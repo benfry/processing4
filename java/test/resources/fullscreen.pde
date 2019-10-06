@@ -1,0 +1,2 @@
+fullScreen(FX2D);
+

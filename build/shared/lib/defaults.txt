@@ -195,7 +195,7 @@ run.options =
 # settings for the -XmsNNNm and -XmxNNNm command line option
 run.options.memory = false
 run.options.memory.initial = 64
-run.options.memory.maximum = 256
+run.options.memory.maximum = 512
 
 # By default, Mac OS X 10.6 launches applications in 32-bit mode, 
 # which is more compatible with libraries (many have not updated to 64-bit).

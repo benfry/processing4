@@ -1,0 +1,44 @@
+import processing.core.*;
+import processing.data.*;
+import processing.event.*;
+import processing.opengl.*;
+
+import java.util.*;
+import java.util.function.*;
+
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+
+public class typeinference extends PApplet {
+
+  public void setup() {
+    List<String> list = new ArrayList<>();
+    list.add("line1\nline2");
+    list.add("line3");
+
+    // Local variable type inference in loop
+    for (var s : list) {
+      println(s);
+    }
+
+    // Local variable type inference
+    var testString = list.get(0);
+    println(testString.lines().count()); // Java 11 API
+  }
+
+
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "typeinference" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
+}

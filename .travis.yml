@@ -9,8 +9,16 @@ jdk:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install ant-optional
+  - sudo apt-get install wget
+  - wget --no-check-certificate https://www-us.apache.org/dist//ant/binaries/apache-ant-1.10.7-bin.tar.gz
+  - tar -xzvf apache-ant-1.10.7-bin.tar.gz
+  - export PATH=`pwd`/apache-ant-1.10.7/bin:$PATH
+
+services:
+  - xvfb
 
 before_script:
+  - export DISPLAY=:99.0
   - cd build
 
 script:

@@ -9,7 +9,7 @@
 	    value="${basedir}/src/processing/mode/java/preproc" />
 
   <property name="antlr_jar"
-	    value="${basedir}/mode/antlr.jar" />
+	    value="${basedir}/mode/antlr-4.7.2-complete.jar" />
 
   <property name="mode_jar"
             value="${basedir}/mode/JavaMode.jar" />
@@ -24,52 +24,26 @@
     <delete file="${mode_jar}" />
     <delete>
       <fileset dir="${generated}">
-      	<include name="*.java" />
-      	<include name="*.tokens" />
-      	<include name="*.txt" />
-      	<include name="*.g" />
-      	<include name="*.smap" />
-      	<include name="*.properties" />
+	<include name="*.java" />
+	<include name="*.tokens" />
+	<include name="*.txt" />
+	<include name="*.g" />
+	<include name="*.smap" />
+	<include name="*.properties" />
       </fileset>
     </delete>
   </target>
 
-  <target name="preproc" description="Compile ANTLR grammar">
-    <antlr target="${grammars}/java15.g" outputdirectory="${generated}">
+  <target name="preproc" description="Compile ANTLR 4 grammar">
+    <java classname="org.antlr.v4.Tool"
+        failonerror="true">
       <classpath path="${antlr_jar}" />
-    </antlr>
-    <antlr target="${grammars}/pde.g"
-	   outputdirectory="${generated}"
-	   glib="${grammars}/java15.g">
-      <classpath path="${antlr_jar}" />
-    </antlr>
-
-    <!-- clean up the warning mess caused by this old antlr version -->
-    <!--<property name="uuc" value="@SuppressWarnings({ &quot;unused&quot;, &quot;unchecked&quot;, &quot;cast&quot; })${line.separator}" />-->
-    <property name="uucr" value="@SuppressWarnings({ &quot;unused&quot;, &quot;unchecked&quot;, &quot;cast&quot;, &quot;rawtypes&quot;  })${line.separator}" />
-    <property name="uc" value="@SuppressWarnings({ &quot;unused&quot;, &quot;cast&quot; })${line.separator}" />
-
-    <!-- need to match against the previous line so that we don't re-add -->
-    <replaceregexp file="generated/processing/mode/java/preproc/JavaLexer.java"
-                   match="(\n\n)(public class JavaLexer .*)"
-                   replace="\1${uucr}\2">
-    </replaceregexp>
-
-    <replaceregexp file="generated/processing/mode/java/preproc/JavaRecognizer.java"
-                   match="(\*/\n)(public class JavaRecognizer .*)"
-                   replace="\1${uc}\2">
-    </replaceregexp>
-
-    <replaceregexp file="generated/processing/mode/java/preproc/PdeLexer.java"
-                   match="(\n\n)(public class PdeLexer .*)"
-                   replace="\1${uucr}\2">
-    </replaceregexp>
-
-    <replaceregexp file="generated/processing/mode/java/preproc/PdeRecognizer.java"
-                   match="(\n\n)(public class PdeRecognizer .*)"
-                   replace="\1${uc}\2">
-    </replaceregexp>
-    <!-- end of workaround for old antlr -->
+      <arg value="-o" />
+      <arg value="${generated}" />
+      <arg value="-package" />
+      <arg value="processing.mode.java.preproc" />
+      <arg value="${grammars}/Processing.g4" />
+    </java>
   </target>
 
   <path id="classpath.base">
@@ -80,7 +54,7 @@
     <pathelement location="../app/lib/apple.jar" />
     <pathelement location="../app/lib/jna.jar" />
     <pathelement location="../app/lib/jna-platform.jar" />
-    <pathelement location="mode/antlr.jar" />
+    <pathelement location="mode/antlr-4.7.2-complete.jar" />
     <pathelement location="mode/classpath-explorer-1.0.jar" />
     <pathelement location="mode/jsoup-1.7.1.jar" />
     <pathelement location="mode/org.netbeans.swing.outline.jar" />
@@ -147,7 +121,7 @@
   </macrodef>
 
   <target name="test-compile" depends="preproc">
-    <compilecommon srcdir="src; test" destdir="bin-test" classpath="classpath.test" />
+    <compilecommon srcdir="src; test/processing" destdir="bin-test" classpath="classpath.test" />
   </target>
 
   <target name="test" depends="test-compile">
@@ -157,6 +131,7 @@
       <batchtest>
         <fileset dir="test">
           <include name="**/*Test.java" />
+          <include name="**/*Tests.java" />
         </fileset>
       </batchtest>
     </junit>
