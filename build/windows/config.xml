@@ -27,11 +27,11 @@
   <jre>
     <path>java</path>
     <!-- Deal with jokers who install JOGL, ANTLR, etc system-wide -->
-    <opt>-Djava.ext.dirs="%EXEDIR%\\java\\lib\\ext"</opt>
+    <!-- <opt>-Djava.ext.dirs="%EXEDIR%\\java\\lib\\ext"</opt> -->
     <!-- https://github.com/processing/processing/issues/2239 -->
     <opt>-Djna.nosys=true</opt>
-    <!-- Because nosys is set to true, the DLL in the current working 
-	 directory won't be considered. And we can't specify the user's 
+    <!-- Because nosys is set to true, the DLL in the current working
+	 directory won't be considered. And we can't specify the user's
 	 directory here because that'll get us into encoding trouble.
 	 (See https://github.com/processing/processing/issues/3624)
 	 Instead, set this so that Native.loadNativeLibrary() will use
@@ -44,6 +44,8 @@
     <opt>-Dsun.java2d.d3d=false</opt>
     <opt>-Dsun.java2d.ddoffscreen=false</opt>
     <opt>-Dsun.java2d.noddraw=true</opt>
+    <!-- No scaling of swing (see #5753) -->
+    <opt>-Dsun.java2d.uiScale=1</opt>
     <!-- starting in 3.0, require Java 8 -->
     <minVersion>1.8.0_60</minVersion>
     <!-- increase available per PDE X request -->
