@@ -12,7 +12,7 @@ import processing.core.PApplet;
 /**
  * A simple table class to use a String as a lookup for an double value.
  *
- * @nowebref
+ * @webref data:composite
  * @see IntDict
  * @see StringDict
  */

@@ -54,6 +54,8 @@ import processing.core.PConstants;
 import processing.data.StringList;
 import processing.data.XML;
 import processing.mode.java.pdex.SourceUtils;
+import processing.mode.java.pdex.util.runtime.RuntimeConst;
+import processing.mode.java.pdex.util.runtime.strategy.JavaFxRuntimePathFactory;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
 import processing.mode.java.preproc.SurfaceInfo;
@@ -785,10 +787,10 @@ public class JavaBuild {
     if (exportPlatform == PConstants.MACOSX) {
       dotAppFolder = new File(destFolder, sketch.getName() + ".app");
 
-      File contentsOrig = new File(Platform.getJavaHome(), "../../../../..");
+      File contentsOrig = new File(Platform.getJavaHome(), "../../../..");
 
       if (embedJava) {
-        File jdkFolder = new File(Platform.getJavaHome(), "../../..");
+        File jdkFolder = new File(Platform.getJavaHome(), "../..");
         String jdkFolderName = jdkFolder.getCanonicalFile().getName();
         jvmRuntime = "<key>JVMRuntime</key>\n    <string>" + jdkFolderName + "</string>";
         jdkPath = new File(dotAppFolder, "Contents/PlugIns/" + jdkFolderName).getAbsolutePath();
@@ -920,7 +922,6 @@ public class JavaBuild {
     for (Library library : importedLibraries) {
       // add each item from the library folder / export list to the output
       for (File exportFile : library.getApplicationExports(exportPlatform, exportVariant)) {
-//        System.out.println("export: " + exportFile);
         String exportName = exportFile.getName();
         if (!exportFile.exists()) {
           System.err.println(exportFile.getName() +
@@ -942,7 +943,6 @@ public class JavaBuild {
         }
       }
     }
-
 
     /// create platform-specific CLASSPATH based on included jars
 
@@ -972,23 +972,14 @@ public class JavaBuild {
     }
     // https://github.com/processing/processing/issues/2239
     runOptions.append("-Djna.nosys=true");
-    // https://github.com/processing/processing/issues/4608
-    if (embedJava) {
-      // if people don't embed Java, it might be a mess, but what can we do?
-      if (exportPlatform == PConstants.MACOSX) {
-        runOptions.append("-Djava.ext.dirs=$APP_ROOT/Contents/PlugIns/jdk" +
-                          PApplet.javaVersionName +
-                          ".jdk/Contents/Home/jre/lib/ext");
-      } else if (exportPlatform == PConstants.WINDOWS) {
-        runOptions.append("-Djava.ext.dirs=\"%EXEDIR%\\java\\lib\\ext\"");
-      } else if (exportPlatform == PConstants.LINUX) {
-        runOptions.append("-Djava.ext.dirs=\"$APPDIR/java/lib/ext\"");
-      }
-    }
 
     // https://github.com/processing/processing/issues/2559
     if (exportPlatform == PConstants.WINDOWS) {
       runOptions.append("-Djava.library.path=\"%EXEDIR%\\lib\"");
+
+      // No scaling of swing (see #5753) on zoomed displays until some issues regarding JEP 263
+      // with rendering artifacts are sorted out.
+      runOptions.append("-Dsun.java2d.uiScale=1");
     }
 
 

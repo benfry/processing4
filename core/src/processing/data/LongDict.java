@@ -11,7 +11,7 @@ import processing.core.PApplet;
 /**
  * A simple class to use a String as a lookup for an int value.
  *
- * @nowebref
+ * @webref data:composite
  * @see FloatDict
  * @see StringDict
  */

@@ -103,6 +103,7 @@ class ErrorChecker {
 
     if (problems.isEmpty()) {
       AtomicReference<ClassPath> searchClassPath = new AtomicReference<>(null);
+
       List<Problem> cuProblems = Arrays.stream(iproblems)
           // Filter Warnings if they are not enabled
           .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
@@ -312,6 +313,7 @@ class ErrorChecker {
         // replace inner class separators with dots
         .map(res -> res.replace('$', '.'))
         // sort, prioritize clases from java. package
+        .map(res -> res.startsWith("classes.") ? res.substring(8) : res)
         .sorted((o1, o2) -> {
           // put java.* first, should be prioritized more
           boolean o1StartsWithJava = o1.startsWith("java");
