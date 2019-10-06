@@ -1,0 +1,18 @@
+git:
+  depth: 1
+
+language: java
+
+jdk:
+  - openjdk11
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install ant-optional
+
+before_script:
+  - cd build
+
+script:
+  - ant clean
+  - ant build
