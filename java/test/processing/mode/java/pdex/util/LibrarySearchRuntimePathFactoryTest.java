@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime.strategy;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,15 +26,13 @@ import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class CodeFolderRuntimePathFactoryTest {
+public class LibrarySearchRuntimePathFactoryTest {
 
-  private CodeFolderRuntimePathFactory factory;
+  private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
@@ -43,7 +41,8 @@ public class CodeFolderRuntimePathFactoryTest {
 
   @Before
   public void setUp() throws Exception {
-    factory = new CodeFolderRuntimePathFactory();
+    RuntimePathBuilder builder = new RuntimePathBuilder();
+    factory = builder::buildLibrarySearchPath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
@@ -53,13 +52,14 @@ public class CodeFolderRuntimePathFactoryTest {
 
   @Test
   public void testBuildClasspathSize() {
-    assertEquals(2, classpath.size());
+    assertEquals(3, classpath.size());
   }
 
   @Test
   public void testBuildClasspathValues() {
-    assertEquals("testdir" + File.separator + "file1.jar", classpath.get(0));
-    assertEquals("testdir" + File.separator + "file3.zip", classpath.get(1));
+    assertTrue(classpath.get(0).contains("library3"));
+    assertTrue(classpath.get(1).contains("java.library4"));
+    assertTrue(classpath.get(2).contains("library5"));
   }
 
 }

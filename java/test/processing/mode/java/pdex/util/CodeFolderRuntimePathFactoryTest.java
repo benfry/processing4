@@ -18,47 +18,49 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime.strategy;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
+import processing.mode.java.pdex.util.RuntimePathFactoryTestUtil;
 
-import java.io.IOException;
+import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
+public class CodeFolderRuntimePathFactoryTest {
 
-public class LibrarySketchRuntimePathFactoryTest {
-
-  private LibrarySketchRuntimePathFactory factory;
+  private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
-  private List<String> classpathEntries;
+
+  private List<String> classpath;
 
   @Before
   public void setUp() throws Exception {
-    factory = new LibrarySketchRuntimePathFactory();
+    RuntimePathBuilder builder = new RuntimePathBuilder();
+    factory = builder::buildCodeFolderPath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
 
-    classpathEntries = factory.buildClasspath(testMode, testImports, testSketch);
+    classpath = factory.buildClasspath(testMode, testImports, testSketch);
   }
 
   @Test
   public void testBuildClasspathSize() {
-    assertEquals(2, classpathEntries.size());
+    assertEquals(2, classpath.size());
   }
 
   @Test
   public void testBuildClasspathValues() {
-    assertTrue(classpathEntries.get(0).contains("library3"));
-    assertTrue(classpathEntries.get(1).contains("library5"));
+    assertEquals("testdir" + File.separator + "file1.jar", classpath.get(0));
+    assertEquals("testdir" + File.separator + "file3.zip", classpath.get(1));
   }
 
 }

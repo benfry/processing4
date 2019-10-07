@@ -49,7 +49,7 @@ import processing.mode.java.JavaEditor;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.TextTransform.OffsetMapper;
 import processing.mode.java.pdex.util.ProblemFactory;
-import processing.mode.java.pdex.util.runtime.RuntimePathBuilder;
+import processing.mode.java.pdex.util.RuntimePathBuilder;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
 import processing.mode.java.preproc.code.ImportUtil;

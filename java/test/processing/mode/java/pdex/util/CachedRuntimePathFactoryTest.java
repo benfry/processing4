@@ -18,14 +18,13 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime.strategy;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.util.runtime.RuntimePathUtilTest;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,29 +35,30 @@ import static org.junit.Assert.*;
 
 public class CachedRuntimePathFactoryTest {
 
-  private CachedRuntimePathFactory cachedRuntimePathFactory;
+  private RuntimePathBuilder.CachedRuntimePathFactory cachedRuntimePathFactory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
 
   @Before
   public void setUp() throws Exception {
-    cachedRuntimePathFactory = new CachedRuntimePathFactory(new RuntimePathFactoryStrategy() {
+    cachedRuntimePathFactory = new RuntimePathBuilder.CachedRuntimePathFactory(
+        new RuntimePathBuilder.RuntimePathFactoryStrategy() {
+          private int calls = 0;
 
-      private int calls = 0;
+          @Override
+          public List<String> buildClasspath(JavaMode mode, List<ImportStatement> imports,
+                Sketch sketch) {
 
-      @Override
-      public List<String> buildClasspath(JavaMode mode, List<ImportStatement> imports,
-            Sketch sketch) {
+            String retVal = String.format("Test%d", calls);
+            calls++;
 
-        String retVal = String.format("Test%d", calls);
-        calls++;
-
-        List<String> retList = new ArrayList<>();
-        retList.add(retVal);
-        return retList;
-      }
-    });
+            List<String> retList = new ArrayList<>();
+            retList.add(retVal);
+            return retList;
+          }
+        }
+    );
 
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();

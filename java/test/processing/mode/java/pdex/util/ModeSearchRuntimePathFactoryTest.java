@@ -18,33 +18,31 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime.strategy;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.util.runtime.RuntimeConst;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 
-public class JavaRuntimePathFactoryTest {
+public class ModeSearchRuntimePathFactoryTest {
 
-  private JavaRuntimePathFactory factory;
+  private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
-
   private List<String> classpath;
 
   @Before
   public void setUp() throws Exception {
-    factory = new JavaRuntimePathFactory();
+    RuntimePathBuilder builder = new RuntimePathBuilder();
+    factory = builder::buildModeSearchPath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
@@ -53,19 +51,15 @@ public class JavaRuntimePathFactoryTest {
   }
 
   @Test
-  public void testBuildClasspathSize() {
-    assertEquals(RuntimeConst.STANDARD_MODULES.length, classpath.size());
+  public void buildClasspathLength() {
+    assertEquals(3, classpath.size());
   }
 
   @Test
-  public void testBuildClasspathValues() {
-    boolean foundTarget = false;
-    for (String entry : classpath) {
-      boolean justFound = entry.contains("java.base.jmod") && entry.contains("jmods");
-      foundTarget = foundTarget || justFound;
-    }
-
-    assertTrue(foundTarget);
+  public void buildClasspathValues() {
+    assertEquals("library6", classpath.get(0));
+    assertEquals("javax.library7", classpath.get(1));
+    assertEquals("library8", classpath.get(2));
   }
 
 }

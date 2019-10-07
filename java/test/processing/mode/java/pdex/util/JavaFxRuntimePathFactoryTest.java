@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime.strategy;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,15 +26,14 @@ import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 
-public class RuntimePathFactoryStrategyCollectionTest {
+public class JavaFxRuntimePathFactoryTest {
 
-  private RuntimePathFactoryStrategyCollection factory;
+  private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
@@ -42,11 +41,8 @@ public class RuntimePathFactoryStrategyCollectionTest {
 
   @Before
   public void setUp() throws Exception {
-    List<RuntimePathFactoryStrategy> innerFactories = new ArrayList<>();
-    innerFactories.add(createInnerFactory("test1"));
-    innerFactories.add(createInnerFactory("test2"));
-    factory = new RuntimePathFactoryStrategyCollection(innerFactories);
-
+    RuntimePathBuilder builder = new RuntimePathBuilder();
+    factory = builder::buildJavaFxRuntimePath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
@@ -54,23 +50,20 @@ public class RuntimePathFactoryStrategyCollectionTest {
     classpath = factory.buildClasspath(testMode, testImports, testSketch);
   }
 
-  private RuntimePathFactoryStrategy createInnerFactory(String retStr) {
-    return (mode, imports, sketch) -> {
-      List<String> retList = new ArrayList<>();
-      retList.add(retStr);
-      return retList;
-    };
+  @Test
+  public void testBuildClasspathSize() {
+    assertEquals(RuntimePathBuilder.JAVA_FX_JARS.length, classpath.size());
   }
 
   @Test
-  public void testBuildClasspathLength() {
-    assertEquals(2, classpath.size());
-  }
+  public void testBuildClasspathValues() {
+    boolean foundTarget = false;
+    for (String entry : classpath) {
+      boolean justFound = entry.contains("javafx.base.jar") && entry.contains("lib");
+      foundTarget = foundTarget || justFound;
+    }
 
-  @Test
-  public void testBuildClasspathContent() {
-    assertEquals("test1", classpath.get(0));
-    assertEquals("test2", classpath.get(1));
+    assertTrue(foundTarget);
   }
 
 }

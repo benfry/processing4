@@ -18,48 +18,48 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime.strategy;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
+import processing.mode.java.pdex.util.RuntimePathFactoryTestUtil;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class LibrarySearchRuntimePathFactoryTest {
+public class CoreLibraryRuntimePathFactoryTest {
 
-  private LibrarySearchRuntimePathFactory factory;
+  private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
-
-  private List<String> classpath;
+  private List<String> classPath;
 
   @Before
   public void setUp() throws Exception {
-    factory = new LibrarySearchRuntimePathFactory();
+    RuntimePathBuilder builder = new RuntimePathBuilder();
+    factory = builder::buildCoreLibraryPath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
 
-    classpath = factory.buildClasspath(testMode, testImports, testSketch);
+    classPath = factory.buildClasspath(testMode, testImports, testSketch);
   }
 
   @Test
   public void testBuildClasspathSize() {
-    assertEquals(3, classpath.size());
+    assertEquals(2, classPath.size());
   }
 
   @Test
-  public void testBuildClasspathValues() {
-    assertTrue(classpath.get(0).contains("library3"));
-    assertTrue(classpath.get(1).contains("java.library4"));
-    assertTrue(classpath.get(2).contains("library5"));
+  public void testBuildClasspathValue() {
+    assertEquals("library1", classPath.get(0));
+    assertEquals("library2", classPath.get(1));
   }
+
 
 }
