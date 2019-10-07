@@ -5,6 +5,9 @@ X fix potential highlighting issue that wasn't selecting portions of text
 X update AppBundler to use newer SDK, recompile
 X edit build.xml files and appbundler to preserve more attributes
 
+_ selecting a sketch in the Sketch menu no longer opens its window
+_   https://github.com/processing/processing/issues/5882
+
 _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
 
@@ -12,6 +15,13 @@ _ startup errors in contrib manager
 _   https://github.com/processing/processing/issues/5482
 _   https://github.com/processing/processing/issues/5916
 _   https://github.com/processing/processing/issues/5823
+
+quick fixes
+_ rename-variable menu allows Java identifiers
+_   https://github.com/processing/processing/pull/5906
+_ tweak mode issue
+_   https://github.com/processing/processing/issues/5805
+_   https://github.com/processing/processing/pull/5909
 
 fork issues
 _ processing-sam/build/macosx/jdk-0u1_macosx_64.tgz
