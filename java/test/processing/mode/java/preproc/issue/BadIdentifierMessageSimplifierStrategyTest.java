@@ -1,25 +1,24 @@
-package processing.mode.java.preproc.issue.strategy;
+package processing.mode.java.preproc.issue;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import processing.mode.java.preproc.issue.IssueMessageSimplification;
 
 import java.util.Optional;
 
 
-public class MissingGenericTypeMessageSimplifierStrategyTest {
+public class BadIdentifierMessageSimplifierStrategyTest {
 
-  private MissingGenericTypeMessageSimplifierStrategy strategy;
+  private PreprocessIssueMessageSimplifier.PreprocIssueMessageSimplifierStrategy strategy;
 
   @Before
   public void setup() {
-    strategy = new MissingGenericTypeMessageSimplifierStrategy();
+    strategy = PreprocessIssueMessageSimplifier.get().createInvalidIdentifierStrategy();
   }
 
   @Test
   public void testPresent() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("<>'");
+    Optional<IssueMessageSimplification> msg = strategy.simplify("test(a,01a");
     Assert.assertTrue(msg.isPresent());
   }
 

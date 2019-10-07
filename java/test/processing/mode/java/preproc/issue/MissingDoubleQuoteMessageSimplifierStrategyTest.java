@@ -1,4 +1,4 @@
-package processing.mode.java.preproc.issue.strategy;
+package processing.mode.java.preproc.issue;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -8,18 +8,18 @@ import processing.mode.java.preproc.issue.IssueMessageSimplification;
 import java.util.Optional;
 
 
-public class ExtraneousInputMessageSimplifierStrategyTest {
+public class MissingDoubleQuoteMessageSimplifierStrategyTest {
 
-  private ExtraneousInputMessageSimplifierStrategy strategy;
+  private PreprocessIssueMessageSimplifier.PreprocIssueMessageSimplifierStrategy strategy;
 
   @Before
   public void setup() {
-    strategy = new ExtraneousInputMessageSimplifierStrategy();
+    strategy = PreprocessIssueMessageSimplifier.get().createMissingDoubleQuoteStrategy();
   }
 
   @Test
   public void testPresent() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("extraneous input 'test' expecting ';'");
+    Optional<IssueMessageSimplification> msg = strategy.simplify("String x = \" \" \"");
     Assert.assertTrue(msg.isPresent());
   }
 

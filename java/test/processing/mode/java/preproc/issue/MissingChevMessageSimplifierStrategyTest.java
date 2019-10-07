@@ -1,4 +1,4 @@
-package processing.mode.java.preproc.issue.strategy;
+package processing.mode.java.preproc.issue;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public class MissingChevMessageSimplifierStrategyTest {
 
-  private processing.mode.java.preproc.issue.strategy.MissingChevMessageSimplifierStrategy strategy;
+  private PreprocessIssueMessageSimplifier.PreprocIssueMessageSimplifierStrategy strategy;
 
   @Before
   public void setup() {
-    strategy = new MissingChevMessageSimplifierStrategy();
+    strategy = PreprocessIssueMessageSimplifier.get().createUnbalancedChevStrategy();
   }
 
   @Test

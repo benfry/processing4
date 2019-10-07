@@ -1,4 +1,4 @@
-package processing.mode.java.preproc.issue.strategy;
+package processing.mode.java.preproc.issue;
 
 import java.util.HashMap;
 import java.util.Map;

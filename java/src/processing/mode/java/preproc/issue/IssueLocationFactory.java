@@ -43,7 +43,7 @@ public class IssueLocationFactory {
   /**
    * Determine where an issue should be reported.
    *
-   * @param simplification The issue simplification generated from {PreprocessIssueMessageSimplifierFacade}.
+   * @param simplification The issue simplification generated from {PreprocessIssueMessageSimplifier}.
    * @param originalLine The original line (1 indexed) on which the issue was reported.
    * @param originalOffset The original number of characters from the start of the line where the
    *    the issue was reported.

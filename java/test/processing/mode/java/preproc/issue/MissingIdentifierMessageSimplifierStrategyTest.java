@@ -1,20 +1,20 @@
-package processing.mode.java.preproc.issue.strategy;
+package processing.mode.java.preproc.issue;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import processing.mode.java.preproc.issue.IssueMessageSimplification;
 
 import java.util.Optional;
 
 
 public class MissingIdentifierMessageSimplifierStrategyTest {
 
-  private MissingIdentifierMessageSimplifierStrategy strategy;
+  private PreprocessIssueMessageSimplifier.PreprocIssueMessageSimplifierStrategy strategy;
 
   @Before
   public void setup() {
-    strategy = new MissingIdentifierMessageSimplifierStrategy();
+    strategy = PreprocessIssueMessageSimplifier.get()
+        .createMissingIdentifierSimplifierStrategy();
   }
 
   @Test
