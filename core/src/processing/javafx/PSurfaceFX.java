@@ -253,7 +253,6 @@ public class PSurfaceFX implements PSurface {
           renderScale = Math.max(renderScale, s.getRecommendedOutputScaleX());
         }
       }
-      float uiScale = Screen.getMainScreen().getRecommendedOutputScaleX();
       if (sketch.pixelDensity == 2 && renderScale < 2) {
         sketch.pixelDensity = 1;
         sketch.g.pixelDensity = 1;
@@ -940,7 +939,6 @@ public class PSurfaceFX implements PSurface {
   }
 
 
-  @SuppressWarnings("deprecation")
   private int getKeyCode(KeyEvent fxEvent) {
     if (fxEvent.getEventType() == KeyEvent.KEY_TYPED) {
       return 0;
@@ -957,7 +955,6 @@ public class PSurfaceFX implements PSurface {
   }
 
 
-  @SuppressWarnings("deprecation")
   private char getKeyChar(KeyEvent fxEvent) {
     KeyCode kc = fxEvent.getCode();
 
