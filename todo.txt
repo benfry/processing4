@@ -1,4 +1,4 @@
-0270 (4.x)
+1270 (4.x alpha)
 X use ctrl-page up/down for tabs on Windows
 X   https://github.com/processing/processing/issues/5794
 X fix potential highlighting issue that wasn't selecting portions of text
