@@ -31,7 +31,7 @@ import java.awt.*;
  * We have to register a quit handler to safely shut down the sketch,
  * otherwise OS X will just kill the sketch when a user hits Cmd-Q.
  * In addition, we have a method to set the dock icon image so we look more
- * like a native desktop.
+ * like a native application.
  *
  * This is a stripped-down version of what's in processing.app.platform to fix
  * <a href="https://github.com/processing/processing/issues/3301">3301</a>.
