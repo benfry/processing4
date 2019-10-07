@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -26,10 +26,12 @@ import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
 import processing.mode.java.pdex.PreprocessedSketch;
-import processing.mode.java.pdex.util.runtime.strategy.RuntimePathFactoryTestUtil;
+import processing.mode.java.pdex.util.RuntimePathFactoryTestUtil;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.StringJoiner;
 
 import static org.junit.Assert.*;
 
@@ -122,6 +124,33 @@ public class RuntimePathBuilderTest {
         .count();
 
     assertTrue(count > 0);
+  }
+
+  @Test
+  public void sanitizeClassPath() {
+    StringJoiner testStrJoiner = new StringJoiner(File.pathSeparator);
+    testStrJoiner.add("test1");
+    testStrJoiner.add("");
+    testStrJoiner.add("test2");
+
+    List<String> classPath = builder.sanitizeClassPath(testStrJoiner.toString());
+    assertEquals(2, classPath.size());
+    assertEquals("test1", classPath.get(0));
+    assertEquals("test2", classPath.get(1));
+  }
+
+  @Test
+  public void sanitizeClassPathNoDuplicate() {
+    StringJoiner testStrJoiner = new StringJoiner(File.pathSeparator);
+    testStrJoiner.add("test1");
+    testStrJoiner.add("");
+    testStrJoiner.add("test2");
+    testStrJoiner.add("test2");
+
+    List<String> classPath = builder.sanitizeClassPath(testStrJoiner.toString());
+    assertEquals(2, classPath.size());
+    assertEquals("test1", classPath.get(0));
+    assertEquals("test2", classPath.get(1));
   }
 
 }

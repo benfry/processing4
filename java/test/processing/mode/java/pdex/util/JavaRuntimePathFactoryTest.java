@@ -18,31 +18,32 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util.runtime.strategy;
+package processing.mode.java.pdex.util;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
 import processing.mode.java.JavaMode;
 import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.util.runtime.RuntimeConst;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 
-public class JavaFxRuntimePathFactoryTest {
+public class JavaRuntimePathFactoryTest {
 
-  private JavaFxRuntimePathFactory factory;
+  private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
+
   private List<String> classpath;
 
   @Before
   public void setUp() throws Exception {
-    factory = new JavaFxRuntimePathFactory();
+    RuntimePathBuilder builder = new RuntimePathBuilder();
+    factory = builder::buildJavaRuntimePath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
@@ -52,14 +53,14 @@ public class JavaFxRuntimePathFactoryTest {
 
   @Test
   public void testBuildClasspathSize() {
-    assertEquals(RuntimeConst.JAVA_FX_JARS.length, classpath.size());
+    assertEquals(RuntimePathBuilder.STANDARD_MODULES.length, classpath.size());
   }
 
   @Test
   public void testBuildClasspathValues() {
     boolean foundTarget = false;
     for (String entry : classpath) {
-      boolean justFound = entry.contains("javafx.base.jar") && entry.contains("lib");
+      boolean justFound = entry.contains("java.base.jmod") && entry.contains("jmods");
       foundTarget = foundTarget || justFound;
     }
 
