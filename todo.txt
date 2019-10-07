@@ -8,6 +8,14 @@ X edit build.xml files and appbundler to preserve more attributes
 major updates for JDK 11 et al
 X https://github.com/processing/processing4/pull/1
 _   go through the comment w/ the various bugs that can be closed
+_ remove jdk.hash from build.xml
+_   need to make sure the downloader isn't relying on it
+_ clean up naming for build/macosx/jdk-0u1.tgz and build/macosx/jdk-11.0.1+13/
+
+contribs
+X tweak mode not working
+X   https://github.com/processing/processing/issues/5805
+X   https://github.com/processing/processing/pull/5909
 
 _ selecting a sketch in the Sketch menu no longer opens its window
 _   https://github.com/processing/processing/issues/5882
@@ -23,9 +31,6 @@ _   https://github.com/processing/processing/issues/5823
 quick fixes
 _ rename-variable menu allows Java identifiers
 _   https://github.com/processing/processing/pull/5906
-_ tweak mode issue
-_   https://github.com/processing/processing/issues/5805
-_   https://github.com/processing/processing/pull/5909
 
 from Casey
 _ Issue with https and downloading the binaries, +Checksums?
