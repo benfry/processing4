@@ -459,7 +459,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
       return !sketch.isReadOnly();
     }
 
-    @SuppressWarnings("unchecked")
     public boolean importData(TransferHandler.TransferSupport support) {
       int successful = 0;
 
