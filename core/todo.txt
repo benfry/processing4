@@ -11,6 +11,11 @@ _ simple rotateZ() fix
 _   https://github.com/processing/processing/pull/5821
 _   https://github.com/processing/processing/issues/5770
 
+_ check for disabling FBO code (fixes Intel HD 3000)
+_   https://github.com/processing/processing/issues/4104
+_   https://github.com/processing/processing/pull/5881
+
+
 high-ish
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068

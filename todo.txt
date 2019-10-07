@@ -1,9 +1,13 @@
-0270 (3.5.4 or 3.6)
+0270 (4.x)
 X use ctrl-page up/down for tabs on Windows
 X   https://github.com/processing/processing/issues/5794
 X fix potential highlighting issue that wasn't selecting portions of text
 X update AppBundler to use newer SDK, recompile
 X edit build.xml files and appbundler to preserve more attributes
+
+major updates for JDK 11 et al
+X https://github.com/processing/processing4/pull/1
+_   go through the comment w/ the various bugs that can be closed
 
 _ selecting a sketch in the Sketch menu no longer opens its window
 _   https://github.com/processing/processing/issues/5882
@@ -22,9 +26,6 @@ _   https://github.com/processing/processing/pull/5906
 _ tweak mode issue
 _   https://github.com/processing/processing/issues/5805
 _   https://github.com/processing/processing/pull/5909
-
-fork issues
-_ processing-sam/build/macosx/jdk-0u1_macosx_64.tgz
 
 from Casey
 _ Issue with https and downloading the binaries, +Checksums?
