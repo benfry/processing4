@@ -281,6 +281,9 @@ public class PApplet implements PConstants {
    * @see PApplet#get(int, int, int, int)
    * @see PApplet#set(int, int, int)
    * @see PImage
+   * @see PApplet#pixelDensity()
+   * @see PApplet#pixelWidth
+   * @see PApplet#pixelHeight
    */
   public int[] pixels;
 
@@ -1214,7 +1217,8 @@ public class PApplet implements PConstants {
  /**
   * @webref environment
   * @param density 1 or 2
-  *
+  * @see PApplet#pixelWidth
+  * @see PApplet#pixelHeight
   */
   public void pixelDensity(int density) {
     //println(density + " " + this.pixelDensity);
@@ -2004,6 +2008,9 @@ public class PApplet implements PConstants {
    * @param height height of the display window in units of pixels
    * @see PApplet#width
    * @see PApplet#height
+   * @see PApplet#setup()
+   * @see PApplet#settings()
+   * @see PApplet#fullScreen()
    */
   public void size(int width, int height) {
     // Check to make sure the width/height have actually changed. It's ok to
@@ -12166,11 +12173,11 @@ public class PApplet implements PConstants {
   /**
    * ( begin auto-generated from square.xml )
    *
-   * Draws a square to the screen. A square is a four-sided shape with 
-   * every angle at ninety degrees and each side is the same length. 
-   * By default, the first two parameters set the location of the 
-   * upper-left corner, the third sets the width and height. The way 
-   * these parameters are interpreted, however, may be changed with the 
+   * Draws a square to the screen. A square is a four-sided shape with
+   * every angle at ninety degrees and each side is the same length.
+   * By default, the first two parameters set the location of the
+   * upper-left corner, the third sets the width and height. The way
+   * these parameters are interpreted, however, may be changed with the
    * <b>rectMode()</b> function.
    *
    * ( end auto-generated )
@@ -12279,9 +12286,9 @@ public class PApplet implements PConstants {
   /**
    * ( begin auto-generated from circle.xml )
    *
-   * Draws a circle to the screen. By default, the first two parameters 
-   * set the location of the center, and the third sets the shape's width 
-   * and height. The origin may be changed with the <b>ellipseMode()</b> 
+   * Draws a circle to the screen. By default, the first two parameters
+   * set the location of the center, and the third sets the shape's width
+   * and height. The origin may be changed with the <b>ellipseMode()</b>
    * function.
    *
    * ( end auto-generated )
@@ -12577,17 +12584,17 @@ public class PApplet implements PConstants {
    * ( begin auto-generated from curvePoint.xml )
    *
    * Evalutes the curve at point t for points a, b, c, d. The parameter t
-   * varies between 0 and 1, a and d are points on the curve, and b and c are
-   * the control points. This can be done once with the x coordinates and a
+   * varies between 0 and 1, a and d are the control points, and b and c are
+   * the points on the curve. This can be done once with the x coordinates and a
    * second time with the y coordinates to get the location of a curve at t.
    *
    * ( end auto-generated )
    *
    * @webref shape:curves
-   * @param a coordinate of first point on the curve
-   * @param b coordinate of second point on the curve
-   * @param c coordinate of third point on the curve
-   * @param d coordinate of fourth point on the curve
+   * @param a coordinate of first control point
+   * @param b coordinate of first point on the curve
+   * @param c coordinate of second point on the curve
+   * @param d coordinate of second control point
    * @param t value between 0 and 1
    * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
    * @see PGraphics#curveVertex(float, float)
@@ -13323,28 +13330,28 @@ public class PApplet implements PConstants {
   /**
    * ( begin auto-generated from push.xml )
    *
-   * The <b>push()</b> function saves the current drawing style 
-   * settings and transformations, while <b>pop()</b> restores these 
-   * settings. Note that these functions are always used together. 
-   * They allow you to change the style and transformation settings 
-   * and later return to what you had. When a new state is started 
-   * with push(), it builds on the current style and transform 
+   * The <b>push()</b> function saves the current drawing style
+   * settings and transformations, while <b>pop()</b> restores these
+   * settings. Note that these functions are always used together.
+   * They allow you to change the style and transformation settings
+   * and later return to what you had. When a new state is started
+   * with push(), it builds on the current style and transform
    * information.<br />
    * <br />
-   * <b>push()</b> stores information related to the current 
-   * transformation state and style settings controlled by the 
-   * following functions: <b>rotate()</b>, <b>translate()</b>, 
-   * <b>scale()</b>, <b>fill()</b>, <b>stroke()</b>, <b>tint()</b>, 
-   * <b>strokeWeight()</b>, <b>strokeCap()</b>, <b>strokeJoin()</b>, 
-   * <b>imageMode()</b>, <b>rectMode()</b>, <b>ellipseMode()</b>, 
-   * <b>colorMode()</b>, <b>textAlign()</b>, <b>textFont()</b>, 
+   * <b>push()</b> stores information related to the current
+   * transformation state and style settings controlled by the
+   * following functions: <b>rotate()</b>, <b>translate()</b>,
+   * <b>scale()</b>, <b>fill()</b>, <b>stroke()</b>, <b>tint()</b>,
+   * <b>strokeWeight()</b>, <b>strokeCap()</b>, <b>strokeJoin()</b>,
+   * <b>imageMode()</b>, <b>rectMode()</b>, <b>ellipseMode()</b>,
+   * <b>colorMode()</b>, <b>textAlign()</b>, <b>textFont()</b>,
    * <b>textMode()</b>, <b>textSize()</b>, <b>textLeading()</b>.<br />
    * <br />
-   * The <b>push()</b> and <b>pop()</b> functions were added with 
-   * Processing 3.5. They can be used in place of <b>pushMatrix()</b>, 
-   * <b>popMatrix()</b>, <b>pushStyles()</b>, and <b>popStyles()</b>. 
-   * The difference is that push() and pop() control both the 
-   * transformations (rotate, scale, translate) and the drawing styles 
+   * The <b>push()</b> and <b>pop()</b> functions were added with
+   * Processing 3.5. They can be used in place of <b>pushMatrix()</b>,
+   * <b>popMatrix()</b>, <b>pushStyles()</b>, and <b>popStyles()</b>.
+   * The difference is that push() and pop() control both the
+   * transformations (rotate, scale, translate) and the drawing styles
    * at the same time.
    *
    * ( end auto-generated )
@@ -13361,28 +13368,28 @@ public class PApplet implements PConstants {
   /**
    * ( begin auto-generated from pop.xml )
    *
-   * The <b>pop()</b> function restores the previous drawing style 
-   * settings and transformations after <b>push()</b> has changed them. 
-   * Note that these functions are always used together. They allow 
-   * you to change the style and transformation settings and later 
-   * return to what you had. When a new state is started with push(), 
+   * The <b>pop()</b> function restores the previous drawing style
+   * settings and transformations after <b>push()</b> has changed them.
+   * Note that these functions are always used together. They allow
+   * you to change the style and transformation settings and later
+   * return to what you had. When a new state is started with push(),
    * it builds on the current style and transform information.<br />
    * <br />
    * <br />
-   * <b>push()</b> stores information related to the current 
-   * transformation state and style settings controlled by the 
-   * following functions: <b>rotate()</b>, <b>translate()</b>, 
-   * <b>scale()</b>, <b>fill()</b>, <b>stroke()</b>, <b>tint()</b>, 
-   * <b>strokeWeight()</b>, <b>strokeCap()</b>, <b>strokeJoin()</b>, 
-   * <b>imageMode()</b>, <b>rectMode()</b>, <b>ellipseMode()</b>, 
-   * <b>colorMode()</b>, <b>textAlign()</b>, <b>textFont()</b>, 
+   * <b>push()</b> stores information related to the current
+   * transformation state and style settings controlled by the
+   * following functions: <b>rotate()</b>, <b>translate()</b>,
+   * <b>scale()</b>, <b>fill()</b>, <b>stroke()</b>, <b>tint()</b>,
+   * <b>strokeWeight()</b>, <b>strokeCap()</b>, <b>strokeJoin()</b>,
+   * <b>imageMode()</b>, <b>rectMode()</b>, <b>ellipseMode()</b>,
+   * <b>colorMode()</b>, <b>textAlign()</b>, <b>textFont()</b>,
    * <b>textMode()</b>, <b>textSize()</b>, <b>textLeading()</b>.<br />
    * <br />
-   * The <b>push()</b> and <b>pop()</b> functions were added with 
-   * Processing 3.5. They can be used in place of <b>pushMatrix()</b>, 
-   * <b>popMatrix()</b>, <b>pushStyles()</b>, and <b>popStyles()</b>. 
-   * The difference is that push() and pop() control both the 
-   * transformations (rotate, scale, translate) and the drawing styles 
+   * The <b>push()</b> and <b>pop()</b> functions were added with
+   * Processing 3.5. They can be used in place of <b>pushMatrix()</b>,
+   * <b>popMatrix()</b>, <b>pushStyles()</b>, and <b>popStyles()</b>.
+   * The difference is that push() and pop() control both the
+   * transformations (rotate, scale, translate) and the drawing styles
    * at the same time.
    *
    * ( end auto-generated )
@@ -14859,6 +14866,8 @@ public class PApplet implements PConstants {
 
 /**
  * gray number specifying value between white and black
+ *
+ * @param gray value between black and white, by default 0 to 255
  */
   public void specular(float gray) {
     if (recorder != null) recorder.specular(gray);
@@ -14924,6 +14933,8 @@ public class PApplet implements PConstants {
 
   /**
    * gray number specifying value between white and black
+   *
+   * @param gray value between black and white, by default 0 to 255
    */
   public void emissive(float gray) {
     if (recorder != null) recorder.emissive(gray);

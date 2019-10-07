@@ -3049,13 +3049,7 @@ int testFunction(int dst, int src) {
     */
     try {
       byte tiff[] = new byte[768];
-      System.arraycopy(
-          TIFF_HEADER,
-          0,
-          tiff,
-          0,
-          TIFF_HEADER.length
-      );
+      System.arraycopy(TIFF_HEADER, 0, tiff, 0, TIFF_HEADER.length);
 
       tiff[30] = (byte) ((pixelWidth >> 8) & 0xff);
       tiff[31] = (byte) ((pixelWidth) & 0xff);
