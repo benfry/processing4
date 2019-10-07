@@ -30,14 +30,14 @@
   <jre>
     <path>java</path>
     <!-- Deal with jokers who install JOGL, ANTLR, etc system-wide -->
-    <opt>-Djava.ext.dirs="%EXEDIR%\\java\\lib\\ext"</opt>
+    <!-- <opt>-Djava.ext.dirs="%EXEDIR%\\java\\lib\\ext"</opt> -->
     <!-- Prevent a user-installed JNA from conflicting with our version.
          https://github.com/processing/processing/issues/2239 -->
     <opt>-Djna.nosys=true</opt>
     <!-- starting in 3.0, require Java 8 -->
     <minVersion>1.8.0_60</minVersion>
     <!-- increase available per PDE X request -->
-    <maxHeapSize>256</maxHeapSize>
+    <maxHeapSize>512</maxHeapSize>
   </jre>
 
   <messages>

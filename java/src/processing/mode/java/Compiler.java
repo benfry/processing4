@@ -62,14 +62,17 @@ public class Compiler {
     SketchException exception = null;
     boolean success = false;
 
+    String classpath = build.getClassPath();
+    String classpathEmptyRemoved = classpath.replace("::", ":");
+
     String baseCommand[] = new String[] {
       "-g",
       "-Xemacs",
       //"-noExit",  // not necessary for ecj
-      "-source", "1.7",
-      "-target", "1.7",
+      "-source", "11",
+      "-target", "11",
       "-encoding", "utf8",
-      "-classpath", build.getClassPath(),
+      "-classpath", classpathEmptyRemoved,
       "-nowarn", // we're not currently interested in warnings (works in ecj)
       "-d", build.getBinFolder().getAbsolutePath() // output the classes in the buildPath
     };

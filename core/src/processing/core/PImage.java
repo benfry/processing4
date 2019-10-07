@@ -61,6 +61,17 @@ import javax.imageio.metadata.*;
  */
 public class PImage implements PConstants, Cloneable {
 
+  private static final byte TIFF_HEADER[] = {
+    77, 77, 0, 42, 0, 0, 0, 8, 0, 9, 0, -2, 0, 4, 0, 0, 0, 1, 0, 0,
+    0, 0, 1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1,
+    0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0, 3, 0, 0, 0, 122, 1, 6, 0, 3, 0,
+    0, 0, 1, 0, 2, 0, 0, 1, 17, 0, 4, 0, 0, 0, 1, 0, 0, 3, 0, 1, 21,
+    0, 3, 0, 0, 0, 1, 0, 3, 0, 0, 1, 22, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0,
+    1, 23, 0, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 8, 0, 8
+  };
+
+  private static final String TIFF_ERROR = "Error: Processing can only read its own TIFF files.";
+
   /**
    * Format for this image, one of RGB, ARGB or ALPHA.
    * note that RGB images still require 0xff in the high byte
@@ -90,7 +101,7 @@ public class PImage implements PConstants, Cloneable {
    *
    * @webref image:pixels
    * @usage web_application
-   * @brief Array containing the color of every pixel in the image
+   * @brief     Array containing the color of every pixel in the image
    */
   public int[] pixels;
 
@@ -286,6 +297,40 @@ public class PImage implements PConstants, Cloneable {
 
   //////////////////////////////////////////////////////////////
 
+  public PImage(int width, int height, int[] pixels, boolean requiresCheckAlpha, PApplet parent) {
+    initFromPixels(
+        width,
+        height,
+        pixels,
+        RGB,
+        1
+    );
+
+    this.parent = parent;
+
+    if (requiresCheckAlpha) {
+      checkAlpha();
+    }
+  }
+
+  public PImage(int width, int height, int[] pixels, boolean requiresCheckAlpha, PApplet parent,
+                int format, int factor) {
+
+    initFromPixels(width, height, pixels, format, factor);
+    this.parent = parent;
+
+    if (requiresCheckAlpha) {
+      checkAlpha();
+    }
+  }
+
+  private void initFromPixels(int width, int height, int[] pixels, int format, int factor) {
+    this.width = width;
+    this.height = height;
+    this.format = format;
+    this.pixelDensity = factor;
+    this.pixels = pixels;
+  }
 
   /**
    * Construct a new PImage from a java.awt.Image. This constructor assumes
@@ -2947,20 +2992,6 @@ int testFunction(int dst, int src) {
 
   // FILE I/O
 
-
-  static byte TIFF_HEADER[] = {
-    77, 77, 0, 42, 0, 0, 0, 8, 0, 9, 0, -2, 0, 4, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1,
-    0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0, 3, 0, 0, 0, 122, 1, 6, 0, 3, 0,
-    0, 0, 1, 0, 2, 0, 0, 1, 17, 0, 4, 0, 0, 0, 1, 0, 0, 3, 0, 1, 21,
-    0, 3, 0, 0, 0, 1, 0, 3, 0, 0, 1, 22, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0,
-    1, 23, 0, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 8, 0, 8
-  };
-
-
-  static final String TIFF_ERROR =
-    "Error: Processing can only read its own TIFF files.";
-
   static protected PImage loadTIFF(byte tiff[]) {
     if ((tiff[42] != tiff[102]) ||  // width/height in both places
         (tiff[43] != tiff[103])) {
@@ -3007,7 +3038,6 @@ int testFunction(int dst, int src) {
     }
     return outgoing;
   }
-
 
   protected boolean saveTIFF(OutputStream output) {
     // shutting off the warning, people can figure this out themselves
@@ -3328,10 +3358,10 @@ int testFunction(int dst, int src) {
   /**
    * ( begin auto-generated from PImage_save.xml )
    *
-   * Saves the image into a file. Append a file extension to the name of 
-   * the file, to indicate the file format to be used: either TIFF (.tif), 
-   * TARGA (.tga), JPEG (.jpg), or PNG (.png). If no extension is included 
-   * in the filename, the image will save in TIFF format and .tif will be 
+   * Saves the image into a file. Append a file extension to the name of
+   * the file, to indicate the file format to be used: either TIFF (.tif),
+   * TARGA (.tga), JPEG (.jpg), or PNG (.png). If no extension is included
+   * in the filename, the image will save in TIFF format and .tif will be
    * added to the name.  These files are saved to the sketch's folder, which
    * may be opened by selecting "Show sketch folder" from the "Sketch" menu.
    * <br /><br />To save an image created within the code, rather
@@ -3371,68 +3401,68 @@ int testFunction(int dst, int src) {
    * @usage application
    * @param filename a sequence of letters and numbers
    */
-  public boolean save(String filename) {  // ignore
-    boolean success = false;
+   public boolean save(String filename) {  // ignore
+     boolean success = false;
 
-    if (parent != null) {
-      // use savePath(), so that the intermediate directories are created
-      filename = parent.savePath(filename);
+     if (parent != null) {
+       // use savePath(), so that the intermediate directories are created
+       filename = parent.savePath(filename);
 
-    } else {
-      File file = new File(filename);
-      if (file.isAbsolute()) {
-        // make sure that the intermediate folders have been created
-        PApplet.createPath(file);
-      } else {
-        String msg =
-          "PImage.save() requires an absolute path. " +
-          "Use createImage(), or pass savePath() to save().";
-        PGraphics.showException(msg);
-      }
-    }
+     } else {
+       File file = new File(filename);
+       if (file.isAbsolute()) {
+         // make sure that the intermediate folders have been created
+         PApplet.createPath(file);
+       } else {
+         String msg =
+           "PImage.save() requires an absolute path. " +
+           "Use createImage(), or pass savePath() to save().";
+         PGraphics.showException(msg);
+       }
+     }
 
-    // Make sure the pixel data is ready to go
-    loadPixels();
+     // Make sure the pixel data is ready to go
+     loadPixels();
 
-    try {
-      OutputStream os = null;
+     try {
+       OutputStream os = null;
 
-      if (saveImageFormats == null) {
-        saveImageFormats = javax.imageio.ImageIO.getWriterFormatNames();
-      }
-      if (saveImageFormats != null) {
-        for (int i = 0; i < saveImageFormats.length; i++) {
-          if (filename.endsWith("." + saveImageFormats[i])) {
-            if (!saveImageIO(filename)) {
-              System.err.println("Error while saving image.");
-              return false;
-            }
-            return true;
-          }
-        }
-      }
+       if (saveImageFormats == null) {
+         saveImageFormats = javax.imageio.ImageIO.getWriterFormatNames();
+       }
+       if (saveImageFormats != null) {
+         for (int i = 0; i < saveImageFormats.length; i++) {
+           if (filename.endsWith("." + saveImageFormats[i])) {
+             if (!saveImageIO(filename)) {
+               System.err.println("Error while saving image.");
+               return false;
+             }
+             return true;
+           }
+         }
+       }
 
-      if (filename.toLowerCase().endsWith(".tga")) {
-        os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-        success = saveTGA(os); //, pixels, width, height, format);
+       if (filename.toLowerCase().endsWith(".tga")) {
+         os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
+         success = saveTGA(os); //, pixels, width, height, format);
 
-      } else {
-        if (!filename.toLowerCase().endsWith(".tif") &&
-            !filename.toLowerCase().endsWith(".tiff")) {
-          // if no .tif extension, add it..
-          filename += ".tif";
-        }
-        os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-        success = saveTIFF(os); //, pixels, width, height);
-      }
-      os.flush();
-      os.close();
+       } else {
+         if (!filename.toLowerCase().endsWith(".tif") &&
+             !filename.toLowerCase().endsWith(".tiff")) {
+           // if no .tif extension, add it..
+           filename += ".tif";
+         }
+         os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
+         success = saveTIFF(os); //, pixels, width, height);
+       }
+       os.flush();
+       os.close();
 
-    } catch (IOException e) {
-      System.err.println("Error while saving image.");
-      e.printStackTrace();
-      success = false;
-    }
-    return success;
-  }
+     } catch (IOException e) {
+       System.err.println("Error while saving image.");
+       e.printStackTrace();
+       success = false;
+     }
+     return success;
+   }
 }

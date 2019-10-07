@@ -84,14 +84,22 @@ class ErrorChecker {
 
 
   private void handleSketchProblems(PreprocessedSketch ps) {
+
     Map<String, String[]> suggCache =
         JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
 
     final List<Problem> problems = new ArrayList<>();
 
-    IProblem[] iproblems = ps.compilationUnit.getProblems();
+    IProblem[] iproblems;
+    if (ps.compilationUnit == null) {
+      iproblems = new IProblem[0];
+    } else {
+      iproblems = ps.compilationUnit.getProblems();
+    }
 
-    { // Check for curly quotes
+    problems.addAll(ps.otherProblems);
+
+    if (problems.isEmpty()) { // Check for curly quotes
       List<JavaProblem> curlyQuoteProblems = checkForCurlyQuotes(ps);
       problems.addAll(curlyQuoteProblems);
     }
@@ -103,6 +111,7 @@ class ErrorChecker {
 
     if (problems.isEmpty()) {
       AtomicReference<ClassPath> searchClassPath = new AtomicReference<>(null);
+
       List<Problem> cuProblems = Arrays.stream(iproblems)
           // Filter Warnings if they are not enabled
           .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
@@ -187,6 +196,10 @@ class ErrorChecker {
     Pattern.compile("([“”‘’])", Pattern.UNICODE_CHARACTER_CLASS);
 
   static private List<JavaProblem> checkForCurlyQuotes(PreprocessedSketch ps) {
+    if (ps.compilationUnit == null) {
+      return new ArrayList<>();
+    }
+
     List<JavaProblem> problems = new ArrayList<>(0);
 
     // Go through the scrubbed code and look for curly quotes (they should not be any)
@@ -312,6 +325,7 @@ class ErrorChecker {
         // replace inner class separators with dots
         .map(res -> res.replace('$', '.'))
         // sort, prioritize clases from java. package
+        .map(res -> res.startsWith("classes.") ? res.substring(8) : res)
         .sorted((o1, o2) -> {
           // put java.* first, should be prioritized more
           boolean o1StartsWithJava = o1.startsWith("java");

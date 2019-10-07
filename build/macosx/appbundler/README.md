@@ -1,13 +1,13 @@
 appbundler
 ==========
 
-This is a fork of the [infinitekind fork](https://bitbucket.org/infinitekind/appbundler) of Oracle's appbundler. 
+This is a fork of the [infinitekind fork](https://bitbucket.org/infinitekind/appbundler) of Oracle's appbundler.
 (Many thanks for their additional work!) This fork covers several additional features (ability to remove JavaFX
-binaries, a rewritten Info.plist writer, etc). See changes in the commits to this source.
+binaries, a rewritten Info.plist writer, etc). See changes in the commits to this source. appbundler itself is under the GPL v2 with classpath license.
 
 And here's the README from the [infinitekind fork](https://bitbucket.org/infinitekind/appbundler):
 
-A fork of the [Java Application Bundler](https://svn.java.net/svn/appbundler~svn) 
+A fork of the [Java Application Bundler](https://svn.java.net/svn/appbundler~svn)
 with the following changes:
 
 - The native binary is created as universal (32/64)
@@ -16,7 +16,7 @@ with the following changes:
 - Allows to specify the name of the executable instead of using the default `"JavaAppLauncher"` **(contributed by Karl von Randow)**
 - Adds `classpathref` support to the `bundleapp` task
 - Adds support for `JVMArchs` and `LSArchitecturePriority` keys
-- Allows to specify a custom value for `CFBundleVersion` 
+- Allows to specify a custom value for `CFBundleVersion`
 - Allows specifying registered file extensions using `CFBundleDocumentTypes`
 - Passes to the Java application a set of environment variables with the paths of
   the OSX special folders and whether the application is running in the
@@ -34,11 +34,11 @@ These are the environment variables passed to the JVM:
 Example:
 
     <target name="bundle">
-      <taskdef name="bundleapp" 
+      <taskdef name="bundleapp"
         classpath="appbundler-1.0ea.jar"
         classname="com.oracle.appbundler.AppBundlerTask"/>
 
-      <bundleapp 
+      <bundleapp
           classpathref="runclasspathref"
           outputdirectory="${dist}"
           name="${bundle.name}"
@@ -51,7 +51,7 @@ Example:
           mainclassname="Main"
           copyright="2012 Your Company"
           applicationCategory="public.app-category.finance">
-          
+
           <runtime dir="${runtime}/Contents/Home"/>
 
           <arch name="x86_64"/>
@@ -61,7 +61,7 @@ Example:
             icon="${bundle.icon}"
             name="Images"
             role="editor">
-          </bundledocument> 
+          </bundledocument>
 
           <bundledocument extensions="pdf"
             icon="${bundle.icon}"

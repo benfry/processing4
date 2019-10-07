@@ -75,6 +75,10 @@ public class Platform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+  static public boolean isInit() {
+    return inst != null;
+  }
+
 
   static public void init() {
     try {
@@ -339,10 +343,10 @@ public class Platform {
       File[] plugins = getContentFile("../PlugIns").listFiles(new FilenameFilter() {
         public boolean accept(File dir, String name) {
           return dir.isDirectory() &&
-            name.endsWith(".jdk") && !name.startsWith(".");
+            name.contains("jdk") && !name.startsWith(".");
         }
       });
-      return new File(plugins[0], "Contents/Home/jre");
+      return new File(plugins[0], "Contents/Home");
     }
     // On all other platforms, it's the 'java' folder adjacent to Processing
     return getContentFile("java");

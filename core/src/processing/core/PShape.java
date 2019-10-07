@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
-import javax.xml.bind.DatatypeConverter;
+import java.util.Base64;
 
 
 /**
@@ -1910,16 +1910,29 @@ public class PShape implements PConstants {
     }
   }
 
- private void loadBase64Image(){
-    String[] parts = this.imagePath.split(";base64,");
+  private void loadBase64Image() {
+    PImage loadedImage = parseBase64Image(this.imagePath);
+    if (loadedImage != null) {
+      setTexture(loadedImage);
+    }
+  }
+
+  /**
+   * Parse a base 64 encoded image within an image path.
+   *
+   * @param imagePath The image path containing the base 64 image data.
+   * @return Newly loaded PImage.
+   */
+  protected static PImage parseBase64Image(String imagePath) {
+    String[] parts = imagePath.split(";base64,");
     String extension = parts[0].substring(11);
     String encodedData = parts[1];
 
-    byte[] decodedBytes = DatatypeConverter.parseBase64Binary(encodedData);
+    byte[] decodedBytes = Base64.getDecoder().decode(encodedData);
 
     if(decodedBytes == null){
       System.err.println("Decode Error on image: " + imagePath.substring(0, 20));
-      return;
+      return null;
     }
 
     Image awtImage = new ImageIcon(decodedBytes).getImage();
@@ -1928,22 +1941,26 @@ public class PShape implements PConstants {
       BufferedImage buffImage = (BufferedImage) awtImage;
       int space = buffImage.getColorModel().getColorSpace().getType();
       if (space == ColorSpace.TYPE_CMYK) {
-       return;
+        System.err.println("Could not load CMYK color space on image: " + imagePath.substring(0, 20));
+       return null;
       }
     }
 
+    // if it's a .gif image, test to see if it has transparency
+    boolean requiresCheckAlpha = extension.equals("gif") || extension.equals("png") ||
+        extension.equals("unknown");
+
     PImage loadedImage = new PImage(awtImage);
+
+    if (requiresCheckAlpha) {
+        loadedImage.checkAlpha();
+    }
+
     if (loadedImage.width == -1) {
       // error...
     }
 
-    // if it's a .gif image, test to see if it has transparency
-    if (extension.equals("gif") || extension.equals("png") ||
-      extension.equals("unknown")) {
-    loadedImage.checkAlpha();
-    }
-
-    setTexture(loadedImage);
+    return loadedImage;
   }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

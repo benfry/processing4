@@ -1,8 +1,11 @@
 <?xml version="1.0"?>
 <project name="Processing Core" default="build">
 
+  <property environment="env"/>
+
   <target name="clean" description="Clean out the build directories">
     <delete dir="bin" />
+    <delete dir="bin-test" />
     <delete file="library/core.jar" />
   </target>
 
@@ -14,67 +17,102 @@
     <subant buildpath="methods" target="dist" />
   </target>
 
-  <target name="compile" description="Compile" depends="methods-build">
-    <taskdef name="methods"
-	     classname="PAppletMethods"
-	     classpath="methods/methods.jar" />
-    <methods dir="${basedir}/src/processing/core" recorder="true" />
+  <path id="classpath.base">
+    <!-- kinda gross, but if not using the JDT, this just ignored anyway -->
+    <pathelement location="apple.jar" />
+    <pathelement location="library/jogl-all.jar" />
+    <pathelement location="library/gluegen-rt.jar" />
+    <pathelement location="library/javafx-swt.jar" />
+    <pathelement location="library/javafx.base.jar" />
+    <pathelement location="library/javafx.controls.jar" />
+    <pathelement location="library/javafx.fxml.jar" />
+    <pathelement location="library/javafx.graphics.jar" />
+    <pathelement location="library/javafx.media.jar" />
+    <pathelement location="library/javafx.properties" />
+    <pathelement location="library/javafx.swing.jar" />
+    <pathelement location="library/javafx.web.jar" />
+  </path>
 
-    <!-- Where can I expect to find Java Mode JARs? -->
-    <property name="java.mode" value="../java/mode/" />
+  <path id="classpath.test">
+    <pathelement location="library-test/junit-4.8.1.jar" />
+    <pathelement location="library-test/mockito-all-1.10.19.jar" />
+    <pathelement location="bin-test" />
+    <path refid="classpath.base" />
+  </path>
 
-    <!-- Check for JDT compiler, since this is likely a PDE build. Using
-	 it allows us to build the PDE with only a JRE on Windows and Linux.
-	 So that the core can be built independently of the PDE,
-	 use javac (the "modern" compiler) if ecj is not present. -->
-    <property name="jdt.jar" value="${java.mode}/org.eclipse.jdt.core.jar" />
-    <condition property="build.compiler"
-	       value="org.eclipse.jdt.core.JDTCompilerAdapter"
-	       else="modern">
-      <available file="${jdt.jar}" />
-    </condition>
-    <!--<echo message="compiler is ${build.compiler}" />-->
+  <macrodef name="compilecommon">
+    <attribute name="destdir"/>
+    <attribute name="srcdir"/>
+    <attribute name="classpath"/>
+    <sequential>
+      <taskdef name="methods"
+  	     classname="PAppletMethods"
+  	     classpath="methods/methods.jar" />
+      <methods dir="${basedir}/src/processing/core" recorder="true" />
 
-    <!-- JavaFX got removed from the Oracle's JDK for arm -->
-    <condition property="fx.unavailable" value="true">
-      <or>
-        <equals arg1="${os.arch}" arg2="arm" />
-        <equals arg1="${os.arch}" arg2="aarch64" />
-      </or>
-    </condition>
+      <!-- Where can I expect to find Java Mode JARs? -->
+      <property name="java.mode" value="../java/mode/" />
 
-    <!-- link against apple.jar for the ThinkDifferent class -->
-    <mkdir dir="bin" />
-    <javac source="1.8"
-	   target="1.8"
-	   encoding="UTF-8"
-	   includeAntRuntime="false"
-	   debug="true"
-	   destdir="bin"
-	   classpath="apple.jar;
-                      library/jogl-all.jar;
-                      library/gluegen-rt.jar"
-	   nowarn="true">
-      <!-- kinda gross, but if not using the JDT, this just ignored anyway -->
-      <compilerclasspath path="${jdt.jar}; ${java.mode}/jdtCompilerAdapter.jar" />
-      <src path="src" />
-      <include name="processing/**" />
-      <exclude name="processing/javafx/**" if="fx.unavailable" />
-    </javac>
+      <!-- JavaFX got removed from the Oracle's JDK for arm and Java 11 -->
+      <condition property="fx.unavailable" value="true">
+        <or>
+          <equals arg1="${os.arch}" arg2="arm" />
+          <equals arg1="${os.arch}" arg2="aarch64" />
+        </or>
+      </condition>
 
-    <!-- Copy the jnilib to the bin folder so it's included. -->
-    <copy todir="bin/japplemenubar"
-	        file="src/japplemenubar/libjAppleMenuBar.jnilib"
-          preservelastmodified="true" />
+      <!-- link against apple.jar for the ThinkDifferent class -->
+      <mkdir dir="@{destdir}" />
+      <javac source="1.8"
+  	   target="1.8"
+  	   encoding="UTF-8"
+  	   includeAntRuntime="false"
+  	   debug="true"
+  	   destdir="@{destdir}"
+  	   nowarn="true">
+        <classpath refid="@{classpath}"/>
+        <src path="@{srcdir}" />
+        <include name="processing/**" />
+        <exclude name="processing/javafx/**" if="fx.unavailable" />
+      </javac>
 
-    <!-- Copy shaders to bin. (Eclipse does this automatically.) -->
-    <copy todir="bin" preservelastmodified="true">
-      <fileset dir="src">
-        <include name="processing/opengl/shaders/*.glsl" />
-        <include name="processing/opengl/cursors/*.png" />
-        <include name="icon/*.png" />
-      </fileset>
-    </copy>
+      <!-- Copy the jnilib to the bin folder so it's included. -->
+      <copy todir="bin/japplemenubar"
+  	  file="src/japplemenubar/libjAppleMenuBar.jnilib" />
+
+      <!-- Copy shaders to bin. (Eclipse does this automatically.) -->
+      <copy todir="bin">
+        <fileset dir="src">
+          <include name="processing/opengl/shaders/*.glsl" />
+          <include name="processing/opengl/cursors/*.png" />
+          <include name="icon/*.png" />
+        </fileset>
+      </copy>
+    </sequential>
+  </macrodef>
+
+  <target name="test-compile" description="Compile" depends="methods-build">
+    <compilecommon srcdir="src; test" destdir="bin-test" classpath="classpath.test" />
+  </target>
+
+  <target name="clean-pre-test" description="Required step prior to test">
+    <delete dir="resource-test/scratch" />
+  </target>
+
+  <target name="test" depends="test-compile, clean-pre-test">
+    <junit haltonfailure="true">
+      <classpath refid="classpath.test" />
+      <formatter type="brief" usefile="false" />
+      <batchtest>
+        <fileset dir="test">
+          <include name="**/*Test.java" />
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+  <target name="compile" description="Compile" depends="test">
+    <compilecommon srcdir="src" destdir="bin" classpath="classpath.base" />
   </target>
 
   <target name="build" depends="compile" description="Build core library">
