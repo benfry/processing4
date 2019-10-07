@@ -193,6 +193,6 @@ public class PreprocessorResult {
    *    given.
    */
   public String getSketchHeight() {
-    return sketchWidth;
+    return sketchHeight;
   }
 }
