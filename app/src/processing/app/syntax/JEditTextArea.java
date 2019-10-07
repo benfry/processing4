@@ -2481,7 +2481,7 @@ public class JEditTextArea extends JComponent
 
 
     private void doSingleClick(MouseEvent evt, int line, int offset, int dot) {
-      if ((evt.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      if (evt.isShiftDown()) {
         select(getMarkPosition(),dot);
       } else {
         setCaretPosition(dot);
