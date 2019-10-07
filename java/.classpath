@@ -21,7 +21,8 @@
 	<classpathentry kind="lib" path="mode/org.netbeans.swing.outline.jar"/>
 	<classpathentry kind="lib" path="test/lib/junit-4.8.1.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/processing-app"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/AdoptOpenJDK 11 [11.0.4]"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/processing4-app"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/processing4-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
