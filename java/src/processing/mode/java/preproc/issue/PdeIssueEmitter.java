@@ -22,15 +22,11 @@
 package processing.mode.java.preproc.issue;
 
 import org.antlr.v4.runtime.BaseErrorListener;
-import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import org.antlr.v4.runtime.atn.ATNConfigSet;
-import org.antlr.v4.runtime.dfa.DFA;
 
 import processing.mode.java.preproc.SourceEmitter;
 
-import java.util.BitSet;
 import java.util.Optional;
 
 
@@ -40,7 +36,7 @@ import java.util.Optional;
  * <p>
  *   A {BaseErrorListener} which looks for syntax errors reported by ANTLR and converts them to
  *   {PdePreprocessIssue}s that are consumable by a {PdePreprocessIssueListener}. It does this by
- *   running the {PreprocessIssueMessageSimplifierFacade} to generate a more user-friendly error message
+ *   running the {PreprocessIssueMessageSimplifier} to generate a more user-friendly error message
  *   before informing the provided listener.
  * </p>
  */
@@ -81,7 +77,7 @@ public class PdeIssueEmitter extends BaseErrorListener {
   public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
                           int charPositionInLine, String msg, RecognitionException e) {
 
-    PreprocessIssueMessageSimplifierFacade facade = PreprocessIssueMessageSimplifierFacade.get();
+    PreprocessIssueMessageSimplifier facade = PreprocessIssueMessageSimplifier.get();
     IssueMessageSimplification simplification = facade.simplify(msg);
 
     IssueLocation issueLocation;

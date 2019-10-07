@@ -1,4 +1,4 @@
-package processing.mode.java.preproc.issue.strategy;
+package processing.mode.java.preproc.issue;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public class MissingMethodNameMessageSimplifierStrategyTest {
 
-  private MissingMethodNameMessageSimplifierStrategy strategy;
+  private PreprocessIssueMessageSimplifier.PreprocIssueMessageSimplifierStrategy strategy;
 
   @Before
   public void setup() {
-    strategy = new MissingMethodNameMessageSimplifierStrategy();
+    strategy = PreprocessIssueMessageSimplifier.get().createMethodMissingNameStrategy();
   }
 
   @Test
