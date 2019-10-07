@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/AdoptOpenJDK 11 [11.0.4]">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
@@ -9,6 +9,8 @@
 	<classpathentry kind="lib" path="library/jogl-all.jar"/>
 	<classpathentry kind="lib" path="library/gluegen-rt.jar"/>
 	<classpathentry kind="lib" path="apple.jar"/>
+	<classpathentry kind="lib" path="library/javafx.graphics.jar"/>
+	<classpathentry kind="lib" path="library/javafx.base.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX11"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
