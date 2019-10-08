@@ -3,14 +3,14 @@
   <target name="compile">
 
     <mkdir dir="bin" />
-    <javac source="1.8"
-           target="1.8"
+    <javac source="11"
+           target="11"
 	   srcdir="src"
            destdir="bin"
 	   debug="true"
 	   includeantruntime="true"
 	   nowarn="true">
-     
+
     </javac>
   </target>
 

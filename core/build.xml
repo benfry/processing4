@@ -63,8 +63,8 @@
 
       <!-- link against apple.jar for the ThinkDifferent class -->
       <mkdir dir="@{destdir}" />
-      <javac source="1.8"
-  	   target="1.8"
+      <javac source="11"
+  	   target="11"
   	   encoding="UTF-8"
   	   includeAntRuntime="false"
   	   debug="true"
