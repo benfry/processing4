@@ -22,8 +22,8 @@
       <!-- Where can I expect to find Java Mode JARs? -->
       <property name="java.mode" value="../../java/mode/" />
 
-      <javac source="1.8"
-          target="1.8"
+      <javac source="11"
+          target="11"
           srcdir="@{srcdir}"
           destdir="@{destdir}"
           debug="true"
