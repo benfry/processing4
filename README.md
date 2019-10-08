@@ -12,4 +12,4 @@ Ben Fry, 4 October 2019
 
 As with all releases, I'll do everything possible to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor.
 
-(Started writing this section because I thought we had our first break, but found an alternate solution.)
+* `Base.defaultFileMenu` is now `protected` instead of `static public`

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-19 The Processing Foundation
   Copyright (c) 2008-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -42,8 +42,6 @@ import processing.mode.java.runner.Runner;
 
 /**
  * Class to handle running Processing from the command line.
- *
- * @author fry
  */
 public class Commander implements RunnerListener {
   static final String helpArg = "--help";
@@ -65,26 +63,12 @@ public class Commander implements RunnerListener {
   static final int BUILD = 1;
   static final int RUN = 2;
   static final int PRESENT = 3;
-//  static final int EXPORT_APPLET = 4;
   static final int EXPORT = 4;
 
   Sketch sketch;
 
   PrintStream systemOut;
   PrintStream systemErr;
-
-
-  static public void main(String[] args) {
-    // Do this early so that error messages go to the console
-    Base.setCommandLine();
-    // init the platform so that prefs and other native code is ready to go
-    Platform.init();
-    // make sure a full JDK is installed
-    //Base.initRequirements();
-
-    // launch command line handler
-    new Commander(args);
-  }
 
 
   public Commander(String[] args) {
@@ -152,24 +136,12 @@ public class Commander implements RunnerListener {
         embedJava = false;
 
       } else if (arg.startsWith(platformArg)) {
-//        complainAndQuit("The --platform option has been removed from Processing 2.1.", false);
         String platformStr = arg.substring(platformArg.length());
         platform = Platform.getIndex(platformStr);
         if (platform == -1) {
           complainAndQuit(platformStr + " should instead be " +
                           "'windows', 'macosx', or 'linux'.", true);
         }
-
-      } else if (arg.startsWith(bitsArg)) {
-        complainAndQuit("The --bits option has been removed.", false);
-//        String bitsStr = arg.substring(bitsArg.length());
-//        if (bitsStr.equals("32")) {
-//          platformBits = 32;
-//        } else if (bitsStr.equals("64")) {
-//          platformBits = 64;
-//        } else {
-//          complainAndQuit("Bits should be either 32 or 64, not " + bitsStr, true);
-//        }
 
       } else if (arg.startsWith(sketchArg)) {
         sketchPath = arg.substring(sketchArg.length());
@@ -199,13 +171,6 @@ public class Commander implements RunnerListener {
     }
     String[] sketchArgs = PApplet.subset(args, argOffset);
 
-//    if ((outputPath == null) &&
-//        (task == PREPROCESS || task == BUILD ||
-//         task == RUN || task == PRESENT)) {
-//      complainAndQuit("An output path must be specified when using " +
-//                      preprocArg + ", " + buildArg + ", " +
-//                      runArg + ", or " + presentArg + ".");
-//    }
     if (task == HELP) {
       printCommandLine(systemOut);
       System.exit(0);
@@ -256,8 +221,6 @@ public class Commander implements RunnerListener {
 
       boolean success = false;
 
-//      JavaMode javaMode =
-//        new JavaMode(null, Base.getContentFile("modes/java"));
       JavaMode javaMode = (JavaMode)
         ModeContribution.load(null, Platform.getContentFile("modes/java"),
                               "processing.mode.java.JavaMode").getMode();
@@ -389,9 +352,6 @@ public class Commander implements RunnerListener {
     out.println("--no-java            Do not embed Java. Use at your own risk!");
     out.println("--platform           Specify the platform (export to application only).");
     out.println("                     Should be one of 'windows', 'macosx', or 'linux'.");
-//    out.println("--bits               Must be specified if libraries are used that are");
-//    out.println("                     32- or 64-bit specific such as the OpenGL library.");
-//    out.println("                     Otherwise specify 0 or leave it out.");
 
     out.println();
     out.println("The --build, --run, --present, or --export must be the final parameter");
@@ -406,22 +366,31 @@ public class Commander implements RunnerListener {
 
 
   @Override
-  public void startIndeterminate() {
-  }
+  public void startIndeterminate() { }
 
 
   @Override
-  public void stopIndeterminate() {
-  }
+  public void stopIndeterminate() { }
 
 
   @Override
-  public void statusHalt() {
-  }
+  public void statusHalt() { }
 
 
   @Override
   public boolean isHalted() {
     return false;
+  }
+
+
+  static public void main(String[] args) {
+    // Do this early so that error messages go to the console
+    Base.setCommandLine();
+
+    // init the platform so that prefs and other native code is ready to go
+    Platform.init();
+
+    // launch command line handler
+    new Commander(args);
   }
 }

@@ -4,7 +4,7 @@
   Part of the Processing project - http://processing.org
 
   Copyright (c) 2010-11 Ben Fry and Casey Reas
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-19 The Processing Foundation
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2
@@ -37,6 +37,7 @@ import processing.app.*;
 import processing.app.ui.Editor;
 import processing.app.ui.EditorException;
 import processing.app.ui.EditorState;
+
 import processing.mode.java.runner.Runner;
 import processing.mode.java.tweak.SketchParser;
 
