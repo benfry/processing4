@@ -22,19 +22,17 @@
 
 package processing.app.platform;
 
-import java.awt.event.*;
+import java.awt.Desktop;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 
-import com.apple.eawt.Application;
-
-import processing.app.*;
+import processing.app.Base;
+import processing.app.Language;
 import processing.app.ui.About;
 import processing.app.ui.Toolkit;
 
@@ -52,130 +50,51 @@ import processing.app.ui.Toolkit;
  */
 public class ThinkDifferent {
 
-  // pseudo-singleton model; no point in making multiple instances
-  // of the EAWT application or our adapter
-  private static ThinkDifferent adapter;
-  // http://developer.apple.com/documentation/Java/Reference/1.4.2/appledoc/api/com/apple/eawt/Application.html
-  private static Application application;
-
-  // reference to the app where the existing quit, about, prefs code is
-  //private Base base;
+  static private ThinkDifferent adapter;
 
 
   static protected void init(final Base base) {
-    if (application == null) {
-      application = Application.getApplication();
-    }
+    final Desktop desktop = Desktop.getDesktop();
+
     if (adapter == null) {
-      adapter = new ThinkDifferent();  //base);
+      adapter = new ThinkDifferent();
     }
 
-    setHandler(application, "setAboutHandler", (proxy, method, args) -> {
+    desktop.setAboutHandler((event) -> {
       new About(null);
-      return null;
     });
 
-    setHandler(application, "setPreferencesHandler", (proxy, method, args) -> {
+    desktop.setPreferencesHandler((event) -> {
       base.handlePrefs();
-      return null;
     });
 
-    setHandler(application, "setOpenFileHandler", (proxy, method, args) -> {
-      Method m = args[0].getClass().getMethod("getFiles");
-      for (File file : (List<File>) m.invoke(args[0])) {
+    desktop.setOpenFileHandler((event) -> {
+      for (File file : event.getFiles()) {
         base.handleOpen(file.getAbsolutePath());
       }
-      return null;
     });
 
-    setHandler(application, "setPrintFileHandler", (proxy, method, args) -> {
+    desktop.setPrintFileHandler((event) -> {
       // TODO not yet implemented
-      return null;
     });
 
-    setHandler(application, "setQuitHandler", (proxy, method, args) -> {
+    desktop.setQuitHandler((event, quitResponse) -> {
       if (base.handleQuit()) {
-        args[1].getClass().getMethod("performQuit").invoke(args[1]);
+        quitResponse.performQuit();
       } else {
-        args[1].getClass().getMethod("cancelQuit").invoke(args[1]);
+        quitResponse.cancelQuit();
       }
-      return null;
     });
 
-    // Set the menubar to be used when nothing else is open.
+    // Set the menu bar to be used when nothing else is open.
     JMenuBar defaultMenuBar = new JMenuBar();
     JMenu fileMenu = buildFileMenu(base);
     defaultMenuBar.add(fileMenu);
     // This is kind of a gross way to do this, but the alternatives? Hrm.
     Base.defaultFileMenu = fileMenu;
-
-//    if (PApplet.javaVersion <= 1.6f) {  // doesn't work on Oracle's Java
-    try {
-      application.setDefaultMenuBar(defaultMenuBar);
-
-    } catch (Exception e) {
-      e.printStackTrace();  // oh well, never mind
-    }
-//    } else {
-//      // The douchebags at Oracle didn't feel that a working f*king menubar
-//      // on OS X was important enough to make it into the 7u40 release.
-//      //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8007267
-//      // It languished in the JDK 8 source and has been backported for 7u60:
-//      //http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=8022667
-//
-//      JFrame offscreen = new JFrame();
-//      offscreen.setUndecorated(true);
-//      offscreen.setJMenuBar(defaultMenuBar);
-//      Dimension screen = Toolkit.getScreenSize();
-//      offscreen.setLocation(screen.width, screen.height);
-//      offscreen.setVisible(true);
-//    }
+    desktop.setDefaultMenuBar(defaultMenuBar);
   }
 
-
-//  public ThinkDifferent(Base base) {
-//    this.base = base;
-//  }
-
-  /**
-   * Sets a handler on an instance of {@link Application}, taking into account JVM version
-   * differences.
-   *
-   * @param app an instance of {@link Application}
-   * @param name the "set handler" method name
-   * @param handler the handler
-   */
-  private static void setHandler(Application app, String name, InvocationHandler handler) {
-    // Determine which version of com.apple.eawt.Application to use and pass it a handler of the
-    // appropriate type
-    Method[] methods = app.getClass().getMethods();
-    for (Method m : methods) {
-      if (!name.equals(m.getName())) {
-        continue;
-      }
-      if (m.getParameterCount() != 1) {
-        continue;
-      }
-      Class paramType = m.getParameterTypes()[0];
-      try {
-        // Allow a null handler
-        Object proxy = null;
-        if (handler != null) {
-          proxy = Proxy.newProxyInstance(
-              paramType.getClassLoader(), new Class<?>[] { paramType }, handler);
-        }
-        m.invoke(app, proxy);
-      } catch (IllegalArgumentException ex) {
-        // TODO: Print error?: method doesn't take an interface, etc.
-      } catch (IllegalAccessException ex) {
-        // TODO: Print error?: Other method invocation problem
-      } catch (InvocationTargetException ex) {
-        ex.getCause().printStackTrace();
-        // TODO: Print ex.getCause() a different way?
-      }
-      break;
-    }
-  }
 
   /**
    * Gimpy file menu to be used on OS X when no sketches are open.
