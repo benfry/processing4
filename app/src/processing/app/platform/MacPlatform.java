@@ -28,9 +28,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+
 import processing.app.Base;
 import processing.app.Messages;
 import processing.app.platform.DefaultPlatform;
+import processing.app.ui.About;
 
 
 /**
@@ -54,8 +58,42 @@ public class MacPlatform extends DefaultPlatform {
 
   public void initBase(Base base) {
     super.initBase(base);
+
+    final Desktop desktop = Desktop.getDesktop();
+
     System.setProperty("apple.laf.useScreenMenuBar", "true");
-    ThinkDifferent.init(base);
+
+    // Set the menu bar to be used when nothing else is open.
+    JMenuBar defaultMenuBar = new JMenuBar();
+    JMenu fileMenu = base.initDefaultFileMenu();
+    defaultMenuBar.add(fileMenu);
+    desktop.setDefaultMenuBar(defaultMenuBar);
+
+    desktop.setAboutHandler((event) -> {
+      new About(null);
+    });
+
+    desktop.setPreferencesHandler((event) -> {
+      base.handlePrefs();
+    });
+
+    desktop.setOpenFileHandler((event) -> {
+      for (File file : event.getFiles()) {
+        base.handleOpen(file.getAbsolutePath());
+      }
+    });
+
+    desktop.setPrintFileHandler((event) -> {
+      // TODO not yet implemented
+    });
+
+    desktop.setQuitHandler((event, quitResponse) -> {
+      if (base.handleQuit()) {
+        quitResponse.performQuit();
+      } else {
+        quitResponse.cancelQuit();
+      }
+    });
   }
 
 

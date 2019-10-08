@@ -9,6 +9,7 @@ after the JDK 11 update
 X use a new pref for the sketchbook folder location for 4.x
 X finish porting ThinkDifferent to use Desktop APIs
 X   http://openjdk.java.net/jeps/272
+X   also roll it into MacPlatform, since less platform-specific code needed
 _ Implement reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
 
