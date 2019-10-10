@@ -95,7 +95,7 @@ public class PdePreprocessor {
    * Create a new preprocessor.
    *
    * Create a new preprocessor that will use the following set of configuration values to process
-   * a parse tree. This object should be instantiated by calling {builderFor}.
+   * a parse tree. This object can be instantiated by calling {builderFor}.
    *
    * @param newSketchName The name of the sketch.
    * @param newTabSize The number of spaces within a tab.
@@ -104,7 +104,7 @@ public class PdePreprocessor {
    * @param newFactory The factory to use for building the ANTLR tree traversal listener where
    *    preprocessing edits should be made.
    */
-  private PdePreprocessor(final String newSketchName, final int newTabSize, boolean newIsTesting,
+  public PdePreprocessor(final String newSketchName, final int newTabSize, boolean newIsTesting,
         final ParseTreeListenerFactory newFactory) {
 
     sketchName = newSketchName;
