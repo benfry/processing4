@@ -705,4 +705,18 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     return builder.build();
   }
+
+  /**
+   * Listener for issues encountered while processing a valid pde parse tree.
+   */
+  static interface PdeParseTreeErrorListener {
+
+    /**
+     * Callback to invoke when an issue is encountered while processing a valid PDE parse tree.
+     *
+     * @param issue The issue reported.
+     */
+    void onError(PdePreprocessIssue issue);
+
+  }
 }

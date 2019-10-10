@@ -125,7 +125,7 @@ public class JavaEditor extends Editor {
 
 
   public PdePreprocessor createPreprocessor(final String sketchName) {
-    return new PdePreprocessor(sketchName);
+    return PdePreprocessor.builderFor(sketchName).build();
   }
 
 
