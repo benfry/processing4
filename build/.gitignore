@@ -2,7 +2,5 @@ work
 javadoc
 
 jre/bin-test
-macosx/javafx-sdk-11.0.2
-macosx/jdk-0u4.tgz
-macosx/jdk-11.0.4+11
-macosx/jfx-11.0.2.zip
+macosx/javafx-sdk-*
+macosx/jdk-11.*
