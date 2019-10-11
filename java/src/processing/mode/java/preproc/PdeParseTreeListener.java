@@ -51,7 +51,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private static final String FULLSCREEN_METHOD_NAME = "fullScreen";
   private final int tabSize;
 
-  private int headerOffset;
+//  private int headerOffset;
 
   private String sketchName;
   private boolean isTesting;
@@ -633,21 +633,21 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     edits.add(CodeEditOperationUtil.createInsertBefore(location, text, rewriter));
   }
 
-  /**
-   * Insert text before a location in code.
-   *
-   * @param locationToken Character offset from start.
-   * @param locationOffset
-   * @param text Text to add.
-   */
-  private void createInsertBefore(int locationToken, int locationOffset, String text) {
-    edits.add(CodeEditOperationUtil.createInsertBefore(
-        locationToken,
-        locationOffset,
-        text,
-        rewriter
-    ));
-  }
+//  /**
+//   * Insert text before a location in code.
+//   *
+//   * @param locationToken Character offset from start.
+//   * @param locationOffset
+//   * @param text Text to add.
+//   */
+//  private void createInsertBefore(int locationToken, int locationOffset, String text) {
+//    edits.add(CodeEditOperationUtil.createInsertBefore(
+//        locationToken,
+//        locationOffset,
+//        text,
+//        rewriter
+//    ));
+//  }
 
   /**
    * Insert text after a location in code.

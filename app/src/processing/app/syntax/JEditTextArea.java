@@ -1336,12 +1336,12 @@ public class JEditTextArea extends JComponent
    * @param startOffset The offset to apply before the text will be drawn.
    * @return The width of the input segment in pixels with fractional character widths considered.
    */
-  private int getTabbedTextWidth(Segment s, FontMetrics metrics, float x, TabExpander expander,
-      int startOffset) {
+  private int getTabbedTextWidth(Segment s, FontMetrics metrics, float x,
+                                 TabExpander expander, int startOffset) {
+    float additionalOffset =
+      getPartialPixelWidth(metrics, x, expander, startOffset) * s.length();
 
-    float additionalOffset = getPartialPixelWidth(metrics, x, expander, startOffset) * s.length();
-
-    return (int) Math.round(
+    return Math.round(
       Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) + additionalOffset
     );
   }
@@ -1369,14 +1369,9 @@ public class JEditTextArea extends JComponent
     // See https://github.com/sampottinger/processing/issues/103
     // Requires reference not object equality check
     if (candidateMetrics != cachedPartialPixelWidthFont) {
-      float withFractional = Utilities.getTabbedTextWidth​(
-        TEST_SEGMENT,
-        candidateMetrics,
-        x,
-        expander,
-        startOffset
-      );
-
+      float withFractional =
+        Utilities.getTabbedTextWidth(TEST_SEGMENT, candidateMetrics,
+                                     x, expander, startOffset);
       int withoutFractional = (int) withFractional;
 
       partialPixelWidth = withFractional - withoutFractional;
@@ -2486,7 +2481,7 @@ public class JEditTextArea extends JComponent
 
 
     private void doSingleClick(MouseEvent evt, int line, int offset, int dot) {
-      if ((evt.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      if (evt.isShiftDown()) {
         select(getMarkPosition(),dot);
       } else {
         setCaretPosition(dot);

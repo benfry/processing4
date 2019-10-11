@@ -155,7 +155,7 @@ public class PApplet implements PConstants {
     String osname = System.getProperty("os.name");
 
     if (osname.indexOf("Mac") != -1) {
-      platform = MACOSX;
+      platform = MACOS;
 
     } else if (osname.indexOf("Windows") != -1) {
       platform = WINDOWS;
@@ -981,7 +981,7 @@ public class PApplet implements PConstants {
     // be called, conjuring up the demons of various rendering configurations.
     settings();
 
-    if (display == SPAN && platform == MACOSX) {
+    if (display == SPAN && platform == MACOS) {
       // Make sure "Displays have separate Spaces" is unchecked
       // in System Preferences > Mission Control
       Process p = exec("defaults", "read", "com.apple.spaces", "spans-displays");
@@ -1158,7 +1158,7 @@ public class PApplet implements PConstants {
   * @param display the display number to check
   */
   public int displayDensity(int display) {
-    if (PApplet.platform == PConstants.MACOSX) {
+    if (PApplet.platform == PConstants.MACOS) {
       // This should probably be reset each time there's a display change.
       // A 5-minute search didn't turn up any such event in the Java 7 API.
       // Also, should we use the Toolkit associated with the editor window?
@@ -2696,7 +2696,7 @@ public class PApplet implements PConstants {
     int button = event.getButton();
 
     // If running on Mac OS, allow ctrl-click as right mouse.
-    if (PApplet.platform == PConstants.MACOSX && event.getButton() == PConstants.LEFT) {
+    if (PApplet.platform == PConstants.MACOS && event.getButton() == PConstants.LEFT) {
       if (action == MouseEvent.PRESS && event.isControlDown()) {
         macosxLeftButtonWithCtrlPressed = true;
       }
@@ -3037,8 +3037,8 @@ public class PApplet implements PConstants {
       // embedded inside an application that has its own close behavior.
       if (external &&
           event.getKeyCode() == 'W' &&
-          ((event.isMetaDown() && platform == MACOSX) ||
-           (event.isControlDown() && platform != MACOSX))) {
+          ((event.isMetaDown() && platform == MACOS) ||
+           (event.isControlDown() && platform != MACOS))) {
         // Can't use this native stuff b/c the native event might be NEWT
 //      if (external && event.getNative() instanceof java.awt.event.KeyEvent &&
 //          ((java.awt.event.KeyEvent) event.getNative()).getModifiers() ==
@@ -3504,7 +3504,7 @@ public class PApplet implements PConstants {
       // in the user.dir part of the url
       params = new String[] { "cmd", "/c" };
 
-    } else if (platform == MACOSX) {
+    } else if (platform == MACOS) {
       params = new String[] { "open" };
 
     } else if (platform == LINUX) {
@@ -3841,7 +3841,7 @@ public class PApplet implements PConstants {
       handleMethods("dispose");
     }
 
-    if (platform == MACOSX) {
+    if (platform == MACOS) {
       try {
         final String td = "processing.core.ThinkDifferent";
         final Class<?> thinkDifferent = getClass().getClassLoader().loadClass(td);
@@ -6678,7 +6678,7 @@ public class PApplet implements PConstants {
           (sketch.g instanceof PGraphicsOpenGL) && (platform == WINDOWS);
         if (hide) sketch.surface.setVisible(false);
 
-        if (platform == MACOSX && useNativeSelect != false) {
+        if (platform == MACOS && useNativeSelect != false) {
           FileDialog fileDialog =
             new FileDialog(parentFrame, prompt, FileDialog.LOAD);
           if (defaultSelection != null) {
@@ -7967,7 +7967,7 @@ public class PApplet implements PConstants {
 
       // Workaround for bug in Java for OS X from Oracle (7u51)
       // https://github.com/processing/processing/issues/2181
-      if (platform == MACOSX) {
+      if (platform == MACOS) {
         if (jarPath.contains("Contents/Java/")) {
           String appPath = jarPath.substring(0, jarPath.indexOf(".app") + 4);
           File containingFolder = new File(appPath).getParentFile();
@@ -9258,7 +9258,7 @@ public class PApplet implements PConstants {
   static Pattern matchPattern(String regexp) {
     Pattern p = null;
     if (matchPatterns == null) {
-      matchPatterns = new LinkedHashMap<String, Pattern>(16, 0.75f, true) {
+      matchPatterns = new LinkedHashMap<>(16, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<String, Pattern> eldest) {
           // Limit the number of match patterns at 10 most recently used
@@ -10857,7 +10857,7 @@ public class PApplet implements PConstants {
       }
     }
 
-    if (platform == MACOSX) {
+    if (platform == MACOS) {
       try {
         final String td = "processing.core.ThinkDifferent";
         Class<?> thinkDifferent =
@@ -11077,7 +11077,7 @@ public class PApplet implements PConstants {
 
   /** Convenience method, should only be called by PSurface subclasses. */
   static public void hideMenuBar() {
-    if (PApplet.platform == PConstants.MACOSX) {
+    if (PApplet.platform == PConstants.MACOS) {
       // Call some native code to remove the menu bar on OS X. Not necessary
       // on Linux and Windows, who are happy to make full screen windows.
       japplemenubar.JAppleMenuBar.hide();

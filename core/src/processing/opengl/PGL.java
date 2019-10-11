@@ -165,6 +165,17 @@ public abstract class PGL {
   protected boolean usingFrontTex = false;
   protected boolean needSepFrontTex = false;
 
+  /**
+   * Defines if FBO Layer is allowed in the given environment.
+   * Using FBO can cause a fatal error during runtime for
+   * Intel HD Graphics 3000 chipsets (commonly used on older MacBooks)
+   * <a href="https://github.com/processing/processing/issues/4104">#4104</a>
+   * The value remains as 'true' unless set false during init.
+   * TODO There's already code in here to enable/disable the FBO properly,
+   * this should be making use of that mechanism instead. [fry 191007]
+   */
+  protected boolean fboAllowed = true;
+
   // ........................................................
 
   // Texture rendering
@@ -852,10 +863,12 @@ public abstract class PGL {
         saveFirstFrame();
       }
 
-      if (!clearColor && 0 < sketch.frameCount || !sketch.isLooping()) {
-        enableFBOLayer();
-        if (SINGLE_BUFFERED) {
-          createFBOLayer();
+      if (fboAllowed) {
+        if (!clearColor && 0 < sketch.frameCount || !sketch.isLooping()) {
+          enableFBOLayer();
+          if (SINGLE_BUFFERED) {
+            createFBOLayer();
+          }
         }
       }
     }
