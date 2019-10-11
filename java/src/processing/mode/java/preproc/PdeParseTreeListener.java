@@ -87,7 +87,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param newSketchName The name of the sketch being traversed.
    * @param newTabSize Size of tab / indent.
    */
-  PdeParseTreeListener(TokenStream tokens, String newSketchName, int newTabSize) {
+  public PdeParseTreeListener(TokenStream tokens, String newSketchName, int newTabSize) {
     rewriter = new TokenStreamRewriter(tokens);
     sketchName = newSketchName;
     tabSize = newTabSize;
@@ -109,7 +109,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param newTabSize Size of tab / indent.
    * @param newCodeGen The new code generator to use within this listener.
    */
-  PdeParseTreeListener(TokenStream tokens, String newSketchName, int newTabSize,
+  public PdeParseTreeListener(TokenStream tokens, String newSketchName, int newTabSize,
         RewriterCodeGenerator newCodeGen) {
 
     rewriter = new TokenStreamRewriter(tokens);
@@ -732,7 +732,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   /**
    * Listener for issues encountered while processing a valid pde parse tree.
    */
-  static interface PdeParseTreeErrorListener {
+  public static interface PdeParseTreeErrorListener {
 
     /**
      * Callback to invoke when an issue is encountered while processing a valid PDE parse tree.
