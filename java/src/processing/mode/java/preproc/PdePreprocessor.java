@@ -34,7 +34,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import processing.app.Preferences;
 import processing.app.SketchException;
-import processing.mode.java.preproc.code.ImportUtil;
 import processing.mode.java.preproc.issue.PdeIssueEmitter;
 import processing.mode.java.preproc.issue.PdePreprocessIssue;
 
@@ -281,6 +280,52 @@ public class PdePreprocessor {
     private Optional<List<String>> defaultImports;
     private Optional<List<String>> coreImports;
 
+    /**
+     * The imports required for the Java processing mode.
+     *
+     * <p>
+     * The set of imports required by processing itself (in java mode) that are made public so that
+     * client code (like in modes) can modify and re-use this list.
+     * </p>
+     */
+    public static final String[] BASE_CORE_IMPORTS = {
+        "processing.core.*",
+        "processing.data.*",
+        "processing.event.*",
+        "processing.opengl.*"
+    };
+
+    /**
+     * The imports provided as a convenience for the user.
+     *
+     * <p>
+     * The imports that are not strictly required by processing sketches but that are included on
+     * behalf of the user that are made public so that client code (like in modes) can modify and
+     * re-use this list.
+     * </p>
+     */
+    public static final String[] BASE_DEFAULT_IMPORTS = {
+        "java.util.HashMap",
+        "java.util.ArrayList",
+        "java.io.File",
+        "java.io.BufferedReader",
+        "java.io.PrintWriter",
+        "java.io.InputStream",
+        "java.io.OutputStream",
+        "java.io.IOException"
+    };
+
+    /**
+     * Create a new preprocessor builder.
+     *
+     * <p>
+     * Create a new preprocessor builder which will use default values unless overridden prior to
+     * calling build. Note that client code should use {PdePreprocessor.builderFor} instead of
+     * this constructor.
+     * </p>
+     *
+     * @param newSketchName The name of the sketch.
+     */
     private PdePreprocessorBuilder(String newSketchName) {
       sketchName = newSketchName;
       tabSize = Optional.empty();
@@ -368,11 +413,11 @@ public class PdePreprocessor {
       );
 
       List<String> effectiveDefaultImports = defaultImports.orElseGet(
-          () -> Arrays.asList(ImportUtil.getDefaultImports())
+          () -> Arrays.asList(BASE_DEFAULT_IMPORTS)
       );
 
       List<String> effectiveCoreImports = coreImports.orElseGet(
-          () -> Arrays.asList(ImportUtil.getCoreImports())
+          () -> Arrays.asList(BASE_CORE_IMPORTS)
       );
 
       return new PdePreprocessor(
