@@ -56,9 +56,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 270;
+  static private final int REVISION = 1270;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "0270"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1270"; //$NON-NLS-1$
   /** Set true if this a proper release rather than a numbered revision. */
 
   /**
@@ -84,7 +84,7 @@ public class Base {
     Collections.synchronizedList(new ArrayList<Editor>());
   protected Editor activeEditor;
   /** A lone file menu to be used when all sketch windows are closed. */
-  static public JMenu defaultFileMenu;
+  protected JMenu defaultFileMenu;
 
   /**
    * Starts with the last mode used with the environment,
@@ -435,6 +435,49 @@ public class Base {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  /**
+   * Limited file menu to be used on OS X when no sketches are open.
+   */
+  public JMenu initDefaultFileMenu() {
+    defaultFileMenu = new JMenu(Language.text("menu.file"));
+
+    JMenuItem item = Toolkit.newJMenuItem(Language.text("menu.file.new"), 'N');
+    item.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          handleNew();
+        }
+      });
+    defaultFileMenu.add(item);
+
+    item = Toolkit.newJMenuItem(Language.text("menu.file.open"), 'O');
+    item.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          handleOpenPrompt();
+        }
+      });
+    defaultFileMenu.add(item);
+
+    item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
+    item.addActionListener(new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        getNextMode().showSketchbookFrame();
+      }
+    });
+    defaultFileMenu.add(item);
+
+    item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');
+    item.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        thinkDifferentExamples();
+      }
+    });
+    defaultFileMenu.add(item);
+
+    return defaultFileMenu;
+  }
 
 
   void buildCoreModes() {

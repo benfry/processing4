@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/AdoptOpenJDK 11 [11.0.4]">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing-core"/>
 	<classpathentry kind="lib" path="lib/jna.jar"/>
 	<classpathentry kind="lib" path="lib/jna-platform.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant-launcher.jar"/>
-	<classpathentry kind="lib" path="test/lib/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="/processing-core/apple.jar"/>
+	<classpathentry kind="lib" path="/processing4-core/library-test/junit-4.8.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

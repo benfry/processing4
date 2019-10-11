@@ -31,9 +31,6 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-//import org.eclipse.jdt.core.compiler.batch.BatchCompiler;
-//import org.eclipse.jdt.core.compiler.CompilationProgress;
-
 
 public class Compiler {
 

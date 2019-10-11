@@ -24,7 +24,6 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 package processing.mode.java;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -230,20 +229,12 @@ public class JavaBuild {
       outputFolder.mkdirs();
 //      Base.openFolder(outputFolder);
       final File java = new File(outputFolder, sketch.getName() + ".java");
-      final PrintWriter stream = new PrintWriter(new FileWriter(java, StandardCharsets.UTF_8));
+      final PrintWriter stream = PApplet.createWriter(java);
       try {
-        result = preprocessor.write(
-            stream,
-            bigCode.toString(),
-            codeFolderPackages
-        );
+        result = preprocessor.write(stream, bigCode.toString(), codeFolderPackages);
       } finally {
         stream.close();
       }
-    } catch (FileNotFoundException fnfe) {
-      fnfe.printStackTrace();
-      String msg = "Build folder disappeared or could not be written";
-      throw new SketchException(msg);
     } catch (SketchException pe) {
       // RunnerExceptions are caught here and re-thrown, so that they don't
       // get lost in the more general "Exception" handler below.
@@ -581,7 +572,7 @@ public class JavaBuild {
 
         if (Library.hasMultipleArch(platform, importedLibraries)) {
           // Don't try to export 32-bit on macOS, because it doesn't exist.
-          if (platform != PConstants.MACOSX) {
+          if (platform != PConstants.MACOS) {
             // export the 32-bit version
             folder = new File(sketch.getFolder(), "application." + platformName + "32");
             if (!exportApplication(folder, platform, "32", embedJava && (bits == 32) && ("x86".equals(arch) || "i386".equals(arch)))) {
@@ -656,7 +647,7 @@ public class JavaBuild {
     File dotAppFolder = null;
     String jvmRuntime = "";
     String jdkPath = null;
-    if (exportPlatform == PConstants.MACOSX) {
+    if (exportPlatform == PConstants.MACOS) {
       dotAppFolder = new File(destFolder, sketch.getName() + ".app");
 
       File contentsOrig = new File(Platform.getJavaHome(), "../../../..");
@@ -759,10 +750,10 @@ public class JavaBuild {
     // the folder inside the .app package, while Linux and Windows will have a
     // 'data' folder next to 'lib'.
     if (sketch.hasDataFolder()) {
-      if (exportPlatform == PConstants.MACOSX) {
-        Util.copyDir(sketch.getDataFolder(),  new File(jarFolder, "data"));
+      if (exportPlatform == PConstants.MACOS) {
+        Util.copyDir(sketch.getDataFolder(), new File(jarFolder, "data"));
       } else {
-        Util.copyDir(sketch.getDataFolder(),  new File(destFolder, "data"));
+        Util.copyDir(sketch.getDataFolder(), new File(destFolder, "data"));
       }
     }
 
@@ -819,7 +810,7 @@ public class JavaBuild {
     /// create platform-specific CLASSPATH based on included jars
 
     String exportClassPath = null;
-    if (exportPlatform == PConstants.MACOSX) {
+    if (exportPlatform == PConstants.MACOS) {
       exportClassPath = "$JAVAROOT/" + jarList.join(":$JAVAROOT/");
     } else if (exportPlatform == PConstants.WINDOWS) {
       exportClassPath = jarList.join(",");
@@ -853,7 +844,7 @@ public class JavaBuild {
 
     /// macosx: write out Info.plist (template for classpath, etc)
 
-    if (exportPlatform == PConstants.MACOSX) {
+    if (exportPlatform == PConstants.MACOS) {
       StringBuilder runOptionsXML = new StringBuilder();
       for (String opt : runOptions) {
         runOptionsXML.append("      <string>");

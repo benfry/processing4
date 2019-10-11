@@ -1,8 +1,6 @@
 work
 javadoc
 
-jre/bin-test
-
 # Not sure what crazy collisions we would have but leaving these explicit
 macosx/javafx-sdk-*
 macosx/jdk-11.*
