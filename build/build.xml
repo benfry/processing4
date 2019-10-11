@@ -916,6 +916,17 @@
       <fileset dir="${launch4j.dir}/bin" includes="windres-*" />
     </delete>
 
+    <!-- remove temporary files -->
+    <exec executable="rm">
+      <arg value="-r"/>
+      <arg line="${jdk.path.macosx}"/>
+    </exec>
+
+    <exec executable="rm">
+      <arg value="-r"/>
+      <arg line="${jfx.path.dist}"/>
+    </exec>
+
   </target>
 
   <target name="macosx-run" depends="macosx-build"
@@ -1161,9 +1172,6 @@
       <arg value="work/java/" />
     </exec>
 
-    <delete dir="linux/jdk${jdk.esoteric}" failonerror="false" />
-    <delete dir="linux/jdk${jdk.esoteric}" failonerror="false" />
-
     <!-- Remove unused JRE bloat. -->
     <delete failonerror="true">
       <!--
@@ -1172,6 +1180,17 @@
       -->
       <fileset refid="jdk-optional-linux" />
     </delete>
+
+    <exec executable="rm">
+      <arg value="-r"/>
+      <arg line="linux/jdk-${jdk.esoteric}+${jdk.build}"/>
+    </exec>
+
+    <exec executable="rm">
+      <arg value="-r"/>
+      <arg line="${jfx.path.dist}"/>
+    </exec>
+
   </target>
 
   <target name="linux-run" depends="linux-build"
