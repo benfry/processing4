@@ -1410,6 +1410,7 @@
           <fileset dir="${jfx.path.dist}/legal" includes="**"/>
         </copy>
 
+        <delete failonerror="false" dir="${jfx.path.dist}" />
       </then>
     </if>
 
