@@ -21,7 +21,6 @@
 package processing.mode.java;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -131,7 +130,7 @@ public class JavaToolbar extends EditorToolbar {
 
   @Override
   public void handleRun(int modifiers) {
-    boolean shift = (modifiers & InputEvent.SHIFT_MASK) != 0;
+    boolean shift = (modifiers & ActionEvent.SHIFT_MASK) != 0;
     if (shift) {
       jeditor.handlePresent();
     } else {

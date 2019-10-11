@@ -25,6 +25,7 @@
 package processing.opengl;
 
 import java.awt.Component;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -35,6 +36,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -109,6 +111,7 @@ public class PSurfaceJOGL implements PSurface {
 
   protected boolean external = false;
 
+
   public PSurfaceJOGL(PGraphics graphics) {
     this.graphics = graphics;
     this.pgl = (PJOGL) ((PGraphicsOpenGL)graphics).pgl;
@@ -174,7 +177,24 @@ public class PSurfaceJOGL implements PSurface {
       awtDisplayDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
     }
 
-    displayRect = awtDisplayDevice.getDefaultConfiguration().getBounds();
+    GraphicsConfiguration config = awtDisplayDevice.getDefaultConfiguration();
+    displayRect = config.getBounds();
+
+    /** See explanation at {@link PGL#fboAllowed} in PGL */
+    if (PApplet.platform == PConstants.MACOS) {
+      try {
+        Class<?> cglClass = Class.forName("sun.java2d.opengl.CGLGraphicsConfig");
+        Method cglMethod = cglClass.getMethod("getContextCapabilities");
+        Class<?> ctcClass = Class.forName("sun.java2d.pipe.hw.ContextCapabilities");
+        Method ctcMethod = ctcClass.getMethod("getAdapterId");
+        Object cglInstance = cglClass.cast(config);
+        Object ctcInstance = cglMethod.invoke(cglInstance);
+        Object idInstance = ctcMethod.invoke(ctcInstance);
+        if (String.valueOf(idInstance).contains("Intel HD Graphics 3000")) {
+          pgl.fboAllowed = false;
+        }
+      } catch (Exception e) { }
+    }
   }
 
 
@@ -257,7 +277,7 @@ public class PSurfaceJOGL implements PSurface {
 //      window = GLWindow.create(displayDevice.getScreen(), pgl.getCaps());
 //    }
 
-    windowScaleFactor = PApplet.platform == PConstants.MACOSX ?
+    windowScaleFactor = PApplet.platform == PConstants.MACOS ?
         1 : sketch.pixelDensity;
 
     boolean spanDisplays = sketch.sketchDisplay() == PConstants.SPAN;
@@ -321,7 +341,7 @@ public class PSurfaceJOGL implements PSurface {
     sketch.setSize(sketchWidth, sketchHeight);
 
     float[] reqSurfacePixelScale;
-    if (graphics.is2X() && PApplet.platform == PConstants.MACOSX) {
+    if (graphics.is2X() && PApplet.platform == PConstants.MACOS) {
        // Retina
        reqSurfacePixelScale = new float[] { ScalableSurface.AUTOMAX_PIXELSCALE,
                                             ScalableSurface.AUTOMAX_PIXELSCALE };
@@ -777,7 +797,7 @@ public class PSurfaceJOGL implements PSurface {
       return 1;
     }
 
-    if (PApplet.platform == PConstants.MACOSX) {
+    if (PApplet.platform == PConstants.MACOS) {
       return getCurrentPixelScale();
     }
 
@@ -900,7 +920,7 @@ public class PSurfaceJOGL implements PSurface {
     public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
       pgl.resetFBOLayer();
       pgl.getGL(drawable);
-      float scale = PApplet.platform == PConstants.MACOSX ?
+      float scale = PApplet.platform == PConstants.MACOS ?
           getCurrentPixelScale() : getPixelScale();
       setSize((int) (w / scale), (int) (h / scale));
     }
@@ -1044,7 +1064,7 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     int scale;
-    if (PApplet.platform == PConstants.MACOSX) {
+    if (PApplet.platform == PConstants.MACOS) {
       scale = (int) getCurrentPixelScale();
     } else {
       scale = (int) getPixelScale();

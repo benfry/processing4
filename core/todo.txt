@@ -1,5 +1,10 @@
-0270 (3.5.4 or 3.6)
-_ size() issues on Mojave?
+1270 (4.x alpha)
+X check for disabling FBO code (fixes Intel HD 3000)
+X   https://github.com/processing/processing/issues/4104
+X   https://github.com/processing/processing/pull/5881
+
+
+_ size() issues on Mojave? (3.4 works, 3.5.3 does not)
 _   https://github.com/processing/processing/issues/5791
 _ use exit event to set mouseY to 0 on macOS
 _   https://github.com/processing/processing/pull/5796/files
@@ -7,8 +12,14 @@ _   https://github.com/processing/processing/pull/5796/files
 _ possible fix for precision issues with PDF
 _   https://github.com/processing/processing/issues/5801#issuecomment-466632459
 
+_ simple rotateZ() fix
+_   https://github.com/processing/processing/pull/5821
+_   https://github.com/processing/processing/issues/5770
+
 
 high-ish
+_ Update isAccessible() in Table to use JDK 11 reflection methods
+_   https://github.com/processing/processing4/issues/3
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
 _ make setting the window icon automatic, based on files in local dirs

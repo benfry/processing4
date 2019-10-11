@@ -80,8 +80,12 @@ public interface PConstants {
 
   static final int OTHER   = 0;
   static final int WINDOWS = 1;
-  static final int MACOSX  = 2;
+  static final int MACOS   = 2;
   static final int LINUX   = 3;
+
+  /** @deprecated Marketers gonna market, use {@link #MACOS} */
+  @Deprecated
+  static final int MACOSX  = 2;
 
   static final String[] platformNames = {
     "other", "windows", "macosx", "linux"

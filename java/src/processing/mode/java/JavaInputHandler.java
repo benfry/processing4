@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-19 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -24,14 +24,14 @@
 
 package processing.mode.java;
 
+import java.awt.event.KeyEvent;
+import java.util.Arrays;
+
 import processing.app.Preferences;
 import processing.app.Sketch;
-import processing.app.syntax.*;
+import processing.app.syntax.JEditTextArea;
+import processing.app.syntax.PdeInputHandler;
 import processing.app.ui.Editor;
-
-import java.awt.*;
-import java.awt.event.*;
-import java.util.Arrays;
 
 
 /**
@@ -41,9 +41,9 @@ import java.util.Arrays;
  */
 public class JavaInputHandler extends PdeInputHandler {
 
-  /** ctrl-alt on windows and linux, cmd-alt on mac os x */
-  static final int CTRL_ALT = ActionEvent.ALT_MASK |
-    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+//  /** ctrl-alt on windows and linux, cmd-alt on mac os x */
+//  static final int CTRL_ALT = ActionEvent.ALT_MASK |
+//    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
 
   public JavaInputHandler(Editor editor) {
@@ -66,7 +66,8 @@ public class JavaInputHandler extends PdeInputHandler {
     Sketch sketch = editor.getSketch();
     JEditTextArea textarea = editor.getTextArea();
 
-    if ((event.getModifiers() & InputEvent.META_MASK) != 0) {
+    if (event.isMetaDown()) {
+    //if ((event.getModifiers() & InputEvent.META_MASK) != 0) {
       //event.consume();  // does nothing
       return false;
     }
@@ -76,8 +77,8 @@ public class JavaInputHandler extends PdeInputHandler {
       sketch.setModified(true);
     }
 
-    if ((code == KeyEvent.VK_UP) &&
-        ((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
+    if ((code == KeyEvent.VK_UP) && event.isControlDown()) {
+        //((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
       // back up to the last empty line
       char contents[] = textarea.getText().toCharArray();
       //int origIndex = textarea.getCaretPosition() - 1;
@@ -104,7 +105,8 @@ public class JavaInputHandler extends PdeInputHandler {
       // if the first char, index will be -2
       if (index < 0) index = 0;
 
-      if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      if (event.isShiftDown()) {
         textarea.setSelectionStart(caretIndex);
         textarea.setSelectionEnd(index);
       } else {
@@ -113,8 +115,8 @@ public class JavaInputHandler extends PdeInputHandler {
       event.consume();
 //      return true;
 
-    } else if ((code == KeyEvent.VK_DOWN) &&
-               ((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
+    } else if ((code == KeyEvent.VK_DOWN) && event.isControlDown()) {
+               //((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
       char contents[] = textarea.getText().toCharArray();
       int caretIndex = textarea.getCaretPosition();
 
@@ -136,7 +138,8 @@ public class JavaInputHandler extends PdeInputHandler {
         index++;
       }
 
-      if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      if (event.isShiftDown()) {
         textarea.setSelectionStart(caretIndex);
         textarea.setSelectionEnd(index);
       } else {
@@ -146,7 +149,8 @@ public class JavaInputHandler extends PdeInputHandler {
 //      return true;
 
     } else if (c == 9) {
-      if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      if (event.isShiftDown()) {
         // if shift is down, the user always expects an outdent
         // http://code.google.com/p/processing/issues/detail?id=458
         editor.handleOutdent();
@@ -317,7 +321,8 @@ public class JavaInputHandler extends PdeInputHandler {
   public boolean handleTyped(KeyEvent event) {
     char c = event.getKeyChar();
 
-    if ((event.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+    //if ((event.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+    if (event.isControlDown()) {  // TODO true on typed? [fry 191007]
       // on linux, ctrl-comma (prefs) being passed through to the editor
       if (c == KeyEvent.VK_COMMA) {
         event.consume();
