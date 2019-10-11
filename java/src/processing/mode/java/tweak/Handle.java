@@ -23,6 +23,7 @@ package processing.mode.java.tweak;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Comparator;
 import java.util.Locale;
 
@@ -171,7 +172,7 @@ public class Handle {
 
     } else if ("float".equals(type)) {
       BigDecimal bd = new BigDecimal(value.floatValue());
-      bd = bd.setScale(decimalPlaces, BigDecimal.ROUND_HALF_UP);
+      bd = bd.setScale(decimalPlaces, RoundingMode.HALF_UP);
       newValue = bd.floatValue();
       strNewValue = String.format(Locale.US, textFormat, newValue.floatValue());
     }

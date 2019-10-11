@@ -8,8 +8,6 @@ import processing.app.Problem;
 import processing.app.ui.Editor;
 import processing.mode.java.preproc.issue.PdePreprocessIssue;
 
-import java.util.List;
-
 
 /**
  * Factory which helps create {Problem}s during preprocessing.

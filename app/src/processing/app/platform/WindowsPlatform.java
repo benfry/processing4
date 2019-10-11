@@ -28,11 +28,8 @@ import java.io.UnsupportedEncodingException;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Shell32Util;
 import com.sun.jna.platform.win32.ShlObj;
-import com.sun.jna.win32.StdCallLibrary;
-import com.sun.jna.win32.W32APIOptions;
 
 import processing.app.Base;
 import processing.app.Messages;
@@ -563,7 +560,7 @@ public class WindowsPlatform extends DefaultPlatform {
   static WinLibC getLibC() {
     if (clib == null) {
       try {
-        clib = (WinLibC) Native.loadLibrary("msvcrt", WinLibC.class);
+        clib = Native.loadLibrary("msvcrt", WinLibC.class);
       } catch (UnsatisfiedLinkError ule) {
         Messages.showTrace("JNA Error",
                            "JNA could not be loaded. Please report here:\n" +

@@ -91,7 +91,7 @@ public class Toolkit {
 
   /** Command on Mac OS X, Ctrl on Windows and Linux */
   static final int SHORTCUT_KEY_MASK =
-    awtToolkit.getMenuShortcutKeyMask();
+    awtToolkit.getMenuShortcutKeyMaskEx();
   /** Command-Option on Mac OS X, Ctrl-Alt on Windows and Linux */
   static final int SHORTCUT_ALT_KEY_MASK =
     ActionEvent.ALT_MASK | SHORTCUT_KEY_MASK;
@@ -178,8 +178,7 @@ public class Toolkit {
    */
   static public JMenuItem newJMenuItem(String title, int what) {
     JMenuItem menuItem = new JMenuItem(title);
-    int modifiers = awtToolkit.getMenuShortcutKeyMask();
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, modifiers));
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_KEY_MASK));
     return menuItem;
   }
 
@@ -190,8 +189,7 @@ public class Toolkit {
    */
   static public JMenuItem newJMenuItem(Action action, int what) {
     JMenuItem menuItem = new JMenuItem(action);
-    int modifiers = awtToolkit.getMenuShortcutKeyMask();
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, modifiers));
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_KEY_MASK));
     return menuItem;
   }
 
@@ -201,9 +199,7 @@ public class Toolkit {
    */
   static public JMenuItem newJMenuItemShift(String title, int what) {
     JMenuItem menuItem = new JMenuItem(title);
-    int modifiers = awtToolkit.getMenuShortcutKeyMask();
-    modifiers |= ActionEvent.SHIFT_MASK;
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, modifiers));
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_SHIFT_KEY_MASK));
     return menuItem;
   }
 
@@ -213,9 +209,7 @@ public class Toolkit {
    */
   static public JMenuItem newJMenuItemShift(Action action, int what) {
     JMenuItem menuItem = new JMenuItem(action);
-    int modifiers = awtToolkit.getMenuShortcutKeyMask();
-    modifiers |= ActionEvent.SHIFT_MASK;
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, modifiers));
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_SHIFT_KEY_MASK));
     return menuItem;
   }
 
@@ -235,8 +229,7 @@ public class Toolkit {
 
   static public JCheckBoxMenuItem newJCheckBoxMenuItem(String title, int what) {
     JCheckBoxMenuItem menuItem = new JCheckBoxMenuItem(title);
-    int modifiers = awtToolkit.getMenuShortcutKeyMask();
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, modifiers));
+    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_KEY_MASK));
     return menuItem;
   }
 
@@ -326,7 +319,7 @@ public class Toolkit {
     if (fmTmp == null) return; // All null menuitems; would fail.
     final FontMetrics fm = fmTmp; // Hack for accessing variable in comparator.
 
-    final Comparator<Character> charComparator = new Comparator<Character>() {
+    final Comparator<Character> charComparator = new Comparator<>() {
       char[] baddies = "qypgjaeiouQAEIOU".toCharArray();
       public int compare(Character ch1, Character ch2) {
         // Discriminates against descenders for readability, per MS
@@ -699,8 +692,7 @@ public class Toolkit {
     root.registerKeyboardAction(disposer, stroke,
                                 JComponent.WHEN_IN_FOCUSED_WINDOW);
 
-    int modifiers = awtToolkit.getMenuShortcutKeyMask();
-    stroke = KeyStroke.getKeyStroke('W', modifiers);
+    stroke = KeyStroke.getKeyStroke('W', SHORTCUT_KEY_MASK);
     root.registerKeyboardAction(disposer, stroke,
                                 JComponent.WHEN_IN_FOCUSED_WINDOW);
   }
