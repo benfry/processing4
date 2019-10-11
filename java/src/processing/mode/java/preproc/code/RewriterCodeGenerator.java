@@ -35,13 +35,14 @@ public class RewriterCodeGenerator {
   }
 
   /**
-   * Write preface code to wrap sketch code so that it is contained within a proper Java definition.
+   * Prepare preface code to wrap sketch code so that it is contained within a proper Java
+   * definition.
    *
    * @param headerWriter The writer into which the header should be written.
    * @param params The parameters for the rewrite.
    * @return Information about the completed rewrite.
    */
-  public RewriteResult writeHeader(TokenStreamRewriter headerWriter, RewriteParams params) {
+  public RewriteResult prepareHeader(TokenStreamRewriter headerWriter, RewriteParams params) {
 
     RewriteResultBuilder resultBuilder = new RewriteResultBuilder();
 
@@ -51,6 +52,50 @@ public class RewriterCodeGenerator {
         0,
         true
     );
+
+    writeHeaderContents(decoratedWriter, params, resultBuilder);
+
+    decoratedWriter.finish();
+
+    return resultBuilder.build();
+  }
+
+  /**
+   * Prepare the footer for a sketch (finishes the constructs introduced in header like class def).
+   *
+   * @param footerWriter The writer through which the footer should be introduced.
+   * @param params The parameters for the rewrite.
+   * @param insertPoint The loction at which the footer should be written.
+   * @return Information about the completed rewrite.
+   */
+  public RewriteResult prepareFooter(TokenStreamRewriter footerWriter, RewriteParams params,
+        int insertPoint) {
+
+    RewriteResultBuilder resultBuilder = new RewriteResultBuilder();
+
+    PrintWriterWithEditGen decoratedWriter = new PrintWriterWithEditGen(
+        footerWriter,
+        resultBuilder,
+        insertPoint,
+        false
+    );
+
+    writeFooterContents(decoratedWriter, params, resultBuilder);
+
+    decoratedWriter.finish();
+
+    return resultBuilder.build();
+  }
+
+  /**
+   * Write the contents of the header using a prebuilt print writer.
+   *
+   * @param decoratedWriter he writer though which the comment should be introduced.
+   * @param params The parameters for the rewrite.
+   * @param resultBuilder Builder for reporting out results to the caller.
+   */
+  protected void writeHeaderContents(PrintWriterWithEditGen decoratedWriter, RewriteParams params,
+        RewriteResultBuilder resultBuilder) {
 
     if (!params.getisTesting()) writePreprocessorComment(decoratedWriter, params, resultBuilder);
     writeImports(decoratedWriter, params, resultBuilder);
@@ -69,31 +114,17 @@ public class RewriterCodeGenerator {
     if (requiresStaticSketchHeader) {
       writeStaticSketchHeader(decoratedWriter, params, resultBuilder);
     }
-
-    decoratedWriter.finish();
-
-    return resultBuilder.build();
   }
 
   /**
-   * Write the footer for a sketch (finishes the constructs introduced in header like class def).
+   * Write the contents of the footer using a prebuilt print writer.
    *
-   * @param footerWriter The writer through which the footer should be introduced.
+   * @param decoratedWriter he writer though which the comment should be introduced.
    * @param params The parameters for the rewrite.
-   * @param insertPoint The loction at which the footer should be written.
-   * @return Information about the completed rewrite.
+   * @param resultBuilder Builder for reporting out results to the caller.
    */
-  public RewriteResult writeFooter(TokenStreamRewriter footerWriter, RewriteParams params,
-        int insertPoint) {
-
-    RewriteResultBuilder resultBuilder = new RewriteResultBuilder();
-
-    PrintWriterWithEditGen decoratedWriter = new PrintWriterWithEditGen(
-        footerWriter,
-        resultBuilder,
-        insertPoint,
-        false
-    );
+  protected void writeFooterContents(PrintWriterWithEditGen decoratedWriter, RewriteParams params,
+        RewriteResultBuilder resultBuilder) {
 
     decoratedWriter.addEmptyLine();
 
@@ -112,10 +143,6 @@ public class RewriterCodeGenerator {
       if (!params.getFoundMain()) writeMain(decoratedWriter, params, resultBuilder);
       writeClassFooter(decoratedWriter, params, resultBuilder);
     }
-
-    decoratedWriter.finish();
-
-    return resultBuilder.build();
   }
 
   /**
@@ -125,7 +152,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writePreprocessorComment(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writePreprocessorComment(PrintWriterWithEditGen headerWriter, RewriteParams params,
     RewriteResultBuilder resultBuilder) {
 
     String dateStr = new SimpleDateFormat("YYYY-MM-dd").format(new Date());
@@ -146,7 +173,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeImports(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writeImports(PrintWriterWithEditGen headerWriter, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
     writeImportList(headerWriter, params.getCoreImports(), params, resultBuilder);
@@ -163,7 +190,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeImportList(PrintWriterWithEditGen headerWriter, List<String> imports, RewriteParams params,
+  protected void writeImportList(PrintWriterWithEditGen headerWriter, List<String> imports, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
     writeImportList(headerWriter, imports.toArray(new String[0]), params, resultBuilder);
@@ -177,8 +204,8 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeImportList(PrintWriterWithEditGen headerWriter, String[] imports,  RewriteParams params,
-        RewriteResultBuilder resultBuilder) {
+  protected void writeImportList(PrintWriterWithEditGen headerWriter, String[] imports,
+        RewriteParams params, RewriteResultBuilder resultBuilder) {
 
     for (String importDecl : imports) {
       headerWriter.addCodeLine("import " + importDecl + ";");
@@ -195,7 +222,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeClassHeader(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writeClassHeader(PrintWriterWithEditGen headerWriter, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
     headerWriter.addCodeLine("public class " + params.getSketchName() + " extends PApplet {");
@@ -210,7 +237,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeStaticSketchHeader(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writeStaticSketchHeader(PrintWriterWithEditGen headerWriter, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
     headerWriter.addCodeLine(indent1 + "public void setup() {");
@@ -223,7 +250,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeStaticSketchFooter(PrintWriterWithEditGen footerWriter, RewriteParams params,
+  protected void writeStaticSketchFooter(PrintWriterWithEditGen footerWriter, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
     footerWriter.addCodeLine(indent2 +   "noLoop();");
@@ -231,15 +258,15 @@ public class RewriterCodeGenerator {
   }
 
   /**
-   * Write code supporting speical functions like size.
+   * Write code supporting special functions like size.
    *
    * @param classBodyWriter The writer into which the code should be written. Should be for class
    *    body.
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeExtraFieldsAndMethods(PrintWriterWithEditGen classBodyWriter, RewriteParams params,
-        RewriteResultBuilder resultBuilder) {
+  protected void writeExtraFieldsAndMethods(PrintWriterWithEditGen classBodyWriter,
+        RewriteParams params, RewriteResultBuilder resultBuilder) {
 
     if (!params.getIsSizeValidInGlobal()) {
       return;
@@ -282,7 +309,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeMain(PrintWriterWithEditGen footerWriter, RewriteParams params,
+  protected void writeMain(PrintWriterWithEditGen footerWriter, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
     footerWriter.addEmptyLine();
@@ -323,7 +350,7 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeClassFooter(PrintWriterWithEditGen footerWriter, RewriteParams params,
+  protected void writeClassFooter(PrintWriterWithEditGen footerWriter, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
     footerWriter.addCodeLine("}");

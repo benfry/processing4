@@ -76,6 +76,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private boolean sizeIsFullscreen = false;
   private RewriteResult headerResult;
   private RewriteResult footerResult;
+  private RewriterCodeGenerator codeGen;
 
   private Optional<PdeParseTreeErrorListener> pdeParseTreeErrorListenerMaybe;
 
@@ -90,6 +91,31 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     rewriter = new TokenStreamRewriter(tokens);
     sketchName = newSketchName;
     tabSize = newTabSize;
+
+    codeGen = new RewriterCodeGenerator(tabSize);
+    pdeParseTreeErrorListenerMaybe = Optional.empty();
+  }
+
+  /**
+   * Create a new listener with a customized code generator.
+   *
+   * <p>
+   * A significant amount of code is generated via a {RewriterCodeGenerator} and this constructor
+   * allows client code to specify different generators as needed by their modes.
+   * </p>
+   *
+   * @param tokens The tokens over which to rewrite.
+   * @param newSketchName The name of the sketch being traversed.
+   * @param newTabSize Size of tab / indent.
+   * @param newCodeGen The new code generator to use within this listener.
+   */
+  PdeParseTreeListener(TokenStream tokens, String newSketchName, int newTabSize,
+        RewriterCodeGenerator newCodeGen) {
+
+    rewriter = new TokenStreamRewriter(tokens);
+    sketchName = newSketchName;
+    tabSize = newTabSize;
+    codeGen = newCodeGen;
 
     pdeParseTreeErrorListenerMaybe = Optional.empty();
   }
@@ -235,13 +261,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param ctx The context from ANTLR for the processing sketch.
    */
   public void exitProcessingSketch(ProcessingParser.ProcessingSketchContext ctx) {
-    // header
     RewriteParams rewriteParams = createRewriteParams();
 
-    RewriterCodeGenerator codeGen = new RewriterCodeGenerator(tabSize);
-
-    headerResult = codeGen.writeHeader(rewriter, rewriteParams);
-
+    // header
+    headerResult = codeGen.prepareHeader(rewriter, rewriteParams);
     lineOffset = headerResult.getLineOffset();
 
     // footer
@@ -249,7 +272,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     int tokens = tokenStream.size();
     int length = tokenStream.get(tokens-1).getStopIndex();
 
-    footerResult = codeGen.writeFooter(rewriter, rewriteParams, length);
+    footerResult = codeGen.prepareFooter(rewriter, rewriteParams, length);
   }
 
   /**
@@ -719,4 +742,5 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     void onError(PdePreprocessIssue issue);
 
   }
+
 }

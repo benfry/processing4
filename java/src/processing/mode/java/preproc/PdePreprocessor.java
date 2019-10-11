@@ -294,7 +294,7 @@ public class PdePreprocessor {
      * @param newFactory The factory to use in building a parse tree listener.
      * @return This builder for method chaining.
      */
-    public PdePreprocessorBuilder setParseTreeFactory(ParseTreeListenerFactory newFactory) {
+    public PdePreprocessorBuilder setParseTreeListenerFactory(ParseTreeListenerFactory newFactory) {
       parseTreeFactory = Optional.of(newFactory);
       return this;
     }
