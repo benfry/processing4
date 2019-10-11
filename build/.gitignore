@@ -2,5 +2,14 @@ work
 javadoc
 
 jre/bin-test
+
+# Not sure what crazy collisions we would have but leaving these explicit
 macosx/javafx-sdk-*
 macosx/jdk-11.*
+macosx/jfx-11.*
+windows/javafx-sdk-*
+windows/jdk-11.*
+windows/jfx-11.*
+linux/javafx-sdk-*
+linux/jdk-11.*
+linux/jfx-11.*

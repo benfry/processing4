@@ -105,8 +105,6 @@
   <property name="jdk.hash" value="59066701cf1a433da9770636fbc4c9aa" />
   -->
 
-  <property name="jdk.short" value="${jdk.version}u${jdk.update}" />
-
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.separator" value="-" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
@@ -263,7 +261,7 @@
       <property name="target-platform" value="@{platform}" />
       <property name="${target-platform}" value="${target-platform}" />
 
-      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.short}.tgz" />
+      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz" />
 
       <property name="jdk.data.model" value="@{datamodel}" />
 
@@ -273,13 +271,13 @@
 
       <property name="jfx.path.lib" value="${jfx.path.dist}/lib" />
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.short}.tgz">
+      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz">
         <not>
           <equals arg1="${target-platform}" arg2="windows" />
         </not>
       </condition>
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.short}.zip">
+      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.zip">
         <equals arg1="${target-platform}" arg2="windows" />
       </condition>
     </sequential>
