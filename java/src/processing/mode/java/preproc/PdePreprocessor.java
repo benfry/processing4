@@ -24,6 +24,7 @@ package processing.mode.java.preproc;
 import java.io.PrintWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -75,6 +76,8 @@ public class PdePreprocessor {
   private final int tabSize;
   private final boolean isTesting;
   private final ParseTreeListenerFactory listenerFactory;
+  private final List<String> defaultImports;
+  private final List<String> coreImports;
 
   private boolean foundMain;
 
@@ -103,14 +106,19 @@ public class PdePreprocessor {
    *    (false).
    * @param newFactory The factory to use for building the ANTLR tree traversal listener where
    *    preprocessing edits should be made.
+   * @param newDefaultImports Imports provided for user convenience.
+   * @param newCoreImports Imports required for core or processing itself.
    */
   public PdePreprocessor(final String newSketchName, final int newTabSize, boolean newIsTesting,
-        final ParseTreeListenerFactory newFactory) {
+        final ParseTreeListenerFactory newFactory, List<String> newDefaultImports,
+        List<String> newCoreImports) {
 
     sketchName = newSketchName;
     tabSize = newTabSize;
     isTesting = newIsTesting;
     listenerFactory = newFactory;
+    defaultImports = newDefaultImports;
+    coreImports = newCoreImports;
   }
 
   /**
@@ -180,8 +188,8 @@ public class PdePreprocessor {
     final List<PdePreprocessIssue> treeIssues = new ArrayList<>();
     PdeParseTreeListener listener = listenerFactory.build(tokens, sketchName, tabSize);
     listener.setTesting(isTesting);
-    listener.setCoreImports(ImportUtil.getCoreImports());
-    listener.setDefaultImports(ImportUtil.getDefaultImports());
+    listener.setCoreImports(coreImports);
+    listener.setDefaultImports(defaultImports);
     listener.setCodeFolderImports(codeFolderImports);
     listener.setTreeErrorListener((x) -> { treeIssues.add(x); });
 
@@ -229,6 +237,24 @@ public class PdePreprocessor {
     return foundMain;
   }
 
+  /**
+   * Get the more or processing-required imports that this preprocessor is using.
+   *
+   * @return List of imports required by processing or this mode.
+   */
+  public List<String> getCoreImports() {
+    return coreImports;
+  }
+
+  /**
+   * Get convenience imports provided on the user's behalf.
+   *
+   * @return Imports included by default but not required by processing or the mode.
+   */
+  public List<String> getDefaultImports() {
+    return defaultImports;
+  }
+
   /* ========================
    * === Type Definitions ===
    * ========================
@@ -252,12 +278,16 @@ public class PdePreprocessor {
     private Optional<Integer> tabSize;
     private Optional<Boolean> isTesting;
     private Optional<ParseTreeListenerFactory> parseTreeFactory;
+    private Optional<List<String>> defaultImports;
+    private Optional<List<String>> coreImports;
 
     private PdePreprocessorBuilder(String newSketchName) {
       sketchName = newSketchName;
       tabSize = Optional.empty();
       isTesting = Optional.empty();
       parseTreeFactory = Optional.empty();
+      defaultImports = Optional.empty();
+      coreImports = Optional.empty();
     }
 
     /**
@@ -300,6 +330,28 @@ public class PdePreprocessor {
     }
 
     /**
+     * Indicate which imports are provided on behalf of the user for convenience.
+     *
+     * @param newDefaultImports The new set of default imports.
+     * @return This builder for method chaining.
+     */
+    public PdePreprocessorBuilder setDefaultImports(List<String> newDefaultImports) {
+      defaultImports = Optional.of(newDefaultImports);
+      return this;
+    }
+
+    /**
+     * Indicate which imports are required by processing or the mode itself.
+     *
+     * @param newCoreImports The new set of core imports.
+     * @return This builder for method chaining.
+     */
+    public PdePreprocessorBuilder setCoreImports(List<String> newCoreImports) {
+      coreImports = Optional.of(newCoreImports);
+      return this;
+    }
+
+    /**
      * Build the preprocessor.
      *
      * @return Newly built preproceesor.
@@ -315,11 +367,21 @@ public class PdePreprocessor {
           PdeParseTreeListener::new
       );
 
+      List<String> effectiveDefaultImports = defaultImports.orElseGet(
+          () -> Arrays.asList(ImportUtil.getDefaultImports())
+      );
+
+      List<String> effectiveCoreImports = coreImports.orElseGet(
+          () -> Arrays.asList(ImportUtil.getCoreImports())
+      );
+
       return new PdePreprocessor(
           sketchName,
           effectiveTabSize,
           effectiveIsTesting,
-          effectiveFactory
+          effectiveFactory,
+          effectiveDefaultImports,
+          effectiveCoreImports
       );
     }
 
