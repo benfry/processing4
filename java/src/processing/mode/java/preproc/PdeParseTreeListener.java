@@ -56,6 +56,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private String sketchName;
   private boolean isTesting;
   private TokenStreamRewriter rewriter;
+  private Optional<String> destinationPackageName;
 
   private Mode mode = Mode.JAVA;
   private boolean foundMain;
@@ -76,7 +77,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private boolean sizeIsFullscreen = false;
   private RewriteResult headerResult;
   private RewriteResult footerResult;
-  private RewriterCodeGenerator codeGen;
 
   private String indent1;
   private String indent2;
@@ -90,13 +90,17 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param tokens The tokens over which to rewrite.
    * @param newSketchName The name of the sketch being traversed.
    * @param newTabSize Size of tab / indent.
+   * @param newDestinationPackageName The package to which generated code should be assigned (the
+   *    package to which the sketch code java file should be assigned).
    */
-  public PdeParseTreeListener(TokenStream tokens, String newSketchName, int newTabSize) {
+  public PdeParseTreeListener(TokenStream tokens, String newSketchName, int newTabSize,
+        Optional<String> newDestinationPackageName) {
+
     rewriter = new TokenStreamRewriter(tokens);
     sketchName = newSketchName;
     tabSize = newTabSize;
+    destinationPackageName = newDestinationPackageName;
 
-    codeGen = new RewriterCodeGenerator(tabSize);
     pdeParseTreeErrorListenerMaybe = Optional.empty();
 
     final char[] indentChars = new char[newTabSize];
@@ -801,7 +805,15 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   protected void writeHeaderContents(PrintWriterWithEditGen decoratedWriter, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
-    if (!params.getisTesting()) writePreprocessorComment(decoratedWriter, params, resultBuilder);
+    if (!params.getIsTesting()) {
+      writePreprocessorComment(decoratedWriter, params, resultBuilder);
+    }
+
+    if (destinationPackageName.isPresent()) {
+      decoratedWriter.addCodeLine("package " + destinationPackageName.get() + ";");
+      decoratedWriter.addEmptyLine();
+    }
+
     writeImports(decoratedWriter, params, resultBuilder);
 
     PdePreprocessor.Mode mode = params.getMode();

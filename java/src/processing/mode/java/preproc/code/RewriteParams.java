@@ -101,7 +101,7 @@ public class RewriteParams {
    *
    * @return Flag indicating if this is being run as part of automated testing.
    */
-  public boolean getisTesting() {
+  public boolean getIsTesting() {
     return isTesting;
   }
 
