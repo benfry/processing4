@@ -18,8 +18,6 @@
   </target>
 
   <path id="classpath.base">
-    <!-- kinda gross, but if not using the JDT, this just ignored anyway -->
-    <pathelement location="apple.jar" />
     <pathelement location="library/jogl-all.jar" />
     <pathelement location="library/gluegen-rt.jar" />
     <pathelement location="library/javafx-swt.jar" />
@@ -61,7 +59,6 @@
         </or>
       </condition>
 
-      <!-- link against apple.jar for the ThinkDifferent class -->
       <mkdir dir="@{destdir}" />
       <javac source="11"
   	   target="11"

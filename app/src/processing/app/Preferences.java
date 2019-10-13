@@ -404,17 +404,17 @@ public class Preferences {
 
 
   /**
-   * Check for a 3.0 sketchbook location, and if none exists,
-   * try to grab it from the 2.0 sketchbook location.
+   * Check for a 4.0 sketchbook location, and if none exists,
+   * try to grab it from the 3.0 sketchbook location.
    * @return true if a location was found and the pref didn't exist
    */
   static protected boolean checkSketchbookPref() {
-    // If a 3.0 sketchbook location has never been inited
+    // If a 4.0 sketchbook location has never been inited
     if (getSketchbookPath() == null) {
-      String twoPath = get("sketchbook.path");
-      // If they've run the 2.0 version, start with that location
-      if (twoPath != null) {
-        setSketchbookPath(twoPath);
+      String threePath = get("sketchbook.path.three"); //$NON-NLS-1$
+      // If they've run the 3.0 version, start with that location
+      if (threePath != null) {
+        setSketchbookPath(threePath);
         return true;  // save the sketchbook right away
       }
       // Otherwise it'll be null, and reset properly by Base
@@ -424,16 +424,16 @@ public class Preferences {
 
 
   static public String getOldSketchbookPath() {
-    return get("sketchbook.path");
-  }
-
-
-  static public String getSketchbookPath() {
     return get("sketchbook.path.three"); //$NON-NLS-1$
   }
 
 
+  static public String getSketchbookPath() {
+    return get("sketchbook.path.four"); //$NON-NLS-1$
+  }
+
+
   static protected void setSketchbookPath(String path) {
-    set("sketchbook.path.three", path); //$NON-NLS-1$
+    set("sketchbook.path.four", path); //$NON-NLS-1$
   }
 }

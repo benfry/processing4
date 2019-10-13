@@ -425,7 +425,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     sketch.displayWidth = screenRect.width;
     sketch.displayHeight = screenRect.height;
 
-    windowScaleFactor = PApplet.platform == PConstants.MACOSX ?
+    windowScaleFactor = PApplet.platform == PConstants.MACOS ?
         1 : sketch.pixelDensity;
 
     sketchWidth = sketch.sketchWidth() * windowScaleFactor;
@@ -565,7 +565,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     // Workaround for apparent Java bug on OS X?
     // https://github.com/processing/processing/issues/3472
     if (cursorVisible &&
-        (PApplet.platform == PConstants.MACOSX) &&
+        (PApplet.platform == PConstants.MACOS) &&
         (cursorType != PConstants.ARROW)) {
       hideCursor();
       showCursor();
@@ -588,7 +588,7 @@ public class PSurfaceAWT extends PSurfaceNone {
   public void setIcon(PImage image) {
     Image awtImage = (Image) image.getNative();
 
-    if (PApplet.platform != PConstants.MACOSX) {
+    if (PApplet.platform != PConstants.MACOS) {
       frame.setIconImage(awtImage);
 
     } else {
@@ -623,12 +623,12 @@ public class PSurfaceAWT extends PSurfaceNone {
   protected void setProcessingIcon(Frame frame) {
     // On OS X, this only affects what shows up in the dock when minimized.
     // So replacing it is actually a step backwards. Brilliant.
-    if (PApplet.platform != PConstants.MACOSX) {
+    if (PApplet.platform != PConstants.MACOS) {
       //Image image = Toolkit.getDefaultToolkit().createImage(ICON_IMAGE);
       //frame.setIconImage(image);
       try {
         if (iconImages == null) {
-          iconImages = new ArrayList<Image>();
+          iconImages = new ArrayList<>();
           final int[] sizes = { 16, 32, 48, 64, 128, 256, 512 };
 
           for (int sz : sizes) {
@@ -1475,7 +1475,7 @@ public class PSurfaceAWT extends PSurfaceNone {
   public void setCursor(int kind) {
     // Swap the HAND cursor because MOVE doesn't seem to be available on OS X
     // https://github.com/processing/processing/issues/2358
-    if (PApplet.platform == PConstants.MACOSX && kind == PConstants.MOVE) {
+    if (PApplet.platform == PConstants.MACOS && kind == PConstants.MOVE) {
       kind = PConstants.HAND;
     }
     canvas.setCursor(Cursor.getPredefinedCursor(kind));
