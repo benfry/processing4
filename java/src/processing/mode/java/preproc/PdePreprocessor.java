@@ -191,7 +191,7 @@ public class PdePreprocessor {
         tokens,
         sketchName,
         tabSize,
-        Optional.empty()
+        destinationPackage
     );
     listener.setTesting(isTesting);
     listener.setCoreImports(coreImports);

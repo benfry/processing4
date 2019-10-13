@@ -771,13 +771,13 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   protected void writeHeaderContents(PrintWriterWithEditGen decoratedWriter,
         RewriteResultBuilder resultBuilder) {
 
-    if (!isTesting) {
-      writePreprocessorComment(decoratedWriter, resultBuilder);
-    }
-
     if (destinationPackageName.isPresent()) {
       decoratedWriter.addCodeLine("package " + destinationPackageName.get() + ";");
       decoratedWriter.addEmptyLine();
+    }
+
+    if (!isTesting) {
+      writePreprocessorComment(decoratedWriter, resultBuilder);
     }
 
     writeImports(decoratedWriter, resultBuilder);
