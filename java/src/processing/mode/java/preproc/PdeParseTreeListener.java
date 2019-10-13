@@ -261,10 +261,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param ctx The context from ANTLR for the processing sketch.
    */
   public void exitProcessingSketch(ProcessingParser.ProcessingSketchContext ctx) {
-    RewriteParams rewriteParams = createRewriteParams();
-
     // header
-    headerResult = prepareHeader(rewriter, rewriteParams);
+    headerResult = prepareHeader(rewriter);
     lineOffset = headerResult.getLineOffset();
 
     // footer
@@ -272,7 +270,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     int tokens = tokenStream.size();
     int length = tokenStream.get(tokens-1).getStopIndex();
 
-    footerResult = prepareFooter(rewriter, rewriteParams, length);
+    footerResult = prepareFooter(rewriter, length);
   }
 
   /**
@@ -708,34 +706,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     edits.add(createDelete(location, rewriter));
   }
 
-  /**
-   * Create parameters required by the RewriterCodeGenerator.
-   *
-   * @return Newly created rewrite params.
-   */
-  protected RewriteParams createRewriteParams() {
-    RewriteParamsBuilder builder = new RewriteParamsBuilder(VERSION_STR);
-
-    builder.setSketchName(sketchName);
-    builder.setisTesting(isTesting);
-    builder.setRewriter(rewriter);
-    builder.setMode(mode);
-    builder.setFoundMain(foundMain);
-    builder.setLineOffset(lineOffset);
-    builder.setSketchWidth(sketchWidth);
-    builder.setSketchHeight(sketchHeight);
-    builder.setSketchRenderer(sketchRenderer);
-    builder.setIsSizeValidInGlobal(sizeRequiresRewrite);
-    builder.setIsSizeFullscreen(sizeIsFullscreen);
-
-    builder.addCoreImports(coreImports);
-    builder.addDefaultImports(defaultImports);
-    builder.addCodeFolderImports(codeFolderImports);
-    builder.addFoundImports(foundImports);
-
-    return builder.build();
-  }
-
   /*
    * =========================================
    * === Code generation utility functions ===
@@ -747,10 +717,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * definition.
    *
    * @param headerWriter The writer into which the header should be written.
-   * @param params The parameters for the rewrite.
    * @return Information about the completed rewrite.
    */
-  protected RewriteResult prepareHeader(TokenStreamRewriter headerWriter, RewriteParams params) {
+  protected RewriteResult prepareHeader(TokenStreamRewriter headerWriter) {
 
     RewriteResultBuilder resultBuilder = new RewriteResultBuilder();
 
@@ -761,7 +730,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         true
     );
 
-    writeHeaderContents(decoratedWriter, params, resultBuilder);
+    writeHeaderContents(decoratedWriter, resultBuilder);
 
     decoratedWriter.finish();
 
@@ -772,12 +741,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Prepare the footer for a sketch (finishes the constructs introduced in header like class def).
    *
    * @param footerWriter The writer through which the footer should be introduced.
-   * @param params The parameters for the rewrite.
    * @param insertPoint The loction at which the footer should be written.
    * @return Information about the completed rewrite.
    */
-  protected RewriteResult prepareFooter(TokenStreamRewriter footerWriter, RewriteParams params,
-      int insertPoint) {
+  protected RewriteResult prepareFooter(TokenStreamRewriter footerWriter, int insertPoint) {
 
     RewriteResultBuilder resultBuilder = new RewriteResultBuilder();
 
@@ -788,7 +755,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         false
     );
 
-    writeFooterContents(decoratedWriter, params, resultBuilder);
+    writeFooterContents(decoratedWriter, resultBuilder);
 
     decoratedWriter.finish();
 
@@ -799,14 +766,13 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Write the contents of the header using a prebuilt print writer.
    *
    * @param decoratedWriter he writer though which the comment should be introduced.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeHeaderContents(PrintWriterWithEditGen decoratedWriter, RewriteParams params,
+  protected void writeHeaderContents(PrintWriterWithEditGen decoratedWriter,
         RewriteResultBuilder resultBuilder) {
 
-    if (!params.getIsTesting()) {
-      writePreprocessorComment(decoratedWriter, params, resultBuilder);
+    if (!isTesting) {
+      writePreprocessorComment(decoratedWriter, resultBuilder);
     }
 
     if (destinationPackageName.isPresent()) {
@@ -814,9 +780,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       decoratedWriter.addEmptyLine();
     }
 
-    writeImports(decoratedWriter, params, resultBuilder);
-
-    PdePreprocessor.Mode mode = params.getMode();
+    writeImports(decoratedWriter, resultBuilder);
 
     boolean requiresClassHeader = mode == PdePreprocessor.Mode.STATIC;
     requiresClassHeader = requiresClassHeader || mode == PdePreprocessor.Mode.ACTIVE;
@@ -824,11 +788,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     boolean requiresStaticSketchHeader = mode == PdePreprocessor.Mode.STATIC;
 
     if (requiresClassHeader) {
-      writeClassHeader(decoratedWriter, params, resultBuilder);
+      writeClassHeader(decoratedWriter, resultBuilder);
     }
 
     if (requiresStaticSketchHeader) {
-      writeStaticSketchHeader(decoratedWriter, params, resultBuilder);
+      writeStaticSketchHeader(decoratedWriter, resultBuilder);
     }
   }
 
@@ -836,28 +800,27 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Write the contents of the footer using a prebuilt print writer.
    *
    * @param decoratedWriter he writer though which the comment should be introduced.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeFooterContents(PrintWriterWithEditGen decoratedWriter, RewriteParams params,
+  protected void writeFooterContents(PrintWriterWithEditGen decoratedWriter,
         RewriteResultBuilder resultBuilder) {
 
     decoratedWriter.addEmptyLine();
-
-    PdePreprocessor.Mode mode = params.getMode();
 
     boolean requiresStaticSketchFooter = mode == PdePreprocessor.Mode.STATIC;
     boolean requiresClassWrap = mode == PdePreprocessor.Mode.STATIC;
     requiresClassWrap = requiresClassWrap || mode == PdePreprocessor.Mode.ACTIVE;
 
     if (requiresStaticSketchFooter) {
-      writeStaticSketchFooter(decoratedWriter, params, resultBuilder);
+      writeStaticSketchFooter(decoratedWriter, resultBuilder);
     }
 
     if (requiresClassWrap) {
-      writeExtraFieldsAndMethods(decoratedWriter, params, resultBuilder);
-      if (!params.getFoundMain()) writeMain(decoratedWriter, params, resultBuilder);
-      writeClassFooter(decoratedWriter, params, resultBuilder);
+      writeExtraFieldsAndMethods(decoratedWriter, resultBuilder);
+      if (!foundMain) {
+        writeMain(decoratedWriter, resultBuilder);
+      }
+      writeClassFooter(decoratedWriter, resultBuilder);
     }
   }
 
@@ -865,17 +828,16 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Comment out sketch code before it is moved elsewhere in resulting Java.
    *
    * @param headerWriter The writer though which the comment should be introduced.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writePreprocessorComment(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writePreprocessorComment(PrintWriterWithEditGen headerWriter,
         RewriteResultBuilder resultBuilder) {
 
     String dateStr = new SimpleDateFormat("YYYY-MM-dd").format(new Date());
 
     String newCode = String.format(
         "/* autogenerated by Processing preprocessor v%s on %s */",
-        params.getVersion(),
+        VERSION_STR,
         dateStr
     );
 
@@ -886,16 +848,15 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Add imports as part of conversion from processing sketch to Java code.
    *
    * @param headerWriter The writer though which the imports should be introduced.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeImports(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writeImports(PrintWriterWithEditGen headerWriter,
         RewriteResultBuilder resultBuilder) {
 
-    writeImportList(headerWriter, params.getCoreImports(), params, resultBuilder);
-    writeImportList(headerWriter, params.getCodeFolderImports(), params, resultBuilder);
-    writeImportList(headerWriter, params.getFoundImports(), params, resultBuilder);
-    writeImportList(headerWriter, params.getDefaultImports(), params, resultBuilder);
+    writeImportList(headerWriter, coreImports, resultBuilder);
+    writeImportList(headerWriter, codeFolderImports, resultBuilder);
+    writeImportList(headerWriter, foundImports, resultBuilder);
+    writeImportList(headerWriter, defaultImports, resultBuilder);
   }
 
   /**
@@ -903,13 +864,12 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    *
    * @param headerWriter The writer though which the imports should be introduced.
    * @param imports Collection of imports to introduce.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
   protected void writeImportList(PrintWriterWithEditGen headerWriter, List<String> imports,
-      RewriteParams params, RewriteResultBuilder resultBuilder) {
+      RewriteResultBuilder resultBuilder) {
 
-    writeImportList(headerWriter, imports.toArray(new String[0]), params, resultBuilder);
+    writeImportList(headerWriter, imports.toArray(new String[0]), resultBuilder);
   }
 
   /**
@@ -917,11 +877,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    *
    * @param headerWriter The writer though which the imports should be introduced.
    * @param imports Collection of imports to introduce.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
   protected void writeImportList(PrintWriterWithEditGen headerWriter, String[] imports,
-        RewriteParams params, RewriteResultBuilder resultBuilder) {
+        RewriteResultBuilder resultBuilder) {
 
     for (String importDecl : imports) {
       headerWriter.addCodeLine("import " + importDecl + ";");
@@ -935,13 +894,12 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Write the prefix which defines the enclosing class for the sketch.
    *
    * @param headerWriter The writer through which the header should be introduced.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeClassHeader(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writeClassHeader(PrintWriterWithEditGen headerWriter,
         RewriteResultBuilder resultBuilder) {
 
-    headerWriter.addCodeLine("public class " + params.getSketchName() + " extends PApplet {");
+    headerWriter.addCodeLine("public class " + sketchName + " extends PApplet {");
 
     headerWriter.addEmptyLine();
   }
@@ -950,10 +908,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Write the header for a static sketch (no methods).
    *
    * @param headerWriter The writer through which the header should be introduced.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeStaticSketchHeader(PrintWriterWithEditGen headerWriter, RewriteParams params,
+  protected void writeStaticSketchHeader(PrintWriterWithEditGen headerWriter,
         RewriteResultBuilder resultBuilder) {
 
     headerWriter.addCodeLine(indent1 + "public void setup() {");
@@ -963,10 +920,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Write the bottom of the sketch code for static mode.
    *
    * @param footerWriter The footer into which the text should be written.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeStaticSketchFooter(PrintWriterWithEditGen footerWriter, RewriteParams params,
+  protected void writeStaticSketchFooter(PrintWriterWithEditGen footerWriter,
         RewriteResultBuilder resultBuilder) {
 
     footerWriter.addCodeLine(indent2 +   "noLoop();");
@@ -978,34 +934,33 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    *
    * @param classBodyWriter The writer into which the code should be written. Should be for class
    *    body.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
   protected void writeExtraFieldsAndMethods(PrintWriterWithEditGen classBodyWriter,
-        RewriteParams params, RewriteResultBuilder resultBuilder) {
+        RewriteResultBuilder resultBuilder) {
 
-    if (!params.getIsSizeValidInGlobal()) {
+    if (!sizeRequiresRewrite) {
       return;
     }
 
     String settingsOuterTemplate = indent1 + "public void settings() { %s }";
 
     String settingsInner;
-    if (params.getIsSizeFullscreen()) {
-      String fullscreenInner = params.getSketchRenderer().orElse("");
+    if (sizeIsFullscreen) {
+      String fullscreenInner = sketchRenderer == null ? "" : sketchRenderer;
       settingsInner = String.format("fullScreen(%s);", fullscreenInner);
     } else {
 
-      if (params.getSketchWidth().isEmpty() || params.getSketchHeight().isEmpty()) {
+      if (sketchWidth.isEmpty() || sketchHeight.isEmpty()) {
         return;
       }
 
       StringJoiner argJoiner = new StringJoiner(",");
-      argJoiner.add(params.getSketchWidth().get());
-      argJoiner.add(params.getSketchHeight().get());
+      argJoiner.add(sketchWidth);
+      argJoiner.add(sketchHeight);
 
-      if (params.getSketchRenderer().isPresent()) {
-        argJoiner.add(params.getSketchRenderer().get());
+      if (sketchRenderer != null) {
+        argJoiner.add(sketchRenderer);
       }
 
       settingsInner = String.format("size(%s);", argJoiner.toString());
@@ -1022,10 +977,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Write the main method.
    *
    * @param footerWriter The writer into which the footer should be written.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeMain(PrintWriterWithEditGen footerWriter, RewriteParams params,
+  protected void writeMain(PrintWriterWithEditGen footerWriter,
         RewriteResultBuilder resultBuilder) {
 
     footerWriter.addEmptyLine();
@@ -1046,7 +1000,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
           footerWriter.addCode("\"" + PApplet.ARGS_HIDE_STOP + "\", ");
         }
       }
-      footerWriter.addCode("\"" + params.getSketchName() + "\"");
+      footerWriter.addCode("\"" + sketchName + "\"");
     }
 
     footerWriter.addCodeLine(" };");
@@ -1063,10 +1017,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * Write the end of the class body for the footer.
    *
    * @param footerWriter The writer into which the footer should be written.
-   * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  protected void writeClassFooter(PrintWriterWithEditGen footerWriter, RewriteParams params,
+  protected void writeClassFooter(PrintWriterWithEditGen footerWriter,
         RewriteResultBuilder resultBuilder) {
 
     footerWriter.addCodeLine("}");
