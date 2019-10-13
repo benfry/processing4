@@ -39,7 +39,13 @@ public class ProcessingTestUtil {
       throws SketchException {
     final String program = read(resource);
     final StringWriter out = new StringWriter();
-    PreprocessorResult result = new PdePreprocessor(name, 4, true).write(out, program);
+    
+    PdePreprocessor preprocessor = PdePreprocessor.builderFor(name)
+        .setTabSize(4)
+        .setIsTesting(true)
+        .build();
+
+    PreprocessorResult result = preprocessor.write(out, program);
 
     if (result.getPreprocessIssues().size() > 0) {
       throw new PdePreprocessIssueException(result.getPreprocessIssues().get(0));
