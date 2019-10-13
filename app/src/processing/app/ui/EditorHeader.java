@@ -63,35 +63,35 @@ public class EditorHeader extends JComponent {
   // (total tab width will be this plus TEXT_MARGIN*2)
   static final int NO_TEXT_WIDTH = Toolkit.zoom(16);
 
-  Color textColor[] = new Color[2];
-  Color tabColor[] = new Color[2];
-  Color modifiedColor;
-  Color arrowColor;
+  protected Color textColor[] = new Color[2];
+  protected Color tabColor[] = new Color[2];
+  protected Color modifiedColor;
+  protected Color arrowColor;
 
-  Editor editor;
+  protected Editor editor;
 
-  Tab[] tabs = new Tab[0];
-  Tab[] visitOrder;
+  protected Tab[] tabs = new Tab[0];
+  protected Tab[] visitOrder;
 
-  Font font;
-  int fontAscent;
+  protected Font font;
+  protected int fontAscent;
 
-  JMenu menu;
-  JPopupMenu popup;
+  protected JMenu menu;
+  protected JPopupMenu popup;
 
-  int menuLeft;
-  int menuRight;
+  protected int menuLeft;
+  protected int menuRight;
 
   static final int UNSELECTED = 0;
   static final int SELECTED = 1;
 
-  Image offscreen;
-  int sizeW, sizeH;
-  int imageW, imageH;
+  private Image offscreen;
+  private int sizeW, sizeH;
+  private int imageW, imageH;
 
-  String lastNoticeName;
+  private String lastNoticeName;
 
-  Image gradient;
+  private Image gradient;
 
 
   public EditorHeader(Editor eddie) {
