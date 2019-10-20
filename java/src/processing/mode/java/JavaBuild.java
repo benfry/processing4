@@ -138,7 +138,8 @@ public class JavaBuild {
    * @return null if compilation failed, main class name if not
    */
   public String preprocess(File srcFolder, boolean sizeWarning) throws SketchException {
-    return preprocess(srcFolder, null, new PdePreprocessor(sketch.getName()), sizeWarning);
+    PdePreprocessor preprocessor = PdePreprocessor.builderFor(sketch.getName()).build();
+    return preprocess(srcFolder, null, preprocessor, sizeWarning);
   }
 
 
