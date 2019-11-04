@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.util.Optional;
+
 import processing.app.Preferences;
 import processing.app.SketchException;
 import processing.mode.java.preproc.PdePreprocessor;
@@ -37,13 +39,23 @@ public class ProcessingTestUtil {
 
   static String preprocess(final String name, final File resource)
       throws SketchException {
+    return preprocess(name, resource, Optional.empty());
+  }
+  static String preprocess(final String name, final File resource, Optional<String> optionalPackage)
+      throws SketchException {
+
     final String program = read(resource);
     final StringWriter out = new StringWriter();
-    
-    PdePreprocessor preprocessor = PdePreprocessor.builderFor(name)
-        .setTabSize(4)
-        .setIsTesting(true)
-        .build();
+
+    PdePreprocessor.PdePreprocessorBuilder builder = PdePreprocessor.builderFor(name);
+    builder.setTabSize(4);
+    builder.setIsTesting(true);
+
+    if (optionalPackage.isPresent()) {
+      builder.setDestinationPackage(optionalPackage.get());
+    }
+
+    PdePreprocessor preprocessor = builder.build();
 
     PreprocessorResult result = preprocessor.write(out, program);
 

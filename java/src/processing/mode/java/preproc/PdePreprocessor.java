@@ -77,6 +77,7 @@ public class PdePreprocessor {
   private final ParseTreeListenerFactory listenerFactory;
   private final List<String> defaultImports;
   private final List<String> coreImports;
+  private final Optional<String> destinationPackage;
 
   private boolean foundMain;
 
@@ -110,7 +111,7 @@ public class PdePreprocessor {
    */
   public PdePreprocessor(final String newSketchName, final int newTabSize, boolean newIsTesting,
         final ParseTreeListenerFactory newFactory, List<String> newDefaultImports,
-        List<String> newCoreImports) {
+        List<String> newCoreImports, Optional<String> newDestinationPackage) {
 
     sketchName = newSketchName;
     tabSize = newTabSize;
@@ -118,6 +119,7 @@ public class PdePreprocessor {
     listenerFactory = newFactory;
     defaultImports = newDefaultImports;
     coreImports = newCoreImports;
+    destinationPackage = newDestinationPackage;
   }
 
   /**
@@ -185,7 +187,12 @@ public class PdePreprocessor {
     // Parser
     final List<PdePreprocessIssue> preprocessIssues = new ArrayList<>();
     final List<PdePreprocessIssue> treeIssues = new ArrayList<>();
-    PdeParseTreeListener listener = listenerFactory.build(tokens, sketchName, tabSize);
+    PdeParseTreeListener listener = listenerFactory.build(
+        tokens,
+        sketchName,
+        tabSize,
+        destinationPackage
+    );
     listener.setTesting(isTesting);
     listener.setCoreImports(coreImports);
     listener.setDefaultImports(defaultImports);
@@ -279,6 +286,7 @@ public class PdePreprocessor {
     private Optional<ParseTreeListenerFactory> parseTreeFactory;
     private Optional<List<String>> defaultImports;
     private Optional<List<String>> coreImports;
+    private Optional<String> destinationPackage;
 
     /**
      * The imports required for the Java processing mode.
@@ -333,6 +341,7 @@ public class PdePreprocessor {
       parseTreeFactory = Optional.empty();
       defaultImports = Optional.empty();
       coreImports = Optional.empty();
+      destinationPackage = Optional.empty();
     }
 
     /**
@@ -397,6 +406,17 @@ public class PdePreprocessor {
     }
 
     /**
+     * Specify to which package generated code should be assigned.
+     *
+     * @param newDestinationPackage The package to which output code should be assigned.
+     * @return This builder for method chaining.
+     */
+    public PdePreprocessorBuilder setDestinationPackage(String newDestinationPackage) {
+      destinationPackage = Optional.of(newDestinationPackage);
+      return this;
+    }
+
+    /**
      * Build the preprocessor.
      *
      * @return Newly built preproceesor.
@@ -426,7 +446,8 @@ public class PdePreprocessor {
           effectiveIsTesting,
           effectiveFactory,
           effectiveDefaultImports,
-          effectiveCoreImports
+          effectiveCoreImports,
+          destinationPackage
       );
     }
 
@@ -448,9 +469,11 @@ public class PdePreprocessor {
      * @param tokens The token stream with sketch code contents.
      * @param sketchName The name of the sketch that will be preprocessed.
      * @param tabSize The size (number of spaces) of the tabs.
+     * @param packageName The optional package name for generated code.
      * @return The newly created listener.
      */
-    PdeParseTreeListener build(CommonTokenStream tokens, String sketchName, int tabSize);
+    PdeParseTreeListener build(CommonTokenStream tokens, String sketchName, int tabSize,
+        Optional<String> packageName);
 
   }
 
@@ -459,17 +482,6 @@ public class PdePreprocessor {
    * === Internal Utility Functions ===
    * ==================================
    */
-
-  /**
-   * Factory function to create a {PdeParseTreeListener} for use in preprocessing
-   *
-   * @param tokens The token stream for which the listener needs to be created.
-   * @param sketchName The name of the sketch being preprocessed.
-   * @return Newly created listener suitable for use in this {PdePreprocessor}.
-   */
-  private PdeParseTreeListener createListener(CommonTokenStream tokens, String sketchName) {
-    return new PdeParseTreeListener(tokens, sketchName, tabSize);
-  }
 
   /**
    * Utility function to substitute non ascii characters for escaped unicode character sequences.
