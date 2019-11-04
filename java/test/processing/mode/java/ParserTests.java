@@ -88,8 +88,12 @@ public class ParserTests {
   }
 
   static void expectGood(final String id, boolean ignoreWhitespace) {
+    expectGood(id, ignoreWhitespace, Optional.empty());
+  }
+
+  static void expectGood(final String id, boolean ignoreWhitespace, Optional<String> packageName) {
     try {
-      final String program = preprocess(id, res(id + ".pde"));
+      final String program = preprocess(id, res(id + ".pde"), packageName);
       boolean successful = compile(id, program);
       if (successful) {
         System.err.println("----------------------------");
@@ -366,6 +370,11 @@ public class ParserTests {
   @Test
   public void typeInference() {
     expectGood("typeinference");
+  }
+
+  @Test
+  public void testPackage() {
+    expectGood("packageTest", true, Optional.of("test.subtest"));
   }
 
   private static boolean compile(String id, String program) {
