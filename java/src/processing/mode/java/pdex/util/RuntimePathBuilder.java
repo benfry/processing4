@@ -20,21 +20,30 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.mode.java.pdex.util;
 
-import com.google.classpath.ClassPathFactory;
-import processing.app.*;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.PreprocessedSketch;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.StringJoiner;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.google.classpath.ClassPathFactory;
+
+import processing.app.Library;
+import processing.app.Messages;
+import processing.app.Sketch;
+import processing.app.SketchException;
+import processing.app.Util;
+import processing.mode.java.JavaMode;
+import processing.mode.java.pdex.ImportStatement;
+import processing.mode.java.pdex.PreprocessedSketch;
 
 
 /**

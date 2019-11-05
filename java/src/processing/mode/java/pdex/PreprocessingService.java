@@ -52,7 +52,6 @@ import processing.mode.java.pdex.util.ProblemFactory;
 import processing.mode.java.pdex.util.RuntimePathBuilder;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
-import processing.mode.java.preproc.code.ImportUtil;
 import processing.mode.java.preproc.code.SyntaxUtil;
 
 
@@ -522,16 +521,16 @@ public class PreprocessingService {
   /**
    * Determine which imports need to be available for core processing services.
    *
-   * @param p The preprocessor to operate on.
+   * @param preprocessor The preprocessor to operate on.
    * @return The import statements that need to be present.
    */
-  private static List<ImportStatement> buildCoreAndDefaultImports(PdePreprocessor p) {
+  private static List<ImportStatement> buildCoreAndDefaultImports(PdePreprocessor preprocessor) {
     List<ImportStatement> result = new ArrayList<>();
 
-    for (String imp : ImportUtil.getCoreImports()) {
+    for (String imp : preprocessor.getCoreImports()) {
       result.add(ImportStatement.parse(imp));
     }
-    for (String imp : ImportUtil.getDefaultImports()) {
+    for (String imp : preprocessor.getDefaultImports()) {
       result.add(ImportStatement.parse(imp));
     }
 

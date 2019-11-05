@@ -662,10 +662,8 @@ public class Runner implements MessageConsumer {
 
 
   protected Connector findConnector(String connectorName) {
-//    List connectors =
-//      com.sun.jdi.Bootstrap.virtualMachineManager().allConnectors();
     List<Connector> connectors =
-      org.eclipse.jdi.Bootstrap.virtualMachineManager().allConnectors();
+      com.sun.jdi.Bootstrap.virtualMachineManager().allConnectors();
 
 //    // debug: code to list available connectors
 //    Iterator iter2 = connectors.iterator();

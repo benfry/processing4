@@ -25,8 +25,6 @@ import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 
-import processing.mode.java.preproc.SourceEmitter;
-
 import java.util.Optional;
 
 
@@ -100,4 +98,31 @@ public class PdeIssueEmitter extends BaseErrorListener {
     ));
   }
 
+  /**
+   * Simple interface for strategy which can emit the full body of a processing sketch.
+   */
+  public static interface SourceEmitter {
+
+    /**
+     * Get the full body of the processing sketch.
+     *
+     * @return String processing sketch source code across all tabs.
+     */
+    String getSource();
+
+  }
+
+  /**
+   * Interface for listener that responds to issues reported by the preprocessor.
+   */
+  public static interface PdePreprocessIssueListener {
+
+    /**
+     * Callback to invoke when an issue is encountered in preprocesing.
+     *
+     * @param issue Description of the issue.
+     */
+    void onIssue(PdePreprocessIssue issue);
+
+  }
 }

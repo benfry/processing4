@@ -1,7 +1,12 @@
 work
 javadoc
 
-macosx/javafx-sdk-11.0.2
-macosx/jdk-0u4.tgz
-macosx/jdk-11.0.4+11
-macosx/jfx-11.0.2.zip
+macosx/javafx-sdk-*
+macosx/jdk-11.*
+macosx/jfx-11.*
+windows/javafx-sdk-*
+windows/jdk-11.*
+windows/jfx-11.*
+linux/javafx-sdk-*
+linux/jdk-11.*
+linux/jfx-11.*

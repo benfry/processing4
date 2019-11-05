@@ -914,7 +914,7 @@ public class PFont implements PConstants {
         GraphicsEnvironment.getLocalGraphicsEnvironment();
       fonts = ge.getAllFonts();
 
-      if (PApplet.platform == PConstants.MACOSX) {
+      if (PApplet.platform == PConstants.MACOS) {
         fontDifferent = new HashMap<>();
         for (Font font : fonts) {
           // No need to use getPSName() anymore because getName()
@@ -936,7 +936,7 @@ public class PFont implements PConstants {
    * See: <a href="https://github.com/processing/processing/issues/5481">issue #5481</a>
    */
   static public Font findFont(String name) {
-    if (PApplet.platform == PConstants.MACOSX) {
+    if (PApplet.platform == PConstants.MACOS) {
       loadFonts();
       Font maybe = fontDifferent.get(name);
       if (maybe != null) {

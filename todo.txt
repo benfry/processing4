@@ -5,17 +5,30 @@ X fix potential highlighting issue that wasn't selecting portions of text
 X update AppBundler to use newer SDK, recompile
 X edit build.xml files and appbundler to preserve more attributes
 
+after the JDK 11 update
+X use a new pref for the sketchbook folder location for 4.x
+X finish porting ThinkDifferent to use Desktop APIs
+X   http://openjdk.java.net/jeps/272
+X   also roll it into MacPlatform, since less platform-specific code needed
+_ Implement reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
+_   https://github.com/processing/processing4/issues/9
+
 major updates for JDK 11 et al
 X https://github.com/processing/processing4/pull/1
 _   go through the comment w/ the various bugs that can be closed
 _ remove jdk.hash from build.xml
 _   need to make sure the downloader isn't relying on it
 _ clean up naming for build/macosx/jdk-0u1.tgz and build/macosx/jdk-11.0.1+13/
+_ fix "WARNING: Illegal reflective access by processing.app.ui.Toolkit to field sun.awt.CGraphicsDevice.scale" warning on startup
 
 contribs
 X tweak mode not working
 X   https://github.com/processing/processing/issues/5805
 X   https://github.com/processing/processing/pull/5909
+
+sampottinger
+X Fix JDK naming and cleanup in ant build
+X   https://github.com/processing/processing4/pull/12
 
 _ selecting a sketch in the Sketch menu no longer opens its window
 _   https://github.com/processing/processing/issues/5882

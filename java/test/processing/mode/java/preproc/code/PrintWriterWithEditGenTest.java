@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import processing.mode.java.pdex.TextTransform;
+import processing.mode.java.preproc.PdeParseTreeListener;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class PrintWriterWithEditGenTest {
 
   @Test
   public void addEmptyLineBefore() {
-    PrintWriterWithEditGen editGen = createGen(true);
+    PdeParseTreeListener.PrintWriterWithEditGen editGen = createGen(true);
     editGen.addEmptyLine();
     editGen.finish();
 
@@ -36,7 +37,7 @@ public class PrintWriterWithEditGenTest {
 
   @Test
   public void addCodeLineBefore() {
-    PrintWriterWithEditGen editGen = createGen(true);
+    PdeParseTreeListener.PrintWriterWithEditGen editGen = createGen(true);
     editGen.addCodeLine("test");
     editGen.finish();
 
@@ -48,7 +49,7 @@ public class PrintWriterWithEditGenTest {
 
   @Test
   public void addCodeBefore() {
-    PrintWriterWithEditGen editGen = createGen(true);
+    PdeParseTreeListener.PrintWriterWithEditGen editGen = createGen(true);
     editGen.addCode("test");
     editGen.finish();
 
@@ -60,7 +61,7 @@ public class PrintWriterWithEditGenTest {
 
   @Test
   public void addEmptyLineAfter() {
-    PrintWriterWithEditGen editGen = createGen(false);
+    PdeParseTreeListener.PrintWriterWithEditGen editGen = createGen(false);
     editGen.addEmptyLine();
     editGen.finish();
 
@@ -72,7 +73,7 @@ public class PrintWriterWithEditGenTest {
 
   @Test
   public void addCodeLineAfter() {
-    PrintWriterWithEditGen editGen = createGen(false);
+    PdeParseTreeListener.PrintWriterWithEditGen editGen = createGen(false);
     editGen.addCodeLine("test");
     editGen.finish();
 
@@ -84,7 +85,7 @@ public class PrintWriterWithEditGenTest {
 
   @Test
   public void addCodeAfter() {
-    PrintWriterWithEditGen editGen = createGen(false);
+    PdeParseTreeListener.PrintWriterWithEditGen editGen = createGen(false);
     editGen.addCode("test");
     editGen.finish();
 
@@ -94,8 +95,8 @@ public class PrintWriterWithEditGenTest {
     Mockito.verify(tokenStreamRewriter).insertAfter(5, "test");
   }
 
-  private PrintWriterWithEditGen createGen(boolean before) {
-    return new PrintWriterWithEditGen(
+  private PdeParseTreeListener.PrintWriterWithEditGen createGen(boolean before) {
+    return new PdeParseTreeListener.PrintWriterWithEditGen(
         tokenStreamRewriter,
         rewriteResultBuilder,
         5,

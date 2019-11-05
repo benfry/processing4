@@ -43,7 +43,6 @@ implements MouseListener, MouseMotionListener, ActionListener {
   protected boolean pressed;
   protected boolean selected;
   protected boolean rollover;
-//  protected JLabel rolloverLabel;
   protected boolean shift;
 
   protected Image enabledImage;
@@ -55,7 +54,6 @@ implements MouseListener, MouseMotionListener, ActionListener {
   protected Image gradient;
 
   protected EditorToolbar toolbar;
-//  protected Mode mode;
 
 
   public EditorButton(EditorToolbar parent, String name, String title) {
@@ -128,50 +126,8 @@ implements MouseListener, MouseMotionListener, ActionListener {
   }
 
 
-//    public String toString() {
-//      switch (this) {
-//      case DISABLED: return "disabled";
-//      case ENABLED: return "enabled";
-//      case SELECTED: return "selected";
-//      case ROLLOVER: return "rollover";
-//      case PRESSED: return "pressed";
-//
-////    for (State bs : State.values()) {
-////      Image image = mode.loadImage(bs.getFilename(name));
-////      if (image != null) {
-////        imageMap.put(bs, image);
-////      }
-////    }
-////
-////    enabled = true;
-////    //updateState();
-////    setState(State.ENABLED);
-//  }
-
-
-//  public void setReverse() {
-//    gradient = mode.makeGradient("reversed", DIM, DIM);
-//  }
-
-
-//  public void setGradient(Image gradient) {
-//    this.gradient = gradient;
-//  }
-
-
-//  public void setRolloverLabel(JLabel label) {
-//    rolloverLabel = label;
-//  }
-
-
   @Override
-  public void mouseClicked(MouseEvent e) {
-//    if (isEnabled()) {
-//      shift = e.isShiftDown();
-//      actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
-//                                      null, e.getModifiers()));
-//    }
-  }
+  public void mouseClicked(MouseEvent e) { }
 
 
   public boolean isShiftDown() {
@@ -181,12 +137,17 @@ implements MouseListener, MouseMotionListener, ActionListener {
 
   @Override
   public void mousePressed(MouseEvent e) {
-    setPressed(true);
-
-    // Need to fire here (or on mouse up) because mouseClicked()
+    // Using mousePressed() (or mouseReleased()) because mouseClicked()
     // won't be fired if the user nudges the mouse while clicking.
     // https://github.com/processing/processing/issues/3529
+    setPressed(true);
+
     shift = e.isShiftDown();
+
+    // It looks like ActionEvent expects old-style modifiers,
+    // so the e.getModifiers() call here may be correct.
+    // TODO Look into how this is getting used in Modes,
+    // and either update or add ignore to the deprecation [fry 191008]
     actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
                                     null, e.getModifiers()));
   }
@@ -211,25 +172,6 @@ implements MouseListener, MouseMotionListener, ActionListener {
   }
 
 
-  /*
-  @Override
-  public void keyTyped(KeyEvent e) { }
-
-
-  @Override
-  public void keyReleased(KeyEvent e) {
-    updateRollover(e);
-  }
-
-
-  @Override
-  public void keyPressed(KeyEvent e) {
-    System.out.println(e);
-    updateRollover(e);
-  }
-  */
-
-
   public String getRolloverText(InputEvent e) {
     if (e.isShiftDown()) {
       return titleShift;
@@ -240,42 +182,15 @@ implements MouseListener, MouseMotionListener, ActionListener {
   }
 
 
-  /*
-  public void updateRollover(InputEvent e) {
-    if (rolloverLabel != null) {
-      if (e.isShiftDown()) {
-        rolloverLabel.setText(titleShift);
-      } else if (e.isAltDown()) {
-        rolloverLabel.setText(titleAlt);
-      } else {
-        rolloverLabel.setText(title);
-      }
-    }
-  }
-  */
-
-
   @Override
   public void mouseEntered(MouseEvent e) {
     toolbar.setRollover(this, e);
-    /*
-    rollover = true;
-    updateRollover(e);
-    repaint();
-    */
   }
 
 
   @Override
   public void mouseExited(MouseEvent e) {
     toolbar.setRollover(null, e);
-    /*
-    rollover = false;
-    if (rolloverLabel != null) {
-      rolloverLabel.setText("");
-    }
-    repaint();
-    */
   }
 
 
@@ -288,11 +203,6 @@ implements MouseListener, MouseMotionListener, ActionListener {
 
 
   abstract public void actionPerformed(ActionEvent e);
-
-//  @Override
-//  public void actionPerformed(ActionEvent e) {
-//    // To be overridden by all subclasses
-//  }
 
 
   @Override
@@ -311,58 +221,4 @@ implements MouseListener, MouseMotionListener, ActionListener {
   public Dimension getMaximumSize() {
     return getPreferredSize();
   }
-
-
-//  public Image getImage() {
-//    return imageMap.get(state);
-//  }
-//
-//
-////  protected void updateState() {
-////    state = ButtonState.ENABLED;
-////  }
-//
-//
-//  public void setEnabled(boolean enabled) {
-//    this.enabled = enabled;
-//    if (enabled) {
-//      if (state == State.DISABLED) {
-//        setState(State.ENABLED);
-//      }
-//    } else {
-//      if (state == State.ENABLED) {
-//        setState(State.DISABLED);
-//      }
-//    }
-//  }
-//
-//
-//  public void setState(State state) {
-//    this.state = state;
-//  }
-
-
-//  public enum State {
-//    DISABLED, ENABLED, SELECTED, ROLLOVER, PRESSED;
-//
-//    /**
-//     * @param name the root name
-//     * @return
-//     */
-//    public String getFilename(String name) {
-//      final int res = Toolkit.highResDisplay() ? 2 : 1;
-//      return name + "-" + toString() + "-" + res + "x.png";
-//    }
-//
-//    public String toString() {
-//      switch (this) {
-//      case DISABLED: return "disabled";
-//      case ENABLED: return "enabled";
-//      case SELECTED: return "selected";
-//      case ROLLOVER: return "rollover";
-//      case PRESSED: return "pressed";
-//      }
-//      return null;
-//    }
-//  }
 }

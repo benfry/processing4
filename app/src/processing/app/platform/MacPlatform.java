@@ -28,28 +28,19 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
-import com.apple.eio.FileManager;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 
 import processing.app.Base;
 import processing.app.Messages;
 import processing.app.platform.DefaultPlatform;
+import processing.app.ui.About;
 
 
 /**
- * Platform handler for Mac OS X.
+ * Platform handler for macOS.
  */
 public class MacPlatform extends DefaultPlatform {
-
-  // Removing for 2.0b8 because Quaqua doesn't have OS X 10.8 version.
-  /*
-  public void setLookAndFeel() throws Exception {
-    // Use the Quaqua L & F on OS X to make JFileChooser less awful
-    UIManager.setLookAndFeel("ch.randelshofer.quaqua.QuaquaLookAndFeel");
-    // undo quaqua trying to fix the margins, since we've already
-    // hacked that in, bit by bit, over the years
-    UIManager.put("Component.visualMargin", new Insets(1, 1, 1, 1));
-  }
-  */
 
   public void saveLanguage(String language) {
     String[] cmdarray = new String[]{
@@ -67,35 +58,42 @@ public class MacPlatform extends DefaultPlatform {
 
   public void initBase(Base base) {
     super.initBase(base);
+
+    final Desktop desktop = Desktop.getDesktop();
+
     System.setProperty("apple.laf.useScreenMenuBar", "true");
-    ThinkDifferent.init(base);
-    /*
-    try {
-      String name = "processing.app.macosx.ThinkDifferent";
-      Class osxAdapter = ClassLoader.getSystemClassLoader().loadClass(name);
 
-      Class[] defArgs = { Base.class };
-      Method registerMethod = osxAdapter.getDeclaredMethod("register", defArgs);
-      if (registerMethod != null) {
-        Object[] args = { this };
-        registerMethod.invoke(osxAdapter, args);
+    // Set the menu bar to be used when nothing else is open.
+    JMenuBar defaultMenuBar = new JMenuBar();
+    JMenu fileMenu = base.initDefaultFileMenu();
+    defaultMenuBar.add(fileMenu);
+    desktop.setDefaultMenuBar(defaultMenuBar);
+
+    desktop.setAboutHandler((event) -> {
+      new About(null);
+    });
+
+    desktop.setPreferencesHandler((event) -> {
+      base.handlePrefs();
+    });
+
+    desktop.setOpenFileHandler((event) -> {
+      for (File file : event.getFiles()) {
+        base.handleOpen(file.getAbsolutePath());
       }
-    } catch (NoClassDefFoundError e) {
-      // This will be thrown first if the OSXAdapter is loaded on a system without the EAWT
-      // because OSXAdapter extends ApplicationAdapter in its def
-      System.err.println("This version of Mac OS X does not support the Apple EAWT." +
-                         "Application Menu handling has been disabled (" + e + ")");
+    });
 
-    } catch (ClassNotFoundException e) {
-      // This shouldn't be reached; if there's a problem with the OSXAdapter
-      // we should get the above NoClassDefFoundError first.
-      System.err.println("This version of Mac OS X does not support the Apple EAWT. " +
-                         "Application Menu handling has been disabled (" + e + ")");
-    } catch (Exception e) {
-      System.err.println("Exception while loading BaseOSX:");
-      e.printStackTrace();
-    }
-    */
+    desktop.setPrintFileHandler((event) -> {
+      // TODO not yet implemented
+    });
+
+    desktop.setQuitHandler((event, quitResponse) -> {
+      if (base.handleQuit()) {
+        quitResponse.performQuit();
+      } else {
+        quitResponse.cancelQuit();
+      }
+    });
   }
 
 
@@ -106,28 +104,7 @@ public class MacPlatform extends DefaultPlatform {
 
   public File getDefaultSketchbookFolder() throws Exception {
     return new File(getDocumentsFolder(), "Processing");
-    /*
-    // looking for /Users/blah/Documents/Processing
-    try {
-      Class clazz = Class.forName("processing.app.BaseMacOS");
-      Method m = clazz.getMethod("getDocumentsFolder", new Class[] { });
-      String documentsPath = (String) m.invoke(null, new Object[] { });
-      sketchbookFolder = new File(documentsPath, "Processing");
-
-    } catch (Exception e) {
-      sketchbookFolder = promptSketchbookLocation();
-    }
-    */
   }
-
-
-//  /**
-//   * Moves the specified File object (which might be a file or folder)
-//   * to the trash.
-//   */
-//  public boolean deleteFile(File file) throws IOException {
-//    return FileManager.moveToTrash(file);
-//  }
 
 
   public void openURL(String url) throws Exception {
@@ -145,64 +122,23 @@ public class MacPlatform extends DefaultPlatform {
   }
 
 
-  /*
-  public void openURL(String url) throws Exception {
-    if (PApplet.javaVersion < 1.6f) {
-      if (url.startsWith("http://")) {
-        // formerly com.apple.eio.FileManager.openURL(url);
-        // but due to deprecation, instead loading dynamically
-        try {
-          Class<?> eieio = Class.forName("com.apple.eio.FileManager");
-          Method openMethod =
-            eieio.getMethod("openURL", new Class[] { String.class });
-          openMethod.invoke(null, new Object[] { url });
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      } else {
-        // Assume this is a file instead, and just open it.
-        // Extension of http://dev.processing.org/bugs/show_bug.cgi?id=1010
-        processing.core.PApplet.open(url);
-      }
-    } else {
-      try {
-        Class<?> desktopClass = Class.forName("java.awt.Desktop");
-        Method getMethod = desktopClass.getMethod("getDesktop");
-        Object desktop = getMethod.invoke(null, new Object[] { });
-
-        // for Java 1.6, replacing with java.awt.Desktop.browse()
-        // and java.awt.Desktop.open()
-        if (url.startsWith("http://")) {  // browse to a location
-          Method browseMethod =
-            desktopClass.getMethod("browse", new Class[] { URI.class });
-          browseMethod.invoke(desktop, new Object[] { new URI(url) });
-        } else {  // open a file
-          Method openMethod =
-            desktopClass.getMethod("open", new Class[] { File.class });
-          openMethod.invoke(desktop, new Object[] { new File(url) });
-        }
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-
-  public boolean openFolderAvailable() {
-    return true;
-  }
-
-
-  public void openFolder(File file) throws Exception {
-    //openURL(file.getAbsolutePath());  // handles char replacement, etc
-    processing.core.PApplet.open(file.getAbsolutePath());
-  }
-  */
-
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  // TODO I suspect this won't work much longer, since access to the user's
+  // home directory seems verboten on more recent macOS versions [fry 191008]
+  protected String getLibraryFolder() throws FileNotFoundException {
+    return System.getProperty("user.home") + "/Library";
+  }
+
+
+  // see notes on getLibraryFolder()
+  protected String getDocumentsFolder() throws FileNotFoundException {
+    return System.getProperty("user.home") + "/Documents";
+  }
+
+
+  /*
   // Some of these are supposedly constants in com.apple.eio.FileManager,
   // however they don't seem to link properly from Eclipse.
 
@@ -237,4 +173,5 @@ public class MacPlatform extends DefaultPlatform {
   protected String getDocumentsFolder() throws FileNotFoundException {
     return FileManager.findFolder(kUserDomain, kDocumentsFolderType);
   }
+  */
 }

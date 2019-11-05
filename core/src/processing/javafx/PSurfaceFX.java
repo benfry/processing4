@@ -154,7 +154,7 @@ public class PSurfaceFX implements PSurface {
 
       //addEventHandler(eventType, eventHandler);
 
-      EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
+      EventHandler<MouseEvent> mouseHandler = new EventHandler<>() {
         public void handle(MouseEvent e) {
           fxMouseEvent(e);
         }
@@ -175,7 +175,7 @@ public class PSurfaceFX implements PSurface {
         }
       });
 
-      EventHandler<KeyEvent> keyHandler = new EventHandler<KeyEvent>() {
+      EventHandler<KeyEvent> keyHandler = new EventHandler<>() {
         public void handle(KeyEvent e) {
           fxKeyEvent(e);
         }
@@ -248,7 +248,7 @@ public class PSurfaceFX implements PSurface {
 
       // See JEP 263
       float renderScale = Screen.getMainScreen().getRecommendedOutputScaleX();
-      if (PApplet.platform == PConstants.MACOSX) {
+      if (PApplet.platform == PConstants.MACOS) {
         for (Screen s : Screen.getScreens()) {
           renderScale = Math.max(renderScale, s.getRecommendedOutputScaleX());
         }
@@ -337,7 +337,7 @@ public class PSurfaceFX implements PSurface {
 
       // Workaround for https://bugs.openjdk.java.net/browse/JDK-8136495
       // https://github.com/processing/processing/issues/3823
-      if ((PApplet.platform == PConstants.MACOSX ||
+      if ((PApplet.platform == PConstants.MACOS ||
            PApplet.platform == PConstants.LINUX) &&
           PApplet.javaVersionName.compareTo("1.8.0_60") >= 0 &&
           PApplet.javaVersionName.compareTo("1.8.0_72") < 0) {

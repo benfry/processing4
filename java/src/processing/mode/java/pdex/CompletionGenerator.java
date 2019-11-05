@@ -1790,7 +1790,7 @@ public class CompletionGenerator {
 
     // Now parse the expression into an ASTNode object
     ASTNode nearestNode;
-    ASTParser parser = ASTParser.newParser(AST.JLS8);
+    ASTParser parser = ASTParser.newParser(AST.JLS11);
     parser.setKind(ASTParser.K_EXPRESSION);
     parser.setSource(phrase.toCharArray());
     ASTNode testnode = parser.createAST(null);

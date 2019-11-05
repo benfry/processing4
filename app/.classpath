@@ -11,7 +11,6 @@
 	<classpathentry kind="lib" path="lib/jna-platform.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant-launcher.jar"/>
-	<classpathentry kind="lib" path="/processing4-core/apple.jar"/>
 	<classpathentry kind="lib" path="/processing4-core/library-test/junit-4.8.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
