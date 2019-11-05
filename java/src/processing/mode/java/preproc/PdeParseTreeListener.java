@@ -1289,10 +1289,30 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     return TextTransform.Edit.delete(start.getStartIndex(), start.getText().length());
   }
 
+  /*
+   * ================================================
+   * === Utility functions for import statements. ===
+   * ================================================
+   */
+
+  /**
+   * Create a set of non-static imports given the fully qualified names (FQNs) for the types to be imported.
+   *
+   * @param fullyQualifiedNames The fully qualified names of the types to be imported. This should be like
+   *    "java.util.List". Supports wildcards.
+   * @return Import statements for the listed types.
+   */
   private List<ImportStatement> createPlainImportStatementInfos(List<String> fullyQualifiedNames) {
     return fullyQualifiedNames.stream().map(this::createPlainImportStatementInfo).collect(Collectors.toList());
   }
 
+  /**
+   * Create a single non-static import given the fully qualified name (FQN)
+   *
+   * @param fullyQualifiedName The fully qualified name of the types to be imported. This should be like
+   *    "java.util.List". Supports wildcards.
+   * @return Newly created ImportStatement.
+   */
   private ImportStatement createPlainImportStatementInfo(String fullyQualifiedName) {
     return ImportStatement.parse(fullyQualifiedName);
   }
