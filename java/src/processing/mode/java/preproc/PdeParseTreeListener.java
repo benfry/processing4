@@ -506,30 +506,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   }
 
   /**
-<<<<<<< HEAD
-   * Check if this contains an annation.
-   *
-   * @param context The modifier context to check.
-   * @return True if annotation. False otherwise
-   */
-  private boolean isAnnoation(ProcessingParser.ModifierContext context) {
-    if (context.getChildCount() == 0) {
-      return false;
-    }
-
-    ProcessingParser.ClassOrInterfaceModifierContext classModifierCtx;
-    if (!(context.getChild(0) instanceof ProcessingParser.ClassOrInterfaceModifierContext)) {
-      return false;
-    }
-
-    classModifierCtx = (ProcessingParser.ClassOrInterfaceModifierContext) context.getChild(0);
-
-    return classModifierCtx.getChild(0) instanceof ProcessingParser.AnnotationContext;
-  }
-
-  /**
-=======
->>>>>>> master
    * Endpoint for ANTLR to call after parsing a primitive type name.
    *
    * <p>
