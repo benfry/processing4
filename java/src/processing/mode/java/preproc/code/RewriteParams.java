@@ -1,6 +1,7 @@
 package processing.mode.java.preproc.code;
 
 import org.antlr.v4.runtime.TokenStreamRewriter;
+import processing.mode.java.pdex.ImportStatement;
 import processing.mode.java.preproc.PdePreprocessor;
 
 import java.util.List;
@@ -19,10 +20,10 @@ public class RewriteParams {
   private final PdePreprocessor.Mode mode;
   private final boolean foundMain;
   private final int lineOffset;
-  private final List<String> coreImports;
-  private final List<String> defaultImports;
-  private final List<String> codeFolderImports;
-  private final List<String> foundImports;
+  private final List<ImportStatement> coreImports;
+  private final List<ImportStatement> defaultImports;
+  private final List<ImportStatement> codeFolderImports;
+  private final List<ImportStatement> foundImports;
   private final Optional<String> sketchWidth;
   private final Optional<String> sketchHeight;
   private final Optional<String> sketchRenderer;
@@ -54,9 +55,9 @@ public class RewriteParams {
    */
   public RewriteParams(String newVersion, String newSketchName, boolean newisTesting,
                        TokenStreamRewriter newRewriter, PdePreprocessor.Mode newMode,
-                       boolean newFoundMain, int newLineOffset, List<String> newCoreImports,
-                       List<String> newDefaultImports, List<String> newCodeFolderImports,
-                       List<String> newFoundImports, Optional<String> newSketchWidth,
+                       boolean newFoundMain, int newLineOffset, List<ImportStatement> newCoreImports,
+                       List<ImportStatement> newDefaultImports, List<ImportStatement> newCodeFolderImports,
+                       List<ImportStatement> newFoundImports, Optional<String> newSketchWidth,
                        Optional<String> newSketchHeight, Optional<String> newSketchRenderer,
                        boolean newIsSizeValidInGlobal, boolean newSizeIsFullscreen) {
 
@@ -146,7 +147,7 @@ public class RewriteParams {
    *
    * @return The set of imports to include that are required for processing.
    */
-  public List<String> getCoreImports() {
+  public List<ImportStatement> getCoreImports() {
     return coreImports;
   }
 
@@ -155,7 +156,7 @@ public class RewriteParams {
    *
    * @return The set of imports included for user convenience.
    */
-  public List<String> getDefaultImports() {
+  public List<ImportStatement> getDefaultImports() {
     return defaultImports;
   }
 
@@ -164,7 +165,7 @@ public class RewriteParams {
    *
    * @return The imports required to include other code in the code folder.
    */
-  public List<String> getCodeFolderImports() {
+  public List<ImportStatement> getCodeFolderImports() {
     return codeFolderImports;
   }
 
@@ -173,7 +174,7 @@ public class RewriteParams {
    *
    * @return The imports included by the user.
    */
-  public List<String> getFoundImports() {
+  public List<ImportStatement> getFoundImports() {
     return foundImports;
   }
 

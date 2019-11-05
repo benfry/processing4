@@ -83,17 +83,25 @@ public class ImportStatement {
     is.isStatic = match.group(2) != null;
     String pckg = match.group(3);
     pckg = (pckg == null) ? "" : pckg.replaceAll("\\s","");
-    is.packageName = pckg.endsWith(".") ?
-        pckg.substring(0, pckg.length()-1) :
-        pckg;
 
-    is.className = match.group(4);
-    is.isStarred = is.className.equals("*");
+    String memberName = match.group(4);
+    is.isStarred = memberName.equals("*");
+
+    // Deal with static member imports whose "className" is actually a "member name".
+    boolean endsWithPeriod = pckg.endsWith(".");
+    if (is.isStatic) {
+      String withContainingTypeNameAtEnd = endsWithPeriod ? pckg.substring(0, pckg.length() - 1) : pckg;
+      int periodOfContainingTypeName = withContainingTypeNameAtEnd.lastIndexOf(".");
+      String containingTypeName = withContainingTypeNameAtEnd.substring(periodOfContainingTypeName + 1);
+      is.packageName = withContainingTypeNameAtEnd.substring(0, periodOfContainingTypeName);
+      is.className = containingTypeName + "." + memberName;
+    } else {
+      is.packageName = endsWithPeriod ? pckg.substring(0, pckg.length() - 1) : pckg;
+      is.className = memberName;
+    }
 
     return is;
   }
-
-
 
   public String getFullSourceLine() {
     return importKw + " " + (isStatic ? (staticKw + " ") : "") + packageName + "." + className + ";";

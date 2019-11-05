@@ -22,12 +22,15 @@
 package processing.mode.java.preproc;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Interval;
 
 import org.antlr.v4.runtime.tree.ParseTree;
 import processing.core.PApplet;
+import processing.mode.java.pdex.ImportStatement;
 import processing.mode.java.pdex.TextTransform;
 import processing.mode.java.preproc.PdePreprocessor.Mode;
 import processing.mode.java.preproc.code.*;
@@ -62,10 +65,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   private int lineOffset;
 
-  private ArrayList<String> coreImports = new ArrayList<>();
-  private ArrayList<String> defaultImports = new ArrayList<>();
-  private ArrayList<String> codeFolderImports = new ArrayList<>();
-  private ArrayList<String> foundImports = new ArrayList<>();
+  private ArrayList<ImportStatement> coreImports = new ArrayList<>();
+  private ArrayList<ImportStatement> defaultImports = new ArrayList<>();
+  private ArrayList<ImportStatement> codeFolderImports = new ArrayList<>();
+  private ArrayList<ImportStatement> foundImports = new ArrayList<>();
   private ArrayList<TextTransform.Edit> edits = new ArrayList<>();
 
   private String sketchWidth;
@@ -95,30 +98,49 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   }
 
   /**
-   * Indicate imports for code folders.
+   * Indicate imports for code folders given those imports' fully qualified names.
    *
-   * @param codeFolderImports List of imports for sources sitting in the sketch code folder.
+   * @param codeFolderImports List of imports for sources sitting in the sketch code folder. Note that these will be
+   *    interpreted as non-static imports.
    */
   public void setCodeFolderImports(List<String> codeFolderImports) {
+    setCodeFolderImportInfo(createPlainImportStatementInfos(codeFolderImports));
+  }
+
+  /**
+   * Indicate imports for code folders given full import statement information.
+   * names.
+   *
+   * @param codeFolderImports List of import statement info for sources sitting in the sketch code folder.
+   */
+  public void setCodeFolderImportInfo(List<ImportStatement> codeFolderImports) {
     this.codeFolderImports.clear();
     this.codeFolderImports.addAll(codeFolderImports);
   }
 
   /**
-   * Indicate list of imports required for all sketches to be inserted in preprocessing.
+   * Indicate list of imports required for all sketches to be inserted in preprocessing given those imports' fully
+   * qualified names.
    *
-   * @param coreImports The list of imports required for all sketches.
+   * @param coreImports The list of imports required for all sketches. Note that these will be interpreted as non-static
+   *    imports.
    */
   public void setCoreImports(String[] coreImports) {
     setCoreImports(Arrays.asList(coreImports));
   }
 
   /**
-   * Indicate list of imports required for all sketches to be inserted in preprocessing.
+   * Indicate list of imports required for all sketches to be inserted in preprocessing given those imports' fully
+   * qualified names.
    *
-   * @param coreImports The list of imports required for all sketches.
+   * @param coreImports The list of imports required for all sketches. Note that these will be interpreted as non-static
+   *    imports.
    */
   public void setCoreImports(List<String> coreImports) {
+    setCoreImportInfo(createPlainImportStatementInfos(coreImports));
+  }
+
+  public void setCoreImportInfo(List<ImportStatement> coreImports) {
     this.coreImports.clear();
     this.coreImports.addAll(coreImports);
   }
@@ -142,12 +164,17 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    *
    * <p>
    *    Indicate list of imports that are not required for sketch operation but included for the
-   *    user's convenience regardless.
+   *    user's convenience regardless given those imports' fully qualified names.
    * </p>
    *
-   * @param defaultImports The list of imports to include for user convenience.
+   * @param defaultImports The list of imports to include for user convenience. Note that these will be interpreted as
+   *    non-static imports.
    */
   public void setDefaultImports(List<String> defaultImports) {
+    setDefaultImportInfo(createPlainImportStatementInfos(defaultImports));
+  }
+
+  public void setDefaultImportInfo(List<ImportStatement> defaultImports) {
     this.defaultImports.clear();
     this.defaultImports.addAll(defaultImports);
   }
@@ -204,7 +231,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @return The result of the last preprocessing.
    */
   public PreprocessorResult getResult() {
-    List<String> allImports = new ArrayList<>();
+    List<ImportStatement> allImports = new ArrayList<>();
 
     allImports.addAll(coreImports);
     allImports.addAll(defaultImports);
@@ -392,8 +419,13 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       });
     }
 
+    // Find the start of the fully qualified name.
+    boolean isStaticImport = false;
     for(int i = 0; i < ctx.getChildCount(); i++) {
       ParseTree candidate = ctx.getChild(i);
+      String candidateText = candidate.getText().toLowerCase();
+      boolean childIsStatic = (candidateText.equals("static"));
+      isStaticImport = isStaticImport || childIsStatic;
       if (candidate instanceof ProcessingParser.QualifiedNameContext) {
         startCtx = (ProcessingParser.QualifiedNameContext) ctx.getChild(i);
       }
@@ -403,11 +435,22 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       return;
     }
 
-    Interval interval =
-        new Interval(startCtx.start.getStartIndex(), ctx.stop.getStopIndex());
+    // Extract the fully qualified name
+    Interval interval = new Interval(
+        startCtx.start.getStartIndex(),
+        ctx.stop.getStopIndex()
+    );
+
     String importString = ctx.start.getInputStream().getText(interval);
-    String importStringNoSemi = importString.substring(0, importString.length() - 1);
-    foundImports.add(importStringNoSemi);
+    int endImportIndex = importString.length() - 1;
+    String importStringNoSemi = importString.substring(0, endImportIndex);
+
+    // Check for static import
+    if (isStaticImport) {
+      importStringNoSemi = "static " + importStringNoSemi;
+    }
+
+    foundImports.add(ImportStatement.parse(importStringNoSemi));
 
     createDelete(ctx.start, ctx.stop);
   }
@@ -544,7 +587,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   /**
    * Check if this contains an annation.
    *
-   * @param child The modifier context to check.
+   * @param context The modifier context to check.
    * @return True if annotation. False otherwise
    */
   private boolean isAnnoation(ProcessingParser.ModifierContext context) {
@@ -704,5 +747,13 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     builder.addFoundImports(foundImports);
 
     return builder.build();
+  }
+
+  private List<ImportStatement> createPlainImportStatementInfos(List<String> fullyQualifiedNames) {
+    return fullyQualifiedNames.stream().map(this::createPlainImportStatementInfo).collect(Collectors.toList());
+  }
+
+  private ImportStatement createPlainImportStatementInfo(String fullyQualifiedName) {
+    return ImportStatement.parse(fullyQualifiedName);
   }
 }

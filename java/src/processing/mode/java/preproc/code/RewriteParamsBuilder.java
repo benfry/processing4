@@ -1,6 +1,7 @@
 package processing.mode.java.preproc.code;
 
 import org.antlr.v4.runtime.TokenStreamRewriter;
+import processing.mode.java.pdex.ImportStatement;
 import processing.mode.java.preproc.PdePreprocessor;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ public class RewriteParamsBuilder {
   private Optional<Boolean> isSizeValidInGlobal;
   private Optional<Boolean> isSizeFullscreen;
 
-  private ArrayList<String> coreImports;
-  private ArrayList<String> defaultImports;
-  private ArrayList<String> codeFolderImports;
-  private ArrayList<String> foundImports;
+  private ArrayList<ImportStatement> coreImports;
+  private ArrayList<ImportStatement> defaultImports;
+  private ArrayList<ImportStatement> codeFolderImports;
+  private ArrayList<ImportStatement> foundImports;
 
   /**
    * Create a new params build.
@@ -165,7 +166,7 @@ public class RewriteParamsBuilder {
    *
    * @param newImports The set of imports to include that are required for processing.
    */
-  public void addCoreImports(Collection<String> newImports) {
+  public void addCoreImports(Collection<ImportStatement> newImports) {
     coreImports.addAll(newImports);
   }
 
@@ -174,7 +175,7 @@ public class RewriteParamsBuilder {
    *
    * @param newImports The set of imports included for user convenience.
    */
-  public void addDefaultImports(Collection<String> newImports) {
+  public void addDefaultImports(Collection<ImportStatement> newImports) {
     defaultImports.addAll(newImports);
   }
 
@@ -183,7 +184,7 @@ public class RewriteParamsBuilder {
    *
    * @param newImports The imports required to include other code in the code folder.
    */
-  public void addCodeFolderImports(Collection<String> newImports) {
+  public void addCodeFolderImports(Collection<ImportStatement> newImports) {
     codeFolderImports.addAll(newImports);
   }
 
@@ -192,7 +193,7 @@ public class RewriteParamsBuilder {
    *
    * @param newImports The imports included by the user.
    */
-  public void addFoundImports(Collection<String> newImports) {
+  public void addFoundImports(Collection<ImportStatement> newImports) {
     foundImports.addAll(newImports);
   }
 

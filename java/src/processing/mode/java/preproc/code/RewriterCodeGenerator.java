@@ -3,6 +3,7 @@ package processing.mode.java.preproc.code;
 import org.antlr.v4.runtime.TokenStreamRewriter;
 import processing.app.Preferences;
 import processing.core.PApplet;
+import processing.mode.java.pdex.ImportStatement;
 import processing.mode.java.preproc.PdePreprocessor;
 
 import java.text.SimpleDateFormat;
@@ -163,10 +164,10 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeImportList(PrintWriterWithEditGen headerWriter, List<String> imports, RewriteParams params,
+  private void writeImportList(PrintWriterWithEditGen headerWriter, List<ImportStatement> imports, RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
-    writeImportList(headerWriter, imports.toArray(new String[0]), params, resultBuilder);
+    writeImportList(headerWriter, imports.toArray(new ImportStatement[0]), params, resultBuilder);
   }
 
   /**
@@ -177,11 +178,11 @@ public class RewriterCodeGenerator {
    * @param params The parameters for the rewrite.
    * @param resultBuilder Builder for reporting out results to the caller.
    */
-  private void writeImportList(PrintWriterWithEditGen headerWriter, String[] imports,  RewriteParams params,
+  private void writeImportList(PrintWriterWithEditGen headerWriter, ImportStatement[] imports,  RewriteParams params,
         RewriteResultBuilder resultBuilder) {
 
-    for (String importDecl : imports) {
-      headerWriter.addCodeLine("import " + importDecl + ";");
+    for (ImportStatement importDecl : imports) {
+      headerWriter.addCodeLine(importDecl.getFullSourceLine());
     }
     if (imports.length > 0) {
       headerWriter.addEmptyLine();
