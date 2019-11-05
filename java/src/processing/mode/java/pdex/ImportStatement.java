@@ -2,7 +2,7 @@
 
 /*
 Part of the Processing project - http://processing.org
-Copyright (c) 2012-15 The Processing Foundation
+Copyright (c) 2012-19 The Processing Foundation
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License version 2
@@ -25,9 +25,6 @@ import java.util.regex.Matcher;
 
 /**
  * Wrapper for import statements
- *
- * @author Manindra Moharana &lt;me@mkmoharana.com&gt;
- *
  */
 public class ImportStatement {
 
@@ -84,9 +81,9 @@ public class ImportStatement {
    * Prase an import statement from a fully qualified name.
    *
    * @param importString The fully qualified name from which an import statement should be built. This supports static
-   *    prepended so both "java.util.List" and "static org.processing.package.Factory.build" are supported. Note that
-   *    the static prepending is required if the import is static.
-   * @return
+   *    prepended so both "java.util.List" and "static org.processing.package.Factory.build" are supported but
+   *    "import java.util.List;" is not. Note that the static prepending is required if the import is static.
+   * @return Newly parsed import statement information.
    */
   public static ImportStatement parse(String importString) {
     Matcher matcher = SourceUtils.IMPORT_REGEX_NO_KEYWORD.matcher(importString);
@@ -145,7 +142,7 @@ public class ImportStatement {
    *    "org.processing.package.Factory.build" would be returned for
    *    "import static org.processing.package.Factory.build".
    */
-  public String getFullClassName(){
+  public String getFullMemberName(){
     return packageName + "." + memberName;
   }
 

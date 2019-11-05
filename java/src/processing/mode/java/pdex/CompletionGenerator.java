@@ -739,7 +739,7 @@ public class CompletionGenerator {
         .map(list -> list.stream()
             .map(is -> {
               if (is.getMemberName().equals(finalClassName)) {
-                return is.getFullClassName();
+                return is.getFullMemberName();
               } else if (is.isStarredImport()) {
                 return is.getPackageName() + "." + finalClassName;
               }

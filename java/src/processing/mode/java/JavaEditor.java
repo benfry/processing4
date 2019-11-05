@@ -1811,7 +1811,7 @@ public class JavaEditor extends Editor {
         if (!imports.isEmpty()) {
           ArrayList<String> importHeaders = new ArrayList<>();
           for (ImportStatement importStatement : imports) {
-            importHeaders.add(importStatement.getFullClassName());
+            importHeaders.add(importStatement.getFullMemberName());
           }
           List<AvailableContribution> installLibsHeaders =
             getNotInstalledAvailableLibs(importHeaders);
