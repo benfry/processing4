@@ -79,7 +79,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   protected EditorState state;
   protected Mode mode;
 
-  static public final int LEFT_GUTTER = Toolkit.zoom(44);
+  static public final int LEFT_GUTTER = Toolkit.zoom(45);
   static public final int RIGHT_GUTTER = Toolkit.zoom(12);
   static public final int GUTTER_MARGIN = Toolkit.zoom(3);
 
