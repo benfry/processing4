@@ -24,7 +24,6 @@ package processing.mode.java.preproc;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import processing.mode.java.pdex.ImportStatement;
 import processing.mode.java.pdex.TextTransform;
@@ -38,7 +37,6 @@ public class PreprocessorResult {
 
   private final int headerOffset;
   private final String className;
-  private final List<String> importStatementsStr;
   private final List<ImportStatement> importStatements;
   private final PdePreprocessor.Mode programType;
   private final List<TextTransform.Edit> edits;
@@ -66,13 +64,13 @@ public class PreprocessorResult {
    * @param newHeaderOffset The offset (in number of chars) from the start of the program at which
    *    the header finishes.
    * @param newClassName The name of the class containing the sketch.
-   * @param newExtraImports Additional imports beyond the defaults and code folder.
+   * @param newImportStatements The imports required for the sketch including defaults and core imports.
    * @param newEdits The edits made during preprocessing.
    * @param newSketchWidth The width of the sketch in pixels or special value like displayWidth;
    * @param newSketchHeight The height of the sketch in pixels or special value like displayWidth;
    */
   public PreprocessorResult(PdePreprocessor.Mode newProgramType, int newHeaderOffset,
-        String newClassName, List<String> newExtraImports, List<TextTransform.Edit> newEdits,
+        String newClassName, List<ImportStatement> newImportStatements, List<TextTransform.Edit> newEdits,
         String newSketchWidth, String newSketchHeight) {
 
     if (newClassName == null) {
@@ -81,14 +79,10 @@ public class PreprocessorResult {
 
     headerOffset = newHeaderOffset;
     className = newClassName;
-    importStatementsStr = Collections.unmodifiableList(new ArrayList<>(newExtraImports));
+    importStatements = newImportStatements;
     programType = newProgramType;
     edits = newEdits;
     preprocessIssues = new ArrayList<>();
-
-    importStatements = importStatementsStr.stream()
-        .map(ImportStatement::parse)
-        .collect(Collectors.toList());
 
     sketchWidth = newSketchWidth;
     sketchHeight = newSketchHeight;
@@ -103,7 +97,6 @@ public class PreprocessorResult {
     preprocessIssues = Collections.unmodifiableList(newPreprocessIssues);
     headerOffset = 0;
     className = "unknown";
-    importStatementsStr = new ArrayList<>();
     programType = PdePreprocessor.Mode.STATIC;
     edits = new ArrayList<>();
     importStatements = new ArrayList<>();
@@ -138,15 +131,6 @@ public class PreprocessorResult {
    */
   public String getClassName() {
     return className;
-  }
-
-  /**
-   * Get the imports beyond the default set that are included in the sketch.
-   *
-   * @return Additional imports beyond the defaults and code folder.
-   */
-  public List<String> getImportStatementsStr() {
-    return importStatementsStr;
   }
 
   /**

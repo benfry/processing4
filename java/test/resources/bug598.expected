@@ -3,7 +3,7 @@ import processing.data.*;
 import processing.event.*;
 import processing.opengl.*;
 
-import java.lang.Math.tanh;
+import static java.lang.Math.tanh;
 import java.util.concurrent.Callable;
 import java.util.List;
 import java.util.Comparator;
