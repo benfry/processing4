@@ -1,15 +1,27 @@
-This is an experimental fork to attempt the move to JDK 11. Because that's a major, API-breaking change, it would be Processing 4.
+Sam Pottinger Processing Branch
+==============================================================
+This is a fork of the [Processing 4](https://github.com/processing/processing4) project that conatins the preview of a possible Processing 4 beta.
 
-I'm working with Sam Pottinger to incorporate [his changes](https://github.com/sampottinger/processing) to see if that can be the basis for this new release. Getting things moved to OpenJDK 11 will help the longevity of the project.
+<br>
 
-**It's not clear if we'll ship an actual Processing 4.0**, since I have less free time than ever, and very little development help. If you'd like to help, contribute bug fixes.
+Usage
+--------------------------------------------------------------
+Pre-built binaries are available for download! These are not sponsored or endorsed by the Processing Foundation and are only provided as a convenience for testing this branch. These are temporary and will go away as the review process continues. It is not meant to be a release. See [https://www.datadrivenempathy.com/processing](https://www.datadrivenempathy.com/processing). You can also clone this repo (`$ git clone git@github.com:sampottinger/processing.git`) and follow the build instructions below.
 
-Ben Fry, 4 October 2019
+<br>
 
----
+Build
+--------------------------------------------------------------
+For building on your local machine, please see https://gist.github.com/sampottinger/939441d7277d318189ec81844e3ca516.
 
-## API changes
+<br>
 
-As with all releases, I'll do everything possible to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor.
+Development / Issues
+--------------------------------------------------------------
+Please beta test! Until further dicussion at [Support for Java 11, OpenJDK, and OpenJFX](https://github.com/processing/processing/pull/5753), please report issues on this fork via comments on PRs. If you are offering code related tothe changes pending review (Java 11, OpenJDK, OpenJFX, ANTLR 4, or CI), feel free to open PRs here. Otherwise, please contribute back to the [main repo](https://github.com/processing/processing).
 
-* `Base.defaultFileMenu` is now `protected` instead of `static public`
+<br>
+
+Release
+--------------------------------------------------------------
+CI is automated via Travis. Deployment is done via [a script](https://gist.github.com/sampottinger/946a070808ef32c4170f30b279407d1c).
