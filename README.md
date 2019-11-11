@@ -6,7 +6,7 @@ This is a fork of the [Processing 4](https://github.com/processing/processing4) 
 
 Usage
 --------------------------------------------------------------
-Pre-built binaries are available for download! These are not sponsored or endorsed by the Processing Foundation and are only provided as a convenience for testing this branch. These are temporary and will go away as the review process continues. It is not meant to be a release. See [https://www.datadrivenempathy.com/processing](https://www.datadrivenempathy.com/processing). You can also clone this repo (`$ git clone git@github.com:sampottinger/processing.git`) and follow the build instructions below.
+Pre-built binaries are available for download! These are not sponsored or endorsed by the Processing Foundation and are only provided as a convenience for testing this branch. These are temporary and will go away as the review process continues. It is not meant to be a release. See [https://www.datadrivenempathy.com/processing](https://www.datadrivenempathy.com/processing). You can also clone this repo (`$ git clone git@github.com:sampottinger/processing4.git`) and follow the build instructions below.
 
 <br>
 
@@ -18,7 +18,7 @@ For building on your local machine, please see https://gist.github.com/sampottin
 
 Development / Issues
 --------------------------------------------------------------
-Please beta test! Until further dicussion at [Support for Java 11, OpenJDK, and OpenJFX](https://github.com/processing/processing/pull/5753), please report issues on this fork via comments on PRs. If you are offering code related tothe changes pending review (Java 11, OpenJDK, OpenJFX, ANTLR 4, or CI), feel free to open PRs here. Otherwise, please contribute back to the [main repo](https://github.com/processing/processing).
+Please beta test and write issues back to the [main repo](https://github.com/processing/processing4).
 
 <br>
 
