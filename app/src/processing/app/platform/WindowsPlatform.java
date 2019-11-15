@@ -560,7 +560,7 @@ public class WindowsPlatform extends DefaultPlatform {
   static WinLibC getLibC() {
     if (clib == null) {
       try {
-        clib = Native.loadLibrary("msvcrt", WinLibC.class);
+        clib = Native.load("msvcrt", WinLibC.class);
       } catch (UnsatisfiedLinkError ule) {
         Messages.showTrace("JNA Error",
                            "JNA could not be loaded. Please report here:\n" +

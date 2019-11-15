@@ -129,7 +129,7 @@ public class DefaultPlatform {
 
 
   public interface CLibrary extends Library {
-    CLibrary INSTANCE = Native.loadLibrary("c", CLibrary.class);
+    CLibrary INSTANCE = Native.load("c", CLibrary.class);
     int setenv(String name, String value, int overwrite);
     String getenv(String name);
     int unsetenv(String name);
