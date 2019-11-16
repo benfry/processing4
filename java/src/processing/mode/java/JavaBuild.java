@@ -40,6 +40,7 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.data.StringList;
 import processing.data.XML;
+import processing.mode.java.pdex.ImportStatement;
 import processing.mode.java.pdex.util.ProblemFactory;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
@@ -272,18 +273,8 @@ public class JavaBuild {
       javaLibraryPath += File.pathSeparator + core.getNativePath();
     }
 
-    for (String item : result.getImportStatementsStr()) {
-      // remove things up to the last dot
-      int dot = item.lastIndexOf('.');
-      // http://dev.processing.org/bugs/show_bug.cgi?id=1145
-      String entry = (dot == -1) ? item : item.substring(0, dot);
-
-      if (item.startsWith("static ")) {
-        // import static - https://github.com/processing/processing/issues/8
-        int dot2 = item.lastIndexOf('.');
-        entry = entry.substring(7, (dot2 == -1) ? entry.length() : dot2);
-      }
-
+    for (ImportStatement item : result.getImportStatements()) {
+      String entry = item.getPackageName();
       Library library = mode.getLibrary(entry);
 
       if (library != null) {

@@ -738,8 +738,8 @@ public class CompletionGenerator {
     return importListStream
         .map(list -> list.stream()
             .map(is -> {
-              if (is.getClassName().equals(finalClassName)) {
-                return is.getFullClassName();
+              if (is.getMemberName().equals(finalClassName)) {
+                return is.getFullMemberName();
               } else if (is.isStarredImport()) {
                 return is.getPackageName() + "." + finalClassName;
               }
