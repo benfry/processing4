@@ -25,10 +25,23 @@ contribs
 X tweak mode not working
 X   https://github.com/processing/processing/issues/5805
 X   https://github.com/processing/processing/pull/5909
+X updtes to Ukrainian translation
+X   https://github.com/processing/processing/pull/5944
 
 sampottinger
 X Fix JDK naming and cleanup in ant build
 X   https://github.com/processing/processing4/pull/12
+X   https://github.com/processing/processing4/issues/6
+X Migrate to JNA 5 compatiable Native.load
+X   https://github.com/processing/processing4/issues/7
+X   https://github.com/processing/processing4/pull/15
+X console font spacing is off
+X   https://github.com/processing/processing4/issues/19
+X   https://github.com/processing/processing4/pull/20
+X implement 'import static'
+X   https://github.com/processing/processing4/pull/18
+X   https://github.com/processing/processing/issues/5577
+
 
 _ selecting a sketch in the Sketch menu no longer opens its window
 _   https://github.com/processing/processing/issues/5882
