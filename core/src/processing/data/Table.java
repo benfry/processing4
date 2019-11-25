@@ -1038,7 +1038,7 @@ public class Table {
 //      Class sketchClass = sketch.getClass();
       Class<?> sketchClass = enclosingObject.getClass();
       targetField = sketchClass.getDeclaredField(fieldName);
-//      PApplet.println("found " + targetField);
+      // PApplet.println("found " + targetField);
       Class<?> targetArray = targetField.getType();
       if (!targetArray.isArray()) {
         // fieldName is not an array
@@ -1053,20 +1053,20 @@ public class Table {
     }
 
 //    Object enclosingObject = sketch;
-//    PApplet.println("enclosing obj is " + enclosingObject);
+    // PApplet.println("enclosing obj is " + enclosingObject);
     Class<?> enclosingClass = target.getEnclosingClass();
     Constructor<?> con = null;
 
     try {
       if (enclosingClass == null) {
         con = target.getDeclaredConstructor();  //new Class[] { });
-//        PApplet.println("no enclosing class");
+        // PApplet.println("no enclosing class");
       } else {
         con = target.getDeclaredConstructor(new Class[] { enclosingClass });
-//        PApplet.println("enclosed by " + enclosingClass.getName());
+        // PApplet.println("enclosed by " + enclosingClass.getName());
       }
-      if (!con.isAccessible()) {
-//        System.out.println("setting constructor to public");
+      if (!con.canAccess(null)) {
+        // System.out.println("setting constructor to public");
         con.setAccessible(true);
       }
     } catch (SecurityException e) {
@@ -1080,14 +1080,9 @@ public class Table {
     for (Field field : fields) {
       String name = field.getName();
       if (getColumnIndex(name, false) != -1) {
-//        System.out.println("found field " + name);
-        if (!field.isAccessible()) {
-//          PApplet.println("  changing field access");
-          field.setAccessible(true);
-        }
         inuse.add(field);
       } else {
-//        System.out.println("skipping field " + name);
+        // System.out.println("skipping field " + name);
       }
     }
 
@@ -1099,12 +1094,23 @@ public class Table {
           //item = target.newInstance();
           item = con.newInstance();
         } else {
-          item = con.newInstance(new Object[] { enclosingObject });
+          item = con.newInstance(enclosingObject);
         }
+
+        // Only needed once
+        if (index == 0) {
+          for (Field field : inuse) {
+            if (!field.canAccess(item)) {
+              // PApplet.println("  changing field access");
+              field.setAccessible(true);
+            }
+          }
+        }
+
         //Object item = defaultCons.newInstance(new Object[] { });
         for (Field field : inuse) {
           String name = field.getName();
-          //PApplet.println("gonna set field " + name);
+          // PApplet.println("gonna set field " + name);
 
           if (field.getType() == String.class) {
             field.set(item, row.getString(name));
@@ -1151,8 +1157,8 @@ public class Table {
 //        list.add(item);
         Array.set(outgoing, index++, item);
       }
-      if (!targetField.isAccessible()) {
-//        PApplet.println("setting target field to public");
+      if (!targetField.canAccess(enclosingObject)) {
+        // PApplet.println("setting target field to public");
         targetField.setAccessible(true);
       }
       // Set the array in the sketch
