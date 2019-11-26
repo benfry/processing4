@@ -30,6 +30,7 @@ import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -907,23 +908,14 @@ public class Toolkit {
   // A 5-minute search didn't turn up any such event in the Java API.
   // Also, should we use the Toolkit associated with the editor window?
   static private boolean checkRetina() {
-    if (Platform.isMacOS()) {
-      GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      GraphicsDevice device = env.getDefaultScreenDevice();
+    GraphicsDevice graphicsDevice = GraphicsEnvironment
+            .getLocalGraphicsEnvironment()
+            .getDefaultScreenDevice();
+    GraphicsConfiguration graphicsConfig = graphicsDevice
+            .getDefaultConfiguration();
 
-      try {
-        Field field = device.getClass().getDeclaredField("scale");
-        if (field != null) {
-          field.setAccessible(true);
-          Object scale = field.get(device);
-
-          if (scale instanceof Integer && ((Integer)scale).intValue() == 2) {
-            return true;
-          }
-        }
-      } catch (Exception ignore) { }
-    }
-    return false;
+    AffineTransform tx = graphicsConfig.getDefaultTransform();
+    return Math.round(tx.getScaleX()) == 2;
   }
 
 
