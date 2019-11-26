@@ -41,6 +41,21 @@ X   https://github.com/processing/processing4/pull/20
 X implement 'import static'
 X   https://github.com/processing/processing4/pull/18
 X   https://github.com/processing/processing/issues/5577
+X problems with windows ui scaling
+X   https://github.com/processing/processing4/issues/21
+X   https://github.com/processing/processing4/pull/30
+X   introduces regression that makes things uglier
+X Fix display density detection and use GraphicsConfiguration
+X   https://github.com/processing/processing4/issues/32
+X   https://github.com/processing/processing4/issues/35
+X Replace mac specific fullscreen option for setResizable
+X   https://github.com/processing/processing4/issues/36
+X Fixed Table's use of deprecated isAccessible
+X   https://github.com/processing/processing4/pull/33
+X   https://github.com/processing/processing4/issues/3
+X Moved tests to separate target, and defaults to dist
+X   https://github.com/processing/processing4/pull/38
+X   https://github.com/processing/processing4/issues/8
 
 
 _ selecting a sketch in the Sketch menu no longer opens its window
