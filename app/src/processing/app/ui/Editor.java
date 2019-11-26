@@ -391,18 +391,8 @@ public abstract class Editor extends JFrame implements RunnerListener {
     // Add a window listener to watch for changes to the files in the sketch
     addWindowFocusListener(new ChangeDetector(this));
 
-    // Try to enable fancy fullscreen on OSX
-    if (Platform.isMacOS()) {
-      try {
-        Class util = Class.forName("com.apple.eawt.FullScreenUtilities");
-        Class params[] = new Class[]{Window.class, Boolean.TYPE};
-        Method method = util.getMethod("setWindowCanFullScreen", params);
-        method.invoke(util, this, true);
-      } catch (Exception e) {
-        Messages.loge("Could not enable OSX fullscreen", e);
-      }
-    }
-
+    // Enable window resizing (which allows for full screen button)
+    setResizable(true);
   }
 
 
