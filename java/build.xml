@@ -124,7 +124,7 @@
     <compilecommon srcdir="src; test/processing" destdir="bin-test" classpath="classpath.test" />
   </target>
 
-  <target name="test" depends="test-compile">
+  <target name="test" depends="build, test-compile">
     <junit haltonfailure="true">
       <classpath refid="classpath.test" />
       <formatter type="brief" usefile="false" />
@@ -137,7 +137,7 @@
     </junit>
   </target>
 
-  <target name="compile" depends="test" description="Compile sources">
+  <target name="compile" description="Compile sources" depends="preproc">
     <compilecommon srcdir="src" destdir="bin" classpath="classpath.base" />
   </target>
 
