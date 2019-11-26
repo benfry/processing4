@@ -30,6 +30,9 @@
     <!-- <opt>-Djava.ext.dirs="%EXEDIR%\\java\\lib\\ext"</opt> -->
     <!-- https://github.com/processing/processing/issues/2239 -->
     <opt>-Djna.nosys=true</opt>
+    <!-- Java 9+ handles high DPI internally so OS display scaling -->
+    <!-- can cause display issues with custom rendering swing elements. -->
+    <opt>-Dsun.java2d.uiScale.enabled=false</opt>
     <!-- Because nosys is set to true, the DLL in the current working
 	 directory won't be considered. And we can't specify the user's
 	 directory here because that'll get us into encoding trouble.
