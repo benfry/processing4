@@ -354,7 +354,7 @@
 
   <target name="downloader-setup">
     <!-- make sure we're built -->
-    <subant buildpath="jre" target="dist" />
+    <subant buildpath="jre" target="dist-no-test" />
 
     <!-- define our special JRE downloader task -->
     <taskdef name="downloader"
@@ -482,7 +482,7 @@
     <antcall target="${target-platform}-run-app" />
   </target>
 
-  <target name="dist" depends="revision-check"
+  <target name="dist" depends="revision-check, test"
           description="Build Processing for distribution.">
     <input message="Enter version number:"
            addproperty="version"
@@ -524,6 +524,12 @@
 
     <!-- make sure this isn't around from an old build 140730 -->
     <delete dir="../java/examples" />
+  </target>
+
+  <target name="test" depends="build">
+    <subant buildpath="../core" target="test"/>
+    <subant buildpath="../java" target="test"/>
+    <subant buildpath="jre" target="test" />
   </target>
 
   <target name="subprojects-build">

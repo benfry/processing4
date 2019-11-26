@@ -47,13 +47,15 @@
     </junit>
   </target>
 
-  <target name="compile" depends="test">
+  <target name="compile">
     <compilecommon srcdir="src" destdir="bin" classpath="classpath.base" />
   </target>
 
-  <target name="dist" depends="compile">
+  <target name="dist-no-test" depends="compile">
     <jar basedir="bin" destfile="downloader.jar" />
   </target>
+
+  <target name="dist" depends="test, dist-no-test" />
 
   <target name="demo" depends="dist">
     <taskdef name="downloader"
