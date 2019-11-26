@@ -96,7 +96,7 @@
     <delete dir="resource-test/scratch" />
   </target>
 
-  <target name="test" depends="build, test-compile, clean-pre-test">
+  <target name="test" depends="methods-build, build, test-compile, clean-pre-test">
     <junit haltonfailure="true">
       <classpath refid="classpath.test" />
       <formatter type="brief" usefile="false" />
