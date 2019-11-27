@@ -96,7 +96,7 @@
     <delete dir="resource-test/scratch" />
   </target>
 
-  <target name="test" depends="test-compile, clean-pre-test">
+  <target name="test" depends="build, test-compile, clean-pre-test">
     <junit haltonfailure="true">
       <classpath refid="classpath.test" />
       <formatter type="brief" usefile="false" />
@@ -108,11 +108,11 @@
     </junit>
   </target>
 
-  <target name="compile" description="Compile" depends="test">
+  <target name="compile" description="Compile">
     <compilecommon srcdir="src" destdir="bin" classpath="classpath.base" />
   </target>
 
-  <target name="build" depends="compile" description="Build core library">
+  <target name="build" depends="methods-build, compile" description="Build core library">
     <jar basedir="bin" destfile="library/core.jar" />
   </target>
 
