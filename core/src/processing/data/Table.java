@@ -1065,7 +1065,7 @@ public class Table {
         con = target.getDeclaredConstructor(new Class[] { enclosingClass });
 //        PApplet.println("enclosed by " + enclosingClass.getName());
       }
-      if (!con.isAccessible()) {
+      if (!con.canAccess(null)) {
 //        System.out.println("setting constructor to public");
         con.setAccessible(true);
       }
@@ -1080,11 +1080,6 @@ public class Table {
     for (Field field : fields) {
       String name = field.getName();
       if (getColumnIndex(name, false) != -1) {
-//        System.out.println("found field " + name);
-        if (!field.isAccessible()) {
-//          PApplet.println("  changing field access");
-          field.setAccessible(true);
-        }
         inuse.add(field);
       } else {
 //        System.out.println("skipping field " + name);
@@ -1099,12 +1094,23 @@ public class Table {
           //item = target.newInstance();
           item = con.newInstance();
         } else {
-          item = con.newInstance(new Object[] { enclosingObject });
+          item = con.newInstance(enclosingObject);
         }
+
+        // Only needed once
+        if (index == 0) {
+          for (Field field : inuse) {
+            if (!field.canAccess(item)) {
+              // PApplet.println("  changing field access");
+              field.setAccessible(true);
+            }
+          }
+        }
+
         //Object item = defaultCons.newInstance(new Object[] { });
         for (Field field : inuse) {
           String name = field.getName();
-          //PApplet.println("gonna set field " + name);
+          // PApplet.println("gonna set field " + name);
 
           if (field.getType() == String.class) {
             field.set(item, row.getString(name));
@@ -1151,7 +1157,7 @@ public class Table {
 //        list.add(item);
         Array.set(outgoing, index++, item);
       }
-      if (!targetField.isAccessible()) {
+      if (!targetField.canAccess(enclosingObject)) {
 //        PApplet.println("setting target field to public");
         targetField.setAccessible(true);
       }
