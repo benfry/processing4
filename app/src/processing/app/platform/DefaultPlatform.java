@@ -54,6 +54,8 @@ import processing.app.Preferences;
 public class DefaultPlatform {
   Base base;
 
+  private final float ZOOM_DEFAULT_SIZING = 1;
+  private final int DEFAULT_DPI = 96;
 
   public void initBase(Base base) {
     this.base = base;
@@ -157,8 +159,34 @@ public class DefaultPlatform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-
-  public int getSystemDPI() {
-    return 96;
+  /**
+   * Get the zoom or display scaling requested by the operating system.
+   *
+   * <p>
+   * Get the operating system zoom setting that Processing may use to resize
+   * internal elements depending on user preferences. Note that some operating
+   * systems will perform zooming in a way that is transparent to the
+   * the applications. If that is the case, this will return 1. Otherwise,
+   * the operating system will not automatically resize UI elements and this
+   * will return a value other than 1, meaning that Processing may need to
+   * resize elements on its own depending on user preferences.
+   * </p>
+   *
+   * <p>
+   * Note that this may be distinct from the system DPI and some operating
+   * systems may report a DPI of 96 while also requesting a display zooming of
+   * 125%. However, others may not report a "display scaling" but provide a
+   * DPI of 120 when the elements should have a 125% zoom. This will use the
+   * preferred method of determining the appropriate zoom given the platform
+   * in use. Using this system display scaling percentage approach instead of
+   * returning DPI directly is preferred after JEP 263.
+   * </p>
+   *
+   * @return The zoom level where 1 means 100% (no zoom) and 125% means 25%
+   *    additional zoom.
+   */
+  public float getSystemZoom() {
+    return ZOOM_DEFAULT_SIZING;
   }
+
 }

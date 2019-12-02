@@ -411,9 +411,9 @@ public class Platform {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  static public int getSystemDPI() {
-    return inst.getSystemDPI();
+  
+  static public float getSystemZoom() {
+    return inst.getSystemZoom();
   }
+
 }

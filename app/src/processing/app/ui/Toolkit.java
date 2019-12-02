@@ -851,7 +851,7 @@ public class Toolkit {
 
   static private float parseZoom() {
     if (Preferences.getBoolean("editor.zoom.auto")) {
-      float newZoom = Platform.getSystemDPI() / 96f;
+      float newZoom = Platform.getSystemZoom();
       String percentSel = ((int) (newZoom*100)) + "%";
       Preferences.set("editor.zoom", percentSel);
       return newZoom;
