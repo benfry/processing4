@@ -56,6 +56,9 @@ X   https://github.com/processing/processing4/issues/3
 X Moved tests to separate target, and defaults to dist
 X   https://github.com/processing/processing4/pull/38
 X   https://github.com/processing/processing4/issues/8
+X update to Java 11.0.5 from 11.0.2
+X   https://github.com/processing/processing4/pull/40
+X   https://github.com/processing/processing4/issues/39
 
 
 _ selecting a sketch in the Sketch menu no longer opens its window

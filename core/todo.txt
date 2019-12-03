@@ -3,6 +3,12 @@ X check for disabling FBO code (fixes Intel HD 3000)
 X   https://github.com/processing/processing/issues/4104
 X   https://github.com/processing/processing/pull/5881
 
+contrib
+X rotateZ() is breaking in PShapeOpenGL
+X   https://github.com/processing/processing4/issues/28
+X   https://github.com/processing/processing4/pull/41
+
+
 _ make edits to core so that awt can be flagged off, and lwjgl can run
 _   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
 _ removing AWT from core
