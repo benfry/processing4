@@ -22,6 +22,7 @@
 
 package processing.app.platform;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -29,9 +30,7 @@ import java.util.Optional;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-import com.sun.jna.platform.win32.Shell32Util;
-import com.sun.jna.platform.win32.ShlObj;
-import com.sun.jna.platform.win32.GDI32;
+import com.sun.jna.platform.win32.*;
 
 import processing.app.Base;
 import processing.app.Messages;
@@ -62,6 +61,10 @@ public class WindowsPlatform extends DefaultPlatform {
     System.getProperty("user.dir").replace('/', '\\') +
     "\\" + APP_NAME.toLowerCase() + ".exe \"%1\"";
   static final String REG_DOC = APP_NAME + ".Document";
+
+  private static final float RESOLUTION_AT_NO_SCALE = 96;
+  private static final int VERTRES = 10;
+  private static final int DESKTOPVERTRES = 117;
 
   private Optional<Float> cachedDisplayScaling;
 
@@ -642,8 +645,19 @@ public class WindowsPlatform extends DefaultPlatform {
   }
 
   private float calculateSystemZoom() {
-    // TODO
-    return 1;
+    WinDef.HDC hdc = GDI32.INSTANCE.CreateCompatibleDC(null);
+
+    if (hdc == null) {
+      float resolution = Toolkit.getDefaultToolkit().getScreenResolution();
+      return resolution / RESOLUTION_AT_NO_SCALE;
+    }
+
+    float vertualResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, VERTRES);
+    float logicalResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, DESKTOPVERTRES);
+
+    GDI32.INSTANCE.DeleteDC(hdc);
+
+    return logicalResolution / vertualResolution;
   }
 
 }
