@@ -1765,7 +1765,7 @@ public class Base {
           String path = e.getActionCommand();
           if (new File(path).exists()) {
             boolean replace = replaceExisting;
-            if ((e.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+            if ((e.getModifiers() & ActionEvent.SHIFT_DOWN_MASK) != 0) {
               replace = !replace;
             }
 //            if (replace) {

@@ -1035,10 +1035,10 @@ public class PSurfaceJOGL implements PSurface {
                                   int peAction) {
     int modifiers = nativeEvent.getModifiers();
     int peModifiers = modifiers &
-                      (InputEvent.SHIFT_MASK |
-                       InputEvent.CTRL_MASK |
-                       InputEvent.META_MASK |
-                       InputEvent.ALT_MASK);
+                      (InputEvent.SHIFT_DOWN_MASK |
+                       InputEvent.CTRL_DOWN_MASK |
+                       InputEvent.META_DOWN_MASK |
+                       InputEvent.ALT_DOWN_MASK);
 
     int peButton = 0;
     switch (nativeEvent.getButton()) {
@@ -1099,10 +1099,10 @@ public class PSurfaceJOGL implements PSurface {
   protected void nativeKeyEvent(com.jogamp.newt.event.KeyEvent nativeEvent,
                                 int peAction) {
     int peModifiers = nativeEvent.getModifiers() &
-                      (InputEvent.SHIFT_MASK |
-                       InputEvent.CTRL_MASK |
-                       InputEvent.META_MASK |
-                       InputEvent.ALT_MASK);
+                      (InputEvent.SHIFT_DOWN_MASK |
+                       InputEvent.CTRL_DOWN_MASK |
+                       InputEvent.META_DOWN_MASK |
+                       InputEvent.ALT_DOWN_MASK);
 
     short code = nativeEvent.getKeyCode();
     char keyChar;

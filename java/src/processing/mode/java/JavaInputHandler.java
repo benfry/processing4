@@ -42,7 +42,7 @@ import processing.app.ui.Editor;
 public class JavaInputHandler extends PdeInputHandler {
 
 //  /** ctrl-alt on windows and linux, cmd-alt on mac os x */
-//  static final int CTRL_ALT = ActionEvent.ALT_MASK |
+//  static final int CTRL_ALT = ActionEvent.ALT_DOWN_MASK |
 //    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
 
 
@@ -67,7 +67,7 @@ public class JavaInputHandler extends PdeInputHandler {
     JEditTextArea textarea = editor.getTextArea();
 
     if (event.isMetaDown()) {
-    //if ((event.getModifiers() & InputEvent.META_MASK) != 0) {
+    //if ((event.getModifiers() & InputEvent.META_DOWN_MASK) != 0) {
       //event.consume();  // does nothing
       return false;
     }
@@ -78,7 +78,7 @@ public class JavaInputHandler extends PdeInputHandler {
     }
 
     if ((code == KeyEvent.VK_UP) && event.isControlDown()) {
-        //((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
+        //((event.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0)) {
       // back up to the last empty line
       char contents[] = textarea.getText().toCharArray();
       //int origIndex = textarea.getCaretPosition() - 1;
@@ -105,7 +105,7 @@ public class JavaInputHandler extends PdeInputHandler {
       // if the first char, index will be -2
       if (index < 0) index = 0;
 
-      //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      //if ((event.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0) {
       if (event.isShiftDown()) {
         textarea.setSelectionStart(caretIndex);
         textarea.setSelectionEnd(index);
@@ -116,7 +116,7 @@ public class JavaInputHandler extends PdeInputHandler {
 //      return true;
 
     } else if ((code == KeyEvent.VK_DOWN) && event.isControlDown()) {
-               //((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
+               //((event.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0)) {
       char contents[] = textarea.getText().toCharArray();
       int caretIndex = textarea.getCaretPosition();
 
@@ -138,7 +138,7 @@ public class JavaInputHandler extends PdeInputHandler {
         index++;
       }
 
-      //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      //if ((event.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0) {
       if (event.isShiftDown()) {
         textarea.setSelectionStart(caretIndex);
         textarea.setSelectionEnd(index);
@@ -149,7 +149,7 @@ public class JavaInputHandler extends PdeInputHandler {
 //      return true;
 
     } else if (c == 9) {
-      //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
+      //if ((event.getModifiers() & InputEvent.SHIFT_DOWN_MASK) != 0) {
       if (event.isShiftDown()) {
         // if shift is down, the user always expects an outdent
         // http://code.google.com/p/processing/issues/detail?id=458
@@ -321,7 +321,7 @@ public class JavaInputHandler extends PdeInputHandler {
   public boolean handleTyped(KeyEvent event) {
     char c = event.getKeyChar();
 
-    //if ((event.getModifiers() & InputEvent.CTRL_MASK) != 0) {
+    //if ((event.getModifiers() & InputEvent.CTRL_DOWN_MASK) != 0) {
     if (event.isControlDown()) {  // TODO true on typed? [fry 191007]
       // on linux, ctrl-comma (prefs) being passed through to the editor
       if (c == KeyEvent.VK_COMMA) {

@@ -161,8 +161,8 @@ public class DefaultInputHandler extends InputHandler
 
           // don't get command-s or other menu key equivs on mac
           // unless it's something that's specifically bound (cmd-left or right)
-          //if ((modifiers & KeyEvent.META_MASK) != 0) return;
-          if ((modifiers & InputEvent.META_MASK) != 0) {
+          //if ((modifiers & KeyEvent.META_DOWN_MASK) != 0) return;
+          if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
             KeyStroke keyStroke = KeyStroke.getKeyStroke(keyCode, modifiers);
             if (currentBindings.get(keyStroke) == null) {
               return;
@@ -177,7 +177,7 @@ public class DefaultInputHandler extends InputHandler
                                    KeyEvent.VK_META);
                 */
 
-                if((modifiers & ~InputEvent.SHIFT_MASK) != 0
+                if((modifiers & ~InputEvent.SHIFT_DOWN_MASK) != 0
                         || evt.isActionKey()
                         || keyCode == KeyEvent.VK_BACK_SPACE
                         || keyCode == KeyEvent.VK_DELETE
@@ -242,14 +242,14 @@ public class DefaultInputHandler extends InputHandler
                 // this is the apple/cmd key on macosx.. so menu commands
                 // were being passed through as legit keys.. added this line
                 // in an attempt to prevent.
-                if ((modifiers & InputEvent.META_MASK) != 0) return;
+                if ((modifiers & InputEvent.META_DOWN_MASK) != 0) return;
 
                 // Prevent CTRL-/ from going through as a typed '/' character
                 // http://code.google.com/p/processing/issues/detail?id=596
-                if ((modifiers & InputEvent.CTRL_MASK) != 0 && c == '/') return;
+                if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0 && c == '/') return;
 
                 if (c != KeyEvent.CHAR_UNDEFINED) // &&
-                  //                (modifiers & KeyEvent.ALT_MASK) == 0)
+                  //                (modifiers & KeyEvent.ALT_DOWN_MASK) == 0)
                 {
                   if(c >= 0x20 && c != 0x7f)
                         {
@@ -319,16 +319,16 @@ public class DefaultInputHandler extends InputHandler
                                         .charAt(i)))
                                 {
                                 case 'A':
-                                        modifiers |= InputEvent.ALT_MASK;
+                                        modifiers |= InputEvent.ALT_DOWN_MASK;
                                         break;
                                 case 'C':
-                                        modifiers |= InputEvent.CTRL_MASK;
+                                        modifiers |= InputEvent.CTRL_DOWN_MASK;
                                         break;
                                 case 'M':
-                                        modifiers |= InputEvent.META_MASK;
+                                        modifiers |= InputEvent.META_DOWN_MASK;
                                         break;
                                 case 'S':
-                                        modifiers |= InputEvent.SHIFT_MASK;
+                                        modifiers |= InputEvent.SHIFT_DOWN_MASK;
                                         break;
                                 }
                         }

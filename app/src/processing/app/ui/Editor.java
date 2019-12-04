@@ -914,7 +914,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     menu.add(item);
 
     item = new JMenuItem("Move Selected Lines Up");
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.ALT_MASK));
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.ALT_DOWN_MASK));
     item.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           handleMoveLines(true);
@@ -923,7 +923,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     menu.add(item);
 
     item = new JMenuItem("Move Selected Lines Down");
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.ALT_MASK));
+    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.ALT_DOWN_MASK));
     item.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           handleMoveLines(false);
