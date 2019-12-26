@@ -652,12 +652,12 @@ public class WindowsPlatform extends DefaultPlatform {
       return resolution / RESOLUTION_AT_NO_SCALE;
     }
 
-    float vertualResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, VERTRES);
+    float virtualResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, VERTRES);
     float logicalResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, DESKTOPVERTRES);
 
     GDI32.INSTANCE.DeleteDC(hdc);
 
-    return logicalResolution / vertualResolution;
+    return logicalResolution / virtualResolution;
   }
 
 }
