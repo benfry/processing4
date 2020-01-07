@@ -182,8 +182,8 @@ public class DefaultPlatform {
    * returning DPI directly is preferred after JEP 263.
    * </p>
    *
-   * @return The zoom level where 1 means 100% (no zoom) and 125% means 25%
-   *    additional zoom.
+   * @return The zoom level where 1.0 means 100% (no zoom) and 1.25 means 
+   *    125% (25% additional zoom).
    */
   public float getSystemZoom() {
     return ZOOM_DEFAULT_SIZING;
