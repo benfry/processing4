@@ -23,10 +23,6 @@ _   https://github.com/processing/processing/pull/5796/files
 _ possible fix for precision issues with PDF
 _   https://github.com/processing/processing/issues/5801#issuecomment-466632459
 
-_ simple rotateZ() fix
-_   https://github.com/processing/processing/pull/5821
-_   https://github.com/processing/processing/issues/5770
-
 
 high-ish
 _ Update isAccessible() in Table to use JDK 11 reflection methods
