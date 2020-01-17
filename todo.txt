@@ -4,7 +4,10 @@ X   https://github.com/processing/processing/issues/5794
 X fix potential highlighting issue that wasn't selecting portions of text
 X update AppBundler to use newer SDK, recompile
 X edit build.xml files and appbundler to preserve more attributes
+X remove jdk.hash from build.xml
+X   need to make sure the downloader isn't relying on it
 
+cross-ported from 3.5.4
 X don't remove entries from Recent menu on Save As
 X   https://github.com/processing/processing/issues/5902
 X when a conflicting library (bad link w/ core) is found, need to report it
@@ -20,7 +23,7 @@ o   need to make classpath code be less promiscuous
 o   the order of adding libraries to classpath should be opposite
 o     the important local libraries should be first in cp, user contrib later
 
-contrib manager
+contrib manager 3.5.4
 X contrib listing names should not be case sensitive
 X   libs in all caps appeared above those in lowercase
 X ignore library subfolders
@@ -39,8 +42,6 @@ X use a new pref for the sketchbook folder location for 4.x
 X finish porting ThinkDifferent to use Desktop APIs
 X   http://openjdk.java.net/jeps/272
 X   also roll it into MacPlatform, since less platform-specific code needed
-_ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
-_   https://github.com/processing/processing4/issues/9
 
 major updates for JDK 11 et al
 X https://github.com/processing/processing4/pull/1
@@ -59,11 +60,7 @@ X Making the ThinkDifferent classes be JDK version-independent
 X   https://github.com/processing/processing/pull/5747
 X Parsing of nested generics
 X   https://github.com/processing/processing/issues/4514
-
-_ remove jdk.hash from build.xml
-_   need to make sure the downloader isn't relying on it
-_ clean up naming for build/macosx/jdk-0u1.tgz and build/macosx/jdk-11.0.1+13/
-_ fix "WARNING: Illegal reflective access by processing.app.ui.Toolkit to field sun.awt.CGraphicsDevice.scale" warning on startup
+X clean up naming for build/macosx/jdk-0u1.tgz and build/macosx/jdk-11.0.1+13/
 
 contribs
 X tweak mode not working
@@ -92,6 +89,8 @@ X   introduces regression that makes things uglier
 X Fix display density detection and use GraphicsConfiguration
 X   https://github.com/processing/processing4/issues/32
 X   https://github.com/processing/processing4/issues/35
+X   https://github.com/processing/processing4/pull/34
+X   removes "WARNING: Illegal reflective access by processing.app.ui.Toolkit to field sun.awt.CGraphicsDevice.scale" warning on startup
 X Replace mac specific fullscreen option for setResizable
 X   https://github.com/processing/processing4/issues/36
 X Fixed Table's use of deprecated isAccessible
@@ -103,6 +102,25 @@ X   https://github.com/processing/processing4/issues/8
 X update to Java 11.0.5 from 11.0.2
 X   https://github.com/processing/processing4/pull/40
 X   https://github.com/processing/processing4/issues/39
+
+cleaning
+X Issue with https and downloading the binaries, +Checksums?
+X   https://github.com/processing/processing-docs/issues/766
+X   was just an issue with https vs http
+
+
+before release
+_ Welcome screen or not?
+_   link to a wiki page for 4.x
+
+
+open issues
+_ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
+_   https://github.com/processing/processing4/issues/9
+_ further streamline the downloader
+_   https://github.com/processing/processing4/issues/47
+_ i18n support for Modes
+_   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 
 
 _ selecting a sketch in the Sketch menu no longer opens its window
@@ -117,8 +135,6 @@ _ rename-variable menu allows Java identifiers
 _   https://github.com/processing/processing/pull/5906
 
 from Casey
-_ Issue with https and downloading the binaries, +Checksums?
-_   https://github.com/processing/processing-docs/issues/766
 _ Math for BLEND incorrect in the reference?
 _   https://github.com/processing/processing-docs/issues/762
 _ .setAngle() for PVector?
@@ -132,9 +148,6 @@ _ "Could not get the settings folder" isn't very helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
 _   then tell the user which folder to fix
-
-_ i18n support for Modes
-_   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 
 _ show the recommended sw version on the download page
 _ just skip the welcome screen on Windows hidpi dipslays?
