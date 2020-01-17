@@ -53,7 +53,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private static final String VERSION_STR = "3.0.0";
   private static final String SIZE_METHOD_NAME = "size";
   private static final String FULLSCREEN_METHOD_NAME = "fullScreen";
-  private final int tabSize;
 
   private String sketchName;
   private boolean isTesting;
@@ -100,7 +99,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     rewriter = new TokenStreamRewriter(tokens);
     sketchName = newSketchName;
-    tabSize = newTabSize;
     destinationPackageName = newDestinationPackageName;
 
     pdeParseTreeErrorListenerMaybe = Optional.empty();

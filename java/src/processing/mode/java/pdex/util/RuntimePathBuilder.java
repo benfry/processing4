@@ -299,7 +299,7 @@ public class RuntimePathBuilder {
    * @param caches The caches to invalidate so that, when their value is requested again, the value
    *    is generated again.
    */
-  private void invalidateAll(List<CachedRuntimePathFactory> caches) {
+  static private void invalidateAll(List<CachedRuntimePathFactory> caches) {
     for (CachedRuntimePathFactory cache : caches) {
       cache.invalidateCache();
     }
