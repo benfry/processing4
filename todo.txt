@@ -14,6 +14,18 @@ X clean up a lot of bad temp file handling in the contrib manager
 X   https://github.com/processing/processing/issues/5845
 X don't remove entries from Recent menu on Save As
 X   https://github.com/processing/processing/issues/5902
+X when a conflicting library (bad link w/ core) is found, need to report it
+o   altho prolly only when it's actually different (md5hash it?)
+o   this seems to be causing a lot of trouble with recent releases
+o   (opengl changes and whatnot)
+X jar files like the bad aiexport plugin will cause serious problems
+X   https://github.com/processing/processing/issues/95
+X   need to ignore processing.core classes showing up in other jar files
+X   tougher than it looks, because it all depends on what java wants to use
+X     i.e. even if not specified, the stuff will be in the classpath
+o   need to make classpath code be less promiscuous
+o   the order of adding libraries to classpath should be opposite
+o     the important local libraries should be first in cp, user contrib later
 
 after the JDK 11 update
 X use a new pref for the sketchbook folder location for 4.x
@@ -737,18 +749,6 @@ _     the /Library one is empty (by default), maybe skip it?
 _ classpath conflicts also problem with PDE itself
 _   catch antlr conflicts, and put up an error message
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1225 (no Google issue)
-_ when a conflicting library (bad link w/ core) is found, need to report it
-_   altho prolly only when it's actually different (md5hash it?)
-_   this seems to be causing a lot of trouble with recent releases
-_   (opengl changes and whatnot)
-_ jar files like the bad aiexport plugin will cause serious problems
-_   https://github.com/processing/processing/issues/95
-_   need to ignore processing.core classes showing up in other jar files
-_   tougher than it looks, because it all depends on what java wants to use
-_     i.e. even if not specified, the stuff will be in the classpath
-_   need to make classpath code be less promiscuous
-_   the order of adding libraries to classpath should be opposite
-_     the important local libraries should be first in cp, user contrib later
 _ make sure there aren't library jar files named the same thing
 _   i.e. if one library has db.jar, then that's gonna kill another db.jar
 _   when the files are copied over
