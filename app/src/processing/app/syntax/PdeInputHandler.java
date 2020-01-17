@@ -25,7 +25,6 @@
 
 package processing.app.syntax;
 
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
 import processing.app.Platform;
@@ -216,8 +215,7 @@ public class PdeInputHandler extends DefaultInputHandler {
     // Don't do this on OS X, because alt (the option key) is used for
     // non-ASCII chars, and there are no menu mnemonics to speak of
     if (!Platform.isMacOS()) {
-      if ((event.getModifiers() & InputEvent.ALT_MASK) != 0 &&
-          (event.getModifiers() & InputEvent.CTRL_MASK) == 0 &&
+      if (event.isAltDown() && !event.isControlDown() &&
           event.getKeyChar() != KeyEvent.VK_UNDEFINED) {
         // This is probably a menu mnemonic, don't pass it through.
         // If it's an alt-NNNN sequence, those only work on the keypad
@@ -232,8 +230,7 @@ public class PdeInputHandler extends DefaultInputHandler {
   public void keyPressed(KeyEvent event) {
     // don't pass the ctrl-, through to the editor
     // https://github.com/processing/processing/issues/3074
-    if ((event.getModifiers() & InputEvent.CTRL_MASK) != 0 &&
-        event.getKeyChar() == ',') {
+    if (event.isControlDown() && event.getKeyChar() == ',') {
       return;
     }
     // don't pass menu mnemonics (alt-f for file, etc) to the editor
