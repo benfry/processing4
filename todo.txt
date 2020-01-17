@@ -93,9 +93,6 @@ X   https://github.com/processing/processing4/pull/34
 X   removes "WARNING: Illegal reflective access by processing.app.ui.Toolkit to field sun.awt.CGraphicsDevice.scale" warning on startup
 X Replace mac specific fullscreen option for setResizable
 X   https://github.com/processing/processing4/issues/36
-X Fixed Table's use of deprecated isAccessible
-X   https://github.com/processing/processing4/pull/33
-X   https://github.com/processing/processing4/issues/3
 X Moved tests to separate target, and defaults to dist
 X   https://github.com/processing/processing4/pull/38
 X   https://github.com/processing/processing4/issues/8
