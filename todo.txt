@@ -108,10 +108,13 @@ X Issue with https and downloading the binaries, +Checksums?
 X   https://github.com/processing/processing-docs/issues/766
 X   was just an issue with https vs http
 
+X update the welcome screen and links
+X   link to a wiki page for 4.x
+_   create wiki page for changes in 4.x
 
-before release
+before final release
 _ Welcome screen or not?
-_   link to a wiki page for 4.x
+_ change help menu links to go to newer FAQ and the rest
 
 
 open issues
