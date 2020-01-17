@@ -55,7 +55,11 @@ import java.awt.print.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -1060,25 +1064,34 @@ public abstract class Editor extends JFrame implements RunnerListener {
       sketchMenu.addSeparator();
     }
 
-//    final Editor editorName = this;
-
     sketchMenu.addMenuListener(new MenuListener() {
       // Menu Listener that populates the menu only when the menu is opened
-      List<JMenuItem> menuList = new ArrayList<>();
+      Map<Sketch, JMenuItem> itemMap = new HashMap<>();
 
       @Override
       public void menuSelected(MenuEvent event) {
-        JMenuItem item;
+        Set<JMenuItem> unseen = new HashSet(itemMap.values());
+
         for (final Editor editor : base.getEditors()) {
-          //if (Editor.this.getSketch().getName().trim().contains(editor2.getSketch().getName().trim()))
-          if (getSketch().getMainFilePath().equals(editor.getSketch().getMainFilePath())) {
-            item = new JCheckBoxMenuItem(editor.getSketch().getName());
-            item.setSelected(true);
-          } else {
-            item = new JMenuItem(editor.getSketch().getName());
+          Sketch sketch = editor.getSketch();
+
+          JMenuItem item = itemMap.get(sketch);
+          if (item != null) {
+            unseen.remove(item);
+          } else {  // it's a new item
+            item = new JCheckBoxMenuItem();
+            sketchMenu.add(item);
+            itemMap.put(sketch, item);
           }
-          item.setText(editor.getSketch().getName() +
-                       " (" + editor.getMode().getTitle() + ")");
+          // set selected if the current sketch, deselect if not
+          item.setSelected(sketch.equals(getSketch()));
+
+          // name may have changed while Sketch object stayed the same
+          String name = sketch.getName();
+          if (!editor.getMode().equals(base.getDefaultMode())) {
+            name += " (" + editor.getMode().getTitle() + ")";
+          }
+          item.setText(name);
 
           // Action listener to bring the appropriate sketch in front
           item.addActionListener(new ActionListener() {
@@ -1089,24 +1102,34 @@ public abstract class Editor extends JFrame implements RunnerListener {
               editor.toFront();
             }
           });
-          sketchMenu.add(item);
-          menuList.add(item);
-          Toolkit.setMenuMnemsInside(sketchMenu);
-        }
-      }
 
-      @Override
-      public void menuDeselected(MenuEvent event) {
-        for (JMenuItem item : menuList) {
+          // Disabling for now, might be problematic [fry 200117]
+          //Toolkit.setMenuMnemsInside(sketchMenu);
+        }
+
+        for (JMenuItem item : unseen) {
           sketchMenu.remove(item);
+          Sketch s = findSketch(item);
+          if (s != null) {
+            itemMap.remove(s);
+          }
         }
-        menuList.clear();
+      }
+
+      Sketch findSketch(JMenuItem item) {
+        for (Map.Entry<Sketch, JMenuItem> e : itemMap.entrySet()) {
+          if (item == e.getValue()) {
+            return e.getKey();
+          }
+        }
+        return null;
       }
 
       @Override
-      public void menuCanceled(MenuEvent event) {
-        menuDeselected(event);
-      }
+      public void menuDeselected(MenuEvent event) { }
+
+      @Override
+      public void menuCanceled(MenuEvent event) { }
     });
 
     return sketchMenu;

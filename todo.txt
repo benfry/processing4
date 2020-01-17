@@ -6,6 +6,12 @@ X update AppBundler to use newer SDK, recompile
 X edit build.xml files and appbundler to preserve more attributes
 X remove jdk.hash from build.xml
 X   need to make sure the downloader isn't relying on it
+X add Sketch.equals() to use main file path
+X update the welcome screen and links
+X   link to a wiki page for 4.x
+X   create wiki page for changes in 4.x
+X selecting a sketch in the Sketch menu no longer opens its window
+X   https://github.com/processing/processing/issues/5882
 
 cross-ported from 3.5.4
 X don't remove entries from Recent menu on Save As
@@ -105,10 +111,6 @@ X Issue with https and downloading the binaries, +Checksums?
 X   https://github.com/processing/processing-docs/issues/766
 X   was just an issue with https vs http
 
-X update the welcome screen and links
-X   link to a wiki page for 4.x
-_   create wiki page for changes in 4.x
-
 before final release
 _ Welcome screen or not?
 _ change help menu links to go to newer FAQ and the rest
@@ -122,9 +124,6 @@ _   https://github.com/processing/processing4/issues/47
 _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 
-
-_ selecting a sketch in the Sketch menu no longer opens its window
-_   https://github.com/processing/processing/issues/5882
 
 _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893

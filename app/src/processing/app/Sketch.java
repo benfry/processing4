@@ -1829,4 +1829,13 @@ public class Sketch {
   public Mode getMode() {
     return mode;
   }
+
+
+  @Override
+  public boolean equals(Object another) {
+    if (another instanceof Sketch) {
+      return getMainFilePath().equals(((Sketch) another).getMainFilePath());
+    }
+    return false;
+  }
 }
