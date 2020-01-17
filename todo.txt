@@ -44,7 +44,22 @@ _   https://github.com/processing/processing4/issues/9
 
 major updates for JDK 11 et al
 X https://github.com/processing/processing4/pull/1
-_   go through the comment w/ the various bugs that can be closed
+X   go through the comment w/ the various bugs that can be closed
+X   https://github.com/processing/processing/issues/5750
+X   https://github.com/processing/processing/pull/5753
+X   https://github.com/processing/processing/issues/4415
+X update grammar for ANTLR
+X   https://github.com/processing/processing/issues/3054
+X incorporate new preproc
+o   https://github.com/fjenett/processing-preprocessor-antlr4
+X   https://github.com/processing/processing/issues/3055
+X support for Travis CI
+X   https://github.com/processing/processing/issues/2747
+X Making the ThinkDifferent classes be JDK version-independent
+X   https://github.com/processing/processing/pull/5747
+X Parsing of nested generics
+X   https://github.com/processing/processing/issues/4514
+
 _ remove jdk.hash from build.xml
 _   need to make sure the downloader isn't relying on it
 _ clean up naming for build/macosx/jdk-0u1.tgz and build/macosx/jdk-11.0.1+13/
@@ -615,11 +630,6 @@ PDE / Compiler & Preprocessor
 medium (bugs/features)
 _ preprocessor throws error when calling color() on a PGraphics
 _   https://github.com/processing/processing/issues/3762
-_ incorporate new preproc
-_   https://github.com/fjenett/processing-preprocessor-antlr4
-_   https://github.com/processing/processing/issues/3055
-_ update grammar for ANTLR
-_   https://github.com/processing/processing/issues/3054
 _ omitting a semicolon shows the error on the line after it
 _ npe if library is removed before compile
 _   always check library folders to make sure they're still valid

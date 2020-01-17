@@ -8,6 +8,10 @@ X rotateZ() is breaking in PShapeOpenGL
 X   https://github.com/processing/processing4/issues/28
 X   https://github.com/processing/processing4/pull/41
 
+the big merge
+X Fix Java 11 incompatibilities inside PSurfaceFX
+X   https://github.com/processing/processing/issues/5286
+
 
 _ make edits to core so that awt can be flagged off, and lwjgl can run
 _   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
@@ -471,8 +475,6 @@ FX2D / Issues
 
 _ many shift- keys not working properly in FX2D (added a test sketch)
 _   https://github.com/processing/processing/issues/5317
-_ Fix Java 11 incompatibilities inside PSurfaceFX
-_   https://github.com/processing/processing/issues/5286
 _ Hitting ESC in FX2D app on macOS throws IllegalStateException
 _   https://github.com/processing/processing/issues/5249
 _ wrong window size with fullScreen()
