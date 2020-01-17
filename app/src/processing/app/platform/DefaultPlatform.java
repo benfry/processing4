@@ -55,7 +55,6 @@ public class DefaultPlatform {
   Base base;
 
   private final float ZOOM_DEFAULT_SIZING = 1;
-  private final int DEFAULT_DPI = 96;
 
   public void initBase(Base base) {
     this.base = base;
@@ -182,7 +181,7 @@ public class DefaultPlatform {
    * returning DPI directly is preferred after JEP 263.
    * </p>
    *
-   * @return The zoom level where 1.0 means 100% (no zoom) and 1.25 means 
+   * @return The zoom level where 1.0 means 100% (no zoom) and 1.25 means
    *    125% (25% additional zoom).
    */
   public float getSystemZoom() {
