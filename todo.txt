@@ -74,6 +74,9 @@ X   https://github.com/processing/processing/issues/5805
 X   https://github.com/processing/processing/pull/5909
 X updtes to Ukrainian translation
 X   https://github.com/processing/processing/pull/5944
+X rename-variable menu allows Java identifiers
+X   https://github.com/processing/processing/issues/5828
+X   https://github.com/processing/processing/pull/5906
 
 sampottinger
 X Fix JDK naming and cleanup in ant build
@@ -129,9 +132,6 @@ _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
 
 
-quick fixes
-_ rename-variable menu allows Java identifiers
-_   https://github.com/processing/processing/pull/5906
 
 from Casey
 _ Math for BLEND incorrect in the reference?
