@@ -245,7 +245,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       // Using 'fm' here because it's relative to the editor text size,
       // not the numbers in the gutter
       Utilities.drawTabbedText(new Segment(txt, 0, text.length()),
-                               tx, textBaseline, gfx, this, 0);
+                               (float) tx, (float) textBaseline,
+                               (Graphics2D) gfx, this, 0);
     }
   }
 
