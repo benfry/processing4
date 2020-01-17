@@ -2,6 +2,7 @@ package processing.app;
 
 import java.io.*;
 import java.util.*;
+import java.util.zip.ZipFile;
 
 import processing.app.contrib.*;
 import processing.core.*;
@@ -478,6 +479,23 @@ public class Library extends LocalContribution {
   };
 
 
+  static public String findCollision(File folder) {
+    File[] jars = PApplet.listFiles(folder, "recursive", "extension=jar");
+    for (File file : jars) {
+      try {
+        ZipFile zf = new ZipFile(file);
+        if (zf.getEntry("processing/core/PApplet.class") != null) {
+          return "processing.core";
+        }
+        if (zf.getEntry("processing/app/Base.class") != null) {
+          return "processing.app";
+        }
+      } catch (IOException e) { }
+    }
+    return null;
+  }
+
+
   static public List<File> discover(File folder) {
     List<File> libraries = new ArrayList<>();
     String[] folderNames = folder.list(junkFolderFilter);
@@ -488,8 +506,9 @@ public class Library extends LocalContribution {
       // replaced hella slow bubble sort with this feller for 0093
       Arrays.sort(folderNames, String.CASE_INSENSITIVE_ORDER);
 
-      // TODO some weirdness because ContributionType.LIBRARY.isCandidate()
-      // handles some, but not all, of this [fry 200116]
+      // TODO a little odd because ContributionType.LIBRARY.isCandidate()
+      // handles some, but not all, of this; and the rules of selection
+      // should probably be consolidated in a sensible way [fry 200116]
       for (String potentialName : folderNames) {
         File baseFolder = new File(folder, potentialName);
         File libraryFolder = new File(baseFolder, "library");
@@ -498,16 +517,35 @@ public class Library extends LocalContribution {
         // inside the 'library' subfolder of the sketch
         if (libraryJar.exists()) {
           String sanityCheck = Sketch.sanitizeName(potentialName);
-          if (sanityCheck.equals(potentialName)) {
-            libraries.add(baseFolder);
-
-          } else {
+          if (!sanityCheck.equals(potentialName)) {
             final String mess =
               "The library \"" + potentialName + "\" cannot be used.\n" +
               "Library names must contain only basic letters and numbers.\n" +
               "(ASCII only and no spaces, and it cannot start with a number)";
             Messages.showMessage("Ignoring bad library name", mess);
-            continue;
+
+          } else {
+            String pkg = findCollision(libraryFolder);
+            if (pkg != null) {
+              final String mess =
+                "The library \"" + potentialName + "\" cannot be used\n" +
+                "because it contains the " + pkg + " libraries.\n" +
+                "Please contact the library author for an update.";
+              Messages.showMessage("Ignoring bad library", mess);
+
+              // Move the folder out of the way
+              File badFolder = new File(baseFolder.getParentFile(), "disabled");
+              if (!badFolder.exists()) {
+                badFolder.mkdirs();
+              }
+              File hideFolder = new File(badFolder, baseFolder.getName());
+              System.out.println("moving " + baseFolder);
+              System.out.println("to " + hideFolder);
+              baseFolder.renameTo(hideFolder);
+
+            } else {
+              libraries.add(baseFolder);
+            }
           }
         }
       }
