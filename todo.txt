@@ -11,6 +11,9 @@ X don't unzip __MACOSX files with contribs
 X don't do library subfolders
 X show error when .properties file is missing from contribs
 X clean up a lot of bad temp file handling in the contrib manager
+X   https://github.com/processing/processing/issues/5845
+X don't remove entries from Recent menu on Save As
+X   https://github.com/processing/processing/issues/5902
 
 after the JDK 11 update
 X use a new pref for the sketchbook folder location for 4.x
