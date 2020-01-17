@@ -372,7 +372,6 @@
                 platform="${target-platform}${jdk.data.model}"
                 update="${jdk.update}"
                 build="${jdk.build}"
-                hash="${jdk.hash}"
                 component="JDK"
                 flavor="${jdk.downloader}"
                 path="${jdk.tgz.path}" />

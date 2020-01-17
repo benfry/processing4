@@ -40,8 +40,9 @@ public abstract class DownloadUrlGenerator {
    * @param flavor The flavor like "macosx-x64.dmg".
    * @param hash The hash like "d54c1d3a095b4ff2b6607d096fa80163".
    */
-  public abstract String buildUrl(String platform, String component, int train, int version,
-      int update, int build, String flavor, String hash);
+  public abstract String buildUrl(String platform, String component,
+                                  int train, int version, int update,
+                                  int build, String flavor);
 
   /**
    * Get the cookie that should be used in downloading the target component.
@@ -64,10 +65,10 @@ public abstract class DownloadUrlGenerator {
    * @param update The update (like 13).
    * @param build The build number (like 133).
    * @param flavor The flavor like "macosx-x64.dmg".
-   * @param hash The hash like "d54c1d3a095b4ff2b6607d096fa80163".
    */
-  public String getLocalFilename(String downloadPlatform, String component, int train, int version,
-      int update, int build, String flavor, String hash) {
+  public String getLocalFilename(String downloadPlatform, String component,
+                                 int train, int version, int update,
+                                 int build, String flavor) {
 
     String baseFilename = component.toLowerCase();
 

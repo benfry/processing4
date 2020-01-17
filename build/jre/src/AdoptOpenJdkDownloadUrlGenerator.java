@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2019 The Processing Foundation
+  Copyright (c) 2019-20 The Processing Foundation
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -23,12 +23,14 @@
  * Utility to generate download URLs from AdoptOpenJDK.
  */
 public class AdoptOpenJdkDownloadUrlGenerator extends DownloadUrlGenerator {
+  static private final String BASE_URL =
+    "https://github.com/AdoptOpenJDK/openjdk%d-binaries/releases/download/jdk-%d.%d.%d%%2B%d/OpenJDK%dU-%s_%d.%d.%d_%d.%s";
 
-  private static final String BASE_URL = "https://github.com/AdoptOpenJDK/openjdk%d-binaries/releases/download/jdk-%d.%d.%d%%2B%d/OpenJDK%dU-%s_%d.%d.%d_%d.%s";
 
   @Override
-  public String buildUrl(String platform, String component, int train, int version, int update,
-      int build, String flavor, String hash) {
+  public String buildUrl(String platform, String component,
+                         int train, int version, int update,
+                         int build, String flavor) {
 
     if (!component.equalsIgnoreCase("jdk")) {
       throw new RuntimeException("Can only generate JDK download URLs for AdoptOpenJDK.");
@@ -53,6 +55,7 @@ public class AdoptOpenJdkDownloadUrlGenerator extends DownloadUrlGenerator {
     );
   }
 
+
   /**
    * Build a the filename (the "flavor") that is expected on AdoptOpenJDK.
    *
@@ -71,6 +74,7 @@ public class AdoptOpenJdkDownloadUrlGenerator extends DownloadUrlGenerator {
       default: throw new RuntimeException("Unknown platform: " + downloadPlatform);
     }
   }
+
 
   /**
    * Determine the download file extension.

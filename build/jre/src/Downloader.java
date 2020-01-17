@@ -33,20 +33,14 @@ import org.apache.tools.ant.Task;
 public class Downloader extends Task {
   private static final boolean PRINT_LOGGING = true;
 
-  private boolean openJdk; // If using openJDK.
   private String platform; // macos
   private int train;  // Java 11 (was 1 through Java 8)
   private int version;  // 0 (was 8 prior to Java 9)
-  private int update;   // Update 131
-  private int build;    // Build 11
-  // https://gist.github.com/P7h/9741922
-  // http://stackoverflow.com/q/10268583
-  private String hash;  // d54c1d3a095b4ff2b6607d096fa80163
+  private int update;  // Update 131
+  private int build;  // Build 11
 
-  private String component;  // "JRE", "JDK", or "JFX"
-
-  private String flavor; // Like "zip"
-
+  private String component;  // "jre", "jdk", or "jfx"
+  private String flavor;  // Like "zip"
   private String path;  // target path
 
 
@@ -54,6 +48,7 @@ public class Downloader extends Task {
    * Create a new downloader without tag attributes filled in.
    **/
   public Downloader() { }
+
 
   /**
    * Set the platform being used.
@@ -64,14 +59,6 @@ public class Downloader extends Task {
     this.platform = platform;
   }
 
-  /**
-   * Indicate if the OpenJDK is being used.
-   *
-   * @param openJdk True if OpenJDK is being used. False if Oracle JDK is being used.
-   */
-  public void setOpenJdk(boolean openJdk) {
-    this.openJdk = openJdk;
-  }
 
   /**
    * Specify the build train being used.
@@ -82,6 +69,7 @@ public class Downloader extends Task {
     this.train = train;
   }
 
+
   /**
    * Set the version to download within the given build train.
    *
@@ -90,6 +78,7 @@ public class Downloader extends Task {
   public void setVersion(int version) {
     this.version = version;
   }
+
 
   /**
    * Set the update number to download within the given build train.
@@ -100,6 +89,7 @@ public class Downloader extends Task {
     this.update = update;
   }
 
+
   /**
    * Set the build number to download.
    *
@@ -109,14 +99,6 @@ public class Downloader extends Task {
     this.build = build;
   }
 
-  /**
-   * Set the expected hash of the download.
-   *
-   * @param hash The hash set.
-   */
-  public void setHash(String hash) {
-    this.hash = hash;
-  }
 
   /**
    * Indicate what component or release type of Java is being downloaded.
@@ -127,6 +109,7 @@ public class Downloader extends Task {
     this.component = component;
   }
 
+
   /**
    * Indicate the file flavor to be downloaded.
    *
@@ -136,6 +119,7 @@ public class Downloader extends Task {
     this.flavor = flavor;
   }
 
+
   /**
    * Set the path to which the file should be downloaded.
    *
@@ -144,6 +128,7 @@ public class Downloader extends Task {
   public void setPath(String path) {
     this.path = path;
   }
+
 
   /**
    * Download the JDK or JRE.
@@ -167,17 +152,13 @@ public class Downloader extends Task {
       throw new BuildException("You've gotta choose a flavor (macosx-x64.dmg, windows-x64.exe...)");
     }
 
-    if (update >= 121 && hash == null) {
-      throw new BuildException("Starting with 8u121, a hash is required, see https://gist.github.com/P7h/9741922");
-    }
-
-    //download(path, jdk, platform, bits, version, update, build);
     try {
       download();
     } catch (IOException e) {
       throw new BuildException(e);
     }
   }
+
 
   /**
    * Download the package from AdoptOpenJDK or Oracle.
@@ -310,17 +291,9 @@ public class Downloader extends Task {
 
     // Determine url generator
     if (isJavaDownload) {
-      if (openJdk) {
-        downloadUrlGenerator = new AdoptOpenJdkDownloadUrlGenerator();
-      } else {
-        downloadUrlGenerator = new OracleDownloadUrlGenerator();
-      }
+      downloadUrlGenerator = new AdoptOpenJdkDownloadUrlGenerator();
     } else if (isJfxDownload) {
-      if (openJdk) {
-        downloadUrlGenerator = new GluonHqDownloadUrlGenerator();
-      } else {
-        return Optional.empty(); // Nothing to download
-      }
+      downloadUrlGenerator = new GluonHqDownloadUrlGenerator();
     } else {
       throw new RuntimeException("Do not know how to download: " + component);
     }
@@ -333,8 +306,7 @@ public class Downloader extends Task {
         version,
         update,
         build,
-        flavor,
-        hash
+        flavor
     );
 
     String url = downloadUrlGenerator.buildUrl(
@@ -344,8 +316,7 @@ public class Downloader extends Task {
         version,
         update,
         build,
-        flavor,
-        hash
+        flavor
     );
 
     return Optional.of(new DownloadItem(url, path, downloadUrlGenerator.getCookie()));
