@@ -35,7 +35,7 @@
   </macrodef>
 
   <target name="test-compile">
-    <compilecommon srcdir="src; test" destdir="bin-test" classpath="classpath.test" />
+    <!-- <compilecommon srcdir="src; test" destdir="bin-test" classpath="classpath.test" /> -->
   </target>
 
   <target name="test" depends="test-compile">
