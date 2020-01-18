@@ -43,7 +43,6 @@
       <classpath refid="classpath.test" />
       <formatter type="brief" usefile="false" />
       <test name="AdoptOpenJdkDownloadUrlGeneratorTest" />
-      <test name="OracleDownloadUrlGeneratorTest" />
     </junit>
   </target>
 
