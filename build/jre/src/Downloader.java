@@ -51,7 +51,7 @@ public class Downloader extends Task {
    * @param platform The platfom for which files are being downloaded like macosx.
    */
   public void setPlatform(String platform) {
-    this.platform = platform;
+    this.platform = platform.toLowerCase();
   }
 
 
@@ -158,40 +158,19 @@ public class Downloader extends Task {
    * Download the package from AdoptOpenJDK or Oracle.
    */
   void download() throws IOException {
-    DownloadUrlGenerator downloadUrlGenerator;
+    if (path == null) {
+      path = getLocalFilename(component, version, update, flavor);
+    }
 
-    // Determine url generator
+    String url = null;
     if (component.equals("jdk")) {
-      downloadUrlGenerator = new AdoptOpenJdkDownloadUrlGenerator();
+      url = adoptOpenJdkUrl(platform, component, train, version, update, build, flavor);
     } else if (component.equals("jfx")) {
-      downloadUrlGenerator = new GluonHqDownloadUrlGenerator();
+      url = gluonHqUrl(platform, component, train, version, update);
     } else {
       throw new RuntimeException("Do not know how to download: " + component);
     }
-
-    if (path == null) {
-      path = getLocalFilename(
-        platform,
-        component,
-        train,
-        version,
-        update,
-        build,
-        flavor
-      );
-    }
-
-    String url = downloadUrlGenerator.buildUrl(
-        platform,
-        component,
-        train,
-        version,
-        update,
-        build,
-        flavor
-    );
-
-    System.out.println("Attempting download at " + url);
+    System.out.println("Downloading from " + url);
 
     HttpURLConnection conn =
       (HttpURLConnection) new URL(url).openConnection();
@@ -270,6 +249,61 @@ public class Downloader extends Task {
   }
 
 
+  static private String adoptOpenJdkUrl(String platform, String component,
+                                        int train, int version, int update,
+                                        int build, String flavor) {
+    final String URL_FORMAT = "https://github.com/AdoptOpenJDK/openjdk%d-binaries/releases/download/jdk-%d.%d.%d%%2B%d/OpenJDK%dU-%s_%d.%d.%d_%d.%s";
+
+    String filename = null;
+    switch (platform) {
+      case "windows32": filename = "jdk_x86-32_windows_hotspot"; break;
+      case "windows64": filename = "jdk_x64_windows_hotspot"; break;
+      case "macosx64": filename = "jdk_x64_mac_hotspot"; break;
+      case "linux32": throw new RuntimeException("32-bit Linux not supported by AdoptOpenJDK.");
+      case "linux64": filename = "jdk_x64_linux_hotspot"; break;
+      case "linuxarm": filename = "jdk_aarch64_linux_hotspot"; break;
+      default: throw new RuntimeException("Unknown platform: " + platform);
+    }
+
+    String fileExtension = platform.startsWith("windows") ? "zip" : "tar.gz";
+
+    return String.format(
+        URL_FORMAT,
+        train,
+        train,
+        version,
+        update,
+        build,
+        train,
+        filename,
+        train,
+        version,
+        update,
+        build,
+        fileExtension
+    );
+  }
+
+
+  static private String gluonHqUrl(String platform, String component,
+                                   int train, int version, int update) {
+    final String URL_FORMAT =
+      "http://gluonhq.com/download/javafx-%d-%d-%d-sdk-%s/";
+
+    String platformShort;
+    if (platform.contains("linux")) {
+      platformShort = "linux";
+    } else if (platform.contains("mac")) {
+      platformShort = "mac";
+    } else if (platform.contains("windows")) {
+      platformShort = "windows";
+    } else {
+      throw new RuntimeException("Unsupported platform for JFX: " + platform);
+    }
+    return String.format(URL_FORMAT, train, version, update, platformShort);
+  }
+
+
   /**
    * Determine the name of the file to which the remote file should be saved.
    *
@@ -282,9 +316,8 @@ public class Downloader extends Task {
    * @param build The build number (like 133).
    * @param flavor The flavor like "macosx-x64.dmg".
    */
-  public String getLocalFilename(String downloadPlatform, String component,
-                                 int train, int version, int update,
-                                 int build, String flavor) {
+  static private String getLocalFilename(String component, int version,
+                                         int update, String flavor) {
     String versionStr;
     if (update == 0) {
       versionStr = String.format("-%d-%s", version, flavor);

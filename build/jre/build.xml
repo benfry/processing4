@@ -42,7 +42,7 @@
     <junit haltonfailure="true">
       <classpath refid="classpath.test" />
       <formatter type="brief" usefile="false" />
-      <test name="AdoptOpenJdkDownloadUrlGeneratorTest" />
+      <!-- <test name="AdoptOpenJdkDownloadUrlGeneratorTest" /> -->
     </junit>
   </target>
 
