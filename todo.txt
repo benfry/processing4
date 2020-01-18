@@ -12,6 +12,8 @@ X   link to a wiki page for 4.x
 X   create wiki page for changes in 4.x
 X selecting a sketch in the Sketch menu no longer opens its window
 X   https://github.com/processing/processing/issues/5882
+X streamlining the jdk downloader
+X   https://github.com/processing/processing4/issues/47
 
 cross-ported from 3.5.4
 X don't remove entries from Recent menu on Save As

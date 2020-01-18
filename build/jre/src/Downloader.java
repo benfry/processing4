@@ -48,7 +48,7 @@ public class Downloader extends Task {
   /**
    * Set the platform being used.
    *
-   * @param platform The platfom for which files are being downloaded like macosx.
+   * @param platform The platform for which files are being downloaded like macosx.
    */
   public void setPlatform(String platform) {
     this.platform = platform.toLowerCase();
