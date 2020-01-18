@@ -19,8 +19,25 @@
   Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
+/*
+  Part of the Processing project - http://processing.org
 
-import java.util.Optional;
+  Copyright (c) 2019-20 The Processing Foundation
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU General Public License
+  version 2, as published by the Free Software Foundation.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software Foundation,
+  Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
+
 
 /**
  * Abstract base class for strategy to generate download URLs.
@@ -43,16 +60,6 @@ public abstract class DownloadUrlGenerator {
   public abstract String buildUrl(String platform, String component,
                                   int train, int version, int update,
                                   int build, String flavor);
-
-  /**
-   * Get the cookie that should be used in downloading the target component.
-   *
-   * @return Optional that is empty if no cookie should be used or optional with the string cookie
-   *    value if one should be used.
-   */
-  public Optional<String> getCookie() {
-    return Optional.empty();
-  }
 
   /**
    * Determine the name of the file to which the remote file should be saved.
@@ -78,8 +85,6 @@ public abstract class DownloadUrlGenerator {
     } else {
       versionStr = String.format("-%du%d-%s", version, update, flavor);
     }
-
     return baseFilename + versionStr;
   }
-
 }

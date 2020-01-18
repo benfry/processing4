@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2014-19 The Processing Foundation
+  Copyright (c) 2014-20 The Processing Foundation
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -31,8 +31,6 @@ import org.apache.tools.ant.Task;
  * Ant Task for downloading the latest JRE, JDK, or OpenJFX release.
  */
 public class Downloader extends Task {
-  private static final boolean PRINT_LOGGING = true;
-
   private String platform; // macos
   private int train;  // Java 11 (was 1 through Java 8)
   private int version;  // 0 (was 8 prior to Java 9)
@@ -44,9 +42,6 @@ public class Downloader extends Task {
   private String path;  // target path
 
 
-  /**
-   * Create a new downloader without tag attributes filled in.
-   **/
   public Downloader() { }
 
 
@@ -163,46 +158,63 @@ public class Downloader extends Task {
    * Download the package from AdoptOpenJDK or Oracle.
    */
   void download() throws IOException {
-    DownloadItem downloadItem;
+    DownloadUrlGenerator downloadUrlGenerator;
 
-    // Determine url generator for task
-    Optional<DownloadItem> downloadItemMaybe = getDownloadItem();
-    if (downloadItemMaybe.isEmpty()) {
-      return; // There is nothing to do.
+    // Determine url generator
+    if (component.equals("jdk")) {
+      downloadUrlGenerator = new AdoptOpenJdkDownloadUrlGenerator();
+    } else if (component.equals("jfx")) {
+      downloadUrlGenerator = new GluonHqDownloadUrlGenerator();
     } else {
-      downloadItem = downloadItemMaybe.get();
+      throw new RuntimeException("Do not know how to download: " + component);
     }
 
-    // Build URL and path
     if (path == null) {
-      path = downloadItem.getLocalPath();
+      path = downloadUrlGenerator.getLocalFilename(
+        platform,
+        component,
+        train,
+        version,
+        update,
+        build,
+        flavor
+      );
     }
 
-    String url = downloadItem.getUrl();
+    String url = downloadUrlGenerator.buildUrl(
+        platform,
+        component,
+        train,
+        version,
+        update,
+        build,
+        flavor
+    );
 
-    // Downlaod
-    println("Attempting download at " + url);
+    System.out.println("Attempting download at " + url);
 
     HttpURLConnection conn =
       (HttpURLConnection) new URL(url).openConnection();
 
+    /*
     Optional<String> cookieMaybe = downloadItem.getCookie();
 
     if (cookieMaybe.isPresent()) {
       conn.setRequestProperty("Cookie", cookieMaybe.get());
     }
+    */
 
-    //printHeaders(conn);
-    //conn.connect();
     while (conn.getResponseCode() == 302 || conn.getResponseCode() == 301) {
       Map<String, List<String>> headers = conn.getHeaderFields();
       List<String> location = headers.get("Location");
       if (location.size() == 1) {
         url = location.get(0);
-        println("Redirecting to " + url);
+        System.out.println("Redirecting to " + url);
       } else {
-        throw new BuildException("Got " + location.size() + " locations.");
+        // TODO should
+        throw new BuildException("Received multiple redirect locations");
       }
+      /*
       List<String> cookies = headers.get("Set-Cookie");
       conn = (HttpURLConnection) new URL(url).openConnection();
       if (cookies != null) {
@@ -214,7 +226,7 @@ public class Downloader extends Task {
       if (cookieMaybe.isPresent()) {
         conn.setRequestProperty("Cookie", cookieMaybe.get());
       }
-
+      */
       conn.connect();
     }
 
@@ -223,8 +235,8 @@ public class Downloader extends Task {
       BufferedInputStream bis = new BufferedInputStream(input);
       File outputFile = new File(path); //folder, filename);
 
-      String msg = String.format("Downloading %s from %s%n", outputFile.getAbsolutePath(), url);
-      println(msg);
+      System.out.format("Downloading %s from %s%n",
+                        outputFile.getAbsolutePath(), url);
 
       // Write to a temp file so that we don't have an incomplete download
       // masquerading as a good archive.
@@ -242,7 +254,8 @@ public class Downloader extends Task {
 
       if (outputFile.exists()) {
         if (!outputFile.delete()) {
-          throw new BuildException("Could not delete old download: " + outputFile.getAbsolutePath());
+          throw new BuildException("Could not delete old download: " +
+                                   outputFile.getAbsolutePath());
         }
       }
       if (!tempFile.renameTo(outputFile)) {
@@ -256,91 +269,18 @@ public class Downloader extends Task {
     }
   }
 
-  /**
-   * Print the headers used for {URLConnection}.
-   */
-  static void printHeaders(URLConnection conn) {
+
+  static private void printHeaders(URLConnection conn) {
     Map<String, List<String>> headers = conn.getHeaderFields();
     Set<Map.Entry<String, List<String>>> entrySet = headers.entrySet();
     for (Map.Entry<String, List<String>> entry : entrySet) {
       String headerName = entry.getKey();
-      println("Header Name:" + headerName);
+      System.err.println("Header Name:" + headerName);
       List<String> headerValues = entry.getValue();
       for (String value : headerValues) {
-        print("Header value:" + value);
+        System.err.println("Header Value:" + value);
       }
-      printEmptyLine();
-      printEmptyLine();
+      System.err.println();
     }
-  }
-
-  /**
-   * Get the item to be downloaded for this task.
-   *
-   * @return The to be downloaded or empty if there is no download required.
-   */
-  private Optional<DownloadItem> getDownloadItem() {
-    DownloadUrlGenerator downloadUrlGenerator;
-
-    // Determine url generator
-    if (component.equals("jdk")) {
-      downloadUrlGenerator = new AdoptOpenJdkDownloadUrlGenerator();
-    } else if (component.equals("jfx")) {
-      downloadUrlGenerator = new GluonHqDownloadUrlGenerator();
-    } else {
-      throw new RuntimeException("Do not know how to download: " + component);
-    }
-
-    // Build download item
-    String path = downloadUrlGenerator.getLocalFilename(
-        platform,
-        component,
-        train,
-        version,
-        update,
-        build,
-        flavor
-    );
-
-    String url = downloadUrlGenerator.buildUrl(
-        platform,
-        component,
-        train,
-        version,
-        update,
-        build,
-        flavor
-    );
-
-    return Optional.of(new DownloadItem(url, path, downloadUrlGenerator.getCookie()));
-  }
-
-  /**
-   * Print a line out to console if logging is enabled.
-   *
-   * @param message The message to be printed.
-   */
-  private static void println(String message) {
-    if (PRINT_LOGGING) {
-      System.out.println(message);
-    }
-  }
-
-  /**
-   * Print a line out to console if logging is enabled without a newline.
-   *
-   * @param message The message to be printed.
-   */
-  private static void print(String message) {
-    if (PRINT_LOGGING) {
-      System.out.print(message);
-    }
-  }
-
-  /**
-   * Print an empty line to the system.out.
-   */
-  private static void printEmptyLine() {
-    println("");
   }
 }
