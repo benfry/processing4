@@ -60,31 +60,4 @@ public abstract class DownloadUrlGenerator {
   public abstract String buildUrl(String platform, String component,
                                   int train, int version, int update,
                                   int build, String flavor);
-
-  /**
-   * Determine the name of the file to which the remote file should be saved.
-   *
-   * @param downloadPlatform The platform for which the download URL is being generated like
-   *    "macos" or "linux64".
-   * @param component The component to download like "JDK", "JRE", or "JFX".
-   * @param train The JDK train (like 1 or 11).
-   * @param version The JDK version (like 8 or 1).
-   * @param update The update (like 13).
-   * @param build The build number (like 133).
-   * @param flavor The flavor like "macosx-x64.dmg".
-   */
-  public String getLocalFilename(String downloadPlatform, String component,
-                                 int train, int version, int update,
-                                 int build, String flavor) {
-
-    String baseFilename = component.toLowerCase();
-
-    String versionStr;
-    if (update == 0) {
-      versionStr = String.format("-%d-%s", version, flavor);
-    } else {
-      versionStr = String.format("-%du%d-%s", version, update, flavor);
-    }
-    return baseFilename + versionStr;
-  }
 }

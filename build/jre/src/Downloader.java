@@ -170,7 +170,7 @@ public class Downloader extends Task {
     }
 
     if (path == null) {
-      path = downloadUrlGenerator.getLocalFilename(
+      path = getLocalFilename(
         platform,
         component,
         train,
@@ -267,6 +267,31 @@ public class Downloader extends Task {
       printHeaders(conn);
       System.exit(1);
     }
+  }
+
+
+  /**
+   * Determine the name of the file to which the remote file should be saved.
+   *
+   * @param downloadPlatform The platform for which the download URL is being generated like
+   *    "macos" or "linux64".
+   * @param component The component to download like "JDK", "JRE", or "JFX".
+   * @param train The JDK train (like 1 or 11).
+   * @param version The JDK version (like 8 or 1).
+   * @param update The update (like 13).
+   * @param build The build number (like 133).
+   * @param flavor The flavor like "macosx-x64.dmg".
+   */
+  public String getLocalFilename(String downloadPlatform, String component,
+                                 int train, int version, int update,
+                                 int build, String flavor) {
+    String versionStr;
+    if (update == 0) {
+      versionStr = String.format("-%d-%s", version, flavor);
+    } else {
+      versionStr = String.format("-%du%d-%s", version, update, flavor);
+    }
+    return component + versionStr;
   }
 
 
