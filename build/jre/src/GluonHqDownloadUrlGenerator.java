@@ -24,13 +24,13 @@
  * URL generator for downloading JFX directly from OpenJFX's sponsor Gluon.
  */
 public class GluonHqDownloadUrlGenerator extends DownloadUrlGenerator {
-
-  private static final String TEMPLATE_URL = "http://gluonhq.com/download/javafx-%d-%d-%d-sdk-%s/";
+  static private final String URL_FORMAT =
+    "http://gluonhq.com/download/javafx-%d-%d-%d-sdk-%s/";
 
   @Override
-  public String buildUrl(String platform, String component, int train, int version, int update,
-      int build, String flavor) {
-
+  public String buildUrl(String platform, String component,
+                         int train, int version, int update,
+                         int build, String flavor) {
       String platformLower = platform.toLowerCase();
 
       String platformShort;
@@ -43,8 +43,6 @@ public class GluonHqDownloadUrlGenerator extends DownloadUrlGenerator {
       } else {
         throw new RuntimeException("Unsupported platform for JFX: " + platform);
       }
-
-      return String.format(TEMPLATE_URL, train, version, update, platformShort);
+      return String.format(URL_FORMAT, train, version, update, platformShort);
   }
-
 }

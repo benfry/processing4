@@ -23,7 +23,7 @@
  * Utility to generate download URLs from AdoptOpenJDK.
  */
 public class AdoptOpenJdkDownloadUrlGenerator extends DownloadUrlGenerator {
-  static private final String BASE_URL =
+  static private final String URL_FORMAT =
     "https://github.com/AdoptOpenJDK/openjdk%d-binaries/releases/download/jdk-%d.%d.%d%%2B%d/OpenJDK%dU-%s_%d.%d.%d_%d.%s";
 
 
@@ -37,9 +37,9 @@ public class AdoptOpenJdkDownloadUrlGenerator extends DownloadUrlGenerator {
     }
 
     String filename = buildDownloadRemoteFilename(platform);
-    String fileExtension = buildFileExtension(platform);
+    String fileExtension = platform.startsWith("windows") ? "zip" : "tar.gz";
     return String.format(
-        BASE_URL,
+        URL_FORMAT,
         train,
         train,
         version,
@@ -63,7 +63,7 @@ public class AdoptOpenJdkDownloadUrlGenerator extends DownloadUrlGenerator {
    *    "macos" or "linux64".
    * @return The artifact name without extension like "jdk_x64_mac_hotspot".
    */
-  private String buildDownloadRemoteFilename(String downloadPlatform) {
+  static private String buildDownloadRemoteFilename(String downloadPlatform) {
     switch (downloadPlatform.toLowerCase()) {
       case "windows32": return "jdk_x86-32_windows_hotspot";
       case "windows64": return "jdk_x64_windows_hotspot";
@@ -73,17 +73,5 @@ public class AdoptOpenJdkDownloadUrlGenerator extends DownloadUrlGenerator {
       case "linuxarm": return "jdk_aarch64_linux_hotspot";
       default: throw new RuntimeException("Unknown platform: " + downloadPlatform);
     }
-  }
-
-
-  /**
-   * Determine the download file extension.
-   *
-   * @param downloadPlatform The platform for which the download URL is being generated like
-   *    "macos" or "linux64".
-   * @return The file extension without leading period like "zip" or "tar.gz".
-   */
-  private String buildFileExtension(String downloadPlatform) {
-    return downloadPlatform.startsWith("windows") ? "zip" : "tar.gz";
   }
 }

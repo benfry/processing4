@@ -120,6 +120,8 @@ _ change help menu links to go to newer FAQ and the rest
 
 
 open issues
+_ update the docs repo
+_   check with Casey re: shallow clone or approach
 _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
 _ further streamline the downloader
