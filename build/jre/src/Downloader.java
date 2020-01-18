@@ -193,15 +193,15 @@ public class Downloader extends Task {
         // TODO should this just do one of the
         throw new BuildException("No redirect location provided");
       }
-      List<String> cookies = headers.get("Set-Cookie");
       conn = (HttpURLConnection) new URL(url).openConnection();
+      /*
+      List<String> cookies = headers.get("Set-Cookie");
       if (cookies != null) {
         for (String cookie : cookies) {
           System.out.println("Setting cookie " + cookie);
           conn.setRequestProperty("Cookie", cookie);
         }
       }
-      /*
       if (cookieMaybe.isPresent()) {
         conn.setRequestProperty("Cookie", cookieMaybe.get());
       }
