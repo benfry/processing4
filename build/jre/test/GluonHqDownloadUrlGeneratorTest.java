@@ -39,7 +39,6 @@ public class GluonHqDownloadUrlGeneratorTest {
   private static final int UPDATE = 2;
   private static final int BUILD = 0;
   private static final String FLAVOR_SUFFIX = ".zip";
-  private static final String HASH = "";
 
   private AdoptOpenJdkDownloadUrlGenerator urlGenerator;
 
@@ -57,8 +56,7 @@ public class GluonHqDownloadUrlGeneratorTest {
         VERSION,
         UPDATE,
         BUILD,
-        "windows" + FLAVOR_SUFFIX,
-        HASH
+        "windows" + FLAVOR_SUFFIX
     );
 
     assertEquals(
@@ -76,8 +74,7 @@ public class GluonHqDownloadUrlGeneratorTest {
         VERSION,
         UPDATE,
         BUILD,
-        "mac" + FLAVOR_SUFFIX,
-        HASH
+        "mac" + FLAVOR_SUFFIX
     );
 
     assertEquals(
@@ -95,8 +92,7 @@ public class GluonHqDownloadUrlGeneratorTest {
         VERSION,
         UPDATE,
         BUILD,
-        "linux64" + FLAVOR_SUFFIX,
-        HASH
+        "linux64" + FLAVOR_SUFFIX
     );
 
     assertEquals(
