@@ -39,7 +39,7 @@ public class Downloader extends Task {
   private int update;  // Update 131
   private int build;  // Build 11
 
-  private String component;  // "jre", "jdk", or "jfx"
+  private String component;  // "jdk" or "jfx"
   private String flavor;  // Like "zip"
   private String path;  // target path
 
@@ -103,10 +103,10 @@ public class Downloader extends Task {
   /**
    * Indicate what component or release type of Java is being downloaded.
    *
-   * @param component The component to download like "JDK", "JRE", or "OpenJFX".
+   * @param component The component to download like "jdk" or "jfx"
    */
   public void setComponent(String component) {
-    this.component = component;
+    this.component = component.toLowerCase();
   }
 
 
@@ -131,7 +131,7 @@ public class Downloader extends Task {
 
 
   /**
-   * Download the JDK or JRE.
+   * Entry point called by Ant
    */
   public void execute() throws BuildException {
     if (train == 0) {
@@ -139,8 +139,7 @@ public class Downloader extends Task {
       throw new BuildException("Train (i.e. 1 or 11) must be set");
     }
 
-    boolean isJava11 = train == 11;
-    if (!isJava11 && version == 0) {
+    if (train != 11 && version == 0) {
       throw new BuildException("Version (i.e. 7 or 8) must be set");
     }
 
@@ -281,18 +280,12 @@ public class Downloader extends Task {
    * @return The to be downloaded or empty if there is no download required.
    */
   private Optional<DownloadItem> getDownloadItem() {
-    // Determine download type
-    boolean isJavaDownload = component.equalsIgnoreCase("jdk");
-    isJavaDownload = isJavaDownload || component.equalsIgnoreCase("jre");
-
-    boolean isJfxDownload = component.equalsIgnoreCase("jfx");
-
     DownloadUrlGenerator downloadUrlGenerator;
 
     // Determine url generator
-    if (isJavaDownload) {
+    if (component.equals("jdk")) {
       downloadUrlGenerator = new AdoptOpenJdkDownloadUrlGenerator();
-    } else if (isJfxDownload) {
+    } else if (component.equals("jfx")) {
       downloadUrlGenerator = new GluonHqDownloadUrlGenerator();
     } else {
       throw new RuntimeException("Do not know how to download: " + component);

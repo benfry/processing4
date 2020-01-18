@@ -366,13 +366,12 @@
       <equals arg1="${jdk.data.model}" arg2="64" />
     </condition>
 
-    <downloader train="${jdk.train}"
+    <downloader component="jdk"
+                train="${jdk.train}"
                 version="${jdk.version}"
-                openJdk="true"
                 platform="${target-platform}${jdk.data.model}"
                 update="${jdk.update}"
                 build="${jdk.build}"
-                component="JDK"
                 flavor="${jdk.downloader}"
                 path="${jdk.tgz.path}" />
   </target>
@@ -380,14 +379,13 @@
   <target name="jfx-download" depends="jfx-check, downloader-setup"
           unless="jfx.zip.downloaded">
 
-    <downloader train="${jfx.train}"
+    <downloader component="jfx"
+                train="${jfx.train}"
                 version="${jfx.version}"
-                openJdk="true"
                 platform="${target-platform}${jdk.data.model}"
                 update="${jfx.update}"
                 build="1"
                 hash="${jfx.hash}"
-                component="JFX"
                 flavor="${target-platform}${jdk.data.model}.zip"
                 path="${jfx.path.zip}" />
 
