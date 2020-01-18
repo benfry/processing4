@@ -40,7 +40,6 @@ public class AdoptOpenJdkDownloadUrlGeneratorTest {
   private static final int UPDATE = 1;
   private static final int BUILD = 13;
   private static final String FLAVOR_SUFFIX = "-x64.tar.gz";
-  private static final String HASH = "";
 
   private AdoptOpenJdkDownloadUrlGenerator urlGenerator;
 
@@ -58,8 +57,7 @@ public class AdoptOpenJdkDownloadUrlGeneratorTest {
       VERSION,
       UPDATE,
       BUILD,
-      "windows" + FLAVOR_SUFFIX,
-      HASH
+      "windows" + FLAVOR_SUFFIX
     );
 
     assertEquals(
@@ -77,8 +75,7 @@ public class AdoptOpenJdkDownloadUrlGeneratorTest {
       VERSION,
       UPDATE,
       BUILD,
-      "mac" + FLAVOR_SUFFIX,
-      HASH
+      "mac" + FLAVOR_SUFFIX
     );
 
     assertEquals(
@@ -96,8 +93,7 @@ public class AdoptOpenJdkDownloadUrlGeneratorTest {
       VERSION,
       UPDATE,
       BUILD,
-      "linux64" + FLAVOR_SUFFIX,
-      HASH
+      "linux64" + FLAVOR_SUFFIX
     );
 
     assertEquals(
@@ -115,8 +111,7 @@ public class AdoptOpenJdkDownloadUrlGeneratorTest {
       VERSION,
       UPDATE,
       BUILD,
-      "linuxArm" + FLAVOR_SUFFIX,
-      HASH
+      "linuxArm" + FLAVOR_SUFFIX
     );
 
     assertEquals(
