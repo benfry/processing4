@@ -186,22 +186,22 @@ public class Downloader extends Task {
     while (conn.getResponseCode() == 302 || conn.getResponseCode() == 301) {
       Map<String, List<String>> headers = conn.getHeaderFields();
       List<String> location = headers.get("Location");
-      if (location.size() == 1) {
+      if (location.size() > 0) {
         url = location.get(0);
         System.out.println("Redirecting to " + url);
       } else {
-        // TODO should
-        throw new BuildException("Received multiple redirect locations");
+        // TODO should this just do one of the
+        throw new BuildException("No redirect location provided");
       }
-      /*
       List<String> cookies = headers.get("Set-Cookie");
       conn = (HttpURLConnection) new URL(url).openConnection();
       if (cookies != null) {
         for (String cookie : cookies) {
+          System.out.println("Setting cookie " + cookie);
           conn.setRequestProperty("Cookie", cookie);
         }
       }
-
+      /*
       if (cookieMaybe.isPresent()) {
         conn.setRequestProperty("Cookie", cookieMaybe.get());
       }
@@ -288,7 +288,7 @@ public class Downloader extends Task {
   static private String gluonHqUrl(String platform, String component,
                                    int train, int version, int update) {
     final String URL_FORMAT =
-      "http://gluonhq.com/download/javafx-%d-%d-%d-sdk-%s/";
+      "https://gluonhq.com/download/javafx-%d-%d-%d-sdk-%s/";
 
     String platformShort;
     if (platform.contains("linux")) {
