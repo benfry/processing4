@@ -4,6 +4,19 @@ X   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538
 X   add --disable-awt to PApplet.main()
 X fix for precision issues with PDF
 X   https://github.com/processing/processing/issues/5801#issuecomment-466632459
+X implement displayDensity(int), it's been returning the main display's value
+X show 'displays have separate spaces' notice in the console
+X   allows us to get rid of JOptionPane
+X show 'displays have separate spaces' message when the param is unset
+X   Catalina seems to have it un-set, but the default is the same
+
+_ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
+
+_ Surface not available inside handleSettings()
+_   therefore impossible to get displays, displayWidth/Height, and pixelDensity
+_   should surface be set on command line?
+_   or can we just require that size() goes first, and inits surface *type* w/o sizes
+_   or even that it inits a surface-specific class for getting that info
 
 
 before final release
@@ -122,22 +135,9 @@ _   save the constructor for the version that actually copies data
 _   the table pointer version will be speedy and allow chaining
 
 
-discussion/decisions
-_ how to handle the touch api
-_   can't do MouseEvent et al with Android
-_   http://dvcs.w3.org/hg/webevents/raw-file/tip/touchevents.html
-_   http://www.html5rocks.com/en/mobile/touch.html
-_   decision: go with what looks like javascript/ios
-_   touchEvent(), gestureEvent()?
-_ size() function that scales to screen, keeps aspect, re-scales mouse coords
-_ add screen(PVector), model(PVector) and world(PVector)?
-_   maybe screenVec()? or screenXYZ()?
-_ Separately, if we wanted, we could add a method that can safely do drawing calls, but that won't be any faster or make use of more processors the way that `thread()` does.
-_ need reference update for createShape()
-_   though we need to verify the behavior here
-_   createShape(RECT) uses x/y/w/h, and optionally adds a mode param
-_     and optionally the corner radii
-_   createShape(ELLIPSE) is x/y/w/h, and optionally adds a mode param
+additions
+_ async calls for selectInput/Output/Folder
+_   now that we have saner syntax with new preproc, we can do Runnable
 _ async requests
 _   https://github.com/processing/processing/issues/3165
 _   Request r = createRequest("http://p5.org/feed/13134.jpg");
@@ -151,13 +151,33 @@ _   remove/update requestImage example
 _   check into promise api
 _     http://www.html5rocks.com/en/tutorials/es6/promises/
 _     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+_ how to handle the touch api
+_   can't do MouseEvent et al with Android
+_   http://dvcs.w3.org/hg/webevents/raw-file/tip/touchevents.html
+_   http://www.html5rocks.com/en/mobile/touch.html
+_   decision: go with what looks like javascript/ios
+_   touchEvent(), gestureEvent()?
+_   touch event doesn't make sense for mouseMove on desktop, hover on Android
+_   probably go with pointer: more universal for touch/mouse
+_ size() function that scales to screen, keeps aspect, re-scales mouse coords
+
+
+discussion/decisions
+_ add screen(PVector), model(PVector) and world(PVector)?
+_   maybe screenVec()? or screenXYZ()?
+_ drawThread()
+_   we could add a method that can safely do drawing calls, but that won't be
+_   any faster or make use of more processors the way that `thread()` does.
+_   though it might be useful for tacking the result of thread() on at the end of draw()
+_ need reference update for createShape()
+_   though we need to verify the behavior here
+_   createShape(RECT) uses x/y/w/h, and optionally adds a mode param
+_     and optionally the corner radii
+_   createShape(ELLIPSE) is x/y/w/h, and optionally adds a mode param
 _ fix the registered methods doc, stop/dispose working
 _   Casey needs to nudge people about libraries, so we need to fix this
 _ pause(), resume(), start(), stop() clarifications
 _ dispose/stop not great w/ libraries yet
-_ proper touch events
-_   touch event doesn't make sense for mouseMove on desktop, hover on Android
-_   probably go with pointer: more universal for touch/mouse
 _ move away from loadPixels
 _ add options for image.save() (or saveImage?)
 _   add quality=[0,1] for jpeg images
