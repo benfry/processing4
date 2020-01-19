@@ -1073,18 +1073,8 @@ public class PApplet implements PConstants {
 
 
   final public boolean sketchFullScreen() {
-    //return false;
     return fullScreen;
   }
-
-
-//  // Could be named 'screen' instead of display since it's the people using
-//  // full screen who will be looking for it. On the other hand, screenX/Y/Z
-//  // makes things confusing, and if 'displayIndex' exists...
-//  public boolean sketchSpanDisplays() {
-//    //return false;
-//    return spanDisplays;
-//  }
 
 
   // Numbered from 1, SPAN (0) means all displays, -1 means the default display
@@ -1094,13 +1084,11 @@ public class PApplet implements PConstants {
 
 
   final public String sketchOutputPath() {
-    //return null;
     return outputPath;
   }
 
 
   final public OutputStream sketchOutputStream() {
-    //return null;
     return outputStream;
   }
 
@@ -1145,18 +1133,21 @@ public class PApplet implements PConstants {
     return 1;
   }
 
+
  /**
   * @param display the display number to check
+  * (1-indexed to match the Preferences dialog box)
   */
   public int displayDensity(int display) {
-    GraphicsDevice graphicsDevice = GraphicsEnvironment
-            .getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice();
-    GraphicsConfiguration graphicsConfig = graphicsDevice
-            .getDefaultConfiguration();
+    if (display > 0 && display <= displayDevices.length) {
+      GraphicsConfiguration graphicsConfig =
+        displayDevices[display - 1].getDefaultConfiguration();
+      AffineTransform tx = graphicsConfig.getDefaultTransform();
+      return (int) Math.round(tx.getScaleX());
+    }
 
-    AffineTransform tx = graphicsConfig.getDefaultTransform();
-    return (int) Math.round(tx.getScaleX());
+    System.err.println("Display " + display + " does not exist, returning ");
+    return 1;  // not the end of the world, so don't throw a RuntimeException
   }
 
 
