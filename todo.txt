@@ -15,6 +15,7 @@ X   https://github.com/processing/processing/issues/5882
 X streamlining the jdk downloader
 X   https://github.com/processing/processing4/issues/47
 X remove JOGL from the repo, switch it to auto-download
+X   add "ant clean-jogl" target for removing those binaries
 
 cross-ported from 3.5.4
 X don't remove entries from Recent menu on Save As
@@ -80,6 +81,8 @@ X   https://github.com/processing/processing/pull/5944
 X rename-variable menu allows Java identifiers
 X   https://github.com/processing/processing/issues/5828
 X   https://github.com/processing/processing/pull/5906
+X Replace C/C++ style array declarations with Java style array declarations
+X   https://github.com/processing/processing4/pull/49
 
 sampottinger
 X Fix JDK naming and cleanup in ant build
