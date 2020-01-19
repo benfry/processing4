@@ -34,15 +34,10 @@ _ possible fix for precision issues with PDF
 _   https://github.com/processing/processing/issues/5801#issuecomment-466632459
 
 
-high
+high-ish
 _ size() issues on Mojave? (3.4 works, 3.5.3 does not)
 _   https://github.com/processing/processing/issues/5791
 _   closed for now; unable to confirm anything in the thread
-
-
-high-ish
-_ Update isAccessible() in Table to use JDK 11 reflection methods
-_   https://github.com/processing/processing4/issues/3
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
 _ make setting the window icon automatic, based on files in local dirs

@@ -832,7 +832,7 @@
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
       <!--<fileset dir="shared" includes="launch4j/**" />-->
       <fileset dir="shared" includes="lib/**" />
-      <fileset file="shared/revisions.txt" />
+      <fileset file="shared/changes.md" />
     </copy>
 
     <preparejfx />
@@ -1017,7 +1017,7 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**"  />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/revisions.txt" />
+      <fileset file="shared/changes.md" />
     </copy>
 
     <antcall target="assemble">
@@ -1336,7 +1336,7 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**" />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/revisions.txt" />
+      <fileset file="shared/changes.md" />
     </copy>
 
     <preparejfx />
@@ -1368,7 +1368,7 @@
       </then>
     </if>
 
-    <fixcrlf file="windows/work/revisions.txt" eol="crlf" encoding="UTF-8" />
+    <fixcrlf file="windows/work/changes.md" eol="crlf" encoding="UTF-8" />
 
     <antcall target="assemble">
       <param name="target.path" value="windows/work" />
