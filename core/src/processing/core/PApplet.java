@@ -756,6 +756,9 @@ public class PApplet implements PConstants {
    */
   protected boolean exitCalled;
 
+  // ok to be static because it's not possible to mix enabled/disabled
+  static protected boolean disableAWT;
+
   // messages to send if attached as an external vm
 
   /**
@@ -777,6 +780,9 @@ public class PApplet implements PConstants {
 
   /** Used by the PDE to suggest a display (set in prefs, passed on Run) */
   static public final String ARGS_DISPLAY = "--display";
+
+  /** Disable AWT so that LWJGL and others can run */
+  static public final String ARGS_DISABLE_AWT = "--disable-awt";
 
 //  static public final String ARGS_SPAN_DISPLAYS = "--span";
 
@@ -959,25 +965,27 @@ public class PApplet implements PConstants {
   void handleSettings() {
     insideSettings = true;
 
-    // Need the list of display devices to be queried already for usage below.
-    // https://github.com/processing/processing/issues/3295
-    // https://github.com/processing/processing/issues/3296
-    // Not doing this from a static initializer because it may cause
-    // PApplet to cache and the values to stick through subsequent runs.
-    // Instead make it a runtime thing and a local variable.
-    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    GraphicsDevice device = ge.getDefaultScreenDevice();
-    displayDevices = ge.getScreenDevices();
+    if (!disableAWT) {
+      // Need the list of display devices to be queried already for usage below.
+      // https://github.com/processing/processing/issues/3295
+      // https://github.com/processing/processing/issues/3296
+      // Not doing this from a static initializer because it may cause
+      // PApplet to cache and the values to stick through subsequent runs.
+      // Instead make it a runtime thing and a local variable.
+      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      GraphicsDevice device = ge.getDefaultScreenDevice();
+      displayDevices = ge.getScreenDevices();
 
-    // Default or unparsed will be -1, spanning will be 0, actual displays will
-    // be numbered from 1 because it's too weird to say "display 0" in prefs.
-    if (display > 0 && display <= displayDevices.length) {
-      device = displayDevices[display-1];
+      // Default or unparsed will be -1, spanning will be 0, actual displays will
+      // be numbered from 1 because it's too weird to say "display 0" in prefs.
+      if (display > 0 && display <= displayDevices.length) {
+        device = displayDevices[display-1];
+      }
+      // Set displayWidth and displayHeight for people still using those.
+      DisplayMode displayMode = device.getDisplayMode();
+      displayWidth = displayMode.getWidth();
+      displayHeight = displayMode.getHeight();
     }
-    // Set displayWidth and displayHeight for people still using those.
-    DisplayMode displayMode = device.getDisplayMode();
-    displayWidth = displayMode.getWidth();
-    displayHeight = displayMode.getHeight();
 
     // Here's where size(), fullScreen(), smooth(N) and noSmooth() might
     // be called, conjuring up the demons of various rendering configurations.
@@ -10601,36 +10609,12 @@ public class PApplet implements PConstants {
   }
 
 
-  // Moving this back off the EDT for alpha 10. Not sure if we're helping or
-  // hurting, but unless we do, errors inside settings() are never passed
+  // Moving this back off the EDT for 3.0 alpha 10. Not sure if we're helping
+  // or hurting, but unless we do, errors inside settings() are never passed
   // through to the PDE. There are other ways around that, no doubt, but I'm
   // also suspecting that these "not showing up" bugs might be EDT issues.
   static public void runSketch(final String[] args,
                                final PApplet constructedSketch) {
-//    EventQueue.invokeLater(new Runnable() {
-//      public void run() {
-//        runSketchEDT(args, constructedSketch);
-//      }
-//    });
-//  }
-//
-//
-//  /**
-//   * Moving this to the EDT for 3.0a6 because that's the proper thing to do
-//   * when messing with Swing components. But mostly we're AWT, so who knows.
-//   */
-//  static protected void runSketchEDT(final String[] args,
-//                                     final PApplet constructedSketch) {
-    // Supposed to help with flicker, but no effect on OS X.
-    // TODO IIRC this helped on Windows, but need to double check.
-    System.setProperty("sun.awt.noerasebackground", "true");
-
-    // Remove 60fps limit on the JavaFX "pulse" timer
-    System.setProperty("javafx.animation.fullspeed", "true");
-
-    // Doesn't seem to do anything helpful here (that can't be done via Runner)
-    //System.setProperty("com.apple.mrj.application.apple.menu.about.name", "potato");
-
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
@@ -10658,16 +10642,6 @@ public class PApplet implements PConstants {
       }
     }
     */
-
-    // Catch any HeadlessException to provide more useful feedback
-    try {
-      // Call validate() while resize events are in progress
-      Toolkit.getDefaultToolkit().setDynamicLayout(true);
-    } catch (HeadlessException e) {
-      System.err.println("Cannot run sketch without a display. Read this for possible solutions:");
-      System.err.println("https://github.com/processing/processing/wiki/Running-without-a-Display");
-      System.exit(1);
-    }
 
     // So that the system proxy setting are used by default
     System.setProperty("java.net.useSystemProxies", "true");
@@ -10714,6 +10688,9 @@ public class PApplet implements PConstants {
             System.err.println(value + " is not a valid choice for " + ARGS_DISPLAY);
             displayNum = -1;  // use the default
           }
+
+        } else if (param.equals(ARGS_DISABLE_AWT)) {
+          disableAWT = true;
 
         } else if (param.equals(ARGS_WINDOW_COLOR)) {
           if (value.charAt(0) == '#' && value.length() == 7) {
@@ -10768,16 +10745,24 @@ public class PApplet implements PConstants {
       argIndex++;
     }
 
-//    // Now that sketch path is passed in args after the sketch name
-//    // it's not set in the above loop(the above loop breaks after
-//    // finding sketch name). So setting sketch path here.
-//    // https://github.com/processing/processing/commit/0a14835e6f5f4766b022e73a8fe562318636727c
-//    // TODO this is a hack added for PDE X and needs to be removed [fry 141104]
-//    for (int i = 0; i < args.length; i++) {
-//      if (args[i].startsWith(ARGS_SKETCH_FOLDER)){
-//        folder = args[i].substring(args[i].indexOf('=') + 1);
-//      }
-//    }
+    if (!disableAWT) {
+      // Supposed to help with flicker, but no effect on OS X.
+      // TODO IIRC this helped on Windows, but need to double check.
+      System.setProperty("sun.awt.noerasebackground", "true");
+
+      // Remove 60fps limit on the JavaFX "pulse" timer
+      System.setProperty("javafx.animation.fullspeed", "true");
+
+      // Catch any HeadlessException to provide more useful feedback
+      try {
+        // Call validate() while resize events are in progress
+        Toolkit.getDefaultToolkit().setDynamicLayout(true);
+      } catch (HeadlessException e) {
+        System.err.println("Cannot run sketch without a display. Read this for possible solutions:");
+        System.err.println("https://github.com/processing/processing/wiki/Running-without-a-Display");
+        System.exit(1);
+      }
+    }
 
     final PApplet sketch;
     if (constructedSketch != null) {
@@ -10796,7 +10781,9 @@ public class PApplet implements PConstants {
       }
     }
 
-    if (platform == MACOS) {
+    // TODO When disabling AWT for LWJGL or others, we need to figure out
+    // how to make Cmd-Q and the rest of this still work properly.
+    if (platform == MACOS && !disableAWT) {
       try {
         final String td = "processing.core.ThinkDifferent";
         Class<?> thinkDifferent =
@@ -10926,54 +10913,56 @@ public class PApplet implements PConstants {
     g = createPrimaryGraphics();
     surface = g.createSurface();
 
-    // Create fake Frame object to warn user about the changes
-    if (g.displayable()) {
-      frame = new Frame() {
-        @Override
-        public void setResizable(boolean resizable) {
-          deprecationWarning("setResizable");
-          surface.setResizable(resizable);
-        }
+    if (!disableAWT) {
+      // Create fake Frame object to warn user about the changes
+      if (g.displayable()) {
+        frame = new Frame() {
+          @Override
+          public void setResizable(boolean resizable) {
+            deprecationWarning("setResizable");
+            surface.setResizable(resizable);
+          }
 
-        @Override
-        public void setVisible(boolean visible) {
-          deprecationWarning("setVisible");
-          surface.setVisible(visible);
-        }
+          @Override
+          public void setVisible(boolean visible) {
+            deprecationWarning("setVisible");
+            surface.setVisible(visible);
+          }
 
-        @Override
-        public void setTitle(String title) {
-          deprecationWarning("setTitle");
-          surface.setTitle(title);
-        }
+          @Override
+          public void setTitle(String title) {
+            deprecationWarning("setTitle");
+            surface.setTitle(title);
+          }
 
-        @Override
-        public void setUndecorated(boolean ignored) {
-          throw new RuntimeException("'frame' has been removed from Processing 3, " +
-            "use fullScreen() to get an undecorated full screen frame");
-        }
+          @Override
+          public void setUndecorated(boolean ignored) {
+            throw new RuntimeException("'frame' has been removed from Processing 3, " +
+              "use fullScreen() to get an undecorated full screen frame");
+          }
 
-        // Can't override this one because it's called by Window's constructor
-        /*
-        @Override
-        public void setLocation(int x, int y) {
-          deprecationWarning("setLocation");
-          surface.setLocation(x, y);
-        }
-        */
+          /*
+          // Can't override this one because it's called by Window's constructor
+          @Override
+          public void setLocation(int x, int y) {
+            deprecationWarning("setLocation");
+            surface.setLocation(x, y);
+          }
+          */
 
-        @Override
-        public void setSize(int w, int h) {
-          deprecationWarning("setSize");
-          surface.setSize(w, h);
-        }
+          @Override
+          public void setSize(int w, int h) {
+            deprecationWarning("setSize");
+            surface.setSize(w, h);
+          }
 
-        private void deprecationWarning(String method) {
-          PGraphics.showWarning("Use surface." + method + "() instead of " +
-                                "frame." + method + " in Processing 3");
-          //new Exception(method).printStackTrace(System.out);
-        }
-      };
+          private void deprecationWarning(String method) {
+            PGraphics.showWarning("Use surface." + method + "() instead of " +
+                                  "frame." + method + " in Processing 3");
+            //new Exception(method).printStackTrace(System.out);
+          }
+        };
+      }
 
       surface.initFrame(this); //, backgroundColor, displayNum, fullScreen, spanDisplays);
       surface.setTitle(getClass().getSimpleName());
@@ -10982,7 +10971,6 @@ public class PApplet implements PConstants {
       surface.initOffscreen(this);  // for PDF/PSurfaceNone and friends
     }
 
-//    init();
     return surface;
   }
 

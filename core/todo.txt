@@ -1,19 +1,25 @@
 1271 (4.0a2)
+X make edits to core so that awt can be flagged off, and lwjgl can run
+X   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
+X   add --disable-awt to PApplet.main()
 
 
 before final release
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
-
-
-_ make edits to core so that awt can be flagged off, and lwjgl can run
-_   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
-_ removing AWT from core
+_ ThinkDifferent unavailable with --disable-awt, needs workaround
+_   https://github.com/processing/processing4/issues/52
+_ Better resolution for frame/surface methods
+_   https://github.com/processing/processing4/issues/53
+_ Remove frame from PApplet
+_   https://github.com/processing/processing4/issues/54
+_ Remove all usage of AWT from PApplet
+_   https://github.com/processing/processing4/issues/55
 _   https://github.com/codeanticode/processing-lwjgl/wiki#making-awt-optional-in-papplet
 _ move loadImage() into surface
-
-_ use exit event to set mouseY to 0 on macOS
-_   https://github.com/processing/processing/pull/5796/files
+_   move AWT code out of PImage, and into its own PImageJava2D class
+_   how to handle with JavaFX?
+_   https://github.com/processing/processing4/issues/56
 
 _ possible fix for precision issues with PDF
 _   https://github.com/processing/processing/issues/5801#issuecomment-466632459
@@ -41,6 +47,9 @@ _   https://github.com/processing/processing/issues/4020
 _   calling textSize() fixes it, only hpapens with the default font
 _ incorrect textWidth() with pixelDensity(2) when textFont() not used
 _   https://github.com/processing/processing/issues/5768
+_ use exit event to set mouseY to 0 on macOS
+_   https://github.com/processing/processing/pull/5796/files
+_   y coords on macOS seem to be one pixel off
 
 
 retina/hi-dpi/sizing

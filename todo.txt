@@ -5,7 +5,12 @@ before final release
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
 _ Welcome screen or not?
+_   set a new preference for it, so people see it
 _ change help menu links to go to newer FAQ and the rest
+_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_ better means of understanding Library/Mode/Tool usage
+_ automate notarization in the build process
+_   https://github.com/processing/processing4/issues/24
 
 
 open issues
