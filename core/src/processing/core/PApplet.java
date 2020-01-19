@@ -34,8 +34,6 @@ import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
-// used to present the fullScreen() warning about Spaces on OS X
-import javax.swing.JOptionPane;
 
 // inside runSketch() to warn users about headless
 import java.awt.HeadlessException;
@@ -932,21 +930,18 @@ public class PApplet implements PConstants {
         resultCode = p.waitFor();
       } catch (InterruptedException e) { }
 
-      String result = trim(stdout.toString());
-      if ("0".equals(result)) {
-        EventQueue.invokeLater(new Runnable() {
-          public void run() {
-            checkLookAndFeel();
-            final String msg =
-              "To use fullScreen(SPAN), first turn off “Displays have separate spaces”\n" +
-              "in System Preferences \u2192 Mission Control. Then log out and log back in.";
-            JOptionPane.showMessageDialog(null, msg, "Apple's Defaults Stink",
-                                          JOptionPane.WARNING_MESSAGE);
-          }
-        });
-      } else if (!"1".equals(result)) {
+      if (resultCode == 1) {
         System.err.println("Could not check the status of “Displays have separate spaces.”");
         System.err.format("Received message '%s' and result code %d.%n", trim(stderr.toString()), resultCode);
+      }
+
+      String processOutput = trim(stdout.toString());
+      // It looks like on Catalina, the option may not be set, so resultCode
+      // will be 1 (an error, since the param doesn't exist. But "Displays
+      // have separate spaces" is on by default, so show the message.
+      if (resultCode == 1 || "0".equals(processOutput)) {
+        System.err.println("To use fullScreen(SPAN), first turn off “Displays have separate spaces”");
+        System.err.println("in System Preferences \u2192 Mission Control. Then log out and log back in.");
       }
     }
 
@@ -10719,25 +10714,7 @@ public class PApplet implements PConstants {
     }
 
     // Call the settings() method which will give us our size() call
-//    try {
     sketch.handleSettings();
-//    } catch (Throwable t) {
-//      System.err.println("I think I'm gonna hurl");
-//    }
-
-////    sketch.spanDisplays = spanDisplays;
-//    // If spanning screens, that means we're also full screen.
-////    fullScreen |= spanDisplays;
-//    if (spanDisplays) {
-//      displayIndex = SPAN;
-////      fullScreen = true;
-//    }
-
-//    // If the applet doesn't call for full screen, but the command line does,
-//    // enable it. Conversely, if the command line does not, don't disable it.
-//    // Query the applet to see if it wants to be full screen all the time.
-//    //fullScreen |= sketch.sketchFullScreen();
-//    sketch.fullScreen |= fullScreen;
 
     sketch.external = external;
 
@@ -10746,22 +10723,6 @@ public class PApplet implements PConstants {
     }
 
     final PSurface surface = sketch.initSurface();
-//      sketch.initSurface(windowColor, displayIndex, fullScreen, spanDisplays);
-
-    /*
-    // Wait until the applet has figured out its width. In a static mode app,
-    // everything happens inside setup(), so this will be after setup() has
-    // completed, and the empty draw() has set "finished" to true.
-    while (sketch.defaultSize && !sketch.finished) {
-      //System.out.println("default size");
-      try {
-        Thread.sleep(5);
-
-      } catch (InterruptedException e) {
-        //System.out.println("interrupt");
-      }
-    }
-    */
 
     if (present) {
       if (hideStop) {
@@ -10780,14 +10741,6 @@ public class PApplet implements PConstants {
 
     sketch.showSurface();
     sketch.startSurface();
-    /*
-    if (sketch.getGraphics().displayable()) {
-      surface.setVisible(true);
-    }
-
-    //sketch.init();
-    surface.startThread();
-    */
   }
 
 
