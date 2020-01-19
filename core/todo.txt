@@ -71,6 +71,15 @@ _   https://bugs.openjdk.java.net/browse/JDK-8027391
 _   test with JG's 13" retina laptop
 
 
+from Casey
+_ Math for BLEND incorrect in the reference?
+_   https://github.com/processing/processing-docs/issues/762
+_ .setAngle() for PVector?
+_   https://github.com/processing/processing-docs/issues/744
+_ How much of the attrib*() functions should be documented?
+_   https://github.com/processing/processing-docs/issues/172
+
+
 misc
 _ should we drop the 'default' prefix from the ex handler so it's not static?
 _   http://docs.oracle.com/javase/1.5.0/docs/api/java/lang/Thread.html

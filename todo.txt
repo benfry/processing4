@@ -29,14 +29,9 @@ _   https://github.com/processing/processing/issues/5893
 
 
 from Casey
-_ Math for BLEND incorrect in the reference?
-_   https://github.com/processing/processing-docs/issues/762
-_ .setAngle() for PVector?
-_   https://github.com/processing/processing-docs/issues/744
 _ Installation on Linux
 _   https://github.com/processing/processing-docs/issues/645
-_ How much of the attrib*() functions should be documented?
-_   https://github.com/processing/processing-docs/issues/172
+
 
 _ "Could not get the settings folder" isn't very helpful
 _   https://github.com/processing/processing/issues/5744
