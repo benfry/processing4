@@ -3,6 +3,8 @@ package processing.awt;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.Frame;
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
 import java.io.File;
 
 import javax.swing.JFileChooser;
@@ -29,6 +31,26 @@ public class ShimAWT {
     this.sketch = sketch;
   }
   */
+
+
+  static public void initRun() {
+    // Supposed to help with flicker, but no effect on OS X.
+    // TODO IIRC this helped on Windows, but need to double check.
+    System.setProperty("sun.awt.noerasebackground", "true");
+
+    // Remove 60fps limit on the JavaFX "pulse" timer
+    System.setProperty("javafx.animation.fullspeed", "true");
+
+    // Catch any HeadlessException to provide more useful feedback
+    try {
+      // Call validate() while resize events are in progress
+      Toolkit.getDefaultToolkit().setDynamicLayout(true);
+    } catch (HeadlessException e) {
+      System.err.println("Cannot run sketch without a display. Read this for possible solutions:");
+      System.err.println("https://github.com/processing/processing/wiki/Running-without-a-Display");
+      System.exit(1);
+    }
+  }
 
 
   /*

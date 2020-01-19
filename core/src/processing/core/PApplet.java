@@ -35,10 +35,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 
-// inside runSketch() to warn users about headless
-import java.awt.HeadlessException;
-import java.awt.Toolkit;
-
 // used by loadImage()
 import java.awt.Image;
 import java.awt.color.ColorSpace;
@@ -71,6 +67,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.*;
 import java.util.zip.*;
+
+// TODO have this removed by 4.0 final
+import processing.awt.ShimAWT;
 
 import processing.data.*;
 import processing.event.*;
@@ -10618,22 +10617,7 @@ public class PApplet implements PConstants {
     }
 
     if (!disableAWT) {
-      // Supposed to help with flicker, but no effect on OS X.
-      // TODO IIRC this helped on Windows, but need to double check.
-      System.setProperty("sun.awt.noerasebackground", "true");
-
-      // Remove 60fps limit on the JavaFX "pulse" timer
-      System.setProperty("javafx.animation.fullspeed", "true");
-
-      // Catch any HeadlessException to provide more useful feedback
-      try {
-        // Call validate() while resize events are in progress
-        Toolkit.getDefaultToolkit().setDynamicLayout(true);
-      } catch (HeadlessException e) {
-        System.err.println("Cannot run sketch without a display. Read this for possible solutions:");
-        System.err.println("https://github.com/processing/processing/wiki/Running-without-a-Display");
-        System.exit(1);
-      }
+      ShimAWT.initRun();
     }
 
     final PApplet sketch;
