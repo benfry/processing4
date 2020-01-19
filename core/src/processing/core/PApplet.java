@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-20 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -829,77 +829,12 @@ public class PApplet implements PConstants {
   public Frame frame;
 
 
-//  public Frame getFrame() {
-//    return frame;
-//  }
-//
-//
-//  public void setFrame(Frame frame) {
-//    this.frame = frame;
-//  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-//  /**
-//   * Applet initialization. This can do GUI work because the components have
-//   * not been 'realized' yet: things aren't visible, displayed, etc.
-//   */
-//  public void init() {
-////    println("init() called " + Integer.toHexString(hashCode()));
-//    // using a local version here since the class variable is deprecated
-////    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-////    screenWidth = screen.width;
-////    screenHeight = screen.height;
-//
-//    defaultSize = true;
-//    finished = false; // just for clarity
-//
-//    // this will be cleared by draw() if it is not overridden
-//    looping = true;
-//    redraw = true;  // draw this guy at least once
-//    firstMouse = true;
-//
-//    // calculated dynamically on first call
-////    // Removed in 2.1.2, brought back for 2.1.3. Usually sketchPath is set
-////    // inside runSketch(), but if this sketch takes care of calls to init()
-////    // when PApplet.main() is not used (i.e. it's in a Java application).
-////    // THe path needs to be set here so that loadXxxx() functions work.
-////    if (sketchPath == null) {
-////      sketchPath = calcSketchPath();
-////    }
-//
-//    // set during Surface.initFrame()
-////    // Figure out the available display width and height.
-////    // No major problem if this fails, we have to try again anyway in
-////    // handleDraw() on the first (== 0) frame.
-////    checkDisplaySize();
-//
-////    // Set the default size, until the user specifies otherwise
-////    int w = sketchWidth();
-////    int h = sketchHeight();
-////    defaultSize = (w == DEFAULT_WIDTH) && (h == DEFAULT_HEIGHT);
-////
-////    g = makeGraphics(w, h, sketchRenderer(), null, true);
-////    // Fire component resize event
-////    setSize(w, h);
-////    setPreferredSize(new Dimension(w, h));
-////
-////    width = g.width;
-////    height = g.height;
-//
-//    surface.startThread();
-//  }
-
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   boolean insideSettings;
 
   String renderer = JAVA2D;
-//  int quality = 2;
   int smooth = 1;  // default smoothing (whatever that means for the renderer)
 
   boolean fullScreen;
@@ -1055,17 +990,6 @@ public class PApplet implements PConstants {
   }
 
 
-  // Named quality instead of smooth to avoid people trying to set (or get)
-  // the current smooth level this way. Also that smooth(number) isn't really
-  // public or well-known API. It's specific to the capabilities of the
-  // rendering surface, and somewhat independent of whether the sketch is
-  // smoothing at any given time. It's also a bit like getFill() would return
-  // true/false for whether fill was enabled, getFillColor() would return the
-  // color itself. Or at least that's what I can recall at the moment. [fry]
-//  public int sketchQuality() {
-//    //return 2;
-//    return quality;
-//  }
   // smoothing 1 is default.. 0 is none.. 2,4,8 depend on renderer
   final public int sketchSmooth() {
     return smooth;
