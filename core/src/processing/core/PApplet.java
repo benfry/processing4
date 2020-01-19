@@ -47,14 +47,6 @@ import javax.imageio.ImageIO;
 // allows us to remove our own MediaTracker code
 import javax.swing.ImageIcon;
 
-// used by selectInput(), selectOutput(), selectFolder()
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import javax.swing.JFileChooser;
-
-// set the look and feel, if specified
-import javax.swing.UIManager;
-
 // used by link()
 import java.awt.Desktop;
 
@@ -6317,25 +6309,6 @@ public class PApplet implements PConstants {
   */
 
 
-  static private boolean lookAndFeelCheck;
-
-  /**
-   * Initialize the Look & Feel if it hasn't been already.
-   * Call this before using any Swing-related code in PApplet methods.
-   */
-  static private void checkLookAndFeel() {
-    if (!lookAndFeelCheck) {
-      if (platform == WINDOWS) {
-        // Windows is defaulting to Metal or something else awful.
-        // Which also is not scaled properly with HiDPI interfaces.
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) { }
-      }
-      lookAndFeelCheck = true;
-    }
-  }
-
   /**
    * Open a platform-specific file chooser dialog to select a file for input.
    * After the selection is made, the selected File will be passed to the
@@ -6377,10 +6350,12 @@ public class PApplet implements PConstants {
 
   public void selectInput(String prompt, String callback,
                           File file, Object callbackObject) {
-    selectInput(prompt, callback, file, callbackObject, null, this);  //selectFrame());
+    //selectInput(prompt, callback, file, callbackObject, null, this);
+    surface.selectInput(prompt, callback, file, callbackObject);
   }
 
 
+  /*
   static public void selectInput(String prompt, String callbackMethod,
                                  File file, Object callbackObject, Frame parent,
                                  PApplet sketch) {
@@ -6392,6 +6367,7 @@ public class PApplet implements PConstants {
                                  File file, Object callbackObject, Frame parent) {
     selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD, null);
   }
+  */
 
 
   /**
@@ -6413,10 +6389,12 @@ public class PApplet implements PConstants {
 
   public void selectOutput(String prompt, String callback,
                            File file, Object callbackObject) {
-    selectOutput(prompt, callback, file, callbackObject, null, this); //selectFrame());
+    //selectOutput(prompt, callback, file, callbackObject, null, this);
+    surface.selectOutput(prompt, callback, file, callbackObject);
   }
 
 
+  /*
   static public void selectOutput(String prompt, String callbackMethod,
                                   File file, Object callbackObject, Frame parent) {
     selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE, null);
@@ -6484,6 +6462,7 @@ public class PApplet implements PConstants {
       }
     });
   }
+  */
 
 
   /**
@@ -6505,10 +6484,12 @@ public class PApplet implements PConstants {
 
   public void selectFolder(String prompt, String callback,
                            File file, Object callbackObject) {
-    selectFolder(prompt, callback, file, callbackObject, null, this); //selectFrame());
+    //selectFolder(prompt, callback, file, callbackObject, null, this);
+    surface.selectFolder(prompt, callback, file, callbackObject);
   }
 
 
+  /*
   static public void selectFolder(final String prompt,
                                   final String callbackMethod,
                                   final File defaultSelection,
@@ -6567,11 +6548,12 @@ public class PApplet implements PConstants {
       }
     });
   }
+  */
 
 
-  static private void selectCallback(File selectedFile,
-                                     String callbackMethod,
-                                     Object callbackObject) {
+  static public void selectCallback(File selectedFile,
+                                    String callbackMethod,
+                                    Object callbackObject) {
     try {
       Class<?> callbackClass = callbackObject.getClass();
       Method selectMethod =
@@ -6588,7 +6570,6 @@ public class PApplet implements PConstants {
       System.err.println(callbackMethod + "() could not be found");
     }
   }
-
 
 
   //////////////////////////////////////////////////////////////

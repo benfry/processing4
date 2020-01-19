@@ -22,6 +22,7 @@
 
 package processing.core;
 
+import java.io.File;
 
 public interface PSurface {
   /**
@@ -45,6 +46,19 @@ public interface PSurface {
 //  public void initFrame(PApplet sketch, int backgroundColor,
 //                        int deviceIndex, boolean fullScreen, boolean spanDisplays);
   public void initFrame(PApplet sketch);
+
+//  public int displayDensity();
+
+//  public int displayDensity(int display);
+
+  public void selectInput(String prompt, String callback,
+                          File file, Object callbackObject);
+
+  public void selectOutput(String prompt, String callback,
+                           File file, Object callbackObject);
+
+  public void selectFolder(String prompt, String callback,
+                           File file, Object callbackObject);
 
   /**
    * Get the native window object associated with this drawing surface.

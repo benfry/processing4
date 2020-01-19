@@ -9,6 +9,7 @@ X show 'displays have separate spaces' notice in the console
 X   allows us to get rid of JOptionPane
 X show 'displays have separate spaces' message when the param is unset
 X   Catalina seems to have it un-set, but the default is the same
+X move selectInput/Output/Folder to ShimAWT class
 
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
 
@@ -20,6 +21,8 @@ _   or even that it inits a surface-specific class for getting that info
 
 
 before final release
+_ implement selectInput/Output/Folder methods in PSurfaceJOGL
+_ implement selectInput/Output/Folder methods in PSurfaceFX
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround

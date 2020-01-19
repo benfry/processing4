@@ -27,6 +27,7 @@ import com.sun.glass.ui.Screen;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import processing.awt.ShimAWT;
 import processing.core.*;
 
 
@@ -219,6 +221,27 @@ public class PSurfaceFX implements PSurface {
     public double prefHeight(double width) {
       return getHeight();
     }
+  }
+
+
+  @Override
+  public void selectInput(String prompt, String callbackMethod,
+                          File file, Object callbackObject) {
+    ShimAWT.selectInput(prompt, callbackMethod, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectOutput(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    ShimAWT.selectOutput(prompt, callbackMethod, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectFolder(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    ShimAWT.selectFolder(prompt, callbackMethod, file, callbackObject);
   }
 
 

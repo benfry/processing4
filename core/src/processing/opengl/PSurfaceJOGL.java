@@ -25,6 +25,8 @@
 package processing.opengl;
 
 import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -67,7 +69,7 @@ import com.jogamp.newt.event.InputEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 
-
+import processing.awt.ShimAWT;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -80,6 +82,8 @@ import processing.event.MouseEvent;
 public class PSurfaceJOGL implements PSurface {
   /** Selected GL profile */
   public static GLProfile profile;
+
+  ShimAWT shim;
 
   public PJOGL pgl;
 
@@ -118,6 +122,71 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
+  /*
+  @Override
+  public int displayDensity() {
+    return shim.displayDensity();
+  }
+
+
+  @Override
+  public int displayDensity(int display) {
+    return shim.displayDensity(display);
+  }
+  */
+
+
+  @Override
+  public void selectInput(String prompt, String callbackMethod,
+                          File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+        (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectImpl(prompt, callbackMethod, file,
+                         callbackObject, null, FileDialog.LOAD);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
+  @Override
+  public void selectOutput(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+        (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectImpl(prompt, callbackMethod, file,
+                         callbackObject, null, FileDialog.SAVE);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
+  @Override
+  public void selectFolder(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+        (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectFolderImpl(prompt, callbackMethod, file,
+                               callbackObject, null);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
   public void initOffscreen(PApplet sketch) {
     this.sketch = sketch;
 
@@ -134,6 +203,7 @@ public class PSurfaceJOGL implements PSurface {
 
   public void initFrame(PApplet sketch) {
     this.sketch = sketch;
+
     initIcons();
     initDisplay();
     initGL();

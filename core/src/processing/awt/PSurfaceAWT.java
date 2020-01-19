@@ -41,6 +41,7 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -354,6 +355,41 @@ public class PSurfaceAWT extends PSurfaceNone {
     }
   }
   */
+
+
+  /*
+  @Override
+  public int displayDensity() {
+    return shim.displayDensity();
+  }
+
+
+  @Override
+  public int displayDensity(int display) {
+    return shim.displayDensity(display);
+  }
+  */
+
+
+  @Override
+  public void selectInput(String prompt, String callback,
+                          File file, Object callbackObject) {
+    ShimAWT.selectInput(prompt, callback, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectOutput(String prompt, String callback,
+                           File file, Object callbackObject) {
+    ShimAWT.selectOutput(prompt, callback, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectFolder(String prompt, String callback,
+                           File file, Object callbackObject) {
+    ShimAWT.selectFolder(prompt, callback, file, callbackObject);
+  }
 
 
   // what needs to happen here?

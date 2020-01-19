@@ -22,6 +22,7 @@
 
 package processing.core;
 
+import java.io.File;
 
 /**
  * Surface that's not really visible. Used for PDF and friends, or as a base
@@ -41,6 +42,31 @@ public class PSurfaceNone implements PSurface {
 
   public PSurfaceNone(PGraphics graphics) {
     this.graphics = graphics;
+  }
+
+
+  public int displayDensity() {
+    return 1;
+  }
+
+
+  public int displayDensity(int display) {
+    return 1;
+  }
+
+
+  public void selectInput(String prompt, String callback, File file,
+                          Object callbackObject) {
+  }
+
+
+  public void selectOutput(String prompt, String callback, File file,
+                           Object callbackObject) {
+  }
+
+
+  public void selectFolder(String prompt, String callback, File file,
+                           Object callbackObject) {
   }
 
 
