@@ -2,6 +2,8 @@
 X make edits to core so that awt can be flagged off, and lwjgl can run
 X   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
 X   add --disable-awt to PApplet.main()
+X fix for precision issues with PDF
+X   https://github.com/processing/processing/issues/5801#issuecomment-466632459
 
 
 before final release
@@ -21,8 +23,6 @@ _   move AWT code out of PImage, and into its own PImageJava2D class
 _   how to handle with JavaFX?
 _   https://github.com/processing/processing4/issues/56
 
-_ possible fix for precision issues with PDF
-_   https://github.com/processing/processing/issues/5801#issuecomment-466632459
 
 
 high-ish

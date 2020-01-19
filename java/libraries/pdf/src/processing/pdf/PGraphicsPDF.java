@@ -29,6 +29,7 @@ import java.util.*;
 
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.*;
+import com.lowagie.text.pdf.ByteBuffer;
 
 import processing.awt.PGraphicsJava2D;
 import processing.core.*;
@@ -121,6 +122,9 @@ public class PGraphicsPDF extends PGraphicsJava2D {
 //    long t0 = System.currentTimeMillis();
 
     if (document == null) {
+      // https://github.com/processing/processing/issues/5801#issuecomment-466632459
+      ByteBuffer.HIGH_PRECISION = true;
+
       document = new Document(new Rectangle(width, height));
       boolean missingPath = false;
       try {
