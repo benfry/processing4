@@ -32,19 +32,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 
-// used by loadImage()
-import java.awt.Image;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-// allows us to remove our own MediaTracker code
-import javax.swing.ImageIcon;
-
 // used by link()
 import java.awt.Desktop;
-
-// used by desktopFile() method
-import javax.swing.filechooser.FileSystemView;
 
 // loadXML() error handling
 import javax.xml.parsers.ParserConfigurationException;
@@ -5288,8 +5277,6 @@ public class PApplet implements PConstants {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  protected String[] loadImageFormats;
-
   /**
    * ( begin auto-generated from loadImage.xml )
    *
@@ -5331,29 +5318,14 @@ public class PApplet implements PConstants {
    * @see PGraphics#background(float, float, float, float)
    */
   public PImage loadImage(String filename) {
-//    return loadImage(filename, null, null);
     return loadImage(filename, null);
   }
 
-//  /**
-//   * @param extension the type of image to load, for example "png", "gif", "jpg"
-//   */
-//  public PImage loadImage(String filename, String extension) {
-//    return loadImage(filename, extension, null);
-//  }
-
-//  /**
-//   * @nowebref
-//   */
-//  public PImage loadImage(String filename, Object params) {
-//    return loadImage(filename, null, params);
-//  }
 
   /**
    * @param extension type of image to load, for example "png", "gif", "jpg"
    */
-  public PImage loadImage(String filename, String extension) { //, Object params) {
-
+  public PImage loadImage(String filename, String extension) {
     // awaitAsyncSaveCompletion() has to run on the main thread, because P2D
     // and P3D call GL functions. If this runs on background, requestImage()
     // already called awaitAsyncSaveCompletion() on the main thread.
@@ -5361,127 +5333,7 @@ public class PApplet implements PConstants {
       g.awaitAsyncSaveCompletion(filename);
     }
 
-    if (extension == null) {
-      String lower = filename.toLowerCase();
-      int dot = filename.lastIndexOf('.');
-      if (dot == -1) {
-        extension = "unknown";  // no extension found
-
-      } else {
-        extension = lower.substring(dot + 1);
-
-        // check for, and strip any parameters on the url, i.e.
-        // filename.jpg?blah=blah&something=that
-        int question = extension.indexOf('?');
-        if (question != -1) {
-          extension = extension.substring(0, question);
-        }
-      }
-    }
-
-    // just in case. them users will try anything!
-    extension = extension.toLowerCase();
-
-    if (extension.equals("tga")) {
-      try {
-        PImage image = loadImageTGA(filename);
-//        if (params != null) {
-//          image.setParams(g, params);
-//        }
-        return image;
-      } catch (IOException e) {
-        printStackTrace(e);
-        return null;
-      }
-    }
-
-    if (extension.equals("tif") || extension.equals("tiff")) {
-      byte[] bytes = loadBytes(filename);
-      PImage image =  (bytes == null) ? null : PImage.loadTIFF(bytes);
-//      if (params != null) {
-//        image.setParams(g, params);
-//      }
-      return image;
-    }
-
-    // For jpeg, gif, and png, load them using createImage(),
-    // because the javax.imageio code was found to be much slower.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=392
-    try {
-      if (extension.equals("jpg") || extension.equals("jpeg") ||
-          extension.equals("gif") || extension.equals("png") ||
-          extension.equals("unknown")) {
-        byte[] bytes = loadBytes(filename);
-        if (bytes == null) {
-          return null;
-        } else {
-          //Image awtImage = Toolkit.getDefaultToolkit().createImage(bytes);
-          Image awtImage = new ImageIcon(bytes).getImage();
-
-          if (awtImage instanceof BufferedImage) {
-            BufferedImage buffImage = (BufferedImage) awtImage;
-            int space = buffImage.getColorModel().getColorSpace().getType();
-            if (space == ColorSpace.TYPE_CMYK) {
-              System.err.println(filename + " is a CMYK image, " +
-                                 "only RGB images are supported.");
-              return null;
-              /*
-              // wishful thinking, appears to not be supported
-              // https://community.oracle.com/thread/1272045?start=0&tstart=0
-              BufferedImage destImage =
-                new BufferedImage(buffImage.getWidth(),
-                                  buffImage.getHeight(),
-                                  BufferedImage.TYPE_3BYTE_BGR);
-              ColorConvertOp op = new ColorConvertOp(null);
-              op.filter(buffImage, destImage);
-              image = new PImage(destImage);
-              */
-            }
-          }
-
-          PImage image = new PImage(awtImage);
-          if (image.width == -1) {
-            System.err.println("The file " + filename +
-                               " contains bad image data, or may not be an image.");
-          }
-
-          // if it's a .gif image, test to see if it has transparency
-          if (extension.equals("gif") || extension.equals("png") ||
-              extension.equals("unknown")) {
-            image.checkAlpha();
-          }
-
-//          if (params != null) {
-//            image.setParams(g, params);
-//          }
-          image.parent = this;
-          return image;
-        }
-      }
-    } catch (Exception e) {
-      // show error, but move on to the stuff below, see if it'll work
-      printStackTrace(e);
-    }
-
-    if (loadImageFormats == null) {
-      loadImageFormats = ImageIO.getReaderFormatNames();
-    }
-    if (loadImageFormats != null) {
-      for (int i = 0; i < loadImageFormats.length; i++) {
-        if (extension.equals(loadImageFormats[i])) {
-          return loadImageIO(filename);
-//          PImage image = loadImageIO(filename);
-//          if (params != null) {
-//            image.setParams(g, params);
-//          }
-//          return image;
-        }
-      }
-    }
-
-    // failed, could not load image after all those attempts
-    System.err.println("Could not find a method to load " + filename);
-    return null;
+    return ShimAWT.loadImage(this, filename, extension);
   }
 
 
@@ -5555,250 +5407,6 @@ public class PApplet implements PConstants {
     });
     return vessel;
   }
-
-
-  /**
-   * Use Java 1.4 ImageIO methods to load an image.
-   */
-  protected PImage loadImageIO(String filename) {
-    InputStream stream = createInput(filename);
-    if (stream == null) {
-      System.err.println("The image " + filename + " could not be found.");
-      return null;
-    }
-
-    try {
-      BufferedImage bi = ImageIO.read(stream);
-      PImage outgoing = new PImage(bi.getWidth(), bi.getHeight());
-      outgoing.parent = this;
-
-      bi.getRGB(0, 0, outgoing.width, outgoing.height,
-                outgoing.pixels, 0, outgoing.width);
-
-      // check the alpha for this image
-      // was gonna call getType() on the image to see if RGB or ARGB,
-      // but it's not actually useful, since gif images will come through
-      // as TYPE_BYTE_INDEXED, which means it'll still have to check for
-      // the transparency. also, would have to iterate through all the other
-      // types and guess whether alpha was in there, so.. just gonna stick
-      // with the old method.
-      outgoing.checkAlpha();
-
-      stream.close();
-      // return the image
-      return outgoing;
-
-    } catch (Exception e) {
-      printStackTrace(e);
-      return null;
-    }
-  }
-
-
-  /**
-   * Targa image loader for RLE-compressed TGA files.
-   * <p>
-   * Rewritten for 0115 to read/write RLE-encoded targa images.
-   * For 0125, non-RLE encoded images are now supported, along with
-   * images whose y-order is reversed (which is standard for TGA files).
-   * <p>
-   * A version of this function is in MovieMaker.java. Any fixes here
-   * should be applied over in MovieMaker as well.
-   * <p>
-   * Known issue with RLE encoding and odd behavior in some apps:
-   * https://github.com/processing/processing/issues/2096
-   * Please help!
-   */
-  protected PImage loadImageTGA(String filename) throws IOException {
-    InputStream is = createInput(filename);
-    if (is == null) return null;
-
-    byte[] header = new byte[18];
-    int offset = 0;
-    do {
-      int count = is.read(header, offset, header.length - offset);
-      if (count == -1) return null;
-      offset += count;
-    } while (offset < 18);
-
-    /*
-      header[2] image type code
-      2  (0x02) - Uncompressed, RGB images.
-      3  (0x03) - Uncompressed, black and white images.
-      10 (0x0A) - Run-length encoded RGB images.
-      11 (0x0B) - Compressed, black and white images. (grayscale?)
-
-      header[16] is the bit depth (8, 24, 32)
-
-      header[17] image descriptor (packed bits)
-      0x20 is 32 = origin upper-left
-      0x28 is 32 + 8 = origin upper-left + 32 bits
-
-        7  6  5  4  3  2  1  0
-      128 64 32 16  8  4  2  1
-    */
-
-    int format = 0;
-
-    if (((header[2] == 3) || (header[2] == 11)) &&  // B&W, plus RLE or not
-        (header[16] == 8) &&  // 8 bits
-        ((header[17] == 0x8) || (header[17] == 0x28))) {  // origin, 32 bit
-      format = ALPHA;
-
-    } else if (((header[2] == 2) || (header[2] == 10)) &&  // RGB, RLE or not
-               (header[16] == 24) &&  // 24 bits
-               ((header[17] == 0x20) || (header[17] == 0))) {  // origin
-      format = RGB;
-
-    } else if (((header[2] == 2) || (header[2] == 10)) &&
-               (header[16] == 32) &&
-               ((header[17] == 0x8) || (header[17] == 0x28))) {  // origin, 32
-      format = ARGB;
-    }
-
-    if (format == 0) {
-      System.err.println("Unknown .tga file format for " + filename);
-                         //" (" + header[2] + " " +
-                         //(header[16] & 0xff) + " " +
-                         //hex(header[17], 2) + ")");
-      return null;
-    }
-
-    int w = ((header[13] & 0xff) << 8) + (header[12] & 0xff);
-    int h = ((header[15] & 0xff) << 8) + (header[14] & 0xff);
-    PImage outgoing = createImage(w, h, format);
-
-    // where "reversed" means upper-left corner (normal for most of
-    // the modernized world, but "reversed" for the tga spec)
-    //boolean reversed = (header[17] & 0x20) != 0;
-    // https://github.com/processing/processing/issues/1682
-    boolean reversed = (header[17] & 0x20) == 0;
-
-    if ((header[2] == 2) || (header[2] == 3)) {  // not RLE encoded
-      if (reversed) {
-        int index = (h-1) * w;
-        switch (format) {
-        case ALPHA:
-          for (int y = h-1; y >= 0; y--) {
-            for (int x = 0; x < w; x++) {
-              outgoing.pixels[index + x] = is.read();
-            }
-            index -= w;
-          }
-          break;
-        case RGB:
-          for (int y = h-1; y >= 0; y--) {
-            for (int x = 0; x < w; x++) {
-              outgoing.pixels[index + x] =
-                is.read() | (is.read() << 8) | (is.read() << 16) |
-                0xff000000;
-            }
-            index -= w;
-          }
-          break;
-        case ARGB:
-          for (int y = h-1; y >= 0; y--) {
-            for (int x = 0; x < w; x++) {
-              outgoing.pixels[index + x] =
-                is.read() | (is.read() << 8) | (is.read() << 16) |
-                (is.read() << 24);
-            }
-            index -= w;
-          }
-        }
-      } else {  // not reversed
-        int count = w * h;
-        switch (format) {
-        case ALPHA:
-          for (int i = 0; i < count; i++) {
-            outgoing.pixels[i] = is.read();
-          }
-          break;
-        case RGB:
-          for (int i = 0; i < count; i++) {
-            outgoing.pixels[i] =
-              is.read() | (is.read() << 8) | (is.read() << 16) |
-              0xff000000;
-          }
-          break;
-        case ARGB:
-          for (int i = 0; i < count; i++) {
-            outgoing.pixels[i] =
-              is.read() | (is.read() << 8) | (is.read() << 16) |
-              (is.read() << 24);
-          }
-          break;
-        }
-      }
-
-    } else {  // header[2] is 10 or 11
-      int index = 0;
-      int[] px = outgoing.pixels;
-
-      while (index < px.length) {
-        int num = is.read();
-        boolean isRLE = (num & 0x80) != 0;
-        if (isRLE) {
-          num -= 127;  // (num & 0x7F) + 1
-          int pixel = 0;
-          switch (format) {
-          case ALPHA:
-            pixel = is.read();
-            break;
-          case RGB:
-            pixel = 0xFF000000 |
-              is.read() | (is.read() << 8) | (is.read() << 16);
-            //(is.read() << 16) | (is.read() << 8) | is.read();
-            break;
-          case ARGB:
-            pixel = is.read() |
-              (is.read() << 8) | (is.read() << 16) | (is.read() << 24);
-            break;
-          }
-          for (int i = 0; i < num; i++) {
-            px[index++] = pixel;
-            if (index == px.length) break;
-          }
-        } else {  // write up to 127 bytes as uncompressed
-          num += 1;
-          switch (format) {
-          case ALPHA:
-            for (int i = 0; i < num; i++) {
-              px[index++] = is.read();
-            }
-            break;
-          case RGB:
-            for (int i = 0; i < num; i++) {
-              px[index++] = 0xFF000000 |
-                is.read() | (is.read() << 8) | (is.read() << 16);
-              //(is.read() << 16) | (is.read() << 8) | is.read();
-            }
-            break;
-          case ARGB:
-            for (int i = 0; i < num; i++) {
-              px[index++] = is.read() | //(is.read() << 24) |
-                (is.read() << 8) | (is.read() << 16) | (is.read() << 24);
-              //(is.read() << 16) | (is.read() << 8) | is.read();
-            }
-            break;
-          }
-        }
-      }
-
-      if (!reversed) {
-        int[] temp = new int[w];
-        for (int y = 0; y < h/2; y++) {
-          int z = (h-1) - y;
-          System.arraycopy(px, y*w, temp, 0, w);
-          System.arraycopy(px, z*w, px, y*w, w);
-          System.arraycopy(temp, 0, px, z*w, w);
-        }
-      }
-    }
-    is.close();
-    return outgoing;
-  }
-
 
 
   //////////////////////////////////////////////////////////////
@@ -7894,17 +7502,15 @@ public class PApplet implements PConstants {
 
   static File desktopFolder;
 
-  /** Not a supported function. For testing use only. */
   static public File desktopFile(String what) {
     if (desktopFolder == null) {
       // Should work on Linux and OS X (on OS X, even with the localized version).
       desktopFolder = new File(System.getProperty("user.home"), "Desktop");
       if (!desktopFolder.exists()) {
-        if (platform == WINDOWS) {
-          FileSystemView filesys = FileSystemView.getFileSystemView();
-          desktopFolder = filesys.getHomeDirectory();
+        if (platform == WINDOWS && !disableAWT) {
+          desktopFolder = ShimAWT.getWindowsDesktop();
         } else {
-          throw new UnsupportedOperationException("Could not find a suitable desktop foldder");
+          throw new UnsupportedOperationException("Could not find a suitable Desktop foldder");
         }
       }
     }
@@ -7912,7 +7518,6 @@ public class PApplet implements PConstants {
   }
 
 
-  /** Not a supported function. For testing use only. */
   static public String desktopPath(String what) {
     return desktopFile(what).getAbsolutePath();
   }

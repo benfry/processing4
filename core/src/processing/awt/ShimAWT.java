@@ -4,14 +4,25 @@ import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.Frame;
 import java.awt.HeadlessException;
+import java.awt.Image;
 import java.awt.Toolkit;
+import java.awt.color.ColorSpace;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 
+// used by desktopFile() method
+import javax.swing.filechooser.FileSystemView;
+
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.core.PImage;
 
 
 /**
@@ -20,7 +31,7 @@ import processing.core.PConstants;
  * JavaFX, and JOGL renderers. Once PSurfaceFX and PSurfaceJOGL have
  * their own implementations, these methods will move to PSurfaceAWT.
  */
-public class ShimAWT {
+public class ShimAWT implements PConstants {
   /*
   PGraphics graphics;
   PApplet sketch;
@@ -31,6 +42,163 @@ public class ShimAWT {
     this.sketch = sketch;
   }
   */
+
+
+  static public PImage loadImage(PApplet sketch, String filename, String extension) {
+    if (extension == null) {
+      String lower = filename.toLowerCase();
+      int dot = filename.lastIndexOf('.');
+      if (dot == -1) {
+        extension = "unknown";  // no extension found
+
+      } else {
+        extension = lower.substring(dot + 1);
+
+        // check for, and strip any parameters on the url, i.e.
+        // filename.jpg?blah=blah&something=that
+        int question = extension.indexOf('?');
+        if (question != -1) {
+          extension = extension.substring(0, question);
+        }
+      }
+    }
+
+    // just in case. them users will try anything!
+    extension = extension.toLowerCase();
+
+    if (extension.equals("tga")) {
+      try {
+        InputStream input = sketch.createInput(filename);
+        if (input == null) return null;
+
+        PImage image = PImage.loadTGA(input);
+        image.parent = sketch;
+        return image;
+
+      } catch (IOException e) {
+        e.printStackTrace();
+        return null;
+      }
+    }
+
+    if (extension.equals("tif") || extension.equals("tiff")) {
+      InputStream input = sketch.createInput(filename);
+      PImage image =  (input == null) ? null : PImage.loadTIFF(input);
+      return image;
+    }
+
+    // For jpeg, gif, and png, load them using createImage(),
+    // because the javax.imageio code was found to be much slower.
+    // http://dev.processing.org/bugs/show_bug.cgi?id=392
+    try {
+      if (extension.equals("jpg") || extension.equals("jpeg") ||
+          extension.equals("gif") || extension.equals("png") ||
+          extension.equals("unknown")) {
+        byte[] bytes = sketch.loadBytes(filename);
+        if (bytes == null) {
+          return null;
+        } else {
+          //Image awtImage = Toolkit.getDefaultToolkit().createImage(bytes);
+          Image awtImage = new ImageIcon(bytes).getImage();
+
+          if (awtImage instanceof BufferedImage) {
+            BufferedImage buffImage = (BufferedImage) awtImage;
+            int space = buffImage.getColorModel().getColorSpace().getType();
+            if (space == ColorSpace.TYPE_CMYK) {
+              System.err.println(filename + " is a CMYK image, " +
+                                 "only RGB images are supported.");
+              return null;
+              /*
+              // wishful thinking, appears to not be supported
+              // https://community.oracle.com/thread/1272045?start=0&tstart=0
+              BufferedImage destImage =
+                new BufferedImage(buffImage.getWidth(),
+                                  buffImage.getHeight(),
+                                  BufferedImage.TYPE_3BYTE_BGR);
+              ColorConvertOp op = new ColorConvertOp(null);
+              op.filter(buffImage, destImage);
+              image = new PImage(destImage);
+              */
+            }
+          }
+
+          PImage image = new PImage(awtImage);
+          if (image.width == -1) {
+            System.err.println("The file " + filename +
+                               " contains bad image data, or may not be an image.");
+          }
+
+          // if it's a .gif image, test to see if it has transparency
+          if (extension.equals("gif") || extension.equals("png") ||
+              extension.equals("unknown")) {
+            image.checkAlpha();
+          }
+
+          image.parent = sketch;
+          return image;
+        }
+      }
+    } catch (Exception e) {
+      // show error, but move on to the stuff below, see if it'll work
+      e.printStackTrace();
+    }
+
+    if (loadImageFormats == null) {
+      loadImageFormats = ImageIO.getReaderFormatNames();
+    }
+    if (loadImageFormats != null) {
+      for (int i = 0; i < loadImageFormats.length; i++) {
+        if (extension.equals(loadImageFormats[i])) {
+          return loadImageIO(sketch, filename);
+        }
+      }
+    }
+
+    // failed, could not load image after all those attempts
+    System.err.println("Could not find a method to load " + filename);
+    return null;
+  }
+
+
+  static protected String[] loadImageFormats;
+
+
+  /**
+   * Use Java 1.4 ImageIO methods to load an image.
+   */
+  static protected PImage loadImageIO(PApplet sketch, String filename) {
+    InputStream stream = sketch.createInput(filename);
+    if (stream == null) {
+      System.err.println("The image " + filename + " could not be found.");
+      return null;
+    }
+
+    try {
+      BufferedImage bi = ImageIO.read(stream);
+      PImage outgoing = new PImage(bi.getWidth(), bi.getHeight());
+      outgoing.parent = sketch;
+
+      bi.getRGB(0, 0, outgoing.width, outgoing.height,
+                outgoing.pixels, 0, outgoing.width);
+
+      // check the alpha for this image
+      // was gonna call getType() on the image to see if RGB or ARGB,
+      // but it's not actually useful, since gif images will come through
+      // as TYPE_BYTE_INDEXED, which means it'll still have to check for
+      // the transparency. also, would have to iterate through all the other
+      // types and guess whether alpha was in there, so.. just gonna stick
+      // with the old method.
+      outgoing.checkAlpha();
+
+      stream.close();
+      // return the image
+      return outgoing;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 
 
   static public void initRun() {
@@ -283,5 +451,12 @@ public class ShimAWT {
       }
       lookAndFeelCheck = true;
     }
+  }
+
+
+  // TODO maybe call this with reflection from inside PApplet?
+  // longer term, develop a more general method for other platforms
+  static public File getWindowsDesktop() {
+    return FileSystemView.getFileSystemView().getHomeDirectory();
   }
 }

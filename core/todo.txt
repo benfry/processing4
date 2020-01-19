@@ -11,10 +11,15 @@ X show 'displays have separate spaces' message when the param is unset
 X   Catalina seems to have it un-set, but the default is the same
 X move selectInput/Output/Folder to ShimAWT class
 X remove the java.awt.Frame object from PApplet
+X move loadImage() into ShimAWT
+X desktopFile() and desktopPath() methods are supported, unless we find they're trouble
+
+_ move ShimAWT.loadImage() to the PSurface subclasses
 
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
-_ java.awt.Frame object "frame" removed from PApplet
+_ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
+_ protected PImage.checkAlpha() now public
 
 _ Surface not available inside handleSettings()
 _   therefore impossible to get displays, displayWidth/Height, and pixelDensity
