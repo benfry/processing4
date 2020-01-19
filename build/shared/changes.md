@@ -2,9 +2,11 @@
 
 *Revision 1270 - 18 January 2019*
 
-This is a massive update! With the help of [Sam Pottinger](https://gleap.org/), we're working to get Processing to run with Java 11. This will give us a 
+This is a massive update! With the help of [Sam Pottinger](https://gleap.org/), we're working to get Processing to run with Java 11. This will give us a more stable platform for the next few years. 
 
 In the process, there are also significant updates which include updated Java syntax support and lots of other long-awaited features.
+
+We've started a [Changes in 4.0](https://github.com/processing/processing4/wiki/Changes-in-4.0) document to keep track of all the details.
 
 We recommend using a different sketchbook location for 4.0, to avoid confusion with things that might be incompatible with your 3.0 work.
 
@@ -33,7 +35,6 @@ We recommend using a different sketchbook location for 4.0, to avoid confusion w
 ### Other Contributed Fixes 
 
 * Disable FBO when using Intel HD 3000 Graphics. [4104](https://github.com/processing/processing/issues/4104), [5881](https://github.com/processing/processing/pull/5881)
-
 * `rotateZ()` was breaking in `PShapeOpenGL`. [28](https://github.com/processing/processing4/issues/28), [41](https://github.com/processing/processing4/pull/41)
 
 
