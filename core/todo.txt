@@ -10,8 +10,11 @@ X   allows us to get rid of JOptionPane
 X show 'displays have separate spaces' message when the param is unset
 X   Catalina seems to have it un-set, but the default is the same
 X move selectInput/Output/Folder to ShimAWT class
+X remove the java.awt.Frame object from PApplet
 
+api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
+_ java.awt.Frame object "frame" removed from PApplet
 
 _ Surface not available inside handleSettings()
 _   therefore impossible to get displays, displayWidth/Height, and pixelDensity

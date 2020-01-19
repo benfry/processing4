@@ -24,9 +24,6 @@
 
 package processing.core;
 
-// dummy object for backwards compatibility, plus the select methods
-import java.awt.Frame;
-
 // before calling settings() to get displayWidth/Height
 import java.awt.DisplayMode;
 // handleSettings() and displayDensity()
@@ -811,11 +808,11 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   * A dummy frame to keep compatibility with 2.x code
-   * and encourage users to update.
-   */
-  public Frame frame;
+//  /**
+//   * A dummy frame to keep compatibility with 2.x code
+//   * and encourage users to update.
+//   */
+//  public Frame frame;
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -10727,9 +10724,10 @@ public class PApplet implements PConstants {
     g = createPrimaryGraphics();
     surface = g.createSurface();
 
-    if (!disableAWT) {
-      // Create fake Frame object to warn user about the changes
-      if (g.displayable()) {
+    // Create fake Frame object to warn user about the changes
+    if (g.displayable()) {
+      /*
+      if (!disableAWT) {
         frame = new Frame() {
           @Override
           public void setResizable(boolean resizable) {
@@ -10754,7 +10752,7 @@ public class PApplet implements PConstants {
             throw new RuntimeException("'frame' has been removed from Processing 3, " +
               "use fullScreen() to get an undecorated full screen frame");
           }
-
+          */
           /*
           // Can't override this one because it's called by Window's constructor
           @Override
@@ -10763,7 +10761,7 @@ public class PApplet implements PConstants {
             surface.setLocation(x, y);
           }
           */
-
+          /*
           @Override
           public void setSize(int w, int h) {
             deprecationWarning("setSize");
@@ -10777,8 +10775,8 @@ public class PApplet implements PConstants {
           }
         };
       }
-
-      surface.initFrame(this); //, backgroundColor, displayNum, fullScreen, spanDisplays);
+      */
+      surface.initFrame(this);
       surface.setTitle(getClass().getSimpleName());
 
     } else {
