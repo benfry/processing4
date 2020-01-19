@@ -148,21 +148,20 @@ public class PApplet implements PConstants {
   public static final float javaVersion = 1 + javaPlatform / 10f;
 
   /**
-   * Current platform in use, one of the
-   * PConstants WINDOWS, MACOSX, MACOS9, LINUX or OTHER.
+   * Current platform in use, one of the PConstants WINDOWS, MACOS, LINUX or OTHER.
    */
   static public int platform;
 
   static {
-    String osname = System.getProperty("os.name");
+    final String name = System.getProperty("os.name");
 
-    if (osname.indexOf("Mac") != -1) {
+    if (name.indexOf("Mac") != -1) {
       platform = MACOS;
 
-    } else if (osname.indexOf("Windows") != -1) {
+    } else if (name.indexOf("Windows") != -1) {
       platform = WINDOWS;
 
-    } else if (osname.equals("Linux")) {  // true for the ibm vm
+    } else if (name.equals("Linux")) {  // true for the ibm vm
       platform = LINUX;
 
     } else {
@@ -239,24 +238,6 @@ public class PApplet implements PConstants {
   static public final int DEFAULT_WIDTH = 100;
   static public final int DEFAULT_HEIGHT = 100;
 
-//  /**
-//   * Exception thrown when size() is called the first time.
-//   * <p>
-//   * This is used internally so that setup() is forced to run twice
-//   * when the renderer is changed. This is the only way for us to handle
-//   * invoking the new renderer while also in the midst of rendering.
-//   */
-//  static public class RendererChangeException extends RuntimeException { }
-
-  /**
-   * true if no size() command has been executed. This is used to wait until
-   * a size has been set before placing in the window and showing it.
-   */
-//  public boolean defaultSize;
-
-//  /** Storage for the current renderer size to avoid re-allocation. */
-//  Dimension currentSize = new Dimension();
-
   /**
    * ( begin auto-generated from pixels.xml )
    *
@@ -283,7 +264,7 @@ public class PApplet implements PConstants {
    * @see PApplet#get(int, int, int, int)
    * @see PApplet#set(int, int, int)
    * @see PImage
-   * @see PApplet#pixelDensity()
+   * @see PApplet#pixelDensity(int)
    * @see PApplet#pixelWidth
    * @see PApplet#pixelHeight
    */
