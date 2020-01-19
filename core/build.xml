@@ -7,7 +7,9 @@
     <delete dir="bin" />
     <delete dir="bin-test" />
     <delete file="library/core.jar" />
+  </target>
 
+  <target name="clean-jogl" description="Clean out the JOGL binaries">
     <delete>
       <fileset dir="library" includes="gluegen-rt*.jar" />
       <fileset dir="library" includes="jogl-all*.jar" />
