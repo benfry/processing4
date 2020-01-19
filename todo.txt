@@ -1,4 +1,4 @@
-1270 (4.x alpha)
+1270 (4.0a1)
 X use ctrl-page up/down for tabs on Windows
 X   https://github.com/processing/processing/issues/5794
 X fix potential highlighting issue that wasn't selecting portions of text
@@ -120,6 +120,7 @@ X Issue with https and downloading the binaries, +Checksums?
 X   https://github.com/processing/processing-docs/issues/766
 X   was just an issue with https vs http
 
+
 before final release
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
@@ -140,7 +141,6 @@ _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348
 
 _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
-
 
 
 from Casey
