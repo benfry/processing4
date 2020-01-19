@@ -354,9 +354,6 @@
   <target name="jdk-download" depends="jdk-check, downloader-setup"
           unless="jdk.tgz.downloaded">
 
-    <!-- we normally download a JRE, except on arm -->
-    <property name="jdk.download.jdk" value="true" />
-
     <condition property="jdk.downloader"
                value="${target-platform}-i586.tar.gz">
         <equals arg1="${jdk.data.model}" arg2="32" />
@@ -366,13 +363,12 @@
       <equals arg1="${jdk.data.model}" arg2="64" />
     </condition>
 
-    <downloader train="${jdk.train}"
+    <downloader component="jdk"
+                train="${jdk.train}"
                 version="${jdk.version}"
-                openJdk="true"
                 platform="${target-platform}${jdk.data.model}"
                 update="${jdk.update}"
                 build="${jdk.build}"
-                component="JDK"
                 flavor="${jdk.downloader}"
                 path="${jdk.tgz.path}" />
   </target>
@@ -380,17 +376,14 @@
   <target name="jfx-download" depends="jfx-check, downloader-setup"
           unless="jfx.zip.downloaded">
 
-    <downloader train="${jfx.train}"
+    <downloader component="jfx"
+                train="${jfx.train}"
                 version="${jfx.version}"
-                openJdk="true"
                 platform="${target-platform}${jdk.data.model}"
                 update="${jfx.update}"
                 build="1"
-                hash="${jfx.hash}"
-                component="JFX"
                 flavor="${target-platform}${jdk.data.model}.zip"
                 path="${jfx.path.zip}" />
-
   </target>
 
   <!-- code signing hack, turns on code signing during dist -->
@@ -694,16 +687,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <condition property="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk">
-      <equals arg1="${jdk.train}" arg2="1" />
-    </condition>
-
-    <!-- Force full JDK when not on train 1 (starts with java 11) -->
-    <condition property="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk/">
-      <not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </not>
-    </condition>
+    <property name="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk/" />
 
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
@@ -1133,31 +1117,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <!-- use the jdk subfolder when having downloaded a JDK file -->
-    <condition property="jdk.dir" value="jdk${jdk.esoteric}">
-      <!-- property might not be set, but it is for arm -->
-      <and>
-        <equals arg1="${jdk.download.jdk}" arg2="true" />
-        <equals arg1="${jdk.train}" arg2="1" />
-      </and>
-    </condition>
-
-    <!-- use top level JRE otherwise -->
-    <condition property="jdk.dir" value="jdk${jdk.esoteric}">
-      <and>
-        <not>
-          <equals arg1="${jdk.download.jdk}" arg2="true" />
-        </not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </and>
-    </condition>
-
-    <!-- Force full JDK when not on train 1 (starts with java 11) -->
-    <condition property="jdk.dir" value="jdk-${jdk.esoteric}+${jdk.build}/">
-      <not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </not>
-    </condition>
+    <property name="jdk.dir" value="jdk-${jdk.esoteric}+${jdk.build}/" />
 
     <exec executable="rsync" dir="linux">
       <arg value="-a" />
@@ -1485,16 +1445,7 @@
            src="${jdk.tgz.path}"
            overwrite="false" />
 
-    <condition property="jdk.dir" value="windows/work/jdk${jdk.esoteric}">
-      <equals arg1="${jdk.train}" arg2="1" />
-    </condition>
-
-    <!-- Force full JDK when not on train 1 (starts with java 11) -->
-    <condition property="jdk.dir" value="windows/work/jdk-${jdk.esoteric}+${jdk.build}/">
-      <not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </not>
-    </condition>
+    <property name="jdk.dir" value="windows/work/jdk-${jdk.esoteric}+${jdk.build}/" />
 
     <move file="${jdk.dir}" tofile="windows/work/java" />
 

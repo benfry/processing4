@@ -35,15 +35,14 @@
   </macrodef>
 
   <target name="test-compile">
-    <compilecommon srcdir="src; test" destdir="bin-test" classpath="classpath.test" />
+    <!-- <compilecommon srcdir="src; test" destdir="bin-test" classpath="classpath.test" /> -->
   </target>
 
   <target name="test" depends="test-compile">
     <junit haltonfailure="true">
       <classpath refid="classpath.test" />
       <formatter type="brief" usefile="false" />
-      <test name="AdoptOpenJdkDownloadUrlGeneratorTest" />
-      <test name="OracleDownloadUrlGeneratorTest" />
+      <!-- <test name="AdoptOpenJdkDownloadUrlGeneratorTest" /> -->
     </junit>
   </target>
 

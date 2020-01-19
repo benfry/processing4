@@ -12,6 +12,8 @@ X   link to a wiki page for 4.x
 X   create wiki page for changes in 4.x
 X selecting a sketch in the Sketch menu no longer opens its window
 X   https://github.com/processing/processing/issues/5882
+X streamlining the jdk downloader
+X   https://github.com/processing/processing4/issues/47
 
 cross-ported from 3.5.4
 X don't remove entries from Recent menu on Save As
@@ -74,6 +76,9 @@ X   https://github.com/processing/processing/issues/5805
 X   https://github.com/processing/processing/pull/5909
 X updtes to Ukrainian translation
 X   https://github.com/processing/processing/pull/5944
+X rename-variable menu allows Java identifiers
+X   https://github.com/processing/processing/issues/5828
+X   https://github.com/processing/processing/pull/5906
 
 sampottinger
 X Fix JDK naming and cleanup in ant build
@@ -117,6 +122,8 @@ _ change help menu links to go to newer FAQ and the rest
 
 
 open issues
+_ update the docs repo
+_   check with Casey re: shallow clone or approach
 _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
 _ further streamline the downloader
@@ -129,9 +136,6 @@ _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
 
 
-quick fixes
-_ rename-variable menu allows Java identifiers
-_   https://github.com/processing/processing/pull/5906
 
 from Casey
 _ Math for BLEND incorrect in the reference?
