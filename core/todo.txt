@@ -22,6 +22,7 @@ X   https://github.com/processing/processing4/issues/4
 X Remove all usage of AWT from PApplet
 X   https://github.com/processing/processing4/issues/55
 
+
 contribs
 X remove redundant boxing and casting
 X   https://github.com/processing/processing4/pull/51
@@ -29,6 +30,7 @@ X   https://github.com/processing/processing4/pull/51
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
 _ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
+X   https://github.com/processing/processing4/issues/54
 _ protected PImage.checkAlpha() now public
 _ all AWT calls have been moved out of PImage
 _   this may be a problem for anything that was relying on those internals
@@ -48,6 +50,8 @@ _ implement openLink() in PSurfaceJOGL
 
 
 before final release
+_ Warn users or provide auto-fix when `frame` is used in a sketch
+_   https://github.com/processing/processing4/issues/59
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
