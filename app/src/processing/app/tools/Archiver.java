@@ -26,6 +26,7 @@ package processing.app.tools;
 
 import processing.app.*;
 import processing.app.ui.Editor;
+import processing.awt.ShimAWT;
 import processing.core.PApplet;
 
 import java.io.*;
@@ -97,8 +98,8 @@ public class Archiver implements Tool {
     } while (newbie.exists());
 
     // open up a prompt for where to save this fella
-    PApplet.selectOutput(Language.text("archive_sketch"),
-                         "fileSelected", newbie, this, editor);
+    ShimAWT.selectOutput(Language.text("archive_sketch"),
+                         "fileSelected", newbie, this);
   }
 
 

@@ -40,6 +40,7 @@ import processing.app.Base;
 import processing.app.Language;
 import processing.app.Platform;
 import processing.app.Preferences;
+import processing.awt.ShimAWT;
 import processing.core.PApplet;
 
 
@@ -113,9 +114,9 @@ public class Welcome {
         // The link will already have the full URL prefix
         if (link.endsWith("#sketchbook")) {
           File folder = new File(Preferences.getSketchbookPath()).getParentFile();
-          PApplet.selectFolder(Language.text("preferences.sketchbook_location.popup"),
+          ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
                                "sketchbookCallback", folder,
-                               this, this);
+                               this);
         } else {
           super.handleLink(link);
         }
