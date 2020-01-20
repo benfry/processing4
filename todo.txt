@@ -1,5 +1,10 @@
 1271 (4.0a2)
 
+sam
+X Resolve rewrite of pixelDensity to settings in preproc
+X   https://github.com/processing/processing4/pull/60
+X   https://github.com/processing/processing4/issues/58
+
 
 before final release
 _ Update graphics and visual design elements for 4.x
