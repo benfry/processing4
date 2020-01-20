@@ -170,6 +170,18 @@ public class Language {
   }
 
 
+  static public void addModeStrings(Mode mode) {
+    String baseFilename = "languages/mode.properties";
+    String langFilename = "languages/mode_" + instance.language + ".properties";
+    File modeBaseFile = new File(mode.getFolder(), baseFilename);
+    File modeLangFile = new File(mode.getFolder(), langFilename);
+    if (modeBaseFile.exists() && modeLangFile.exists()) {
+      instance.bundle.read(modeBaseFile);
+      instance.bundle.read(modeLangFile);
+    }
+  }
+
+
   static private String get(String key) {
     LanguageBundle bundle = init().bundle;
 
@@ -182,7 +194,6 @@ public class Language {
 
     return null;
   }
-
 
   /** Get translation from bundles. */
   static public String text(String key) {
