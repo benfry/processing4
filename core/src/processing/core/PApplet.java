@@ -5322,7 +5322,7 @@ public class PApplet implements PConstants {
       g.awaitAsyncSaveCompletion(filename);
     }
 
-    return ShimAWT.loadImage(this, filename, extension);
+    return surface.loadImage(filename, extension);
   }
 
 

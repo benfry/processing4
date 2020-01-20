@@ -69,7 +69,6 @@ import com.jogamp.newt.event.InputEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 
-import processing.awt.ShimAWT;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
@@ -78,12 +77,13 @@ import processing.core.PSurface;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
+// have this removed by 4.0 final
+import processing.awt.ShimAWT;
+
 
 public class PSurfaceJOGL implements PSurface {
   /** Selected GL profile */
   public static GLProfile profile;
-
-  ShimAWT shim;
 
   public PJOGL pgl;
 
@@ -134,6 +134,12 @@ public class PSurfaceJOGL implements PSurface {
     return shim.displayDensity(display);
   }
   */
+
+
+  // TODO rewrite before 4.0 release
+  public PImage loadImage(String path, Object... args) {
+    return ShimAWT.loadImage(sketch, path, args);
+  }
 
 
   @Override

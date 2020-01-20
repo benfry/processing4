@@ -55,6 +55,10 @@ public interface PSurface {
 
   //
 
+  public PImage loadImage(String path, Object... args);
+
+  //
+
   public void selectInput(String prompt, String callback,
                           File file, Object callbackObject);
 

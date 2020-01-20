@@ -224,6 +224,12 @@ public class PSurfaceFX implements PSurface {
   }
 
 
+  // TODO rewrite before 4.0 release
+  public PImage loadImage(String path, Object... args) {
+    return ShimAWT.loadImage(sketch, path, args);
+  }
+
+
   @Override
   public void selectInput(String prompt, String callbackMethod,
                           File file, Object callbackObject) {

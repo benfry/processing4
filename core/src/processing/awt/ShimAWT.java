@@ -47,7 +47,13 @@ public class ShimAWT implements PConstants {
   */
 
 
-  static public PImage loadImage(PApplet sketch, String filename, String extension) {
+  static public PImage loadImage(PApplet sketch, String filename, Object... args) {
+    String extension = null;
+    if (args != null && args.length > 0) {
+      // the only one that's supported for now
+      extension = (String) args[0];
+    }
+
     if (extension == null) {
       String lower = filename.toLowerCase();
       int dot = filename.lastIndexOf('.');

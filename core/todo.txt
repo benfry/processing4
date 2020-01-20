@@ -13,8 +13,7 @@ X move selectInput/Output/Folder to ShimAWT class
 X remove the java.awt.Frame object from PApplet
 X move loadImage() into ShimAWT
 X desktopFile() and desktopPath() methods are supported, unless we find they're trouble
-
-_ move ShimAWT.loadImage() to the PSurface subclasses
+X move ShimAWT.loadImage() to the PSurface subclasses
 
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed

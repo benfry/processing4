@@ -24,6 +24,8 @@ package processing.core;
 
 import java.io.File;
 
+import processing.awt.ShimAWT;
+
 /**
  * Surface that's not really visible. Used for PDF and friends, or as a base
  * class for other drawing surfaces. It includes the standard rendering loop.
@@ -52,6 +54,11 @@ public class PSurfaceNone implements PSurface {
 
   public int displayDensity(int display) {
     return 1;
+  }
+
+
+  public PImage loadImage(String path, Object... args) {
+    return ShimAWT.loadImage(sketch, path, args);
   }
 
 
