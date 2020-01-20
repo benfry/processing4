@@ -72,7 +72,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   private String sketchWidth;
   private String sketchHeight;
-  private String sketchRenderer;
+  private String sketchRenderer = null;
+  private String sketchOutputFilename = null;
 
   private boolean sizeRequiresRewrite = false;
   private boolean sizeIsFullscreen = false;
@@ -620,9 +621,14 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
               sketchRenderer.equals("P3D") ||
               sketchRenderer.equals("OPENGL") ||
               sketchRenderer.equals("JAVA2D") ||
+              sketchRenderer.equals("PDF") ||
               sketchRenderer.equals("FX2D"))) {
             thisRequiresRewrite = false;
           }
+        }
+
+        if (argsContext.getChildCount() > 5) {
+          sketchOutputFilename = argsContext.getChild(6).getText();
         }
       }
 
@@ -1001,6 +1007,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
       if (sketchRenderer != null) {
         argJoiner.add(sketchRenderer);
+      }
+
+      if (sketchOutputFilename != null) {
+        argJoiner.add(sketchOutputFilename);
       }
 
       settingsInner = String.format("size(%s);", argJoiner.toString());
