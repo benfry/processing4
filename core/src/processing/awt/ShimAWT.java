@@ -1,5 +1,6 @@
 package processing.awt;
 
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
 import java.awt.Frame;
@@ -11,6 +12,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -458,5 +461,20 @@ public class ShimAWT implements PConstants {
   // longer term, develop a more general method for other platforms
   static public File getWindowsDesktop() {
     return FileSystemView.getFileSystemView().getHomeDirectory();
+  }
+
+
+  static public boolean openLink(String url) {
+    try {
+      if (Desktop.isDesktopSupported()) {
+        Desktop.getDesktop().browse(new URI(url));
+        return true;
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (URISyntaxException e) {
+      e.printStackTrace();
+    }
+    return false;
   }
 }

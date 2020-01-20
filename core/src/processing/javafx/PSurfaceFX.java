@@ -249,11 +249,6 @@ public class PSurfaceFX implements PSurface {
   }
 
 
-//  public Component initComponent(PApplet sketch) {
-//    return null;
-//  }
-
-
   static public class PApplicationFX extends Application {
     static public PSurfaceFX surface;
 //    static String title;  // title set at launch
@@ -725,6 +720,11 @@ public class PSurfaceFX implements PSurface {
 
   public void hideCursor() {
     canvas.getScene().setCursor(Cursor.NONE);
+  }
+
+
+  public boolean openLink(String url) {
+    return ShimAWT.openLink(url);
   }
 
 

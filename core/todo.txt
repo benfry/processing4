@@ -31,6 +31,8 @@ _   or even that it inits a surface-specific class for getting that info
 before final release
 _ implement selectInput/Output/Folder methods in PSurfaceJOGL
 _ implement selectInput/Output/Folder methods in PSurfaceFX
+_ implement openLink() in PSurfaceFX
+_ implement openLink() in PSurfaceJOGL
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround

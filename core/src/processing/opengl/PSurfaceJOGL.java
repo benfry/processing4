@@ -1395,4 +1395,9 @@ public class PSurfaceJOGL implements PSurface {
       }
     });
   }
+
+
+  public boolean openLink(String url) {
+    return ShimAWT.openLink(url);
+  }
 }

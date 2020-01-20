@@ -35,6 +35,12 @@ public interface PSurface {
   static public final int MIN_WINDOW_WIDTH = 128;
   static public final int MIN_WINDOW_HEIGHT = 128;
 
+  //public int displayDensity();
+
+  //public int displayDensity(int display);
+
+  //
+
   // renderer that doesn't draw to the screen
   public void initOffscreen(PApplet sketch);
 
@@ -47,9 +53,7 @@ public interface PSurface {
 //                        int deviceIndex, boolean fullScreen, boolean spanDisplays);
   public void initFrame(PApplet sketch);
 
-//  public int displayDensity();
-
-//  public int displayDensity(int display);
+  //
 
   public void selectInput(String prompt, String callback,
                           File file, Object callbackObject);
@@ -59,6 +63,8 @@ public interface PSurface {
 
   public void selectFolder(String prompt, String callback,
                            File file, Object callbackObject);
+
+  //
 
   /**
    * Get the native window object associated with this drawing surface.
@@ -150,6 +156,14 @@ public interface PSurface {
   public void showCursor();
 
   public void hideCursor();
+
+  //
+
+  /**
+   * @param url the link to open
+   * @return false if unable to find a viable way to open
+   */
+  public boolean openLink(String url);
 
   //
 

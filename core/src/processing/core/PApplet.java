@@ -32,9 +32,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 
-// used by link()
-import java.awt.Desktop;
-
 // loadXML() error handling
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -3271,17 +3268,9 @@ public class PApplet implements PConstants {
    * @param url the complete URL, as a String in quotes
    */
   public void link(String url) {
-    try {
-      if (Desktop.isDesktopSupported()) {
-        Desktop.getDesktop().browse(new URI(url));
-      } else {
-        // Just pass it off to open() and hope for the best
-        launch(url);
-      }
-    } catch (IOException e) {
-      printStackTrace(e);
-    } catch (URISyntaxException e) {
-      printStackTrace(e);
+    if (!surface.openLink(url)) {
+      // Just pass it off to launch() and hope for the best
+      launch(url);
     }
   }
 

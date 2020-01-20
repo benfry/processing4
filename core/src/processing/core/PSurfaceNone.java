@@ -204,6 +204,14 @@ public class PSurfaceNone implements PSurface {
   //
 
 
+  public boolean openLink(String url) {
+    return false;
+  }
+
+
+  //
+
+
   public Thread createThread() {
     return new AnimationThread();
   }
