@@ -52,6 +52,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   private static final String VERSION_STR = "3.0.0";
   private static final String SIZE_METHOD_NAME = "size";
+  private static final String PIXEL_DENSITY_METHOD_NAME = "pixelDensity";
   private static final String FULLSCREEN_METHOD_NAME = "fullScreen";
 
   private String sketchName;
@@ -73,8 +74,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private String sketchWidth;
   private String sketchHeight;
   private String sketchRenderer;
+  private String pixelDensity;
 
   private boolean sizeRequiresRewrite = false;
+  private boolean pixelDensityRequiresRewrite = false;
   private boolean sizeIsFullscreen = false;
   private RewriteResult headerResult;
   private RewriteResult footerResult;
@@ -307,6 +310,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     if (SIZE_METHOD_NAME.equals(methodName) || FULLSCREEN_METHOD_NAME.equals(methodName)) {
       handleSizeCall(ctx);
+    }
+
+    if (PIXEL_DENSITY_METHOD_NAME.equals(methodName)) {
+      handlePixelDensityCall(ctx);
     }
   }
 
@@ -653,6 +660,35 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     }
   }
 
+  protected void handlePixelDensityCall(ParserRuleContext ctx) {
+    ParserRuleContext testCtx = ctx.getParent()
+        .getParent()
+        .getParent()
+        .getParent();
+
+    boolean isInGlobal =
+        testCtx instanceof ProcessingParser.StaticProcessingSketchContext;
+
+    boolean isInSetup;
+    if (!isInGlobal) {
+      ParserRuleContext methodDeclaration = testCtx.getParent()
+          .getParent();
+
+      isInSetup = isMethodSetup(methodDeclaration);
+    } else {
+      isInSetup = false;
+    }
+
+    ParseTree argsContext = ctx.getChild(2);
+
+    if (isInGlobal || isInSetup) {
+      pixelDensity = argsContext.getChild(0).getText();
+      delete(ctx.start, ctx.stop);
+      insertAfter(ctx.stop, "/* pixelDensity commented out by preprocessor */");
+      pixelDensityRequiresRewrite = true;
+    }
+  }
+
   /**
    * Determine if a method declaration is for setup.
    *
@@ -979,35 +1015,43 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   protected void writeExtraFieldsAndMethods(PrintWriterWithEditGen classBodyWriter,
         RewriteResultBuilder resultBuilder) {
 
-    if (!sizeRequiresRewrite) {
+    if (!sizeRequiresRewrite && !pixelDensityRequiresRewrite) {
       return;
     }
 
     String settingsOuterTemplate = indent1 + "public void settings() { %s }";
 
-    String settingsInner;
-    if (sizeIsFullscreen) {
-      String fullscreenInner = sketchRenderer == null ? "" : sketchRenderer;
-      settingsInner = String.format("fullScreen(%s);", fullscreenInner);
-    } else {
+    StringBuilder settingsInner = new StringBuilder();
 
-      if (sketchWidth.isEmpty() || sketchHeight.isEmpty()) {
-        return;
+    if (sizeRequiresRewrite) {
+      if (sizeIsFullscreen) {
+        String fullscreenInner = sketchRenderer == null ? "" : sketchRenderer;
+        settingsInner.append(String.format("fullScreen(%s);", fullscreenInner));
+      } else {
+
+        if (sketchWidth.isEmpty() || sketchHeight.isEmpty()) {
+          return;
+        }
+
+        StringJoiner argJoiner = new StringJoiner(",");
+        argJoiner.add(sketchWidth);
+        argJoiner.add(sketchHeight);
+
+        if (sketchRenderer != null) {
+          argJoiner.add(sketchRenderer);
+        }
+
+        settingsInner.append(String.format("size(%s);", argJoiner.toString()));
       }
+    }
 
-      StringJoiner argJoiner = new StringJoiner(",");
-      argJoiner.add(sketchWidth);
-      argJoiner.add(sketchHeight);
-
-      if (sketchRenderer != null) {
-        argJoiner.add(sketchRenderer);
-      }
-
-      settingsInner = String.format("size(%s);", argJoiner.toString());
+    if (pixelDensityRequiresRewrite) {
+      settingsInner.append("\n");
+      settingsInner.append(String.format("pixelDensity(%s);", pixelDensity));
     }
 
 
-    String newCode = String.format(settingsOuterTemplate, settingsInner);
+    String newCode = String.format(settingsOuterTemplate, settingsInner.toString());
 
     classBodyWriter.addEmptyLine();
     classBodyWriter.addCodeLine(newCode);

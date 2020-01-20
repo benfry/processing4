@@ -378,6 +378,16 @@ public class ParserTests {
     expectGood("packageTest", true, Optional.of("test.subtest"));
   }
 
+  @Test
+  public void testStaticPixelDensity() {
+    expectGood("staticpixeldensity");
+  }
+
+  @Test
+  public void testParamPixelDensity() {
+    expectGood("parampixeldensity");
+  }
+
   private static boolean compile(String id, String program) {
     // Create compilable AST to get syntax problems
     CompilationUnit compilableCU = JdtCompilerUtil.makeAST(
