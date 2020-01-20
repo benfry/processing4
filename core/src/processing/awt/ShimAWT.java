@@ -15,6 +15,12 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.awt.DisplayMode;
+import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.geom.AffineTransform;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
@@ -45,6 +51,98 @@ public class ShimAWT implements PConstants {
     this.sketch = sketch;
   }
   */
+  static private ShimAWT instance;
+
+  private GraphicsDevice[] displayDevices;
+
+  private int displayWidth;
+  private int displayHeight;
+
+
+  /** Only needed for display functions */
+  static private ShimAWT getInstance() {
+    if (instance == null) {
+      instance = new ShimAWT();
+    }
+    return instance;
+  }
+
+
+  private ShimAWT() {
+    // Need the list of display devices to be queried already for usage below.
+    // https://github.com/processing/processing/issues/3295
+    // https://github.com/processing/processing/issues/3296
+    // Not doing this from a static initializer because it may cause
+    // PApplet to cache and the values to stick through subsequent runs.
+    // Instead make it a runtime thing and a local variable.
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = ge.getDefaultScreenDevice();
+    displayDevices = ge.getScreenDevices();
+
+//    // Default or unparsed will be -1, spanning will be 0, actual displays will
+//    // be numbered from 1 because it's too weird to say "display 0" in prefs.
+//    if (display > 0 && display <= displayDevices.length) {
+//      device = displayDevices[display-1];
+//    }
+    // When this was called, display will always be unset (even in 3.x),
+    // since this happens before settings() is called.
+
+    // Set displayWidth and displayHeight for people still using those.
+    DisplayMode displayMode = device.getDisplayMode();
+    displayWidth = displayMode.getWidth();
+    displayHeight = displayMode.getHeight();
+  }
+
+
+  static public int getDisplayWidth() {
+    return getInstance().displayWidth;
+  }
+
+
+  static public int getDisplayHeight() {
+    return getInstance().displayHeight;
+  }
+
+
+  static public int getDisplayCount() {
+    return getInstance().displayDevices.length;
+  }
+
+
+  static public int getDisplayDensity(int num) {
+    return getInstance().displayDensityImpl(num);
+  }
+
+
+  /*
+  private int displayDensityImpl() {
+    if (display != SPAN && (fullScreen || present)) {
+      return displayDensity(display);
+    }
+    // walk through all displays, use 2 if any display is 2
+    for (int i = 0; i < displayDevices.length; i++) {
+      if (displayDensity(i+1) == 2) {
+        return 2;
+      }
+    }
+    // If nobody's density is 2 then everyone is 1
+    return 1;
+  }
+  */
+
+
+  private int displayDensityImpl(int display) {
+    if (display > 0 && display <= displayDevices.length) {
+      GraphicsConfiguration graphicsConfig =
+        displayDevices[display - 1].getDefaultConfiguration();
+      AffineTransform tx = graphicsConfig.getDefaultTransform();
+      return (int) Math.round(tx.getScaleX());
+    }
+
+    System.err.println("Display " + display + " does not exist, " +
+                       "returning 1 for displayDensity(" + display + ")");
+    return 1;  // not the end of the world, so don't throw a RuntimeException
+  }
 
 
   static public PImage loadImage(PApplet sketch, String filename, Object... args) {

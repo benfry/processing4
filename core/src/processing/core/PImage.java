@@ -2827,7 +2827,7 @@ int testFunction(int dst, int src) {
   }
 
 
-  static public PImage loadTIFF(InputStream input) {
+  static public PImage loadTIFF(InputStream input) {  // ignore
     byte tiff[] = PApplet.loadBytes(input);
 
     if ((tiff[42] != tiff[102]) ||  // width/height in both places
@@ -2931,7 +2931,7 @@ int testFunction(int dst, int src) {
    * https://github.com/processing/processing/issues/2096
    * Please help!
    */
-  static public PImage loadTGA(InputStream input) throws IOException {
+  static public PImage loadTGA(InputStream input) throws IOException {  // ignore
     byte[] header = new byte[18];
     int offset = 0;
     do {

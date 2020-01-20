@@ -24,19 +24,6 @@
 
 package processing.core;
 
-// before calling settings() to get displayWidth/Height
-import java.awt.DisplayMode;
-// handleSettings() and displayDensity()
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.geom.AffineTransform;
-
-// loadXML() error handling
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
@@ -50,6 +37,10 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.*;
 import java.util.zip.*;
+
+// loadXML() error handling
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
 
 // TODO have this removed by 4.0 final
 import processing.awt.ShimAWT;
@@ -811,7 +802,7 @@ public class PApplet implements PConstants {
 
   boolean fullScreen;
   int display = -1;  // use default
-  GraphicsDevice[] displayDevices;
+//  GraphicsDevice[] displayDevices;
   // Unlike the others above, needs to be public to support
   // the pixelWidth and pixelHeight fields.
   public int pixelDensity = 1;
@@ -854,25 +845,11 @@ public class PApplet implements PConstants {
     insideSettings = true;
 
     if (!disableAWT) {
-      // Need the list of display devices to be queried already for usage below.
-      // https://github.com/processing/processing/issues/3295
-      // https://github.com/processing/processing/issues/3296
-      // Not doing this from a static initializer because it may cause
-      // PApplet to cache and the values to stick through subsequent runs.
-      // Instead make it a runtime thing and a local variable.
-      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      GraphicsDevice device = ge.getDefaultScreenDevice();
-      displayDevices = ge.getScreenDevices();
-
-      // Default or unparsed will be -1, spanning will be 0, actual displays will
-      // be numbered from 1 because it's too weird to say "display 0" in prefs.
-      if (display > 0 && display <= displayDevices.length) {
-        device = displayDevices[display-1];
-      }
-      // Set displayWidth and displayHeight for people still using those.
-      DisplayMode displayMode = device.getDisplayMode();
-      displayWidth = displayMode.getWidth();
-      displayHeight = displayMode.getHeight();
+      displayWidth = ShimAWT.getDisplayWidth();
+      displayHeight = ShimAWT.getDisplayHeight();
+    } else {
+      // https://github.com/processing/processing4/issues/57
+      System.err.println("AWT disabled, displayWidth/displayHeight will be 0");
     }
 
     // Here's where size(), fullScreen(), smooth(N) and noSmooth() might
@@ -1016,8 +993,16 @@ public class PApplet implements PConstants {
     if (display != SPAN && (fullScreen || present)) {
       return displayDensity(display);
     }
+
+    int displayCount = 0;
+    if (!disableAWT) {
+      displayCount = ShimAWT.getDisplayCount();
+    } else {
+      // https://github.com/processing/processing4/issues/57
+      System.err.println("display count needs to be implemented for non-AWT");
+    }
     // walk through all displays, use 2 if any display is 2
-    for (int i = 0; i < displayDevices.length; i++) {
+    for (int i = 0; i < displayCount; i++) {
       if (displayDensity(i+1) == 2) {
         return 2;
       }
@@ -1032,6 +1017,10 @@ public class PApplet implements PConstants {
   * (1-indexed to match the Preferences dialog box)
   */
   public int displayDensity(int display) {
+    if (!disableAWT) {
+      return ShimAWT.getDisplayDensity(display);
+    }
+    /*
     if (display > 0 && display <= displayDevices.length) {
       GraphicsConfiguration graphicsConfig =
         displayDevices[display - 1].getDefaultConfiguration();
@@ -1041,6 +1030,9 @@ public class PApplet implements PConstants {
 
     System.err.println("Display " + display + " does not exist, " +
                        "returning 1 for displayDensity(" + display + ")");
+    */
+    // https://github.com/processing/processing4/issues/57
+    System.err.println("displayDensity() unavailable because AWT is disabled");
     return 1;  // not the end of the world, so don't throw a RuntimeException
   }
 
@@ -14944,6 +14936,15 @@ public class PApplet implements PConstants {
    */
   static public void showMissingWarning(String method) {
     PGraphics.showMissingWarning(method);
+  }
+
+
+  /**
+   * Check the alpha on an image, using a really primitive loop.
+   */
+  public void checkAlpha() {
+    if (recorder != null) recorder.checkAlpha();
+    g.checkAlpha();
   }
 
 
