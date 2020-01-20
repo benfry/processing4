@@ -22,6 +22,14 @@ X   https://github.com/processing/processing4/issues/4
 X Remove all usage of AWT from PApplet
 X   https://github.com/processing/processing4/issues/55
 
+sam
+X Resolve rewrite of pixelDensity to settings
+X   https://github.com/processing/processing4/pull/60
+X   https://github.com/processing/processing4/issues/58
+
+X PDF broken in getImage()
+_   https://github.com/processing/processing4/issues/62
+
 
 contribs
 X remove redundant boxing and casting

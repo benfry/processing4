@@ -22,7 +22,8 @@ _ further streamline the downloader
 _   https://github.com/processing/processing4/issues/47
 _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
-
+_ Switch to getModifiersEx() in `processing.app`
+_   https://github.com/processing/processing4/issues/67
 
 _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
