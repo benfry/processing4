@@ -1316,44 +1316,24 @@ public class PSurfaceAWT extends PSurfaceNone {
       break;
     }
 
-    //System.out.println(nativeEvent);
-    //int modifiers = nativeEvent.getModifiersEx();
-    // If using getModifiersEx(), the regular modifiers don't set properly.
-    int modifiers = nativeEvent.getModifiers();
-
-    int peModifiers = modifiers &
-      (InputEvent.SHIFT_MASK |
-       InputEvent.CTRL_MASK |
-       InputEvent.META_MASK |
-       InputEvent.ALT_MASK);
-
-    // Windows and OS X seem to disagree on how to handle this. Windows only
-    // sets BUTTON1_DOWN_MASK, while OS X seems to set BUTTON1_MASK.
-    // This is an issue in particular with mouse release events:
+    // Switching to getModifiersEx() for 4.0a2 because of Java 9 deprecation.
+    // Had trouble with this in the past and rolled it back because it was
+    // optional at the time. This time around, just need to iron out the issue.
     // http://code.google.com/p/processing/issues/detail?id=1294
-    // The fix for which led to a regression (fixed here by checking both):
     // http://code.google.com/p/processing/issues/detail?id=1332
+    int modifiers = nativeEvent.getModifiersEx();
+
     int peButton = 0;
-//    if ((modifiers & InputEvent.BUTTON1_MASK) != 0 ||
-//        (modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-//      peButton = LEFT;
-//    } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0 ||
-//               (modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
-//      peButton = CENTER;
-//    } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0 ||
-//               (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
-//      peButton = RIGHT;
-//    }
-    if ((modifiers & InputEvent.BUTTON1_MASK) != 0) {
+    if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
       peButton = PConstants.LEFT;
-    } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0) {
+    } else if ((modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
       peButton = PConstants.CENTER;
-    } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0) {
+    } else if ((modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
       peButton = PConstants.RIGHT;
     }
 
     sketch.postEvent(new MouseEvent(nativeEvent, nativeEvent.getWhen(),
-                                    peAction, peModifiers,
+                                    peAction, modifiers,
                                     nativeEvent.getX() / windowScaleFactor,
                                     nativeEvent.getY() / windowScaleFactor,
                                     peButton,
@@ -1375,6 +1355,9 @@ public class PSurfaceAWT extends PSurfaceNone {
       break;
     }
 
+    int modifiers = event.getModifiersEx();
+
+    /*
 //    int peModifiers = event.getModifiersEx() &
 //      (InputEvent.SHIFT_DOWN_MASK |
 //       InputEvent.CTRL_DOWN_MASK |
@@ -1385,9 +1368,10 @@ public class PSurfaceAWT extends PSurfaceNone {
        InputEvent.CTRL_MASK |
        InputEvent.META_MASK |
        InputEvent.ALT_MASK);
+     */
 
     sketch.postEvent(new KeyEvent(event, event.getWhen(),
-                                  peAction, peModifiers,
+                                  peAction, modifiers,
                                   event.getKeyChar(), event.getKeyCode()));
   }
 

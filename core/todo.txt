@@ -15,6 +15,13 @@ X move loadImage() into ShimAWT
 X desktopFile() and desktopPath() methods are supported, unless we find they're trouble
 X move ShimAWT.loadImage() to the PSurface subclasses
 X move all java.awt and javax.imageio out of PImage
+X make the switch to getModifiersEx() instead of getModifiers()
+X   pass all modifiers to the KeyEvent and MouseEvent constructors
+X   though they aren't even being stored, so what's the point?
+
+contribs
+X remove redundant boxing and casting
+X   https://github.com/processing/processing4/pull/51
 
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
@@ -22,6 +29,8 @@ _ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
 _ protected PImage.checkAlpha() now public
 _ all AWT calls have been moved out of PImage
 _   this may be a problem for anything that was relying on those internals
+_ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
+_   these had been deprecated, not clear they were used anywhere
 
 api todo
 _ Surface not available inside handleSettings()

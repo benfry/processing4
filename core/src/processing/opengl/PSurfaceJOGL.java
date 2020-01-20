@@ -65,7 +65,6 @@ import com.jogamp.newt.Display.PointerIcon;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
 import com.jogamp.newt.awt.NewtCanvasAWT;
-import com.jogamp.newt.event.InputEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -77,6 +76,7 @@ import processing.core.PSurface;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 import processing.awt.PImageAWT;
+
 // have this removed by 4.0 final
 import processing.awt.ShimAWT;
 
@@ -1110,11 +1110,13 @@ public class PSurfaceJOGL implements PSurface {
   protected void nativeMouseEvent(com.jogamp.newt.event.MouseEvent nativeEvent,
                                   int peAction) {
     int modifiers = nativeEvent.getModifiers();
+    /*
     int peModifiers = modifiers &
                       (InputEvent.SHIFT_MASK |
                        InputEvent.CTRL_MASK |
                        InputEvent.META_MASK |
                        InputEvent.ALT_MASK);
+     */
 
     int peButton = 0;
     switch (nativeEvent.getButton()) {
@@ -1163,7 +1165,7 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     MouseEvent me = new MouseEvent(nativeEvent, nativeEvent.getWhen(),
-                                   peAction, peModifiers,
+                                   peAction, modifiers,
                                    mx, my,
                                    peButton,
                                    peCount);
@@ -1174,11 +1176,12 @@ public class PSurfaceJOGL implements PSurface {
 
   protected void nativeKeyEvent(com.jogamp.newt.event.KeyEvent nativeEvent,
                                 int peAction) {
-    int peModifiers = nativeEvent.getModifiers() &
-                      (InputEvent.SHIFT_MASK |
-                       InputEvent.CTRL_MASK |
-                       InputEvent.META_MASK |
-                       InputEvent.ALT_MASK);
+    int modifiers = nativeEvent.getModifiers();
+//    int peModifiers = nativeEvent.getModifiers() &
+//                      (InputEvent.SHIFT_MASK |
+//                       InputEvent.CTRL_MASK |
+//                       InputEvent.META_MASK |
+//                       InputEvent.ALT_MASK);
 
     short code = nativeEvent.getKeyCode();
     char keyChar;
@@ -1204,7 +1207,7 @@ public class PSurfaceJOGL implements PSurface {
     // In contrast to key symbol, key code uses a fixed US keyboard layout and therefore is keyboard layout independent.
     // E.g. virtual key code VK_Y denotes the same physical key regardless whether keyboard layout QWERTY or QWERTZ is active. The key symbol of the former is VK_Y, where the latter produces VK_Y.
     KeyEvent ke = new KeyEvent(nativeEvent, nativeEvent.getWhen(),
-                               peAction, peModifiers,
+                               peAction, modifiers,
                                keyChar,
                                keyCode,
                                nativeEvent.isAutoRepeat());
@@ -1216,7 +1219,7 @@ public class PSurfaceJOGL implements PSurface {
         // Create key typed event
         // TODO: combine dead keys with the following key
         KeyEvent tke = new KeyEvent(nativeEvent, nativeEvent.getWhen(),
-                                    KeyEvent.TYPE, peModifiers,
+                                    KeyEvent.TYPE, modifiers,
                                     keyChar,
                                     0,
                                     nativeEvent.isAutoRepeat());
