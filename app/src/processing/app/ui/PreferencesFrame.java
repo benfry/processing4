@@ -38,6 +38,7 @@ import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.ui.ColorChooser;
+import processing.awt.ShimAWT;
 import processing.core.*;
 
 
@@ -115,9 +116,9 @@ public class PreferencesFrame {
     browseButton.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           File dflt = new File(sketchbookLocationField.getText());
-          PApplet.selectFolder(Language.text("preferences.sketchbook_location.popup"),
+          ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
                                "sketchbookCallback", dflt,
-                               PreferencesFrame.this, frame);
+                               PreferencesFrame.this);
         }
       });
 
