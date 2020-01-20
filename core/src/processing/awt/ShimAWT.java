@@ -184,11 +184,12 @@ public class ShimAWT implements PConstants {
 
     try {
       BufferedImage bi = ImageIO.read(stream);
-      PImage outgoing = new PImage(bi.getWidth(), bi.getHeight());
+      //PImage outgoing = new PImage(bi.getWidth(), bi.getHeight());
+      PImage outgoing = new PImageAWT(bi);
       outgoing.parent = sketch;
 
-      bi.getRGB(0, 0, outgoing.width, outgoing.height,
-                outgoing.pixels, 0, outgoing.width);
+      //bi.getRGB(0, 0, outgoing.width, outgoing.height,
+      //          outgoing.pixels, 0, outgoing.width);
 
       // check the alpha for this image
       // was gonna call getType() on the image to see if RGB or ARGB,
