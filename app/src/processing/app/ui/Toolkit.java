@@ -501,6 +501,18 @@ public class Toolkit {
   }
 
 
+  static public int getMenuItemIndex(JMenu menu, JMenuItem item) {
+    int index = 0;
+    for (Component comp : menu.getMenuComponents()) {
+      if (comp == item) {
+        return index;
+      }
+      index++;
+    }
+    return -1;
+  }
+
+
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
@@ -1134,17 +1146,5 @@ public class Toolkit {
     FontRenderContext frc = g2.getFontRenderContext();
     //return new TextLayout("H", font, frc).getBounds().getHeight();
     return new TextLayout("H", g.getFont(), frc).getBounds().getHeight();
-  }
-
-
-  static public int getMenuItemIndex(JMenu menu, JMenuItem item) {
-    int index = 0;
-    for (Component comp : menu.getMenuComponents()) {
-      if (comp == item) {
-        return index;
-      }
-      index++;
-    }
-    return -1;
   }
 }
