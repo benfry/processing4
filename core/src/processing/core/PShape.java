@@ -29,6 +29,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.ImageIcon;
+
+import processing.awt.PImageAWT;
+
 import java.util.Base64;
 
 
@@ -1950,7 +1953,7 @@ public class PShape implements PConstants {
     boolean requiresCheckAlpha = extension.equals("gif") || extension.equals("png") ||
         extension.equals("unknown");
 
-    PImage loadedImage = new PImage(awtImage);
+    PImage loadedImage = new PImageAWT(awtImage);
 
     if (requiresCheckAlpha) {
         loadedImage.checkAlpha();

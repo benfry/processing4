@@ -131,7 +131,7 @@ public class ShimAWT implements PConstants {
             }
           }
 
-          PImage image = new PImage(awtImage);
+          PImage image = new PImageAWT(awtImage);
           if (image.width == -1) {
             System.err.println("The file " + filename +
                                " contains bad image data, or may not be an image.");

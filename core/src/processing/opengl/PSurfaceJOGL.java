@@ -76,7 +76,7 @@ import processing.core.PImage;
 import processing.core.PSurface;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
-
+import processing.awt.PImageAWT;
 // have this removed by 4.0 final
 import processing.awt.ShimAWT;
 
@@ -1338,7 +1338,7 @@ public class PSurfaceJOGL implements PSurface {
       if (name != null) {
         ImageIcon icon =
           new ImageIcon(getClass().getResource("cursors/" + name + ".png"));
-        PImage img = new PImage(icon.getImage());
+        PImage img = new PImageAWT(icon.getImage());
         // Most cursors just use the center as the hotspot...
         int x = img.width / 2;
         int y = img.height / 2;

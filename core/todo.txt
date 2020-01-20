@@ -14,24 +14,28 @@ X remove the java.awt.Frame object from PApplet
 X move loadImage() into ShimAWT
 X desktopFile() and desktopPath() methods are supported, unless we find they're trouble
 X move ShimAWT.loadImage() to the PSurface subclasses
+X move all java.awt and javax.imageio out of PImage
 
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
 _ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
 _ protected PImage.checkAlpha() now public
+_ all AWT calls have been moved out of PImage
+_   this may be a problem for anything that was relying on those internals
 
+api todo
 _ Surface not available inside handleSettings()
 _   therefore impossible to get displays, displayWidth/Height, and pixelDensity
 _   should surface be set on command line?
 _   or can we just require that size() goes first, and inits surface *type* w/o sizes
 _   or even that it inits a surface-specific class for getting that info
-
-
-before final release
 _ implement selectInput/Output/Folder methods in PSurfaceJOGL
 _ implement selectInput/Output/Folder methods in PSurfaceFX
 _ implement openLink() in PSurfaceFX
 _ implement openLink() in PSurfaceJOGL
+
+
+before final release
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
