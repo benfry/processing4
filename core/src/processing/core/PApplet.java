@@ -1039,7 +1039,8 @@ public class PApplet implements PConstants {
       return (int) Math.round(tx.getScaleX());
     }
 
-    System.err.println("Display " + display + " does not exist, returning ");
+    System.err.println("Display " + display + " does not exist, " +
+                       "returning 1 for displayDensity(" + display + ")");
     return 1;  // not the end of the world, so don't throw a RuntimeException
   }
 
