@@ -18,6 +18,7 @@ X move all java.awt and javax.imageio out of PImage
 X make the switch to getModifiersEx() instead of getModifiers()
 X   pass all modifiers to the KeyEvent and MouseEvent constructors
 X   though they aren't even being stored, so what's the point?
+X   https://github.com/processing/processing4/issues/4
 
 contribs
 X remove redundant boxing and casting
