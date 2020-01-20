@@ -1,22 +1,10 @@
-Processing 4
-==============================
+# Processing 4
+
 4.0 is an exciting next step for Processing in which the internals of the software will see important updates, helping prepare the platform for its future. This includes the move to JDK 11 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this will be 4.0.
 
-<br>
+## API changes
 
-Note from Ben
-------------------------------
-I'm working with [Sam Pottinger](https://github.com/sampottinger) to incorporate his changes to see if that can be the basis for this new release. Getting things moved to OpenJDK 11 will help the longevity of the project.
-
-It's not clear if we'll ship an actual Processing 4.0, because I have less free time than ever, and very little development help. If you'd like to help, contribute bug fixes.
-
-Ben Fry, 4 October 2019
-
-<br>
-
-API changes
-------------------------------
-As with all releases, I'll do everything possible to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor.
+As with all releases, we'll do everything possible to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
 
 ### alpha 2
 
