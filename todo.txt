@@ -4,6 +4,9 @@ sam
 X Resolve rewrite of pixelDensity to settings in preproc
 X   https://github.com/processing/processing4/pull/60
 X   https://github.com/processing/processing4/issues/58
+X Resolve PDF renderer parse issue in preproc
+X   https://github.com/processing/processing4/pull/68
+X   https://github.com/processing/processing4/issues/66
 
 
 before final release
@@ -16,6 +19,8 @@ _ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
 _ better means of understanding Library/Mode/Tool usage
 _ automate notarization in the build process
 _   https://github.com/processing/processing4/issues/24
+_ sign releases on Windows to avoid SmartScreen warnings/errors
+_   https://github.com/processing/processing4/issues/25
 
 
 open issues
@@ -30,27 +35,34 @@ _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348
 _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
 
+
+would like to fix
+_ ability to switch mode in p5 w/o saving/closing/etc
+_ launch/psk files/import from web editor (for class)
+
+
 _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
 
 
 from Casey
-_ Installation on Linux
+_ update installation guide for Linux
 _   https://github.com/processing/processing-docs/issues/645
 
 
-_ "Could not get the settings folder" isn't very helpful
+_ "Could not get the settings folder" message could be more helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
 _   then tell the user which folder to fix
 
-_ show the recommended sw version on the download page
+_ show the recommended sw version for users' platform on the download page
 _ just skip the welcome screen on Windows hidpi dipslays?
 
 _ refresh option for sketchbook
 _ import option for sketchbook
 _ 'show sketch folder' weird when in temp folder
 _   ask to save first (sketch has not been saved yet)
+_   or make the temp folder part of the sketchbook
 _ same with adding files to an unsaved sketch, do we block that?
 
 
