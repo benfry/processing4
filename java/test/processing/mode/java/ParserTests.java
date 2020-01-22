@@ -388,6 +388,11 @@ public class ParserTests {
     expectGood("parampixeldensity");
   }
 
+  @Test
+  public void testPdfWrite() {
+    expectGood("pdfwrite");
+  }
+
   private static boolean compile(String id, String program) {
     // Create compilable AST to get syntax problems
     CompilationUnit compilableCU = JdtCompilerUtil.makeAST(

@@ -73,8 +73,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   private String sketchWidth;
   private String sketchHeight;
-  private String sketchRenderer;
   private String pixelDensity;
+  private String sketchRenderer = null;
+  private String sketchOutputFilename = null;
 
   private boolean sizeRequiresRewrite = false;
   private boolean pixelDensityRequiresRewrite = false;
@@ -627,9 +628,14 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
               sketchRenderer.equals("P3D") ||
               sketchRenderer.equals("OPENGL") ||
               sketchRenderer.equals("JAVA2D") ||
+              sketchRenderer.equals("PDF") ||
               sketchRenderer.equals("FX2D"))) {
             thisRequiresRewrite = false;
           }
+        }
+
+        if (argsContext.getChildCount() > 5) {
+          sketchOutputFilename = argsContext.getChild(6).getText();
         }
       }
 
@@ -1021,12 +1027,12 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     String settingsOuterTemplate = indent1 + "public void settings() { %s }";
 
-    StringBuilder settingsInner = new StringBuilder();
+    StringJoiner settingsInner = new StringJoiner("\n");
 
     if (sizeRequiresRewrite) {
       if (sizeIsFullscreen) {
         String fullscreenInner = sketchRenderer == null ? "" : sketchRenderer;
-        settingsInner.append(String.format("fullScreen(%s);", fullscreenInner));
+        settingsInner.add(String.format("fullScreen(%s);", fullscreenInner));
       } else {
 
         if (sketchWidth.isEmpty() || sketchHeight.isEmpty()) {
@@ -1041,13 +1047,16 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
           argJoiner.add(sketchRenderer);
         }
 
-        settingsInner.append(String.format("size(%s);", argJoiner.toString()));
+        if (sketchOutputFilename != null) {
+          argJoiner.add(sketchOutputFilename);
+        }
+
+        settingsInner.add(String.format("size(%s);", argJoiner.toString()));
       }
     }
 
     if (pixelDensityRequiresRewrite) {
-      settingsInner.append("\n");
-      settingsInner.append(String.format("pixelDensity(%s);", pixelDensity));
+      settingsInner.add(String.format("pixelDensity(%s);", pixelDensity));
     }
 
 
