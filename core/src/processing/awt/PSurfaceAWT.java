@@ -41,6 +41,7 @@ import java.awt.Toolkit;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
 import java.net.URL;
@@ -356,6 +357,41 @@ public class PSurfaceAWT extends PSurfaceNone {
   */
 
 
+  /*
+  @Override
+  public int displayDensity() {
+    return shim.displayDensity();
+  }
+
+
+  @Override
+  public int displayDensity(int display) {
+    return shim.displayDensity(display);
+  }
+  */
+
+
+  @Override
+  public void selectInput(String prompt, String callback,
+                          File file, Object callbackObject) {
+    ShimAWT.selectInput(prompt, callback, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectOutput(String prompt, String callback,
+                           File file, Object callbackObject) {
+    ShimAWT.selectOutput(prompt, callback, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectFolder(String prompt, String callback,
+                           File file, Object callbackObject) {
+    ShimAWT.selectFolder(prompt, callback, file, callbackObject);
+  }
+
+
   // what needs to happen here?
   @Override
   public void initOffscreen(PApplet sketch) {
@@ -597,8 +633,8 @@ public class PSurfaceAWT extends PSurfaceNone {
         Class<?> thinkDifferent =
           Thread.currentThread().getContextClassLoader().loadClass(td);
         Method method =
-          thinkDifferent.getMethod("setIconImage", new Class[] { java.awt.Image.class });
-        method.invoke(null, new Object[] { awtImage });
+          thinkDifferent.getMethod("setIconImage", Image.class);
+        method.invoke(null, awtImage);
       } catch (Exception e) {
         e.printStackTrace();  // That's unfortunate
       }
@@ -655,8 +691,8 @@ public class PSurfaceAWT extends PSurfaceNone {
           Class<?> thinkDifferent =
             Thread.currentThread().getContextClassLoader().loadClass(td);
           Method method =
-            thinkDifferent.getMethod("setIconImage", new Class[] { java.awt.Image.class });
-          method.invoke(null, new Object[] { Toolkit.getDefaultToolkit().getImage(url) });
+            thinkDifferent.getMethod("setIconImage", Image.class);
+          method.invoke(null, Toolkit.getDefaultToolkit().getImage(url));
         } catch (Exception e) {
           e.printStackTrace();  // That's unfortunate
         }
@@ -1280,44 +1316,24 @@ public class PSurfaceAWT extends PSurfaceNone {
       break;
     }
 
-    //System.out.println(nativeEvent);
-    //int modifiers = nativeEvent.getModifiersEx();
-    // If using getModifiersEx(), the regular modifiers don't set properly.
-    int modifiers = nativeEvent.getModifiers();
-
-    int peModifiers = modifiers &
-      (InputEvent.SHIFT_MASK |
-       InputEvent.CTRL_MASK |
-       InputEvent.META_MASK |
-       InputEvent.ALT_MASK);
-
-    // Windows and OS X seem to disagree on how to handle this. Windows only
-    // sets BUTTON1_DOWN_MASK, while OS X seems to set BUTTON1_MASK.
-    // This is an issue in particular with mouse release events:
+    // Switching to getModifiersEx() for 4.0a2 because of Java 9 deprecation.
+    // Had trouble with this in the past and rolled it back because it was
+    // optional at the time. This time around, just need to iron out the issue.
     // http://code.google.com/p/processing/issues/detail?id=1294
-    // The fix for which led to a regression (fixed here by checking both):
     // http://code.google.com/p/processing/issues/detail?id=1332
+    int modifiers = nativeEvent.getModifiersEx();
+
     int peButton = 0;
-//    if ((modifiers & InputEvent.BUTTON1_MASK) != 0 ||
-//        (modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-//      peButton = LEFT;
-//    } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0 ||
-//               (modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
-//      peButton = CENTER;
-//    } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0 ||
-//               (modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
-//      peButton = RIGHT;
-//    }
-    if ((modifiers & InputEvent.BUTTON1_MASK) != 0) {
+    if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
       peButton = PConstants.LEFT;
-    } else if ((modifiers & InputEvent.BUTTON2_MASK) != 0) {
+    } else if ((modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
       peButton = PConstants.CENTER;
-    } else if ((modifiers & InputEvent.BUTTON3_MASK) != 0) {
+    } else if ((modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
       peButton = PConstants.RIGHT;
     }
 
     sketch.postEvent(new MouseEvent(nativeEvent, nativeEvent.getWhen(),
-                                    peAction, peModifiers,
+                                    peAction, modifiers,
                                     nativeEvent.getX() / windowScaleFactor,
                                     nativeEvent.getY() / windowScaleFactor,
                                     peButton,
@@ -1339,6 +1355,9 @@ public class PSurfaceAWT extends PSurfaceNone {
       break;
     }
 
+    int modifiers = event.getModifiersEx();
+
+    /*
 //    int peModifiers = event.getModifiersEx() &
 //      (InputEvent.SHIFT_DOWN_MASK |
 //       InputEvent.CTRL_DOWN_MASK |
@@ -1349,9 +1368,10 @@ public class PSurfaceAWT extends PSurfaceNone {
        InputEvent.CTRL_MASK |
        InputEvent.META_MASK |
        InputEvent.ALT_MASK);
+     */
 
     sketch.postEvent(new KeyEvent(event, event.getWhen(),
-                                  peAction, peModifiers,
+                                  peAction, modifiers,
                                   event.getKeyChar(), event.getKeyCode()));
   }
 

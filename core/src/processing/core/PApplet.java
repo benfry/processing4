@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-20 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -24,50 +24,6 @@
 
 package processing.core;
 
-// dummy object for backwards compatibility, plus the select methods
-import java.awt.Frame;
-
-// before calling settings() to get displayWidth/Height
-import java.awt.DisplayMode;
-// handleSettings() and displayDensity()
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.geom.AffineTransform;
-// used to present the fullScreen() warning about Spaces on OS X
-import javax.swing.JOptionPane;
-
-// inside runSketch() to warn users about headless
-import java.awt.HeadlessException;
-import java.awt.Toolkit;
-
-// used by loadImage()
-import java.awt.Image;
-import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
-import javax.imageio.ImageIO;
-// allows us to remove our own MediaTracker code
-import javax.swing.ImageIcon;
-
-// used by selectInput(), selectOutput(), selectFolder()
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import javax.swing.JFileChooser;
-
-// set the look and feel, if specified
-import javax.swing.UIManager;
-
-// used by link()
-import java.awt.Desktop;
-
-// used by desktopFile() method
-import javax.swing.filechooser.FileSystemView;
-
-// loadXML() error handling
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.xml.sax.SAXException;
-
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
@@ -81,6 +37,13 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.regex.*;
 import java.util.zip.*;
+
+// loadXML() error handling
+import javax.xml.parsers.ParserConfigurationException;
+import org.xml.sax.SAXException;
+
+// TODO have this removed by 4.0 final
+import processing.awt.ShimAWT;
 
 import processing.data.*;
 import processing.event.*;
@@ -148,21 +111,20 @@ public class PApplet implements PConstants {
   public static final float javaVersion = 1 + javaPlatform / 10f;
 
   /**
-   * Current platform in use, one of the
-   * PConstants WINDOWS, MACOSX, MACOS9, LINUX or OTHER.
+   * Current platform in use, one of the PConstants WINDOWS, MACOS, LINUX or OTHER.
    */
   static public int platform;
 
   static {
-    String osname = System.getProperty("os.name");
+    final String name = System.getProperty("os.name");
 
-    if (osname.indexOf("Mac") != -1) {
+    if (name.indexOf("Mac") != -1) {
       platform = MACOS;
 
-    } else if (osname.indexOf("Windows") != -1) {
+    } else if (name.indexOf("Windows") != -1) {
       platform = WINDOWS;
 
-    } else if (osname.equals("Linux")) {  // true for the ibm vm
+    } else if (name.equals("Linux")) {  // true for the ibm vm
       platform = LINUX;
 
     } else {
@@ -239,24 +201,6 @@ public class PApplet implements PConstants {
   static public final int DEFAULT_WIDTH = 100;
   static public final int DEFAULT_HEIGHT = 100;
 
-//  /**
-//   * Exception thrown when size() is called the first time.
-//   * <p>
-//   * This is used internally so that setup() is forced to run twice
-//   * when the renderer is changed. This is the only way for us to handle
-//   * invoking the new renderer while also in the midst of rendering.
-//   */
-//  static public class RendererChangeException extends RuntimeException { }
-
-  /**
-   * true if no size() command has been executed. This is used to wait until
-   * a size has been set before placing in the window and showing it.
-   */
-//  public boolean defaultSize;
-
-//  /** Storage for the current renderer size to avoid re-allocation. */
-//  Dimension currentSize = new Dimension();
-
   /**
    * ( begin auto-generated from pixels.xml )
    *
@@ -283,7 +227,7 @@ public class PApplet implements PConstants {
    * @see PApplet#get(int, int, int, int)
    * @see PApplet#set(int, int, int)
    * @see PImage
-   * @see PApplet#pixelDensity()
+   * @see PApplet#pixelDensity(int)
    * @see PApplet#pixelWidth
    * @see PApplet#pixelHeight
    */
@@ -756,6 +700,9 @@ public class PApplet implements PConstants {
    */
   protected boolean exitCalled;
 
+  // ok to be static because it's not possible to mix enabled/disabled
+  static protected boolean disableAWT;
+
   // messages to send if attached as an external vm
 
   /**
@@ -777,6 +724,9 @@ public class PApplet implements PConstants {
 
   /** Used by the PDE to suggest a display (set in prefs, passed on Run) */
   static public final String ARGS_DISPLAY = "--display";
+
+  /** Disable AWT so that LWJGL and others can run */
+  static public final String ARGS_DISABLE_AWT = "--disable-awt";
 
 //  static public final String ARGS_SPAN_DISPLAYS = "--span";
 
@@ -835,75 +785,11 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   * A dummy frame to keep compatibility with 2.x code
-   * and encourage users to update.
-   */
-  public Frame frame;
-
-
-//  public Frame getFrame() {
-//    return frame;
-//  }
-//
-//
-//  public void setFrame(Frame frame) {
-//    this.frame = frame;
-//  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
 //  /**
-//   * Applet initialization. This can do GUI work because the components have
-//   * not been 'realized' yet: things aren't visible, displayed, etc.
+//   * A dummy frame to keep compatibility with 2.x code
+//   * and encourage users to update.
 //   */
-//  public void init() {
-////    println("init() called " + Integer.toHexString(hashCode()));
-//    // using a local version here since the class variable is deprecated
-////    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-////    screenWidth = screen.width;
-////    screenHeight = screen.height;
-//
-//    defaultSize = true;
-//    finished = false; // just for clarity
-//
-//    // this will be cleared by draw() if it is not overridden
-//    looping = true;
-//    redraw = true;  // draw this guy at least once
-//    firstMouse = true;
-//
-//    // calculated dynamically on first call
-////    // Removed in 2.1.2, brought back for 2.1.3. Usually sketchPath is set
-////    // inside runSketch(), but if this sketch takes care of calls to init()
-////    // when PApplet.main() is not used (i.e. it's in a Java application).
-////    // THe path needs to be set here so that loadXxxx() functions work.
-////    if (sketchPath == null) {
-////      sketchPath = calcSketchPath();
-////    }
-//
-//    // set during Surface.initFrame()
-////    // Figure out the available display width and height.
-////    // No major problem if this fails, we have to try again anyway in
-////    // handleDraw() on the first (== 0) frame.
-////    checkDisplaySize();
-//
-////    // Set the default size, until the user specifies otherwise
-////    int w = sketchWidth();
-////    int h = sketchHeight();
-////    defaultSize = (w == DEFAULT_WIDTH) && (h == DEFAULT_HEIGHT);
-////
-////    g = makeGraphics(w, h, sketchRenderer(), null, true);
-////    // Fire component resize event
-////    setSize(w, h);
-////    setPreferredSize(new Dimension(w, h));
-////
-////    width = g.width;
-////    height = g.height;
-//
-//    surface.startThread();
-//  }
+//  public Frame frame;
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -912,12 +798,11 @@ public class PApplet implements PConstants {
   boolean insideSettings;
 
   String renderer = JAVA2D;
-//  int quality = 2;
   int smooth = 1;  // default smoothing (whatever that means for the renderer)
 
   boolean fullScreen;
   int display = -1;  // use default
-  GraphicsDevice[] displayDevices;
+//  GraphicsDevice[] displayDevices;
   // Unlike the others above, needs to be public to support
   // the pixelWidth and pixelHeight fields.
   public int pixelDensity = 1;
@@ -959,25 +844,13 @@ public class PApplet implements PConstants {
   void handleSettings() {
     insideSettings = true;
 
-    // Need the list of display devices to be queried already for usage below.
-    // https://github.com/processing/processing/issues/3295
-    // https://github.com/processing/processing/issues/3296
-    // Not doing this from a static initializer because it may cause
-    // PApplet to cache and the values to stick through subsequent runs.
-    // Instead make it a runtime thing and a local variable.
-    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    GraphicsDevice device = ge.getDefaultScreenDevice();
-    displayDevices = ge.getScreenDevices();
-
-    // Default or unparsed will be -1, spanning will be 0, actual displays will
-    // be numbered from 1 because it's too weird to say "display 0" in prefs.
-    if (display > 0 && display <= displayDevices.length) {
-      device = displayDevices[display-1];
+    if (!disableAWT) {
+      displayWidth = ShimAWT.getDisplayWidth();
+      displayHeight = ShimAWT.getDisplayHeight();
+    } else {
+      // https://github.com/processing/processing4/issues/57
+      System.err.println("AWT disabled, displayWidth/displayHeight will be 0");
     }
-    // Set displayWidth and displayHeight for people still using those.
-    DisplayMode displayMode = device.getDisplayMode();
-    displayWidth = displayMode.getWidth();
-    displayHeight = displayMode.getHeight();
 
     // Here's where size(), fullScreen(), smooth(N) and noSmooth() might
     // be called, conjuring up the demons of various rendering configurations.
@@ -1008,21 +881,18 @@ public class PApplet implements PConstants {
         resultCode = p.waitFor();
       } catch (InterruptedException e) { }
 
-      String result = trim(stdout.toString());
-      if ("0".equals(result)) {
-        EventQueue.invokeLater(new Runnable() {
-          public void run() {
-            checkLookAndFeel();
-            final String msg =
-              "To use fullScreen(SPAN), first turn off “Displays have separate spaces”\n" +
-              "in System Preferences \u2192 Mission Control. Then log out and log back in.";
-            JOptionPane.showMessageDialog(null, msg, "Apple's Defaults Stink",
-                                          JOptionPane.WARNING_MESSAGE);
-          }
-        });
-      } else if (!"1".equals(result)) {
+      if (resultCode == 1) {
         System.err.println("Could not check the status of “Displays have separate spaces.”");
         System.err.format("Received message '%s' and result code %d.%n", trim(stderr.toString()), resultCode);
+      }
+
+      String processOutput = trim(stdout.toString());
+      // It looks like on Catalina, the option may not be set, so resultCode
+      // will be 1 (an error, since the param doesn't exist. But "Displays
+      // have separate spaces" is on by default, so show the message.
+      if (resultCode == 1 || "0".equals(processOutput)) {
+        System.err.println("To use fullScreen(SPAN), first turn off “Displays have separate spaces”");
+        System.err.println("in System Preferences \u2192 Mission Control. Then log out and log back in.");
       }
     }
 
@@ -1066,17 +936,6 @@ public class PApplet implements PConstants {
   }
 
 
-  // Named quality instead of smooth to avoid people trying to set (or get)
-  // the current smooth level this way. Also that smooth(number) isn't really
-  // public or well-known API. It's specific to the capabilities of the
-  // rendering surface, and somewhat independent of whether the sketch is
-  // smoothing at any given time. It's also a bit like getFill() would return
-  // true/false for whether fill was enabled, getFillColor() would return the
-  // color itself. Or at least that's what I can recall at the moment. [fry]
-//  public int sketchQuality() {
-//    //return 2;
-//    return quality;
-//  }
   // smoothing 1 is default.. 0 is none.. 2,4,8 depend on renderer
   final public int sketchSmooth() {
     return smooth;
@@ -1084,18 +943,8 @@ public class PApplet implements PConstants {
 
 
   final public boolean sketchFullScreen() {
-    //return false;
     return fullScreen;
   }
-
-
-//  // Could be named 'screen' instead of display since it's the people using
-//  // full screen who will be looking for it. On the other hand, screenX/Y/Z
-//  // makes things confusing, and if 'displayIndex' exists...
-//  public boolean sketchSpanDisplays() {
-//    //return false;
-//    return spanDisplays;
-//  }
 
 
   // Numbered from 1, SPAN (0) means all displays, -1 means the default display
@@ -1105,13 +954,11 @@ public class PApplet implements PConstants {
 
 
   final public String sketchOutputPath() {
-    //return null;
     return outputPath;
   }
 
 
   final public OutputStream sketchOutputStream() {
-    //return null;
     return outputStream;
   }
 
@@ -1146,8 +993,16 @@ public class PApplet implements PConstants {
     if (display != SPAN && (fullScreen || present)) {
       return displayDensity(display);
     }
+
+    int displayCount = 0;
+    if (!disableAWT) {
+      displayCount = ShimAWT.getDisplayCount();
+    } else {
+      // https://github.com/processing/processing4/issues/57
+      System.err.println("display count needs to be implemented for non-AWT");
+    }
     // walk through all displays, use 2 if any display is 2
-    for (int i = 0; i < displayDevices.length; i++) {
+    for (int i = 0; i < displayCount; i++) {
       if (displayDensity(i+1) == 2) {
         return 2;
       }
@@ -1156,18 +1011,29 @@ public class PApplet implements PConstants {
     return 1;
   }
 
+
  /**
   * @param display the display number to check
+  * (1-indexed to match the Preferences dialog box)
   */
   public int displayDensity(int display) {
-    GraphicsDevice graphicsDevice = GraphicsEnvironment
-            .getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice();
-    GraphicsConfiguration graphicsConfig = graphicsDevice
-            .getDefaultConfiguration();
+    if (!disableAWT) {
+      return ShimAWT.getDisplayDensity(display);
+    }
+    /*
+    if (display > 0 && display <= displayDevices.length) {
+      GraphicsConfiguration graphicsConfig =
+        displayDevices[display - 1].getDefaultConfiguration();
+      AffineTransform tx = graphicsConfig.getDefaultTransform();
+      return (int) Math.round(tx.getScaleX());
+    }
 
-    AffineTransform tx = graphicsConfig.getDefaultTransform();
-    return (int) Math.round(tx.getScaleX());
+    System.err.println("Display " + display + " does not exist, " +
+                       "returning 1 for displayDensity(" + display + ")");
+    */
+    // https://github.com/processing/processing4/issues/57
+    System.err.println("displayDensity() unavailable because AWT is disabled");
+    return 1;  // not the end of the world, so don't throw a RuntimeException
   }
 
 
@@ -1581,18 +1447,7 @@ public class PApplet implements PConstants {
     }
   }
 
-
-  protected void handleMethods(String methodName) {
-    synchronized (registerLock) {
-      RegisteredMethods meth = registerMap.get(methodName);
-      if (meth != null) {
-        meth.handle();
-      }
-    }
-  }
-
-
-  protected void handleMethods(String methodName, Object[] args) {
+  protected void handleMethods(String methodName, Object...args) {
     synchronized (registerLock) {
       RegisteredMethods meth = registerMap.get(methodName);
       if (meth != null) {
@@ -2223,7 +2078,7 @@ public class PApplet implements PConstants {
       Class<?> rendererClass =
         Thread.currentThread().getContextClassLoader().loadClass(renderer);
 
-      Constructor<?> constructor = rendererClass.getConstructor(new Class[] { });
+      Constructor<?> constructor = rendererClass.getConstructor();
       PGraphics pg = (PGraphics) constructor.newInstance();
 
       pg.setParent(this);
@@ -2707,7 +2562,7 @@ public class PApplet implements PConstants {
       break;
     }
 
-    handleMethods("mouseEvent", new Object[] { event });
+    handleMethods("mouseEvent", event);
 
     switch (action) {
     case MouseEvent.PRESS:
@@ -2979,7 +2834,7 @@ public class PApplet implements PConstants {
     }
     */
 
-    handleMethods("keyEvent", new Object[] { event });
+    handleMethods("keyEvent", event);
 
     // if someone else wants to intercept the key, they should
     // set key to zero (or something besides the ESC).
@@ -3395,17 +3250,9 @@ public class PApplet implements PConstants {
    * @param url the complete URL, as a String in quotes
    */
   public void link(String url) {
-    try {
-      if (Desktop.isDesktopSupported()) {
-        Desktop.getDesktop().browse(new URI(url));
-      } else {
-        // Just pass it off to open() and hope for the best
-        launch(url);
-      }
-    } catch (IOException e) {
-      printStackTrace(e);
-    } catch (URISyntaxException e) {
-      printStackTrace(e);
+    if (!surface.openLink(url)) {
+      // Just pass it off to launch() and hope for the best
+      launch(url);
     }
   }
 
@@ -3824,8 +3671,8 @@ public class PApplet implements PConstants {
    */
   public void method(String name) {
     try {
-      Method method = getClass().getMethod(name, new Class[] {});
-      method.invoke(this, new Object[] { });
+      Method method = getClass().getMethod(name);
+      method.invoke(this);
 
     } catch (IllegalArgumentException e) {
       e.printStackTrace();
@@ -5401,8 +5248,6 @@ public class PApplet implements PConstants {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  protected String[] loadImageFormats;
-
   /**
    * ( begin auto-generated from loadImage.xml )
    *
@@ -5444,29 +5289,14 @@ public class PApplet implements PConstants {
    * @see PGraphics#background(float, float, float, float)
    */
   public PImage loadImage(String filename) {
-//    return loadImage(filename, null, null);
     return loadImage(filename, null);
   }
 
-//  /**
-//   * @param extension the type of image to load, for example "png", "gif", "jpg"
-//   */
-//  public PImage loadImage(String filename, String extension) {
-//    return loadImage(filename, extension, null);
-//  }
-
-//  /**
-//   * @nowebref
-//   */
-//  public PImage loadImage(String filename, Object params) {
-//    return loadImage(filename, null, params);
-//  }
 
   /**
    * @param extension type of image to load, for example "png", "gif", "jpg"
    */
-  public PImage loadImage(String filename, String extension) { //, Object params) {
-
+  public PImage loadImage(String filename, String extension) {
     // awaitAsyncSaveCompletion() has to run on the main thread, because P2D
     // and P3D call GL functions. If this runs on background, requestImage()
     // already called awaitAsyncSaveCompletion() on the main thread.
@@ -5474,127 +5304,7 @@ public class PApplet implements PConstants {
       g.awaitAsyncSaveCompletion(filename);
     }
 
-    if (extension == null) {
-      String lower = filename.toLowerCase();
-      int dot = filename.lastIndexOf('.');
-      if (dot == -1) {
-        extension = "unknown";  // no extension found
-
-      } else {
-        extension = lower.substring(dot + 1);
-
-        // check for, and strip any parameters on the url, i.e.
-        // filename.jpg?blah=blah&something=that
-        int question = extension.indexOf('?');
-        if (question != -1) {
-          extension = extension.substring(0, question);
-        }
-      }
-    }
-
-    // just in case. them users will try anything!
-    extension = extension.toLowerCase();
-
-    if (extension.equals("tga")) {
-      try {
-        PImage image = loadImageTGA(filename);
-//        if (params != null) {
-//          image.setParams(g, params);
-//        }
-        return image;
-      } catch (IOException e) {
-        printStackTrace(e);
-        return null;
-      }
-    }
-
-    if (extension.equals("tif") || extension.equals("tiff")) {
-      byte[] bytes = loadBytes(filename);
-      PImage image =  (bytes == null) ? null : PImage.loadTIFF(bytes);
-//      if (params != null) {
-//        image.setParams(g, params);
-//      }
-      return image;
-    }
-
-    // For jpeg, gif, and png, load them using createImage(),
-    // because the javax.imageio code was found to be much slower.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=392
-    try {
-      if (extension.equals("jpg") || extension.equals("jpeg") ||
-          extension.equals("gif") || extension.equals("png") ||
-          extension.equals("unknown")) {
-        byte[] bytes = loadBytes(filename);
-        if (bytes == null) {
-          return null;
-        } else {
-          //Image awtImage = Toolkit.getDefaultToolkit().createImage(bytes);
-          Image awtImage = new ImageIcon(bytes).getImage();
-
-          if (awtImage instanceof BufferedImage) {
-            BufferedImage buffImage = (BufferedImage) awtImage;
-            int space = buffImage.getColorModel().getColorSpace().getType();
-            if (space == ColorSpace.TYPE_CMYK) {
-              System.err.println(filename + " is a CMYK image, " +
-                                 "only RGB images are supported.");
-              return null;
-              /*
-              // wishful thinking, appears to not be supported
-              // https://community.oracle.com/thread/1272045?start=0&tstart=0
-              BufferedImage destImage =
-                new BufferedImage(buffImage.getWidth(),
-                                  buffImage.getHeight(),
-                                  BufferedImage.TYPE_3BYTE_BGR);
-              ColorConvertOp op = new ColorConvertOp(null);
-              op.filter(buffImage, destImage);
-              image = new PImage(destImage);
-              */
-            }
-          }
-
-          PImage image = new PImage(awtImage);
-          if (image.width == -1) {
-            System.err.println("The file " + filename +
-                               " contains bad image data, or may not be an image.");
-          }
-
-          // if it's a .gif image, test to see if it has transparency
-          if (extension.equals("gif") || extension.equals("png") ||
-              extension.equals("unknown")) {
-            image.checkAlpha();
-          }
-
-//          if (params != null) {
-//            image.setParams(g, params);
-//          }
-          image.parent = this;
-          return image;
-        }
-      }
-    } catch (Exception e) {
-      // show error, but move on to the stuff below, see if it'll work
-      printStackTrace(e);
-    }
-
-    if (loadImageFormats == null) {
-      loadImageFormats = ImageIO.getReaderFormatNames();
-    }
-    if (loadImageFormats != null) {
-      for (int i = 0; i < loadImageFormats.length; i++) {
-        if (extension.equals(loadImageFormats[i])) {
-          return loadImageIO(filename);
-//          PImage image = loadImageIO(filename);
-//          if (params != null) {
-//            image.setParams(g, params);
-//          }
-//          return image;
-        }
-      }
-    }
-
-    // failed, could not load image after all those attempts
-    System.err.println("Could not find a method to load " + filename);
-    return null;
+    return surface.loadImage(filename, extension);
   }
 
 
@@ -5668,250 +5378,6 @@ public class PApplet implements PConstants {
     });
     return vessel;
   }
-
-
-  /**
-   * Use Java 1.4 ImageIO methods to load an image.
-   */
-  protected PImage loadImageIO(String filename) {
-    InputStream stream = createInput(filename);
-    if (stream == null) {
-      System.err.println("The image " + filename + " could not be found.");
-      return null;
-    }
-
-    try {
-      BufferedImage bi = ImageIO.read(stream);
-      PImage outgoing = new PImage(bi.getWidth(), bi.getHeight());
-      outgoing.parent = this;
-
-      bi.getRGB(0, 0, outgoing.width, outgoing.height,
-                outgoing.pixels, 0, outgoing.width);
-
-      // check the alpha for this image
-      // was gonna call getType() on the image to see if RGB or ARGB,
-      // but it's not actually useful, since gif images will come through
-      // as TYPE_BYTE_INDEXED, which means it'll still have to check for
-      // the transparency. also, would have to iterate through all the other
-      // types and guess whether alpha was in there, so.. just gonna stick
-      // with the old method.
-      outgoing.checkAlpha();
-
-      stream.close();
-      // return the image
-      return outgoing;
-
-    } catch (Exception e) {
-      printStackTrace(e);
-      return null;
-    }
-  }
-
-
-  /**
-   * Targa image loader for RLE-compressed TGA files.
-   * <p>
-   * Rewritten for 0115 to read/write RLE-encoded targa images.
-   * For 0125, non-RLE encoded images are now supported, along with
-   * images whose y-order is reversed (which is standard for TGA files).
-   * <p>
-   * A version of this function is in MovieMaker.java. Any fixes here
-   * should be applied over in MovieMaker as well.
-   * <p>
-   * Known issue with RLE encoding and odd behavior in some apps:
-   * https://github.com/processing/processing/issues/2096
-   * Please help!
-   */
-  protected PImage loadImageTGA(String filename) throws IOException {
-    InputStream is = createInput(filename);
-    if (is == null) return null;
-
-    byte[] header = new byte[18];
-    int offset = 0;
-    do {
-      int count = is.read(header, offset, header.length - offset);
-      if (count == -1) return null;
-      offset += count;
-    } while (offset < 18);
-
-    /*
-      header[2] image type code
-      2  (0x02) - Uncompressed, RGB images.
-      3  (0x03) - Uncompressed, black and white images.
-      10 (0x0A) - Run-length encoded RGB images.
-      11 (0x0B) - Compressed, black and white images. (grayscale?)
-
-      header[16] is the bit depth (8, 24, 32)
-
-      header[17] image descriptor (packed bits)
-      0x20 is 32 = origin upper-left
-      0x28 is 32 + 8 = origin upper-left + 32 bits
-
-        7  6  5  4  3  2  1  0
-      128 64 32 16  8  4  2  1
-    */
-
-    int format = 0;
-
-    if (((header[2] == 3) || (header[2] == 11)) &&  // B&W, plus RLE or not
-        (header[16] == 8) &&  // 8 bits
-        ((header[17] == 0x8) || (header[17] == 0x28))) {  // origin, 32 bit
-      format = ALPHA;
-
-    } else if (((header[2] == 2) || (header[2] == 10)) &&  // RGB, RLE or not
-               (header[16] == 24) &&  // 24 bits
-               ((header[17] == 0x20) || (header[17] == 0))) {  // origin
-      format = RGB;
-
-    } else if (((header[2] == 2) || (header[2] == 10)) &&
-               (header[16] == 32) &&
-               ((header[17] == 0x8) || (header[17] == 0x28))) {  // origin, 32
-      format = ARGB;
-    }
-
-    if (format == 0) {
-      System.err.println("Unknown .tga file format for " + filename);
-                         //" (" + header[2] + " " +
-                         //(header[16] & 0xff) + " " +
-                         //hex(header[17], 2) + ")");
-      return null;
-    }
-
-    int w = ((header[13] & 0xff) << 8) + (header[12] & 0xff);
-    int h = ((header[15] & 0xff) << 8) + (header[14] & 0xff);
-    PImage outgoing = createImage(w, h, format);
-
-    // where "reversed" means upper-left corner (normal for most of
-    // the modernized world, but "reversed" for the tga spec)
-    //boolean reversed = (header[17] & 0x20) != 0;
-    // https://github.com/processing/processing/issues/1682
-    boolean reversed = (header[17] & 0x20) == 0;
-
-    if ((header[2] == 2) || (header[2] == 3)) {  // not RLE encoded
-      if (reversed) {
-        int index = (h-1) * w;
-        switch (format) {
-        case ALPHA:
-          for (int y = h-1; y >= 0; y--) {
-            for (int x = 0; x < w; x++) {
-              outgoing.pixels[index + x] = is.read();
-            }
-            index -= w;
-          }
-          break;
-        case RGB:
-          for (int y = h-1; y >= 0; y--) {
-            for (int x = 0; x < w; x++) {
-              outgoing.pixels[index + x] =
-                is.read() | (is.read() << 8) | (is.read() << 16) |
-                0xff000000;
-            }
-            index -= w;
-          }
-          break;
-        case ARGB:
-          for (int y = h-1; y >= 0; y--) {
-            for (int x = 0; x < w; x++) {
-              outgoing.pixels[index + x] =
-                is.read() | (is.read() << 8) | (is.read() << 16) |
-                (is.read() << 24);
-            }
-            index -= w;
-          }
-        }
-      } else {  // not reversed
-        int count = w * h;
-        switch (format) {
-        case ALPHA:
-          for (int i = 0; i < count; i++) {
-            outgoing.pixels[i] = is.read();
-          }
-          break;
-        case RGB:
-          for (int i = 0; i < count; i++) {
-            outgoing.pixels[i] =
-              is.read() | (is.read() << 8) | (is.read() << 16) |
-              0xff000000;
-          }
-          break;
-        case ARGB:
-          for (int i = 0; i < count; i++) {
-            outgoing.pixels[i] =
-              is.read() | (is.read() << 8) | (is.read() << 16) |
-              (is.read() << 24);
-          }
-          break;
-        }
-      }
-
-    } else {  // header[2] is 10 or 11
-      int index = 0;
-      int[] px = outgoing.pixels;
-
-      while (index < px.length) {
-        int num = is.read();
-        boolean isRLE = (num & 0x80) != 0;
-        if (isRLE) {
-          num -= 127;  // (num & 0x7F) + 1
-          int pixel = 0;
-          switch (format) {
-          case ALPHA:
-            pixel = is.read();
-            break;
-          case RGB:
-            pixel = 0xFF000000 |
-              is.read() | (is.read() << 8) | (is.read() << 16);
-            //(is.read() << 16) | (is.read() << 8) | is.read();
-            break;
-          case ARGB:
-            pixel = is.read() |
-              (is.read() << 8) | (is.read() << 16) | (is.read() << 24);
-            break;
-          }
-          for (int i = 0; i < num; i++) {
-            px[index++] = pixel;
-            if (index == px.length) break;
-          }
-        } else {  // write up to 127 bytes as uncompressed
-          num += 1;
-          switch (format) {
-          case ALPHA:
-            for (int i = 0; i < num; i++) {
-              px[index++] = is.read();
-            }
-            break;
-          case RGB:
-            for (int i = 0; i < num; i++) {
-              px[index++] = 0xFF000000 |
-                is.read() | (is.read() << 8) | (is.read() << 16);
-              //(is.read() << 16) | (is.read() << 8) | is.read();
-            }
-            break;
-          case ARGB:
-            for (int i = 0; i < num; i++) {
-              px[index++] = is.read() | //(is.read() << 24) |
-                (is.read() << 8) | (is.read() << 16) | (is.read() << 24);
-              //(is.read() << 16) | (is.read() << 8) | is.read();
-            }
-            break;
-          }
-        }
-      }
-
-      if (!reversed) {
-        int[] temp = new int[w];
-        for (int y = 0; y < h/2; y++) {
-          int z = (h-1) - y;
-          System.arraycopy(px, y*w, temp, 0, w);
-          System.arraycopy(px, z*w, px, y*w, w);
-          System.arraycopy(temp, 0, px, z*w, w);
-        }
-      }
-    }
-    is.close();
-    return outgoing;
-  }
-
 
 
   //////////////////////////////////////////////////////////////
@@ -6418,25 +5884,6 @@ public class PApplet implements PConstants {
   */
 
 
-  static private boolean lookAndFeelCheck;
-
-  /**
-   * Initialize the Look & Feel if it hasn't been already.
-   * Call this before using any Swing-related code in PApplet methods.
-   */
-  static private void checkLookAndFeel() {
-    if (!lookAndFeelCheck) {
-      if (platform == WINDOWS) {
-        // Windows is defaulting to Metal or something else awful.
-        // Which also is not scaled properly with HiDPI interfaces.
-        try {
-          UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) { }
-      }
-      lookAndFeelCheck = true;
-    }
-  }
-
   /**
    * Open a platform-specific file chooser dialog to select a file for input.
    * After the selection is made, the selected File will be passed to the
@@ -6478,10 +5925,12 @@ public class PApplet implements PConstants {
 
   public void selectInput(String prompt, String callback,
                           File file, Object callbackObject) {
-    selectInput(prompt, callback, file, callbackObject, null, this);  //selectFrame());
+    //selectInput(prompt, callback, file, callbackObject, null, this);
+    surface.selectInput(prompt, callback, file, callbackObject);
   }
 
 
+  /*
   static public void selectInput(String prompt, String callbackMethod,
                                  File file, Object callbackObject, Frame parent,
                                  PApplet sketch) {
@@ -6493,6 +5942,7 @@ public class PApplet implements PConstants {
                                  File file, Object callbackObject, Frame parent) {
     selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD, null);
   }
+  */
 
 
   /**
@@ -6514,10 +5964,12 @@ public class PApplet implements PConstants {
 
   public void selectOutput(String prompt, String callback,
                            File file, Object callbackObject) {
-    selectOutput(prompt, callback, file, callbackObject, null, this); //selectFrame());
+    //selectOutput(prompt, callback, file, callbackObject, null, this);
+    surface.selectOutput(prompt, callback, file, callbackObject);
   }
 
 
+  /*
   static public void selectOutput(String prompt, String callbackMethod,
                                   File file, Object callbackObject, Frame parent) {
     selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE, null);
@@ -6585,6 +6037,7 @@ public class PApplet implements PConstants {
       }
     });
   }
+  */
 
 
   /**
@@ -6606,10 +6059,12 @@ public class PApplet implements PConstants {
 
   public void selectFolder(String prompt, String callback,
                            File file, Object callbackObject) {
-    selectFolder(prompt, callback, file, callbackObject, null, this); //selectFrame());
+    //selectFolder(prompt, callback, file, callbackObject, null, this);
+    surface.selectFolder(prompt, callback, file, callbackObject);
   }
 
 
+  /*
   static public void selectFolder(final String prompt,
                                   final String callbackMethod,
                                   final File defaultSelection,
@@ -6668,16 +6123,17 @@ public class PApplet implements PConstants {
       }
     });
   }
+  */
 
 
-  static private void selectCallback(File selectedFile,
-                                     String callbackMethod,
-                                     Object callbackObject) {
+  static public void selectCallback(File selectedFile,
+                                    String callbackMethod,
+                                    Object callbackObject) {
     try {
       Class<?> callbackClass = callbackObject.getClass();
       Method selectMethod =
-        callbackClass.getMethod(callbackMethod, new Class[] { File.class });
-      selectMethod.invoke(callbackObject, new Object[] { selectedFile });
+        callbackClass.getMethod(callbackMethod, File.class);
+      selectMethod.invoke(callbackObject, selectedFile);
 
     } catch (IllegalAccessException iae) {
       System.err.println(callbackMethod + "() must be public");
@@ -6689,7 +6145,6 @@ public class PApplet implements PConstants {
       System.err.println(callbackMethod + "() could not be found");
     }
   }
-
 
 
   //////////////////////////////////////////////////////////////
@@ -8018,17 +7473,15 @@ public class PApplet implements PConstants {
 
   static File desktopFolder;
 
-  /** Not a supported function. For testing use only. */
   static public File desktopFile(String what) {
     if (desktopFolder == null) {
       // Should work on Linux and OS X (on OS X, even with the localized version).
       desktopFolder = new File(System.getProperty("user.home"), "Desktop");
       if (!desktopFolder.exists()) {
-        if (platform == WINDOWS) {
-          FileSystemView filesys = FileSystemView.getFileSystemView();
-          desktopFolder = filesys.getHomeDirectory();
+        if (platform == WINDOWS && !disableAWT) {
+          desktopFolder = ShimAWT.getWindowsDesktop();
         } else {
-          throw new UnsupportedOperationException("Could not find a suitable desktop foldder");
+          throw new UnsupportedOperationException("Could not find a suitable Desktop foldder");
         }
       }
     }
@@ -8036,7 +7489,6 @@ public class PApplet implements PConstants {
   }
 
 
-  /** Not a supported function. For testing use only. */
   static public String desktopPath(String what) {
     return desktopFile(what).getAbsolutePath();
   }
@@ -10601,36 +10053,12 @@ public class PApplet implements PConstants {
   }
 
 
-  // Moving this back off the EDT for alpha 10. Not sure if we're helping or
-  // hurting, but unless we do, errors inside settings() are never passed
+  // Moving this back off the EDT for 3.0 alpha 10. Not sure if we're helping
+  // or hurting, but unless we do, errors inside settings() are never passed
   // through to the PDE. There are other ways around that, no doubt, but I'm
   // also suspecting that these "not showing up" bugs might be EDT issues.
   static public void runSketch(final String[] args,
                                final PApplet constructedSketch) {
-//    EventQueue.invokeLater(new Runnable() {
-//      public void run() {
-//        runSketchEDT(args, constructedSketch);
-//      }
-//    });
-//  }
-//
-//
-//  /**
-//   * Moving this to the EDT for 3.0a6 because that's the proper thing to do
-//   * when messing with Swing components. But mostly we're AWT, so who knows.
-//   */
-//  static protected void runSketchEDT(final String[] args,
-//                                     final PApplet constructedSketch) {
-    // Supposed to help with flicker, but no effect on OS X.
-    // TODO IIRC this helped on Windows, but need to double check.
-    System.setProperty("sun.awt.noerasebackground", "true");
-
-    // Remove 60fps limit on the JavaFX "pulse" timer
-    System.setProperty("javafx.animation.fullspeed", "true");
-
-    // Doesn't seem to do anything helpful here (that can't be done via Runner)
-    //System.setProperty("com.apple.mrj.application.apple.menu.about.name", "potato");
-
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       public void uncaughtException(Thread t, Throwable e) {
         e.printStackTrace();
@@ -10658,16 +10086,6 @@ public class PApplet implements PConstants {
       }
     }
     */
-
-    // Catch any HeadlessException to provide more useful feedback
-    try {
-      // Call validate() while resize events are in progress
-      Toolkit.getDefaultToolkit().setDynamicLayout(true);
-    } catch (HeadlessException e) {
-      System.err.println("Cannot run sketch without a display. Read this for possible solutions:");
-      System.err.println("https://github.com/processing/processing/wiki/Running-without-a-Display");
-      System.exit(1);
-    }
 
     // So that the system proxy setting are used by default
     System.setProperty("java.net.useSystemProxies", "true");
@@ -10714,6 +10132,9 @@ public class PApplet implements PConstants {
             System.err.println(value + " is not a valid choice for " + ARGS_DISPLAY);
             displayNum = -1;  // use the default
           }
+
+        } else if (param.equals(ARGS_DISABLE_AWT)) {
+          disableAWT = true;
 
         } else if (param.equals(ARGS_WINDOW_COLOR)) {
           if (value.charAt(0) == '#' && value.length() == 7) {
@@ -10768,16 +10189,9 @@ public class PApplet implements PConstants {
       argIndex++;
     }
 
-//    // Now that sketch path is passed in args after the sketch name
-//    // it's not set in the above loop(the above loop breaks after
-//    // finding sketch name). So setting sketch path here.
-//    // https://github.com/processing/processing/commit/0a14835e6f5f4766b022e73a8fe562318636727c
-//    // TODO this is a hack added for PDE X and needs to be removed [fry 141104]
-//    for (int i = 0; i < args.length; i++) {
-//      if (args[i].startsWith(ARGS_SKETCH_FOLDER)){
-//        folder = args[i].substring(args[i].indexOf('=') + 1);
-//      }
-//    }
+    if (!disableAWT) {
+      ShimAWT.initRun();
+    }
 
     final PApplet sketch;
     if (constructedSketch != null) {
@@ -10796,14 +10210,16 @@ public class PApplet implements PConstants {
       }
     }
 
-    if (platform == MACOS) {
+    // TODO When disabling AWT for LWJGL or others, we need to figure out
+    // how to make Cmd-Q and the rest of this still work properly.
+    if (platform == MACOS && !disableAWT) {
       try {
         final String td = "processing.core.ThinkDifferent";
         Class<?> thinkDifferent =
           Thread.currentThread().getContextClassLoader().loadClass(td);
         Method method =
-          thinkDifferent.getMethod("init", new Class[] { PApplet.class });
-        method.invoke(null, new Object[] { sketch });
+          thinkDifferent.getMethod("init", PApplet.class);
+        method.invoke(null, sketch);
       } catch (Exception e) {
         e.printStackTrace();  // That's unfortunate
       }
@@ -10836,25 +10252,7 @@ public class PApplet implements PConstants {
     }
 
     // Call the settings() method which will give us our size() call
-//    try {
     sketch.handleSettings();
-//    } catch (Throwable t) {
-//      System.err.println("I think I'm gonna hurl");
-//    }
-
-////    sketch.spanDisplays = spanDisplays;
-//    // If spanning screens, that means we're also full screen.
-////    fullScreen |= spanDisplays;
-//    if (spanDisplays) {
-//      displayIndex = SPAN;
-////      fullScreen = true;
-//    }
-
-//    // If the applet doesn't call for full screen, but the command line does,
-//    // enable it. Conversely, if the command line does not, don't disable it.
-//    // Query the applet to see if it wants to be full screen all the time.
-//    //fullScreen |= sketch.sketchFullScreen();
-//    sketch.fullScreen |= fullScreen;
 
     sketch.external = external;
 
@@ -10863,22 +10261,6 @@ public class PApplet implements PConstants {
     }
 
     final PSurface surface = sketch.initSurface();
-//      sketch.initSurface(windowColor, displayIndex, fullScreen, spanDisplays);
-
-    /*
-    // Wait until the applet has figured out its width. In a static mode app,
-    // everything happens inside setup(), so this will be after setup() has
-    // completed, and the empty draw() has set "finished" to true.
-    while (sketch.defaultSize && !sketch.finished) {
-      //System.out.println("default size");
-      try {
-        Thread.sleep(5);
-
-      } catch (InterruptedException e) {
-        //System.out.println("interrupt");
-      }
-    }
-    */
 
     if (present) {
       if (hideStop) {
@@ -10897,14 +10279,6 @@ public class PApplet implements PConstants {
 
     sketch.showSurface();
     sketch.startSurface();
-    /*
-    if (sketch.getGraphics().displayable()) {
-      surface.setVisible(true);
-    }
-
-    //sketch.init();
-    surface.startThread();
-    */
   }
 
 
@@ -10928,61 +10302,63 @@ public class PApplet implements PConstants {
 
     // Create fake Frame object to warn user about the changes
     if (g.displayable()) {
-      frame = new Frame() {
-        @Override
-        public void setResizable(boolean resizable) {
-          deprecationWarning("setResizable");
-          surface.setResizable(resizable);
-        }
+      /*
+      if (!disableAWT) {
+        frame = new Frame() {
+          @Override
+          public void setResizable(boolean resizable) {
+            deprecationWarning("setResizable");
+            surface.setResizable(resizable);
+          }
 
-        @Override
-        public void setVisible(boolean visible) {
-          deprecationWarning("setVisible");
-          surface.setVisible(visible);
-        }
+          @Override
+          public void setVisible(boolean visible) {
+            deprecationWarning("setVisible");
+            surface.setVisible(visible);
+          }
 
-        @Override
-        public void setTitle(String title) {
-          deprecationWarning("setTitle");
-          surface.setTitle(title);
-        }
+          @Override
+          public void setTitle(String title) {
+            deprecationWarning("setTitle");
+            surface.setTitle(title);
+          }
 
-        @Override
-        public void setUndecorated(boolean ignored) {
-          throw new RuntimeException("'frame' has been removed from Processing 3, " +
-            "use fullScreen() to get an undecorated full screen frame");
-        }
+          @Override
+          public void setUndecorated(boolean ignored) {
+            throw new RuntimeException("'frame' has been removed from Processing 3, " +
+              "use fullScreen() to get an undecorated full screen frame");
+          }
+          */
+          /*
+          // Can't override this one because it's called by Window's constructor
+          @Override
+          public void setLocation(int x, int y) {
+            deprecationWarning("setLocation");
+            surface.setLocation(x, y);
+          }
+          */
+          /*
+          @Override
+          public void setSize(int w, int h) {
+            deprecationWarning("setSize");
+            surface.setSize(w, h);
+          }
 
-        // Can't override this one because it's called by Window's constructor
-        /*
-        @Override
-        public void setLocation(int x, int y) {
-          deprecationWarning("setLocation");
-          surface.setLocation(x, y);
-        }
-        */
-
-        @Override
-        public void setSize(int w, int h) {
-          deprecationWarning("setSize");
-          surface.setSize(w, h);
-        }
-
-        private void deprecationWarning(String method) {
-          PGraphics.showWarning("Use surface." + method + "() instead of " +
-                                "frame." + method + " in Processing 3");
-          //new Exception(method).printStackTrace(System.out);
-        }
-      };
-
-      surface.initFrame(this); //, backgroundColor, displayNum, fullScreen, spanDisplays);
+          private void deprecationWarning(String method) {
+            PGraphics.showWarning("Use surface." + method + "() instead of " +
+                                  "frame." + method + " in Processing 3");
+            //new Exception(method).printStackTrace(System.out);
+          }
+        };
+      }
+      */
+      surface.initFrame(this);
       surface.setTitle(getClass().getSimpleName());
 
     } else {
       surface.initOffscreen(this);  // for PDF/PSurfaceNone and friends
     }
 
-//    init();
     return surface;
   }
 
@@ -15560,6 +14936,15 @@ public class PApplet implements PConstants {
    */
   static public void showMissingWarning(String method) {
     PGraphics.showMissingWarning(method);
+  }
+
+
+  /**
+   * Check the alpha on an image, using a really primitive loop.
+   */
+  public void checkAlpha() {
+    if (recorder != null) recorder.checkAlpha();
+    g.checkAlpha();
   }
 
 

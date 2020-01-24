@@ -25,6 +25,8 @@
 package processing.opengl;
 
 import java.awt.Component;
+import java.awt.EventQueue;
+import java.awt.FileDialog;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -63,10 +65,8 @@ import com.jogamp.newt.Display.PointerIcon;
 import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
 import com.jogamp.newt.awt.NewtCanvasAWT;
-import com.jogamp.newt.event.InputEvent;
 import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.util.FPSAnimator;
-
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -75,6 +75,10 @@ import processing.core.PImage;
 import processing.core.PSurface;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
+import processing.awt.PImageAWT;
+
+// have this removed by 4.0 final
+import processing.awt.ShimAWT;
 
 
 public class PSurfaceJOGL implements PSurface {
@@ -118,6 +122,77 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
+  /*
+  @Override
+  public int displayDensity() {
+    return shim.displayDensity();
+  }
+
+
+  @Override
+  public int displayDensity(int display) {
+    return shim.displayDensity(display);
+  }
+  */
+
+
+  // TODO rewrite before 4.0 release
+  public PImage loadImage(String path, Object... args) {
+    return ShimAWT.loadImage(sketch, path, args);
+  }
+
+
+  @Override
+  public void selectInput(String prompt, String callbackMethod,
+                          File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+        (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectImpl(prompt, callbackMethod, file,
+                         callbackObject, null, FileDialog.LOAD);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
+  @Override
+  public void selectOutput(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+        (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectImpl(prompt, callbackMethod, file,
+                         callbackObject, null, FileDialog.SAVE);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
+  @Override
+  public void selectFolder(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+        (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectFolderImpl(prompt, callbackMethod, file,
+                               callbackObject, null);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
   public void initOffscreen(PApplet sketch) {
     this.sketch = sketch;
 
@@ -134,6 +209,7 @@ public class PSurfaceJOGL implements PSurface {
 
   public void initFrame(PApplet sketch) {
     this.sketch = sketch;
+
     initIcons();
     initDisplay();
     initGL();
@@ -1034,11 +1110,13 @@ public class PSurfaceJOGL implements PSurface {
   protected void nativeMouseEvent(com.jogamp.newt.event.MouseEvent nativeEvent,
                                   int peAction) {
     int modifiers = nativeEvent.getModifiers();
+    /*
     int peModifiers = modifiers &
                       (InputEvent.SHIFT_MASK |
                        InputEvent.CTRL_MASK |
                        InputEvent.META_MASK |
                        InputEvent.ALT_MASK);
+     */
 
     int peButton = 0;
     switch (nativeEvent.getButton()) {
@@ -1087,7 +1165,7 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     MouseEvent me = new MouseEvent(nativeEvent, nativeEvent.getWhen(),
-                                   peAction, peModifiers,
+                                   peAction, modifiers,
                                    mx, my,
                                    peButton,
                                    peCount);
@@ -1098,11 +1176,12 @@ public class PSurfaceJOGL implements PSurface {
 
   protected void nativeKeyEvent(com.jogamp.newt.event.KeyEvent nativeEvent,
                                 int peAction) {
-    int peModifiers = nativeEvent.getModifiers() &
-                      (InputEvent.SHIFT_MASK |
-                       InputEvent.CTRL_MASK |
-                       InputEvent.META_MASK |
-                       InputEvent.ALT_MASK);
+    int modifiers = nativeEvent.getModifiers();
+//    int peModifiers = nativeEvent.getModifiers() &
+//                      (InputEvent.SHIFT_MASK |
+//                       InputEvent.CTRL_MASK |
+//                       InputEvent.META_MASK |
+//                       InputEvent.ALT_MASK);
 
     short code = nativeEvent.getKeyCode();
     char keyChar;
@@ -1128,7 +1207,7 @@ public class PSurfaceJOGL implements PSurface {
     // In contrast to key symbol, key code uses a fixed US keyboard layout and therefore is keyboard layout independent.
     // E.g. virtual key code VK_Y denotes the same physical key regardless whether keyboard layout QWERTY or QWERTZ is active. The key symbol of the former is VK_Y, where the latter produces VK_Y.
     KeyEvent ke = new KeyEvent(nativeEvent, nativeEvent.getWhen(),
-                               peAction, peModifiers,
+                               peAction, modifiers,
                                keyChar,
                                keyCode,
                                nativeEvent.isAutoRepeat());
@@ -1140,7 +1219,7 @@ public class PSurfaceJOGL implements PSurface {
         // Create key typed event
         // TODO: combine dead keys with the following key
         KeyEvent tke = new KeyEvent(nativeEvent, nativeEvent.getWhen(),
-                                    KeyEvent.TYPE, peModifiers,
+                                    KeyEvent.TYPE, modifiers,
                                     keyChar,
                                     0,
                                     nativeEvent.isAutoRepeat());
@@ -1262,7 +1341,7 @@ public class PSurfaceJOGL implements PSurface {
       if (name != null) {
         ImageIcon icon =
           new ImageIcon(getClass().getResource("cursors/" + name + ".png"));
-        PImage img = new PImage(icon.getImage());
+        PImage img = new PImageAWT(icon.getImage());
         // Most cursors just use the center as the hotspot...
         int x = img.width / 2;
         int y = img.height / 2;
@@ -1324,5 +1403,10 @@ public class PSurfaceJOGL implements PSurface {
         window.setPointerVisible(false);
       }
     });
+  }
+
+
+  public boolean openLink(String url) {
+    return ShimAWT.openLink(url);
   }
 }

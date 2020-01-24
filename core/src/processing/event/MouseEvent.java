@@ -37,28 +37,17 @@ public class MouseEvent extends Event {
 
   protected int x, y;
   protected int button;
-//  protected int clickCount;
-//  protected float amount;
   protected int count;
-
-
-//  public MouseEvent(int x, int y) {
-//    this(null,
-//         System.currentTimeMillis(), PRESSED, 0,
-//         x, y, PConstants.LEFT, 1);
-//  }
 
 
   public MouseEvent(Object nativeObject,
                     long millis, int action, int modifiers,
-                    int x, int y, int button, int count) {  //float amount) {  //int clickCount) {
+                    int x, int y, int button, int count) {
     super(nativeObject, millis, action, modifiers);
     this.flavor = MOUSE;
     this.x = x;
     this.y = y;
     this.button = button;
-    //this.clickCount = clickCount;
-    //this.amount = amount;
     this.count = count;
   }
 
@@ -79,27 +68,6 @@ public class MouseEvent extends Event {
   }
 
 
-//  public void setButton(int button) {
-//    this.button = button;
-//  }
-
-
-  /** Do not use, getCount() is the correct method. */
-  @Deprecated
-  public int getClickCount() {
-    //return (int) amount; //clickCount;
-    return count;
-  }
-
-
-  /** Do not use, getCount() is the correct method. */
-  @Deprecated
-  public float getAmount() {
-    //return amount;
-    return count;
-  }
-
-
   /**
    * Number of clicks for mouse button events, or the number of steps (positive
    * or negative depending on direction) for a mouse wheel event.
@@ -113,10 +81,6 @@ public class MouseEvent extends Event {
     return count;
   }
 
-
-//  public void setClickCount(int clickCount) {
-//    this.clickCount = clickCount;
-//  }
 
   private String actionString() {
     switch (action) {
