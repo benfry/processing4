@@ -25,5 +25,6 @@
 	<classpathentry kind="lib" path="mode/org.eclipse.text.jar"/>
 	<classpathentry kind="lib" path="mode/org.netbeans.swing.outline.jar"/>
 	<classpathentry kind="lib" path="test/lib/junit-4.8.1.jar"/>
+	<classpathentry kind="lib" path="/processing4-app/lib/rsyntaxtextarea.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

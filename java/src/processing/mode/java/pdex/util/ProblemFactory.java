@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.OptionalInt;
 import java.util.stream.IntStream;
 
+import javax.swing.text.BadLocationException;
+
 import processing.app.Problem;
 import processing.app.ui.Editor;
 import processing.mode.java.preproc.issue.PdePreprocessIssue;
@@ -41,20 +43,25 @@ public class ProblemFactory {
     // Generate syntax problem
     String message = pdePreprocessIssue.getMsg();
 
-    int lineStart = editor.getLineStartOffset(localLine);
-    int lineStop = editor.getLineStopOffset(localLine) - 1;
+    try {
+      int lineStart = editor.getLineStartOffset(localLine);
+      int lineStop = editor.getLineStopOffset(localLine) - 1;
 
-    if (lineStart == lineStop) {
-      lineStop++;
+      if (lineStart == lineStop) {
+        lineStop++;
+      }
+
+      return new SyntaxProblem(
+          tab,
+          localLine,
+          message,
+          lineStart,
+          lineStop
+      );
+    } catch (BadLocationException ble) {
+      ble.printStackTrace();
+      return null;
     }
-
-    return new SyntaxProblem(
-        tab,
-        localLine,
-        message,
-        lineStart,
-        lineStop
-    );
   }
 
   /**

@@ -33,6 +33,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Segment;
 import javax.swing.text.Utilities;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
 import processing.app.Mode;
 import processing.app.Problem;
 import processing.app.ui.Editor;
@@ -52,7 +54,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected Color gutterLineHighlightColor;
 
 
-  public PdeTextAreaPainter(JEditTextArea textArea, TextAreaDefaults defaults) {
+  public PdeTextAreaPainter(RSyntaxTextArea textArea, TextAreaDefaults defaults) {
     super(textArea, defaults);
 
     // Handle mouse clicks to toggle breakpoints

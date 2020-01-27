@@ -37,6 +37,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.swing.JTree; // needed for javadocs
+import javax.swing.text.BadLocationException;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import processing.app.Messages;
@@ -476,8 +477,12 @@ public class Debugger {
     } else {
       // Make sure the line contains actual code before setting the break
       // https://github.com/processing/processing/issues/3765
-      if (editor.getLineText(index).trim().length() != 0) {
-        setBreakpoint(index);
+      try {
+        if (editor.getLineText(index).trim().length() != 0) {
+          setBreakpoint(index);
+        }
+      } catch (BadLocationException ble) {
+        ble.printStackTrace();
       }
     }
   }

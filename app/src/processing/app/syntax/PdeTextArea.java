@@ -27,6 +27,8 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
 import processing.app.Mode;
 import processing.app.ui.Editor;
 
@@ -36,7 +38,7 @@ import processing.app.ui.Editor;
  * JavaTextArea because they were not Java-specific and would be helpful
  * for other Mode implementations.
  */
-public class PdeTextArea extends JEditTextArea {
+public class PdeTextArea extends RSyntaxTextArea {
   protected final Editor editor;
 
   protected Image gutterGradient;

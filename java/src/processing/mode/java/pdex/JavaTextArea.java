@@ -36,8 +36,8 @@ import javax.swing.SwingWorker;
 
 import processing.app.Messages;
 import processing.app.Platform;
-import processing.app.syntax.PdeTextArea;
-import processing.app.syntax.TextAreaDefaults;
+import processing.app.ui.PdeTextArea;
+
 import processing.mode.java.JavaEditor;
 import processing.mode.java.JavaInputHandler;
 import processing.mode.java.JavaMode;

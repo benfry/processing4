@@ -43,9 +43,6 @@ import processing.core.PApplet;
 import processing.data.StringList;
 import processing.app.*;
 import processing.app.contrib.*;
-import processing.app.syntax.JEditTextArea;
-import processing.app.syntax.PdeTextArea;
-import processing.app.syntax.PdeTextAreaDefaults;
 import processing.app.ui.*;
 import processing.app.ui.Toolkit;
 import processing.mode.java.debug.LineBreakpoint;
@@ -134,7 +131,7 @@ public class JavaEditor extends Editor {
     preprocessingService = new PreprocessingService(this);
     pdex = new PDEX(this, preprocessingService);
 
-    Toolkit.setMenuMnemonics(textarea.getRightClickPopup());
+    Toolkit.setMenuMnemonics(textArea.getPopupMenu());
 
     // ensure completion is hidden when editor loses focus
     addWindowFocusListener(new WindowFocusListener() {
@@ -317,7 +314,7 @@ public class JavaEditor extends Editor {
     item = Toolkit.newJMenuItemShift(Language.text("menu.help.find_in_reference"), 'F');
     item.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        if (textarea.isSelectionActive()) {
+        if (textArea.isSelectionActive()) {
           handleFindReference();
         } else {
           statusNotice(Language.text("editor.status.find_reference.select_word_first"));
@@ -1774,7 +1771,7 @@ public class JavaEditor extends Editor {
    * @return the text area object
    */
   public JavaTextArea getJavaTextArea() {
-    return (JavaTextArea) textarea;
+    return (JavaTextArea) textArea;
   }
 
 
@@ -2541,18 +2538,18 @@ public class JavaEditor extends Editor {
 
         // repaint the editor header (show the modified tabs)
         header.repaint();
-        textarea.invalidate();
+        textArea.invalidate();
 
       } else {  // no or canceled = don't keep changes
         loadSavedCode();
         // update the painter to draw the saved (old) code
-        textarea.invalidate();
+        textArea.invalidate();
       }
     } else {
       // number values were not modified but we need to load the saved code
       // because of some formatting changes
       loadSavedCode();
-      textarea.invalidate();
+      textArea.invalidate();
     }
   }
 

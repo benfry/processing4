@@ -38,7 +38,6 @@ import processing.app.Mode;
 import processing.app.Problem;
 import processing.app.Sketch;
 import processing.app.SketchCode;
-import processing.app.syntax.PdeTextArea;
 import processing.app.ui.Editor;
 import processing.core.PApplet;
 
@@ -94,7 +93,7 @@ public class MarkerColumn extends JPanel {
 
   @Override
   public void paintComponent(Graphics g) {
-    PdeTextArea pta = editor.getPdeTextArea();
+    PdeTextArea pta = editor.getTextArea();
     if (pta != null) {
       g.drawImage(pta.getGutterGradient(),
                   0, 0, getWidth(), getHeight(), this);

@@ -43,6 +43,7 @@ import processing.app.Base;
 import processing.app.Messages;
 import processing.app.Mode;
 import processing.app.syntax.JEditTextArea;
+import processing.app.ui.PdeTextArea;
 import processing.app.ui.Toolkit;
 import processing.mode.java.JavaEditor;
 
@@ -99,7 +100,7 @@ public class CompletionPanel {
    * @param location - Point location where popup list is to be displayed
    * @param dedit
    */
-  public CompletionPanel(final JEditTextArea textarea,
+  public CompletionPanel(final PdeTextArea textarea,
                          int position, String subWord,
                          DefaultListModel<CompletionCandidate> items,
                          final Point location, JavaEditor editor) {
@@ -134,7 +135,7 @@ public class CompletionPanel {
     scrollPane = new JScrollPane();
 //    styleScrollPane();
     //scrollPane.setViewportView(completionList = createSuggestionList(position, items));
-    completionList = new JList<CompletionCandidate>(items) {
+    completionList = new JList<>(items) {
       {
         setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setSelectedIndex(0);

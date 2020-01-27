@@ -57,7 +57,7 @@ class ShowUsage {
     JMenuItem showUsageItem =
       new JMenuItem(Language.text("editor.popup.show_usage"));
     showUsageItem.addActionListener(e -> handleShowUsage());
-    editor.getTextArea().getRightClickPopup().add(showUsageItem);
+    editor.getTextArea().getPopupMenu().add(showUsageItem);
 
     reloadListener = this::reloadShowUsage;
 

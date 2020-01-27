@@ -426,8 +426,8 @@ public class FindReplace extends JFrame {
   public void replace(boolean isCompoundEdit) {
     editor.setSelectedText(replaceField.getText(), isCompoundEdit);
 
-    editor.getSketch().setModified(true);  // This necessary- calling replace()
-    // doesn't seem to mark a sketch as modified
+    // Calling replace() doesn't seem to mark a sketch as modified
+    editor.getSketch().setModified(true);
 
     setFound(false);
   }

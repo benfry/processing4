@@ -39,6 +39,8 @@ _   https://github.com/processing/processing4/issues/67
 would like to fix
 _ ability to switch mode in p5 w/o saving/closing/etc
 _ launch/psk files/import from web editor (for class)
+_ swap in RSyntaxArea
+_   https://github.com/processing/processing/issues/3199
 
 
 _ windows anti-malware leaves browser stuck at 100%

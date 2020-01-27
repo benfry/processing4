@@ -28,14 +28,17 @@ import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.tree.*;
 
+import org.fife.ui.rsyntaxtextarea.TokenMaker;
+import org.fife.ui.rsyntaxtextarea.TokenTypes;
+
 import processing.app.contrib.ContributionManager;
-import processing.app.syntax.*;
 import processing.app.ui.Editor;
 import processing.app.ui.EditorException;
 import processing.app.ui.EditorState;
@@ -52,8 +55,8 @@ public abstract class Mode {
 
   protected File folder;
 
-  protected TokenMarker tokenMarker;
   protected Map<String, String> keywordToReference = new HashMap<>();
+  protected Map<String, Integer> keywordToTokenType = new HashMap<>();
 
   protected Settings theme;
 //  protected Formatter formatter;
@@ -103,7 +106,7 @@ public abstract class Mode {
   public Mode(Base base, File folder) {
     this.base = base;
     this.folder = folder;
-    tokenMarker = createTokenMarker();
+    //tokenMarker = createTokenMarker();
 
     // Get paths for the libraries and examples in the mode folder
     examplesFolder = new File(folder, "examples");
@@ -142,6 +145,18 @@ public abstract class Mode {
 
   protected void loadKeywords(File keywordFile,
                               String commentPrefix) throws IOException {
+    Map<String, Integer> tokenTypeLookup = new HashMap<>();
+    Field[] interfaceFields = TokenTypes.class.getFields();
+    for (Field f : interfaceFields) {
+      if (f.getType() == Integer.class) {
+        try {
+          tokenTypeLookup.put(f.getName(), (Integer) f.get(null));
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
     BufferedReader reader = PApplet.createReader(keywordFile);
     String line = null;
     while ((line = reader.readLine()) != null) {
@@ -152,10 +167,10 @@ public abstract class Mode {
         String[] pieces = PApplet.splitTokens(line);
         if (pieces.length >= 2) {
           String keyword = pieces[0];
-          String coloring = pieces[1];
+          String kind = pieces[1];
 
-          if (coloring.length() > 0) {
-            tokenMarker.addColoring(keyword, coloring);
+          if (kind.length() > 0) {
+            keywordToTokenType.put(keyword, tokenTypeLookup.get(kind));
           }
           if (pieces.length == 3) {
             String htmlFilename = pieces[2];
@@ -787,10 +802,10 @@ public abstract class Mode {
    * Specialized version of getTokenMarker() that can be overridden to
    * provide different TokenMarker objects for different file types.
    * @since 3.2
-   * @param code the code for which we need a TokenMarker
+   * @param code the code for which we need a TokenMaker
    */
-  public TokenMarker getTokenMarker(SketchCode code) {
-    return getTokenMarker();
+  public TokenMaker getTokenMaker(SketchCode code) {
+    return getTokenMaker();
   }
 
 
@@ -949,6 +964,7 @@ public abstract class Mode {
     return validExtension(f.getName().substring(dot + 1));
   }
 
+
   /**
    * Check this extension (no dots, please) against the list of valid
    * extensions.
@@ -969,12 +985,12 @@ public abstract class Mode {
 
 
   /**
-   * Returns the appropriate file extension to use for auxilliary source files in a sketch.
-   * For example, in a Java-mode sketch, auxilliary files should be name "Foo.java"; in
-   * Python mode, they should be named "foo.py".
+   * Returns the appropriate file extension to use for auxilliary source files
+   * in a sketch. For example, in a Java-mode sketch, auxilliary files should
+   * be name "Foo.java"; in Python mode, they should be named "foo.py".
    *
-   * <p>Modes that do not override this function will get the default behavior of returning the
-   * default extension.
+   * <p>Modes that do not override this function will get the default behavior
+   * of returning the default extension.
    */
   public String getModuleExtension() {
     return getDefaultExtension();

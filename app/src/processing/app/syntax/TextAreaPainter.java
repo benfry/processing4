@@ -22,6 +22,9 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.ToolTipManager;
 import javax.swing.text.*;
+
+import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
+
 import javax.swing.JComponent;
 
 import processing.app.Preferences;
@@ -38,7 +41,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   /** A specific painter composed by the InputMethod.*/
   protected CompositionTextPainter compositionTextPainter;
 
-  protected JEditTextArea textArea;
+  protected RSyntaxTextArea textArea;
   protected TextAreaDefaults defaults;
 
 //  protected boolean blockCaret;
@@ -75,7 +78,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   /**
    * Creates a new repaint manager. This should be not be called directly.
    */
-  public TextAreaPainter(JEditTextArea textArea, TextAreaDefaults defaults) {
+  public TextAreaPainter(RSyntaxTextArea textArea, TextAreaDefaults defaults) {
     this.textArea = textArea;
     this.defaults = defaults;
 
