@@ -6,6 +6,26 @@
     <delete file="pde.jar" />
   </target>
 
+
+  <!-- Base URL for the current version of JOGL. This should probably be changed to
+       a location on download.processing.org so that we know it's available forever. -->
+  <property name="rsyntax.url"
+            value="https://repo1.maven.org/maven2/com/fifesoft/rsyntaxtextarea/3.0.8" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <available file="lib/rsyntaxtextarea.jar" property="rsyntax.present" />
+
+  <target name="download-rsyntax" unless="rsyntax.present">
+    <get src="${rsyntax.url}/rsyntaxtextarea-3.0.8.jar"
+         dest="lib/rsyntaxtextarea.jar"
+         usetimestamp="true"
+         ignoreerrors="${rsyntax.present}" />
+    <get src="${rsyntax.url}/rsyntaxtextarea-3.0.8-sources.jar"
+         dest="lib/rsyntaxtextarea-src.jar"
+         usetimestamp="true"
+         ignoreerrors="true" />
+  </target>
+
   <target name="compile" description="Compile sources">
     <condition property="core-built">
       <available file="../core/library/core.jar" />
@@ -39,14 +59,15 @@
                       lib/ant.jar;
                       lib/ant-launcher.jar;
                       lib/jna.jar;
-                      lib/jna-platform.jar"
+                      lib/jna-platform.jar;
+                      lib/rsyntaxtextarea.jar"
 	   debug="on"
 	   nowarn="true">
       <src path="src" />
     </javac>
   </target>
 
-  <target name="build" depends="compile" description="Build PDE">
+  <target name="build" depends="download-rsyntax, compile" description="Build PDE">
     <jar basedir="bin" destfile="pde.jar" />
   </target>
 </project>
