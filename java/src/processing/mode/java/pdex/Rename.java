@@ -24,6 +24,7 @@ import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -36,7 +37,6 @@ import processing.app.Language;
 import processing.app.Platform;
 import processing.app.Sketch;
 import processing.app.SketchCode;
-import processing.app.syntax.SyntaxDocument;
 import processing.app.ui.EditorStatus;
 import processing.app.ui.Toolkit;
 import processing.mode.java.JavaEditor;
@@ -68,7 +68,7 @@ class Rename {
     // Add rename option
     JMenuItem renameItem = new JMenuItem(Language.text("editor.popup.rename"));
     renameItem.addActionListener(e -> handleRename());
-    editor.getTextArea().getRightClickPopup().add(renameItem);
+    editor.getTextArea().getPopupMenu().add(renameItem);
 
     window = new JDialog(editor);
     JRootPane rootPane = window.getRootPane();
@@ -282,7 +282,7 @@ class Rename {
       int tabIndex = entry.getKey();
       SketchCode sketchCode = sketch.getCode(tabIndex);
 
-      SyntaxDocument document = (SyntaxDocument) sketchCode.getDocument();
+      Document document = sketchCode.getDocument();
 
       List<SketchInterval> nodes = entry.getValue();
       nodes.stream()
