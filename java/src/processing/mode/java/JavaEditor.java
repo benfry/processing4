@@ -149,8 +149,8 @@ public class JavaEditor extends Editor {
   }
 
 
-  protected JEditTextArea createTextArea() {
-    return new JavaTextArea(new PdeTextAreaDefaults(mode), this);
+  protected PdeTextArea createTextArea() {
+    return new JavaTextArea(this);
   }
 
 
@@ -1721,8 +1721,9 @@ public class JavaEditor extends Editor {
   /**
    * Select a line in the current tab.
    * @param lineIdx 0-based line number
+   * @throws BadLocationException
    */
-  public void selectLine(int lineIdx) {
+  public void selectLine(int lineIdx) throws BadLocationException {
     setSelection(getLineStartOffset(lineIdx), getLineStopOffset(lineIdx));
   }
 
@@ -1730,8 +1731,9 @@ public class JavaEditor extends Editor {
   /**
    * Set the cursor to the start of a line.
    * @param lineIdx 0-based line number
+   * @throws BadLocationException
    */
-  public void cursorToLineStart(int lineIdx) {
+  public void cursorToLineStart(int lineIdx) throws BadLocationException {
     setSelection(getLineStartOffset(lineIdx), getLineStartOffset(lineIdx));
   }
 
@@ -1739,8 +1741,9 @@ public class JavaEditor extends Editor {
   /**
    * Set the cursor to the end of a line.
    * @param lineIdx 0-based line number
+   * @throws BadLocationException
    */
-  public void cursorToLineEnd(int lineIdx) {
+  public void cursorToLineEnd(int lineIdx) throws BadLocationException {
     setSelection(getLineStopOffset(lineIdx), getLineStopOffset(lineIdx));
   }
 

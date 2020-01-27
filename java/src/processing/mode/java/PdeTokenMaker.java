@@ -1,16 +1,23 @@
 package processing.mode.java;
 
+import java.util.Map;
+
 import org.fife.ui.rsyntaxtextarea.TokenMap;
 import org.fife.ui.rsyntaxtextarea.TokenTypes;
 import org.fife.ui.rsyntaxtextarea.modes.JavaTokenMaker;
 
 
 public class PdeTokenMaker extends JavaTokenMaker {
-  static TokenMap extraTokens = new TokenMap(false);
+  //static TokenMap extraTokens = new TokenMap(false);
+  TokenMap extraTokens;
 
 
-  public PdeTokenMaker() {
+  public PdeTokenMaker(Map<String, Integer> lookup) {
     //extraTokens = getKeywords();
+    extraTokens = new TokenMap(false);
+    for (Map.Entry<String, Integer> entry : lookup.entrySet()) {
+      extraTokens.put(entry.getKey(), entry.getValue());
+    }
   }
 
 
@@ -28,12 +35,12 @@ public class PdeTokenMaker extends JavaTokenMaker {
   }
 
 
+  /*
   public void addKeyword(String keyword, int type) {
     extraTokens.put(keyword, type);
   }
 
 
-  /*
   public void clear() {
     extraTokens = new TokenMap();
   }

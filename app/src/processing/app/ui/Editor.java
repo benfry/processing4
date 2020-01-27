@@ -436,7 +436,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   */
 
 
-  public PdeTextArea createTextArea() {
+  protected PdeTextArea createTextArea() {
     return new PdeTextArea(this);
   }
 

@@ -18,7 +18,6 @@ public class PdeTextArea extends RSyntaxTextArea {
 
 
   public PdeTextArea(Editor editor) {
-    super();
     this.editor = editor;
 
     // load settings from theme.txt

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-15 The Processing Foundation
+  Copyright (c) 2013-20 The Processing Foundation
   Copyright (c) 2010-13 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -59,8 +59,6 @@ public abstract class Mode {
   protected Map<String, Integer> keywordToTokenType = new HashMap<>();
 
   protected Settings theme;
-//  protected Formatter formatter;
-//  protected Tool formatter;
 
   // maps imported packages to their library folder
   protected Map<String, List<Library>> importToLibraryTable;
@@ -80,8 +78,6 @@ public abstract class Mode {
   protected File librariesFolder;
   protected File referenceFolder;
 
-//  protected File examplesContribFolder;
-
   public List<Library> coreLibraries;
   public List<Library> contribLibraries;
 
@@ -97,10 +93,6 @@ public abstract class Mode {
   static final int BACKGROUND_WIDTH = 1025;
   static final int BACKGROUND_HEIGHT = 65;
   protected Image backgroundImage;
-
-//  public Mode(Base base, File folder) {
-//    this(base, folder, base.getSketchbookLibrariesFolder());
-//  }
 
 
   public Mode(Base base, File folder) {
@@ -796,25 +788,30 @@ public abstract class Mode {
   }
 
 
-  /**
-   * Specialized version of getTokenMarker() that can be overridden to
-   * provide different TokenMarker objects for different file types.
-   * @since 3.2
-   * @param code the code for which we need a TokenMaker
-   */
-  public TokenMaker getTokenMaker(SketchCode code) {
-    return getTokenMaker();
+  public Map<String, Integer> getTokenLookup() {
+    return keywordToTokenType;
   }
 
 
-  public TokenMarker getTokenMarker() {
-    return tokenMarker;
-  }
-
-
-  protected TokenMarker createTokenMarker() {
-    return new PdeTokenMarker();
-  }
+//  /**
+//   * Specialized version of getTokenMarker() that can be overridden to
+//   * provide different TokenMarker objects for different file types.
+//   * @since 3.2
+//   * @param code the code for which we need a TokenMaker
+//   */
+//  public TokenMaker getTokenMaker(SketchCode code) {
+//    return getTokenMaker();  // default to the default
+//  }
+//
+//
+//  public TokenMaker getTokenMaker() {
+//    return tokenMaker;
+//  }
+//
+//
+//  protected TokenMaker createTokenMaker() {
+//    return new PdeTokenMaker(keywordToTokenType);
+//  }
 
 
 //  abstract public Formatter createFormatter();

@@ -26,9 +26,9 @@ package processing.app;
 
 import java.io.*;
 
-import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.undo.*;
+
+import processing.app.ui.PdeTextArea;
 
 
 /**
@@ -50,8 +50,10 @@ public class SketchCode {
   /** Last version of the program on disk. */
   private String savedProgram;
 
-  /** Document object for this tab. Currently this is a SyntaxDocument. */
-  private Document document;
+//  /** Document object for this tab. Currently this is a SyntaxDocument. */
+//  private Document document;
+
+  private PdeTextArea textArea;
 
   /** Last time this tab was visited */
   long visited;
@@ -59,15 +61,12 @@ public class SketchCode {
   /** The last time this tab was saved to disk */
   private long lastModified;
 
-  /**
-   * Undo Manager for this tab, each tab keeps track of their own
-   * Editor.undo will be set to this object when this code is the tab
-   * that's currently the front.
-   */
-  private UndoManager undo = new UndoManager();
-
-  /** What was on top of the undo stack when last saved. */
-//  private UndoableEdit lastEdit;
+//  /**
+//   * Undo Manager for this tab, each tab keeps track of their own
+//   * Editor.undo will be set to this object when this code is the tab
+//   * that's currently the front.
+//   */
+//  private UndoManager undo = new UndoManager();
 
   // saved positions from last time this tab was used
   private int selectionStart;
@@ -220,7 +219,13 @@ public class SketchCode {
 
 
   public Document getDocument() {
-    return document;
+    return textArea.getDocument();
+  }
+
+
+  /*
+  public void setDocument(Document d) {
+    document = d;
   }
 
 
@@ -229,14 +234,10 @@ public class SketchCode {
   }
 
 
-  public void setDocument(Document d) {
-    document = d;
-  }
-
-
   public UndoManager getUndo() {
     return undo;
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

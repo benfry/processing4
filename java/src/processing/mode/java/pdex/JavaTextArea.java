@@ -53,11 +53,13 @@ public class JavaTextArea extends PdeTextArea {
   private CompletionPanel suggestion;
 
 
-  public JavaTextArea(TextAreaDefaults defaults, JavaEditor editor) {
-    super(defaults, new JavaInputHandler(editor), editor);
+  public JavaTextArea(JavaEditor editor) {
+    super(editor);
+//  }
+//  public JavaTextArea(TextAreaDefaults defaults, JavaEditor editor) {
+//    super(defaults, new JavaInputHandler(editor), editor);
 
     suggestionGenerator = new CompletionGenerator();
-
     tweakMode = false;
   }
 
@@ -67,6 +69,7 @@ public class JavaTextArea extends PdeTextArea {
   }
 
 
+  /*
   @Override
   protected JavaTextAreaPainter createPainter(final TextAreaDefaults defaults) {
     return new JavaTextAreaPainter(this, defaults);
@@ -77,6 +80,7 @@ public class JavaTextArea extends PdeTextArea {
   protected JavaTextAreaPainter getJavaPainter() {
     return (JavaTextAreaPainter) painter;
   }
+  */
 
 
   /**
@@ -258,7 +262,7 @@ public class JavaTextArea extends PdeTextArea {
       }
 
       // Get line index
-      caretLineIndex = getCaretLine();
+      caretLineIndex = getCaretLineNumber();
       if (caretLineIndex < 0) {
         suggestionRunning = false;
         return;
