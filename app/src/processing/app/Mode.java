@@ -157,9 +157,8 @@ public abstract class Mode {
       }
     }
 
-    BufferedReader reader = PApplet.createReader(keywordFile);
-    String line = null;
-    while ((line = reader.readLine()) != null) {
+    String[] lines = PApplet.loadStrings(keywordFile);
+    for (String line : lines) {
       if (!line.trim().startsWith(commentPrefix)) {
         // Was difficult to make sure that mode authors were properly doing
         // tab-separated values. By definition, there can't be additional
@@ -192,7 +191,6 @@ public abstract class Mode {
         }
       }
     }
-    reader.close();
   }
 
 
