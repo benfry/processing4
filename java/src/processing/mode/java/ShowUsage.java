@@ -33,7 +33,6 @@ import processing.app.Language;
 import processing.app.ui.EditorStatus;
 import processing.app.ui.Toolkit;
 import processing.app.ui.ZoomTreeCellRenderer;
-import processing.mode.java.PreprocessedSketch.SketchInterval;
 
 
 class ShowUsage {
@@ -41,14 +40,14 @@ class ShowUsage {
   final JTree tree;
 
   final JavaEditor editor;
-  final PreprocessingService pps;
+  final PreprocService pps;
 
-  final Consumer<PreprocessedSketch> reloadListener;
+  final Consumer<PreprocSketch> reloadListener;
 
   IBinding binding;
 
 
-  ShowUsage(JavaEditor editor, PreprocessingService pps) {
+  ShowUsage(JavaEditor editor, PreprocService pps) {
     this.editor = editor;
     this.pps = pps;
 
@@ -120,7 +119,7 @@ class ShowUsage {
 
 
   // Thread: worker
-  void handleShowUsage(PreprocessedSketch ps, int tabIndex,
+  void handleShowUsage(PreprocSketch ps, int tabIndex,
                        int startTabOffset, int stopTabOffset) {
     // Map offsets
     int startJavaOffset = ps.tabOffsetToJavaOffset(tabIndex, startTabOffset);
@@ -146,7 +145,7 @@ class ShowUsage {
 
 
   // Thread: worker
-  void findUsageAndUpdateTree(PreprocessedSketch ps, IBinding binding) {
+  void findUsageAndUpdateTree(PreprocSketch ps, IBinding binding) {
 
     this.binding = binding;
 
@@ -257,7 +256,7 @@ class ShowUsage {
 
 
   // Thread: worker
-  void reloadShowUsage(PreprocessedSketch ps) {
+  void reloadShowUsage(PreprocSketch ps) {
     if (binding != null) {
       findUsageAndUpdateTree(ps, binding);
     }
@@ -293,7 +292,7 @@ class ShowUsageTreeNode {
   }
 
 
-  static ShowUsageTreeNode fromSketchInterval(PreprocessedSketch ps, SketchInterval in) {
+  static ShowUsageTreeNode fromSketchInterval(PreprocSketch ps, SketchInterval in) {
     int lineStartPdeOffset = ps.pdeCode.lastIndexOf('\n', in.startPdeOffset) + 1;
     int lineStopPdeOffset = ps.pdeCode.indexOf('\n', in.stopPdeOffset);
     if (lineStopPdeOffset == -1) lineStopPdeOffset = ps.pdeCode.length();

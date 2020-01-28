@@ -87,7 +87,7 @@ public class JavaEditor extends Editor {
   private boolean hasJavaTabs;
   private boolean javaTabWarned;
 
-  protected PreprocessingService preprocessingService;
+  protected PreprocService preprocessingService;
 
   private InspectMode inspect;
   private ShowUsage usage;
@@ -136,7 +136,7 @@ public class JavaEditor extends Editor {
     box.add(textAndError);
     */
 
-    preprocessingService = new PreprocessingService(this);
+    preprocessingService = new PreprocService(this);
 
     pdexEnabled = !hasJavaTabs();
 
@@ -154,8 +154,7 @@ public class JavaEditor extends Editor {
       Document document = code.getDocument();
       addDocumentListener(document);
     }
-
-    sketchChangedX();
+    sketchChanged();
 
     Toolkit.setMenuMnemonics(textarea.getRightClickPopup());
 
@@ -215,7 +214,7 @@ public class JavaEditor extends Editor {
           int currentTabCount = sketch.getCodeCount();
           if (currentTabCount != previousTabCount) {
             previousTabCount = currentTabCount;
-            sketchChangedX();
+            sketchChanged();
           }
         }
       }
@@ -1328,11 +1327,6 @@ public class JavaEditor extends Editor {
 
   @Override
   public void sketchChanged() {
-    preprocessingService.notifySketchChanged();
-  }
-
-
-  public void sketchChangedX() {
     errorChecker.notifySketchChanged();
     preprocessingService.notifySketchChanged();
   }
@@ -1343,17 +1337,17 @@ public class JavaEditor extends Editor {
       doc.addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
-          sketchChangedX();
+          sketchChanged();
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-          sketchChangedX();
+          sketchChanged();
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-          sketchChangedX();
+          sketchChanged();
         }
       });
     }
@@ -1841,7 +1835,7 @@ public class JavaEditor extends Editor {
   }
 
 
-  public PreprocessingService getPreprocessingService() {
+  public PreprocService getPreprocessingService() {
     return preprocessingService;
   }
 
@@ -2535,13 +2529,14 @@ public class JavaEditor extends Editor {
   @Override
   protected void applyPreferences() {
     super.applyPreferences();
+
     if (jmode != null) {
       jmode.loadPreferences();
       Messages.log("Applying prefs");
       // trigger it once to refresh UI
       //pdex.preferencesChanged();
       errorChecker.preferencesChanged();
-      sketchChangedX();
+      sketchChanged();
     }
   }
 

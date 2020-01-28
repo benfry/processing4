@@ -195,7 +195,7 @@ public class CompletionGenerator {
    * @param astNode
    * @return
    */
-  public static ClassMember resolveExpression3rdParty(PreprocessedSketch ps, ASTNode nearestNode,
+  public static ClassMember resolveExpression3rdParty(PreprocSketch ps, ASTNode nearestNode,
                                                       ASTNode astNode, boolean noCompare) {
     log("Resolve 3rdParty expr-- " + getNodeAsString(astNode)
         + " nearest node " + getNodeAsString(nearestNode));
@@ -524,7 +524,7 @@ public class CompletionGenerator {
    * @param noCompare
    * @return
    */
-  public static ArrayList<CompletionCandidate> getMembersForType(PreprocessedSketch ps,
+  public static ArrayList<CompletionCandidate> getMembersForType(PreprocSketch ps,
                                                                  String typeName,
                                                                  String child,
                                                                  boolean noCompare,
@@ -542,7 +542,7 @@ public class CompletionGenerator {
 
   }
 
-  public static ArrayList<CompletionCandidate> getMembersForType(PreprocessedSketch ps,
+  public static ArrayList<CompletionCandidate> getMembersForType(PreprocSketch ps,
                                                                  ClassMember tehClass,
                                                                  String childToLookFor,
                                                                  boolean noCompare,
@@ -682,7 +682,7 @@ public class CompletionGenerator {
    * @param className
    * @return
    */
-  protected static Class<?> findClassIfExists(PreprocessedSketch ps, String className){
+  protected static Class<?> findClassIfExists(PreprocSketch ps, String className){
     if (className == null){
       return null;
     }
@@ -766,7 +766,7 @@ public class CompletionGenerator {
     return tehClass;
   }
 
-  public static ClassMember definedIn3rdPartyClass(PreprocessedSketch ps, String className,String memberName){
+  public static ClassMember definedIn3rdPartyClass(PreprocSketch ps, String className,String memberName){
     Class<?> probableClass = findClassIfExists(ps, className);
     if (probableClass == null) {
       log("Couldn't load " + className);
@@ -779,7 +779,7 @@ public class CompletionGenerator {
     }
   }
 
-  public static ClassMember definedIn3rdPartyClass(PreprocessedSketch ps, ClassMember tehClass,String memberName){
+  public static ClassMember definedIn3rdPartyClass(PreprocSketch ps, ClassMember tehClass,String memberName){
     if(tehClass == null)
       return null;
     log("definedIn3rdPartyClass-> Looking for " + memberName
@@ -1317,7 +1317,7 @@ public class CompletionGenerator {
   }
 
 
-  protected static boolean ignorableSuggestionImport(PreprocessedSketch ps, String impName) {
+  protected static boolean ignorableSuggestionImport(PreprocSketch ps, String impName) {
 
     String impNameLc = impName.toLowerCase();
 
@@ -1402,7 +1402,7 @@ public class CompletionGenerator {
           + m.getDeclaringClass().getName();
     }
 
-    public ClassMember(PreprocessedSketch ps, ASTNode node){
+    public ClassMember(PreprocSketch ps, ASTNode node){
       astNode = node;
       stringVal = getNodeAsString(node);
       if(node instanceof TypeDeclaration){
@@ -1730,7 +1730,7 @@ public class CompletionGenerator {
    * @param line
    * @param lineStartNonWSOffset
    */
-  public List<CompletionCandidate> preparePredictions(final PreprocessedSketch ps,
+  public List<CompletionCandidate> preparePredictions(final PreprocSketch ps,
                                                       final String pdePhrase,
                                                       final int lineNumber) {
     Messages.log("* preparePredictions");

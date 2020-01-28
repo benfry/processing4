@@ -61,15 +61,13 @@ import processing.data.StringList;
 
 /**
  * Service which preprocesses code to check for and report on issues.
- *
  * <p>
- * Service running in a background thread which checks for grammatical issues via ANTLR and performs
- * code analysis via the JDT to check for other issues and related development services. These are
- * reported as {Problem} instances via a callback registered by an {Editor}.
- * </p>
+ * Service running in a background thread which checks for grammatical issues
+ * via ANTLR and performs code analysis via the JDT to check for other issues
+ * and related development services. These are reported as {Problem} instances
+ * via a callback registered by an {Editor}.
  */
-public class PreprocessingService {
-
+public class PreprocService {
   private final static int TIMEOUT_MILLIS = 100;
   private final static int BLOCKING_TIMEOUT_SECONDS = 3000;
 
@@ -86,12 +84,12 @@ public class PreprocessingService {
   private final AtomicBoolean librariesChanged = new AtomicBoolean(true);
 
   private volatile boolean running;
-  private CompletableFuture<PreprocessedSketch> preprocessingTask = new CompletableFuture<>();
+  private CompletableFuture<PreprocSketch> preprocessingTask = new CompletableFuture<>();
 
   private CompletableFuture<?> lastCallback =
-      new CompletableFuture<>() {{
-        complete(null); // initialization block
-      }};
+    new CompletableFuture<>() {{
+      complete(null); // initialization block
+    }};
 
   private volatile boolean isEnabled = true;
 
@@ -101,7 +99,7 @@ public class PreprocessingService {
    * @param editor The editor that will be supported by this service and to which issues should be
    *    reported.
    */
-  public PreprocessingService(JavaEditor editor) {
+  public PreprocService(JavaEditor editor) {
     this.editor = editor;
     isEnabled = !editor.hasJavaTabs();
 
@@ -117,7 +115,7 @@ public class PreprocessingService {
    */
   private void mainLoop() {
     running = true;
-    PreprocessedSketch prevResult = null;
+    PreprocSketch prevResult = null;
     CompletableFuture<?> runningCallbacks = null;
     Messages.log("PPS: Hi!");
     while (running) {
@@ -212,7 +210,7 @@ public class PreprocessingService {
    *    {PreprocessedSketch} that has any {Problem} instances that were resultant.
    * @return A future that will be fulfilled when preprocessing is complete.
    */
-  private CompletableFuture<?> registerCallback(Consumer<PreprocessedSketch> callback) {
+  private CompletableFuture<?> registerCallback(Consumer<PreprocSketch> callback) {
     synchronized (requestLock) {
       lastCallback = preprocessingTask
           // Run callback after both preprocessing task and previous callback
@@ -239,7 +237,7 @@ public class PreprocessingService {
    * @param callback The consumer to inform when preprocessing is complete which will provide a
    *    {PreprocessedSketch} that has any {Problem} instances that were resultant.
    */
-  public void whenDone(Consumer<PreprocessedSketch> callback) {
+  public void whenDone(Consumer<PreprocSketch> callback) {
     if (!isEnabled) return;
     registerCallback(callback);
   }
@@ -257,7 +255,7 @@ public class PreprocessingService {
    *
    * @param callback
    */
-  public void whenDoneBlocking(Consumer<PreprocessedSketch> callback) {
+  public void whenDoneBlocking(Consumer<PreprocSketch> callback) {
     if (!isEnabled) return;
     try {
       registerCallback(callback).get(BLOCKING_TIMEOUT_SECONDS, TimeUnit.SECONDS);
@@ -271,14 +269,14 @@ public class PreprocessingService {
   /// LISTENERS ----------------------------------------------------------------
 
 
-  private Set<Consumer<PreprocessedSketch>> listeners = new CopyOnWriteArraySet<>();
+  private Set<Consumer<PreprocSketch>> listeners = new CopyOnWriteArraySet<>();
 
   /**
    * Register a consumer that will receive all {PreprocessedSketch}es produced from this service.
    *
    * @param listener The listener to receive all future {PreprocessedSketch}es.
    */
-  public void registerListener(Consumer<PreprocessedSketch> listener) {
+  public void registerListener(Consumer<PreprocSketch> listener) {
     if (listener != null) listeners.add(listener);
   }
 
@@ -292,7 +290,7 @@ public class PreprocessingService {
    *
    * @param listener The listener to remove.
    */
-  public void unregisterListener(Consumer<PreprocessedSketch> listener) {
+  public void unregisterListener(Consumer<PreprocSketch> listener) {
     listeners.remove(listener);
   }
 
@@ -306,8 +304,8 @@ public class PreprocessingService {
    *
    * @param ps The sketch to be sent out to consumers.
    */
-  private void fireListeners(PreprocessedSketch ps) {
-    for (Consumer<PreprocessedSketch> listener : listeners) {
+  private void fireListeners(PreprocSketch ps) {
+    for (Consumer<PreprocSketch> listener : listeners) {
       try {
         listener.accept(ps);
       } catch (Exception e) {
@@ -333,11 +331,11 @@ public class PreprocessingService {
    *    beforehand.
    * @return The newly generated preprocessed sketch.
    */
-  private PreprocessedSketch preprocessSketch(PreprocessedSketch prevResult) {
+  private PreprocSketch preprocessSketch(PreprocSketch prevResult) {
 
     boolean firstCheck = prevResult == null;
 
-    PreprocessedSketch.Builder result = new PreprocessedSketch.Builder();
+    PreprocSketch.Builder result = new PreprocSketch.Builder();
 
     List<ImportStatement> codeFolderImports = result.codeFolderImports;
     List<ImportStatement> programImports = result.programImports;
