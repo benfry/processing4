@@ -90,6 +90,10 @@ public class JavaEditor extends Editor {
   protected PreprocessingService preprocessingService;
   protected PDEX pdex;
 
+  // set true to show AST debugging window
+  static private final boolean SHOW_AST_VIEWER = false;
+  private ASTViewer astViewer;
+
 
   protected JavaEditor(Base base, String path, EditorState state,
                        Mode mode) throws EditorException {
@@ -127,6 +131,10 @@ public class JavaEditor extends Editor {
 
     preprocessingService = new PreprocessingService(this);
     pdex = new PDEX(this, preprocessingService);
+
+    if (SHOW_AST_VIEWER) {
+      astViewer = new ASTViewer(this, preprocessingService);
+    }
 
     Toolkit.setMenuMnemonics(textarea.getRightClickPopup());
 
@@ -1338,6 +1346,9 @@ public class JavaEditor extends Editor {
     }
     preprocessingService.dispose();
     pdex.dispose();
+    if (astViewer != null) {
+      astViewer.dispose();
+    }
     super.dispose();
   }
 

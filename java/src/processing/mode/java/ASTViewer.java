@@ -24,13 +24,13 @@ import processing.app.ui.ZoomTreeCellRenderer;
 import processing.mode.java.PreprocessedSketch.SketchInterval;
 
 
-class DebugTree {
+class ASTViewer {
   final JDialog window;
   final JTree tree;
   final Consumer<PreprocessedSketch> updateListener;
 
 
-  DebugTree(JavaEditor editor, PreprocessingService pps) {
+  ASTViewer(JavaEditor editor, PreprocessingService pps) {
     updateListener = this::buildAndUpdateTree;
 
     window = new JDialog(editor);

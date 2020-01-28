@@ -8,8 +8,6 @@ import processing.app.SketchCode;
 
 
 public class PDEX {
-  static private final boolean SHOW_DEBUG_TREE = false;
-
   private boolean enabled = true;
 
   private ErrorChecker errorChecker;
@@ -17,7 +15,6 @@ public class PDEX {
   private InspectMode inspect;
   private ShowUsage usage;
   private Rename rename;
-  private DebugTree debugTree;
 
   private PreprocessingService pps;
 
@@ -33,10 +30,6 @@ public class PDEX {
     inspect = new InspectMode(editor, pps, usage);
     rename = new Rename(editor, pps, usage);
 
-    if (SHOW_DEBUG_TREE) {
-      debugTree = new DebugTree(editor, pps);
-    }
-
     for (SketchCode code : editor.getSketch().getCode()) {
       Document document = code.getDocument();
       addDocumentListener(document);
@@ -47,26 +40,25 @@ public class PDEX {
 
 
   public void addDocumentListener(Document doc) {
-    if (doc != null) doc.addDocumentListener(sketchChangedListener);
+    if (doc != null) {
+      doc.addDocumentListener(new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+          sketchChanged();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+          sketchChanged();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+          sketchChanged();
+        }
+      });
+    }
   }
-
-
-  final DocumentListener sketchChangedListener = new DocumentListener() {
-    @Override
-    public void insertUpdate(DocumentEvent e) {
-      sketchChanged();
-    }
-
-    @Override
-    public void removeUpdate(DocumentEvent e) {
-      sketchChanged();
-    }
-
-    @Override
-    public void changedUpdate(DocumentEvent e) {
-      sketchChanged();
-    }
-  };
 
 
   public void sketchChanged() {
@@ -94,9 +86,6 @@ public class PDEX {
     errorChecker.dispose();
     usage.dispose();
     rename.dispose();
-    if (debugTree != null) {
-      debugTree.dispose();
-    }
   }
 
 
