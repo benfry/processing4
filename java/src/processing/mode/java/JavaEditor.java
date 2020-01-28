@@ -88,7 +88,10 @@ public class JavaEditor extends Editor {
   private boolean javaTabWarned;
 
   protected PreprocessingService preprocessingService;
-  protected PDEX pdex;
+
+  private InspectMode inspect;
+  private ShowUsage usage;
+  private Rename rename;
 
   private boolean pdexEnabled = true;
 
@@ -134,15 +137,25 @@ public class JavaEditor extends Editor {
     */
 
     preprocessingService = new PreprocessingService(this);
-    pdex = new PDEX(this, preprocessingService);
 
     pdexEnabled = !hasJavaTabs();
+
+    usage = new ShowUsage(this, preprocessingService);
+    inspect = new InspectMode(this, preprocessingService, usage);
+    rename = new Rename(this, preprocessingService, usage);
 
     if (SHOW_AST_VIEWER) {
       astViewer = new ASTViewer(this, preprocessingService);
     }
 
     errorChecker = new ErrorChecker(this, preprocessingService);
+
+    for (SketchCode code : getSketch().getCode()) {
+      Document document = code.getDocument();
+      addDocumentListener(document);
+    }
+
+    sketchChangedX();
 
     Toolkit.setMenuMnemonics(textarea.getRightClickPopup());
 
@@ -191,7 +204,7 @@ public class JavaEditor extends Editor {
             preprocessingService.handleHasJavaTabsChange(hasJavaTabs);
             pdexEnabled = !hasJavaTabs;
             if (!pdexEnabled) {
-              pdex.usage.hide();
+              usage.hide();
             }
 
             if (hasJavaTabs) {
@@ -202,7 +215,7 @@ public class JavaEditor extends Editor {
           int currentTabCount = sketch.getCodeCount();
           if (currentTabCount != previousTabCount) {
             previousTabCount = currentTabCount;
-            pdex.sketchChangedX();
+            sketchChangedX();
           }
         }
       }
@@ -1319,6 +1332,34 @@ public class JavaEditor extends Editor {
   }
 
 
+  public void sketchChangedX() {
+    errorChecker.notifySketchChanged();
+    preprocessingService.notifySketchChanged();
+  }
+
+
+  public void addDocumentListener(Document doc) {
+    if (doc != null) {
+      doc.addDocumentListener(new DocumentListener() {
+        @Override
+        public void insertUpdate(DocumentEvent e) {
+          sketchChangedX();
+        }
+
+        @Override
+        public void removeUpdate(DocumentEvent e) {
+          sketchChangedX();
+        }
+
+        @Override
+        public void changedUpdate(DocumentEvent e) {
+          sketchChangedX();
+        }
+      });
+    }
+  }
+
+
   public void statusError(String what) {
     super.statusError(what);
 //    new Exception("deactivating RUN").printStackTrace();
@@ -1357,7 +1398,11 @@ public class JavaEditor extends Editor {
       inspector.dispose();
     }
     preprocessingService.dispose();
-    pdex.dispose();
+
+    inspect.dispose();
+    usage.dispose();
+    rename.dispose();
+
     errorChecker.dispose();
     if (astViewer != null) {
       astViewer.dispose();
@@ -2250,8 +2295,8 @@ public class JavaEditor extends Editor {
     super.setCode(code);
 
     Document newDoc = code.getDocument();
-    if (oldDoc != newDoc && pdex != null) {
-      pdex.addDocumentListener(newDoc);
+    if (oldDoc != newDoc) {
+      addDocumentListener(newDoc);
     }
 
     // set line background colors for tab
@@ -2496,7 +2541,7 @@ public class JavaEditor extends Editor {
       // trigger it once to refresh UI
       //pdex.preferencesChanged();
       errorChecker.preferencesChanged();
-      pdex.sketchChangedX();
+      sketchChangedX();
     }
   }
 
