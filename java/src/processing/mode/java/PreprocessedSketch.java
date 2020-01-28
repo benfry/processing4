@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import com.google.classpath.ClassPath;
 
@@ -15,7 +15,7 @@ import java.util.List;
 import processing.app.Problem;
 import processing.app.Sketch;
 import processing.core.PApplet;
-import processing.mode.java.pdex.TextTransform.OffsetMapper;
+import processing.mode.java.TextTransform.OffsetMapper;
 
 public class PreprocessedSketch {
 

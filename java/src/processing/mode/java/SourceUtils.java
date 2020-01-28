@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.CompilationUnit;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import processing.mode.java.pdex.TextTransform.Edit;
+import processing.mode.java.TextTransform.Edit;
 import processing.mode.java.preproc.PdePreprocessor;
 
 public class SourceUtils {

@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -61,7 +61,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.VariableDeclarationStatement;
 
 import processing.app.Messages;
-import processing.mode.java.JavaMode;
 
 import com.google.classpath.ClassPath;
 import com.google.classpath.RegExpResourceFilter;

@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -26,9 +26,7 @@ import com.google.classpath.RegExpResourceFilter;
 
 import processing.app.Language;
 import processing.app.Problem;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
+import processing.mode.java.PreprocessedSketch.SketchInterval;
 
 
 class ErrorChecker {

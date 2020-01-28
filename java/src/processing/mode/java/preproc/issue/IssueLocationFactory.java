@@ -21,9 +21,9 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 package processing.mode.java.preproc.issue;
 
-import processing.mode.java.preproc.code.SyntaxUtil;
-
 import java.util.Optional;
+
+import processing.mode.java.preproc.SyntaxUtil;
 
 
 /**

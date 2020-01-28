@@ -1,11 +1,10 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.text.Document;
 
 import processing.app.SketchCode;
-import processing.mode.java.JavaEditor;
 
 
 public class PDEX {

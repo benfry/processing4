@@ -19,7 +19,7 @@ along with this program; if not, write to the Free Software Foundation,
 Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
 
-package processing.mode.java.preproc.code;
+package processing.mode.java.preproc;
 
 /**
  * Convenience functions useful for working on syntax checking for source.

@@ -1,7 +1,4 @@
-package processing.mode.java.pdex.util;
-
-import processing.mode.java.pdex.JavaProblem;
-
+package processing.mode.java;
 
 /**
  * Problem identifying a syntax error found in preprocessing.

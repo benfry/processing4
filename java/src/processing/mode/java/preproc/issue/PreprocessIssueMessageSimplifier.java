@@ -24,7 +24,7 @@ package processing.mode.java.preproc.issue;
 
 import processing.app.Language;
 import processing.app.Platform;
-import processing.mode.java.preproc.code.SyntaxUtil;
+import processing.mode.java.preproc.SyntaxUtil;
 
 import java.util.ArrayList;
 import java.util.List;

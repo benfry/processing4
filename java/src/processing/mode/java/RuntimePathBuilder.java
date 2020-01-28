@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util;
+package processing.mode.java;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -41,9 +41,6 @@ import processing.app.Messages;
 import processing.app.Sketch;
 import processing.app.SketchException;
 import processing.app.Util;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.PreprocessedSketch;
 
 
 /**

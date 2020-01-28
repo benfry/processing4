@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -44,7 +44,6 @@ import processing.app.Messages;
 import processing.app.Mode;
 import processing.app.syntax.JEditTextArea;
 import processing.app.ui.Toolkit;
-import processing.mode.java.JavaEditor;
 
 
 public class CompletionPanel {

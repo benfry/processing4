@@ -1,4 +1,7 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
+
+import static processing.mode.java.ASTUtils.getSimpleNameAt;
+import static processing.mode.java.ASTUtils.resolveBinding;
 
 import java.awt.EventQueue;
 import java.awt.event.InputEvent;
@@ -21,12 +24,7 @@ import org.eclipse.jdt.core.dom.VariableDeclaration;
 import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Platform;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
-
-import static processing.mode.java.pdex.ASTUtils.getSimpleNameAt;
-import static processing.mode.java.pdex.ASTUtils.resolveBinding;
+import processing.mode.java.PreprocessedSketch.SketchInterval;
 
 
 class InspectMode {

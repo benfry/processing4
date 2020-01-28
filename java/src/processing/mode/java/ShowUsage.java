@@ -1,6 +1,6 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
-import static processing.mode.java.pdex.ASTUtils.findAllOccurrences;
+import static processing.mode.java.ASTUtils.findAllOccurrences;
 
 import java.awt.Color;
 import java.awt.EventQueue;
@@ -33,8 +33,7 @@ import processing.app.Language;
 import processing.app.ui.EditorStatus;
 import processing.app.ui.Toolkit;
 import processing.app.ui.ZoomTreeCellRenderer;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
+import processing.mode.java.PreprocessedSketch.SketchInterval;
 
 
 class ShowUsage {

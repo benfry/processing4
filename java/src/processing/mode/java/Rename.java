@@ -1,4 +1,8 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
+
+import static processing.mode.java.ASTUtils.findAllOccurrences;
+import static processing.mode.java.ASTUtils.getSimpleNameAt;
+import static processing.mode.java.ASTUtils.resolveBinding;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -39,12 +43,7 @@ import processing.app.SketchCode;
 import processing.app.syntax.SyntaxDocument;
 import processing.app.ui.EditorStatus;
 import processing.app.ui.Toolkit;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
-
-import static processing.mode.java.pdex.ASTUtils.findAllOccurrences;
-import static processing.mode.java.pdex.ASTUtils.getSimpleNameAt;
-import static processing.mode.java.pdex.ASTUtils.resolveBinding;
+import processing.mode.java.PreprocessedSketch.SketchInterval;
 
 
 class Rename {

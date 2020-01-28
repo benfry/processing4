@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.awt.EventQueue;
 import java.awt.Rectangle;
@@ -21,8 +21,7 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import processing.app.Messages;
 import processing.app.ui.ZoomTreeCellRenderer;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
+import processing.mode.java.PreprocessedSketch.SketchInterval;
 
 
 class DebugTree {

@@ -18,11 +18,15 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -42,17 +46,17 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import processing.app.*;
-import processing.data.IntList;
-import processing.data.StringList;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.TextTransform.OffsetMapper;
-import processing.mode.java.pdex.util.ProblemFactory;
-import processing.mode.java.pdex.util.RuntimePathBuilder;
+import processing.app.Messages;
+import processing.app.Sketch;
+import processing.app.SketchCode;
+import processing.app.SketchException;
+import processing.app.Util;
+import processing.mode.java.TextTransform.OffsetMapper;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
-import processing.mode.java.preproc.code.SyntaxUtil;
+import processing.mode.java.preproc.SyntaxUtil;
+import processing.data.IntList;
+import processing.data.StringList;
 
 
 /**
@@ -85,7 +89,7 @@ public class PreprocessingService {
   private CompletableFuture<PreprocessedSketch> preprocessingTask = new CompletableFuture<>();
 
   private CompletableFuture<?> lastCallback =
-      new CompletableFuture<Object>() {{
+      new CompletableFuture<>() {{
         complete(null); // initialization block
       }};
 
