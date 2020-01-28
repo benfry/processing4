@@ -8,9 +8,6 @@ import processing.app.SketchCode;
 
 
 public class PDEX {
-  private boolean enabled = true;
-
-  private ErrorChecker errorChecker;
 
   private InspectMode inspect;
   private ShowUsage usage;
@@ -22,10 +19,6 @@ public class PDEX {
   public PDEX(JavaEditor editor, PreprocessingService pps) {
     this.pps = pps;
 
-    this.enabled = !editor.hasJavaTabs();
-
-    errorChecker = new ErrorChecker(editor, pps);
-
     usage = new ShowUsage(editor, pps);
     inspect = new InspectMode(editor, pps, usage);
     rename = new Rename(editor, pps, usage);
@@ -35,7 +28,7 @@ public class PDEX {
       addDocumentListener(document);
     }
 
-    sketchChanged();
+    sketchChangedX();
   }
 
 
@@ -44,52 +37,32 @@ public class PDEX {
       doc.addDocumentListener(new DocumentListener() {
         @Override
         public void insertUpdate(DocumentEvent e) {
-          sketchChanged();
+          sketchChangedX();
         }
 
         @Override
         public void removeUpdate(DocumentEvent e) {
-          sketchChanged();
+          sketchChangedX();
         }
 
         @Override
         public void changedUpdate(DocumentEvent e) {
-          sketchChanged();
+          sketchChangedX();
         }
       });
     }
   }
 
 
-  public void sketchChanged() {
+  public void sketchChangedX() {
     errorChecker.notifySketchChanged();
     pps.notifySketchChanged();
   }
 
 
-  public void preferencesChanged() {
-    errorChecker.preferencesChanged();
-    sketchChanged();
-  }
-
-
-  public void hasJavaTabsChanged(boolean hasJavaTabs) {
-    enabled = !hasJavaTabs;
-    if (!enabled) {
-      usage.hide();
-    }
-  }
-
-
   public void dispose() {
     inspect.dispose();
-    errorChecker.dispose();
     usage.dispose();
     rename.dispose();
-  }
-
-
-  public void documentChanged(Document newDoc) {
-    addDocumentListener(newDoc);
   }
 }

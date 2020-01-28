@@ -90,6 +90,10 @@ public class JavaEditor extends Editor {
   protected PreprocessingService preprocessingService;
   protected PDEX pdex;
 
+  private boolean pdexEnabled = true;
+
+  private ErrorChecker errorChecker;
+
   // set true to show AST debugging window
   static private final boolean SHOW_AST_VIEWER = false;
   private ASTViewer astViewer;
@@ -132,9 +136,13 @@ public class JavaEditor extends Editor {
     preprocessingService = new PreprocessingService(this);
     pdex = new PDEX(this, preprocessingService);
 
+    pdexEnabled = !hasJavaTabs();
+
     if (SHOW_AST_VIEWER) {
       astViewer = new ASTViewer(this, preprocessingService);
     }
+
+    errorChecker = new ErrorChecker(this, preprocessingService);
 
     Toolkit.setMenuMnemonics(textarea.getRightClickPopup());
 
@@ -181,7 +189,11 @@ public class JavaEditor extends Editor {
         if (preprocessingService != null) {
           if (hasJavaTabsChanged) {
             preprocessingService.handleHasJavaTabsChange(hasJavaTabs);
-            pdex.hasJavaTabsChanged(hasJavaTabs);
+            pdexEnabled = !hasJavaTabs;
+            if (!pdexEnabled) {
+              pdex.usage.hide();
+            }
+
             if (hasJavaTabs) {
               setProblemList(Collections.emptyList());
             }
@@ -190,7 +202,7 @@ public class JavaEditor extends Editor {
           int currentTabCount = sketch.getCodeCount();
           if (currentTabCount != previousTabCount) {
             previousTabCount = currentTabCount;
-            pdex.sketchChanged();
+            pdex.sketchChangedX();
           }
         }
       }
@@ -1346,6 +1358,7 @@ public class JavaEditor extends Editor {
     }
     preprocessingService.dispose();
     pdex.dispose();
+    errorChecker.dispose();
     if (astViewer != null) {
       astViewer.dispose();
     }
@@ -2238,7 +2251,7 @@ public class JavaEditor extends Editor {
 
     Document newDoc = code.getDocument();
     if (oldDoc != newDoc && pdex != null) {
-      pdex.documentChanged(newDoc);
+      pdex.addDocumentListener(newDoc);
     }
 
     // set line background colors for tab
@@ -2481,7 +2494,9 @@ public class JavaEditor extends Editor {
       jmode.loadPreferences();
       Messages.log("Applying prefs");
       // trigger it once to refresh UI
-      pdex.preferencesChanged();
+      //pdex.preferencesChanged();
+      errorChecker.preferencesChanged();
+      pdex.sketchChangedX();
     }
   }
 
