@@ -93,7 +93,7 @@ public class PreprocService {
       complete(null); // initialization block
     }};
 
-  private volatile boolean isEnabled = true;
+  private volatile boolean enabled = true;
 
   /**
    * Create a new preprocessing service to support an editor.
@@ -103,7 +103,7 @@ public class PreprocService {
    */
   public PreprocService(JavaEditor editor) {
     this.editor = editor;
-    isEnabled = !editor.hasJavaTabs();
+    enabled = !editor.hasJavaTabs();
 
     // Register listeners for first run
     whenDone(this::fireListeners);
@@ -176,7 +176,7 @@ public class PreprocService {
    * Indicate to this service that the sketch code has changed.
    */
   public void notifySketchChanged() {
-    if (!isEnabled) return;
+    if (!enabled) return;
     synchronized (requestLock) {
       if (preprocessingTask.isDone()) {
         preprocessingTask = new CompletableFuture<>();
@@ -240,7 +240,7 @@ public class PreprocService {
    *    {PreprocessedSketch} that has any {Problem} instances that were resultant.
    */
   public void whenDone(Consumer<PreprocSketch> callback) {
-    if (!isEnabled) return;
+    if (!enabled) return;
     registerCallback(callback);
   }
 
@@ -258,7 +258,7 @@ public class PreprocService {
    * @param callback
    */
   public void whenDoneBlocking(Consumer<PreprocSketch> callback) {
-    if (!isEnabled) return;
+    if (!enabled) return;
     try {
       registerCallback(callback).get(BLOCKING_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -467,12 +467,11 @@ public class PreprocService {
     OffsetMapper parsableMapper = toParsable.getMapper();
 
     // Create intermediate AST for advanced preprocessing
-    //System.out.println(new String(parsableStage.toCharArray()));
-    CompilationUnit parsableCU = makeAST(
-        parser,
-        parsableStage.toCharArray(),
-        COMPILER_OPTIONS
-    );
+    parser.setSource(parsableStage.toCharArray());
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    CompilationUnit parsableCU = (CompilationUnit) parser.createAST(null);
 
     // Prepare advanced transforms which operate on AST
     TextTransform toCompilable = new TextTransform(parsableStage);
@@ -484,10 +483,11 @@ public class PreprocService {
     char[] compilableStageChars = compilableStage.toCharArray();
 
     // Create compilable AST to get syntax problems
-    // System.out.println(new String(compilableStageChars));
-    // System.out.println("-----");
-    CompilationUnit compilableCU =
-        makeAST(parser, compilableStageChars, COMPILER_OPTIONS);
+    parser.setSource(compilableStageChars);
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    CompilationUnit compilableCU = (CompilationUnit) parser.createAST(null);
 
     // Get syntax problems from compilable AST
     result.hasSyntaxErrors |= Arrays.stream(compilableCU.getProblems())
@@ -495,13 +495,14 @@ public class PreprocService {
 
     // Generate bindings after getting problems - avoids
     // 'missing type' errors when there are syntax problems
-    CompilationUnit bindingsCU = makeASTWithBindings(
-          parser,
-          compilableStageChars,
-          COMPILER_OPTIONS,
-          className,
-          result.classPathArray
-    );
+    parser.setSource(compilableStageChars);
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    parser.setUnitName(className);
+    parser.setEnvironment(result.classPathArray, null, null, false);
+    parser.setResolveBindings(true);
+    CompilationUnit bindingsCU = (CompilationUnit) parser.createAST(null);
 
     // Get compilation problems
     List<IProblem> bindingsProblems = Arrays.asList(bindingsCU.getProblems());
@@ -597,58 +598,12 @@ public class PreprocService {
    * @param hasJavaTabs True if java tabs are in the sketch and false otherwise.
    */
   public void handleHasJavaTabsChange(boolean hasJavaTabs) {
-    isEnabled = !hasJavaTabs;
-    if (isEnabled) {
+    enabled = !hasJavaTabs;
+    if (enabled) {
       notifySketchChanged();
     } else {
       preprocessingTask.cancel(false);
     }
-  }
-
-
-  /**
-   * Create a JDT compilation unit.
-   *
-   * @param parser The parser to use to read the source.
-   * @param source The source after processing with ANTLR.
-   * @param options The JDT compiler options.
-   * @return The JDT parsed compilation unit.
-   */
-  static private CompilationUnit makeAST(ASTParser parser,
-                                         char[] source,
-                                         Map<String, String> options) {
-    parser.setSource(source);
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setCompilerOptions(options);
-    parser.setStatementsRecovery(true);
-
-    return (CompilationUnit) parser.createAST(null);
-  }
-
-  /**
-   * Establish parser options before creating a JDT compilation unit.
-   *
-   * @param parser The parser to use to read the source.
-   * @param source The source after processing with ANTLR.
-   * @param options The JDT compiler options.
-   * @param className The name of the sketch.
-   * @param classPath The classpath to use in compliation.
-   * @return The JDT parsed compilation unit.
-   */
-  static private CompilationUnit makeASTWithBindings(ASTParser parser,
-                                                     char[] source,
-                                                     Map<String, String> options,
-                                                     String className,
-                                                     String[] classPath) {
-    parser.setSource(source);
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setCompilerOptions(options);
-    parser.setStatementsRecovery(true);
-    parser.setUnitName(className);
-    parser.setEnvironment(classPath, null, null, false);
-    parser.setResolveBindings(true);
-
-    return (CompilationUnit) parser.createAST(null);
   }
 
 
