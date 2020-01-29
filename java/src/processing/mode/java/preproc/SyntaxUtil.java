@@ -50,12 +50,11 @@ public class SyntaxUtil {
    */
   private static int getCountString(String body, String search) {
     int count = 0;
-
-    for(int i = 0; i < body.length(); i++)
-    {
-      count += body.substring(i).startsWith(search) ? 1 : 0;
+    for (int i = 0; i < body.length(); i++) {
+      if (body.substring(i).startsWith(search)) {
+        count++;
+      }
     }
-
     return count;
   }
 
@@ -68,12 +67,11 @@ public class SyntaxUtil {
    */
   private static int getCountChar(String body, char search) {
     int count = 0;
-
-    for(int i = 0; i < body.length(); i++)
-    {
-      count += body.charAt(i) == search ? 1 : 0;
+    for (int i = 0; i < body.length(); i++) {
+      if (body.charAt(i) == search) {
+        count++;
+      }
     }
-
     return count;
   }
 
