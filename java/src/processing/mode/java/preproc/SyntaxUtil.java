@@ -36,10 +36,8 @@ public class SyntaxUtil {
   public static int getCount(String body, String search) {
     int count = 0;
     if (search.length() == 1) {
-      // single character version
-      final char sought = search.charAt(0);
       for (int i = 0; i < body.length(); i++) {
-        if (body.charAt(i) == sought) {
+        if (body.charAt(i) == search.charAt(0)) {
           count++;
         }
       }
