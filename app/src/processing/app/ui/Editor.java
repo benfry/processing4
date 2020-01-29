@@ -606,6 +606,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
   abstract public EditorToolbar createToolbar();
 
 
+  public EditorToolbar getToolbar() {
+    return toolbar;
+  }
+
+
   public void rebuildToolbar() {
     toolbar.rebuild();
     toolbar.revalidate();  // necessary to handle sub-components

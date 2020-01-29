@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util;
+package processing.mode.java;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -41,9 +41,6 @@ import processing.app.Messages;
 import processing.app.Sketch;
 import processing.app.SketchException;
 import processing.app.Util;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.PreprocessedSketch;
 
 
 /**
@@ -285,7 +282,7 @@ public class RuntimePathBuilder {
    * @param result The {PreprocessedSketch.Builder} into which the classpath should be inserted.
    * @param mode The {JavaMode} for which the classpath should be generated.
    */
-  public void prepareClassPath(PreprocessedSketch.Builder result, JavaMode mode) {
+  public void prepareClassPath(PreprocSketch.Builder result, JavaMode mode) {
     List<ImportStatement> programImports = result.programImports;
     Sketch sketch = result.sketch;
 
@@ -314,7 +311,7 @@ public class RuntimePathBuilder {
    * @param programImports The imports listed by the sketch (user imports).
    * @param sketch The sketch for which the classpath is being generated.
    */
-  private void prepareSketchClassPath(PreprocessedSketch.Builder result, JavaMode mode,
+  private void prepareSketchClassPath(PreprocSketch.Builder result, JavaMode mode,
         List<ImportStatement> programImports, Sketch sketch) {
 
     Stream<String> sketchClassPath = sketchClassPathStrategies.stream()
@@ -347,7 +344,7 @@ public class RuntimePathBuilder {
    * @param programImports The imports listed by the sketch (user imports).
    * @param sketch The sketch for which the classpath is being generated.
    */
-  private void prepareSearchClassPath(PreprocessedSketch.Builder result, JavaMode mode,
+  private void prepareSearchClassPath(PreprocSketch.Builder result, JavaMode mode,
         List<ImportStatement> programImports, Sketch sketch) {
 
     Stream<String> searchClassPath = searchClassPathStrategies.stream()

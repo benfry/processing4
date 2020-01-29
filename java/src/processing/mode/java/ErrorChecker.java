@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -26,9 +26,6 @@ import com.google.classpath.RegExpResourceFilter;
 
 import processing.app.Language;
 import processing.app.Problem;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
 
 
 class ErrorChecker {
@@ -40,13 +37,13 @@ class ErrorChecker {
   private volatile long nextUiUpdate = 0;
   private volatile boolean enabled = true;
 
-  private final Consumer<PreprocessedSketch> errorHandlerListener = this::handleSketchProblems;
+  private final Consumer<PreprocSketch> errorHandlerListener = this::handleSketchProblems;
 
   private JavaEditor editor;
-  private PreprocessingService pps;
+  private PreprocService pps;
 
 
-  public ErrorChecker(JavaEditor editor, PreprocessingService pps) {
+  public ErrorChecker(JavaEditor editor, PreprocService pps) {
     this.editor = editor;
     this.pps = pps;
     scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -83,7 +80,7 @@ class ErrorChecker {
   }
 
 
-  private void handleSketchProblems(PreprocessedSketch ps) {
+  private void handleSketchProblems(PreprocSketch ps) {
 
     Map<String, String[]> suggCache =
         JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
@@ -158,7 +155,7 @@ class ErrorChecker {
   }
 
 
-  static private JavaProblem convertIProblem(IProblem iproblem, PreprocessedSketch ps) {
+  static private JavaProblem convertIProblem(IProblem iproblem, PreprocSketch ps) {
     SketchInterval in = ps.mapJavaToSketch(iproblem);
     if (in != SketchInterval.BEFORE_START) {
       String badCode = ps.getPdeCode(in);
@@ -195,7 +192,7 @@ class ErrorChecker {
   static private final Pattern CURLY_QUOTE_REGEX =
     Pattern.compile("([“”‘’])", Pattern.UNICODE_CHARACTER_CLASS);
 
-  static private List<JavaProblem> checkForCurlyQuotes(PreprocessedSketch ps) {
+  static private List<JavaProblem> checkForCurlyQuotes(PreprocSketch ps) {
     if (ps.compilationUnit == null) {
       return new ArrayList<>();
     }
@@ -263,13 +260,13 @@ class ErrorChecker {
   }
 
 
-  static private List<JavaProblem> checkForMissingBraces(PreprocessedSketch ps) {
+  static private List<JavaProblem> checkForMissingBraces(PreprocSketch ps) {
     List<JavaProblem> problems = new ArrayList<>(0);
     for (int tabIndex = 0; tabIndex < ps.tabStartOffsets.length; tabIndex++) {
       int tabStartOffset = ps.tabStartOffsets[tabIndex];
       int tabEndOffset = (tabIndex < ps.tabStartOffsets.length - 1) ?
           ps.tabStartOffsets[tabIndex + 1] : ps.scrubbedPdeCode.length();
-      int[] braceResult = SourceUtils.checkForMissingBraces(ps.scrubbedPdeCode, tabStartOffset, tabEndOffset);
+      int[] braceResult = SourceUtil.checkForMissingBraces(ps.scrubbedPdeCode, tabStartOffset, tabEndOffset);
       if (braceResult[0] != 0) {
         JavaProblem problem =
             new JavaProblem(braceResult[0] < 0

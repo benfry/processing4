@@ -1,4 +1,7 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
+
+import static processing.mode.java.ASTUtils.getSimpleNameAt;
+import static processing.mode.java.ASTUtils.resolveBinding;
 
 import java.awt.EventQueue;
 import java.awt.event.InputEvent;
@@ -21,17 +24,11 @@ import org.eclipse.jdt.core.dom.VariableDeclaration;
 import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Platform;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
-
-import static processing.mode.java.pdex.ASTUtils.getSimpleNameAt;
-import static processing.mode.java.pdex.ASTUtils.resolveBinding;
 
 
 class InspectMode {
   final JavaEditor editor;
-  final PreprocessingService pps;
+  final PreprocService pps;
   final ShowUsage usage;
 
   boolean inspectModeEnabled;
@@ -47,7 +44,7 @@ class InspectMode {
       e -> e.getKeyCode() == KeyEvent.VK_CONTROL;
 
 
-  InspectMode(JavaEditor editor, PreprocessingService pps, ShowUsage usage) {
+  InspectMode(JavaEditor editor, PreprocService pps, ShowUsage usage) {
     this.editor = editor;
     this.pps = pps;
     this.usage = usage;
@@ -145,7 +142,7 @@ class InspectMode {
 
 
   // Thread: worker
-  private void handleInspect(PreprocessedSketch ps, int tabIndex, int offset) {
+  private void handleInspect(PreprocSketch ps, int tabIndex, int offset) {
     ASTNode root = ps.compilationUnit;
     int javaOffset = ps.tabOffsetToJavaOffset(tabIndex, offset);
 

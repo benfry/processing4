@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import com.google.classpath.ClassPath;
 
@@ -15,9 +15,9 @@ import java.util.List;
 import processing.app.Problem;
 import processing.app.Sketch;
 import processing.core.PApplet;
-import processing.mode.java.pdex.TextTransform.OffsetMapper;
+import processing.mode.java.TextTransform.OffsetMapper;
 
-public class PreprocessedSketch {
+public class PreprocSketch {
 
   public final Sketch sketch;
 
@@ -46,29 +46,6 @@ public class PreprocessedSketch {
   public final List<Problem> otherProblems;
 
   /// JAVA -> SKETCH -----------------------------------------------------------
-
-
-  public static class SketchInterval {
-
-    public static final SketchInterval BEFORE_START = new SketchInterval(-1, -1, -1, -1, -1);
-
-    private SketchInterval(int tabIndex,
-                           int startTabOffset, int stopTabOffset,
-                           int startPdeOffset, int stopPdeOffset) {
-      this.tabIndex = tabIndex;
-      this.startTabOffset = startTabOffset;
-      this.stopTabOffset = stopTabOffset;
-      this.startPdeOffset = startPdeOffset;
-      this.stopPdeOffset = stopPdeOffset;
-    }
-
-    final int tabIndex;
-    final int startTabOffset;
-    final int stopTabOffset;
-
-    final int startPdeOffset;
-    final int stopPdeOffset;
-  }
 
 
   public boolean inRange(SketchInterval interval) {
@@ -237,16 +214,16 @@ public class PreprocessedSketch {
     public final List<ImportStatement> codeFolderImports = new ArrayList<>();
     public final List<Problem> otherProblems = new ArrayList<>();
 
-    public PreprocessedSketch build() {
-      return new PreprocessedSketch(this);
+    public PreprocSketch build() {
+      return new PreprocSketch(this);
     }
   }
 
-  public static PreprocessedSketch empty() {
+  public static PreprocSketch empty() {
     return new Builder().build();
   }
 
-  private PreprocessedSketch(Builder b) {
+  private PreprocSketch(Builder b) {
     sketch = b.sketch;
 
     compilationUnit = b.compilationUnit;

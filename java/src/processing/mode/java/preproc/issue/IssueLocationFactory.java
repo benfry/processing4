@@ -21,9 +21,9 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 package processing.mode.java.preproc.issue;
 
-import processing.mode.java.preproc.code.SyntaxUtil;
-
 import java.util.Optional;
+
+import processing.mode.java.SourceUtil;
 
 
 /**
@@ -58,7 +58,7 @@ public class IssueLocationFactory {
     // Determine if the issue should be relocated
     boolean shouldAttributeToPrior = simplification.getAttributeToPriorToken();
     shouldAttributeToPrior = shouldAttributeToPrior && originalLine != 0;
-    
+
     if (!shouldAttributeToPrior) {
       return new IssueLocation(originalLine, originalOffset);
     }
@@ -82,7 +82,7 @@ public class IssueLocationFactory {
     if (foundStartOfMatchMaybe.isPresent()) {
       startOfMatch = priorCode.length() - foundStartOfMatchMaybe.get();
       String contentsOfMatch = priorCode.substring(startOfMatch);
-      linesOffset = SyntaxUtil.getCount(contentsOfMatch, "\n");
+      linesOffset = SourceUtil.getCount(contentsOfMatch, "\n");
     } else {
       startOfMatch = priorCode.length();
       linesOffset = 0;

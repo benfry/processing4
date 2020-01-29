@@ -1,4 +1,8 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
+
+import static processing.mode.java.ASTUtils.findAllOccurrences;
+import static processing.mode.java.ASTUtils.getSimpleNameAt;
+import static processing.mode.java.ASTUtils.resolveBinding;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -39,17 +43,11 @@ import processing.app.SketchCode;
 import processing.app.syntax.SyntaxDocument;
 import processing.app.ui.EditorStatus;
 import processing.app.ui.Toolkit;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
-
-import static processing.mode.java.pdex.ASTUtils.findAllOccurrences;
-import static processing.mode.java.pdex.ASTUtils.getSimpleNameAt;
-import static processing.mode.java.pdex.ASTUtils.resolveBinding;
 
 
 class Rename {
   final JavaEditor editor;
-  final PreprocessingService pps;
+  final PreprocService pps;
   final ShowUsage showUsage;
 
   final JDialog window;
@@ -57,10 +55,10 @@ class Rename {
   final JLabel oldNameLabel;
 
   IBinding binding;
-  PreprocessedSketch ps;
+  PreprocSketch ps;
 
 
-  Rename(JavaEditor editor, PreprocessingService pps, ShowUsage showUsage) {
+  Rename(JavaEditor editor, PreprocService pps, ShowUsage showUsage) {
     this.editor = editor;
     this.pps = pps;
     this.showUsage = showUsage;
@@ -183,7 +181,7 @@ class Rename {
 
 
   // Thread: worker
-  void handleRename(PreprocessedSketch ps, int tabIndex, int startTabOffset, int stopTabOffset) {
+  void handleRename(PreprocSketch ps, int tabIndex, int startTabOffset, int stopTabOffset) {
     if (ps.hasSyntaxErrors) {
       editor.statusMessage("Cannot rename until syntax errors are fixed",
                            EditorStatus.WARNING);
@@ -239,7 +237,7 @@ class Rename {
 
 
   // Thread: EDT (we can't allow user to mess with sketch while renaming)
-  void rename(PreprocessedSketch ps, IBinding binding, String newName) {
+  void rename(PreprocSketch ps, IBinding binding, String newName) {
     CompilationUnit root = ps.compilationUnit;
 
     // Renaming constructor should rename class

@@ -24,7 +24,6 @@ package processing.mode.java.debug;
 import java.util.List;
 
 import processing.app.Messages;
-import processing.mode.java.Debugger;
 
 import com.sun.jdi.AbsentInformationException;
 import com.sun.jdi.Location;

@@ -18,7 +18,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.awt.Cursor;
 import java.awt.Dimension;
@@ -38,7 +38,6 @@ import java.util.List;
 import processing.app.SketchCode;
 import processing.app.syntax.PdeTextAreaPainter;
 import processing.app.syntax.TextAreaDefaults;
-import processing.mode.java.JavaEditor;
 import processing.mode.java.tweak.ColorControlBox;
 import processing.mode.java.tweak.ColorSelector;
 import processing.mode.java.tweak.Handle;

@@ -18,11 +18,17 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.io.File;
 import java.io.StringWriter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.CompletableFuture;
@@ -37,35 +43,33 @@ import java.util.stream.StreamSupport;
 
 import javax.swing.text.BadLocationException;
 
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import processing.app.*;
-import processing.data.IntList;
-import processing.data.StringList;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.TextTransform.OffsetMapper;
-import processing.mode.java.pdex.util.ProblemFactory;
-import processing.mode.java.pdex.util.RuntimePathBuilder;
+import processing.app.Messages;
+import processing.app.Sketch;
+import processing.app.SketchCode;
+import processing.app.SketchException;
+import processing.app.Util;
+import processing.mode.java.TextTransform.OffsetMapper;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
-import processing.mode.java.preproc.code.SyntaxUtil;
+import processing.data.IntList;
+import processing.data.StringList;
 
 
 /**
  * Service which preprocesses code to check for and report on issues.
- *
  * <p>
- * Service running in a background thread which checks for grammatical issues via ANTLR and performs
- * code analysis via the JDT to check for other issues and related development services. These are
- * reported as {Problem} instances via a callback registered by an {Editor}.
- * </p>
+ * Service running in a background thread which checks for grammatical issues
+ * via ANTLR and performs code analysis via the JDT to check for other issues
+ * and related development services. These are reported as {Problem} instances
+ * via a callback registered by an {Editor}.
  */
-public class PreprocessingService {
-
+public class PreprocService {
   private final static int TIMEOUT_MILLIS = 100;
   private final static int BLOCKING_TIMEOUT_SECONDS = 3000;
 
@@ -82,14 +86,14 @@ public class PreprocessingService {
   private final AtomicBoolean librariesChanged = new AtomicBoolean(true);
 
   private volatile boolean running;
-  private CompletableFuture<PreprocessedSketch> preprocessingTask = new CompletableFuture<>();
+  private CompletableFuture<PreprocSketch> preprocessingTask = new CompletableFuture<>();
 
   private CompletableFuture<?> lastCallback =
-      new CompletableFuture<Object>() {{
-        complete(null); // initialization block
-      }};
+    new CompletableFuture<>() {{
+      complete(null); // initialization block
+    }};
 
-  private volatile boolean isEnabled = true;
+  private volatile boolean enabled = true;
 
   /**
    * Create a new preprocessing service to support an editor.
@@ -97,9 +101,9 @@ public class PreprocessingService {
    * @param editor The editor that will be supported by this service and to which issues should be
    *    reported.
    */
-  public PreprocessingService(JavaEditor editor) {
+  public PreprocService(JavaEditor editor) {
     this.editor = editor;
-    isEnabled = !editor.hasJavaTabs();
+    enabled = !editor.hasJavaTabs();
 
     // Register listeners for first run
     whenDone(this::fireListeners);
@@ -113,7 +117,7 @@ public class PreprocessingService {
    */
   private void mainLoop() {
     running = true;
-    PreprocessedSketch prevResult = null;
+    PreprocSketch prevResult = null;
     CompletableFuture<?> runningCallbacks = null;
     Messages.log("PPS: Hi!");
     while (running) {
@@ -172,14 +176,15 @@ public class PreprocessingService {
    * Indicate to this service that the sketch code has changed.
    */
   public void notifySketchChanged() {
-    if (!isEnabled) return;
-    synchronized (requestLock) {
-      if (preprocessingTask.isDone()) {
-        preprocessingTask = new CompletableFuture<>();
-        // Register callback which executes all listeners
-        whenDone(this::fireListeners);
+    if (enabled) {
+      synchronized (requestLock) {
+        if (preprocessingTask.isDone()) {
+          preprocessingTask = new CompletableFuture<>();
+          // Register callback which executes all listeners
+          whenDone(this::fireListeners);
+        }
+        requestQueue.offer(Boolean.TRUE);
       }
-      requestQueue.offer(Boolean.TRUE);
     }
   }
 
@@ -208,7 +213,7 @@ public class PreprocessingService {
    *    {PreprocessedSketch} that has any {Problem} instances that were resultant.
    * @return A future that will be fulfilled when preprocessing is complete.
    */
-  private CompletableFuture<?> registerCallback(Consumer<PreprocessedSketch> callback) {
+  private CompletableFuture<?> registerCallback(Consumer<PreprocSketch> callback) {
     synchronized (requestLock) {
       lastCallback = preprocessingTask
           // Run callback after both preprocessing task and previous callback
@@ -235,8 +240,8 @@ public class PreprocessingService {
    * @param callback The consumer to inform when preprocessing is complete which will provide a
    *    {PreprocessedSketch} that has any {Problem} instances that were resultant.
    */
-  public void whenDone(Consumer<PreprocessedSketch> callback) {
-    if (!isEnabled) return;
+  public void whenDone(Consumer<PreprocSketch> callback) {
+    if (!enabled) return;
     registerCallback(callback);
   }
 
@@ -253,8 +258,8 @@ public class PreprocessingService {
    *
    * @param callback
    */
-  public void whenDoneBlocking(Consumer<PreprocessedSketch> callback) {
-    if (!isEnabled) return;
+  public void whenDoneBlocking(Consumer<PreprocSketch> callback) {
+    if (!enabled) return;
     try {
       registerCallback(callback).get(BLOCKING_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
@@ -267,14 +272,14 @@ public class PreprocessingService {
   /// LISTENERS ----------------------------------------------------------------
 
 
-  private Set<Consumer<PreprocessedSketch>> listeners = new CopyOnWriteArraySet<>();
+  private Set<Consumer<PreprocSketch>> listeners = new CopyOnWriteArraySet<>();
 
   /**
    * Register a consumer that will receive all {PreprocessedSketch}es produced from this service.
    *
    * @param listener The listener to receive all future {PreprocessedSketch}es.
    */
-  public void registerListener(Consumer<PreprocessedSketch> listener) {
+  public void registerListener(Consumer<PreprocSketch> listener) {
     if (listener != null) listeners.add(listener);
   }
 
@@ -288,7 +293,7 @@ public class PreprocessingService {
    *
    * @param listener The listener to remove.
    */
-  public void unregisterListener(Consumer<PreprocessedSketch> listener) {
+  public void unregisterListener(Consumer<PreprocSketch> listener) {
     listeners.remove(listener);
   }
 
@@ -302,8 +307,8 @@ public class PreprocessingService {
    *
    * @param ps The sketch to be sent out to consumers.
    */
-  private void fireListeners(PreprocessedSketch ps) {
-    for (Consumer<PreprocessedSketch> listener : listeners) {
+  private void fireListeners(PreprocSketch ps) {
+    for (Consumer<PreprocSketch> listener : listeners) {
       try {
         listener.accept(ps);
       } catch (Exception e) {
@@ -329,11 +334,10 @@ public class PreprocessingService {
    *    beforehand.
    * @return The newly generated preprocessed sketch.
    */
-  private PreprocessedSketch preprocessSketch(PreprocessedSketch prevResult) {
+  private PreprocSketch preprocessSketch(PreprocSketch prevResult) {
+    boolean firstCheck = (prevResult == null);
 
-    boolean firstCheck = prevResult == null;
-
-    PreprocessedSketch.Builder result = new PreprocessedSketch.Builder();
+    PreprocSketch.Builder result = new PreprocSketch.Builder();
 
     List<ImportStatement> codeFolderImports = result.codeFolderImports;
     List<ImportStatement> programImports = result.programImports;
@@ -366,7 +370,7 @@ public class PreprocessingService {
         newPiece.append('\n');
 
         String newPieceBuilt = newPiece.toString();
-        numLines += SyntaxUtil.getCount(newPieceBuilt, "\n");
+        numLines += SourceUtil.getCount(newPieceBuilt, "\n");
         workBuffer.append(newPieceBuilt);
       }
     }
@@ -378,7 +382,8 @@ public class PreprocessingService {
     boolean reloadLibraries = firstCheck || librariesChanged.getAndSet(false);
 
     // Core and default imports
-    PdePreprocessor preProcessor = editor.createPreprocessor(editor.getSketch().getName());
+    PdePreprocessor preProcessor =
+      editor.createPreprocessor(editor.getSketch().getName());
     if (coreAndDefaultImports == null) {
       coreAndDefaultImports = buildCoreAndDefaultImports(preProcessor);
     }
@@ -393,7 +398,7 @@ public class PreprocessingService {
 
     // TODO: convert unicode escapes to chars
 
-    SourceUtils.scrubCommentsAndStrings(workBuffer);
+    SourceUtil.scrubCommentsAndStrings(workBuffer);
 
     result.scrubbedPdeCode = workBuffer.toString();
 
@@ -463,16 +468,15 @@ public class PreprocessingService {
     OffsetMapper parsableMapper = toParsable.getMapper();
 
     // Create intermediate AST for advanced preprocessing
-    //System.out.println(new String(parsableStage.toCharArray()));
-    CompilationUnit parsableCU = JdtCompilerUtil.makeAST(
-        parser,
-        parsableStage.toCharArray(),
-        JdtCompilerUtil.COMPILER_OPTIONS
-    );
+    parser.setSource(parsableStage.toCharArray());
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    CompilationUnit parsableCU = (CompilationUnit) parser.createAST(null);
 
     // Prepare advanced transforms which operate on AST
     TextTransform toCompilable = new TextTransform(parsableStage);
-    toCompilable.addAll(SourceUtils.preprocessAST(parsableCU));
+    toCompilable.addAll(SourceUtil.preprocessAST(parsableCU));
 
     // Transform code to compilable state
     String compilableStage = toCompilable.apply();
@@ -480,10 +484,11 @@ public class PreprocessingService {
     char[] compilableStageChars = compilableStage.toCharArray();
 
     // Create compilable AST to get syntax problems
-    // System.out.println(new String(compilableStageChars));
-    // System.out.println("-----");
-    CompilationUnit compilableCU =
-        JdtCompilerUtil.makeAST(parser, compilableStageChars, JdtCompilerUtil.COMPILER_OPTIONS);
+    parser.setSource(compilableStageChars);
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    CompilationUnit compilableCU = (CompilationUnit) parser.createAST(null);
 
     // Get syntax problems from compilable AST
     result.hasSyntaxErrors |= Arrays.stream(compilableCU.getProblems())
@@ -491,13 +496,14 @@ public class PreprocessingService {
 
     // Generate bindings after getting problems - avoids
     // 'missing type' errors when there are syntax problems
-    CompilationUnit bindingsCU = JdtCompilerUtil.makeASTWithBindings(
-          parser,
-          compilableStageChars,
-          JdtCompilerUtil.COMPILER_OPTIONS,
-          className,
-          result.classPathArray
-    );
+    parser.setSource(compilableStageChars);
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    parser.setUnitName(className);
+    parser.setEnvironment(result.classPathArray, null, null, false);
+    parser.setResolveBindings(true);
+    CompilationUnit bindingsCU = (CompilationUnit) parser.createAST(null);
 
     // Get compilation problems
     List<IProblem> bindingsProblems = Arrays.asList(bindingsCU.getProblems());
@@ -593,12 +599,55 @@ public class PreprocessingService {
    * @param hasJavaTabs True if java tabs are in the sketch and false otherwise.
    */
   public void handleHasJavaTabsChange(boolean hasJavaTabs) {
-    isEnabled = !hasJavaTabs;
-    if (isEnabled) {
+    enabled = !hasJavaTabs;
+    if (enabled) {
       notifySketchChanged();
     } else {
       preprocessingTask.cancel(false);
     }
   }
 
+
+  static private final Map<String, String> COMPILER_OPTIONS;
+  static {
+    Map<String, String> compilerOptions = new HashMap<>();
+
+    compilerOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_11);
+    compilerOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_11);
+    compilerOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_11);
+
+    // See http://help.eclipse.org/mars/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Fguide%2Fjdt_api_options.htm&anchor=compiler
+
+    final String[] generate = {
+        JavaCore.COMPILER_LINE_NUMBER_ATTR,
+        JavaCore.COMPILER_SOURCE_FILE_ATTR
+    };
+
+    final String[] ignore = {
+        JavaCore.COMPILER_PB_UNUSED_IMPORT,
+        JavaCore.COMPILER_PB_MISSING_SERIAL_VERSION,
+        JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE,
+        JavaCore.COMPILER_PB_REDUNDANT_TYPE_ARGUMENTS,
+        JavaCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION
+    };
+
+    final String[] warn = {
+        JavaCore.COMPILER_PB_NO_EFFECT_ASSIGNMENT,
+        JavaCore.COMPILER_PB_NULL_REFERENCE,
+        JavaCore.COMPILER_PB_POTENTIAL_NULL_REFERENCE,
+        JavaCore.COMPILER_PB_REDUNDANT_NULL_CHECK,
+        JavaCore.COMPILER_PB_POSSIBLE_ACCIDENTAL_BOOLEAN_ASSIGNMENT,
+        JavaCore.COMPILER_PB_UNUSED_LABEL,
+        JavaCore.COMPILER_PB_UNUSED_LOCAL,
+        JavaCore.COMPILER_PB_UNUSED_OBJECT_ALLOCATION,
+        JavaCore.COMPILER_PB_UNUSED_PARAMETER,
+        JavaCore.COMPILER_PB_UNUSED_PRIVATE_MEMBER
+    };
+
+    for (String s : generate) compilerOptions.put(s, JavaCore.GENERATE);
+    for (String s : ignore)   compilerOptions.put(s, JavaCore.IGNORE);
+    for (String s : warn)     compilerOptions.put(s, JavaCore.WARNING);
+
+    COMPILER_OPTIONS = Collections.unmodifiableMap(compilerOptions);
+  }
 }

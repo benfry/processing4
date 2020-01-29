@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import java.awt.EventQueue;
 import java.awt.Rectangle;
@@ -21,17 +21,15 @@ import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import processing.app.Messages;
 import processing.app.ui.ZoomTreeCellRenderer;
-import processing.mode.java.JavaEditor;
-import processing.mode.java.pdex.PreprocessedSketch.SketchInterval;
 
 
-class DebugTree {
+class ASTViewer {
   final JDialog window;
   final JTree tree;
-  final Consumer<PreprocessedSketch> updateListener;
+  final Consumer<PreprocSketch> updateListener;
 
 
-  DebugTree(JavaEditor editor, PreprocessingService pps) {
+  ASTViewer(JavaEditor editor, PreprocService pps) {
     updateListener = this::buildAndUpdateTree;
 
     window = new JDialog(editor);
@@ -96,7 +94,7 @@ class DebugTree {
 
 
   // Thread: worker
-  void buildAndUpdateTree(PreprocessedSketch ps) {
+  void buildAndUpdateTree(PreprocSketch ps) {
     CompilationUnit cu = ps.compilationUnit;
     if (cu.types().isEmpty()){
       Messages.loge("No Type found in CU");

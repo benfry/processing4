@@ -18,7 +18,7 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java;
+package processing.mode.java.debug;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -40,7 +40,7 @@ import com.sun.jdi.Value;
 import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Mode;
-import processing.mode.java.debug.VariableNode;
+import processing.mode.java.JavaEditor;
 
 
 public class VariableInspector extends JDialog {

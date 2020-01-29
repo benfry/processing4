@@ -36,6 +36,10 @@ _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
 
 
+questions
+_ can we get rid of pdexEnabled? does it work w/ java tabs?
+
+
 would like to fix
 _ ability to switch mode in p5 w/o saving/closing/etc
 _ launch/psk files/import from web editor (for class)

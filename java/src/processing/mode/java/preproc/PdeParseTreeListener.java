@@ -31,10 +31,10 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import processing.app.Preferences;
 import processing.core.PApplet;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.TextTransform;
+import processing.mode.java.ImportStatement;
+import processing.mode.java.SourceUtil;
+import processing.mode.java.TextTransform;
 import processing.mode.java.preproc.PdePreprocessor.Mode;
-import processing.mode.java.preproc.code.*;
 import processing.mode.java.preproc.issue.PdePreprocessIssue;
 import processing.mode.java.preproc.issue.PreprocessIssueMessageSimplifier;
 
@@ -1219,7 +1219,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         ));
       }
 
-      rewriteResultBuilder.addOffset(SyntaxUtil.getCount(newCode, "\n"));
+      rewriteResultBuilder.addOffset(SourceUtil.getCount(newCode, "\n"));
     }
 
   }

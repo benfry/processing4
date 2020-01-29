@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
