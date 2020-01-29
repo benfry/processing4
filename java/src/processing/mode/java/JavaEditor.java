@@ -48,6 +48,7 @@ import processing.app.syntax.PdeTextArea;
 import processing.app.syntax.PdeTextAreaDefaults;
 import processing.app.ui.*;
 import processing.app.ui.Toolkit;
+import processing.mode.java.debug.Debugger;
 import processing.mode.java.debug.LineBreakpoint;
 import processing.mode.java.debug.LineHighlight;
 import processing.mode.java.debug.LineID;
@@ -1806,7 +1807,7 @@ public class JavaEditor extends Editor {
   }
 
 
-  protected void activateRun() {
+  public void activateRun() {
     debugger.enableMenuItem(false);
     toolbar.activateRun();
   }
@@ -1824,32 +1825,34 @@ public class JavaEditor extends Editor {
   }
 
 
+  /*
   protected void activateDebug() {
     activateRun();
   }
 
 
-  protected void deactivateDebug() {
+  public void deactivateDebug() {
     deactivateRun();
   }
+   */
 
 
-  protected void activateContinue() {
+  public void activateContinue() {
     ((JavaToolbar) toolbar).activateContinue();
   }
 
 
-  protected void deactivateContinue() {
+  public void deactivateContinue() {
     ((JavaToolbar) toolbar).deactivateContinue();
   }
 
 
-  protected void activateStep() {
+  public void activateStep() {
     ((JavaToolbar) toolbar).activateStep();
   }
 
 
-  protected void deactivateStep() {
+  public void deactivateStep() {
     ((JavaToolbar) toolbar).deactivateStep();
   }
 
@@ -2035,7 +2038,7 @@ public class JavaEditor extends Editor {
    * Retrieve line of sketch where the cursor currently resides.
    * @return the current {@link LineID}
    */
-  protected LineID getCurrentLineID() {
+  public LineID getCurrentLineID() {
     String tab = getSketch().getCurrentCode().getFileName();
     int lineNo = getTextArea().getCaretLine();
     return new LineID(tab, lineNo);

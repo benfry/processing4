@@ -19,7 +19,7 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java;
+package processing.mode.java.debug;
 
 import com.sun.jdi.*;
 import com.sun.jdi.event.*;
@@ -51,7 +51,8 @@ import processing.app.RunnerListenerEdtAdapter;
 import processing.app.Sketch;
 import processing.app.SketchCode;
 import processing.app.ui.Toolkit;
-import processing.mode.java.debug.*;
+import processing.mode.java.JavaBuild;
+import processing.mode.java.JavaEditor;
 import processing.mode.java.runner.Runner;
 
 
@@ -120,7 +121,7 @@ public class Debugger {
    *
    * @return The debug menu
    */
-  protected JMenu buildMenu() {
+  public JMenu buildMenu() {
     debugMenu = new JMenu(Language.text("menu.debug"));
     JMenuItem item;
 
@@ -181,7 +182,8 @@ public class Debugger {
         public void actionPerformed(ActionEvent e) {
           Messages.log("Invoked 'Toggle Breakpoint' menu item");
           // TODO wouldn't getCaretLine() do the same thing with less effort?
-          toggleBreakpoint(editor.getCurrentLineID().lineIdx());
+          //toggleBreakpoint(editor.getCurrentLineID().lineIdx());
+          toggleBreakpoint(editor.getTextArea().getCaretLine());
         }
       });
     debugMenu.add(item);
@@ -191,12 +193,12 @@ public class Debugger {
   }
 
 
-  void enableMenuItem(boolean enabled) {
+  public void enableMenuItem(boolean enabled) {
     debugItem.setEnabled(enabled);
   }
 
 
-  boolean isEnabled() {
+  public boolean isEnabled() {
     return enabled;
   }
 
@@ -327,7 +329,8 @@ public class Debugger {
     editor.prepareRun();
 
     // after prepareRun, since this removes highlights
-    editor.activateDebug();
+    //editor.activateDebug();
+    editor.activateRun();
 
     try {
       Sketch sketch = editor.getSketch();
@@ -393,7 +396,8 @@ public class Debugger {
     stopTrackingLineChanges();
     started = false;
 
-    editor.deactivateDebug();
+    //editor.deactivateDebug();
+    editor.deactivateRun();
     editor.deactivateContinue();
     editor.deactivateStep();
 
@@ -516,7 +520,7 @@ public class Debugger {
   }
 
 
-  synchronized void setBreakpoint(LineID line) {
+  synchronized public void setBreakpoint(LineID line) {
     // do nothing if we are kinda busy
     if (isStarted() && !isPaused()) {
       return;
@@ -578,7 +582,7 @@ public class Debugger {
    * Clear breakpoints in a specific tab.
    * @param tabFilename the tab's file name
    */
-  synchronized void clearBreakpoints(String tabFilename) {
+  synchronized public void clearBreakpoints(String tabFilename) {
     // TODO: handle busy-ness correctly
     if (isBusy()) {
       log("busy");
@@ -616,7 +620,7 @@ public class Debugger {
    * Toggle a breakpoint on a line in the current tab.
    * @param lineIdx the line index (0-based) in the current tab
    */
-  synchronized void toggleBreakpoint(int lineIdx) {
+  synchronized public void toggleBreakpoint(int lineIdx) {
     LineID line = editor.getLineIDInCurrentTab(lineIdx);
     int index = line.lineIdx();
     if (hasBreakpoint(line)) {
@@ -660,7 +664,7 @@ public class Debugger {
    * @param tabFilename the tab's file name
    * @return the list of breakpoints in the given tab
    */
-  synchronized List<LineBreakpoint> getBreakpoints(String tabFilename) {
+  synchronized public List<LineBreakpoint> getBreakpoints(String tabFilename) {
     List<LineBreakpoint> list = new ArrayList<>();
     for (LineBreakpoint bp : breakpoints) {
       if (bp.lineID().fileName().equals(tabFilename)) {
@@ -763,7 +767,7 @@ public class Debugger {
     currentThread = be.thread(); // save this thread
     updateVariableInspector(currentThread); // this is already on the EDT
     final LineID newCurrentLine = locationToLineID(be.location());
-    javax.swing.SwingUtilities.invokeLater(new Runnable() {
+    java.awt.EventQueue.invokeLater(new Runnable() {
       @Override
       public void run() {
         editor.setCurrentLine(newCurrentLine);
@@ -1508,7 +1512,7 @@ public class Debugger {
 
 
   /** Start tracking all line changes (due to edits) in the current tab. */
-  protected void startTrackingLineChanges() {
+  public void startTrackingLineChanges() {
     // TODO: maybe move this to the editor?
     SketchCode tab = editor.getSketch().getCurrentCode();
     if (runtimeTabsTracked.contains(tab.getFileName())) {

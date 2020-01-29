@@ -31,6 +31,7 @@ import processing.app.Language;
 import processing.app.ui.Editor;
 import processing.app.ui.EditorButton;
 import processing.app.ui.EditorToolbar;
+import processing.mode.java.debug.Debugger;
 
 
 public class JavaToolbar extends EditorToolbar {
