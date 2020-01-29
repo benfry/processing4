@@ -34,45 +34,22 @@ public class SyntaxUtil {
    * @return The number of times search appears in body.
    */
   public static int getCount(String body, String search) {
+    int count = 0;
     if (search.length() == 1) {
-      return getCountChar(body, search.charAt(0));
+      // single character version
+      final char sought = search.charAt(0);
+      for (int i = 0; i < body.length(); i++) {
+        if (body.charAt(i) == sought) {
+          count++;
+        }
+      }
     } else {
-      return getCountString(body, search);
-    }
-  }
-
-  /**
-   * Determine how many times a string appears in another.
-   *
-   * @param body The string in which occurrences should be counted.
-   * @param search The string to look for.
-   * @return The number of times search appears in body.
-   */
-  private static int getCountString(String body, String search) {
-    int count = 0;
-    for (int i = 0; i < body.length(); i++) {
-      if (body.substring(i).startsWith(search)) {
-        count++;
+      for (int i = 0; i < body.length(); i++) {
+        if (body.substring(i).startsWith(search)) {
+          count++;
+        }
       }
     }
     return count;
   }
-
-  /**
-   * Determine how many times a character appears in another.
-   *
-   * @param body The string in which occurrences should be counted.
-   * @param search The character to look for.
-   * @return The number of times search appears in body.
-   */
-  private static int getCountChar(String body, char search) {
-    int count = 0;
-    for (int i = 0; i < body.length(); i++) {
-      if (body.charAt(i) == search) {
-        count++;
-      }
-    }
-    return count;
-  }
-
 }
