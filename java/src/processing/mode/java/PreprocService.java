@@ -176,14 +176,15 @@ public class PreprocService {
    * Indicate to this service that the sketch code has changed.
    */
   public void notifySketchChanged() {
-    if (!enabled) return;
-    synchronized (requestLock) {
-      if (preprocessingTask.isDone()) {
-        preprocessingTask = new CompletableFuture<>();
-        // Register callback which executes all listeners
-        whenDone(this::fireListeners);
+    if (enabled) {
+      synchronized (requestLock) {
+        if (preprocessingTask.isDone()) {
+          preprocessingTask = new CompletableFuture<>();
+          // Register callback which executes all listeners
+          whenDone(this::fireListeners);
+        }
+        requestQueue.offer(Boolean.TRUE);
       }
-      requestQueue.offer(Boolean.TRUE);
     }
   }
 
