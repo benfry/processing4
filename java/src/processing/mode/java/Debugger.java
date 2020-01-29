@@ -25,6 +25,10 @@ import com.sun.jdi.*;
 import com.sun.jdi.event.*;
 import com.sun.jdi.request.*;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,21 +40,30 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JTree; // needed for javadocs
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import processing.app.Language;
 import processing.app.Messages;
 import processing.app.RunnerListenerEdtAdapter;
 import processing.app.Sketch;
 import processing.app.SketchCode;
+import processing.app.ui.Toolkit;
 import processing.mode.java.debug.*;
 import processing.mode.java.runner.Runner;
 
 
 public class Debugger {
-
   /// editor window, acting as main view
   protected JavaEditor editor;
+
+  protected JMenu debugMenu;
+  protected JMenuItem debugItem;
+  protected boolean enabled;
+
+  protected VariableInspector inspector;
 
   /// the runtime, contains debuggee VM
   protected Runner runtime;
@@ -97,7 +110,137 @@ public class Debugger {
 
   public Debugger(JavaEditor editor) {
     this.editor = editor;
+    inspector = new VariableInspector(editor);
   }
+
+
+  /**
+   * Creates the debug menu. Includes ActionListeners for the menu items.
+   * Intended for adding to the menu bar.
+   *
+   * @return The debug menu
+   */
+  protected JMenu buildMenu() {
+    debugMenu = new JMenu(Language.text("menu.debug"));
+    JMenuItem item;
+
+    debugItem = Toolkit.newJMenuItem(Language.text("menu.debug.enable"), 'D');
+    debugItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        toggleEnabled();
+      }
+    });
+    debugMenu.add(debugItem);
+    debugMenu.addSeparator();
+
+    item = Toolkit.newJMenuItem(Language.text("menu.debug.continue"), KeyEvent.VK_U);
+    item.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          //editor.handleContinue();
+          continueDebug();
+        }
+      });
+    debugMenu.add(item);
+    item.setEnabled(false);
+
+    item = Toolkit.newJMenuItemExt("menu.debug.step");
+    item.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        //editor.handleStep(0);
+        stepOver();
+      }
+    });
+    debugMenu.add(item);
+    item.setEnabled(false);
+
+    item = Toolkit.newJMenuItemExt("menu.debug.step_into");
+    item.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          //handleStep(ActionEvent.SHIFT_MASK);
+          stepInto();
+        }
+      });
+    debugMenu.add(item);
+    item.setEnabled(false);
+
+    item = Toolkit.newJMenuItemExt("menu.debug.step_out");
+    item.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          //handleStep(ActionEvent.ALT_MASK);
+          stepOut();
+        }
+      });
+    debugMenu.add(item);
+    item.setEnabled(false);
+
+    debugMenu.addSeparator();
+
+    item =
+      Toolkit.newJMenuItem(Language.text("menu.debug.toggle_breakpoint"), 'B');
+    item.addActionListener(new ActionListener() {
+        public void actionPerformed(ActionEvent e) {
+          Messages.log("Invoked 'Toggle Breakpoint' menu item");
+          // TODO wouldn't getCaretLine() do the same thing with less effort?
+          toggleBreakpoint(editor.getCurrentLineID().lineIdx());
+        }
+      });
+    debugMenu.add(item);
+    item.setEnabled(false);
+
+    return debugMenu;
+  }
+
+
+  void enableMenuItem(boolean enabled) {
+    debugItem.setEnabled(enabled);
+  }
+
+
+  boolean isEnabled() {
+    return enabled;
+  }
+
+
+  void toggleEnabled() {
+    enabled = !enabled;
+
+    if (enabled) {
+      debugItem.setText(Language.text("menu.debug.disable"));
+    } else {
+      debugItem.setText(Language.text("menu.debug.enable"));
+    }
+    inspector.setVisible(enabled);
+
+    for (Component item : debugMenu.getMenuComponents()) {
+      if (item instanceof JMenuItem && item != debugItem) {
+        item.setEnabled(enabled);
+      }
+    }
+  }
+
+
+  /*
+  public void handleStep(int modifiers) {
+    if (modifiers == 0) {
+      Messages.log("Invoked 'Step Over' menu item");
+      stepOver();
+
+    } else if ((modifiers & ActionEvent.SHIFT_MASK) != 0) {
+      Messages.log("Invoked 'Step Into' menu item");
+      stepInto();
+
+    } else if ((modifiers & ActionEvent.ALT_MASK) != 0) {
+      Messages.log("Invoked 'Step Out' menu item");
+      stepOut();
+    }
+  }
+
+
+  public void handleContinue() {
+    Messages.log("Invoked 'Continue' menu item");
+    continueDebug();
+  }
+  */
 
 
   public VirtualMachine vm() {
@@ -156,6 +299,11 @@ public class Debugger {
   }
 
 
+  public void dispose() {
+    inspector.dispose();
+  }
+
+
   /**
    * Start a debugging session. Builds the sketch and launches a VM to run it.
    * VM starts suspended. Should produce a VMStartEvent.
@@ -173,7 +321,7 @@ public class Debugger {
     editor.clearConsole();
 
     // clear variable inspector (also resets expanded states)
-    editor.variableInspector().reset();
+    inspector.reset();
 
     // load edits into sketch obj, etc...
     editor.prepareRun();
@@ -227,7 +375,7 @@ public class Debugger {
    * VMDisconnectEvent.
    */
   public synchronized void stopDebug() {
-    editor.variableInspector().lock();
+    inspector.lock();
     if (runtime != null) {
       Messages.log("closing runtime");
 
@@ -256,7 +404,7 @@ public class Debugger {
   /** Resume paused debugging session. Resumes VM. */
   public synchronized void continueDebug() {
     editor.activateContinue();
-    editor.variableInspector().lock();
+    inspector.lock();
     //editor.clearSelection();
     //clearHighlight();
     editor.clearCurrentLine();
@@ -279,7 +427,7 @@ public class Debugger {
     if (!isStarted()) {
       startDebug();
     } else if (isPaused()) {
-      editor.variableInspector().lock();
+      inspector.lock();
       editor.activateStep();
 
       // use global to mark that there is a step request pending
@@ -884,7 +1032,6 @@ public class Debugger {
         // TODO: needs to be handled in a better way:
         log("call stack empty");
       } else {
-        final VariableInspector vi = editor.variableInspector();
         // first get data
         final List<DefaultMutableTreeNode> stackTrace = getStackTrace(t);
         final List<VariableNode> locals = getLocals(t, 0);
@@ -893,16 +1040,16 @@ public class Debugger {
         final List<VariableNode> declaredThisFields = getThisFields(t, 0, false);
         final String thisName = thisName(t);
         // now update asynchronously
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+        java.awt.EventQueue.invokeLater(new Runnable() {
           @Override
           public void run() {
             //System.out.println("updating vi. from EDT: " + javax.swing.SwingUtilities.isEventDispatchThread());
-            vi.updateCallStack(stackTrace, "Call Stack");
-            vi.updateLocals(locals, "Locals at " + currentLocation);
-            vi.updateThisFields(thisFields, "Class " + thisName);
-            vi.updateDeclaredThisFields(declaredThisFields, "Class " + thisName);
-            vi.unlock(); // need to do this before rebuilding, otherwise we get these ... dots in the labels
-            vi.rebuild();
+            inspector.updateCallStack(stackTrace, "Call Stack");
+            inspector.updateLocals(locals, "Locals at " + currentLocation);
+            inspector.updateThisFields(thisFields, "Class " + thisName);
+            inspector.updateDeclaredThisFields(declaredThisFields, "Class " + thisName);
+            inspector.unlock(); // need to do this before rebuilding, otherwise we get these ... dots in the labels
+            inspector.rebuild();
           }
         });
       }

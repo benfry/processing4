@@ -74,12 +74,6 @@ public class JavaEditor extends Editor {
   protected LineHighlight currentLine; // where the debugger is suspended
   protected final String breakpointMarkerComment = " //<>//";
 
-  protected JMenu debugMenu;
-  protected JMenuItem debugItem;
-  protected Debugger debugger;
-  protected boolean debugEnabled;
-
-  protected VariableInspector inspector;
   protected JMenuItem inspectorItem;
 
   static final int ERROR_TAB_INDEX = 0;
@@ -87,7 +81,9 @@ public class JavaEditor extends Editor {
   private boolean hasJavaTabs;
   private boolean javaTabWarned;
 
-  protected PreprocService preprocessingService;
+  protected PreprocService preprocService;
+
+  protected Debugger debugger;
 
   private InspectMode inspect;
   private ShowUsage usage;
@@ -108,7 +104,6 @@ public class JavaEditor extends Editor {
 
     jmode = (JavaMode) mode;
     debugger = new Debugger(this);
-    inspector = new VariableInspector(this);
 
     // set breakpoints from marker comments
     for (LineID lineID : stripBreakpointComments()) {
@@ -136,19 +131,19 @@ public class JavaEditor extends Editor {
     box.add(textAndError);
     */
 
-    preprocessingService = new PreprocService(this);
+    preprocService = new PreprocService(this);
 
     pdexEnabled = !hasJavaTabs();
 
-    usage = new ShowUsage(this, preprocessingService);
-    inspect = new InspectMode(this, preprocessingService, usage);
-    rename = new Rename(this, preprocessingService, usage);
+    usage = new ShowUsage(this, preprocService);
+    inspect = new InspectMode(this, preprocService, usage);
+    rename = new Rename(this, preprocService, usage);
 
     if (SHOW_AST_VIEWER) {
-      astViewer = new ASTViewer(this, preprocessingService);
+      astViewer = new ASTViewer(this, preprocService);
     }
 
-    errorChecker = new ErrorChecker(this, preprocessingService);
+    errorChecker = new ErrorChecker(this, preprocService);
 
     for (SketchCode code : getSketch().getCode()) {
       Document document = code.getDocument();
@@ -198,9 +193,9 @@ public class JavaEditor extends Editor {
         boolean hasJavaTabsChanged = hasJavaTabs != newHasJavaTabs;
         hasJavaTabs = newHasJavaTabs;
 
-        if (preprocessingService != null) {
+        if (preprocService != null) {
           if (hasJavaTabsChanged) {
-            preprocessingService.handleHasJavaTabsChange(hasJavaTabs);
+            preprocService.handleHasJavaTabsChange(hasJavaTabs);
             pdexEnabled = !hasJavaTabs;
             if (!pdexEnabled) {
               usage.hide();
@@ -1194,28 +1189,6 @@ public class JavaEditor extends Editor {
   }
 
 
-  public void handleStep(int modifiers) {
-    if (modifiers == 0) {
-      Messages.log("Invoked 'Step Over' menu item");
-      debugger.stepOver();
-
-    } else if ((modifiers & ActionEvent.SHIFT_MASK) != 0) {
-      Messages.log("Invoked 'Step Into' menu item");
-      debugger.stepInto();
-
-    } else if ((modifiers & ActionEvent.ALT_MASK) != 0) {
-      Messages.log("Invoked 'Step Out' menu item");
-      debugger.stepOut();
-    }
-  }
-
-
-  public void handleContinue() {
-    Messages.log("Invoked 'Continue' menu item");
-    debugger.continueDebug();
-  }
-
-
   public void onRunnerExiting(Runner runner) {
     synchronized (runtimeLock) {
       if (this.runtime == runner) {
@@ -1315,20 +1288,20 @@ public class JavaEditor extends Editor {
 
   @Override
   public void librariesChanged() {
-    preprocessingService.notifyLibrariesChanged();
+    preprocService.notifyLibrariesChanged();
   }
 
 
   @Override
   public void codeFolderChanged() {
-    preprocessingService.notifyCodeFolderChanged();
+    preprocService.notifyCodeFolderChanged();
   }
 
 
   @Override
   public void sketchChanged() {
     errorChecker.notifySketchChanged();
-    preprocessingService.notifySketchChanged();
+    preprocService.notifySketchChanged();
   }
 
 
@@ -1385,13 +1358,11 @@ public class JavaEditor extends Editor {
   public void dispose() {
     //System.out.println("window dispose");
     // quit running debug session
-    if (debugEnabled) {
+    if (debugger.isEnabled()) {
       debugger.stopDebug();
     }
-    if (inspector != null) {
-      inspector.dispose();
-    }
-    preprocessingService.dispose();
+    debugger.dispose();
+    preprocService.dispose();
 
     inspect.dispose();
     usage.dispose();
@@ -1405,201 +1376,16 @@ public class JavaEditor extends Editor {
   }
 
 
-  /**
-   * Creates the debug menu. Includes ActionListeners for the menu items.
-   * Intended for adding to the menu bar.
-   *
-   * @return The debug menu
-   */
-  protected JMenu buildDebugMenu() {
-    debugMenu = new JMenu(Language.text("menu.debug"));
-    JMenuItem item;
-
-    // "use the debugger" sounds too colloquial, and "enable" sounds too technical
-//    enableDebug =
-//      Toolkit.newJCheckBoxMenuItem(Language.text("menu.debug.enable"),
-//                                   KeyEvent.VK_D);
-//    enableDebug =
-//      Toolkit.newJCheckBoxMenuItem(Language.text("menu.debug.enable"),
-//                                   KeyEvent.VK_D);
-    debugItem = Toolkit.newJMenuItem(Language.text("menu.debug.enable"), 'D');
-//    enableDebug.setSelected(false);
-    debugItem.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-//        updateDebugToggle();
-        toggleDebug();
-      }
-    });
-//    toggleDebugger.addChangeListener(new ChangeListener() {
-//      public void stateChanged(ChangeEvent e) {
-//      }
-//    });
-    debugMenu.add(debugItem);
-    debugMenu.addSeparator();
-
-//    item = Toolkit.newJMenuItemAlt(Language.text("menu.debug.debug"), KeyEvent.VK_R);
-//    item.addActionListener(new ActionListener() {
-//        public void actionPerformed(ActionEvent e) {
-//          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Debug' menu item");
-//          debugger.startDebug();
-//        }
-//      });
-//    debugMenu.add(item);
-
-    item = Toolkit.newJMenuItem(Language.text("menu.debug.continue"), KeyEvent.VK_U);
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleContinue();
-        }
-      });
-    debugMenu.add(item);
-    item.setEnabled(false);
-
-//    item = new JMenuItem(Language.text("menu.debug.stop"));
-//    item.addActionListener(new ActionListener() {
-//        public void actionPerformed(ActionEvent e) {
-//          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Stop' menu item");
-//          debugger.stopDebug();
-//        }
-//      });
-//    debugMenu.add(item);
-
-    item = Toolkit.newJMenuItemExt("menu.debug.step");
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        handleStep(0);
-      }
-    });
-    debugMenu.add(item);
-    item.setEnabled(false);
-
-    item = Toolkit.newJMenuItemExt("menu.debug.step_into");
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleStep(ActionEvent.SHIFT_MASK);
-        }
-      });
-    debugMenu.add(item);
-    item.setEnabled(false);
-
-    item = Toolkit.newJMenuItemExt("menu.debug.step_out");
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleStep(ActionEvent.ALT_MASK);
-        }
-      });
-    debugMenu.add(item);
-    item.setEnabled(false);
-
-    debugMenu.addSeparator();
-
-    item =
-      Toolkit.newJMenuItem(Language.text("menu.debug.toggle_breakpoint"), 'B');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Messages.log("Invoked 'Toggle Breakpoint' menu item");
-          // TODO wouldn't getCaretLine() do the same thing with less effort?
-          toggleBreakpoint(getCurrentLineID().lineIdx());
-        }
-      });
-    debugMenu.add(item);
-    item.setEnabled(false);
-
-    /*
-    inspectorItem = Toolkit.newJMenuItem(Language.text("menu.debug.show_variables"), 'Y');
-    inspectorItem.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          toggleVariableInspector();
-        }
-      });
-    debugMenu.add(inspectorItem);
-    inspectorItem.setEnabled(false);
-    */
-
-    /*
-    item = new JMenuItem(Language.text("menu.debug.list_breakpoints"));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'List Breakpoints' menu item");
-          debugger.listBreakpoints();
-        }
-      });
-    debugMenu.add(item);
-
-    debugMenu.addSeparator();
-     */
-
-    /*
-    item = new JMenuItem(Language.text("menu.debug.print_stack_trace"));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Print Stack Trace' menu item");
-          debugger.printStackTrace();
-        }
-      });
-    debugMenu.add(item);
-
-    item = new JMenuItem(Language.text("menu.debug.print_locals"));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Print Locals' menu item");
-          debugger.printLocals();
-        }
-      });
-    debugMenu.add(item);
-
-    item = new JMenuItem(Language.text("menu.debug.print_fields"));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Print This' menu item");
-          debugger.printThis();
-        }
-      });
-    debugMenu.add(item);
-
-    item = new JMenuItem(Language.text("menu.debug.print_source_location"));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Print Source' menu item");
-          debugger.printSource();
-        }
-      });
-    debugMenu.add(item);
-
-    item = new JMenuItem(Language.text("menu.debug.print_threads"));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Print Threads' menu item");
-          debugger.printThreads();
-        }
-      });
-    debugMenu.add(item);
-
-    debugMenu.addSeparator();
-    */
-
-//    item = Toolkit.newJMenuItem(Language.text("menu.debug.toggle_variable_inspector"), KeyEvent.VK_I);
-//    item.addActionListener(new ActionListener() {
-//        public void actionPerformed(ActionEvent e) {
-//          Logger.getLogger(JavaEditor.class.getName()).log(Level.INFO, "Invoked 'Toggle Variable Inspector' menu item");
-//          toggleVariableInspector();
-//        }
-//      });
-//    debugMenu.add(item);
-
-    return debugMenu;
-  }
-
-
   @Override
   public boolean isDebuggerEnabled() {
-    return debugEnabled;
+    return debugger.isEnabled();
   }
 
 
   @Override
   public JMenu buildModeMenu() {
-    return buildDebugMenu();
+    //return buildDebugMenu();
+    return debugger.buildMenu();
   }
 
 
@@ -1836,7 +1622,7 @@ public class JavaEditor extends Editor {
 
 
   public PreprocService getPreprocessingService() {
-    return preprocessingService;
+    return preprocService;
   }
 
 
@@ -1849,7 +1635,7 @@ public class JavaEditor extends Editor {
     autoSave();
     super.prepareRun();
     downloadImports();
-    preprocessingService.cancel();
+    preprocService.cancel();
   }
 
 
@@ -2020,18 +1806,8 @@ public class JavaEditor extends Editor {
   }
 
 
-  /**
-   * Access variable inspector window.
-   * @return the variable inspector object
-   */
-  public VariableInspector variableInspector() {
-    return inspector;
-  }
-
-
   protected void activateRun() {
-    debugItem.setEnabled(false);
-//    toolbar.activate(JavaToolbar.RUN);
+    debugger.enableMenuItem(false);
     toolbar.activateRun();
   }
 
@@ -2044,12 +1820,11 @@ public class JavaEditor extends Editor {
    */
   public void deactivateRun() {
     toolbar.deactivateRun();
-    debugItem.setEnabled(true);
+    debugger.enableMenuItem(true);
   }
 
 
   protected void activateDebug() {
-    //debugToolbar.activate(DebugToolbar.DEBUG);
     activateRun();
   }
 
@@ -2080,11 +1855,12 @@ public class JavaEditor extends Editor {
 
 
   public void toggleDebug() {
-    debugEnabled = !debugEnabled;
+//    debugEnabled = !debugEnabled;
 
     rebuildToolbar();
     repaint();  // show/hide breakpoints in the gutter
 
+    /*
     if (debugEnabled) {
       debugItem.setText(Language.text("menu.debug.disable"));
     } else {
@@ -2097,6 +1873,7 @@ public class JavaEditor extends Editor {
         item.setEnabled(debugEnabled);
       }
     }
+    */
   }
 
 
