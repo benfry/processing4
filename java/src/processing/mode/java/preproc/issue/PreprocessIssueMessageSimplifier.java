@@ -24,7 +24,7 @@ package processing.mode.java.preproc.issue;
 
 import processing.app.Language;
 import processing.app.Platform;
-import processing.mode.java.preproc.SyntaxUtil;
+import processing.mode.java.SourceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -273,7 +273,7 @@ public class PreprocessIssueMessageSimplifier {
         messageContent = messageContent.replace(filter.get(), "");
       }
 
-      int count = SyntaxUtil.getCount(messageContent, token);
+      int count = SourceUtil.getCount(messageContent, token);
 
       if (count % 2 == 0) {
         return Optional.empty();
@@ -342,8 +342,8 @@ public class PreprocessIssueMessageSimplifier {
     public Optional<IssueMessageSimplification> simplify(String message) {
       String messageContent = getOffendingArea(message);
 
-      int count1 = SyntaxUtil.getCount(messageContent, token1);
-      int count2 = SyntaxUtil.getCount(messageContent, token2);
+      int count1 = SourceUtil.getCount(messageContent, token1);
+      int count2 = SourceUtil.getCount(messageContent, token2);
 
       if (count1 == count2) {
         return Optional.empty();

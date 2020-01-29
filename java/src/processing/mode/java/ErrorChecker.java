@@ -266,7 +266,7 @@ class ErrorChecker {
       int tabStartOffset = ps.tabStartOffsets[tabIndex];
       int tabEndOffset = (tabIndex < ps.tabStartOffsets.length - 1) ?
           ps.tabStartOffsets[tabIndex + 1] : ps.scrubbedPdeCode.length();
-      int[] braceResult = SourceUtils.checkForMissingBraces(ps.scrubbedPdeCode, tabStartOffset, tabEndOffset);
+      int[] braceResult = SourceUtil.checkForMissingBraces(ps.scrubbedPdeCode, tabStartOffset, tabEndOffset);
       if (braceResult[0] != 0) {
         JavaProblem problem =
             new JavaProblem(braceResult[0] < 0

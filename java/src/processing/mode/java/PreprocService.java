@@ -54,7 +54,6 @@ import processing.app.Util;
 import processing.mode.java.TextTransform.OffsetMapper;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
-import processing.mode.java.preproc.SyntaxUtil;
 import processing.data.IntList;
 import processing.data.StringList;
 
@@ -332,8 +331,7 @@ public class PreprocService {
    * @return The newly generated preprocessed sketch.
    */
   private PreprocSketch preprocessSketch(PreprocSketch prevResult) {
-
-    boolean firstCheck = prevResult == null;
+    boolean firstCheck = (prevResult == null);
 
     PreprocSketch.Builder result = new PreprocSketch.Builder();
 
@@ -368,7 +366,7 @@ public class PreprocService {
         newPiece.append('\n');
 
         String newPieceBuilt = newPiece.toString();
-        numLines += SyntaxUtil.getCount(newPieceBuilt, "\n");
+        numLines += SourceUtil.getCount(newPieceBuilt, "\n");
         workBuffer.append(newPieceBuilt);
       }
     }
@@ -380,7 +378,8 @@ public class PreprocService {
     boolean reloadLibraries = firstCheck || librariesChanged.getAndSet(false);
 
     // Core and default imports
-    PdePreprocessor preProcessor = editor.createPreprocessor(editor.getSketch().getName());
+    PdePreprocessor preProcessor =
+      editor.createPreprocessor(editor.getSketch().getName());
     if (coreAndDefaultImports == null) {
       coreAndDefaultImports = buildCoreAndDefaultImports(preProcessor);
     }
@@ -395,7 +394,7 @@ public class PreprocService {
 
     // TODO: convert unicode escapes to chars
 
-    SourceUtils.scrubCommentsAndStrings(workBuffer);
+    SourceUtil.scrubCommentsAndStrings(workBuffer);
 
     result.scrubbedPdeCode = workBuffer.toString();
 
@@ -474,7 +473,7 @@ public class PreprocService {
 
     // Prepare advanced transforms which operate on AST
     TextTransform toCompilable = new TextTransform(parsableStage);
-    toCompilable.addAll(SourceUtils.preprocessAST(parsableCU));
+    toCompilable.addAll(SourceUtil.preprocessAST(parsableCU));
 
     // Transform code to compilable state
     String compilableStage = toCompilable.apply();

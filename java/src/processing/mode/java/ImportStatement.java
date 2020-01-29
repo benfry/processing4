@@ -86,7 +86,7 @@ public class ImportStatement {
    * @return Newly parsed import statement information.
    */
   public static ImportStatement parse(String importString) {
-    Matcher matcher = SourceUtils.IMPORT_REGEX_NO_KEYWORD.matcher(importString);
+    Matcher matcher = SourceUtil.IMPORT_REGEX_NO_KEYWORD.matcher(importString);
     if (!matcher.find()) return null;
 
     return parse(matcher.toMatchResult());

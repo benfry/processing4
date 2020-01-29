@@ -1740,10 +1740,10 @@ public class CompletionGenerator {
     // If the parsed code contains pde enhancements, take 'em out.
     // TODO: test this
     TextTransform transform = new TextTransform(pdePhrase);
-    transform.addAll(SourceUtils.replaceTypeConstructors(pdePhrase));
-    transform.addAll(SourceUtils.replaceHexLiterals(pdePhrase));
-    transform.addAll(SourceUtils.replaceColorRegex(pdePhrase));
-    transform.addAll(SourceUtils.fixFloatsRegex(pdePhrase));
+    transform.addAll(SourceUtil.replaceTypeConstructors(pdePhrase));
+    transform.addAll(SourceUtil.replaceHexLiterals(pdePhrase));
+    transform.addAll(SourceUtil.replaceColorRegex(pdePhrase));
+    transform.addAll(SourceUtil.fixFloatsRegex(pdePhrase));
     String phrase = transform.apply();
 
     //After typing 'arg.' all members of arg type are to be listed. This one is a flag for it

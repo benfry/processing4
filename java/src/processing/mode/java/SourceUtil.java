@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import processing.mode.java.TextTransform.Edit;
 import processing.mode.java.preproc.PdePreprocessor;
 
-public class SourceUtils {
+public class SourceUtil {
 
 
   public static final Pattern IMPORT_REGEX =
@@ -367,5 +367,31 @@ public class SourceUtils {
       }
     }
     return new int[] {depth, lineNumber - 1, end - lineStart - 2, end - start - 2};
+  }
+
+
+  /**
+   * Determine how many times a string appears in another.
+   *
+   * @param body The string in which occurrences should be counted.
+   * @param search The string to look for.
+   * @return The number of times search appears in body.
+   */
+  public static int getCount(String body, String search) {
+    int count = 0;
+    if (search.length() == 1) {
+      for (int i = 0; i < body.length(); i++) {
+        if (body.charAt(i) == search.charAt(0)) {
+          count++;
+        }
+      }
+    } else {
+      for (int i = 0; i < body.length(); i++) {
+        if (body.substring(i).startsWith(search)) {
+          count++;
+        }
+      }
+    }
+    return count;
   }
 }

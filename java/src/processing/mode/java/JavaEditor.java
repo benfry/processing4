@@ -1649,7 +1649,7 @@ public class JavaEditor extends Editor {
       if (sc.isExtension("pde")) {
         String tabCode = sc.getProgram();
 
-        List<ImportStatement> imports =  SourceUtils.parseProgramImports(tabCode);
+        List<ImportStatement> imports =  SourceUtil.parseProgramImports(tabCode);
 
         if (!imports.isEmpty()) {
           ArrayList<String> importHeaders = new ArrayList<>();
