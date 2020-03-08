@@ -85,7 +85,7 @@ public class JavaEditor extends Editor {
 
   protected PreprocService preprocService;
 
-  private Debugger debugger = null;
+  private Debugger debugger;
 
   private InspectMode inspect;
   private ShowUsage usage;
