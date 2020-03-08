@@ -83,6 +83,8 @@ public class JavaEditor extends Editor {
   private boolean hasJavaTabs;
   private boolean javaTabWarned;
 
+  // To ensure proper initalization, do not use these variables directly. Instead, call
+  // or override getPreprocessingService and getDebugger.
   private PreprocService preprocService;
   private Debugger debugger;
 
@@ -106,9 +108,10 @@ public class JavaEditor extends Editor {
     jmode = (JavaMode) mode;
 
     // set breakpoints from marker comments
+    Debugger targetDebugger = getDebugger();
     for (LineID lineID : stripBreakpointComments()) {
       //System.out.println("setting: " + lineID);
-      getDebugger().setBreakpoint(lineID);
+      targetDebugger.setBreakpoint(lineID);
     }
     // setting breakpoints will flag sketch as modified, so override this here
     getSketch().setModified(false);
@@ -133,15 +136,16 @@ public class JavaEditor extends Editor {
 
     pdexEnabled = !hasJavaTabs();
 
-    usage = new ShowUsage(this, getPreprocessingService());
-    inspect = new InspectMode(this, getPreprocessingService(), usage);
-    rename = new Rename(this, getPreprocessingService(), usage);
+    PreprocService targetPreprocService = getPreprocessingService();
+    usage = new ShowUsage(this, targetPreprocService);
+    inspect = new InspectMode(this, targetPreprocService, usage);
+    rename = new Rename(this, targetPreprocService, usage);
 
     if (SHOW_AST_VIEWER) {
-      astViewer = new ASTViewer(this, getPreprocessingService());
+      astViewer = new ASTViewer(this, targetPreprocService);
     }
 
-    errorChecker = new ErrorChecker(this, getPreprocessingService());
+    errorChecker = new ErrorChecker(this, targetPreprocService);
 
     for (SketchCode code : getSketch().getCode()) {
       Document document = code.getDocument();
@@ -1095,12 +1099,13 @@ public class JavaEditor extends Editor {
     if (isDebuggerEnabled()) {
       // Hitting Run while a sketch is running should restart the sketch
       // https://github.com/processing/processing/issues/3623
-      if (getDebugger().isStarted()) {
-        getDebugger().stopDebug();
+      Debugger targetDebugger = getDebugger();
+      if (targetDebugger.isStarted()) {
+        targetDebugger.stopDebug();
       }
       // Don't start the sketch paused, continue until a breakpoint or error
       // https://github.com/processing/processing/issues/3096
-      getDebugger().continueDebug();
+      targetDebugger.continueDebug();
 
     } else {
       handleLaunch(false, false);
@@ -1156,8 +1161,9 @@ public class JavaEditor extends Editor {
    * session or performs standard stop action if not currently debugging.
    */
   public void handleStop() {
-    if (getDebugger().isStarted()) {
-      getDebugger().stopDebug();
+    Debugger targetDebugger = getDebugger();
+    if (targetDebugger.isStarted()) {
+      targetDebugger.stopDebug();
     } else {
       toolbar.activateStop();
 
@@ -1215,14 +1221,15 @@ public class JavaEditor extends Editor {
     boolean saved = super.handleSaveAs();
     if (saved) {
       // re-set breakpoints in first tab (name has changed)
-      List<LineBreakpoint> bps = getDebugger().getBreakpoints(oldName);
-      getDebugger().clearBreakpoints(oldName);
+      Debugger targetDebugger = getDebugger();
+      List<LineBreakpoint> bps = targetDebugger.getBreakpoints(oldName);
+      targetDebugger.clearBreakpoints(oldName);
       String newName = getSketch().getCode(0).getFileName();
       //System.out.println("new name: " + newName);
       for (LineBreakpoint bp : bps) {
         LineID line = new LineID(newName, bp.lineID().lineIdx());
         //System.out.println("setting: " + line);
-        getDebugger().setBreakpoint(line);
+        targetDebugger.setBreakpoint(line);
       }
       // add breakpoint marker comments to source file
       for (SketchCode code : getSketch().getCode()) {
@@ -1355,11 +1362,15 @@ public class JavaEditor extends Editor {
   public void dispose() {
     //System.out.println("window dispose");
     // quit running debug session
-    if (getDebugger().isEnabled()) {
-      getDebugger().stopDebug();
+
+    Debugger targetDebugger = getDebugger();
+    if (targetDebugger.isEnabled()) {
+      targetDebugger.stopDebug();
     }
-    getDebugger().dispose();
+    targetDebugger.dispose();
+
     getPreprocessingService().dispose();
+
     debugger = null;
     preprocService = null;
 
@@ -2099,8 +2110,10 @@ public class JavaEditor extends Editor {
         }
       }
     }
-    if (getDebugger() != null && getDebugger().isStarted()) {
-      getDebugger().startTrackingLineChanges();
+
+    Debugger targetDebugger = getDebugger();
+    if (targetDebugger.isStarted()) {
+      targetDebugger.startTrackingLineChanges();
     }
     if (errorColumn != null) {
       errorColumn.repaint();
