@@ -1360,6 +1360,8 @@ public class JavaEditor extends Editor {
     }
     getDebugger().dispose();
     getPreprocessingService().dispose();
+    debugger = null;
+    preprocService = null;
 
     inspect.dispose();
     usage.dispose();
@@ -1862,6 +1864,7 @@ public class JavaEditor extends Editor {
   public void toggleDebug() {
 //    debugEnabled = !debugEnabled;
 
+    getDebugger().toggleEnabled();
     rebuildToolbar();
     repaint();  // show/hide breakpoints in the gutter
 
