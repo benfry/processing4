@@ -83,8 +83,7 @@ public class JavaEditor extends Editor {
   private boolean hasJavaTabs;
   private boolean javaTabWarned;
 
-  protected PreprocService preprocService;
-
+  private PreprocService preprocService;
   private Debugger debugger;
 
   private InspectMode inspect;
@@ -132,19 +131,17 @@ public class JavaEditor extends Editor {
     box.add(textAndError);
     */
 
-    preprocService = new PreprocService(this);
-
     pdexEnabled = !hasJavaTabs();
 
-    usage = new ShowUsage(this, preprocService);
-    inspect = new InspectMode(this, preprocService, usage);
-    rename = new Rename(this, preprocService, usage);
+    usage = new ShowUsage(this, getPreprocessingService());
+    inspect = new InspectMode(this, getPreprocessingService(), usage);
+    rename = new Rename(this, getPreprocessingService(), usage);
 
     if (SHOW_AST_VIEWER) {
-      astViewer = new ASTViewer(this, preprocService);
+      astViewer = new ASTViewer(this, getPreprocessingService());
     }
 
-    errorChecker = new ErrorChecker(this, preprocService);
+    errorChecker = new ErrorChecker(this, getPreprocessingService());
 
     for (SketchCode code : getSketch().getCode()) {
       Document document = code.getDocument();
@@ -196,7 +193,7 @@ public class JavaEditor extends Editor {
 
         if (preprocService != null) {
           if (hasJavaTabsChanged) {
-            preprocService.handleHasJavaTabsChange(hasJavaTabs);
+            getPreprocessingService().handleHasJavaTabsChange(hasJavaTabs);
             pdexEnabled = !hasJavaTabs;
             if (!pdexEnabled) {
               usage.hide();
@@ -1288,20 +1285,20 @@ public class JavaEditor extends Editor {
 
   @Override
   public void librariesChanged() {
-    preprocService.notifyLibrariesChanged();
+    getPreprocessingService().notifyLibrariesChanged();
   }
 
 
   @Override
   public void codeFolderChanged() {
-    preprocService.notifyCodeFolderChanged();
+    getPreprocessingService().notifyCodeFolderChanged();
   }
 
 
   @Override
   public void sketchChanged() {
     errorChecker.notifySketchChanged();
-    preprocService.notifySketchChanged();
+    getPreprocessingService().notifySketchChanged();
   }
 
 
@@ -1362,7 +1359,7 @@ public class JavaEditor extends Editor {
       getDebugger().stopDebug();
     }
     getDebugger().dispose();
-    preprocService.dispose();
+    getPreprocessingService().dispose();
 
     inspect.dispose();
     usage.dispose();
@@ -1625,6 +1622,9 @@ public class JavaEditor extends Editor {
 
 
   public PreprocService getPreprocessingService() {
+    if (preprocService == null) {
+      preprocService = new PreprocService(this);
+    }
     return preprocService;
   }
 
@@ -1638,7 +1638,7 @@ public class JavaEditor extends Editor {
     autoSave();
     super.prepareRun();
     downloadImports();
-    preprocService.cancel();
+    getPreprocessingService().cancel();
   }
 
 
