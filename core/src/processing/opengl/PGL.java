@@ -2322,7 +2322,7 @@ public abstract class PGL {
           isNoFboRenderer = String.valueOf(rendererName).contains("Intel HD Graphics 3000");
         } catch (Exception e) {
           System.err.println("Could not read renderer name. FBOs disabled. Reason: " + e);
-          isNoFboRenderer = true;
+          return false; // Try again later.
         }
       } else {
         isNoFboRenderer = false;
