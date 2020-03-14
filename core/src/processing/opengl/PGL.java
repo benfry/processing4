@@ -33,6 +33,7 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import processing.core.PApplet;
@@ -170,11 +171,8 @@ public abstract class PGL {
    * Using FBO can cause a fatal error during runtime for
    * Intel HD Graphics 3000 chipsets (commonly used on older MacBooks)
    * <a href="https://github.com/processing/processing/issues/4104">#4104</a>
-   * The value remains as 'true' unless set false during init.
-   * TODO There's already code in here to enable/disable the FBO properly,
-   * this should be making use of that mechanism instead. [fry 191007]
    */
-  protected boolean fboAllowed = true;
+  private Optional<Boolean> fboAllowed = Optional.empty();
 
   // ........................................................
 
@@ -863,7 +861,7 @@ public abstract class PGL {
         saveFirstFrame();
       }
 
-      if (fboAllowed) {
+      if (getIsFboAllowed()) {
         if (!clearColor && 0 < sketch.frameCount || !sketch.isLooping()) {
           enableFBOLayer();
           if (SINGLE_BUFFERED) {
@@ -2301,6 +2299,41 @@ public abstract class PGL {
     intBuffer.rewind();
     getIntegerv(MAX_TEXTURE_IMAGE_UNITS, intBuffer);
     return intBuffer.get(0);
+  }
+
+
+  /**
+   * Determine if the renderer / hardware supports frame buffer objects (FBOs).
+   *
+   * @return True if confirmed that FBOs are supported by the renderer on the current hardware. Will
+   *    be false if the support status has not been confirmed yet (for example, because the graphics
+   *    context has not been itiliazed) or if it is confirmed that the renderer / hardware
+   *    combination do not support FBOs.
+   */
+  protected boolean getIsFboAllowed() {
+
+    // If not yet determined, try to find.
+    if (fboAllowed.isEmpty()) {
+      boolean isNoFboRenderer;
+      if (PApplet.platform == PConstants.MACOS) {
+        String rendererName;
+        try {
+          rendererName = getString(PGL.RENDERER);
+          isNoFboRenderer = String.valueOf(rendererName).contains("Intel HD Graphics 3000");
+        } catch (Exception e) {
+          System.err.println("Could not read renderer name. FBOs disabled. Reason: " + e);
+          isNoFboRenderer = true;
+        }
+      } else {
+        isNoFboRenderer = false;
+      }
+
+      // Cache value.
+      fboAllowed = Optional.of(!isNoFboRenderer);
+    }
+
+    // Return cached value.
+    return fboAllowed.get();
   }
 
 
