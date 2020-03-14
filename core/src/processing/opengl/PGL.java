@@ -2320,7 +2320,7 @@ public abstract class PGL {
         try {
           rendererName = getString(PGL.RENDERER);
           isNoFboRenderer = String.valueOf(rendererName).contains("Intel HD Graphics 3000");
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
           System.err.println("Could not read renderer name. FBOs disabled. Reason: " + e);
           return false; // Try again later.
         }
@@ -3125,7 +3125,17 @@ public abstract class PGL {
   public abstract void getIntegerv(int value, IntBuffer data);
   public abstract void getFloatv(int value, FloatBuffer data);
   public abstract boolean isEnabled(int value);
-  public abstract String getString(int name);
+
+  /**
+   * Get a configuration or status string from the underlying renderer.
+   *
+   * @param name The name or ID of the attribute to request.
+   * @return The requested value as a string.
+   * @throws GraphicsNotInitializedException Thrown if an attribute is requested that is not
+   *    available until graphics initialization before that initialization compeltes. For example,
+   *    if requesting a GL string before GL context is available.
+   */
+  public abstract String getString(int name) throws GraphicsNotInitializedException;
 
   ///////////////////////////////////////////////////////////
 
@@ -3416,4 +3426,25 @@ public abstract class PGL {
   public abstract void renderbufferStorageMultisample(int target, int samples, int format, int width, int height);
   public abstract void readBuffer(int buf);
   public abstract void drawBuffer(int buf);
+
+  ///////////////////////////////////////////////////////////
+
+  // Exceptions
+
+  /**
+   * Exception for when attempting an operation requiring the graphics renderer, context, etc
+   * to have been initialized before that initialization.
+   */
+  public class GraphicsNotInitializedException extends RuntimeException {
+
+    /**
+     * Create a new exception indicating that an action could not be fulfilled because the rendering
+     * context or equivalent is not ready.
+     *
+     * @param msg Further details about the issue.
+     */
+    public GraphicsNotInitializedException(String msg) {
+      super(msg);
+    }
+  }
 }
