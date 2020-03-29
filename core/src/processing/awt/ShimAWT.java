@@ -266,7 +266,6 @@ public class ShimAWT implements PConstants {
     return null;
   }
 
-
   static protected String[] loadImageFormats;
 
 

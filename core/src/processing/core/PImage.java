@@ -24,12 +24,18 @@
 
 package processing.core;
 
+import javax.imageio.*;
+import javax.imageio.metadata.IIOInvalidTreeException;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
+import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
 
 
 /**
@@ -247,6 +253,123 @@ public class PImage implements PConstants, Cloneable {
 
   public PImage(int width, int height, int format, int factor) {
     init(width, height, format, factor);
+  }
+
+  /**
+   * Save a PImage to a path using ImageIO.
+   *
+   * @param image The image to be saved.
+   * @param path The path to which it should be saved.
+   * @return True if successful and false otherwise.
+   * @throws IOException
+   */
+  static public boolean saveViaImageIO(PImage image, String path) throws IOException {
+    try {
+      int outputFormat = (image.format == ARGB) ?
+              BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+
+      String extension = path.substring(path.lastIndexOf('.') + 1).toLowerCase();
+
+      // JPEG and BMP images that have an alpha channel set get pretty unhappy.
+      // BMP just doesn't write, and JPEG writes it as a CMYK image.
+      // http://code.google.com/p/processing/issues/detail?id=415
+      if (extension.equals("bmp") || extension.equals("jpg") || extension.equals("jpeg")) {
+        outputFormat = BufferedImage.TYPE_INT_RGB;
+      }
+
+      BufferedImage bimage = new BufferedImage(image.pixelWidth, image.pixelHeight, outputFormat);
+      bimage.setRGB(0, 0, image.pixelWidth, image.pixelHeight, image.pixels, 0, image.pixelWidth);
+
+      File file = new File(path);
+
+      ImageWriter writer = null;
+      ImageWriteParam param = null;
+      IIOMetadata metadata = null;
+
+      if (extension.equals("jpg") || extension.equals("jpeg")) {
+        if ((writer = imageioWriter("jpeg")) != null) {
+          // Set JPEG quality to 90% with baseline optimization. Setting this
+          // to 1 was a huge jump (about triple the size), so this seems good.
+          // Oddly, a smaller file size than Photoshop at 90%, but I suppose
+          // it's a completely different algorithm.
+          param = writer.getDefaultWriteParam();
+          param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+          param.setCompressionQuality(0.9f);
+        }
+      }
+
+      if (extension.equals("png")) {
+        if ((writer = imageioWriter("png")) != null) {
+          param = writer.getDefaultWriteParam();
+          if (false) {
+            metadata = imageioDPI(writer, param, 100);
+          }
+        }
+      }
+
+      if (writer != null) {
+        BufferedOutputStream output =
+                new BufferedOutputStream(PApplet.createOutput(file));
+        writer.setOutput(ImageIO.createImageOutputStream(output));
+//        writer.write(null, new IIOImage(bimage, null, null), param);
+        writer.write(metadata, new IIOImage(bimage, null, metadata), param);
+        writer.dispose();
+
+        output.flush();
+        output.close();
+        return true;
+      }
+      // If iter.hasNext() somehow fails up top, it falls through to here
+      return ImageIO.write(bimage, extension, file);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new IOException("image save failed.");
+    }
+  }
+
+  static private ImageWriter imageioWriter(String extension) {
+    Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(extension);
+    if (iter.hasNext()) {
+      return iter.next();
+    }
+    return null;
+  }
+
+  static private IIOMetadata imageioDPI(ImageWriter writer, ImageWriteParam param, double dpi) {
+    // http://stackoverflow.com/questions/321736/how-to-set-dpi-information-in-an-image
+    ImageTypeSpecifier typeSpecifier =
+            ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_RGB);
+    IIOMetadata metadata =
+            writer.getDefaultImageMetadata(typeSpecifier, param);
+
+    if (!metadata.isReadOnly() && metadata.isStandardMetadataFormatSupported()) {
+      // for PNG, it's dots per millimeter
+      double dotsPerMilli = dpi / 25.4;
+
+      IIOMetadataNode horiz = new IIOMetadataNode("HorizontalPixelSize");
+      horiz.setAttribute("value", Double.toString(dotsPerMilli));
+
+      IIOMetadataNode vert = new IIOMetadataNode("VerticalPixelSize");
+      vert.setAttribute("value", Double.toString(dotsPerMilli));
+
+      IIOMetadataNode dim = new IIOMetadataNode("Dimension");
+      dim.appendChild(horiz);
+      dim.appendChild(vert);
+
+      IIOMetadataNode root = new IIOMetadataNode("javax_imageio_1.0");
+      root.appendChild(dim);
+
+      try {
+        metadata.mergeTree("javax_imageio_1.0", root);
+        return metadata;
+
+      } catch (IIOInvalidTreeException e) {
+        System.err.println("Could not set the DPI of the output image");
+        e.printStackTrace();
+      }
+    }
+    return null;
   }
 
 
@@ -3346,10 +3469,12 @@ int testFunction(int dst, int src) {
          return true;
        }
 
-       if (filename.toLowerCase().endsWith(".tga")) {
+       String filenameLower = filename.toLowerCase();
+       if (filenameLower.endsWith(".png")) {
+         return saveViaImageIO(this, filename); // Currently no viable PNG saving alternative.
+       } else if (filenameLower.endsWith(".tga")) {
          os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
          success = saveTGA(os); //, pixels, width, height, format);
-
        } else {
          if (!filename.toLowerCase().endsWith(".tif") &&
              !filename.toLowerCase().endsWith(".tiff")) {
