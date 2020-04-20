@@ -1,22 +1,27 @@
-# Processing 4.0
+Sam Pottinger Processing Branch
+==============================================================
+This is a fork of the [Processing 4](https://github.com/processing/processing4) project that conatins the preview of a possible Processing 4 beta.
 
-Processing 4 is an exciting next step for Processing in which the internals of the software will see important updates, helping prepare the platform for its future. This includes the move to JDK 11 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this will be 4.0.
+<br>
 
+Usage
+--------------------------------------------------------------
+Pre-built binaries are available for download! These are not sponsored or endorsed by the Processing Foundation and are only provided as a convenience for testing this branch. These are temporary and will go away as the review process continues. It is not meant to be a release. See [https://www.datadrivenempathy.com/processing](https://www.datadrivenempathy.com/processing). You can also clone this repo (`$ git clone git@github.com:sampottinger/processing4.git`) and follow the build instructions below.
 
-## API changes
+<br>
 
-As with all releases, we'll do everything possible to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
+Build
+--------------------------------------------------------------
+For building on your local machine, please see https://gist.github.com/sampottinger/939441d7277d318189ec81844e3ca516.
 
+<br>
 
-### alpha 2
+Development / Issues
+--------------------------------------------------------------
+Please beta test and write issues back to the [main repo](https://github.com/processing/processing4).
 
-* The `static` versions of `selectInput()`, `selectOutput()`, and `selectFolder()` in `PApplet` have been removed. These were not documented, hopefully were not in use anywhere.
-* The `frame` object has been removed from `PApplet`. We've been warning folks to use `surface` since 2015, but we still should [warn users](https://github.com/processing/processing4/issues/59)
-* `PImage.checkAlpha()` is now `public` instead of `protected`
-* All AWT calls have been moved out of `PImage`, which may be a problem for anything that was relying on those internals
-* Removed `MouseEvent.getClickCount()` and `MouseEvent.getAmount()`. These had been deprecated, not clear they were used anywhere.
+<br>
 
-
-### alpha 1 
-
-* `Base.defaultFileMenu` is now `protected` instead of `static public`
+Release
+--------------------------------------------------------------
+CI is automated via Travis. Deployment is done via [a script](https://gist.github.com/sampottinger/946a070808ef32c4170f30b279407d1c).
