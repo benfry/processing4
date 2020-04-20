@@ -44,14 +44,14 @@ public class Platform {
   static Map<Integer, String> platformNames = new HashMap<>();
   static {
     platformNames.put(PConstants.WINDOWS, "windows"); //$NON-NLS-1$
-    platformNames.put(PConstants.MACOSX, "macosx"); //$NON-NLS-1$
+    platformNames.put(PConstants.MACOS, "macosx"); //$NON-NLS-1$
     platformNames.put(PConstants.LINUX, "linux"); //$NON-NLS-1$
   }
 
   static Map<String, Integer> platformIndices = new HashMap<>();
   static {
     platformIndices.put("windows", PConstants.WINDOWS); //$NON-NLS-1$
-    platformIndices.put("macosx", PConstants.MACOSX); //$NON-NLS-1$
+    platformIndices.put("macosx", PConstants.MACOS); //$NON-NLS-1$
     platformIndices.put("linux", PConstants.LINUX); //$NON-NLS-1$
   }
 
@@ -412,8 +412,8 @@ public class Platform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-
-  static public int getSystemDPI() {
-    return inst.getSystemDPI();
+  static public float getSystemZoom() {
+    return inst.getSystemZoom();
   }
+
 }

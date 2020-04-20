@@ -864,7 +864,7 @@ public class AutoFormat implements Formatter {
    * @param result The code to format.
    * @return The formatted code.
    */
-  private String simpleRegexCleanup(String result) {
+  static private String simpleRegexCleanup(String result) {
     return result.replaceAll("([^ \n]+) +\n", "$1\n"); // Remove trail whitespace
   }
 }

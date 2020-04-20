@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-20 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -56,9 +56,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1270;
+  static private final int REVISION = 1271;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1270"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1271"; //$NON-NLS-1$
   /** Set true if this a proper release rather than a numbered revision. */
 
   /**

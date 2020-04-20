@@ -9,12 +9,52 @@
     <delete file="library/core.jar" />
   </target>
 
+  <target name="clean-jogl" description="Clean out the JOGL binaries">
+    <delete>
+      <fileset dir="library" includes="gluegen-rt*.jar" />
+      <fileset dir="library" includes="jogl-all*.jar" />
+    </delete>
+  </target>
+
   <target name="methods-check">
     <available file="methods/methods.jar" property="methods.present" />
   </target>
 
   <target name="methods-build" depends="methods-check" unless="methods.present">
     <subant buildpath="methods" target="dist" />
+  </target>
+
+  <!-- Base URL for the current version of JOGL. This should probably be changed to
+       a location on download.processing.org so that we know it's available forever. -->
+  <property name="jogl.url"
+            value="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20200307/jar" />
+
+  <available file="library/jogl-all.jar" property="jogl.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="jogl.ignorable" value="false" else="true">
+    <isset property="jogl.present" />
+  </condition>
+
+  <target name="download-jogl" unless="jogl.present">
+    <get dest="library" usetimestamp="true" ignoreerrors="${jogl.ignorable}">
+      <url url="${jogl.url}/gluegen-rt-natives-linux-aarch64.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-linux-amd64.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-linux-armv6hf.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-linux-i586.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-macosx-universal.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-windows-amd64.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-windows-i586.jar" />
+      <url url="${jogl.url}/gluegen-rt.jar" />
+      <url url="${jogl.url}/jogl-all-natives-linux-aarch64.jar" />
+      <url url="${jogl.url}/jogl-all-natives-linux-amd64.jar" />
+      <url url="${jogl.url}/jogl-all-natives-linux-armv6hf.jar" />
+      <url url="${jogl.url}/jogl-all-natives-linux-i586.jar" />
+      <url url="${jogl.url}/jogl-all-natives-macosx-universal.jar" />
+      <url url="${jogl.url}/jogl-all-natives-windows-amd64.jar" />
+      <url url="${jogl.url}/jogl-all-natives-windows-i586.jar" />
+      <url url="${jogl.url}/jogl-all.jar" />
+    </get>
   </target>
 
   <path id="classpath.base">
@@ -112,7 +152,8 @@
     <compilecommon srcdir="src" destdir="bin" classpath="classpath.base" />
   </target>
 
-  <target name="build" depends="methods-build, compile" description="Build core library">
+  <target name="build" depends="download-jogl, methods-build, compile"
+          description="Build core library">
     <jar basedir="bin" destfile="library/core.jar" />
   </target>
 

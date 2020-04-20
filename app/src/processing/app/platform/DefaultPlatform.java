@@ -23,14 +23,19 @@
 
 package processing.app.platform;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Graphics;
 import java.io.File;
 import java.net.URI;
 
+import javax.swing.Icon;
 import javax.swing.UIManager;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import org.violetlib.aqua.AquaLookAndFeel;
 
 import processing.app.Base;
 import processing.app.Preferences;
@@ -54,6 +59,7 @@ import processing.app.Preferences;
 public class DefaultPlatform {
   Base base;
 
+  private final float ZOOM_DEFAULT_SIZING = 1;
 
   public void initBase(Base base) {
     this.base = base;
@@ -74,7 +80,20 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      if (System.getProperty("os.name", "").startsWith("Mac OS")) {
+        UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
+
+        Icon collapse = new MacTreeIcon(true);
+        Icon open = new MacTreeIcon(false);
+        Icon leaf = new MacEmptyIcon();
+        UIManager.put("Tree.closedIcon", leaf);
+        UIManager.put("Tree.openIcon", leaf);
+        UIManager.put("Tree.collapsedIcon", open);
+        UIManager.put("Tree.expandedIcon", collapse);
+        UIManager.put("Tree.leafIcon", leaf);
+      } else {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      }
     } else {
       UIManager.setLookAndFeel(laf);
     }
@@ -157,8 +176,78 @@ public class DefaultPlatform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-
-  public int getSystemDPI() {
-    return 96;
+  /**
+   * Get the zoom or display scaling requested by the operating system.
+   *
+   * <p>
+   * Get the operating system zoom setting that Processing may use to resize
+   * internal elements depending on user preferences. Note that some operating
+   * systems will perform zooming in a way that is transparent to the
+   * the applications. If that is the case, this will return 1. Otherwise,
+   * the operating system will not automatically resize UI elements and this
+   * will return a value other than 1, meaning that Processing may need to
+   * resize elements on its own depending on user preferences.
+   * </p>
+   *
+   * <p>
+   * Note that this may be distinct from the system DPI and some operating
+   * systems may report a DPI of 96 while also requesting a display zooming of
+   * 125%. However, others may not report a "display scaling" but provide a
+   * DPI of 120 when the elements should have a 125% zoom. This will use the
+   * preferred method of determining the appropriate zoom given the platform
+   * in use. Using this system display scaling percentage approach instead of
+   * returning DPI directly is preferred after JEP 263.
+   * </p>
+   *
+   * @return The zoom level where 1.0 means 100% (no zoom) and 1.25 means
+   *    125% (25% additional zoom).
+   */
+  public float getSystemZoom() {
+    return ZOOM_DEFAULT_SIZING;
   }
+
+  class MacEmptyIcon implements Icon {
+    private final int SIZE = 1;
+
+    public MacEmptyIcon() {
+    }
+
+    public int getIconWidth() {
+        return SIZE;
+    }
+
+    public int getIconHeight() {
+        return SIZE;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {}
+  }
+
+  class MacTreeIcon implements Icon {
+    private final int SIZE = 12;
+    private final boolean isOpen;
+
+    public MacTreeIcon(boolean newIsOpen) {
+      isOpen = newIsOpen;
+    }
+
+    public int getIconWidth() {
+        return SIZE;
+    }
+
+    public int getIconHeight() {
+        return SIZE;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      g.setColor(Color.GRAY);
+
+      g.drawLine(x + SIZE / 2 - 3, y + SIZE / 2, x + SIZE / 2 + 3, y + SIZE / 2);
+
+      if (!isOpen) {
+        g.drawLine(x + SIZE / 2, y + SIZE / 2 - 3, x + SIZE / 2, y + SIZE / 2 + 3);
+      }
+    }
+  }
+
 }

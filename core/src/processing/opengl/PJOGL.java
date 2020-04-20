@@ -722,7 +722,7 @@ public class PJOGL extends PGL {
     PathIterator iter;
 
     public FontOutline(char ch, Font font) {
-      char textArray[] = new char[] { ch };
+      char[] textArray = new char[] { ch };
       FontRenderContext frc = getFontRenderContext(font);
       GlyphVector gv = font.createGlyphVector(frc, textArray);
       Shape shp = gv.getOutline();
@@ -733,7 +733,7 @@ public class PJOGL extends PGL {
       return iter.isDone();
     }
 
-    public int currentSegment(float coords[]) {
+    public int currentSegment(float[] coords) {
       return iter.currentSegment(coords);
     }
 
@@ -1120,6 +1120,9 @@ public class PJOGL extends PGL {
 
   @Override
   public String getString(int name) {
+    if (gl == null) {
+      throw new PGL.GraphicsNotInitializedException("Context not initalized.");
+    }
     return gl.glGetString(name);
   }
 
@@ -1469,7 +1472,7 @@ public class PJOGL extends PGL {
 
   @Override
   public void shaderSource(int shader, String source) {
-    gl2.glShaderSource(shader, 1, new String[] { source }, (int[]) null, 0);
+    gl2.glShaderSource(shader, 1, new String[] { source }, null, 0);
   }
 
   @Override

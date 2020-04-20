@@ -82,7 +82,7 @@ public class PGraphicsJava2D extends PGraphics {
   float[] curveDrawY;
 
   int transformCount;
-  AffineTransform transformStack[] =
+  AffineTransform[] transformStack =
     new AffineTransform[MATRIX_STACK_DEPTH];
   double[] transform = new double[6];
 
@@ -253,14 +253,14 @@ public class PGraphicsJava2D extends PGraphics {
   }
 
 
-  /**
-   * Still need a means to get the java.awt.Image object, since getNative()
-   * is going to return the {@link Graphics2D} object.
-   */
-  @Override
-  public Image getImage() {
-    return image;
-  }
+//  /**
+//   * Still need a means to get the java.awt.Image object, since getNative()
+//   * is going to return the {@link Graphics2D} object.
+//   */
+//  @Override
+//  public Image getImage() {
+//    return image;
+//  }
 
 
   /** Returns the java.awt.Graphics2D object used by this renderer. */
@@ -782,7 +782,7 @@ public class PGraphicsJava2D extends PGraphics {
     //float vertex[];
 
     if (vertexCount == vertices.length) {
-      float temp[][] = new float[vertexCount<<1][VERTEX_FIELD_COUNT];
+      float[][] temp = new float[vertexCount<<1][VERTEX_FIELD_COUNT];
       System.arraycopy(vertices, 0, temp, 0, vertexCount);
       vertices = temp;
       //message(CHATTER, "allocating more vertices " + vertices.length);
@@ -1959,7 +1959,7 @@ public class PGraphicsJava2D extends PGraphics {
 
 
   @Override
-  protected float textWidthImpl(char buffer[], int start, int stop) {
+  protected float textWidthImpl(char[] buffer, int start, int stop) {
     if (textFont == null) {
       defaultFontOrDeath("textWidth");
     }
@@ -2028,7 +2028,7 @@ public class PGraphicsJava2D extends PGraphics {
 
 
   @Override
-  protected void textLineImpl(char buffer[], int start, int stop,
+  protected void textLineImpl(char[] buffer, int start, int stop,
                               float x, float y) {
     Font font = (Font) textFont.getNative();
 //    if (font != null && (textFont.isStream() || hints[ENABLE_NATIVE_FONTS])) {
@@ -2828,7 +2828,7 @@ public class PGraphicsJava2D extends PGraphics {
   // GET/SET
 
 
-  static int getset[] = new int[1];
+  static int[] getset = new int[1];
 
 
   @Override

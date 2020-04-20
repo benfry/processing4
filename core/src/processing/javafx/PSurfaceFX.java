@@ -27,6 +27,7 @@ import com.sun.glass.ui.Screen;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,6 +62,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import processing.awt.ShimAWT;
 import processing.core.*;
 
 
@@ -222,13 +224,35 @@ public class PSurfaceFX implements PSurface {
   }
 
 
-  public void initOffscreen(PApplet sketch) {
+  // TODO rewrite before 4.0 release
+  public PImage loadImage(String path, Object... args) {
+    return ShimAWT.loadImage(sketch, path, args);
   }
 
 
-//  public Component initComponent(PApplet sketch) {
-//    return null;
-//  }
+  @Override
+  public void selectInput(String prompt, String callbackMethod,
+                          File file, Object callbackObject) {
+    ShimAWT.selectInput(prompt, callbackMethod, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectOutput(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    ShimAWT.selectOutput(prompt, callbackMethod, file, callbackObject);
+  }
+
+
+  @Override
+  public void selectFolder(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    ShimAWT.selectFolder(prompt, callbackMethod, file, callbackObject);
+  }
+
+
+  public void initOffscreen(PApplet sketch) {
+  }
 
 
   static public class PApplicationFX extends Application {
@@ -702,6 +726,11 @@ public class PSurfaceFX implements PSurface {
 
   public void hideCursor() {
     canvas.getScene().setCursor(Cursor.NONE);
+  }
+
+
+  public boolean openLink(String url) {
+    return ShimAWT.openLink(url);
   }
 
 

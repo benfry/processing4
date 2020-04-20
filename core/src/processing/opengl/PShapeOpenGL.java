@@ -1269,7 +1269,7 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public void rotateZ(float angle) {
-    transform(ROTATE, angle);
+    rotate(angle, 0, 0, 1);
   }
 
 
@@ -4681,7 +4681,7 @@ public class PShapeOpenGL extends PShape {
         if (family == GROUP) {
           if (fragmentedGroup(gl)) {
             for (int i = 0; i < childCount; i++) {
-              ((PShapeOpenGL) children[i]).draw(gl);
+              children[i].draw(gl);
             }
           } else {
             PImage tex = null;

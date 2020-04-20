@@ -19,7 +19,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import processing.app.SketchException;
-import processing.mode.java.pdex.JdtCompilerUtil;
 import processing.mode.java.preproc.PreprocessorResult;
 import processing.mode.java.preproc.issue.PdePreprocessIssueException;
 
@@ -68,21 +67,6 @@ public class ParserTests {
     }
   }
 
-  static void expectCompilerException(final String id) {
-    try {
-      final String program = preprocess(id, res(id + ".pde"));
-      boolean succeeded = compile(id, program);
-      if (succeeded) {
-        fail("Expected to fail.");
-      }
-    } catch (Exception e) {
-      if (!e.equals(e.getCause()) && e.getCause() != null)
-        fail(e.getCause().toString());
-      else
-        fail(e.toString());
-    }
-  }
-
   static void expectGood(final String id) {
     expectGood(id, true);
   }
@@ -94,13 +78,6 @@ public class ParserTests {
   static void expectGood(final String id, boolean ignoreWhitespace, Optional<String> packageName) {
     try {
       final String program = preprocess(id, res(id + ".pde"), packageName);
-      boolean successful = compile(id, program);
-      if (!successful) {
-        System.err.println("----------------------------");
-        System.err.println(program);
-        System.err.println("----------------------------");
-        fail("Compilation failed.");
-      }
 
       final File expectedFile = res(id + ".expected");
       if (expectedFile.exists()) {
@@ -216,11 +193,6 @@ public class ParserTests {
   @Test
   public void bug1064() {
     expectGood("bug1064");
-  }
-
-  @Test
-  public void bug1145() {
-    expectCompilerException("bug1145");
   }
 
   @Test
@@ -378,31 +350,19 @@ public class ParserTests {
     expectGood("packageTest", true, Optional.of("test.subtest"));
   }
 
-  private static boolean compile(String id, String program) {
-    // Create compilable AST to get syntax problems
-    CompilationUnit compilableCU = JdtCompilerUtil.makeAST(
-        ASTParser.newParser(AST.JLS11),
-        program.toCharArray(),
-        JdtCompilerUtil.COMPILER_OPTIONS
-    );
+  @Test
+  public void testStaticPixelDensity() {
+    expectGood("staticpixeldensity");
+  }
 
-    // Get syntax problems from compilable AST
-    Optional<IProblem> problem = Arrays.stream(compilableCU.getProblems())
-        .filter(IProblem::isError)
-        .findFirst();
+  @Test
+  public void testParamPixelDensity() {
+    expectGood("parampixeldensity");
+  }
 
-    if (problem.isPresent()) {
-      IProblem problemFound = problem.get();
-
-      System.err.println("Compilation issue: "
-          + problemFound.getMessage()
-          + "(" + problemFound.getSourceLineNumber() + ")"
-      );
-
-      return false;
-    } else {
-      return true;
-    }
+  @Test
+  public void testPdfWrite() {
+    expectGood("pdfwrite");
   }
 
 }

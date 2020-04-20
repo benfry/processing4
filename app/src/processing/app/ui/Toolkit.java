@@ -50,7 +50,6 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -502,6 +501,18 @@ public class Toolkit {
   }
 
 
+  static public int getMenuItemIndex(JMenu menu, JMenuItem item) {
+    int index = 0;
+    for (Component comp : menu.getMenuComponents()) {
+      if (comp == item) {
+        return index;
+      }
+      index++;
+    }
+    return -1;
+  }
+
+
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
@@ -851,7 +862,7 @@ public class Toolkit {
 
   static private float parseZoom() {
     if (Preferences.getBoolean("editor.zoom.auto")) {
-      float newZoom = Platform.getSystemDPI() / 96f;
+      float newZoom = Platform.getSystemZoom();
       String percentSel = ((int) (newZoom*100)) + "%";
       Preferences.set("editor.zoom", percentSel);
       return newZoom;
@@ -1135,17 +1146,5 @@ public class Toolkit {
     FontRenderContext frc = g2.getFontRenderContext();
     //return new TextLayout("H", font, frc).getBounds().getHeight();
     return new TextLayout("H", g.getFont(), frc).getBounds().getHeight();
-  }
-
-
-  static public int getMenuItemIndex(JMenu menu, JMenuItem item) {
-    int index = 0;
-    for (Component comp : menu.getMenuComponents()) {
-      if (comp == item) {
-        return index;
-      }
-      index++;
-    }
-    return -1;
   }
 }

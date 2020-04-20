@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2014-19 The Processing Foundation
+  Copyright (c) 2014-20 The Processing Foundation
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU General Public License
@@ -31,47 +31,29 @@ import org.apache.tools.ant.Task;
  * Ant Task for downloading the latest JRE, JDK, or OpenJFX release.
  */
 public class Downloader extends Task {
-  private static final boolean PRINT_LOGGING = true;
-
-  private boolean openJdk; // If using openJDK.
   private String platform; // macos
   private int train;  // Java 11 (was 1 through Java 8)
   private int version;  // 0 (was 8 prior to Java 9)
-  private int update;   // Update 131
-  private int build;    // Build 11
-  // https://gist.github.com/P7h/9741922
-  // http://stackoverflow.com/q/10268583
-  private String hash;  // d54c1d3a095b4ff2b6607d096fa80163
+  private int update;  // Update 131
+  private int build;  // Build 11
 
-  private String component;  // "JRE", "JDK", or "JFX"
-
-  private String flavor; // Like "zip"
-
+  private String component;  // "jdk" or "jfx"
+  private String flavor;  // Like "zip"
   private String path;  // target path
 
 
-  /**
-   * Create a new downloader without tag attributes filled in.
-   **/
   public Downloader() { }
+
 
   /**
    * Set the platform being used.
    *
-   * @param platform The platfom for which files are being downloaded like macosx.
+   * @param platform The platform for which files are being downloaded like macosx.
    */
   public void setPlatform(String platform) {
-    this.platform = platform;
+    this.platform = platform.toLowerCase();
   }
 
-  /**
-   * Indicate if the OpenJDK is being used.
-   *
-   * @param openJdk True if OpenJDK is being used. False if Oracle JDK is being used.
-   */
-  public void setOpenJdk(boolean openJdk) {
-    this.openJdk = openJdk;
-  }
 
   /**
    * Specify the build train being used.
@@ -82,6 +64,7 @@ public class Downloader extends Task {
     this.train = train;
   }
 
+
   /**
    * Set the version to download within the given build train.
    *
@@ -90,6 +73,7 @@ public class Downloader extends Task {
   public void setVersion(int version) {
     this.version = version;
   }
+
 
   /**
    * Set the update number to download within the given build train.
@@ -100,6 +84,7 @@ public class Downloader extends Task {
     this.update = update;
   }
 
+
   /**
    * Set the build number to download.
    *
@@ -109,23 +94,16 @@ public class Downloader extends Task {
     this.build = build;
   }
 
-  /**
-   * Set the expected hash of the download.
-   *
-   * @param hash The hash set.
-   */
-  public void setHash(String hash) {
-    this.hash = hash;
-  }
 
   /**
    * Indicate what component or release type of Java is being downloaded.
    *
-   * @param component The component to download like "JDK", "JRE", or "OpenJFX".
+   * @param component The component to download like "jdk" or "jfx"
    */
   public void setComponent(String component) {
-    this.component = component;
+    this.component = component.toLowerCase();
   }
+
 
   /**
    * Indicate the file flavor to be downloaded.
@@ -136,6 +114,7 @@ public class Downloader extends Task {
     this.flavor = flavor;
   }
 
+
   /**
    * Set the path to which the file should be downloaded.
    *
@@ -145,8 +124,9 @@ public class Downloader extends Task {
     this.path = path;
   }
 
+
   /**
-   * Download the JDK or JRE.
+   * Entry point called by Ant
    */
   public void execute() throws BuildException {
     if (train == 0) {
@@ -154,8 +134,7 @@ public class Downloader extends Task {
       throw new BuildException("Train (i.e. 1 or 11) must be set");
     }
 
-    boolean isJava11 = train == 11;
-    if (!isJava11 && version == 0) {
+    if (train != 11 && version == 0) {
       throw new BuildException("Version (i.e. 7 or 8) must be set");
     }
 
@@ -167,11 +146,6 @@ public class Downloader extends Task {
       throw new BuildException("You've gotta choose a flavor (macosx-x64.dmg, windows-x64.exe...)");
     }
 
-    if (update >= 121 && hash == null) {
-      throw new BuildException("Starting with 8u121, a hash is required, see https://gist.github.com/P7h/9741922");
-    }
-
-    //download(path, jdk, platform, bits, version, update, build);
     try {
       download();
     } catch (IOException e) {
@@ -179,62 +153,59 @@ public class Downloader extends Task {
     }
   }
 
+
   /**
    * Download the package from AdoptOpenJDK or Oracle.
    */
   void download() throws IOException {
-    DownloadItem downloadItem;
-
-    // Determine url generator for task
-    Optional<DownloadItem> downloadItemMaybe = getDownloadItem();
-    if (downloadItemMaybe.isEmpty()) {
-      return; // There is nothing to do.
-    } else {
-      downloadItem = downloadItemMaybe.get();
-    }
-
-    // Build URL and path
     if (path == null) {
-      path = downloadItem.getLocalPath();
+      path = getLocalFilename(component, version, update, flavor);
     }
 
-    String url = downloadItem.getUrl();
-
-    // Downlaod
-    println("Attempting download at " + url);
+    String url = null;
+    if (component.equals("jdk")) {
+      url = adoptOpenJdkUrl(platform, component, train, version, update, build, flavor);
+    } else if (component.equals("jfx")) {
+      url = gluonHqUrl(platform, component, train, version, update);
+    } else {
+      throw new RuntimeException("Do not know how to download: " + component);
+    }
+    System.out.println("Downloading from " + url);
 
     HttpURLConnection conn =
       (HttpURLConnection) new URL(url).openConnection();
 
+    /*
     Optional<String> cookieMaybe = downloadItem.getCookie();
 
     if (cookieMaybe.isPresent()) {
       conn.setRequestProperty("Cookie", cookieMaybe.get());
     }
+    */
 
-    //printHeaders(conn);
-    //conn.connect();
     while (conn.getResponseCode() == 302 || conn.getResponseCode() == 301) {
       Map<String, List<String>> headers = conn.getHeaderFields();
       List<String> location = headers.get("Location");
-      if (location.size() == 1) {
+      if (location.size() > 0) {
         url = location.get(0);
-        println("Redirecting to " + url);
+        System.out.println("Redirecting to " + url);
       } else {
-        throw new BuildException("Got " + location.size() + " locations.");
+        // TODO should this just do one of the
+        throw new BuildException("No redirect location provided");
       }
-      List<String> cookies = headers.get("Set-Cookie");
       conn = (HttpURLConnection) new URL(url).openConnection();
+      /*
+      List<String> cookies = headers.get("Set-Cookie");
       if (cookies != null) {
         for (String cookie : cookies) {
+          System.out.println("Setting cookie " + cookie);
           conn.setRequestProperty("Cookie", cookie);
         }
       }
-
       if (cookieMaybe.isPresent()) {
         conn.setRequestProperty("Cookie", cookieMaybe.get());
       }
-
+      */
       conn.connect();
     }
 
@@ -243,8 +214,8 @@ public class Downloader extends Task {
       BufferedInputStream bis = new BufferedInputStream(input);
       File outputFile = new File(path); //folder, filename);
 
-      String msg = String.format("Downloading %s from %s%n", outputFile.getAbsolutePath(), url);
-      println(msg);
+      System.out.format("Downloading %s from %s%n",
+                        outputFile.getAbsolutePath(), url);
 
       // Write to a temp file so that we don't have an incomplete download
       // masquerading as a good archive.
@@ -262,7 +233,8 @@ public class Downloader extends Task {
 
       if (outputFile.exists()) {
         if (!outputFile.delete()) {
-          throw new BuildException("Could not delete old download: " + outputFile.getAbsolutePath());
+          throw new BuildException("Could not delete old download: " +
+                                   outputFile.getAbsolutePath());
         }
       }
       if (!tempFile.renameTo(outputFile)) {
@@ -276,107 +248,97 @@ public class Downloader extends Task {
     }
   }
 
+
+  static private String adoptOpenJdkUrl(String platform, String component,
+                                        int train, int version, int update,
+                                        int build, String flavor) {
+    final String URL_FORMAT = "https://github.com/AdoptOpenJDK/openjdk%d-binaries/releases/download/jdk-%d.%d.%d%%2B%d/OpenJDK%dU-%s_%d.%d.%d_%d.%s";
+
+    String filename = null;
+    switch (platform) {
+      case "windows32": filename = "jdk_x86-32_windows_hotspot"; break;
+      case "windows64": filename = "jdk_x64_windows_hotspot"; break;
+      case "macosx64": filename = "jdk_x64_mac_hotspot"; break;
+      case "linux32": throw new RuntimeException("32-bit Linux not supported by AdoptOpenJDK.");
+      case "linux64": filename = "jdk_x64_linux_hotspot"; break;
+      case "linuxarm": filename = "jdk_aarch64_linux_hotspot"; break;
+      default: throw new RuntimeException("Unknown platform: " + platform);
+    }
+
+    String fileExtension = platform.startsWith("windows") ? "zip" : "tar.gz";
+
+    return String.format(
+        URL_FORMAT,
+        train,
+        train,
+        version,
+        update,
+        build,
+        train,
+        filename,
+        train,
+        version,
+        update,
+        build,
+        fileExtension
+    );
+  }
+
+
+  static private String gluonHqUrl(String platform, String component,
+                                   int train, int version, int update) {
+    final String URL_FORMAT =
+      "https://gluonhq.com/download/javafx-%d-%d-%d-sdk-%s/";
+
+    String platformShort;
+    if (platform.contains("linux")) {
+      platformShort = "linux";
+    } else if (platform.contains("mac")) {
+      platformShort = "mac";
+    } else if (platform.contains("windows")) {
+      platformShort = "windows";
+    } else {
+      throw new RuntimeException("Unsupported platform for JFX: " + platform);
+    }
+    return String.format(URL_FORMAT, train, version, update, platformShort);
+  }
+
+
   /**
-   * Print the headers used for {URLConnection}.
+   * Determine the name of the file to which the remote file should be saved.
+   *
+   * @param downloadPlatform The platform for which the download URL is being generated like
+   *    "macos" or "linux64".
+   * @param component The component to download like "JDK", "JRE", or "JFX".
+   * @param train The JDK train (like 1 or 11).
+   * @param version The JDK version (like 8 or 1).
+   * @param update The update (like 13).
+   * @param build The build number (like 133).
+   * @param flavor The flavor like "macosx-x64.dmg".
    */
-  static void printHeaders(URLConnection conn) {
+  static private String getLocalFilename(String component, int version,
+                                         int update, String flavor) {
+    String versionStr;
+    if (update == 0) {
+      versionStr = String.format("-%d-%s", version, flavor);
+    } else {
+      versionStr = String.format("-%du%d-%s", version, update, flavor);
+    }
+    return component + versionStr;
+  }
+
+
+  static private void printHeaders(URLConnection conn) {
     Map<String, List<String>> headers = conn.getHeaderFields();
     Set<Map.Entry<String, List<String>>> entrySet = headers.entrySet();
     for (Map.Entry<String, List<String>> entry : entrySet) {
       String headerName = entry.getKey();
-      println("Header Name:" + headerName);
+      System.err.println("Header Name:" + headerName);
       List<String> headerValues = entry.getValue();
       for (String value : headerValues) {
-        print("Header value:" + value);
+        System.err.println("Header Value:" + value);
       }
-      printEmptyLine();
-      printEmptyLine();
+      System.err.println();
     }
-  }
-
-  /**
-   * Get the item to be downloaded for this task.
-   *
-   * @return The to be downloaded or empty if there is no download required.
-   */
-  private Optional<DownloadItem> getDownloadItem() {
-    // Determine download type
-    boolean isJavaDownload = component.equalsIgnoreCase("jdk");
-    isJavaDownload = isJavaDownload || component.equalsIgnoreCase("jre");
-
-    boolean isJfxDownload = component.equalsIgnoreCase("jfx");
-
-    DownloadUrlGenerator downloadUrlGenerator;
-
-    // Determine url generator
-    if (isJavaDownload) {
-      if (openJdk) {
-        downloadUrlGenerator = new AdoptOpenJdkDownloadUrlGenerator();
-      } else {
-        downloadUrlGenerator = new OracleDownloadUrlGenerator();
-      }
-    } else if (isJfxDownload) {
-      if (openJdk) {
-        downloadUrlGenerator = new GluonHqDownloadUrlGenerator();
-      } else {
-        return Optional.empty(); // Nothing to download
-      }
-    } else {
-      throw new RuntimeException("Do not know how to download: " + component);
-    }
-
-    // Build download item
-    String path = downloadUrlGenerator.getLocalFilename(
-        platform,
-        component,
-        train,
-        version,
-        update,
-        build,
-        flavor,
-        hash
-    );
-
-    String url = downloadUrlGenerator.buildUrl(
-        platform,
-        component,
-        train,
-        version,
-        update,
-        build,
-        flavor,
-        hash
-    );
-
-    return Optional.of(new DownloadItem(url, path, downloadUrlGenerator.getCookie()));
-  }
-
-  /**
-   * Print a line out to console if logging is enabled.
-   *
-   * @param message The message to be printed.
-   */
-  private static void println(String message) {
-    if (PRINT_LOGGING) {
-      System.out.println(message);
-    }
-  }
-
-  /**
-   * Print a line out to console if logging is enabled without a newline.
-   *
-   * @param message The message to be printed.
-   */
-  private static void print(String message) {
-    if (PRINT_LOGGING) {
-      System.out.print(message);
-    }
-  }
-
-  /**
-   * Print an empty line to the system.out.
-   */
-  private static void printEmptyLine() {
-    println("");
   }
 }

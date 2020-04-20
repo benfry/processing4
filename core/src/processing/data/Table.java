@@ -1062,7 +1062,7 @@ public class Table {
         con = target.getDeclaredConstructor();  //new Class[] { });
 //        PApplet.println("no enclosing class");
       } else {
-        con = target.getDeclaredConstructor(new Class[] { enclosingClass });
+        con = target.getDeclaredConstructor(enclosingClass);
 //        PApplet.println("enclosed by " + enclosingClass.getName());
       }
       if (!con.canAccess(null)) {
@@ -1509,17 +1509,15 @@ public class Table {
     entry = new ZipEntry("content.xml");
     zos.putNextEntry(entry);
     //lines = new String[] {
-    writeUTF(zos, new String[] {
-      xmlHeader,
-      "<office:document-content" +
-        " xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\"" +
-        " xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\"" +
-        " xmlns:table=\"urn:oasis:names:tc:opendocument:xmlns:table:1.0\"" +
-        " office:version=\"1.2\">",
-     "  <office:body>",
-     "    <office:spreadsheet>",
-     "      <table:table table:name=\"Sheet1\" table:print=\"false\">"
-    });
+    writeUTF(zos, xmlHeader,
+            "<office:document-content" +
+              " xmlns:office=\"urn:oasis:names:tc:opendocument:xmlns:office:1.0\"" +
+              " xmlns:text=\"urn:oasis:names:tc:opendocument:xmlns:text:1.0\"" +
+              " xmlns:table=\"urn:oasis:names:tc:opendocument:xmlns:table:1.0\"" +
+              " office:version=\"1.2\">",
+            "  <office:body>",
+            "    <office:spreadsheet>",
+            "      <table:table table:name=\"Sheet1\" table:print=\"false\">");
     //zos.write(PApplet.join(lines, "\n").getBytes());
 
     byte[] rowStart = "        <table:table-row>\n".getBytes();
@@ -1546,12 +1544,10 @@ public class Table {
     }
 
     //lines = new String[] {
-    writeUTF(zos, new String[] {
-      "      </table:table>",
-      "    </office:spreadsheet>",
-      "  </office:body>",
-      "</office:document-content>"
-    });
+    writeUTF(zos, "      </table:table>",
+            "    </office:spreadsheet>",
+            "  </office:body>",
+            "</office:document-content>");
     //zos.write(PApplet.join(lines, "\n").getBytes());
     zos.closeEntry();
 
@@ -1718,19 +1714,19 @@ public class Table {
         columns[column] = new int[rowCount];
         break;
       case LONG:
-        columns[column] = new long[rowCount];;
+        columns[column] = new long[rowCount];
         break;
       case FLOAT:
-        columns[column] = new float[rowCount];;
+        columns[column] = new float[rowCount];
         break;
       case DOUBLE:
-        columns[column] = new double[rowCount];;
+        columns[column] = new double[rowCount];
         break;
       case STRING:
-        columns[column] = new String[rowCount];;
+        columns[column] = new String[rowCount];
         break;
       case CATEGORY:
-        columns[column] = new int[rowCount];;
+        columns[column] = new int[rowCount];
         break;
       default:
         throw new IllegalArgumentException(newType + " is not a valid column type.");

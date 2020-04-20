@@ -1,105 +1,72 @@
-1270 (4.x alpha)
-X use ctrl-page up/down for tabs on Windows
-X   https://github.com/processing/processing/issues/5794
-X fix potential highlighting issue that wasn't selecting portions of text
-X update AppBundler to use newer SDK, recompile
-X edit build.xml files and appbundler to preserve more attributes
+1271 (4.0a2)
 
-after the JDK 11 update
-X use a new pref for the sketchbook folder location for 4.x
-X finish porting ThinkDifferent to use Desktop APIs
-X   http://openjdk.java.net/jeps/272
-X   also roll it into MacPlatform, since less platform-specific code needed
-_ Implement reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
+sam
+X Resolve rewrite of pixelDensity to settings in preproc
+X   https://github.com/processing/processing4/pull/60
+X   https://github.com/processing/processing4/issues/58
+X Resolve PDF renderer parse issue in preproc
+X   https://github.com/processing/processing4/pull/68
+X   https://github.com/processing/processing4/issues/66
+
+
+before final release
+_ Update graphics and visual design elements for 4.x
+_   https://github.com/processing/processing4/issues/48
+_ Welcome screen or not?
+_   set a new preference for it, so people see it
+_ change help menu links to go to newer FAQ and the rest
+_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_ better means of understanding Library/Mode/Tool usage
+_ automate notarization in the build process
+_   https://github.com/processing/processing4/issues/24
+_ sign releases on Windows to avoid SmartScreen warnings/errors
+_   https://github.com/processing/processing4/issues/25
+
+
+open issues
+_ update the docs repo
+_   check with Casey re: shallow clone or approach
+_ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
-
-major updates for JDK 11 et al
-X https://github.com/processing/processing4/pull/1
-_   go through the comment w/ the various bugs that can be closed
-_ remove jdk.hash from build.xml
-_   need to make sure the downloader isn't relying on it
-_ clean up naming for build/macosx/jdk-0u1.tgz and build/macosx/jdk-11.0.1+13/
-_ fix "WARNING: Illegal reflective access by processing.app.ui.Toolkit to field sun.awt.CGraphicsDevice.scale" warning on startup
-
-contribs
-X tweak mode not working
-X   https://github.com/processing/processing/issues/5805
-X   https://github.com/processing/processing/pull/5909
-X updtes to Ukrainian translation
-X   https://github.com/processing/processing/pull/5944
-
-sampottinger
-X Fix JDK naming and cleanup in ant build
-X   https://github.com/processing/processing4/pull/12
-X   https://github.com/processing/processing4/issues/6
-X Migrate to JNA 5 compatiable Native.load
-X   https://github.com/processing/processing4/issues/7
-X   https://github.com/processing/processing4/pull/15
-X console font spacing is off
-X   https://github.com/processing/processing4/issues/19
-X   https://github.com/processing/processing4/pull/20
-X implement 'import static'
-X   https://github.com/processing/processing4/pull/18
-X   https://github.com/processing/processing/issues/5577
-X problems with windows ui scaling
-X   https://github.com/processing/processing4/issues/21
-X   https://github.com/processing/processing4/pull/30
-X   introduces regression that makes things uglier
-X Fix display density detection and use GraphicsConfiguration
-X   https://github.com/processing/processing4/issues/32
-X   https://github.com/processing/processing4/issues/35
-X Replace mac specific fullscreen option for setResizable
-X   https://github.com/processing/processing4/issues/36
-X Fixed Table's use of deprecated isAccessible
-X   https://github.com/processing/processing4/pull/33
-X   https://github.com/processing/processing4/issues/3
-X Moved tests to separate target, and defaults to dist
-X   https://github.com/processing/processing4/pull/38
-X   https://github.com/processing/processing4/issues/8
+_ further streamline the downloader
+_   https://github.com/processing/processing4/issues/47
+_ i18n support for Modes
+_   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
+_ Switch to getModifiersEx() in `processing.app`
+_   https://github.com/processing/processing4/issues/67
 
 
-_ selecting a sketch in the Sketch menu no longer opens its window
-_   https://github.com/processing/processing/issues/5882
+questions
+_ can we get rid of pdexEnabled? does it work w/ java tabs?
+
+
+would like to fix
+_ ability to switch mode in p5 w/o saving/closing/etc
+_ launch/psk files/import from web editor (for class)
+
 
 _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
 
-_ startup errors in contrib manager
-_   https://github.com/processing/processing/issues/5482
-_   https://github.com/processing/processing/issues/5916
-_   https://github.com/processing/processing/issues/5823
-
-quick fixes
-_ rename-variable menu allows Java identifiers
-_   https://github.com/processing/processing/pull/5906
 
 from Casey
-_ Issue with https and downloading the binaries, +Checksums?
-_   https://github.com/processing/processing-docs/issues/766
-_ Math for BLEND incorrect in the reference?
-_   https://github.com/processing/processing-docs/issues/762
-_ .setAngle() for PVector?
-_   https://github.com/processing/processing-docs/issues/744
-_ Installation on Linux
+_ update installation guide for Linux
 _   https://github.com/processing/processing-docs/issues/645
-_ How much of the attrib*() functions should be documented?
-_   https://github.com/processing/processing-docs/issues/172
 
-_ "Could not get the settings folder" isn't very helpful
+
+_ "Could not get the settings folder" message could be more helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
 _   then tell the user which folder to fix
 
-_ i18n support for Modes
-_   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
-
-_ show the recommended sw version on the download page
+_ show the recommended sw version for users' platform on the download page
 _ just skip the welcome screen on Windows hidpi dipslays?
 
 _ refresh option for sketchbook
 _ import option for sketchbook
 _ 'show sketch folder' weird when in temp folder
 _   ask to save first (sketch has not been saved yet)
+_   or make the temp folder part of the sketchbook
 _ same with adding files to an unsaved sketch, do we block that?
 
 
@@ -587,11 +554,6 @@ PDE / Compiler & Preprocessor
 medium (bugs/features)
 _ preprocessor throws error when calling color() on a PGraphics
 _   https://github.com/processing/processing/issues/3762
-_ incorporate new preproc
-_   https://github.com/fjenett/processing-preprocessor-antlr4
-_   https://github.com/processing/processing/issues/3055
-_ update grammar for ANTLR
-_   https://github.com/processing/processing/issues/3054
 _ omitting a semicolon shows the error on the line after it
 _ npe if library is removed before compile
 _   always check library folders to make sure they're still valid
@@ -724,18 +686,6 @@ _     the /Library one is empty (by default), maybe skip it?
 _ classpath conflicts also problem with PDE itself
 _   catch antlr conflicts, and put up an error message
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1225 (no Google issue)
-_ when a conflicting library (bad link w/ core) is found, need to report it
-_   altho prolly only when it's actually different (md5hash it?)
-_   this seems to be causing a lot of trouble with recent releases
-_   (opengl changes and whatnot)
-_ jar files like the bad aiexport plugin will cause serious problems
-_   https://github.com/processing/processing/issues/95
-_   need to ignore processing.core classes showing up in other jar files
-_   tougher than it looks, because it all depends on what java wants to use
-_     i.e. even if not specified, the stuff will be in the classpath
-_   need to make classpath code be less promiscuous
-_   the order of adding libraries to classpath should be opposite
-_     the important local libraries should be first in cp, user contrib later
 _ make sure there aren't library jar files named the same thing
 _   i.e. if one library has db.jar, then that's gonna kill another db.jar
 _   when the files are copied over

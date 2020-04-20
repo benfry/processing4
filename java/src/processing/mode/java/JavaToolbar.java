@@ -31,6 +31,7 @@ import processing.app.Language;
 import processing.app.ui.Editor;
 import processing.app.ui.EditorButton;
 import processing.app.ui.EditorToolbar;
+import processing.mode.java.debug.Debugger;
 
 
 public class JavaToolbar extends EditorToolbar {
@@ -77,8 +78,17 @@ public class JavaToolbar extends EditorToolbar {
                                     Language.text("menu.debug.step_out")) {
         @Override
         public void actionPerformed(ActionEvent e) {
-          final int mask = ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK;
-          jeditor.handleStep(e.getModifiers() & mask);
+          Debugger d = jeditor.getDebugger();
+
+          final int modifiers = e.getModifiers() &
+            (ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK);
+          if (modifiers == 0) {
+            d.stepOver();
+          } else if ((modifiers & ActionEvent.SHIFT_MASK) != 0) {
+            d.stepInto();
+          } else if ((modifiers & ActionEvent.ALT_MASK) != 0) {
+            d.stepOut();
+          }
         }
       };
       outgoing.add(stepButton);
@@ -88,7 +98,8 @@ public class JavaToolbar extends EditorToolbar {
                                         Language.text("menu.debug.continue")) {
         @Override
         public void actionPerformed(ActionEvent e) {
-          jeditor.handleContinue();
+          //jeditor.handleContinue();
+          jeditor.getDebugger().continueDebug();
         }
       };
       outgoing.add(continueButton);

@@ -22,14 +22,15 @@
 
 package processing.app.platform;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.Optional;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-import com.sun.jna.platform.win32.Shell32Util;
-import com.sun.jna.platform.win32.ShlObj;
+import com.sun.jna.platform.win32.*;
 
 import processing.app.Base;
 import processing.app.Messages;
@@ -61,10 +62,16 @@ public class WindowsPlatform extends DefaultPlatform {
     "\\" + APP_NAME.toLowerCase() + ".exe \"%1\"";
   static final String REG_DOC = APP_NAME + ".Document";
 
-  // Starting with Java 9, the scaling is done automatically. If DPI is
-  // used to scaling within the application, one ends up with 2x the
-  // expected scale. See JEP 263.
-  private static final int WINDOWS_NATIVE_DPI = 96;
+  private static final float RESOLUTION_AT_NO_SCALE = 96;
+  private static final int VERTRES = 10;
+  private static final int DESKTOPVERTRES = 117;
+
+  private Optional<Float> cachedDisplayScaling;
+
+  public WindowsPlatform() {
+    super();
+    cachedDisplayScaling = Optional.empty();
+  }
 
   public void initBase(Base base) {
     super.initBase(base);
@@ -629,10 +636,28 @@ public class WindowsPlatform extends DefaultPlatform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+  public float getSystemZoom() {
+    if (cachedDisplayScaling.isEmpty()) {
+      cachedDisplayScaling = Optional.of(calculateSystemZoom());
+    }
 
-  public int getSystemDPI() {
-    // Note that this is supported "natively" within Java - See JEP 263.
-    return WINDOWS_NATIVE_DPI;
+    return cachedDisplayScaling.get();
+  }
+
+  private float calculateSystemZoom() {
+    WinDef.HDC hdc = GDI32.INSTANCE.CreateCompatibleDC(null);
+
+    if (hdc == null) {
+      float resolution = Toolkit.getDefaultToolkit().getScreenResolution();
+      return resolution / RESOLUTION_AT_NO_SCALE;
+    }
+
+    float virtualResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, VERTRES);
+    float logicalResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, DESKTOPVERTRES);
+
+    GDI32.INSTANCE.DeleteDC(hdc);
+
+    return logicalResolution / virtualResolution;
   }
 
 }

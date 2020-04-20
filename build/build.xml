@@ -87,27 +87,16 @@
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="5" />
+  <property name="jdk.update" value="6" />
   <property name="jdk.build" value="10" />
+
+  <property name="jdk.prefix" value="jdk" />
+  <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
   <property name="jfx.train" value="11" />
   <property name="jfx.version" value="0" />
   <property name="jfx.update" value="2" />
   <property name="jfx.build" value="0" />
-
-  <!-- See https://gist.github.com/P7h/9741922
-       or http://stackoverflow.com/q/10268583 -->
-  <property name="jdk.hash" value="1961070e4c9b4e26a04e7f5a083f551e" />
-
-  <!-- these a*holes at Oracle... no longer works without a login
-  <property name="jdk.update" value="212" />
-  <property name="jdk.build" value="10" />
-  <property name="jdk.hash" value="59066701cf1a433da9770636fbc4c9aa" />
-  -->
-
-  <property name="jdk.prefix" value="jdk" />
-  <property name="jdk.separator" value="-" />
-  <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
   <property name="jfx.name" value="${jfx.train}.${jfx.version}.${jfx.update}" />
 
@@ -365,9 +354,6 @@
   <target name="jdk-download" depends="jdk-check, downloader-setup"
           unless="jdk.tgz.downloaded">
 
-    <!-- we normally download a JRE, except on arm -->
-    <property name="jdk.download.jdk" value="true" />
-
     <condition property="jdk.downloader"
                value="${target-platform}-i586.tar.gz">
         <equals arg1="${jdk.data.model}" arg2="32" />
@@ -377,14 +363,12 @@
       <equals arg1="${jdk.data.model}" arg2="64" />
     </condition>
 
-    <downloader train="${jdk.train}"
+    <downloader component="jdk"
+                train="${jdk.train}"
                 version="${jdk.version}"
-                openJdk="true"
                 platform="${target-platform}${jdk.data.model}"
                 update="${jdk.update}"
                 build="${jdk.build}"
-                hash="${jdk.hash}"
-                component="JDK"
                 flavor="${jdk.downloader}"
                 path="${jdk.tgz.path}" />
   </target>
@@ -392,17 +376,14 @@
   <target name="jfx-download" depends="jfx-check, downloader-setup"
           unless="jfx.zip.downloaded">
 
-    <downloader train="${jfx.train}"
+    <downloader component="jfx"
+                train="${jfx.train}"
                 version="${jfx.version}"
-                openJdk="true"
                 platform="${target-platform}${jdk.data.model}"
                 update="${jfx.update}"
                 build="1"
-                hash="${jfx.hash}"
-                component="JFX"
                 flavor="${target-platform}${jdk.data.model}.zip"
                 path="${jfx.path.zip}" />
-
   </target>
 
   <!-- code signing hack, turns on code signing during dist -->
@@ -443,6 +424,7 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
+    <include name="app/lib/vaqua7.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
@@ -706,16 +688,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <condition property="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk">
-      <equals arg1="${jdk.train}" arg2="1" />
-    </condition>
-
-    <!-- Force full JDK when not on train 1 (starts with java 11) -->
-    <condition property="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk/">
-      <not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </not>
-    </condition>
+    <property name="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk/" />
 
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
@@ -749,6 +722,7 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
+      <classpath file="../app/lib/vaqua7.jar" />
 
       <!-- plus core.jar... note that this is no longer shared -->
       <classpath file="../core/library/core.jar" />
@@ -860,7 +834,7 @@
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
       <!--<fileset dir="shared" includes="launch4j/**" />-->
       <fileset dir="shared" includes="lib/**" />
-      <fileset file="shared/revisions.txt" />
+      <fileset file="shared/changes.md" />
     </copy>
 
     <preparejfx />
@@ -1045,7 +1019,7 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**"  />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/revisions.txt" />
+      <fileset file="shared/changes.md" />
     </copy>
 
     <antcall target="assemble">
@@ -1145,31 +1119,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <!-- use the jdk subfolder when having downloaded a JDK file -->
-    <condition property="jdk.dir" value="jdk${jdk.esoteric}">
-      <!-- property might not be set, but it is for arm -->
-      <and>
-        <equals arg1="${jdk.download.jdk}" arg2="true" />
-        <equals arg1="${jdk.train}" arg2="1" />
-      </and>
-    </condition>
-
-    <!-- use top level JRE otherwise -->
-    <condition property="jdk.dir" value="jdk${jdk.esoteric}">
-      <and>
-        <not>
-          <equals arg1="${jdk.download.jdk}" arg2="true" />
-        </not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </and>
-    </condition>
-
-    <!-- Force full JDK when not on train 1 (starts with java 11) -->
-    <condition property="jdk.dir" value="jdk-${jdk.esoteric}+${jdk.build}/">
-      <not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </not>
-    </condition>
+    <property name="jdk.dir" value="jdk-${jdk.esoteric}+${jdk.build}/" />
 
     <exec executable="rsync" dir="linux">
       <arg value="-a" />
@@ -1388,7 +1338,7 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**" />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/revisions.txt" />
+      <fileset file="shared/changes.md" />
     </copy>
 
     <preparejfx />
@@ -1420,7 +1370,7 @@
       </then>
     </if>
 
-    <fixcrlf file="windows/work/revisions.txt" eol="crlf" encoding="UTF-8" />
+    <fixcrlf file="windows/work/changes.md" eol="crlf" encoding="UTF-8" />
 
     <antcall target="assemble">
       <param name="target.path" value="windows/work" />
@@ -1497,16 +1447,7 @@
            src="${jdk.tgz.path}"
            overwrite="false" />
 
-    <condition property="jdk.dir" value="windows/work/jdk${jdk.esoteric}">
-      <equals arg1="${jdk.train}" arg2="1" />
-    </condition>
-
-    <!-- Force full JDK when not on train 1 (starts with java 11) -->
-    <condition property="jdk.dir" value="windows/work/jdk-${jdk.esoteric}+${jdk.build}/">
-      <not>
-        <equals arg1="${jdk.train}" arg2="1" />
-      </not>
-    </condition>
+    <property name="jdk.dir" value="windows/work/jdk-${jdk.esoteric}+${jdk.build}/" />
 
     <move file="${jdk.dir}" tofile="windows/work/java" />
 
