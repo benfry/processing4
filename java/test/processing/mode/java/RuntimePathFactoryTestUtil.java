@@ -18,14 +18,12 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util;
+package processing.mode.java;
 
 import org.mockito.Mockito;
 import processing.app.Library;
 import processing.app.Sketch;
 import processing.app.SketchException;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
 
 import java.io.File;
 import java.io.IOException;
