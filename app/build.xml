@@ -39,7 +39,8 @@
                       lib/ant.jar;
                       lib/ant-launcher.jar;
                       lib/jna.jar;
-                      lib/jna-platform.jar"
+                      lib/jna-platform.jar;
+                      lib/vaqua7.jar"
 	   debug="on"
 	   nowarn="true">
       <src path="src" />

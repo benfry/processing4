@@ -23,14 +23,19 @@
 
 package processing.app.platform;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Graphics;
 import java.io.File;
 import java.net.URI;
 
+import javax.swing.Icon;
 import javax.swing.UIManager;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
+import org.violetlib.aqua.AquaLookAndFeel;
 
 import processing.app.Base;
 import processing.app.Preferences;
@@ -75,7 +80,20 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      if (System.getProperty("os.name", "").startsWith("Mac OS")) {
+        UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
+
+        Icon collapse = new MacTreeIcon(true);
+        Icon open = new MacTreeIcon(false);
+        Icon leaf = new MacEmptyIcon();
+        UIManager.put("Tree.closedIcon", leaf);
+        UIManager.put("Tree.openIcon", leaf);
+        UIManager.put("Tree.collapsedIcon", open);
+        UIManager.put("Tree.expandedIcon", collapse);
+        UIManager.put("Tree.leafIcon", leaf);
+      } else {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      }
     } else {
       UIManager.setLookAndFeel(laf);
     }
@@ -186,6 +204,50 @@ public class DefaultPlatform {
    */
   public float getSystemZoom() {
     return ZOOM_DEFAULT_SIZING;
+  }
+
+  class MacEmptyIcon implements Icon {
+    private final int SIZE = 1;
+
+    public MacEmptyIcon() {
+    }
+
+    public int getIconWidth() {
+        return SIZE;
+    }
+
+    public int getIconHeight() {
+        return SIZE;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {}
+  }
+
+  class MacTreeIcon implements Icon {
+    private final int SIZE = 12;
+    private final boolean isOpen;
+
+    public MacTreeIcon(boolean newIsOpen) {
+      isOpen = newIsOpen;
+    }
+
+    public int getIconWidth() {
+        return SIZE;
+    }
+
+    public int getIconHeight() {
+        return SIZE;
+    }
+
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      g.setColor(Color.GRAY);
+
+      g.drawLine(x + SIZE / 2 - 3, y + SIZE / 2, x + SIZE / 2 + 3, y + SIZE / 2);
+
+      if (!isOpen) {
+        g.drawLine(x + SIZE / 2, y + SIZE / 2 - 3, x + SIZE / 2, y + SIZE / 2 + 3);
+      }
+    }
   }
 
 }
