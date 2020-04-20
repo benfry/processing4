@@ -54,6 +54,7 @@
     <pathelement location="../app/lib/apple.jar" />
     <pathelement location="../app/lib/jna.jar" />
     <pathelement location="../app/lib/jna-platform.jar" />
+    <pathelement location="../app/lib/vaqua7.jar" />
 
     <pathelement location="mode/antlr-4.7.2-complete.jar" />
     <pathelement location="mode/classpath-explorer-1.0.jar" />
