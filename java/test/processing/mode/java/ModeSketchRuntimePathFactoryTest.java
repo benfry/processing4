@@ -18,32 +18,29 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util;
+package processing.mode.java;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 
-public class JavaRuntimePathFactoryTest {
+public class ModeSketchRuntimePathFactoryTest {
 
   private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
-
   private List<String> classpath;
 
   @Before
   public void setUp() throws Exception {
     RuntimePathBuilder builder = new RuntimePathBuilder();
-    factory = builder::buildJavaRuntimePath;
+    factory = builder::buildModeSketchPath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
@@ -52,19 +49,15 @@ public class JavaRuntimePathFactoryTest {
   }
 
   @Test
-  public void testBuildClasspathSize() {
-    assertEquals(RuntimePathBuilder.STANDARD_MODULES.length, classpath.size());
+  public void buildClasspathLength() {
+    assertEquals(3, classpath.size());
   }
 
   @Test
-  public void testBuildClasspathValues() {
-    boolean foundTarget = false;
-    for (String entry : classpath) {
-      boolean justFound = entry.contains("java.base.jmod") && entry.contains("jmods");
-      foundTarget = foundTarget || justFound;
-    }
-
-    assertTrue(foundTarget);
+  public void buildClasspathValues() {
+    assertEquals("library6", classpath.get(0));
+    assertEquals("javax.library7", classpath.get(1));
+    assertEquals("library8", classpath.get(2));
   }
 
 }

@@ -18,15 +18,11 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util;
+package processing.mode.java;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.PreprocessedSketch;
-import processing.mode.java.pdex.util.RuntimePathFactoryTestUtil;
 
 import java.io.File;
 import java.util.Arrays;
@@ -42,7 +38,7 @@ public class RuntimePathBuilderTest {
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
-  private PreprocessedSketch.Builder result;
+  private PreprocSketch.Builder result;
 
   @Before
   public void setUp() throws Exception {
@@ -51,7 +47,7 @@ public class RuntimePathBuilderTest {
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
 
-    result = new PreprocessedSketch.Builder();
+    result = new PreprocSketch.Builder();
     result.programImports.addAll(testImports);
     result.sketch = testSketch;
 

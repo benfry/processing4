@@ -1,12 +1,11 @@
-package processing.mode.java.preproc.code;
+package processing.mode.java.preproc;
 
 import org.antlr.v4.runtime.TokenStreamRewriter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import processing.mode.java.pdex.TextTransform;
-import processing.mode.java.preproc.PdeParseTreeListener;
+import processing.mode.java.TextTransform;
 
 import java.util.List;
 

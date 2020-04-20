@@ -1,4 +1,4 @@
-package processing.mode.java.pdex;
+package processing.mode.java;
 
 import org.junit.Assert;
 import org.junit.Before;
