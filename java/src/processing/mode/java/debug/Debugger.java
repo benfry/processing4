@@ -203,7 +203,7 @@ public class Debugger {
   }
 
 
-  void toggleEnabled() {
+  public void toggleEnabled() {
     enabled = !enabled;
 
     if (enabled) {
