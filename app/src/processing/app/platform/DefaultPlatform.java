@@ -80,7 +80,7 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      if (System.getProperty("os.name", "").startsWith("Mac OS")) {
+      if (shouldUseVaqua()) {
         UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
 
         Icon collapse = new MacTreeIcon(true);
@@ -206,39 +206,71 @@ public class DefaultPlatform {
     return ZOOM_DEFAULT_SIZING;
   }
 
+  /**
+   * Spacer icon for mac when using Vaqua.
+   *
+   * <p>
+   * Due to potential rendering issues, this small spacer is used to ensure that rendering is stable
+   * while using Vaqua with non-standard swing components. Without this, some sizing calculations
+   * non-standard components may fail or become unreliable.
+   * </p>
+   */
   class MacEmptyIcon implements Icon {
     private final int SIZE = 1;
 
-    public MacEmptyIcon() {
-    }
+    /**
+     * Create a new single pixel spacer icon.
+     */
+    public MacEmptyIcon() {}
 
+    @Override
     public int getIconWidth() {
         return SIZE;
     }
 
+    @Override
     public int getIconHeight() {
         return SIZE;
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {}
   }
 
-  class MacTreeIcon implements Icon {
+  /**
+   * Replacement tree icon for mac when using Vaqua.
+   *
+   * <p>
+   * Due to potential rendering issues with the regular tree icon set, this replacement tree icon
+   * for mac ensures stable rendering when using Vaqua with non-standard swing components. Without
+   * this, some sizing calculations within non-standard components may fail or become unreliable.
+   * </p>
+   */
+  private class MacTreeIcon implements Icon {
     private final int SIZE = 12;
     private final boolean isOpen;
 
+    /**
+     * Create a new tree icon.
+     *
+     * @param newIsOpen Flag indicating if the icon should be in the open or closed state at
+     *    construction. True if open false otherwise.
+     */
     public MacTreeIcon(boolean newIsOpen) {
       isOpen = newIsOpen;
     }
 
+    @Override
     public int getIconWidth() {
         return SIZE;
     }
 
+    @Override
     public int getIconHeight() {
         return SIZE;
     }
 
+    @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {
       g.setColor(Color.GRAY);
 
@@ -248,6 +280,31 @@ public class DefaultPlatform {
         g.drawLine(x + SIZE / 2, y + SIZE / 2 - 3, x + SIZE / 2, y + SIZE / 2 + 3);
       }
     }
+  }
+
+  /**
+   * Determine if Vaqua swing modifications for OS X should be used.
+   *
+   * @return True if the system is compatible with Vaqua and it is preferred. False otherwise.
+   */
+  private boolean shouldUseVaqua() {
+    boolean isMac = System.getProperty("os.name", "").startsWith("Mac OS");
+    if (!isMac) {
+      return false;
+    }
+
+    String fullMacVersion = System.getProperty("os.version", "NOT_AVAILABLE");
+    if ("NOT_AVAILABLE".equals(fullMacVersion)) {
+      return false;
+    }
+
+    String[] components = fullMacVersion.split("\\.");
+    if (components.length < 2) {
+      return false;
+    }
+
+    int macTrain = Integer.parseInt(components[1]);
+    return macTrain >= 10;
   }
 
 }
