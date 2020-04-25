@@ -9,6 +9,9 @@ X   https://github.com/processing/processing4/pull/68
 X   https://github.com/processing/processing4/issues/66
 X Bump JOGL 2.4 to the new release candidate (20200307)
 X   https://github.com/processing/processing4/pull/85
+X Remove debugging printout from Open Recent
+X   https://github.com/processing/processing4/issues/78
+X   https://github.com/processing/processing4/pull/79
 
 
 before final release
