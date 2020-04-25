@@ -75,7 +75,8 @@ public class JavaEditor extends Editor {
   protected LineHighlight currentLine; // where the debugger is suspended
   protected final String breakpointMarkerComment = " //<>//";
 
-  protected JMenuItem inspectorItem;
+  JMenu modeMenu;
+//  protected JMenuItem inspectorItem;
 
   static final int ERROR_TAB_INDEX = 0;
 
@@ -104,7 +105,9 @@ public class JavaEditor extends Editor {
     super(base, path, state, mode);
 
     jmode = (JavaMode) mode;
+
     debugger = new Debugger(this);
+    debugger.populateMenu(modeMenu);
 
     // set breakpoints from marker comments
     for (LineID lineID : stripBreakpointComments()) {
@@ -1385,8 +1388,7 @@ public class JavaEditor extends Editor {
 
   @Override
   public JMenu buildModeMenu() {
-    //return buildDebugMenu();
-    return debugger.buildMenu();
+    return modeMenu = new JMenu(Language.text("menu.debug"));
   }
 
 

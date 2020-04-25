@@ -1,4 +1,6 @@
 1271 (4.0a2)
+X break buildMenu() into populateMenu() method to delay Debugger init
+X   https://github.com/processing/processing4/issues/73
 
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
