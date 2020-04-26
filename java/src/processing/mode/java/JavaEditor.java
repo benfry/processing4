@@ -1,4 +1,3 @@
-
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
@@ -76,7 +75,8 @@ public class JavaEditor extends Editor {
   protected LineHighlight currentLine; // where the debugger is suspended
   protected final String breakpointMarkerComment = " //<>//";
 
-  protected JMenuItem inspectorItem;
+  JMenu modeMenu;
+//  protected JMenuItem inspectorItem;
 
   static final int ERROR_TAB_INDEX = 0;
 
@@ -85,7 +85,7 @@ public class JavaEditor extends Editor {
 
   protected PreprocService preprocService;
 
-  protected Debugger debugger = null;
+  protected Debugger debugger;
 
   private InspectMode inspect;
   private ShowUsage usage;
@@ -106,10 +106,13 @@ public class JavaEditor extends Editor {
 
     jmode = (JavaMode) mode;
 
+    debugger = new Debugger(this);
+    debugger.populateMenu(modeMenu);
+
     // set breakpoints from marker comments
     for (LineID lineID : stripBreakpointComments()) {
       //System.out.println("setting: " + lineID);
-      getDebugger().setBreakpoint(lineID);
+      debugger.setBreakpoint(lineID);
     }
     // setting breakpoints will flag sketch as modified, so override this here
     getSketch().setModified(false);
@@ -268,7 +271,7 @@ public class JavaEditor extends Editor {
       public void actionPerformed(ActionEvent e) {
         if (isDebuggerEnabled()) {
           Messages.log("Invoked 'Stop' menu item");
-          getDebugger().stopDebug();
+          debugger.stopDebug();
         } else {
           handleStop();
         }
@@ -1098,12 +1101,12 @@ public class JavaEditor extends Editor {
     if (isDebuggerEnabled()) {
       // Hitting Run while a sketch is running should restart the sketch
       // https://github.com/processing/processing/issues/3623
-      if (getDebugger().isStarted()) {
-        getDebugger().stopDebug();
+      if (debugger.isStarted()) {
+        debugger.stopDebug();
       }
       // Don't start the sketch paused, continue until a breakpoint or error
       // https://github.com/processing/processing/issues/3096
-      getDebugger().continueDebug();
+      debugger.continueDebug();
 
     } else {
       handleLaunch(false, false);
@@ -1159,8 +1162,9 @@ public class JavaEditor extends Editor {
    * session or performs standard stop action if not currently debugging.
    */
   public void handleStop() {
-    if (getDebugger().isStarted()) {
-      getDebugger().stopDebug();
+    if (debugger.isStarted()) {
+      debugger.stopDebug();
+
     } else {
       toolbar.activateStop();
 
@@ -1206,7 +1210,7 @@ public class JavaEditor extends Editor {
 
   @Override
   public void toggleBreakpoint(int lineIndex) {
-    getDebugger().toggleBreakpoint(lineIndex);
+    debugger.toggleBreakpoint(lineIndex);
   }
 
 
@@ -1218,14 +1222,14 @@ public class JavaEditor extends Editor {
     boolean saved = super.handleSaveAs();
     if (saved) {
       // re-set breakpoints in first tab (name has changed)
-      List<LineBreakpoint> bps = getDebugger().getBreakpoints(oldName);
-      getDebugger().clearBreakpoints(oldName);
+      List<LineBreakpoint> bps = debugger.getBreakpoints(oldName);
+      debugger.clearBreakpoints(oldName);
       String newName = getSketch().getCode(0).getFileName();
       //System.out.println("new name: " + newName);
       for (LineBreakpoint bp : bps) {
         LineID line = new LineID(newName, bp.lineID().lineIdx());
         //System.out.println("setting: " + line);
-        getDebugger().setBreakpoint(line);
+        debugger.setBreakpoint(line);
       }
       // add breakpoint marker comments to source file
       for (SketchCode code : getSketch().getCode()) {
@@ -1358,10 +1362,10 @@ public class JavaEditor extends Editor {
   public void dispose() {
     //System.out.println("window dispose");
     // quit running debug session
-    if (getDebugger().isEnabled()) {
-      getDebugger().stopDebug();
+    if (debugger.isEnabled()) {
+      debugger.stopDebug();
     }
-    getDebugger().dispose();
+    debugger.dispose();
     preprocService.dispose();
 
     inspect.dispose();
@@ -1378,14 +1382,13 @@ public class JavaEditor extends Editor {
 
   @Override
   public boolean isDebuggerEnabled() {
-    return getDebugger().isEnabled();
+    return debugger.isEnabled();
   }
 
 
   @Override
   public JMenu buildModeMenu() {
-    //return buildDebugMenu();
-    return getDebugger().buildMenu();
+    return modeMenu = new JMenu(Language.text("menu.debug"));
   }
 
 
@@ -1467,7 +1470,7 @@ public class JavaEditor extends Editor {
       Messages.loge("Illegal tab name to addBreakpointComments() " + tabFilename);
       return;
     }
-    List<LineBreakpoint> bps = getDebugger().getBreakpoints(tab.getFileName());
+    List<LineBreakpoint> bps = debugger.getBreakpoints(tab.getFileName());
 
     // load the source file
     ////switched to using methods provided by the SketchCode class
@@ -1535,7 +1538,7 @@ public class JavaEditor extends Editor {
    */
   protected void setTabContents(String tabFilename, String code) {
     // remove all breakpoints of this tab
-    getDebugger().clearBreakpoints(tabFilename);
+    debugger.clearBreakpoints(tabFilename);
 
     SketchCode currentTab = getCurrentTab();
 
@@ -1608,9 +1611,6 @@ public class JavaEditor extends Editor {
 
 
   public Debugger getDebugger() {
-    if (debugger == null) {
-      debugger = new Debugger(this);
-    }
     return debugger;
   }
 
@@ -1810,7 +1810,7 @@ public class JavaEditor extends Editor {
 
 
   public void activateRun() {
-    getDebugger().enableMenuItem(false);
+    debugger.enableMenuItem(false);
     toolbar.activateRun();
   }
 
@@ -1823,7 +1823,7 @@ public class JavaEditor extends Editor {
    */
   public void deactivateRun() {
     toolbar.deactivateRun();
-    getDebugger().enableMenuItem(true);
+    debugger.enableMenuItem(true);
   }
 
 
