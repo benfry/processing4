@@ -1,9 +1,10 @@
-package processing.mode.java.preproc.issue;
+package processing.mode.java.preproc;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import processing.mode.java.preproc.issue.IssueMessageSimplification;
+import processing.mode.java.preproc.PdeIssueEmitter;
+import processing.mode.java.preproc.PreprocessIssueMessageSimplifier;
 
 import java.util.Optional;
 
@@ -19,13 +20,13 @@ public class MissingChevMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("class Test <a extends {");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class Test <a extends {");
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("class {");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class {");
     Assert.assertTrue(msg.isEmpty());
   }
 
