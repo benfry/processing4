@@ -242,8 +242,11 @@ public class Recent {
   synchronized static public void remove(Editor editor) {
     int index = findRecord(editor.getSketch().getMainFilePath());
     if (index != -1) {
+<<<<<<< HEAD
       /*System.out.println("removing " + editor.getSketch().getMainFilePath());
       new Exception().printStackTrace(System.out);*/
+=======
+>>>>>>> jssc_migrate_sampottinger_dep_on_demand
       records.remove(index);
     }
   }
