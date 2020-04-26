@@ -18,20 +18,18 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util;
+package processing.mode.java;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
 
-public class ModeSketchRuntimePathFactoryTest {
+public class JavaFxRuntimePathFactoryTest {
 
   private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
@@ -42,7 +40,7 @@ public class ModeSketchRuntimePathFactoryTest {
   @Before
   public void setUp() throws Exception {
     RuntimePathBuilder builder = new RuntimePathBuilder();
-    factory = builder::buildModeSketchPath;
+    factory = builder::buildJavaFxRuntimePath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
@@ -51,15 +49,19 @@ public class ModeSketchRuntimePathFactoryTest {
   }
 
   @Test
-  public void buildClasspathLength() {
-    assertEquals(3, classpath.size());
+  public void testBuildClasspathSize() {
+    assertEquals(RuntimePathBuilder.JAVA_FX_JARS.length, classpath.size());
   }
 
   @Test
-  public void buildClasspathValues() {
-    assertEquals("library6", classpath.get(0));
-    assertEquals("javax.library7", classpath.get(1));
-    assertEquals("library8", classpath.get(2));
+  public void testBuildClasspathValues() {
+    boolean foundTarget = false;
+    for (String entry : classpath) {
+      boolean justFound = entry.contains("javafx.base.jar") && entry.contains("lib");
+      foundTarget = foundTarget || justFound;
+    }
+
+    assertTrue(foundTarget);
   }
 
 }
