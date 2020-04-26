@@ -117,12 +117,9 @@ public class Debugger {
 
   /**
    * Creates the debug menu. Includes ActionListeners for the menu items.
-   * Intended for adding to the menu bar.
-   *
-   * @return The debug menu
    */
-  public JMenu buildMenu() {
-    debugMenu = new JMenu(Language.text("menu.debug"));
+  public void populateMenu(JMenu modeMenu) {
+    debugMenu = modeMenu;
     JMenuItem item;
 
     debugItem = Toolkit.newJMenuItem(Language.text("menu.debug.enable"), 'D');
@@ -188,8 +185,6 @@ public class Debugger {
       });
     debugMenu.add(item);
     item.setEnabled(false);
-
-    return debugMenu;
   }
 
 
@@ -203,7 +198,7 @@ public class Debugger {
   }
 
 
-  public void toggleEnabled() {
+  void toggleEnabled() {
     enabled = !enabled;
 
     if (enabled) {
