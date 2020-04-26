@@ -118,7 +118,7 @@ public class PApplet implements PConstants {
   static {
     final String name = System.getProperty("os.name");
 
-    if (name.indexOf("Mac") != -1) {
+    if (name.contains("Mac")) {
       platform = MACOS;
 
     } else if (name.indexOf("Windows") != -1) {
@@ -864,7 +864,7 @@ public class PApplet implements PConstants {
       BufferedReader errReader = createReader(p.getErrorStream());
       StringBuilder stdout = new StringBuilder();
       StringBuilder stderr = new StringBuilder();
-      String line = null;
+      String line;
       try {
         while ((line = outReader.readLine()) != null) {
           stdout.append(line);
@@ -879,7 +879,7 @@ public class PApplet implements PConstants {
       int resultCode = -1;
       try {
         resultCode = p.waitFor();
-      } catch (InterruptedException e) { }
+      } catch (InterruptedException ignored) { }
 
       if (resultCode == 1) {
         System.err.println("Could not check the status of “Displays have separate spaces.”");
@@ -1252,6 +1252,7 @@ public class PApplet implements PConstants {
     Object[] emptyArgs = new Object[] { };
 
 
+    @SuppressWarnings("unused")
     void handle() {
       handle(emptyArgs);
     }
@@ -1404,7 +1405,7 @@ public class PApplet implements PConstants {
   }
 
 
-  private void registerWithArgs(String name, Object o, Class<?> cargs[]) {
+  private void registerWithArgs(String name, Object o, Class<?>[] cargs) {
     Class<?> c = o.getClass();
     try {
       Method method = c.getMethod(name, cargs);
@@ -1438,8 +1439,6 @@ public class PApplet implements PConstants {
         die("No registered methods with the name " + name + "() were found.");
       }
       try {
-//      Method method = o.getClass().getMethod(name, new Class[] {});
-//      meth.remove(o, method);
         meth.remove(target);
       } catch (Exception e) {
         die("Could not unregister " + name + "() for " + target, e);
@@ -3707,13 +3706,7 @@ public class PApplet implements PConstants {
    * @see PApplet#noLoop()
    */
   public void thread(final String name) {
-    Thread later = new Thread() {
-      @Override
-      public void run() {
-        method(name);
-      }
-    };
-    later.start();
+    new Thread(() -> method(name)).start();
   }
 
 
@@ -5350,11 +5343,7 @@ public class PApplet implements PConstants {
 
     // if the image loading thread pool hasn't been created, create it
     if (requestImagePool == null) {
-      ThreadFactory factory = new ThreadFactory() {
-        public Thread newThread(Runnable r) {
-          return new Thread(r, REQUEST_IMAGE_THREAD_PREFIX);
-        }
-      };
+      ThreadFactory factory = r -> new Thread(r, REQUEST_IMAGE_THREAD_PREFIX);
       requestImagePool = Executors.newFixedThreadPool(4, factory);
     }
     requestImagePool.execute(() -> {
@@ -5434,13 +5423,7 @@ public class PApplet implements PConstants {
 
       // can't use catch-all exception, since it might catch the
       // RuntimeException about the incorrect case sensitivity
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException(e);
-
-    } catch (SAXException e) {
+    } catch (IOException | ParserConfigurationException | SAXException e) {
       throw new RuntimeException(e);
     }
   }
@@ -5671,10 +5654,9 @@ public class PApplet implements PConstants {
       String optionStr = Table.extensionOptions(true, filename, options);
       String[] optionList = trim(split(optionStr, ','));
 
-      Table dictionary = null;
       for (String opt : optionList) {
         if (opt.startsWith("dictionary=")) {
-          dictionary = loadTable(opt.substring(opt.indexOf('=') + 1), "tsv");
+          Table dictionary = loadTable(opt.substring(opt.indexOf('=') + 1), "tsv");
           return dictionary.typedParse(createInput(filename), optionStr);
         }
       }
@@ -6592,7 +6574,7 @@ public class PApplet implements PConstants {
       }
     }
 
-    InputStream stream = null;
+    InputStream stream;
 
     // Moved this earlier than the getResourceAsStream() checks, because
     // calling getResourceAsStream() on a directory lists its contents.
@@ -6626,17 +6608,15 @@ public class PApplet implements PConstants {
                                        filename + ". Rename the file " +
                                        "or change your code.");
           }
-        } catch (IOException e) { }
+        } catch (IOException ignored) { }
       }
 
       // if this file is ok, may as well just load it
-      stream = new FileInputStream(file);
-      if (stream != null) return stream;
+      return new FileInputStream(file);
 
       // have to break these out because a general Exception might
       // catch the RuntimeException being thrown above
-    } catch (IOException ioe) {
-    } catch (SecurityException se) { }
+    } catch (IOException | SecurityException ignored) { }
 
     // Using getClassLoader() prevents java from converting dots
     // to slashes or requiring a slash at the beginning.
@@ -6674,21 +6654,18 @@ public class PApplet implements PConstants {
       // an application, or as a signed applet
       try {  // first try to catch any security exceptions
         try {
-          stream = new FileInputStream(dataPath(filename));
-          if (stream != null) return stream;
-        } catch (IOException e2) { }
+          return new FileInputStream(dataPath(filename));
+        } catch (IOException ignored) { }
 
         try {
-          stream = new FileInputStream(sketchPath(filename));
-          if (stream != null) return stream;
-        } catch (Exception e) { }  // ignored
+          return new FileInputStream(sketchPath(filename));
+        } catch (Exception ignored) { }
 
         try {
-          stream = new FileInputStream(filename);
-          if (stream != null) return stream;
-        } catch (IOException e1) { }
+          return new FileInputStream(filename);
+        } catch (IOException ignored) { }
 
-      } catch (SecurityException se) { }  // online, whups
+      } catch (SecurityException ignored) { }  // online, whups
 
     } catch (Exception e) {
       printStackTrace(e);
@@ -6780,7 +6757,7 @@ public class PApplet implements PConstants {
           }
 
           if (input != null) {
-            byte[] buffer = null;
+            byte[] buffer;
             if (length != -1) {
               buffer = new byte[length];
               int count;
@@ -7003,14 +6980,9 @@ public class PApplet implements PConstants {
    * @nowebref
    */
   static public String[] loadStrings(InputStream input) {
-    try {
-      BufferedReader reader =
-        new BufferedReader(new InputStreamReader(input, "UTF-8"));
-      return loadStrings(reader);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return null;
+    BufferedReader reader =
+      new BufferedReader(new InputStreamReader(input, StandardCharsets.UTF_8));
+    return loadStrings(reader);
   }
 
 
@@ -7018,7 +6990,7 @@ public class PApplet implements PConstants {
     try {
       String[] lines = new String[100];
       int lineCount = 0;
-      String line = null;
+      String line;
       while ((line = reader.readLine()) != null) {
         if (lineCount == lines.length) {
           String[] temp = new String[lineCount << 1];
@@ -7154,24 +7126,23 @@ public class PApplet implements PConstants {
 
       saveStream(targetStream, source);
       targetStream.close();
-      targetStream = null;
 
       if (target.exists()) {
         if (!target.delete()) {
-          System.err.println("Could not replace " +
-                             target.getAbsolutePath() + ".");
+          System.err.println("Could not replace " + target);
         }
       }
       if (!tempFile.renameTo(target)) {
-        System.err.println("Could not rename temporary file " +
-                           tempFile.getAbsolutePath());
+        System.err.println("Could not rename temporary file " + tempFile);
         return false;
       }
       return true;
 
     } catch (IOException e) {
       if (tempFile != null) {
-        tempFile.delete();
+        if (!tempFile.delete()) {
+          System.err.println("Could not rename temporary file " + tempFile);
+        }
       }
       e.printStackTrace();
       return false;
@@ -7235,7 +7206,9 @@ public class PApplet implements PConstants {
   static private File createTempFile(File file) throws IOException {
     File parentDir = file.getParentFile();
     if (!parentDir.exists()) {
-      parentDir.mkdirs();
+      if (!parentDir.mkdirs()) {
+        throw new IOException("Could not make directories for " + parentDir);
+      }
     }
     String name = file.getName();
     String prefix;
@@ -7266,25 +7239,29 @@ public class PApplet implements PConstants {
       tempFile = createTempFile(file);
 
       OutputStream output = createOutput(tempFile);
-      saveBytes(output, data);
-      output.close();
-      output = null;
+      if (output != null) {
+        saveBytes(output, data);
+        output.close();
+      } else {
+        System.err.println("Could not write to " + tempFile);
+      }
 
       if (file.exists()) {
         if (!file.delete()) {
-          System.err.println("Could not replace " + file.getAbsolutePath());
+          System.err.println("Could not replace " + file);
         }
       }
 
       if (!tempFile.renameTo(file)) {
-        System.err.println("Could not rename temporary file " +
-                           tempFile.getAbsolutePath());
+        System.err.println("Could not rename temporary file " + tempFile);
       }
 
     } catch (IOException e) {
       System.err.println("error saving bytes to " + file);
       if (tempFile != null) {
-        tempFile.delete();
+        if (!tempFile.delete()) {
+          System.err.println("Could not delete temporary file " + tempFile);
+        }
       }
       e.printStackTrace();
     }
@@ -7624,11 +7601,7 @@ public class PApplet implements PConstants {
   // using toURI() and URI.toURL()."
   // https://docs.oracle.com/javase/8/docs/api/java/net/URL.html
   static public String urlDecode(String str) {
-    try {
-      return URLDecoder.decode(str, "UTF-8");
-    } catch (UnsupportedEncodingException e) {  // safe per the JDK source
-      return null;
-    }
+    return URLDecoder.decode(str, StandardCharsets.UTF_8);
   }
 
 
@@ -8614,8 +8587,8 @@ public class PApplet implements PConstants {
 
     char[] chars = value.toCharArray();
     int splitCount = 0; //1;
-    for (int i = 0; i < chars.length; i++) {
-      if (chars[i] == delim) splitCount++;
+    for (char ch : chars) {
+      if (ch == delim) splitCount++;
     }
     // make sure that there is something in the input string
     //if (chars.length > 0) {

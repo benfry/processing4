@@ -1,4 +1,9 @@
 1271 (4.0a2)
+X break buildMenu() into populateMenu() method to delay Debugger init
+X   https://github.com/processing/processing4/issues/73
+X macOS build broken
+X   https://github.com/processing/processing4/issues/83
+_ debug button in the toolbar is currently broken
 
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
@@ -7,6 +12,11 @@ X   https://github.com/processing/processing4/issues/58
 X Resolve PDF renderer parse issue in preproc
 X   https://github.com/processing/processing4/pull/68
 X   https://github.com/processing/processing4/issues/66
+X Bump JOGL 2.4 to the new release candidate (20200307)
+X   https://github.com/processing/processing4/pull/85
+X Remove debugging printout from Open Recent
+X   https://github.com/processing/processing4/issues/78
+X   https://github.com/processing/processing4/pull/79
 
 
 before final release
