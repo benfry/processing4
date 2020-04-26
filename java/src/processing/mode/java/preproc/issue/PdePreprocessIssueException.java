@@ -1,6 +1,5 @@
 package processing.mode.java.preproc.issue;
 
-import processing.mode.java.preproc.issue.PdePreprocessIssue;
 
 public class PdePreprocessIssueException extends RuntimeException {
 
