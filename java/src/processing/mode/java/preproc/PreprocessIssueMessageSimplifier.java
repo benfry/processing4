@@ -689,6 +689,12 @@ public class PreprocessIssueMessageSimplifier {
   }
 
   /**
+   * =====================
+   * == Utility classes ==
+   * =====================
+   */
+
+  /**
    * Simple automaton that reads backwards from a position in source to find the prior token.
    *
    * <p>
