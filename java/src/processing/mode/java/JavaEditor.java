@@ -1,4 +1,3 @@
-
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
@@ -76,17 +75,17 @@ public class JavaEditor extends Editor {
   protected LineHighlight currentLine; // where the debugger is suspended
   protected final String breakpointMarkerComment = " //<>//";
 
-  protected JMenuItem inspectorItem;
+  JMenu modeMenu;
+//  protected JMenuItem inspectorItem;
 
   static final int ERROR_TAB_INDEX = 0;
 
   private boolean hasJavaTabs;
   private boolean javaTabWarned;
 
-  // To ensure proper initalization, do not use these variables directly. Instead, call
-  // or override getPreprocessingService and getDebugger.
-  private PreprocService preprocService;
-  private Debugger debugger;
+  protected PreprocService preprocService;
+
+  protected Debugger debugger;
 
   private InspectMode inspect;
   private ShowUsage usage;
@@ -107,11 +106,13 @@ public class JavaEditor extends Editor {
 
     jmode = (JavaMode) mode;
 
+    debugger = new Debugger(this);
+    debugger.populateMenu(modeMenu);
+
     // set breakpoints from marker comments
-    Debugger targetDebugger = getDebugger();
     for (LineID lineID : stripBreakpointComments()) {
       //System.out.println("setting: " + lineID);
-      targetDebugger.setBreakpoint(lineID);
+      debugger.setBreakpoint(lineID);
     }
     // setting breakpoints will flag sketch as modified, so override this here
     getSketch().setModified(false);
@@ -134,18 +135,19 @@ public class JavaEditor extends Editor {
     box.add(textAndError);
     */
 
+    preprocService = new PreprocService(this);
+
     pdexEnabled = !hasJavaTabs();
 
-    PreprocService targetPreprocService = getPreprocessingService();
-    usage = new ShowUsage(this, targetPreprocService);
-    inspect = new InspectMode(this, targetPreprocService, usage);
-    rename = new Rename(this, targetPreprocService, usage);
+    usage = new ShowUsage(this, preprocService);
+    inspect = new InspectMode(this, preprocService, usage);
+    rename = new Rename(this, preprocService, usage);
 
     if (SHOW_AST_VIEWER) {
-      astViewer = new ASTViewer(this, targetPreprocService);
+      astViewer = new ASTViewer(this, preprocService);
     }
 
-    errorChecker = new ErrorChecker(this, targetPreprocService);
+    errorChecker = new ErrorChecker(this, preprocService);
 
     for (SketchCode code : getSketch().getCode()) {
       Document document = code.getDocument();
@@ -197,7 +199,7 @@ public class JavaEditor extends Editor {
 
         if (preprocService != null) {
           if (hasJavaTabsChanged) {
-            getPreprocessingService().handleHasJavaTabsChange(hasJavaTabs);
+            preprocService.handleHasJavaTabsChange(hasJavaTabs);
             pdexEnabled = !hasJavaTabs;
             if (!pdexEnabled) {
               usage.hide();
@@ -269,7 +271,7 @@ public class JavaEditor extends Editor {
       public void actionPerformed(ActionEvent e) {
         if (isDebuggerEnabled()) {
           Messages.log("Invoked 'Stop' menu item");
-          getDebugger().stopDebug();
+          debugger.stopDebug();
         } else {
           handleStop();
         }
@@ -1099,13 +1101,12 @@ public class JavaEditor extends Editor {
     if (isDebuggerEnabled()) {
       // Hitting Run while a sketch is running should restart the sketch
       // https://github.com/processing/processing/issues/3623
-      Debugger targetDebugger = getDebugger();
-      if (targetDebugger.isStarted()) {
-        targetDebugger.stopDebug();
+      if (debugger.isStarted()) {
+        debugger.stopDebug();
       }
       // Don't start the sketch paused, continue until a breakpoint or error
       // https://github.com/processing/processing/issues/3096
-      targetDebugger.continueDebug();
+      debugger.continueDebug();
 
     } else {
       handleLaunch(false, false);
@@ -1161,9 +1162,9 @@ public class JavaEditor extends Editor {
    * session or performs standard stop action if not currently debugging.
    */
   public void handleStop() {
-    Debugger targetDebugger = getDebugger();
-    if (targetDebugger.isStarted()) {
-      targetDebugger.stopDebug();
+    if (debugger.isStarted()) {
+      debugger.stopDebug();
+
     } else {
       toolbar.activateStop();
 
@@ -1209,7 +1210,7 @@ public class JavaEditor extends Editor {
 
   @Override
   public void toggleBreakpoint(int lineIndex) {
-    getDebugger().toggleBreakpoint(lineIndex);
+    debugger.toggleBreakpoint(lineIndex);
   }
 
 
@@ -1221,15 +1222,14 @@ public class JavaEditor extends Editor {
     boolean saved = super.handleSaveAs();
     if (saved) {
       // re-set breakpoints in first tab (name has changed)
-      Debugger targetDebugger = getDebugger();
-      List<LineBreakpoint> bps = targetDebugger.getBreakpoints(oldName);
-      targetDebugger.clearBreakpoints(oldName);
+      List<LineBreakpoint> bps = debugger.getBreakpoints(oldName);
+      debugger.clearBreakpoints(oldName);
       String newName = getSketch().getCode(0).getFileName();
       //System.out.println("new name: " + newName);
       for (LineBreakpoint bp : bps) {
         LineID line = new LineID(newName, bp.lineID().lineIdx());
         //System.out.println("setting: " + line);
-        targetDebugger.setBreakpoint(line);
+        debugger.setBreakpoint(line);
       }
       // add breakpoint marker comments to source file
       for (SketchCode code : getSketch().getCode()) {
@@ -1292,20 +1292,20 @@ public class JavaEditor extends Editor {
 
   @Override
   public void librariesChanged() {
-    getPreprocessingService().notifyLibrariesChanged();
+    preprocService.notifyLibrariesChanged();
   }
 
 
   @Override
   public void codeFolderChanged() {
-    getPreprocessingService().notifyCodeFolderChanged();
+    preprocService.notifyCodeFolderChanged();
   }
 
 
   @Override
   public void sketchChanged() {
     errorChecker.notifySketchChanged();
-    getPreprocessingService().notifySketchChanged();
+    preprocService.notifySketchChanged();
   }
 
 
@@ -1362,17 +1362,11 @@ public class JavaEditor extends Editor {
   public void dispose() {
     //System.out.println("window dispose");
     // quit running debug session
-
-    Debugger targetDebugger = getDebugger();
-    if (targetDebugger.isEnabled()) {
-      targetDebugger.stopDebug();
+    if (debugger.isEnabled()) {
+      debugger.stopDebug();
     }
-    targetDebugger.dispose();
-
-    getPreprocessingService().dispose();
-
-    debugger = null;
-    preprocService = null;
+    debugger.dispose();
+    preprocService.dispose();
 
     inspect.dispose();
     usage.dispose();
@@ -1388,14 +1382,13 @@ public class JavaEditor extends Editor {
 
   @Override
   public boolean isDebuggerEnabled() {
-    return getDebugger().isEnabled();
+    return debugger.isEnabled();
   }
 
 
   @Override
   public JMenu buildModeMenu() {
-    //return buildDebugMenu();
-    return getDebugger().buildMenu();
+    return modeMenu = new JMenu(Language.text("menu.debug"));
   }
 
 
@@ -1477,7 +1470,7 @@ public class JavaEditor extends Editor {
       Messages.loge("Illegal tab name to addBreakpointComments() " + tabFilename);
       return;
     }
-    List<LineBreakpoint> bps = getDebugger().getBreakpoints(tab.getFileName());
+    List<LineBreakpoint> bps = debugger.getBreakpoints(tab.getFileName());
 
     // load the source file
     ////switched to using methods provided by the SketchCode class
@@ -1545,7 +1538,7 @@ public class JavaEditor extends Editor {
    */
   protected void setTabContents(String tabFilename, String code) {
     // remove all breakpoints of this tab
-    getDebugger().clearBreakpoints(tabFilename);
+    debugger.clearBreakpoints(tabFilename);
 
     SketchCode currentTab = getCurrentTab();
 
@@ -1618,9 +1611,6 @@ public class JavaEditor extends Editor {
 
 
   public Debugger getDebugger() {
-    if (debugger == null) {
-      debugger = new Debugger(this);
-    }
     return debugger;
   }
 
@@ -1635,9 +1625,6 @@ public class JavaEditor extends Editor {
 
 
   public PreprocService getPreprocessingService() {
-    if (preprocService == null) {
-      preprocService = new PreprocService(this);
-    }
     return preprocService;
   }
 
@@ -1651,7 +1638,7 @@ public class JavaEditor extends Editor {
     autoSave();
     super.prepareRun();
     downloadImports();
-    getPreprocessingService().cancel();
+    preprocService.cancel();
   }
 
 
@@ -1823,7 +1810,7 @@ public class JavaEditor extends Editor {
 
 
   public void activateRun() {
-    getDebugger().enableMenuItem(false);
+    debugger.enableMenuItem(false);
     toolbar.activateRun();
   }
 
@@ -1836,7 +1823,7 @@ public class JavaEditor extends Editor {
    */
   public void deactivateRun() {
     toolbar.deactivateRun();
-    getDebugger().enableMenuItem(true);
+    debugger.enableMenuItem(true);
   }
 
 
@@ -1875,7 +1862,7 @@ public class JavaEditor extends Editor {
   public void toggleDebug() {
 //    debugEnabled = !debugEnabled;
 
-    getDebugger().toggleEnabled();
+    debugger.toggleEnabled();
     rebuildToolbar();
     repaint();  // show/hide breakpoints in the gutter
 
@@ -2110,10 +2097,8 @@ public class JavaEditor extends Editor {
         }
       }
     }
-
-    Debugger targetDebugger = getDebugger();
-    if (targetDebugger.isStarted()) {
-      targetDebugger.startTrackingLineChanges();
+    if (getDebugger() != null && getDebugger().isStarted()) {
+      getDebugger().startTrackingLineChanges();
     }
     if (errorColumn != null) {
       errorColumn.repaint();

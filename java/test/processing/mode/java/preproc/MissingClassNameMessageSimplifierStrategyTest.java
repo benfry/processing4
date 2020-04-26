@@ -1,9 +1,10 @@
-package processing.mode.java.preproc.issue;
+package processing.mode.java.preproc;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import processing.mode.java.preproc.issue.IssueMessageSimplification;
+import processing.mode.java.preproc.PdeIssueEmitter;
+import processing.mode.java.preproc.PreprocessIssueMessageSimplifier;
 
 import java.util.Optional;
 
@@ -19,19 +20,19 @@ public class MissingClassNameMessageSimplifierStrategyTest {
 
   @Test
   public void testPresentExtends() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("class extends Base\n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class extends Base\n{");
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentNoExtends() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("class \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class \n{");
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("int x = y");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y");
     Assert.assertTrue(msg.isEmpty());
   }
 

@@ -35,8 +35,6 @@ import processing.mode.java.ImportStatement;
 import processing.mode.java.SourceUtil;
 import processing.mode.java.TextTransform;
 import processing.mode.java.preproc.PdePreprocessor.Mode;
-import processing.mode.java.preproc.issue.PdePreprocessIssue;
-import processing.mode.java.preproc.issue.PreprocessIssueMessageSimplifier;
 
 /**
  * ANTLR tree traversal listener that preforms code rewrites as part of sketch preprocessing.
