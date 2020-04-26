@@ -39,6 +39,7 @@ _ all AWT calls have been moved out of PImage
 _   this may be a problem for anything that was relying on those internals
 _ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
 _   these had been deprecated, not clear they were used anywhere
+_ add callbacks to requestImage() and others
 
 api todo
 _ Surface not available inside handleSettings()

@@ -1193,7 +1193,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   /**
-   * Override this if you want a special menu for your particular 'mode'.
+   * Override this if you want a special menu for a Mode.
+   * You only get one menu, use it wisely!
+   * Note that this is called from the Editor constructor,
+   * so your Editor object may not be completely initialized yet.
    */
   public JMenu buildModeMenu() {
     return null;
