@@ -170,11 +170,11 @@ public abstract class PGL {
    * Using FBO can cause a fatal error during runtime for
    * Intel HD Graphics 3000 chipsets (commonly used on older MacBooks)
    * <a href="https://github.com/processing/processing/issues/4104">#4104</a>
-   * The value remains as 'true' unless set false during init.
-   * TODO There's already code in here to enable/disable the FBO properly,
-   * this should be making use of that mechanism instead. [fry 191007]
+   * Changed to private because needs to be accessed via isFboAllowed().
+   * <a href="https://github.com/processing/processing4/pull/76">#76</a> and
+   * <a href="https://github.com/processing/processing4/issues/50">#50</a>
    */
-  protected boolean fboAllowed = true;
+  private Boolean fboAllowed = true;
 
   // ........................................................
 
@@ -863,7 +863,7 @@ public abstract class PGL {
         saveFirstFrame();
       }
 
-      if (fboAllowed) {
+      if (isFboAllowed()) {
         if (!clearColor && 0 < sketch.frameCount || !sketch.isLooping()) {
           enableFBOLayer();
           if (SINGLE_BUFFERED) {
@@ -2301,6 +2301,28 @@ public abstract class PGL {
     intBuffer.rewind();
     getIntegerv(MAX_TEXTURE_IMAGE_UNITS, intBuffer);
     return intBuffer.get(0);
+  }
+
+
+  public boolean isFboAllowed() {
+    if (fboAllowed == null) {
+      if (PApplet.platform == PConstants.MACOS) {
+        try {
+          String hardware = getString(PGL.RENDERER);
+          if (hardware != null && hardware.contains("Intel HD Graphics 3000")) {
+            fboAllowed = false;
+            return false;
+          }
+        } catch (RuntimeException e) {
+          System.err.println("Could not read renderer name. FBOs disabled. Reason: " + e);
+          // disable for now, but will try again on next isFboAllowed() call
+          return false;
+        }
+      }
+      // all other scenarios allow for FBOs
+      fboAllowed = true;
+    }
+    return fboAllowed;
   }
 
 

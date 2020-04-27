@@ -24,7 +24,9 @@ X   https://github.com/processing/processing4/pull/96
 X Debug button in the toolbar is currently broken
 X   https://github.com/processing/processing4/issues/94
 X   https://github.com/processing/processing4/pull/95
-
+X Fix WARNING: Illegal reflective access by processing.opengl.PSurfaceJOGL” on getContextCapabilities()
+X   https://github.com/processing/processing4/issues/50
+X   https://github.com/processing/processing4/pull/76
 
 before final release
 _ Update graphics and visual design elements for 4.x
