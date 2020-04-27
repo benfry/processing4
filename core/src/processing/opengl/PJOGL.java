@@ -1120,9 +1120,6 @@ public class PJOGL extends PGL {
 
   @Override
   public String getString(int name) {
-    if (gl == null) {
-      throw new PGL.GraphicsNotInitializedException("Context not initalized.");
-    }
     return gl.glGetString(name);
   }
 

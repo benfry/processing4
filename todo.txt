@@ -3,7 +3,6 @@ X break buildMenu() into populateMenu() method to delay Debugger init
 X   https://github.com/processing/processing4/issues/73
 X macOS build broken
 X   https://github.com/processing/processing4/issues/83
-_ debug button in the toolbar is currently broken
 
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
@@ -17,7 +16,17 @@ X   https://github.com/processing/processing4/pull/85
 X Remove debugging printout from Open Recent
 X   https://github.com/processing/processing4/issues/78
 X   https://github.com/processing/processing4/pull/79
-
+X Fix broken tests
+X   https://github.com/processing/processing4/issues/92
+X   https://github.com/processing/processing4/pull/93
+X Refactor out preproc.issue
+X   https://github.com/processing/processing4/pull/96
+X Debug button in the toolbar is currently broken
+X   https://github.com/processing/processing4/issues/94
+X   https://github.com/processing/processing4/pull/95
+X Fix WARNING: Illegal reflective access by processing.opengl.PSurfaceJOGL” on getContextCapabilities()
+X   https://github.com/processing/processing4/issues/50
+X   https://github.com/processing/processing4/pull/76
 
 before final release
 _ Update graphics and visual design elements for 4.x
