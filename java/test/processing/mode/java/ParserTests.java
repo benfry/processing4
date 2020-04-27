@@ -8,19 +8,14 @@ import static processing.mode.java.ProcessingTestUtil.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 
-import org.eclipse.jdt.core.compiler.IProblem;
-import org.eclipse.jdt.core.dom.AST;
-import org.eclipse.jdt.core.dom.ASTParser;
-import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import processing.app.SketchException;
 import processing.mode.java.preproc.PreprocessorResult;
-import processing.mode.java.preproc.issue.PdePreprocessIssueException;
+import processing.mode.java.preproc.PdePreprocessIssueException;
 
 
 public class ParserTests {

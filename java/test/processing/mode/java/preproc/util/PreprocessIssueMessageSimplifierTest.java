@@ -2,7 +2,7 @@ package processing.mode.java.preproc.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import processing.mode.java.preproc.issue.PreprocessIssueMessageSimplifier;
+import processing.mode.java.preproc.PreprocessIssueMessageSimplifier;
 
 
 public class PreprocessIssueMessageSimplifierTest {

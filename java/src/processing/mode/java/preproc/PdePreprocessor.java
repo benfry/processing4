@@ -34,8 +34,6 @@ import org.antlr.v4.runtime.tree.ParseTreeWalker;
 
 import processing.app.Preferences;
 import processing.app.SketchException;
-import processing.mode.java.preproc.issue.PdeIssueEmitter;
-import processing.mode.java.preproc.issue.PdePreprocessIssue;
 
 
 /**

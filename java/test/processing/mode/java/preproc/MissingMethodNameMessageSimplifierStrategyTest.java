@@ -1,9 +1,10 @@
-package processing.mode.java.preproc.issue;
+package processing.mode.java.preproc;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import processing.mode.java.preproc.issue.IssueMessageSimplification;
+import processing.mode.java.preproc.PdeIssueEmitter;
+import processing.mode.java.preproc.PreprocessIssueMessageSimplifier;
 
 import java.util.Optional;
 
@@ -19,25 +20,25 @@ public class MissingMethodNameMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("void (int x) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void (int x) \n{");
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentNoSpace() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("test(int x) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("test(int x) \n{");
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentUnderscore() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("void (int x_y) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void (int x_y) \n{");
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<IssueMessageSimplification> msg = strategy.simplify("int x = y");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y");
     Assert.assertTrue(msg.isEmpty());
   }
 
