@@ -3,15 +3,13 @@ package processing.mode.java.preproc.util;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import processing.mode.java.preproc.issue.IssueLocation;
-import processing.mode.java.preproc.issue.IssueLocationFactory;
-import processing.mode.java.preproc.issue.IssueMessageSimplification;
+import processing.mode.java.preproc.PdeIssueEmitter;
 
 
 public class IssueLocationFactoryTest {
 
   private String source;
-  private IssueLocation issueLocation;
+  private PdeIssueEmitter.IssueLocation issueLocation;
 
   @Before
   public void setup() {
@@ -33,8 +31,8 @@ public class IssueLocationFactoryTest {
 
   @Test
   public void getLineWithOffsetApplies() {
-    issueLocation = IssueLocationFactory.getLineWithOffset(
-        new IssueMessageSimplification("test message", true),
+    issueLocation = PdeIssueEmitter.IssueLocationFactory.getLineWithOffset(
+        new PdeIssueEmitter.IssueMessageSimplification("test message", true),
         15,
         0,
         source
@@ -46,8 +44,8 @@ public class IssueLocationFactoryTest {
 
   @Test
   public void getLineWithOffsetNotApplies() {
-    issueLocation = IssueLocationFactory.getLineWithOffset(
-        new IssueMessageSimplification("test message", false),
+    issueLocation = PdeIssueEmitter.IssueLocationFactory.getLineWithOffset(
+        new PdeIssueEmitter.IssueMessageSimplification("test message", false),
         15,
         0,
         source
@@ -59,8 +57,8 @@ public class IssueLocationFactoryTest {
 
   @Test
   public void getLineWithOffsetEndWhite() {
-    issueLocation = IssueLocationFactory.getLineWithOffset(
-        new IssueMessageSimplification("test message", true),
+    issueLocation = PdeIssueEmitter.IssueLocationFactory.getLineWithOffset(
+        new PdeIssueEmitter.IssueMessageSimplification("test message", true),
         14,
         0,
         "\n\n\n\n\n\n\n\n\n\n\nnoFill()\nellipse(50,50,50,50)\n"

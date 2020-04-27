@@ -6,7 +6,7 @@ import java.util.stream.IntStream;
 
 import processing.app.Problem;
 import processing.app.ui.Editor;
-import processing.mode.java.preproc.issue.PdePreprocessIssue;
+import processing.mode.java.preproc.PdePreprocessIssue;
 
 
 /**
