@@ -18,48 +18,46 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.mode.java.pdex.util;
+package processing.mode.java;
 
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
-import processing.mode.java.JavaMode;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.util.RuntimePathFactoryTestUtil;
 
 import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class CoreLibraryRuntimePathFactoryTest {
+public class LibrarySearchRuntimePathFactoryTest {
 
   private RuntimePathBuilder.RuntimePathFactoryStrategy factory;
   private JavaMode testMode;
   private List<ImportStatement> testImports;
   private Sketch testSketch;
-  private List<String> classPath;
+
+  private List<String> classpath;
 
   @Before
   public void setUp() throws Exception {
     RuntimePathBuilder builder = new RuntimePathBuilder();
-    factory = builder::buildCoreLibraryPath;
+    factory = builder::buildLibrarySearchPath;
     testMode = RuntimePathFactoryTestUtil.createTestJavaMode();
     testImports = RuntimePathFactoryTestUtil.createTestImports();
     testSketch = RuntimePathFactoryTestUtil.createTestSketch();
 
-    classPath = factory.buildClasspath(testMode, testImports, testSketch);
+    classpath = factory.buildClasspath(testMode, testImports, testSketch);
   }
 
   @Test
   public void testBuildClasspathSize() {
-    assertEquals(2, classPath.size());
+    assertEquals(3, classpath.size());
   }
 
   @Test
-  public void testBuildClasspathValue() {
-    assertEquals("library1", classPath.get(0));
-    assertEquals("library2", classPath.get(1));
+  public void testBuildClasspathValues() {
+    assertTrue(classpath.get(0).contains("library3"));
+    assertTrue(classpath.get(1).contains("java.library4"));
+    assertTrue(classpath.get(2).contains("library5"));
   }
-
 
 }
