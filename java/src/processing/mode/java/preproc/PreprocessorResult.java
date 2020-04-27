@@ -27,7 +27,6 @@ import java.util.List;
 
 import processing.mode.java.ImportStatement;
 import processing.mode.java.TextTransform;
-import processing.mode.java.preproc.issue.PdePreprocessIssue;
 
 
 /**

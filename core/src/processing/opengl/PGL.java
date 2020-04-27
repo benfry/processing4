@@ -33,7 +33,6 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.regex.Pattern;
 
 import processing.core.PApplet;
@@ -171,8 +170,11 @@ public abstract class PGL {
    * Using FBO can cause a fatal error during runtime for
    * Intel HD Graphics 3000 chipsets (commonly used on older MacBooks)
    * <a href="https://github.com/processing/processing/issues/4104">#4104</a>
+   * Changed to private because needs to be accessed via isFboAllowed().
+   * <a href="https://github.com/processing/processing4/pull/76">#76</a> and
+   * <a href="https://github.com/processing/processing4/issues/50">#50</a>
    */
-  private Optional<Boolean> fboAllowed = Optional.empty();
+  private Boolean fboAllowed = true;
 
   // ........................................................
 
@@ -861,7 +863,7 @@ public abstract class PGL {
         saveFirstFrame();
       }
 
-      if (getIsFboAllowed()) {
+      if (isFboAllowed()) {
         if (!clearColor && 0 < sketch.frameCount || !sketch.isLooping()) {
           enableFBOLayer();
           if (SINGLE_BUFFERED) {
@@ -2302,38 +2304,25 @@ public abstract class PGL {
   }
 
 
-  /**
-   * Determine if the renderer / hardware supports frame buffer objects (FBOs).
-   *
-   * @return True if confirmed that FBOs are supported by the renderer on the current hardware. Will
-   *    be false if the support status has not been confirmed yet (for example, because the graphics
-   *    context has not been itiliazed) or if it is confirmed that the renderer / hardware
-   *    combination do not support FBOs.
-   */
-  protected boolean getIsFboAllowed() {
-
-    // If not yet determined, try to find.
-    if (fboAllowed.isEmpty()) {
-      boolean isNoFboRenderer;
+  public boolean isFboAllowed() {
+    if (fboAllowed == null) {
       if (PApplet.platform == PConstants.MACOS) {
-        String rendererName;
         try {
-          rendererName = getString(PGL.RENDERER);
-          isNoFboRenderer = String.valueOf(rendererName).contains("Intel HD Graphics 3000");
+          String hardware = getString(PGL.RENDERER);
+          if (hardware != null && hardware.contains("Intel HD Graphics 3000")) {
+            fboAllowed = false;
+            return false;
+          }
         } catch (RuntimeException e) {
           System.err.println("Could not read renderer name. FBOs disabled. Reason: " + e);
-          return false; // Try again later.
+          // disable for now, but will try again on next isFboAllowed() call
+          return false;
         }
-      } else {
-        isNoFboRenderer = false;
       }
-
-      // Cache value.
-      fboAllowed = Optional.of(!isNoFboRenderer);
+      // all other scenarios allow for FBOs
+      fboAllowed = true;
     }
-
-    // Return cached value.
-    return fboAllowed.get();
+    return fboAllowed;
   }
 
 
@@ -3125,17 +3114,7 @@ public abstract class PGL {
   public abstract void getIntegerv(int value, IntBuffer data);
   public abstract void getFloatv(int value, FloatBuffer data);
   public abstract boolean isEnabled(int value);
-
-  /**
-   * Get a configuration or status string from the underlying renderer.
-   *
-   * @param name The name or ID of the attribute to request.
-   * @return The requested value as a string.
-   * @throws GraphicsNotInitializedException Thrown if an attribute is requested that is not
-   *    available until graphics initialization before that initialization compeltes. For example,
-   *    if requesting a GL string before GL context is available.
-   */
-  public abstract String getString(int name) throws GraphicsNotInitializedException;
+  public abstract String getString(int name);
 
   ///////////////////////////////////////////////////////////
 
@@ -3426,25 +3405,4 @@ public abstract class PGL {
   public abstract void renderbufferStorageMultisample(int target, int samples, int format, int width, int height);
   public abstract void readBuffer(int buf);
   public abstract void drawBuffer(int buf);
-
-  ///////////////////////////////////////////////////////////
-
-  // Exceptions
-
-  /**
-   * Exception for when attempting an operation requiring the graphics renderer, context, etc
-   * to have been initialized before that initialization.
-   */
-  public class GraphicsNotInitializedException extends RuntimeException {
-
-    /**
-     * Create a new exception indicating that an action could not be fulfilled because the rendering
-     * context or equivalent is not ready.
-     *
-     * @param msg Further details about the issue.
-     */
-    public GraphicsNotInitializedException(String msg) {
-      super(msg);
-    }
-  }
 }

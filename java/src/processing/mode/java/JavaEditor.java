@@ -1862,6 +1862,7 @@ public class JavaEditor extends Editor {
   public void toggleDebug() {
 //    debugEnabled = !debugEnabled;
 
+    debugger.toggleEnabled();
     rebuildToolbar();
     repaint();  // show/hide breakpoints in the gutter
 

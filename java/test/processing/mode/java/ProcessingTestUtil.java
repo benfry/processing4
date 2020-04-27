@@ -2,7 +2,6 @@ package processing.mode.java;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
 import java.util.Optional;
@@ -11,7 +10,7 @@ import processing.app.Preferences;
 import processing.app.SketchException;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
-import processing.mode.java.preproc.issue.PdePreprocessIssueException;
+import processing.mode.java.preproc.PdePreprocessIssueException;
 
 
 public class ProcessingTestUtil {
