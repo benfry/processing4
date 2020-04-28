@@ -723,7 +723,7 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
-      <classpath file="../app/lib/vaqua7.jar" />
+      <classpath file="../app/lib/VAqua7.jar" />
 
       <!-- plus core.jar... note that this is no longer shared -->
       <classpath file="../core/library/core.jar" />

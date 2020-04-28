@@ -81,7 +81,7 @@ public class DefaultPlatform {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
       boolean isMac = System.getProperty("os.name", "").startsWith("Mac OS");
-      if (isMac) {
+      if (isMac && Preferences.getBoolean("editor.allow_vaqua")) {
         UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
 
         Icon collapse = new MacTreeIcon(true);
