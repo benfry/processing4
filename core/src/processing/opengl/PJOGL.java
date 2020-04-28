@@ -39,24 +39,17 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
 import com.jogamp.common.util.VersionNumber;
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GL2ES2;
-import com.jogamp.opengl.GL2ES3;
-import com.jogamp.opengl.GL2GL3;
-import com.jogamp.opengl.GL3ES3;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLCapabilitiesImmutable;
-import com.jogamp.opengl.GLContext;
-import com.jogamp.opengl.GLDrawable;
+import com.jogamp.opengl.*;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUtessellator;
 import com.jogamp.opengl.glu.GLUtessellatorCallbackAdapter;
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 
+import processing.awt.PImageAWT;
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.core.PMatrix3D;
 import processing.core.PSurface;
 
@@ -1986,4 +1979,17 @@ public class PJOGL extends PGL {
       throw new RuntimeException(String.format(MISSING_GLFUNC_ERROR, "glDrawBuffer()"));
     }
   }
+
+
+  ///////////////////////////////////////////////////////////
+
+  // Screenshot
+
+  public PImage getScreenshot() {
+    AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(capabilities.getGLProfile(), true);
+    return new PImageAWT(util.readPixelsToBufferedImage​(gl, 0, 0, 640, 360, true));
+  }
+
+
+
 }

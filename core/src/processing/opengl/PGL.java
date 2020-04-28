@@ -38,6 +38,7 @@ import java.util.regex.Pattern;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 
 /**
@@ -3405,4 +3406,11 @@ public abstract class PGL {
   public abstract void renderbufferStorageMultisample(int target, int samples, int format, int width, int height);
   public abstract void readBuffer(int buf);
   public abstract void drawBuffer(int buf);
+
+  ///////////////////////////////////////////////////////////
+
+  // Screenshot
+
+  abstract public PImage getScreenshot();
+
 }

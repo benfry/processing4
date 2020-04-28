@@ -5571,7 +5571,8 @@ public class PGraphicsOpenGL extends PGraphics {
 
   @Override
   public boolean save(String filename) {
-    return saveImpl(filename);
+    PImage image = pgl.getScreenshot();
+    return image.save(filename);
   }
 
 
