@@ -424,7 +424,7 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
-    <include name="app/lib/vaqua7.jar" />
+    <include name="app/lib/VAqua7.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
