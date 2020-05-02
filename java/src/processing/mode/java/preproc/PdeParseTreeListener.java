@@ -31,12 +31,10 @@ import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import processing.app.Preferences;
 import processing.core.PApplet;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.TextTransform;
+import processing.mode.java.ImportStatement;
+import processing.mode.java.SourceUtil;
+import processing.mode.java.TextTransform;
 import processing.mode.java.preproc.PdePreprocessor.Mode;
-import processing.mode.java.preproc.code.*;
-import processing.mode.java.preproc.issue.PdePreprocessIssue;
-import processing.mode.java.preproc.issue.PreprocessIssueMessageSimplifier;
 
 /**
  * ANTLR tree traversal listener that preforms code rewrites as part of sketch preprocessing.
@@ -578,6 +576,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   /**
    * Manage parsing out a size or fullscreen call.
    *
+   * <p>
+   * The size call will need to be rewritten if it is in global or setup, having it hoisted up to
+   * settings body.
+   * </p>
+   *
    * @param ctx The context of the call.
    */
   protected void handleSizeCall(ParserRuleContext ctx) {
@@ -624,14 +627,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
         if (argsContext.getChildCount() > 3) {
           sketchRenderer = argsContext.getChild(4).getText();
-          if (!(sketchRenderer.equals("P2D") ||
-              sketchRenderer.equals("P3D") ||
-              sketchRenderer.equals("OPENGL") ||
-              sketchRenderer.equals("JAVA2D") ||
-              sketchRenderer.equals("PDF") ||
-              sketchRenderer.equals("FX2D"))) {
-            thisRequiresRewrite = false;
-          }
         }
 
         if (argsContext.getChildCount() > 5) {
@@ -648,13 +643,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
         if (argsContext.getChildCount() > 0) {
           sketchRenderer = argsContext.getChild(0).getText();
-          if (!(sketchRenderer.equals("P2D") ||
-              sketchRenderer.equals("P3D") ||
-              sketchRenderer.equals("OPENGL") ||
-              sketchRenderer.equals("JAVA2D") ||
-              sketchRenderer.equals("FX2D"))) {
-            thisRequiresRewrite = false;
-          }
         }
       }
     }
@@ -1219,7 +1207,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         ));
       }
 
-      rewriteResultBuilder.addOffset(SyntaxUtil.getCount(newCode, "\n"));
+      rewriteResultBuilder.addOffset(SourceUtil.getCount(newCode, "\n"));
     }
 
   }

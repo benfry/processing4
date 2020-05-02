@@ -40,8 +40,6 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.data.StringList;
 import processing.data.XML;
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.util.ProblemFactory;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
 

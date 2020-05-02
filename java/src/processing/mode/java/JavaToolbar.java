@@ -31,29 +31,39 @@ import processing.app.Language;
 import processing.app.ui.Editor;
 import processing.app.ui.EditorButton;
 import processing.app.ui.EditorToolbar;
+import processing.mode.java.debug.Debugger;
 
 
 public class JavaToolbar extends EditorToolbar {
   JavaEditor jeditor;
 
-//  boolean debug;  // true if this is the expanded debug feller
   EditorButton stepButton;
   EditorButton continueButton;
 
 
-//  public JavaToolbar(Editor editor, boolean debug) {
   public JavaToolbar(Editor editor) {
     super(editor);
-//    this.debug = debug;
     jeditor = (JavaEditor) editor;
+  }
+
+
+  /**
+   * Check if 'debugger' is available and enabled.
+   */
+  private boolean isDebuggerArmed() {
+    // 'jeditor' not ready yet because this is called by super()
+    // 'debugger' also null during init
+    if (jeditor == null) {
+      return false;
+    }
+    return jeditor.isDebuggerEnabled();
   }
 
 
   @Override
   public List<EditorButton> createButtons() {
-    // jeditor not ready yet because this is called by super()
-    final boolean debug = ((JavaEditor) editor).isDebuggerEnabled();
-//    System.out.println("creating buttons in JavaToolbar, debug:" + debug);
+    final boolean debug = isDebuggerArmed();
+
     List<EditorButton> outgoing = new ArrayList<>();
 
     final String runText = debug ?
@@ -77,8 +87,17 @@ public class JavaToolbar extends EditorToolbar {
                                     Language.text("menu.debug.step_out")) {
         @Override
         public void actionPerformed(ActionEvent e) {
-          final int mask = ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK;
-          jeditor.handleStep(e.getModifiers() & mask);
+          Debugger d = jeditor.getDebugger();
+
+          final int modifiers = e.getModifiers() &
+            (ActionEvent.SHIFT_MASK | ActionEvent.ALT_MASK);
+          if (modifiers == 0) {
+            d.stepOver();
+          } else if ((modifiers & ActionEvent.SHIFT_MASK) != 0) {
+            d.stepInto();
+          } else if ((modifiers & ActionEvent.ALT_MASK) != 0) {
+            d.stepOut();
+          }
         }
       };
       outgoing.add(stepButton);
@@ -88,7 +107,8 @@ public class JavaToolbar extends EditorToolbar {
                                         Language.text("menu.debug.continue")) {
         @Override
         public void actionPerformed(ActionEvent e) {
-          jeditor.handleContinue();
+          //jeditor.handleContinue();
+          jeditor.getDebugger().continueDebug();
         }
       };
       outgoing.add(continueButton);
@@ -119,10 +139,9 @@ public class JavaToolbar extends EditorToolbar {
       }
     };
 
-    if (((JavaEditor) editor).isDebuggerEnabled()) {
+    if (isDebuggerArmed()) {
       debugButton.setSelected(true);
     }
-//    debugButton.setRolloverLabel(label);
     box.add(debugButton);
     addGap(box);
   }

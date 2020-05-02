@@ -1,4 +1,18 @@
 1271 (4.0a2)
+X break buildMenu() into populateMenu() method to delay Debugger init
+X   https://github.com/processing/processing4/issues/73
+X macOS build broken
+X   https://github.com/processing/processing4/issues/83
+
+
+_ save() mostly broken due to AWT refactor
+_   https://github.com/processing/processing4/issues/80
+
+
+review
+_ use vaqua
+_   https://github.com/processing/processing4/pull/88
+
 
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
@@ -7,6 +21,28 @@ X   https://github.com/processing/processing4/issues/58
 X Resolve PDF renderer parse issue in preproc
 X   https://github.com/processing/processing4/pull/68
 X   https://github.com/processing/processing4/issues/66
+X Bump JOGL 2.4 to the new release candidate (20200307)
+X   https://github.com/processing/processing4/pull/85
+X Remove debugging printout from Open Recent
+X   https://github.com/processing/processing4/issues/78
+X   https://github.com/processing/processing4/pull/79
+X Fix broken tests
+X   https://github.com/processing/processing4/issues/92
+X   https://github.com/processing/processing4/pull/93
+X Refactor out preproc.issue
+X   https://github.com/processing/processing4/pull/96
+X Debug button in the toolbar is currently broken
+X   https://github.com/processing/processing4/issues/94
+X   https://github.com/processing/processing4/pull/95
+X Fix WARNING: Illegal reflective access by processing.opengl.PSurfaceJOGL” on getContextCapabilities()
+X   https://github.com/processing/processing4/issues/50
+X   https://github.com/processing/processing4/pull/76
+X Migrate JSSC to sampottinger/jssc
+X   https://github.com/processing/processing4/issues/71
+X   https://github.com/processing/processing4/pull/75
+X Rewrite size call for all renderers
+X   https://github.com/processing/processing4/issues/90
+X   https://github.com/processing/processing4/pull/91
 
 
 before final release
@@ -34,6 +70,10 @@ _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
+
+
+questions
+_ can we get rid of pdexEnabled? does it work w/ java tabs?
 
 
 would like to fix

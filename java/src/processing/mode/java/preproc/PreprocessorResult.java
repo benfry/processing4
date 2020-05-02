@@ -25,9 +25,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import processing.mode.java.pdex.ImportStatement;
-import processing.mode.java.pdex.TextTransform;
-import processing.mode.java.preproc.issue.PdePreprocessIssue;
+import processing.mode.java.ImportStatement;
+import processing.mode.java.TextTransform;
 
 
 /**
