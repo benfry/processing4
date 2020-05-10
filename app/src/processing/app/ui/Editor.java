@@ -1310,6 +1310,12 @@ public abstract class Editor extends JFrame implements RunnerListener {
     }
   }
 
+  static public void showChangesV4() {
+    if (!Base.isCommandLine()) {
+      Platform.openURL("https://github.com/processing/processing4/wiki/Changes-in-4.0");
+    }
+  }
+
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
