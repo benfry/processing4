@@ -54,6 +54,7 @@ public class PreferencesFrame {
   JTextField presentColor;
   JTextField presentColorHex;
   JCheckBox editorAntialiasBox;
+  JCheckBox useOldNamingScheme;
   JCheckBox deletePreviousBox;
   JCheckBox memoryOverrideBox;
   JTextField memoryField;
@@ -279,6 +280,11 @@ public class PreferencesFrame {
     // [ ] Use smooth text in editor window
 
     editorAntialiasBox = new JCheckBox(Language.text("preferences.use_smooth_text"));
+    
+    
+    // [ ] Use Old naming scheme for new Sketches
+
+    useOldNamingScheme = new JCheckBox("Use Old naming scheme for new Sketches");
 
 
     // [ ] Enable complex text input (for Japanese et al, requires restart)
@@ -435,6 +441,7 @@ public class PreferencesFrame {
                       .addComponent(presentColorHex, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                       .addComponent(presentColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
           .addComponent(editorAntialiasBox)
+          .addComponent(useOldNamingScheme)
           .addComponent(inputMethodBox)
           .addGroup(layout.createSequentialGroup()
                       .addComponent(errorCheckerBox)
@@ -498,6 +505,7 @@ public class PreferencesFrame {
                   .addComponent(presentColorHex)
                   .addComponent(presentColor))
       .addComponent(editorAntialiasBox)
+      .addComponent(useOldNamingScheme)
       .addComponent(inputMethodBox)
       .addGroup(layout.createParallelGroup()
                   .addComponent(errorCheckerBox)
@@ -590,6 +598,9 @@ public class PreferencesFrame {
   protected void applyFrame() {
     Preferences.setBoolean("editor.smooth", //$NON-NLS-1$
                            editorAntialiasBox.isSelected());
+    
+    Preferences.setBoolean("editor.untitled.old_naming_scheme", //$NON-NLS-1$
+                           useOldNamingScheme.isSelected());
 
     Preferences.setBoolean("export.delete_target_folder", //$NON-NLS-1$
                            deletePreviousBox.isSelected());
