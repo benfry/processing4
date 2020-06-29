@@ -542,7 +542,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    */
   public void exitColorPrimitiveType(ProcessingParser.ColorPrimitiveTypeContext ctx) {
     if (ctx.getText().equals("color")) {
-      insertBefore(ctx.start, "int");
+      insertAfter(ctx.stop, "int");
       delete(ctx.start, ctx.stop);
     }
   }
