@@ -1986,7 +1986,7 @@ public class PJOGL extends PGL {
   // Screenshot
 
   public PImage getScreenshot() {
-    AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(capabilities.getGLProfile(), true);
+    AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(capabilities.getGLProfile(), false);
     return new PImageAWT(util.readPixelsToBufferedImage​(gl, true));
   }
 
