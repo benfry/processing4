@@ -129,6 +129,14 @@ public class Preferences {
   }
 
 
+  /**
+   * For testing, pretend to load preferences without a real file.
+   */
+  static public void skipInit() {
+    initalized = true;
+  }
+
+
   static void handleProxy(String protocol, String hostProp, String portProp) {
     String proxyHost = get("proxy." + protocol + ".host");
     String proxyPort = get("proxy." + protocol + ".port");
