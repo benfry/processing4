@@ -55,11 +55,13 @@ public class Preferences {
   static Map<String, String> defaults;
   static Map<String, String> table = new HashMap<>();
   static File preferencesFile;
+  private static boolean initalized = false;
 
 
 //  /** @return true if the sketchbook file did not exist */
 //  static public boolean init() {
   static public void init() {
+    initalized = true;
     // start by loading the defaults, in case something
     // important was deleted from the user prefs
     try {
@@ -260,6 +262,11 @@ public class Preferences {
   // all the information from preferences.txt
 
   static public String get(String attribute /*, String defaultValue */) {
+    if (!initalized) {
+      throw new RuntimeException(
+        "Tried reading preferences prior to initalization."
+      );
+    }
     return table.get(attribute);
   }
 

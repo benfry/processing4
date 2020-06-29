@@ -713,6 +713,13 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   protected void buildMenuBar() {
+    Font menubarFont = new Font(
+      Preferences.get("editor.font.family"),
+      Font.PLAIN,
+      Toolkit.zoom(10)
+    );
+    UIManager.put("Menu.font", menubarFont);
+
     JMenuBar menubar = new JMenuBar();
     fileMenu = buildFileMenu();
     menubar.add(fileMenu);
