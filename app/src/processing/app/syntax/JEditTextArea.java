@@ -1216,7 +1216,7 @@ public class JEditTextArea extends JComponent
    * Selects all text in the given line.
    * @param line The line number to select all text in it.
    */
-  public final void selectLine(final int line)
+  private final void selectLine(final int line)
   {
     selectLine = true;
     final int lineStart = getLineStartOffset(line);
