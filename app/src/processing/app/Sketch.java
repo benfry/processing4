@@ -844,6 +844,7 @@ public class Sketch {
 
     // https://github.com/processing/processing4/issues/77
     boolean useNative = Preferences.getBoolean("chooser.files.native");
+
     if (useNative) {
       // get new name for folder
       FileDialog fd = new FileDialog(editor, PROMPT, FileDialog.SAVE);

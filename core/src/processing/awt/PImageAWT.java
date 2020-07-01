@@ -31,21 +31,8 @@ import java.awt.image.DataBuffer;
 import java.awt.image.DataBufferInt;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
-import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 
-import javax.imageio.IIOImage;
-import javax.imageio.ImageIO;
-import javax.imageio.ImageTypeSpecifier;
-import javax.imageio.ImageWriteParam;
-import javax.imageio.ImageWriter;
-import javax.imageio.metadata.IIOInvalidTreeException;
-import javax.imageio.metadata.IIOMetadata;
-import javax.imageio.metadata.IIOMetadataNode;
-
-import processing.core.PApplet;
 import processing.core.PImage;
 
 
@@ -268,71 +255,8 @@ public class PImageAWT extends PImage {
    * <TT>println(javax.imageio.ImageIO.getReaderFormatNames())</TT>
    */
   protected boolean saveImageIO(String path) throws IOException {
-    try {
-      int outputFormat = (format == ARGB) ?
-        BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
-
-      String extension =
-        path.substring(path.lastIndexOf('.') + 1).toLowerCase();
-
-      // JPEG and BMP images that have an alpha channel set get pretty unhappy.
-      // BMP just doesn't write, and JPEG writes it as a CMYK image.
-      // http://code.google.com/p/processing/issues/detail?id=415
-      if (extension.equals("bmp") || extension.equals("jpg") || extension.equals("jpeg")) {
-        outputFormat = BufferedImage.TYPE_INT_RGB;
-      }
-
-      BufferedImage bimage = new BufferedImage(pixelWidth, pixelHeight, outputFormat);
-      bimage.setRGB(0, 0, pixelWidth, pixelHeight, pixels, 0, pixelWidth);
-
-      File file = new File(path);
-
-      ImageWriter writer = null;
-      ImageWriteParam param = null;
-      IIOMetadata metadata = null;
-
-      if (extension.equals("jpg") || extension.equals("jpeg")) {
-        if ((writer = imageioWriter("jpeg")) != null) {
-          // Set JPEG quality to 90% with baseline optimization. Setting this
-          // to 1 was a huge jump (about triple the size), so this seems good.
-          // Oddly, a smaller file size than Photoshop at 90%, but I suppose
-          // it's a completely different algorithm.
-          param = writer.getDefaultWriteParam();
-          param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-          param.setCompressionQuality(0.9f);
-        }
-      }
-
-      if (extension.equals("png")) {
-        if ((writer = imageioWriter("png")) != null) {
-          param = writer.getDefaultWriteParam();
-          if (false) {
-            metadata = imageioDPI(writer, param, 100);
-          }
-        }
-      }
-
-      if (writer != null) {
-        BufferedOutputStream output =
-          new BufferedOutputStream(PApplet.createOutput(file));
-        writer.setOutput(ImageIO.createImageOutputStream(output));
-//        writer.write(null, new IIOImage(bimage, null, null), param);
-        writer.write(metadata, new IIOImage(bimage, null, metadata), param);
-        writer.dispose();
-
-        output.flush();
-        output.close();
-        return true;
-      }
-      // If iter.hasNext() somehow fails up top, it falls through to here
-      return javax.imageio.ImageIO.write(bimage, extension, file);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new IOException("image save failed.");
-    }
+    return PImage.saveViaImageIO(this, path);
   }
-
 
   private ImageWriter imageioWriter(String extension) {
     Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(extension);
