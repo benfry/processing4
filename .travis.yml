@@ -11,7 +11,7 @@ before_install:
   - sudo apt-get install ant-optional
   - sudo apt-get install wget
   - wget --no-check-certificate https://downloads.apache.org/ant/binaries/apache-ant-1.10.8-bin.zip
-  - tar -xzvf apache-ant-1.10.8-bin.tar.gz
+  - unzip apache-ant-1.10.8-bin.zip
   - export PATH=`pwd`/apache-ant-1.10.8/bin:$PATH
 
 services:
