@@ -245,8 +245,7 @@ public class CompileErrorMessageSimplifier {
           final String undefinedName = args[0];
           if (undefinedName.equals("frame")) {
             result = Language.interpolate("editor.status.item_removed", undefinedName, "surface");
-          }
-          else {
+          } else {
             result = Language.interpolate("editor.status.undef_name", undefinedName);
           }
         }

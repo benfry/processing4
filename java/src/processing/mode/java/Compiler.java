@@ -182,7 +182,7 @@ public class Compiler {
               exception.setMessage("processing.xml no longer exists, this code needs to be updated for 2.0.");
               System.err.println("The processing.xml library has been replaced " +
               		               "with a new 'XML' class that's built-in.");
-              handleCrustyCode();
+              handleCrustyCodeV3();
 
             } else {
               exception.setMessage("The package " +
@@ -206,7 +206,7 @@ public class Compiler {
               what.equals("BGraphics") ||
               what.equals("BImage")) {
             exception.setMessage(what + " has been replaced with P" + what.substring(1));
-            handleCrustyCode();
+            handleCrustyCodeV3();
 
           } else {
             exception.setMessage("Cannot find a class or type " +
@@ -230,22 +230,22 @@ public class Compiler {
               what.equals("LINE_STRIP")) {
             exception.setMessage("LINE_LOOP and LINE_STRIP are not available, " +
             		                 "please update your code.");
-            handleCrustyCode();
+            handleCrustyCodeV3();
 
           } else if (what.equals("framerate")) {
             exception.setMessage("framerate should be changed to frameRate.");
-            handleCrustyCode();
+            handleCrustyCodeV3();
 
           } else if (what.equals("screen")) {
             exception.setMessage("Change screen.width and screen.height to " +
             		                 "displayWidth and displayHeight.");
-            handleCrustyCode();
+            handleCrustyCodeV3();
 
           } else if (what.equals("screenWidth") ||
                      what.equals("screenHeight")) {
             exception.setMessage("Change screenWidth and screenHeight to " +
                                  "displayWidth and displayHeight.");
-            handleCrustyCode();
+            handleCrustyCodeV3();
 
           } else if (what.equals("frame")) {
             exception.setMessage("frame was removed, use surface instead.");
@@ -283,15 +283,15 @@ public class Compiler {
           if (parts != null) {
             if (parts[1].equals("framerate(int)")) {
               exception.setMessage("framerate() no longer exists, use frameRate() instead.");
-              handleCrustyCode();
+              handleCrustyCodeV3();
 
             } else if (parts[1].equals("push()")) {
               exception.setMessage("push() no longer exists, use pushMatrix() instead.");
-              handleCrustyCode();
+              handleCrustyCodeV3();
 
             } else if (parts[1].equals("pop()")) {
               exception.setMessage("pop() no longer exists, use popMatrix() instead.");
-              handleCrustyCode();
+              handleCrustyCodeV3();
 
             } else {
               String mess = "The function " + parts[1] + " does not exist.";
@@ -325,9 +325,9 @@ public class Compiler {
             "please read the Changes page on the Wiki.");
   }
 
-  static protected void handleCrustyCode() {
+  static protected void handleCrustyCodeV3() {
     printCrustyCodeMessage();
-    Editor.showChanges();
+    Editor.showChangesV3();
   }
 
   static protected void handleCrustyCodeV4() {

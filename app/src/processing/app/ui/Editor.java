@@ -1303,7 +1303,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
-  static public void showChanges() {
+  static public void showChangesV3() {
     // http://code.google.com/p/processing/issues/detail?id=1520
     if (!Base.isCommandLine()) {
       Platform.openURL("https://github.com/processing/processing/wiki/Changes");
