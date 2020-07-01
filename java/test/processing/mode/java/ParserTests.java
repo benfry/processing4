@@ -360,4 +360,9 @@ public class ParserTests {
     expectGood("pdfwrite");
   }
 
+  @Test
+  public void testColorReturn() {
+    expectGood("colorreturn");
+  }
+
 }
