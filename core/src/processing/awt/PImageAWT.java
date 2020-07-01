@@ -32,6 +32,7 @@ import java.awt.image.DataBufferInt;
 import java.awt.image.PixelGrabber;
 import java.awt.image.WritableRaster;
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
