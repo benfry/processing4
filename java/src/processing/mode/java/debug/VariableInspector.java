@@ -610,7 +610,7 @@ public class VariableInspector extends JDialog {
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
       Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      setForeground(tree.isEnabled() ? Color.BLACK : Color.GRAY);
+      //setForeground(tree.isEnabled() ? Color.BLACK : Color.GRAY);
 
       if (value instanceof VariableNode) {
         VariableNode var = (VariableNode) value;

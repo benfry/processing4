@@ -841,7 +841,10 @@ public class Sketch {
     // TODO rewrite this to use shared version from PApplet (But because that
     // specifies a callback function, this needs to wait until the refactoring)
     final String PROMPT = Language.text("save");
-    if (Preferences.getBoolean("chooser.files.native")) {
+
+    // https://github.com/processing/processing4/issues/77
+    boolean useNative = Preferences.getBoolean("chooser.files.native");
+    if (useNative) {
       // get new name for folder
       FileDialog fd = new FileDialog(editor, PROMPT, FileDialog.SAVE);
       if (isReadOnly() || isUntitled()) {
