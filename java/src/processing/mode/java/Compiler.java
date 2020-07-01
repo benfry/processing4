@@ -247,6 +247,9 @@ public class Compiler {
                                  "displayWidth and displayHeight.");
             handleCrustyCode();
 
+          } else if (what.equals("frame")) {
+            exception.setMessage("frame was removed, use surface instead.");
+            handleCrustyCodeV4();
           } else {
             exception.setMessage("Cannot find anything " +
                                  "named \u201C" + what + "\u201D");
@@ -316,12 +319,21 @@ public class Compiler {
     return success;
   }
 
+  static protected void printCrustyCodeMessage() {
+    System.err.println("This code needs to be updated " +
+            "for this version of Processing, " +
+            "please read the Changes page on the Wiki.");
+  }
 
   static protected void handleCrustyCode() {
-    System.err.println("This code needs to be updated " +
-                       "for this version of Processing, " +
-                       "please read the Changes page on the Wiki.");
+    printCrustyCodeMessage();
     Editor.showChanges();
+  }
+
+  static protected void handleCrustyCodeV4() {
+    printCrustyCodeMessage();
+    // maybe put here an auto-fix prompt
+    Editor.showChangesV4();
   }
 
 
