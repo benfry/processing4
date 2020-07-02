@@ -14913,19 +14913,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Save a PImage to a path using ImageIO.
-   *
-   * @param image The image to be saved.
-   * @param path The path to which it should be saved.
-   * @return True if successful and false otherwise.
-   * @throws IOException
-   */
-  static public boolean saveViaImageIO(PImage image, String path) throws IOException {
-    return PGraphics.saveViaImageIO(image, path);
-  }
-
-
-  /**
    * Check the alpha on an image, using a really primitive loop.
    */
   public void checkAlpha() {
