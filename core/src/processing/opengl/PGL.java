@@ -39,6 +39,7 @@ import java.util.regex.Pattern;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 
 /**
@@ -56,6 +57,7 @@ public abstract class PGL {
   /** The PGraphics and PApplet objects using this interface */
   protected PGraphicsOpenGL graphics;
   protected PApplet sketch;
+  protected RenderCallback renderCallback;
 
   /** OpenGL thread */
   protected Thread glThread;
@@ -401,11 +403,26 @@ public abstract class PGL {
   // Initialization, finalization
 
 
-  public PGL() { }
+  public PGL() {
+    this.renderCallback = () -> {};
+  }
 
 
   public PGL(PGraphicsOpenGL pg) {
     this.graphics = pg;
+    this.renderCallback = () -> {};
+    initGraphics();
+  }
+
+
+  public PGL(PGraphicsOpenGL pg, RenderCallback newCallback) {
+    this.graphics = pg;
+    this.renderCallback = newCallback;
+    initGraphics();
+  }
+
+
+  private void initGraphics() {
     if (glColorTex == null) {
       glColorFbo = allocateIntBuffer(1);
       glColorTex = allocateIntBuffer(2);
@@ -463,6 +480,9 @@ public abstract class PGL {
 
 
   abstract protected void registerListeners();
+
+
+  abstract protected PImage screenshot();
 
 
   protected int getReadFramebuffer()  {
@@ -873,6 +893,8 @@ public abstract class PGL {
         }
       }
     }
+
+    renderCallback.onRender();
   }
 
 
@@ -2707,6 +2729,13 @@ public abstract class PGL {
 
   abstract protected Object getDerivedFont(Object font, float size);
 
+  ///////////////////////////////////////////////////////////
+
+  protected interface RenderCallback {
+
+    void onRender();
+
+  }
 
   ///////////////////////////////////////////////////////////
 

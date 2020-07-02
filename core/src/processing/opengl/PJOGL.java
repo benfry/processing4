@@ -54,9 +54,12 @@ import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUtessellator;
 import com.jogamp.opengl.glu.GLUtessellatorCallbackAdapter;
+import com.jogamp.opengl.util.awt.AWTGLReadBufferUtil;
 
+import processing.awt.PImageAWT;
 import processing.core.PApplet;
 import processing.core.PGraphics;
+import processing.core.PImage;
 import processing.core.PMatrix3D;
 import processing.core.PSurface;
 
@@ -148,6 +151,11 @@ public class PJOGL extends PGL {
     glu = new GLU();
   }
 
+  public PJOGL(PGraphicsOpenGL pg, PGL.RenderCallback callback) {
+    super(pg, callback);
+    glu = new GLU();
+  }
+
 
   @Override
   public Object getNative() {
@@ -169,6 +177,13 @@ public class PJOGL extends PGL {
 
   @Override
   protected void registerListeners() {}
+
+
+  @Override
+  protected PImage screenshot() {
+    AWTGLReadBufferUtil util = new AWTGLReadBufferUtil(capabilities.getGLProfile(), false);
+    return new PImageAWT(util.readPixelsToBufferedImage​(gl, true));
+  }
 
 
   static public void setIcon(String... icons) {
@@ -1816,8 +1831,6 @@ public class PJOGL extends PGL {
   public void blendColor(float red, float green, float blue, float alpha) {
     gl2.glBlendColor(red, green, blue, alpha);
   }
-
-  ///////////////////////////////////////////////////////////
 
   // Whole Framebuffer Operations
 
