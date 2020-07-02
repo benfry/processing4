@@ -424,6 +424,7 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
+    <include name="app/lib/VAqua7.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
@@ -704,7 +705,8 @@
                copyright="© The Processing Foundation"
                shortVersion="${version}"
                version="${revision}"
-               mainClassName="processing.app.BaseSplash">
+               mainClassName="processing.app.BaseSplash"
+               minimumSystemVersion="10.10.0">
 
       <!-- The appbundler task needs a couple files (the Info.plist and
            anything else outside /jdk) from the full JDK, even though
@@ -721,6 +723,7 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
+      <classpath file="../app/lib/VAqua7.jar" />
 
       <!-- plus core.jar... note that this is no longer shared -->
       <classpath file="../core/library/core.jar" />

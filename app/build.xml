@@ -1,12 +1,22 @@
 <?xml version="1.0"?>
 <project name="Processing PDE" default="build">
 
+  <property name="vaqua.url" value="https://violetlib.org/release/vaqua" />
+
   <target name="clean" description="Clean the build directories">
     <delete dir="bin" />
     <delete file="pde.jar" />
   </target>
 
-  <target name="compile" description="Compile sources">
+  <target name="download-vaqua">
+
+    <get dest="lib" usetimestamp="true">
+      <url url="${vaqua.url}/7/VAqua7.jar" />
+    </get>
+
+  </target>
+
+  <target name="compile" description="Compile sources" depends="download-vaqua">
     <condition property="core-built">
       <available file="../core/library/core.jar" />
     </condition>
@@ -39,7 +49,8 @@
                       lib/ant.jar;
                       lib/ant-launcher.jar;
                       lib/jna.jar;
-                      lib/jna-platform.jar"
+                      lib/jna-platform.jar;
+                      lib/VAqua7.jar"
 	   debug="on"
 	   nowarn="true">
       <src path="src" />

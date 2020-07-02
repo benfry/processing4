@@ -4,6 +4,16 @@ X   https://github.com/processing/processing4/issues/73
 X macOS build broken
 X   https://github.com/processing/processing4/issues/83
 
+
+_ save() mostly broken due to AWT refactor
+_   https://github.com/processing/processing4/issues/80
+
+
+review
+_ use vaqua
+_   https://github.com/processing/processing4/pull/88
+
+
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
 X   https://github.com/processing/processing4/pull/60
@@ -27,6 +37,13 @@ X   https://github.com/processing/processing4/pull/95
 X Fix WARNING: Illegal reflective access by processing.opengl.PSurfaceJOGL” on getContextCapabilities()
 X   https://github.com/processing/processing4/issues/50
 X   https://github.com/processing/processing4/pull/76
+X Migrate JSSC to sampottinger/jssc
+X   https://github.com/processing/processing4/issues/71
+X   https://github.com/processing/processing4/pull/75
+X Rewrite size call for all renderers
+X   https://github.com/processing/processing4/issues/90
+X   https://github.com/processing/processing4/pull/91
+
 
 before final release
 _ Update graphics and visual design elements for 4.x

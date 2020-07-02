@@ -542,7 +542,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    */
   public void exitColorPrimitiveType(ProcessingParser.ColorPrimitiveTypeContext ctx) {
     if (ctx.getText().equals("color")) {
-      insertBefore(ctx.start, "int");
+      insertAfter(ctx.stop, "int");
       delete(ctx.start, ctx.stop);
     }
   }
@@ -575,6 +575,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   /**
    * Manage parsing out a size or fullscreen call.
+   *
+   * <p>
+   * The size call will need to be rewritten if it is in global or setup, having it hoisted up to
+   * settings body.
+   * </p>
    *
    * @param ctx The context of the call.
    */
@@ -622,14 +627,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
         if (argsContext.getChildCount() > 3) {
           sketchRenderer = argsContext.getChild(4).getText();
-          if (!(sketchRenderer.equals("P2D") ||
-              sketchRenderer.equals("P3D") ||
-              sketchRenderer.equals("OPENGL") ||
-              sketchRenderer.equals("JAVA2D") ||
-              sketchRenderer.equals("PDF") ||
-              sketchRenderer.equals("FX2D"))) {
-            thisRequiresRewrite = false;
-          }
         }
 
         if (argsContext.getChildCount() > 5) {
@@ -646,13 +643,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
         if (argsContext.getChildCount() > 0) {
           sketchRenderer = argsContext.getChild(0).getText();
-          if (!(sketchRenderer.equals("P2D") ||
-              sketchRenderer.equals("P3D") ||
-              sketchRenderer.equals("OPENGL") ||
-              sketchRenderer.equals("JAVA2D") ||
-              sketchRenderer.equals("FX2D"))) {
-            thisRequiresRewrite = false;
-          }
         }
       }
     }

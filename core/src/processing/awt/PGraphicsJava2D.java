@@ -3031,8 +3031,8 @@ public class PGraphicsJava2D extends PGraphics {
   // SAVE
 
 
-//  public void save(String filename) {
-//    loadPixels();
-//    super.save(filename);
-//  }
+  public boolean save(String filename) {
+    PImageAWT outImage = new PImageAWT(image);
+    return outImage.save(filename);
+  }
 }
