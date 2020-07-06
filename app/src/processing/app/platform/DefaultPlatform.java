@@ -80,7 +80,8 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      if (shouldUseVaqua()) {
+      boolean isMac = System.getProperty("os.name", "").startsWith("Mac OS");
+      if (isMac && Preferences.getBoolean("editor.allow_vaqua")) {
         UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
 
         Icon collapse = new MacTreeIcon(true);
@@ -281,30 +282,4 @@ public class DefaultPlatform {
       }
     }
   }
-
-  /**
-   * Determine if Vaqua swing modifications for OS X should be used.
-   *
-   * @return True if the system is compatible with Vaqua and it is preferred. False otherwise.
-   */
-  private boolean shouldUseVaqua() {
-    boolean isMac = System.getProperty("os.name", "").startsWith("Mac OS");
-    if (!isMac) {
-      return false;
-    }
-
-    String fullMacVersion = System.getProperty("os.version", "NOT_AVAILABLE");
-    if ("NOT_AVAILABLE".equals(fullMacVersion)) {
-      return false;
-    }
-
-    String[] components = fullMacVersion.split("\\.");
-    if (components.length < 2) {
-      return false;
-    }
-
-    int macTrain = Integer.parseInt(components[1]);
-    return macTrain >= 10;
-  }
-
 }

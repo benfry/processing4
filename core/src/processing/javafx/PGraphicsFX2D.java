@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
@@ -50,6 +51,7 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 
 import processing.core.*;
+import processing.awt.PImageAWT;
 
 
 public class PGraphicsFX2D extends PGraphics {
@@ -2314,7 +2316,11 @@ public class PGraphicsFX2D extends PGraphics {
   // SAVE
 
 
-  //public void save(String filename)
+  public boolean save(String filename) {
+    loadPixels();
+    PImage processingImage = new PImageAWT(SwingFXUtils.fromFXImage(snapshotImage, null));
+    return processingImage.save(filename);
+  }
 
 
 

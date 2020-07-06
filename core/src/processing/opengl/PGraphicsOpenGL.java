@@ -47,6 +47,10 @@ public class PGraphicsOpenGL extends PGraphics {
   /** Font cache for texture objects. */
   protected WeakHashMap<PFont, FontTexture> fontMap;
 
+  // Blocking save
+  protected volatile Object saveBlocker;
+  private volatile Optional<String> saveTargetMaybe;
+
   // ........................................................
 
   // Disposal of native resources
@@ -568,6 +572,9 @@ public class PGraphicsOpenGL extends PGraphics {
   public PGraphicsOpenGL() {
     pgl = createPGL(this);
 
+    saveTargetMaybe = Optional.empty();
+    saveBlocker = new Object();
+
     if (intBuffer == null) {
       intBuffer = PGL.allocateIntBuffer(2);
       floatBuffer = PGL.allocateFloatBuffer(2);
@@ -709,7 +716,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
   // Factory method
   protected PGL createPGL(PGraphicsOpenGL pg) {
-    return new PJOGL(pg);
+    return new PJOGL(pg, () -> { onRender(); });
 //    return new PGLES(pg);
   }
 
@@ -756,17 +763,29 @@ public class PGraphicsOpenGL extends PGraphics {
 //    return super.save(filename); // ASYNC save frame using PBOs not yet available on Android
 
     if (getHint(DISABLE_ASYNC_SAVEFRAME)) {
-      // Act as an opaque surface for the purposes of saving.
-      if (primaryGraphics) {
-        int prevFormat = format;
-        format = RGB;
-        boolean result = super.save(filename);
-        format = prevFormat;
-        return result;
-      }
+      saveTargetMaybe = Optional.of(filename);
 
-      return super.save(filename);
+      if (!drawing) {
+        beginDraw();
+      }
+      flush();
+      updatePixelSize();
+      endDraw(); // Briefly stop drawing
+
+      synchronized(saveBlocker) {
+        try {
+          while (saveTargetMaybe.isPresent()) {
+            saveBlocker.wait();
+          }
+          beginDraw(); // Resume drawing
+          return true;
+        } catch (InterruptedException e) {
+          return false;
+        }
+      }
     }
+
+    boolean needEndDraw = false;
 
     if (asyncImageSaver == null) {
       asyncImageSaver = new AsyncImageSaver();
@@ -781,7 +800,6 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     if (asyncPixelReader != null && !loaded) {
-      boolean needEndDraw = false;
       if (!drawing) {
         beginDraw();
         needEndDraw = true;
@@ -807,6 +825,21 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     return true;
+  }
+
+
+  private void onRender() {
+    if (saveTargetMaybe.isEmpty()) {
+      return; // Nothing to save
+    }
+
+    PImage outputImage = pgl.screenshot();
+    outputImage.save(saveTargetMaybe.get());
+    saveTargetMaybe = Optional.empty();
+
+    synchronized(saveBlocker) {
+      saveBlocker.notify();
+    }
   }
 
 

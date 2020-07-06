@@ -844,7 +844,6 @@ public class Sketch {
 
     // https://github.com/processing/processing4/issues/77
     boolean useNative = Preferences.getBoolean("chooser.files.native");
-    useNative = useNative && !Platform.isMacOS();
 
     if (useNative) {
       // get new name for folder
