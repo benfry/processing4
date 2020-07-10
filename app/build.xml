@@ -35,6 +35,14 @@
 	   encoding="UTF-8"
 	   includeAntRuntime="false"
 	   classpath="../core/library/core.jar;
+                      ../core/library/javafx-swt.jar;
+                      ../core/library/javafx.base.jar;
+                      ../core/library/javafx.controls.jar;
+                      ../core/library/javafx.fxml.jar;
+                      ../core/library/javafx.graphics.jar;
+                      ../core/library/javafx.media.jar;
+                      ../core/library/javafx.swing.jar;
+                      ../core/library/javafx.web.jar;
                       ../core/apple.jar;
                       lib/ant.jar;
                       lib/ant-launcher.jar;
