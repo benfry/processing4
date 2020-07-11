@@ -721,9 +721,20 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
+      <classpath file="../core/apple.jar" />
 
       <!-- plus core.jar... note that this is no longer shared -->
       <classpath file="../core/library/core.jar" />
+
+      <!-- plus all the JFX stuff :( -->
+      <classpath file="../core/library/javafx-swt.jar" />
+      <classpath file="../core/library/javafx.base.jar" />
+      <classpath file="../core/library/javafx.controls.jar" />
+      <classpath file="../core/library/javafx.fxml.jar" />
+      <classpath file="../core/library/javafx.graphics.jar" />
+      <classpath file="../core/library/javafx.media.jar" />
+      <classpath file="../core/library/javafx.swing.jar" />
+      <classpath file="../core/library/javafx.web.jar" />
 
       <arch name="x86_64"/>
       <!-- no support for this with Java 7 from Oracle -->
@@ -765,6 +776,7 @@
       <option value="-Dcom.apple.macos.use-file-dialog-packages=true" />
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
+      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/core/library" />
 
 <!--
     the old options; most of these are probably no longer useful
