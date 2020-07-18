@@ -5033,7 +5033,6 @@ public class PApplet implements PConstants {
   /**
    */
   public float noise(float x) {
-    // is this legit? it's a dumb way to do it (but repair it later)
     return noiseGenerator.noise(x);
   }
 
@@ -5083,7 +5082,6 @@ public class PApplet implements PConstants {
    * @see PApplet#random(float,float)
    */
   public float noise(float x, float y, float z) {
-
     return noiseGenerator.noise(x, y, z);
   }
 

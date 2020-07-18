@@ -12,7 +12,7 @@ public class PerlinNoiseGenerator implements NoiseGenerator {
   private static final int PERLIN_TWOPI = PGraphics.SINCOS_LENGTH;
   private static final int PERLIN_PI = PGraphics.SINCOS_LENGTH >> 1;
 
-  private float perlin_amp_falloff;
+  private float perlin_amp_falloff = 0.5f;
   private int perlin_octaves = 4;
   private float[] perlin_cosTable = PGraphics.cosLUT;
   private float[] perlin;
