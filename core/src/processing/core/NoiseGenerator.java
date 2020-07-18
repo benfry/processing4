@@ -1,51 +1,15 @@
 package processing.core;
 
-import java.util.Arrays;
-import java.util.Random;
-
-public class NoiseGenerator {
-  private static final int PERLIN_YWRAPB = 4;
-
-  private static final int PERLIN_YWRAP = 1 << PERLIN_YWRAPB;
-
-  private static final int PERLIN_ZWRAPB = 8;
-
-  private static final int PERLIN_ZWRAP = 1 << PERLIN_ZWRAPB;
-
-  private static final int PERLIN_SIZE = 4095;
-
-  private float perlin_amp_falloff;
-
-  private int perlin_octaves = 4; // default to medium smoothfloat perlin_amp_falloff = 0.5f; // 50% reduction/octave// [toxi 031112]
-
-  // new vars needed due to recent change of cos table in PGraphics
-  private int perlin_TWOPI = PGraphics.SINCOS_LENGTH;;
-
-  private int perlin_PI = PGraphics.SINCOS_LENGTH >> 1;
-
-  private float[] perlin_cosTable = PGraphics.cosLUT;
-
-  private double[] perlin;
-
-  private Random perlinRandom;
-
-  public NoiseGenerator() {
-  }
+public interface NoiseGenerator {
+  /**
+   *
+   */
+  default float noise(float x){ return noise(x, 0); }
 
   /**
    *
    */
-  public float noise(float x) {
-    // is this legit? it's a dumb way to do it (but repair it later)
-    return noise(x, 0f, 0f);
-  }
-
-  /**
-   *
-   */
-  public float noise(float x, float y) {
-    return noise(x, y, 0f);
-  }
+  default float noise(float x, float y) { return noise(x, y, 0); }
 
   /**
    * ( begin auto-generated from noise.xml )
@@ -86,84 +50,7 @@ public class NoiseGenerator {
    * @see PApplet#noiseDetail(int, float)
    * @see PApplet#random(float, float)
    */
-  public float noise(float x, float y, float z) {
-    if (x < 0) x = -x;
-    if (y < 0) y = -y;
-    if (z < 0) z = -z;
-
-    int xi = (int) x,
-        yi = (int) y,
-        zi = (int) z;
-
-    float xf = x - xi;
-    float yf = y - yi;
-    float zf = z - zi;
-    float rxf, ryf;
-
-    float r = 0;
-    float ampl = 0.5f;
-
-    float n1, n2, n3;
-
-    try {
-
-      for (int i = 0; i < perlin_octaves; i++) {
-        int of = xi + (yi << PERLIN_YWRAPB) + (zi << PERLIN_ZWRAPB);
-
-        rxf = noise_fsc(xf);
-        ryf = noise_fsc(yf);
-
-        n1 = getPerlin(of & PERLIN_SIZE);
-        n1 += rxf * (getPerlin((of + 1) & PERLIN_SIZE) - n1);
-        n2 = getPerlin((of + PERLIN_YWRAP) & PERLIN_SIZE);
-        n2 += rxf * (getPerlin((of + PERLIN_YWRAP + 1) & PERLIN_SIZE) - n2);
-        n1 += ryf * (n2 - n1);
-
-        of += PERLIN_ZWRAP;
-        n2 = getPerlin(of & PERLIN_SIZE);
-        n2 += rxf * (getPerlin((of + 1) & PERLIN_SIZE) - n2);
-        n3 = getPerlin((of + PERLIN_YWRAP) & PERLIN_SIZE);
-        n3 += rxf * (getPerlin((of + PERLIN_YWRAP + 1) & PERLIN_SIZE) - n3);
-        n2 += ryf * (n3 - n2);
-
-        n1 += noise_fsc(zf) * (n2 - n1);
-
-        r += n1 * ampl;
-        ampl *= perlin_amp_falloff;
-        xi <<= 1;
-        xf *= 2;
-        yi <<= 1;
-        yf *= 2;
-        zi <<= 1;
-        zf *= 2;
-
-        if (xf >= 1.0f) {
-          xi++;
-          xf--;
-        }
-        if (yf >= 1.0f) {
-          yi++;
-          yf--;
-        }
-        if (zf >= 1.0f) {
-          zi++;
-          zf--;
-        }
-      }
-      return r;
-    } catch(ArithmeticException e){
-      e.printStackTrace();
-    }
-
-    return 0f;
-  }// [toxi 031112]
-
-  // now adjusts to the size of the cosLUT used via
-  // the new variables, defined above
-  float noise_fsc(float i) {
-    // using bagel's cosine table instead
-    return 0.5f * (1.0f - perlin_cosTable[(int) (i * perlin_PI) % perlin_TWOPI]);
-  }
+  float noise(float x, float y, float z);
 
   /**
    * ( begin auto-generated from noiseDetail.xml )
@@ -188,21 +75,13 @@ public class NoiseGenerator {
    * @param lod number of octaves to be used by the noise
    * @see PApplet#noise(float, float, float)
    */
-  public void noiseDetail(int lod) {
-    if (lod>0)
-      perlin_octaves = lod;
-  }
+  void noiseDetail(int lod);
 
   /**
    * @see #noiseDetail(int)
    * @param falloff falloff factor for each octave
    */
-  public void noiseDetail(int lod, float falloff) {
-    if (lod>0)
-      perlin_octaves = lod;
-    if (falloff>0)
-      perlin_amp_falloff = falloff;
-  }
+  void noiseDetail(int lod, float falloff);
 
   /**
    * ( begin auto-generated from noiseSeed.xml )
@@ -220,38 +99,5 @@ public class NoiseGenerator {
    * @see PApplet#random(float,float)
    * @see PApplet#randomSeed(long)
    */
-  public void noiseSeed(long seed) {
-    if (perlinRandom == null)
-      perlinRandom = new Random();
-    perlinRandom.setSeed(seed);
-    // force table reset after changing the random number seed [0122]
-    perlin = null;
-  }
-
-  private double[] getPerlin() {
-    if (perlin == null) {
-      perlin = new double[PERLIN_SIZE + 1];
-      Arrays.parallelSetAll(perlin, i -> getPerlinRandom().nextFloat());
-
-      // [toxi 031112]
-      // noise broke due to recent change of cos table in PGraphics
-      // this will take care of it
-      perlin_cosTable = PGraphics.cosLUT;
-      perlin_TWOPI = perlin_PI = PGraphics.SINCOS_LENGTH;
-      perlin_PI >>= 1;
-    }
-
-    return perlin;
-  }
-
-  private float getPerlin(int index){
-    return (float)getPerlin()[index];
-  }
-
-  private Random getPerlinRandom() {
-    if(perlinRandom == null)
-      perlinRandom = new Random();
-
-    return perlinRandom;
-  }
+  void noiseSeed(long seed);
 }

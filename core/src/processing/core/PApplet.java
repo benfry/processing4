@@ -139,7 +139,7 @@ public class PApplet implements PConstants {
    */
   static public boolean useNativeSelect = true;
 
-  private final NoiseGenerator noiseGenerator = new NoiseGenerator();
+  private final NoiseGenerator noiseGenerator = new PerlinNoiseGenerator();
 
   /** The PGraphics renderer associated with this PApplet */
   public PGraphics g;
