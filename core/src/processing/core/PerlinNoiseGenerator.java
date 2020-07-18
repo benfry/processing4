@@ -18,16 +18,8 @@ public class PerlinNoiseGenerator implements NoiseGenerator {
   private float[] perlin;
   private Random perlinRandom;
 
-  @Override public float noise(float x) {
-    // is this legit? it's a dumb way to do it (but repair it later)
-    return noise(x, 0f, 0f);
-  }
-
-  @Override public float noise(float x, float y) {
-    return noise(x, y, 0f);
-  }
-
-  @Override public float noise(float x, float y, float z) {
+  @Override
+  public float noise(float x, float y, float z) {
     if (x < 0) x = -x;
     if (y < 0) y = -y;
     if (z < 0) z = -z;
@@ -115,17 +107,15 @@ public class PerlinNoiseGenerator implements NoiseGenerator {
 
   @Override
   public void noiseSeed(long seed) {
-    if (perlinRandom == null) perlinRandom = new Random();
-
-    perlinRandom.setSeed(seed);
+    getPerlinRandom().setSeed(seed);
     perlin = null;
   }
 
   private float[] getPerlin() {
     if (perlin == null) {
       perlin = new float[PERLIN_SIZE + 1];
-      IntStream.range(0, perlin.length).parallel()
-        .forEach(this::updatePerlinAtIndex);
+      IntStream.range(0, perlin.length)
+        .forEachOrdered(this::updatePerlinAtIndex);
     }
 
     return perlin;
