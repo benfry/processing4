@@ -3,9 +3,10 @@ package processing.core;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 import java.util.stream.IntStream;
+
+import static org.mockito.Mockito.anyFloat;
 
 public class PerlinNoiseGeneratorTest {
 
@@ -66,7 +67,8 @@ public class PerlinNoiseGeneratorTest {
 
   @Test
   public void noiseGenerator_differentSeed_returnsDifferentResult() {
-
+    /* this is potentially flaky and should really be replaced with a test
+    making sure that 'noiseSeed' delegates to the internal random provider */
     float x = anyFloat();
     float y = anyFloat();
     float z = anyFloat();
@@ -74,7 +76,7 @@ public class PerlinNoiseGeneratorTest {
     sut.noiseSeed(TEST_SEED);
     float firstValue = sut.noise(x, y, z);
 
-    sut.noiseSeed(TEST_SEED + anyLong());
+    sut.noiseSeed(TEST_SEED + 1);
     float secondValue = sut.noise(x, y, z);
 
     Assert.assertFalse(firstValue == secondValue);
