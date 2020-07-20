@@ -1,12 +1,12 @@
 package processing.core;
 
+import static processing.core.Some.someFloat;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.stream.IntStream;
-
-import static org.mockito.Mockito.anyFloat;
 
 public class PerlinNoiseGeneratorTest {
 
@@ -41,9 +41,9 @@ public class PerlinNoiseGeneratorTest {
 
   @Test
   public void noiseGenerator_sameParameters_returnsSameResult() {
-    float x = anyFloat();
-    float y = anyFloat();
-    float z = anyFloat();
+    float x = someFloat();
+    float y = someFloat();
+    float z = someFloat();
 
     float value = sut.noise(x, y, z);
     Assert.assertEquals(value, sut.noise(x, y, z), 0.0);
@@ -52,9 +52,9 @@ public class PerlinNoiseGeneratorTest {
   @Test
   public void noiseGenerator_sameSeed_returnsSameResult() {
 
-    float x = anyFloat();
-    float y = anyFloat();
-    float z = anyFloat();
+    float x = someFloat();
+    float y = someFloat();
+    float z = someFloat();
 
     sut.noiseSeed(TEST_SEED);
     float firstValue = sut.noise(x, y, z);
@@ -69,9 +69,10 @@ public class PerlinNoiseGeneratorTest {
   public void noiseGenerator_differentSeed_returnsDifferentResult() {
     /* this is potentially flaky and should really be replaced with a test
     making sure that 'noiseSeed' delegates to the internal random provider */
-    float x = anyFloat();
-    float y = anyFloat();
-    float z = anyFloat();
+
+    float x = someFloat();
+    float y = someFloat();
+    float z = someFloat();
 
     sut.noiseSeed(TEST_SEED);
     float firstValue = sut.noise(x, y, z);
