@@ -24,6 +24,9 @@
 
 package processing.core;
 
+import processing.core.io.ExtensionSwitchingImageWriter;
+import processing.core.io.ImageWriter;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,7 +63,9 @@ import java.io.OutputStream;
  */
 public class PImage implements PConstants, Cloneable {
 
-  private static final byte TIFF_HEADER[] = {
+  private final ImageWriter imageWriter = new ExtensionSwitchingImageWriter();
+
+  private static final byte[] TIFF_HEADER = {
     77, 77, 0, 42, 0, 0, 0, 8, 0, 9, 0, -2, 0, 4, 0, 0, 0, 1, 0, 0,
     0, 0, 1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1,
     0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0, 3, 0, 0, 0, 122, 1, 6, 0, 3, 0,
@@ -2822,6 +2827,7 @@ int testFunction(int dst, int src) {
   // FILE I/O
 
 
+  @Deprecated // Create ImageWriter instead
   protected boolean saveImpl(String filename) {
     return false;
   }
@@ -2875,47 +2881,6 @@ int testFunction(int dst, int src) {
     }
     return outgoing;
   }
-
-  protected boolean saveTIFF(OutputStream output) {
-    // shutting off the warning, people can figure this out themselves
-    /*
-    if (format != RGB) {
-      System.err.println("Warning: only RGB information is saved with " +
-                         ".tif files. Use .tga or .png for ARGB images and others.");
-    }
-    */
-    try {
-      byte[] tiff = new byte[768];
-      System.arraycopy(TIFF_HEADER, 0, tiff, 0, TIFF_HEADER.length);
-
-      tiff[30] = (byte) ((pixelWidth >> 8) & 0xff);
-      tiff[31] = (byte) ((pixelWidth) & 0xff);
-      tiff[42] = tiff[102] = (byte) ((pixelHeight >> 8) & 0xff);
-      tiff[43] = tiff[103] = (byte) ((pixelHeight) & 0xff);
-
-      int count = pixelWidth*pixelHeight*3;
-      tiff[114] = (byte) ((count >> 24) & 0xff);
-      tiff[115] = (byte) ((count >> 16) & 0xff);
-      tiff[116] = (byte) ((count >> 8) & 0xff);
-      tiff[117] = (byte) ((count) & 0xff);
-
-      // spew the header to the disk
-      output.write(tiff);
-
-      for (int i = 0; i < pixels.length; i++) {
-        output.write((pixels[i] >> 16) & 0xff);
-        output.write((pixels[i] >> 8) & 0xff);
-        output.write(pixels[i] & 0xff);
-      }
-      output.flush();
-      return true;
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return false;
-  }
-
 
   /**
    * Targa image loader for RLE-compressed TGA files.
@@ -3115,161 +3080,6 @@ int testFunction(int dst, int src) {
     return outgoing;
   }
 
-
-  /**
-   * Creates a Targa32 formatted byte sequence of specified
-   * pixel buffer using RLE compression.
-   * </p>
-   * Also figured out how to avoid parsing the image upside-down
-   * (there's a header flag to set the image origin to top-left)
-   * </p>
-   * Starting with revision 0092, the format setting is taken into account:
-   * <UL>
-   * <LI><TT>ALPHA</TT> images written as 8bit grayscale (uses lowest byte)
-   * <LI><TT>RGB</TT> &rarr; 24 bits
-   * <LI><TT>ARGB</TT> &rarr; 32 bits
-   * </UL>
-   * All versions are RLE compressed.
-   * </p>
-   * Contributed by toxi 8-10 May 2005, based on this RLE
-   * <A HREF="http://www.wotsit.org/download.asp?f=tga">specification</A>
-   */
-  protected boolean saveTGA(OutputStream output) {
-    byte[] header = new byte[18];
-
-     if (format == ALPHA) {  // save ALPHA images as 8bit grayscale
-       header[2] = 0x0B;
-       header[16] = 0x08;
-       header[17] = 0x28;
-
-     } else if (format == RGB) {
-       header[2] = 0x0A;
-       header[16] = 24;
-       header[17] = 0x20;
-
-     } else if (format == ARGB) {
-       header[2] = 0x0A;
-       header[16] = 32;
-       header[17] = 0x28;
-
-     } else {
-       throw new RuntimeException("Image format not recognized inside save()");
-     }
-     // set image dimensions lo-hi byte order
-     header[12] = (byte) (pixelWidth & 0xff);
-     header[13] = (byte) (pixelWidth >> 8);
-     header[14] = (byte) (pixelHeight & 0xff);
-     header[15] = (byte) (pixelHeight >> 8);
-
-     try {
-       output.write(header);
-
-       int maxLen = pixelHeight * pixelWidth;
-       int index = 0;
-       int col; //, prevCol;
-       int[] currChunk = new int[128];
-
-       // 8bit image exporter is in separate loop
-       // to avoid excessive conditionals...
-       if (format == ALPHA) {
-         while (index < maxLen) {
-           boolean isRLE = false;
-           int rle = 1;
-           currChunk[0] = col = pixels[index] & 0xff;
-           while (index + rle < maxLen) {
-             if (col != (pixels[index + rle]&0xff) || rle == 128) {
-               isRLE = (rle > 1);
-               break;
-             }
-             rle++;
-           }
-           if (isRLE) {
-             output.write(0x80 | (rle - 1));
-             output.write(col);
-
-           } else {
-             rle = 1;
-             while (index + rle < maxLen) {
-               int cscan = pixels[index + rle] & 0xff;
-               if ((col != cscan && rle < 128) || rle < 3) {
-                 currChunk[rle] = col = cscan;
-               } else {
-                 if (col == cscan) rle -= 2;
-                 break;
-               }
-               rle++;
-             }
-             output.write(rle - 1);
-             for (int i = 0; i < rle; i++) output.write(currChunk[i]);
-           }
-           index += rle;
-         }
-       } else {  // export 24/32 bit TARGA
-         while (index < maxLen) {
-           boolean isRLE = false;
-           currChunk[0] = col = pixels[index];
-           int rle = 1;
-           // try to find repeating bytes (min. len = 2 pixels)
-           // maximum chunk size is 128 pixels
-           while (index + rle < maxLen) {
-             if (col != pixels[index + rle] || rle == 128) {
-               isRLE = (rle > 1); // set flag for RLE chunk
-               break;
-             }
-             rle++;
-           }
-           if (isRLE) {
-             output.write(128 | (rle - 1));
-             output.write(col & 0xff);
-             output.write(col >> 8 & 0xff);
-             output.write(col >> 16 & 0xff);
-             if (format == ARGB) output.write(col >>> 24 & 0xff);
-
-           } else {  // not RLE
-             rle = 1;
-             while (index + rle < maxLen) {
-               if ((col != pixels[index + rle] && rle < 128) || rle < 3) {
-                 currChunk[rle] = col = pixels[index + rle];
-               } else {
-                 // check if the exit condition was the start of
-                 // a repeating colour
-                 if (col == pixels[index + rle]) rle -= 2;
-                 break;
-               }
-               rle++;
-             }
-             // write uncompressed chunk
-             output.write(rle - 1);
-             if (format == ARGB) {
-               for (int i = 0; i < rle; i++) {
-                 col = currChunk[i];
-                 output.write(col & 0xff);
-                 output.write(col >> 8 & 0xff);
-                 output.write(col >> 16 & 0xff);
-                 output.write(col >>> 24 & 0xff);
-               }
-             } else {
-               for (int i = 0; i < rle; i++) {
-                 col = currChunk[i];
-                 output.write(col & 0xff);
-                 output.write(col >> 8 & 0xff);
-                 output.write(col >> 16 & 0xff);
-               }
-             }
-           }
-           index += rle;
-         }
-       }
-       output.flush();
-       return true;
-
-     } catch (IOException e) {
-       e.printStackTrace();
-       return false;
-     }
-  }
-
-
   /**
    * ( begin auto-generated from PImage_save.xml )
    *
@@ -3317,7 +3127,6 @@ int testFunction(int dst, int src) {
    * @param filename a sequence of letters and numbers
    */
    public boolean save(String filename) {  // ignore
-     boolean success = false;
 
      if (parent != null) {
        // use savePath(), so that the intermediate directories are created
@@ -3339,34 +3148,7 @@ int testFunction(int dst, int src) {
      // Make sure the pixel data is ready to go
      loadPixels();
 
-     try {
-       OutputStream os = null;
+     return imageWriter.save(filename, this);
 
-       if (saveImpl(filename)) {
-         return true;
-       }
-
-       if (filename.toLowerCase().endsWith(".tga")) {
-         os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-         success = saveTGA(os); //, pixels, width, height, format);
-
-       } else {
-         if (!filename.toLowerCase().endsWith(".tif") &&
-             !filename.toLowerCase().endsWith(".tiff")) {
-           // if no .tif extension, add it..
-           filename += ".tif";
-         }
-         os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-         success = saveTIFF(os); //, pixels, width, height);
-       }
-       os.flush();
-       os.close();
-
-     } catch (IOException e) {
-       System.err.println("Error while saving image.");
-       e.printStackTrace();
-       success = false;
-     }
-     return success;
    }
 }
