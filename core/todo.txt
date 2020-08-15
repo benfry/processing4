@@ -30,6 +30,14 @@ contribs
 X remove redundant boxing and casting
 X   https://github.com/processing/processing4/pull/51
 
+
+_ use PImageAWT where needed
+_   https://github.com/processing/processing4/issues/80
+_   https://github.com/processing/processing4/pull/97
+_   https://github.com/processing/processing4/pull/98
+_ moving loadImage() into Surface
+_   https://github.com/processing/processing4/issues/56
+
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
 _ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
