@@ -21,22 +21,23 @@ X   though they aren't even being stored, so what's the point?
 X   https://github.com/processing/processing4/issues/4
 X Remove all usage of AWT from PApplet
 X   https://github.com/processing/processing4/issues/55
-
 X PDF broken in getImage()
-_   https://github.com/processing/processing4/issues/62
-
+X   https://github.com/processing/processing4/issues/62
+X   https://github.com/processing/processing4/commit/624e9074aeb1d9e2e6b2943e35ffd97a90b8b737
 
 contribs
 X remove redundant boxing and casting
 X   https://github.com/processing/processing4/pull/51
 
 
-_ use PImageAWT where needed
+critical
+_ Saving to PNG broken
 _   https://github.com/processing/processing4/issues/80
 _   https://github.com/processing/processing4/pull/97
 _   https://github.com/processing/processing4/pull/98
 _ moving loadImage() into Surface
 _   https://github.com/processing/processing4/issues/56
+
 
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
