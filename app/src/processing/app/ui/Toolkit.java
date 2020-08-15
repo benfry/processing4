@@ -829,6 +829,13 @@ public class Toolkit {
     new StringList("100%", "150%", "200%", "300%");
 
 
+  /**
+   * Calculate the desired size in pixels of an element using preferences or
+   * system zoom if preferences set to auto.
+   *
+   * @param pixels The size in pixels to scale.
+   * @return The scaled size.
+   */
   static public int zoom(int pixels) {
     if (zoom == 0) {
       zoom = parseZoom();
@@ -844,8 +851,7 @@ public class Toolkit {
   }
 
 
-  static public final int BORDER =
-    Toolkit.zoom(Platform.isMacOS() ? 20 : 13);
+  static public final int BORDER = Platform.isMacOS() ? 20 : 13;
 
 
   static public void setBorder(JComponent comp) {
@@ -903,7 +909,7 @@ public class Toolkit {
 
 
   static public boolean highResImages() {
-    return isRetina() || (zoom > 1);
+    return isRetina() || (Platform.getSystemZoom() > 1);
   }
 
 
