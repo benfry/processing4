@@ -3,6 +3,7 @@ X break buildMenu() into populateMenu() method to delay Debugger init
 X   https://github.com/processing/processing4/issues/73
 X macOS build broken
 X   https://github.com/processing/processing4/issues/83
+X bump JDK to 11.0.8
 
 _ save() mostly broken due to AWT refactor
 _   https://github.com/processing/processing4/issues/80

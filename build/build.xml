@@ -87,13 +87,13 @@
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="7" />
+  <property name="jdk.update" value="8" />
   <property name="jdk.build" value="10" />
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
-  <!-- as of 200427, gluon is currently working on 14.0, and has 11.0.7 available for
+  <!-- as of 200815, gluon is currently working on 14.0, and has 11.0.8 available for
        commercial clients as an LTS release, but 11.0.2 is the latest public version -->
   <property name="jfx.train" value="11" />
   <property name="jfx.version" value="0" />
