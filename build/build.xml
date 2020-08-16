@@ -951,17 +951,29 @@
     <!-- 3rd party is for the app store, dev id is gatekeeper only -->
     <!--<arg value="3rd Party Mac Developer Application" />-->
 
+    <!--
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
-      <arg value="--force" />
-      <arg value="--sign" />
+      <arg value="- -force" />
+      <arg value="- -sign" />
       <arg value="Developer ID Application" />
       <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
     </exec>
+    -->
 
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
-      <arg value="--force" />
       <arg value="--sign" />
       <arg value="Developer ID Application" />
+
+      <!-- remove all other signatures -->
+      <arg value="--force" />
+
+      <!-- recursively sign everything -->
+      <arg value="--deep" />
+
+      <!-- enable the "hardened runtime" -->
+      <arg value="--options" />
+      <arg value="runtime" />
+
       <arg value="Processing.app" />
     </exec>
 
@@ -982,7 +994,7 @@
     <!-- xcrun: error: unable to find utility "altool", not a developer tool or in PATH -->
     <!-- fix with 'sudo xcode-select -r' -->
 
-    <!-- to sign/update documents for app password, etc -->
+    <!-- when it's time to sign/update documents or make an app password: -->
     <!-- https://developer.apple.com/account/ -->
 
     <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
