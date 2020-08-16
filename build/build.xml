@@ -988,9 +988,10 @@
     <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
       <arg value="altool" />
       <arg value="--notarize-app" />
+      <arg value="--verbose" />
 
       <arg value="--primary-bundle-id" />
-      <arg value="org.processing.app.zip" />
+      <arg value="org.processing.app" />
 
       <arg value="--username" />
       <arg value="${env.PROCESSING_APPLE_ID}" />
