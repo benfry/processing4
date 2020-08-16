@@ -35,7 +35,6 @@ import javax.swing.UIManager;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
-import org.violetlib.aqua.AquaLookAndFeel;
 
 import processing.app.Base;
 import processing.app.Preferences;
