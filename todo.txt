@@ -6,6 +6,9 @@ X   https://github.com/processing/processing4/issues/83
 X bump JDK to 11.0.8
 X Make macOS notarization part of the build process
 X   https://github.com/processing/processing4/issues/24
+X NullPointerException in ContributionManager.updateFlagged() on startup
+X   check for directory existence and read/write access on startup
+X   https://github.com/processing/processing/issues/6034
 
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
