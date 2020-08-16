@@ -388,10 +388,12 @@
                 path="${jfx.path.zip}" />
   </target>
 
-  <!-- code signing hack, turns on code signing during dist -->
+  <!-- Code signing hack, turns on code signing and notarization during dist. -->
+  <!--
   <condition property="codesign">
     <equals arg1="${env.USER}" arg2="fry" />
   </condition>
+  -->
 
   <!-- Set the version of Java that must be present to build. -->
   <property name="jdk.path.macosx" value="macosx/jdk-${jdk.esoteric}+${jdk.build}" />
@@ -949,14 +951,14 @@
     <!-- 3rd party is for the app store, dev id is gatekeeper only -->
     <!--<arg value="3rd Party Mac Developer Application" />-->
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
+    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--force" />
       <arg value="--sign" />
       <arg value="Developer ID Application" />
       <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
     </exec>
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
+    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--force" />
       <arg value="--sign" />
       <arg value="Developer ID Application" />
@@ -976,6 +978,31 @@
     <!-- Disabling since it's a lot of gunk but not that useful. -->
   </target>
 
+  <target name="macosx-dist-notarize" if="env.PROCESSING_APP_PASSWORD">
+    <!-- xcrun: error: unable to find utility "altool", not a developer tool or in PATH -->
+    <!-- fix with 'sudo xcode-select -r' -->
+
+    <!-- to sign/update documents for app password, etc -->
+    <!-- https://developer.apple.com/account/ -->
+
+    <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
+      <arg value="altool" />
+      <arg value="--notarize-app" />
+
+      <arg value="--primary-bundle-id" />
+      <arg value="org.processing.app.zip" />
+
+      <arg value="--username" />
+      <arg value="${env.PROCESSING_APPLE_ID}" />
+
+      <arg value="--password" />
+      <arg value="${env.PROCESSING_APP_PASSWORD}" />
+
+      <arg value="--file" />
+      <arg value="processing-${version}-macosx.zip" />
+    </exec>
+  </target>
+
   <target name="macosx-dist" if="macosx"
           depends="macosx-build"
           description="Create a downloadable .zip for the Mac OS X version">
@@ -985,6 +1012,8 @@
     <exec executable="ditto" dir="macosx/work">
       <arg line="-c -k -rsrc . ../processing-${version}-macosx.zip" />
     </exec>
+
+    <antcall target="macosx-dist-notarize" />
 
     <echo>
       =======================================================
