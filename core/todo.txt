@@ -36,6 +36,7 @@ X   https://github.com/processing/processing4/issues/80
 
 
 load/save image
+_ https://github.com/processing/processing4/wiki/Exorcising-AWT
 _ moving loadImage() into Surface
 _   https://github.com/processing/processing4/issues/56
 _ other PImage save implementations
@@ -53,6 +54,7 @@ _   this may be a problem for anything that was relying on those internals
 _ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
 _   these had been deprecated, not clear they were used anywhere
 _ add callbacks to requestImage() and others
+
 
 api todo
 _ Surface not available inside handleSettings()
@@ -85,7 +87,6 @@ _ move loadImage() into surface
 _   move AWT code out of PImage, and into its own PImageJava2D class
 _   how to handle with JavaFX?
 _   https://github.com/processing/processing4/issues/56
-
 
 
 high-ish
