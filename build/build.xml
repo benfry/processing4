@@ -388,13 +388,6 @@
                 path="${jfx.path.zip}" />
   </target>
 
-  <!-- Code signing hack, turns on code signing and notarization during dist. -->
-  <!--
-  <condition property="codesign">
-    <equals arg1="${env.USER}" arg2="fry" />
-  </condition>
-  -->
-
   <!-- Set the version of Java that must be present to build. -->
   <property name="jdk.path.macosx" value="macosx/jdk-${jdk.esoteric}+${jdk.build}" />
 
@@ -940,7 +933,7 @@
     </exec>
   </target>
 
-  <target name="macosx-dist-sign" if="codesign">
+  <target name="macosx-dist-sign" if="env.PROCESSING_APP_PASSWORD">
     <echo>
       Code signing will only work if you have a $99/yr Apple developer ID.
 
@@ -959,6 +952,35 @@
       <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
     </exec>
     -->
+
+    <apply executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+      <arg value="--sign" />
+      <arg value="Developer ID Application" />
+
+      <!-- remove all other signatures -->
+      <arg value="--force" />
+
+      <!-- recursively sign everything -->
+      <arg value="--deep" />
+
+      <!-- enable the "hardened runtime" -->
+      <arg value="--options" />
+      <arg value="runtime" />
+
+      <fileset dir="macosx/work/Processing.app/Contents/Java">
+        <patternset>
+          <include name="**/*.dylib" />
+          <include name="**/*.jnilib" />
+          <include name="**/*.jar" />
+          <include name="**/*.app" />
+
+          <include name="modes/java/application/mac-app-stub" />
+          <include name="modes/java/application/template.app/Contents/MacOS/JavaApplicationStub" />
+          <include name="modes/java/application/launch4j/bin/windres" />
+          <include name="modes/java/application/launch4j/bin/ld" />
+        </patternset>
+      </fileset>
+    </apply>
 
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--sign" />
@@ -1000,7 +1022,9 @@
     <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
       <arg value="altool" />
       <arg value="--notarize-app" />
-      <arg value="--verbose" />
+
+      <!-- spew a bunch of useless garbage that has nothing to do with success/failure -->
+      <!-- <arg value="- -verbose" /> -->
 
       <arg value="--primary-bundle-id" />
       <arg value="org.processing.app" />
