@@ -545,7 +545,6 @@ public class ContributionManager {
 
     installPreviouslyFailed(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookModesFolder());
-
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
     SwingWorker s = new SwingWorker<Void, Void>() {
@@ -642,6 +641,13 @@ public class ContributionManager {
    * Updates all the flagged modes/tools.
    */
   static private void updateFlagged(Base base, File root) throws Exception {
+    // https://github.com/processing/processing/issues/6034
+    if (!root.exists()) return;  // folder doesn't exist, nothing to update
+
+    if (!root.canRead() || !root.canWrite()) {
+      throw new Exception("Please fix read/write permissions for " + root);
+    }
+
     File[] markedForUpdate = root.listFiles(new FileFilter() {
       public boolean accept(File folder) {
         return (folder.isDirectory() &&
