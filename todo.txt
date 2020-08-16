@@ -5,10 +5,6 @@ X macOS build broken
 X   https://github.com/processing/processing4/issues/83
 X bump JDK to 11.0.8
 
-_ save() mostly broken due to AWT refactor
-_   https://github.com/processing/processing4/issues/80
-
-
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
 X   https://github.com/processing/processing4/pull/60

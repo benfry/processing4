@@ -753,19 +753,20 @@ public class PGraphicsOpenGL extends PGraphics {
 
   @Override
   public boolean saveImpl(String filename) {
-//    return super.save(filename); // ASYNC save frame using PBOs not yet available on Android
+    // ASYNC save frame using PBOs not yet available on Android
+    //return super.save(filename);
 
     if (getHint(DISABLE_ASYNC_SAVEFRAME)) {
       // Act as an opaque surface for the purposes of saving.
       if (primaryGraphics) {
         int prevFormat = format;
         format = RGB;
-        boolean result = super.save(filename);
+        boolean result = super.saveImpl(filename);
         format = prevFormat;
         return result;
       }
 
-      return super.save(filename);
+      return super.saveImpl(filename);
     }
 
     if (asyncImageSaver == null) {
@@ -5569,10 +5570,13 @@ public class PGraphicsOpenGL extends PGraphics {
   // SAVE
 
 
+  // need to call save() to ensure 1) path is correct and 2) pixels are loaded
+  /*
   @Override
   public boolean save(String filename) {
     return saveImpl(filename);
   }
+  */
 
 
   @Override

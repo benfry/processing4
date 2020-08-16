@@ -9,19 +9,27 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.color.ColorSpace;
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.util.Iterator;
 import java.awt.DisplayMode;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 
+import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageTypeSpecifier;
+import javax.imageio.ImageWriteParam;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOInvalidTreeException;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.metadata.IIOMetadataNode;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.UIManager;
@@ -143,6 +151,12 @@ public class ShimAWT implements PConstants {
                        "returning 1 for displayDensity(" + display + ")");
     return 1;  // not the end of the world, so don't throw a RuntimeException
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static protected String[] loadImageFormats;  // list of ImageIO formats
 
 
   static public PImage loadImage(PApplet sketch, String filename, Object... args) {
@@ -267,9 +281,6 @@ public class ShimAWT implements PConstants {
   }
 
 
-  static protected String[] loadImageFormats;
-
-
   /**
    * Use Java 1.4 ImageIO methods to load an image.
    */
@@ -307,6 +318,157 @@ public class ShimAWT implements PConstants {
       return null;
     }
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static public boolean saveImage(PImage image, String path) {
+    if (saveImageFormats == null) {
+      saveImageFormats = javax.imageio.ImageIO.getWriterFormatNames();
+    }
+    try {
+      if (saveImageFormats != null) {
+        for (int i = 0; i < saveImageFormats.length; i++) {
+          if (path.endsWith("." + saveImageFormats[i])) {
+            if (!saveImageIO(image, path)) {
+              System.err.println("Error while saving image.");
+              return false;
+            }
+            return true;
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return false;
+  }
+
+
+  static protected String[] saveImageFormats;
+
+
+  /**
+   * Use ImageIO functions from Java 1.4 and later to handle image save.
+   * Various formats are supported, typically jpeg, png, bmp, and wbmp.
+   * To get a list of the supported formats for writing, use: <BR>
+   * <TT>println(javax.imageio.ImageIO.getReaderFormatNames())</TT>
+   */
+  static protected boolean saveImageIO(PImage image, String path) throws IOException {
+    try {
+      int outputFormat = (image.format == ARGB) ?
+        BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+
+      String extension =
+        path.substring(path.lastIndexOf('.') + 1).toLowerCase();
+
+      // JPEG and BMP images that have an alpha channel set get pretty unhappy.
+      // BMP just doesn't write, and JPEG writes it as a CMYK image.
+      // http://code.google.com/p/processing/issues/detail?id=415
+      if (extension.equals("bmp") || extension.equals("jpg") || extension.equals("jpeg")) {
+        outputFormat = BufferedImage.TYPE_INT_RGB;
+      }
+
+      BufferedImage bimage = new BufferedImage(image.pixelWidth, image.pixelHeight, outputFormat);
+      bimage.setRGB(0, 0, image.pixelWidth, image.pixelHeight, image.pixels, 0, image.pixelWidth);
+
+      File file = new File(path);
+
+      ImageWriter writer = null;
+      ImageWriteParam param = null;
+      IIOMetadata metadata = null;
+
+      if (extension.equals("jpg") || extension.equals("jpeg")) {
+        if ((writer = imageioWriter("jpeg")) != null) {
+          // Set JPEG quality to 90% with baseline optimization. Setting this
+          // to 1 was a huge jump (about triple the size), so this seems good.
+          // Oddly, a smaller file size than Photoshop at 90%, but I suppose
+          // it's a completely different algorithm.
+          param = writer.getDefaultWriteParam();
+          param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+          param.setCompressionQuality(0.9f);
+        }
+      }
+
+      if (extension.equals("png")) {
+        if ((writer = imageioWriter("png")) != null) {
+          param = writer.getDefaultWriteParam();
+          if (false) {
+            metadata = imageioDPI(writer, param, 100);
+          }
+        }
+      }
+
+      if (writer != null) {
+        BufferedOutputStream output =
+          new BufferedOutputStream(PApplet.createOutput(file));
+        writer.setOutput(ImageIO.createImageOutputStream(output));
+//        writer.write(null, new IIOImage(bimage, null, null), param);
+        writer.write(metadata, new IIOImage(bimage, null, metadata), param);
+        writer.dispose();
+
+        output.flush();
+        output.close();
+        return true;
+      }
+      // If iter.hasNext() somehow fails up top, it falls through to here
+      return javax.imageio.ImageIO.write(bimage, extension, file);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new IOException("image save failed.");
+    }
+  }
+
+
+  static private ImageWriter imageioWriter(String extension) {
+    Iterator<ImageWriter> iter = ImageIO.getImageWritersByFormatName(extension);
+    if (iter.hasNext()) {
+      return iter.next();
+    }
+    return null;
+  }
+
+
+  static private IIOMetadata imageioDPI(ImageWriter writer, ImageWriteParam param, double dpi) {
+    // http://stackoverflow.com/questions/321736/how-to-set-dpi-information-in-an-image
+    ImageTypeSpecifier typeSpecifier =
+      ImageTypeSpecifier.createFromBufferedImageType(BufferedImage.TYPE_INT_RGB);
+    IIOMetadata metadata =
+      writer.getDefaultImageMetadata(typeSpecifier, param);
+
+    if (!metadata.isReadOnly() && metadata.isStandardMetadataFormatSupported()) {
+      // for PNG, it's dots per millimeter
+      double dotsPerMilli = dpi / 25.4;
+
+      IIOMetadataNode horiz = new IIOMetadataNode("HorizontalPixelSize");
+      horiz.setAttribute("value", Double.toString(dotsPerMilli));
+
+      IIOMetadataNode vert = new IIOMetadataNode("VerticalPixelSize");
+      vert.setAttribute("value", Double.toString(dotsPerMilli));
+
+      IIOMetadataNode dim = new IIOMetadataNode("Dimension");
+      dim.appendChild(horiz);
+      dim.appendChild(vert);
+
+      IIOMetadataNode root = new IIOMetadataNode("javax_imageio_1.0");
+      root.appendChild(dim);
+
+      try {
+        metadata.mergeTree("javax_imageio_1.0", root);
+        return metadata;
+
+      } catch (IIOInvalidTreeException e) {
+        System.err.println("Could not set the DPI of the output image");
+        e.printStackTrace();
+      }
+    }
+    return null;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   static public void initRun() {

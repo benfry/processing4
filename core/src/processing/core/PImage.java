@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import processing.awt.ShimAWT;
+
 
 /**
    * ( begin auto-generated from PImage.xml )
@@ -2817,14 +2819,10 @@ int testFunction(int dst, int src) {
   }
 
 
+
   //////////////////////////////////////////////////////////////
 
   // FILE I/O
-
-
-  protected boolean saveImpl(String filename) {
-    return false;
-  }
 
 
   static public PImage loadTIFF(InputStream input) {  // ignore
@@ -3316,57 +3314,75 @@ int testFunction(int dst, int src) {
    * @usage application
    * @param filename a sequence of letters and numbers
    */
-   public boolean save(String filename) {  // ignore
-     boolean success = false;
+  public boolean save(String filename) {  // ignore
+    boolean success = false;
 
-     if (parent != null) {
-       // use savePath(), so that the intermediate directories are created
-       filename = parent.savePath(filename);
+    if (parent != null) {
+      // use savePath(), so that the intermediate directories are created
+      filename = parent.savePath(filename);
 
-     } else {
-       File file = new File(filename);
-       if (file.isAbsolute()) {
-         // make sure that the intermediate folders have been created
-         PApplet.createPath(file);
-       } else {
-         String msg =
-           "PImage.save() requires an absolute path. " +
-           "Use createImage(), or pass savePath() to save().";
-         PGraphics.showException(msg);
-       }
-     }
+    } else {
+      File file = new File(filename);
+      if (file.isAbsolute()) {
+        // make sure that the intermediate folders have been created
+        PApplet.createPath(file);
+      } else {
+        String msg =
+            "PImage.save() requires an absolute path. " +
+                "Use createImage(), or pass savePath() to save().";
+        PGraphics.showException(msg);
+      }
+    }
 
-     // Make sure the pixel data is ready to go
-     loadPixels();
+    // Make sure the pixel data is ready to go
+    loadPixels();
 
-     try {
-       OutputStream os = null;
+    try {
+      final String lower = filename.toLowerCase();
 
-       if (saveImpl(filename)) {
-         return true;
-       }
+      if (saveImpl(filename)) {
+        return true;
+      }
 
-       if (filename.toLowerCase().endsWith(".tga")) {
-         os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-         success = saveTGA(os); //, pixels, width, height, format);
+      if (lower.endsWith(".tga")) {
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
+        success = saveTGA(os); //, pixels, width, height, format);
+        os.close();
 
-       } else {
-         if (!filename.toLowerCase().endsWith(".tif") &&
-             !filename.toLowerCase().endsWith(".tiff")) {
-           // if no .tif extension, add it..
-           filename += ".tif";
-         }
-         os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-         success = saveTIFF(os); //, pixels, width, height);
-       }
-       os.flush();
-       os.close();
+      } else {  // fall-through case is TIFF
+        // add a default extension and save uncompressed
+        // TODO this is the only place in the api that we mess w/ file names,
+        // and while arguably useful, seems like a weird precedent [fry 200816]
+        if (!lower.endsWith(".tif") && !lower.endsWith(".tiff")) {
+          filename += ".tif";
+        }
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
+        success = saveTIFF(os); //, pixels, width, height);
+        os.close();
+      }
 
-     } catch (IOException e) {
-       System.err.println("Error while saving image.");
-       e.printStackTrace();
-       success = false;
-     }
-     return success;
-   }
+    } catch (IOException e) {
+      System.err.println("Error while saving image.");
+      e.printStackTrace();
+      success = false;
+    }
+    return success;
+  }
+
+
+  /**
+   * Override this in subclasses to intercept save calls for other formats
+   * or higher-performance implementations. When reaching this code, pixels
+   * must be loaded and that path should be absolute.
+   *
+   * @param path must be a full path (not relative or simply a filename)
+   */
+  protected boolean saveImpl(String path) {
+    // TODO Imperfect/temporary solution for alpha 2.
+    // https://github.com/processing/processing4/wiki/Exorcising-AWT
+    if (!PApplet.disableAWT) {
+      return ShimAWT.saveImage(this, path);
+    }
+    return false;
+  }
 }
