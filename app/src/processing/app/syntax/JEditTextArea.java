@@ -1213,6 +1213,20 @@ public class JEditTextArea extends JComponent
   }
 
   /**
+   * Selects all text in the given line.
+   * @param line The line number to select all text in it.
+   */
+  private final void selectLine(final int line)
+  {
+    selectLine = true;
+    final int lineStart = getLineStartOffset(line);
+    final int lineEnd = getLineSelectionStopOffset(line);
+    select(lineStart, lineEnd);
+    selectionAncorStart = selectionStart;
+    selectionAncorEnd = selectionEnd;
+  }
+
+  /**
    * Moves the mark to the caret position.
    */
   public final void selectNone()
@@ -1635,6 +1649,7 @@ public class JEditTextArea extends JComponent
   /**
    * Deletes the selected text from the text area and places it
    * into the clipboard.
+   * If no selection is made, the whole line with caret will be selectd.
    */
   public void cut() {
     if (editable) {
@@ -1646,20 +1661,21 @@ public class JEditTextArea extends JComponent
 
   /**
    * Places the selected text into the clipboard.
+   * If no selection is made, the whole line with caret will be selectd.
    */
   public void copy() {
-    if (selectionStart != selectionEnd) {
-      Clipboard clipboard = getToolkit().getSystemClipboard();
-
-      String selection = getSelectedText();
-      if (selection != null) {
-        int repeatCount = inputHandler.getRepeatCount();
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < repeatCount; i++)
-          sb.append(selection);
-
-        clipboard.setContents(new StringSelection(sb.toString()), null);
+    if (selectionStart == selectionEnd) {
+      selectLine(getCaretLine());
+    }
+    Clipboard clipboard = getToolkit().getSystemClipboard();
+    String selection = getSelectedText();
+    if (selection != null) {
+      int repeatCount = inputHandler.getRepeatCount();
+      StringBuilder sb = new StringBuilder();
+      for(int i = 0; i < repeatCount; i++) {
+        sb.append(selection);
       }
+      clipboard.setContents(new StringSelection(sb.toString()), null);
     }
   }
 
@@ -2530,10 +2546,7 @@ public class JEditTextArea extends JComponent
 
 
     private void doTripleClick(MouseEvent evt, int line, int offset, int dot) {
-      selectLine = true;
-      select(getLineStartOffset(line),getLineSelectionStopOffset(line));
-      selectionAncorStart = selectionStart;
-      selectionAncorEnd = selectionEnd;
+      selectLine(line);
     }
   }
 

@@ -33,11 +33,13 @@ import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
+import processing.core.PImage;
 
 
 /**
@@ -55,6 +57,7 @@ public abstract class PGL {
   /** The PGraphics and PApplet objects using this interface */
   protected PGraphicsOpenGL graphics;
   protected PApplet sketch;
+  protected RenderCallback renderCallback;
 
   /** OpenGL thread */
   protected Thread glThread;
@@ -169,7 +172,7 @@ public abstract class PGL {
    * Defines if FBO Layer is allowed in the given environment.
    * Using FBO can cause a fatal error during runtime for
    * Intel HD Graphics 3000 chipsets (commonly used on older MacBooks)
-   * <a href="https://github.com/processing/processing/issues/4104">#4104</a>
+   * <a href="https://github.com/processing/processing/issues/4104">#4104</a>.
    * Changed to private because needs to be accessed via isFboAllowed().
    * <a href="https://github.com/processing/processing4/pull/76">#76</a> and
    * <a href="https://github.com/processing/processing4/issues/50">#50</a>
@@ -400,11 +403,26 @@ public abstract class PGL {
   // Initialization, finalization
 
 
-  public PGL() { }
+  public PGL() {
+    this.renderCallback = () -> {};
+  }
 
 
   public PGL(PGraphicsOpenGL pg) {
     this.graphics = pg;
+    this.renderCallback = () -> {};
+    initGraphics();
+  }
+
+
+  public PGL(PGraphicsOpenGL pg, RenderCallback newCallback) {
+    this.graphics = pg;
+    this.renderCallback = newCallback;
+    initGraphics();
+  }
+
+
+  private void initGraphics() {
     if (glColorTex == null) {
       glColorFbo = allocateIntBuffer(1);
       glColorTex = allocateIntBuffer(2);
@@ -462,6 +480,9 @@ public abstract class PGL {
 
 
   abstract protected void registerListeners();
+
+
+  abstract protected PImage screenshot();
 
 
   protected int getReadFramebuffer()  {
@@ -872,6 +893,8 @@ public abstract class PGL {
         }
       }
     }
+
+    renderCallback.onRender();
   }
 
 
@@ -2303,7 +2326,7 @@ public abstract class PGL {
     return intBuffer.get(0);
   }
 
-
+  
   public boolean isFboAllowed() {
     if (fboAllowed == null) {
       if (PApplet.platform == PConstants.MACOS) {
@@ -2706,6 +2729,13 @@ public abstract class PGL {
 
   abstract protected Object getDerivedFont(Object font, float size);
 
+  ///////////////////////////////////////////////////////////
+
+  protected interface RenderCallback {
+
+    void onRender();
+
+  }
 
   ///////////////////////////////////////////////////////////
 
@@ -3114,7 +3144,17 @@ public abstract class PGL {
   public abstract void getIntegerv(int value, IntBuffer data);
   public abstract void getFloatv(int value, FloatBuffer data);
   public abstract boolean isEnabled(int value);
-  public abstract String getString(int name);
+
+  /**
+   * Get a configuration or status string from the underlying renderer.
+   *
+   * @param name The name or ID of the attribute to request.
+   * @return The requested value as a string.
+   * @throws GraphicsNotInitializedException Thrown if an attribute is requested that is not
+   *    available until graphics initialization before that initialization compeltes. For example,
+   *    if requesting a GL string before GL context is available.
+   */
+  public abstract String getString(int name) throws GraphicsNotInitializedException;
 
   ///////////////////////////////////////////////////////////
 
@@ -3405,4 +3445,25 @@ public abstract class PGL {
   public abstract void renderbufferStorageMultisample(int target, int samples, int format, int width, int height);
   public abstract void readBuffer(int buf);
   public abstract void drawBuffer(int buf);
+
+  ///////////////////////////////////////////////////////////
+
+  // Exceptions
+
+  /**
+   * Exception for when attempting an operation requiring the graphics renderer, context, etc
+   * to have been initialized before that initialization.
+   */
+  public class GraphicsNotInitializedException extends RuntimeException {
+
+    /**
+     * Create a new exception indicating that an action could not be fulfilled because the rendering
+     * context or equivalent is not ready.
+     *
+     * @param msg Further details about the issue.
+     */
+    public GraphicsNotInitializedException(String msg) {
+      super(msg);
+    }
+  }
 }
