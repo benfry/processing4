@@ -21,14 +21,28 @@ X   though they aren't even being stored, so what's the point?
 X   https://github.com/processing/processing4/issues/4
 X Remove all usage of AWT from PApplet
 X   https://github.com/processing/processing4/issues/55
-
 X PDF broken in getImage()
-_   https://github.com/processing/processing4/issues/62
-
+X   https://github.com/processing/processing4/issues/62
+X   https://github.com/processing/processing4/commit/624e9074aeb1d9e2e6b2943e35ffd97a90b8b737
 
 contribs
 X remove redundant boxing and casting
 X   https://github.com/processing/processing4/pull/51
+
+critical
+X PImage save() mostly broken due to AWT refactor
+X Saving to PNG broken in anything but the default renderer
+X   https://github.com/processing/processing4/issues/80
+
+
+load/save image
+_ https://github.com/processing/processing4/wiki/Exorcising-AWT
+_ moving loadImage() into Surface
+_   https://github.com/processing/processing4/issues/56
+_ other PImage save implementations
+_   https://github.com/processing/processing4/pull/97
+_   https://github.com/processing/processing4/pull/98
+
 
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
@@ -40,6 +54,7 @@ _   this may be a problem for anything that was relying on those internals
 _ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
 _   these had been deprecated, not clear they were used anywhere
 _ add callbacks to requestImage() and others
+
 
 api todo
 _ Surface not available inside handleSettings()
@@ -65,13 +80,13 @@ _   https://github.com/processing/processing4/issues/53
 _ Remove frame from PApplet
 _   https://github.com/processing/processing4/issues/54
 _ Remove all usage of AWT from PApplet
-_   https://github.com/processing/processing4/issues/55
+X   https://github.com/processing/processing4/issues/55
 _   https://github.com/codeanticode/processing-lwjgl/wiki#making-awt-optional-in-papplet
+_   https://github.com/processing/processing4/issues/57
 _ move loadImage() into surface
 _   move AWT code out of PImage, and into its own PImageJava2D class
 _   how to handle with JavaFX?
 _   https://github.com/processing/processing4/issues/56
-
 
 
 high-ish

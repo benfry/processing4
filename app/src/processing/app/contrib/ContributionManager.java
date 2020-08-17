@@ -545,7 +545,6 @@ public class ContributionManager {
 
     installPreviouslyFailed(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookModesFolder());
-
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
     SwingWorker s = new SwingWorker<Void, Void>() {
@@ -639,9 +638,16 @@ public class ContributionManager {
 
 
   /**
-   * Updates all the flagged modes/tools.
+   * Updates all the flagged Mode and Tool folders.
    */
   static private void updateFlagged(Base base, File root) throws Exception {
+    // https://github.com/processing/processing/issues/6034
+    if (!root.exists()) return;  // folder doesn't exist, nothing to update
+
+    if (!root.canRead() || !root.canWrite()) {
+      throw new Exception("Please fix read/write permissions for " + root);
+    }
+
     File[] markedForUpdate = root.listFiles(new FileFilter() {
       public boolean accept(File folder) {
         return (folder.isDirectory() &&
@@ -653,8 +659,7 @@ public class ContributionManager {
     List<AvailableContribution> updateContribsList = new LinkedList<>();
 
     // TODO This is bad code... This root.getName() stuff to get the folder
-    // type, plus "libraries.properties" (not the correct file name),
-    // and I have no idea what "putting this here, in just in case" means.
+    // type, plus "libraries.properties" (not the correct file name).
     // Not sure the function here so I'm not fixing it at the moment,
     // but this whole function could use some cleaning. [fry 180105]
 
@@ -665,8 +670,6 @@ public class ContributionManager {
       propFileName = "tool.properties";
     else if (type.equalsIgnoreCase("modes"))
       propFileName = "mode.properties";
-    else if (type.equalsIgnoreCase("libraries")) //putting this here, just in case
-      propFileName = "libraries.properties";
 
     for (File folder : markedForUpdate) {
       StringDict props = Util.readSettings(new File(folder, propFileName));
@@ -674,19 +677,15 @@ public class ContributionManager {
       Util.removeDir(folder);
     }
 
-    Iterator<AvailableContribution> iter = listing.advertisedContributions.iterator();
-    while (iter.hasNext()) {
-      AvailableContribution availableContribs = iter.next();
-      if (updateContribsNames.contains(availableContribs.getName())) {
-        updateContribsList.add(availableContribs);
+    for (AvailableContribution contrib : listing.advertisedContributions) {
+      if (updateContribsNames.contains(contrib.getName())) {
+        updateContribsList.add(contrib);
       }
     }
 
-    Iterator<AvailableContribution> iter2 = updateContribsList.iterator();
-    while (iter2.hasNext()) {
-      AvailableContribution contribToUpdate = iter2.next();
-      installOnStartUp(base, contribToUpdate);
-      listing.replaceContribution(contribToUpdate, contribToUpdate);
+    for (AvailableContribution contrib : updateContribsList) {
+      installOnStartUp(base, contrib);
+      listing.replaceContribution(contrib, contrib);
     }
   }
 

@@ -87,12 +87,14 @@
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="6" />
+  <property name="jdk.update" value="8" />
   <property name="jdk.build" value="10" />
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
+  <!-- as of 200815, gluon is currently working on 14.0, and has 11.0.8 available for
+       commercial clients as an LTS release, but 11.0.2 is the latest public version -->
   <property name="jfx.train" value="11" />
   <property name="jfx.version" value="0" />
   <property name="jfx.update" value="2" />
@@ -386,11 +388,6 @@
                 path="${jfx.path.zip}" />
   </target>
 
-  <!-- code signing hack, turns on code signing during dist -->
-  <condition property="codesign">
-    <equals arg1="${env.USER}" arg2="fry" />
-  </condition>
-
   <!-- Set the version of Java that must be present to build. -->
   <property name="jdk.path.macosx" value="macosx/jdk-${jdk.esoteric}+${jdk.build}" />
 
@@ -424,6 +421,7 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
+    <include name="app/lib/VAqua7.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
@@ -704,7 +702,8 @@
                copyright="© The Processing Foundation"
                shortVersion="${version}"
                version="${revision}"
-               mainClassName="processing.app.BaseSplash">
+               mainClassName="processing.app.BaseSplash"
+               minimumSystemVersion="10.10.0">
 
       <!-- The appbundler task needs a couple files (the Info.plist and
            anything else outside /jdk) from the full JDK, even though
@@ -721,6 +720,7 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
+      <classpath file="../app/lib/VAqua7.jar" />
 
       <!-- plus core.jar... note that this is no longer shared -->
       <classpath file="../core/library/core.jar" />
@@ -909,9 +909,19 @@
 
   <target name="macosx-run" depends="macosx-build"
           description="Run Mac OS X version">
+
+    <!-- Terminal.app has a new location in Catalina -->
+    <available file="/System/Applications/Utilities/Terminal.app" type="dir"
+               property="terminal.path"
+               value="/System/Applications/Utilities/Terminal.app" />
+
+    <available file="/Applications/Utilities/Terminal.app" type="dir"
+               property="terminal.path"
+               value="/Applications/Utilities/Terminal.app" />
+
     <exec executable="open" dir="macosx/work" spawn="true">
       <arg value="-a" />
-      <arg value="/Applications/Utilities/Terminal.app" />
+      <arg value="${terminal.path}" />
       <arg value="Processing.app/Contents/MacOS/Processing" />
     </exec>
   </target>
@@ -923,7 +933,7 @@
     </exec>
   </target>
 
-  <target name="macosx-dist-sign" if="codesign">
+  <target name="macosx-dist-sign" if="env.PROCESSING_APP_PASSWORD">
     <echo>
       Code signing will only work if you have a $99/yr Apple developer ID.
 
@@ -934,17 +944,93 @@
     <!-- 3rd party is for the app store, dev id is gatekeeper only -->
     <!--<arg value="3rd Party Mac Developer Application" />-->
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
-      <arg value="--force" />
-      <arg value="--sign" />
+    <!--
+    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+      <arg value="- -force" />
+      <arg value="- -sign" />
       <arg value="Developer ID Application" />
       <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
     </exec>
+    -->
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
-      <arg value="--force" />
+    <!-- codesign can't work inside jars, so instead unpack the two we need,
+         just before doing our big signing event -->
+
+    <!-- Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal.jar/natives/macosx-universal/libgluegen_rt.dylib -->
+    <!-- Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar/natives/windows_32/libjssc.dylib -->
+
+    <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
+
+    <property name="unpack.gluegen" value="macosx/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
+
+    <property name="unpack.jssc" value="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
+
+    <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
+    <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
+    <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
+
+    <!-- Termporary; these appear to be in error
+         https://github.com/processing/processing4/issues/119 -->
+    <delete file="${unpack.jssc}/natives/windows_64/libjssc.dylib" />
+    <delete file="${unpack.jssc}/natives/windows_32/libjssc.dylib" />
+
+    <!-- <unzip src="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
+
+    <apply executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
+
+      <!-- remove all other signatures -->
+      <arg value="--force" />
+
+      <!-- recursively sign everything -->
+      <arg value="--deep" />
+
+      <!-- enable the "hardened runtime" -->
+      <arg value="--options" />
+      <arg value="runtime" />
+
+      <fileset dir="macosx/work/Processing.app/Contents/Java">
+        <patternset>
+          <include name="**/*.dylib" />
+          <include name="**/*.jnilib" />
+          <!-- <include name="**/*.jar" /> -->
+          <!-- <include name="**/*.app" /> -->
+
+          <include name="modes/java/application/mac-app-stub" />
+          <!-- <include name="modes/java/application/template.app" /> -->
+          <include name="modes/java/application/template.app/Contents/MacOS/JavaApplicationStub" />
+          <include name="modes/java/application/launch4j/bin/windres" />
+          <include name="modes/java/application/launch4j/bin/ld" />
+        </patternset>
+      </fileset>
+    </apply>
+
+    <!-- re-package the jar files after signing their macOS contents -->
+    <zip destfile="${unpack.jogl}.jar" basedir="${unpack.jogl}" />
+    <zip destfile="${unpack.gluegen}.jar" basedir="${unpack.gluegen}" />
+    <zip destfile="${unpack.jssc}.jar" basedir="${unpack.jssc}" />
+
+    <!-- delete the temporary directories w/ the jar contents -->
+    <delete dir="${unpack.jogl}" />
+    <delete dir="${unpack.gluegen}" />
+    <delete dir="${unpack.jssc}" />
+
+    <!-- sign the outher application, now that we've finished all the contents -->
+    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+      <arg value="--sign" />
+      <arg value="Developer ID Application" />
+
+      <!-- remove all other signatures -->
+      <arg value="--force" />
+
+      <!-- recursively sign everything -->
+      <arg value="--deep" />
+
+      <!-- enable the "hardened runtime" -->
+      <arg value="--options" />
+      <arg value="runtime" />
+
       <arg value="Processing.app" />
     </exec>
 
@@ -961,6 +1047,34 @@
     <!-- Disabling since it's a lot of gunk but not that useful. -->
   </target>
 
+  <target name="macosx-dist-notarize" if="env.PROCESSING_APP_PASSWORD">
+    <!-- xcrun: error: unable to find utility "altool", not a developer tool or in PATH -->
+    <!-- fix with 'sudo xcode-select -r' -->
+
+    <!-- when it's time to sign/update documents or make an app password: -->
+    <!-- https://developer.apple.com/account/ -->
+
+    <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
+      <arg value="altool" />
+      <arg value="--notarize-app" />
+
+      <!-- spew a bunch of useless garbage that has nothing to do with success/failure -->
+      <!-- <arg value="- -verbose" /> -->
+
+      <arg value="--primary-bundle-id" />
+      <arg value="org.processing.app" />
+
+      <arg value="--username" />
+      <arg value="${env.PROCESSING_APPLE_ID}" />
+
+      <arg value="--password" />
+      <arg value="${env.PROCESSING_APP_PASSWORD}" />
+
+      <arg value="--file" />
+      <arg value="processing-${version}-macosx.zip" />
+    </exec>
+  </target>
+
   <target name="macosx-dist" if="macosx"
           depends="macosx-build"
           description="Create a downloadable .zip for the Mac OS X version">
@@ -970,6 +1084,8 @@
     <exec executable="ditto" dir="macosx/work">
       <arg line="-c -k -rsrc . ../processing-${version}-macosx.zip" />
     </exec>
+
+    <antcall target="macosx-dist-notarize" />
 
     <echo>
       =======================================================

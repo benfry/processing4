@@ -760,7 +760,8 @@ public class PGraphicsOpenGL extends PGraphics {
 
   @Override
   public boolean saveImpl(String filename) {
-//    return super.save(filename); // ASYNC save frame using PBOs not yet available on Android
+    // ASYNC save frame using PBOs not yet available on Android
+    //return super.save(filename);
 
     if (getHint(DISABLE_ASYNC_SAVEFRAME)) {
       saveTargetMaybe = Optional.of(filename);
@@ -5602,10 +5603,13 @@ public class PGraphicsOpenGL extends PGraphics {
   // SAVE
 
 
+  // need to call save() to ensure 1) path is correct and 2) pixels are loaded
+  /*
   @Override
   public boolean save(String filename) {
     return saveImpl(filename);
   }
+  */
 
 
   @Override

@@ -3,16 +3,12 @@ X break buildMenu() into populateMenu() method to delay Debugger init
 X   https://github.com/processing/processing4/issues/73
 X macOS build broken
 X   https://github.com/processing/processing4/issues/83
-
-
-_ save() mostly broken due to AWT refactor
-_   https://github.com/processing/processing4/issues/80
-
-
-review
-_ use vaqua
-_   https://github.com/processing/processing4/pull/88
-
+X bump JDK to 11.0.8
+X Make macOS notarization part of the build process
+X   https://github.com/processing/processing4/issues/24
+X NullPointerException in ContributionManager.updateFlagged() on startup
+X   check for directory existence and read/write access on startup
+X   https://github.com/processing/processing/issues/6034
 
 sam
 X Resolve rewrite of pixelDensity to settings in preproc
@@ -43,6 +39,26 @@ X   https://github.com/processing/processing4/pull/75
 X Rewrite size call for all renderers
 X   https://github.com/processing/processing4/issues/90
 X   https://github.com/processing/processing4/pull/91
+X Switch to JFileChooser on Mac with VAqua
+X   https://github.com/processing/processing4/pull/88
+X cut/copy/paste while saving a sketch on OS X goes to the editor, not the save dialog
+X   https://github.com/processing/processing4/issues/77
+X implement the basics of dark mode for the Mac
+X   https://github.com/processing/processing4/issues/89
+X Color as return type is broken
+X   https://github.com/processing/processing4/issues/104
+X   https://github.com/processing/processing4/pull/105
+X Automated (jenkins) build broken because ant 1.10.7 download no longer available
+X   https://github.com/processing/processing4/issues/106
+X   https://github.com/processing/processing4/pull/107
+X Processing IDE interface too small on high-res Windows displays
+X   https://github.com/processing/processing4/issues/102
+X Ensure not trying to use Toolkit zoom before ready
+X   https://github.com/processing/processing4/pull/103
+
+
+_ JSSC binaries for windows_32 and windows_64 appear to be macOS files
+_   https://github.com/processing/processing4/issues/119
 
 
 before final release
