@@ -57,6 +57,10 @@ X Ensure not trying to use Toolkit zoom before ready
 X   https://github.com/processing/processing4/pull/103
 
 
+_ JSSC binaries for windows_32 and windows_64 appear to be macOS files
+_   https://github.com/processing/processing4/issues/119
+
+
 before final release
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48

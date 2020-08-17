@@ -953,6 +953,29 @@
     </exec>
     -->
 
+    <!-- codesign can't work inside jars, so instead unpack the two we need,
+         just before doing our big signing event -->
+
+    <!-- Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal.jar/natives/macosx-universal/libgluegen_rt.dylib -->
+    <!-- Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar/natives/windows_32/libjssc.dylib -->
+
+    <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
+
+    <property name="unpack.gluegen" value="macosx/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
+
+    <property name="unpack.jssc" value="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
+
+    <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
+    <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
+    <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
+
+    <!-- Termporary; these appear to be in error
+         https://github.com/processing/processing4/issues/119 -->
+    <delete file="${unpack.jssc}/natives/windows_64/libjssc.dylib" />
+    <delete file="${unpack.jssc}/natives/windows_32/libjssc.dylib" />
+
+    <!-- <unzip src="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
+
     <apply executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
@@ -971,10 +994,11 @@
         <patternset>
           <include name="**/*.dylib" />
           <include name="**/*.jnilib" />
-          <include name="**/*.jar" />
-          <include name="**/*.app" />
+          <!-- <include name="**/*.jar" /> -->
+          <!-- <include name="**/*.app" /> -->
 
           <include name="modes/java/application/mac-app-stub" />
+          <!-- <include name="modes/java/application/template.app" /> -->
           <include name="modes/java/application/template.app/Contents/MacOS/JavaApplicationStub" />
           <include name="modes/java/application/launch4j/bin/windres" />
           <include name="modes/java/application/launch4j/bin/ld" />
@@ -982,6 +1006,17 @@
       </fileset>
     </apply>
 
+    <!-- re-package the jar files after signing their macOS contents -->
+    <zip destfile="${unpack.jogl}.jar" basedir="${unpack.jogl}" />
+    <zip destfile="${unpack.gluegen}.jar" basedir="${unpack.gluegen}" />
+    <zip destfile="${unpack.jssc}.jar" basedir="${unpack.jssc}" />
+
+    <!-- delete the temporary directories w/ the jar contents -->
+    <delete dir="${unpack.jogl}" />
+    <delete dir="${unpack.gluegen}" />
+    <delete dir="${unpack.jssc}" />
+
+    <!-- sign the outher application, now that we've finished all the contents -->
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
