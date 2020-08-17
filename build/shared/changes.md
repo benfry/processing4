@@ -1,13 +1,15 @@
 # Processing 4.0 alpha 2
 
-*Revision 1271 - 16 August 2020*
+*Revision 1271 - 17 August 2020*
+
+Several fixes for this round, plus working on the guts quite a bit to prepare for newer/faster/better rendering methods.
 
 
 ### Bug Fixes
 
 * Break buildMenu() into populateMenu() method to delay Debugger init [73](https://github.com/processing/processing4/issues/73)
 * Fix broken macOS build [83](https://github.com/processing/processing4/issues/83)
-* Bump JDK to 11.0.8
+* Bump JDK to 11.0.8, then rolled back to JDK 11.0.6 again [121](https://github.com/processing/processing4/issues/121), [123](https://github.com/processing/processing4/pull/123)
 * Make macOS notarization part of the build process [24](https://github.com/processing/processing4/issues/24)
 * `NullPointerException` in `ContributionManager.updateFlagged()` on startup. Now checks for directory `modes` and `tools` directories and read/write access on startup [6034](https://github.com/processing/processing/issues/6034)
 * PDF was broken on `getImage()` call [62](https://github.com/processing/processing4/issues/62), [commit](https://github.com/processing/processing4/commit/624e9074aeb1d9e2e6b2943e35ffd97a90b8b737)
