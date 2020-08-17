@@ -941,23 +941,19 @@
       export CODESIGN_ALLOCATE="/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate"
     </echo>
 
-    <!-- 3rd party is for the app store, dev id is gatekeeper only -->
+    <!-- Use "3rd Party Mac Developer Application" for the app store,
+         instead of "Developer ID Application" when just doing Gatekeeper. -->
     <!--<arg value="3rd Party Mac Developer Application" />-->
 
-    <!--
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
-      <arg value="- -force" />
-      <arg value="- -sign" />
+      <arg value="--force" />
+      <arg value="--sign" />
       <arg value="Developer ID Application" />
       <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
     </exec>
-    -->
 
-    <!-- codesign can't work inside jars, so instead unpack the two we need,
-         just before doing our big signing event -->
-
-    <!-- Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal.jar/natives/macosx-universal/libgluegen_rt.dylib -->
-    <!-- Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar/natives/windows_32/libjssc.dylib -->
+    <!-- codesign can't work inside jars, so instead temporarily unpack the files
+         that contain dylib entries, just before doing our big signing event -->
 
     <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
 
