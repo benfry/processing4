@@ -61,36 +61,34 @@ import processing.app.ui.Toolkit;
  */
 public class DefaultPlatform {
 
-  private final List<String> FONT_SCALING_WIDGETS =new ArrayList<String>(){{
-    add("Button");
-    add("CheckBox");
-    add("CheckBoxMenuItem");
-    add("ComboBox");
-    add("Label");
-    add("List");
-    add("Menu");
-    add("MenuBar");
-    add("MenuItem");
-    add("OptionPane");
-    add("Panel");
-    add("PopupMenu");
-    add("ProgressBar");
-    add("RadioButton");
-    add("RadioButtonMenuItem");
-    add("ScrollPane");
-    add("TabbedPane");
-    add("Table");
-    add("TableHeader");
-    add("TextArea");
-    add("TextField");
-    add("TextPane");
-    add("TitledBorder");
-    add("ToggleButton");
-    add("ToolBar");
-    add("ToolTip");
-    add("Tree");
-    add("Viewport");
-  }};
+  private final String[] FONT_SCALING_WIDGETS = {
+    "Button",
+    "CheckBox",
+    "CheckBoxMenuItem",
+    "ComboBox",
+    "List",
+    "Menu",
+    "MenuBar",
+    "MenuItem",
+    "OptionPane",
+    "Panel",
+    "PopupMenu",
+    "ProgressBar",
+    "RadioButton",
+    "RadioButtonMenuItem",
+    "ScrollPane",
+    "TabbedPane",
+    "Table",
+    "TableHeader",
+    "TextArea",
+    "TextPane",
+    "TitledBorder",
+    "ToggleButton",
+    "ToolBar",
+    "ToolTip",
+    "Tree",
+    "Viewport"
+  };
 
   Base base;
 
@@ -139,6 +137,9 @@ public class DefaultPlatform {
       for (String widgetName : FONT_SCALING_WIDGETS) {
         scaleDefaultFont(widgetName);
       }
+
+      UIManager.put("Label.font", new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
+      UIManager.put("TextField.font", new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
     }
   }
 
@@ -291,8 +292,11 @@ public class DefaultPlatform {
     String fontPropertyName = name + ".font";
 
     Font currentFont = (Font) UIManager.get(fontPropertyName);
-    int newSize = Toolkit.zoom(currentFont.getSize());
+    System.out.println(currentFont);
+    float newSize = Toolkit.zoom(currentFont.getSize());
+    System.out.println(newSize);
     Font newFont = currentFont.deriveFont(newSize);
+    System.out.println(newFont);
 
     UIManager.put(fontPropertyName, newFont);
   }

@@ -45,6 +45,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 import javax.swing.event.*;
+import javax.swing.UIManager;
 
 
 /**
@@ -101,7 +102,7 @@ public class CreateFont extends JFrame implements Tool {
     textarea.setBackground(null);
     textarea.setEditable(false);
     textarea.setHighlighter(null);
-    textarea.setFont(new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
+    textarea.setFont(new Font("Dialog", Font.PLAIN, 12));
     pain.add(textarea);
 
     // don't care about families starting with . or #
@@ -174,8 +175,6 @@ public class CreateFont extends JFrame implements Tool {
     System.arraycopy(fontList, 0, list, 0, index);
 
     fontSelector = new JList<String>(list);
-    fontSelector.setFont(new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
-
     fontSelector.addListSelectionListener(new ListSelectionListener() {
         public void valueChanged(ListSelectionEvent e) {
           if (e.getValueIsAdjusting() == false) {
@@ -196,11 +195,9 @@ public class CreateFont extends JFrame implements Tool {
 
     sample = new SampleComponent(this);
 
-    Font dialogBottomFont = new Font("Dialog", Font.PLAIN, Toolkit.zoom(12));
-
     // Seems that in some instances, no default font is set
     // http://dev.processing.org/bugs/show_bug.cgi?id=777
-    sample.setFont(dialogBottomFont);
+    sample.setFont(new Font("Dialog", Font.PLAIN, 12));
 
     pain.add(sample);
 
@@ -208,13 +205,8 @@ public class CreateFont extends JFrame implements Tool {
     pain.add(new Box.Filler(d2, d2, d2));
 
     JPanel panel = new JPanel();
-
-    JLabel sizeLabel = new JLabel(Language.text("create_font.size") + ":" );
-    sizeLabel.setFont(dialogBottomFont);
-    panel.add(sizeLabel);
-
+    panel.add(new JLabel(Language.text("create_font.size") + ":" ));
     sizeSelector = new JTextField(" 48 ");
-    sizeSelector.setFont(dialogBottomFont);
     sizeSelector.getDocument().addDocumentListener(new DocumentListener() {
         public void insertUpdate(DocumentEvent e) { update(); }
         public void removeUpdate(DocumentEvent e) { update(); }
@@ -223,7 +215,6 @@ public class CreateFont extends JFrame implements Tool {
     panel.add(sizeSelector);
 
     smoothBox = new JCheckBox(Language.text("create_font.smooth"));
-    smoothBox.setFont(dialogBottomFont);
     smoothBox.addActionListener(new ActionListener() {
         public void actionPerformed(ActionEvent e) {
           smooth = smoothBox.isSelected();
@@ -242,7 +233,6 @@ public class CreateFont extends JFrame implements Tool {
 //    allBox.setSelected(all);
 //    panel.add(allBox);
     charsetButton = new JButton(Language.text("create_font.characters"));
-    charsetButton.setFont(dialogBottomFont);
     charsetButton.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         //showCharacterList();
@@ -293,7 +283,7 @@ public class CreateFont extends JFrame implements Tool {
     //System.out.println(getPreferredSize());
 
     // do this after pack so it doesn't affect layout
-    sample.setFont(new Font(list[0], Font.PLAIN, Toolkit.zoom(48)));
+    sample.setFont(new Font(list[0], Font.PLAIN, 48));
 
     fontSelector.setSelectedIndex(0);
 
@@ -523,7 +513,7 @@ class CharacterSelector extends JFrame {
     textarea.setBackground(null);
     textarea.setEditable(false);
     textarea.setHighlighter(null);
-    textarea.setFont(new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
+    textarea.setFont(new Font("Dialog", Font.PLAIN, 12));
     pain.add(textarea);
 
     ActionListener listener = new ActionListener() {
