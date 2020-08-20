@@ -26,9 +26,12 @@ package processing.app.platform;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.io.File;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.UIManager;
@@ -38,6 +41,7 @@ import com.sun.jna.Native;
 
 import processing.app.Base;
 import processing.app.Preferences;
+import processing.app.ui.Toolkit;
 
 
 /**
@@ -56,6 +60,36 @@ import processing.app.Preferences;
  * know if name is proper Java package syntax.)
  */
 public class DefaultPlatform {
+
+  private final String[] FONT_SCALING_WIDGETS = {
+    "Button",
+    "CheckBox",
+    "CheckBoxMenuItem",
+    "ComboBox",
+    "List",
+    "Menu",
+    "MenuBar",
+    "MenuItem",
+    "OptionPane",
+    "Panel",
+    "PopupMenu",
+    "ProgressBar",
+    "RadioButton",
+    "RadioButtonMenuItem",
+    "ScrollPane",
+    "TabbedPane",
+    "Table",
+    "TableHeader",
+    "TextArea",
+    "TextPane",
+    "TitledBorder",
+    "ToggleButton",
+    "ToolBar",
+    "ToolTip",
+    "Tree",
+    "Viewport"
+  };
+
   Base base;
 
   private final float ZOOM_DEFAULT_SIZING = 1;
@@ -96,6 +130,16 @@ public class DefaultPlatform {
       }
     } else {
       UIManager.setLookAndFeel(laf);
+    }
+
+    // Specify font when scaling is active.
+    if (!Preferences.getBoolean("editor.zoom.auto")) {
+      for (String widgetName : FONT_SCALING_WIDGETS) {
+        scaleDefaultFont(widgetName);
+      }
+
+      UIManager.put("Label.font", new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
+      UIManager.put("TextField.font", new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
     }
   }
 
@@ -235,6 +279,26 @@ public class DefaultPlatform {
 
     @Override
     public void paintIcon(Component c, Graphics g, int x, int y) {}
+  }
+
+  /**
+   * Set the default font for the widget by the given name.
+   *
+   * @param name The name of the widget whose font will be set to a scaled version of its current
+   *    default font in the selected look and feel. This must match the system widget name like
+   *    "Button" or "CheckBox"
+   */
+  private void scaleDefaultFont(String name) {
+    String fontPropertyName = name + ".font";
+
+    Font currentFont = (Font) UIManager.get(fontPropertyName);
+    System.out.println(currentFont);
+    float newSize = Toolkit.zoom(currentFont.getSize());
+    System.out.println(newSize);
+    Font newFont = currentFont.deriveFont(newSize);
+    System.out.println(newFont);
+
+    UIManager.put(fontPropertyName, newFont);
   }
 
   /**

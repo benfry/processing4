@@ -1750,8 +1750,11 @@ public class JavaEditor extends Editor {
                                     + " changes in your sketch.<br />"
                                     + "&nbsp;&nbsp;&nbsp; Do you want to save it before"
                                     + " running? </body></html>");
-          label.setFont(new Font(label.getFont().getName(),
-                                 Font.PLAIN, label.getFont().getSize() + 1));
+          label.setFont(new Font(
+              label.getFont().getName(),
+              Font.PLAIN,
+              Toolkit.zoom(label.getFont().getSize() + 1)
+          ));
           panelLabel.add(label);
           panelMain.add(panelLabel);
           final JCheckBox dontRedisplay = new JCheckBox("Remember this decision");
