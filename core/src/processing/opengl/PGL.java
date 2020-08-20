@@ -2307,7 +2307,7 @@ public abstract class PGL {
   public boolean isFboAllowed() {
     if (fboAllowed == null) {
       if (PApplet.platform == PConstants.MACOS) {
-        try {
+        /*try {
           String hardware = getString(PGL.RENDERER);
           if (hardware != null && hardware.contains("Intel HD Graphics 3000")) {
             fboAllowed = false;
@@ -2317,7 +2317,8 @@ public abstract class PGL {
           System.err.println("Could not read renderer name. FBOs disabled. Reason: " + e);
           // disable for now, but will try again on next isFboAllowed() call
           return false;
-        }
+        }*/
+        fboAllowed = false; // Starting with JDK 11.0.8, this isn't working at all for some reason.
       }
       // all other scenarios allow for FBOs
       fboAllowed = true;
