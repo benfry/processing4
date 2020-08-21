@@ -42,7 +42,7 @@ import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.swing.ImageIcon;
+import javax.swing.*;
 
 import com.jogamp.common.util.IOUtil;
 import com.jogamp.common.util.IOUtil.ClassResources;
@@ -51,12 +51,7 @@ import com.jogamp.nativewindow.ScalableSurface;
 import com.jogamp.nativewindow.util.Dimension;
 import com.jogamp.nativewindow.util.PixelFormat;
 import com.jogamp.nativewindow.util.PixelRectangle;
-import com.jogamp.opengl.GLAnimatorControl;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.GLException;
-import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.*;
 import com.jogamp.nativewindow.MutableGraphicsConfiguration;
 import com.jogamp.nativewindow.WindowClosingProtocol;
 import com.jogamp.newt.Display;
@@ -65,6 +60,7 @@ import com.jogamp.newt.NewtFactory;
 import com.jogamp.newt.Screen;
 import com.jogamp.newt.awt.NewtCanvasAWT;
 import com.jogamp.newt.opengl.GLWindow;
+import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
 import processing.core.PApplet;
@@ -215,8 +211,67 @@ public class PSurfaceJOGL implements PSurface {
     initWindow();
     initListeners();
     initAnimator();
+
+    // Create profile
+    GLProfile profile = GLProfile.get(GLProfile.GL2);
+    GLCapabilities capabilities = new GLCapabilities(profile);
+
+    // Try JFrame
+    JFrame otherWindowFrame = new JFrame("Test with JFrame");
+
+    GLCanvas glcanvas = new GLCanvas(capabilities);
+    glcanvas.addGLEventListener(createTestEventListener());
+    glcanvas.setSize(400, 400);
+
+    otherWindowFrame.getContentPane().add(glcanvas);
+    otherWindowFrame.setSize(
+        otherWindowFrame.getContentPane().getPreferredSize()
+    );
+    otherWindowFrame.setVisible(true);
+
+    // Try GLWindow
+    GLWindow otherWindowGl = GLWindow.create(capabilities);
+    otherWindowGl.addGLEventListener(createTestEventListener());
+    otherWindowGl.setTitle("Test with GLWindow");
+    otherWindowGl.setSize(400, 400);
+    otherWindowGl.setVisible(true);
   }
 
+  private GLEventListener createTestEventListener() {
+    return new GLEventListener() {
+      @Override
+      public void init(GLAutoDrawable glAutoDrawable) {
+
+      }
+
+      @Override
+      public void dispose(GLAutoDrawable glAutoDrawable) {
+
+      }
+
+      @Override
+      public void display(GLAutoDrawable glAutoDrawable) {
+        GL2 gl = glAutoDrawable.getGL().getGL2();   // get the OpenGL graphics context
+
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT);    // clear background
+        gl.glLoadIdentity();                   // reset the model-view matrix
+
+        gl.glBegin(GL.GL_TRIANGLES);
+        gl.glColor3f(1, 0, 0);
+        gl.glVertex2d(-1, -1);
+        gl.glColor3f(0, 1, 0);
+        gl.glVertex2d(0, 1);
+        gl.glColor3f(0, 0, 1);
+        gl.glVertex2d(0, 0);
+        gl.glEnd();
+      }
+
+      @Override
+      public void reshape(GLAutoDrawable glAutoDrawable, int i, int i1, int i2, int i3) {
+
+      }
+    };
+  }
 
   public Object getNative() {
     return window;
