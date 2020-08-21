@@ -291,7 +291,7 @@ public class PJOGL extends PGL {
   @Override
   protected void swapBuffers()  {
     PSurfaceJOGL surf = (PSurfaceJOGL)sketch.getSurface();
-    surf.window.swapBuffers();
+    surf.swapBuffers();
   }
 
 

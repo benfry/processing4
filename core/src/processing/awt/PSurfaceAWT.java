@@ -61,7 +61,7 @@ import processing.event.MouseEvent;
 
 public class PSurfaceAWT extends FrameBasedSurface {
 
-  Canvas canvas;
+  private Canvas canvas;
 
   public PSurfaceAWT(PGraphics graphics) {
     super(graphics);
@@ -88,6 +88,17 @@ public class PSurfaceAWT extends FrameBasedSurface {
         }
       }
     });
+  }
+
+  @Override
+  public Thread createThread() {
+    return new AnimationThread() {
+      @Override
+      public void callDraw() {
+        sketch.handleDraw();
+        render();
+      }
+    };
   }
 
   @Override
@@ -184,7 +195,7 @@ public class PSurfaceAWT extends FrameBasedSurface {
     return canvas.getToolkit().createCustomCursor(
         image,
         new Point(x, y),
-        "custom"
+        name
     );
   }
 

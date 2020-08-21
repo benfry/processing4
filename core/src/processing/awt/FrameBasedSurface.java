@@ -70,7 +70,7 @@ public abstract class FrameBasedSurface extends PSurfaceNone {
     Frame frame;
 
     // Note that x and y may not be zero, depending on the display configuration
-    Rectangle screenRect;
+    protected Rectangle screenRect;
 
     // Used for resizing, at least on Windows insets size changes when
     // frame.setResizable() is called, and in resize listener we need
@@ -88,7 +88,7 @@ public abstract class FrameBasedSurface extends PSurfaceNone {
     int sketchWidth;
     int sketchHeight;
 
-    int windowScaleFactor;
+    protected int windowScaleFactor;
 
 
     public FrameBasedSurface(PGraphics graphics) {
@@ -1431,19 +1431,6 @@ public abstract class FrameBasedSurface extends PSurfaceNone {
         setCursor(invisibleCursor);
         cursorVisible = false;
     }
-
-
-    @Override
-    public Thread createThread() {
-        return new AnimationThread() {
-            @Override
-            public void callDraw() {
-                sketch.handleDraw();
-                render();
-            }
-        };
-    }
-
 
     void debug(String format, Object ... args) {
         System.out.format(format + "%n", args);

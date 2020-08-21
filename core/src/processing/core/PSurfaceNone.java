@@ -207,6 +207,10 @@ public class PSurfaceNone implements PSurface {
 
   public void hideCursor() { }
 
+  protected PGraphics getGraphics() {
+    return graphics;
+  }
+
 
   //
 

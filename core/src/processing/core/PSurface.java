@@ -190,4 +190,5 @@ public interface PSurface {
   public boolean stopThread();
 
   public boolean isStopped();
+
 }
