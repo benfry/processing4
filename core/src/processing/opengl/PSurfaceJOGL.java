@@ -26,39 +26,14 @@ package processing.opengl;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.ByteBuffer;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.swing.ImageIcon;
-
-import com.jogamp.common.util.IOUtil;
-import com.jogamp.common.util.IOUtil.ClassResources;
-import com.jogamp.nativewindow.NativeSurface;
 import com.jogamp.nativewindow.ScalableSurface;
-import com.jogamp.nativewindow.util.Dimension;
-import com.jogamp.nativewindow.util.PixelFormat;
-import com.jogamp.nativewindow.util.PixelRectangle;
 import com.jogamp.opengl.GLAnimatorControl;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.nativewindow.MutableGraphicsConfiguration;
-import com.jogamp.nativewindow.WindowClosingProtocol;
-import com.jogamp.newt.Display;
-import com.jogamp.newt.Display.PointerIcon;
-import com.jogamp.newt.NewtFactory;
-import com.jogamp.newt.Screen;
-import com.jogamp.newt.awt.NewtCanvasAWT;
-import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -66,14 +41,6 @@ import processing.awt.FrameBasedSurface;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.core.PGraphics;
-import processing.core.PImage;
-import processing.core.PSurface;
-import processing.event.KeyEvent;
-import processing.event.MouseEvent;
-import processing.awt.PImageAWT;
-
-// have this removed by 4.0 final
-import processing.awt.ShimAWT;
 
 
 public class PSurfaceJOGL extends FrameBasedSurface {
