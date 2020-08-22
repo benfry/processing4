@@ -4,6 +4,8 @@
 
 Several fixes for this round, plus working on the guts quite a bit to prepare for newer/faster/better rendering methods.
 
+The minimum system version for macOS (for the PDE and exported applications) is now set to 10.13.6 (the last update of High Sierra). Apple will likely be dropping support for High Sierra in late 2020, so we may make the minimum 10.14.x by the time 4.x ships.
+
 
 ### Bug Fixes
 

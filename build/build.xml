@@ -703,7 +703,7 @@
                shortVersion="${version}"
                version="${revision}"
                mainClassName="processing.app.BaseSplash"
-               minimumSystemVersion="10.10.0">
+               minimumSystemVersion="10.13.6">
 
       <!-- The appbundler task needs a couple files (the Info.plist and
            anything else outside /jdk) from the full JDK, even though
