@@ -39,6 +39,7 @@ To make way for more advanced rendering options, the exorcism of AWT from the ba
 
 ### Sam was at it again
 
+* Zoom dialog fonts based on user scale setting [111](https://github.com/processing/processing4/issues/111), [125](https://github.com/processing/processing4/pull/125)
 * Resolve rewrite of pixelDensity to settings in preproc [58](https://github.com/processing/processing4/issues/58), [60](https://github.com/processing/processing4/pull/60)
 * Resolve PDF renderer parse issue in preproc [66](https://github.com/processing/processing4/issues/66), [68](https://github.com/processing/processing4/pull/68)
 * Bump JOGL 2.4 to the new release candidate (20200307) [85](https://github.com/processing/processing4/pull/85)

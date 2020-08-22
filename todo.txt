@@ -55,6 +55,9 @@ X Processing IDE interface too small on high-res Windows displays
 X   https://github.com/processing/processing4/issues/102
 X Ensure not trying to use Toolkit zoom before ready
 X   https://github.com/processing/processing4/pull/103
+X Zoom dialog fonts based on user scale setting
+X   https://github.com/processing/processing4/issues/111
+X   https://github.com/processing/processing4/pull/125
 
 
 _ JSSC binaries for windows_32 and windows_64 appear to be macOS files
