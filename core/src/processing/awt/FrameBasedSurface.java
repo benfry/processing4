@@ -1245,7 +1245,39 @@ public abstract class FrameBasedSurface extends PSurfaceNone {
     // listeners, for all my men!
     protected void addListeners() {
 
-        addMouseListener(new MouseListener() {
+        addMouseListener(createMouseListener());
+        addMouseMotionListener(createMouseMotionListener());
+        addMouseWheelListener(createMouseWheelListener());
+        addKeyListener(createKeyListener());
+        addFocusListener(createFocusListener());
+    }
+
+    // These are here to allow subclass to change listeners.
+
+    protected MouseWheelListener createMouseWheelListener() {
+        return new MouseWheelListener() {
+
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                nativeMouseEvent(e);
+            }
+        };
+    }
+
+    protected  MouseMotionListener createMouseMotionListener() {
+        return new MouseMotionListener() {
+
+            public void mouseDragged(java.awt.event.MouseEvent e) {
+                nativeMouseEvent(e);
+            }
+
+            public void mouseMoved(java.awt.event.MouseEvent e) {
+                nativeMouseEvent(e);
+            }
+        };
+    }
+
+    protected MouseListener createMouseListener() {
+        return new MouseListener() {
 
             public void mousePressed(java.awt.event.MouseEvent e) {
                 nativeMouseEvent(e);
@@ -1266,27 +1298,11 @@ public abstract class FrameBasedSurface extends PSurfaceNone {
             public void mouseExited(java.awt.event.MouseEvent e) {
                 nativeMouseEvent(e);
             }
-        });
+        };
+    }
 
-        addMouseMotionListener(new MouseMotionListener() {
-
-            public void mouseDragged(java.awt.event.MouseEvent e) {
-                nativeMouseEvent(e);
-            }
-
-            public void mouseMoved(java.awt.event.MouseEvent e) {
-                nativeMouseEvent(e);
-            }
-        });
-
-        addMouseWheelListener(new MouseWheelListener() {
-
-            public void mouseWheelMoved(MouseWheelEvent e) {
-                nativeMouseEvent(e);
-            }
-        });
-
-        addKeyListener(new KeyListener() {
+    protected KeyListener createKeyListener() {
+        return new KeyListener() {
 
             public void keyPressed(java.awt.event.KeyEvent e) {
                 nativeKeyEvent(e);
@@ -1301,9 +1317,11 @@ public abstract class FrameBasedSurface extends PSurfaceNone {
             public void keyTyped(java.awt.event.KeyEvent e) {
                 nativeKeyEvent(e);
             }
-        });
+        };
+    }
 
-        addFocusListener(new FocusListener() {
+    protected FocusListener createFocusListener() {
+        return new FocusListener() {
 
             public void focusGained(FocusEvent e) {
                 sketch.focused = true;
@@ -1314,8 +1332,10 @@ public abstract class FrameBasedSurface extends PSurfaceNone {
                 sketch.focused = false;
                 sketch.focusLost();
             }
-        });
+        };
     }
+
+    // Required for access to canvas which I don't want saved in this superclass
 
     protected abstract void addMouseListener(MouseListener listener);
     protected abstract void addMouseMotionListener(MouseMotionListener listener);
