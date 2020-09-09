@@ -1,0 +1,65 @@
+<project name="Procesing Web Reference Generator" default="compile" basedir=".">
+    <description>
+        Build file for the Processing documentation generator.
+        Creates the ProcessingWeblet.class, which is used by javadoc to structure
+        the parsed Processing source code into the website reference.
+    </description>
+  <!-- set global properties for this build -->
+  <property name="src" location="src"/>
+  <property name="build" location="bin"/>
+  <property name="test" location="test"/>
+
+  <target name="init">
+    <!-- Create the time stamp -->
+    <tstamp/>
+    <!-- Create the build directory structure used by compile -->
+    <mkdir dir="${build}"/>
+  </target>
+
+  <path id="class.path">
+    <fileset dir="lib">
+      <include name="*.jar" />
+    </fileset>
+  </path>
+
+  <target name="rundoc">
+    <mkdir dir="docs" />
+    <javadoc access="public" destdir="docs">
+
+      <fileset dir="test" defaultexcludes="yes">
+        <include name="*" />
+      </fileset>
+      <classpath refid="class.path" />
+
+      <doclet name="ProcessingWeblet" path="bin">
+        <param name="-webref" value="../../reference"/>
+        <param name="-localref" value="../../distribution"/>
+        <param name="-templatedir" value="../templates"/>
+        <param name="-examplesdir" value="../../content/api_en"/>
+        <param name="-includedir" value="../../content/api_en/include"/>
+        <param name="-imagedir" value="images"/>
+        <param name="-encoding" value="UTF-8"/>
+        <param name="-corepackage" value="processing.data"/>
+        <param name="-corepackage" value="processing.event"/>
+        <param name="-corepackage" value="processing.opengl"/>
+        <param name="-rootclass" value="PConstants"/>
+      </doclet>
+
+    </javadoc>
+  </target>
+
+  <target name="compile" depends="clean,init"
+        description="compile the source " >
+    <!-- Compile the java code from ${src} into ${build} -->
+    <!-- Note that your environment JAVA_HOME now matters for building -->
+    <javac srcdir="${src}" destdir="${build}" source="1.8" target="1.8" includeantruntime="true">
+      <classpath refid="class.path" />
+    </javac>
+  </target>
+
+  <target name="clean"
+        description="clean up" >
+    <!-- Delete the ${build} and ${dist} directory trees -->
+    <delete dir="${build}"/>
+  </target>
+</project>
