@@ -10,11 +10,12 @@ import com.sun.javadoc.PackageDoc;
 public class LibraryWriter extends BaseWriter {
 	PackageDoc doc;
 	String pkg;
-	LibraryIndexWriter indexWriter;
 	String dir;
 	
 	static TemplateWriter templateWriter;
 	static ArrayList<String> writtenLibraries;
+
+	private String libDir ="../../../processing-website/content/references/translations/en/";
 	
 	public LibraryWriter(){
 		if(templateWriter == null ){
@@ -38,10 +39,12 @@ public class LibraryWriter extends BaseWriter {
 		
 		String[] parts = doc.name().split("\\."); 
 		String pkg = parts[parts.length-1] + "/";
-		dir = jsonDir + "libraries/"+pkg;
+		if (pkg.equals("data/") || pkg.equals("opengl/"))
+			dir = jsonDir;
+		else 
+			dir = libDir + pkg;
 
 		Shared.i().createOutputDirectory(dir);
-		indexWriter = new LibraryIndexWriter(doc, dir);
 		
 		//grab all relevant information for the doc
 		for( ClassDoc classDoc : doc.allClasses() ){
@@ -57,20 +60,5 @@ public class LibraryWriter extends BaseWriter {
 			}
 		}
 		
-	}
-	
-	private void writeRemainingXml( String xmlDir )
-	{
-		File directory = new File( xmlDir );
-		File[] files = directory.listFiles();
-		for( File f : files )
-		{
-			if( f.getAbsolutePath().endsWith("xml") )
-			{
-				// try writing everything (will not overwrite any existing docs)
-				//XMLReferenceWriter.parseFile( f.getAbsoluteFile(), dir, indexWriter );
-			}
-				
-		}
 	}
 }

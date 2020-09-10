@@ -62,15 +62,6 @@ public class ProcessingWeblet extends Standard {
 			// see: /api_en/include
 
 			System.out.println("===Source code @webref files written.===");
-			
-			if (!Shared.i().getIncludeDirectory().equals(""))
-			{
-				System.out.println("\n===Writing XML-sourced reference.===");
-
-				//XMLReferenceWriter.write( Shared.i().getIncludeDirectory(), indexWriter);
-				
-				System.out.println("===Include directory files written.===");
-			}
 
 			// write out the index file
 

@@ -5,7 +5,7 @@ echo "[REFERENCE GENERATOR] Booting up..."
 # PROCESSING_SRC_PATH=./test
 PROCESSING_SRC_PATH=../../core/src
 PROCESSING_LIB_PATH=../../java/libraries
-REFERENCES_OUT_PATH=../../../processing-website
+REFERENCES_OUT_PATH=../../../processing-website/content/references/translations/en
 # GENERATE REFERENCE ENTRIES AND INDEX THROUGH JAVADOC - BY DAVID WICKS
 
 echo "[REFERENCE GENERATOR] Source Path :: $PROCESSING_SRC_PATH"
@@ -13,20 +13,14 @@ echo "[REFERENCE GENERATOR] Library Path :: $PROCESSING_LIB_PATH"
 
 
 echo "[REFERENCE GENERATOR] Removing previous version of the ref..."
-rm -rf ../../reference
-mkdir ../../reference
-rm -rf ../../distribution
-mkdir ../../distribution
-rm -rf $REFERENCES_OUT_PATH/json
-mkdir $REFERENCES_OUT_PATH/json
-mkdir $REFERENCES_OUT_PATH/json/libraries
-mkdir $REFERENCES_OUT_PATH/json/libraries/io
-mkdir $REFERENCES_OUT_PATH/json/libraries/net
-mkdir $REFERENCES_OUT_PATH/json/libraries/data
-mkdir $REFERENCES_OUT_PATH/json/libraries/serial
-mkdir $REFERENCES_OUT_PATH/json/libraries/opengl
-mkdir $REFERENCES_OUT_PATH/json/libraries/sound
-mkdir $REFERENCES_OUT_PATH/json/libraries/video
+rm -rf $REFERENCES_OUT_PATH
+mkdir $REFERENCES_OUT_PATH
+mkdir $REFERENCES_OUT_PATH/processing
+mkdir $REFERENCES_OUT_PATH/io
+mkdir $REFERENCES_OUT_PATH/net
+mkdir $REFERENCES_OUT_PATH/serial
+mkdir $REFERENCES_OUT_PATH/sound
+mkdir $REFERENCES_OUT_PATH/video
 
 echo "[REFERENCE GENERATOR] Generating new javadocs..."
 javadoc -doclet ProcessingWeblet \

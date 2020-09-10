@@ -4,12 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 import com.sun.javadoc.Doc;
 import com.sun.javadoc.ProgramElementDoc;
@@ -32,7 +27,7 @@ public class Shared {
 	private String templateDirectory = "templates";
 	private String exampleDirectory = "web_examples";
 	private String includeDirectory = "include";
-	private String jsonDirectory ="../../../processing-website/json/";
+	private String jsonDirectory ="../../../processing-website/content/references/translations/en/processing/";
 
 	boolean noisy = false;
 	public ArrayList<String> corePackages;
@@ -181,29 +176,6 @@ public class Shared {
 
 		f = new File(OUTPUT_DIRECTORY() + dir);
 		f.mkdirs();
-	}
-
-	public static Document loadXmlDocument( String path )
-	{
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-		factory.setNamespaceAware(true);
-		DocumentBuilder builder;
-		Document doc = null;
-		try {
-			builder = factory.newDocumentBuilder();
-			doc = builder.parse( path );
-		} catch (ParserConfigurationException e) {
-			System.out.println("Failed to parse " + path );
-			System.out.println( e.getLocalizedMessage() );
-		} catch (SAXException e) {
-			System.out.println("Failed to parse " + path );
-			System.out.println( e.getLocalizedMessage() );
-		} catch (IOException e) {
-			System.out.println("Failed to parse " + path );
-			System.out.println( e.getLocalizedMessage() );
-		}
-
-		return doc;
 	}
 
 	public void createBaseDirectories(){

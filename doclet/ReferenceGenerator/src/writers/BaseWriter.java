@@ -10,12 +10,6 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
@@ -37,7 +31,7 @@ public class BaseWriter {
 	// Some utilities
 
 	public final static String MODE_JAVASCRIPT = "js";
-	public final static String jsonDir = "../../../processing-website/json/";
+	public final static String jsonDir = "../../../processing-website/content/references/translations/en/processing/";
 
 	public BaseWriter()
 	{
@@ -78,7 +72,11 @@ public class BaseWriter {
 			//add package name to anchor
 			String[] parts = doc.containingPackage().name().split("\\.");
 			String pkg = parts[parts.length-1] + "/";
-			ret = "libraries/" + pkg + ret;
+			if (pkg.equals("data/") || pkg.equals("opengl/"))
+				ret = ret;
+			else 
+				ret = pkg + ret;
+			
 		}
 
 		return ret;
@@ -597,49 +595,7 @@ public class BaseWriter {
 		// add link to each @see_external item
 		for( Tag tag : doc.tags( Shared.i().getSeeAlsoTagName() ) )
 		{
-			// get xml for method
-			String filename = tag.text() + ".json";
-			String basePath = Shared.i().getJSONDirectory();
-			File f = new File( basePath + filename );
-
-			if( ! f.exists() )
-			{
-				basePath = Shared.i().getIncludeDirectory();
-				f = new File( basePath + filename );
-			}
-
-			if( f.exists() )
-			{
-				Document xmlDoc = Shared.loadXmlDocument( f.getPath() );
-				XPathFactory xpathFactory = XPathFactory.newInstance();
-				XPath xpath = xpathFactory.newXPath();
-
-				try
-				{
-					String name = (String) xpath.evaluate("//name", xmlDoc, XPathConstants.STRING);
-					// get anchor from original filename
-					String path = f.getAbsolutePath();
-					String anchorBase = path.substring( path.lastIndexOf("/")+1, path.indexOf(".xml"));
-					if( name.endsWith("()") )
-					{
-						if( !anchorBase.endsWith("_" ) )
-						{
-							anchorBase += "_";
-						}
-					}
-					String anchor = anchorBase;
-
-					// get method name from xml
-					// get anchor from method name
-					HashMap<String, String> map = new HashMap<String, String>();
-					map.put( "anchor", anchor );
-
-					related.add( anchor );
-				} catch (XPathExpressionException e)
-				{
-					e.printStackTrace();
-				}
-			}
+			related.add( tag.text().concat("_") );
 		}
 
 		return related;
