@@ -33,7 +33,6 @@ import java.net.*;
 
 
 /**
- * ( begin auto-generated from Server.xml )
  * 
  * A server sends and receives data to and from its associated clients 
  * (other programs connected to it). When a server is started, it begins 
@@ -42,10 +41,10 @@ import java.net.*;
  * commonly used so be sure to not select one of these. For example, web 
  * servers usually use port 80 and POP mail uses port 110.
  * 
- * ( end auto-generated )
  * @webref net
  * @usage application
- * @brief The server class is used to create server objects which send and receives data to and from its associated clients (other programs connected to it). 
+ * @webBrief The server class is used to create server objects which send 
+ * and receives data to and from its associated clients (other programs connected to it). 
  * @instanceName server  	any variable of type Server
  */
 public class Server implements Runnable {
@@ -115,13 +114,11 @@ public class Server implements Runnable {
 
 
   /**
-   * ( begin auto-generated from Server_disconnect.xml )
    * 
    * Disconnect a particular client.
    * 
-   * ( end auto-generated )
-   * @brief Disconnect a particular client.
    * @webref server:server
+   * @webBrief Disconnect a particular client.
    * @param client the client to disconnect
    */
   public void disconnect(Client client) {
@@ -186,14 +183,12 @@ public class Server implements Runnable {
 
   
   /**
-   * ( begin auto-generated from Server_active.xml )
    * 
    * Returns true if this server is still active and hasn't run
    * into any trouble.
    * 
-   * ( end auto-generated )
    * @webref server:server
-   * @brief Return true if this server is still active.
+   * @webBrief Return true if this server is still active.
    */
   public boolean active() {
     return thread != null;
@@ -216,13 +211,11 @@ public class Server implements Runnable {
   int lastAvailable = -1;
 
   /**
-   * ( begin auto-generated from Server_available.xml )
    * 
    * Returns the next client in line with a new message.
    * 
-   * ( end auto-generated )
-   * @brief Returns the next client in line with a new message.
    * @webref server
+   * @webBrief Returns the next client in line with a new message.
    * @usage application
    */
   public Client available() {
@@ -254,17 +247,15 @@ public class Server implements Runnable {
 
 
   /**
-   * ( begin auto-generated from Server_stop.xml )
    * 
    * Disconnects all clients and stops the server.
    * 
-   * ( end auto-generated )
    * <h3>Advanced</h3>
    * Use this to shut down the server if you finish using it while your applet 
    * is still running. Otherwise, it will be automatically be shut down by the 
    * host PApplet using dispose(), which is identical. 
-   * @brief Disconnects all clients and stops the server.
    * @webref server
+   * @webBrief Disconnects all clients and stops the server.
    * @usage application
    */
   public void stop() {
@@ -332,14 +323,12 @@ public class Server implements Runnable {
 
 
   /**
-   * ( begin auto-generated from Server_write.xml )
    * 
    * Writes a value to all the connected clients. It sends bytes out from the 
    * Server object.
    * 
-   * ( end auto-generated )
    * @webref server
-   * @brief Writes data to all connected clients
+   * @webBrief Writes data to all connected clients
    * @param data data to write
    */
   public void write(int data) {  // will also cover char
