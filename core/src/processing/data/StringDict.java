@@ -12,6 +12,7 @@ import processing.core.PApplet;
  * A simple table class to use a String as a lookup for another String value.
  *
  * @webref data:composite
+ * @webBrief A simple table class to use a String as a lookup for another String value.
  * @see IntDict
  * @see FloatDict
  */
@@ -130,8 +131,10 @@ public class StringDict {
 
 
   /**
+   * Returns the number of key/value pairs
+   *
    * @webref stringdict:method
-   * @brief Returns the number of key/value pairs
+   * @webBrief Returns the number of key/value pairs
    */
   public int size() {
     return count;
@@ -165,7 +168,7 @@ public class StringDict {
    * Remove all entries.
    *
    * @webref stringdict:method
-   * @brief Remove all entries
+   * @webBrief Remove all entries
    */
   public void clear() {
     count = 0;
@@ -279,7 +282,7 @@ public class StringDict {
    * Return a copy of the internal keys array. This array can be modified.
    *
    * @webref stringdict:method
-   * @brief Return a copy of the internal keys array
+   * @webBrief Return a copy of the internal keys array
    */
   public String[] keyArray() {
     crop();
@@ -301,8 +304,10 @@ public class StringDict {
   }
 
   /**
+   * Return the internal array being used to store the values
+   *
    * @webref stringdict:method
-   * @brief Return the internal array being used to store the values
+   * @webBrief Return the internal array being used to store the values
    */
   public Iterable<String> values() {
     return new Iterable<String>() {
@@ -339,7 +344,7 @@ public class StringDict {
    * Create a new array and copy each of the values into it.
    *
    * @webref stringdict:method
-   * @brief Create a new array and copy each of the values into it
+   * @webBrief Create a new array and copy each of the values into it
    */
   public String[] valueArray() {
     crop();
@@ -365,7 +370,7 @@ public class StringDict {
    * Return a value for the specified key.
    *
    * @webref stringdict:method
-   * @brief Return a value for the specified key
+   * @webBrief Return a value for the specified key
    */
   public String get(String key) {
     int index = index(key);
@@ -382,8 +387,10 @@ public class StringDict {
 
 
   /**
+   * Create a new key/value pair or change the value of one
+   *
    * @webref stringdict:method
-   * @brief Create a new key/value pair or change the value of one
+   * @webBrief Create a new key/value pair or change the value of one
    */
   public void set(String key, String value) {
     int index = index(key);
@@ -411,8 +418,10 @@ public class StringDict {
 
 
   /**
+   * Check if a key is a part of the data structure
+   *
    * @webref stringdict:method
-   * @brief Check if a key is a part of the data structure
+   * @webBrief Check if a key is a part of the data structure
    */
   public boolean hasKey(String key) {
     return index(key) != -1;
@@ -431,8 +440,10 @@ public class StringDict {
   }
 
   /**
+   * Remove a key/value pair
+   *
    * @webref stringdict:method
-   * @brief Remove a key/value pair
+   * @webBrief Remove a key/value pair
    */
   public String remove(String key) {
     int index = index(key);
@@ -482,15 +493,17 @@ public class StringDict {
    * tie-breaker (only really possible with a key that has a case change).
    *
    * @webref stringdict:method
-   * @brief Sort the keys alphabetically
+   * @webBrief Sort the keys alphabetically
    */
   public void sortKeys() {
     sortImpl(true, false);
   }
 
   /**
+   * Sort the keys alphabetically in reverse 
+   * 
    * @webref stringdict:method
-   * @brief Sort the keys alphabetically in reverse
+   * @webBrief Sort the keys alphabetically in reverse
    */
   public void sortKeysReverse() {
     sortImpl(true, true);
@@ -501,7 +514,7 @@ public class StringDict {
    * Sort by values in descending order (largest value will be at [0]).
    *
    * @webref stringdict:method
-   * @brief Sort by values in ascending order
+   * @webBrief Sort by values in ascending order
    */
   public void sortValues() {
     sortImpl(false, false);
@@ -509,8 +522,10 @@ public class StringDict {
 
 
   /**
+   * Sort by values in descending order
+   *
    * @webref stringdict:method
-   * @brief Sort by values in descending order
+   * @webBrief Sort by values in descending order
    */
   public void sortValuesReverse() {
     sortImpl(false, true);

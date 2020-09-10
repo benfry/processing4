@@ -3,7 +3,14 @@ package processing.data;
 import java.io.PrintWriter;
 
 /**
+ * A <b>TableRow</b> object represents a single row of data values, 
+ * stored in columns, from a table.<br />
+ * <br />
+ * Additional <b>TableRow</b> methods are documented in the 
+ * <a href="http://processing.github.io/processing-javadocs/core/">Processing Data Javadoc</a>.
+ *
  * @webref data:composite
+ * @webBrief represents a single row of data values, stored in columns, from a table.
  * @see Table
  * @see Table#addRow()
  * @see Table#removeRow(int)
@@ -14,8 +21,10 @@ import java.io.PrintWriter;
 public interface TableRow {
 
   /**
+   * Get an String value from the specified column
+   *
    * @webref tablerow:method
-   * @brief Get an String value from the specified column
+   * @webBrief Get an String value from the specified column
    * @param column ID number of the column to reference
    * @see TableRow#getInt(int)
    * @see TableRow#getFloat(int)
@@ -28,8 +37,10 @@ public interface TableRow {
   public String getString(String columnName);
 
   /**
+   * Get an integer value from the specified column
+   *
    * @webref tablerow:method
-   * @brief Get an integer value from the specified column
+   * @webBrief Get an integer value from the specified column
    * @param column ID number of the column to reference
    * @see TableRow#getFloat(int)
    * @see TableRow#getString(int)
@@ -42,7 +53,7 @@ public interface TableRow {
   public int getInt(String columnName);
 
   /**
-   * @brief Get a long value from the specified column
+   * @webBrief Get a long value from the specified column
    * @param column ID number of the column to reference
    * @see TableRow#getFloat(int)
    * @see TableRow#getString(int)
@@ -56,8 +67,10 @@ public interface TableRow {
   public long getLong(String columnName);
 
   /**
+   * Get a float value from the specified column
+   *
    * @webref tablerow:method
-   * @brief Get a float value from the specified column
+   * @webBrief Get a float value from the specified column
    * @param column ID number of the column to reference
    * @see TableRow#getInt(int)
    * @see TableRow#getString(int)
@@ -70,7 +83,7 @@ public interface TableRow {
   public float getFloat(String columnName);
   
   /**
-   * @brief Get a double value from the specified column
+   * @webBrief Get a double value from the specified column
    * @param column ID number of the column to reference
    * @see TableRow#getInt(int)
    * @see TableRow#getString(int)
@@ -83,8 +96,10 @@ public interface TableRow {
   public double getDouble(String columnName);
 
   /**
+   * Store a String value in the specified column
+   *
    * @webref tablerow:method
-   * @brief Store a String value in the specified column
+   * @webBrief Store a String value in the specified column
    * @param column ID number of the target column
    * @param value value to assign
    * @see TableRow#setInt(int, int)
@@ -97,8 +112,10 @@ public interface TableRow {
   public void setString(String columnName, String value);
 
   /**
+   * Store an integer value in the specified column
+   *
    * @webref tablerow:method
-   * @brief Store an integer value in the specified column
+   * @webBrief Store an integer value in the specified column
    * @param column ID number of the target column
    * @param value value to assign
    * @see TableRow#setFloat(int, float)
@@ -112,7 +129,7 @@ public interface TableRow {
   public void setInt(String columnName, int value);
   
   /**
-   * @brief Store a long value in the specified column
+   * @webBrief Store a long value in the specified column
    * @param column ID number of the target column
    * @param value value to assign
    * @see TableRow#setFloat(int, float)
@@ -126,8 +143,10 @@ public interface TableRow {
   public void setLong(String columnName, long value);
 
   /**
+   * Store a float value in the specified column
+   *
    * @webref tablerow:method
-   * @brief Store a float value in the specified column
+   * @webBrief Store a float value in the specified column
    * @param column ID number of the target column
    * @param value value to assign
    * @see TableRow#setInt(int, int)
@@ -141,7 +160,7 @@ public interface TableRow {
   public void setFloat(String columnName, float value);
 
   /**
-   * @brief Store a double value in the specified column
+   * @webBrief Store a double value in the specified column
    * @param column ID number of the target column
    * @param value value to assign
    * @see TableRow#setFloat(int, float)
@@ -155,14 +174,16 @@ public interface TableRow {
   public void setDouble(String columnName, double value);
 
   /**
+   * Get the column count.
+   *
    * @webref tablerow:method
-   * @brief Get the column count.
+   * @webBrief Get the column count.
    * @return count of all columns
    */
   public int getColumnCount();
   
   /**
-   * @brief Get the column type.
+   * @webBrief Get the column type.
    * @param columnName title of the target column
    * @return type of the column
    */
@@ -174,21 +195,23 @@ public interface TableRow {
   public int getColumnType(int column);
   
   /**
-   * @brief Get the all column types
+   * @webBrief Get the all column types
    * @return list of all column types
    */
   public int[] getColumnTypes();
 
   /**
+   * Get the column title.
+   *
    * @webref tablerow:method
-   * @brief Get the column title.
+   * @webBrief Get the column title.
    * @param column ID number of the target column
    * @return title of the column
    */
   public String getColumnTitle(int column);
 
   /**
-   * @brief Get the all column titles
+   * @webBrief Get the all column titles
    * @return list of all column titles
    */
   public String[] getColumnTitles();

@@ -36,7 +36,6 @@ import java.util.Base64;
 
 
 /**
- * ( begin auto-generated from PShape.xml )
  *
  * Datatype for storing shapes. Processing can currently load and display
  * SVG (Scalable Vector Graphics) shapes. Before a shape is used, it must
@@ -49,7 +48,6 @@ import java.util.Base64;
  * and Adobe Illustrator. It is not a full SVG implementation, but offers
  * some straightforward support for handling vector data.
  *
- * ( end auto-generated )
  * <h3>Advanced</h3>
  *
  * In-progress class to handle shape data, currently to be considered of
@@ -78,6 +76,7 @@ import java.util.Base64;
  * the PShape interface, and the ease of loadShape() and shape().</p>
  *
  * @webref shape
+ * @webBrief Datatype for storing shapes.
  * @usage Web &amp; Application
  * @see PApplet#loadShape(String)
  * @see PApplet#createShape()
@@ -134,26 +133,22 @@ public class PShape implements PConstants {
     "This renderer does not support %1$s for individual vertices";
 
   /**
-   * ( begin auto-generated from PShape_width.xml )
    *
    * The width of the PShape document.
    *
-   * ( end auto-generated )
    * @webref pshape:field
    * @usage web_application
-   * @brief     Shape document width
+   * @webBrief Shape document width
    * @see PShape#height
    */
   public float width;
   /**
-   * ( begin auto-generated from PShape_height.xml )
    *
    * The height of the PShape document.
    *
-   * ( end auto-generated )
    * @webref pshape:field
    * @usage web_application
-   * @brief     Shape document height
+   * @webBrief Shape document height
    * @see PShape#width
    */
   public float height;
@@ -393,7 +388,6 @@ public class PShape implements PConstants {
   }
 
   /**
-   * ( begin auto-generated from PShape_isVisible.xml )
    *
    * Returns a boolean value "true" if the image is set to be visible,
    * "false" if not. This is modified with the <b>setVisible()</b> parameter.
@@ -402,10 +396,9 @@ public class PShape implements PConstants {
    * created the SVG file. For instance, this parameter is controlled by
    * showing or hiding the shape in the layers palette in Adobe Illustrator.
    *
-   * ( end auto-generated )
    * @webref pshape:method
    * @usage web_application
-   * @brief Returns a boolean value "true" if the image is set to be visible, "false" if not
+   * @webBrief Returns a boolean value "true" if the image is set to be visible, "false" if not
    * @see PShape#setVisible(boolean)
    */
   public boolean isVisible() {
@@ -414,7 +407,6 @@ public class PShape implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PShape_setVisible.xml )
    *
    * Sets the shape to be visible or invisible. This is determined by the
    * value of the <b>visible</b> parameter.
@@ -423,10 +415,9 @@ public class PShape implements PConstants {
    * created the SVG file. For instance, this parameter is controlled by
    * showing or hiding the shape in the layers palette in Adobe Illustrator.
    *
-   * ( end auto-generated )
    * @webref pshape:mathod
    * @usage web_application
-   * @brief Sets the shape to be visible or invisible
+   * @webBrief  Sets the shape to be visible or invisible
    * @param visible "false" makes the shape invisible and "true" makes it visible
    * @see PShape#isVisible()
    */
@@ -436,20 +427,18 @@ public class PShape implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PShape_disableStyle.xml )
    *
    * Disables the shape's style data and uses Processing's current styles.
    * Styles include attributes such as colors, stroke weight, and stroke
    * joints.
    *
-   * ( end auto-generated )
    *  <h3>Advanced</h3>
    * Overrides this shape's style information and uses PGraphics styles and
    * colors. Identical to ignoreStyles(true). Also disables styles for all
    * child shapes.
    * @webref pshape:method
    * @usage web_application
-   * @brief     Disables the shape's style data and uses Processing styles
+   * @webBrief Disables the shape's style data and uses Processing styles
    * @see PShape#enableStyle()
    */
   public void disableStyle() {
@@ -462,17 +451,15 @@ public class PShape implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PShape_enableStyle.xml )
    *
    * Enables the shape's style data and ignores Processing's current styles.
    * Styles include attributes such as colors, stroke weight, and stroke
    * joints.
    *
-   * ( end auto-generated )
    *
    * @webref pshape:method
    * @usage web_application
-   * @brief Enables the shape's style data and ignores the Processing styles
+   * @webBrief Enables the shape's style data and ignores the Processing styles
    * @see PShape#disableStyle()
    */
   public void enableStyle() {
@@ -624,8 +611,21 @@ public class PShape implements PConstants {
 
 
   /**
+   * The <b>beginContour()</b> and <b>endContour()</b> methods make it 
+   * possible to define shapes with other shapes cut out of them. For 
+   * example, the inside of a letter 'O'. These two functions are always 
+   * used together, you'll never use one without the other. Between them, 
+   * define the geometry you want to create. As you'll see when you run 
+   * the example above, the second smaller shape is cut out of the first 
+   * larger shape.<br />
+   * <br />
+   * The exterior shape and the interior contour must <em>wind</em> in 
+   * opposite directions. This means that if the points of the geometry 
+   * for the exterior shape are described in a clockwise order, the points 
+   * on the interior shape are defined in a counterclockwise order. 
+   * 
    * @webref shape:vertex
-   * @brief Starts a new contour
+   * @webBrief Starts a new contour
    * @see PShape#endContour()
    */
   public void beginContour() {
@@ -659,8 +659,21 @@ public class PShape implements PConstants {
 
 
   /**
+   * The <b>beginContour()</b> and <b>endContour()</b> methods make 
+   * it possible to define shapes with other shapes cut out of them. 
+   * For example, the inside of a letter 'O'. These two functions are 
+   * always used together, you'll never use one without the other. 
+   * Between them, define the geometry you want to create. As you'll 
+   * see when you run the example above, the second smaller shape is 
+   * cut out of the first larger shape.<br />
+   * <br />
+   * The exterior shape and the interior contour must <em>wind</em> 
+   * in opposite directions. This means that if the points of the 
+   * geometry for the exterior shape are described in a clockwise order, 
+   * the points on the interior shape are defined in a counterclockwise order. 
+   *
    * @webref shape:vertex
-   * @brief Ends a contour
+   * @webBrief Ends a contour
    * @see PShape#beginContour()
    */
   public void endContour() {
@@ -752,8 +765,11 @@ public class PShape implements PConstants {
 
 
   /**
+   * This method is used to start a custom shape created with the <b>createShape()</b> 
+   * function. It's always and only used with <b>createShape()</b>. 
+   * 
    * @webref pshape:method
-   * @brief Starts the creation of a new PShape
+   * @webBrief Starts the creation of a new PShape
    * @see PApplet#endShape()
    */
   public void beginShape() {
@@ -767,8 +783,11 @@ public class PShape implements PConstants {
   }
 
   /**
+   * This method is used to complete a custom shape created with the <b>createShape()</b> 
+   * function. It's always and only used with <b>createShape()</b>. 
+   *
    * @webref pshape:method
-   * @brief Finishes the creation of a new PShape
+   * @webBrief Finishes the creation of a new PShape
    * @see PApplet#beginShape()
    */
   public void endShape() {
@@ -1974,8 +1993,10 @@ public class PShape implements PConstants {
   }
 
   /**
+   * Returns the number of children within the PShape.
+   * 
    * @webref
-   * @brief Returns the number of children
+   * @webBrief Returns the number of children
    */
   public int getChildCount() {
     return childCount;
@@ -1997,16 +2018,14 @@ public class PShape implements PConstants {
   }
 
   /**
-   * ( begin auto-generated from PShape_getChild.xml )
    *
    * Extracts a child shape from a parent shape. Specify the name of the
    * shape with the <b>target</b> parameter. The shape is returned as a
    * <b>PShape</b> object, or <b>null</b> is returned if there is an error.
    *
-   * ( end auto-generated )
    * @webref pshape:method
    * @usage web_application
-   * @brief Returns a child element of a shape as a PShape object
+   * @webBrief Returns a child element of a shape as a PShape object
    * @param index the layer position of the shape to get
    * @see PShape#addChild(PShape)
    */
@@ -2050,8 +2069,12 @@ public class PShape implements PConstants {
 
   // can't be just 'add' because that suggests additive geometry
   /**
+   * Adds a child PShape to a parent PShape that is defined as a GROUP. 
+   * In the example, the three shapes <b>path</b>, <b>rectangle</b>, 
+   * and <b>circle</b> are added to a parent PShape variable named 
+   * <b>house</b> that is a GROUP.
    * @webref pshape:method
-   * @brief Adds a new child
+   * @webBrief Adds a new child
    * @param who any variable of type PShape
    * @see PShape#getChild(int)
    */
@@ -2220,8 +2243,13 @@ public class PShape implements PConstants {
   }
 
   /**
+   * The <b>getVertexCount()</b> method returns the number of vertices that 
+   * make up a PShape. In the above example, the value 4 is returned by the 
+   * <b>getVertexCount()</b> method because 4 vertices are defined in 
+   * <b>setup()</b>.
+   * 
    * @webref pshape:method
-   * @brief Returns the total number of vertices as an int
+   * @webBrief Returns the total number of vertices as an int
    * @see PShape#getVertex(int)
    * @see PShape#setVertex(int, float, float)
    */
@@ -2234,8 +2262,14 @@ public class PShape implements PConstants {
 
 
   /**
+   * The <b>getVertex()</b> method returns a PVector with the coordinates of 
+   * the vertex point located at the position defined by the <b>index</b> 
+   * parameter. This method works when shapes are created as shown in the 
+   * example above, but won't work properly when a shape is defined explicitly 
+   * (e.g. <b>createShape(RECT, 20, 20, 80, 80)</b>.
+   * 
    * @webref pshape:method
-   * @brief Returns the vertex at the index position
+   * @webBrief Returns the vertex at the index position
    * @param index the location of the vertex
    * @see PShape#setVertex(int, float, float)
    * @see PShape#getVertexCount()
@@ -2280,8 +2314,13 @@ public class PShape implements PConstants {
 
 
   /**
+   * The <b>setVertex()</b> method defines the coordinates of the vertex point 
+   * located at the position defined by the <b>index</b> parameter. This method 
+   * works when shapes are created as shown in the example above, but won't work 
+   * properly when a shape is defined explicitly (e.g. <b>createShape(RECT, 20, 20, 80, 80)</b>.
+   * 
    * @webref pshape:method
-   * @brief Sets the vertex at the index position
+   * @webBrief Sets the vertex at the index position
    * @param index the location of the vertex
    * @param x the x value for the vertex
    * @param y the y value for the vertex
@@ -2471,7 +2510,6 @@ public class PShape implements PConstants {
   }
 
  /**
-   * ( begin auto-generated from PShape_setFill.xml )
    *
    * The <b>setFill()</b> method defines the fill color of a <b>PShape</b>.
    * This method is used after shapes are created or when a shape is defined explicitly
@@ -2482,11 +2520,10 @@ public class PShape implements PConstants {
    * created, only the <b>setFill()</b> method can define a new fill value for
    * the <b>PShape</b>.
    *
-   * ( end auto-generated )
    *
    * @webref
    * @param fill
-   * @brief Set the fill value
+   * @webBrief Set the fill value
    */
   public void setFill(int fill) {
     if (openShape) {
@@ -2627,7 +2664,6 @@ public class PShape implements PConstants {
   }
 
   /**
-   * ( begin auto-generated from PShape_setStroke.xml )
    *
    * The <b>setStroke()</b> method defines the outline color of a <b>PShape</b>.
    * This method is used after shapes are created or when a shape is defined
@@ -2638,11 +2674,10 @@ public class PShape implements PConstants {
    * However, after the shape is created, only the <b>setStroke()</b> method
    * can define a new stroke value for the <b>PShape</b>.
    *
-   * ( end auto-generated )
    *
    * @webref
    * @param stroke
-   * @brief Set the stroke value
+   * @webBrief Set the stroke value
    */
   public void setStroke(int stroke) {
     if (openShape) {
@@ -3034,7 +3069,6 @@ public class PShape implements PConstants {
 
 
 /**
-   * ( begin auto-generated from PShape_translate.xml )
    *
    * Specifies an amount to displace the shape. The <b>x</b> parameter
    * specifies left/right translation, the <b>y</b> parameter specifies
@@ -3048,10 +3082,9 @@ public class PShape implements PConstants {
    * Using this method with the <b>z</b> parameter requires using the P3D
    * parameter in combination with size.
    *
-   * ( end auto-generated )
    * @webref pshape:method
    * @usage web_application
-   * @brief Displaces the shape
+   * @webBrief Displaces the shape
    * @param x left/right translation
    * @param y up/down translation
    * @see PShape#rotate(float)
@@ -3072,7 +3105,6 @@ public class PShape implements PConstants {
   }
 
   /**
-   * ( begin auto-generated from PShape_rotateX.xml )
    *
    * Rotates a shape around the x-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -3088,10 +3120,9 @@ public class PShape implements PConstants {
    * This method requires a 3D renderer. You need to use P3D as a third
    * parameter for the <b>size()</b> function as shown in the example above.
    *
-   * ( end auto-generated )
    * @webref pshape:method
    * @usage web_application
-   * @brief Rotates the shape around the x-axis
+   * @webBrief Rotates the shape around the x-axis
    * @param angle angle of rotation specified in radians
    * @see PShape#rotate(float)
    * @see PShape#rotateY(float)
@@ -3105,7 +3136,6 @@ public class PShape implements PConstants {
   }
 
   /**
-   * ( begin auto-generated from PShape_rotateY.xml )
    *
    * Rotates a shape around the y-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -3121,11 +3151,10 @@ public class PShape implements PConstants {
    * This method requires a 3D renderer. You need to use P3D as a third
    * parameter for the <b>size()</b> function as shown in the example above.
    *
-   * ( end auto-generated )
    *
    * @webref pshape:method
    * @usage web_application
-   * @brief Rotates the shape around the y-axis
+   * @webBrief Rotates the shape around the y-axis
    * @param angle angle of rotation specified in radians
    * @see PShape#rotate(float)
    * @see PShape#rotateX(float)
@@ -3140,7 +3169,6 @@ public class PShape implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PShape_rotateZ.xml )
    *
    * Rotates a shape around the z-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -3156,10 +3184,9 @@ public class PShape implements PConstants {
    * This method requires a 3D renderer. You need to use P3D as a third
    * parameter for the <b>size()</b> function as shown in the example above.
    *
-   * ( end auto-generated )
    * @webref pshape:method
    * @usage web_application
-   * @brief Rotates the shape around the z-axis
+   * @webBrief Rotates the shape around the z-axis
    * @param angle angle of rotation specified in radians
    * @see PShape#rotate(float)
    * @see PShape#rotateX(float)
@@ -3173,7 +3200,6 @@ public class PShape implements PConstants {
   }
 
   /**
-   * ( begin auto-generated from PShape_rotate.xml )
    *
    * Rotates a shape the amount specified by the <b>angle</b> parameter.
    * Angles should be specified in radians (values from 0 to TWO_PI) or
@@ -3187,10 +3213,9 @@ public class PShape implements PConstants {
    * <b>rotate(PI)</b>. This transformation is applied directly to the shape,
    * it's not refreshed each time <b>draw()</b> is run.
    *
-   * ( end auto-generated )
    * @webref pshape:method
    * @usage web_application
-   * @brief Rotates the shape
+   * @webBrief Rotates the shape
    * @param angle angle of rotation specified in radians
    * @see PShape#rotateX(float)
    * @see PShape#rotateY(float)
@@ -3224,7 +3249,6 @@ public class PShape implements PConstants {
   //
 
   /**
-   * ( begin auto-generated from PShape_scale.xml )
    *
    * Increases or decreases the size of a shape by expanding and contracting
    * vertices. Shapes always scale from the relative origin of their bounding
@@ -3238,10 +3262,9 @@ public class PShape implements PConstants {
    * Using this method with the <b>z</b> parameter requires using the P3D
    * parameter in combination with size.
    *
-   * ( end auto-generated )
    * @webref pshape:method
    * @usage web_application
-   * @brief Increases and decreases the size of a shape
+   * @webBrief Increases and decreases the size of a shape
    * @param s percentate to scale the object
    * @see PShape#rotate(float)
    * @see PShape#translate(float, float)
@@ -3272,14 +3295,12 @@ public class PShape implements PConstants {
   //
 
 /**
-   * ( begin auto-generated from PShape_resetMatrix.xml )
    *
    * Replaces the current matrix of a shape with the identity matrix. The
    * equivalent function in OpenGL is glLoadIdentity().
    *
-   * ( end auto-generated )
    * @webref pshape:method
-   * @brief Replaces the current matrix of a shape with the identity matrix
+   * @webBrief Replaces the current matrix of a shape with the identity matrix
    * @usage web_application
    * @see PShape#rotate(float)
    * @see PShape#scale(float)

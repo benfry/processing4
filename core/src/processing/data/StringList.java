@@ -17,6 +17,7 @@ import processing.core.PApplet;
  * a sorted copy, use list.copy().sort().
  *
  * @webref data:composite
+ * @webBrief Helper class for a list of Strings.
  * @see IntList
  * @see FloatList
  */
@@ -100,7 +101,7 @@ public class StringList implements Iterable<String> {
    * Get the length of the list.
    *
    * @webref stringlist:method
-   * @brief Get the length of the list
+   * @webBrief Get the length of the list
    */
   public int size() {
     return count;
@@ -124,7 +125,7 @@ public class StringList implements Iterable<String> {
    * Remove all entries from the list.
    *
    * @webref stringlist:method
-   * @brief Remove all entries from the list
+   * @webBrief Remove all entries from the list
    */
   public void clear() {
     count = 0;
@@ -135,7 +136,7 @@ public class StringList implements Iterable<String> {
    * Get an entry at a particular index.
    *
    * @webref stringlist:method
-   * @brief Get an entry at a particular index
+   * @webBrief Get an entry at a particular index
    */
   public String get(int index) {
     if (index >= count) {
@@ -151,7 +152,7 @@ public class StringList implements Iterable<String> {
    * entries with 0s.
    *
    * @webref stringlist:method
-   * @brief Set an entry at a particular index
+   * @webBrief Set an entry at a particular index
    */
   public void set(int index, String what) {
     if (index >= count) {
@@ -185,7 +186,7 @@ public class StringList implements Iterable<String> {
    * Remove an element from the specified index.
    *
    * @webref stringlist:method
-   * @brief Remove an element from the specified index
+   * @webBrief Remove an element from the specified index
    */
   public String remove(int index) {
     if (index < 0 || index >= count) {
@@ -294,7 +295,7 @@ public class StringList implements Iterable<String> {
    * Add a new entry to the list.
    *
    * @webref stringlist:method
-   * @brief Add a new entry to the list
+   * @webBrief Add a new entry to the list
    */
   public void append(String value) {
     if (count == data.length) {
@@ -467,8 +468,10 @@ public class StringList implements Iterable<String> {
 //  }
 
   /**
+   * Check if a value is a part of the list
+   *
    * @webref stringlist:method
-   * @brief Check if a value is a part of the list
+   * @webBrief Check if a value is a part of the list
    */
   public boolean hasValue(String value) {
     if (value == null) {
@@ -492,7 +495,7 @@ public class StringList implements Iterable<String> {
    * Sorts the array in place.
    *
    * @webref stringlist:method
-   * @brief Sorts the array in place
+   * @webBrief Sorts the array in place
    */
   public void sort() {
     sortImpl(false);
@@ -503,7 +506,7 @@ public class StringList implements Iterable<String> {
    * Reverse sort, orders values from highest to lowest.
    *
    * @webref stringlist:method
-   * @brief Reverse sort, orders values from highest to lowest
+   * @webBrief Reverse sort, orders values from highest to lowest
    */
   public void sortReverse() {
     sortImpl(true);
@@ -551,8 +554,10 @@ public class StringList implements Iterable<String> {
 //  }
 
   /**
+   * Reverse the order of the list elements
+   *
    * @webref stringlist:method
-   * @brief Reverse the order of the list elements
+   * @webBrief Reverse the order of the list elements
    */
   public void reverse() {
     int ii = count - 1;
@@ -570,7 +575,7 @@ public class StringList implements Iterable<String> {
    * obey the randomSeed() function in PApplet.
    *
    * @webref stringlist:method
-   * @brief Randomize the order of the list elements
+   * @webBrief Randomize the order of the list elements
    */
   public void shuffle() {
     Random r = new Random();
@@ -605,7 +610,7 @@ public class StringList implements Iterable<String> {
    * Make the entire list lower case.
    *
    * @webref stringlist:method
-   * @brief Make the entire list lower case
+   * @webBrief Make the entire list lower case
    */
   public void lower() {
     for (int i = 0; i < count; i++) {
@@ -620,7 +625,7 @@ public class StringList implements Iterable<String> {
    * Make the entire list upper case.
    *
    * @webref stringlist:method
-   * @brief Make the entire list upper case
+   * @webBrief Make the entire list upper case
    */
   public void upper() {
     for (int i = 0; i < count; i++) {
@@ -680,7 +685,7 @@ public class StringList implements Iterable<String> {
    *
    * @return an array sized by the length of the list with each of the values.
    * @webref stringlist:method
-   * @brief Create a new array with a copy of all the values
+   * @webBrief Create a new array with a copy of all the values
    */
   public String[] array() {
     return array(null);

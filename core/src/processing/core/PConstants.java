@@ -128,15 +128,14 @@ public interface PConstants {
   // useful goodness
 
   /**
-   * ( begin auto-generated from PI.xml )
    *
    * PI is a mathematical constant with the value 3.14159265358979323846. It
    * is the ratio of the circumference of a circle to its diameter. It is
    * useful in combination with the trigonometric functions <b>sin()</b> and
    * <b>cos()</b>.
    *
-   * ( end auto-generated )
    * @webref constants
+   * @webBrief PI is a mathematical constant with the value 3.14159265358979323846.
    * @see PConstants#TWO_PI
    * @see PConstants#TAU
    * @see PConstants#HALF_PI
@@ -145,15 +144,14 @@ public interface PConstants {
    */
   static final float PI = (float) Math.PI;
   /**
-   * ( begin auto-generated from HALF_PI.xml )
    *
    * HALF_PI is a mathematical constant with the value
    * 1.57079632679489661923. It is half the ratio of the circumference of a
    * circle to its diameter. It is useful in combination with the
    * trigonometric functions <b>sin()</b> and <b>cos()</b>.
    *
-   * ( end auto-generated )
    * @webref constants
+   * @webBrief HALF_PI is a mathematical constant with the value 1.57079632679489661923.
    * @see PConstants#PI
    * @see PConstants#TWO_PI
    * @see PConstants#TAU
@@ -162,15 +160,14 @@ public interface PConstants {
   static final float HALF_PI = (float) (Math.PI / 2.0);
   static final float THIRD_PI = (float) (Math.PI / 3.0);
   /**
-   * ( begin auto-generated from QUARTER_PI.xml )
    *
    * QUARTER_PI is a mathematical constant with the value 0.7853982. It is
    * one quarter the ratio of the circumference of a circle to its diameter.
    * It is useful in combination with the trigonometric functions
    * <b>sin()</b> and <b>cos()</b>.
    *
-   * ( end auto-generated )
    * @webref constants
+   * @webBrief QUARTER_PI is a mathematical constant with the value 0.7853982.
    * @see PConstants#PI
    * @see PConstants#TWO_PI
    * @see PConstants#TAU
@@ -178,15 +175,14 @@ public interface PConstants {
    */
   static final float QUARTER_PI = (float) (Math.PI / 4.0);
   /**
-   * ( begin auto-generated from TWO_PI.xml )
    *
    * TWO_PI is a mathematical constant with the value 6.28318530717958647693.
    * It is twice the ratio of the circumference of a circle to its diameter.
    * It is useful in combination with the trigonometric functions
    * <b>sin()</b> and <b>cos()</b>.
    *
-   * ( end auto-generated )
    * @webref constants
+   * @webBrief TWO_PI is a mathematical constant with the value 6.28318530717958647693.
    * @see PConstants#PI
    * @see PConstants#TAU
    * @see PConstants#HALF_PI
@@ -194,15 +190,14 @@ public interface PConstants {
    */
   static final float TWO_PI = (float) (2.0 * Math.PI);
   /**
-   * ( begin auto-generated from TAU.xml )
    *
    * TAU is an alias for TWO_PI, a mathematical constant with the value
    * 6.28318530717958647693. It is twice the ratio of the circumference
    * of a circle to its diameter. It is useful in combination with the
    * trigonometric functions <b>sin()</b> and <b>cos()</b>.
    *
-   * ( end auto-generated )
    * @webref constants
+   * @webBrief An alias for TWO_PI
    * @see PConstants#PI
    * @see PConstants#TWO_PI
    * @see PConstants#HALF_PI

@@ -56,6 +56,8 @@ import processing.core.PConstants;
  * <p>A rough "spec" for CSV can be found <a href="http://tools.ietf.org/html/rfc4180">here</a>.</p>
  *
  * @webref data:composite
+ * @webBrief Generic class for handling tabular data, typically from a CSV, TSV, or
+ * other sort of spreadsheet file.
  * @see PApplet#loadTable(String)
  * @see PApplet#saveTable(Table, String)
  * @see TableRow
@@ -1789,8 +1791,10 @@ public class Table {
 
 
   /**
+   * Adds a new column to a table
+   *
    * @webref table:method
-   * @brief Adds a new column to a table
+   * @webBrief Adds a new column to a table
    * @see Table#removeColumn(String)
    */
   public void addColumn() {
@@ -1863,8 +1867,10 @@ public class Table {
   }
 
  /**
+   * Removes a column from a table
+   *
    * @webref table:method
-   * @brief Removes a column from a table
+   * @webBrief Removes a column from a table
    * @param columnName the title of the column to be removed
    * @see Table#addColumn()
    */
@@ -1908,8 +1914,10 @@ public class Table {
 
 
   /**
+   * Gets the number of columns in a table
+   *
    * @webref table:method
-   * @brief Gets the number of columns in a table
+   * @webBrief Gets the number of columns in a table
    * @see Table#getRowCount()
    */
   public int getColumnCount() {
@@ -2256,8 +2264,10 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Gets the number of rows in a table
+   *
    * @webref table:method
-   * @brief Gets the number of rows in a table
+   * @webBrief Gets the number of rows in a table
    * @see Table#getColumnCount()
    */
   public int getRowCount() {
@@ -2271,8 +2281,10 @@ public class Table {
 
 
   /**
+   * Removes all rows from a table
+   *
    * @webref table:method
-   * @brief Removes all rows from a table
+   * @webBrief Removes all rows from a table
    * @see Table#addRow()
    * @see Table#removeRow(int)
    */
@@ -2314,8 +2326,10 @@ public class Table {
 
 
  /**
+   * Adds a row to a table
+   *
    * @webref table:method
-   * @brief Adds a row to a table
+   * @webBrief Adds a row to a table
    * @see Table#removeRow(int)
    * @see Table#clearRows()
    */
@@ -2437,9 +2451,11 @@ public class Table {
   }
 
 
-  /**
+  /** 
+   * Removes a row from a table
+   *
    * @webref table:method
-   * @brief Removes a row from a table
+   * @webBrief Removes a row from a table
    * @param row ID number of the row to remove
    * @see Table#addRow()
    * @see Table#clearRows()
@@ -2644,8 +2660,10 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Gets a row from a table
+   *
    * @webref table:method
-   * @brief Gets a row from a table
+   * @webBrief Gets a row from a table
    * @param row ID number of the row to get
    * @see Table#rows()
    * @see Table#findRow(String, int)
@@ -2664,7 +2682,7 @@ public class Table {
    * If you want to iterate in a multi-threaded manner, don't use the iterator.
    *
    * @webref table:method
-   * @brief Gets multiple rows from a table
+   * @webBrief Gets multiple rows from a table
    * @see Table#getRow(int)
    * @see Table#findRow(String, int)
    * @see Table#findRows(String, int)
@@ -3051,8 +3069,10 @@ public class Table {
 
 
   /**
+   * Get an integer value from the specified row and column
+   *
    * @webref table:method
-   * @brief Get an integer value from the specified row and column
+   * @webBrief Get an integer value from the specified row and column
    * @param row ID number of the row to reference
    * @param column ID number of the column to reference
    * @see Table#getFloat(int, int)
@@ -3088,8 +3108,10 @@ public class Table {
 
 
   /**
+   * Store an integer value in the specified row and column
+   *
    * @webref table:method
-   * @brief Store an integer value in the specified row and column
+   * @webBrief Store an integer value in the specified row and column
    * @param row ID number of the target row
    * @param column ID number of the target column
    * @param value value to assign
@@ -3232,7 +3254,7 @@ public class Table {
    * this is Float.NaN, but can be controlled with setMissingFloat().
    *
    * @webref table:method
-   * @brief Get a float value from the specified row and column
+   * @webBrief Get a float value from the specified row and column
    * @param row ID number of the row to reference
    * @param column ID number of the column to reference
    * @see Table#getInt(int, int)
@@ -3269,8 +3291,10 @@ public class Table {
 
 
   /**
+   * Store a float value in the specified row and column
+   *
    * @webref table:method
-   * @brief Store a float value in the specified row and column
+   * @webBrief Store a float value in the specified row and column
    * @param row ID number of the target row
    * @param column ID number of the target column
    * @param value value to assign
@@ -3465,7 +3489,7 @@ public class Table {
    * Get a String value from the table. If the row is longer than the table
    *
    * @webref table:method
-   * @brief Get an String value from the specified row and column
+   * @webBrief Get an String value from the specified row and column
    * @param row ID number of the row to reference
    * @param column ID number of the column to reference
    * @see Table#getInt(int, int)
@@ -3516,8 +3540,10 @@ public class Table {
 
 
   /**
+   * Store a float value in the specified row and column
+   *
    * @webref table:method
-   * @brief Store a String value in the specified row and column
+   * @webBrief Store a String value in the specified row and column
    * @param row ID number of the target row
    * @param column ID number of the target column
    * @param value value to assign
@@ -3546,8 +3572,10 @@ public class Table {
   }
 
   /**
+   * Gets all values in the specified column
+   *
    * @webref table:method
-   * @brief Gets all values in the specified column
+   * @webBrief Gets all values in the specified column
    * @param columnName title of the column to search
    * @see Table#getInt(int, int)
    * @see Table#getFloat(int, int)
@@ -3688,8 +3716,10 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Finds a row that contains the given value
+   *
    * @webref table:method
-   * @brief Finds a row that contains the given value
+   * @webBrief Finds a row that contains the given value
    * @param value the value to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3713,8 +3743,10 @@ public class Table {
 
 
   /**
+   * Finds multiple rows that contain the given value
+   *
    * @webref table:method
-   * @brief Finds multiple rows that contain the given value
+   * @webBrief Finds multiple rows that contain the given value
    * @param value the value to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3741,7 +3773,7 @@ public class Table {
 
 
   /**
-   * @brief Finds multiple rows that contain the given value
+   * @webBrief Finds multiple rows that contain the given value
    * @param value the value to match
    * @param column ID number of the column to search
    */
@@ -3845,8 +3877,10 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Finds a row that matches the given expression
+   *
    * @webref table:method
-   * @brief Finds a row that matches the given expression
+   * @webBrief Finds a row that matches the given expression
    * @param regexp the regular expression to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3870,8 +3904,10 @@ public class Table {
 
 
   /**
+   * Finds multiple rows that match the given expression
+   *
    * @webref table:method
-   * @brief Finds multiple rows that match the given expression
+   * @webBrief Finds multiple rows that match the given expression
    * @param regexp the regular expression to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3898,8 +3934,10 @@ public class Table {
 
 
   /**
+   * Finds multiple rows that match the given expression
+   *
    * @webref table:method
-   * @brief Finds multiple rows that match the given expression
+   * @webBrief Finds multiple rows that match the given expression
    * @param value the regular expression to match
    * @param column ID number of the column to search
    */
@@ -4002,7 +4040,7 @@ public class Table {
    * Remove any of the specified characters from the entire table.
    *
    * @webref table:method
-   * @brief Removes characters from the table
+   * @webBrief Removes characters from the table
    * @param tokens a list of individual characters to be removed
    * @see Table#trim()
    */
@@ -4055,8 +4093,10 @@ public class Table {
 
 
   /**
+   * Trims whitespace from values
+   *
    * @webref table:method
-   * @brief Trims whitespace from values
+   * @webBrief Trims whitespace from values
    * @see Table#removeTokens(String)
    */
   public void trim() {
@@ -4299,7 +4339,7 @@ public class Table {
    * Sorts (orders) a table based on the values in a column.
    *
    * @webref table:method
-   * @brief Orders a table based on the values in a column
+   * @webBrief Orders a table based on the values in a column
    * @param columnName the name of the column to sort
    * @see Table#trim()
    */

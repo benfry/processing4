@@ -56,6 +56,7 @@ import java.util.HashMap;
  *   ^^^^^^^^^^^^^^ setWidth (width displaced by char)
  * </PRE>
  * @webref typography
+ * @webBrief Grayscale bitmap font class used by Processing.
  * @see PApplet#loadFont(String)
  * @see PApplet#createFont(String, float, boolean, char[])
  * @see PGraphics#textFont(PFont)
@@ -869,7 +870,6 @@ public class PFont implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PFont_list.xml )
    *
    * Gets a list of the fonts installed on the system. The data is returned
    * as a String array. This list provides the names of each font for input
@@ -877,9 +877,9 @@ public class PFont implements PConstants {
    * fonts. This function is meant as a tool for programming local
    * applications and is not recommended for use in applets.
    *
-   * ( end auto-generated )
    *
    * @webref pfont
+   * @webBrief Gets a list of the fonts installed on the system.
    * @usage application
    * @brief     Gets a list of the fonts installed on the system
    */

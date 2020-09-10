@@ -39,6 +39,8 @@ import java.util.HashMap;
  * http://processing.org/discourse/beta/num_1159494801.html
  *
  * @webref rendering:shaders
+ * @webBrief This class encapsulates a GLSL shader program, including a vertex
+ * and a fragment shader.
  */
 public class PShader implements PConstants {
   static protected final int POINT    = 0;
@@ -382,8 +384,10 @@ public class PShader implements PConstants {
   }
 
   /**
+   * Sets a variable within the shader
+   *
    * @webref rendering:shaders
-   * @brief Sets a variable within the shader
+   * @webBrief Sets a variable within the shader
    * @param name the name of the uniform variable to modify
    * @param x first component of the variable to modify
    */

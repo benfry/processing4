@@ -45,6 +45,8 @@ import processing.core.PApplet;
  * representing a single node of an XML tree.
  *
  * @webref data:composite
+ * @webBrief This is the base class used for the Processing XML library,
+ * representing a single node of an XML tree.
  * @see PApplet#loadXML(String)
  * @see PApplet#parseXML(String)
  * @see PApplet#saveXML(XML, String)
@@ -247,8 +249,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Converts String content to an XML object
+   *
    * @webref xml:method
-   * @brief Converts String content to an XML object
+   * @webBrief Converts String content to an XML object
    * @param data the content to be parsed as XML
    * @return an XML object, or null
    * @throws SAXException
@@ -301,7 +305,7 @@ public class XML implements Serializable {
    * element.
    *
    * @webref xml:method
-   * @brief Gets a copy of the element's parent
+   * @webBrief Gets a copy of the element's parent
    */
   public XML getParent() {
     return this.parent;
@@ -320,7 +324,7 @@ public class XML implements Serializable {
    * prefix) of the element.
    *
    * @webref xml:method
-   * @brief Gets the element's full name
+   * @webBrief Gets the element's full name
    * @return the name, or null if the element only contains #PCDATA.
    */
   public String getName() {
@@ -329,8 +333,10 @@ public class XML implements Serializable {
   }
 
   /**
+   * Sets the element's name
+   *
    * @webref xml:method
-   * @brief Sets the element's name
+   * @webBrief Sets the element's name
    */
   public void setName(String newName) {
     Document document = node.getOwnerDocument();
@@ -370,7 +376,7 @@ public class XML implements Serializable {
    * Returns the number of children.
    *
    * @webref xml:method
-   * @brief Returns the element's number of children
+   * @webBrief Returns the element's number of children
    * @return the count.
    */
   public int getChildCount() {
@@ -383,7 +389,7 @@ public class XML implements Serializable {
    * Returns a boolean of whether or not there are children.
    *
    * @webref xml:method
-   * @brief Checks whether or not an element has any children
+   * @webBrief Checks whether or not an element has any children
    */
   public boolean hasChildren() {
     checkChildren();
@@ -396,7 +402,7 @@ public class XML implements Serializable {
    * each child and calling getName() on each XMLElement.
    *
    * @webref xml:method
-   * @brief Returns the names of all children as an array
+   * @webBrief Returns the names of all children as an array
    */
   public String[] listChildren() {
 //    NodeList children = node.getChildNodes();
@@ -421,7 +427,7 @@ public class XML implements Serializable {
    * Returns an array containing all the child elements.
    *
    * @webref xml:method
-   * @brief Returns an array containing all child elements
+   * @webBrief Returns an array containing all child elements
    */
   public XML[] getChildren() {
 //    NodeList children = node.getChildNodes();
@@ -441,7 +447,7 @@ public class XML implements Serializable {
    * Quick accessor for an element at a particular index.
    *
    * @webref xml:method
-   * @brief Returns the child element with the specified index value or path
+   * @webBrief Returns the child element with the specified index value or path
    */
   public XML getChild(int index) {
     checkChildren();
@@ -557,8 +563,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Appends a new child to the element
+   *
    * @webref xml:method
-   * @brief Appends a new child to the element
+   * @webBrief Appends a new child to the element
    */
   public XML addChild(String tag) {
     Document document = node.getOwnerDocument();
@@ -586,8 +594,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Removes the specified child
+   *
    * @webref xml:method
-   * @brief Removes the specified child
+   * @webBrief Removes the specified child
    */
   public void removeChild(XML kid) {
     node.removeChild(kid.node);
@@ -600,7 +610,7 @@ public class XML implements Serializable {
    * If you call this and use saveXML() your original spacing will be gone.
    * 
    * @nowebref
-   * @brief Removes whitespace nodes
+   * @webBrief Removes whitespace nodes
    */
   public void trim() {
     try {
@@ -674,7 +684,7 @@ public class XML implements Serializable {
    * Returns the number of attributes.
    *
    * @webref xml:method
-   * @brief Counts the specified element's number of attributes
+   * @webBrief Counts the specified element's number of attributes
    */
   public int getAttributeCount() {
     return node.getAttributes().getLength();
@@ -685,7 +695,7 @@ public class XML implements Serializable {
    * Get a list of the names for all of the attributes for this node.
    *
    * @webref xml:method
-   * @brief Returns a list of names of all attributes as an array
+   * @webBrief Returns a list of names of all attributes as an array
    */
   public String[] listAttributes() {
     NamedNodeMap nnm = node.getAttributes();
@@ -700,7 +710,7 @@ public class XML implements Serializable {
    * Returns whether an attribute exists.
    *
    * @webref xml:method
-   * @brief Checks whether or not an element has the specified attribute
+   * @webBrief Checks whether or not an element has the specified attribute
    */
   public boolean hasAttribute(String name) {
     return (node.getAttributes().getNamedItem(name) != null);
@@ -732,8 +742,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Gets the content of an attribute as a String
+   *
    * @webref xml:method
-   * @brief Gets the content of an attribute as a String
+   * @webBrief Gets the content of an attribute as a String
    */
   public String getString(String name) {
     return getString(name, null);
@@ -753,8 +765,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an attribute as a String
+   *
    * @webref xml:method
-   * @brief Sets the content of an attribute as a String
+   * @webBrief Sets the content of an attribute as a String
    */
   public void setString(String name, String value) {
     ((Element) node).setAttribute(name, value);
@@ -762,8 +776,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Gets the content of an attribute as an int
+   *
    * @webref xml:method
-   * @brief Gets the content of an attribute as an int
+   * @webBrief Gets the content of an attribute as an int
    */
   public int getInt(String name) {
     return getInt(name, 0);
@@ -771,8 +787,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an attribute as an int
+   *
    * @webref xml:method
-   * @brief Sets the content of an attribute as an int
+   * @webBrief Sets the content of an attribute as an int
    */
   public void setInt(String name, int value) {
     setString(name, String.valueOf(value));
@@ -793,8 +811,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an element as an int
+   *
    * @webref xml:method
-   * @brief Sets the content of an element as an int
+   * @webBrief Sets the content of an element as an int
    */
   public void setLong(String name, long value) {
     setString(name, String.valueOf(value));
@@ -818,7 +838,7 @@ public class XML implements Serializable {
    * Returns the value of an attribute, or zero if not present.
    *
    * @webref xml:method
-   * @brief Gets the content of an attribute as a float
+   * @webBrief Gets the content of an attribute as a float
    */
   public float getFloat(String name) {
     return getFloat(name, 0);
@@ -839,8 +859,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an attribute as a float
+   *
    * @webref xml:method
-   * @brief Sets the content of an attribute as a float
+   * @webBrief Sets the content of an attribute as a float
    */
   public void setFloat(String name, float value) {
     setString(name, String.valueOf(value));
@@ -877,7 +899,7 @@ public class XML implements Serializable {
    * this method returns null.
    *
    * @webref xml:method
-   * @brief Gets the content of an element
+   * @webBrief Gets the content of an element
    * @return the content.
    * @see XML#getIntContent()
    * @see XML#getFloatContent()
@@ -894,8 +916,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Gets the content of an element as an int
+   *
    * @webref xml:method
-   * @brief Gets the content of an element as an int
+   * @webBrief Gets the content of an element as an int
    * @return the content.
    * @see XML#getContent()
    * @see XML#getFloatContent()
@@ -914,8 +938,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Gets the content of an element as a float
+   *
    * @webref xml:method
-   * @brief Gets the content of an element as a float
+   * @webBrief Gets the content of an element as a float
    * @return the content.
    * @see XML#getContent()
    * @see XML#getIntContent()
@@ -966,8 +992,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an element
+   *
    * @webref xml:method
-   * @brief Sets the content of an element
+   * @webBrief Sets the content of an element
    */
   public void setContent(String text) {
     node.setTextContent(text);
@@ -998,7 +1026,7 @@ public class XML implements Serializable {
    * Format this XML data as a String.
    *
    * @webref xml:method
-   * @brief Formats XML data as a String
+   * @webBrief Formats XML data as a String
    * @param indent -1 for a single line (and no declaration), >= 0 for indents and newlines
    * @return the content
    * @see XML#toString()
@@ -1144,7 +1172,7 @@ public class XML implements Serializable {
    * Same as format(2). Use the format() function for more options.
    *
    * @webref xml:method
-   * @brief Gets XML data as a String using default formatting
+   * @webBrief Gets XML data as a String using default formatting
    * @return the content
    * @see XML#format(int)
    */

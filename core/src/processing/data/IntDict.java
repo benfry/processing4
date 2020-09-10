@@ -12,6 +12,7 @@ import processing.core.PApplet;
  * A simple class to use a String as a lookup for an int value.
  *
  * @webref data:composite
+ * @webBrief A simple class to use a String as a lookup for an int value.
  * @see FloatDict
  * @see StringDict
  */
@@ -110,7 +111,7 @@ public class IntDict {
    * Returns the number of key/value pairs
    *
    * @webref intdict:method
-   * @brief Returns the number of key/value pairs
+   * @webBrief Returns the number of key/value pairs
    */
   public int size() {
     return count;
@@ -144,7 +145,7 @@ public class IntDict {
    * Remove all entries.
    *
    * @webref intdict:method
-   * @brief Remove all entries
+   * @webBrief Remove all entries
    */
   public void clear() {
     count = 0;
@@ -258,7 +259,7 @@ public class IntDict {
    * Return a copy of the internal keys array. This array can be modified.
    *
    * @webref intdict:method
-   * @brief Return a copy of the internal keys array
+   * @webBrief Return a copy of the internal keys array
    */
   public String[] keyArray() {
     crop();
@@ -282,7 +283,7 @@ public class IntDict {
 
   /**
    * @webref intdict:method
-   * @brief Return the internal array being used to store the values
+   * @webBrief Return the internal array being used to store the values
    */
   public Iterable<Integer> values() {
     return new Iterable<Integer>() {
@@ -319,7 +320,7 @@ public class IntDict {
    * Create a new array and copy each of the values into it.
    *
    * @webref intdict:method
-   * @brief Create a new array and copy each of the values into it
+   * @webBrief Create a new array and copy each of the values into it
    */
   public int[] valueArray() {
     crop();
@@ -347,7 +348,7 @@ public class IntDict {
    * Return a value for the specified key.
    *
    * @webref intdict:method
-   * @brief Return a value for the specified key
+   * @webBrief Return a value for the specified key
    */
   public int get(String key) {
     int index = index(key);
@@ -369,7 +370,7 @@ public class IntDict {
    * Create a new key/value pair or change the value of one.
    *
    * @webref intdict:method
-   * @brief Create a new key/value pair or change the value of one
+   * @webBrief Create a new key/value pair or change the value of one
    */
   public void set(String key, int amount) {
     int index = index(key);
@@ -392,7 +393,7 @@ public class IntDict {
 
   /**
    * @webref intdict:method
-   * @brief Check if a key is a part of the data structure
+   * @webBrief Check if a key is a part of the data structure
    */
   public boolean hasKey(String key) {
     return index(key) != -1;
@@ -403,7 +404,7 @@ public class IntDict {
    * Increase the value associated with a specific key by 1.
    *
    * @webref intdict:method
-   * @brief Increase the value of a specific key value by 1
+   * @webBrief Increase the value of a specific key value by 1
    */
   public void increment(String key) {
     add(key, 1);
@@ -424,7 +425,7 @@ public class IntDict {
 
   /**
    * @webref intdict:method
-   * @brief Add to a value
+   * @webBrief Add to a value
    */
   public void add(String key, int amount) {
     int index = index(key);
@@ -438,7 +439,7 @@ public class IntDict {
 
   /**
    * @webref intdict:method
-   * @brief Subtract from a value
+   * @webBrief Subtract from a value
    */
   public void sub(String key, int amount) {
     add(key, -amount);
@@ -447,7 +448,7 @@ public class IntDict {
 
   /**
    * @webref intdict:method
-   * @brief Multiply a value
+   * @webBrief Multiply a value
    */
   public void mult(String key, int amount) {
     int index = index(key);
@@ -459,7 +460,7 @@ public class IntDict {
 
   /**
    * @webref intdict:method
-   * @brief Divide a value
+   * @webBrief Divide a value
    */
   public void div(String key, int amount) {
     int index = index(key);
@@ -590,7 +591,7 @@ public class IntDict {
 
   /**
    * @webref intdict:method
-   * @brief Remove a key/value pair
+   * @webBrief Remove a key/value pair
    */
   public int remove(String key) {
     int index = index(key);
@@ -639,7 +640,7 @@ public class IntDict {
    * tie-breaker (only really possible with a key that has a case change).
    *
    * @webref intdict:method
-   * @brief Sort the keys alphabetically
+   * @webBrief Sort the keys alphabetically
    */
   public void sortKeys() {
     sortImpl(true, false, true);
@@ -650,7 +651,7 @@ public class IntDict {
    * tie-breaker (only really possible with a key that has a case change).
    *
    * @webref intdict:method
-   * @brief Sort the keys alphabetically in reverse
+   * @webBrief Sort the keys alphabetically in reverse
    */
   public void sortKeysReverse() {
     sortImpl(true, true, true);
@@ -661,7 +662,7 @@ public class IntDict {
    * Sort by values in ascending order. The smallest value will be at [0].
    *
    * @webref intdict:method
-   * @brief Sort by values in ascending order
+   * @webBrief Sort by values in ascending order
    */
   public void sortValues() {
     sortValues(true);
@@ -682,7 +683,7 @@ public class IntDict {
    * Sort by values in descending order. The largest value will be at [0].
    *
    * @webref intdict:method
-   * @brief Sort by values in descending order
+   * @webBrief Sort by values in descending order
    */
   public void sortValuesReverse() {
     sortValuesReverse(true);

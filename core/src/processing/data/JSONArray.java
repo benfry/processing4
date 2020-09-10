@@ -91,6 +91,7 @@ import processing.core.PApplet;
  * @author JSON.org
  * @version 2012-11-13
  * @webref data:composite
+ * @webBrief A JSONArray is an ordered sequence of values.
  * @see JSONObject
  * @see PApplet#loadJSONObject(String)
  * @see PApplet#loadJSONArray(String)
@@ -276,7 +277,7 @@ public class JSONArray {
    * Get the string associated with an index.
    *
    * @webref jsonarray:method
-   * @brief Gets the String value associated with an index
+   * @webBrief Gets the String value associated with an index
    * @param index must be between 0 and length() - 1
    * @return      A string value.
    * @throws RuntimeException If there is no string value for the index.
@@ -311,7 +312,7 @@ public class JSONArray {
    * Get the int value associated with an index.
    *
    * @webref jsonarray:method
-   * @brief Gets the int value associated with an index
+   * @webBrief Gets the int value associated with an index
    * @param index must be between 0 and length() - 1
    * @return The value.
    * @throws RuntimeException If the key is not found or if the value is not a number.
@@ -390,7 +391,7 @@ public class JSONArray {
    * internally, so this is simply getDouble() cast to a float.
    *
    * @webref jsonarray:method
-   * @brief Gets the float value associated with an index
+   * @webBrief Gets the float value associated with an index
    * @param index must be between 0 and length() - 1
    * @see JSONArray#getInt(int)
    * @see JSONArray#getString(int)
@@ -453,7 +454,7 @@ public class JSONArray {
    * The string values "true" and "false" are converted to boolean.
    *
    * @webref jsonarray:method
-   * @brief Gets the boolean value associated with an index
+   * @webBrief Gets the boolean value associated with an index
    * @param index must be between 0 and length() - 1
    * @return      The truth.
    * @throws RuntimeException If there is no value for the index or if the
@@ -499,7 +500,7 @@ public class JSONArray {
    * Get the JSONArray associated with an index.
    *
    * @webref jsonobject:method
-   * @brief Gets the JSONArray associated with an index value
+   * @webBrief Gets the JSONArray associated with an index value
    * @param index must be between 0 and length() - 1
    * @return A JSONArray value.
    * @throws RuntimeException If there is no value for the index. or if the
@@ -530,7 +531,7 @@ public class JSONArray {
    * Get the JSONObject associated with an index.
    *
    * @webref jsonobject:method
-   * @brief Gets the JSONObject associated with an index value
+   * @webBrief Gets the JSONObject associated with an index value
    * @param index the index value of the object to get
    * @return A JSONObject value.
    * @throws RuntimeException If there is no value for the index or if the
@@ -561,7 +562,7 @@ public class JSONArray {
    * Get this entire array as a String array.
    *
    * @webref jsonarray:method
-   * @brief Gets the entire array as an array of Strings
+   * @webBrief Gets the entire array as an array of Strings
    * @see JSONArray#getIntArray()
    */
   public String[] getStringArray() {
@@ -577,7 +578,7 @@ public class JSONArray {
    * Get this entire array as an int array. Everything must be an int.
    *
    * @webref jsonarray:method
-   * @brief Gets the entire array as array of ints
+   * @webBrief Gets the entire array as array of ints
    * @see JSONArray#getStringArray()
    */
   public int[] getIntArray() {
@@ -698,7 +699,7 @@ public class JSONArray {
    * Append an String value. This increases the array's length by one.
    *
    * @webref jsonarray:method
-   * @brief Appends a value, increasing the array's length by one
+   * @webBrief Appends a value, increasing the array's length by one
    * @param value a String value
    * @return this.
    * @see JSONArray#size()
@@ -852,7 +853,7 @@ public class JSONArray {
    *  it out.
    *
    * @webref jsonarray:method
-   * @brief Put a String value in the JSONArray
+   * @webBrief Put a String value in the JSONArray
    * @param index an index value
    * @param value the value to assign
    * @return this.
@@ -873,7 +874,7 @@ public class JSONArray {
    *  it out.
    *
    * @webref jsonarray:method
-   * @brief Put an int value in the JSONArray
+   * @webBrief Put an int value in the JSONArray
    * @param index an index value
    * @param value the value to assign
    * @return this.
@@ -909,7 +910,7 @@ public class JSONArray {
    * setDouble(value).
    *
    * @webref jsonarray:method
-   * @brief Put a float value in the JSONArray
+   * @webBrief Put a float value in the JSONArray
    * @param index an index value
    * @param value the value to assign
    * @return this.
@@ -945,7 +946,7 @@ public class JSONArray {
    * necessary to pad it out.
    *
    * @webref jsonarray:method
-   * @brief Put a boolean value in the JSONArray
+   * @webBrief Put a boolean value in the JSONArray
    * @param index an index value
    * @param value the value to assign
    * @return this.
@@ -974,8 +975,10 @@ public class JSONArray {
 //  }
 
   /**
+   * Sets the JSONArray value associated with an index value
+   *
    * @webref jsonarray:method
-   * @brief Sets the JSONArray value associated with an index value
+   * @webBrief Sets the JSONArray value associated with an index value
    * @param index the index value to target
    * @param value the value to assign
    * @see JSONArray#setJSONObject(int, JSONObject)
@@ -988,8 +991,10 @@ public class JSONArray {
   }
 
   /**
+   * Sets the JSONObject value associated with an index value
+   *
    * @webref jsonarray:method
-   * @brief Sets the JSONObject value associated with an index value
+   * @webBrief Sets the JSONObject value associated with an index value
    * @param index the index value to target
    * @param value the value to assign
    * @see JSONArray#setJSONArray(int, JSONArray)
@@ -1035,7 +1040,7 @@ public class JSONArray {
    * Get the number of elements in the JSONArray, included nulls.
    *
    * @webref jsonarray:method
-   * @brief Gets the number of elements in the JSONArray
+   * @webBrief Gets the number of elements in the JSONArray
    * @return The length (or size).
    * @see JSONArray#append(String)
    * @see JSONArray#remove(int)
@@ -1048,6 +1053,7 @@ public class JSONArray {
   /**
    * Determine if the value is null.
    * @webref
+   * @webBrief Determine if the value is null.
    * @param index must be between 0 and length() - 1
    * @return true if the value at the index is null, or if there is no value.
    */
@@ -1060,7 +1066,7 @@ public class JSONArray {
    * Remove an index and close the hole.
    *
    * @webref jsonarray:method
-   * @brief Removes an element
+   * @webBrief Removes an element
    * @param index the index value of the element to be removed
    * @return The value that was associated with the index, or null if there was no value.
    * @see JSONArray#size()

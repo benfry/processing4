@@ -35,7 +35,6 @@ import processing.awt.ShimAWT;
 
 
 /**
-   * ( begin auto-generated from PImage.xml )
    *
    * Datatype for storing images. Processing can display <b>.gif</b>,
    * <b>.jpg</b>, <b>.tga</b>, and <b>.png</b> images. Images may be
@@ -51,9 +50,9 @@ import processing.awt.ShimAWT;
    * <br/> create a new image, use the <b>createImage()</b> function. Do not
    * use the syntax <b>new PImage()</b>.
    *
-   * ( end auto-generated )
    *
  * @webref image
+ * @webBrief Datatype for storing images.
  * @usage Web &amp; Application
  * @instanceName pimg any object of type PImage
  * @see PApplet#loadImage(String)
@@ -81,7 +80,6 @@ public class PImage implements PConstants, Cloneable {
   public int format;
 
   /**
-   * ( begin auto-generated from pixels.xml )
    *
    * Array containing the values for all the pixels in the display window.
    * These values are of the color datatype. This array is the size of the
@@ -98,11 +96,10 @@ public class PImage implements PConstants, Cloneable {
    * Without <b>loadPixels()</b>, running the code may (or will in future
    * releases) result in a NullPointerException.
    *
-   * ( end auto-generated )
    *
    * @webref image:pixels
+   * @webBrief Array containing the color of every pixel in the image.
    * @usage web_application
-   * @brief     Array containing the color of every pixel in the image
    */
   public int[] pixels;
 
@@ -114,26 +111,22 @@ public class PImage implements PConstants, Cloneable {
   public int pixelHeight;
 
   /**
-   * ( begin auto-generated from PImage_width.xml )
    *
    * The width of the image in units of pixels.
    *
-   * ( end auto-generated )
    * @webref pimage:field
+   * @webBrief The width of the image in units of pixels.
    * @usage web_application
-   * @brief     Image width
    */
   public int width;
 
   /**
-   * ( begin auto-generated from PImage_height.xml )
    *
    * The height of the image in units of pixels.
    *
-   * ( end auto-generated )
    * @webref pimage:field
+   * @webBrief The height of the image in units of pixels.
    * @usage web_application
-   * @brief     Image height
    */
   public int height;
 
@@ -206,7 +199,6 @@ public class PImage implements PConstants, Cloneable {
    * <br/> <br/>
    * To create a new image, use the <b>createImage()</b> function (do not use
    * <b>new PImage()</b>).
-   * ( end auto-generated )
    * @nowebref
    * @usage web_application
    * @see PApplet#loadImage(String, String)
@@ -384,7 +376,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_loadPixels.xml )
    *
    * Loads the pixel data for the image into its <b>pixels[]</b> array. This
    * function must always be called before reading from or writing to <b>pixels[]</b>.
@@ -396,7 +387,6 @@ public class PImage implements PConstants, Cloneable {
    * function in the current Processing release, this will always be subject
    * to change.
    *
-   * ( end auto-generated )
    *
    * <h3>Advanced</h3>
    * Call this when you want to mess with the pixels[] array.
@@ -405,7 +395,7 @@ public class PImage implements PConstants, Cloneable {
    * this should copy all data into the pixels[] array
    *
    * @webref pimage:pixels
-   * @brief Loads the pixel data for the image into its pixels[] array
+   * @webBrief Loads the pixel data for the image into its <b>pixels[]</b> array.
    * @usage web_application
    */
   public void loadPixels() {  // ignore
@@ -422,7 +412,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_updatePixels.xml )
    *
    * Updates the image with the data in its <b>pixels[]</b> array. Use in
    * conjunction with <b>loadPixels()</b>. If you're only reading pixels from
@@ -438,14 +427,13 @@ public class PImage implements PConstants, Cloneable {
    * Currently, none of the renderers use the additional parameters to
    * <b>updatePixels()</b>, however this may be implemented in the future.
    *
-   * ( end auto-generated )
    * <h3>Advanced</h3>
    * Mark the pixels in this region as needing an update.
    * This is not currently used by any of the renderers, however the api
    * is structured this way in the hope of being able to use this to
    * speed things up in the future.
    * @webref pimage:pixels
-   * @brief Updates the image with the data in its pixels[] array
+   * @webBrief Updates the image with the data in its <b>pixels[]</b> array.
    * @usage web_application
    * @param x x-coordinate of the upper-left corner
    * @param y y-coordinate of the upper-left corner
@@ -497,7 +485,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_resize.xml )
    *
    * Resize the image to a new width and height. To make the image scale
    * proportionally, use 0 as the value for the <b>wide</b> or <b>high</b>
@@ -511,9 +498,8 @@ public class PImage implements PConstants, Cloneable {
    * content, first get a copy of its image data using the <b>get()</b>
    * method, and call <b>resize()</b> on the PImage that is returned.
    *
-   * ( end auto-generated )
    * @webref pimage:method
-   * @brief Changes the size of an image to a new width and height
+   * @webBrief Resize the image to a new width and height.
    * @usage web_application
    * @param w the resized image width
    * @param h the resized image height
@@ -550,7 +536,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_get.xml )
    *
    * Reads the color of any pixel or grabs a section of an image. If no
    * parameters are specified, the entire image is returned. Use the <b>x</b>
@@ -571,7 +556,6 @@ public class PImage implements PConstants, Cloneable {
    * equivalent statement to <b>get(x, y)</b> using <b>pixels[]</b> is
    * <b>pixels[y*width+x]</b>. See the reference for <b>pixels[]</b> for more information.
    *
-   * ( end auto-generated )
    *
    * <h3>Advanced</h3>
    * Returns an ARGB "color" type (a packed 32 bit int with the color.
@@ -592,7 +576,7 @@ public class PImage implements PConstants, Cloneable {
    * pixels[] array directly.
    *
    * @webref image:pixels
-   * @brief Reads the color of any pixel or grabs a rectangle of pixels
+   * @webBrief Reads the color of any pixel or grabs a rectangle of pixels.
    * @usage web_application
    * @param x x-coordinate of the pixel
    * @param y y-coordinate of the pixel
@@ -709,7 +693,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_set.xml )
    *
    * Changes the color of any pixel or writes an image directly into the
    * display window.<br />
@@ -727,10 +710,9 @@ public class PImage implements PConstants, Cloneable {
    * is <b>pixels[y*width+x] = #000000</b>. See the reference for
    * <b>pixels[]</b> for more information.
    *
-   * ( end auto-generated )
    *
    * @webref image:pixels
-   * @brief writes a color to any pixel or writes an image into another
+   * @webBrief Writes a color to any pixel or writes an image into another
    * @usage web_application
    * @param x x-coordinate of the pixel
    * @param y y-coordinate of the pixel
@@ -831,7 +813,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_mask.xml )
    *
    * Masks part of an image from displaying by loading another image and
    * using it as an alpha channel. This mask image should only contain
@@ -844,7 +825,6 @@ public class PImage implements PConstants, Cloneable {
    * same length as the target image's pixels array and should contain only
    * grayscale data of values between 0-255.
    *
-   * ( end auto-generated )
    *
    * <h3>Advanced</h3>
    *
@@ -861,9 +841,9 @@ public class PImage implements PConstants, Cloneable {
    * performing a proper luminance-based conversion.
    *
    * @webref pimage:method
+   * @webBrief Masks part of an image with another image as an alpha channel
    * @usage web_application
    * @param img image to use as the mask
-   * @brief Masks part of an image with another image as an alpha channel
    */
   public void mask(PImage img) {
     img.loadPixels();
@@ -949,7 +929,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_filter.xml )
    *
    * Filters an image as defined by one of the following modes:<br /><br
    * />THRESHOLD - converts the image to black and white pixels depending if
@@ -975,7 +954,6 @@ public class PImage implements PConstants, Cloneable {
    * <br />
    * DILATE - increases the light areas with the amount defined by the level parameter
    *
-   * ( end auto-generated )
    *
    * <h3>Advanced</h3>
    * Method to apply a variety of basic filters to this image.
@@ -996,7 +974,7 @@ public class PImage implements PConstants, Cloneable {
    * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
    *
    * @webref image:pixels
-   * @brief Converts the image to grayscale or black and white
+   * @webBrief Converts the image to grayscale or black and white
    * @usage web_application
    * @param kind Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE, or DILATE
    * @param param unique for each, see above
@@ -1501,7 +1479,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_copy.xml )
    *
    * Copies a region of pixels from one image into another. If the source and
    * destination regions aren't the same size, it will automatically resize
@@ -1511,10 +1488,9 @@ public class PImage implements PConstants, Cloneable {
    * <br /><br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
    *
-   * ( end auto-generated )
    *
    * @webref image:pixels
-   * @brief Copies the entire image
+   * @webBrief Copies the entire image
    * @usage web_application
    * @param sx X coordinate of the source's upper left corner
    * @param sy Y coordinate of the source's upper left corner
@@ -1550,13 +1526,11 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from blendColor.xml )
    *
    * Blends two color values together based on the blending mode given as the
    * <b>MODE</b> parameter. The possible modes are described in the reference
    * for the <b>blend()</b> function.
    *
-   * ( end auto-generated )
    * <h3>Advanced</h3>
    * <UL>
    * <LI>REPLACE - destination colour equals colour of source pixel: C = A.
@@ -1621,6 +1595,8 @@ public class PImage implements PConstants, Cloneable {
    * built with Processing.</P>
    *
    * @webref color:creating_reading
+   * @webBrief Blends two color values together based on the blending mode given as the
+   * <b>MODE</b> parameter.
    * @usage web_application
    * @param c1 the first color to blend
    * @param c2 the second color to blend
@@ -1663,7 +1639,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   * ( begin auto-generated from PImage_blend.xml )
    *
    * Blends a region of pixels into the image specified by the <b>img</b>
    * parameter. These copies utilize full alpha channel support and a choice
@@ -1711,10 +1686,9 @@ public class PImage implements PConstants, Cloneable {
    * <br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
    *
-   * ( end auto-generated )
    *
    * @webref image:pixels
-   * @brief  Copies a pixel or rectangle of pixels using different blending modes
+   * @webBrief Copies a pixel or rectangle of pixels using different blending modes.
    * @param src an image variable referring to the source image
    * @param sx X coordinate of the source's upper left corner
    * @param sy Y coordinate of the source's upper left corner
@@ -3269,7 +3243,6 @@ int testFunction(int dst, int src) {
 
 
   /**
-   * ( begin auto-generated from PImage_save.xml )
    *
    * Saves the image into a file. Append a file extension to the name of
    * the file, to indicate the file format to be used: either TIFF (.tif),
@@ -3283,7 +3256,6 @@ int testFunction(int dst, int src) {
    * program and can therefore save the file to the right place. See the
    * <b>createImage()</b> reference for more information.
    *
-   * ( end auto-generated )
    * <h3>Advanced</h3>
    * Save this image to disk.
    * <p>
@@ -3310,7 +3282,7 @@ int testFunction(int dst, int src) {
    * file with no error.
    *
    * @webref pimage:method
-   * @brief Saves the image to a TIFF, TARGA, PNG, or JPEG file
+   * @webBrief Saves the image to a TIFF, TARGA, PNG, or JPEG file.
    * @usage application
    * @param filename a sequence of letters and numbers
    */
