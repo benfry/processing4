@@ -143,7 +143,6 @@ public class PApplet implements PConstants {
   public PGraphics g;
 
   /**
-   * ( begin auto-generated from displayWidth.xml )
    *
    * System variable which stores the width of the computer screen. For
    * example, if the current screen resolution is 1024x768,
@@ -160,7 +159,6 @@ public class PApplet implements PConstants {
   public int displayWidth;
 
   /**
-   * ( begin auto-generated from displayHeight.xml )
    *
    * System variable that stores the height of the computer screen. For
    * example, if the current screen resolution is 1024x768,
@@ -10851,7 +10849,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from beginShape.xml )
    *
    * Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
    * creating more complex forms. <b>beginShape()</b> begins recording
@@ -10878,8 +10875,9 @@ public class PApplet implements PConstants {
    * <b>strokeJoin()</b> cannot be changed while inside a
    * <b>beginShape()</b>/<b>endShape()</b> block with any renderer.
    *
-   * 
    * @webref shape:vertex
+   * @webBrief Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
+   * creating more complex forms.
    * @param kind Either POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, or QUAD_STRIP
    * @see PShape
    * @see PGraphics#endShape()
@@ -10904,7 +10902,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from normal.xml )
    *
    * Sets the current normal vector. This is for drawing three dimensional
    * shapes and surfaces and specifies a vector perpendicular to the surface
@@ -10913,8 +10910,8 @@ public class PApplet implements PConstants {
    * imperfect, this is a better option when you want more control. This
    * function is identical to glNormal3f() in OpenGL.
    *
-   * 
    * @webref lights_camera:lights
+   * @webBrief Sets the current normal vector.
    * @param nx x direction
    * @param ny y direction
    * @param nz z direction
@@ -10965,7 +10962,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textureMode.xml )
    *
    * Sets the coordinate space for texture mapping. There are two options,
    * IMAGE, which refers to the actual coordinates of the image, and
@@ -10975,8 +10971,8 @@ public class PApplet implements PConstants {
    * the points (0,0) (0,100) (100,200) (0,200). The same mapping in
    * NORMAL_SPACE is (0,0) (0,1) (1,1) (0,1).
    *
-   * 
    * @webref image:textures
+   * @webBrief Sets the coordinate space for texture mapping.
    * @param mode either IMAGE or NORMAL
    * @see PGraphics#texture(PImage)
    * @see PGraphics#textureWrap(int)
@@ -10988,13 +10984,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textureWrap.xml )
    *
-   * Description to come...
+   * Defines if textures repeat or draw once within a texture map. 
+   * The two parameters are CLAMP (the default behavior) and REPEAT. 
+   * This function only works with the P2D and P3D renderers.
    *
-   * ( end auto-generated from textureWrap.xml )
    *
    * @webref image:textures
+   * @webBrief Defines if textures repeat or draw once within a texture map. 
    * @param wrap Either CLAMP (default) or REPEAT
    * @see PGraphics#texture(PImage)
    * @see PGraphics#textureMode(int)
@@ -11006,7 +11003,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from texture.xml )
    *
    * Sets a texture to be applied to vertex points. The <b>texture()</b>
    * function must be called between <b>beginShape()</b> and
@@ -11015,8 +11011,8 @@ public class PApplet implements PConstants {
    * When textures are in use, the fill color is ignored. Instead, use tint()
    * to specify the color of the texture as it is applied to the shape.
    *
-   * 
    * @webref image:textures
+   * @webBrief Sets a texture to be applied to vertex points.
    * @param image reference to a PImage object
    * @see PGraphics#textureMode(int)
    * @see PGraphics#textureWrap(int)
@@ -11071,7 +11067,6 @@ public class PApplet implements PConstants {
 
 
 /**
-   * ( begin auto-generated from vertex.xml )
    *
    * All shapes are constructed by connecting a series of vertices.
    * <b>vertex()</b> is used to specify the vertex coordinates for points,
@@ -11088,8 +11083,8 @@ public class PApplet implements PConstants {
    * <b>v</b> are specified in relation to the image's size in pixels, but
    * this relation can be changed with <b>textureMode()</b>.
    *
-   * 
  * @webref shape:vertex
+ * @webBrief All shapes are constructed by connecting a series of vertices.
  * @param x x-coordinate of the vertex
  * @param y y-coordinate of the vertex
  * @param z z-coordinate of the vertex
@@ -11109,7 +11104,22 @@ public class PApplet implements PConstants {
 
 
   /**
+   * Use the <b>beginContour()</b> and <b>endContour()</b> function to 
+   * create negative shapes within shapes such as the center of the 
+   * letter 'O'. <b>beginContour()</b> begins recording vertices for the 
+   * shape and <b>endContour()</b> stops recording. The vertices that 
+   * define a negative shape must "wind" in the opposite direction from 
+   * the exterior shape. First draw vertices for the exterior shape in 
+   * clockwise order, then for internal shapes, draw vertices counterclockwise.<br />
+   * <br />
+   * These functions can only be used within a <b>beginShape()</b>/<b>endShape()</b> 
+   * pair and transformations such as <b>translate()</b>, <b>rotate()</b>, and 
+   * <b>scale()</b> do not work within a <b>beginContour()</b>/<b>endContour()</b> 
+   * pair. It is also not possible to use other shapes, such as <b>ellipse()</b> 
+   * or <b>rect()</b> within.
+   *
    * @webref shape:vertex
+   * @webBrief Begins recording vertices for the shape.
    */
   public void beginContour() {
     if (recorder != null) recorder.beginContour();
@@ -11118,7 +11128,22 @@ public class PApplet implements PConstants {
 
 
   /**
+   * Use the <b>beginContour()</b> and <b>endContour()</b> function to 
+   * create negative shapes within shapes such as the center of the 
+   * letter 'O'. <b>beginContour()</b> begins recording vertices for 
+   * the shape and <b>endContour()</b> stops recording. The vertices 
+   * that define a negative shape must "wind" in the opposite direction 
+   * from the exterior shape. First draw vertices for the exterior shape 
+   * in clockwise order, then for internal shapes, draw vertices counterclockwise.<br />
+   * <br />
+   * These functions can only be used within a <b>beginShape()</b>/<b>endShape()</b> 
+   * pair and transformations such as <b>translate()</b>, <b>rotate()</b>, and 
+   * <b>scale()</b> do not work within a <b>beginContour()</b>/<b>endContour()</b> 
+   * pair. It is also not possible to use other shapes, such as <b>ellipse()</b> 
+   * or <b>rect()</b> within. 
+   * 
    * @webref shape:vertex
+   * @webBrief Stops recording vertices for the shape.
    */
   public void endContour() {
     if (recorder != null) recorder.endContour();
@@ -11133,7 +11158,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from endShape.xml )
    *
    * The <b>endShape()</b> function is the companion to <b>beginShape()</b>
    * and may only be called after <b>beginShape()</b>. When <b>endshape()</b>
@@ -11142,8 +11166,8 @@ public class PApplet implements PConstants {
    * as the value for the MODE parameter to close the shape (to connect the
    * beginning and the end).
    *
-   * 
    * @webref shape:vertex
+   * @webBrief the companion to <b>beginShape()</b> and may only be called after <b>beginShape()</b>.
    * @param mode use CLOSE to close the shape
    * @see PShape
    * @see PGraphics#beginShape(int)
@@ -11155,7 +11179,25 @@ public class PApplet implements PConstants {
 
 
   /**
+   * Loads geometry into a variable of type <b>PShape</b>. SVG and OBJ 
+   * files may be loaded. To load correctly, the file must be located 
+   * in the data directory of the current sketch. In most cases, 
+   * <b>loadShape()</b> should be used inside <b>setup()</b> because 
+   * loading shapes inside <b>draw()</b> will reduce the speed of a sketch.<br />
+   * <br />
+   * Alternatively, the file maybe be loaded from anywhere on the local 
+   * computer using an absolute path (something that starts with / on 
+   * Unix and Linux, or a drive letter on Windows), or the filename 
+   * parameter can be a URL for a file found on a network.<br />
+   * <br />
+   * If the file is not available or an error occurs, <b>null</b> will 
+   * be returned and an error message will be printed to the console. 
+   * The error message does not halt the program, however the null value 
+   * may cause a NullPointerException if your code does not check whether 
+   * the value returned is null.<br />
+   * 
    * @webref shape
+   * @webBrief Loads geometry into a variable of type <b>PShape</b>.
    * @param filename name of file to load, can be .svg or .obj
    * @see PShape
    * @see PApplet#createShape()
@@ -11174,7 +11216,35 @@ public class PApplet implements PConstants {
 
 
   /**
+   * The <b>createShape()</b> function is used to define a new shape. 
+   * Once created, this shape can be drawn with the <b>shape()</b> 
+   * function. The basic way to use the function defines new primitive 
+   * shapes. One of the following parameters are used as the first 
+   * parameter: <b>ELLIPSE</b>, <b>RECT</b>, <b>ARC</b>, <b>TRIANGLE</b>, 
+   * <b>SPHERE</b>, <b>BOX</b>, <b>QUAD</b>, or <b>LINE</b>. The 
+   * parameters for each of these different shapes are the same as their 
+   * corresponding functions: <b>ellipse()</b>, <b>rect()</b>, <b>arc()</b>, 
+   * <b>triangle()</b>, <b>sphere()</b>, <b>box()</b>, <b>quad()</b>, and 
+   * <b>line()</b>. The first example above clarifies how this works.<br />
+   * <br />
+   * Custom, unique shapes can be made by using <b>createShape()</b> without 
+   * a parameter. After the shape is started, the drawing attributes and 
+   * geometry can be set directly to the shape within the <b>beginShape()</b> 
+   * and <b>endShape()</b> methods. See the second example above for specifics, 
+   * and the reference for <b>beginShape()</b> for all of its options.<br />
+   * <br />
+   * The  <b>createShape()</b> function can also be used to make a complex 
+   * shape made of other shapes. This is called a "group" and it's created by 
+   * using the parameter <b>GROUP</b> as the first parameter. See the fourth 
+   * example above to see how it works.<br />
+   * <br />
+   * After using <b>createShape()</b>, stroke and fill color can be set by 
+   * calling methods like <b>setFill()</b> and <b>setStroke()</b>, as seen 
+   * in the examples above. The complete list of methods and fields for the 
+   * PShape class are in the <a href="http://processing.github.io/processing-javadocs/core/">Processing Javadoc</a>.
+   * 
    * @webref shape
+   * @webBrief The <b>createShape()</b> function is used to define a new shape. 
    * @see PShape
    * @see PShape#endShape()
    * @see PApplet#loadShape(String)
@@ -11199,13 +11269,25 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from loadShader.xml )
+   * Loads a shader into the PShader object. The shader file must be 
+   * loaded in the sketch's "data" folder/directory to load correctly. 
+   * Shaders are compatible with the P2D and P3D renderers, but not 
+   * with the default renderer.<br />
+   * <br />
+   * Alternatively, the file maybe be loaded from anywhere on the local 
+   * computer using an absolute path (something that starts with / on 
+   * Unix and Linux, or a drive letter on Windows), or the filename 
+   * parameter can be a URL for a file found on a network.<br />
+   * <br />
+   * If the file is not available or an error occurs, <b>null</b> will 
+   * be returned and an error message will be printed to the console. 
+   * The error message does not halt the program, however the null 
+   * value may cause a NullPointerException if your code does not check 
+   * whether the value returned is null.<br />
    *
-   * This is a new reference entry for Processing 2.0. It will be updated shortly.
-   *
-   * 
    *
    * @webref rendering:shaders
+   * @webBrief Loads a shader into the PShader object. 
    * @param fragFilename name of fragment shader file
    */
   public PShader loadShader(String fragFilename) {
@@ -11222,13 +11304,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from shader.xml )
    *
-   * This is a new reference entry for Processing 2.0. It will be updated shortly.
+   * Applies the shader specified by the parameters. It's compatible with 
+   * the P2D and P3D renderers, but not with the default renderer.
    *
-   * 
    *
    * @webref rendering:shaders
+   * @webBrief Applies the shader specified by the parameters.
    * @param shader name of shader file
    */
   public void shader(PShader shader) {
@@ -11247,13 +11329,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from resetShader.xml )
    *
-   * This is a new reference entry for Processing 2.0. It will be updated shortly.
+   * Restores the default shaders. Code that runs after <b>resetShader()</b> 
+   * will not be affected by previously defined shaders.
    *
-   * 
    *
    * @webref rendering:shaders
+   * @webBrief Restores the default shaders. 
    */
   public void resetShader() {
     if (recorder != null) recorder.resetShader();
@@ -11280,15 +11362,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from clip.xml )
    *
    * Limits the rendering to the boundaries of a rectangle defined
    * by the parameters. The boundaries are drawn based on the state
    * of the <b>imageMode()</b> fuction, either CORNER, CORNERS, or CENTER.
    *
-   * 
    *
    * @webref rendering
+   * @webBrief Limits the rendering to the boundaries of a rectangle defined
+   * by the parameters.
    * @param a x-coordinate of the rectangle, by default
    * @param b y-coordinate of the rectangle, by default
    * @param c width of the rectangle, by default
@@ -11301,13 +11383,12 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from noClip.xml )
    *
    * Disables the clipping previously started by the <b>clip()</b> function.
    *
-   * 
    *
    * @webref rendering
+   * @webBrief Disables the clipping previously started by the <b>clip()</b> function.
    */
   public void noClip() {
     if (recorder != null) recorder.noClip();
@@ -11316,13 +11397,43 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from blendMode.xml )
    *
-   * This is a new reference entry for Processing 2.0. It will be updated shortly.
+   * Blends the pixels in the display window according to a defined mode. 
+   * There is a choice of the following modes to blend the source pixels (A) 
+   * with the ones of pixels already in the display window (B). Each pixel's 
+   * final color is the result of applying one of the blend modes with each 
+   * channel of (A) and (B) independently. The red channel is compared with 
+   * red, green with green, and blue with blue.<br />
+   * <br />
+   * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
+   * <br />
+   * ADD - additive blending with white clip: C = min(A*factor + B, 255)<br />
+   * <br />
+   * SUBTRACT - subtractive blending with black clip: C = max(B - A*factor, 0)<br />
+   * <br />
+   * DARKEST - only the darkest color succeeds: C = min(A*factor, B)<br />
+   * <br />
+   * LIGHTEST - only the lightest color succeeds: C = max(A*factor, B)<br />
+   * <br />
+   * DIFFERENCE - subtract colors from underlying image.<br />
+   * <br />
+   * EXCLUSION - similar to DIFFERENCE, but less extreme.<br />
+   * <br />
+   * MULTIPLY - multiply the colors, result will always be darker.<br />
+   * <br />
+   * SCREEN - opposite multiply, uses inverse values of the colors.<br />
+   * <br />
+   * REPLACE - the pixels entirely replace the others and don't utilize alpha (transparency) values<br />
+   * <br />
+   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b> 
+   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function 
+   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE, 
+   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might 
+   * not be available as well. 
    *
-   * 
    *
    * @webref rendering
+   * @webBrief Blends the pixels in the display window according to a defined mode. 
    * @param mode the blending mode to use
    */
   public void blendMode(int mode) {
@@ -11340,7 +11451,6 @@ public class PApplet implements PConstants {
 
 
 /**
-   * ( begin auto-generated from bezierVertex.xml )
    *
    * Specifies vertex coordinates for Bezier curves. Each call to
    * <b>bezierVertex()</b> defines the position of two control points and one
@@ -11353,8 +11463,8 @@ public class PApplet implements PConstants {
    * 3D version requires rendering with P3D (see the Environment reference
    * for more information).
    *
-   * 
  * @webref shape:vertex
+ * @webBrief Specifies vertex coordinates for Bezier curves.
  * @param x2 the x-coordinate of the 1st control point
  * @param y2 the y-coordinate of the 1st control point
  * @param z2 the z-coordinate of the 1st control point
@@ -11378,7 +11488,19 @@ public class PApplet implements PConstants {
 
 
   /**
+   * Specifies vertex coordinates for quadratic Bezier curves. Each call 
+   * to <b>quadraticVertex()</b> defines the position of one control 
+   * point and one anchor point of a Bezier curve, adding a new segment 
+   * to a line or shape. The first time <b>quadraticVertex()</b> is used 
+   * within a <b>beginShape()</b> call, it must be prefaced with a call 
+   * to <b>vertex()</b> to set the first anchor point. This function must 
+   * be used between <b>beginShape()</b> and <b>endShape()</b> and only 
+   * when there is no MODE parameter specified to <b>beginShape()</b>. 
+   * Using the 3D version requires rendering with P3D (see the Environment 
+   * reference for more information).
+   * 
    * @webref shape:vertex
+   * @webBrief Specifies vertex coordinates for quadratic Bezier curves.
    * @param cx the x-coordinate of the control point
    * @param cy the y-coordinate of the control point
    * @param x3 the x-coordinate of the anchor point
@@ -11407,7 +11529,6 @@ public class PApplet implements PConstants {
 
 
  /**
-   * ( begin auto-generated from curveVertex.xml )
    *
    * Specifies vertex coordinates for curves. This function may only be used
    * between <b>beginShape()</b> and <b>endShape()</b> and only when there is
@@ -11421,9 +11542,9 @@ public class PApplet implements PConstants {
    * version requires rendering with P3D (see the Environment reference for
    * more information).
    *
-   * 
   *
   * @webref shape:vertex
+  * @webBrief Specifies vertex coordinates for curves.
   * @param x the x-coordinate of the vertex
   * @param y the y-coordinate of the vertex
   * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
@@ -11449,7 +11570,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from point.xml )
    *
    * Draws a point, a coordinate in space at the dimension of one pixel. The
    * first parameter is the horizontal value for the point, the second value
@@ -11458,9 +11578,9 @@ public class PApplet implements PConstants {
    * requires the P3D parameter in combination with <b>size()</b> as shown in
    * the above example.
    *
-   * 
    *
    * @webref shape:2d_primitives
+   * @webBrief Draws a point, a coordinate in space at the dimension of one pixel.
    * @param x x-coordinate of the point
    * @param y y-coordinate of the point
    * @see PGraphics#stroke(int)
@@ -11481,7 +11601,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from line.xml )
    *
    * Draws a line (a direct path between two points) to the screen. The
    * version of <b>line()</b> with four parameters draws the line in 2D.  To
@@ -11493,8 +11612,8 @@ public class PApplet implements PConstants {
    * Drawing this shape in 3D with the <b>z</b> parameter requires the P3D
    * parameter in combination with <b>size()</b> as shown in the above example.
    *
-   * 
    * @webref shape:2d_primitives
+   * @webBrief Draws a line (a direct path between two points) to the screen.
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
    * @param x2 x-coordinate of the second point
@@ -11522,14 +11641,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from triangle.xml )
    *
    * A triangle is a plane created by connecting three points. The first two
    * arguments specify the first point, the middle two arguments specify the
    * second point, and the last two arguments specify the third point.
    *
-   * 
    * @webref shape:2d_primitives
+   * @webBrief A triangle is a plane created by connecting three points.
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
    * @param x2 x-coordinate of the second point
@@ -11546,7 +11664,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from quad.xml )
    *
    * A quad is a quadrilateral, a four sided polygon. It is similar to a
    * rectangle, but the angles between its edges are not constrained to
@@ -11554,8 +11671,8 @@ public class PApplet implements PConstants {
    * vertex and the subsequent pairs should proceed clockwise or
    * counter-clockwise around the defined shape.
    *
-   * 
    * @webref shape:2d_primitives
+   * @webBrief A quad is a quadrilateral, a four sided polygon. 
    * @param x1 x-coordinate of the first corner
    * @param y1 y-coordinate of the first corner
    * @param x2 x-coordinate of the second corner
@@ -11573,7 +11690,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from rectMode.xml )
    *
    * Modifies the location from which rectangles draw. The default mode is
    * <b>rectMode(CORNER)</b>, which specifies the location to be the upper
@@ -11591,8 +11707,8 @@ public class PApplet implements PConstants {
    * sensitive language. Note: In version 125, the mode named CENTER_RADIUS
    * was shortened to RADIUS.
    *
-   * 
    * @webref shape:attributes
+   * @webBrief Modifies the location from which rectangles draw.
    * @param mode either CORNER, CORNERS, CENTER, or RADIUS
    * @see PGraphics#rect(float, float, float, float)
    */
@@ -11603,7 +11719,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from rect.xml )
    *
    * Draws a rectangle to the screen. A rectangle is a four-sided shape with
    * every angle at ninety degrees. By default, the first two parameters set
@@ -11611,9 +11726,9 @@ public class PApplet implements PConstants {
    * fourth sets the height. These parameters may be changed with the
    * <b>rectMode()</b> function.
    *
-   * 
    *
    * @webref shape:2d_primitives
+   * @webBrief Draws a rectangle to the screen.
    * @param a x-coordinate of the rectangle by default
    * @param b y-coordinate of the rectangle by default
    * @param c width of the rectangle by default
@@ -11650,7 +11765,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from square.xml )
    *
    * Draws a square to the screen. A square is a four-sided shape with
    * every angle at ninety degrees and each side is the same length.
@@ -11659,9 +11773,9 @@ public class PApplet implements PConstants {
    * these parameters are interpreted, however, may be changed with the
    * <b>rectMode()</b> function.
    *
-   * 
    *
    * @webref shape:2d_primitives
+   * @webBrief Draws a square to the screen.
    * @param x x-coordinate of the rectangle by default
    * @param y y-coordinate of the rectangle by default
    * @param extent width and height of the rectangle by default
@@ -11675,7 +11789,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from ellipseMode.xml )
    *
    * The origin of the ellipse is modified by the <b>ellipseMode()</b>
    * function. The default configuration is <b>ellipseMode(CENTER)</b>, which
@@ -11688,8 +11801,9 @@ public class PApplet implements PConstants {
    * ellipse's bounding box. The parameter must be written in ALL CAPS
    * because Processing is a case-sensitive language.
    *
-   * 
    * @webref shape:attributes
+   * @webBrief The origin of the ellipse is modified by the <b>ellipseMode()</b>
+   * function.
    * @param mode either CENTER, RADIUS, CORNER, or CORNERS
    * @see PApplet#ellipse(float, float, float, float)
    * @see PApplet#arc(float, float, float, float, float, float)
@@ -11701,15 +11815,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from ellipse.xml )
    *
    * Draws an ellipse (oval) in the display window. An ellipse with an equal
    * <b>width</b> and <b>height</b> is a circle. The first two parameters set
    * the location, the third sets the width, and the fourth sets the height.
    * The origin may be changed with the <b>ellipseMode()</b> function.
    *
-   * 
    * @webref shape:2d_primitives
+   * @webBrief Draws an ellipse (oval) in the display window.
    * @param a x-coordinate of the ellipse
    * @param b y-coordinate of the ellipse
    * @param c width of the ellipse by default
@@ -11724,7 +11837,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from arc.xml )
    *
    * Draws an arc in the display window. Arcs are drawn along the outer edge
    * of an ellipse defined by the <b>x</b>, <b>y</b>, <b>width</b> and
@@ -11732,8 +11844,8 @@ public class PApplet implements PConstants {
    * with the <b>ellipseMode()</b> function. The <b>start</b> and <b>stop</b>
    * parameters specify the angles at which to draw the arc.
    *
-   * 
    * @webref shape:2d_primitives
+   * @webBrief Draws an arc in the display window. 
    * @param a x-coordinate of the arc's ellipse
    * @param b y-coordinate of the arc's ellipse
    * @param c width of the arc's ellipse by default
@@ -11763,15 +11875,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from circle.xml )
    *
    * Draws a circle to the screen. By default, the first two parameters
    * set the location of the center, and the third sets the shape's width
    * and height. The origin may be changed with the <b>ellipseMode()</b>
    * function.
    *
-   * 
    * @webref shape:2d_primitives
+   * @webBrief Draws a circle to the screen. 
    * @param x x-coordinate of the ellipse
    * @param y y-coordinate of the ellipse
    * @param extent width and height of the ellipse by default
@@ -11785,14 +11896,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from box.xml )
    *
    * A box is an extruded rectangle. A box with equal dimension on all sides
    * is a cube.
    *
-   * 
    *
    * @webref shape:3d_primitives
+   * @webBrief A box is an extruded rectangle.
    * @param size dimension of the box in all dimensions (creates a cube)
    * @see PGraphics#sphere(float)
    */
@@ -11814,7 +11924,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from sphereDetail.xml )
    *
    * Controls the detail used to render a sphere by adjusting the number of
    * vertices of the sphere mesh. The default resolution is 30, which creates
@@ -11829,7 +11938,6 @@ public class PApplet implements PConstants {
    * and vertical resolution independently, use the version of the functions
    * with two parameters.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * Code for sphereDetail() submitted by toxi [031031].
@@ -11837,6 +11945,8 @@ public class PApplet implements PConstants {
    *
    * @param res number of segments (minimum 3) used per full circle revolution
    * @webref shape:3d_primitives
+   * @webBrief Controls the detail used to render a sphere by adjusting the number of
+   * vertices of the sphere mesh.
    * @see PGraphics#sphere(float)
    */
   public void sphereDetail(int res) {
@@ -11856,11 +11966,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from sphere.xml )
    *
    * A sphere is a hollow ball made from tessellated triangles.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * <P>
@@ -11884,6 +11992,7 @@ public class PApplet implements PConstants {
    * </PRE>
    *
    * @webref shape:3d_primitives
+   * @webBrief A sphere is a hollow ball made from tessellated triangles.
    * @param r the radius of the sphere
    * @see PGraphics#sphereDetail(int)
    */
@@ -11894,7 +12003,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from bezierPoint.xml )
    *
    * Evaluates the Bezier at point t for points a, b, c, d. The parameter t
    * varies between 0 and 1, a and d are points on the curve, and b and c are
@@ -11902,7 +12010,6 @@ public class PApplet implements PConstants {
    * second time with the y coordinates to get the location of a bezier curve
    * at t.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * For instance, to convert the following example:<PRE>
@@ -11926,6 +12033,7 @@ public class PApplet implements PConstants {
    * endShape();</PRE>
    *
    * @webref shape:curves
+   * @webBrief Evaluates the Bezier at point t for points a, b, c, d.
    * @param a coordinate of first point on the curve
    * @param b coordinate of first control point
    * @param c coordinate of second control point
@@ -11941,18 +12049,17 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from bezierTangent.xml )
    *
    * Calculates the tangent of a point on a Bezier curve. There is a good
    * definition of <a href="http://en.wikipedia.org/wiki/Tangent"
    * target="new"><em>tangent</em> on Wikipedia</a>.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * Code submitted by Dave Bollinger (davol) for release 0136.
    *
    * @webref shape:curves
+   * @webBrief Calculates the tangent of a point on a Bezier curve.
    * @param a coordinate of first point on the curve
    * @param b coordinate of first control point
    * @param c coordinate of second control point
@@ -11968,15 +12075,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from bezierDetail.xml )
    *
    * Sets the resolution at which Beziers display. The default value is 20.
    * This function is only useful when using the P3D renderer as the default
    * P2D renderer does not use this information.
    *
-   * 
    *
    * @webref shape:curves
+   * @webBrief Sets the resolution at which Beziers display.
    * @param detail resolution of the curves
    * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
    * @see PGraphics#curveVertex(float, float, float)
@@ -11998,7 +12104,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from bezier.xml )
    *
    * Draws a Bezier curve on the screen. These curves are defined by a series
    * of anchor and control points. The first two parameters specify the first
@@ -12008,7 +12113,6 @@ public class PApplet implements PConstants {
    * Bezier. Using the 3D version requires rendering with P3D (see the
    * Environment reference for more information).
    *
-   * 
    *
    * <h3>Advanced</h3>
    * Draw a cubic bezier curve. The first and last points are
@@ -12034,6 +12138,7 @@ public class PApplet implements PConstants {
    * <PRE>bezier(x1, y1, cx, cy, cx, cy, x2, y2);</PRE>
    *
    * @webref shape:curves
+   * @webBrief Draws a Bezier curve on the screen.
    * @param x1 coordinates for the first anchor point
    * @param y1 coordinates for the first anchor point
    * @param z1 coordinates for the first anchor point
@@ -12060,16 +12165,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from curvePoint.xml )
    *
    * Evalutes the curve at point t for points a, b, c, d. The parameter t
    * varies between 0 and 1, a and d are the control points, and b and c are
    * the points on the curve. This can be done once with the x coordinates and a
    * second time with the y coordinates to get the location of a curve at t.
    *
-   * 
    *
    * @webref shape:curves
+   * @webBrief Evalutes the curve at point t for points a, b, c, d.
    * @param a coordinate of first control point
    * @param b coordinate of first point on the curve
    * @param c coordinate of second point on the curve
@@ -12085,18 +12189,17 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from curveTangent.xml )
    *
    * Calculates the tangent of a point on a curve. There's a good definition
    * of <em><a href="http://en.wikipedia.org/wiki/Tangent"
    * target="new">tangent</em> on Wikipedia</a>.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * Code thanks to Dave Bollinger (Bug #715)
    *
    * @webref shape:curves
+   * @webBrief Calculates the tangent of a point on a curve.
    * @param a coordinate of first point on the curve
    * @param b coordinate of first control point
    * @param c coordinate of second control point
@@ -12113,15 +12216,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from curveDetail.xml )
    *
    * Sets the resolution at which curves display. The default value is 20.
    * This function is only useful when using the P3D renderer as the default
    * P2D renderer does not use this information.
    *
-   * 
    *
    * @webref shape:curves
+   * @webBrief Sets the resolution at which curves display.
    * @param detail resolution of the curves
    * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
    * @see PGraphics#curveVertex(float, float)
@@ -12134,7 +12236,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from curveTightness.xml )
    *
    * Modifies the quality of forms created with <b>curve()</b> and
    * <b>curveVertex()</b>. The parameter <b>squishy</b> determines how the
@@ -12144,9 +12245,10 @@ public class PApplet implements PConstants {
    * within the range -5.0 and 5.0 will deform the curves but will leave them
    * recognizable and as values increase in magnitude, they will continue to deform.
    *
-   * 
    *
    * @webref shape:curves
+   * @webBrief Modifies the quality of forms created with <b>curve()</b> and
+   * <b>curveVertex()</b>.
    * @param tightness amount of deformation from the original vertices
    * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
    * @see PGraphics#curveVertex(float, float)
@@ -12158,7 +12260,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from curve.xml )
    *
    * Draws a curved line on the screen. The first and second parameters
    * specify the beginning control point and the last two parameters specify
@@ -12170,7 +12271,6 @@ public class PApplet implements PConstants {
    * implementation of Catmull-Rom splines. Using the 3D version requires
    * rendering with P3D (see the Environment reference for more information).
    *
-   * 
    *
    * <h3>Advanced</h3>
    * As of revision 0070, this function no longer doubles the first
@@ -12187,6 +12287,7 @@ public class PApplet implements PConstants {
    * </PRE>
    *
    * @webref shape:curves
+   * @webBrief Draws a curved line on the screen.
    * @param x1 coordinates for the beginning control point
    * @param y1 coordinates for the beginning control point
    * @param x2 coordinates for the first point
@@ -12224,7 +12325,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from imageMode.xml )
    *
    * Modifies the location from which images draw. The default mode is
    * <b>imageMode(CORNER)</b>, which specifies the location to be the upper
@@ -12239,9 +12339,9 @@ public class PApplet implements PConstants {
    * The parameter to <b>imageMode()</b> must be written in ALL CAPS because
    * Processing is a case-sensitive language.
    *
-   * 
    *
    * @webref image:loading_displaying
+   * @webBrief Modifies the location from which images draw.
    * @param mode either CORNER, CORNERS, or CENTER
    * @see PApplet#loadImage(String, String)
    * @see PImage
@@ -12255,7 +12355,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from image.xml )
    *
    * Displays images to the screen. The images must be in the sketch's "data"
    * directory to load correctly. Select "Add file..." from the "Sketch" menu
@@ -12274,13 +12373,13 @@ public class PApplet implements PConstants {
    * The color of an image may be modified with the <b>tint()</b> function.
    * This function will maintain transparency for GIF and PNG images.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * Starting with release 0124, when using the default (JAVA2D) renderer,
    * smooth() will also improve image quality of resized images.
    *
    * @webref image:loading_displaying
+   * @webBrief Displays images to the screen.
    * @param img the image to display
    * @param a x-coordinate of the image by default
    * @param b y-coordinate of the image by default
@@ -12323,7 +12422,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from shapeMode.xml )
    *
    * Modifies the location from which shapes draw. The default mode is
    * <b>shapeMode(CORNER)</b>, which specifies the location to be the upper
@@ -12337,9 +12435,9 @@ public class PApplet implements PConstants {
    * and height. The parameter must be written in "ALL CAPS" because
    * Processing is a case sensitive language.
    *
-   * 
    *
    * @webref shape:loading_displaying
+   * @webBrief Modifies the location from which shapes draw.
    * @param mode either CORNER, CORNERS, CENTER
    * @see PShape
    * @see PGraphics#shape(PShape)
@@ -12358,7 +12456,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from shape.xml )
    *
    * Displays shapes to the screen. The shapes must be in the sketch's "data"
    * directory to load correctly. Select "Add file..." from the "Sketch" menu
@@ -12375,9 +12472,9 @@ public class PApplet implements PConstants {
    * Note complex shapes may draw awkwardly with P3D. This renderer does not
    * yet support shapes that have holes or complicated breaks.
    *
-   * 
    *
    * @webref shape:loading_displaying
+   * @webBrief Displays shapes to the screen.
    * @param shape the shape to display
    * @param x x-coordinate of the shape
    * @param y y-coordinate of the shape
@@ -12412,7 +12509,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textAlign.xml )
    *
    * Sets the current alignment for drawing text. The parameters LEFT,
    * CENTER, and RIGHT set the display characteristics of the letters in
@@ -12439,9 +12535,9 @@ public class PApplet implements PConstants {
    * <b>textAscent()</b> or <b>textDescent()</b> so that the hack works even
    * if you change the size of the font.
    *
-   * 
    *
    * @webref typography:attributes
+   * @webBrief Sets the current alignment for drawing text. 
    * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
    * @param alignY vertical alignment, either TOP, BOTTOM, CENTER, or BASELINE
    * @see PApplet#loadFont(String)
@@ -12458,16 +12554,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textAscent.xml )
    *
    * Returns ascent of the current font at its current size. This information
    * is useful for determining the height of the font above the baseline. For
    * example, adding the <b>textAscent()</b> and <b>textDescent()</b> values
    * will give you the total height of the line.
    *
-   * 
    *
    * @webref typography:metrics
+   * @webBrief Returns ascent of the current font at its current size.
    * @see PGraphics#textDescent()
    */
   public float textAscent() {
@@ -12476,16 +12571,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textDescent.xml )
    *
    * Returns descent of the current font at its current size. This
    * information is useful for determining the height of the font below the
    * baseline. For example, adding the <b>textAscent()</b> and
    * <b>textDescent()</b> values will give you the total height of the line.
    *
-   * 
    *
    * @webref typography:metrics
+   * @webBrief Returns descent of the current font at its current size.
    * @see PGraphics#textAscent()
    */
   public float textDescent() {
@@ -12494,7 +12588,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textFont.xml )
    *
    * Sets the current font that will be drawn with the <b>text()</b>
    * function. Fonts must be loaded with <b>loadFont()</b> before it can be
@@ -12512,9 +12605,10 @@ public class PApplet implements PConstants {
    * available: when the font is still installed, or the font is created via
    * the <b>createFont()</b> function (rather than the Create Font tool).
    *
-   * 
    *
    * @webref typography:loading_displaying
+   * @webBrief Sets the current font that will be drawn with the <b>text()</b>
+   * function.
    * @param which any variable of the type PFont
    * @see PApplet#createFont(String, float, boolean)
    * @see PApplet#loadFont(String)
@@ -12538,14 +12632,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textLeading.xml )
    *
    * Sets the spacing between lines of text in units of pixels. This setting
    * will be used in all subsequent calls to the <b>text()</b> function.
    *
-   * 
    *
    * @webref typography:attributes
+   * @webBrief Sets the spacing between lines of text in units of pixels.
    * @param leading the size in pixels for spacing between lines
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -12560,7 +12653,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textMode.xml )
    *
    * Sets the way text draws to the screen. In the default configuration, the
    * <b>MODEL</b> mode, it's possible to rotate, scale, and place letters in
@@ -12580,9 +12672,9 @@ public class PApplet implements PConstants {
    * not currently optimized for <b>P3D</b>, so if recording shape data, use
    * <b>textMode(MODEL)</b> until you're ready to capture the geometry with <b>beginRaw()</b>.
    *
-   * 
    *
    * @webref typography:attributes
+   * @webBrief Sets the way text draws to the screen. 
    * @param mode either MODEL or SHAPE
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -12598,14 +12690,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textSize.xml )
    *
    * Sets the current font size. This size will be used in all subsequent
    * calls to the <b>text()</b> function. Font size is measured in units of pixels.
    *
-   * 
    *
    * @webref typography:attributes
+   * @webBrief Sets the current font size.
    * @param size the size of the letters in units of pixels
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -12627,13 +12718,12 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from textWidth.xml )
    *
    * Calculates and returns the width of any character or text string.
    *
-   * 
    *
    * @webref typography:attributes
+   * @webBrief Calculates and returns the width of any character or text string.
    * @param str the String of characters to measure
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -12655,7 +12745,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from text.xml )
    *
    * Draws text to the screen. Displays the information specified in the
    * <b>data</b> or <b>stringdata</b> parameters on the screen in the
@@ -12671,9 +12760,9 @@ public class PApplet implements PConstants {
    * inside a rectangle, the coordinates are interpreted based on the current
    * <b>rectMode()</b> setting.
    *
-   * 
    *
    * @webref typography:loading_displaying
+   * @webBrief Draws text to the screen.
    * @param c the alphanumeric character to be displayed
    * @param x x-coordinate of text
    * @param y y-coordinate of text
@@ -12807,7 +12896,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from push.xml )
    *
    * The <b>push()</b> function saves the current drawing style
    * settings and transformations, while <b>pop()</b> restores these
@@ -12833,9 +12921,11 @@ public class PApplet implements PConstants {
    * transformations (rotate, scale, translate) and the drawing styles
    * at the same time.
    *
-   * 
    *
    * @webref structure
+   * @webBrief The <b>push()</b> function saves the current drawing style
+   * settings and transformations, while <b>pop()</b> restores these
+   * settings.
    * @see PGraphics#pop()
    */
   public void push() {
@@ -12845,7 +12935,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from pop.xml )
    *
    * The <b>pop()</b> function restores the previous drawing style
    * settings and transformations after <b>push()</b> has changed them.
@@ -12871,9 +12960,10 @@ public class PApplet implements PConstants {
    * transformations (rotate, scale, translate) and the drawing styles
    * at the same time.
    *
-   * 
    *
    * @webref structure
+   * @webBrief The <b>pop()</b> function restores the previous drawing style
+   * settings and transformations after <b>push()</b> has changed them.
    * @see PGraphics#push()
    */
   public void pop() {
@@ -12883,7 +12973,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from pushMatrix.xml )
    *
    * Pushes the current transformation matrix onto the matrix stack.
    * Understanding <b>pushMatrix()</b> and <b>popMatrix()</b> requires
@@ -12894,9 +12983,9 @@ public class PApplet implements PConstants {
    * the other transformation functions and may be embedded to control the
    * scope of the transformations.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Pushes the current transformation matrix onto the matrix stack.
    * @see PGraphics#popMatrix()
    * @see PGraphics#translate(float, float, float)
    * @see PGraphics#scale(float)
@@ -12912,7 +13001,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from popMatrix.xml )
    *
    * Pops the current transformation matrix off the matrix stack.
    * Understanding pushing and popping requires understanding the concept of
@@ -12922,9 +13010,9 @@ public class PApplet implements PConstants {
    * in conjuction with the other transformation functions and may be
    * embedded to control the scope of the transformations.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Pops the current transformation matrix off the matrix stack.
    * @see PGraphics#pushMatrix()
    */
   public void popMatrix() {
@@ -12934,7 +13022,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from translate.xml )
    *
    * Specifies an amount to displace objects within the display window. The
    * <b>x</b> parameter specifies left/right translation, the <b>y</b>
@@ -12949,9 +13036,9 @@ public class PApplet implements PConstants {
    * transformation is reset when the loop begins again. This function can be
    * further controlled by the <b>pushMatrix()</b> and <b>popMatrix()</b>.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Specifies an amount to displace objects within the display window.
    * @param x left/right translation
    * @param y up/down translation
    * @see PGraphics#popMatrix()
@@ -12978,7 +13065,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from rotate.xml )
    *
    * Rotates a shape the amount specified by the <b>angle</b> parameter.
    * Angles should be specified in radians (values from 0 to TWO_PI) or
@@ -12996,9 +13082,9 @@ public class PApplet implements PConstants {
    * matrix by a rotation matrix. This function can be further controlled by
    * the <b>pushMatrix()</b> and <b>popMatrix()</b>.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Rotates a shape the amount specified by the <b>angle</b> parameter.
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -13015,7 +13101,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from rotateX.xml )
    *
    * Rotates a shape around the x-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -13030,9 +13115,10 @@ public class PApplet implements PConstants {
    * This function requires using P3D as a third parameter to <b>size()</b>
    * as shown in the example above.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Rotates a shape around the x-axis the amount specified by the
+   * <b>angle</b> parameter.
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -13049,7 +13135,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from rotateY.xml )
    *
    * Rotates a shape around the y-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -13064,9 +13149,10 @@ public class PApplet implements PConstants {
    * This function requires using P3D as a third parameter to <b>size()</b>
    * as shown in the examples above.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Rotates a shape around the y-axis the amount specified by the
+   * <b>angle</b> parameter.
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -13083,7 +13169,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from rotateZ.xml )
    *
    * Rotates a shape around the z-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -13098,9 +13183,10 @@ public class PApplet implements PConstants {
    * This function requires using P3D as a third parameter to <b>size()</b>
    * as shown in the examples above.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Rotates a shape around the z-axis the amount specified by the
+   * <b>angle</b> parameter.
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -13131,7 +13217,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from scale.xml )
    *
    * Increases or decreases the size of a shape by expanding and contracting
    * vertices. Objects always scale from their relative origin to the
@@ -13146,9 +13231,10 @@ public class PApplet implements PConstants {
    * parameter for <b>size()</b> as shown in the example above. This function
    * can be further controlled by <b>pushMatrix()</b> and <b>popMatrix()</b>.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Increases or decreases the size of a shape by expanding and contracting
+   * vertices. 
    * @param s percentage to scale the object
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
@@ -13190,7 +13276,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from shearX.xml )
    *
    * Shears a shape around the x-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -13207,9 +13292,10 @@ public class PApplet implements PConstants {
    * matrix by a rotation matrix. This function can be further controlled by
    * the <b>pushMatrix()</b> and <b>popMatrix()</b> functions.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Shears a shape around the x-axis the amount specified by the
+   * <b>angle</b> parameter. 
    * @param angle angle of shear specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -13225,7 +13311,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from shearY.xml )
    *
    * Shears a shape around the y-axis the amount specified by the
    * <b>angle</b> parameter. Angles should be specified in radians (values
@@ -13242,9 +13327,10 @@ public class PApplet implements PConstants {
    * matrix by a rotation matrix. This function can be further controlled by
    * the <b>pushMatrix()</b> and <b>popMatrix()</b> functions.
    *
-   * 
    *
    * @webref transform
+   * @webBrief Shears a shape around the y-axis the amount specified by the
+   * <b>angle</b> parameter.
    * @param angle angle of shear specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -13260,14 +13346,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from resetMatrix.xml )
    *
    * Replaces the current matrix with the identity matrix. The equivalent
    * function in OpenGL is glLoadIdentity().
    *
-   * 
    *
    * @webref transform
+   * @webBrief Replaces the current matrix with the identity matrix.
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#applyMatrix(PMatrix)
@@ -13280,16 +13365,16 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from applyMatrix.xml )
    *
    * Multiplies the current matrix by the one specified through the
    * parameters. This is very slow because it will try to calculate the
    * inverse of the transform, so avoid it whenever possible. The equivalent
    * function in OpenGL is glMultMatrix().
    *
-   * 
    *
    * @webref transform
+   * @webBrief Multiplies the current matrix by the one specified through the
+   * parameters.
    * @source
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
@@ -13401,14 +13486,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from printMatrix.xml )
    *
    * Prints the current matrix to the Console (the text window at the bottom
    * of Processing).
    *
-   * 
    *
    * @webref transform
+   * @webBrief Prints the current matrix to the Console (the text window at the bottom
+   * of Processing).
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#resetMatrix()
@@ -13421,7 +13506,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from beginCamera.xml )
    *
    * The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
    * advanced customization of the camera space. The functions are useful if
@@ -13440,9 +13524,10 @@ public class PApplet implements PConstants {
    * following <b>endCamera()</b> and pairs of <b>beginCamera()</b> and
    * <b>endCamera()</b> cannot be nested.
    *
-   * 
    *
    * @webref lights_camera:camera
+   * @webBrief The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
+   * advanced customization of the camera space.
    * @see PGraphics#camera()
    * @see PGraphics#endCamera()
    * @see PGraphics#applyMatrix(PMatrix)
@@ -13457,15 +13542,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from endCamera.xml )
    *
    * The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
    * advanced customization of the camera space. Please see the reference for
    * <b>beginCamera()</b> for a description of how the functions are used.
    *
-   * 
    *
    * @webref lights_camera:camera
+   * @webBrief The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
+   * advanced customization of the camera space.
    * @see PGraphics#beginCamera()
    * @see PGraphics#camera(float, float, float, float, float, float, float, float, float)
    */
@@ -13476,7 +13561,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from camera.xml )
    *
    * Sets the position of the camera through setting the eye position, the
    * center of the scene, and which axis is facing upward. Moving the eye
@@ -13488,9 +13572,9 @@ public class PApplet implements PConstants {
    * 180.0), width/2.0, height/2.0, 0, 0, 1, 0)</b>. This function is similar
    * to <b>gluLookAt()</b> in OpenGL, but it first clears the current camera settings.
    *
-   * 
    *
    * @webref lights_camera:camera
+   * @webBrief Sets the position of the camera. 
    * @see PGraphics#beginCamera()
    * @see PGraphics#endCamera()
    * @see PGraphics#frustum(float, float, float, float, float, float)
@@ -13521,13 +13605,13 @@ public class PApplet implements PConstants {
 
 
 /**
-   * ( begin auto-generated from printCamera.xml )
    *
    * Prints the current camera matrix to the Console (the text window at the
    * bottom of Processing).
    *
-   * 
  * @webref lights_camera:camera
+ * @webBrief Prints the current camera matrix to the Console (the text window at the
+ * bottom of Processing).
  * @see PGraphics#camera(float, float, float, float, float, float, float, float, float)
  */
   public void printCamera() {
@@ -13537,7 +13621,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from ortho.xml )
    *
    * Sets an orthographic projection and defines a parallel clipping volume.
    * All objects with the same dimension appear the same size, regardless of
@@ -13548,9 +13631,9 @@ public class PApplet implements PConstants {
    * parameters are given, the default is used: ortho(0, width, 0, height,
    * -10, 10).
    *
-   * 
    *
    * @webref lights_camera:camera
+   * @webBrief Sets an orthographic projection and defines a parallel clipping volume.
    */
   public void ortho() {
     if (recorder != null) recorder.ortho();
@@ -13584,7 +13667,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from perspective.xml )
    *
    * Sets a perspective projection applying foreshortening, making distant
    * objects appear smaller than closer ones. The parameters define a viewing
@@ -13597,9 +13679,10 @@ public class PApplet implements PConstants {
    * default values are: perspective(PI/3.0, width/height, cameraZ/10.0,
    * cameraZ*10.0) where cameraZ is ((height/2.0) / tan(PI*60.0/360.0));
    *
-   * 
    *
    * @webref lights_camera:camera
+   * @webBrief Sets a perspective projection applying foreshortening, making distant
+   * objects appear smaller than closer ones. 
    */
   public void perspective() {
     if (recorder != null) recorder.perspective();
@@ -13620,15 +13703,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from frustum.xml )
    *
    * Sets a perspective matrix defined through the parameters. Works like
    * glFrustum, except it wipes out the current perspective matrix rather
    * than muliplying itself with it.
    *
-   * 
    *
    * @webref lights_camera:camera
+   * @webBrief Sets a perspective matrix defined through the parameters.
    * @param left left coordinate of the clipping plane
    * @param right right coordinate of the clipping plane
    * @param bottom bottom coordinate of the clipping plane
@@ -13649,14 +13731,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from printProjection.xml )
    *
    * Prints the current projection matrix to the Console (the text window at
    * the bottom of Processing).
    *
-   * 
    *
    * @webref lights_camera:camera
+   * @webBrief Prints the current projection matrix to the Console.
    * @see PGraphics#camera(float, float, float, float, float, float, float, float, float)
    */
   public void printProjection() {
@@ -13666,14 +13747,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from screenX.xml )
    *
    * Takes a three-dimensional X, Y, Z position and returns the X value for
    * where it will appear on a (two-dimensional) screen.
    *
-   * 
    *
    * @webref lights_camera:coordinates
+   * @webBrief Takes a three-dimensional X, Y, Z position and returns the X value for
+   * where it will appear on a (two-dimensional) screen.
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @see PGraphics#screenY(float, float, float)
@@ -13685,14 +13766,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from screenY.xml )
    *
    * Takes a three-dimensional X, Y, Z position and returns the Y value for
    * where it will appear on a (two-dimensional) screen.
    *
-   * 
    *
    * @webref lights_camera:coordinates
+   * @webBrief Takes a three-dimensional X, Y, Z position and returns the Y value for
+   * where it will appear on a (two-dimensional) screen.
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @see PGraphics#screenX(float, float, float)
@@ -13720,14 +13801,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from screenZ.xml )
    *
    * Takes a three-dimensional X, Y, Z position and returns the Z value for
    * where it will appear on a (two-dimensional) screen.
    *
-   * 
    *
    * @webref lights_camera:coordinates
+   * @webBrief Takes a three-dimensional X, Y, Z position and returns the Z value for
+   * where it will appear on a (two-dimensional) screen.
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -13740,7 +13821,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from modelX.xml )
    *
    * Returns the three-dimensional X, Y, Z position in model space. This
    * returns the X value for a given coordinate based on the current set of
@@ -13755,9 +13835,9 @@ public class PApplet implements PConstants {
    * (x, y, z) coordinate returned by the model functions is used to place
    * another box in the same location.
    *
-   * 
    *
    * @webref lights_camera:coordinates
+   * @webBrief Returns the three-dimensional X, Y, Z position in model space.
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -13770,7 +13850,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from modelY.xml )
    *
    * Returns the three-dimensional X, Y, Z position in model space. This
    * returns the Y value for a given coordinate based on the current set of
@@ -13785,9 +13864,9 @@ public class PApplet implements PConstants {
    * (x, y, z) coordinate returned by the model functions is used to place
    * another box in the same location.
    *
-   * 
    *
    * @webref lights_camera:coordinates
+   * @webBrief Returns the three-dimensional X, Y, Z position in model space.
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -13800,7 +13879,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from modelZ.xml )
    *
    * Returns the three-dimensional X, Y, Z position in model space. This
    * returns the Z value for a given coordinate based on the current set of
@@ -13815,9 +13893,9 @@ public class PApplet implements PConstants {
    * (x, y, z) coordinate returned by the model functions is used to place
    * another box in the same location.
    *
-   * 
    *
    * @webref lights_camera:coordinates
+   * @webBrief Returns the three-dimensional X, Y, Z position in model space.
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -13830,7 +13908,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from pushStyle.xml )
    *
    * The <b>pushStyle()</b> function saves the current style settings and
    * <b>popStyle()</b> restores the prior settings. Note that these functions
@@ -13847,9 +13924,9 @@ public class PApplet implements PConstants {
    * textAlign(), textFont(), textMode(), textSize(), textLeading(),
    * emissive(), specular(), shininess(), ambient()
    *
-   * 
    *
    * @webref structure
+   * @webBrief Saves the current style settings and <b>popStyle()</b> restores the prior settings.
    * @see PGraphics#popStyle()
    */
   public void pushStyle() {
@@ -13859,7 +13936,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from popStyle.xml )
    *
    * The <b>pushStyle()</b> function saves the current style settings and
    * <b>popStyle()</b> restores the prior settings; these functions are
@@ -13869,9 +13945,9 @@ public class PApplet implements PConstants {
    * <b>pushStyle()</b> and <b>popStyle()</b> functions can be embedded to
    * provide more control (see the second example above for a demonstration.)
    *
-   * 
    *
    * @webref structure
+   * @webBrief Saves the current style settings and <b>popStyle()</b> restores the prior settings
    * @see PGraphics#pushStyle()
    */
   public void popStyle() {
@@ -13887,7 +13963,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from strokeWeight.xml )
    *
    * Sets the width of the stroke used for lines, points, and the border
    * around shapes. All widths are set in units of pixels.
@@ -13901,9 +13976,10 @@ public class PApplet implements PConstants {
    * operating system's OpenGL implementation. For instance, the thickness
    * may not go higher than 10 pixels.
    *
-   * 
    *
    * @webref shape:attributes
+   * @webBrief Sets the width of the stroke used for lines, points, and the border
+   * around shapes.
    * @param weight the weight (in pixels) of the stroke
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#strokeJoin(int)
@@ -13916,7 +13992,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from strokeJoin.xml )
    *
    * Sets the style of the joints which connect line segments. These joints
    * are either mitered, beveled, or rounded and specified with the
@@ -13928,9 +14003,9 @@ public class PApplet implements PConstants {
    * Issue 123</a>). More information about the renderers can be found in the
    * <b>size()</b> reference.
    *
-   * 
    *
    * @webref shape:attributes
+   * @webBrief Sets the style of the joints which connect line segments.
    * @param join either MITER, BEVEL, ROUND
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#strokeWeight(float)
@@ -13943,7 +14018,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from strokeCap.xml )
    *
    * Sets the style for rendering line endings. These ends are either
    * squared, extended, or rounded and specified with the corresponding
@@ -13954,9 +14028,8 @@ public class PApplet implements PConstants {
    * Issue 123</a>). More information about the renderers can be found in the
    * <b>size()</b> reference.
    *
-   * 
-   *
    * @webref shape:attributes
+   * @webBrief Sets the style for rendering line endings.
    * @param cap either SQUARE, PROJECT, or ROUND
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#strokeWeight(float)
@@ -13970,14 +14043,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from noStroke.xml )
    *
    * Disables drawing the stroke (outline). If both <b>noStroke()</b> and
    * <b>noFill()</b> are called, nothing will be drawn to the screen.
    *
-   * 
    *
    * @webref color:setting
+   * @webBrief Disables drawing the stroke (outline).
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#fill(float, float, float, float)
    * @see PGraphics#noFill()
@@ -13989,7 +14061,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from stroke.xml )
    *
    * Sets the color used to draw lines and borders around shapes. This color
    * is either specified in terms of the RGB or HSB color depending on the
@@ -14008,8 +14079,8 @@ public class PApplet implements PConstants {
    * current maximum value as specified by <b>colorMode()</b>. The default
    * maximum value is 255.
    *
-   * 
-   *
+   * @webref color:setting
+   * @webBrief Sets the color used to draw lines and borders around shapes.
    * @param rgb color value in hexadecimal notation
    * @see PGraphics#noStroke()
    * @see PGraphics#strokeWeight(float)
@@ -14055,7 +14126,6 @@ public class PApplet implements PConstants {
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
    * @param v3 blue or brightness value (depending on current color mode)
-   * @webref color:setting
    */
   public void stroke(float v1, float v2, float v3) {
     if (recorder != null) recorder.stroke(v1, v2, v3);
@@ -14070,14 +14140,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from noTint.xml )
    *
    * Removes the current fill value for displaying images and reverts to
    * displaying images with their original hues.
    *
-   * 
    *
    * @webref image:loading_displaying
+   * @webBrief Removes the current fill value for displaying images and reverts to
+   * displaying images with their original hues.
    * @usage web_application
    * @see PGraphics#tint(float, float, float, float)
    * @see PGraphics#image(PImage, float, float, float, float)
@@ -14089,7 +14159,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from tint.xml )
    *
    * Sets the fill value for displaying images. Images can be tinted to
    * specified colors or made transparent by setting the alpha.<br />
@@ -14114,9 +14183,9 @@ public class PApplet implements PConstants {
    * The <b>tint()</b> function is also used to control the coloring of
    * textures in 3D.
    *
-   * 
    *
    * @webref image:loading_displaying
+   * @webBrief Sets the fill value for displaying images.
    * @usage web_application
    * @param rgb color value in hexadecimal notation
    * @see PGraphics#noTint()
@@ -14170,14 +14239,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from noFill.xml )
    *
    * Disables filling geometry. If both <b>noStroke()</b> and <b>noFill()</b>
    * are called, nothing will be drawn to the screen.
    *
-   * 
    *
    * @webref color:setting
+   * @webBrief Disables filling geometry.
    * @usage web_application
    * @see PGraphics#fill(float, float, float, float)
    * @see PGraphics#stroke(int, float)
@@ -14190,7 +14258,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from fill.xml )
    *
    * Sets the color used to fill shapes. For example, if you run <b>fill(204,
    * 102, 0)</b>, all subsequent shapes will be filled with orange. This
@@ -14212,9 +14279,9 @@ public class PApplet implements PConstants {
    * <br/> <br/>
    * To change the color of an image (or a texture), use tint().
    *
-   * 
    *
    * @webref color:setting
+   * @webBrief Sets the color used to fill shapes.
    * @usage web_application
    * @param rgb color variable or hex value
    * @see PGraphics#noFill()
@@ -14272,7 +14339,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from ambient.xml )
    *
    * Sets the ambient reflectance for shapes drawn to the screen. This is
    * combined with the ambient light component of environment. The color
@@ -14282,9 +14348,9 @@ public class PApplet implements PConstants {
    * reflect. Used in combination with <b>emissive()</b>, <b>specular()</b>,
    * and <b>shininess()</b> in setting the material properties of shapes.
    *
-   * 
    *
    * @webref lights_camera:material_properties
+   * @webBrief Sets the ambient reflectance for shapes drawn to the screen.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#emissive(float, float, float)
@@ -14318,7 +14384,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from specular.xml )
    *
    * Sets the specular color of the materials used for shapes drawn to the
    * screen, which sets the color of hightlights. Specular refers to light
@@ -14327,9 +14392,10 @@ public class PApplet implements PConstants {
    * with <b>emissive()</b>, <b>ambient()</b>, and <b>shininess()</b> in
    * setting the material properties of shapes.
    *
-   * 
    *
    * @webref lights_camera:material_properties
+   * @webBrief Sets the specular color of the materials used for shapes drawn to the
+   * screen, which sets the color of hightlights.
    * @usage web_application
    * @param rgb color to set
    * @see PGraphics#lightSpecular(float, float, float)
@@ -14366,15 +14432,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from shininess.xml )
    *
    * Sets the amount of gloss in the surface of shapes. Used in combination
    * with <b>ambient()</b>, <b>specular()</b>, and <b>emissive()</b> in
    * setting the material properties of shapes.
    *
-   * 
    *
    * @webref lights_camera:material_properties
+   * @webBrief Sets the amount of gloss in the surface of shapes.
    * @usage web_application
    * @param shine degree of shininess
    * @see PGraphics#emissive(float, float, float)
@@ -14388,16 +14453,16 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from emissive.xml )
    *
    * Sets the emissive color of the material used for drawing shapes drawn to
    * the screen. Used in combination with <b>ambient()</b>,
    * <b>specular()</b>, and <b>shininess()</b> in setting the material
    * properties of shapes.
    *
-   * 
    *
    * @webref lights_camera:material_properties
+   * @webBrief Sets the emissive color of the material used for drawing shapes drawn to
+   * the screen.
    * @usage web_application
    * @param rgb color to set
    * @see PGraphics#ambient(float, float, float)
@@ -14433,7 +14498,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from lights.xml )
    *
    * Sets the default ambient light, directional light, falloff, and specular
    * values. The defaults are ambientLight(128, 128, 128) and
@@ -14443,9 +14507,10 @@ public class PApplet implements PConstants {
    * looping program will cause them to only have an effect the first time
    * through the loop.
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Sets the default ambient light, directional light, falloff, and specular
+   * values. 
    * @usage web_application
    * @see PGraphics#ambientLight(float, float, float, float, float, float)
    * @see PGraphics#directionalLight(float, float, float, float, float, float)
@@ -14460,16 +14525,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from noLights.xml )
    *
    * Disable all lighting. Lighting is turned off by default and enabled with
    * the <b>lights()</b> function. This function can be used to disable
    * lighting so that 2D geometry (which does not require lighting) can be
    * drawn after a set of lighted 3D geometry.
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Disable all lighting.
    * @usage web_application
    * @see PGraphics#lights()
    */
@@ -14480,7 +14544,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from ambientLight.xml )
    *
    * Adds an ambient light. Ambient light doesn't come from a specific
    * direction, the rays have light have bounced around so much that objects
@@ -14491,9 +14554,9 @@ public class PApplet implements PConstants {
    * have an effect the first time through the loop. The effect of the
    * parameters is determined by the current color mode.
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Adds an ambient light.
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -14522,7 +14585,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from directionalLight.xml )
    *
    * Adds a directional light. Directional light comes from one direction and
    * is stronger when hitting a surface squarely and weaker if it hits at a a
@@ -14536,9 +14598,9 @@ public class PApplet implements PConstants {
    * direction the light is facing. For example, setting <b>ny</b> to -1 will
    * cause the geometry to be lit from below (the light is facing directly upward).
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Adds a directional light.
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -14559,7 +14621,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from pointLight.xml )
    *
    * Adds a point light. Lights need to be included in the <b>draw()</b> to
    * remain persistent in a looping program. Placing them in the
@@ -14569,9 +14630,9 @@ public class PApplet implements PConstants {
    * mode. The <b>x</b>, <b>y</b>, and <b>z</b> parameters set the position
    * of the light.
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Adds a point light.
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -14592,7 +14653,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from spotLight.xml )
    *
    * Adds a spot light. Lights need to be included in the <b>draw()</b> to
    * remain persistent in a looping program. Placing them in the
@@ -14604,9 +14664,9 @@ public class PApplet implements PConstants {
    * direction or light. The <b>angle</b> parameter affects angle of the
    * spotlight cone.
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Adds a spot light.
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -14634,7 +14694,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from lightFalloff.xml )
    *
    * Sets the falloff rates for point lights, spot lights, and ambient
    * lights. The parameters are used to determine the falloff with the
@@ -14649,9 +14708,10 @@ public class PApplet implements PConstants {
    * and falloff. You can think of it as a point light that doesn't care
    * which direction a surface is facing.
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Sets the falloff rates for point lights, spot lights, and ambient
+   * lights.
    * @usage web_application
    * @param constant constant value or determining falloff
    * @param linear linear value for determining falloff
@@ -14669,7 +14729,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from lightSpecular.xml )
    *
    * Sets the specular color for lights. Like <b>fill()</b>, it affects only
    * the elements which are created after it in the code. Specular refers to
@@ -14679,9 +14738,9 @@ public class PApplet implements PConstants {
    * specular material qualities set through the <b>specular()</b> and
    * <b>shininess()</b> functions.
    *
-   * 
    *
    * @webref lights_camera:lights
+   * @webBrief Sets the specular color for lights.
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -14699,7 +14758,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from background.xml )
    *
    * The <b>background()</b> function sets the color used for the background
    * of the Processing window. The default background is light gray. In the
@@ -14715,7 +14773,6 @@ public class PApplet implements PConstants {
    * It is not possible to use transparency (alpha) in background colors with
    * the main drawing surface, however they will work properly with <b>createGraphics()</b>.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * <p>Clear the background with a color that includes an alpha value. This can
@@ -14728,6 +14785,7 @@ public class PApplet implements PConstants {
    * and draw a rectangle.</p>
    *
    * @webref color:setting
+   * @webBrief Sets the color used for the background of the Processing window.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#stroke(float)
@@ -14783,7 +14841,15 @@ public class PApplet implements PConstants {
 
 
   /**
+   * Clears the pixels within a buffer. This function only works on 
+   * <b>PGraphics</b> objects created with the <b>createGraphics()</b> 
+   * function. Unlike the main graphics context (the display window), 
+   * pixels in additional graphics areas created with <b>createGraphics()</b> 
+   * can be entirely or partially transparent. This function clears 
+   * everything in a <b>PGraphics</b> object to make all of the pixels 
+   * 100% transparent.
    * @webref color:setting
+   * @webBrief Clears the pixels within a buffer.
    */
   public void clear() {
     if (recorder != null) recorder.clear();
@@ -14812,7 +14878,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from colorMode.xml )
    *
    * Changes the way Processing interprets color data. By default, the
    * parameters for <b>fill()</b>, <b>stroke()</b>, <b>background()</b>, and
@@ -14823,9 +14888,9 @@ public class PApplet implements PConstants {
    * are specified between 0 and 1. The limits for defining colors are
    * altered by setting the parameters range1, range2, range3, and range 4.
    *
-   * 
    *
    * @webref color:setting
+   * @webBrief Changes the way Processing interprets color data.
    * @usage web_application
    * @param mode Either RGB or HSB, corresponding to Red/Green/Blue and Hue/Saturation/Brightness
    * @see PGraphics#background(float)
@@ -14869,12 +14934,11 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from alpha.xml )
    *
    * Extracts the alpha value from a color.
    *
-   * 
    * @webref color:creating_reading
+   * @webBrief Extracts the alpha value from a color.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -14890,7 +14954,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from red.xml )
    *
    * Extracts the red value from a color, scaled to match current
    * <b>colorMode()</b>. This value is always returned as a  float so be
@@ -14902,9 +14965,9 @@ public class PApplet implements PConstants {
    * /><pre>float r1 = red(myColor);<br />float r2 = myColor &gt;&gt; 16
    * &amp; 0xFF;</pre>
    *
-   * 
    *
    * @webref color:creating_reading
+   * @webBrief Extracts the red value from a color, scaled to match current <b>colorMode()</b>.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#green(int)
@@ -14921,7 +14984,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from green.xml )
    *
    * Extracts the green value from a color, scaled to match current
    * <b>colorMode()</b>. This value is always returned as a  float so be
@@ -14933,9 +14995,9 @@ public class PApplet implements PConstants {
    * are equivalent:<br /><pre>float r1 = green(myColor);<br />float r2 =
    * myColor &gt;&gt; 8 &amp; 0xFF;</pre>
    *
-   * 
    *
    * @webref color:creating_reading
+   * @webBrief Extracts the green value from a color, scaled to match current <b>colorMode()</b>.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -14952,7 +15014,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from blue.xml )
    *
    * Extracts the blue value from a color, scaled to match current
    * <b>colorMode()</b>. This value is always returned as a  float so be
@@ -14964,9 +15025,9 @@ public class PApplet implements PConstants {
    * equivalent:<br /><pre>float r1 = blue(myColor);<br />float r2 = myColor
    * &amp; 0xFF;</pre>
    *
-   * 
    *
    * @webref color:creating_reading
+   * @webBrief Extracts the blue value from a color, scaled to match current <b>colorMode()</b>. 
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -14983,12 +15044,11 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from hue.xml )
    *
    * Extracts the hue value from a color.
    *
-   * 
    * @webref color:creating_reading
+   * @webBrief Extracts the hue value from a color.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -15004,12 +15064,11 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from saturation.xml )
    *
    * Extracts the saturation value from a color.
    *
-   * 
    * @webref color:creating_reading
+   * @webBrief Extracts the saturation value from a color.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -15025,13 +15084,12 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from brightness.xml )
    *
    * Extracts the brightness value from a color.
    *
-   * 
    *
    * @webref color:creating_reading
+   * @webBrief Extracts the brightness value from a color.
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -15113,7 +15171,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PImage_get.xml )
    *
    * Reads the color of any pixel or grabs a section of an image. If no
    * parameters are specified, the entire image is returned. Use the <b>x</b>
@@ -15134,7 +15191,6 @@ public class PApplet implements PConstants {
    * equivalent statement to <b>get(x, y)</b> using <b>pixels[]</b> is
    * <b>pixels[y*width+x]</b>. See the reference for <b>pixels[]</b> for more information.
    *
-   * 
    *
    * <h3>Advanced</h3>
    * Returns an ARGB "color" type (a packed 32 bit int with the color.
@@ -15155,7 +15211,7 @@ public class PApplet implements PConstants {
    * pixels[] array directly.
    *
    * @webref image:pixels
-   * @brief Reads the color of any pixel or grabs a rectangle of pixels
+   * @webBrief Reads the color of any pixel or grabs a rectangle of pixels.
    * @usage web_application
    * @param x x-coordinate of the pixel
    * @param y y-coordinate of the pixel
@@ -15192,7 +15248,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PImage_set.xml )
    *
    * Changes the color of any pixel or writes an image directly into the
    * display window.<br />
@@ -15210,10 +15265,9 @@ public class PApplet implements PConstants {
    * is <b>pixels[y*width+x] = #000000</b>. See the reference for
    * <b>pixels[]</b> for more information.
    *
-   * 
    *
    * @webref image:pixels
-   * @brief writes a color to any pixel or writes an image into another
+   * @webBrief Writes a color to any pixel or writes an image into another
    * @usage web_application
    * @param x x-coordinate of the pixel
    * @param y y-coordinate of the pixel
@@ -15243,7 +15297,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PImage_mask.xml )
    *
    * Masks part of an image from displaying by loading another image and
    * using it as an alpha channel. This mask image should only contain
@@ -15256,7 +15309,6 @@ public class PApplet implements PConstants {
    * same length as the target image's pixels array and should contain only
    * grayscale data of values between 0-255.
    *
-   * 
    *
    * <h3>Advanced</h3>
    *
@@ -15273,9 +15325,9 @@ public class PApplet implements PConstants {
    * performing a proper luminance-based conversion.
    *
    * @webref pimage:method
+   * @webBrief Masks part of an image with another image as an alpha channel
    * @usage web_application
    * @param img image to use as the mask
-   * @brief Masks part of an image with another image as an alpha channel
    */
   public void mask(PImage img) {
     if (recorder != null) recorder.mask(img);
@@ -15290,7 +15342,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PImage_filter.xml )
    *
    * Filters an image as defined by one of the following modes:<br /><br
    * />THRESHOLD - converts the image to black and white pixels depending if
@@ -15316,7 +15367,6 @@ public class PApplet implements PConstants {
    * <br />
    * DILATE - increases the light areas with the amount defined by the level parameter
    *
-   * 
    *
    * <h3>Advanced</h3>
    * Method to apply a variety of basic filters to this image.
@@ -15337,7 +15387,7 @@ public class PApplet implements PConstants {
    * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
    *
    * @webref image:pixels
-   * @brief Converts the image to grayscale or black and white
+   * @webBrief Converts the image to grayscale or black and white
    * @usage web_application
    * @param kind Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE, or DILATE
    * @param param unique for each, see above
@@ -15349,7 +15399,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PImage_copy.xml )
    *
    * Copies a region of pixels from one image into another. If the source and
    * destination regions aren't the same size, it will automatically resize
@@ -15359,10 +15408,9 @@ public class PApplet implements PConstants {
    * <br /><br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
    *
-   * 
    *
    * @webref image:pixels
-   * @brief Copies the entire image
+   * @webBrief Copies the entire image
    * @usage web_application
    * @param sx X coordinate of the source's upper left corner
    * @param sy Y coordinate of the source's upper left corner
@@ -15401,7 +15449,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PImage_blend.xml )
    *
    * Blends a region of pixels into the image specified by the <b>img</b>
    * parameter. These copies utilize full alpha channel support and a choice
@@ -15449,10 +15496,9 @@ public class PApplet implements PConstants {
    * <br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
    *
-   * 
    *
    * @webref image:pixels
-   * @brief  Copies a pixel or rectangle of pixels using different blending modes
+   * @webBrief Copies a pixel or rectangle of pixels using different blending modes.
    * @param src an image variable referring to the source image
    * @param sx X coordinate of the source's upper left corner
    * @param sy Y coordinate of the source's upper left corner

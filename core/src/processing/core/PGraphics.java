@@ -1723,7 +1723,6 @@ public class PGraphics extends PImage implements PConstants {
    * @webref shape:vertex
    * @webBrief Stops recording vertices for the shape.
    */
-   */
   public void endContour() {
     showMissingWarning("endContour");
   }

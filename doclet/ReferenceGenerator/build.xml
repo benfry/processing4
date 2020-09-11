@@ -52,7 +52,7 @@
         description="compile the source " >
     <!-- Compile the java code from ${src} into ${build} -->
     <!-- Note that your environment JAVA_HOME now matters for building -->
-    <javac srcdir="${src}" destdir="${build}" source="1.8" target="1.8" includeantruntime="true">
+    <javac srcdir="${src}" destdir="${build}" source="11" target="11" includeantruntime="true">
       <classpath refid="class.path" />
     </javac>
   </target>

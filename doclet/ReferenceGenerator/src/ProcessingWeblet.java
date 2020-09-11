@@ -57,9 +57,6 @@ public class ProcessingWeblet extends Standard {
 			System.out.println("\n===Writing .javadoc sourced reference.===");
 
 			writeContents(root);
-			
-			// write out everything in the include directory:
-			// see: /api_en/include
 
 			System.out.println("===Source code @webref files written.===");
 
