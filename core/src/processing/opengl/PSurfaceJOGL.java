@@ -229,8 +229,8 @@ public class PSurfaceJOGL implements PSurface {
     screen = NewtFactory.createScreen(display, 0);
     screen.addReference();
 
-    GraphicsEnvironment environment = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    GraphicsDevice[] awtDevices = environment.getScreenDevices();
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice[] awtDevices = ge.getScreenDevices();
 
     GraphicsDevice awtDisplayDevice = null;
     int displayNum = sketch.sketchDisplay();
@@ -249,7 +249,7 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     if (awtDisplayDevice == null) {
-      awtDisplayDevice = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+      awtDisplayDevice = ge.getDefaultScreenDevice();
     }
 
     GraphicsConfiguration config = awtDisplayDevice.getDefaultConfiguration();
@@ -258,7 +258,6 @@ public class PSurfaceJOGL implements PSurface {
 
 
   protected void initGL() {
-//  System.out.println("*******************************");
     if (profile == null) {
       if (PJOGL.profile == 1) {
         try {
@@ -336,13 +335,15 @@ public class PSurfaceJOGL implements PSurface {
 //      window = GLWindow.create(displayDevice.getScreen(), pgl.getCaps());
 //    }
 
-    windowScaleFactor = PApplet.platform == PConstants.MACOS ?
-        1 : sketch.pixelDensity;
+    windowScaleFactor =
+      (PApplet.platform == PConstants.MACOS) ? 1 : sketch.pixelDensity;
 
     boolean spanDisplays = sketch.sketchDisplay() == PConstants.SPAN;
     screenRect = spanDisplays ?
-      new Rectangle(screen.getX(), screen.getY(), screen.getWidth(), screen.getHeight()) :
-      new Rectangle((int) displayRect.getX(), (int) displayRect.getY(),
+      new Rectangle(screen.getX(), screen.getY(),
+                    screen.getWidth(), screen.getHeight()) :
+      new Rectangle((int) displayRect.getX(),
+                    (int) displayRect.getY(),
                     (int) displayRect.getWidth(),
                     (int) displayRect.getHeight());
 
@@ -399,19 +400,15 @@ public class PSurfaceJOGL implements PSurface {
 
     sketch.setSize(sketchWidth, sketchHeight);
 
-    float[] reqSurfacePixelScale;
-    if (graphics.is2X() && PApplet.platform == PConstants.MACOS) {
-       // Retina
-       reqSurfacePixelScale = new float[] { ScalableSurface.AUTOMAX_PIXELSCALE,
-                                            ScalableSurface.AUTOMAX_PIXELSCALE };
-    } else {
-      // Non-retina
-      reqSurfacePixelScale = new float[] { ScalableSurface.IDENTITY_PIXELSCALE,
-                                           ScalableSurface.IDENTITY_PIXELSCALE };
-    }
-    window.setSurfaceScale(reqSurfacePixelScale);
+    // https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/newt/opengl/GLWindow.html#setSurfaceScale(float%5B%5D)
+    float surfaceScale =
+      (graphics.is2X() && PApplet.platform == PConstants.MACOS) ?
+      ScalableSurface.AUTOMAX_PIXELSCALE :
+      ScalableSurface.IDENTITY_PIXELSCALE;
+    window.setSurfaceScale(new float[] { surfaceScale, surfaceScale });
+
     window.setSize(sketchWidth * windowScaleFactor, sketchHeight * windowScaleFactor);
-    window.setResizable(false);
+    window.setResizable(true);
     setSize(sketchWidth, sketchHeight);
     if (fullScreen) {
       PApplet.hideMenuBar();
@@ -863,6 +860,7 @@ public class PSurfaceJOGL implements PSurface {
     return 2;
   }
 
+
   private float getCurrentPixelScale() {
     // Even if the graphics are retina, the user might have moved the window
     // into a non-retina monitor, so we need to check
@@ -960,9 +958,11 @@ public class PSurfaceJOGL implements PSurface {
         sketch.exitActual();
       }
     }
+
     public void dispose(GLAutoDrawable drawable) {
 //      sketch.dispose();
     }
+
     public void init(GLAutoDrawable drawable) {
       pgl.getGL(drawable);
       pgl.init(drawable);
