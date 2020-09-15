@@ -79,6 +79,8 @@ _   https://github.com/processing/processing4/issues/25
 
 
 open issues
+_ fixing undo
+_   https://github.com/processing/processing/issues/4775
 _ update the docs repo
 _   check with Casey re: shallow clone or approach
 _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
@@ -93,6 +95,12 @@ _   https://github.com/processing/processing4/issues/67
 
 questions
 _ can we get rid of pdexEnabled? does it work w/ java tabs?
+_ Java 17 is the next LTS, arriving in September 2021
+
+
+_ language server refactoring
+_   https://github.com/processing/processing4/issues/117
+_   https://theia-ide.org/
 
 
 would like to fix
