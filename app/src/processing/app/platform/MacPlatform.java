@@ -33,7 +33,6 @@ import javax.swing.JMenuBar;
 
 import processing.app.Base;
 import processing.app.Messages;
-import processing.app.platform.DefaultPlatform;
 import processing.app.ui.About;
 
 
