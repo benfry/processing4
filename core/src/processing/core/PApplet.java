@@ -154,7 +154,7 @@ public class PApplet implements PConstants {
    * around it and not be placed in the upper corner of the screen. On Mac OS
    * X, the menu bar will remain present unless "Present" mode is used.
    *
-   * 
+   *
    */
   public int displayWidth;
 
@@ -170,7 +170,7 @@ public class PApplet implements PConstants {
    * around it and not be placed in the upper corner of the screen. On Mac OS
    * X, the menu bar will remain present unless "Present" mode is used.
    *
-   * 
+   *
    */
   public int displayHeight;
 
@@ -201,20 +201,21 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Array containing the values for all the pixels in the display window.
-   * These values are of the color datatype. This array is the size of the
-   * display window. For example, if the image is 100x100 pixels, there will
-   * be 10000 values and if the window is 200x300 pixels, there will be 60000
-   * values. The <b>index</b> value defines the position of a value within
-   * the array. For example, the statement <b>color b = pixels[230]</b> will
-   * set the variable <b>b</b> to be equal to the value at that location in
-   * the array.<br />
-   * <br />
-   * Before accessing this array, the data must loaded with the
-   * <b>loadPixels()</b> function. After the array data has been modified,
-   * the <b>updatePixels()</b> function must be run to update the changes.
-   * Without <b>loadPixels()</b>, running the code may (or will in future
-   * releases) result in a NullPointerException.
+   * The <b>pixels[]</b> array contains the values for all the pixels in the
+   * display window. These values are of the color datatype. This array is
+   * defined by the size of the display window. For example, if the window is
+   * 100 x 100 pixels, there will be 10,000 values and if the window is
+   * 200 x 300 pixels, there will be 60,000 values. When the pixel density is
+   * set to higher than 1 with the <b>pixelDensity()</b> function, these values
+   * will change. See the reference for <b>pixelWidth</b> or <b>pixelHeight</b>
+   * for more information.
+   * <br /><br />
+   * Before accessing this array, the data must loaded with the <b>loadPixels()</b>
+   * function. Failure to do so may result in a NullPointerException. Subsequent
+   * changes to the display window will not be reflected in <b>pixels</b> until
+   * <b>loadPixels()</b> is called again. After <b>pixels</b> has been modified,
+   * the <b>updatePixels()</b> function must be run to update the content of the
+   * display window.
    *
    *
    * @webref image:pixels
@@ -235,8 +236,8 @@ public class PApplet implements PConstants {
    * System variable which stores the width of the display window. This value
    * is set by the first parameter of the <b>size()</b> function. For
    * example, the function call <b>size(320, 240)</b> sets the <b>width</b>
-   * variable to the value 320. The value of <b>width</b> is zero until
-   * <b>size()</b> is called.
+   * variable to the value 320. The value of <b>width</b> defaults to 100 if
+   * <b>size()</b> is not used in a program.
    *
    * @webref environment
    * @webBrief System variable which stores the width of the display window.
@@ -250,8 +251,8 @@ public class PApplet implements PConstants {
    * System variable which stores the height of the display window. This
    * value is set by the second parameter of the <b>size()</b> function. For
    * example, the function call <b>size(320, 240)</b> sets the <b>height</b>
-   * variable to the value 240. The value of <b>height</b> is zero until
-   * <b>size()</b> is called.
+   * variable to the value 240. The value of <b>height</b> defaults to 100 if
+   * <b>size()</b> is not used in a program.
    *
    * @webref environment
    * @webBrief System variable which stores the height of the display window.
@@ -313,6 +314,13 @@ public class PApplet implements PConstants {
    *
    * The system variable <b>mouseX</b> always contains the current horizontal
    * coordinate of the mouse.
+   * <br /><br />
+   * Note that Processing can only track the mouse position when the pointer
+   * is over the current window. The default value of <b>mouseX</b> is <b>0</b>,
+   * so <b>0</b> will be returned until the mouse moves in front of the sketch
+   * window. (This typically happens when a sketch is first run.)  Once the
+   * mouse moves away from the window, <b>mouseX</b> will continue to report
+   * its most recent position.
    *
    * @webref input:mouse
    * @webBrief The system variable that always contains the current horizontal coordinate of the mouse.
@@ -336,6 +344,13 @@ public class PApplet implements PConstants {
    *
    * The system variable <b>mouseY</b> always contains the current vertical
    * coordinate of the mouse.
+   * <br /><br />
+   * Note that Processing can only track the mouse position when the pointer
+   * is over the current window. The default value of <b>mouseY</b> is <b>0</b>,
+   * so <b>0</b> will be returned until the mouse moves in front of the sketch
+   * window. (This typically happens when a sketch is first run.)  Once the
+   * mouse moves away from the window, <b>mouseY</b> will continue to report
+   * its most recent position.
    *
    * @webref input:mouse
    * @webBrief The system variable that always contains the current vertical coordinate of the mouse.
@@ -359,21 +374,21 @@ public class PApplet implements PConstants {
    * The system variable <b>pmouseX</b> always contains the horizontal
    * position of the mouse in the frame previous to the current frame.<br />
    * <br />
-   * You may find that <b>pmouseX</b> and <b>pmouseY</b> have different
-   * values inside <b>draw()</b> and inside events like <b>mousePressed()</b>
-   * and <b>mouseMoved()</b>. This is because they're used for different
-   * roles, so don't mix them. Inside <b>draw()</b>, <b>pmouseX</b> and
-   * <b>pmouseY</b> update only once per frame (once per trip through your
-   * <b>draw()</b>). But, inside mouse events, they update each time the
-   * event is called. If they weren't separated, then the mouse would be read
-   * only once per frame, making response choppy. If the mouse variables were
-   * always updated multiple times per frame, using <NOBR><b>line(pmouseX,
-   * pmouseY, mouseX, mouseY)</b></NOBR> inside <b>draw()</b> would have lots
-   * of gaps, because <b>pmouseX</b> may have changed several times in
-   * between the calls to <b>line()</b>. Use <b>pmouseX</b> and
-   * <b>pmouseY</b> inside <b>draw()</b> if you want values relative to the
-   * previous frame. Use <b>pmouseX</b> and <b>pmouseY</b> inside the mouse
-   * functions if you want continuous response.
+   * You may find that <b>pmouseX</b> and <b>pmouseY</b> have different values
+   * when referenced inside of <b>draw()</b> and inside of mouse events like
+   * <b>mousePressed()</b> and <b>mouseMoved()</b>. Inside <b>draw()</b>,
+   * <b>pmouseX</b> and <b>pmouseY</b> update only once per frame (once per trip
+   * through the <b>draw()</b> loop). But inside mouse events, they update each
+   * time the event is called. If these values weren't updated immediately during
+   * events, then the mouse position would be read only once per frame, resulting
+   * in slight delays and choppy interaction. If the mouse variables were always
+   * updated multiple times per frame, then something like <b>line(pmouseX, pmouseY,
+   * mouseX, mouseY)</b> inside <b>draw()</b> would have lots of gaps, because
+   * <b>pmouseX</b> may have changed several times in between the calls to
+   * <b>line()</b>.<br /><br />
+   * If you want values relative to the previous frame, use <b>pmouseX</b> and
+   * <b>pmouseY</b> inside <b>draw()</b>. If you want continuous response, use
+   * <b>pmouseX</b> and <b>pmouseY</b> inside the mouse event functions.
    *
    * @webref input:mouse
    * @webBrief The system variable that always contains the horizontal
@@ -448,10 +463,13 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Processing automatically tracks if the mouse button is pressed and which
-   * button is pressed. The value of the system variable <b>mouseButton</b>
-   * is either <b>LEFT</b>, <b>RIGHT</b>, or <b>CENTER</b> depending on which
-   * button is pressed.
+   * When a mouse button is pressed, the value of the system variable
+   * <b>mouseButton</b> is set to either <b>LEFT</b>, <b>RIGHT</b>, or
+   * <b>CENTER</b>, depending on which button is pressed. (If no button is
+   * pressed, <b>mouseButton</b> may be reset to <b>0</b>. For that reason,
+   * it's best to use <b>mousePressed</b> first to test if any button is being
+   * pressed, and only then test the value of <b>mouseButton</b>, as shown in
+   * the examples above.)
    *
    *
    * <h3>Advanced:</h3>
@@ -476,10 +494,15 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Variable storing if a mouse button is pressed. The value of the system
-   * variable <b>mousePressed</b> is true if a mouse button is pressed and
-   * false if a button is not pressed.
-   * 
+   * The <b>mousePressed()</b> function is called once after every time a
+   * mouse button is pressed. The <b>mouseButton</b> variable (see the
+   * related reference entry) can be used to determine which button has
+   * been pressed.
+   * <br /><br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops
+   * listening for events.
+   *
    * @webref input:mouse
    * @webBrief Variable storing if a mouse button is pressed.
    * @see PApplet#mouseX
@@ -522,7 +545,10 @@ public class PApplet implements PConstants {
    * commonly used on PCs and Unix and the RETURN key is used instead on
    * Macintosh. Check for both ENTER and RETURN to make sure your program
    * will work for all platforms.
-   *
+   * <br /><br />
+   * There are issues with how <b>keyCode</b> behaves across different
+   * renderers and operating systems. Watch out for unexpected behavior as
+   * you switch renderers and operating systems.
    *
    * <h3>Advanced</h3>
    *
@@ -544,23 +570,33 @@ public class PApplet implements PConstants {
   /**
    *
    * The variable <b>keyCode</b> is used to detect special keys such as the
-   * UP, DOWN, LEFT, RIGHT arrow keys and ALT, CONTROL, SHIFT. When checking
-   * for these keys, it's first necessary to check and see if the key is
-   * coded. This is done with the conditional "if (key == CODED)" as shown in
-   * the example.
+   * UP, DOWN, LEFT, RIGHT arrow keys and ALT, CONTROL, SHIFT.
+   * <br /><br />
+   * When checking for these keys, it can be useful to first check if the key
+   * is coded. This is done with the conditional <b>if (key == CODED)</b>, as
+   * shown in the example above.
    * <br/> <br/>
    * The keys included in the ASCII specification (BACKSPACE, TAB, ENTER,
-   * RETURN, ESC, and DELETE) do not require checking to see if they key is
-   * coded, and you should simply use the <b>key</b> variable instead of
-   * <b>keyCode</b> If you're making cross-platform projects, note that the
-   * ENTER key is commonly used on PCs and Unix and the RETURN key is used
-   * instead on Macintosh. Check for both ENTER and RETURN to make sure your
-   * program will work for all platforms.
+   * RETURN, ESC, and DELETE) do not require checking to see if the key is
+   * coded; for those keys, you should simply use the <b>key</b> variable
+   * directly (and not <b>keyCode</b>).  If you're making cross-platform
+   * projects, note that the ENTER key is commonly used on PCs and Unix,
+   * while the RETURN key is used on Macs. Make sure your program will work
+   * on all platforms by checking for both ENTER and RETURN.
    * <br/> <br/>
-   * For users familiar with Java, the values for UP and DOWN are simply
-   * shorter versions of Java's KeyEvent.VK_UP and KeyEvent.VK_DOWN. Other
-   * keyCode values can be found in the Java <a
-   * href="http://download.oracle.com/javase/6/docs/api/java/awt/event/KeyEvent.html">KeyEvent</a> reference.
+   * For those familiar with Java, the values for UP and DOWN are simply
+   * shorter versions of Java's <b>KeyEvent.VK_UP</b> and <b>KeyEvent.VK_DOWN</b>.
+   *  Other <b>keyCode</b> values can be found in the Java
+   * <a href="https://docs.oracle.com/javase/8/docs/api/java/awt/event/KeyEvent.html">KeyEvent</a>
+   * reference.
+   * <br /><br />
+   * There are issues with how <b>keyCode</b> behaves across different renderers
+   * and operating systems. Watch out for unexpected behavior as you switch
+   * renderers and operating systems and you are using keys are aren't mentioned
+   * in this reference entry.
+   * <br /><br />
+   * If you are using P2D or P3D as your renderer, use the
+   * <a href="https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/newt/event/KeyEvent.html">NEWT KeyEvent constants</a>.
    *
    *
    * <h3>Advanced</h3>
@@ -583,6 +619,9 @@ public class PApplet implements PConstants {
    *
    * The boolean system variable <b>keyPressed</b> is <b>true</b> if any key
    * is pressed and <b>false</b> if no keys are pressed.
+   * <br /><br />
+   * Note that there is a similarly named function called <b>keyPressed()</b>.
+   * See its reference page for more information.
    *
    * @webref input:keyboard
    * @webBrief The boolean system variable that is <b>true</b> if any key
@@ -606,9 +645,7 @@ public class PApplet implements PConstants {
    *
    * Confirms if a Processing program is "focused", meaning that it is active
    * and will accept input from mouse or keyboard. This variable is "true" if
-   * it is focused and "false" if not. This variable is often used when you
-   * want to warn people they need to click on or roll over an applet before
-   * it will work.
+   * it is focused and "false" if not.
    *
    * @webref environment
    * @webBrief Confirms if a Processing program is "focused".
@@ -661,7 +698,7 @@ public class PApplet implements PConstants {
    *
    * @webref environment
    * @webBrief The system variable that contains the number of frames
-   * displayed since the program started. 
+   * displayed since the program started.
    * @see PApplet#frameRate(float)
    * @see PApplet#frameRate
    */
@@ -887,25 +924,25 @@ public class PApplet implements PConstants {
 
   /**
   *
-  * The <b>settings()</b> function is new with Processing 3.0. 
-  * It's not needed in most sketches. It's only useful when it's 
-  * absolutely necessary to define the parameters to <b>size()</b> 
-  * with a variable. Alternately, the <b>settings()</b> function 
-  * is necessary when using Processing code outside of the 
-  * Processing Development Environment (PDE). For example, when 
-  * using the Eclipse code editor, it's necessary to use 
-  * <b>settings()</b> to define the <b>size()</b> and 
+  * The <b>settings()</b> function is new with Processing 3.0.
+  * It's not needed in most sketches. It's only useful when it's
+  * absolutely necessary to define the parameters to <b>size()</b>
+  * with a variable. Alternately, the <b>settings()</b> function
+  * is necessary when using Processing code outside of the
+  * Processing Development Environment (PDE). For example, when
+  * using the Eclipse code editor, it's necessary to use
+  * <b>settings()</b> to define the <b>size()</b> and
   * <b>smooth()</b> values for a sketch.</b>.
   * <br /> <br />
-  * The <b>settings()</b> method runs before the sketch has been 
-  * set up, so other Processing functions cannot be used at that 
-  * point. For instance, do not use loadImage() inside settings(). 
-  * The settings() method runs "passively" to set a few variables, 
-  * compared to the <b>setup()</b> command that call commands in 
-  * the Processing API. 
+  * The <b>settings()</b> method runs before the sketch has been
+  * set up, so other Processing functions cannot be used at that
+  * point. For instance, do not use loadImage() inside settings().
+  * The settings() method runs "passively" to set a few variables,
+  * compared to the <b>setup()</b> command that call commands in
+  * the Processing API.
   *
   * @webref environment
-  * @webBrief Used when absolutely necessary to define the parameters to <b>size()</b> 
+  * @webBrief Used when absolutely necessary to define the parameters to <b>size()</b>
   * with a variable.
   * @see PApplet#fullScreen()
   * @see PApplet#setup()
@@ -979,7 +1016,7 @@ public class PApplet implements PConstants {
   * and a "1" if not. This information is useful for a program to adapt to
   * run at double the pixel density on a screen that supports it.
   *
-  * 
+  *
   * @webref environment
   * @webBrief Returns "2" if the screen is high-density and "1" if not.
   * @see PApplet#pixelDensity(int)
@@ -1034,31 +1071,31 @@ public class PApplet implements PConstants {
 
 
  /**
-  * This function is new with Processing 3.0. It makes it 
-  * possible for Processing to render using all of the 
-  * pixels on high resolutions screens like Apple Retina 
-  * displays and Windows High-DPI displays. This function 
-  * can only be run once within a program and it must be 
-  * used right after size() in a program without a setup() 
-  * and used within setup() when a program has one. The 
-  * pixelDensity() should only be used with hardcoded 
-  * numbers (in almost all cases this number will be 2) 
-  * or in combination with displayDensity() as in the 
+  * This function is new with Processing 3.0. It makes it
+  * possible for Processing to render using all of the
+  * pixels on high resolutions screens like Apple Retina
+  * displays and Windows High-DPI displays. This function
+  * can only be run once within a program and it must be
+  * used right after size() in a program without a setup()
+  * and used within setup() when a program has one. The
+  * pixelDensity() should only be used with hardcoded
+  * numbers (in almost all cases this number will be 2)
+  * or in combination with displayDensity() as in the
   * third example above.
   *
-  * When the pixel density is set to more than 1, it 
-  * changes all of the pixel operations including the way 
-  * get(), set(), blend(), copy(), and updatePixels() 
-  * all work. See the reference for pixelWidth and 
+  * When the pixel density is set to more than 1, it
+  * changes all of the pixel operations including the way
+  * get(), set(), blend(), copy(), and updatePixels()
+  * all work. See the reference for pixelWidth and
   * pixelHeight for more information.
   *
-  * To use variables as the arguments to pixelDensity() 
-  * function, place the pixelDensity() function within 
-  * the settings() function. There is more information 
+  * To use variables as the arguments to pixelDensity()
+  * function, place the pixelDensity() function within
+  * the settings() function. There is more information
   * about this on the settings() reference page.
-  * 
+  *
   * @webref environment
-  * @webBrief It makes it possible for Processing to render using all of the 
+  * @webBrief It makes it possible for Processing to render using all of the
   * pixels on high resolutions screens
   * @param density 1 or 2
   * @see PApplet#pixelWidth
@@ -1112,39 +1149,39 @@ public class PApplet implements PConstants {
   }
 
   /**
-   * Draws all geometry with smooth (anti-aliased) edges. 
-   * This behavior is the default, so smooth() only needs 
-   * to be used when a program needs to set the smoothing 
-   * in a different way. The level parameter increases 
-   * the amount of smoothness. This is the level of over 
+   * Draws all geometry with smooth (anti-aliased) edges.
+   * This behavior is the default, so smooth() only needs
+   * to be used when a program needs to set the smoothing
+   * in a different way. The level parameter increases
+   * the amount of smoothness. This is the level of over
    * sampling applied to the graphics buffer.
    *
-   * With the P2D and P3D renderers, smooth(2) is the 
-   * default, this is called "2x anti-aliasing." The code 
-   * smooth(4) is used for 4x anti-aliasing and smooth(8) 
-   * is specified for "8x anti-aliasing." The maximum 
-   * anti-aliasing level is determined by the hardware of 
-   * the machine that is running the software, so smooth(4) 
+   * With the P2D and P3D renderers, smooth(2) is the
+   * default, this is called "2x anti-aliasing." The code
+   * smooth(4) is used for 4x anti-aliasing and smooth(8)
+   * is specified for "8x anti-aliasing." The maximum
+   * anti-aliasing level is determined by the hardware of
+   * the machine that is running the software, so smooth(4)
    * and smooth(8) will not work with every computer.
-   * 
-   * The default renderer uses smooth(3) by default. This 
-   * is bicubic smoothing. The other option for the default 
+   *
+   * The default renderer uses smooth(3) by default. This
+   * is bicubic smoothing. The other option for the default
    * renderer is smooth(2), which is bilinear smoothing.
    *
-   * With Processing 3.0, smooth() is different than before. 
-   * It was common to use smooth() and noSmooth() to turn on 
-   * and off antialiasing within a sketch. Now, because of 
-   * how the software has changed, smooth() can only be set 
-   * once within a sketch. It can be used either at the top 
-   * of a sketch without a setup(), or after the size() 
-   * function when used in a sketch with setup(). The 
+   * With Processing 3.0, smooth() is different than before.
+   * It was common to use smooth() and noSmooth() to turn on
+   * and off antialiasing within a sketch. Now, because of
+   * how the software has changed, smooth() can only be set
+   * once within a sketch. It can be used either at the top
+   * of a sketch without a setup(), or after the size()
+   * function when used in a sketch with setup(). The
    * noSmooth() function also follows the same rules.
    *
-   * When smooth() is used with a PGraphics object, it should 
-   * be run right after the object is created with 
-   * createGraphics(), as shown in the Reference in the third 
+   * When smooth() is used with a PGraphics object, it should
+   * be run right after the object is created with
+   * createGraphics(), as shown in the Reference in the third
    * example.
-   * 
+   *
    * @webref environment
    * @webBrief Draws all geometry with smooth (anti-aliased) edges.
    * @param level either 2, 3, 4, or 8 depending on the renderer
@@ -1159,19 +1196,20 @@ public class PApplet implements PConstants {
   }
 
   /**
-   * Draws all geometry and fonts with jagged (aliased) 
-   * edges and images with hard edges between the pixels 
-   * when enlarged rather than interpolating pixels. Note 
-   * that smooth() is active by default, so it is necessary 
-   * to call noSmooth() to disable smoothing of geometry, 
-   * fonts, and images. Since the release of Processing 3.0, 
-   * the noSmooth() function can only be run once for each 
-   * sketch, either at the top of a sketch without a setup(), 
-   * or after the size() function when used in a sketch with 
+   * Draws all geometry and fonts with jagged (aliased)
+   * edges and images with hard edges between the pixels
+   * when enlarged rather than interpolating pixels. Note
+   * that smooth() is active by default, so it is necessary
+   * to call noSmooth() to disable smoothing of geometry,
+   * fonts, and images. Since the release of Processing 3.0,
+   * the noSmooth() function can only be run once for each
+   * sketch, either at the top of a sketch without a setup(),
+   * or after the size() function when used in a sketch with
    * setup(). See the examples above for both scenarios.
+   *
    * @webref environment
-   * @webBrief Draws all geometry and fonts with jagged (aliased) 
-   * edges and images with hard edges between the pixels 
+   * @webBrief Draws all geometry and fonts with jagged (aliased)
+   * edges and images with hard edges between the pixels
    * when enlarged rather than interpolating pixels.
    */
   public void noSmooth() {
@@ -1677,18 +1715,20 @@ public class PApplet implements PConstants {
 
 /**
    *
-   * The <b>setup()</b> function is called once when the program starts. It's
-   * used to define initial
-   * enviroment properties such as screen size and background color and to
-   * load media such as images
-   * and fonts as the program starts. There can only be one <b>setup()</b>
-   * function for each program and
-   * it shouldn't be called again after its initial execution. Note:
-   * Variables declared within
-   * <b>setup()</b> are not accessible within other functions, including
-   * <b>draw()</b>.
+   * The <b>setup()</b> function is run once, when the program starts. It's used
+   * to define initial enviroment properties such as screen size and to load media
+   * such as images and fonts as the program starts. There can only be one
+   * <b>setup()</b> function for each program and it shouldn't be called again
+   * after its initial execution.<br />
+   * <br />
+   * If the sketch is a different dimension than the default, the <b>size()</b>
+   * function or <b>fullScreen()</b> function must be the first line in
+   * <b>setup()</b>.<br />
+   * <br />
+   * Note: Variables declared within <b>setup()</b> are not accessible within
+   * other functions, including <b>draw()</b>.
    *
-   * 
+   *
  * @webref structure
  * @webBrief  The <b>setup()</b> function is called once when the program starts.
  * @usage web_application
@@ -1702,21 +1742,31 @@ public class PApplet implements PConstants {
 
 /**
    *
-   * Called directly after <b>setup()</b> and continuously executes the lines
-   * of code contained inside its block until the program is stopped or
-   * <b>noLoop()</b> is called. The <b>draw()</b> function is called
-   * automatically and should never be called explicitly. It should always be
-   * controlled with <b>noLoop()</b>, <b>redraw()</b> and <b>loop()</b>.
-   * After <b>noLoop()</b> stops the code in <b>draw()</b> from executing,
-   * <b>redraw()</b> causes the code inside <b>draw()</b> to execute once and
-   * <b>loop()</b> will causes the code inside <b>draw()</b> to execute
-   * continuously again. The number of times <b>draw()</b> executes in each
-   * second may be controlled with <b>frameRate()</b> function.
-   * There can only be one <b>draw()</b> function for each sketch
-   * and <b>draw()</b> must exist if you want the code to run continuously or
-   * to process events such as <b>mousePressed()</b>. Sometimes, you might
-   * have an empty call to <b>draw()</b> in your program as shown in the
-   * above example.
+   * Called directly after <b>setup()</b>, the <b>draw()</b> function continuously
+   * executes the lines of code contained inside its block until the program is
+   * stopped or <b>noLoop()</b> is called. <b>draw()</b> is called automatically
+   * and should never be called explicitly. All Processing programs update the
+   * screen at the end of draw(), never earlier.<br />
+   * <br />
+   * To stop the code inside of <b>draw()</b> from running continuously, use
+   * <b>noLoop()</b>, <b>redraw()</b> and <b>loop()</b>. If <b>noLoop()</b> is
+   * used to stop the code in <b>draw()</b> from running, then <b>redraw()</b>
+   * will cause the code inside <b>draw()</b> to run a single time, and
+   * <b>loop()</b> will cause the code inside <b>draw()</b> to resume running
+   * continuously.<br />
+   * <br />
+   * The number of times <b>draw()</b> executes in each second may be controlled
+   * with the <b>frameRate()</b> function.<br />
+   * <br />
+   * It is common to call <b>background()</b> near the beginning of the
+   * <b>draw()</b> loop to clear the contents of the window, as shown in the first
+   * example above.  Since pixels drawn to the window are cumulative, omitting
+   * <b>background()</b> may result in unintended results.<br />
+   * <br />
+   * There can only be one <b>draw()</b> function for each sketch, and <b>draw()</b>
+   * must exist if you want the code to run continuously, or to process events such
+   * as <b>mousePressed()</b>. Sometimes, you might have an empty call to
+   * <b>draw()</b> in your program, as shown in the second example above.
    *
  * @webref structure
  * @webBrief Called directly after <b>setup()</b> and continuously executes the lines
@@ -1776,23 +1826,22 @@ public class PApplet implements PConstants {
 
 
 /**
-  * This function is new for Processing 3.0. It opens a 
-  * sketch using the full size of the computer's display. 
-  * This function must be the first line in setup(). The 
-  * size() and fullScreen() functions cannot both be used 
-  * in the same program, just choose one.
-  * When fullScreen() is used without a parameter, it draws 
-  * the sketch to the screen currently selected inside the 
-  * Preferences window. When it is used with a single 
-  * parameter, this number defines the screen to display to 
-  * program on (e.g. 1, 2, 3...). When used with two 
-  * parameters, the first defines the renderer to use 
-  * (e.g. P2D) and the second defines the screen. The SPAN 
-  * parameter can be used in place of a screen number to 
-  * draw the sketch as a full-screen window across all of 
-  * the attached displays if there are more than one.
-  * Prior to Processing 3.0, a full-screen program was 
-  * defined with size(displayWidth, displayHeight).
+  * This function is new for Processing 3.0. It opens a sketch using the full
+  * size of the computer's display. This function must be the first line in
+  * <b>setup()</b>. The <b>size()</b> and <b>fullScreen()</b> functions cannot
+  * both be used in the same program, just choose one.<br />
+  * <br />
+  * When <b>fullScreen()</b> is used without a parameter, it draws the sketch
+  * to the screen currently selected inside the Preferences window. When it is
+  * used with a single parameter, this number defines the screen to display to
+  * program on (e.g. 1, 2, 3...). When used with two parameters, the first
+  * defines the renderer to use (e.g. P2D) and the second defines the screen.
+  * The <b>SPAN</b> parameter can be used in place of a screen number to draw
+  * the sketch as a full-screen window across all of the attached displays if
+  * there are more than one.<br />
+  * <br />
+  * Prior to Processing 3.0, a full-screen program was defined with
+  * <b>size(displayWidth, displayHeight)</b>.
   *
   * @webref environment
   * @webBrief Opens a sketch using the full size of the computer's display.
@@ -1832,73 +1881,82 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Defines the dimension of the display window in units of pixels. The
-   * <b>size()</b> function must be the first line in <b>setup()</b>. If
-   * <b>size()</b> is not used, the default size of the window is 100x100
-   * pixels. The system variables <b>width</b> and <b>height</b> are set by
-   * the parameters passed to this function.<br />
+   * Defines the dimension of the display window width and height in units of
+   * pixels. In a program that has the <b>setup()</b> function, the
+   * <b>size()</b> function must be the first line of code inside
+   * <b>setup()</b>, and the <b>setup()</b> function must appear in the code tab
+   * with the same name as your sketch folder.<br />
    * <br />
-   * Do not use variables as the parameters to <b>size()</b> function,
-   * because it will cause problems when exporting your sketch. When
-   * variables are used, the dimensions of your sketch cannot be determined
-   * during export. Instead, employ numeric values in the <b>size()</b>
-   * statement, and then use the built-in <b>width</b> and <b>height</b>
-   * variables inside your program when the dimensions of the display window
-   * are needed.<br />
+   * The built-in variables <b>width</b> and <b>height</b> are set by the
+   * parameters passed to this function. For example, running <b>size(640,
+   * 480)</b> will assign 640 to the <b>width</b> variable and 480 to the height
+   * <b>variable</b>. If <b>size()</b> is not used, the window will be given a
+   * default size of 100 x 100 pixels.<br />
    * <br />
-   * The <b>size()</b> function can only be used once inside a sketch, and
-   * cannot be used for resizing.<br/>
-   * <br/> <b>renderer</b> parameter selects which rendering engine to use.
-   * For example, if you will be drawing 3D shapes, use <b>P3D</b>, if you
-   * want to export images from a program as a PDF file use <b>PDF</b>. A
-   * brief description of the three primary renderers follows:<br />
+   * The <b>size()</b> function can only be used once inside a sketch, and it
+   * cannot be used for resizing.<br />
    * <br />
-   * <b>P2D</b> (Processing 2D) - The default renderer that supports two
-   * dimensional drawing.<br />
-   * <br />
-   * <b>P3D</b> (Processing 3D) - 3D graphics renderer that makes use of
-   * OpenGL-compatible graphics hardware.<br />
-   * <br />
-   * <b>PDF</b> - The PDF renderer draws 2D graphics directly to an Acrobat
-   * PDF file. This produces excellent results when you need vector shapes
-   * for high resolution output or printing. You must first use Import
-   * Library &rarr; PDF to make use of the library. More information can be
-   * found in the PDF library reference.<br />
-   * <br />
-   * The P3D renderer doesn't support <b>strokeCap()</b> or
-   * <b>strokeJoin()</b>, which can lead to ugly results when using
-   * <b>strokeWeight()</b>. (<a
-   * href="http://code.google.com/p/processing/issues/detail?id=123">Issue
-   * 123</a>) <br />
+   * As of Processing 3, to run a sketch at the full dimensions of a screen, use
+   * the <b>fullScreen()</b> function, rather than the older way of using
+   * <b>size(displayWidth, displayHeight)</b>.<br />
    * <br />
    * The maximum width and height is limited by your operating system, and is
-   * usually the width and height of your actual screen. On some machines it
-   * may simply be the number of pixels on your current screen, meaning that
-   * a screen of 800x600 could support <b>size(1600, 300)</b>, since it's the
-   * same number of pixels. This varies widely so you'll have to try
-   * different rendering modes and sizes until you get what you're looking
-   * for. If you need something larger, use <b>createGraphics</b> to create a
-   * non-visible drawing surface.<br />
+   * usually the width and height of your actual screen. On some machines it may
+   * simply be the number of pixels on your current screen, meaning that a
+   * screen of 800 x 600 could support <b>size(1600, 300)</b>, since that is the
+   * same number of pixels. This varies widely, so you'll have to try different
+   * rendering modes and sizes until you get what you're looking for. If you
+   * need something larger, use <b>createGraphics</b> to create a non-visible
+   * drawing surface.<br />
    * <br />
-   * Again, the <b>size()</b> function must be the first line of the code (or
-   * first item inside setup). Any code that appears before the <b>size()</b>
-   * command may run more than once, which can lead to confusing results.
+   * The minimum width and height is around 100 pixels in each direction. This
+   * is the smallest that is supported across Windows, macOS, and Linux. We
+   * enforce the minimum size so that sketches will run identically on different
+   * machines. <br />
+   * The <b>renderer</b> parameter selects which rendering engine to use. For
+   * example, if you will be drawing 3D shapes, use <b>P3D</b>. In addition to
+   * the default renderer, other renderers are:<br />
+   * <br />
+   * <b>P2D</b> (Processing 2D): 2D graphics renderer that makes use of
+   * OpenGL-compatible graphics hardware.<br />
+   * <br />
+   * <b>P3D</b> (Processing 3D): 3D graphics renderer that makes use of
+   * OpenGL-compatible graphics hardware.<br />
+   * <br />
+   * <b>FX2D</b> (JavaFX 2D): A 2D renderer that uses JavaFX, which may be
+   * faster for some applications, but has some compatibility quirks. <br />
+   * <b>PDF</b>: The PDF renderer draws 2D graphics directly to an Acrobat PDF
+   * file. This produces excellent results when you need vector shapes for
+   * high-resolution output or printing. You must first use Import Library
+   * &rarr; PDF to make use of the library. More information can be found in the
+   * PDF library reference.<br />
+   * <br />
+   * <b>SVG</b>: The SVG renderer draws 2D graphics directly to an SVG file.
+   * This is great for importing into other vector programs or using for digital
+   * fabrication. You must first use Import Library &rarr; SVG Export to make
+   * use of the library.<br />
+   * <br />
+   * As of Processing 3.0, to use variables as the parameters to <b>size()</b>
+   * function, place the <b>size()</b> function within the <b>settings()</b>
+   * function (instead of <b>setup()</b>). There is more information about this
+   * on the <b>settings()</b> reference page.<br />
+   * <br />
    *
-   * 
-   * <h3>Advanced</h3>
-   * If using Java 1.3 or later, this will default to using
-   * PGraphics2, the Java2D-based renderer. If using Java 1.1,
-   * or if PGraphics2 is not available, then PGraphics will be used.
-   * To set your own renderer, use the other version of the size()
-   * method that takes a renderer as its last parameter.
+   * <h3>Advanced</h3> If using Java 1.3 or later, this will default to using
+   * PGraphics2, the Java2D-based renderer. If using Java 1.1, or if PGraphics2
+   * is not available, then PGraphics will be used. To set your own renderer,
+   * use the other version of the size() method that takes a renderer as its
+   * last parameter.
    * <p>
-   * If called once a renderer has already been set, this will
-   * use the previous renderer and simply resize it.
+   * If called once a renderer has already been set, this will use the previous
+   * renderer and simply resize it.
    *
    * @webref environment
    * @webBrief Defines the dimension of the display window in units of pixels.
-   * @param width width of the display window in units of pixels
-   * @param height height of the display window in units of pixels
+   * @param width
+   *          width of the display window in units of pixels
+   * @param height
+   *          height of the display window in units of pixels
    * @see PApplet#width
    * @see PApplet#height
    * @see PApplet#setup()
@@ -2028,40 +2086,56 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Creates and returns a new <b>PGraphics</b> object of the types P2D or
-   * P3D. Use this class if you need to draw into an off-screen graphics
-   * buffer. The PDF renderer requires the filename parameter. The DXF
-   * renderer should not be used with <b>createGraphics()</b>, it's only
-   * built for use with <b>beginRaw()</b> and <b>endRaw()</b>.<br />
+   * Creates and returns a new <b>PGraphics</b> object. Use this class if you
+   * need to draw into an off-screen graphics buffer. The first two parameters
+   * define the width and height in pixels. The third, optional parameter
+   * specifies the renderer. It can be defined as P2D, P3D, PDF, or SVG. If the
+   * third parameter isn't used, the default renderer is set. The PDF and SVG
+   * renderers require the filename parameter.<br />
    * <br />
-   * It's important to call any drawing functions between <b>beginDraw()</b>
-   * and <b>endDraw()</b> statements. This is also true for any functions
-   * that affect drawing, such as <b>smooth()</b> or <b>colorMode()</b>.<br/>
-   * <br/> the main drawing surface which is completely opaque, surfaces
-   * created with <b>createGraphics()</b> can have transparency. This makes
-   * it possible to draw into a graphics and maintain the alpha channel. By
-   * using <b>save()</b> to write a PNG or TGA file, the transparency of the
-   * graphics object will be honored. Note that transparency levels are
-   * binary: pixels are either complete opaque or transparent. For the time
-   * being, this means that text characters will be opaque blocks. This will
-   * be fixed in a future release (<a
-   * href="http://code.google.com/p/processing/issues/detail?id=80">Issue 80</a>).
+   * It's important to consider the renderer used with <b>createGraphics()</b>
+   * in relation to the main renderer specified in <b>size()</b>. For example,
+   * it's only possible to use P2D or P3D with <b>createGraphics()</b> when one
+   * of them is defined in <b>size()</b>. Unlike Processing 1.0, P2D and P3D use
+   * OpenGL for drawing, and when using an OpenGL renderer it's necessary for
+   * the main drawing surface to be OpenGL-based. If P2D or P3D are used as the
+   * renderer in <b>size()</b>, then any of the options can be used with
+   * <b>createGraphics()</b>. If the default renderer is used in <b>size()</b>,
+   * then only the default, PDF, or SVG can be used with
+   * <b>createGraphics()</b>.<br />
+   * <br />
+   * It's important to run all drawing functions between the <b>beginDraw()</b>
+   * and <b>endDraw()</b>. As the exception to this rule, <b>smooth()</b> should
+   * be run on the PGraphics object before <b>beginDraw()</b>. See the reference
+   * for <b>smooth()</b> for more detail.<br />
+   * <br />
+   * The <b>createGraphics()</b> function should almost never be used inside
+   * <b>draw()</b> because of the memory and time needed to set up the graphics.
+   * One-time or occasional use during <b>draw()</b> might be acceptable, but
+   * code that calls <b>createGraphics()</b> at 60 frames per second might run
+   * out of memory or freeze your sketch.<br />
+   * <br />
+   * Unlike the main drawing surface which is completely opaque, surfaces
+   * created with <b>createGraphics()</b> can have transparency. This makes it
+   * possible to draw into a graphics and maintain the alpha channel. By using
+   * <b>save()</b> to write a PNG or TGA file, the transparency of the graphics
+   * object will be honored.
    *
-   * <h3>Advanced</h3>
-   * Create an offscreen PGraphics object for drawing. This can be used
-   * for bitmap or vector images drawing or rendering.
+   * <h3>Advanced</h3> Create an offscreen PGraphics object for drawing. This
+   * can be used for bitmap or vector images drawing or rendering.
    * <UL>
-   * <LI>Do not use "new PGraphicsXxxx()", use this method. This method
-   * ensures that internal variables are set up properly that tie the
-   * new graphics context back to its parent PApplet.
-   * <LI>The basic way to create bitmap images is to use the <A
-   * HREF="http://processing.org/reference/saveFrame_.html">saveFrame()</A>
+   * <LI>Do not use "new PGraphicsXxxx()", use this method. This method ensures
+   * that internal variables are set up properly that tie the new graphics
+   * context back to its parent PApplet.
+   * <LI>The basic way to create bitmap images is to use the
+   * <A HREF="http://processing.org/reference/saveFrame_.html">saveFrame()</A>
    * function.
-   * <LI>If you want to create a really large scene and write that,
-   * first make sure that you've allocated a lot of memory in the Preferences.
-   * <LI>If you want to create images that are larger than the screen,
-   * you should create your own PGraphics object, draw to that, and use
+   * <LI>If you want to create a really large scene and write that, first make
+   * sure that you've allocated a lot of memory in the Preferences.
+   * <LI>If you want to create images that are larger than the screen, you
+   * should create your own PGraphics object, draw to that, and use
    * <A HREF="http://processing.org/reference/save_.html">save()</A>.
+   *
    * <PRE>
    *
    * PGraphics big;
@@ -2080,23 +2154,28 @@ public class PApplet implements PConstants {
    * }
    *
    * </PRE>
+   *
    * <LI>It's important to always wrap drawing to createGraphics() with
-   * beginDraw() and endDraw() (beginFrame() and endFrame() prior to
-   * revision 0115). The reason is that the renderer needs to know when
-   * drawing has stopped, so that it can update itself internally.
-   * This also handles calling the defaults() method, for people familiar
-   * with that.
+   * beginDraw() and endDraw() (beginFrame() and endFrame() prior to revision
+   * 0115). The reason is that the renderer needs to know when drawing has
+   * stopped, so that it can update itself internally. This also handles calling
+   * the defaults() method, for people familiar with that.
    * <LI>With Processing 0115 and later, it's possible to write images in
    * formats other than the default .tga and .tiff. The exact formats and
    * background information can be found in the developer's reference for
-   * <A HREF="http://dev.processing.org/reference/core/javadoc/processing/core/PImage.html#save(java.lang.String)">PImage.save()</A>.
+   * <A HREF=
+   * "http://dev.processing.org/reference/core/javadoc/processing/core/PImage.html#save(java.lang.String)">PImage.save()</A>.
    * </UL>
    *
    * @webref rendering
-   * @webBrief Creates and returns a new <b>PGraphics</b> object of the types P2D or P3D. 
-   * @param w width in pixels
-   * @param h height in pixels
-   * @param renderer Either P2D, P3D, or PDF
+   * @webBrief Creates and returns a new <b>PGraphics</b> object of the types
+   *           P2D or P3D.
+   * @param w
+   *          width in pixels
+   * @param h
+   *          height in pixels
+   * @param renderer
+   *          Either P2D, P3D, or PDF
    * @see PGraphics#PGraphics
    *
    */
@@ -2256,7 +2335,7 @@ public class PApplet implements PConstants {
    * Advanced users please note that createImage() should be used instead of
    * the syntax <tt>new PImage()</tt>.
    *
-   * 
+   *
    * <h3>Advanced</h3>
    * Preferred method of creating new PImage objects, ensures that a
    * reference to the parent PApplet is included, which makes save() work
@@ -2423,18 +2502,21 @@ public class PApplet implements PConstants {
 
 
 /**
-   *
-   * Executes the code within <b>draw()</b> one time. This functions allows
-   * the program to update the display window only when necessary, for
-   * example when an event registered by <b>mousePressed()</b> or
-   * <b>keyPressed()</b> occurs.
-   * <br/><br/> structuring a program, it only makes sense to call redraw()
-   * within events such as <b>mousePressed()</b>. This is because
-   * <b>redraw()</b> does not run <b>draw()</b> immediately (it only sets a
-   * flag that indicates an update is needed).
-   * <br/><br/> <b>redraw()</b> within <b>draw()</b> has no effect because
-   * <b>draw()</b> is continuously called anyway.
-   *
+ *
+ * Executes the code within <b>draw()</b> one time. This functions allows the
+ * program to update the display window only when necessary, for example when an
+ * event registered by <b>mousePressed()</b> or <b>keyPressed()</b> occurs.
+ * <br/>
+ * <br/>
+ * In structuring a program, it only makes sense to call redraw() within events
+ * such as <b>mousePressed()</b>. This is because <b>redraw()</b> does not run
+ * <b>draw()</b> immediately (it only sets a flag that indicates an update is
+ * needed). <br/>
+ * <br/>
+ * The <b>redraw()</b> function does not work properly when called inside
+ * <b>draw()</b>. To enable/disable animations, use <b>loop()</b> and
+ * <b>noLoop()</b>.
+ *
  * @webref structure
  * @webBrief Executes the code within <b>draw()</b> one time.
  * @usage web_application
@@ -2461,12 +2543,15 @@ public class PApplet implements PConstants {
   }
 
 /**
-   *
-   * Causes Processing to continuously execute the code within <b>draw()</b>.
-   * If <b>noLoop()</b> is called, the code in <b>draw()</b> stops executing.
-   *
+ *
+ * By default, Processing loops through <b>draw()</b> continuously, executing
+ * the code within it. However, the <b>draw()</b> loop may be stopped by calling
+ * <b>noLoop()</b>. In that case, the <b>draw()</b> loop can be resumed with
+ * <b>loop()</b>.
+ *
  * @webref structure
- * @webBrief Causes Processing to continuously execute the code within <b>draw()</b>.
+ * @webBrief Causes Processing to continuously execute the code within
+ *           <b>draw()</b>.
  * @usage web_application
  * @see PApplet#noLoop()
  * @see PApplet#redraw()
@@ -2498,7 +2583,7 @@ public class PApplet implements PConstants {
    * Otherwise, the sketch would enter an odd state until <b>loop()</b> was called.
    *
  * @webref structure
- * @webBrief Stops Processing from continuously executing the code within <b>draw()</b>. 
+ * @webBrief Stops Processing from continuously executing the code within <b>draw()</b>.
  * @usage web_application
  * @see PApplet#loop()
  * @see PApplet#redraw()
@@ -2680,19 +2765,22 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The <b>mousePressed()</b> function is called once after every time a
-   * mouse button is pressed. The <b>mouseButton</b> variable (see the
-   * related reference entry) can be used to determine which button has been pressed.
+   * The <b>mousePressed()</b> function is called once after every time a mouse
+   * button is pressed. The <b>mouseButton</b> variable (see the related
+   * reference entry) can be used to determine which button has been pressed.
+   * <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events.
    *
-   * 
    * <h3>Advanced</h3>
    *
-   * If you must, use
-   * int button = mouseEvent.getButton();
-   * to figure out which button was clicked. It will be one of:
-   * MouseEvent.BUTTON1, MouseEvent.BUTTON2, MouseEvent.BUTTON3
-   * Note, however, that this is completely inconsistent across
-   * platforms.
+   * If you must, use int button = mouseEvent.getButton(); to figure out which
+   * button was clicked. It will be one of: MouseEvent.BUTTON1,
+   * MouseEvent.BUTTON2, MouseEvent.BUTTON3 Note, however, that this is
+   * completely inconsistent across platforms.
+   *
    * @webref input:mouse
    * @webBrief Called once after every time a mouse button is pressed.
    * @see PApplet#mouseX
@@ -2717,8 +2805,12 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The <b>mouseReleased()</b> function is called every time a mouse button
-   * is released.
+   * The <b>mouseReleased()</b> function is called every time a mouse button is
+   * released. <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events.
    *
    * @webref input:mouse
    * @webBrief Called every time a mouse button is released.
@@ -2744,15 +2836,20 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The <b>mouseClicked()</b> function is called once after a mouse button
-   * has been pressed and then released.
+   * The <b>mouseClicked()</b> function is called <i>after</i> a mouse button
+   * has been pressed and then released. <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events.
    *
-   * <h3>Advanced</h3>
-   * When the mouse is clicked, mousePressed() will be called,
-   * then mouseReleased(), then mouseClicked(). Note that
-   * mousePressed is already false inside of mouseClicked().
+   * <h3>Advanced</h3> When the mouse is clicked, mousePressed() will be called,
+   * then mouseReleased(), then mouseClicked(). Note that mousePressed is
+   * already false inside of mouseClicked().
+   *
    * @webref input:mouse
-   * @webBrief Called once after a mouse button has been pressed and then released.
+   * @webBrief Called once after a mouse button has been pressed and then
+   *           released.
    * @see PApplet#mouseX
    * @see PApplet#mouseY
    * @see PApplet#pmouseX
@@ -2776,10 +2873,16 @@ public class PApplet implements PConstants {
   /**
    *
    * The <b>mouseDragged()</b> function is called once every time the mouse
-   * moves and a mouse button is pressed.
+   * moves while a mouse button is pressed. (If a button <i>is not</i> being
+   * pressed, <b>mouseMoved()</b> is called instead.) <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events.
    *
    * @webref input:mouse
-   * @webBrief Called once every time the mouse moves and a mouse button is pressed.
+   * @webBrief Called once every time the mouse moves and a mouse button is
+   *           pressed.
    * @see PApplet#mouseX
    * @see PApplet#mouseY
    * @see PApplet#pmouseX
@@ -2802,12 +2905,18 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The <b>mouseMoved()</b> function is called every time the mouse moves
-   * and a mouse button is not pressed.
+   * The <b>mouseMoved()</b> function is called every time the mouse moves and a
+   * mouse button is not pressed. (If a button <i>is</i> being pressed,
+   * <b>mouseDragged()</b> is called instead.) <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events.
    *
-   * 
+   *
    * @webref input:mouse
-   * @webBrief Called every time the mouse moves and a mouse button is not pressed.
+   * @webBrief Called every time the mouse moves and a mouse button is not
+   *           pressed.
    * @see PApplet#mouseX
    * @see PApplet#mouseY
    * @see PApplet#pmouseX
@@ -2849,22 +2958,22 @@ public class PApplet implements PConstants {
   public void mouseWheel() { }
 
   /**
-   * The code within the <b>mouseWheel()</b> event function 
-   * is run when the mouse wheel is moved. (Some mice don't 
-   * have wheels and this function is only applicable with 
-   * mice that have a wheel.) The <b>getCount()</b> function 
-   * used within <b>mouseWheel()</b> returns positive values 
-   * when the mouse wheel is rotated down (toward the user), 
-   * and negative values for the other direction (up or away 
-   * from the user). On OS X with "natural" scrolling enabled, 
+   * The code within the <b>mouseWheel()</b> event function
+   * is run when the mouse wheel is moved. (Some mice don't
+   * have wheels and this function is only applicable with
+   * mice that have a wheel.) The <b>getCount()</b> function
+   * used within <b>mouseWheel()</b> returns positive values
+   * when the mouse wheel is rotated down (toward the user),
+   * and negative values for the other direction (up or away
+   * from the user). On OS X with "natural" scrolling enabled,
    * the values are opposite.
    * <br /><br />
-   * Mouse and keyboard events only work when a program has 
-   * <b>draw()</b>. Without <b>draw()</b>, the code is only 
+   * Mouse and keyboard events only work when a program has
+   * <b>draw()</b>. Without <b>draw()</b>, the code is only
    * run once and then stops listening for events.
    *
    * @webref input:mouse
-   * @webBrief The code within the <b>mouseWheel()</b> event function 
+   * @webBrief The code within the <b>mouseWheel()</b> event function
    * is run when the mouse wheel is moved.
    * @param event the MouseEvent
    * @see PApplet#mouseX
@@ -2953,31 +3062,44 @@ public class PApplet implements PConstants {
    *
    * The <b>keyPressed()</b> function is called once every time a key is
    * pressed. The key that was pressed is stored in the <b>key</b> variable.
-   * <br/> <br/>
-   * For non-ASCII keys, use the <b>keyCode</b> variable. The keys included
-   * in the ASCII specification (BACKSPACE, TAB, ENTER, RETURN, ESC, and
-   * DELETE) do not require checking to see if they key is coded, and you
-   * should simply use the <b>key</b> variable instead of <b>keyCode</b> If
-   * you're making cross-platform projects, note that the ENTER key is
-   * commonly used on PCs and Unix and the RETURN key is used instead on
-   * Macintosh. Check for both ENTER and RETURN to make sure your program
-   * will work for all platforms.
-   * <br/> <br/>
-   * Because of how operating systems handle key repeats, holding down a key
-   * may cause multiple calls to keyPressed() (and keyReleased() as well).
-   * The rate of repeat is set by the operating system and how each computer
-   * is configured.
+   * <br />
+   * <br />
+   * For non-ASCII keys, use the <b>keyCode</b> variable. The keys included in
+   * the ASCII specification (BACKSPACE, TAB, ENTER, RETURN, ESC, and DELETE) do
+   * not require checking to see if the key is coded; for those keys, you should
+   * simply use the <b>key</b> variable directly (and not <b>keyCode</b>). If
+   * you're making cross-platform projects, note that the ENTER key is commonly
+   * used on PCs and Unix, while the RETURN key is used on Macs. Make sure your
+   * program will work on all platforms by checking for both ENTER and RETURN.
+   * <br />
+   * <br />
+   * Because of how operating systems handle key repeats, holding down a key may
+   * cause multiple calls to <b>keyPressed()</b>. The rate of repeat is set by
+   * the operating system, and may be configured differently on each computer.
+   * <br />
+   * <br />
+   * Note that there is a similarly named boolean variable called
+   * <b>keyPressed</b>. See its reference page for more information. <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events. <br />
+   * <br />
+   * With the release of macOS Sierra, Apple changed how key repeat works, so
+   * keyPressed may not function as expected. See <a href=
+   * "https://github.com/processing/processing/wiki/Troubleshooting#key-repeat-on-macos-sierra">here</a>
+   * for details of the problem and how to fix it.
    *
    * <h3>Advanced</h3>
    *
-   * Called each time a single key on the keyboard is pressed.
-   * Because of how operating systems handle key repeats, holding
-   * down a key will cause multiple calls to keyPressed(), because
-   * the OS repeat takes over.
+   * Called each time a single key on the keyboard is pressed. Because of how
+   * operating systems handle key repeats, holding down a key will cause
+   * multiple calls to keyPressed(), because the OS repeat takes over.
    * <p>
-   * Examples for key handling:
-   * (Tested on Windows XP, please notify if different on other
-   * platforms, I have a feeling Mac OS and Linux may do otherwise)
+   * Examples for key handling: (Tested on Windows XP, please notify if
+   * different on other platforms, I have a feeling Mac OS and Linux may do
+   * otherwise)
+   *
    * <PRE>
    * 1. Pressing 'a' on the keyboard:
    *    keyPressed  with key == 'a' and keyCode == 'A'
@@ -3015,6 +3137,7 @@ public class PApplet implements PConstants {
    *    Java 1.1 (Microsoft VM) passes the TAB key through normally.
    *    Not tested on other platforms or for 1.3.
    * </PRE>
+   *
    * @webref input:keyboard
    * @webBrief Called once every time a key is pressed.
    * @see PApplet#key
@@ -3034,7 +3157,11 @@ public class PApplet implements PConstants {
    *
    * The <b>keyReleased()</b> function is called once every time a key is
    * released. The key that was released will be stored in the <b>key</b>
-   * variable. See <b>key</b> and <b>keyReleased</b> for more information.
+   * variable. See <b>key</b> and <b>keyCode</b> for more information. <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events.
    *
    * @webref input:keyboard
    * @webBrief called once every time a key is released.
@@ -3053,15 +3180,21 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The <b>keyTyped()</b> function is called once every time a key is
-   * pressed, but action keys such as Ctrl, Shift, and Alt are ignored.
-   * Because of how operating systems handle key repeats, holding down a key
-   * will cause multiple calls to <b>keyTyped()</b>, the rate is set by the
-   * operating system and how each computer is configured.
+   * The <b>keyTyped()</b> function is called once every time a key is pressed,
+   * but action keys such as Ctrl, Shift, and Alt are ignored. <br />
+   * <br />
+   * Because of how operating systems handle key repeats, holding down a key may
+   * cause multiple calls to <b>keyTyped()</b>. The rate of repeat is set by the
+   * operating system, and may be configured differently on each computer.
+   * <br />
+   * <br />
+   * Mouse and keyboard events only work when a program has <b>draw()</b>.
+   * Without <b>draw()</b>, the code is only run once and then stops listening
+   * for events.
    *
    * @webref input:keyboard
-   * @webBrief Called once every time a key is
-   * pressed, but action keys such as Ctrl, Shift, and Alt are ignored.
+   * @webBrief Called once every time a key is pressed, but action keys such as
+   *           Ctrl, Shift, and Alt are ignored.
    * @see PApplet#keyPressed
    * @see PApplet#key
    * @see PApplet#keyCode
@@ -3104,7 +3237,7 @@ public class PApplet implements PConstants {
    * starting an applet. This information is often used for timing animation
    * sequences.
    *
-   * 
+   *
    * <h3>Advanced</h3>
    * <p>
    * This is a function, rather than a variable, because it may
@@ -3148,9 +3281,9 @@ public class PApplet implements PConstants {
    * Processing communicates with the clock on your computer. The
    * <b>minute()</b> function returns the current minute as a value from 0 - 59.
    *
-   * 
+   *
    * @webref input:time_date
-   * @webBrief Processing communicates with the clock on your computer. 
+   * @webBrief Processing communicates with the clock on your computer.
    * @see PApplet#millis()
    * @see PApplet#second()
    * @see PApplet#hour()
@@ -3187,7 +3320,7 @@ public class PApplet implements PConstants {
    * Processing communicates with the clock on your computer. The
    * <b>day()</b> function returns the current day as a value from 1 - 31.
    *
-   * 
+   *
    * <h3>Advanced</h3>
    * Get the current day of the month (1 through 31).
    * <p>
@@ -3195,7 +3328,7 @@ public class PApplet implements PConstants {
    * or day of the year (1..365) then use java's Calendar.get()
    *
    * @webref input:time_date
-   * @webBrief Processing communicates with the clock on your computer. 
+   * @webBrief Processing communicates with the clock on your computer.
    * @see PApplet#millis()
    * @see PApplet#second()
    * @see PApplet#minute()
@@ -3212,7 +3345,7 @@ public class PApplet implements PConstants {
    * Processing communicates with the clock on your computer. The
    * <b>month()</b> function returns the current month as a value from 1 - 12.
    *
-   * 
+   *
    * @webref input:time_date
    * @webBrief Processing communicates with the clock on your computer.
    * @see PApplet#millis()
@@ -3233,10 +3366,9 @@ public class PApplet implements PConstants {
    * <b>year()</b> function returns the current year as an integer (2003,
    * 2004, 2005, etc).
    *
-   * The <b>year()</b> function returns the current year as an integer (2003, 2004, 2005, etc).
    *
    * @webref input:time_date
-   * @webBrief Processing communicates with the clock on your computer. 
+   * @webBrief Processing communicates with the clock on your computer.
    * @see PApplet#millis()
    * @see PApplet#second()
    * @see PApplet#minute()
@@ -3289,15 +3421,16 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Specifies the number of frames to be displayed every second. If the
-   * processor is not fast enough to maintain the specified rate, it will not
-   * be achieved. For example, the function call <b>frameRate(30)</b> will
-   * attempt to refresh 30 times a second. It is recommended to set the frame
-   * rate within <b>setup()</b>. The default rate is 60 frames per second.
+   * Specifies the number of frames to be displayed every second. For example,
+   * the function call <b>frameRate(30)</b> will attempt to refresh 30 times a
+   * second. If the processor is not fast enough to maintain the specified rate,
+   * the frame rate will not be achieved. Setting the frame rate within
+   * <b>setup()</b> is recommended. The default rate is 60 frames per second.
    *
    * @webref environment
    * @webBrief Specifies the number of frames to be displayed every second.
-   * @param fps number of desired frames per second
+   * @param fps
+   *          number of desired frames per second
    * @see PApplet#frameRate
    * @see PApplet#frameCount
    * @see PApplet#setup()
@@ -3339,39 +3472,38 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Attempts to open an application or file using your platform's launcher.
-   * The <b>file</b> parameter is a String specifying the file name and
-   * location. The location parameter must be a full path name, or the name
-   * of an executable in the system's PATH. In most cases, using a full path
-   * is the best option, rather than relying on the system PATH. Be sure to
-   * make the file executable before attempting to open it (chmod +x).
-   * <br/> <br/>
-   * The <b>args</b> parameter is a String or String array which is passed to
-   * the command line. If you have multiple parameters, e.g. an application
-   * and a document, or a command with multiple switches, use the version
-   * that takes a String array, and place each individual item in a separate
-   * element.
-   * <br/> <br/>
-   * If args is a String (not an array), then it can only be a single file or
-   * application with no parameters. It's not the same as executing that
-   * String using a shell. For instance, launch("javac -help") will not work
-   * properly.
-   * <br/> <br/>
+   * Attempts to open an application or file using your platform's launcher. The
+   * <b>filename</b> parameter is a String specifying the file name and
+   * location. The location parameter must be a full path name, or the name of
+   * an executable in the system's PATH. In most cases, using a full path is the
+   * best option, rather than relying on the system PATH. Be sure to make the
+   * file executable before attempting to open it (chmod +x).<br />
+   * <br />
+   * This function (roughly) emulates what happens when you double-click an
+   * application or document in the macOS Finder, the Windows Explorer, or your
+   * favorite Linux file manager. If you're trying to run command line functions
+   * directly, use the <b>exec()</b> function instead (see below).<br />
+   * <br />
    * This function behaves differently on each platform. On Windows, the
    * parameters are sent to the Windows shell via "cmd /c". On Mac OS X, the
-   * "open" command is used (type "man open" in Terminal.app for
-   * documentation). On Linux, it first tries gnome-open, then kde-open, but
-   * if neither are available, it sends the command to the shell without any
-   * alterations.
-   * <br/> <br/>
-   * For users familiar with Java, this is not quite the same as
-   * Runtime.exec(), because the launcher command is prepended. Instead, the
+   * "open" command is used (type "man open" in Terminal.app for documentation).
+   * On Linux, it first tries gnome-open, then kde-open, but if neither are
+   * available, it sends the command to the shell and prays that something
+   * useful happens.<br />
+   * <br />
+   * For users familiar with Java, this is not the same as Runtime.exec(),
+   * because the launcher command is prepended. Instead, the
    * <b>exec(String[])</b> function is a shortcut for
-   * Runtime.getRuntime.exec(String[]).
+   * Runtime.getRuntime.exec(String[]). The <b>exec()</b> function is documented
+   * in the
+   * <a href="http://processing.github.io/processing-javadocs/core/">JavaDoc</a>
+   * in the <b>PApplet</b> class.
    *
    * @webref input:files
-   * @webBrief Attempts to open an application or file using your platform's launcher.
-   * @param args arguments to the launcher, eg. a filename.
+   * @webBrief Attempts to open an application or file using your platform's
+   *           launcher.
+   * @param args
+   *          arguments to the launcher, eg. a filename.
    * @usage Application
    */
   static public Process launch(String... args) {
@@ -3765,18 +3897,44 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Launch a new thread and call the specified function from that new thread.
-   * This is a very simple way to do a thread without needing to get into
-   * classes, runnables, etc.
-   * <p/>
-   * Note that the function being called must be public. Inside the PDE,
-   * 'public' is automatically added, but when used without the preprocessor,
-   * (like from Eclipse) you'll have to do it yourself.
+   * Processing sketches follow a specific sequence of steps: <b>setup()</b>
+   * first, followed by <b>draw()</b> over and over and over again in a loop. A
+   * thread is also a series of steps with a beginning, a middle, and an end. A
+   * Processing sketch is a single thread, often referred to as the "Animation"
+   * thread. Other threads' sequences, however, can run independently of the
+   * main animation loop. In fact, you can launch any number of threads at one
+   * time, and they will all run concurrently. <br />
+   * <br />
+   * You cannot draw to the screen from a function called by <b>thread()</b>.
+   * Because it runs independently, the code will not be synchronized to the
+   * animation thread, causing strange or at least inconsistent results. Use
+   * <b>thread()</b> to load files or do other tasks that take time. When the
+   * task is finished, set a variable that indicates the task is complete, and
+   * check that from inside your <b>draw()</b> method. <br />
+   * <br />
+   * Processing uses threads quite often, such as with library functions like
+   * <b>captureEvent()</b> and <b>movieEvent()</b>. These functions are
+   * triggered by a different thread running behind the scenes, and they alert
+   * Processing whenever they have something to report. This is useful when you
+   * need to perform a task that takes too long and would slow down the main
+   * animation's frame rate, such as grabbing data from the network. If a
+   * separate thread gets stuck or has an error, the entire program won't grind
+   * to a halt, since the error only stops that individual thread. <br />
+   * <br />
+   * Writing your own thread can be a complex endeavor that involves extending
+   * the Java <a href=
+   * "https://docs.oracle.com/javase/tutorial/essential/concurrency/threads.html">Thread</a>
+   * class. However, the <b>thread()</b> method is a quick and dirty way to
+   * implement a simple thread in Processing. By passing in a <b>String</b> that
+   * matches the name of a function declared elsewhere in the sketch, Processing
+   * will execute that function in a separate thread.
    *
    * @webref structure
-   * @webBrief Launch a new thread and call the specified function from that new thread.
+   * @webBrief Launch a new thread and call the specified function from that new
+   *           thread.
    * @usage Application
-   * @param name name of the function to be executed in a separate thread
+   * @param name
+   *          name of the function to be executed in a separate thread
    * @see PApplet#setup()
    * @see PApplet#draw()
    * @see PApplet#loop()
@@ -3795,21 +3953,23 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Saves an image from the display window. Images are saved in TIFF, TARGA,
-   * JPEG, and PNG format depending on the extension within the
-   * <b>filename</b> parameter. For example, "image.tif" will have a TIFF
-   * image and "image.png" will save a PNG image. If no extension is included
-   * in the filename, the image will save in TIFF format and <b>.tif</b> will
-   * be added to the name. These files are saved to the sketch's folder,
-   * which may be opened by selecting "Show sketch folder" from the "Sketch"
-   * menu. It is not possible to use <b>save()</b> while running the program
-   * in a web browser.
-   * <br/> images saved from the main drawing window will be opaque. To save
+   * Saves an image from the display window. Append a file extension to the name
+   * of the file, to indicate the file format to be used: either TIFF (.tif),
+   * TARGA (.tga), JPEG (.jpg), or PNG (.png). If no extension is included in
+   * the filename, the image will save in TIFF format and <b>.tif</b> will be
+   * added to the name. These files are saved to the sketch's folder, which may
+   * be opened by selecting "Show sketch folder" from the "Sketch" menu.
+   * Alternatively, the files can be saved to any location on the computer by
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows).<br />
+   * <br />
+   * All images saved from the main drawing window will be opaque. To save
    * images without a background, use <b>createGraphics()</b>.
    *
    * @webref output:image
    * @webBrief Saves an image from the display window.
-   * @param filename any sequence of letters and numbers
+   * @param filename
+   *          any sequence of letters and numbers
    * @see PApplet#saveFrame()
    * @see PApplet#createGraphics(int, int, String)
    */
@@ -3834,34 +3994,36 @@ public class PApplet implements PConstants {
    *
    * Saves a numbered sequence of images, one image each time the function is
    * run. To save an image that is identical to the display window, run the
-   * function at the end of <b>draw()</b> or within mouse and key events such
-   * as <b>mousePressed()</b> and <b>keyPressed()</b>. If <b>saveFrame()</b>
-   * is called without parameters, it will save the files as screen-0000.tif,
-   * screen-0001.tif, etc. It is possible to specify the name of the sequence
-   * with the <b>filename</b> parameter and make the choice of saving TIFF,
-   * TARGA, PNG, or JPEG files with the <b>ext</b> parameter. These image
-   * sequences can be loaded into programs such as Apple's QuickTime software
-   * and made into movies. These files are saved to the sketch's folder,
-   * which may be opened by selecting "Show sketch folder" from the "Sketch"
-   * menu.<br />
+   * function at the end of <b>draw()</b> or within mouse and key events such as
+   * <b>mousePressed()</b> and <b>keyPressed()</b>. Use the Movie Maker program
+   * in the Tools menu to combine these images to a movie.<br />
    * <br />
-   * It is not possible to use saveXxxxx() functions inside a web browser
-   * unless the sketch is <a
-   * href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</A>. To
-   * save a file back to a server, see the <a
-   * href="http://wiki.processing.org/w/Saving_files_to_a_web-server">save to
-   * web</A> code snippet on the Processing Wiki.<br/>
-   * <br/ >
+   * If <b>saveFrame()</b> is used without parameters, it will save files as
+   * screen-0000.tif, screen-0001.tif, and so on. You can specify the name of
+   * the sequence with the <b>filename</b> parameter, including hash marks
+   * (####), which will be replaced by the current <b>frameCount</b> value. (The
+   * number of hash marks is used to determine how many digits to include in the
+   * file names.) Append a file extension, to indicate the file format to be
+   * used: either TIFF (.tif), TARGA (.tga), JPEG (.jpg), or PNG (.png). Image
+   * files are saved to the sketch's folder, which may be opened by selecting
+   * "Show Sketch Folder" from the "Sketch" menu.<br />
+   * <br />
+   * Alternatively, the files can be saved to any location on the computer by
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows).<br />
+   * <br />
    * All images saved from the main drawing window will be opaque. To save
    * images without a background, use <b>createGraphics()</b>.
    *
    * @webref output:image
-   * @webBrief Saves a numbered sequence of images, one image each time the function is
-   * run.
+   * @webBrief Saves a numbered sequence of images, one image each time the
+   *           function is run.
    * @see PApplet#save(String)
    * @see PApplet#createGraphics(int, int, String, String)
    * @see PApplet#frameCount
-   * @param filename any sequence of letters or numbers that ends with either ".tif", ".tga", ".jpg", or ".png"
+   * @param filename
+   *          any sequence of letters or numbers that ends with either ".tif",
+   *          ".tga", ".jpg", or ".png"
    */
   public void saveFrame(String filename) {
     try {
@@ -3922,31 +4084,38 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Sets the cursor to a predefined symbol, an image, or makes it visible if
-   * already hidden. If you are trying to set an image as the cursor, it is
-   * recommended to make the size 16x16 or 32x32 pixels. It is not possible
-   * to load an image as the cursor if you are exporting your program for the
-   * Web and not all MODES work with all Web browsers. The values for
-   * parameters <b>x</b> and <b>y</b> must be less than the dimensions of the image.
-   * <br /> <br />
-   * Setting or hiding the cursor generally does not work with "Present" mode
-   * (when running full-screen).
+   * Sets the cursor to a predefined symbol or an image, or makes it visible if
+   * already hidden. If you are trying to set an image as the cursor, the
+   * recommended size is 16x16 or 32x32 pixels. The values for parameters
+   * <b>x</b> and <b>y</b> must be less than the dimensions of the image. <br />
+   * <br />
+   * Setting or hiding the cursor does not generally work with "Present" mode
+   * (when running full-screen). <br />
+   * <br />
+   * With the P2D and P3D renderers, a generic set of cursors are used because
+   * the OpenGL renderer doesn't have access to the default cursor images for
+   * each platform
+   * (<a href="https://github.com/processing/processing/issues/3791">Issue
+   * 3791</a>).
    *
-   * <h3>Advanced</h3>
-   * Set a custom cursor to an image with a specific hotspot.
-   * Only works with JDK 1.2 and later.
-   * Currently seems to be broken on Java 1.4 for Mac OS X
+   * <h3>Advanced</h3> Set a custom cursor to an image with a specific hotspot.
+   * Only works with JDK 1.2 and later. Currently seems to be broken on Java 1.4
+   * for Mac OS X
    * <p>
-   * Based on code contributed by Amit Pitaru, plus additional
-   * code to handle Java versions via reflection by Jonathan Feinberg.
-   * Reflection removed for release 0128 and later.
+   * Based on code contributed by Amit Pitaru, plus additional code to handle
+   * Java versions via reflection by Jonathan Feinberg. Reflection removed for
+   * release 0128 and later.
+   *
    * @webref environment
-   * @webBrief Sets the cursor to a predefined symbol, an image, or makes it visible if
-   * already hidden.
+   * @webBrief Sets the cursor to a predefined symbol, an image, or makes it
+   *           visible if already hidden.
    * @see PApplet#noCursor()
-   * @param img any variable of type PImage
-   * @param x the horizontal active spot of the cursor
-   * @param y the vertical active spot of the cursor
+   * @param img
+   *          any variable of type PImage
+   * @param x
+   *          the horizontal active spot of the cursor
+   * @param y
+   *          the vertical active spot of the cursor
    */
   public void cursor(PImage img, int x, int y) {
     surface.setCursor(img, x, y);
@@ -3983,31 +4152,32 @@ public class PApplet implements PConstants {
   //////////////////////////////////////////////////////////////
 
 /**
-   *
-   * Writes to the console area of the Processing environment. This is often
-   * helpful for looking at the data a program is producing. The companion
-   * function <b>println()</b> works like <b>print()</b>, but creates a new
-   * line of text for each call to the function. Individual elements can be
-   * separated with quotes ("") and joined with the addition operator (+).<br />
-   * <br />
-   * Beginning with release 0125, to print the contents of an array, use
-   * println(). There's no sensible way to do a <b>print()</b> of an array,
-   * because there are too many possibilities for how to separate the data
-   * (spaces, commas, etc). If you want to print an array as a single line,
-   * use <b>join()</b>. With <b>join()</b>, you can choose any delimiter you
-   * like and <b>print()</b> the result.<br />
-   * <br />
-   * Using <b>print()</b> on an object will output <b>null</b>, a memory
-   * location that may look like "@10be08," or the result of the
-   * <b>toString()</b> method from the object that's being printed. Advanced
-   * users who want more useful output when calling <b>print()</b> on their
-   * own classes can add a <b>toString()</b> method to the class that returns
-   * a String.
-   * 
+ *
+ * The <b>print()</b> function writes to the console area, the black rectangle
+ * at the bottom of the Processing environment. This function is often helpful
+ * for looking at the data a program is producing. The companion function
+ * <b>println()</b> works like <b>print()</b>, but creates a new line of text
+ * for each call to the function. More than one parameter can be passed into the
+ * function by separating them with commas. Alternatively, individual elements
+ * can be separated with quotes ("") and joined with the addition operator
+ * (+).<br />
+ * <br />
+ * Using <b>print()</b> on an object will output <b>null</b>, a memory location
+ * that may look like "@10be08," or the result of the <b>toString()</b> method
+ * from the object that's being printed. Advanced users who want more useful
+ * output when calling <b>print()</b> on their own classes can add a
+ * <b>toString()</b> method to the class that returns a String.<br />
+ * <br />
+ * Note that the console is relatively slow. It works well for occasional
+ * messages, but does not support high-speed, real-time output (such as at 60
+ * frames per second). It should also be noted, that a print() within a for loop
+ * can sometimes lock up the program, and cause the sketch to freeze.
+ *
  * @webref output:text_area
  * @webBrief Writes to the console area of the Processing environment.
  * @usage IDE
- * @param what data to print to console
+ * @param what
+ *          data to print to console
  * @see PApplet#println()
  * @see PApplet#printArray(Object)
  * @see PApplet#join(String[], char)
@@ -4085,24 +4255,29 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Writes to the text area of the Processing environment's console. This is
-   * often helpful for looking at the data a program is producing. Each call
-   * to this function creates a new line of output. Individual elements can
-   * be separated with quotes ("") and joined with the string concatenation
-   * operator (+). See <b>print()</b> for more about what to expect in the output.
-   * <br/><br/> <b>println()</b> on an array (by itself) will write the
-   * contents of the array to the console. This is often helpful for looking
-   * at the data a program is producing. A new line is put between each
-   * element of the array. This function can only print one dimensional
-   * arrays. For arrays with higher dimensions, the result will be closer to
-   * that of <b>print()</b>.
+   * The <b>println()</b> function writes to the console area, the black
+   * rectangle at the bottom of the Processing environment. This function is
+   * often helpful for looking at the data a program is producing. Each call to
+   * this function creates a new line of output. More than one parameter can be
+   * passed into the function by separating them with commas. Alternatively,
+   * individual elements can be separated with quotes ("") and joined with the
+   * addition operator (+).<br />
+   * <br />
+   * Before Processing 2.1, <b>println()</b> was used to write array data to the
+   * console. Now, use <b>printArray()</b> to write array data to the
+   * console.<br />
+   * <br />
+   * Note that the console is relatively slow. It works well for occasional
+   * messages, but does not support high-speed, real-time output (such as at 60
+   * frames per second). It should also be noted, that a println() within a for
+   * loop can sometimes lock up the program, and cause the sketch to freeze.
    *
- * @webref output:text_area
- * @webBrief Writes to the text area of the Processing environment's console.
- * @usage IDE
- * @see PApplet#print(byte)
- * @see PApplet#printArray(Object)
- */
+   * @webref output:text_area
+   * @webBrief Writes to the text area of the Processing environment's console.
+   * @usage IDE
+   * @see PApplet#print(byte)
+   * @see PApplet#printArray(Object)
+   */
   static public void println() {
     System.out.println();
   }
@@ -4194,17 +4369,17 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The printArray() function writes array data to the text 
-   * area of the Processing environment's console. A new line 
-   * is put between each element of the array. This function 
+   * The printArray() function writes array data to the text
+   * area of the Processing environment's console. A new line
+   * is put between each element of the array. This function
    * can only print one dimensional arrays.
-   * Note that the console is relatively slow. It works well 
-   * for occasional messages, but does not support high-speed, 
+   * Note that the console is relatively slow. It works well
+   * for occasional messages, but does not support high-speed,
    * real-time output (such as at 60 frames per second).
    *
-   * 
+   *
  * @webref output:text_area
- * @webBrief The printArray() function writes array data to the text 
+ * @webBrief The printArray() function writes array data to the text
  * area of the Processing environment's console.
  * @param what one-dimensional array
  * @usage IDE
@@ -4330,7 +4505,7 @@ public class PApplet implements PConstants {
    * Calculates the absolute value (magnitude) of a number. The absolute
    * value of a number is always positive.
    *
-   * 
+   *
    * @webref math:calculation
    * @webBrief Calculates the absolute value (magnitude) of a number.
    * @param n number to compute
@@ -4421,15 +4596,19 @@ public class PApplet implements PConstants {
   }
 
 /**
-   *
-   * Determines the largest value in a sequence of numbers.
-   *
-   * @webref math:calculation
-   * @webBrief Determines the largest value in a sequence of numbers.
-   * @param a first number to compare
-   * @param b second number to compare
-   * @see PApplet#min(float, float, float)
-   */
+ *
+ * Determines the largest value in a sequence of numbers, and then returns that
+ * value. <b>max()</b> accepts either two or three <b>float</b> or <b>int</b>
+ * values as parameters, or an array of any length.
+ *
+ * @webref math:calculation
+ * @webBrief Determines the largest value in a sequence of numbers.
+ * @param a
+ *          first number to compare
+ * @param b
+ *          second number to compare
+ * @see PApplet#min(float, float, float)
+ */
   static public final int max(int a, int b) {
     return (a > b) ? a : b;
   }
@@ -4523,16 +4702,21 @@ public class PApplet implements PConstants {
   }
 
 /**
-   *
-   * Determines the smallest value in a sequence of numbers.
-   *
-   * @webref math:calculation
-   * @webBrief Determines the smallest value in a sequence of numbers.
-   * @param a first number
-   * @param b second number
-   * @param c third number
-   * @see PApplet#max(float, float, float)
-   */
+ *
+ * Determines the smallest value in a sequence of numbers, and then returns that
+ * value. <b>min()</b> accepts either two or three <b>float</b> or <b>int</b>
+ * values as parameters, or an array of any length.
+ *
+ * @webref math:calculation
+ * @webBrief Determines the smallest value in a sequence of numbers.
+ * @param a
+ *          first number
+ * @param b
+ *          second number
+ * @param c
+ *          third number
+ * @see PApplet#max(float, float, float)
+ */
   static public final float min(float a, float b, float c) {
     return (a < b) ? ((a < c) ? a : c) : ((b < c) ? b : c);
   }
@@ -4597,7 +4781,7 @@ public class PApplet implements PConstants {
 /**
    *
    * Constrains a value to not exceed a maximum and minimum value.
-   * 
+   *
    * @webref math:calculation
    * @webBrief Constrains a value to not exceed a maximum and minimum value.
    * @param amt the value to constrain
@@ -4616,7 +4800,7 @@ public class PApplet implements PConstants {
    * Calculates the sine of an angle. This function expects the values of the
    * <b>angle</b> parameter to be provided in radians (values from 0 to
    * 6.28). Values are returned in the range -1 to 1.
-   * 
+   *
    * @webref math:trigonometry
    * @webBrief Calculates the sine of an angle.
    * @param angle an angle in radians
@@ -4759,7 +4943,7 @@ public class PApplet implements PConstants {
    * 360 degrees in a circle and 2*PI radians in a circle. For example,
    * 90&deg; = PI/2 = 1.5707964. All trigonometric functions in Processing
    * require their parameters to be specified in radians.
-   * 
+   *
    * @webref math:trigonometry
    * @webBrief Converts a degree measurement to its corresponding value in radians.
    * @param degrees degree value to convert to radians
@@ -4802,16 +4986,17 @@ public class PApplet implements PConstants {
   }
 
 /**
-   *
-   * Calculates the integer closest to the <b>value</b> parameter. For
-   * example, <b>round(9.2)</b> returns the value 9.
-   *
-   * @webref math:calculation
-   * @webBrief Calculates the integer closest to the <b>value</b> parameter.
-   * @param n number to round
-   * @see PApplet#floor(float)
-   * @see PApplet#ceil(float)
-   */
+ *
+ * Calculates the integer closest to the <b>n</b> parameter. For example,
+ * <b>round(133.8)</b> returns the value 134.
+ *
+ * @webref math:calculation
+ * @webBrief Calculates the integer closest to the <b>value</b> parameter.
+ * @param n
+ *          number to round
+ * @see PApplet#floor(float)
+ * @see PApplet#ceil(float)
+ */
   static public final int round(float n) {
     return Math.round(n);
   }
@@ -4888,17 +5073,21 @@ public class PApplet implements PConstants {
   /**
    *
    * Normalizes a number from another range into a value between 0 and 1.
-   * <br/> <br/>
-   * Identical to map(value, low, high, 0, 1);
-   * <br/> <br/>
-   * Numbers outside the range are not clamped to 0 and 1, because
-   * out-of-range values are often intentional and useful.
+   * Identical to <b>map(value, low, high, 0, 1)</b>.<br />
+   * <br />
+   * Numbers outside of the range are not clamped to 0 and 1, because
+   * out-of-range values are often intentional and useful. (See the second
+   * example above.)
    *
    * @webref math:calculation
-   * @webBrief Normalizes a number from another range into a value between 0 and 1.
-   * @param value the incoming value to be converted
-   * @param start lower bound of the value's current range
-   * @param stop upper bound of the value's current range
+   * @webBrief Normalizes a number from another range into a value between 0 and
+   *           1.
+   * @param value
+   *          the incoming value to be converted
+   * @param start
+   *          lower bound of the value's current range
+   * @param stop
+   *          upper bound of the value's current range
    * @see PApplet#map(float, float, float, float, float)
    * @see PApplet#lerp(float, float, float)
    */
@@ -4908,21 +5097,28 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Re-maps a number from one range to another. In the example above,
-   * the number '25' is converted from a value in the range 0..100 into
-   * a value that ranges from the left edge (0) to the right edge (width)
-   * of the screen.
-   * <br/> <br/>
-   * Numbers outside the range are not clamped to 0 and 1, because
-   * out-of-range values are often intentional and useful.
+   * Re-maps a number from one range to another.<br />
+   * <br />
+   * In the first example above, the number 25 is converted from a value in the
+   * range of 0 to 100 into a value that ranges from the left edge of the window
+   * (0) to the right edge (width).<br />
+   * <br />
+   * As shown in the second example, numbers outside of the range are not
+   * clamped to the minimum and maximum parameters values, because out-of-range
+   * values are often intentional and useful.
    *
    * @webref math:calculation
    * @webBrief Re-maps a number from one range to another.
-   * @param value the incoming value to be converted
-   * @param start1 lower bound of the value's current range
-   * @param stop1 upper bound of the value's current range
-   * @param start2 lower bound of the value's target range
-   * @param stop2 upper bound of the value's target range
+   * @param value
+   *          the incoming value to be converted
+   * @param start1
+   *          lower bound of the value's current range
+   * @param stop1
+   *          upper bound of the value's current range
+   * @param start2
+   *          lower bound of the value's target range
+   * @param stop2
+   *          upper bound of the value's target range
    * @see PApplet#norm(float, float, float)
    * @see PApplet#lerp(float, float, float)
    */
@@ -5017,21 +5213,24 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Generates random numbers. Each time the <b>random()</b> function is
-   * called, it returns an unexpected value within the specified range. If
-   * one parameter is passed to the function it will return a <b>float</b>
-   * between zero and the value of the <b>high</b> parameter. The function
-   * call <b>random(5)</b> returns values between 0 and 5 (starting at zero,
-   * up to but not including 5). If two parameters are passed, it will return
-   * a <b>float</b> with a value between the the parameters. The function
-   * call <b>random(-5, 10.2)</b> returns values starting at -5 up to (but
-   * not including) 10.2. To convert a floating-point random number to an
-   * integer, use the <b>int()</b> function.
+   * Generates random numbers. Each time the <b>random()</b> function is called,
+   * it returns an unexpected value within the specified range. If only one
+   * parameter is passed to the function, it will return a float between zero
+   * and the value of the <b>high</b> parameter. For example, <b>random(5)</b>
+   * returns values between 0 and 5 (starting at zero, and up to, but not
+   * including, 5).<br />
+   * <br />
+   * If two parameters are specified, the function will return a float with a
+   * value between the two values. For example, <b>random(-5, 10.2)</b> returns
+   * values starting at -5 and up to (but not including) 10.2. To convert a
+   * floating-point random number to an integer, use the <b>int()</b> function.
    *
    * @webref math:random
    * @webBrief Generates random numbers.
-   * @param low lower limit
-   * @param high upper limit
+   * @param low
+   *          lower limit
+   * @param high
+   *          upper limit
    * @see PApplet#randomSeed(long)
    * @see PApplet#noise(float, float, float)
    */
@@ -5049,19 +5248,20 @@ public class PApplet implements PConstants {
 
 
  /**
-   *
-   * Sets the seed value for <b>random()</b>. By default, <b>random()</b>
-   * produces different results each time the program is run. Set the
-   * <b>value</b> parameter to a constant to return the same pseudo-random
-   * numbers each time the software is run.
-   *
-   * @webref math:random
-   * @webBrief Sets the seed value for <b>random()</b>.
-   * @param seed seed value
-   * @see PApplet#random(float,float)
-   * @see PApplet#noise(float, float, float)
-   * @see PApplet#noiseSeed(long)
-   */
+  *
+  * Sets the seed value for <b>random()</b>. By default, <b>random()</b>
+  * produces different results each time the program is run. Set the <b>seed</b>
+  * parameter to a constant to return the same pseudo-random numbers each time
+  * the software is run.
+  *
+  * @webref math:random
+  * @webBrief Sets the seed value for <b>random()</b>.
+  * @param seed
+  *          seed value
+  * @see PApplet#random(float,float)
+  * @see PApplet#noise(float, float, float)
+  * @see PApplet#noiseSeed(long)
+  */
   public final void randomSeed(long seed) {
     if (internalRandom == null) {
       internalRandom = new Random();
@@ -5119,38 +5319,49 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Returns the Perlin noise value at specified coordinates. Perlin noise is
-   * a random sequence generator producing a more natural ordered, harmonic
-   * succession of numbers compared to the standard <b>random()</b> function.
-   * It was invented by Ken Perlin in the 1980s and been used since in
-   * graphical applications to produce procedural textures, natural motion,
-   * shapes, terrains etc.<br /><br /> The main difference to the
-   * <b>random()</b> function is that Perlin noise is defined in an infinite
-   * n-dimensional space where each pair of coordinates corresponds to a
-   * fixed semi-random value (fixed only for the lifespan of the program).
+   * Returns the Perlin noise value at specified coordinates. Perlin noise is a
+   * random sequence generator producing a more natural, harmonic succession of
+   * numbers than that of the standard <b>random()</b> function. It was
+   * developed by Ken Perlin in the 1980s and has been used in graphical
+   * applications to generate procedural textures, shapes, terrains, and other
+   * seemingly organic forms.<br />
+   * <br />
+   * In contrast to the <b>random()</b> function, Perlin noise is defined in an
+   * infinite n-dimensional space, in which each pair of coordinates corresponds
+   * to a fixed semi-random value (fixed only for the lifespan of the program).
    * The resulting value will always be between 0.0 and 1.0. Processing can
-   * compute 1D, 2D and 3D noise, depending on the number of coordinates
-   * given. The noise value can be animated by moving through the noise space
-   * as demonstrated in the example above. The 2nd and 3rd dimension can also
-   * be interpreted as time.<br /><br />The actual noise is structured
-   * similar to an audio signal, in respect to the function's use of
-   * frequencies. Similar to the concept of harmonics in physics, perlin
-   * noise is computed over several octaves which are added together for the
-   * final result. <br /><br />Another way to adjust the character of the
-   * resulting sequence is the scale of the input coordinates. As the
-   * function works within an infinite space the value of the coordinates
-   * doesn't matter as such, only the distance between successive coordinates
-   * does (eg. when using <b>noise()</b> within a loop). As a general rule
-   * the smaller the difference between coordinates, the smoother the
-   * resulting noise sequence will be. Steps of 0.005-0.03 work best for most
-   * applications, but this will differ depending on use.
+   * compute 1D, 2D and 3D noise, depending on the number of coordinates given.
+   * The noise value can be animated by moving through the noise space, as
+   * demonstrated in the first example above. The 2nd and 3rd dimensions can
+   * also be interpreted as time.<br />
+   * <br />
+   * The actual noise structure is similar to that of an audio signal, in
+   * respect to the function's use of frequencies. Similar to the concept of
+   * harmonics in physics, Perlin noise is computed over several octaves which
+   * are added together for the final result.<br />
+   * <br />
+   * Another way to adjust the character of the resulting sequence is the scale
+   * of the input coordinates. As the function works within an infinite space,
+   * the value of the coordinates doesn't matter as such; only the
+   * <em>distance</em> between successive coordinates is important (such as when
+   * using <b>noise()</b> within a loop). As a general rule, the smaller the
+   * difference between coordinates, the smoother the resulting noise sequence.
+   * Steps of 0.005-0.03 work best for most applications, but this will differ
+   * depending on use.<br />
+   * <br />
+   * There have been debates over the accuracy of the implementation of noise in
+   * Processing. For clarification, it's an implementation of "classic Perlin
+   * noise" from 1983, and not the newer "simplex noise" method from 2001.
    *
-   * 
+   *
    * @webref math:random
    * @webBrief Returns the Perlin noise value at specified coordinates.
-   * @param x x-coordinate in noise space
-   * @param y y-coordinate in noise space
-   * @param z z-coordinate in noise space
+   * @param x
+   *          x-coordinate in noise space
+   * @param y
+   *          y-coordinate in noise space
+   * @param z
+   *          z-coordinate in noise space
    * @see PApplet#noiseSeed(long)
    * @see PApplet#noiseDetail(int, float)
    * @see PApplet#random(float,float)
@@ -5237,24 +5448,27 @@ public class PApplet implements PConstants {
   /**
    *
    * Adjusts the character and level of detail produced by the Perlin noise
-   * function. Similar to harmonics in physics, noise is computed over
-   * several octaves. Lower octaves contribute more to the output signal and
-   * as such define the overal intensity of the noise, whereas higher octaves
-   * create finer grained details in the noise sequence. By default, noise is
-   * computed over 4 octaves with each octave contributing exactly half than
-   * its predecessor, starting at 50% strength for the 1st octave. This
-   * falloff amount can be changed by adding an additional function
-   * parameter. Eg. a falloff factor of 0.75 means each octave will now have
-   * 75% impact (25% less) of the previous lower octave. Any value between
-   * 0.0 and 1.0 is valid, however note that values greater than 0.5 might
-   * result in greater than 1.0 values returned by <b>noise()</b>.<br /><br
-   * />By changing these parameters, the signal created by the <b>noise()</b>
+   * function. Similar to harmonics in physics, noise is computed over several
+   * octaves. Lower octaves contribute more to the output signal and as such
+   * define the overall intensity of the noise, whereas higher octaves create
+   * finer-grained details in the noise sequence.<br />
+   * <br />
+   * By default, noise is computed over 4 octaves with each octave contributing
+   * exactly half than its predecessor, starting at 50% strength for the first
+   * octave. This falloff amount can be changed by adding an additional function
+   * parameter. For example, a falloff factor of 0.75 means each octave will now
+   * have 75% impact (25% less) of the previous lower octave. While any number
+   * between 0.0 and 1.0 is valid, note that values greater than 0.5 may result
+   * in <b>noise()</b> returning values greater than 1.0.<br />
+   * <br />
+   * By changing these parameters, the signal created by the <b>noise()</b>
    * function can be adapted to fit very specific needs and characteristics.
    *
    * @webref math:random
-   * @webBrief Adjusts the character and level of detail produced by the Perlin noise
-   * function.
-   * @param lod number of octaves to be used by the noise
+   * @webBrief Adjusts the character and level of detail produced by the Perlin
+   *           noise function.
+   * @param lod
+   *          number of octaves to be used by the noise
    * @see PApplet#noise(float, float, float)
    */
   public void noiseDetail(int lod) {
@@ -5299,38 +5513,46 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Loads an image into a variable of type <b>PImage</b>. Four types of
-   * images ( <b>.gif</b>, <b>.jpg</b>, <b>.tga</b>, <b>.png</b>) images may
-   * be loaded. To load correctly, images must be located in the data
-   * directory of the current sketch. In most cases, load all images in
-   * <b>setup()</b> to preload them at the start of the program. Loading
-   * images inside <b>draw()</b> will reduce the speed of a program.<br/>
-   * <br/> <b>filename</b> parameter can also be a URL to a file found
-   * online. For security reasons, a Processing sketch found online can only
-   * download files from the same server from which it came. Getting around
-   * this restriction requires a <a
-   * href="http://wiki.processing.org/w/Sign_an_Applet">signed
-   * applet</a>.<br/>
-   * <br/> <b>extension</b> parameter is used to determine the image type in
-   * cases where the image filename does not end with a proper extension.
-   * Specify the extension as the second parameter to <b>loadImage()</b>, as
-   * shown in the third example on this page.<br/>
-   * <br/> an image is not loaded successfully, the <b>null</b> value is
+   * Loads an image into a variable of type <b>PImage</b>. Four types of images
+   * ( <b>.gif</b>, <b>.jpg</b>, <b>.tga</b>, <b>.png</b>) images may be loaded.
+   * To load correctly, images must be located in the data directory of the
+   * current sketch.<br />
+   * <br />
+   * In most cases, load all images in <b>setup()</b> to preload them at the
+   * start of the program. Loading images inside <b>draw()</b> will reduce the
+   * speed of a program. Images cannot be loaded outside <b>setup()</b> unless
+   * they're inside a function that's called after <b>setup()</b> has already
+   * run.<br />
+   * <br />
+   * Alternatively, the file maybe be loaded from anywhere on the local computer
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows), or the filename parameter can be a URL for a
+   * file found on a network.<br />
+   * <br />
+   * If the file is not available or an error occurs, <b>null</b> will be
    * returned and an error message will be printed to the console. The error
    * message does not halt the program, however the null value may cause a
-   * NullPointerException if your code does not check whether the value
-   * returned from <b>loadImage()</b> is null.<br/>
-   * <br/> on the type of error, a <b>PImage</b> object may still be
+   * NullPointerException if your code does not check whether the value returned
+   * is null.<br />
+   * <br />
+   * The <b>extension</b> parameter is used to determine the image type in cases
+   * where the image filename does not end with a proper extension. Specify the
+   * extension as the second parameter to <b>loadImage()</b>, as shown in the
+   * third example on this page. Note that CMYK images are not supported.<br />
+   * <br />
+   * Depending on the type of error, a <b>PImage</b> object may still be
    * returned, but the width and height of the image will be set to -1. This
    * happens if bad image data is returned or cannot be decoded properly.
    * Sometimes this happens with image URLs that produce a 403 error or that
-   * redirect to a password prompt, because <b>loadImage()</b> will attempt
-   * to interpret the HTML as image data.
+   * redirect to a password prompt, because <b>loadImage()</b> will attempt to
+   * interpret the HTML as image data.
    *
-   * 
+   *
    * @webref image:loading_displaying
    * @webBrief Loads an image into a variable of type <b>PImage</b>.
-   * @param filename name of file to load, can be .gif, .jpg, .tga, or a handful of other image types depending on your platform
+   * @param filename
+   *          name of file to load, can be .gif, .jpg, .tga, or a handful of
+   *          other image types depending on your platform
    * @see PImage
    * @see PGraphics#image(PImage, float, float, float, float)
    * @see PGraphics#imageMode(int)
@@ -5368,23 +5590,27 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * This function load images on a separate thread so that your sketch does
-   * not freeze while images load during <b>setup()</b>. While the image is
-   * loading, its width and height will be 0. If an error occurs while
-   * loading the image, its width and height will be set to -1. You'll know
-   * when the image has loaded properly because its width and height will be
-   * greater than 0. Asynchronous image loading (particularly when
-   * downloading from a server) can dramatically improve performance.<br />
-   * <br/> <b>extension</b> parameter is used to determine the image type in
-   * cases where the image filename does not end with a proper extension.
-   * Specify the extension as the second parameter to <b>requestImage()</b>.
+   * This function loads images on a separate thread so that your sketch doesn't
+   * freeze while images load during <b>setup()</b>. While the image is loading,
+   * its width and height will be 0. If an error occurs while loading the image,
+   * its width and height will be set to -1. You'll know when the image has
+   * loaded properly because its <b>width</b> and <b>height</b> will be greater
+   * than 0. Asynchronous image loading (particularly when downloading from a
+   * server) can dramatically improve performance.<br />
+   * <br />
+   * The <b>extension</b> parameter is used to determine the image type in cases
+   * where the image filename does not end with a proper extension. Specify the
+   * extension as the second parameter to <b>requestImage()</b>.
    *
-   * 
+   *
    * @webref image:loading_displaying
-   * @webBrief Loads images on a separate thread so that your sketch does
-   * not freeze while images load during <b>setup()</b>.
-   * @param filename name of the file to load, can be .gif, .jpg, .tga, or a handful of other image types depending on your platform
-   * @param extension the type of image to load, for example "png", "gif", "jpg"
+   * @webBrief Loads images on a separate thread so that your sketch does not
+   *           freeze while images load during <b>setup()</b>.
+   * @param filename
+   *          name of the file to load, can be .gif, .jpg, .tga, or a handful of
+   *          other image types depending on your platform
+   * @param extension
+   *          the type of image to load, for example "png", "gif", "jpg"
    * @see PImage
    * @see PApplet#loadImage(String, String)
    */
@@ -5450,17 +5676,17 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Reads the contents of a file or URL and creates an XML 
-   * object with its values. If a file is specified, it must 
-   * be located in the sketch's "data" folder. The filename 
+   * Reads the contents of a file or URL and creates an XML
+   * object with its values. If a file is specified, it must
+   * be located in the sketch's "data" folder. The filename
    * parameter can also be a URL to a file found online.<br /><br />
-   * All files loaded and saved by the Processing API use 
-   * UTF-8 encoding. If you need to load an XML file that's 
+   * All files loaded and saved by the Processing API use
+   * UTF-8 encoding. If you need to load an XML file that's
    * not in UTF-8 format, see the <a href="http://processing.github.io/processing-javadocs/core/processing/data/XML.html">
    * developer's reference</a> for the XML object.
    * @webref input:files
-   * @webBrief Reads the contents of a file or URL and creates an XML 
-   * object with its values. 
+   * @webBrief Reads the contents of a file or URL and creates an XML
+   * object with its values.
    * @param filename name of a file in the data folder or a URL.
    * @see XML
    * @see PApplet#parseXML(String)
@@ -5495,21 +5721,24 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Takes a String, parses its contents, and returns 
-   * an XML object. If the String does not contain XML 
-   * data or cannot be parsed, a null value is returned.
-   * parseXML() is most useful when pulling data dynamically, 
-   * such as from third-party APIs. Normally, API results 
-   * would be saved to a String, and then can be converted 
-   * to a structured XML object using parseXML(). Be sure 
-   * to check if null is returned before performing 
-   * operations on the new XML object, in case the String 
-   * content could not be parsed.
-   * If your data already exists as an XML file in the data 
-   * folder, it is simpler to use loadXML().
+   * Takes a String, parses its contents, and returns an XML object. If the
+   * String does not contain XML data or cannot be parsed, a null value is
+   * returned.<br />
+   * <br />
+   * <b>parseXML()</b> is most useful when pulling data dynamically, such as
+   * from third-party APIs. Normally, API results would be saved to a String,
+   * and then can be converted to a structured XML object using
+   * <b>parseXML()</b>. Be sure to check if null is returned before performing
+   * operations on the new XML object, in case the String content could not be
+   * parsed.<br />
+   * <br />
+   * If your data already exists as an XML file in the data folder, it is
+   * simpler to use <b>loadXML()</b>.
+   *
    * @webref input:files
    * @webBrief Converts String content to an XML object
-   * @param xmlString the content to be parsed as XML
+   * @param xmlString
+   *          the content to be parsed as XML
    * @return an XML object, or null
    * @see XML
    * @see PApplet#loadXML(String)
@@ -5531,20 +5760,22 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Writes the contents of an XML object to a file. 
-   * By default, this file is saved to the sketch's 
-   * folder. This folder is opened by selecting "Show 
-   * Sketch Folder" from the "Sketch" menu.
-   * Alternatively, the file can be saved to any location 
-   * on the computer by using an absolute path (something 
-   * that starts with / on Unix and Linux, or a drive 
-   * letter on Windows).
-   * All files loaded and saved by the Processing API use 
-   * UTF-8 encoding.
+   * Writes the contents of an XML object to a file. By default, this file is
+   * saved to the sketch's folder. This folder is opened by selecting "Show
+   * Sketch Folder" from the "Sketch" menu.<br />
+   * <br />
+   * Alternatively, the file can be saved to any location on the computer by
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows).<br />
+   * <br />
+   * All files loaded and saved by the Processing API use UTF-8 encoding.
+   *
    * @webref output:files
    * @webBrief Writes the contents of an XML object to a file.
-   * @param xml the XML object to save to disk
-   * @param filename name of the file to write to
+   * @param xml
+   *          the XML object to save to disk
+   * @param filename
+   *          name of the file to write to
    * @see XML
    * @see PApplet#loadXML(String)
    * @see PApplet#parseXML(String)
@@ -5561,24 +5792,25 @@ public class PApplet implements PConstants {
   }
 
   /**
-   * Takes a <b>String</b>, parses its contents, and returns 
-   * a <b>JSONObject</b>. If the <b>String</b> does not contain
-   * <b>JSONObject</b> data or cannot be parsed, a <b>null</b> 
-   * value is returned.<br /> <br />
-   * <b>parseJSONObject()</b> is most useful when pulling data 
-   * dynamically, such as from third-party APIs. Normally, API 
-   * results would be saved to a <b>String</b>, and then can be 
-   * converted to a structured <b>JSONObject</b> using 
-   * <b>parseJSONObject()</b>. Be sure to check if <b>null</b> 
-   * is returned before performing operations on the new
-   * <b>JSONObject</b> in case the <b>String</b> content could 
-   * not be parsed.<br /> <br />
-   * If your data already exists as a <b>JSON</b> file in the 
-   * data folder, it is simpler to use <b>loadJSONObject()</b>.
+   * Takes a <b>String</b>, parses its contents, and returns a
+   * <b>JSONObject</b>. If the <b>String</b> does not contain <b>JSONObject</b>
+   * data or cannot be parsed, a <b>null</b> value is returned.<br />
+   * <br />
+   * <b>parseJSONObject()</b> is most useful when pulling data dynamically, such
+   * as from third-party APIs. Normally, API results would be saved to a
+   * <b>String</b>, and then can be converted to a structured <b>JSONObject</b>
+   * using <b>parseJSONObject()</b>. Be sure to check if <b>null</b> is returned
+   * before performing operations on the new <b>JSONObject</b> in case the
+   * <b>String</b> content could not be parsed.<br />
+   * <br />
+   * If your data already exists as a <b>JSON</b> file in the data folder, it is
+   * simpler to use <b>loadJSONObject()</b>.
+   *
    * @webref input:files
-   * @webBrief Takes a <b>String</b>, parses its contents, and returns 
-   * a <b>JSONObject</b>.
-   * @param input String to parse as a JSONObject
+   * @webBrief Takes a <b>String</b>, parses its contents, and returns a
+   *           <b>JSONObject</b>.
+   * @param input
+   *          String to parse as a JSONObject
    * @see PApplet#loadJSONObject(String)
    * @see PApplet#saveJSONObject(JSONObject, String)
    */
@@ -5588,13 +5820,16 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Loads a JSON from the data folder or a URL, and returns a 
-   * <b>JSONObject</b>.<br /><br />
+   * Loads a JSON from the data folder or a URL, and returns a
+   * <b>JSONObject</b>.<br />
+   * <br />
    * All files loaded and saved by the Processing API use UTF-8 encoding.
+   *
    * @webref input:files
-   * @webBrief Loads a JSON from the data folder or a URL, and returns a 
-   * <b>JSONObject</b>.
-   * @param filename name of a file in the data folder or a URL
+   * @webBrief Loads a JSON from the data folder or a URL, and returns a
+   *           <b>JSONObject</b>.
+   * @param filename
+   *          name of a file in the data folder or a URL
    * @see JSONObject
    * @see JSONArray
    * @see PApplet#loadJSONArray(String)
@@ -5631,20 +5866,22 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Writes the contents of a <b>JSONObject</b> object to 
-   * a file. By default, this file is saved to the sketch's 
-   * folder. This folder is opened by selecting "Show Sketch 
-   * Folder" from the "Sketch" menu.<br /> <br />
-   * Alternatively, the file can be saved to any location on 
-   * the computer by using an absolute path (something that 
-   * starts with / on Unix and Linux, or a drive letter on 
-   * Windows).<br /> <br />
+   * Writes the contents of a <b>JSONObject</b> object to a file. By default,
+   * this file is saved to the sketch's folder. This folder is opened by
+   * selecting "Show Sketch Folder" from the "Sketch" menu.<br />
+   * <br />
+   * Alternatively, the file can be saved to any location on the computer by
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows).<br />
+   * <br />
    * All files loaded and saved by the Processing API use UTF-8 encoding.
+   *
    * @webref output:files
-   * @webBrief Writes the contents of a <b>JSONObject</b> object to 
-   * a file.
-   * @param json the JSONObject to save
-   * @param filename the name of the file to save to
+   * @webBrief Writes the contents of a <b>JSONObject</b> object to a file.
+   * @param json
+   *          the JSONObject to save
+   * @param filename
+   *          the name of the file to save to
    * @see JSONObject
    * @see JSONArray
    * @see PApplet#loadJSONObject(String)
@@ -5664,50 +5901,46 @@ public class PApplet implements PConstants {
   }
 
 /**
-   * Takes a <b>String</b>, parses its contents, and returns a <b>JSONArray</b>. 
-   * If the <b>String</b> does not contain <b>JSONArray</b> data or cannot be 
-   * parsed, a <b>null</b> value is returned.<br /> <br />
-   * <b>parseJSONArray()</b> is most useful when pulling data dynamically, 
-   * such as from third-party APIs. Normally, API results would be saved to a 
-   * <b>String</b>, and then can be converted to a structured <b>JSONArray</b> 
-   * using <b>parseJSONArray()</b>. Be sure to check if <b>null</b> is returned 
-   * before performing operations on the new <b>JSONArray</b> in case the 
-   * <b>String</b> content could not be parsed.<br /> <br />
-   * If your data already exists as a <b>JSON</b> file in the data folder, it 
-   * is simpler to use <b>loadJSONArray()</b>.
-   * @webref input:files
-   * @webBrief
-   * @param input String to parse as a JSONArray
-   * @see JSONObject
-   * @see PApplet#loadJSONObject(String)
-   * @see PApplet#saveJSONObject(JSONObject, String)
-   */
+ * Takes a <b>String</b>, parses its contents, and returns a <b>JSONArray</b>.
+ * If the <b>String</b> does not contain <b>JSONArray</b> data or cannot be
+ * parsed, a <b>null</b> value is returned.<br />
+ * <br />
+ * <b>parseJSONArray()</b> is most useful when pulling data dynamically, such as
+ * from third-party APIs. Normally, API results would be saved to a
+ * <b>String</b>, and then can be converted to a structured <b>JSONArray</b>
+ * using <b>parseJSONArray()</b>. Be sure to check if <b>null</b> is returned
+ * before performing operations on the new <b>JSONArray</b> in case the
+ * <b>String</b> content could not be parsed.<br />
+ * <br />
+ * If your data already exists as a <b>JSON</b> file in the data folder, it is
+ * simpler to use <b>loadJSONArray()</b>.
+ *
+ * @webref input:files
+ * @webBrief
+ * @param input
+ *          String to parse as a JSONArray
+ * @see JSONObject
+ * @see PApplet#loadJSONObject(String)
+ * @see PApplet#saveJSONObject(JSONObject, String)
+ */
   public JSONArray parseJSONArray(String input) {
     return new JSONArray(new StringReader(input));
   }
 
 
   /**
-   * Takes a <b>String</b>, parses its contents, and 
-   * returns a <b>JSONArray</b>. If the <b>String</b> 
-   * does not contain <b>JSONArray</b> data or cannot 
-   * be parsed, a <b>null</b> value is returned.<br />
+   * Loads an array of JSON objects from the data folder or a URL, and returns a
+   * <b>JSONArray</b>. Per standard JSON syntax, the array must be enclosed in a
+   * pair of hard brackets <b>[]</b>, and each object within the array must be
+   * separated by a comma.<br />
    * <br />
-   * <b>parseJSONArray()</b> is most useful when pulling 
-   * data dynamically, such as from third-party APIs. 
-   * Normally, API results would be saved to a 
-   * <b>String</b>, and then can be converted to a 
-   * structured <b>JSONArray</b> using <b>parseJSONArray()</b>. 
-   * Be sure to check if <b>null</b> is returned before 
-   * performing operations on the new <b>JSONArray</b> 
-   * in case the <b>String</b> content could not be parsed.<br />
-   * <br />
-   * If your data already exists as a <b>JSON</b> file in 
-   * the data folder, it is simpler to use <b>loadJSONArray()</b>.
+   * All files loaded and saved by the Processing API use UTF-8 encoding.
+   *
    * @webref input:files
-   * @webBrief Takes a <b>String</b>, parses its contents, and 
-   * returns a <b>JSONArray</b>.
-   * @param filename name of a file in the data folder or a URL
+   * @webBrief Takes a <b>String</b>, parses its contents, and returns a
+   *           <b>JSONArray</b>.
+   * @param filename
+   *          name of a file in the data folder or a URL
    * @see JSONArray
    * @see PApplet#loadJSONObject(String)
    * @see PApplet#saveJSONObject(JSONObject, String)
@@ -5740,22 +5973,22 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Writes the contents of a <b>JSONArray</b> object to a 
-   * file. By default, this file is saved to the sketch's 
-   * folder. This folder is opened by selecting "Show Sketch Folder" 
-   * from the "Sketch" menu.<br />
+   * Writes the contents of a <b>JSONArray</b> object to a file. By default,
+   * this file is saved to the sketch's folder. This folder is opened by
+   * selecting "Show Sketch Folder" from the "Sketch" menu.<br />
    * <br />
-   * Alternatively, the file can be saved to any location 
-   * on the computer by using an absolute path (something 
-   * that starts with / on Unix and Linux, or a drive letter 
-   * on Windows).<br />
+   * Alternatively, the file can be saved to any location on the computer by
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows).<br />
    * <br />
    * All files loaded and saved by the Processing API use UTF-8 encoding.
+   *
    * @webref output:files
-   * @webBrief Writes the contents of a <b>JSONArray</b> object to a 
-   * file.
-   * @param json the JSONArray to save
-   * @param filename the name of the file to save to
+   * @webBrief Writes the contents of a <b>JSONArray</b> object to a file.
+   * @param json
+   *          the JSONArray to save
+   * @param filename
+   *          the name of the file to save to
    * @see JSONObject
    * @see JSONArray
    * @see PApplet#loadJSONObject(String)
@@ -5787,35 +6020,33 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Reads the contents of a file or URL and creates an 
-   * Table object with its values. If a file is specified, 
-   * it must be located in the sketch's "data" folder. The 
-   * filename parameter can also be a URL to a file found 
-   * online. The filename must either end in an extension 
-   * or an extension must be specified in the <b>options</b> 
-   * parameter. For example, to use tab-separated data, 
-   * include "tsv" in the options parameter if the filename 
-   * or URL does not end in <b>.tsv</b>. Note: If an extension 
-   * is in both places, the extension in the <b>options</b> 
-   * is used.<br />
+   * Reads the contents of a file or URL and creates an Table object with its
+   * values. If a file is specified, it must be located in the sketch's "data"
+   * folder. The filename parameter can also be a URL to a file found online.
+   * The filename must either end in an extension or an extension must be
+   * specified in the <b>options</b> parameter. For example, to use
+   * tab-separated data, include "tsv" in the options parameter if the filename
+   * or URL does not end in <b>.tsv</b>. Note: If an extension is in both
+   * places, the extension in the <b>options</b> is used.<br />
    * <br />
-   * If the file contains a header row, include "header" in 
-   * the <b>options</b> parameter. If the file does not have 
-   * a header row, then simply omit the "header" option.<br />
+   * If the file contains a header row, include "header" in the <b>options</b>
+   * parameter. If the file does not have a header row, then simply omit the
+   * "header" option.<br />
    * <br />
-   * Some CSV files contain newline (CR or LF) characters 
-   * inside cells. This is rare, but adding the "newlines" 
-   * option will handle them properly. (This is not enabled 
-   * by default because the parsing code is much slower.)<br />
+   * Some CSV files contain newline (CR or LF) characters inside cells. This is
+   * rare, but adding the "newlines" option will handle them properly. (This is
+   * not enabled by default because the parsing code is much slower.)<br />
    * <br />
-   * When specifying multiple options, separate them with commas, 
-   * as in: <b>loadTable("data.csv", "header, tsv")</b><br />
+   * When specifying multiple options, separate them with commas, as in:
+   * <b>loadTable("data.csv", "header, tsv")</b><br />
    * <br />
    * All files loaded and saved by the Processing API use UTF-8 encoding.
+   *
    * @webref input:files
-   * @webBrief Reads the contents of a file or URL and creates an 
-   * Table object with its values.
-   * @param filename name of a file in the data folder or a URL.
+   * @webBrief Reads the contents of a file or URL and creates an Table object
+   *           with its values.
+   * @param filename
+   *          name of a file in the data folder or a URL.
    * @see Table
    * @see PApplet#saveTable(Table, String)
    * @see PApplet#loadBytes(String)
@@ -5865,18 +6096,22 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Writes the contents of a Table object to a file. By default, this
-   * file is saved to the sketch's folder. This folder is opened by 
-   * selecting "Show Sketch Folder" from the "Sketch" menu.<br />
+   * Writes the contents of a Table object to a file. By default, this file is
+   * saved to the sketch's folder. This folder is opened by selecting "Show
+   * Sketch Folder" from the "Sketch" menu.<br />
    * <br />
-   * Alternatively, the file can be saved to any location on the computer 
-   * by using an absolute path (something that starts with / on Unix and 
-   * Linux, or a drive letter on Windows).<br /><br />
+   * Alternatively, the file can be saved to any location on the computer by
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows).<br />
+   * <br />
    * All files loaded and saved by the Processing API use UTF-8 encoding.
+   *
    * @webref output:files
    * @webBrief Writes the contents of a Table object to a file.
-   * @param table the Table object to save to a file
-   * @param filename the filename to which the Table should be saved
+   * @param table
+   *          the Table object to save to a file
+   * @param filename
+   *          the filename to which the Table should be saved
    * @see Table
    * @see PApplet#loadTable(String)
    */
@@ -5920,35 +6155,48 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Loads a font into a variable of type <b>PFont</b>. To load correctly,
-   * fonts must be located in the data directory of the current sketch. To
-   * create a font to use with Processing, select "Create Font..." from the
-   * Tools menu. This will create a font in the format Processing requires
-   * and also adds it to the current sketch's data directory.<br />
+   * Loads a .vlw formatted font into a <b>PFont</b> object. Create a .vlw font
+   * by selecting "Create Font..." from the Tools menu. This tool creates a
+   * texture for each alphanumeric character and then adds them as a .vlw file
+   * to the current sketch's data folder. Because the letters are defined as
+   * textures (and not vector data) the size at which the fonts are created must
+   * be considered in relation to the size at which they are drawn. For example,
+   * load a 32pt font if the sketch displays the font at 32 pixels or smaller.
+   * Conversely, if a 12pt font is loaded and displayed at 48pts, the letters
+   * will be distorted because the program will be stretching a small graphic to
+   * a large size.<br />
    * <br />
    * Like <b>loadImage()</b> and other functions that load data, the
-   * <b>loadFont()</b> function should not be used inside <b>draw()</b>,
-   * because it will slow down the sketch considerably, as the font will be
-   * re-loaded from the disk (or network) on each frame.<br />
+   * <b>loadFont()</b> function should not be used inside <b>draw()</b>, because
+   * it will slow down the sketch considerably, as the font will be re-loaded
+   * from the disk (or network) on each frame. It's recommended to load files
+   * inside <b>setup()</b><br />
    * <br />
-   * For most renderers, Processing displays fonts using the .vlw font
-   * format, which uses images for each letter, rather than defining them
-   * through vector data. When <b>hint(ENABLE_NATIVE_FONTS)</b> is used with
-   * the JAVA2D renderer, the native version of a font will be used if it is
-   * installed on the user's machine.<br />
+   * To load correctly, fonts must be located in the "data" folder of the
+   * current sketch. Alternatively, the file maybe be loaded from anywhere on
+   * the local computer using an absolute path (something that starts with / on
+   * Unix and Linux, or a drive letter on Windows), or the filename parameter
+   * can be a URL for a file found on a network.<br />
    * <br />
-   * Using <b>createFont()</b> (instead of loadFont) enables vector data to
-   * be used with the JAVA2D (default) renderer setting. This can be helpful
-   * when many font sizes are needed, or when using any renderer based on
-   * JAVA2D, such as the PDF library.
+   * If the file is not available or an error occurs, <b>null</b> will be
+   * returned and an error message will be printed to the console. The error
+   * message does not halt the program, however the null value may cause a
+   * NullPointerException if your code does not check whether the value returned
+   * is null.<br />
+   * <br />
+   * Use <b>createFont()</b> (instead of <b>loadFont()</b>) to enable vector
+   * data to be used with the default renderer setting. This can be helpful when
+   * many font sizes are needed, or when using any renderer based on the default
+   * renderer, such as the PDF library.
    *
-  * @webref typography:loading_displaying
-  * @webBrief Loads a font into a variable of type <b>PFont</b>.
-  * @param filename name of the font to load
-  * @see PFont
-  * @see PGraphics#textFont(PFont, float)
-  * @see PApplet#createFont(String, float, boolean, char[])
-  */
+   * @webref typography:loading_displaying
+   * @webBrief Loads a font into a variable of type <b>PFont</b>.
+   * @param filename
+   *          name of the font to load
+   * @see PFont
+   * @see PGraphics#textFont(PFont, float)
+   * @see PApplet#createFont(String, float, boolean, char[])
+   */
   public PFont loadFont(String filename) {
     if (!filename.toLowerCase().endsWith(".vlw")) {
       throw new IllegalArgumentException("loadFont() is for .vlw files, try createFont()");
@@ -5978,45 +6226,44 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Dynamically converts a font to the format used by Processing from either
-   * a font name that's installed on the computer, or from a .ttf or .otf
-   * file inside the sketches "data" folder. This function is an advanced
-   * feature for precise control. On most occasions you should create fonts
-   * through selecting "Create Font..." from the Tools menu.
-   * <br /><br />
-   * Use the <b>PFont.list()</b> method to first determine the names for the
-   * fonts recognized by the computer and are compatible with this function.
-   * Because of limitations in Java, not all fonts can be used and some might
-   * work with one operating system and not others. When sharing a sketch
-   * with other people or posting it on the web, you may need to include a
-   * .ttf or .otf version of your font in the data directory of the sketch
-   * because other people might not have the font installed on their
-   * computer. Only fonts that can legally be distributed should be included
-   * with a sketch.
-   * <br /><br />
+   * Dynamically converts a font to the format used by Processing from a .ttf or
+   * .otf file inside the sketch's "data" folder or a font that's installed
+   * elsewhere on the computer. If you want to use a font installed on your
+   * computer, use the <b>PFont.list()</b> method to first determine the names
+   * for the fonts recognized by the computer and are compatible with this
+   * function. Not all fonts can be used and some might work with one operating
+   * system and not others. When sharing a sketch with other people or posting
+   * it on the web, you may need to include a .ttf or .otf version of your font
+   * in the data directory of the sketch because other people might not have the
+   * font installed on their computer. Only fonts that can legally be
+   * distributed should be included with a sketch.<br />
+   * <br />
    * The <b>size</b> parameter states the font size you want to generate. The
-   * <b>smooth</b> parameter specifies if the font should be antialiased or
-   * not, and the <b>charset</b> parameter is an array of chars that
-   * specifies the characters to generate.
-   * <br /><br />
-   * This function creates a bitmapped version of a font in the same manner
-   * as the Create Font tool. It loads a font by name, and converts it to a
-   * series of images based on the size of the font. When possible, the
-   * <b>text()</b> function will use a native font rather than the bitmapped
-   * version created behind the scenes with <b>createFont()</b>. For
-   * instance, when using P2D, the actual native version of the font will be
-   * employed by the sketch, improving drawing quality and performance. With
-   * the P3D renderer, the bitmapped version will be used. While this can
-   * drastically improve speed and appearance, results are poor when
-   * exporting if the sketch does not include the .otf or .ttf file, and the
-   * requested font is not available on the machine running the sketch.
+   * <b>smooth</b> parameter specifies if the font should be antialiased or not.
+   * The <b>charset</b> parameter is an array of chars that specifies the
+   * characters to generate.<br />
+   * <br />
+   * This function allows Processing to work with the font natively in the
+   * default renderer, so the letters are defined by vector geometry and are
+   * rendered quickly. In the <b>P2D</b> and <b>P3D</b> renderers, the function
+   * sets the project to render the font as a series of small textures. For
+   * instance, when using the default renderer, the actual native version of the
+   * font will be employed by the sketch, improving drawing quality and
+   * performance. With the <b>P2D</b> and <b>P3D</b> renderers, the bitmapped
+   * version will be used to improve speed and appearance, but the results are
+   * poor when exporting if the sketch does not include the .otf or .ttf file,
+   * and the requested font is not available on the machine running the sketch.
    *
    * @webref typography:loading_displaying
    * @webBrief Dynamically converts a font to the format used by Processing.
-   * @param name name of the font to load
-   * @param size point size of the font
-   * @param smooth true for an antialiased font, false for aliased
-   * @param charset array containing characters to be generated
+   * @param name
+   *          name of the font to load
+   * @param size
+   *          point size of the font
+   * @param smooth
+   *          true for an antialiased font, false for aliased
+   * @param charset
+   *          array containing characters to be generated
    * @see PFont
    * @see PGraphics#textFont(PFont, float)
    * @see PGraphics#text(String, float, float, float, float)
@@ -6066,9 +6313,9 @@ public class PApplet implements PConstants {
   /**
    * Open a platform-specific file chooser dialog to select a file for input.
    * After the selection is made, the selected File will be passed to the
-   * 'callback' function. If the dialog is closed or canceled, null will be
-   * sent to the function, so that the program is not waiting for additional
-   * input. The callback is necessary because of how threading works.
+   * 'callback' function. If the dialog is closed or canceled, null will be sent
+   * to the function, so that the program is not waiting for additional input.
+   * The callback is necessary because of how threading works.
    *
    * <pre>
    * void setup() {
@@ -6085,13 +6332,16 @@ public class PApplet implements PConstants {
    * </pre>
    *
    * For advanced users, the method must be 'public', which is true for all
-   * methods inside a sketch when run from the PDE, but must explicitly be
-   * set when using Eclipse or other development environments.
+   * methods inside a sketch when run from the PDE, but must explicitly be set
+   * when using Eclipse or other development environments.
    *
    * @webref input:files
-   * @webBrief Open a platform-specific file chooser dialog to select a file for input.
-   * @param prompt message to the user
-   * @param callback name of the method to be called when the selection is made
+   * @webBrief Open a platform-specific file chooser dialog to select a file for
+   *           input.
+   * @param prompt
+   *          message to the user
+   * @param callback
+   *          name of the method to be called when the selection is made
    */
   public void selectInput(String prompt, String callback) {
     selectInput(prompt, callback, null);
@@ -6126,10 +6376,10 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Opens a platform-specific file chooser dialog to select a file for output. 
-   * After the selection is made, the selected File will be passed to the 
-   * 'callback' function. If the dialog is closed or canceled, null will be sent 
-   * to the function, so that the program is not waiting for additional input. 
+   * Opens a platform-specific file chooser dialog to select a file for output.
+   * After the selection is made, the selected File will be passed to the
+   * 'callback' function. If the dialog is closed or canceled, null will be sent
+   * to the function, so that the program is not waiting for additional input.
    * The callback is necessary because of how threading works.
    *
    * @webref output:files
@@ -6226,15 +6476,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Opens a platform-specific file chooser dialog to select a folder. 
-   * After the selection is made, the selection will be passed to the 
-   * 'callback' function. If the dialog is closed or canceled, null 
-   * will be sent to the function, so that the program is not waiting 
-   * for additional input. The callback is necessary because of how 
+   * Opens a platform-specific file chooser dialog to select a folder.
+   * After the selection is made, the selection will be passed to the
+   * 'callback' function. If the dialog is closed or canceled, null
+   * will be sent to the function, so that the program is not waiting
+   * for additional input. The callback is necessary because of how
    * threading works.
    *
    * @webref input:files
-   * @webBrief Opens a platform-specific file chooser dialog to select a folder. 
+   * @webBrief Opens a platform-specific file chooser dialog to select a folder.
    * @param prompt message to the user
    * @param callback name of the method to be called when the selection is made
    */
@@ -6498,18 +6748,22 @@ public class PApplet implements PConstants {
   /**
    *
    * Creates a <b>BufferedReader</b> object that can be used to read files
-   * line-by-line as individual <b>String</b> objects. This is the complement
-   * to the <b>createWriter()</b> function.
-   * <br/> <br/>
+   * line-by-line as individual <b>String</b> objects. This is the complement to
+   * the <b>createWriter()</b> function. For more information about the
+   * <b>BufferedReader</b> class and its methods like <b>readLine()</b> and
+   * <b>close</b> used in the above example, please consult a Java
+   * reference.<br />
+   * <br />
    * Starting with Processing release 0134, all files loaded and saved by the
    * Processing API use UTF-8 encoding. In previous releases, the default
-   * encoding for your platform was used, which causes problems when files
-   * are moved to other platforms.
+   * encoding for your platform was used, which causes problems when files are
+   * moved to other platforms.
    *
    * @webref input:files
-   * @webBrief Creates a <b>BufferedReader</b> object that can be used to read files
-   * line-by-line as individual <b>String</b> objects.
-   * @param filename name of the file to be opened
+   * @webBrief Creates a <b>BufferedReader</b> object that can be used to read
+   *           files line-by-line as individual <b>String</b> objects.
+   * @param filename
+   *          name of the file to be opened
    * @see BufferedReader
    * @see PApplet#createWriter(String)
    * @see PrintWriter
@@ -6582,7 +6836,7 @@ public class PApplet implements PConstants {
    * encoding for your platform was used, which causes problems when files
    * are moved to other platforms.
    *
-   * 
+   *
    * @webref output:files
    * @webBrief reates a new file in the sketch folder, and a <b>PrintWriter</b> object
    * to write to it.
@@ -6667,7 +6921,7 @@ public class PApplet implements PConstants {
    * In earlier releases, this function was called <b>openStream()</b>.<br />
    * <br />
    *
-   * 
+   *
    * <h3>Advanced</h3>
    * Simplified method to open a Java InputStream.
    * <p>
@@ -6912,19 +7166,26 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Reads the contents of a file or url and places it in a byte array. If a
-   * file is specified, it must be located in the sketch's "data"
-   * directory/folder.<br />
+   * Reads the contents of a file and places it in a byte array. If the name of
+   * the file is used as the parameter, as in the above example, the file must
+   * be loaded in the sketch's "data" directory/folder. <br />
    * <br />
-   * The filename parameter can also be a URL to a file found online. For
-   * security reasons, a Processing sketch found online can only download
-   * files from the same server from which it came. Getting around this
-   * restriction requires a <a
-   * href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</a>.
+   * Alternatively, the file maybe be loaded from anywhere on the local computer
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows), or the filename parameter can be a URL for a
+   * file found on a network.<br />
+   * <br />
+   * If the file is not available or an error occurs, <b>null</b> will be
+   * returned and an error message will be printed to the console. The error
+   * message does not halt the program, however the null value may cause a
+   * NullPointerException if your code does not check whether the value returned
+   * is null.<br />
    *
    * @webref input:files
-   * @webBrief Reads the contents of a file or url and places it in a byte array.
-   * @param filename name of a file in the data folder or a URL.
+   * @webBrief Reads the contents of a file or url and places it in a byte
+   *           array.
+   * @param filename
+   *          name of a file in the data folder or a URL.
    * @see PApplet#loadStrings(String)
    * @see PApplet#saveStrings(String, String[])
    * @see PApplet#saveBytes(String, byte[])
@@ -7122,44 +7383,43 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Reads the contents of a file or url and creates a String array of its
-   * individual lines. If a file is specified, it must be located in the
-   * sketch's "data" directory/folder.<br />
+   * Reads the contents of a file and creates a String array of its individual
+   * lines. If the name of the file is used as the parameter, as in the above
+   * example, the file must be loaded in the sketch's "data" directory/folder.
    * <br />
-   * The filename parameter can also be a URL to a file found online. For
-   * security reasons, a Processing sketch found online can only download
-   * files from the same server from which it came. Getting around this
-   * restriction requires a <a
-   * href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</a>.
+   * <br />
+   * Alternatively, the file maybe be loaded from anywhere on the local computer
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows), or the filename parameter can be a URL for a
+   * file found on a network.<br />
    * <br />
    * If the file is not available or an error occurs, <b>null</b> will be
    * returned and an error message will be printed to the console. The error
    * message does not halt the program, however the null value may cause a
-   * NullPointerException if your code does not check whether the value
-   * returned is null.
-   * <br/> <br/>
+   * NullPointerException if your code does not check whether the value returned
+   * is null.<br />
+   * <br />
    * Starting with Processing release 0134, all files loaded and saved by the
    * Processing API use UTF-8 encoding. In previous releases, the default
-   * encoding for your platform was used, which causes problems when files
-   * are moved to other platforms.
+   * encoding for your platform was used, which causes problems when files are
+   * moved to other platforms.
    *
-   * 
-   * <h3>Advanced</h3>
-   * Load data from a file and shove it into a String array.
+   *
+   * <h3>Advanced</h3> Load data from a file and shove it into a String array.
    * <p>
-   * Exceptions are handled internally, when an error, occurs, an
-   * exception is printed to the console and 'null' is returned,
-   * but the program continues running. This is a tradeoff between
-   * 1) showing the user that there was a problem but 2) not requiring
-   * that all i/o code is contained in try/catch blocks, for the sake
-   * of new users (or people who are just trying to get things done
-   * in a "scripting" fashion. If you want to handle exceptions,
-   * use Java methods for I/O.
+   * Exceptions are handled internally, when an error, occurs, an exception is
+   * printed to the console and 'null' is returned, but the program continues
+   * running. This is a tradeoff between 1) showing the user that there was a
+   * problem but 2) not requiring that all i/o code is contained in try/catch
+   * blocks, for the sake of new users (or people who are just trying to get
+   * things done in a "scripting" fashion. If you want to handle exceptions, use
+   * Java methods for I/O.
    *
    * @webref input:files
-   * @webBrief Reads the contents of a file or url and creates a String array of its
-   * individual lines. 
-   * @param filename name of the file or url to load
+   * @webBrief Reads the contents of a file or url and creates a String array of
+   *           its individual lines.
+   * @param filename
+   *          name of the file or url to load
    * @see PApplet#loadBytes(String)
    * @see PApplet#saveStrings(String, String[])
    * @see PApplet#saveBytes(String, byte[])
@@ -7235,24 +7495,25 @@ public class PApplet implements PConstants {
    *
    * Similar to <b>createInput()</b>, this creates a Java <b>OutputStream</b>
    * for a given filename or path. The file will be created in the sketch
-   * folder, or in the same folder as an exported application.
-   * <br /><br />
+   * folder, or in the same folder as an exported application. <br />
+   * <br />
    * If the path does not exist, intermediate folders will be created. If an
-   * exception occurs, it will be printed to the console, and <b>null</b>
-   * will be returned.
-   * <br /><br />
-   * This function is a convenience over the Java approach that requires you
-   * to 1) create a FileOutputStream object, 2) determine the exact file
-   * location, and 3) handle exceptions. Exceptions are handled internally by
-   * the function, which is more appropriate for "sketch" projects.
-   * <br /><br />
+   * exception occurs, it will be printed to the console, and <b>null</b> will
+   * be returned. <br />
+   * <br />
+   * This function is a convenience over the Java approach that requires you to
+   * 1) create a FileOutputStream object, 2) determine the exact file location,
+   * and 3) handle exceptions. Exceptions are handled internally by the
+   * function, which is more appropriate for "sketch" projects. <br />
+   * <br />
    * If the output filename ends with <b>.gz</b>, the output will be
    * automatically GZIP compressed as it is written.
    *
    * @webref output:files
-   * @webBrief Similar to <b>createInput()</b>, this creates a Java <b>OutputStream</b>
-   * for a given filename or path.
-   * @param filename name of the file to open
+   * @webBrief Similar to <b>createInput()</b>, this creates a Java
+   *           <b>OutputStream</b> for a given filename or path.
+   * @param filename
+   *          name of the file to open
    * @see PApplet#createInput(String)
    * @see PApplet#selectOutput(String,String)
    */
@@ -7285,16 +7546,18 @@ public class PApplet implements PConstants {
    * basically <b>saveBytes(blah, loadBytes())</b>, but done more efficiently
    * (and with less confusing syntax).<br />
    * <br />
-   * When using the <b>targetFile</b> parameter, it writes to a <b>File</b>
-   * object for greater control over the file location. (Note that unlike
-   * some other functions, this will not automatically compress or uncompress
-   * gzip files.)
+   * The <b>target</b> parameter can be either a String specifying a file name,
+   * or, for greater control over the file location, a <b>File</b> object. (Note
+   * that, unlike some other functions, this will not automatically compress or
+   * uncompress gzip files.)
    *
-   * 
+   *
    * @webref output:files
    * @webBrief Save the contents of a stream to a file in the sketch folder.
-   * @param target name of the file to write to
-   * @param source location to read from (a filename, path, or URL)
+   * @param target
+   *          name of the file to write to
+   * @param source
+   *          location to read from (a filename, path, or URL)
    * @see PApplet#createOutput(String)
    */
   public boolean saveStream(String target, String source) {
@@ -7375,24 +7638,21 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Opposite of <b>loadBytes()</b>, will write an entire array of bytes to a
-   * file. The data is saved in binary format. This file is saved to the
-   * sketch's folder, which is opened by selecting "Show sketch folder" from
-   * the "Sketch" menu.<br />
-   * <br />
-   * It is not possible to use saveXxxxx() functions inside a web browser
-   * unless the sketch is <a
-   * href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</A>. To
-   * save a file back to a server, see the <a
-   * href="http://wiki.processing.org/w/Saving_files_to_a_web-server">save to
-   * web</A> code snippet on the Processing Wiki.
+   * As the opposite of <b>loadBytes()</b>, this function will write an entire
+   * array of bytes to a file. The data is saved in binary format. This file is
+   * saved to the sketch's folder, which is opened by selecting "Show Sketch
+   * Folder" from the "Sketch" menu. Alternatively, the files can be saved to
+   * any location on the computer by using an absolute path (something that
+   * starts with / on Unix and Linux, or a drive letter on Windows).
    *
-   * 
+   *
    * @webref output:files
-   * @webBrief Opposite of <b>loadBytes()</b>, will write an entire array of bytes to a
-   * file.
-   * @param filename name of the file to write to
-   * @param data array of bytes to be written
+   * @webBrief Opposite of <b>loadBytes()</b>, will write an entire array of
+   *           bytes to a file.
+   * @param filename
+   *          name of the file to write to
+   * @param data
+   *          array of bytes to be written
    * @see PApplet#loadStrings(String)
    * @see PApplet#loadBytes(String)
    * @see PApplet#saveStrings(String, String[])
@@ -7493,26 +7753,25 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Writes an array of strings to a file, one line per string. This file is
-   * saved to the sketch's folder, which is opened by selecting "Show sketch
-   * folder" from the "Sketch" menu.<br />
+   * Writes an array of Strings to a file, one line per String. By default, this
+   * file is saved to the sketch's folder. This folder is opened by selecting
+   * "Show Sketch Folder" from the "Sketch" menu.<br />
    * <br />
-   * It is not possible to use saveXxxxx() functions inside a web browser
-   * unless the sketch is <a
-   * href="http://wiki.processing.org/w/Sign_an_Applet">signed applet</A>. To
-   * save a file back to a server, see the <a
-   * href="http://wiki.processing.org/w/Saving_files_to_a_web-server">save to
-   * web</A> code snippet on the Processing Wiki.<br/>
-   * <br/ >
-   * Starting with Processing 1.0, all files loaded and saved by the
-   * Processing API use UTF-8 encoding. In previous releases, the default
-   * encoding for your platform was used, which causes problems when files
-   * are moved to other platforms.
+   * Alternatively, the file can be saved to any location on the computer by
+   * using an absolute path (something that starts with / on Unix and Linux, or
+   * a drive letter on Windows).<br />
+   * <br />
+   * Starting with Processing 1.0, all files loaded and saved by the Processing
+   * API use UTF-8 encoding. In earlier releases, the default encoding for your
+   * platform was used, which causes problems when files are moved to other
+   * platforms.
    *
    * @webref output:files
    * @webBrief Writes an array of strings to a file, one line per string.
-   * @param filename filename for output
-   * @param data string array to be written
+   * @param filename
+   *          filename for output
+   * @param data
+   *          string array to be written
    * @see PApplet#loadStrings(String)
    * @see PApplet#loadBytes(String)
    * @see PApplet#saveBytes(String, byte[])
@@ -7818,18 +8077,19 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Sorts an array of numbers from smallest to largest and puts an array of
-   * words in alphabetical order. The original array is not modified, a
-   * re-ordered array is returned. The <b>count</b> parameter states the
-   * number of elements to sort. For example if there are 12 elements in an
-   * array and if count is the value 5, only the first five elements on the
-   * array will be sorted. <!--As of release 0126, the alphabetical ordering
-   * is case insensitive.-->
+   * Sorts an array of numbers from smallest to largest, or puts an array of
+   * words in alphabetical order. The original array is not modified; a
+   * re-ordered array is returned. The <b>count</b> parameter states the number
+   * of elements to sort. For example, if there are 12 elements in an array and
+   * <b>count</b> is set to 5, only the first 5 elements in the array will be
+   * sorted. <!--As of release 0126, the alphabetical ordering is case
+   * insensitive.-->
    *
    * @webref data:array_functions
-   * @webBrief Sorts an array of numbers from smallest to largest and puts an array of
-   * words in alphabetical order. 
-   * @param list array to sort
+   * @webBrief Sorts an array of numbers from smallest to largest and puts an
+   *           array of words in alphabetical order.
+   * @param list
+   *          array to sort
    * @see PApplet#reverse(boolean[])
    */
   static public byte[] sort(byte[] list) {
@@ -7901,21 +8161,40 @@ public class PApplet implements PConstants {
    *
    * Copies an array (or part of an array) to another array. The <b>src</b>
    * array is copied to the <b>dst</b> array, beginning at the position
-   * specified by <b>srcPos</b> and into the position specified by
-   * <b>dstPos</b>. The number of elements to copy is determined by
-   * <b>length</b>. The simplified version with two arguments copies an
-   * entire array to another of the same size. It is equivalent to
-   * "arrayCopy(src, 0, dst, 0, src.length)". This function is far more
-   * efficient for copying array data than iterating through a <b>for</b> and
-   * copying each element.
+   * specified by <b>srcPosition</b> and into the position specified by
+   * <b>dstPosition</b>. The number of elements to copy is determined by
+   * <b>length</b>. Note that copying values overwrites existing values in the
+   * destination array. To append values instead of overwriting them, use
+   * <b>concat()</b>.<br />
+   * <br />
+   * The simplified version with only two arguments &mdash; <b>arrayCopy(src,
+   * dst)</b> &mdash; copies an entire array to another of the same size. It is
+   * equivalent to <b>arrayCopy(src, 0, dst, 0, src.length)</b>.<br />
+   * <br />
+   * Using this function is far more efficient for copying array data than
+   * iterating through a <b>for()</b> loop and copying each element
+   * individually. This function only copies references, which means that for
+   * most purposes it only copies one-dimensional arrays (a single set of
+   * brackets). If used with a two (or three or more) dimensional array, it will
+   * only copy the references at the first level, because a two dimensional
+   * array is simply an "array of arrays". This does not produce an error,
+   * however, because this is often the desired behavior. Internally, this
+   * function calls Java's <a href=
+   * "https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#arraycopy-java.lang.Object-int-java.lang.Object-int-int-">System.arraycopy()</a>
+   * method, so most things that apply there are inherited.
    *
    * @webref data:array_functions
    * @webBrief Copies an array (or part of an array) to another array.
-   * @param src the source array
-   * @param srcPosition starting position in the source array
-   * @param dst the destination array of the same data type as the source array
-   * @param dstPosition starting position in the destination array
-   * @param length number of array elements to be copied
+   * @param src
+   *          the source array
+   * @param srcPosition
+   *          starting position in the source array
+   * @param dst
+   *          the destination array of the same data type as the source array
+   * @param dstPosition
+   *          starting position in the destination array
+   * @param length
+   *          number of array elements to be copied
    * @see PApplet#concat(boolean[], boolean[])
    */
   static public void arrayCopy(Object src, int srcPosition,
@@ -7970,18 +8249,19 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Increases the size of an array. By default, this function doubles the
-   * size of the array, but the optional <b>newSize</b> parameter provides
-   * precise control over the increase in size.
-   * <br/> <br/>
-   * When using an array of objects, the data returned from the function must
-   * be cast to the object array's data type. For example: <em>SomeClass[]
-   * items = (SomeClass[]) expand(originalArray)</em>.
+   * Increases the size of a one-dimensional array. By default, this function
+   * doubles the size of the array, but the optional <b>newSize</b> parameter
+   * provides precise control over the increase in size. <br />
+   * <br />
+   * When using an array of objects, the data returned from the function must be
+   * cast to the object array's data type. For example: <em>SomeClass[] items =
+   * (SomeClass[]) expand(originalArray)</em>
    *
-   * 
+   *
    * @webref data:array_functions
    * @webBrief Increases the size of an array.
-   * @param list the array to expand
+   * @param list
+   *          the array to expand
    * @see PApplet#shorten(boolean[])
    */
   static public boolean[] expand(boolean[] list) {
@@ -8097,7 +8377,7 @@ public class PApplet implements PConstants {
    * be cast to the object array's data type. For example: <em>SomeClass[]
    * items = (SomeClass[]) append(originalArray, element)</em>.
    *
-   * 
+   *
    * @webref data:array_functions
    * @webBrief Expands an array by one element and adds data to the new position.
    * @param array array to append
@@ -8151,7 +8431,7 @@ public class PApplet implements PConstants {
    * be cast to the object array's data type. For example: <em>SomeClass[]
    * items = (SomeClass[]) shorten(originalArray)</em>.
    *
-   * 
+   *
    * @webref data:array_functions
    * @webBrief Decreases an array by one element and returns the shortened array.
    * @param list array to shorten
@@ -8190,20 +8470,26 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Inserts a value or array of values into an existing array. The first two
-   * parameters must be of the same datatype. The <b>array</b> parameter
-   * defines the array which will be modified and the second parameter
-   * defines the data which will be inserted.
-   * <br/> <br/>
-   * When using an array of objects, the data returned from the function must
-   * be cast to the object array's data type. For example: <em>SomeClass[]
-   * items = (SomeClass[]) splice(array1, array2, index)</em>.
+   * Inserts a value or an array of values into an existing array. The first two
+   * parameters must be arrays of the same datatype. The first parameter
+   * specifies the initial array to be modified, and the second parameter
+   * defines the data to be inserted. The third parameter is an index value
+   * which specifies the array position from which to insert data. (Remember
+   * that array index numbering starts at zero, so the first position is 0, the
+   * second position is 1, and so on.)<br />
+   * <br />
+   * When splicing an array of objects, the data returned from the function must
+   * be cast to the object array's data type. For example: <em>SomeClass[] items
+   * = (SomeClass[]) splice(array1, array2, index)</em>
    *
    * @webref data:array_functions
    * @webBrief Inserts a value or array of values into an existing array.
-   * @param list array to splice into
-   * @param value value to be spliced in
-   * @param index position in the array from which to insert data
+   * @param list
+   *          array to splice into
+   * @param value
+   *          value to be spliced in
+   * @param index
+   *          position in the array from which to insert data
    * @see PApplet#concat(boolean[], boolean[])
    * @see PApplet#subset(boolean[], int, int)
    */
@@ -8357,24 +8643,27 @@ public class PApplet implements PConstants {
 
 
  /**
-   *
-   * Extracts an array of elements from an existing array. The <b>array</b>
-   * parameter defines the array from which the elements will be copied and
-   * the <b>offset</b> and <b>length</b> parameters determine which elements
-   * to extract. If no <b>length</b> is given, elements will be extracted
-   * from the <b>offset</b> to the end of the array. When specifying the
-   * <b>offset</b> remember the first array element is 0. This function does
-   * not change the source array.
-   * <br/> <br/>
-   * When using an array of objects, the data returned from the function must
-   * be cast to the object array's data type. For example: <em>SomeClass[]
-   * items = (SomeClass[]) subset(originalArray, 0, 4)</em>.
-   *
+  *
+  * Extracts an array of elements from an existing array. The <b>list</b>
+  * parameter defines the array from which the elements will be copied, and the
+  * <b>start</b> and <b>count</b> parameters specify which elements to extract.
+  * If no <b>count</b> is given, elements will be extracted from the
+  * <b>start</b> to the end of the array. When specifying the <b>start</b>,
+  * remember that the first array element is 0. This function does not change
+  * the source array.<br />
+  * <br />
+  * When using an array of objects, the data returned from the function must be
+  * cast to the object array's data type. For example: <em>SomeClass[] items =
+  * (SomeClass[]) subset(originalArray, 0, 4)</em>
+  *
   * @webref data:array_functions
   * @webBrief Extracts an array of elements from an existing array.
-  * @param list array to extract from
-  * @param start position to begin
-  * @param count number of values to extract
+  * @param list
+  *          array to extract from
+  * @param start
+  *          position to begin
+  * @param count
+  *          number of values to extract
   * @see PApplet#splice(boolean[], boolean, int)
   */
   static public boolean[] subset(boolean[] list, int start, int count) {
@@ -8483,19 +8772,21 @@ public class PApplet implements PConstants {
 
 
  /**
-   *
-   * Concatenates two arrays. For example, concatenating the array { 1, 2, 3
-   * } and the array { 4, 5, 6 } yields { 1, 2, 3, 4, 5, 6 }. Both parameters
-   * must be arrays of the same datatype.
-   * <br/> <br/>
-   * When using an array of objects, the data returned from the function must
-   * be cast to the object array's data type. For example: <em>SomeClass[]
-   * items = (SomeClass[]) concat(array1, array2)</em>.
-   *
+  *
+  * Concatenates two arrays. For example, concatenating the array { 1, 2, 3 }
+  * and the array { 4, 5, 6 } yields { 1, 2, 3, 4, 5, 6 }. Both parameters must
+  * be arrays of the same datatype. <br />
+  * <br />
+  * When using an array of objects, the data returned from the function must be
+  * cast to the object array's data type. For example: <em>SomeClass[] items =
+  * (SomeClass[]) concat(array1, array2)</em>.
+  *
   * @webref data:array_functions
-  * @webBrief Concatenates two arrays. 
-  * @param a first array to concatenate
-  * @param b second array to concatenate
+  * @webBrief Concatenates two arrays.
+  * @param a
+  *          first array to concatenate
+  * @param b
+  *          second array to concatenate
   * @see PApplet#splice(boolean[], boolean, int)
   * @see PApplet#arrayCopy(Object, int, Object, int, int)
   */
@@ -8675,7 +8966,7 @@ public class PApplet implements PConstants {
    *
    * Combines an array of Strings into one String, each separated by the
    * character(s) used for the <b>separator</b> parameter. To join arrays of
-   * ints or floats, it's necessary to first convert them to strings using
+   * ints or floats, it's necessary to first convert them to Strings using
    * <b>nf()</b> or <b>nfs()</b>.
    *
    * @webref data:string_functions
@@ -8710,21 +9001,25 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The splitTokens() function splits a String at one or many character
-   * "tokens." The <b>tokens</b> parameter specifies the character or
-   * characters to be used as a boundary.
-   * <br/> <br/>
-   * If no <b>tokens</b> character is specified, any whitespace character is
-   * used to split. Whitespace characters include tab (\\t), line feed (\\n),
-   * carriage return (\\r), form feed (\\f), and space. To convert a String
-   * to an array of integers or floats, use the datatype conversion functions
-   * <b>int()</b> and <b>float()</b> to convert the array of Strings.
+   * The <b>splitTokens()</b> function splits a String at one or many character
+   * delimiters or "tokens." The <b>delim</b> parameter specifies the character
+   * or characters to be used as a boundary.<br />
+   * <br />
+   * If no <b>delim</b> characters are specified, any whitespace character is
+   * used to split. Whitespace characters include tab (&#92;t), line feed
+   * (&#92;n), carriage return (&#92;r), form feed (&#92;f), and space.<br />
+   * <br />
+   * After using this function to parse incoming data, it is common to convert
+   * the data from Strings to integers or floats by using the datatype
+   * conversion functions <b>int()</b> and <b>float()</b>.
    *
    * @webref data:string_functions
-   * @webBrief The splitTokens() function splits a String at one or many character
-   * "tokens."
-   * @param value the String to be split
-   * @param delim list of individual characters that will be used as separators
+   * @webBrief The splitTokens() function splits a String at one or many
+   *           character "tokens."
+   * @param value
+   *          the String to be split
+   * @param delim
+   *          list of individual characters that will be used as separators
    * @see PApplet#split(String, String)
    * @see PApplet#join(String[], String)
    * @see PApplet#trim(String)
@@ -8743,37 +9038,38 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The split() function breaks a string into pieces using a character or
-   * string as the divider. The <b>delim</b> parameter specifies the
+   * The <b>split()</b> function breaks a String into pieces using a character
+   * or string as the delimiter. The <b>delim</b> parameter specifies the
    * character or characters that mark the boundaries between each piece. A
-   * String[] array is returned that contains each of the pieces.
-   * <br/> <br/>
-   * If the result is a set of numbers, you can convert the String[] array to
-   * to a float[] or int[] array using the datatype conversion functions
-   * <b>int()</b> and <b>float()</b> (see example above).
-   * <br/> <br/>
-   * The <b>splitTokens()</b> function works in a similar fashion, except
-   * that it splits using a range of characters instead of a specific
-   * character or sequence.
-   * <!-- /><br />
+   * String[] array is returned that contains each of the pieces. <br />
+   * <br />
+   * If the result is a set of numbers, you can convert the String[] array to a
+   * float[] or int[] array using the datatype conversion functions <b>int()</b>
+   * and <b>float()</b>. (See the second example above.) <br />
+   * <br />
+   * The <b>splitTokens()</b> function works in a similar fashion, except that
+   * it splits using a range of characters instead of a specific character or
+   * sequence. <!-- <br />
+   * <br />
    * This function uses regular expressions to determine how the <b>delim</b>
    * parameter divides the <b>str</b> parameter. Therefore, if you use
    * characters such parentheses and brackets that are used with regular
-   * expressions as a part of the <b>delim</b> parameter, you'll need to put
-   * two blackslashes (\\\\) in front of the character (see example above).
-   * You can read more about <a
-   * href="http://en.wikipedia.org/wiki/Regular_expression">regular
-   * expressions</a> and <a
-   * href="http://en.wikipedia.org/wiki/Escape_character">escape
-   * characters</a> on Wikipedia.
-   * -->
-   * 
+   * expressions as a part of the <b>delim</b> parameter, you'll need to put two
+   * blackslashes (\\\\) in front of the character (see example above). You can
+   * read more about
+   * <a href="http://en.wikipedia.org/wiki/Regular_expression">regular
+   * expressions</a> and
+   * <a href="http://en.wikipedia.org/wiki/Escape_character">escape
+   * characters</a> on Wikipedia. -->
+   *
    * @webref data:string_functions
-   * @webBrief The split() function breaks a string into pieces using a character or
-   * string as the divider.
+   * @webBrief The split() function breaks a string into pieces using a
+   *           character or string as the divider.
    * @usage web_application
-   * @param value the String to be split
-   * @param delim the character or String used to separate the data
+   * @param value
+   *          the String to be split
+   * @param delim
+   *          the character or String used to separate the data
    */
   static public String[] split(String value, char delim) {
     // do this so that the exception occurs inside the user's
@@ -8856,33 +9152,37 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The match() function is used to apply a regular expression to a piece of
-   * text, and return matching groups (elements found inside parentheses) as
-   * a String array. No match will return null. If no groups are specified in
-   * the regexp, but the sequence matches, an array of length one (with the
-   * matched text as the first element of the array) will be returned.<br />
+   * This function is used to apply a regular expression to a piece of text, and
+   * return matching groups (elements found inside parentheses) as a String
+   * array. If there are no matches, a null value will be returned. If no groups
+   * are specified in the regular expression, but the sequence matches, an array
+   * of length 1 (with the matched text as the first element of the array) will
+   * be returned.<br />
    * <br />
    * To use the function, first check to see if the result is null. If the
-   * result is null, then the sequence did not match. If the sequence did
-   * match, an array is returned.
-   * If there are groups (specified by sets of parentheses) in the regexp,
-   * then the contents of each will be returned in the array.
-   * Element [0] of a regexp match returns the entire matching string, and
-   * the match groups start at element [1] (the first group is [1], the
-   * second [2], and so on).<br />
+   * result is null, then the sequence did not match at all. If the sequence did
+   * match, an array is returned.<br />
    * <br />
-   * The syntax can be found in the reference for Java's <a
-   * href="http://download.oracle.com/javase/6/docs/api/">Pattern</a> class.
-   * For regular expression syntax, read the <a
-   * href="http://download.oracle.com/javase/tutorial/essential/regex/">Java
+   * If there are groups (specified by sets of parentheses) in the regular
+   * expression, then the contents of each will be returned in the array.
+   * Element [0] of a regular expression match returns the entire matching
+   * string, and the match groups start at element [1] (the first group is [1],
+   * the second [2], and so on).<br />
+   * <br />
+   * The syntax can be found in the reference for Java's <a href=
+   * "https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">Pattern</a>
+   * class. For regular expression syntax, read the
+   * <a href="https://docs.oracle.com/javase/tutorial/essential/regex/">Java
    * Tutorial</a> on the topic.
    *
    * @webref data:string_functions
-   * @webBrief The match() function is used to apply a regular expression to a piece of
-   * text, and return matching groups (elements found inside parentheses) as
-   * a String array. No match will return null.
-   * @param str the String to be searched
-   * @param regexp the regexp to be used for matching
+   * @webBrief The match() function is used to apply a regular expression to a
+   *           piece of text, and return matching groups (elements found inside
+   *           parentheses) as a String array. No match will return null.
+   * @param str
+   *          the String to be searched
+   * @param regexp
+   *          the regexp to be used for matching
    * @see PApplet#matchAll(String, String)
    * @see PApplet#split(String, String)
    * @see PApplet#splitTokens(String, String)
@@ -8906,33 +9206,37 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * This function is used to apply a regular expression to a piece of text,
-   * and return a list of matching groups (elements found inside parentheses)
-   * as a two-dimensional String array. No matches will return null. If no
-   * groups are specified in the regexp, but the sequence matches, a two
-   * dimensional array is still returned, but the second dimension is only of
-   * length one.<br />
+   * This function is used to apply a regular expression to a piece of text, and
+   * return a list of matching groups (elements found inside parentheses) as a
+   * two-dimensional String array. If there are no matches, a null value will be
+   * returned. If no groups are specified in the regular expression, but the
+   * sequence matches, a two dimensional array is still returned, but the second
+   * dimension is only of length one.<br />
    * <br />
    * To use the function, first check to see if the result is null. If the
-   * result is null, then the sequence did not match at all. If the sequence
-   * did match, a 2D array is returned. If there are groups (specified by
-   * sets of parentheses) in the regexp, then the contents of each will be
-   * returned in the array.
-   * Assuming, a loop with counter variable i, element [i][0] of a regexp
-   * match returns the entire matching string, and the match groups start at
-   * element [i][1] (the first group is [i][1], the second [i][2], and so
-   * on).<br />
+   * result is null, then the sequence did not match at all. If the sequence did
+   * match, a 2D array is returned.<br />
    * <br />
-   * The syntax can be found in the reference for Java's <a
-   * href="http://download.oracle.com/javase/6/docs/api/">Pattern</a> class.
-   * For regular expression syntax, read the <a
-   * href="http://download.oracle.com/javase/tutorial/essential/regex/">Java
+   * If there are groups (specified by sets of parentheses) in the regular
+   * expression, then the contents of each will be returned in the array.
+   * Assuming a loop with counter variable i, element [i][0] of a regular
+   * expression match returns the entire matching string, and the match groups
+   * start at element [i][1] (the first group is [i][1], the second [i][2], and
+   * so on).<br />
+   * <br />
+   * The syntax can be found in the reference for Java's <a href=
+   * "https://docs.oracle.com/javase/8/docs/api/java/util/regex/Pattern.html">Pattern</a>
+   * class. For regular expression syntax, read the
+   * <a href="https://docs.oracle.com/javase/tutorial/essential/regex/">Java
    * Tutorial</a> on the topic.
    *
    * @webref data:string_functions
-   * @webBrief This function is used to apply a regular expression to a piece of text.
-   * @param str the String to be searched
-   * @param regexp the regexp to be used for matching
+   * @webBrief This function is used to apply a regular expression to a piece of
+   *           text.
+   * @param str
+   *          the String to be searched
+   * @param regexp
+   *          the regexp to be used for matching
    * @see PApplet#match(String, String)
    * @see PApplet#split(String, String)
    * @see PApplet#splitTokens(String, String)
@@ -9476,23 +9780,27 @@ public class PApplet implements PConstants {
   /**
    *
    * Utility function for formatting numbers into strings. There are two
-   * versions, one for formatting floats and one for formatting ints. The
-   * values for the <b>digits</b>, <b>left</b>, and <b>right</b> parameters
-   * should always be positive integers.<br /><br />As shown in the above
-   * example, <b>nf()</b> is used to add zeros to the left and/or right of a
-   * number. This is typically for aligning a list of numbers. To
-   * <em>remove</em> digits from a floating-point number, use the
-   * <b>int()</b>, <b>ceil()</b>, <b>floor()</b>, or <b>round()</b>
-   * functions.
+   * versions: one for formatting floats, and one for formatting ints. The
+   * values for the <b>digits</b> and <b>right</b> parameters should always be
+   * positive integers. The <b>left</b> parameter should be positive or 0. If it
+   * is zero, only the right side is formatted.<br />
+   * <br />
+   * As shown in the above example, <b>nf()</b> is used to add zeros to the left
+   * and/or right of a number. This is typically for aligning a list of numbers.
+   * To <em>remove</em> digits from a floating-point number, use the
+   * <b>int()</b>, <b>ceil()</b>, <b>floor()</b>, or <b>round()</b> functions.
    *
    * @webref data:string_functions
    * @webBrief Utility function for formatting numbers into strings.
-   * @param nums the numbers to format
-   * @param digits number of digits to pad with zero
+   * @param nums
+   *          the numbers to format
+   * @param digits
+   *          number of digits to pad with zero
    * @see PApplet#nfs(float, int, int)
    * @see PApplet#nfp(float, int, int)
    * @see PApplet#nfc(float, int)
-   * @see <a href="https://processing.org/reference/intconvert_.html">int(float)</a>
+   * @see <a href=
+   *      "https://processing.org/reference/intconvert_.html">int(float)</a>
    */
 
   static public String[] nf(int[] nums, int digits) {
@@ -9524,17 +9832,21 @@ public class PApplet implements PConstants {
   /**
    *
    * Utility function for formatting numbers into strings and placing
-   * appropriate commas to mark units of 1000. There are two versions, one
-   * for formatting ints and one for formatting an array of ints. The value
-   * for the <b>digits</b> parameter should always be a positive integer.
-   * <br/><br/>
+   * appropriate commas to mark units of 1000. There are four versions: one for
+   * formatting ints, one for formatting an array of ints, one for formatting
+   * floats, and one for formatting an array of floats.<br />
+   * <br />
+   * The value for the <b>right</b> parameter should always be a positive
+   * integer.<br />
+   * <br />
    * For a non-US locale, this will insert periods instead of commas, or
    * whatever is apprioriate for that region.
-   * 
+   *
    * @webref data:string_functions
    * @webBrief Utility function for formatting numbers into strings and placing
-   * appropriate commas to mark units of 1000.
-   * @param nums the numbers to format
+   *           appropriate commas to mark units of 1000.
+   * @param nums
+   *          the numbers to format
    * @see PApplet#nf(float, int, int)
    * @see PApplet#nfp(float, int, int)
    * @see PApplet#nfs(float, int, int)
@@ -9582,9 +9894,9 @@ public class PApplet implements PConstants {
    * two versions, one for formatting floats and one for formatting ints. The
    * values for the <b>digits</b>, <b>left</b>, and <b>right</b> parameters
    * should always be positive integers.
-   * 
+   *
   * @webref data:string_functions
-  * @webBrief Utility function for formatting numbers into strings. 
+  * @webBrief Utility function for formatting numbers into strings.
   * @param num the number to format
   * @param digits number of digits to pad with zeroes
   * @see PApplet#nf(float, int, int)
@@ -9614,17 +9926,19 @@ public class PApplet implements PConstants {
    * in the front when it's negative or positive.
    */
  /**
-   *
-   * Utility function for formatting numbers into strings. Similar to
-   * <b>nf()</b> but puts a "+" in front of positive numbers and a "-" in
-   * front of negative numbers. There are two versions, one for formatting
-   * floats and one for formatting ints. The values for the <b>digits</b>,
-   * <b>left</b>, and <b>right</b> parameters should always be positive integers.
-   *
+  *
+  * Utility function for formatting numbers into strings. Similar to <b>nf()</b>
+  * but puts a "+" in front of positive numbers and a "-" in front of negative
+  * numbers. There are two versions: one for formatting floats, and one for
+  * formatting ints. The values for the <b>digits</b>, <b>left</b>, and
+  * <b>right</b> parameters should always be positive integers.
+  *
   * @webref data:string_functions
   * @webBrief Utility function for formatting numbers into strings.
-  * @param num the number to format
-  * @param digits number of digits to pad with zeroes
+  * @param num
+  *          the number to format
+  * @param digits
+  *          number of digits to pad with zeroes
   * @see PApplet#nf(float, int, int)
   * @see PApplet#nfs(float, int, int)
   * @see PApplet#nfc(float, int)
@@ -9761,19 +10075,21 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Converts a byte, char, int, or color to a String containing the
-   * equivalent hexadecimal notation. For example color(0, 102, 153) will
-   * convert to the String "FF006699". This function can help make your geeky
-   * debugging sessions much happier.
-   * <br/> <br/>
-   * Note that the maximum number of digits is 8, because an int value can
-   * only represent up to 32 bits. Specifying more than eight digits will
-   * simply shorten the string to eight anyway.
+   * Converts an <b>int</b>, <b>byte</b>, <b>char</b>, or <b>color</b> to a
+   * <b>String</b> containing the equivalent hexadecimal notation. For example,
+   * the <b>color</b> value produced by <b>color(0, 102, 153)</b> will convert
+   * to the <b>String</b> value <b>"FF006699"</b>. This function can help make
+   * your geeky debugging sessions much happier.<br />
+   * <br />
+   * Note that the maximum number of digits is 8, because an <b>int</b> value
+   * can only represent up to 32 bits. Specifying more than 8 digits will not
+   * increase the length of the <b>String</b> further.
    *
    * @webref data:conversion
    * @webBrief Converts a byte, char, int, or color to a String containing the
-   * equivalent hexadecimal notation. 
-   * @param value the value to convert
+   *           equivalent hexadecimal notation.
+   * @param value
+   *          the value to convert
    * @see PApplet#unhex(String)
    * @see PApplet#binary(byte)
    * @see PApplet#unbinary(String)
@@ -9809,19 +10125,20 @@ public class PApplet implements PConstants {
   }
 
  /**
-   *
-   * Converts a String representation of a hexadecimal number to its
-   * equivalent integer value.
-   *
-   * 
-   * @webref data:conversion
-   * @webBrief Converts a String representation of a hexadecimal number to its
-   * equivalent integer value.
-   * @param value String to convert to an integer
-   * @see PApplet#hex(int, int)
-   * @see PApplet#binary(byte)
-   * @see PApplet#unbinary(String)
-   */
+  *
+  * Converts a <b>String</b> representation of a hexadecimal number to its
+  * equivalent integer value.
+  *
+  *
+  * @webref data:conversion
+  * @webBrief Converts a String representation of a hexadecimal number to its
+  *           equivalent integer value.
+  * @param value
+  *          String to convert to an integer
+  * @see PApplet#hex(int, int)
+  * @see PApplet#binary(byte)
+  * @see PApplet#unbinary(String)
+  */
   static final public int unhex(String value) {
     // has to parse as a Long so that it'll work for numbers bigger than 2^31
     return (int) (Long.parseLong(value, 16));
@@ -9861,21 +10178,24 @@ public class PApplet implements PConstants {
    */
 
  /**
-   *
-   * Converts a byte, char, int, or color to a String containing the
-   * equivalent binary notation. For example color(0, 102, 153, 255) will
-   * convert to the String "11111111000000000110011010011001". This function
-   * can help make your geeky debugging sessions much happier.
-   * <br/> <br/>
-   * Note that the maximum number of digits is 32, because an int value can
-   * only represent up to 32 bits. Specifying more than 32 digits will simply
-   * shorten the string to 32 anyway.
-   *
+  *
+  * Converts an <b>int</b>, <b>byte</b>, <b>char</b>, or <b>color</b> to a
+  * <b>String</b> containing the equivalent binary notation. For example, the
+  * <b>color</b> value produced by <b>color(0, 102, 153, 255)</b> will convert
+  * to the <b>String</b> value <b>"11111111000000000110011010011001"</b>. This
+  * function can help make your geeky debugging sessions much happier.<br />
+  * <br />
+  * Note that the maximum number of digits is 32, because an <b>int</b> value
+  * can only represent up to 32 bits. Specifying more than 32 digits will have
+  * no effect.
+  *
   * @webref data:conversion
   * @webBrief Converts a byte, char, int, or color to a String containing the
-  * equivalent binary notation.
-  * @param value value to convert
-  * @param digits number of digits to return
+  *           equivalent binary notation.
+  * @param value
+  *          value to convert
+  * @param digits
+  *          number of digits to return
   * @see PApplet#unbinary(String)
   * @see PApplet#hex(int,int)
   * @see PApplet#unhex(String)
@@ -9899,18 +10219,20 @@ public class PApplet implements PConstants {
 
 
  /**
-   *
-   * Converts a String representation of a binary number to its equivalent
-   * integer value. For example, unbinary("00001000") will return 8.
-   *
-   * @webref data:conversion
-   * @webBrief Converts a String representation of a binary number to its equivalent
-   * integer value.
-   * @param value String to convert to an integer
-   * @see PApplet#binary(byte)
-   * @see PApplet#hex(int,int)
-   * @see PApplet#unhex(String)
-   */
+  *
+  * Converts a <b>String</b> representation of a binary number to its equivalent
+  * integer value. For example, <b>unbinary("00001000")</b> will return
+  * <b>8</b>.
+  *
+  * @webref data:conversion
+  * @webBrief Converts a String representation of a binary number to its
+  *           equivalent integer value.
+  * @param value
+  *          String to convert to an integer
+  * @see PApplet#binary(byte)
+  * @see PApplet#hex(int,int)
+  * @see PApplet#unhex(String)
+  */
   static final public int unbinary(String value) {
     return Integer.parseInt(value, 2);
   }
@@ -9927,16 +10249,29 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Creates colors for storing in variables of the <b>color</b> datatype.
-   * The parameters are interpreted as RGB or HSB values depending on the
-   * current <b>colorMode()</b>. The default mode is RGB values from 0 to 255
-   * and therefore, the function call <b>color(255, 204, 0)</b> will return a
-   * bright yellow color. More about how colors are stored can be found in
-   * the reference for the <a href="color_datatype.html">color</a> datatype.
+   * Creates colors for storing in variables of the <b>color</b> datatype. The
+   * parameters are interpreted as RGB or HSB values depending on the current
+   * <b>colorMode()</b>. The default mode is RGB values from 0 to 255 and,
+   * therefore, <b>color(255, 204, 0)</b> will return a bright yellow color (see
+   * the first example above).<br />
+   * <br />
+   * Note that if only one value is provided to <b>color()</b>, it will be
+   * interpreted as a grayscale value. Add a second value, and it will be used
+   * for alpha transparency. When three values are specified, they are
+   * interpreted as either RGB or HSB values. Adding a fourth value applies
+   * alpha transparency.<br />
+   * <br />
+   * Note that when using hexadecimal notation, it is not necessary to use
+   * <b>color()</b>, as in: <b>color c = #006699</b><br />
+   * <br />
+   * More about how colors are stored can be found in the reference for the
+   * <a href="color_datatype.html">color</a> datatype.
    *
    * @webref color:creating_reading
-   * @webBrief Creates colors for storing in variables of the <b>color</b> datatype.
-   * @param gray number specifying value between white and black
+   * @webBrief Creates colors for storing in variables of the <b>color</b>
+   *           datatype.
+   * @param gray
+   *          number specifying value between white and black
    * @see PApplet#colorMode(int)
    */
   public final int color(int gray) {
@@ -10053,18 +10388,26 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Calculates a color or colors between two color at a specific increment.
-   * The <b>amt</b> parameter is the amount to interpolate between the two
-   * values where 0.0 equal to the first point, 0.1 is very near the first
-   * point, 0.5 is half-way in between, etc.
+   * Calculates a color between two colors at a specific increment. The
+   * <b>amt</b> parameter is the amount to interpolate between the two values
+   * where 0.0 is equal to the first point, 0.1 is very near the first point,
+   * 0.5 is halfway in between, etc. <br />
+   * An amount below 0 will be treated as 0. Likewise, amounts above 1 will be
+   * capped at 1. This is different from the behavior of lerp(), but necessary
+   * because otherwise numbers outside the range will produce strange and
+   * unexpected colors.
    *
-   * 
+   *
    * @webref color:creating_reading
-   * @webBrief Calculates a color or colors between two color at a specific increment.
+   * @webBrief Calculates a color or colors between two color at a specific
+   *           increment.
    * @usage web_application
-   * @param c1 interpolate from this color
-   * @param c2 interpolate to this color
-   * @param amt between 0.0 and 1.0
+   * @param c1
+   *          interpolate from this color
+   * @param c2
+   *          interpolate to this color
+   * @param amt
+   *          between 0.0 and 1.0
    * @see PImage#blendColor(int, int, int)
    * @see PGraphics#color(float, float, float, float)
    * @see PApplet#lerp(float, float, float)
@@ -10598,20 +10941,24 @@ public class PApplet implements PConstants {
    * Opens a new file and all subsequent drawing functions are echoed to this
    * file as well as the display window. The <b>beginRecord()</b> function
    * requires two parameters, the first is the renderer and the second is the
-   * file name. This function is always used with <b>endRecord()</b> to stop
-   * the recording process and close the file.
-   * <br /> <br />
-   * Note that beginRecord() will only pick up any settings that happen after
-   * it has been called. For instance, if you call textFont() before
-   * beginRecord(), then that font will not be set for the file that you're
-   * recording to.
+   * file name. This function is always used with <b>endRecord()</b> to stop the
+   * recording process and close the file. <br />
+   * <br />
+   * Note that <b>beginRecord()</b> will only pick up any settings that happen
+   * after it has been called. For instance, if you call <b>textFont()</b>
+   * before <b>beginRecord()</b>, then that font will not be set for the file
+   * that you're recording to. <br />
+   * <br />
+   * <b>beginRecord()</b> works only with the PDF and SVG renderers.
    *
-   * 
+   *
    * @webref output:files
-   * @webBrief Opens a new file and all subsequent drawing functions are echoed to this
-   * file as well as the display window.
-   * @param renderer PDF or SVG
-   * @param filename filename for output
+   * @webBrief Opens a new file and all subsequent drawing functions are echoed
+   *           to this file as well as the display window.
+   * @param renderer
+   *          PDF or SVG
+   * @param filename
+   *          filename for output
    * @see PApplet#endRecord()
    */
   public PGraphics beginRecord(String renderer, String filename) {
@@ -10679,7 +11026,7 @@ public class PApplet implements PConstants {
    * See examples in the reference for the <b>PDF</b> and <b>DXF</b>
    * libraries for more information.
    *
-   * 
+   *
    * @webref output:files
    * @webBrief To create vectors from 3D data, use the <b>beginRaw()</b> and
    * <b>endRaw()</b> commands.
@@ -10717,7 +11064,7 @@ public class PApplet implements PConstants {
    * Complement to <b>beginRaw()</b>; they must always be used together. See
    * the <b>beginRaw()</b> reference for details.
    *
-   * 
+   *
    * @webref output:files
    * @webBrief Complement to <b>beginRaw()</b>; they must always be used together.
    * @see PApplet#beginRaw(String, String)
@@ -10742,25 +11089,18 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Loads the pixel data for the display window into the <b>pixels[]</b>
-   * array. This function must always be called before reading from or
-   * writing to <b>pixels[]</b>.
-   * <br/><br/> renderers may or may not seem to require <b>loadPixels()</b>
-   * or <b>updatePixels()</b>. However, the rule is that any time you want to
-   * manipulate the <b>pixels[]</b> array, you must first call
-   * <b>loadPixels()</b>, and after changes have been made, call
-   * <b>updatePixels()</b>. Even if the renderer may not seem to use this
-   * function in the current Processing release, this will always be subject
-   * to change.
+   * Loads the pixel data of the current display window into the <b>pixels[]</b>
+   * array. This function must always be called before reading from or writing
+   * to <b>pixels[]</b>. Subsequent changes to the display window will not be
+   * reflected in <b>pixels</b> until <b>loadPixels()</b> is called again.
    *
-   * <h3>Advanced</h3>
-   * Override the g.pixels[] function to set the pixels[] array
-   * that's part of the PApplet object. Allows the use of
-   * pixels[] in the code, rather than g.pixels[].
+   * <h3>Advanced</h3> Override the g.pixels[] function to set the pixels[]
+   * array that's part of the PApplet object. Allows the use of pixels[] in the
+   * code, rather than g.pixels[].
    *
    * @webref image:pixels
-   * @webBrief Loads the pixel data for the display window into the <b>pixels[]</b>
-   * array. 
+   * @webBrief Loads the pixel data for the display window into the
+   *           <b>pixels[]</b> array.
    * @see PApplet#pixels
    * @see PApplet#updatePixels()
    */
@@ -10770,27 +11110,18 @@ public class PApplet implements PConstants {
   }
 
  /**
-   *
-   * Updates the display window with the data in the <b>pixels[]</b> array.
-   * Use in conjunction with <b>loadPixels()</b>. If you're only reading
-   * pixels from the array, there's no need to call <b>updatePixels()</b>
-   * unless there are changes.
-   * <br/><br/> renderers may or may not seem to require <b>loadPixels()</b>
-   * or <b>updatePixels()</b>. However, the rule is that any time you want to
-   * manipulate the <b>pixels[]</b> array, you must first call
-   * <b>loadPixels()</b>, and after changes have been made, call
-   * <b>updatePixels()</b>. Even if the renderer may not seem to use this
-   * function in the current Processing release, this will always be subject
-   * to change.
-   * <br/> <br/>
-   * Currently, none of the renderers use the additional parameters to
-   * <b>updatePixels()</b>, however this may be implemented in the future.
-   *
-   * @webref image:pixels
-   * @webBrief Updates the display window with the data in the <b>pixels[]</b> array.
-   * @see PApplet#loadPixels()
-   * @see PApplet#pixels
-   */
+  *
+  * Updates the display window with the data in the <b>pixels[]</b> array. Use
+  * in conjunction with <b>loadPixels()</b>. If you're only reading pixels from
+  * the array, there's no need to call <b>updatePixels()</b> &mdash; updating is
+  * only necessary to apply changes.
+  *
+  * @webref image:pixels
+  * @webBrief Updates the display window with the data in the <b>pixels[]</b>
+  *           array.
+  * @see PApplet#loadPixels()
+  * @see PApplet#pixels
+  */
   public void updatePixels() {
     g.updatePixels();
   }
@@ -10848,43 +11179,44 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
-   * creating more complex forms. <b>beginShape()</b> begins recording
-   * vertices for a shape and <b>endShape()</b> stops recording. The value of
-   * the <b>MODE</b> parameter tells it which types of shapes to create from
-   * the provided vertices. With no mode specified, the shape can be any
-   * irregular polygon. The parameters available for beginShape() are POINTS,
-   * LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, and QUAD_STRIP.
-   * After calling the <b>beginShape()</b> function, a series of
-   * <b>vertex()</b> commands must follow. To stop drawing the shape, call
-   * <b>endShape()</b>. The <b>vertex()</b> function with two parameters
-   * specifies a position in 2D and the <b>vertex()</b> function with three
-   * parameters specifies a position in 3D. Each shape will be outlined with
-   * the current stroke color and filled with the fill color.
-   * <br/> <br/>
-   * Transformations such as <b>translate()</b>, <b>rotate()</b>, and
-   * <b>scale()</b> do not work within <b>beginShape()</b>. It is also not
-   * possible to use other shapes, such as <b>ellipse()</b> or <b>rect()</b>
-   * within <b>beginShape()</b>.
-   * <br/> <br/>
-   * The P3D renderer settings allow <b>stroke()</b> and <b>fill()</b>
-   * settings to be altered per-vertex, however the default P2D renderer does
-   * not. Settings such as <b>strokeWeight()</b>, <b>strokeCap()</b>, and
-   * <b>strokeJoin()</b> cannot be changed while inside a
-   * <b>beginShape()</b>/<b>endShape()</b> block with any renderer.
-   *
-   * @webref shape:vertex
-   * @webBrief Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
-   * creating more complex forms.
-   * @param kind Either POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP, QUADS, or QUAD_STRIP
-   * @see PShape
-   * @see PGraphics#endShape()
-   * @see PGraphics#vertex(float, float, float, float, float)
-   * @see PGraphics#curveVertex(float, float, float)
-   * @see PGraphics#bezierVertex(float, float, float, float, float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Using the <b>beginShape()</b> and <b>endShape()</b> functions allow creating
+	 * more complex forms. <b>beginShape()</b> begins recording vertices for a shape
+	 * and <b>endShape()</b> stops recording. The value of the <b>kind</b> parameter
+	 * tells it which types of shapes to create from the provided vertices. With no
+	 * mode specified, the shape can be any irregular polygon. The parameters
+	 * available for beginShape() are POINTS, LINES, TRIANGLES, TRIANGLE_FAN,
+	 * TRIANGLE_STRIP, QUADS, and QUAD_STRIP. After calling the <b>beginShape()</b>
+	 * function, a series of <b>vertex()</b> commands must follow. To stop drawing
+	 * the shape, call <b>endShape()</b>. The <b>vertex()</b> function with two
+	 * parameters specifies a position in 2D and the <b>vertex()</b> function with
+	 * three parameters specifies a position in 3D. Each shape will be outlined with
+	 * the current stroke color and filled with the fill color. <br />
+	 * <br />
+	 * Transformations such as <b>translate()</b>, <b>rotate()</b>, and
+	 * <b>scale()</b> do not work within <b>beginShape()</b>. It is also not
+	 * possible to use other shapes, such as <b>ellipse()</b> or <b>rect()</b>
+	 * within <b>beginShape()</b>. <br />
+	 * <br />
+	 * The P2D and P3D renderers allow <b>stroke()</b> and <b>fill()</b> to be
+	 * altered on a per-vertex basis, but the default renderer does not. Settings
+	 * such as <b>strokeWeight()</b>, <b>strokeCap()</b>, and <b>strokeJoin()</b>
+	 * cannot be changed while inside a <b>beginShape()</b>/<b>endShape()</b> block
+	 * with any renderer.
+	 *
+	 * @webref shape:vertex
+	 * @webBrief Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
+	 *           creating more complex forms.
+	 * @param kind Either POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP,
+	 *             QUADS, or QUAD_STRIP
+	 * @see PShape
+	 * @see PGraphics#endShape()
+	 * @see PGraphics#vertex(float, float, float, float, float)
+	 * @see PGraphics#curveVertex(float, float, float)
+	 * @see PGraphics#bezierVertex(float, float, float, float, float, float, float,
+	 *      float, float)
+	 */
   public void beginShape(int kind) {
     if (recorder != null) recorder.beginShape(kind);
     g.beginShape(kind);
@@ -10901,24 +11233,24 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the current normal vector. This is for drawing three dimensional
-   * shapes and surfaces and specifies a vector perpendicular to the surface
-   * of the shape which determines how lighting affects it. Processing
-   * attempts to automatically assign normals to shapes, but since that's
-   * imperfect, this is a better option when you want more control. This
-   * function is identical to glNormal3f() in OpenGL.
-   *
-   * @webref lights_camera:lights
-   * @webBrief Sets the current normal vector.
-   * @param nx x direction
-   * @param ny y direction
-   * @param nz z direction
-   * @see PGraphics#beginShape(int)
-   * @see PGraphics#endShape(int)
-   * @see PGraphics#lights()
-   */
+  	/**
+	 *
+	 * Sets the current normal vector. Used for drawing three dimensional shapes and
+	 * surfaces, <b>normal()</b> specifies a vector perpendicular to a shape's
+	 * surface which, in turn, determines how lighting affects it. Processing
+	 * attempts to automatically assign normals to shapes, but since that's
+	 * imperfect, this is a better option when you want more control. This function
+	 * is identical to <b>glNormal3f()</b> in OpenGL.
+	 *
+	 * @webref lights_camera:lights
+	 * @webBrief Sets the current normal vector.
+	 * @param nx x direction
+	 * @param ny y direction
+	 * @param nz z direction
+	 * @see PGraphics#beginShape(int)
+	 * @see PGraphics#endShape(int)
+	 * @see PGraphics#lights()
+	 */
   public void normal(float nx, float ny, float nz) {
     if (recorder != null) recorder.normal(nx, ny, nz);
     g.normal(nx, ny, nz);
@@ -10961,22 +11293,23 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the coordinate space for texture mapping. There are two options,
-   * IMAGE, which refers to the actual coordinates of the image, and
-   * NORMAL, which refers to a normalized space of values ranging from 0
-   * to 1. The default mode is IMAGE. In IMAGE, if an image is 100 x 200
-   * pixels, mapping the image onto the entire size of a quad would require
-   * the points (0,0) (0,100) (100,200) (0,200). The same mapping in
-   * NORMAL_SPACE is (0,0) (0,1) (1,1) (0,1).
-   *
-   * @webref image:textures
-   * @webBrief Sets the coordinate space for texture mapping.
-   * @param mode either IMAGE or NORMAL
-   * @see PGraphics#texture(PImage)
-   * @see PGraphics#textureWrap(int)
-   */
+  	/**
+	 *
+	 * Sets the coordinate space for texture mapping. The default mode is
+	 * <b>IMAGE</b>, which refers to the actual coordinates of the image.
+	 * <b>NORMAL</b> refers to a normalized space of values ranging from 0 to 1.
+	 * This function only works with the P2D and P3D renderers.<br />
+	 * <br />
+	 * With <b>IMAGE</b>, if an image is 100 x 200 pixels, mapping the image onto
+	 * the entire size of a quad would require the points (0,0) (100, 0) (100,200)
+	 * (0,200). The same mapping in <b>NORMAL</b> is (0,0) (1,0) (1,1) (0,1).
+	 *
+	 * @webref image:textures
+	 * @webBrief Sets the coordinate space for texture mapping.
+	 * @param mode either IMAGE or NORMAL
+	 * @see PGraphics#texture(PImage)
+	 * @see PGraphics#textureWrap(int)
+	 */
   public void textureMode(int mode) {
     if (recorder != null) recorder.textureMode(mode);
     g.textureMode(mode);
@@ -11002,24 +11335,26 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets a texture to be applied to vertex points. The <b>texture()</b>
-   * function must be called between <b>beginShape()</b> and
-   * <b>endShape()</b> and before any calls to <b>vertex()</b>.
-   * <br/> <br/>
-   * When textures are in use, the fill color is ignored. Instead, use tint()
-   * to specify the color of the texture as it is applied to the shape.
-   *
-   * @webref image:textures
-   * @webBrief Sets a texture to be applied to vertex points.
-   * @param image reference to a PImage object
-   * @see PGraphics#textureMode(int)
-   * @see PGraphics#textureWrap(int)
-   * @see PGraphics#beginShape(int)
-   * @see PGraphics#endShape(int)
-   * @see PGraphics#vertex(float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Sets a texture to be applied to vertex points. The <b>texture()</b> function
+	 * must be called between <b>beginShape()</b> and <b>endShape()</b> and before
+	 * any calls to <b>vertex()</b>. This function only works with the P2D and P3D
+	 * renderers.<br />
+	 * <br />
+	 * When textures are in use, the fill color is ignored. Instead, use
+	 * <b>tint()</b> to specify the color of the texture as it is applied to the
+	 * shape.
+	 *
+	 * @webref image:textures
+	 * @webBrief Sets a texture to be applied to vertex points.
+	 * @param image reference to a PImage object
+	 * @see PGraphics#textureMode(int)
+	 * @see PGraphics#textureWrap(int)
+	 * @see PGraphics#beginShape(int)
+	 * @see PGraphics#endShape(int)
+	 * @see PGraphics#vertex(float, float, float, float, float)
+	 */
   public void texture(PImage image) {
     if (recorder != null) recorder.texture(image);
     g.texture(image);
@@ -11067,22 +11402,22 @@ public class PApplet implements PConstants {
 
 
 /**
-   *
-   * All shapes are constructed by connecting a series of vertices.
-   * <b>vertex()</b> is used to specify the vertex coordinates for points,
-   * lines, triangles, quads, and polygons and is used exclusively within the
-   * <b>beginShape()</b> and <b>endShape()</b> function.<br />
-   * <br />
-   * Drawing a vertex in 3D using the <b>z</b> parameter requires the P3D
-   * parameter in combination with size as shown in the above example.<br />
-   * <br />
-   * This function is also used to map a texture onto the geometry. The
-   * <b>texture()</b> function declares the texture to apply to the geometry
-   * and the <b>u</b> and <b>v</b> coordinates set define the mapping of this
-   * texture to the form. By default, the coordinates used for <b>u</b> and
-   * <b>v</b> are specified in relation to the image's size in pixels, but
-   * this relation can be changed with <b>textureMode()</b>.
-   *
+ *
+ * All shapes are constructed by connecting a series of vertices.
+ * <b>vertex()</b> is used to specify the vertex coordinates for points, lines,
+ * triangles, quads, and polygons. It is used exclusively within the
+ * <b>beginShape()</b> and <b>endShape()</b> functions. <br />
+ * <br />
+ * Drawing a vertex in 3D using the <b>z</b> parameter requires the P3D
+ * parameter in combination with size, as shown in the above example. <br />
+ * <br />
+ * This function is also used to map a texture onto geometry. The
+ * <b>texture()</b> function declares the texture to apply to the geometry and
+ * the <b>u</b> and <b>v</b> coordinates set define the mapping of this texture
+ * to the form. By default, the coordinates used for <b>u</b> and <b>v</b> are
+ * specified in relation to the image's size in pixels, but this relation can be
+ * changed with <b>textureMode()</b>.
+ *
  * @webref shape:vertex
  * @webBrief All shapes are constructed by connecting a series of vertices.
  * @param x x-coordinate of the vertex
@@ -11092,7 +11427,8 @@ public class PApplet implements PConstants {
  * @param v vertical coordinate for the texture mapping
  * @see PGraphics#beginShape(int)
  * @see PGraphics#endShape(int)
- * @see PGraphics#bezierVertex(float, float, float, float, float, float, float, float, float)
+ * @see PGraphics#bezierVertex(float, float, float, float, float, float, float,
+ *      float, float)
  * @see PGraphics#quadraticVertex(float, float, float, float, float, float)
  * @see PGraphics#curveVertex(float, float, float)
  * @see PGraphics#texture(PImage)
@@ -11569,22 +11905,33 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Draws a point, a coordinate in space at the dimension of one pixel. The
-   * first parameter is the horizontal value for the point, the second value
-   * is the vertical value for the point, and the optional third value is the
-   * depth value. Drawing this shape in 3D with the <b>z</b> parameter
-   * requires the P3D parameter in combination with <b>size()</b> as shown in
-   * the above example.
-   *
-   *
-   * @webref shape:2d_primitives
-   * @webBrief Draws a point, a coordinate in space at the dimension of one pixel.
-   * @param x x-coordinate of the point
-   * @param y y-coordinate of the point
-   * @see PGraphics#stroke(int)
-   */
+  	/**
+	 *
+	 * Draws a point, a coordinate in space at the dimension of one pixel. The first
+	 * parameter is the horizontal value for the point, the second value is the
+	 * vertical value for the point, and the optional third value is the depth
+	 * value. Drawing this shape in 3D with the <b>z</b> parameter requires the P3D
+	 * parameter in combination with <b>size()</b> as shown in the above example.
+	 * <br />
+	 * <br />
+	 * Use <b>stroke()</b> to set the color of a <b>point()</b>. <br />
+	 * <br />
+	 * Point appears round with the default <b>strokeCap(ROUND)</b> and square with
+	 * <b>strokeCap(PROJECT)</b>. Points are invisible with <b>strokeCap(SQUARE)</b>
+	 * (no cap). <br />
+	 * <br />
+	 * Using point() with strokeWeight(1) or smaller may draw nothing to the screen,
+	 * depending on the graphics settings of the computer. Workarounds include
+	 * setting the pixel using <b>set()</s> or drawing the point using either
+	 * <b>circle()</b> or <b>square()</b>.
+	 *
+	 *
+	 * @webref shape:2d_primitives
+	 * @webBrief Draws a point, a coordinate in space at the dimension of one pixel.
+	 * @param x x-coordinate of the point
+	 * @param y y-coordinate of the point
+	 * @see PGraphics#stroke(int)
+	 */
   public void point(float x, float y) {
     if (recorder != null) recorder.point(x, y);
     g.point(x, y);
@@ -11689,53 +12036,67 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Modifies the location from which rectangles draw. The default mode is
-   * <b>rectMode(CORNER)</b>, which specifies the location to be the upper
-   * left corner of the shape and uses the third and fourth parameters of
-   * <b>rect()</b> to specify the width and height. The syntax
-   * <b>rectMode(CORNERS)</b> uses the first and second parameters of
-   * <b>rect()</b> to set the location of one corner and uses the third and
-   * fourth parameters to set the opposite corner. The syntax
-   * <b>rectMode(CENTER)</b> draws the image from its center point and uses
-   * the third and forth parameters of <b>rect()</b> to specify the image's
-   * width and height. The syntax <b>rectMode(RADIUS)</b> draws the image
-   * from its center point and uses the third and forth parameters of
-   * <b>rect()</b> to specify half of the image's width and height. The
-   * parameter must be written in ALL CAPS because Processing is a case
-   * sensitive language. Note: In version 125, the mode named CENTER_RADIUS
-   * was shortened to RADIUS.
-   *
-   * @webref shape:attributes
-   * @webBrief Modifies the location from which rectangles draw.
-   * @param mode either CORNER, CORNERS, CENTER, or RADIUS
-   * @see PGraphics#rect(float, float, float, float)
-   */
+  	/**
+	 *
+	 * Modifies the location from which rectangles are drawn by changing the way in
+	 * which parameters given to <b>rect()</b> are intepreted.<br />
+	 * <br />
+	 * The default mode is <b>rectMode(CORNER)</b>, which interprets the first two
+	 * parameters of <b>rect()</b> as the upper-left corner of the shape, while the
+	 * third and fourth parameters are its width and height.<br />
+	 * <br />
+	 * <b>rectMode(CORNERS)</b> interprets the first two parameters of <b>rect()</b>
+	 * as the location of one corner, and the third and fourth parameters as the
+	 * location of the opposite corner.<br />
+	 * <br />
+	 * <b>rectMode(CENTER)</b> interprets the first two parameters of <b>rect()</b>
+	 * as the shape's center point, while the third and fourth parameters are its
+	 * width and height.<br />
+	 * <br />
+	 * <b>rectMode(RADIUS)</b> also uses the first two parameters of <b>rect()</b>
+	 * as the shape's center point, but uses the third and fourth parameters to
+	 * specify half of the shapes's width and height.<br />
+	 * <br />
+	 * The parameter must be written in ALL CAPS because Processing is a
+	 * case-sensitive language.
+	 *
+	 * @webref shape:attributes
+	 * @webBrief Modifies the location from which rectangles draw.
+	 * @param mode either CORNER, CORNERS, CENTER, or RADIUS
+	 * @see PGraphics#rect(float, float, float, float)
+	 */
   public void rectMode(int mode) {
     if (recorder != null) recorder.rectMode(mode);
     g.rectMode(mode);
   }
 
 
-  /**
-   *
-   * Draws a rectangle to the screen. A rectangle is a four-sided shape with
-   * every angle at ninety degrees. By default, the first two parameters set
-   * the location of the upper-left corner, the third sets the width, and the
-   * fourth sets the height. These parameters may be changed with the
-   * <b>rectMode()</b> function.
-   *
-   *
-   * @webref shape:2d_primitives
-   * @webBrief Draws a rectangle to the screen.
-   * @param a x-coordinate of the rectangle by default
-   * @param b y-coordinate of the rectangle by default
-   * @param c width of the rectangle by default
-   * @param d height of the rectangle by default
-   * @see PGraphics#rectMode(int)
-   * @see PGraphics#quad(float, float, float, float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Draws a rectangle to the screen. A rectangle is a four-sided shape with every
+	 * angle at ninety degrees. By default, the first two parameters set the
+	 * location of the upper-left corner, the third sets the width, and the fourth
+	 * sets the height. The way these parameters are interpreted, however, may be
+	 * changed with the <b>rectMode()</b> function.<br />
+	 * <br />
+	 * To draw a rounded rectangle, add a fifth parameter, which is used as the
+	 * radius value for all four corners.<br />
+	 * <br />
+	 * To use a different radius value for each corner, include eight parameters.
+	 * When using eight parameters, the latter four set the radius of the arc at
+	 * each corner separately, starting with the top-left corner and moving
+	 * clockwise around the rectangle.
+	 *
+	 *
+	 * @webref shape:2d_primitives
+	 * @webBrief Draws a rectangle to the screen.
+	 * @param a x-coordinate of the rectangle by default
+	 * @param b y-coordinate of the rectangle by default
+	 * @param c width of the rectangle by default
+	 * @param d height of the rectangle by default
+	 * @see PGraphics#rectMode(int)
+	 * @see PGraphics#quad(float, float, float, float, float, float, float, float)
+	 */
   public void rect(float a, float b, float c, float d) {
     if (recorder != null) recorder.rect(a, b, c, d);
     g.rect(a, b, c, d);
@@ -11788,75 +12149,98 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * The origin of the ellipse is modified by the <b>ellipseMode()</b>
-   * function. The default configuration is <b>ellipseMode(CENTER)</b>, which
-   * specifies the location of the ellipse as the center of the shape. The
-   * <b>RADIUS</b> mode is the same, but the width and height parameters to
-   * <b>ellipse()</b> specify the radius of the ellipse, rather than the
-   * diameter. The <b>CORNER</b> mode draws the shape from the upper-left
-   * corner of its bounding box. The <b>CORNERS</b> mode uses the four
-   * parameters to <b>ellipse()</b> to set two opposing corners of the
-   * ellipse's bounding box. The parameter must be written in ALL CAPS
-   * because Processing is a case-sensitive language.
-   *
-   * @webref shape:attributes
-   * @webBrief The origin of the ellipse is modified by the <b>ellipseMode()</b>
-   * function.
-   * @param mode either CENTER, RADIUS, CORNER, or CORNERS
-   * @see PApplet#ellipse(float, float, float, float)
-   * @see PApplet#arc(float, float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Modifies the location from which ellipses are drawn by changing the way in
+	 * which parameters given to <b>ellipse()</b> are intepreted.<br />
+	 * <br />
+	 * The default mode is <b>ellipseMode(CENTER)</b>, which interprets the first
+	 * two parameters of <b>ellipse()</b> as the shape's center point, while the
+	 * third and fourth parameters are its width and height.<br />
+	 * <br />
+	 * <b>ellipseMode(RADIUS)</b> also uses the first two parameters of
+	 * <b>ellipse()</b> as the shape's center point, but uses the third and fourth
+	 * parameters to specify half of the shapes's width and height.<br />
+	 * <br />
+	 * <b>ellipseMode(CORNER)</b> interprets the first two parameters of
+	 * <b>ellipse()</b> as the upper-left corner of the shape, while the third and
+	 * fourth parameters are its width and height.<br />
+	 * <br />
+	 * <b>ellipseMode(CORNERS)</b> interprets the first two parameters of
+	 * <b>ellipse()</b> as the location of one corner of the ellipse's bounding box,
+	 * and the third and fourth parameters as the location of the opposite
+	 * corner.<br />
+	 * <br />
+	 * The parameter must be written in ALL CAPS because Processing is a
+	 * case-sensitive language.
+	 *
+	 * @webref shape:attributes
+	 * @webBrief The origin of the ellipse is modified by the <b>ellipseMode()</b>
+	 *           function.
+	 * @param mode either CENTER, RADIUS, CORNER, or CORNERS
+	 * @see PApplet#ellipse(float, float, float, float)
+	 * @see PApplet#arc(float, float, float, float, float, float)
+	 */
   public void ellipseMode(int mode) {
     if (recorder != null) recorder.ellipseMode(mode);
     g.ellipseMode(mode);
   }
 
 
-  /**
-   *
-   * Draws an ellipse (oval) in the display window. An ellipse with an equal
-   * <b>width</b> and <b>height</b> is a circle. The first two parameters set
-   * the location, the third sets the width, and the fourth sets the height.
-   * The origin may be changed with the <b>ellipseMode()</b> function.
-   *
-   * @webref shape:2d_primitives
-   * @webBrief Draws an ellipse (oval) in the display window.
-   * @param a x-coordinate of the ellipse
-   * @param b y-coordinate of the ellipse
-   * @param c width of the ellipse by default
-   * @param d height of the ellipse by default
-   * @see PApplet#ellipseMode(int)
-   * @see PApplet#arc(float, float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Draws an ellipse (oval) to the screen. An ellipse with equal width and height
+	 * is a circle. By default, the first two parameters set the location, and the
+	 * third and fourth parameters set the shape's width and height. The origin may
+	 * be changed with the <b>ellipseMode()</b> function.
+	 *
+	 * @webref shape:2d_primitives
+	 * @webBrief Draws an ellipse (oval) in the display window.
+	 * @param a x-coordinate of the ellipse
+	 * @param b y-coordinate of the ellipse
+	 * @param c width of the ellipse by default
+	 * @param d height of the ellipse by default
+	 * @see PApplet#ellipseMode(int)
+	 * @see PApplet#arc(float, float, float, float, float, float)
+	 */
   public void ellipse(float a, float b, float c, float d) {
     if (recorder != null) recorder.ellipse(a, b, c, d);
     g.ellipse(a, b, c, d);
   }
 
 
-  /**
-   *
-   * Draws an arc in the display window. Arcs are drawn along the outer edge
-   * of an ellipse defined by the <b>x</b>, <b>y</b>, <b>width</b> and
-   * <b>height</b> parameters. The origin or the arc's ellipse may be changed
-   * with the <b>ellipseMode()</b> function. The <b>start</b> and <b>stop</b>
-   * parameters specify the angles at which to draw the arc.
-   *
-   * @webref shape:2d_primitives
-   * @webBrief Draws an arc in the display window. 
-   * @param a x-coordinate of the arc's ellipse
-   * @param b y-coordinate of the arc's ellipse
-   * @param c width of the arc's ellipse by default
-   * @param d height of the arc's ellipse by default
-   * @param start angle to start the arc, specified in radians
-   * @param stop angle to stop the arc, specified in radians
-   * @see PApplet#ellipse(float, float, float, float)
-   * @see PApplet#ellipseMode(int)
-   * @see PApplet#radians(float)
-   * @see PApplet#degrees(float)
-   */
+  	/**
+	 *
+	 * Draws an arc to the screen. Arcs are drawn along the outer edge of an ellipse
+	 * defined by the <b>a</b>, <b>b</b>, <b>c</b>, and <b>d</b> parameters. The
+	 * origin of the arc's ellipse may be changed with the <b>ellipseMode()</b>
+	 * function. Use the <b>start</b> and <b>stop</b> parameters to specify the
+	 * angles (in radians) at which to draw the arc. The start/stop values must be
+	 * in clockwise order. <br />
+	 * <br />
+	 * There are three ways to draw an arc; the rendering technique used is defined
+	 * by the optional seventh parameter. The three options, depicted in the above
+	 * examples, are PIE, OPEN, and CHORD. The default mode is the OPEN stroke with
+	 * a PIE fill. <br />
+	 * <br />
+	 * In some cases, the <b>arc()</b> function isn't accurate enough for smooth
+	 * drawing. For example, the shape may jitter on screen when rotating slowly. If
+	 * you're having an issue with how arcs are rendered, you'll need to draw the
+	 * arc yourself with <b>beginShape()</b>/<b>endShape()</b> or a <b>PShape</b>.
+	 *
+	 * @webref shape:2d_primitives
+	 * @webBrief Draws an arc in the display window.
+	 * @param a     x-coordinate of the arc's ellipse
+	 * @param b     y-coordinate of the arc's ellipse
+	 * @param c     width of the arc's ellipse by default
+	 * @param d     height of the arc's ellipse by default
+	 * @param start angle to start the arc, specified in radians
+	 * @param stop  angle to stop the arc, specified in radians
+	 * @see PApplet#ellipse(float, float, float, float)
+	 * @see PApplet#ellipseMode(int)
+	 * @see PApplet#radians(float)
+	 * @see PApplet#degrees(float)
+	 */
   public void arc(float a, float b, float c, float d,
                   float start, float stop) {
     if (recorder != null) recorder.arc(a, b, c, d, start, stop);
@@ -12074,20 +12458,21 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the resolution at which Beziers display. The default value is 20.
-   * This function is only useful when using the P3D renderer as the default
-   * P2D renderer does not use this information.
-   *
-   *
-   * @webref shape:curves
-   * @webBrief Sets the resolution at which Beziers display.
-   * @param detail resolution of the curves
-   * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
-   * @see PGraphics#curveVertex(float, float, float)
-   * @see PGraphics#curveTightness(float)
-   */
+  	/**
+	 *
+	 * Sets the resolution at which Beziers display. The default value is 20. This
+	 * function is only useful when using the <b>P3D</b> renderer; the default
+	 * <b>P2D</b> renderer does not use this information.
+	 *
+	 *
+	 * @webref shape:curves
+	 * @webBrief Sets the resolution at which Beziers display.
+	 * @param detail resolution of the curves
+	 * @see PGraphics#curve(float, float, float, float, float, float, float, float,
+	 *      float, float, float, float)
+	 * @see PGraphics#curveVertex(float, float, float)
+	 * @see PGraphics#curveTightness(float)
+	 */
   public void bezierDetail(int detail) {
     if (recorder != null) recorder.bezierDetail(detail);
     g.bezierDetail(detail);
@@ -12164,25 +12549,29 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Evalutes the curve at point t for points a, b, c, d. The parameter t
-   * varies between 0 and 1, a and d are the control points, and b and c are
-   * the points on the curve. This can be done once with the x coordinates and a
-   * second time with the y coordinates to get the location of a curve at t.
-   *
-   *
-   * @webref shape:curves
-   * @webBrief Evalutes the curve at point t for points a, b, c, d.
-   * @param a coordinate of first control point
-   * @param b coordinate of first point on the curve
-   * @param c coordinate of second point on the curve
-   * @param d coordinate of second control point
-   * @param t value between 0 and 1
-   * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
-   * @see PGraphics#curveVertex(float, float)
-   * @see PGraphics#bezierPoint(float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Evaluates the curve at point <b>t</b> for points <b>a</b>, <b>b</b>,
+	 * <b>c</b>, <b>d</b>. The parameter <b>t</b> may range from 0 (the start of the
+	 * curve) and 1 (the end of the curve). <b>a</b> and <b>d</b> are the control
+	 * points, and <b>b</b> and <b>c</b> are points on the curve. As seen in the
+	 * example above, this can be used once with the <b>x</b> coordinates and a
+	 * second time with the <b>y</b> coordinates to get the location of a curve at
+	 * <b>t</b>.
+	 *
+	 *
+	 * @webref shape:curves
+	 * @webBrief Evalutes the curve at point t for points a, b, c, d.
+	 * @param a coordinate of first control point
+	 * @param b coordinate of first point on the curve
+	 * @param c coordinate of second point on the curve
+	 * @param d coordinate of second control point
+	 * @param t value between 0 and 1
+	 * @see PGraphics#curve(float, float, float, float, float, float, float, float,
+	 *      float, float, float, float)
+	 * @see PGraphics#curveVertex(float, float)
+	 * @see PGraphics#bezierPoint(float, float, float, float, float)
+	 */
   public float curvePoint(float a, float b, float c, float d, float t) {
     return g.curvePoint(a, b, c, d, t);
   }
@@ -12235,24 +12624,25 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Modifies the quality of forms created with <b>curve()</b> and
-   * <b>curveVertex()</b>. The parameter <b>squishy</b> determines how the
-   * curve fits to the vertex points. The value 0.0 is the default value for
-   * <b>squishy</b> (this value defines the curves to be Catmull-Rom splines)
-   * and the value 1.0 connects all the points with straight lines. Values
-   * within the range -5.0 and 5.0 will deform the curves but will leave them
-   * recognizable and as values increase in magnitude, they will continue to deform.
-   *
-   *
-   * @webref shape:curves
-   * @webBrief Modifies the quality of forms created with <b>curve()</b> and
-   * <b>curveVertex()</b>.
-   * @param tightness amount of deformation from the original vertices
-   * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
-   * @see PGraphics#curveVertex(float, float)
-   */
+  	/**
+	 *
+	 * Modifies the quality of forms created with <b>curve()</b> and
+	 * <b>curveVertex()</b>. The parameter <b>tightness</b> determines how the curve
+	 * fits to the vertex points. The value 0.0 is the default value for
+	 * <b>tightness</b> (this value defines the curves to be Catmull-Rom splines)
+	 * and the value 1.0 connects all the points with straight lines. Values within
+	 * the range -5.0 and 5.0 will deform the curves but will leave them
+	 * recognizable and as values increase in magnitude, they will continue to
+	 * deform.
+	 *
+	 * @webref shape:curves
+	 * @webBrief Modifies the quality of forms created with <b>curve()</b> and
+	 *           <b>curveVertex()</b>.
+	 * @param tightness amount of deformation from the original vertices
+	 * @see PGraphics#curve(float, float, float, float, float, float, float, float,
+	 *      float, float, float, float)
+	 * @see PGraphics#curveVertex(float, float)
+	 */
   public void curveTightness(float tightness) {
     if (recorder != null) recorder.curveTightness(tightness);
     g.curveTightness(tightness);
@@ -12324,72 +12714,74 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Modifies the location from which images draw. The default mode is
-   * <b>imageMode(CORNER)</b>, which specifies the location to be the upper
-   * left corner and uses the fourth and fifth parameters of <b>image()</b>
-   * to set the image's width and height. The syntax
-   * <b>imageMode(CORNERS)</b> uses the second and third parameters of
-   * <b>image()</b> to set the location of one corner of the image and uses
-   * the fourth and fifth parameters to set the opposite corner. Use
-   * <b>imageMode(CENTER)</b> to draw images centered at the given x and y
-   * position.<br />
-   * <br />
-   * The parameter to <b>imageMode()</b> must be written in ALL CAPS because
-   * Processing is a case-sensitive language.
-   *
-   *
-   * @webref image:loading_displaying
-   * @webBrief Modifies the location from which images draw.
-   * @param mode either CORNER, CORNERS, or CENTER
-   * @see PApplet#loadImage(String, String)
-   * @see PImage
-   * @see PGraphics#image(PImage, float, float, float, float)
-   * @see PGraphics#background(float, float, float, float)
-   */
+  	/**
+	 *
+	 * Modifies the location from which images are drawn by changing the way in
+	 * which parameters given to <b>image()</b> are intepreted.<br />
+	 * <br />
+	 * The default mode is <b>imageMode(CORNER)</b>, which interprets the second and
+	 * third parameters of <b>image()</b> as the upper-left corner of the image. If
+	 * two additional parameters are specified, they are used to set the image's
+	 * width and height.<br />
+	 * <br />
+	 * <b>imageMode(CORNERS)</b> interprets the second and third parameters of
+	 * <b>image()</b> as the location of one corner, and the fourth and fifth
+	 * parameters as the opposite corner.<br />
+	 * <br />
+	 * <b>imageMode(CENTER)</b> interprets the second and third parameters of
+	 * <b>image()</b> as the image's center point. If two additional parameters are
+	 * specified, they are used to set the image's width and height.<br />
+	 * <br />
+	 * The parameter must be written in ALL CAPS because Processing is a
+	 * case-sensitive language.
+	 *
+	 *
+	 * @webref image:loading_displaying
+	 * @webBrief Modifies the location from which images draw.
+	 * @param mode either CORNER, CORNERS, or CENTER
+	 * @see PApplet#loadImage(String, String)
+	 * @see PImage
+	 * @see PGraphics#image(PImage, float, float, float, float)
+	 * @see PGraphics#background(float, float, float, float)
+	 */
   public void imageMode(int mode) {
     if (recorder != null) recorder.imageMode(mode);
     g.imageMode(mode);
   }
 
 
-  /**
-   *
-   * Displays images to the screen. The images must be in the sketch's "data"
-   * directory to load correctly. Select "Add file..." from the "Sketch" menu
-   * to add the image. Processing currently works with GIF, JPEG, and Targa
-   * images. The <b>img</b> parameter specifies the image to display and the
-   * <b>x</b> and <b>y</b> parameters define the location of the image from
-   * its upper-left corner. The image is displayed at its original size
-   * unless the <b>width</b> and <b>height</b> parameters specify a different
-   * size.<br />
-   * <br />
-   * The <b>imageMode()</b> function changes the way the parameters work. For
-   * example, a call to <b>imageMode(CORNERS)</b> will change the
-   * <b>width</b> and <b>height</b> parameters to define the x and y values
-   * of the opposite corner of the image.<br />
-   * <br />
-   * The color of an image may be modified with the <b>tint()</b> function.
-   * This function will maintain transparency for GIF and PNG images.
-   *
-   *
-   * <h3>Advanced</h3>
-   * Starting with release 0124, when using the default (JAVA2D) renderer,
-   * smooth() will also improve image quality of resized images.
-   *
-   * @webref image:loading_displaying
-   * @webBrief Displays images to the screen.
-   * @param img the image to display
-   * @param a x-coordinate of the image by default
-   * @param b y-coordinate of the image by default
-   * @see PApplet#loadImage(String, String)
-   * @see PImage
-   * @see PGraphics#imageMode(int)
-   * @see PGraphics#tint(float)
-   * @see PGraphics#background(float, float, float, float)
-   * @see PGraphics#alpha(int)
-   */
+  	/**
+	 *
+	 * The <b>image()</b> function draws an image to the display window. Images must
+	 * be in the sketch's "data" directory to load correctly. Select "Add file..."
+	 * from the "Sketch" menu to add the image to the data directory, or just drag
+	 * the image file onto the sketch window. Processing currently works with GIF,
+	 * JPEG, and PNG images. <br />
+	 * <br />
+	 * The <b>img</b> parameter specifies the image to display and by default the
+	 * <b>a</b> and <b>b</b> parameters define the location of its upper-left
+	 * corner. The image is displayed at its original size unless the <b>c</b> and
+	 * <b>d</b> parameters specify a different size. The <b>imageMode()</b> function
+	 * can be used to change the way these parameters draw the image.<br />
+	 * <br />
+	 * The color of an image may be modified with the <b>tint()</b> function. This
+	 * function will maintain transparency for GIF and PNG images.
+	 *
+	 * <h3>Advanced</h3> Starting with release 0124, when using the default (JAVA2D)
+	 * renderer, smooth() will also improve image quality of resized images.
+	 *
+	 * @webref image:loading_displaying
+	 * @webBrief Displays images to the screen.
+	 * @param img the image to display
+	 * @param a   x-coordinate of the image by default
+	 * @param b   y-coordinate of the image by default
+	 * @see PApplet#loadImage(String, String)
+	 * @see PImage
+	 * @see PGraphics#imageMode(int)
+	 * @see PGraphics#tint(float)
+	 * @see PGraphics#background(float, float, float, float)
+	 * @see PGraphics#alpha(int)
+	 */
   public void image(PImage img, float a, float b) {
     if (recorder != null) recorder.image(img, a, b);
     g.image(img, a, b);
@@ -12455,35 +12847,29 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Displays shapes to the screen. The shapes must be in the sketch's "data"
-   * directory to load correctly. Select "Add file..." from the "Sketch" menu
-   * to add the shape. Processing currently works with SVG shapes only. The
-   * <b>sh</b> parameter specifies the shape to display and the <b>x</b> and
-   * <b>y</b> parameters define the location of the shape from its upper-left
-   * corner. The shape is displayed at its original size unless the
-   * <b>width</b> and <b>height</b> parameters specify a different size. The
-   * <b>shapeMode()</b> function changes the way the parameters work. A call
-   * to <b>shapeMode(CORNERS)</b>, for example, will change the width and
-   * height parameters to define the x and y values of the opposite corner of
-   * the shape.
-   * <br /><br />
-   * Note complex shapes may draw awkwardly with P3D. This renderer does not
-   * yet support shapes that have holes or complicated breaks.
-   *
-   *
-   * @webref shape:loading_displaying
-   * @webBrief Displays shapes to the screen.
-   * @param shape the shape to display
-   * @param x x-coordinate of the shape
-   * @param y y-coordinate of the shape
-   * @see PShape
-   * @see PApplet#loadShape(String)
-   * @see PGraphics#shapeMode(int)
-   *
-   * Convenience method to draw at a particular location.
-   */
+  	/**
+	 *
+	 * Draws shapes to the display window. Shapes must be in the sketch's "data"
+	 * directory to load correctly. Select "Add file..." from the "Sketch" menu to
+	 * add the shape. Processing currently works with SVG, OBJ, and custom-created
+	 * shapes. The <b>shape</b> parameter specifies the shape to display and the
+	 * coordinate parameters define the location of the shape from its upper-left
+	 * corner. The shape is displayed at its original size unless the <b>c</b> and
+	 * <b>d</b> parameters specify a different size. The <b>shapeMode()</b> function
+	 * can be used to change the way these parameters are interpreted.
+	 *
+	 *
+	 * @webref shape:loading_displaying
+	 * @webBrief Displays shapes to the screen.
+	 * @param shape the shape to display
+	 * @param x     x-coordinate of the shape
+	 * @param y     y-coordinate of the shape
+	 * @see PShape
+	 * @see PApplet#loadShape(String)
+	 * @see PGraphics#shapeMode(int)
+	 *
+	 *      Convenience method to draw at a particular location.
+	 */
   public void shape(PShape shape, float x, float y) {
     if (recorder != null) recorder.shape(shape, x, y);
     g.shape(shape, x, y);
@@ -12508,114 +12894,109 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the current alignment for drawing text. The parameters LEFT,
-   * CENTER, and RIGHT set the display characteristics of the letters in
-   * relation to the values for the <b>x</b> and <b>y</b> parameters of the
-   * <b>text()</b> function.
-   * <br/> <br/>
-   * In Processing 0125 and later, an optional second parameter can be used
-   * to vertically align the text. BASELINE is the default, and the vertical
-   * alignment will be reset to BASELINE if the second parameter is not used.
-   * The TOP and CENTER parameters are straightforward. The BOTTOM parameter
-   * offsets the line based on the current <b>textDescent()</b>. For multiple
-   * lines, the final line will be aligned to the bottom, with the previous
-   * lines appearing above it.
-   * <br/> <br/>
-   * When using <b>text()</b> with width and height parameters, BASELINE is
-   * ignored, and treated as TOP. (Otherwise, text would by default draw
-   * outside the box, since BASELINE is the default setting. BASELINE is not
-   * a useful drawing mode for text drawn in a rectangle.)
-   * <br/> <br/>
-   * The vertical alignment is based on the value of <b>textAscent()</b>,
-   * which many fonts do not specify correctly. It may be necessary to use a
-   * hack and offset by a few pixels by hand so that the offset looks
-   * correct. To do this as less of a hack, use some percentage of
-   * <b>textAscent()</b> or <b>textDescent()</b> so that the hack works even
-   * if you change the size of the font.
-   *
-   *
-   * @webref typography:attributes
-   * @webBrief Sets the current alignment for drawing text. 
-   * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
-   * @param alignY vertical alignment, either TOP, BOTTOM, CENTER, or BASELINE
-   * @see PApplet#loadFont(String)
-   * @see PFont
-   * @see PGraphics#text(String, float, float)
-   * @see PGraphics#textSize(float)
-   * @see PGraphics#textAscent()
-   * @see PGraphics#textDescent()
-   */
+  	/**
+	 *
+	 * Sets the current alignment for drawing text. The parameters LEFT, CENTER, and
+	 * RIGHT set the display characteristics of the letters in relation to the
+	 * values for the <b>x</b> and <b>y</b> parameters of the <b>text()</b>
+	 * function. <br />
+	 * <br />
+	 * An optional second parameter can be used to vertically align the text.
+	 * BASELINE is the default, and the vertical alignment will be reset to BASELINE
+	 * if the second parameter is not used. The TOP and CENTER parameters are
+	 * straightforward. The BOTTOM parameter offsets the line based on the current
+	 * <b>textDescent()</b>. For multiple lines, the final line will be aligned to
+	 * the bottom, with the previous lines appearing above it. <br />
+	 * <br />
+	 * When using <b>text()</b> with width and height parameters, BASELINE is
+	 * ignored, and treated as TOP. (Otherwise, text would by default draw outside
+	 * the box, since BASELINE is the default setting. BASELINE is not a useful
+	 * drawing mode for text drawn in a rectangle.) <br />
+	 * <br />
+	 * The vertical alignment is based on the value of <b>textAscent()</b>, which
+	 * many fonts do not specify correctly. It may be necessary to use a hack and
+	 * offset by a few pixels by hand so that the offset looks correct. To do this
+	 * as less of a hack, use some percentage of <b>textAscent()</b> or
+	 * <b>textDescent()</b> so that the hack works even if you change the size of
+	 * the font.
+	 *
+	 *
+	 * 
+	 * @webref typography:attributes
+	 * @webBrief Sets the current alignment for drawing text.
+	 * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
+	 * @param alignY vertical alignment, either TOP, BOTTOM, CENTER, or BASELINE
+	 * @see PApplet#loadFont(String)
+	 * @see PFont
+	 * @see PGraphics#text(String, float, float)
+	 * @see PGraphics#textSize(float)
+	 * @see PGraphics#textAscent()
+	 * @see PGraphics#textDescent()
+	 */
   public void textAlign(int alignX, int alignY) {
     if (recorder != null) recorder.textAlign(alignX, alignY);
     g.textAlign(alignX, alignY);
   }
 
 
-  /**
-   *
-   * Returns ascent of the current font at its current size. This information
-   * is useful for determining the height of the font above the baseline. For
-   * example, adding the <b>textAscent()</b> and <b>textDescent()</b> values
-   * will give you the total height of the line.
-   *
-   *
-   * @webref typography:metrics
-   * @webBrief Returns ascent of the current font at its current size.
-   * @see PGraphics#textDescent()
-   */
+  	/**
+	 *
+	 * Returns ascent of the current font at its current size. This information is
+	 * useful for determining the height of the font above the baseline.
+	 *
+	 *
+	 * @webref typography:metrics
+	 * @webBrief Returns ascent of the current font at its current size.
+	 * @see PGraphics#textDescent()
+	 */
   public float textAscent() {
     return g.textAscent();
   }
 
 
-  /**
-   *
-   * Returns descent of the current font at its current size. This
-   * information is useful for determining the height of the font below the
-   * baseline. For example, adding the <b>textAscent()</b> and
-   * <b>textDescent()</b> values will give you the total height of the line.
-   *
-   *
-   * @webref typography:metrics
-   * @webBrief Returns descent of the current font at its current size.
-   * @see PGraphics#textAscent()
-   */
+  	/**
+	 *
+	 * Returns descent of the current font at its current size. This information is
+	 * useful for determining the height of the font below the baseline.
+	 *
+	 * @webref typography:metrics
+	 * @webBrief Returns descent of the current font at its current size.
+	 * @see PGraphics#textAscent()
+	 */
   public float textDescent() {
     return g.textDescent();
   }
 
 
-  /**
-   *
-   * Sets the current font that will be drawn with the <b>text()</b>
-   * function. Fonts must be loaded with <b>loadFont()</b> before it can be
-   * used. This font will be used in all subsequent calls to the
-   * <b>text()</b> function. If no <b>size</b> parameter is input, the font
-   * will appear at its original size (the size it was created at with the
-   * "Create Font..." tool) until it is changed with <b>textSize()</b>. <br
-   * /> <br /> Because fonts are usually bitmaped, you should create fonts at
-   * the sizes that will be used most commonly. Using <b>textFont()</b>
-   * without the size parameter will result in the cleanest-looking text. <br
-   * /><br /> With the default (JAVA2D) and PDF renderers, it's also possible
-   * to enable the use of native fonts via the command
-   * <b>hint(ENABLE_NATIVE_FONTS)</b>. This will produce vector text in
-   * JAVA2D sketches and PDF output in cases where the vector data is
-   * available: when the font is still installed, or the font is created via
-   * the <b>createFont()</b> function (rather than the Create Font tool).
-   *
-   *
-   * @webref typography:loading_displaying
-   * @webBrief Sets the current font that will be drawn with the <b>text()</b>
-   * function.
-   * @param which any variable of the type PFont
-   * @see PApplet#createFont(String, float, boolean)
-   * @see PApplet#loadFont(String)
-   * @see PFont
-   * @see PGraphics#text(String, float, float)
-   * @see PGraphics#textSize(float)
-   */
+  	/**
+	 *
+	 * Sets the current font that will be drawn with the <b>text()</b> function.
+	 * Fonts must be created for Processing with <b>createFont()</b> or loaded with
+	 * <b>loadFont()</b> before they can be used. The font set through
+	 * <b>textFont()</b> will be used in all subsequent calls to the <b>text()</b>
+	 * function. If no <b>size</b> parameter is specified, the font size defaults to
+	 * the original size (the size in which it was created with the "Create Font..."
+	 * tool) overriding any previous calls to <b>textFont()</b> or
+	 * <b>textSize()</b>.<br />
+	 * <br />
+	 * When fonts are rendered as an image texture (as is the case with the P2D and
+	 * P3D renderers as well as with <b>loadFont()</b> and vlw files), you should
+	 * create fonts at the sizes that will be used most commonly. Using
+	 * <b>textFont()</b> without the size parameter will result in the cleanest
+	 * type.<br />
+	 * <br />
+	 *
+	 *
+	 * @webref typography:loading_displaying
+	 * @webBrief Sets the current font that will be drawn with the <b>text()</b>
+	 *           function.
+	 * @param which any variable of the type PFont
+	 * @see PApplet#createFont(String, float, boolean)
+	 * @see PApplet#loadFont(String)
+	 * @see PFont
+	 * @see PGraphics#text(String, float, float)
+	 * @see PGraphics#textSize(float)
+	 */
   public void textFont(PFont which) {
     if (recorder != null) recorder.textFont(which);
     g.textFont(which);
@@ -12631,58 +13012,59 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the spacing between lines of text in units of pixels. This setting
-   * will be used in all subsequent calls to the <b>text()</b> function.
-   *
-   *
-   * @webref typography:attributes
-   * @webBrief Sets the spacing between lines of text in units of pixels.
-   * @param leading the size in pixels for spacing between lines
-   * @see PApplet#loadFont(String)
-   * @see PFont#PFont
-   * @see PGraphics#text(String, float, float)
-   * @see PGraphics#textFont(PFont)
-   * @see PGraphics#textSize(float)
-   */
+  	/**
+	 *
+	 * Sets the spacing between lines of text in units of pixels. This setting will
+	 * be used in all subsequent calls to the <b>text()</b> function. Note, however,
+	 * that the leading is reset by <b>textSize()</b>. For example, if the leading
+	 * is set to 20 with <b>textLeading(20)</b>, then if <b>textSize(48)</b> is run
+	 * at a later point, the leading will be reset to the default for the text size
+	 * of 48.
+	 *
+	 *
+	 * @webref typography:attributes
+	 * @webBrief Sets the spacing between lines of text in units of pixels.
+	 * @param leading the size in pixels for spacing between lines
+	 * @see PApplet#loadFont(String)
+	 * @see PFont#PFont
+	 * @see PGraphics#text(String, float, float)
+	 * @see PGraphics#textFont(PFont)
+	 * @see PGraphics#textSize(float)
+	 */
   public void textLeading(float leading) {
     if (recorder != null) recorder.textLeading(leading);
     g.textLeading(leading);
   }
 
 
-  /**
-   *
-   * Sets the way text draws to the screen. In the default configuration, the
-   * <b>MODEL</b> mode, it's possible to rotate, scale, and place letters in
-   * two and three dimensional space.<br />
-   * <br />
-   * The <b>SHAPE</b> mode draws text using the the glyph outlines of
-   * individual characters rather than as textures. This mode is only
-   * supported with the <b>PDF</b> and <b>P3D</b> renderer settings. With the
-   * <b>PDF</b> renderer, you must call <b>textMode(SHAPE)</b> before any
-   * other drawing occurs. If the outlines are not available, then
-   * <b>textMode(SHAPE)</b> will be ignored and <b>textMode(MODEL)</b> will
-   * be used instead.<br />
-   * <br />
-   * The <b>textMode(SHAPE)</b> option in <b>P3D</b> can be combined with
-   * <b>beginRaw()</b> to write vector-accurate text to 2D and 3D output
-   * files, for instance <b>DXF</b> or <b>PDF</b>. The <b>SHAPE</b> mode is
-   * not currently optimized for <b>P3D</b>, so if recording shape data, use
-   * <b>textMode(MODEL)</b> until you're ready to capture the geometry with <b>beginRaw()</b>.
-   *
-   *
-   * @webref typography:attributes
-   * @webBrief Sets the way text draws to the screen. 
-   * @param mode either MODEL or SHAPE
-   * @see PApplet#loadFont(String)
-   * @see PFont#PFont
-   * @see PGraphics#text(String, float, float)
-   * @see PGraphics#textFont(PFont)
-   * @see PGraphics#beginRaw(PGraphics)
-   * @see PApplet#createFont(String, float, boolean)
-   */
+  	/**
+	 *
+	 * Sets the way text draws to the screen, either as texture maps or as vector
+	 * geometry. The default <b>textMode(MODEL)</b>, uses textures to render the
+	 * fonts. The <b>textMode(SHAPE)</b> mode draws text using the glyph outlines of
+	 * individual characters rather than as textures. This mode is only supported
+	 * with the <b>PDF</b> and <b>P3D</b> renderer settings. With the <b>PDF</b>
+	 * renderer, you must call <b>textMode(SHAPE)</b> before any other drawing
+	 * occurs. If the outlines are not available, then <b>textMode(SHAPE)</b> will
+	 * be ignored and <b>textMode(MODEL)</b> will be used instead.<br />
+	 * <br />
+	 * The <b>textMode(SHAPE)</b> option in <b>P3D</b> can be combined with
+	 * <b>beginRaw()</b> to write vector-accurate text to 2D and 3D output files,
+	 * for instance <b>DXF</b> or <b>PDF</b>. The <b>SHAPE</b> mode is not currently
+	 * optimized for <b>P3D</b>, so if recording shape data, use
+	 * <b>textMode(MODEL)</b> until you're ready to capture the geometry with
+	 * <b>beginRaw()</b>.
+	 *
+	 * @webref typography:attributes
+	 * @webBrief Sets the way text draws to the screen.
+	 * @param mode either MODEL or SHAPE
+	 * @see PApplet#loadFont(String)
+	 * @see PFont#PFont
+	 * @see PGraphics#text(String, float, float)
+	 * @see PGraphics#textFont(PFont)
+	 * @see PGraphics#beginRaw(PGraphics)
+	 * @see PApplet#createFont(String, float, boolean)
+	 */
   public void textMode(int mode) {
     if (recorder != null) recorder.textMode(mode);
     g.textMode(mode);
@@ -12744,40 +13126,45 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Draws text to the screen. Displays the information specified in the
-   * <b>data</b> or <b>stringdata</b> parameters on the screen in the
-   * position specified by the <b>x</b> and <b>y</b> parameters and the
-   * optional <b>z</b> parameter. A default font will be used unless a font
-   * is set with the <b>textFont()</b> function. Change the color of the text
-   * with the <b>fill()</b> function. The text displays in relation to the
-   * <b>textAlign()</b> function, which gives the option to draw to the left,
-   * right, and center of the coordinates.
-   * <br /><br />
-   * The <b>x2</b> and <b>y2</b> parameters define a rectangular area to
-   * display within and may only be used with string data. For text drawn
-   * inside a rectangle, the coordinates are interpreted based on the current
-   * <b>rectMode()</b> setting.
-   *
-   *
-   * @webref typography:loading_displaying
-   * @webBrief Draws text to the screen.
-   * @param c the alphanumeric character to be displayed
-   * @param x x-coordinate of text
-   * @param y y-coordinate of text
-   * @see PGraphics#textAlign(int, int)
-   * @see PGraphics#textFont(PFont)
-   * @see PGraphics#textMode(int)
-   * @see PGraphics#textSize(float)
-   * @see PGraphics#textLeading(float)
-   * @see PGraphics#textWidth(String)
-   * @see PGraphics#textAscent()
-   * @see PGraphics#textDescent()
-   * @see PGraphics#rectMode(int)
-   * @see PGraphics#fill(int, float)
-   * @see_external String
-   */
+  	/**
+	 *
+	 * Draws text to the screen. Displays the information specified in the first
+	 * parameter on the screen in the position specified by the additional
+	 * parameters. A default font will be used unless a font is set with the
+	 * <b>textFont()</b> function and a default size will be used unless a font is
+	 * set with <b>textSize()</b>. Change the color of the text with the
+	 * <b>fill()</b> function. The text displays in relation to the
+	 * <b>textAlign()</b> function, which gives the option to draw to the left,
+	 * right, and center of the coordinates.<br />
+	 * <br />
+	 * The <b>x2</b> and <b>y2</b> parameters define a rectangular area to display
+	 * within and may only be used with string data. When these parameters are
+	 * specified, they are interpreted based on the current <b>rectMode()</b>
+	 * setting. Text that does not fit completely within the rectangle specified
+	 * will not be drawn to the screen.<br />
+	 * <br />
+	 * Note that Processing now lets you call <b>text()</b> without first specifying
+	 * a PFont with <b>textFont()</b>. In that case, a generic sans-serif font will
+	 * be used instead. (See the third example above.)
+	 *
+	 *
+	 * @webref typography:loading_displaying
+	 * @webBrief Draws text to the screen.
+	 * @param c the alphanumeric character to be displayed
+	 * @param x x-coordinate of text
+	 * @param y y-coordinate of text
+	 * @see PGraphics#textAlign(int, int)
+	 * @see PGraphics#textFont(PFont)
+	 * @see PGraphics#textMode(int)
+	 * @see PGraphics#textSize(float)
+	 * @see PGraphics#textLeading(float)
+	 * @see PGraphics#textWidth(String)
+	 * @see PGraphics#textAscent()
+	 * @see PGraphics#textDescent()
+	 * @see PGraphics#rectMode(int)
+	 * @see PGraphics#fill(int, float)
+	 * @see_external String
+	 */
   public void text(char c, float x, float y) {
     if (recorder != null) recorder.text(c, x, y);
     g.text(c, x, y);
@@ -12941,7 +13328,7 @@ public class PApplet implements PConstants {
    * Note that these functions are always used together. They allow
    * you to change the style and transformation settings and later
    * return to what you had. When a new state is started with push(),
-   * it builds on the current style and transform information.<br />
+   * it builds on the current style and transform information.
    * <br />
    * <br />
    * <b>push()</b> stores information related to the current
@@ -13021,34 +13408,36 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Specifies an amount to displace objects within the display window. The
-   * <b>x</b> parameter specifies left/right translation, the <b>y</b>
-   * parameter specifies up/down translation, and the <b>z</b> parameter
-   * specifies translations toward/away from the screen. Using this function
-   * with the <b>z</b> parameter requires using P3D as a parameter in
-   * combination with size as shown in the above example. Transformations
-   * apply to everything that happens after and subsequent calls to the
-   * function accumulates the effect. For example, calling <b>translate(50,
-   * 0)</b> and then <b>translate(20, 0)</b> is the same as <b>translate(70,
-   * 0)</b>. If <b>translate()</b> is called within <b>draw()</b>, the
-   * transformation is reset when the loop begins again. This function can be
-   * further controlled by the <b>pushMatrix()</b> and <b>popMatrix()</b>.
-   *
-   *
-   * @webref transform
-   * @webBrief Specifies an amount to displace objects within the display window.
-   * @param x left/right translation
-   * @param y up/down translation
-   * @see PGraphics#popMatrix()
-   * @see PGraphics#pushMatrix()
-   * @see PGraphics#rotate(float)
-   * @see PGraphics#rotateX(float)
-   * @see PGraphics#rotateY(float)
-   * @see PGraphics#rotateZ(float)
-   * @see PGraphics#scale(float, float, float)
-   */
+  	/**
+	 *
+	 * Specifies an amount to displace objects within the display window. The
+	 * <b>x</b> parameter specifies left/right translation, the <b>y</b> parameter
+	 * specifies up/down translation, and the <b>z</b> parameter specifies
+	 * translations toward/away from the screen. Using this function with the
+	 * <b>z</b> parameter requires using P3D as a parameter in combination with size
+	 * as shown in the above example. <br />
+	 * <br />
+	 * Transformations are cumulative and apply to everything that happens after and
+	 * subsequent calls to the function accumulates the effect. For example, calling
+	 * <b>translate(50, 0)</b> and then <b>translate(20, 0)</b> is the same as
+	 * <b>translate(70, 0)</b>. If <b>translate()</b> is called within
+	 * <b>draw()</b>, the transformation is reset when the loop begins again. This
+	 * function can be further controlled by using <b>pushMatrix()</b> and
+	 * <b>popMatrix()</b>.
+	 *
+	 *
+	 * @webref transform
+	 * @webBrief Specifies an amount to displace objects within the display window.
+	 * @param x left/right translation
+	 * @param y up/down translation
+	 * @see PGraphics#popMatrix()
+	 * @see PGraphics#pushMatrix()
+	 * @see PGraphics#rotate(float)
+	 * @see PGraphics#rotateX(float)
+	 * @see PGraphics#rotateY(float)
+	 * @see PGraphics#rotateZ(float)
+	 * @see PGraphics#scale(float, float, float)
+	 */
   public void translate(float x, float y) {
     if (recorder != null) recorder.translate(x, y);
     g.translate(x, y);
@@ -13216,34 +13605,36 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Increases or decreases the size of a shape by expanding and contracting
-   * vertices. Objects always scale from their relative origin to the
-   * coordinate system. Scale values are specified as decimal percentages.
-   * For example, the function call <b>scale(2.0)</b> increases the dimension
-   * of a shape by 200%. Transformations apply to everything that happens
-   * after and subsequent calls to the function multiply the effect. For
-   * example, calling <b>scale(2.0)</b> and then <b>scale(1.5)</b> is the
-   * same as <b>scale(3.0)</b>. If <b>scale()</b> is called within
-   * <b>draw()</b>, the transformation is reset when the loop begins again.
-   * Using this fuction with the <b>z</b> parameter requires using P3D as a
-   * parameter for <b>size()</b> as shown in the example above. This function
-   * can be further controlled by <b>pushMatrix()</b> and <b>popMatrix()</b>.
-   *
-   *
-   * @webref transform
-   * @webBrief Increases or decreases the size of a shape by expanding and contracting
-   * vertices. 
-   * @param s percentage to scale the object
-   * @see PGraphics#pushMatrix()
-   * @see PGraphics#popMatrix()
-   * @see PGraphics#translate(float, float, float)
-   * @see PGraphics#rotate(float)
-   * @see PGraphics#rotateX(float)
-   * @see PGraphics#rotateY(float)
-   * @see PGraphics#rotateZ(float)
-   */
+  	/**
+	 *
+	 * Increases or decreases the size of a shape by expanding and contracting
+	 * vertices. Objects always scale from their relative origin to the coordinate
+	 * system. Scale values are specified as decimal percentages. For example, the
+	 * function call <b>scale(2.0)</b> increases the dimension of a shape by
+	 * 200%.<br />
+	 * <br />
+	 * Transformations apply to everything that happens after and subsequent calls
+	 * to the function multiply the effect. For example, calling <b>scale(2.0)</b>
+	 * and then <b>scale(1.5)</b> is the same as <b>scale(3.0)</b>. If
+	 * <b>scale()</b> is called within <b>draw()</b>, the transformation is reset
+	 * when the loop begins again. Using this function with the <b>z</b> parameter
+	 * requires using P3D as a parameter for <b>size()</b>, as shown in the third
+	 * example above. This function can be further controlled with
+	 * <b>pushMatrix()</b> and <b>popMatrix()</b>.
+	 *
+	 *
+	 * @webref transform
+	 * @webBrief Increases or decreases the size of a shape by expanding and
+	 *           contracting vertices.
+	 * @param s percentage to scale the object
+	 * @see PGraphics#pushMatrix()
+	 * @see PGraphics#popMatrix()
+	 * @see PGraphics#translate(float, float, float)
+	 * @see PGraphics#rotate(float)
+	 * @see PGraphics#rotateX(float)
+	 * @see PGraphics#rotateY(float)
+	 * @see PGraphics#rotateZ(float)
+	 */
   public void scale(float s) {
     if (recorder != null) recorder.scale(s);
     g.scale(s);
@@ -13345,19 +13736,19 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Replaces the current matrix with the identity matrix. The equivalent
-   * function in OpenGL is glLoadIdentity().
-   *
-   *
-   * @webref transform
-   * @webBrief Replaces the current matrix with the identity matrix.
-   * @see PGraphics#pushMatrix()
-   * @see PGraphics#popMatrix()
-   * @see PGraphics#applyMatrix(PMatrix)
-   * @see PGraphics#printMatrix()
-   */
+  	/**
+	 *
+	 * Replaces the current matrix with the identity matrix. The equivalent function
+	 * in OpenGL is <b>glLoadIdentity()</b>.
+	 *
+	 *
+	 * @webref transform
+	 * @webBrief Replaces the current matrix with the identity matrix.
+	 * @see PGraphics#pushMatrix()
+	 * @see PGraphics#popMatrix()
+	 * @see PGraphics#applyMatrix(PMatrix)
+	 * @see PGraphics#printMatrix()
+	 */
   public void resetMatrix() {
     if (recorder != null) recorder.resetMatrix();
     g.resetMatrix();
@@ -13620,21 +14011,21 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets an orthographic projection and defines a parallel clipping volume.
-   * All objects with the same dimension appear the same size, regardless of
-   * whether they are near or far from the camera. The parameters to this
-   * function specify the clipping volume where left and right are the
-   * minimum and maximum x values, top and bottom are the minimum and maximum
-   * y values, and near and far are the minimum and maximum z values. If no
-   * parameters are given, the default is used: ortho(0, width, 0, height,
-   * -10, 10).
-   *
-   *
-   * @webref lights_camera:camera
-   * @webBrief Sets an orthographic projection and defines a parallel clipping volume.
-   */
+  	/**
+	 *
+	 * Sets an orthographic projection and defines a parallel clipping volume. All
+	 * objects with the same dimension appear the same size, regardless of whether
+	 * they are near or far from the camera. The parameters to this function specify
+	 * the clipping volume where left and right are the minimum and maximum x
+	 * values, top and bottom are the minimum and maximum y values, and near and far
+	 * are the minimum and maximum z values. If no parameters are given, the default
+	 * is used: ortho(-width/2, width/2, -height/2, height/2).
+	 *
+	 *
+	 * @webref lights_camera:camera
+	 * @webBrief Sets an orthographic projection and defines a parallel clipping
+	 *           volume.
+	 */
   public void ortho() {
     if (recorder != null) recorder.ortho();
     g.ortho();
@@ -13702,26 +14093,44 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets a perspective matrix defined through the parameters. Works like
-   * glFrustum, except it wipes out the current perspective matrix rather
-   * than muliplying itself with it.
-   *
-   *
-   * @webref lights_camera:camera
-   * @webBrief Sets a perspective matrix defined through the parameters.
-   * @param left left coordinate of the clipping plane
-   * @param right right coordinate of the clipping plane
-   * @param bottom bottom coordinate of the clipping plane
-   * @param top top coordinate of the clipping plane
-   * @param near near component of the clipping plane; must be greater than zero
-   * @param far far component of the clipping plane; must be greater than the near value
-   * @see PGraphics#camera(float, float, float, float, float, float, float, float, float)
-   * @see PGraphics#beginCamera()
-   * @see PGraphics#endCamera()
-   * @see PGraphics#perspective(float, float, float, float)
-   */
+  	/**
+	 *
+	 * Sets a perspective matrix as defined by the parameters.<br />
+	 * <br />
+	 * A frustum is a geometric form: a pyramid with its top cut off. With the
+	 * viewer's eye at the imaginary top of the pyramid, the six planes of the
+	 * frustum act as clipping planes when rendering a 3D view. Thus, any form
+	 * inside the clipping planes is rendered and visible; anything outside those
+	 * planes is not visible.<br />
+	 * <br />
+	 * Setting the frustum has the effect of changing the <em>perspective</em> with
+	 * which the scene is rendered. This can be achieved more simply in many cases
+	 * by using <strong>perspective()</strong>.<br />
+	 * <br />
+	 * Note that the near value must be greater than zero (as the point of the
+	 * frustum "pyramid" cannot converge "behind" the viewer). Similarly, the far
+	 * value must be greater than the near value (as the "far" plane of the frustum
+	 * must be "farther away" from the viewer than the near plane).<br />
+	 * <br />
+	 * Works like glFrustum, except it wipes out the current perspective matrix
+	 * rather than multiplying itself with it.
+	 *
+	 *
+	 * @webref lights_camera:camera
+	 * @webBrief Sets a perspective matrix defined through the parameters.
+	 * @param left   left coordinate of the clipping plane
+	 * @param right  right coordinate of the clipping plane
+	 * @param bottom bottom coordinate of the clipping plane
+	 * @param top    top coordinate of the clipping plane
+	 * @param near   near component of the clipping plane; must be greater than zero
+	 * @param far    far component of the clipping plane; must be greater than the
+	 *               near value
+	 * @see PGraphics#camera(float, float, float, float, float, float, float, float,
+	 *      float)
+	 * @see PGraphics#beginCamera()
+	 * @see PGraphics#endCamera()
+	 * @see PGraphics#perspective(float, float, float, float)
+	 */
   public void frustum(float left, float right,
                       float bottom, float top,
                       float near, float far) {
@@ -13962,80 +14371,68 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the width of the stroke used for lines, points, and the border
-   * around shapes. All widths are set in units of pixels.
-   * <br/> <br/>
-   * When drawing with P3D, series of connected lines (such as the stroke
-   * around a polygon, triangle, or ellipse) produce unattractive results
-   * when a thick stroke weight is set (<a
-   * href="http://code.google.com/p/processing/issues/detail?id=123">see
-   * Issue 123</a>). With P3D, the minimum and maximum values for
-   * <b>strokeWeight()</b> are controlled by the graphics card and the
-   * operating system's OpenGL implementation. For instance, the thickness
-   * may not go higher than 10 pixels.
-   *
-   *
-   * @webref shape:attributes
-   * @webBrief Sets the width of the stroke used for lines, points, and the border
-   * around shapes.
-   * @param weight the weight (in pixels) of the stroke
-   * @see PGraphics#stroke(int, float)
-   * @see PGraphics#strokeJoin(int)
-   * @see PGraphics#strokeCap(int)
-   */
+  	/**
+	 *
+	 * Sets the width of the stroke used for lines, points, and the border around
+	 * shapes. All widths are set in units of pixels. <br />
+	 * <br />
+	 * Using point() with strokeWeight(1) or smaller may draw nothing to the screen,
+	 * depending on the graphics settings of the computer. Workarounds include
+	 * setting the pixel using <b>set()</s> or drawing the point using either
+	 * <b>circle()</b> or <b>square()</b>.
+	 *
+	 *
+	 * @webref shape:attributes
+	 * @webBrief Sets the width of the stroke used for lines, points, and the border
+	 *           around shapes.
+	 * @param weight the weight (in pixels) of the stroke
+	 * @see PGraphics#stroke(int, float)
+	 * @see PGraphics#strokeJoin(int)
+	 * @see PGraphics#strokeCap(int)
+	 */
   public void strokeWeight(float weight) {
     if (recorder != null) recorder.strokeWeight(weight);
     g.strokeWeight(weight);
   }
 
 
-  /**
-   *
-   * Sets the style of the joints which connect line segments. These joints
-   * are either mitered, beveled, or rounded and specified with the
-   * corresponding parameters MITER, BEVEL, and ROUND. The default joint is
-   * MITER.
-   * <br/> <br/>
-   * This function is not available with the P3D renderer, (<a
-   * href="http://code.google.com/p/processing/issues/detail?id=123">see
-   * Issue 123</a>). More information about the renderers can be found in the
-   * <b>size()</b> reference.
-   *
-   *
-   * @webref shape:attributes
-   * @webBrief Sets the style of the joints which connect line segments.
-   * @param join either MITER, BEVEL, ROUND
-   * @see PGraphics#stroke(int, float)
-   * @see PGraphics#strokeWeight(float)
-   * @see PGraphics#strokeCap(int)
-   */
+  	/**
+	 *
+	 * Sets the style of the joints which connect line segments. These joints are
+	 * either mitered, beveled, or rounded and specified with the corresponding
+	 * parameters MITER, BEVEL, and ROUND. The default joint is MITER.
+	 *
+	 *
+	 * @webref shape:attributes
+	 * @webBrief Sets the style of the joints which connect line segments.
+	 * @param join either MITER, BEVEL, ROUND
+	 * @see PGraphics#stroke(int, float)
+	 * @see PGraphics#strokeWeight(float)
+	 * @see PGraphics#strokeCap(int)
+	 */
   public void strokeJoin(int join) {
     if (recorder != null) recorder.strokeJoin(join);
     g.strokeJoin(join);
   }
 
 
-  /**
-   *
-   * Sets the style for rendering line endings. These ends are either
-   * squared, extended, or rounded and specified with the corresponding
-   * parameters SQUARE, PROJECT, and ROUND. The default cap is ROUND.
-   * <br/> <br/>
-   * This function is not available with the P3D renderer (<a
-   * href="http://code.google.com/p/processing/issues/detail?id=123">see
-   * Issue 123</a>). More information about the renderers can be found in the
-   * <b>size()</b> reference.
-   *
-   * @webref shape:attributes
-   * @webBrief Sets the style for rendering line endings.
-   * @param cap either SQUARE, PROJECT, or ROUND
-   * @see PGraphics#stroke(int, float)
-   * @see PGraphics#strokeWeight(float)
-   * @see PGraphics#strokeJoin(int)
-   * @see PApplet#size(int, int, String, String)
-   */
+  	/**
+	 *
+	 * Sets the style for rendering line endings. These ends are either squared,
+	 * extended, or rounded, each of which specified with the corresponding
+	 * parameters: SQUARE, PROJECT, and ROUND. The default cap is ROUND. <br />
+	 * <br />
+	 * To make <b>point()</b> appear square, use <b>strokeCap(PROJECT)</b>. Using
+	 * <b>strokeCap(SQUARE)</b> (no cap) causes points to become invisible.
+	 *
+	 * @webref shape:attributes
+	 * @webBrief Sets the style for rendering line endings.
+	 * @param cap either SQUARE, PROJECT, or ROUND
+	 * @see PGraphics#stroke(int, float)
+	 * @see PGraphics#strokeWeight(float)
+	 * @see PGraphics#strokeJoin(int)
+	 * @see PApplet#size(int, int, String, String)
+	 */
   public void strokeCap(int cap) {
     if (recorder != null) recorder.strokeCap(cap);
     g.strokeCap(cap);
@@ -14060,38 +14457,42 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the color used to draw lines and borders around shapes. This color
-   * is either specified in terms of the RGB or HSB color depending on the
-   * current <b>colorMode()</b> (the default color space is RGB, with each
-   * value in the range from 0 to 255).
-   * <br/> <br/>
-   * When using hexadecimal notation to specify a color, use "#" or "0x"
-   * before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six
-   * digits to specify a color (the way colors are specified in HTML and
-   * CSS). When using the hexadecimal notation starting with "0x", the
-   * hexadecimal value must be specified with eight characters; the first two
-   * characters define the alpha component and the remainder the red, green,
-   * and blue components.
-   * <br/> <br/>
-   * The value for the parameter "gray" must be less than or equal to the
-   * current maximum value as specified by <b>colorMode()</b>. The default
-   * maximum value is 255.
-   *
-   * @webref color:setting
-   * @webBrief Sets the color used to draw lines and borders around shapes.
-   * @param rgb color value in hexadecimal notation
-   * @see PGraphics#noStroke()
-   * @see PGraphics#strokeWeight(float)
-   * @see PGraphics#strokeJoin(int)
-   * @see PGraphics#strokeCap(int)
-   * @see PGraphics#fill(int, float)
-   * @see PGraphics#noFill()
-   * @see PGraphics#tint(int, float)
-   * @see PGraphics#background(float, float, float, float)
-   * @see PGraphics#colorMode(int, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Sets the color used to draw lines and borders around shapes. This color is
+	 * either specified in terms of the RGB or HSB color depending on the current
+	 * <b>colorMode().</b> The default color space is RGB, with each value in the
+	 * range from 0 to 255. <br />
+	 * <br />
+	 * When using hexadecimal notation to specify a color, use "<b>#</b>" or
+	 * "<b>0x</b>" before the values (e.g., <b>#CCFFAA</b> or <b>0xFFCCFFAA</b>).
+	 * The <b>#</b> syntax uses six digits to specify a color (just as colors are
+	 * typically specified in HTML and CSS). When using the hexadecimal notation
+	 * starting with "<b>0x</b>", the hexadecimal value must be specified with eight
+	 * characters; the first two characters define the alpha component, and the
+	 * remainder define the red, green, and blue components. <br />
+	 * <br />
+	 * The value for the gray parameter must be less than or equal to the current
+	 * maximum value as specified by <b>colorMode()</b>. The default maximum value
+	 * is 255. <br />
+	 * <br />
+	 * When drawing in 2D with the default renderer, you may need
+	 * <b>hint(ENABLE_STROKE_PURE)</b> to improve drawing quality (at the expense of
+	 * performance). See the hint() documentation for more details.
+	 *
+	 * @webref color:setting
+	 * @webBrief Sets the color used to draw lines and borders around shapes.
+	 * @param rgb color value in hexadecimal notation
+	 * @see PGraphics#noStroke()
+	 * @see PGraphics#strokeWeight(float)
+	 * @see PGraphics#strokeJoin(int)
+	 * @see PGraphics#strokeCap(int)
+	 * @see PGraphics#fill(int, float)
+	 * @see PGraphics#noFill()
+	 * @see PGraphics#tint(int, float)
+	 * @see PGraphics#background(float, float, float, float)
+	 * @see PGraphics#colorMode(int, float, float, float, float)
+	 */
   public void stroke(int rgb) {
     if (recorder != null) recorder.stroke(rgb);
     g.stroke(rgb);
@@ -14158,39 +14559,39 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the fill value for displaying images. Images can be tinted to
-   * specified colors or made transparent by setting the alpha.<br />
-   * <br />
-   * To make an image transparent, but not change it's color, use white as
-   * the tint color and specify an alpha value. For instance, tint(255, 128)
-   * will make an image 50% transparent (unless <b>colorMode()</b> has been
-   * used).<br />
-   * <br />
-   * When using hexadecimal notation to specify a color, use "#" or "0x"
-   * before the values (e.g. #CCFFAA, 0xFFCCFFAA). The # syntax uses six
-   * digits to specify a color (the way colors are specified in HTML and
-   * CSS). When using the hexadecimal notation starting with "0x", the
-   * hexadecimal value must be specified with eight characters; the first two
-   * characters define the alpha component and the remainder the red, green,
-   * and blue components.<br />
-   * <br />
-   * The value for the parameter "gray" must be less than or equal to the
-   * current maximum value as specified by <b>colorMode()</b>. The default
-   * maximum value is 255.<br />
-   * <br />
-   * The <b>tint()</b> function is also used to control the coloring of
-   * textures in 3D.
-   *
-   *
-   * @webref image:loading_displaying
-   * @webBrief Sets the fill value for displaying images.
-   * @usage web_application
-   * @param rgb color value in hexadecimal notation
-   * @see PGraphics#noTint()
-   * @see PGraphics#image(PImage, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Sets the fill value for displaying images. Images can be tinted to specified
+	 * colors or made transparent by including an alpha value.<br />
+	 * <br />
+	 * To apply transparency to an image without affecting its color, use white as
+	 * the tint color and specify an alpha value. For instance, <b>tint(255,
+	 * 128)</b> will make an image 50% transparent (assuming the default alpha range
+	 * of 0-255, which can be changed with <b>colorMode()</b>). <br />
+	 * <br />
+	 * When using hexadecimal notation to specify a color, use "<b>#</b>" or
+	 * "<b>0x</b>" before the values (e.g., <b>#CCFFAA</b> or <b>0xFFCCFFAA</b>).
+	 * The <b>#</b> syntax uses six digits to specify a color (just as colors are
+	 * typically specified in HTML and CSS). When using the hexadecimal notation
+	 * starting with "<b>0x</b>", the hexadecimal value must be specified with eight
+	 * characters; the first two characters define the alpha component, and the
+	 * remainder define the red, green, and blue components. <br />
+	 * <br />
+	 * The value for the gray parameter must be less than or equal to the current
+	 * maximum value as specified by <b>colorMode()</b>. The default maximum value
+	 * is 255. <br />
+	 * <br />
+	 * The <b>tint()</b> function is also used to control the coloring of textures
+	 * in 3D.
+	 *
+	 *
+	 * @webref image:loading_displaying
+	 * @webBrief Sets the fill value for displaying images.
+	 * @usage web_application
+	 * @param rgb color value in hexadecimal notation
+	 * @see PGraphics#noTint()
+	 * @see PGraphics#image(PImage, float, float, float, float)
+	 */
   public void tint(int rgb) {
     if (recorder != null) recorder.tint(rgb);
     g.tint(rgb);
@@ -14543,29 +14944,30 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Adds an ambient light. Ambient light doesn't come from a specific
-   * direction, the rays have light have bounced around so much that objects
-   * are evenly lit from all sides. Ambient lights are almost always used in
-   * combination with other types of lights. Lights need to be included in
-   * the <b>draw()</b> to remain persistent in a looping program. Placing
-   * them in the <b>setup()</b> of a looping program will cause them to only
-   * have an effect the first time through the loop. The effect of the
-   * parameters is determined by the current color mode.
-   *
-   *
-   * @webref lights_camera:lights
-   * @webBrief Adds an ambient light.
-   * @usage web_application
-   * @param v1 red or hue value (depending on current color mode)
-   * @param v2 green or saturation value (depending on current color mode)
-   * @param v3 blue or brightness value (depending on current color mode)
-   * @see PGraphics#lights()
-   * @see PGraphics#directionalLight(float, float, float, float, float, float)
-   * @see PGraphics#pointLight(float, float, float, float, float, float)
-   * @see PGraphics#spotLight(float, float, float, float, float, float, float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Adds an ambient light. Ambient light doesn't come from a specific direction,
+	 * the rays of light have bounced around so much that objects are evenly lit
+	 * from all sides. Ambient lights are almost always used in combination with
+	 * other types of lights. Lights need to be included in the <b>draw()</b> to
+	 * remain persistent in a looping program. Placing them in the <b>setup()</b> of
+	 * a looping program will cause them to only have an effect the first time
+	 * through the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are
+	 * interpreted as either RGB or HSB values, depending on the current color mode.
+	 *
+	 *
+	 * @webref lights_camera:lights
+	 * @webBrief Adds an ambient light.
+	 * @usage web_application
+	 * @param v1 red or hue value (depending on current color mode)
+	 * @param v2 green or saturation value (depending on current color mode)
+	 * @param v3 blue or brightness value (depending on current color mode)
+	 * @see PGraphics#lights()
+	 * @see PGraphics#directionalLight(float, float, float, float, float, float)
+	 * @see PGraphics#pointLight(float, float, float, float, float, float)
+	 * @see PGraphics#spotLight(float, float, float, float, float, float, float,
+	 *      float, float, float, float)
+	 */
   public void ambientLight(float v1, float v2, float v3) {
     if (recorder != null) recorder.ambientLight(v1, v2, v3);
     g.ambientLight(v1, v2, v3);
@@ -14620,31 +15022,31 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Adds a point light. Lights need to be included in the <b>draw()</b> to
-   * remain persistent in a looping program. Placing them in the
-   * <b>setup()</b> of a looping program will cause them to only have an
-   * effect the first time through the loop. The affect of the <b>v1</b>,
-   * <b>v2</b>, and <b>v3</b> parameters is determined by the current color
-   * mode. The <b>x</b>, <b>y</b>, and <b>z</b> parameters set the position
-   * of the light.
-   *
-   *
-   * @webref lights_camera:lights
-   * @webBrief Adds a point light.
-   * @usage web_application
-   * @param v1 red or hue value (depending on current color mode)
-   * @param v2 green or saturation value (depending on current color mode)
-   * @param v3 blue or brightness value (depending on current color mode)
-   * @param x x-coordinate of the light
-   * @param y y-coordinate of the light
-   * @param z z-coordinate of the light
-   * @see PGraphics#lights()
-   * @see PGraphics#directionalLight(float, float, float, float, float, float)
-   * @see PGraphics#ambientLight(float, float, float, float, float, float)
-   * @see PGraphics#spotLight(float, float, float, float, float, float, float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Adds a point light. Lights need to be included in the <b>draw()</b> to remain
+	 * persistent in a looping program. Placing them in the <b>setup()</b> of a
+	 * looping program will cause them to only have an effect the first time through
+	 * the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are interpreted
+	 * as either RGB or HSB values, depending on the current color mode. The
+	 * <b>x</b>, <b>y</b>, and <b>z</b> parameters set the position of the light.
+	 *
+	 *
+	 * @webref lights_camera:lights
+	 * @webBrief Adds a point light.
+	 * @usage web_application
+	 * @param v1 red or hue value (depending on current color mode)
+	 * @param v2 green or saturation value (depending on current color mode)
+	 * @param v3 blue or brightness value (depending on current color mode)
+	 * @param x  x-coordinate of the light
+	 * @param y  y-coordinate of the light
+	 * @param z  z-coordinate of the light
+	 * @see PGraphics#lights()
+	 * @see PGraphics#directionalLight(float, float, float, float, float, float)
+	 * @see PGraphics#ambientLight(float, float, float, float, float, float)
+	 * @see PGraphics#spotLight(float, float, float, float, float, float, float,
+	 *      float, float, float, float)
+	 */
   public void pointLight(float v1, float v2, float v3,
                          float x, float y, float z) {
     if (recorder != null) recorder.pointLight(v1, v2, v3, x, y, z);
@@ -14652,38 +15054,40 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Adds a spot light. Lights need to be included in the <b>draw()</b> to
-   * remain persistent in a looping program. Placing them in the
-   * <b>setup()</b> of a looping program will cause them to only have an
-   * effect the first time through the loop. The affect of the <b>v1</b>,
-   * <b>v2</b>, and <b>v3</b> parameters is determined by the current color
-   * mode. The <b>x</b>, <b>y</b>, and <b>z</b> parameters specify the
-   * position of the light and <b>nx</b>, <b>ny</b>, <b>nz</b> specify the
-   * direction or light. The <b>angle</b> parameter affects angle of the
-   * spotlight cone.
-   *
-   *
-   * @webref lights_camera:lights
-   * @webBrief Adds a spot light.
-   * @usage web_application
-   * @param v1 red or hue value (depending on current color mode)
-   * @param v2 green or saturation value (depending on current color mode)
-   * @param v3 blue or brightness value (depending on current color mode)
-   * @param x x-coordinate of the light
-   * @param y y-coordinate of the light
-   * @param z z-coordinate of the light
-   * @param nx direction along the x axis
-   * @param ny direction along the y axis
-   * @param nz direction along the z axis
-   * @param angle angle of the spotlight cone
-   * @param concentration exponent determining the center bias of the cone
-   * @see PGraphics#lights()
-   * @see PGraphics#directionalLight(float, float, float, float, float, float)
-   * @see PGraphics#pointLight(float, float, float, float, float, float)
-   * @see PGraphics#ambientLight(float, float, float, float, float, float)
-   */
+  	/**
+	 *
+	 * Adds a spot light. Lights need to be included in the <b>draw()</b> to remain
+	 * persistent in a looping program. Placing them in the <b>setup()</b> of a
+	 * looping program will cause them to only have an effect the first time through
+	 * the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are interpreted
+	 * as either RGB or HSB values, depending on the current color mode. The
+	 * <b>x</b>, <b>y</b>, and <b>z</b> parameters specify the position of the light
+	 * and <b>nx</b>, <b>ny</b>, <b>nz</b> specify the direction of light. The
+	 * <b>angle</b> parameter affects angle of the spotlight cone, while
+	 * <b>concentration</b> sets the bias of light focusing toward the center of
+	 * that cone.
+	 *
+	 * @webref lights_camera:lights
+	 * @webBrief Adds a spot light.
+	 * @usage web_application
+	 * @param v1            red or hue value (depending on current color mode)
+	 * @param v2            green or saturation value (depending on current color
+	 *                      mode)
+	 * @param v3            blue or brightness value (depending on current color
+	 *                      mode)
+	 * @param x             x-coordinate of the light
+	 * @param y             y-coordinate of the light
+	 * @param z             z-coordinate of the light
+	 * @param nx            direction along the x axis
+	 * @param ny            direction along the y axis
+	 * @param nz            direction along the z axis
+	 * @param angle         angle of the spotlight cone
+	 * @param concentration exponent determining the center bias of the cone
+	 * @see PGraphics#lights()
+	 * @see PGraphics#directionalLight(float, float, float, float, float, float)
+	 * @see PGraphics#pointLight(float, float, float, float, float, float)
+	 * @see PGraphics#ambientLight(float, float, float, float, float, float)
+	 */
   public void spotLight(float v1, float v2, float v3,
                         float x, float y, float z,
                         float nx, float ny, float nz,
@@ -14693,35 +15097,38 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Sets the falloff rates for point lights, spot lights, and ambient
-   * lights. The parameters are used to determine the falloff with the
-   * following equation:<br /><br />d = distance from light position to
-   * vertex position<br />falloff = 1 / (CONSTANT + d * LINEAR + (d*d) *
-   * QUADRATIC)<br /><br />Like <b>fill()</b>, it affects only the elements
-   * which are created after it in the code. The default value if
-   * <b>LightFalloff(1.0, 0.0, 0.0)</b>. Thinking about an ambient light with
-   * a falloff can be tricky. It is used, for example, if you wanted a region
-   * of your scene to be lit ambiently one color and another region to be lit
-   * ambiently by another color, you would use an ambient light with location
-   * and falloff. You can think of it as a point light that doesn't care
-   * which direction a surface is facing.
-   *
-   *
-   * @webref lights_camera:lights
-   * @webBrief Sets the falloff rates for point lights, spot lights, and ambient
-   * lights.
-   * @usage web_application
-   * @param constant constant value or determining falloff
-   * @param linear linear value for determining falloff
-   * @param quadratic quadratic value for determining falloff
-   * @see PGraphics#lights()
-   * @see PGraphics#ambientLight(float, float, float, float, float, float)
-   * @see PGraphics#pointLight(float, float, float, float, float, float)
-   * @see PGraphics#spotLight(float, float, float, float, float, float, float, float, float, float, float)
-   * @see PGraphics#lightSpecular(float, float, float)
-   */
+  	/**
+	 *
+	 * Sets the falloff rates for point lights, spot lights, and ambient lights.
+	 * Like <b>fill()</b>, it affects only the elements which are created after it
+	 * in the code. The default value is <b>lightFalloff(1.0, 0.0, 0.0)</b>, and the
+	 * parameters are used to calculate the falloff with the following
+	 * equation:<br />
+	 * <br />
+	 * d = distance from light position to vertex position<br />
+	 * falloff = 1 / (CONSTANT + d * LINEAR + (d*d) * QUADRATIC)<br />
+	 * <br />
+	 * Thinking about an ambient light with a falloff can be tricky. If you want a
+	 * region of your scene to be lit ambiently with one color and another region to
+	 * be lit ambiently with another color, you could use an ambient light with
+	 * location and falloff. You can think of it as a point light that doesn't care
+	 * which direction a surface is facing.
+	 *
+	 *
+	 * @webref lights_camera:lights
+	 * @webBrief Sets the falloff rates for point lights, spot lights, and ambient
+	 *           lights.
+	 * @usage web_application
+	 * @param constant  constant value or determining falloff
+	 * @param linear    linear value for determining falloff
+	 * @param quadratic quadratic value for determining falloff
+	 * @see PGraphics#lights()
+	 * @see PGraphics#ambientLight(float, float, float, float, float, float)
+	 * @see PGraphics#pointLight(float, float, float, float, float, float)
+	 * @see PGraphics#spotLight(float, float, float, float, float, float, float,
+	 *      float, float, float, float)
+	 * @see PGraphics#lightSpecular(float, float, float)
+	 */
   public void lightFalloff(float constant, float linear, float quadratic) {
     if (recorder != null) recorder.lightFalloff(constant, linear, quadratic);
     g.lightFalloff(constant, linear, quadratic);
@@ -14757,42 +15164,49 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * The <b>background()</b> function sets the color used for the background
-   * of the Processing window. The default background is light gray. In the
-   * <b>draw()</b> function, the background color is used to clear the
-   * display window at the beginning of each frame.
-   * <br/> <br/>
-   * An image can also be used as the background for a sketch, however its
-   * width and height must be the same size as the sketch window. To resize
-   * an image 'b' to the size of the sketch window, use b.resize(width, height).
-   * <br/> <br/>
-   * Images used as background will ignore the current <b>tint()</b> setting.
-   * <br/> <br/>
-   * It is not possible to use transparency (alpha) in background colors with
-   * the main drawing surface, however they will work properly with <b>createGraphics()</b>.
-   *
-   *
-   * <h3>Advanced</h3>
-   * <p>Clear the background with a color that includes an alpha value. This can
-   * only be used with objects created by createGraphics(), because the main
-   * drawing surface cannot be set transparent.</p>
-   * <p>It might be tempting to use this function to partially clear the screen
-   * on each frame, however that's not how this function works. When calling
-   * background(), the pixels will be replaced with pixels that have that level
-   * of transparency. To do a semi-transparent overlay, use fill() with alpha
-   * and draw a rectangle.</p>
-   *
-   * @webref color:setting
-   * @webBrief Sets the color used for the background of the Processing window.
-   * @usage web_application
-   * @param rgb any value of the color datatype
-   * @see PGraphics#stroke(float)
-   * @see PGraphics#fill(float)
-   * @see PGraphics#tint(float)
-   * @see PGraphics#colorMode(int)
-   */
+  	/**
+	 *
+	 * The <b>background()</b> function sets the color used for the background of
+	 * the Processing window. The default background is light gray. This function is
+	 * typically used within <b>draw()</b> to clear the display window at the
+	 * beginning of each frame, but it can be used inside <b>setup()</b> to set the
+	 * background on the first frame of animation or if the backgound need only be
+	 * set once. <br />
+	 * <br />
+	 * An image can also be used as the background for a sketch, although the
+	 * image's width and height must match that of the sketch window. Images used
+	 * with <b>background()</b> will ignore the current <b>tint()</b> setting. To
+	 * resize an image to the size of the sketch window, use image.resize(width,
+	 * height). <br />
+	 * <br />
+	 * It is not possible to use the transparency <b>alpha</b> parameter with
+	 * background colors on the main drawing surface. It can only be used along with
+	 * a <b>PGraphics</b> object and <b>createGraphics()</b>.
+	 *
+	 *
+	 * <h3>Advanced</h3>
+	 * <p>
+	 * Clear the background with a color that includes an alpha value. This can only
+	 * be used with objects created by createGraphics(), because the main drawing
+	 * surface cannot be set transparent.
+	 * </p>
+	 * <p>
+	 * It might be tempting to use this function to partially clear the screen on
+	 * each frame, however that's not how this function works. When calling
+	 * background(), the pixels will be replaced with pixels that have that level of
+	 * transparency. To do a semi-transparent overlay, use fill() with alpha and
+	 * draw a rectangle.
+	 * </p>
+	 *
+	 * @webref color:setting
+	 * @webBrief Sets the color used for the background of the Processing window.
+	 * @usage web_application
+	 * @param rgb any value of the color datatype
+	 * @see PGraphics#stroke(float)
+	 * @see PGraphics#fill(float)
+	 * @see PGraphics#tint(float)
+	 * @see PGraphics#colorMode(int)
+	 */
   public void background(int rgb) {
     if (recorder != null) recorder.background(rgb);
     g.background(rgb);
@@ -14848,6 +15262,7 @@ public class PApplet implements PConstants {
    * can be entirely or partially transparent. This function clears 
    * everything in a <b>PGraphics</b> object to make all of the pixels 
    * 100% transparent.
+   * 
    * @webref color:setting
    * @webBrief Clears the pixels within a buffer.
    */
@@ -14877,26 +15292,36 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Changes the way Processing interprets color data. By default, the
-   * parameters for <b>fill()</b>, <b>stroke()</b>, <b>background()</b>, and
-   * <b>color()</b> are defined by values between 0 and 255 using the RGB
-   * color model. The <b>colorMode()</b> function is used to change the
-   * numerical range used for specifying colors and to switch color systems.
-   * For example, calling <b>colorMode(RGB, 1.0)</b> will specify that values
-   * are specified between 0 and 1. The limits for defining colors are
-   * altered by setting the parameters range1, range2, range3, and range 4.
-   *
-   *
-   * @webref color:setting
-   * @webBrief Changes the way Processing interprets color data.
-   * @usage web_application
-   * @param mode Either RGB or HSB, corresponding to Red/Green/Blue and Hue/Saturation/Brightness
-   * @see PGraphics#background(float)
-   * @see PGraphics#fill(float)
-   * @see PGraphics#stroke(float)
-   */
+  	/**
+	 *
+	 * Changes the way Processing interprets color data. By default, the parameters
+	 * for <b>fill()</b>, <b>stroke()</b>, <b>background()</b>, and <b>color()</b>
+	 * are defined by values between 0 and 255 using the RGB color model. The
+	 * <b>colorMode()</b> function is used to change the numerical range used for
+	 * specifying colors and to switch color systems. For example, calling
+	 * <b>colorMode(RGB, 1.0)</b> will specify that values are specified between 0
+	 * and 1. The limits for defining colors are altered by setting the parameters
+	 * <b>max</b>, <b>max1</b>, <b>max2</b>, <b>max3</b>, and <b>maxA</b>. <br />
+	 * <br />
+	 * After changing the range of values for colors with code like
+	 * <b>colorMode(HSB, 360, 100, 100)</b>, those ranges remain in use until they
+	 * are explicitly changed again. For example, after running <b>colorMode(HSB,
+	 * 360, 100, 100)</b> and then changing back to <b>colorMode(RGB)</b>, the range
+	 * for R will be 0 to 360 and the range for G and B will be 0 to 100. To avoid
+	 * this, be explicit about the ranges when changing the color mode. For
+	 * instance, instead of <b>colorMode(RGB)</b>, write <b>colorMode(RGB, 255, 255,
+	 * 255)</b>.
+	 *
+	 *
+	 * @webref color:setting
+	 * @webBrief Changes the way Processing interprets color data.
+	 * @usage web_application
+	 * @param mode Either RGB or HSB, corresponding to Red/Green/Blue and
+	 *             Hue/Saturation/Brightness
+	 * @see PGraphics#background(float)
+	 * @see PGraphics#fill(float)
+	 * @see PGraphics#stroke(float)
+	 */
   public void colorMode(int mode) {
     if (recorder != null) recorder.colorMode(mode);
     g.colorMode(mode);
@@ -14953,91 +15378,115 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Extracts the red value from a color, scaled to match current
-   * <b>colorMode()</b>. This value is always returned as a  float so be
-   * careful not to assign it to an int value.<br /><br />The red() function
-   * is easy to use and undestand, but is slower than another technique. To
-   * achieve the same results when working in <b>colorMode(RGB, 255)</b>, but
-   * with greater speed, use the &gt;&gt; (right shift) operator with a bit
-   * mask. For example, the following two lines of code are equivalent:<br
-   * /><pre>float r1 = red(myColor);<br />float r2 = myColor &gt;&gt; 16
-   * &amp; 0xFF;</pre>
-   *
-   *
-   * @webref color:creating_reading
-   * @webBrief Extracts the red value from a color, scaled to match current <b>colorMode()</b>.
-   * @usage web_application
-   * @param rgb any value of the color datatype
-   * @see PGraphics#green(int)
-   * @see PGraphics#blue(int)
-   * @see PGraphics#alpha(int)
-   * @see PGraphics#hue(int)
-   * @see PGraphics#saturation(int)
-   * @see PGraphics#brightness(int)
-   * @see_external rightshift
-   */
+  	/**
+	 *
+	 * Extracts the red value from a color, scaled to match current
+	 * <b>colorMode()</b>. The value is always returned as a float, so be careful
+	 * not to assign it to an int value.<br />
+	 * <br />
+	 * The <b>red()</b> function is easy to use and understand, but it is slower
+	 * than a technique called bit shifting. When working in <b>colorMode(RGB,
+	 * 255)</b>, you can acheive the same results as <b>red()</b> but with greater
+	 * speed by using the right shift operator (<b>>></b>) with a bit mask. For
+	 * example, the following two lines of code are equivalent means of getting the
+	 * red value of the color value <b>c</b>:<br />
+	 * <br />
+	 * 
+	 * <pre>
+	 * float r1 = red(c); // Simpler, but slower to calculate
+	 * float r2 = c >> 16 & 0xFF; // Very fast to calculate
+	 * </pre>
+	 *
+	 *
+	 * @webref color:creating_reading
+	 * @webBrief Extracts the red value from a color, scaled to match current
+	 *           <b>colorMode()</b>.
+	 * @usage web_application
+	 * @param rgb any value of the color datatype
+	 * @see PGraphics#green(int)
+	 * @see PGraphics#blue(int)
+	 * @see PGraphics#alpha(int)
+	 * @see PGraphics#hue(int)
+	 * @see PGraphics#saturation(int)
+	 * @see PGraphics#brightness(int)
+	 * @see_external rightshift
+	 */
   public final float red(int rgb) {
     return g.red(rgb);
   }
 
 
-  /**
-   *
-   * Extracts the green value from a color, scaled to match current
-   * <b>colorMode()</b>. This value is always returned as a  float so be
-   * careful not to assign it to an int value.<br /><br />The <b>green()</b>
-   * function is easy to use and undestand, but is slower than another
-   * technique. To achieve the same results when working in <b>colorMode(RGB,
-   * 255)</b>, but with greater speed, use the &gt;&gt; (right shift)
-   * operator with a bit mask. For example, the following two lines of code
-   * are equivalent:<br /><pre>float r1 = green(myColor);<br />float r2 =
-   * myColor &gt;&gt; 8 &amp; 0xFF;</pre>
-   *
-   *
-   * @webref color:creating_reading
-   * @webBrief Extracts the green value from a color, scaled to match current <b>colorMode()</b>.
-   * @usage web_application
-   * @param rgb any value of the color datatype
-   * @see PGraphics#red(int)
-   * @see PGraphics#blue(int)
-   * @see PGraphics#alpha(int)
-   * @see PGraphics#hue(int)
-   * @see PGraphics#saturation(int)
-   * @see PGraphics#brightness(int)
-   * @see_external rightshift
-   */
+  	/**
+	 *
+	 * Extracts the green value from a color, scaled to match current
+	 * <b>colorMode()</b>. The value is always returned as a float, so be careful
+	 * not to assign it to an int value.<br />
+	 * <br />
+	 * The <b>green()</b> function is easy to use and understand, but it is slower
+	 * than a technique called bit shifting. When working in <b>colorMode(RGB,
+	 * 255)</b>, you can acheive the same results as <b>green()</b> but with greater
+	 * speed by using the right shift operator (<b>>></b>) with a bit mask. For
+	 * example, the following two lines of code are equivalent means of getting the
+	 * green value of the color value <b>c</b>:<br />
+	 * <br />
+	 * 
+	 * <pre>
+	 * float g1 = green(c); // Simpler, but slower to calculate
+	 * float g2 = c >> 8 & 0xFF; // Very fast to calculate
+	 * </pre>
+	 *
+	 *
+	 * @webref color:creating_reading
+	 * @webBrief Extracts the green value from a color, scaled to match current
+	 *           <b>colorMode()</b>.
+	 * @usage web_application
+	 * @param rgb any value of the color datatype
+	 * @see PGraphics#red(int)
+	 * @see PGraphics#blue(int)
+	 * @see PGraphics#alpha(int)
+	 * @see PGraphics#hue(int)
+	 * @see PGraphics#saturation(int)
+	 * @see PGraphics#brightness(int)
+	 * @see_external rightshift
+	 */
   public final float green(int rgb) {
     return g.green(rgb);
   }
 
 
-  /**
-   *
-   * Extracts the blue value from a color, scaled to match current
-   * <b>colorMode()</b>. This value is always returned as a  float so be
-   * careful not to assign it to an int value.<br /><br />The <b>blue()</b>
-   * function is easy to use and undestand, but is slower than another
-   * technique. To achieve the same results when working in <b>colorMode(RGB,
-   * 255)</b>, but with greater speed, use a bit mask to remove the other
-   * color components. For example, the following two lines of code are
-   * equivalent:<br /><pre>float r1 = blue(myColor);<br />float r2 = myColor
-   * &amp; 0xFF;</pre>
-   *
-   *
-   * @webref color:creating_reading
-   * @webBrief Extracts the blue value from a color, scaled to match current <b>colorMode()</b>. 
-   * @usage web_application
-   * @param rgb any value of the color datatype
-   * @see PGraphics#red(int)
-   * @see PGraphics#green(int)
-   * @see PGraphics#alpha(int)
-   * @see PGraphics#hue(int)
-   * @see PGraphics#saturation(int)
-   * @see PGraphics#brightness(int)
-   * @see_external rightshift
-   */
+  	/**
+	 *
+	 * Extracts the blue value from a color, scaled to match current
+	 * <b>colorMode()</b>. The value is always returned as a float, so be careful
+	 * not to assign it to an int value.<br />
+	 * <br />
+	 * The <b>blue()</b> function is easy to use and understand, but it is slower
+	 * than a technique called bit masking. When working in <b>colorMode(RGB,
+	 * 255)</b>, you can acheive the same results as <b>blue()</b> but with greater
+	 * speed by using a bit mask to remove the other color components. For example,
+	 * the following two lines of code are equivalent means of getting the blue
+	 * value of the color value <b>c</b>:<br />
+	 * <br />
+	 * 
+	 * <pre>
+	 * float b1 = blue(c); // Simpler, but slower to calculate
+	 * float b2 = c & 0xFF; // Very fast to calculate
+	 * </pre>
+	 *
+	 *
+	 * @webref color:creating_reading
+	 * @webBrief Extracts the blue value from a color, scaled to match current
+	 *           <b>colorMode()</b>.
+	 * @usage web_application
+	 * @param rgb any value of the color datatype
+	 * @see PGraphics#red(int)
+	 * @see PGraphics#green(int)
+	 * @see PGraphics#alpha(int)
+	 * @see PGraphics#hue(int)
+	 * @see PGraphics#saturation(int)
+	 * @see PGraphics#brightness(int)
+	 * @see_external rightshift
+	 */
   public final float blue(int rgb) {
     return g.blue(rgb);
   }
@@ -15341,57 +15790,67 @@ public class PApplet implements PConstants {
   }
 
 
-  /**
-   *
-   * Filters an image as defined by one of the following modes:<br /><br
-   * />THRESHOLD - converts the image to black and white pixels depending if
-   * they are above or below the threshold defined by the level parameter.
-   * The level must be between 0.0 (black) and 1.0(white). If no level is
-   * specified, 0.5 is used.<br />
-   * <br />
-   * GRAY - converts any colors in the image to grayscale equivalents<br />
-   * <br />
-   * INVERT - sets each pixel to its inverse value<br />
-   * <br />
-   * POSTERIZE - limits each channel of the image to the number of colors
-   * specified as the level parameter<br />
-   * <br />
-   * BLUR - executes a Guassian blur with the level parameter specifying the
-   * extent of the blurring. If no level parameter is used, the blur is
-   * equivalent to Guassian blur of radius 1<br />
-   * <br />
-   * OPAQUE - sets the alpha channel to entirely opaque<br />
-   * <br />
-   * ERODE - reduces the light areas with the amount defined by the level
-   * parameter<br />
-   * <br />
-   * DILATE - increases the light areas with the amount defined by the level parameter
-   *
-   *
-   * <h3>Advanced</h3>
-   * Method to apply a variety of basic filters to this image.
-   * <P>
-   * <UL>
-   * <LI>filter(BLUR) provides a basic blur.
-   * <LI>filter(GRAY) converts the image to grayscale based on luminance.
-   * <LI>filter(INVERT) will invert the color components in the image.
-   * <LI>filter(OPAQUE) set all the high bits in the image to opaque
-   * <LI>filter(THRESHOLD) converts the image to black and white.
-   * <LI>filter(DILATE) grow white/light areas
-   * <LI>filter(ERODE) shrink white/light areas
-   * </UL>
-   * Luminance conversion code contributed by
-   * <A HREF="http://www.toxi.co.uk">toxi</A>
-   * <P/>
-   * Gaussian blur code contributed by
-   * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
-   *
-   * @webref image:pixels
-   * @webBrief Converts the image to grayscale or black and white
-   * @usage web_application
-   * @param kind Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE, or DILATE
-   * @param param unique for each, see above
-   */
+  	/**
+	 *
+	 * Filters the image as defined by one of the following modes:<br />
+	 * <br />
+	 * THRESHOLD<br />
+	 * Converts the image to black and white pixels depending if they are above or
+	 * below the threshold defined by the level parameter. The parameter must be
+	 * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
+	 * used.<br />
+	 * <br />
+	 * GRAY<br />
+	 * Converts any colors in the image to grayscale equivalents. No parameter is
+	 * used.<br />
+	 * <br />
+	 * OPAQUE<br />
+	 * Sets the alpha channel to entirely opaque. No parameter is used.<br />
+	 * <br />
+	 * INVERT<br />
+	 * Sets each pixel to its inverse value. No parameter is used.<br />
+	 * <br />
+	 * POSTERIZE<br />
+	 * Limits each channel of the image to the number of colors specified as the
+	 * parameter. The parameter can be set to values between 2 and 255, but results
+	 * are most noticeable in the lower ranges.<br />
+	 * <br />
+	 * BLUR<br />
+	 * Executes a Gaussian blur with the level parameter specifying the extent of
+	 * the blurring. If no parameter is used, the blur is equivalent to Gaussian
+	 * blur of radius 1. Larger values increase the blur.<br />
+	 * <br />
+	 * ERODE<br />
+	 * Reduces the light areas. No parameter is used.<br />
+	 * <br />
+	 * DILATE<br />
+	 * Increases the light areas. No parameter is used.
+	 *
+	 *
+	 * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
+	 * <P>
+	 * <UL>
+	 * <LI>filter(BLUR) provides a basic blur.
+	 * <LI>filter(GRAY) converts the image to grayscale based on luminance.
+	 * <LI>filter(INVERT) will invert the color components in the image.
+	 * <LI>filter(OPAQUE) set all the high bits in the image to opaque
+	 * <LI>filter(THRESHOLD) converts the image to black and white.
+	 * <LI>filter(DILATE) grow white/light areas
+	 * <LI>filter(ERODE) shrink white/light areas
+	 * </UL>
+	 * Luminance conversion code contributed by
+	 * <A HREF="http://www.toxi.co.uk">toxi</A>
+	 * <P/>
+	 * Gaussian blur code contributed by
+	 * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
+	 *
+	 * @webref image:pixels
+	 * @webBrief Converts the image to grayscale or black and white
+	 * @usage web_application
+	 * @param kind  Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE,
+	 *              or DILATE
+	 * @param param unique for each, see above
+	 */
   public void filter(int kind, float param) {
     if (recorder != null) recorder.filter(kind, param);
     g.filter(kind, param);

@@ -30,7 +30,31 @@ import java.util.Arrays;
 
 
 /**
- *  @webref
+ * Opens an I2C interface as master.<br/>
+ * <br/>
+ * I2C is a serial bus, commonly used to attach peripheral ICs (Integrated
+ * Circuits) to processors and microcontrollers. It uses two pins, SDA (for
+ * data) and SDL (for the clock signal). Multiple "slave" devices can be
+ * connected to the same bus, as long as they are responding to different
+ * addresses (see below).<br/>
+ * <br/>
+ * The I2C "master" device initiates a transmission, which includes sending the
+ * address of the desired "slave" device. I2C addresses consist of 7 bits plus
+ * one bit that indicates whether the device is being read from or written to.
+ * Some datasheets list the address in an 8 bit form (7 address bits + R/W bit),
+ * while others provide the address in a 7 bit form, with the address in the
+ * lower 7 bits.<br/>
+ * <br/>
+ * This library expects addresses in their 7 bit form, similar to Arduino's Wire
+ * library, and what is being output by the i2cdetect utility on Linux. If the
+ * address provided in a datasheet is greater than 127 (hex 0x7f) or there are
+ * separate addresses for read and write operations listed, which vary exactly
+ * by one, then you want to shift the this number by one bit to the right before
+ * passing it as an argument to
+ * <a href="I2C_beginTransmission_.html">beginTransmission()</a>.
+ * 
+ * @webref
+ * @webBrief Opens an I2C interface as master
  */
 public class I2C {
 
@@ -62,13 +86,22 @@ public class I2C {
   }
 
 
-  /**
-   *  Begins a transmission to an attached device
-   *  @see write
-   *  @see read
-   *  @see endTransmission
-   *  @webref
-   */
+  	/**
+	 * Begins a transmission to an attached device.<br/>
+	 * <br/>
+	 * This function expects the address in the lower 7 bits, the same way as in
+	 * Arduino's Wire library, and as shown in the output of the i2cdetect tool. If
+	 * the address provided in a datasheet is greater than 127 (hex 0x7f) or there
+	 * are separate addresses for read and write operations listed, which vary
+	 * exactly by one, then you want to shift the this number by one bit to the
+	 * right before passing it as an argument to this function.
+	 * 
+	 * @see write
+	 * @see read
+	 * @see endTransmission
+	 * @webref 
+	 * @webBrief Begins a transmission to an attached device
+	 */
   public void beginTransmission(int slave) {
     // addresses 120 (0x78) to 127 are additionally reserved
     if (0x78 <= slave) {
@@ -81,10 +114,18 @@ public class I2C {
   }
 
 
-  /**
-   *  Closes the I2C device
-   *  @webref
-   */
+  	/**
+	 * Closes the I2C device<br/>
+	 * </br>
+	 * It is normally not necessary to explicitly close I2C interfaces, as they are
+	 * closed automatically by the operating system when the sketch exits.</br>
+	 * </br>
+	 * Note: It is possible to have two or more object using the same interface at a
+	 * time.
+	 * 
+	 * @webref
+	 * @webBrief Closes the I2C device.
+	 */
   public void close() {
     if (NativeInterface.isSimulated()) {
       return;
@@ -104,12 +145,18 @@ public class I2C {
   }
 
 
-  /**
-   *  Ends the current transmissions
-   *  @see beginTransmission
-   *  @see write
-   *  @webref
-   */
+  	/**
+	 * Ends the current transmissions<br/>
+	 * <br/>
+	 * This executes any queued writes. <a href="I2C_read_.html">Read()</a>
+	 * implicitly ends the current transmission as well, hence calling
+	 * endTransmission() afterwards is not necessary.
+	 * 
+	 * @see beginTransmission
+	 * @see write
+	 * @webref
+	 * @webBrief Ends the current transmissions.
+	 */
   public void endTransmission() {
     if (!transmitting) {
       // silently ignore this case
@@ -137,6 +184,7 @@ public class I2C {
    *  Lists all available I2C interfaces
    *  @return String array
    *  @webref
+   *  @webBrief Lists all available I2C interfaces
    */
   public static String[] list() {
     if (NativeInterface.isSimulated()) {
@@ -161,15 +209,22 @@ public class I2C {
   }
 
 
-  /**
-   *  Reads bytes from the attached device
-   *  @param len number of bytes to read
-   *  @return bytes read from device
-   *  @see beginTransmission
-   *  @see write
-   *  @see endTransmission
-   *  @webref
-   */
+  	/**
+	 * Read bytes from the attached device<br/>
+	 * <br/>
+	 * You must call beginTransmission() before calling this function. This function
+	 * also ends the current transmission and sends any data that was queued using
+	 * write() before. It is not necessary to call
+	 * <a href="I2C_endTransmission_.html">endTransmission()</a> after read().
+	 * 
+	 * @param len number of bytes to read
+	 * @return bytes read from device
+	 * @see beginTransmission
+	 * @see write
+	 * @see endTransmission
+	 * @webref
+	 * @webBrief Read bytes from the attached device.
+	 */
   public byte[] read(int len) {
     if (!transmitting) {
       throw new RuntimeException("beginTransmisson has not been called");
@@ -195,14 +250,19 @@ public class I2C {
   }
 
 
-  /**
-   *  Adds bytes to be written to the device
-   *  @param out bytes to be written
-   *  @see beginTransmission
-   *  @see read
-   *  @see endTransmission
-   *  @webref
-   */
+  	/**
+	 * Add bytes to be written to the device<br/>
+	 * <br/>
+	 * You must call beginTransmission() before calling this function. The actual
+	 * writing takes part when read() or endTransmission() is being called.
+	 * 
+	 * @param out bytes to be written
+	 * @see beginTransmission
+	 * @see read
+	 * @see endTransmission
+	 * @webref
+	 * @webBrief Add bytes to be written to the device.
+	 */
   public void write(byte[] out) {
     if (!transmitting) {
       throw new RuntimeException("beginTransmisson has not been called");

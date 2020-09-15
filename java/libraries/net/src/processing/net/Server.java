@@ -184,7 +184,7 @@ public class Server implements Runnable {
   
   /**
    * 
-   * Returns true if this server is still active and hasn't run
+   * Returns <b>true</b> if this server is still active and hasn't run
    * into any trouble.
    * 
    * @webref server:server

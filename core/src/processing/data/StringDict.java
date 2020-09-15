@@ -9,10 +9,11 @@ import processing.core.PApplet;
 
 
 /**
- * A simple table class to use a String as a lookup for another String value.
+ * A simple class to use a String as a lookup for an String value. String "keys" 
+ * are associated with String values.
  *
  * @webref data:composite
- * @webBrief A simple table class to use a String as a lookup for another String value.
+ * @webBrief A simple class to use a String as a lookup for an String value
  * @see IntDict
  * @see FloatDict
  */
@@ -279,7 +280,7 @@ public class StringDict {
 
 
   /**
-   * Return a copy of the internal keys array. This array can be modified.
+   * Return a copy of the internal keys array.
    *
    * @webref stringdict:method
    * @webBrief Return a copy of the internal keys array
@@ -489,8 +490,7 @@ public class StringDict {
 
 
   /**
-   * Sort the keys alphabetically (ignoring case). Uses the value as a
-   * tie-breaker (only really possible with a key that has a case change).
+   * Sort the keys alphabetically.
    *
    * @webref stringdict:method
    * @webBrief Sort the keys alphabetically
@@ -511,10 +511,10 @@ public class StringDict {
 
 
   /**
-   * Sort by values in descending order (largest value will be at [0]).
+   * Sort by values in descending order.
    *
    * @webref stringdict:method
-   * @webBrief Sort by values in ascending order
+   * @webBrief Sort by values in descending order
    */
   public void sortValues() {
     sortImpl(false, false);

@@ -35,22 +35,24 @@ import processing.awt.ShimAWT;
 
 
 /**
-   *
-   * Datatype for storing images. Processing can display <b>.gif</b>,
-   * <b>.jpg</b>, <b>.tga</b>, and <b>.png</b> images. Images may be
-   * displayed in 2D and 3D space. Before an image is used, it must be loaded
-   * with the <b>loadImage()</b> function. The <b>PImage</b> class contains
-   * fields for the <b>width</b> and <b>height</b> of the image, as well as
-   * an array called <b>pixels[]</b> that contains the values for every pixel
-   * in the image. The methods described below allow easy access to the
-   * image's pixels and alpha channel and simplify the process of compositing.<br/>
-   * <br/> using the <b>pixels[]</b> array, be sure to use the
-   * <b>loadPixels()</b> method on the image to make sure that the pixel data
-   * is properly loaded.<br/>
-   * <br/> create a new image, use the <b>createImage()</b> function. Do not
-   * use the syntax <b>new PImage()</b>.
-   *
-   *
+ *
+ * Datatype for storing images. Processing can display <b>.gif</b>, <b>.jpg</b>,
+ * <b>.tga</b>, and <b>.png</b> images. Images may be displayed in 2D and 3D
+ * space. Before an image is used, it must be loaded with the <b>loadImage()</b>
+ * function. The <b>PImage</b> class contains fields for the <b>width</b> and
+ * <b>height</b> of the image, as well as an array called <b>pixels[]</b> that
+ * contains the values for every pixel in the image. The methods described below
+ * allow easy access to the image's pixels and alpha channel and simplify the
+ * process of compositing.<br />
+ * <br />
+ * Before using the <b>pixels[]</b> array, be sure to use the
+ * <b>loadPixels()</b> method on the image to make sure that the pixel data is
+ * properly loaded.<br />
+ * <br />
+ * To create a new image, use the <b>createImage()</b> function. Do not use the
+ * syntax <b>new PImage()</b>.
+ *
+ *
  * @webref image
  * @webBrief Datatype for storing images.
  * @usage Web &amp; Application
@@ -79,28 +81,24 @@ public class PImage implements PConstants, Cloneable {
    */
   public int format;
 
-  /**
-   *
-   * Array containing the values for all the pixels in the display window.
-   * These values are of the color datatype. This array is the size of the
-   * display window. For example, if the image is 100x100 pixels, there will
-   * be 10000 values and if the window is 200x300 pixels, there will be 60000
-   * values. The <b>index</b> value defines the position of a value within
-   * the array. For example, the statement <b>color b = pixels[230]</b> will
-   * set the variable <b>b</b> to be equal to the value at that location in
-   * the array.<br />
-   * <br />
-   * Before accessing this array, the data must loaded with the
-   * <b>loadPixels()</b> function. After the array data has been modified,
-   * the <b>updatePixels()</b> function must be run to update the changes.
-   * Without <b>loadPixels()</b>, running the code may (or will in future
-   * releases) result in a NullPointerException.
-   *
-   *
-   * @webref image:pixels
-   * @webBrief Array containing the color of every pixel in the image.
-   * @usage web_application
-   */
+  	/**
+	 *
+	 * The pixels[] array contains the values for all the pixels in the image. These
+	 * values are of the color datatype. This array is the size of the image,
+	 * meaning if the image is 100 x 100 pixels, there will be 10,000 values and if
+	 * the window is 200 x 300 pixels, there will be 60,000 values. <br />
+	 * <br />
+	 * Before accessing this array, the data must loaded with the
+	 * <b>loadPixels()</b> method. Failure to do so may result in a
+	 * NullPointerException. After the array data has been modified, the
+	 * <b>updatePixels()</b> method must be run to update the content of the display
+	 * window.
+	 *
+	 *
+	 * @webref image:pixels
+	 * @webBrief Array containing the color of every pixel in the image.
+	 * @usage web_application
+	 */
   public int[] pixels;
 
   /** 1 for most images, 2 for hi-dpi/retina */
@@ -375,29 +373,23 @@ public class PImage implements PConstants, Cloneable {
   }
 
 
-  /**
-   *
-   * Loads the pixel data for the image into its <b>pixels[]</b> array. This
-   * function must always be called before reading from or writing to <b>pixels[]</b>.
-   * <br/><br/> renderers may or may not seem to require <b>loadPixels()</b>
-   * or <b>updatePixels()</b>. However, the rule is that any time you want to
-   * manipulate the <b>pixels[]</b> array, you must first call
-   * <b>loadPixels()</b>, and after changes have been made, call
-   * <b>updatePixels()</b>. Even if the renderer may not seem to use this
-   * function in the current Processing release, this will always be subject
-   * to change.
-   *
-   *
-   * <h3>Advanced</h3>
-   * Call this when you want to mess with the pixels[] array.
-   * <p/>
-   * For subclasses where the pixels[] buffer isn't set by default,
-   * this should copy all data into the pixels[] array
-   *
-   * @webref pimage:pixels
-   * @webBrief Loads the pixel data for the image into its <b>pixels[]</b> array.
-   * @usage web_application
-   */
+  	/**
+	 *
+	 * Loads the pixel data of the current display window into the <b>pixels[]</b>
+	 * array. This function must always be called before reading from or writing to
+	 * <b>pixels[]</b>. Subsequent changes to the display window will not be
+	 * reflected in <b>pixels</b> until <b>loadPixels()</b> is called again.
+	 *
+	 *
+	 * <h3>Advanced</h3> Call this when you want to mess with the pixels[] array.
+	 * <p/>
+	 * For subclasses where the pixels[] buffer isn't set by default, this should
+	 * copy all data into the pixels[] array
+	 *
+	 * @webref pimage:pixels
+	 * @webBrief Loads the pixel data for the image into its <b>pixels[]</b> array.
+	 * @usage web_application
+	 */
   public void loadPixels() {  // ignore
     if (pixels == null || pixels.length != pixelWidth*pixelHeight) {
       pixels = new int[pixelWidth*pixelHeight];
@@ -411,35 +403,26 @@ public class PImage implements PConstants, Cloneable {
   }
 
 
-  /**
-   *
-   * Updates the image with the data in its <b>pixels[]</b> array. Use in
-   * conjunction with <b>loadPixels()</b>. If you're only reading pixels from
-   * the array, there's no need to call <b>updatePixels()</b>.
-   * <br/><br/> renderers may or may not seem to require <b>loadPixels()</b>
-   * or <b>updatePixels()</b>. However, the rule is that any time you want to
-   * manipulate the <b>pixels[]</b> array, you must first call
-   * <b>loadPixels()</b>, and after changes have been made, call
-   * <b>updatePixels()</b>. Even if the renderer may not seem to use this
-   * function in the current Processing release, this will always be subject
-   * to change.
-   * <br/> <br/>
-   * Currently, none of the renderers use the additional parameters to
-   * <b>updatePixels()</b>, however this may be implemented in the future.
-   *
-   * <h3>Advanced</h3>
-   * Mark the pixels in this region as needing an update.
-   * This is not currently used by any of the renderers, however the api
-   * is structured this way in the hope of being able to use this to
-   * speed things up in the future.
-   * @webref pimage:pixels
-   * @webBrief Updates the image with the data in its <b>pixels[]</b> array.
-   * @usage web_application
-   * @param x x-coordinate of the upper-left corner
-   * @param y y-coordinate of the upper-left corner
-   * @param w width
-   * @param h height
-   */
+  	/**
+	 *
+	 * Updates the display window with the data in the <b>pixels[]</b> array. Use in
+	 * conjunction with <b>loadPixels()</b>. If you're only reading pixels from the
+	 * array, there's no need to call <b>updatePixels()</b> &mdash; updating is only
+	 * necessary to apply changes.
+	 *
+	 * <h3>Advanced</h3> Mark the pixels in this region as needing an update. This
+	 * is not currently used by any of the renderers, however the api is structured
+	 * this way in the hope of being able to use this to speed things up in the
+	 * future.
+	 * 
+	 * @webref pimage:pixels
+	 * @webBrief Updates the image with the data in its <b>pixels[]</b> array.
+	 * @usage web_application
+	 * @param x x-coordinate of the upper-left corner
+	 * @param y y-coordinate of the upper-left corner
+	 * @param w width
+	 * @param h height
+	 */
   public void updatePixels(int x, int y, int w, int h) {  // ignore
     int x2 = x + w;
     int y2 = y + h;
@@ -928,57 +911,67 @@ public class PImage implements PConstants, Cloneable {
   }
 
 
-  /**
-   *
-   * Filters an image as defined by one of the following modes:<br /><br
-   * />THRESHOLD - converts the image to black and white pixels depending if
-   * they are above or below the threshold defined by the level parameter.
-   * The level must be between 0.0 (black) and 1.0(white). If no level is
-   * specified, 0.5 is used.<br />
-   * <br />
-   * GRAY - converts any colors in the image to grayscale equivalents<br />
-   * <br />
-   * INVERT - sets each pixel to its inverse value<br />
-   * <br />
-   * POSTERIZE - limits each channel of the image to the number of colors
-   * specified as the level parameter<br />
-   * <br />
-   * BLUR - executes a Guassian blur with the level parameter specifying the
-   * extent of the blurring. If no level parameter is used, the blur is
-   * equivalent to Guassian blur of radius 1<br />
-   * <br />
-   * OPAQUE - sets the alpha channel to entirely opaque<br />
-   * <br />
-   * ERODE - reduces the light areas with the amount defined by the level
-   * parameter<br />
-   * <br />
-   * DILATE - increases the light areas with the amount defined by the level parameter
-   *
-   *
-   * <h3>Advanced</h3>
-   * Method to apply a variety of basic filters to this image.
-   * <P>
-   * <UL>
-   * <LI>filter(BLUR) provides a basic blur.
-   * <LI>filter(GRAY) converts the image to grayscale based on luminance.
-   * <LI>filter(INVERT) will invert the color components in the image.
-   * <LI>filter(OPAQUE) set all the high bits in the image to opaque
-   * <LI>filter(THRESHOLD) converts the image to black and white.
-   * <LI>filter(DILATE) grow white/light areas
-   * <LI>filter(ERODE) shrink white/light areas
-   * </UL>
-   * Luminance conversion code contributed by
-   * <A HREF="http://www.toxi.co.uk">toxi</A>
-   * <P/>
-   * Gaussian blur code contributed by
-   * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
-   *
-   * @webref image:pixels
-   * @webBrief Converts the image to grayscale or black and white
-   * @usage web_application
-   * @param kind Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE, or DILATE
-   * @param param unique for each, see above
-   */
+  	/**
+	 *
+	 * Filters the image as defined by one of the following modes:<br />
+	 * <br />
+	 * THRESHOLD<br />
+	 * Converts the image to black and white pixels depending if they are above or
+	 * below the threshold defined by the level parameter. The parameter must be
+	 * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
+	 * used.<br />
+	 * <br />
+	 * GRAY<br />
+	 * Converts any colors in the image to grayscale equivalents. No parameter is
+	 * used.<br />
+	 * <br />
+	 * OPAQUE<br />
+	 * Sets the alpha channel to entirely opaque. No parameter is used.<br />
+	 * <br />
+	 * INVERT<br />
+	 * Sets each pixel to its inverse value. No parameter is used.<br />
+	 * <br />
+	 * POSTERIZE<br />
+	 * Limits each channel of the image to the number of colors specified as the
+	 * parameter. The parameter can be set to values between 2 and 255, but results
+	 * are most noticeable in the lower ranges.<br />
+	 * <br />
+	 * BLUR<br />
+	 * Executes a Gaussian blur with the level parameter specifying the extent of
+	 * the blurring. If no parameter is used, the blur is equivalent to Gaussian
+	 * blur of radius 1. Larger values increase the blur.<br />
+	 * <br />
+	 * ERODE<br />
+	 * Reduces the light areas. No parameter is used.<br />
+	 * <br />
+	 * DILATE<br />
+	 * Increases the light areas. No parameter is used.
+	 *
+	 *
+	 * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
+	 * <P>
+	 * <UL>
+	 * <LI>filter(BLUR) provides a basic blur.
+	 * <LI>filter(GRAY) converts the image to grayscale based on luminance.
+	 * <LI>filter(INVERT) will invert the color components in the image.
+	 * <LI>filter(OPAQUE) set all the high bits in the image to opaque
+	 * <LI>filter(THRESHOLD) converts the image to black and white.
+	 * <LI>filter(DILATE) grow white/light areas
+	 * <LI>filter(ERODE) shrink white/light areas
+	 * </UL>
+	 * Luminance conversion code contributed by
+	 * <A HREF="http://www.toxi.co.uk">toxi</A>
+	 * <P/>
+	 * Gaussian blur code contributed by
+	 * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
+	 *
+	 * @webref image:pixels
+	 * @webBrief Converts the image to grayscale or black and white
+	 * @usage web_application
+	 * @param kind  Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE,
+	 *              or DILATE
+	 * @param param unique for each, see above
+	 */
   public void filter(int kind, float param) {
     loadPixels();
 

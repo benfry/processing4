@@ -9,7 +9,8 @@ import processing.core.PApplet;
 
 
 /**
- * A simple class to use a String as a lookup for an int value.
+ * A simple class to use a String as a lookup for an int value. String "keys" are 
+ * associated with integer values.
  *
  * @webref data:composite
  * @webBrief A simple class to use a String as a lookup for an int value.
@@ -142,10 +143,10 @@ public class IntDict {
 
 
   /**
-   * Remove all entries.
+   * Remove all entries from the data structure.
    *
    * @webref intdict:method
-   * @webBrief Remove all entries
+   * @webBrief Remove all entries from the data structure
    */
   public void clear() {
     count = 0;
@@ -256,7 +257,8 @@ public class IntDict {
 
 
   /**
-   * Return a copy of the internal keys array. This array can be modified.
+   * Return a copy of the internal keys array.  In contrast to the <b>keys()</b> 
+   * method, this array can be modified.
    *
    * @webref intdict:method
    * @webBrief Return a copy of the internal keys array
@@ -282,6 +284,8 @@ public class IntDict {
 
 
   /**
+   * Return the internal array being used to store the values.
+   * 
    * @webref intdict:method
    * @webBrief Return the internal array being used to store the values
    */
@@ -316,12 +320,16 @@ public class IntDict {
   }
 
 
-  /**
-   * Create a new array and copy each of the values into it.
-   *
-   * @webref intdict:method
-   * @webBrief Create a new array and copy each of the values into it
-   */
+  	/**
+	 * The version of this method without a parameter creates a new array and copies
+	 * each of the values into it. The version with the <b>int[]</b> parameters
+	 * fills an already-allocated array with the values (more efficient than
+	 * creating a new array each time). If 'array' is null, or not the same size as
+	 * the number of values, a new array will be allocated and returned.
+	 *
+	 * @webref intdict:method
+	 * @webBrief Create a new array and copy each of the values into it
+	 */
   public int[] valueArray() {
     crop();
     return valueArray(null);
@@ -392,6 +400,8 @@ public class IntDict {
 
 
   /**
+   * Check if a key is a part of the data structure.
+   * 
    * @webref intdict:method
    * @webBrief Check if a key is a part of the data structure
    */
@@ -401,7 +411,7 @@ public class IntDict {
 
 
   /**
-   * Increase the value associated with a specific key by 1.
+   * Increase the value of a specific key value by 1
    *
    * @webref intdict:method
    * @webBrief Increase the value of a specific key value by 1
@@ -424,6 +434,9 @@ public class IntDict {
 
 
   /**
+   * Add to a value. If the key does not exist, an new pair is initialized 
+   * with the value supplied.
+   * 
    * @webref intdict:method
    * @webBrief Add to a value
    */
@@ -438,6 +451,8 @@ public class IntDict {
 
 
   /**
+   * Subtract from a value.
+   * 
    * @webref intdict:method
    * @webBrief Subtract from a value
    */
@@ -447,6 +462,8 @@ public class IntDict {
 
 
   /**
+   * Multiply a value.
+   * 
    * @webref intdict:method
    * @webBrief Multiply a value
    */
@@ -459,6 +476,8 @@ public class IntDict {
 
 
   /**
+   * Divide a value.
+   * 
    * @webref intdict:method
    * @webBrief Divide a value
    */
@@ -590,6 +609,8 @@ public class IntDict {
   }
 
   /**
+   * Remove a key/value pair.
+   * 
    * @webref intdict:method
    * @webBrief Remove a key/value pair
    */

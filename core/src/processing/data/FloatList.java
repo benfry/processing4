@@ -159,9 +159,7 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Set the entry at a particular index. If the index is past the length of
-   * the list, it'll expand the list to accommodate, and fill the intermediate
-   * entries with 0s.
+   * Set the entry at a particular index. 
    *
    * @webref floatlist:method
    * @webBrief Set the entry at a particular index
@@ -467,7 +465,7 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Check if a number is a part of the list
+   * Check if a number is a part of the list.
    *
    * @webref floatlist:method
    * @webBrief Check if a number is a part of the list
@@ -498,7 +496,7 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Add to a value
+   * Add to a value.
    * 
    * @webref floatlist:method
    * @webBrief Add to a value
@@ -665,7 +663,7 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Sorts the array in place.
+   * Sorts an array, lowest to highest
    *
    * @webref floatlist:method
    * @webBrief Sorts an array, lowest to highest
@@ -676,10 +674,11 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Reverse sort, orders values from highest to lowest
+   * A sort in reverse. It's equivalent to running <b>sort()</b> and then 
+   * <b>reverse()</b>, but is more efficient than running each separately.
    *
    * @webref floatlist:method
-   * @webBrief Reverse sort, orders values from highest to lowest
+   * @webBrief A sort in reverse.
    */
   public void sortReverse() {
     new Sort() {
@@ -743,10 +742,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Reverse the order of the list elements
+   * Reverse the order of the list
    * 
    * @webref floatlist:method
-   * @webBrief Reverse the order of the list elements
+   * @webBrief Reverse the order of the list
    */
   public void reverse() {
     int ii = count - 1;
@@ -760,8 +759,7 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Randomize the order of the list elements. Note that this does not
-   * obey the randomSeed() function in PApplet.
+   * Randomize the order of the list elements.
    *
    * @webref floatlist:method
    * @webBrief Randomize the order of the list elements

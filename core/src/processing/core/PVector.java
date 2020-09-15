@@ -29,38 +29,37 @@ import java.io.Serializable;
 
 /**
  *
- * A class to describe a two or three dimensional vector. This datatype
- * stores two or three variables that are commonly used as a position,
- * velocity, and/or acceleration. Technically, <em>position</em> is a point
- * and <em>velocity</em> and <em>acceleration</em> are vectors, but this is
- * often simplified to consider all three as vectors. For example, if you
- * consider a rectangle moving across the screen, at any given instant it
- * has a position (the object's location, expressed as a point.), a
- * velocity (the rate at which the object's position changes per time unit,
- * expressed as a vector), and acceleration (the rate at which the object's
- * velocity changes per time unit, expressed as a vector). Since vectors
- * represent groupings of values, we cannot simply use traditional
- * addition/multiplication/etc. Instead, we'll need to do some "vector"
- * math, which is made easy by the methods inside the <b>PVector</b>
- * class.<br />
+ * A class to describe a two or three dimensional vector, specifically a
+ * Euclidean (also known as geometric) vector. A vector is an entity that has
+ * both magnitude and direction. The datatype, however, stores the components of
+ * the vector (x,y for 2D, and x,y,z for 3D). The magnitude and direction can be
+ * accessed via the methods <b>mag()</b> and <b>heading()</b>.<br />
  * <br />
- * The methods for this class are extensive. For a complete list, visit the
- * <a
- * href="http://processing.googlecode.com/svn/trunk/processing/build/javadoc/core/">developer's reference.</a>
+ * In many of the Processing examples, you will see <b>PVector</b> used to
+ * describe a position, velocity, or acceleration. For example, if you consider
+ * a rectangle moving across the screen, at any given instant it has a position
+ * (a vector that points from the origin to its location), a velocity (the rate
+ * at which the object's position changes per time unit, expressed as a vector),
+ * and acceleration (the rate at which the object's velocity changes per time
+ * unit, expressed as a vector). Since vectors represent groupings of values, we
+ * cannot simply use traditional addition/multiplication/etc. Instead, we'll
+ * need to do some "vector" math, which is made easy by the methods inside the
+ * <b>PVector</b> class.
  *
  *
  * A class to describe a two or three dimensional vector.
  * <p>
  * The result of all functions are applied to the vector itself, with the
  * exception of cross(), which returns a new PVector (or writes to a specified
- * 'target' PVector). That is, add() will add the contents of one vector to
- * this one. Using add() with additional parameters allows you to put the
- * result into a new PVector. Functions that act on multiple vectors also
- * include static versions. Because creating new objects can be computationally
- * expensive, most functions include an optional 'target' PVector, so that a
- * new PVector object is not created with each operation.
+ * 'target' PVector). That is, add() will add the contents of one vector to this
+ * one. Using add() with additional parameters allows you to put the result into
+ * a new PVector. Functions that act on multiple vectors also include static
+ * versions. Because creating new objects can be computationally expensive, most
+ * functions include an optional 'target' PVector, so that a new PVector object
+ * is not created with each operation.
  * <p>
- * Initially based on the Vector3D class by <a href="http://www.shiffman.net">Dan Shiffman</a>.
+ * Initially based on the Vector3D class by
+ * <a href="http://www.shiffman.net">Dan Shiffman</a>.
  *
  * @webref math
  * @webBrief A class to describe a two or three dimensional vector.
@@ -197,18 +196,18 @@ public class PVector implements Serializable {
   }
 
 
-  /**
-   *
-   * Make a new 2D unit vector with a random direction.  If you pass in "this"
-   * as an argument, it will use the PApplet's random number generator.  You can
-   * also pass in a target PVector to fill.
-   *
-   * @webref pvector:method
-   * @usage web_application
-   * @return the random PVector
-   * @webBrief  Make a new 2D unit vector with a random direction.
-   * @see PVector#random3D()
-   */
+  	/**
+	 *
+	 * Returns a new 2D unit vector with a random direction. If you pass in
+	 * <b>this</b> as an argument, it will use the PApplet's random number
+	 * generator.
+	 *
+	 * @webref pvector:method
+	 * @usage web_application
+	 * @return the random PVector
+	 * @webBrief Make a new 2D unit vector with a random direction.
+	 * @see PVector#random3D()
+	 */
   static public PVector random2D() {
     return random2D(null, null);
   }
@@ -247,18 +246,18 @@ public class PVector implements Serializable {
   }
 
 
-  /**
-   *
-   * Make a new 3D unit vector with a random direction.  If you pass in "this"
-   * as an argument, it will use the PApplet's random number generator.  You can
-   * also pass in a target PVector to fill.
-   *
-   * @webref pvector:method
-   * @usage web_application
-   * @return the random PVector
-   * @webBrief  Make a new 3D unit vector with a random direction.
-   * @see PVector#random2D()
-   */
+  	/**
+	 *
+	 * Returns a new 3D unit vector with a random direction. If you pass in
+	 * <b>this</b> as an argument, it will use the PApplet's random number
+	 * generator.
+	 *
+	 * @webref pvector:method
+	 * @usage web_application
+	 * @return the random PVector
+	 * @webBrief Make a new 3D unit vector with a random direction.
+	 * @see PVector#random2D()
+	 */
   static public PVector random3D() {
     return random3D(null, null);
   }
@@ -313,12 +312,13 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Make a new 2D unit vector from an angle.
+   * Calculates and returns a new 2D unit vector from the specified angle value
+   * (in radians).
    *
    *
    * @webref pvector:method
    * @usage web_application
-   * @webBrief  Make a new 2D unit vector from an angle
+   * @webBrief Make a new 2D unit vector from an angle
    * @param angle the angle in radians
    * @return the new unit PVector
    */
@@ -345,7 +345,7 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Gets a copy of the vector, returns a PVector object.
+   * Copies the components of the vector and returns the result as a PVector. 
    *
    *
    * @webref pvector:method
@@ -400,15 +400,14 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Calculates the squared magnitude of the vector and returns the result
-   * as a float (this is simply the equation <em>(x*x + y*y + z*z)</em>.)
-   * Faster if the real length is not required in the
-   * case of comparing vectors, etc.
+   * Calculates the magnitude (length) of the vector, squared. This method is
+   * often used to improve performance since, unlike <b>mag()</b>, it does not
+   * require a <b>sqrt()</b> operation.
    *
    *
    * @webref pvector:method
    * @usage web_application
-   * @webBrief  Calculate the magnitude of the vector, squared
+   * @webBrief Calculate the magnitude of the vector, squared
    * @return squared magnitude of the vector
    * @see PVector#mag()
    */
@@ -419,17 +418,17 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Adds x, y, and z components to a vector, adds one vector to another, or
-   * adds two independent vectors together. The version of the method that
-   * adds two vectors together is a static method and returns a PVector, the
-   * others have no return value -- they act directly on the vector. See the
-   * examples for more context.
+   * Adds x, y, and z components to a vector, adds one vector to another, or adds
+   * two independent vectors together. The version of the method that adds two
+   * vectors together is a static method and returns a new PVector, the others act
+   * directly on the vector itself. See the examples for more context.
    *
    *
    * @webref pvector:method
    * @usage web_application
    * @param v the vector to be added
-   * @webBrief  Adds x, y, and z components to a vector, one vector to another, or two independent vectors
+   * @webBrief Adds x, y, and z components to a vector, one vector to another, or
+   *           two independent vectors
    */
   public PVector add(PVector v) {
     x += v.x;
@@ -487,17 +486,18 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Subtracts x, y, and z components from a vector, subtracts one vector
-   * from another, or subtracts two independent vectors. The version of the
-   * method that subtracts two vectors is a static method and returns a
-   * PVector, the others have no return value -- they act directly on the
-   * vector. See the examples for more context.
+   * Subtracts x, y, and z components from a vector, subtracts one vector from
+   * another, or subtracts two independent vectors. The version of the method that
+   * substracts two vectors is a static method and returns a PVector, the others
+   * act directly on the vector. See the examples for more context. In all cases,
+   * the second vector (v2) is subtracted from the first (v1), resulting in v1-v2.
    *
    *
    * @webref pvector:method
    * @usage web_application
    * @param v any variable of type PVector
-   * @webBrief  Subtract x, y, and z components from a vector, one vector from another, or two independent vectors
+   * @webBrief Subtract x, y, and z components from a vector, one vector from
+   *           another, or two independent vectors
    */
   public PVector sub(PVector v) {
     x -= v.x;
@@ -555,12 +555,16 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Multiplies a vector by a scalar or multiplies one vector by another.
+   * Multiplies a vector by a scalar. The version of the method that uses a float
+   * acts directly on the vector upon which it is called (as in the first example
+   * above). The versions that receive both a PVector and a float as arguments are
+   * static methods, and each returns a new PVector that is the result of the
+   * multiplication operation. Both examples above produce the same visual output.
    *
    *
    * @webref pvector:method
    * @usage web_application
-   * @webBrief  Multiply a vector by a scalar
+   * @webBrief Multiply a vector by a scalar
    * @param n the number to multiply with the vector
    */
   public PVector mult(float n) {
@@ -595,12 +599,15 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Divides a vector by a scalar or divides one vector by another.
-   *
+   * Divides a vector by a scalar. The version of the method that uses a float
+   * acts directly on the vector upon which it is called (as in the first example
+   * above). The version that receives both a PVector and a float as arguments is
+   * a static methods, and returns a new PVector that is the result of the
+   * division operation. Both examples above produce the same visual output.
    *
    * @webref pvector:method
    * @usage web_application
-   * @webBrief  Divide a vector by a scalar
+   * @webBrief Divide a vector by a scalar
    * @param n the number by which to divide the vector
    */
   public PVector div(float n) {
@@ -880,18 +887,32 @@ public class PVector implements Serializable {
   }
 
 
-  /**
-   *
-   * Linear interpolate the vector to another vector
-   *
-   *
-   * @webref pvector:method
-   * @usage web_application
-   * @webBrief  Linear interpolate the vector to another vector
-   * @param v the vector to lerp to
-   * @param amt  The amount of interpolation; some value between 0.0 (old vector) and 1.0 (new vector). 0.1 is very near the old vector; 0.5 is halfway in between.
-   * @see PApplet#lerp(float, float, float)
-   */
+  	/**
+	 *
+	 * Calculates linear interpolation from one vector to another vector. (Just like
+	 * regular <b>lerp()</b>, but for vectors.)<br />
+	 * <br />
+	 * Note that there is one <em>static</em> version of this method, and two
+	 * <em>non-static</em> versions. The static version, <b>lerp(v1, v2, amt)</b> is
+	 * given the two vectors to interpolate and returns a new PVector object. The
+	 * static version is used by referencing the PVector class directly. (See the
+	 * middle example above.) The non-static versions, <b>lerp(v, amt)</b> and
+	 * <b>lerp(x, y, z, amt)</b>, do not create a new PVector, but transform the
+	 * values of the PVector on which they are called. These non-static versions
+	 * perform the same operation, but the former takes another vector as input,
+	 * while the latter takes three float values. (See the top and bottom examples
+	 * above, respectively.)
+	 *
+	 *
+	 * @webref pvector:method
+	 * @usage web_application
+	 * @webBrief Linear interpolate the vector to another vector
+	 * @param v   the vector to lerp to
+	 * @param amt The amount of interpolation; some value between 0.0 (old vector)
+	 *            and 1.0 (new vector). 0.1 is very near the old vector; 0.5 is
+	 *            halfway in between.
+	 * @see PApplet#lerp(float, float, float)
+	 */
   public PVector lerp(PVector v, float amt) {
     x = PApplet.lerp(x, v.x, amt);
     y = PApplet.lerp(y, v.y, amt);
@@ -971,14 +992,14 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Return a representation of this vector as a float array. This is only
-   * for temporary use. If used in any other fashion, the contents should be
-   * copied by using the <b>PVector.get()</b> method to copy into your own array.
+   * Return a representation of this vector as a float array. This is only for
+   * temporary use. If used in any other fashion, the contents should be copied by
+   * using the <b>copy()</b> method to copy into your own array.
    *
    *
    * @webref pvector:method
    * @usage: web_application
-   * @webBrief  Return a representation of the vector as a float array
+   * @webBrief Return a representation of the vector as a float array
    */
   public float[] array() {
     if (array == null) {

@@ -149,7 +149,7 @@ public class StringList implements Iterable<String> {
   /**
    * Set the entry at a particular index. If the index is past the length of
    * the list, it'll expand the list to accommodate, and fill the intermediate
-   * entries with 0s.
+   * entries with "null".
    *
    * @webref stringlist:method
    * @webBrief Set an entry at a particular index
@@ -503,10 +503,11 @@ public class StringList implements Iterable<String> {
 
 
   /**
-   * Reverse sort, orders values from highest to lowest.
+   * A sort in reverse. It's equivalent to running <b>sort()</b> and then 
+   * <b>reverse()</b>, but is more efficient than running each separately.
    *
    * @webref stringlist:method
-   * @webBrief Reverse sort, orders values from highest to lowest
+   * @webBrief A sort in reverse
    */
   public void sortReverse() {
     sortImpl(true);
@@ -554,10 +555,10 @@ public class StringList implements Iterable<String> {
 //  }
 
   /**
-   * Reverse the order of the list elements
+   * Reverse the order of the list
    *
    * @webref stringlist:method
-   * @webBrief Reverse the order of the list elements
+   * @webBrief Reverse the order of the list
    */
   public void reverse() {
     int ii = count - 1;
@@ -571,8 +572,7 @@ public class StringList implements Iterable<String> {
 
 
   /**
-   * Randomize the order of the list elements. Note that this does not
-   * obey the randomSeed() function in PApplet.
+   * Randomize the order of the list elements. 
    *
    * @webref stringlist:method
    * @webBrief Randomize the order of the list elements

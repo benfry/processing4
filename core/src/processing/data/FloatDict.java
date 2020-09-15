@@ -9,10 +9,12 @@ import processing.core.PApplet;
 
 
 /**
- * A simple table class to use a String as a lookup for an float value.
+ * A simple class to use a String as a lookup for an float value. String "keys"
+ * are associated with floating-point values.
  *
  * @webref data:composite
- * @webBrief A simple table class to use a String as a lookup for an float value.
+ * @webBrief A simple table class to use a String as a lookup for an float
+ *           value.
  * @see IntDict
  * @see StringDict
  */
@@ -109,7 +111,7 @@ public class FloatDict {
 
 
   /**
-   * Returns the number of key/value pairs
+   * Returns the number of key/value pairs.
    * 
    * @webref floatdict:method
    * @webBrief Returns the number of key/value pairs
@@ -145,7 +147,7 @@ public class FloatDict {
 
 
   /**
-   * Remove all entries.
+   * Remove all entries from the data structure.
    *
    * @webref floatdict:method
    * @webBrief Remove all entries
@@ -258,12 +260,13 @@ public class FloatDict {
   }
 
 
-  /**
-   * Return a copy of the internal keys array. This array can be modified.
-   *
-   * @webref floatdict:method
-   * @webBrief Return a copy of the internal keys array
-   */
+  	/**
+	 * Return a copy of the internal keys array. In contrast to the <b>keys()</b>
+	 * method, this array can be modified.
+	 *
+	 * @webref floatdict:method
+	 * @webBrief Return a copy of the internal keys array
+	 */
   public String[] keyArray() {
     crop();
     return keyArray(null);
@@ -285,7 +288,7 @@ public class FloatDict {
 
 
   /** 
-   * Return the internal array being used to store the values
+   * Return the internal array being used to store the values.
    * 
    * @webref floatdict:method
    * @webBrief Return the internal array being used to store the values
@@ -321,12 +324,16 @@ public class FloatDict {
   }
 
 
-  /**
-   * Create a new array and copy each of the values into it.
-   *
-   * @webref floatdict:method
-   * @webBrief Create a new array and copy each of the values into it
-   */
+  	/**
+	 * The version of this method without a parameter creates a new array and copies
+	 * each of the values into it. The version with the <b>float[]</b> parameters
+	 * fills an already-allocated array with the values (more efficient than
+	 * creating a new array each time). If 'array' is null, or not the same size as
+	 * the number of values, a new array will be allocated and returned.
+	 *
+	 * @webref floatdict:method
+	 * @webBrief Create a new array and copy each of the values into it
+	 */
   public float[] valueArray() {
     crop();
     return valueArray(null);
@@ -372,7 +379,7 @@ public class FloatDict {
 
 
   /**
-   * Create a new key/value pair or change the value of one
+   * Create a new key/value pair or change the value of one.
    *
    * @webref floatdict:method
    * @webBrief Create a new key/value pair or change the value of one
@@ -397,7 +404,7 @@ public class FloatDict {
 
 
   /**
-   * Check if a key is a part of the data structure
+   * Check if a key is a part of the data structure.
    *
    * @webref floatdict:method
    * @webBrief Check if a key is a part of the data structure
@@ -407,12 +414,13 @@ public class FloatDict {
   }
 
 
-  /**
-   * Add to a value
-   * 
-   * @webref floatdict:method
-   * @webBrief Add to a value
-   */
+  	/**
+	 * Add to a value. If the key does not exist, an new pair is initialized with
+	 * the value supplied.
+	 * 
+	 * @webref floatdict:method
+	 * @webBrief Add to a value
+	 */
   public void add(String key, float amount) {
     int index = index(key);
     if (index == -1) {
@@ -424,7 +432,7 @@ public class FloatDict {
 
 
   /**
-   * Subtract from a value
+   * Subtract from a value.
    *
    * @webref floatdict:method
    * @webBrief Subtract from a value
@@ -435,7 +443,7 @@ public class FloatDict {
 
 
   /**
-   * Multiply a value
+   * Multiply a value.
    * 
    * @webref floatdict:method
    * @webBrief Multiply a value
@@ -449,7 +457,7 @@ public class FloatDict {
 
 
   /**
-   * Divide a value
+   * Divide a value.
    *
    * @webref floatdict:method
    * @webBrief Divide a value
@@ -626,7 +634,7 @@ public class FloatDict {
 
 
   /**
-   * Remove a key/value pair
+   * Remove a key/value pair.
    *
    * @webref floatdict:method
    * @webBrief Remove a key/value pair
@@ -685,19 +693,20 @@ public class FloatDict {
   }
 
 
-  /**
-   * Sort the keys alphabetically in reverse
-   *
-   * @webref floatdict:method
-   * @webBrief Sort the keys alphabetically in reverse
-   */
+  	/**
+	 * Sort the keys alphabetically in reverse (ignoring case). Uses the value as a
+	 * tie-breaker (only really possible with a key that has a case change).
+	 *
+	 * @webref floatdict:method
+	 * @webBrief Sort the keys alphabetically in reverse
+	 */
   public void sortKeysReverse() {
     sortImpl(true, true, true);
   }
 
 
   /**
-   * Sort by values in descending order (largest value will be at [0]).
+   * Sort by values in ascending order (largest value will be at [0]).
    *
    * @webref floatdict:method
    * @webBrief Sort by values in ascending order
@@ -718,7 +727,7 @@ public class FloatDict {
 
 
   /**
-   * Sort by values in descending order
+   * Sort by values in descending order. The largest value will be at [0].
    *
    * @webref floatdict:method
    * @webBrief Sort by values in descending order

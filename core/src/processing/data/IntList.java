@@ -178,9 +178,7 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Set the entry at a particular index. If the index is past the length of
-   * the list, it'll expand the list to accommodate, and fill the intermediate
-   * entries with 0s.
+   * Set the entry at a particular index.
    *
    * @webref intlist:method
    * @webBrief Set the entry at a particular index
@@ -444,6 +442,8 @@ public class IntList implements Iterable<Integer> {
 //  }
 
   /**
+   * Check if a number is a part of the data structure.
+   * 
    * @webref intlist:method
    * @webBrief Check if a number is a part of the list
    */
@@ -461,6 +461,8 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Add one to a value.
+   * 
    * @webref intlist:method
    * @webBrief Add one to a value
    */
@@ -480,6 +482,8 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
+   * Add to a value.
+   * 
    * @webref intlist:method
    * @webBrief Add to a value
    */
@@ -492,6 +496,8 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Subtract from a value.
+   * 
    * @webref intlist:method
    * @webBrief Subtract from a value
    */
@@ -504,6 +510,8 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Multiply a value.
+   * 
    * @webref intlist:method
    * @webBrief Multiply a value
    */
@@ -516,6 +524,8 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Divide a value.
+   * 
    * @webref intlist:method
    * @webBrief Divide a value
    */
@@ -539,6 +549,8 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
+   * Return the smallest value.
+   * 
    * @webref intlist:method
    * @webBrief Return the smallest value
    */
@@ -569,6 +581,8 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
+   * Return the largest value.
+   * 
    * @webref intlist:method
    * @webBrief Return the largest value
    */
@@ -620,7 +634,7 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Sorts the array in place.
+   * Sorts the array, lowest to highest.
    *
    * @webref intlist:method
    * @webBrief Sorts the array, lowest to highest
@@ -631,7 +645,8 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Reverse sort, orders values from highest to lowest.
+   * A sort in reverse. It's equivalent to running <b>sort()</b> and then 
+   * <b>reverse()</b>, but is more efficient than running each separately.
    *
    * @webref intlist:method
    * @webBrief Reverse sort, orders values from highest to lowest
@@ -676,6 +691,8 @@ public class IntList implements Iterable<Integer> {
 //  }
 
   /**
+   * Reverse the order of the list.
+   * 
    * @webref intlist:method
    * @webBrief Reverse the order of the list elements
    */
@@ -691,8 +708,7 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Randomize the order of the list elements. Note that this does not
-   * obey the randomSeed() function in PApplet.
+   * Randomize the order of the list elements.
    *
    * @webref intlist:method
    * @webBrief Randomize the order of the list elements

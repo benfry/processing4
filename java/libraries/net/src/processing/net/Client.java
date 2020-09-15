@@ -303,11 +303,11 @@ public class Client implements Runnable {
 
   /**
    * 
-   * Returns true if this client is still active and hasn't run
+   * Returns <b>true</b> if this client is still active and hasn't run
    * into any trouble.
    * 
    * @webref client:client
-   * @webBrief Returns true if this client is still active
+   * @webBrief Returns <b>true</b> if this client is still active
    * @usage application
    */
   public boolean active() {
@@ -389,8 +389,8 @@ public class Client implements Runnable {
 
   /**
    * 
-   * Returns the next byte in the buffer as a char. Returns -1 or 0xffff if 
-   * nothing is there.
+   * Returns the next byte in the buffer as a char. Returns <b>-1</b> or 
+   * <b>0xffff</b> if nothing is there.
    * 
    * @webref client:client
    * @usage application
@@ -422,7 +422,7 @@ public class Client implements Runnable {
    * 
    * @webref client:client
    * @usage application
-   * @webBrief Reads everything in the buffer
+   * @webBrief Reads a group of bytes from the buffer.
    */
   public byte[] readBytes() {
     synchronized (bufferLock) {
@@ -638,11 +638,13 @@ public class Client implements Runnable {
 
   /**
    * 
-   * Writes data to a server specified when constructing the client.
+   * Writes data to a server specified when constructing the client, or writes 
+   * data to the specific client obtained from the Server <b>available()</b> 
+   * method.
    * 
    * @webref client:client
    * @usage application
-   * @webBrief  	Writes bytes, chars, ints, bytes[], Strings
+   * @webBrief  Writes bytes, chars, ints, bytes[], Strings
    * @param data data to write
    */
   public void write(int data) {  // will also cover char

@@ -724,7 +724,6 @@ public class Serial implements SerialPortEventListener {
   /**
    * Writes bytes, chars, ints, bytes[], Strings to the serial port
    * 
-   * @generate Serial_write.xml
    * <h3>Advanced</h3>
    * Write a String to the output. Note that this doesn't account
    * for Unicode (two bytes per char), nor will it send UTF8

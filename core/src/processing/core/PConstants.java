@@ -127,41 +127,42 @@ public interface PConstants {
 
   // useful goodness
 
-  /**
-   *
-   * PI is a mathematical constant with the value 3.14159265358979323846. It
-   * is the ratio of the circumference of a circle to its diameter. It is
-   * useful in combination with the trigonometric functions <b>sin()</b> and
-   * <b>cos()</b>.
-   *
-   * @webref constants
-   * @webBrief PI is a mathematical constant with the value 3.14159265358979323846.
-   * @see PConstants#TWO_PI
-   * @see PConstants#TAU
-   * @see PConstants#HALF_PI
-   * @see PConstants#QUARTER_PI
-   *
-   */
+  	/**
+	 *
+	 * <b>PI</b> is a mathematical constant with the value 3.1415927. It is the
+	 * ratio of the circumference of a circle to its diameter. It is useful in
+	 * combination with the trigonometric functions <b>sin()</b> and <b>cos()</b>.
+	 *
+	 * @webref constants
+	 * @webBrief PI is a mathematical constant with the value
+	 *           3.14159265358979323846.
+	 * @see PConstants#TWO_PI
+	 * @see PConstants#TAU
+	 * @see PConstants#HALF_PI
+	 * @see PConstants#QUARTER_PI
+	 *
+	 */
   static final float PI = (float) Math.PI;
-  /**
-   *
-   * HALF_PI is a mathematical constant with the value
-   * 1.57079632679489661923. It is half the ratio of the circumference of a
-   * circle to its diameter. It is useful in combination with the
-   * trigonometric functions <b>sin()</b> and <b>cos()</b>.
-   *
-   * @webref constants
-   * @webBrief HALF_PI is a mathematical constant with the value 1.57079632679489661923.
-   * @see PConstants#PI
-   * @see PConstants#TWO_PI
-   * @see PConstants#TAU
-   * @see PConstants#QUARTER_PI
-   */
+  	/**
+	 *
+	 * <b>HALF_PI</b> is a mathematical constant with the value 1.5707964. It is
+	 * half the ratio of the circumference of a circle to its diameter. It is useful
+	 * in combination with the trigonometric functions <b>sin()</b> and
+	 * <b>cos()</b>.
+	 *
+	 * @webref constants
+	 * @webBrief HALF_PI is a mathematical constant with the value
+	 *           1.57079632679489661923.
+	 * @see PConstants#PI
+	 * @see PConstants#TWO_PI
+	 * @see PConstants#TAU
+	 * @see PConstants#QUARTER_PI
+	 */
   static final float HALF_PI = (float) (Math.PI / 2.0);
   static final float THIRD_PI = (float) (Math.PI / 3.0);
   /**
    *
-   * QUARTER_PI is a mathematical constant with the value 0.7853982. It is
+   * <b>QUARTER_PI</b> is a mathematical constant with the value 0.7853982. It is
    * one quarter the ratio of the circumference of a circle to its diameter.
    * It is useful in combination with the trigonometric functions
    * <b>sin()</b> and <b>cos()</b>.
@@ -176,7 +177,7 @@ public interface PConstants {
   static final float QUARTER_PI = (float) (Math.PI / 4.0);
   /**
    *
-   * TWO_PI is a mathematical constant with the value 6.28318530717958647693.
+   * <b>TWO_PI</b> is a mathematical constant with the value 6.2831855.
    * It is twice the ratio of the circumference of a circle to its diameter.
    * It is useful in combination with the trigonometric functions
    * <b>sin()</b> and <b>cos()</b>.
@@ -189,20 +190,21 @@ public interface PConstants {
    * @see PConstants#QUARTER_PI
    */
   static final float TWO_PI = (float) (2.0 * Math.PI);
-  /**
-   *
-   * TAU is an alias for TWO_PI, a mathematical constant with the value
-   * 6.28318530717958647693. It is twice the ratio of the circumference
-   * of a circle to its diameter. It is useful in combination with the
-   * trigonometric functions <b>sin()</b> and <b>cos()</b>.
-   *
-   * @webref constants
-   * @webBrief An alias for TWO_PI
-   * @see PConstants#PI
-   * @see PConstants#TWO_PI
-   * @see PConstants#HALF_PI
-   * @see PConstants#QUARTER_PI
-   */
+  	/**
+	 *
+	 * <b>TAU</b> is a mathematical constant with the value 6.2831855. It is the
+	 * circle constant relating the circumference of a circle to its linear
+	 * dimension, the ratio of the circumference of a circle to its radius. It is
+	 * useful in combination with trigonometric functions such as <b>sin()</b> and
+	 * <b>cos()</b>.
+	 *
+	 * @webref constants
+	 * @webBrief An alias for TWO_PI
+	 * @see PConstants#PI
+	 * @see PConstants#TWO_PI
+	 * @see PConstants#HALF_PI
+	 * @see PConstants#QUARTER_PI
+	 */
   static final float TAU = (float) (2.0 * Math.PI);
 
   static final float DEG_TO_RAD = PI/180.0f;

@@ -37,43 +37,54 @@ import java.util.Base64;
 
 /**
  *
- * Datatype for storing shapes. Processing can currently load and display
- * SVG (Scalable Vector Graphics) shapes. Before a shape is used, it must
- * be loaded with the <b>loadShape()</b> function. The <b>shape()</b>
- * function is used to draw the shape to the display window. The
- * <b>PShape</b> object contain a group of methods, linked below, that can
- * operate on the shape data.
- * <br /><br />
- * The <b>loadShape()</b> function supports SVG files created with Inkscape
- * and Adobe Illustrator. It is not a full SVG implementation, but offers
- * some straightforward support for handling vector data.
+ * Datatype for storing shapes. Before a shape is used, it must be loaded with
+ * the <b>loadShape()</b> or created with the <b>createShape()</b>. The
+ * <b>shape()</b> function is used to draw the shape to the display window.
+ * Processing can currently load and display SVG (Scalable Vector Graphics) and
+ * OBJ shapes. OBJ files can only be opened using the <b>P3D</b> renderer. The
+ * <b>loadShape()</b> function supports SVG files created with Inkscape and
+ * Adobe Illustrator. It is not a full SVG implementation, but offers some
+ * straightforward support for handling vector data. <br />
+ * <br />
+ * The <b>PShape</b> object contains a group of methods that can operate on the
+ * shape data. Some of the methods are listed below, but the full list used for
+ * creating and modifying shapes is
+ * <a href="http://processing.github.io/processing-javadocs/core/">available
+ * here in the Processing Javadoc</a>.<br />
+ * <br />
+ * To create a new shape, use the <b>createShape()</b> function. Do not use the
+ * syntax <b>new PShape()</b>.
  *
  * <h3>Advanced</h3>
  *
- * In-progress class to handle shape data, currently to be considered of
- * alpha or beta quality. Major structural work may be performed on this class
- * after the release of Processing 1.0. Such changes may include:
+ * In-progress class to handle shape data, currently to be considered of alpha
+ * or beta quality. Major structural work may be performed on this class after
+ * the release of Processing 1.0. Such changes may include:
  *
  * <ul>
- * <li> addition of proper accessors to read shape vertex and coloring data
- * (this is the second most important part of having a PShape class after all).
- * <li> a means of creating PShape objects ala beginShape() and endShape().
- * <li> load(), update(), and cache methods ala PImage, so that shapes can
- * have renderer-specific optimizations, such as vertex arrays in OpenGL.
- * <li> splitting this class into multiple classes to handle different
- * varieties of shape data (primitives vs collections of vertices vs paths)
- * <li> change of package declaration, for instance moving the code into
- * package processing.shape (if the code grows too much).
+ * <li>addition of proper accessors to read shape vertex and coloring data (this
+ * is the second most important part of having a PShape class after all).
+ * <li>a means of creating PShape objects ala beginShape() and endShape().
+ * <li>load(), update(), and cache methods ala PImage, so that shapes can have
+ * renderer-specific optimizations, such as vertex arrays in OpenGL.
+ * <li>splitting this class into multiple classes to handle different varieties
+ * of shape data (primitives vs collections of vertices vs paths)
+ * <li>change of package declaration, for instance moving the code into package
+ * processing.shape (if the code grows too much).
  * </ul>
  *
- * <p>For the time being, this class and its shape() and loadShape() friends in
- * PApplet exist as placeholders for more exciting things to come. If you'd
- * like to work with this class, make a subclass (see how PShapeSVG works)
- * and you can play with its internal methods all you like.</p>
+ * <p>
+ * For the time being, this class and its shape() and loadShape() friends in
+ * PApplet exist as placeholders for more exciting things to come. If you'd like
+ * to work with this class, make a subclass (see how PShapeSVG works) and you
+ * can play with its internal methods all you like.
+ * </p>
  *
- * <p>Library developers are encouraged to create PShape objects when loading
- * shape data, so that they can eventually hook into the bounty that will be
- * the PShape interface, and the ease of loadShape() and shape().</p>
+ * <p>
+ * Library developers are encouraged to create PShape objects when loading shape
+ * data, so that they can eventually hook into the bounty that will be the
+ * PShape interface, and the ease of loadShape() and shape().
+ * </p>
  *
  * @webref shape
  * @webBrief Datatype for storing shapes.
@@ -387,40 +398,41 @@ public class PShape implements PConstants {
     return name;
   }
 
-  /**
-   *
-   * Returns a boolean value "true" if the image is set to be visible,
-   * "false" if not. This is modified with the <b>setVisible()</b> parameter.
-   * <br/> <br/>
-   * The visibility of a shape is usually controlled by whatever program
-   * created the SVG file. For instance, this parameter is controlled by
-   * showing or hiding the shape in the layers palette in Adobe Illustrator.
-   *
-   * @webref pshape:method
-   * @usage web_application
-   * @webBrief Returns a boolean value "true" if the image is set to be visible, "false" if not
-   * @see PShape#setVisible(boolean)
-   */
+  	/**
+	 *
+	 * Returns a boolean value "true" if the image is set to be visible, "false" if
+	 * not. This value can be modified with the <b>setVisible()</b> method.<br />
+	 * <br />
+	 * The default visibility of a shape is usually controlled by whatever program
+	 * created the SVG file. For instance, this parameter is controlled by showing
+	 * or hiding the shape in the layers palette in Adobe Illustrator.
+	 *
+	 * @webref pshape:method
+	 * @usage web_application
+	 * @webBrief Returns a boolean value "true" if the image is set to be visible,
+	 *           "false" if not
+	 * @see PShape#setVisible(boolean)
+	 */
   public boolean isVisible() {
     return visible;
   }
 
 
-  /**
-   *
-   * Sets the shape to be visible or invisible. This is determined by the
-   * value of the <b>visible</b> parameter.
-   * <br/> <br/>
-   * The visibility of a shape is usually controlled by whatever program
-   * created the SVG file. For instance, this parameter is controlled by
-   * showing or hiding the shape in the layers palette in Adobe Illustrator.
-   *
-   * @webref pshape:mathod
-   * @usage web_application
-   * @webBrief  Sets the shape to be visible or invisible
-   * @param visible "false" makes the shape invisible and "true" makes it visible
-   * @see PShape#isVisible()
-   */
+  	/**
+	 *
+	 * Sets the shape to be visible or invisible. This is determined by the value of
+	 * the <b>visible</b> parameter.<br />
+	 * <br />
+	 * The default visibility of a shape is usually controlled by whatever program
+	 * created the SVG file. For instance, this parameter is controlled by showing
+	 * or hiding the shape in the layers palette in Adobe Illustrator.
+	 *
+	 * @webref pshape:mathod
+	 * @usage web_application
+	 * @webBrief Sets the shape to be visible or invisible
+	 * @param visible "false" makes the shape invisible and "true" makes it visible
+	 * @see PShape#isVisible()
+	 */
   public void setVisible(boolean visible) {
     this.visible = visible;
   }

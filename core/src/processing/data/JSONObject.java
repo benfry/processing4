@@ -51,6 +51,18 @@ import java.util.Set;
 import processing.core.PApplet;
 
 /**
+ * A <b>JSONObject</b> stores JSON data with multiple name/value pairs. Values
+ * can be numeric, Strings, booleans, other <b>JSONObject</b>s or
+ * <b>JSONArray</b>s, or null. <b>JSONObject</b> and <b>JSONArray</b> objects
+ * are quite similar and share most of the same methods; the primary difference
+ * is that the latter stores an array of JSON objects, while the former
+ * represents a single JSON object.<br />
+ * <br />
+ * JSON can be generated from scratch, dynamically, or using data from an
+ * existing file. JSON can also be output and saved to disk, as in the example
+ * above.
+ * 
+ * 
  * A JSONObject is an unordered collection of name/value pairs. Its external
  * form is a string wrapped in curly braces with colons between the names and
  * values, and commas between the values and names. The internal form is an
@@ -555,10 +567,10 @@ public class JSONObject {
 
 
   /**
-   * Gets the String associated with a key
+   * Gets the String value associated with the specified key.
    *
    * @webref jsonobject:method
-   * @webBrief Gets the string value associated with a key
+   * @webBrief Gets the String value associated with the specified key
    * @param key a key string
    * @return A string which is the value.
    * @throws RuntimeException if there is no string value for the key.
@@ -594,10 +606,10 @@ public class JSONObject {
 
 
   /**
-   * Gets the int value associated with a key
+   * Gets the int value associated with the specified key.
    *
    * @webref jsonobject:method
-   * @webBrief Gets the int value associated with a key
+   * @webBrief Gets the int value associated with the specified key
    * @param key A key string.
    * @return The integer value.
    * @throws RuntimeException if the key is not found or if the value cannot
@@ -679,7 +691,7 @@ public class JSONObject {
 
 
   /**
-   * Gets the float value associated with a key
+   * Gets the float value associated with the specified key
    *
    * @webref jsonobject:method
    * @webBrief Gets the float value associated with a key
@@ -741,10 +753,10 @@ public class JSONObject {
 
 
   /**
-   * Get the boolean value associated with a key.
+   * Gets the boolean value associated with the specified key.
    *
    * @webref jsonobject:method
-   * @webBrief Gets the boolean value associated with a key
+   * @webBrief Gets the boolean value associated with the specified key
    * @param key a key string
    * @return The truth.
    * @throws RuntimeException if the value is not a Boolean or the String "true" or "false".
@@ -786,10 +798,10 @@ public class JSONObject {
 
 
   /**
-   * Get the JSONArray value associated with a key.
+   * Retrieves the <b>JSONArray</b> with the associated key.
    *
    * @webref jsonobject:method
-   * @webBrief Gets the JSONArray value associated with a key
+   * @webBrief Retrieves the <b>JSONArray</b> with the associated key
    * @param key a key string
    * @return A JSONArray which is the value, or null if not present
    * @throws RuntimeException if the value is not a JSONArray.
@@ -810,10 +822,10 @@ public class JSONObject {
 
 
   /**
-   * Get the JSONObject value associated with a key.
+   * Given a key value, retrieves the associated <b>JSONObject</b>.
    *
    * @webref jsonobject:method
-   * @webBrief Gets the JSONObject value associated with a key
+   * @webBrief Given a key value, retrieves the associated <b>JSONObject</b>
    * @param key a key string
    * @return A JSONObject which is the value or null if not available.
    * @throws RuntimeException if the value is not a JSONObject.
@@ -916,12 +928,12 @@ public class JSONObject {
 
 
   /**
-   * Determine if the value associated with the key is null or if there is
-   * no value.
+   * Determines if the value associated with the key is <b>null</b>, that is has 
+   * no defined value (<b>false</b>) or if it has a value (<b>true</b>).
    *
    * @webref
-   * @webBrief Determine if the value associated with the key is null or if there is
-   * no value.
+   * @webBrief Determines if the value associated with the key is <b>null</b>, that is has 
+   * no defined value (<b>false</b>) or if it has a value (<b>true</b>).
    * @param key   A key string.
    * @return      true if there is no value associated with the key or if
    *  the value is the JSONObject.NULL object.
@@ -1161,8 +1173,11 @@ public class JSONObject {
 
 
   /**
+   * Inserts a new key/String pair into the <b>JSONObject</b> or, if a value with 
+   * the specified key already exists, assigns a new value.
+   * 
    * @webref jsonobject:method
-   * @webBrief Put a key/String pair in the JSONObject
+   * @webBrief Inserts a new key/String pair into the <b>JSONObject</b>
    * @param key a key string
    * @param value the value to assign
    * @see JSONObject#setInt(String, int)
@@ -1175,10 +1190,11 @@ public class JSONObject {
 
 
   /**
-   * Put a key/int pair in the JSONObject.
-   *
+   * Inserts a new key/int pair into the <b>JSONObject</b> or, if a value with 
+   * the specified key already exists, assigns a new value.
+   * 
    * @webref jsonobject:method
-   * @webBrief Put a key/int pair in the JSONObject
+   * @webBrief Inserts a new key/int pair into the <b>JSONObject</b>
    * @param key a key string
    * @param value the value to assign
    * @return this.
@@ -1207,7 +1223,8 @@ public class JSONObject {
   }
 
   /**
-   * Put a key/float pair in the JSONObject
+   * Inserts a new key/float pair into the <b>JSONObject</b> or, if a value with 
+   * the specified key already exists, assigns a new value.
    * 
    * @webref jsonobject:method
    * @webBrief Put a key/float pair in the JSONObject
@@ -1239,7 +1256,8 @@ public class JSONObject {
 
 
   /**
-   * Put a key/boolean pair in the JSONObject.
+   * Inserts a new key/boolean pair into the <b>JSONObject</b> or, if a value 
+   * with the specified key already exists, assigns a new value.
    *
    * @webref jsonobject:method
    * @webBrief Put a key/boolean pair in the JSONObject
@@ -1257,10 +1275,10 @@ public class JSONObject {
   }
 
   /**
-   * Sets the JSONObject value associated with a key
+   * Sets the value of the <b>JSONObject</b> with the associated key.
    *
    * @webref jsonobject:method
-   * @webBrief Sets the JSONObject value associated with a key
+   * @webBrief Sets the value of the <b>JSONObject</b> with the associated key
    * @param key a key string
    * @param value value to assign
    * @see JSONObject#setJSONArray(String, JSONArray)
@@ -1272,10 +1290,10 @@ public class JSONObject {
   }
 
   /**
-   * Sets the JSONArray value associated with a key
+   * Sets the value of the <b>JSONArray</b> with the associated key.
    *
    * @webref jsonobject:method
-   * @webBrief Sets the JSONArray value associated with a key
+   * @webBrief Sets the value of the <b>JSONArray</b> with the associated key
    * @param key a key string
    * @param value value to assign
    * @see JSONObject#setJSONObject(String, JSONObject)
