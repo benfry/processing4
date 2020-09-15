@@ -1808,18 +1808,18 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  	/**
-	 * Use <b>addColumn()</b> to add a new column to a <b>Table</b> object.
-	 * Typically, you will want to specify a title, so the column may be easily
-	 * referenced later by name. (If no title is specified, the new column's title
-	 * will be null.) A column type may also be specified, in which case all values
-	 * stored in this column must be of the same type (e.g., Table.INT or
-	 * Table.FLOAT). If no type is specified, the default type of STRING is used.
-	 *
-	 * @webref table:method
-	 * @webBrief Adds a new column to a table
-	 * @see Table#removeColumn(String)
-	 */
+  /**
+   * Use <b>addColumn()</b> to add a new column to a <b>Table</b> object.
+   * Typically, you will want to specify a title, so the column may be easily
+   * referenced later by name. (If no title is specified, the new column's title
+   * will be null.) A column type may also be specified, in which case all values
+   * stored in this column must be of the same type (e.g., Table.INT or
+   * Table.FLOAT). If no type is specified, the default type of STRING is used.
+   *
+   * @webref table:method
+   * @webBrief Adds a new column to a table
+   * @see Table#removeColumn(String)
+   */
   public void addColumn() {
     addColumn(null, STRING);
   }
@@ -1889,18 +1889,18 @@ public class Table {
     }
   }
 
- 	/**
-	 * Use <b>removeColumn()</b> to remove an existing column from a <b>Table</b>
-	 * object. The column to be removed may be identified by either its title (a
-	 * String) or its index value (an int). <b>removeColumn(0)</b> would remove the
-	 * first column, <b>removeColumn(1)</b> would remove the second column, and so
-	 * on.
-	 *
-	 * @webref table:method
-	 * @webBrief Removes a column from a table
-	 * @param columnName the title of the column to be removed
-	 * @see Table#addColumn()
-	 */
+  /**
+   * Use <b>removeColumn()</b> to remove an existing column from a <b>Table</b>
+   * object. The column to be removed may be identified by either its title (a
+   * String) or its index value (an int). <b>removeColumn(0)</b> would remove the
+   * first column, <b>removeColumn(1)</b> would remove the second column, and so
+   * on.
+   *
+   * @webref table:method
+   * @webBrief Removes a column from a table
+   * @param columnName the title of the column to be removed
+   * @see Table#addColumn()
+   */
   public void removeColumn(String columnName) {
     removeColumn(getColumnIndex(columnName));
   }
@@ -2353,19 +2353,19 @@ public class Table {
   }
 
 
- 	/**
-	 * Use <b>addRow()</b> to add a new row of data to a <b>Table</b> object. By
-	 * default, an empty row is created. Typically, you would store a reference to
-	 * the new row in a <b>TableRow</b> object (see <b>newRow</b> in the example
-	 * above), and then set individual values using <b>setInt()</b>,
-	 * <b>setFloat()</b>, or <b>setString()</b>. If a <b>TableRow</b> object is
-	 * included as a parameter, then that row is duplicated and added to the table.
-	 *
-	 * @webref table:method
-	 * @webBrief Adds a new row of data to a <b>Table</b> object
-	 * @see Table#removeRow(int)
-	 * @see Table#clearRows()
-	 */
+  /**
+   * Use <b>addRow()</b> to add a new row of data to a <b>Table</b> object. By
+   * default, an empty row is created. Typically, you would store a reference to
+   * the new row in a <b>TableRow</b> object (see <b>newRow</b> in the example
+   * above), and then set individual values using <b>setInt()</b>,
+   * <b>setFloat()</b>, or <b>setString()</b>. If a <b>TableRow</b> object is
+   * included as a parameter, then that row is duplicated and added to the table.
+   *
+   * @webref table:method
+   * @webBrief Adds a new row of data to a <b>Table</b> object
+   * @see Table#removeRow(int)
+   * @see Table#clearRows()
+   */
   public TableRow addRow() {
     //if (rowIncrement == 0) {
     setRowCount(rowCount + 1);
@@ -4092,18 +4092,18 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  	/**
-	 * Removes any of the specified characters (or "tokens"). The example above
-	 * removes all commas, dollar signs, and spaces from the table.<br />
-	 * <br />
-	 * If no column is specified, then the values in all columns and rows are
-	 * processed. A specific column may be referenced by either its ID or title.
-	 *
-	 * @webref table:method
-	 * @webBrief Removes characters from the table
-	 * @param tokens a list of individual characters to be removed
-	 * @see Table#trim()
-	 */
+  /**
+   * Removes any of the specified characters (or "tokens"). The example above
+   * removes all commas, dollar signs, and spaces from the table.<br />
+   * <br />
+   * If no column is specified, then the values in all columns and rows are
+   * processed. A specific column may be referenced by either its ID or title.
+   *
+   * @webref table:method
+   * @webBrief Removes characters from the table
+   * @param tokens a list of individual characters to be removed
+   * @see Table#trim()
+   */
   public void removeTokens(String tokens) {
     for (int col = 0; col < getColumnCount(); col++) {
       removeTokens(tokens, col);

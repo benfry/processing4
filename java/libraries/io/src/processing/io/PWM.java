@@ -110,15 +110,15 @@ public class PWM {
   }
 
 
-  	/**
-	 * Gives ownership of a channel back to the operating system<br/>
-	 * <br/>
-	 * Without calling this function the channel will remain in the current state
-	 * even after the sketch has been closed.
-	 * 
-	 * @webref
-	 * @webBrief Gives ownership of a channel back to the operating system
-	 */
+  /**
+   * Gives ownership of a channel back to the operating system<br/>
+   * <br/>
+   * Without calling this function the channel will remain in the current state
+   * even after the sketch has been closed.
+   * 
+   * @webref
+   * @webBrief Gives ownership of a channel back to the operating system
+   */
   public void close() {
     if (NativeInterface.isSimulated()) {
       return;
@@ -175,16 +175,16 @@ public class PWM {
   }
 
 
-  	/**
-	 * Enables the PWM output<br/>
-	 * <br/>
-	 * When no period is specified, a default 1 kHz (1000 Hz) is used.
-	 * 
-	 * @param period cycle period in Hz
-	 * @param duty   duty cycle, 0.0 (always off) to 1.0 (always on)
-	 * @webref
-	 * @webBrief Enables the PWM output
-	 */
+  /**
+   * Enables the PWM output<br/>
+   * <br/>
+   * When no period is specified, a default 1 kHz (1000 Hz) is used.
+   * 
+   * @param period cycle period in Hz
+   * @param duty   duty cycle, 0.0 (always off) to 1.0 (always on)
+   * @webref
+   * @webBrief Enables the PWM output
+   */
   public void set(int period, float duty) {
     if (NativeInterface.isSimulated()) {
       return;

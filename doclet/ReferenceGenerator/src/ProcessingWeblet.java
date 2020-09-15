@@ -3,7 +3,6 @@ import java.io.IOException;
 import writers.ClassWriter;
 import writers.FieldWriter;
 import writers.FunctionWriter;
-import writers.IndexWriter;
 import writers.LibraryWriter;
 import writers.Shared;
 
@@ -40,14 +39,11 @@ public class ProcessingWeblet extends Standard {
 	private static String verboseFlag = "-noisy";
 	private static String rootFlag = "-rootclass";
 	private static String xmlDescriptionFlag = "-includeXMLTag";
-	private static IndexWriter indexWriter;
 
 	public static boolean start(RootDoc root) 
 	{
 		setConfig(root.options());
 		Shared.i().createBaseDirectories();
-
-		indexWriter = new IndexWriter();
 		
 		try 
 		{
@@ -60,10 +56,6 @@ public class ProcessingWeblet extends Standard {
 
 			System.out.println("===Source code @webref files written.===");
 
-			// write out the index file
-
-			System.out.println("\n===Telling the index to write itself.===");
-			indexWriter.write();
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -134,29 +126,17 @@ public class ProcessingWeblet extends Standard {
 					for (MethodDoc fn : functions) {
 						// write out html reference
 						FunctionWriter.write(fn);
-
-						Tag[] tags = fn.tags(Shared.i().getWebrefTagName());
-						if (tags.length != 0) {
-							// add to the index under the @webref category:sub_category
-							indexWriter.addItem(fn, tags[0]);
-						}
 					}
 					//also need to add fields
 					for(FieldDoc doc : classDoc.fields()){
 						if(Shared.i().isWebref(doc)){
 							FieldWriter.write(doc);
-							indexWriter.addItem(doc, doc.tags(Shared.i().getWebrefTagName())[0] );
 						}
 					}
 					
 				} else {
 					// document a class and its public properties
 					new ClassWriter().write( classDoc );
-					Tag[] classTags = classDoc.tags(Shared.i().getWebrefTagName());
-					if (classTags.length != 0) {
-						// add to the index under the @webref category:sub_category
-						indexWriter.addItem(classDoc, classTags[0]);
-					}
 				}
 			} else {
 				// Document the library passed in

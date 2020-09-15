@@ -320,16 +320,16 @@ public class IntDict {
   }
 
 
-  	/**
-	 * The version of this method without a parameter creates a new array and copies
-	 * each of the values into it. The version with the <b>int[]</b> parameters
-	 * fills an already-allocated array with the values (more efficient than
-	 * creating a new array each time). If 'array' is null, or not the same size as
-	 * the number of values, a new array will be allocated and returned.
-	 *
-	 * @webref intdict:method
-	 * @webBrief Create a new array and copy each of the values into it
-	 */
+  /**
+   * The version of this method without a parameter creates a new array and copies
+   * each of the values into it. The version with the <b>int[]</b> parameters
+   * fills an already-allocated array with the values (more efficient than
+   * creating a new array each time). If 'array' is null, or not the same size as
+   * the number of values, a new array will be allocated and returned.
+   *
+   * @webref intdict:method
+   * @webBrief Create a new array and copy each of the values into it
+   */
   public int[] valueArray() {
     crop();
     return valueArray(null);

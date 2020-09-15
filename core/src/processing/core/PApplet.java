@@ -11905,33 +11905,33 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Draws a point, a coordinate in space at the dimension of one pixel. The first
-	 * parameter is the horizontal value for the point, the second value is the
-	 * vertical value for the point, and the optional third value is the depth
-	 * value. Drawing this shape in 3D with the <b>z</b> parameter requires the P3D
-	 * parameter in combination with <b>size()</b> as shown in the above example.
-	 * <br />
-	 * <br />
-	 * Use <b>stroke()</b> to set the color of a <b>point()</b>. <br />
-	 * <br />
-	 * Point appears round with the default <b>strokeCap(ROUND)</b> and square with
-	 * <b>strokeCap(PROJECT)</b>. Points are invisible with <b>strokeCap(SQUARE)</b>
-	 * (no cap). <br />
-	 * <br />
-	 * Using point() with strokeWeight(1) or smaller may draw nothing to the screen,
-	 * depending on the graphics settings of the computer. Workarounds include
-	 * setting the pixel using <b>set()</s> or drawing the point using either
-	 * <b>circle()</b> or <b>square()</b>.
-	 *
-	 *
-	 * @webref shape:2d_primitives
-	 * @webBrief Draws a point, a coordinate in space at the dimension of one pixel.
-	 * @param x x-coordinate of the point
-	 * @param y y-coordinate of the point
-	 * @see PGraphics#stroke(int)
-	 */
+  /**
+   *
+   * Draws a point, a coordinate in space at the dimension of one pixel. The first
+   * parameter is the horizontal value for the point, the second value is the
+   * vertical value for the point, and the optional third value is the depth
+   * value. Drawing this shape in 3D with the <b>z</b> parameter requires the P3D
+   * parameter in combination with <b>size()</b> as shown in the above example.
+   * <br />
+   * <br />
+   * Use <b>stroke()</b> to set the color of a <b>point()</b>. <br />
+   * <br />
+   * Point appears round with the default <b>strokeCap(ROUND)</b> and square with
+   * <b>strokeCap(PROJECT)</b>. Points are invisible with <b>strokeCap(SQUARE)</b>
+   * (no cap). <br />
+   * <br />
+   * Using point() with strokeWeight(1) or smaller may draw nothing to the screen,
+   * depending on the graphics settings of the computer. Workarounds include
+   * setting the pixel using <b>set()</s> or drawing the point using either
+   * <b>circle()</b> or <b>square()</b>.
+   *
+   *
+   * @webref shape:2d_primitives
+   * @webBrief Draws a point, a coordinate in space at the dimension of one pixel.
+   * @param x x-coordinate of the point
+   * @param y y-coordinate of the point
+   * @see PGraphics#stroke(int)
+   */
   public void point(float x, float y) {
     if (recorder != null) recorder.point(x, y);
     g.point(x, y);
@@ -12036,67 +12036,67 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Modifies the location from which rectangles are drawn by changing the way in
-	 * which parameters given to <b>rect()</b> are intepreted.<br />
-	 * <br />
-	 * The default mode is <b>rectMode(CORNER)</b>, which interprets the first two
-	 * parameters of <b>rect()</b> as the upper-left corner of the shape, while the
-	 * third and fourth parameters are its width and height.<br />
-	 * <br />
-	 * <b>rectMode(CORNERS)</b> interprets the first two parameters of <b>rect()</b>
-	 * as the location of one corner, and the third and fourth parameters as the
-	 * location of the opposite corner.<br />
-	 * <br />
-	 * <b>rectMode(CENTER)</b> interprets the first two parameters of <b>rect()</b>
-	 * as the shape's center point, while the third and fourth parameters are its
-	 * width and height.<br />
-	 * <br />
-	 * <b>rectMode(RADIUS)</b> also uses the first two parameters of <b>rect()</b>
-	 * as the shape's center point, but uses the third and fourth parameters to
-	 * specify half of the shapes's width and height.<br />
-	 * <br />
-	 * The parameter must be written in ALL CAPS because Processing is a
-	 * case-sensitive language.
-	 *
-	 * @webref shape:attributes
-	 * @webBrief Modifies the location from which rectangles draw.
-	 * @param mode either CORNER, CORNERS, CENTER, or RADIUS
-	 * @see PGraphics#rect(float, float, float, float)
-	 */
+  /**
+   *
+   * Modifies the location from which rectangles are drawn by changing the way in
+   * which parameters given to <b>rect()</b> are intepreted.<br />
+   * <br />
+   * The default mode is <b>rectMode(CORNER)</b>, which interprets the first two
+   * parameters of <b>rect()</b> as the upper-left corner of the shape, while the
+   * third and fourth parameters are its width and height.<br />
+   * <br />
+   * <b>rectMode(CORNERS)</b> interprets the first two parameters of <b>rect()</b>
+   * as the location of one corner, and the third and fourth parameters as the
+   * location of the opposite corner.<br />
+   * <br />
+   * <b>rectMode(CENTER)</b> interprets the first two parameters of <b>rect()</b>
+   * as the shape's center point, while the third and fourth parameters are its
+   * width and height.<br />
+   * <br />
+   * <b>rectMode(RADIUS)</b> also uses the first two parameters of <b>rect()</b>
+   * as the shape's center point, but uses the third and fourth parameters to
+   * specify half of the shapes's width and height.<br />
+   * <br />
+   * The parameter must be written in ALL CAPS because Processing is a
+   * case-sensitive language.
+   *
+   * @webref shape:attributes
+   * @webBrief Modifies the location from which rectangles draw.
+   * @param mode either CORNER, CORNERS, CENTER, or RADIUS
+   * @see PGraphics#rect(float, float, float, float)
+   */
   public void rectMode(int mode) {
     if (recorder != null) recorder.rectMode(mode);
     g.rectMode(mode);
   }
 
 
-  	/**
-	 *
-	 * Draws a rectangle to the screen. A rectangle is a four-sided shape with every
-	 * angle at ninety degrees. By default, the first two parameters set the
-	 * location of the upper-left corner, the third sets the width, and the fourth
-	 * sets the height. The way these parameters are interpreted, however, may be
-	 * changed with the <b>rectMode()</b> function.<br />
-	 * <br />
-	 * To draw a rounded rectangle, add a fifth parameter, which is used as the
-	 * radius value for all four corners.<br />
-	 * <br />
-	 * To use a different radius value for each corner, include eight parameters.
-	 * When using eight parameters, the latter four set the radius of the arc at
-	 * each corner separately, starting with the top-left corner and moving
-	 * clockwise around the rectangle.
-	 *
-	 *
-	 * @webref shape:2d_primitives
-	 * @webBrief Draws a rectangle to the screen.
-	 * @param a x-coordinate of the rectangle by default
-	 * @param b y-coordinate of the rectangle by default
-	 * @param c width of the rectangle by default
-	 * @param d height of the rectangle by default
-	 * @see PGraphics#rectMode(int)
-	 * @see PGraphics#quad(float, float, float, float, float, float, float, float)
-	 */
+  /**
+   *
+   * Draws a rectangle to the screen. A rectangle is a four-sided shape with every
+   * angle at ninety degrees. By default, the first two parameters set the
+   * location of the upper-left corner, the third sets the width, and the fourth
+   * sets the height. The way these parameters are interpreted, however, may be
+   * changed with the <b>rectMode()</b> function.<br />
+   * <br />
+   * To draw a rounded rectangle, add a fifth parameter, which is used as the
+   * radius value for all four corners.<br />
+   * <br />
+   * To use a different radius value for each corner, include eight parameters.
+   * When using eight parameters, the latter four set the radius of the arc at
+   * each corner separately, starting with the top-left corner and moving
+   * clockwise around the rectangle.
+   *
+   *
+   * @webref shape:2d_primitives
+   * @webBrief Draws a rectangle to the screen.
+   * @param a x-coordinate of the rectangle by default
+   * @param b y-coordinate of the rectangle by default
+   * @param c width of the rectangle by default
+   * @param d height of the rectangle by default
+   * @see PGraphics#rectMode(int)
+   * @see PGraphics#quad(float, float, float, float, float, float, float, float)
+   */
   public void rect(float a, float b, float c, float d) {
     if (recorder != null) recorder.rect(a, b, c, d);
     g.rect(a, b, c, d);
@@ -12149,98 +12149,98 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Modifies the location from which ellipses are drawn by changing the way in
-	 * which parameters given to <b>ellipse()</b> are intepreted.<br />
-	 * <br />
-	 * The default mode is <b>ellipseMode(CENTER)</b>, which interprets the first
-	 * two parameters of <b>ellipse()</b> as the shape's center point, while the
-	 * third and fourth parameters are its width and height.<br />
-	 * <br />
-	 * <b>ellipseMode(RADIUS)</b> also uses the first two parameters of
-	 * <b>ellipse()</b> as the shape's center point, but uses the third and fourth
-	 * parameters to specify half of the shapes's width and height.<br />
-	 * <br />
-	 * <b>ellipseMode(CORNER)</b> interprets the first two parameters of
-	 * <b>ellipse()</b> as the upper-left corner of the shape, while the third and
-	 * fourth parameters are its width and height.<br />
-	 * <br />
-	 * <b>ellipseMode(CORNERS)</b> interprets the first two parameters of
-	 * <b>ellipse()</b> as the location of one corner of the ellipse's bounding box,
-	 * and the third and fourth parameters as the location of the opposite
-	 * corner.<br />
-	 * <br />
-	 * The parameter must be written in ALL CAPS because Processing is a
-	 * case-sensitive language.
-	 *
-	 * @webref shape:attributes
-	 * @webBrief The origin of the ellipse is modified by the <b>ellipseMode()</b>
-	 *           function.
-	 * @param mode either CENTER, RADIUS, CORNER, or CORNERS
-	 * @see PApplet#ellipse(float, float, float, float)
-	 * @see PApplet#arc(float, float, float, float, float, float)
-	 */
+  /**
+   *
+   * Modifies the location from which ellipses are drawn by changing the way in
+   * which parameters given to <b>ellipse()</b> are intepreted.<br />
+   * <br />
+   * The default mode is <b>ellipseMode(CENTER)</b>, which interprets the first
+   * two parameters of <b>ellipse()</b> as the shape's center point, while the
+   * third and fourth parameters are its width and height.<br />
+   * <br />
+   * <b>ellipseMode(RADIUS)</b> also uses the first two parameters of
+   * <b>ellipse()</b> as the shape's center point, but uses the third and fourth
+   * parameters to specify half of the shapes's width and height.<br />
+   * <br />
+   * <b>ellipseMode(CORNER)</b> interprets the first two parameters of
+   * <b>ellipse()</b> as the upper-left corner of the shape, while the third and
+   * fourth parameters are its width and height.<br />
+   * <br />
+   * <b>ellipseMode(CORNERS)</b> interprets the first two parameters of
+   * <b>ellipse()</b> as the location of one corner of the ellipse's bounding box,
+   * and the third and fourth parameters as the location of the opposite
+   * corner.<br />
+   * <br />
+   * The parameter must be written in ALL CAPS because Processing is a
+   * case-sensitive language.
+   *
+   * @webref shape:attributes
+   * @webBrief The origin of the ellipse is modified by the <b>ellipseMode()</b>
+   *           function.
+   * @param mode either CENTER, RADIUS, CORNER, or CORNERS
+   * @see PApplet#ellipse(float, float, float, float)
+   * @see PApplet#arc(float, float, float, float, float, float)
+   */
   public void ellipseMode(int mode) {
     if (recorder != null) recorder.ellipseMode(mode);
     g.ellipseMode(mode);
   }
 
 
-  	/**
-	 *
-	 * Draws an ellipse (oval) to the screen. An ellipse with equal width and height
-	 * is a circle. By default, the first two parameters set the location, and the
-	 * third and fourth parameters set the shape's width and height. The origin may
-	 * be changed with the <b>ellipseMode()</b> function.
-	 *
-	 * @webref shape:2d_primitives
-	 * @webBrief Draws an ellipse (oval) in the display window.
-	 * @param a x-coordinate of the ellipse
-	 * @param b y-coordinate of the ellipse
-	 * @param c width of the ellipse by default
-	 * @param d height of the ellipse by default
-	 * @see PApplet#ellipseMode(int)
-	 * @see PApplet#arc(float, float, float, float, float, float)
-	 */
+  /**
+   *
+   * Draws an ellipse (oval) to the screen. An ellipse with equal width and height
+   * is a circle. By default, the first two parameters set the location, and the
+   * third and fourth parameters set the shape's width and height. The origin may
+   * be changed with the <b>ellipseMode()</b> function.
+   *
+   * @webref shape:2d_primitives
+   * @webBrief Draws an ellipse (oval) in the display window.
+   * @param a x-coordinate of the ellipse
+   * @param b y-coordinate of the ellipse
+   * @param c width of the ellipse by default
+   * @param d height of the ellipse by default
+   * @see PApplet#ellipseMode(int)
+   * @see PApplet#arc(float, float, float, float, float, float)
+   */
   public void ellipse(float a, float b, float c, float d) {
     if (recorder != null) recorder.ellipse(a, b, c, d);
     g.ellipse(a, b, c, d);
   }
 
 
-  	/**
-	 *
-	 * Draws an arc to the screen. Arcs are drawn along the outer edge of an ellipse
-	 * defined by the <b>a</b>, <b>b</b>, <b>c</b>, and <b>d</b> parameters. The
-	 * origin of the arc's ellipse may be changed with the <b>ellipseMode()</b>
-	 * function. Use the <b>start</b> and <b>stop</b> parameters to specify the
-	 * angles (in radians) at which to draw the arc. The start/stop values must be
-	 * in clockwise order. <br />
-	 * <br />
-	 * There are three ways to draw an arc; the rendering technique used is defined
-	 * by the optional seventh parameter. The three options, depicted in the above
-	 * examples, are PIE, OPEN, and CHORD. The default mode is the OPEN stroke with
-	 * a PIE fill. <br />
-	 * <br />
-	 * In some cases, the <b>arc()</b> function isn't accurate enough for smooth
-	 * drawing. For example, the shape may jitter on screen when rotating slowly. If
-	 * you're having an issue with how arcs are rendered, you'll need to draw the
-	 * arc yourself with <b>beginShape()</b>/<b>endShape()</b> or a <b>PShape</b>.
-	 *
-	 * @webref shape:2d_primitives
-	 * @webBrief Draws an arc in the display window.
-	 * @param a     x-coordinate of the arc's ellipse
-	 * @param b     y-coordinate of the arc's ellipse
-	 * @param c     width of the arc's ellipse by default
-	 * @param d     height of the arc's ellipse by default
-	 * @param start angle to start the arc, specified in radians
-	 * @param stop  angle to stop the arc, specified in radians
-	 * @see PApplet#ellipse(float, float, float, float)
-	 * @see PApplet#ellipseMode(int)
-	 * @see PApplet#radians(float)
-	 * @see PApplet#degrees(float)
-	 */
+  /**
+   *
+   * Draws an arc to the screen. Arcs are drawn along the outer edge of an ellipse
+   * defined by the <b>a</b>, <b>b</b>, <b>c</b>, and <b>d</b> parameters. The
+   * origin of the arc's ellipse may be changed with the <b>ellipseMode()</b>
+   * function. Use the <b>start</b> and <b>stop</b> parameters to specify the
+   * angles (in radians) at which to draw the arc. The start/stop values must be
+   * in clockwise order. <br />
+   * <br />
+   * There are three ways to draw an arc; the rendering technique used is defined
+   * by the optional seventh parameter. The three options, depicted in the above
+   * examples, are PIE, OPEN, and CHORD. The default mode is the OPEN stroke with
+   * a PIE fill. <br />
+   * <br />
+   * In some cases, the <b>arc()</b> function isn't accurate enough for smooth
+   * drawing. For example, the shape may jitter on screen when rotating slowly. If
+   * you're having an issue with how arcs are rendered, you'll need to draw the
+   * arc yourself with <b>beginShape()</b>/<b>endShape()</b> or a <b>PShape</b>.
+   *
+   * @webref shape:2d_primitives
+   * @webBrief Draws an arc in the display window.
+   * @param a     x-coordinate of the arc's ellipse
+   * @param b     y-coordinate of the arc's ellipse
+   * @param c     width of the arc's ellipse by default
+   * @param d     height of the arc's ellipse by default
+   * @param start angle to start the arc, specified in radians
+   * @param stop  angle to stop the arc, specified in radians
+   * @see PApplet#ellipse(float, float, float, float)
+   * @see PApplet#ellipseMode(int)
+   * @see PApplet#radians(float)
+   * @see PApplet#degrees(float)
+   */
   public void arc(float a, float b, float c, float d,
                   float start, float stop) {
     if (recorder != null) recorder.arc(a, b, c, d, start, stop);
@@ -12458,21 +12458,21 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the resolution at which Beziers display. The default value is 20. This
-	 * function is only useful when using the <b>P3D</b> renderer; the default
-	 * <b>P2D</b> renderer does not use this information.
-	 *
-	 *
-	 * @webref shape:curves
-	 * @webBrief Sets the resolution at which Beziers display.
-	 * @param detail resolution of the curves
-	 * @see PGraphics#curve(float, float, float, float, float, float, float, float,
-	 *      float, float, float, float)
-	 * @see PGraphics#curveVertex(float, float, float)
-	 * @see PGraphics#curveTightness(float)
-	 */
+  /**
+   *
+   * Sets the resolution at which Beziers display. The default value is 20. This
+   * function is only useful when using the <b>P3D</b> renderer; the default
+   * <b>P2D</b> renderer does not use this information.
+   *
+   *
+   * @webref shape:curves
+   * @webBrief Sets the resolution at which Beziers display.
+   * @param detail resolution of the curves
+   * @see PGraphics#curve(float, float, float, float, float, float, float, float,
+   *      float, float, float, float)
+   * @see PGraphics#curveVertex(float, float, float)
+   * @see PGraphics#curveTightness(float)
+   */
   public void bezierDetail(int detail) {
     if (recorder != null) recorder.bezierDetail(detail);
     g.bezierDetail(detail);
@@ -12549,29 +12549,29 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Evaluates the curve at point <b>t</b> for points <b>a</b>, <b>b</b>,
-	 * <b>c</b>, <b>d</b>. The parameter <b>t</b> may range from 0 (the start of the
-	 * curve) and 1 (the end of the curve). <b>a</b> and <b>d</b> are the control
-	 * points, and <b>b</b> and <b>c</b> are points on the curve. As seen in the
-	 * example above, this can be used once with the <b>x</b> coordinates and a
-	 * second time with the <b>y</b> coordinates to get the location of a curve at
-	 * <b>t</b>.
-	 *
-	 *
-	 * @webref shape:curves
-	 * @webBrief Evalutes the curve at point t for points a, b, c, d.
-	 * @param a coordinate of first control point
-	 * @param b coordinate of first point on the curve
-	 * @param c coordinate of second point on the curve
-	 * @param d coordinate of second control point
-	 * @param t value between 0 and 1
-	 * @see PGraphics#curve(float, float, float, float, float, float, float, float,
-	 *      float, float, float, float)
-	 * @see PGraphics#curveVertex(float, float)
-	 * @see PGraphics#bezierPoint(float, float, float, float, float)
-	 */
+  /**
+   *
+   * Evaluates the curve at point <b>t</b> for points <b>a</b>, <b>b</b>,
+   * <b>c</b>, <b>d</b>. The parameter <b>t</b> may range from 0 (the start of the
+   * curve) and 1 (the end of the curve). <b>a</b> and <b>d</b> are the control
+   * points, and <b>b</b> and <b>c</b> are points on the curve. As seen in the
+   * example above, this can be used once with the <b>x</b> coordinates and a
+   * second time with the <b>y</b> coordinates to get the location of a curve at
+   * <b>t</b>.
+   *
+   *
+   * @webref shape:curves
+   * @webBrief Evalutes the curve at point t for points a, b, c, d.
+   * @param a coordinate of first control point
+   * @param b coordinate of first point on the curve
+   * @param c coordinate of second point on the curve
+   * @param d coordinate of second control point
+   * @param t value between 0 and 1
+   * @see PGraphics#curve(float, float, float, float, float, float, float, float,
+   *      float, float, float, float)
+   * @see PGraphics#curveVertex(float, float)
+   * @see PGraphics#bezierPoint(float, float, float, float, float)
+   */
   public float curvePoint(float a, float b, float c, float d, float t) {
     return g.curvePoint(a, b, c, d, t);
   }
@@ -12624,25 +12624,25 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Modifies the quality of forms created with <b>curve()</b> and
-	 * <b>curveVertex()</b>. The parameter <b>tightness</b> determines how the curve
-	 * fits to the vertex points. The value 0.0 is the default value for
-	 * <b>tightness</b> (this value defines the curves to be Catmull-Rom splines)
-	 * and the value 1.0 connects all the points with straight lines. Values within
-	 * the range -5.0 and 5.0 will deform the curves but will leave them
-	 * recognizable and as values increase in magnitude, they will continue to
-	 * deform.
-	 *
-	 * @webref shape:curves
-	 * @webBrief Modifies the quality of forms created with <b>curve()</b> and
-	 *           <b>curveVertex()</b>.
-	 * @param tightness amount of deformation from the original vertices
-	 * @see PGraphics#curve(float, float, float, float, float, float, float, float,
-	 *      float, float, float, float)
-	 * @see PGraphics#curveVertex(float, float)
-	 */
+  /**
+   *
+   * Modifies the quality of forms created with <b>curve()</b> and
+   * <b>curveVertex()</b>. The parameter <b>tightness</b> determines how the curve
+   * fits to the vertex points. The value 0.0 is the default value for
+   * <b>tightness</b> (this value defines the curves to be Catmull-Rom splines)
+   * and the value 1.0 connects all the points with straight lines. Values within
+   * the range -5.0 and 5.0 will deform the curves but will leave them
+   * recognizable and as values increase in magnitude, they will continue to
+   * deform.
+   *
+   * @webref shape:curves
+   * @webBrief Modifies the quality of forms created with <b>curve()</b> and
+   *           <b>curveVertex()</b>.
+   * @param tightness amount of deformation from the original vertices
+   * @see PGraphics#curve(float, float, float, float, float, float, float, float,
+   *      float, float, float, float)
+   * @see PGraphics#curveVertex(float, float)
+   */
   public void curveTightness(float tightness) {
     if (recorder != null) recorder.curveTightness(tightness);
     g.curveTightness(tightness);
@@ -12714,74 +12714,74 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Modifies the location from which images are drawn by changing the way in
-	 * which parameters given to <b>image()</b> are intepreted.<br />
-	 * <br />
-	 * The default mode is <b>imageMode(CORNER)</b>, which interprets the second and
-	 * third parameters of <b>image()</b> as the upper-left corner of the image. If
-	 * two additional parameters are specified, they are used to set the image's
-	 * width and height.<br />
-	 * <br />
-	 * <b>imageMode(CORNERS)</b> interprets the second and third parameters of
-	 * <b>image()</b> as the location of one corner, and the fourth and fifth
-	 * parameters as the opposite corner.<br />
-	 * <br />
-	 * <b>imageMode(CENTER)</b> interprets the second and third parameters of
-	 * <b>image()</b> as the image's center point. If two additional parameters are
-	 * specified, they are used to set the image's width and height.<br />
-	 * <br />
-	 * The parameter must be written in ALL CAPS because Processing is a
-	 * case-sensitive language.
-	 *
-	 *
-	 * @webref image:loading_displaying
-	 * @webBrief Modifies the location from which images draw.
-	 * @param mode either CORNER, CORNERS, or CENTER
-	 * @see PApplet#loadImage(String, String)
-	 * @see PImage
-	 * @see PGraphics#image(PImage, float, float, float, float)
-	 * @see PGraphics#background(float, float, float, float)
-	 */
+  /**
+   *
+   * Modifies the location from which images are drawn by changing the way in
+   * which parameters given to <b>image()</b> are intepreted.<br />
+   * <br />
+   * The default mode is <b>imageMode(CORNER)</b>, which interprets the second and
+   * third parameters of <b>image()</b> as the upper-left corner of the image. If
+   * two additional parameters are specified, they are used to set the image's
+   * width and height.<br />
+   * <br />
+   * <b>imageMode(CORNERS)</b> interprets the second and third parameters of
+   * <b>image()</b> as the location of one corner, and the fourth and fifth
+   * parameters as the opposite corner.<br />
+   * <br />
+   * <b>imageMode(CENTER)</b> interprets the second and third parameters of
+   * <b>image()</b> as the image's center point. If two additional parameters are
+   * specified, they are used to set the image's width and height.<br />
+   * <br />
+   * The parameter must be written in ALL CAPS because Processing is a
+   * case-sensitive language.
+   *
+   *
+   * @webref image:loading_displaying
+   * @webBrief Modifies the location from which images draw.
+   * @param mode either CORNER, CORNERS, or CENTER
+   * @see PApplet#loadImage(String, String)
+   * @see PImage
+   * @see PGraphics#image(PImage, float, float, float, float)
+   * @see PGraphics#background(float, float, float, float)
+   */
   public void imageMode(int mode) {
     if (recorder != null) recorder.imageMode(mode);
     g.imageMode(mode);
   }
 
 
-  	/**
-	 *
-	 * The <b>image()</b> function draws an image to the display window. Images must
-	 * be in the sketch's "data" directory to load correctly. Select "Add file..."
-	 * from the "Sketch" menu to add the image to the data directory, or just drag
-	 * the image file onto the sketch window. Processing currently works with GIF,
-	 * JPEG, and PNG images. <br />
-	 * <br />
-	 * The <b>img</b> parameter specifies the image to display and by default the
-	 * <b>a</b> and <b>b</b> parameters define the location of its upper-left
-	 * corner. The image is displayed at its original size unless the <b>c</b> and
-	 * <b>d</b> parameters specify a different size. The <b>imageMode()</b> function
-	 * can be used to change the way these parameters draw the image.<br />
-	 * <br />
-	 * The color of an image may be modified with the <b>tint()</b> function. This
-	 * function will maintain transparency for GIF and PNG images.
-	 *
-	 * <h3>Advanced</h3> Starting with release 0124, when using the default (JAVA2D)
-	 * renderer, smooth() will also improve image quality of resized images.
-	 *
-	 * @webref image:loading_displaying
-	 * @webBrief Displays images to the screen.
-	 * @param img the image to display
-	 * @param a   x-coordinate of the image by default
-	 * @param b   y-coordinate of the image by default
-	 * @see PApplet#loadImage(String, String)
-	 * @see PImage
-	 * @see PGraphics#imageMode(int)
-	 * @see PGraphics#tint(float)
-	 * @see PGraphics#background(float, float, float, float)
-	 * @see PGraphics#alpha(int)
-	 */
+  /**
+   *
+   * The <b>image()</b> function draws an image to the display window. Images must
+   * be in the sketch's "data" directory to load correctly. Select "Add file..."
+   * from the "Sketch" menu to add the image to the data directory, or just drag
+   * the image file onto the sketch window. Processing currently works with GIF,
+   * JPEG, and PNG images. <br />
+   * <br />
+   * The <b>img</b> parameter specifies the image to display and by default the
+   * <b>a</b> and <b>b</b> parameters define the location of its upper-left
+   * corner. The image is displayed at its original size unless the <b>c</b> and
+   * <b>d</b> parameters specify a different size. The <b>imageMode()</b> function
+   * can be used to change the way these parameters draw the image.<br />
+   * <br />
+   * The color of an image may be modified with the <b>tint()</b> function. This
+   * function will maintain transparency for GIF and PNG images.
+   *
+   * <h3>Advanced</h3> Starting with release 0124, when using the default (JAVA2D)
+   * renderer, smooth() will also improve image quality of resized images.
+   *
+   * @webref image:loading_displaying
+   * @webBrief Displays images to the screen.
+   * @param img the image to display
+   * @param a   x-coordinate of the image by default
+   * @param b   y-coordinate of the image by default
+   * @see PApplet#loadImage(String, String)
+   * @see PImage
+   * @see PGraphics#imageMode(int)
+   * @see PGraphics#tint(float)
+   * @see PGraphics#background(float, float, float, float)
+   * @see PGraphics#alpha(int)
+   */
   public void image(PImage img, float a, float b) {
     if (recorder != null) recorder.image(img, a, b);
     g.image(img, a, b);
@@ -12847,29 +12847,29 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Draws shapes to the display window. Shapes must be in the sketch's "data"
-	 * directory to load correctly. Select "Add file..." from the "Sketch" menu to
-	 * add the shape. Processing currently works with SVG, OBJ, and custom-created
-	 * shapes. The <b>shape</b> parameter specifies the shape to display and the
-	 * coordinate parameters define the location of the shape from its upper-left
-	 * corner. The shape is displayed at its original size unless the <b>c</b> and
-	 * <b>d</b> parameters specify a different size. The <b>shapeMode()</b> function
-	 * can be used to change the way these parameters are interpreted.
-	 *
-	 *
-	 * @webref shape:loading_displaying
-	 * @webBrief Displays shapes to the screen.
-	 * @param shape the shape to display
-	 * @param x     x-coordinate of the shape
-	 * @param y     y-coordinate of the shape
-	 * @see PShape
-	 * @see PApplet#loadShape(String)
-	 * @see PGraphics#shapeMode(int)
-	 *
-	 *      Convenience method to draw at a particular location.
-	 */
+  /**
+   *
+   * Draws shapes to the display window. Shapes must be in the sketch's "data"
+   * directory to load correctly. Select "Add file..." from the "Sketch" menu to
+   * add the shape. Processing currently works with SVG, OBJ, and custom-created
+   * shapes. The <b>shape</b> parameter specifies the shape to display and the
+   * coordinate parameters define the location of the shape from its upper-left
+   * corner. The shape is displayed at its original size unless the <b>c</b> and
+   * <b>d</b> parameters specify a different size. The <b>shapeMode()</b> function
+   * can be used to change the way these parameters are interpreted.
+   *
+   *
+   * @webref shape:loading_displaying
+   * @webBrief Displays shapes to the screen.
+   * @param shape the shape to display
+   * @param x     x-coordinate of the shape
+   * @param y     y-coordinate of the shape
+   * @see PShape
+   * @see PApplet#loadShape(String)
+   * @see PGraphics#shapeMode(int)
+   *
+   *      Convenience method to draw at a particular location.
+   */
   public void shape(PShape shape, float x, float y) {
     if (recorder != null) recorder.shape(shape, x, y);
     g.shape(shape, x, y);
@@ -12894,109 +12894,109 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the current alignment for drawing text. The parameters LEFT, CENTER, and
-	 * RIGHT set the display characteristics of the letters in relation to the
-	 * values for the <b>x</b> and <b>y</b> parameters of the <b>text()</b>
-	 * function. <br />
-	 * <br />
-	 * An optional second parameter can be used to vertically align the text.
-	 * BASELINE is the default, and the vertical alignment will be reset to BASELINE
-	 * if the second parameter is not used. The TOP and CENTER parameters are
-	 * straightforward. The BOTTOM parameter offsets the line based on the current
-	 * <b>textDescent()</b>. For multiple lines, the final line will be aligned to
-	 * the bottom, with the previous lines appearing above it. <br />
-	 * <br />
-	 * When using <b>text()</b> with width and height parameters, BASELINE is
-	 * ignored, and treated as TOP. (Otherwise, text would by default draw outside
-	 * the box, since BASELINE is the default setting. BASELINE is not a useful
-	 * drawing mode for text drawn in a rectangle.) <br />
-	 * <br />
-	 * The vertical alignment is based on the value of <b>textAscent()</b>, which
-	 * many fonts do not specify correctly. It may be necessary to use a hack and
-	 * offset by a few pixels by hand so that the offset looks correct. To do this
-	 * as less of a hack, use some percentage of <b>textAscent()</b> or
-	 * <b>textDescent()</b> so that the hack works even if you change the size of
-	 * the font.
-	 *
-	 *
-	 * 
-	 * @webref typography:attributes
-	 * @webBrief Sets the current alignment for drawing text.
-	 * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
-	 * @param alignY vertical alignment, either TOP, BOTTOM, CENTER, or BASELINE
-	 * @see PApplet#loadFont(String)
-	 * @see PFont
-	 * @see PGraphics#text(String, float, float)
-	 * @see PGraphics#textSize(float)
-	 * @see PGraphics#textAscent()
-	 * @see PGraphics#textDescent()
-	 */
+  /**
+   *
+   * Sets the current alignment for drawing text. The parameters LEFT, CENTER, and
+   * RIGHT set the display characteristics of the letters in relation to the
+   * values for the <b>x</b> and <b>y</b> parameters of the <b>text()</b>
+   * function. <br />
+   * <br />
+   * An optional second parameter can be used to vertically align the text.
+   * BASELINE is the default, and the vertical alignment will be reset to BASELINE
+   * if the second parameter is not used. The TOP and CENTER parameters are
+   * straightforward. The BOTTOM parameter offsets the line based on the current
+   * <b>textDescent()</b>. For multiple lines, the final line will be aligned to
+   * the bottom, with the previous lines appearing above it. <br />
+   * <br />
+   * When using <b>text()</b> with width and height parameters, BASELINE is
+   * ignored, and treated as TOP. (Otherwise, text would by default draw outside
+   * the box, since BASELINE is the default setting. BASELINE is not a useful
+   * drawing mode for text drawn in a rectangle.) <br />
+   * <br />
+   * The vertical alignment is based on the value of <b>textAscent()</b>, which
+   * many fonts do not specify correctly. It may be necessary to use a hack and
+   * offset by a few pixels by hand so that the offset looks correct. To do this
+   * as less of a hack, use some percentage of <b>textAscent()</b> or
+   * <b>textDescent()</b> so that the hack works even if you change the size of
+   * the font.
+   *
+   *
+   * 
+   * @webref typography:attributes
+   * @webBrief Sets the current alignment for drawing text.
+   * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
+   * @param alignY vertical alignment, either TOP, BOTTOM, CENTER, or BASELINE
+   * @see PApplet#loadFont(String)
+   * @see PFont
+   * @see PGraphics#text(String, float, float)
+   * @see PGraphics#textSize(float)
+   * @see PGraphics#textAscent()
+   * @see PGraphics#textDescent()
+   */
   public void textAlign(int alignX, int alignY) {
     if (recorder != null) recorder.textAlign(alignX, alignY);
     g.textAlign(alignX, alignY);
   }
 
 
-  	/**
-	 *
-	 * Returns ascent of the current font at its current size. This information is
-	 * useful for determining the height of the font above the baseline.
-	 *
-	 *
-	 * @webref typography:metrics
-	 * @webBrief Returns ascent of the current font at its current size.
-	 * @see PGraphics#textDescent()
-	 */
+  /**
+   *
+   * Returns ascent of the current font at its current size. This information is
+   * useful for determining the height of the font above the baseline.
+   *
+   *
+   * @webref typography:metrics
+   * @webBrief Returns ascent of the current font at its current size.
+   * @see PGraphics#textDescent()
+   */
   public float textAscent() {
     return g.textAscent();
   }
 
 
-  	/**
-	 *
-	 * Returns descent of the current font at its current size. This information is
-	 * useful for determining the height of the font below the baseline.
-	 *
-	 * @webref typography:metrics
-	 * @webBrief Returns descent of the current font at its current size.
-	 * @see PGraphics#textAscent()
-	 */
+  /**
+   *
+   * Returns descent of the current font at its current size. This information is
+   * useful for determining the height of the font below the baseline.
+   *
+   * @webref typography:metrics
+   * @webBrief Returns descent of the current font at its current size.
+   * @see PGraphics#textAscent()
+   */
   public float textDescent() {
     return g.textDescent();
   }
 
 
-  	/**
-	 *
-	 * Sets the current font that will be drawn with the <b>text()</b> function.
-	 * Fonts must be created for Processing with <b>createFont()</b> or loaded with
-	 * <b>loadFont()</b> before they can be used. The font set through
-	 * <b>textFont()</b> will be used in all subsequent calls to the <b>text()</b>
-	 * function. If no <b>size</b> parameter is specified, the font size defaults to
-	 * the original size (the size in which it was created with the "Create Font..."
-	 * tool) overriding any previous calls to <b>textFont()</b> or
-	 * <b>textSize()</b>.<br />
-	 * <br />
-	 * When fonts are rendered as an image texture (as is the case with the P2D and
-	 * P3D renderers as well as with <b>loadFont()</b> and vlw files), you should
-	 * create fonts at the sizes that will be used most commonly. Using
-	 * <b>textFont()</b> without the size parameter will result in the cleanest
-	 * type.<br />
-	 * <br />
-	 *
-	 *
-	 * @webref typography:loading_displaying
-	 * @webBrief Sets the current font that will be drawn with the <b>text()</b>
-	 *           function.
-	 * @param which any variable of the type PFont
-	 * @see PApplet#createFont(String, float, boolean)
-	 * @see PApplet#loadFont(String)
-	 * @see PFont
-	 * @see PGraphics#text(String, float, float)
-	 * @see PGraphics#textSize(float)
-	 */
+  /**
+   *
+   * Sets the current font that will be drawn with the <b>text()</b> function.
+   * Fonts must be created for Processing with <b>createFont()</b> or loaded with
+   * <b>loadFont()</b> before they can be used. The font set through
+   * <b>textFont()</b> will be used in all subsequent calls to the <b>text()</b>
+   * function. If no <b>size</b> parameter is specified, the font size defaults to
+   * the original size (the size in which it was created with the "Create Font..."
+   * tool) overriding any previous calls to <b>textFont()</b> or
+   * <b>textSize()</b>.<br />
+   * <br />
+   * When fonts are rendered as an image texture (as is the case with the P2D and
+   * P3D renderers as well as with <b>loadFont()</b> and vlw files), you should
+   * create fonts at the sizes that will be used most commonly. Using
+   * <b>textFont()</b> without the size parameter will result in the cleanest
+   * type.<br />
+   * <br />
+   *
+   *
+   * @webref typography:loading_displaying
+   * @webBrief Sets the current font that will be drawn with the <b>text()</b>
+   *           function.
+   * @param which any variable of the type PFont
+   * @see PApplet#createFont(String, float, boolean)
+   * @see PApplet#loadFont(String)
+   * @see PFont
+   * @see PGraphics#text(String, float, float)
+   * @see PGraphics#textSize(float)
+   */
   public void textFont(PFont which) {
     if (recorder != null) recorder.textFont(which);
     g.textFont(which);
@@ -13012,59 +13012,59 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the spacing between lines of text in units of pixels. This setting will
-	 * be used in all subsequent calls to the <b>text()</b> function. Note, however,
-	 * that the leading is reset by <b>textSize()</b>. For example, if the leading
-	 * is set to 20 with <b>textLeading(20)</b>, then if <b>textSize(48)</b> is run
-	 * at a later point, the leading will be reset to the default for the text size
-	 * of 48.
-	 *
-	 *
-	 * @webref typography:attributes
-	 * @webBrief Sets the spacing between lines of text in units of pixels.
-	 * @param leading the size in pixels for spacing between lines
-	 * @see PApplet#loadFont(String)
-	 * @see PFont#PFont
-	 * @see PGraphics#text(String, float, float)
-	 * @see PGraphics#textFont(PFont)
-	 * @see PGraphics#textSize(float)
-	 */
+  /**
+   *
+   * Sets the spacing between lines of text in units of pixels. This setting will
+   * be used in all subsequent calls to the <b>text()</b> function. Note, however,
+   * that the leading is reset by <b>textSize()</b>. For example, if the leading
+   * is set to 20 with <b>textLeading(20)</b>, then if <b>textSize(48)</b> is run
+   * at a later point, the leading will be reset to the default for the text size
+   * of 48.
+   *
+   *
+   * @webref typography:attributes
+   * @webBrief Sets the spacing between lines of text in units of pixels.
+   * @param leading the size in pixels for spacing between lines
+   * @see PApplet#loadFont(String)
+   * @see PFont#PFont
+   * @see PGraphics#text(String, float, float)
+   * @see PGraphics#textFont(PFont)
+   * @see PGraphics#textSize(float)
+   */
   public void textLeading(float leading) {
     if (recorder != null) recorder.textLeading(leading);
     g.textLeading(leading);
   }
 
 
-  	/**
-	 *
-	 * Sets the way text draws to the screen, either as texture maps or as vector
-	 * geometry. The default <b>textMode(MODEL)</b>, uses textures to render the
-	 * fonts. The <b>textMode(SHAPE)</b> mode draws text using the glyph outlines of
-	 * individual characters rather than as textures. This mode is only supported
-	 * with the <b>PDF</b> and <b>P3D</b> renderer settings. With the <b>PDF</b>
-	 * renderer, you must call <b>textMode(SHAPE)</b> before any other drawing
-	 * occurs. If the outlines are not available, then <b>textMode(SHAPE)</b> will
-	 * be ignored and <b>textMode(MODEL)</b> will be used instead.<br />
-	 * <br />
-	 * The <b>textMode(SHAPE)</b> option in <b>P3D</b> can be combined with
-	 * <b>beginRaw()</b> to write vector-accurate text to 2D and 3D output files,
-	 * for instance <b>DXF</b> or <b>PDF</b>. The <b>SHAPE</b> mode is not currently
-	 * optimized for <b>P3D</b>, so if recording shape data, use
-	 * <b>textMode(MODEL)</b> until you're ready to capture the geometry with
-	 * <b>beginRaw()</b>.
-	 *
-	 * @webref typography:attributes
-	 * @webBrief Sets the way text draws to the screen.
-	 * @param mode either MODEL or SHAPE
-	 * @see PApplet#loadFont(String)
-	 * @see PFont#PFont
-	 * @see PGraphics#text(String, float, float)
-	 * @see PGraphics#textFont(PFont)
-	 * @see PGraphics#beginRaw(PGraphics)
-	 * @see PApplet#createFont(String, float, boolean)
-	 */
+  /**
+   *
+   * Sets the way text draws to the screen, either as texture maps or as vector
+   * geometry. The default <b>textMode(MODEL)</b>, uses textures to render the
+   * fonts. The <b>textMode(SHAPE)</b> mode draws text using the glyph outlines of
+   * individual characters rather than as textures. This mode is only supported
+   * with the <b>PDF</b> and <b>P3D</b> renderer settings. With the <b>PDF</b>
+   * renderer, you must call <b>textMode(SHAPE)</b> before any other drawing
+   * occurs. If the outlines are not available, then <b>textMode(SHAPE)</b> will
+   * be ignored and <b>textMode(MODEL)</b> will be used instead.<br />
+   * <br />
+   * The <b>textMode(SHAPE)</b> option in <b>P3D</b> can be combined with
+   * <b>beginRaw()</b> to write vector-accurate text to 2D and 3D output files,
+   * for instance <b>DXF</b> or <b>PDF</b>. The <b>SHAPE</b> mode is not currently
+   * optimized for <b>P3D</b>, so if recording shape data, use
+   * <b>textMode(MODEL)</b> until you're ready to capture the geometry with
+   * <b>beginRaw()</b>.
+   *
+   * @webref typography:attributes
+   * @webBrief Sets the way text draws to the screen.
+   * @param mode either MODEL or SHAPE
+   * @see PApplet#loadFont(String)
+   * @see PFont#PFont
+   * @see PGraphics#text(String, float, float)
+   * @see PGraphics#textFont(PFont)
+   * @see PGraphics#beginRaw(PGraphics)
+   * @see PApplet#createFont(String, float, boolean)
+   */
   public void textMode(int mode) {
     if (recorder != null) recorder.textMode(mode);
     g.textMode(mode);
@@ -13126,45 +13126,45 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Draws text to the screen. Displays the information specified in the first
-	 * parameter on the screen in the position specified by the additional
-	 * parameters. A default font will be used unless a font is set with the
-	 * <b>textFont()</b> function and a default size will be used unless a font is
-	 * set with <b>textSize()</b>. Change the color of the text with the
-	 * <b>fill()</b> function. The text displays in relation to the
-	 * <b>textAlign()</b> function, which gives the option to draw to the left,
-	 * right, and center of the coordinates.<br />
-	 * <br />
-	 * The <b>x2</b> and <b>y2</b> parameters define a rectangular area to display
-	 * within and may only be used with string data. When these parameters are
-	 * specified, they are interpreted based on the current <b>rectMode()</b>
-	 * setting. Text that does not fit completely within the rectangle specified
-	 * will not be drawn to the screen.<br />
-	 * <br />
-	 * Note that Processing now lets you call <b>text()</b> without first specifying
-	 * a PFont with <b>textFont()</b>. In that case, a generic sans-serif font will
-	 * be used instead. (See the third example above.)
-	 *
-	 *
-	 * @webref typography:loading_displaying
-	 * @webBrief Draws text to the screen.
-	 * @param c the alphanumeric character to be displayed
-	 * @param x x-coordinate of text
-	 * @param y y-coordinate of text
-	 * @see PGraphics#textAlign(int, int)
-	 * @see PGraphics#textFont(PFont)
-	 * @see PGraphics#textMode(int)
-	 * @see PGraphics#textSize(float)
-	 * @see PGraphics#textLeading(float)
-	 * @see PGraphics#textWidth(String)
-	 * @see PGraphics#textAscent()
-	 * @see PGraphics#textDescent()
-	 * @see PGraphics#rectMode(int)
-	 * @see PGraphics#fill(int, float)
-	 * @see_external String
-	 */
+  /**
+   *
+   * Draws text to the screen. Displays the information specified in the first
+   * parameter on the screen in the position specified by the additional
+   * parameters. A default font will be used unless a font is set with the
+   * <b>textFont()</b> function and a default size will be used unless a font is
+   * set with <b>textSize()</b>. Change the color of the text with the
+   * <b>fill()</b> function. The text displays in relation to the
+   * <b>textAlign()</b> function, which gives the option to draw to the left,
+   * right, and center of the coordinates.<br />
+   * <br />
+   * The <b>x2</b> and <b>y2</b> parameters define a rectangular area to display
+   * within and may only be used with string data. When these parameters are
+   * specified, they are interpreted based on the current <b>rectMode()</b>
+   * setting. Text that does not fit completely within the rectangle specified
+   * will not be drawn to the screen.<br />
+   * <br />
+   * Note that Processing now lets you call <b>text()</b> without first specifying
+   * a PFont with <b>textFont()</b>. In that case, a generic sans-serif font will
+   * be used instead. (See the third example above.)
+   *
+   *
+   * @webref typography:loading_displaying
+   * @webBrief Draws text to the screen.
+   * @param c the alphanumeric character to be displayed
+   * @param x x-coordinate of text
+   * @param y y-coordinate of text
+   * @see PGraphics#textAlign(int, int)
+   * @see PGraphics#textFont(PFont)
+   * @see PGraphics#textMode(int)
+   * @see PGraphics#textSize(float)
+   * @see PGraphics#textLeading(float)
+   * @see PGraphics#textWidth(String)
+   * @see PGraphics#textAscent()
+   * @see PGraphics#textDescent()
+   * @see PGraphics#rectMode(int)
+   * @see PGraphics#fill(int, float)
+   * @see_external String
+   */
   public void text(char c, float x, float y) {
     if (recorder != null) recorder.text(c, x, y);
     g.text(c, x, y);
@@ -13408,36 +13408,36 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Specifies an amount to displace objects within the display window. The
-	 * <b>x</b> parameter specifies left/right translation, the <b>y</b> parameter
-	 * specifies up/down translation, and the <b>z</b> parameter specifies
-	 * translations toward/away from the screen. Using this function with the
-	 * <b>z</b> parameter requires using P3D as a parameter in combination with size
-	 * as shown in the above example. <br />
-	 * <br />
-	 * Transformations are cumulative and apply to everything that happens after and
-	 * subsequent calls to the function accumulates the effect. For example, calling
-	 * <b>translate(50, 0)</b> and then <b>translate(20, 0)</b> is the same as
-	 * <b>translate(70, 0)</b>. If <b>translate()</b> is called within
-	 * <b>draw()</b>, the transformation is reset when the loop begins again. This
-	 * function can be further controlled by using <b>pushMatrix()</b> and
-	 * <b>popMatrix()</b>.
-	 *
-	 *
-	 * @webref transform
-	 * @webBrief Specifies an amount to displace objects within the display window.
-	 * @param x left/right translation
-	 * @param y up/down translation
-	 * @see PGraphics#popMatrix()
-	 * @see PGraphics#pushMatrix()
-	 * @see PGraphics#rotate(float)
-	 * @see PGraphics#rotateX(float)
-	 * @see PGraphics#rotateY(float)
-	 * @see PGraphics#rotateZ(float)
-	 * @see PGraphics#scale(float, float, float)
-	 */
+  /**
+   *
+   * Specifies an amount to displace objects within the display window. The
+   * <b>x</b> parameter specifies left/right translation, the <b>y</b> parameter
+   * specifies up/down translation, and the <b>z</b> parameter specifies
+   * translations toward/away from the screen. Using this function with the
+   * <b>z</b> parameter requires using P3D as a parameter in combination with size
+   * as shown in the above example. <br />
+   * <br />
+   * Transformations are cumulative and apply to everything that happens after and
+   * subsequent calls to the function accumulates the effect. For example, calling
+   * <b>translate(50, 0)</b> and then <b>translate(20, 0)</b> is the same as
+   * <b>translate(70, 0)</b>. If <b>translate()</b> is called within
+   * <b>draw()</b>, the transformation is reset when the loop begins again. This
+   * function can be further controlled by using <b>pushMatrix()</b> and
+   * <b>popMatrix()</b>.
+   *
+   *
+   * @webref transform
+   * @webBrief Specifies an amount to displace objects within the display window.
+   * @param x left/right translation
+   * @param y up/down translation
+   * @see PGraphics#popMatrix()
+   * @see PGraphics#pushMatrix()
+   * @see PGraphics#rotate(float)
+   * @see PGraphics#rotateX(float)
+   * @see PGraphics#rotateY(float)
+   * @see PGraphics#rotateZ(float)
+   * @see PGraphics#scale(float, float, float)
+   */
   public void translate(float x, float y) {
     if (recorder != null) recorder.translate(x, y);
     g.translate(x, y);
@@ -13605,36 +13605,36 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Increases or decreases the size of a shape by expanding and contracting
-	 * vertices. Objects always scale from their relative origin to the coordinate
-	 * system. Scale values are specified as decimal percentages. For example, the
-	 * function call <b>scale(2.0)</b> increases the dimension of a shape by
-	 * 200%.<br />
-	 * <br />
-	 * Transformations apply to everything that happens after and subsequent calls
-	 * to the function multiply the effect. For example, calling <b>scale(2.0)</b>
-	 * and then <b>scale(1.5)</b> is the same as <b>scale(3.0)</b>. If
-	 * <b>scale()</b> is called within <b>draw()</b>, the transformation is reset
-	 * when the loop begins again. Using this function with the <b>z</b> parameter
-	 * requires using P3D as a parameter for <b>size()</b>, as shown in the third
-	 * example above. This function can be further controlled with
-	 * <b>pushMatrix()</b> and <b>popMatrix()</b>.
-	 *
-	 *
-	 * @webref transform
-	 * @webBrief Increases or decreases the size of a shape by expanding and
-	 *           contracting vertices.
-	 * @param s percentage to scale the object
-	 * @see PGraphics#pushMatrix()
-	 * @see PGraphics#popMatrix()
-	 * @see PGraphics#translate(float, float, float)
-	 * @see PGraphics#rotate(float)
-	 * @see PGraphics#rotateX(float)
-	 * @see PGraphics#rotateY(float)
-	 * @see PGraphics#rotateZ(float)
-	 */
+  /**
+   *
+   * Increases or decreases the size of a shape by expanding and contracting
+   * vertices. Objects always scale from their relative origin to the coordinate
+   * system. Scale values are specified as decimal percentages. For example, the
+   * function call <b>scale(2.0)</b> increases the dimension of a shape by
+   * 200%.<br />
+   * <br />
+   * Transformations apply to everything that happens after and subsequent calls
+   * to the function multiply the effect. For example, calling <b>scale(2.0)</b>
+   * and then <b>scale(1.5)</b> is the same as <b>scale(3.0)</b>. If
+   * <b>scale()</b> is called within <b>draw()</b>, the transformation is reset
+   * when the loop begins again. Using this function with the <b>z</b> parameter
+   * requires using P3D as a parameter for <b>size()</b>, as shown in the third
+   * example above. This function can be further controlled with
+   * <b>pushMatrix()</b> and <b>popMatrix()</b>.
+   *
+   *
+   * @webref transform
+   * @webBrief Increases or decreases the size of a shape by expanding and
+   *           contracting vertices.
+   * @param s percentage to scale the object
+   * @see PGraphics#pushMatrix()
+   * @see PGraphics#popMatrix()
+   * @see PGraphics#translate(float, float, float)
+   * @see PGraphics#rotate(float)
+   * @see PGraphics#rotateX(float)
+   * @see PGraphics#rotateY(float)
+   * @see PGraphics#rotateZ(float)
+   */
   public void scale(float s) {
     if (recorder != null) recorder.scale(s);
     g.scale(s);
@@ -13736,19 +13736,19 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Replaces the current matrix with the identity matrix. The equivalent function
-	 * in OpenGL is <b>glLoadIdentity()</b>.
-	 *
-	 *
-	 * @webref transform
-	 * @webBrief Replaces the current matrix with the identity matrix.
-	 * @see PGraphics#pushMatrix()
-	 * @see PGraphics#popMatrix()
-	 * @see PGraphics#applyMatrix(PMatrix)
-	 * @see PGraphics#printMatrix()
-	 */
+  /**
+   *
+   * Replaces the current matrix with the identity matrix. The equivalent function
+   * in OpenGL is <b>glLoadIdentity()</b>.
+   *
+   *
+   * @webref transform
+   * @webBrief Replaces the current matrix with the identity matrix.
+   * @see PGraphics#pushMatrix()
+   * @see PGraphics#popMatrix()
+   * @see PGraphics#applyMatrix(PMatrix)
+   * @see PGraphics#printMatrix()
+   */
   public void resetMatrix() {
     if (recorder != null) recorder.resetMatrix();
     g.resetMatrix();
@@ -14011,21 +14011,21 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets an orthographic projection and defines a parallel clipping volume. All
-	 * objects with the same dimension appear the same size, regardless of whether
-	 * they are near or far from the camera. The parameters to this function specify
-	 * the clipping volume where left and right are the minimum and maximum x
-	 * values, top and bottom are the minimum and maximum y values, and near and far
-	 * are the minimum and maximum z values. If no parameters are given, the default
-	 * is used: ortho(-width/2, width/2, -height/2, height/2).
-	 *
-	 *
-	 * @webref lights_camera:camera
-	 * @webBrief Sets an orthographic projection and defines a parallel clipping
-	 *           volume.
-	 */
+  /**
+   *
+   * Sets an orthographic projection and defines a parallel clipping volume. All
+   * objects with the same dimension appear the same size, regardless of whether
+   * they are near or far from the camera. The parameters to this function specify
+   * the clipping volume where left and right are the minimum and maximum x
+   * values, top and bottom are the minimum and maximum y values, and near and far
+   * are the minimum and maximum z values. If no parameters are given, the default
+   * is used: ortho(-width/2, width/2, -height/2, height/2).
+   *
+   *
+   * @webref lights_camera:camera
+   * @webBrief Sets an orthographic projection and defines a parallel clipping
+   *           volume.
+   */
   public void ortho() {
     if (recorder != null) recorder.ortho();
     g.ortho();
@@ -14093,44 +14093,44 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets a perspective matrix as defined by the parameters.<br />
-	 * <br />
-	 * A frustum is a geometric form: a pyramid with its top cut off. With the
-	 * viewer's eye at the imaginary top of the pyramid, the six planes of the
-	 * frustum act as clipping planes when rendering a 3D view. Thus, any form
-	 * inside the clipping planes is rendered and visible; anything outside those
-	 * planes is not visible.<br />
-	 * <br />
-	 * Setting the frustum has the effect of changing the <em>perspective</em> with
-	 * which the scene is rendered. This can be achieved more simply in many cases
-	 * by using <strong>perspective()</strong>.<br />
-	 * <br />
-	 * Note that the near value must be greater than zero (as the point of the
-	 * frustum "pyramid" cannot converge "behind" the viewer). Similarly, the far
-	 * value must be greater than the near value (as the "far" plane of the frustum
-	 * must be "farther away" from the viewer than the near plane).<br />
-	 * <br />
-	 * Works like glFrustum, except it wipes out the current perspective matrix
-	 * rather than multiplying itself with it.
-	 *
-	 *
-	 * @webref lights_camera:camera
-	 * @webBrief Sets a perspective matrix defined through the parameters.
-	 * @param left   left coordinate of the clipping plane
-	 * @param right  right coordinate of the clipping plane
-	 * @param bottom bottom coordinate of the clipping plane
-	 * @param top    top coordinate of the clipping plane
-	 * @param near   near component of the clipping plane; must be greater than zero
-	 * @param far    far component of the clipping plane; must be greater than the
-	 *               near value
-	 * @see PGraphics#camera(float, float, float, float, float, float, float, float,
-	 *      float)
-	 * @see PGraphics#beginCamera()
-	 * @see PGraphics#endCamera()
-	 * @see PGraphics#perspective(float, float, float, float)
-	 */
+  /**
+   *
+   * Sets a perspective matrix as defined by the parameters.<br />
+   * <br />
+   * A frustum is a geometric form: a pyramid with its top cut off. With the
+   * viewer's eye at the imaginary top of the pyramid, the six planes of the
+   * frustum act as clipping planes when rendering a 3D view. Thus, any form
+   * inside the clipping planes is rendered and visible; anything outside those
+   * planes is not visible.<br />
+   * <br />
+   * Setting the frustum has the effect of changing the <em>perspective</em> with
+   * which the scene is rendered. This can be achieved more simply in many cases
+   * by using <strong>perspective()</strong>.<br />
+   * <br />
+   * Note that the near value must be greater than zero (as the point of the
+   * frustum "pyramid" cannot converge "behind" the viewer). Similarly, the far
+   * value must be greater than the near value (as the "far" plane of the frustum
+   * must be "farther away" from the viewer than the near plane).<br />
+   * <br />
+   * Works like glFrustum, except it wipes out the current perspective matrix
+   * rather than multiplying itself with it.
+   *
+   *
+   * @webref lights_camera:camera
+   * @webBrief Sets a perspective matrix defined through the parameters.
+   * @param left   left coordinate of the clipping plane
+   * @param right  right coordinate of the clipping plane
+   * @param bottom bottom coordinate of the clipping plane
+   * @param top    top coordinate of the clipping plane
+   * @param near   near component of the clipping plane; must be greater than zero
+   * @param far    far component of the clipping plane; must be greater than the
+   *               near value
+   * @see PGraphics#camera(float, float, float, float, float, float, float, float,
+   *      float)
+   * @see PGraphics#beginCamera()
+   * @see PGraphics#endCamera()
+   * @see PGraphics#perspective(float, float, float, float)
+   */
   public void frustum(float left, float right,
                       float bottom, float top,
                       float near, float far) {
@@ -14371,68 +14371,68 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the width of the stroke used for lines, points, and the border around
-	 * shapes. All widths are set in units of pixels. <br />
-	 * <br />
-	 * Using point() with strokeWeight(1) or smaller may draw nothing to the screen,
-	 * depending on the graphics settings of the computer. Workarounds include
-	 * setting the pixel using <b>set()</s> or drawing the point using either
-	 * <b>circle()</b> or <b>square()</b>.
-	 *
-	 *
-	 * @webref shape:attributes
-	 * @webBrief Sets the width of the stroke used for lines, points, and the border
-	 *           around shapes.
-	 * @param weight the weight (in pixels) of the stroke
-	 * @see PGraphics#stroke(int, float)
-	 * @see PGraphics#strokeJoin(int)
-	 * @see PGraphics#strokeCap(int)
-	 */
+  /**
+   *
+   * Sets the width of the stroke used for lines, points, and the border around
+   * shapes. All widths are set in units of pixels. <br />
+   * <br />
+   * Using point() with strokeWeight(1) or smaller may draw nothing to the screen,
+   * depending on the graphics settings of the computer. Workarounds include
+   * setting the pixel using <b>set()</s> or drawing the point using either
+   * <b>circle()</b> or <b>square()</b>.
+   *
+   *
+   * @webref shape:attributes
+   * @webBrief Sets the width of the stroke used for lines, points, and the border
+   *           around shapes.
+   * @param weight the weight (in pixels) of the stroke
+   * @see PGraphics#stroke(int, float)
+   * @see PGraphics#strokeJoin(int)
+   * @see PGraphics#strokeCap(int)
+   */
   public void strokeWeight(float weight) {
     if (recorder != null) recorder.strokeWeight(weight);
     g.strokeWeight(weight);
   }
 
 
-  	/**
-	 *
-	 * Sets the style of the joints which connect line segments. These joints are
-	 * either mitered, beveled, or rounded and specified with the corresponding
-	 * parameters MITER, BEVEL, and ROUND. The default joint is MITER.
-	 *
-	 *
-	 * @webref shape:attributes
-	 * @webBrief Sets the style of the joints which connect line segments.
-	 * @param join either MITER, BEVEL, ROUND
-	 * @see PGraphics#stroke(int, float)
-	 * @see PGraphics#strokeWeight(float)
-	 * @see PGraphics#strokeCap(int)
-	 */
+  /**
+   *
+   * Sets the style of the joints which connect line segments. These joints are
+   * either mitered, beveled, or rounded and specified with the corresponding
+   * parameters MITER, BEVEL, and ROUND. The default joint is MITER.
+   *
+   *
+   * @webref shape:attributes
+   * @webBrief Sets the style of the joints which connect line segments.
+   * @param join either MITER, BEVEL, ROUND
+   * @see PGraphics#stroke(int, float)
+   * @see PGraphics#strokeWeight(float)
+   * @see PGraphics#strokeCap(int)
+   */
   public void strokeJoin(int join) {
     if (recorder != null) recorder.strokeJoin(join);
     g.strokeJoin(join);
   }
 
 
-  	/**
-	 *
-	 * Sets the style for rendering line endings. These ends are either squared,
-	 * extended, or rounded, each of which specified with the corresponding
-	 * parameters: SQUARE, PROJECT, and ROUND. The default cap is ROUND. <br />
-	 * <br />
-	 * To make <b>point()</b> appear square, use <b>strokeCap(PROJECT)</b>. Using
-	 * <b>strokeCap(SQUARE)</b> (no cap) causes points to become invisible.
-	 *
-	 * @webref shape:attributes
-	 * @webBrief Sets the style for rendering line endings.
-	 * @param cap either SQUARE, PROJECT, or ROUND
-	 * @see PGraphics#stroke(int, float)
-	 * @see PGraphics#strokeWeight(float)
-	 * @see PGraphics#strokeJoin(int)
-	 * @see PApplet#size(int, int, String, String)
-	 */
+  /**
+   *
+   * Sets the style for rendering line endings. These ends are either squared,
+   * extended, or rounded, each of which specified with the corresponding
+   * parameters: SQUARE, PROJECT, and ROUND. The default cap is ROUND. <br />
+   * <br />
+   * To make <b>point()</b> appear square, use <b>strokeCap(PROJECT)</b>. Using
+   * <b>strokeCap(SQUARE)</b> (no cap) causes points to become invisible.
+   *
+   * @webref shape:attributes
+   * @webBrief Sets the style for rendering line endings.
+   * @param cap either SQUARE, PROJECT, or ROUND
+   * @see PGraphics#stroke(int, float)
+   * @see PGraphics#strokeWeight(float)
+   * @see PGraphics#strokeJoin(int)
+   * @see PApplet#size(int, int, String, String)
+   */
   public void strokeCap(int cap) {
     if (recorder != null) recorder.strokeCap(cap);
     g.strokeCap(cap);
@@ -14457,42 +14457,42 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the color used to draw lines and borders around shapes. This color is
-	 * either specified in terms of the RGB or HSB color depending on the current
-	 * <b>colorMode().</b> The default color space is RGB, with each value in the
-	 * range from 0 to 255. <br />
-	 * <br />
-	 * When using hexadecimal notation to specify a color, use "<b>#</b>" or
-	 * "<b>0x</b>" before the values (e.g., <b>#CCFFAA</b> or <b>0xFFCCFFAA</b>).
-	 * The <b>#</b> syntax uses six digits to specify a color (just as colors are
-	 * typically specified in HTML and CSS). When using the hexadecimal notation
-	 * starting with "<b>0x</b>", the hexadecimal value must be specified with eight
-	 * characters; the first two characters define the alpha component, and the
-	 * remainder define the red, green, and blue components. <br />
-	 * <br />
-	 * The value for the gray parameter must be less than or equal to the current
-	 * maximum value as specified by <b>colorMode()</b>. The default maximum value
-	 * is 255. <br />
-	 * <br />
-	 * When drawing in 2D with the default renderer, you may need
-	 * <b>hint(ENABLE_STROKE_PURE)</b> to improve drawing quality (at the expense of
-	 * performance). See the hint() documentation for more details.
-	 *
-	 * @webref color:setting
-	 * @webBrief Sets the color used to draw lines and borders around shapes.
-	 * @param rgb color value in hexadecimal notation
-	 * @see PGraphics#noStroke()
-	 * @see PGraphics#strokeWeight(float)
-	 * @see PGraphics#strokeJoin(int)
-	 * @see PGraphics#strokeCap(int)
-	 * @see PGraphics#fill(int, float)
-	 * @see PGraphics#noFill()
-	 * @see PGraphics#tint(int, float)
-	 * @see PGraphics#background(float, float, float, float)
-	 * @see PGraphics#colorMode(int, float, float, float, float)
-	 */
+  /**
+   *
+   * Sets the color used to draw lines and borders around shapes. This color is
+   * either specified in terms of the RGB or HSB color depending on the current
+   * <b>colorMode().</b> The default color space is RGB, with each value in the
+   * range from 0 to 255. <br />
+   * <br />
+   * When using hexadecimal notation to specify a color, use "<b>#</b>" or
+   * "<b>0x</b>" before the values (e.g., <b>#CCFFAA</b> or <b>0xFFCCFFAA</b>).
+   * The <b>#</b> syntax uses six digits to specify a color (just as colors are
+   * typically specified in HTML and CSS). When using the hexadecimal notation
+   * starting with "<b>0x</b>", the hexadecimal value must be specified with eight
+   * characters; the first two characters define the alpha component, and the
+   * remainder define the red, green, and blue components. <br />
+   * <br />
+   * The value for the gray parameter must be less than or equal to the current
+   * maximum value as specified by <b>colorMode()</b>. The default maximum value
+   * is 255. <br />
+   * <br />
+   * When drawing in 2D with the default renderer, you may need
+   * <b>hint(ENABLE_STROKE_PURE)</b> to improve drawing quality (at the expense of
+   * performance). See the hint() documentation for more details.
+   *
+   * @webref color:setting
+   * @webBrief Sets the color used to draw lines and borders around shapes.
+   * @param rgb color value in hexadecimal notation
+   * @see PGraphics#noStroke()
+   * @see PGraphics#strokeWeight(float)
+   * @see PGraphics#strokeJoin(int)
+   * @see PGraphics#strokeCap(int)
+   * @see PGraphics#fill(int, float)
+   * @see PGraphics#noFill()
+   * @see PGraphics#tint(int, float)
+   * @see PGraphics#background(float, float, float, float)
+   * @see PGraphics#colorMode(int, float, float, float, float)
+   */
   public void stroke(int rgb) {
     if (recorder != null) recorder.stroke(rgb);
     g.stroke(rgb);
@@ -14559,39 +14559,39 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the fill value for displaying images. Images can be tinted to specified
-	 * colors or made transparent by including an alpha value.<br />
-	 * <br />
-	 * To apply transparency to an image without affecting its color, use white as
-	 * the tint color and specify an alpha value. For instance, <b>tint(255,
-	 * 128)</b> will make an image 50% transparent (assuming the default alpha range
-	 * of 0-255, which can be changed with <b>colorMode()</b>). <br />
-	 * <br />
-	 * When using hexadecimal notation to specify a color, use "<b>#</b>" or
-	 * "<b>0x</b>" before the values (e.g., <b>#CCFFAA</b> or <b>0xFFCCFFAA</b>).
-	 * The <b>#</b> syntax uses six digits to specify a color (just as colors are
-	 * typically specified in HTML and CSS). When using the hexadecimal notation
-	 * starting with "<b>0x</b>", the hexadecimal value must be specified with eight
-	 * characters; the first two characters define the alpha component, and the
-	 * remainder define the red, green, and blue components. <br />
-	 * <br />
-	 * The value for the gray parameter must be less than or equal to the current
-	 * maximum value as specified by <b>colorMode()</b>. The default maximum value
-	 * is 255. <br />
-	 * <br />
-	 * The <b>tint()</b> function is also used to control the coloring of textures
-	 * in 3D.
-	 *
-	 *
-	 * @webref image:loading_displaying
-	 * @webBrief Sets the fill value for displaying images.
-	 * @usage web_application
-	 * @param rgb color value in hexadecimal notation
-	 * @see PGraphics#noTint()
-	 * @see PGraphics#image(PImage, float, float, float, float)
-	 */
+  /**
+   *
+   * Sets the fill value for displaying images. Images can be tinted to specified
+   * colors or made transparent by including an alpha value.<br />
+   * <br />
+   * To apply transparency to an image without affecting its color, use white as
+   * the tint color and specify an alpha value. For instance, <b>tint(255,
+   * 128)</b> will make an image 50% transparent (assuming the default alpha range
+   * of 0-255, which can be changed with <b>colorMode()</b>). <br />
+   * <br />
+   * When using hexadecimal notation to specify a color, use "<b>#</b>" or
+   * "<b>0x</b>" before the values (e.g., <b>#CCFFAA</b> or <b>0xFFCCFFAA</b>).
+   * The <b>#</b> syntax uses six digits to specify a color (just as colors are
+   * typically specified in HTML and CSS). When using the hexadecimal notation
+   * starting with "<b>0x</b>", the hexadecimal value must be specified with eight
+   * characters; the first two characters define the alpha component, and the
+   * remainder define the red, green, and blue components. <br />
+   * <br />
+   * The value for the gray parameter must be less than or equal to the current
+   * maximum value as specified by <b>colorMode()</b>. The default maximum value
+   * is 255. <br />
+   * <br />
+   * The <b>tint()</b> function is also used to control the coloring of textures
+   * in 3D.
+   *
+   *
+   * @webref image:loading_displaying
+   * @webBrief Sets the fill value for displaying images.
+   * @usage web_application
+   * @param rgb color value in hexadecimal notation
+   * @see PGraphics#noTint()
+   * @see PGraphics#image(PImage, float, float, float, float)
+   */
   public void tint(int rgb) {
     if (recorder != null) recorder.tint(rgb);
     g.tint(rgb);
@@ -14944,30 +14944,30 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Adds an ambient light. Ambient light doesn't come from a specific direction,
-	 * the rays of light have bounced around so much that objects are evenly lit
-	 * from all sides. Ambient lights are almost always used in combination with
-	 * other types of lights. Lights need to be included in the <b>draw()</b> to
-	 * remain persistent in a looping program. Placing them in the <b>setup()</b> of
-	 * a looping program will cause them to only have an effect the first time
-	 * through the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are
-	 * interpreted as either RGB or HSB values, depending on the current color mode.
-	 *
-	 *
-	 * @webref lights_camera:lights
-	 * @webBrief Adds an ambient light.
-	 * @usage web_application
-	 * @param v1 red or hue value (depending on current color mode)
-	 * @param v2 green or saturation value (depending on current color mode)
-	 * @param v3 blue or brightness value (depending on current color mode)
-	 * @see PGraphics#lights()
-	 * @see PGraphics#directionalLight(float, float, float, float, float, float)
-	 * @see PGraphics#pointLight(float, float, float, float, float, float)
-	 * @see PGraphics#spotLight(float, float, float, float, float, float, float,
-	 *      float, float, float, float)
-	 */
+  /**
+   *
+   * Adds an ambient light. Ambient light doesn't come from a specific direction,
+   * the rays of light have bounced around so much that objects are evenly lit
+   * from all sides. Ambient lights are almost always used in combination with
+   * other types of lights. Lights need to be included in the <b>draw()</b> to
+   * remain persistent in a looping program. Placing them in the <b>setup()</b> of
+   * a looping program will cause them to only have an effect the first time
+   * through the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are
+   * interpreted as either RGB or HSB values, depending on the current color mode.
+   *
+   *
+   * @webref lights_camera:lights
+   * @webBrief Adds an ambient light.
+   * @usage web_application
+   * @param v1 red or hue value (depending on current color mode)
+   * @param v2 green or saturation value (depending on current color mode)
+   * @param v3 blue or brightness value (depending on current color mode)
+   * @see PGraphics#lights()
+   * @see PGraphics#directionalLight(float, float, float, float, float, float)
+   * @see PGraphics#pointLight(float, float, float, float, float, float)
+   * @see PGraphics#spotLight(float, float, float, float, float, float, float,
+   *      float, float, float, float)
+   */
   public void ambientLight(float v1, float v2, float v3) {
     if (recorder != null) recorder.ambientLight(v1, v2, v3);
     g.ambientLight(v1, v2, v3);
@@ -15022,31 +15022,31 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Adds a point light. Lights need to be included in the <b>draw()</b> to remain
-	 * persistent in a looping program. Placing them in the <b>setup()</b> of a
-	 * looping program will cause them to only have an effect the first time through
-	 * the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are interpreted
-	 * as either RGB or HSB values, depending on the current color mode. The
-	 * <b>x</b>, <b>y</b>, and <b>z</b> parameters set the position of the light.
-	 *
-	 *
-	 * @webref lights_camera:lights
-	 * @webBrief Adds a point light.
-	 * @usage web_application
-	 * @param v1 red or hue value (depending on current color mode)
-	 * @param v2 green or saturation value (depending on current color mode)
-	 * @param v3 blue or brightness value (depending on current color mode)
-	 * @param x  x-coordinate of the light
-	 * @param y  y-coordinate of the light
-	 * @param z  z-coordinate of the light
-	 * @see PGraphics#lights()
-	 * @see PGraphics#directionalLight(float, float, float, float, float, float)
-	 * @see PGraphics#ambientLight(float, float, float, float, float, float)
-	 * @see PGraphics#spotLight(float, float, float, float, float, float, float,
-	 *      float, float, float, float)
-	 */
+  /**
+   *
+   * Adds a point light. Lights need to be included in the <b>draw()</b> to remain
+   * persistent in a looping program. Placing them in the <b>setup()</b> of a
+   * looping program will cause them to only have an effect the first time through
+   * the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are interpreted
+   * as either RGB or HSB values, depending on the current color mode. The
+   * <b>x</b>, <b>y</b>, and <b>z</b> parameters set the position of the light.
+   *
+   *
+   * @webref lights_camera:lights
+   * @webBrief Adds a point light.
+   * @usage web_application
+   * @param v1 red or hue value (depending on current color mode)
+   * @param v2 green or saturation value (depending on current color mode)
+   * @param v3 blue or brightness value (depending on current color mode)
+   * @param x  x-coordinate of the light
+   * @param y  y-coordinate of the light
+   * @param z  z-coordinate of the light
+   * @see PGraphics#lights()
+   * @see PGraphics#directionalLight(float, float, float, float, float, float)
+   * @see PGraphics#ambientLight(float, float, float, float, float, float)
+   * @see PGraphics#spotLight(float, float, float, float, float, float, float,
+   *      float, float, float, float)
+   */
   public void pointLight(float v1, float v2, float v3,
                          float x, float y, float z) {
     if (recorder != null) recorder.pointLight(v1, v2, v3, x, y, z);
@@ -15054,40 +15054,40 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Adds a spot light. Lights need to be included in the <b>draw()</b> to remain
-	 * persistent in a looping program. Placing them in the <b>setup()</b> of a
-	 * looping program will cause them to only have an effect the first time through
-	 * the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are interpreted
-	 * as either RGB or HSB values, depending on the current color mode. The
-	 * <b>x</b>, <b>y</b>, and <b>z</b> parameters specify the position of the light
-	 * and <b>nx</b>, <b>ny</b>, <b>nz</b> specify the direction of light. The
-	 * <b>angle</b> parameter affects angle of the spotlight cone, while
-	 * <b>concentration</b> sets the bias of light focusing toward the center of
-	 * that cone.
-	 *
-	 * @webref lights_camera:lights
-	 * @webBrief Adds a spot light.
-	 * @usage web_application
-	 * @param v1            red or hue value (depending on current color mode)
-	 * @param v2            green or saturation value (depending on current color
-	 *                      mode)
-	 * @param v3            blue or brightness value (depending on current color
-	 *                      mode)
-	 * @param x             x-coordinate of the light
-	 * @param y             y-coordinate of the light
-	 * @param z             z-coordinate of the light
-	 * @param nx            direction along the x axis
-	 * @param ny            direction along the y axis
-	 * @param nz            direction along the z axis
-	 * @param angle         angle of the spotlight cone
-	 * @param concentration exponent determining the center bias of the cone
-	 * @see PGraphics#lights()
-	 * @see PGraphics#directionalLight(float, float, float, float, float, float)
-	 * @see PGraphics#pointLight(float, float, float, float, float, float)
-	 * @see PGraphics#ambientLight(float, float, float, float, float, float)
-	 */
+  /**
+   *
+   * Adds a spot light. Lights need to be included in the <b>draw()</b> to remain
+   * persistent in a looping program. Placing them in the <b>setup()</b> of a
+   * looping program will cause them to only have an effect the first time through
+   * the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are interpreted
+   * as either RGB or HSB values, depending on the current color mode. The
+   * <b>x</b>, <b>y</b>, and <b>z</b> parameters specify the position of the light
+   * and <b>nx</b>, <b>ny</b>, <b>nz</b> specify the direction of light. The
+   * <b>angle</b> parameter affects angle of the spotlight cone, while
+   * <b>concentration</b> sets the bias of light focusing toward the center of
+   * that cone.
+   *
+   * @webref lights_camera:lights
+   * @webBrief Adds a spot light.
+   * @usage web_application
+   * @param v1            red or hue value (depending on current color mode)
+   * @param v2            green or saturation value (depending on current color
+   *                      mode)
+   * @param v3            blue or brightness value (depending on current color
+   *                      mode)
+   * @param x             x-coordinate of the light
+   * @param y             y-coordinate of the light
+   * @param z             z-coordinate of the light
+   * @param nx            direction along the x axis
+   * @param ny            direction along the y axis
+   * @param nz            direction along the z axis
+   * @param angle         angle of the spotlight cone
+   * @param concentration exponent determining the center bias of the cone
+   * @see PGraphics#lights()
+   * @see PGraphics#directionalLight(float, float, float, float, float, float)
+   * @see PGraphics#pointLight(float, float, float, float, float, float)
+   * @see PGraphics#ambientLight(float, float, float, float, float, float)
+   */
   public void spotLight(float v1, float v2, float v3,
                         float x, float y, float z,
                         float nx, float ny, float nz,
@@ -15097,38 +15097,38 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the falloff rates for point lights, spot lights, and ambient lights.
-	 * Like <b>fill()</b>, it affects only the elements which are created after it
-	 * in the code. The default value is <b>lightFalloff(1.0, 0.0, 0.0)</b>, and the
-	 * parameters are used to calculate the falloff with the following
-	 * equation:<br />
-	 * <br />
-	 * d = distance from light position to vertex position<br />
-	 * falloff = 1 / (CONSTANT + d * LINEAR + (d*d) * QUADRATIC)<br />
-	 * <br />
-	 * Thinking about an ambient light with a falloff can be tricky. If you want a
-	 * region of your scene to be lit ambiently with one color and another region to
-	 * be lit ambiently with another color, you could use an ambient light with
-	 * location and falloff. You can think of it as a point light that doesn't care
-	 * which direction a surface is facing.
-	 *
-	 *
-	 * @webref lights_camera:lights
-	 * @webBrief Sets the falloff rates for point lights, spot lights, and ambient
-	 *           lights.
-	 * @usage web_application
-	 * @param constant  constant value or determining falloff
-	 * @param linear    linear value for determining falloff
-	 * @param quadratic quadratic value for determining falloff
-	 * @see PGraphics#lights()
-	 * @see PGraphics#ambientLight(float, float, float, float, float, float)
-	 * @see PGraphics#pointLight(float, float, float, float, float, float)
-	 * @see PGraphics#spotLight(float, float, float, float, float, float, float,
-	 *      float, float, float, float)
-	 * @see PGraphics#lightSpecular(float, float, float)
-	 */
+  /**
+   *
+   * Sets the falloff rates for point lights, spot lights, and ambient lights.
+   * Like <b>fill()</b>, it affects only the elements which are created after it
+   * in the code. The default value is <b>lightFalloff(1.0, 0.0, 0.0)</b>, and the
+   * parameters are used to calculate the falloff with the following
+   * equation:<br />
+   * <br />
+   * d = distance from light position to vertex position<br />
+   * falloff = 1 / (CONSTANT + d * LINEAR + (d*d) * QUADRATIC)<br />
+   * <br />
+   * Thinking about an ambient light with a falloff can be tricky. If you want a
+   * region of your scene to be lit ambiently with one color and another region to
+   * be lit ambiently with another color, you could use an ambient light with
+   * location and falloff. You can think of it as a point light that doesn't care
+   * which direction a surface is facing.
+   *
+   *
+   * @webref lights_camera:lights
+   * @webBrief Sets the falloff rates for point lights, spot lights, and ambient
+   *           lights.
+   * @usage web_application
+   * @param constant  constant value or determining falloff
+   * @param linear    linear value for determining falloff
+   * @param quadratic quadratic value for determining falloff
+   * @see PGraphics#lights()
+   * @see PGraphics#ambientLight(float, float, float, float, float, float)
+   * @see PGraphics#pointLight(float, float, float, float, float, float)
+   * @see PGraphics#spotLight(float, float, float, float, float, float, float,
+   *      float, float, float, float)
+   * @see PGraphics#lightSpecular(float, float, float)
+   */
   public void lightFalloff(float constant, float linear, float quadratic) {
     if (recorder != null) recorder.lightFalloff(constant, linear, quadratic);
     g.lightFalloff(constant, linear, quadratic);
@@ -15164,49 +15164,49 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * The <b>background()</b> function sets the color used for the background of
-	 * the Processing window. The default background is light gray. This function is
-	 * typically used within <b>draw()</b> to clear the display window at the
-	 * beginning of each frame, but it can be used inside <b>setup()</b> to set the
-	 * background on the first frame of animation or if the backgound need only be
-	 * set once. <br />
-	 * <br />
-	 * An image can also be used as the background for a sketch, although the
-	 * image's width and height must match that of the sketch window. Images used
-	 * with <b>background()</b> will ignore the current <b>tint()</b> setting. To
-	 * resize an image to the size of the sketch window, use image.resize(width,
-	 * height). <br />
-	 * <br />
-	 * It is not possible to use the transparency <b>alpha</b> parameter with
-	 * background colors on the main drawing surface. It can only be used along with
-	 * a <b>PGraphics</b> object and <b>createGraphics()</b>.
-	 *
-	 *
-	 * <h3>Advanced</h3>
-	 * <p>
-	 * Clear the background with a color that includes an alpha value. This can only
-	 * be used with objects created by createGraphics(), because the main drawing
-	 * surface cannot be set transparent.
-	 * </p>
-	 * <p>
-	 * It might be tempting to use this function to partially clear the screen on
-	 * each frame, however that's not how this function works. When calling
-	 * background(), the pixels will be replaced with pixels that have that level of
-	 * transparency. To do a semi-transparent overlay, use fill() with alpha and
-	 * draw a rectangle.
-	 * </p>
-	 *
-	 * @webref color:setting
-	 * @webBrief Sets the color used for the background of the Processing window.
-	 * @usage web_application
-	 * @param rgb any value of the color datatype
-	 * @see PGraphics#stroke(float)
-	 * @see PGraphics#fill(float)
-	 * @see PGraphics#tint(float)
-	 * @see PGraphics#colorMode(int)
-	 */
+  /**
+   *
+   * The <b>background()</b> function sets the color used for the background of
+   * the Processing window. The default background is light gray. This function is
+   * typically used within <b>draw()</b> to clear the display window at the
+   * beginning of each frame, but it can be used inside <b>setup()</b> to set the
+   * background on the first frame of animation or if the backgound need only be
+   * set once. <br />
+   * <br />
+   * An image can also be used as the background for a sketch, although the
+   * image's width and height must match that of the sketch window. Images used
+   * with <b>background()</b> will ignore the current <b>tint()</b> setting. To
+   * resize an image to the size of the sketch window, use image.resize(width,
+   * height). <br />
+   * <br />
+   * It is not possible to use the transparency <b>alpha</b> parameter with
+   * background colors on the main drawing surface. It can only be used along with
+   * a <b>PGraphics</b> object and <b>createGraphics()</b>.
+   *
+   *
+   * <h3>Advanced</h3>
+   * <p>
+   * Clear the background with a color that includes an alpha value. This can only
+   * be used with objects created by createGraphics(), because the main drawing
+   * surface cannot be set transparent.
+   * </p>
+   * <p>
+   * It might be tempting to use this function to partially clear the screen on
+   * each frame, however that's not how this function works. When calling
+   * background(), the pixels will be replaced with pixels that have that level of
+   * transparency. To do a semi-transparent overlay, use fill() with alpha and
+   * draw a rectangle.
+   * </p>
+   *
+   * @webref color:setting
+   * @webBrief Sets the color used for the background of the Processing window.
+   * @usage web_application
+   * @param rgb any value of the color datatype
+   * @see PGraphics#stroke(float)
+   * @see PGraphics#fill(float)
+   * @see PGraphics#tint(float)
+   * @see PGraphics#colorMode(int)
+   */
   public void background(int rgb) {
     if (recorder != null) recorder.background(rgb);
     g.background(rgb);
@@ -15292,36 +15292,36 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Changes the way Processing interprets color data. By default, the parameters
-	 * for <b>fill()</b>, <b>stroke()</b>, <b>background()</b>, and <b>color()</b>
-	 * are defined by values between 0 and 255 using the RGB color model. The
-	 * <b>colorMode()</b> function is used to change the numerical range used for
-	 * specifying colors and to switch color systems. For example, calling
-	 * <b>colorMode(RGB, 1.0)</b> will specify that values are specified between 0
-	 * and 1. The limits for defining colors are altered by setting the parameters
-	 * <b>max</b>, <b>max1</b>, <b>max2</b>, <b>max3</b>, and <b>maxA</b>. <br />
-	 * <br />
-	 * After changing the range of values for colors with code like
-	 * <b>colorMode(HSB, 360, 100, 100)</b>, those ranges remain in use until they
-	 * are explicitly changed again. For example, after running <b>colorMode(HSB,
-	 * 360, 100, 100)</b> and then changing back to <b>colorMode(RGB)</b>, the range
-	 * for R will be 0 to 360 and the range for G and B will be 0 to 100. To avoid
-	 * this, be explicit about the ranges when changing the color mode. For
-	 * instance, instead of <b>colorMode(RGB)</b>, write <b>colorMode(RGB, 255, 255,
-	 * 255)</b>.
-	 *
-	 *
-	 * @webref color:setting
-	 * @webBrief Changes the way Processing interprets color data.
-	 * @usage web_application
-	 * @param mode Either RGB or HSB, corresponding to Red/Green/Blue and
-	 *             Hue/Saturation/Brightness
-	 * @see PGraphics#background(float)
-	 * @see PGraphics#fill(float)
-	 * @see PGraphics#stroke(float)
-	 */
+  /**
+   *
+   * Changes the way Processing interprets color data. By default, the parameters
+   * for <b>fill()</b>, <b>stroke()</b>, <b>background()</b>, and <b>color()</b>
+   * are defined by values between 0 and 255 using the RGB color model. The
+   * <b>colorMode()</b> function is used to change the numerical range used for
+   * specifying colors and to switch color systems. For example, calling
+   * <b>colorMode(RGB, 1.0)</b> will specify that values are specified between 0
+   * and 1. The limits for defining colors are altered by setting the parameters
+   * <b>max</b>, <b>max1</b>, <b>max2</b>, <b>max3</b>, and <b>maxA</b>. <br />
+   * <br />
+   * After changing the range of values for colors with code like
+   * <b>colorMode(HSB, 360, 100, 100)</b>, those ranges remain in use until they
+   * are explicitly changed again. For example, after running <b>colorMode(HSB,
+   * 360, 100, 100)</b> and then changing back to <b>colorMode(RGB)</b>, the range
+   * for R will be 0 to 360 and the range for G and B will be 0 to 100. To avoid
+   * this, be explicit about the ranges when changing the color mode. For
+   * instance, instead of <b>colorMode(RGB)</b>, write <b>colorMode(RGB, 255, 255,
+   * 255)</b>.
+   *
+   *
+   * @webref color:setting
+   * @webBrief Changes the way Processing interprets color data.
+   * @usage web_application
+   * @param mode Either RGB or HSB, corresponding to Red/Green/Blue and
+   *             Hue/Saturation/Brightness
+   * @see PGraphics#background(float)
+   * @see PGraphics#fill(float)
+   * @see PGraphics#stroke(float)
+   */
   public void colorMode(int mode) {
     if (recorder != null) recorder.colorMode(mode);
     g.colorMode(mode);
@@ -15378,115 +15378,115 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Extracts the red value from a color, scaled to match current
-	 * <b>colorMode()</b>. The value is always returned as a float, so be careful
-	 * not to assign it to an int value.<br />
-	 * <br />
-	 * The <b>red()</b> function is easy to use and understand, but it is slower
-	 * than a technique called bit shifting. When working in <b>colorMode(RGB,
-	 * 255)</b>, you can acheive the same results as <b>red()</b> but with greater
-	 * speed by using the right shift operator (<b>>></b>) with a bit mask. For
-	 * example, the following two lines of code are equivalent means of getting the
-	 * red value of the color value <b>c</b>:<br />
-	 * <br />
-	 * 
-	 * <pre>
-	 * float r1 = red(c); // Simpler, but slower to calculate
-	 * float r2 = c >> 16 & 0xFF; // Very fast to calculate
-	 * </pre>
-	 *
-	 *
-	 * @webref color:creating_reading
-	 * @webBrief Extracts the red value from a color, scaled to match current
-	 *           <b>colorMode()</b>.
-	 * @usage web_application
-	 * @param rgb any value of the color datatype
-	 * @see PGraphics#green(int)
-	 * @see PGraphics#blue(int)
-	 * @see PGraphics#alpha(int)
-	 * @see PGraphics#hue(int)
-	 * @see PGraphics#saturation(int)
-	 * @see PGraphics#brightness(int)
-	 * @see_external rightshift
-	 */
+  /**
+   *
+   * Extracts the red value from a color, scaled to match current
+   * <b>colorMode()</b>. The value is always returned as a float, so be careful
+   * not to assign it to an int value.<br />
+   * <br />
+   * The <b>red()</b> function is easy to use and understand, but it is slower
+   * than a technique called bit shifting. When working in <b>colorMode(RGB,
+   * 255)</b>, you can acheive the same results as <b>red()</b> but with greater
+   * speed by using the right shift operator (<b>>></b>) with a bit mask. For
+   * example, the following two lines of code are equivalent means of getting the
+   * red value of the color value <b>c</b>:<br />
+   * <br />
+   * 
+   * <pre>
+   * float r1 = red(c); // Simpler, but slower to calculate
+   * float r2 = c >> 16 & 0xFF; // Very fast to calculate
+   * </pre>
+   *
+   *
+   * @webref color:creating_reading
+   * @webBrief Extracts the red value from a color, scaled to match current
+   *           <b>colorMode()</b>.
+   * @usage web_application
+   * @param rgb any value of the color datatype
+   * @see PGraphics#green(int)
+   * @see PGraphics#blue(int)
+   * @see PGraphics#alpha(int)
+   * @see PGraphics#hue(int)
+   * @see PGraphics#saturation(int)
+   * @see PGraphics#brightness(int)
+   * @see_external rightshift
+   */
   public final float red(int rgb) {
     return g.red(rgb);
   }
 
 
-  	/**
-	 *
-	 * Extracts the green value from a color, scaled to match current
-	 * <b>colorMode()</b>. The value is always returned as a float, so be careful
-	 * not to assign it to an int value.<br />
-	 * <br />
-	 * The <b>green()</b> function is easy to use and understand, but it is slower
-	 * than a technique called bit shifting. When working in <b>colorMode(RGB,
-	 * 255)</b>, you can acheive the same results as <b>green()</b> but with greater
-	 * speed by using the right shift operator (<b>>></b>) with a bit mask. For
-	 * example, the following two lines of code are equivalent means of getting the
-	 * green value of the color value <b>c</b>:<br />
-	 * <br />
-	 * 
-	 * <pre>
-	 * float g1 = green(c); // Simpler, but slower to calculate
-	 * float g2 = c >> 8 & 0xFF; // Very fast to calculate
-	 * </pre>
-	 *
-	 *
-	 * @webref color:creating_reading
-	 * @webBrief Extracts the green value from a color, scaled to match current
-	 *           <b>colorMode()</b>.
-	 * @usage web_application
-	 * @param rgb any value of the color datatype
-	 * @see PGraphics#red(int)
-	 * @see PGraphics#blue(int)
-	 * @see PGraphics#alpha(int)
-	 * @see PGraphics#hue(int)
-	 * @see PGraphics#saturation(int)
-	 * @see PGraphics#brightness(int)
-	 * @see_external rightshift
-	 */
+  /**
+   *
+   * Extracts the green value from a color, scaled to match current
+   * <b>colorMode()</b>. The value is always returned as a float, so be careful
+   * not to assign it to an int value.<br />
+   * <br />
+   * The <b>green()</b> function is easy to use and understand, but it is slower
+   * than a technique called bit shifting. When working in <b>colorMode(RGB,
+   * 255)</b>, you can acheive the same results as <b>green()</b> but with greater
+   * speed by using the right shift operator (<b>>></b>) with a bit mask. For
+   * example, the following two lines of code are equivalent means of getting the
+   * green value of the color value <b>c</b>:<br />
+   * <br />
+   * 
+   * <pre>
+   * float g1 = green(c); // Simpler, but slower to calculate
+   * float g2 = c >> 8 & 0xFF; // Very fast to calculate
+   * </pre>
+   *
+   *
+   * @webref color:creating_reading
+   * @webBrief Extracts the green value from a color, scaled to match current
+   *           <b>colorMode()</b>.
+   * @usage web_application
+   * @param rgb any value of the color datatype
+   * @see PGraphics#red(int)
+   * @see PGraphics#blue(int)
+   * @see PGraphics#alpha(int)
+   * @see PGraphics#hue(int)
+   * @see PGraphics#saturation(int)
+   * @see PGraphics#brightness(int)
+   * @see_external rightshift
+   */
   public final float green(int rgb) {
     return g.green(rgb);
   }
 
 
-  	/**
-	 *
-	 * Extracts the blue value from a color, scaled to match current
-	 * <b>colorMode()</b>. The value is always returned as a float, so be careful
-	 * not to assign it to an int value.<br />
-	 * <br />
-	 * The <b>blue()</b> function is easy to use and understand, but it is slower
-	 * than a technique called bit masking. When working in <b>colorMode(RGB,
-	 * 255)</b>, you can acheive the same results as <b>blue()</b> but with greater
-	 * speed by using a bit mask to remove the other color components. For example,
-	 * the following two lines of code are equivalent means of getting the blue
-	 * value of the color value <b>c</b>:<br />
-	 * <br />
-	 * 
-	 * <pre>
-	 * float b1 = blue(c); // Simpler, but slower to calculate
-	 * float b2 = c & 0xFF; // Very fast to calculate
-	 * </pre>
-	 *
-	 *
-	 * @webref color:creating_reading
-	 * @webBrief Extracts the blue value from a color, scaled to match current
-	 *           <b>colorMode()</b>.
-	 * @usage web_application
-	 * @param rgb any value of the color datatype
-	 * @see PGraphics#red(int)
-	 * @see PGraphics#green(int)
-	 * @see PGraphics#alpha(int)
-	 * @see PGraphics#hue(int)
-	 * @see PGraphics#saturation(int)
-	 * @see PGraphics#brightness(int)
-	 * @see_external rightshift
-	 */
+  /**
+   *
+   * Extracts the blue value from a color, scaled to match current
+   * <b>colorMode()</b>. The value is always returned as a float, so be careful
+   * not to assign it to an int value.<br />
+   * <br />
+   * The <b>blue()</b> function is easy to use and understand, but it is slower
+   * than a technique called bit masking. When working in <b>colorMode(RGB,
+   * 255)</b>, you can acheive the same results as <b>blue()</b> but with greater
+   * speed by using a bit mask to remove the other color components. For example,
+   * the following two lines of code are equivalent means of getting the blue
+   * value of the color value <b>c</b>:<br />
+   * <br />
+   * 
+   * <pre>
+   * float b1 = blue(c); // Simpler, but slower to calculate
+   * float b2 = c & 0xFF; // Very fast to calculate
+   * </pre>
+   *
+   *
+   * @webref color:creating_reading
+   * @webBrief Extracts the blue value from a color, scaled to match current
+   *           <b>colorMode()</b>.
+   * @usage web_application
+   * @param rgb any value of the color datatype
+   * @see PGraphics#red(int)
+   * @see PGraphics#green(int)
+   * @see PGraphics#alpha(int)
+   * @see PGraphics#hue(int)
+   * @see PGraphics#saturation(int)
+   * @see PGraphics#brightness(int)
+   * @see_external rightshift
+   */
   public final float blue(int rgb) {
     return g.blue(rgb);
   }
@@ -15790,67 +15790,67 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Filters the image as defined by one of the following modes:<br />
-	 * <br />
-	 * THRESHOLD<br />
-	 * Converts the image to black and white pixels depending if they are above or
-	 * below the threshold defined by the level parameter. The parameter must be
-	 * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
-	 * used.<br />
-	 * <br />
-	 * GRAY<br />
-	 * Converts any colors in the image to grayscale equivalents. No parameter is
-	 * used.<br />
-	 * <br />
-	 * OPAQUE<br />
-	 * Sets the alpha channel to entirely opaque. No parameter is used.<br />
-	 * <br />
-	 * INVERT<br />
-	 * Sets each pixel to its inverse value. No parameter is used.<br />
-	 * <br />
-	 * POSTERIZE<br />
-	 * Limits each channel of the image to the number of colors specified as the
-	 * parameter. The parameter can be set to values between 2 and 255, but results
-	 * are most noticeable in the lower ranges.<br />
-	 * <br />
-	 * BLUR<br />
-	 * Executes a Gaussian blur with the level parameter specifying the extent of
-	 * the blurring. If no parameter is used, the blur is equivalent to Gaussian
-	 * blur of radius 1. Larger values increase the blur.<br />
-	 * <br />
-	 * ERODE<br />
-	 * Reduces the light areas. No parameter is used.<br />
-	 * <br />
-	 * DILATE<br />
-	 * Increases the light areas. No parameter is used.
-	 *
-	 *
-	 * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
-	 * <P>
-	 * <UL>
-	 * <LI>filter(BLUR) provides a basic blur.
-	 * <LI>filter(GRAY) converts the image to grayscale based on luminance.
-	 * <LI>filter(INVERT) will invert the color components in the image.
-	 * <LI>filter(OPAQUE) set all the high bits in the image to opaque
-	 * <LI>filter(THRESHOLD) converts the image to black and white.
-	 * <LI>filter(DILATE) grow white/light areas
-	 * <LI>filter(ERODE) shrink white/light areas
-	 * </UL>
-	 * Luminance conversion code contributed by
-	 * <A HREF="http://www.toxi.co.uk">toxi</A>
-	 * <P/>
-	 * Gaussian blur code contributed by
-	 * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
-	 *
-	 * @webref image:pixels
-	 * @webBrief Converts the image to grayscale or black and white
-	 * @usage web_application
-	 * @param kind  Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE,
-	 *              or DILATE
-	 * @param param unique for each, see above
-	 */
+  /**
+   *
+   * Filters the image as defined by one of the following modes:<br />
+   * <br />
+   * THRESHOLD<br />
+   * Converts the image to black and white pixels depending if they are above or
+   * below the threshold defined by the level parameter. The parameter must be
+   * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
+   * used.<br />
+   * <br />
+   * GRAY<br />
+   * Converts any colors in the image to grayscale equivalents. No parameter is
+   * used.<br />
+   * <br />
+   * OPAQUE<br />
+   * Sets the alpha channel to entirely opaque. No parameter is used.<br />
+   * <br />
+   * INVERT<br />
+   * Sets each pixel to its inverse value. No parameter is used.<br />
+   * <br />
+   * POSTERIZE<br />
+   * Limits each channel of the image to the number of colors specified as the
+   * parameter. The parameter can be set to values between 2 and 255, but results
+   * are most noticeable in the lower ranges.<br />
+   * <br />
+   * BLUR<br />
+   * Executes a Gaussian blur with the level parameter specifying the extent of
+   * the blurring. If no parameter is used, the blur is equivalent to Gaussian
+   * blur of radius 1. Larger values increase the blur.<br />
+   * <br />
+   * ERODE<br />
+   * Reduces the light areas. No parameter is used.<br />
+   * <br />
+   * DILATE<br />
+   * Increases the light areas. No parameter is used.
+   *
+   *
+   * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
+   * <P>
+   * <UL>
+   * <LI>filter(BLUR) provides a basic blur.
+   * <LI>filter(GRAY) converts the image to grayscale based on luminance.
+   * <LI>filter(INVERT) will invert the color components in the image.
+   * <LI>filter(OPAQUE) set all the high bits in the image to opaque
+   * <LI>filter(THRESHOLD) converts the image to black and white.
+   * <LI>filter(DILATE) grow white/light areas
+   * <LI>filter(ERODE) shrink white/light areas
+   * </UL>
+   * Luminance conversion code contributed by
+   * <A HREF="http://www.toxi.co.uk">toxi</A>
+   * <P/>
+   * Gaussian blur code contributed by
+   * <A HREF="http://incubator.quasimondo.com">Mario Klingemann</A>
+   *
+   * @webref image:pixels
+   * @webBrief Converts the image to grayscale or black and white
+   * @usage web_application
+   * @param kind  Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE,
+   *              or DILATE
+   * @param param unique for each, see above
+   */
   public void filter(int kind, float param) {
     if (recorder != null) recorder.filter(kind, param);
     g.filter(kind, param);

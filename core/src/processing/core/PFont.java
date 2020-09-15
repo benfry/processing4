@@ -884,18 +884,18 @@ public class PFont implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Gets a list of the fonts installed on the system. The data is returned as a
-	 * String array. This list provides the names of each font for input into
-	 * <b>createFont()</b>, which allows Processing to dynamically format fonts.
-	 *
-	 *
-	 * @webref pfont
-	 * @webBrief Gets a list of the fonts installed on the system.
-	 * @usage application
-	 * @brief Gets a list of the fonts installed on the system
-	 */
+  /**
+   *
+   * Gets a list of the fonts installed on the system. The data is returned as a
+   * String array. This list provides the names of each font for input into
+   * <b>createFont()</b>, which allows Processing to dynamically format fonts.
+   *
+   *
+   * @webref pfont
+   * @webBrief Gets a list of the fonts installed on the system.
+   * @usage application
+   * @brief Gets a list of the fonts installed on the system
+   */
   static public String[] list() {
     loadFonts();
     String[] list = new String[fonts.length];

@@ -570,16 +570,16 @@ public class XML implements Serializable {
   }
 
 
-  	/**
-	 * Appends a new child to the element. The child can be specified with either a
-	 * String, which will be used as the new tag's name, or as a reference to an
-	 * existing XML object.<br />
-	 * <br />
-	 * A reference to the newly created child is returned as an XML object.
-	 *
-	 * @webref xml:method
-	 * @webBrief Appends a new child to the element
-	 */
+  /**
+   * Appends a new child to the element. The child can be specified with either a
+   * String, which will be used as the new tag's name, or as a reference to an
+   * existing XML object.<br />
+   * <br />
+   * A reference to the newly created child is returned as an XML object.
+   *
+   * @webref xml:method
+   * @webBrief Appends a new child to the element
+   */
   public XML addChild(String tag) {
     Document document = node.getOwnerDocument();
     Node newChild = document.createElement(tag);
@@ -857,15 +857,15 @@ public class XML implements Serializable {
   }
 
 
-  	/**
-	 * Returns an attribute value of the element as a float. If the
-	 * <b>defaultValue</b> parameter is specified and the attribute doesn't exist,
-	 * then <b>defaultValue</b> is returned. If no <b>defaultValue</b> is specified
-	 * and the attribute doesn't exist, the value 0.0 is returned.
-	 *
-	 * @webref xml:method
-	 * @webBrief Gets the content of an attribute as a float
-	 */
+  /**
+   * Returns an attribute value of the element as a float. If the
+   * <b>defaultValue</b> parameter is specified and the attribute doesn't exist,
+   * then <b>defaultValue</b> is returned. If no <b>defaultValue</b> is specified
+   * and the attribute doesn't exist, the value 0.0 is returned.
+   *
+   * @webref xml:method
+   * @webBrief Gets the content of an attribute as a float
+   */
   public float getFloat(String name) {
     return getFloat(name, 0);
   }
@@ -1049,25 +1049,25 @@ public class XML implements Serializable {
   }
 
 
-  	/**
-	 * Takes an XML object and converts it to a String, formatting its content as
-	 * specified with the <b>indent</b> parameter.<br />
-	 * <br />
-	 * If indent is set to -1, then the String is returned with no line breaks, no
-	 * indentation, and no XML declaration.<br />
-	 * <br />
-	 * If indent is set to 0 or greater, then the String is returned with line
-	 * breaks, and the specified number of spaces as indent values. Meaning, there
-	 * will be no indentation if 0 is specified, or each indent will be replaced
-	 * with the corresponding number of spaces: 1, 2, 3, and so on.
-	 *
-	 * @webref xml:method
-	 * @webBrief Formats XML data as a String
-	 * @param indent -1 for a single line (and no declaration), >= 0 for indents and
-	 *               newlines
-	 * @return the content
-	 * @see XML#toString()
-	 */
+  /**
+   * Takes an XML object and converts it to a String, formatting its content as
+   * specified with the <b>indent</b> parameter.<br />
+   * <br />
+   * If indent is set to -1, then the String is returned with no line breaks, no
+   * indentation, and no XML declaration.<br />
+   * <br />
+   * If indent is set to 0 or greater, then the String is returned with line
+   * breaks, and the specified number of spaces as indent values. Meaning, there
+   * will be no indentation if 0 is specified, or each indent will be replaced
+   * with the corresponding number of spaces: 1, 2, 3, and so on.
+   *
+   * @webref xml:method
+   * @webBrief Formats XML data as a String
+   * @param indent -1 for a single line (and no declaration), >= 0 for indents and
+   *               newlines
+   * @return the content
+   * @see XML#toString()
+   */
   public String format(int indent) {
     try {
       // entities = doctype.getEntities()
@@ -1203,17 +1203,17 @@ public class XML implements Serializable {
   }
 
 
-  	/**
-	 * Takes an XML object and converts it to a String, using default formatting
-	 * rules (includes an XML declaration, line breaks, and two spaces for indents).
-	 * These are the same formatting rules used by <b>println()</b> when printing an
-	 * XML object. This method produces the same results as using <b>format(2)</b>.
-	 *
-	 * @webref xml:method
-	 * @webBrief Gets XML data as a String using default formatting
-	 * @return the content
-	 * @see XML#format(int)
-	 */
+  /**
+   * Takes an XML object and converts it to a String, using default formatting
+   * rules (includes an XML declaration, line breaks, and two spaces for indents).
+   * These are the same formatting rules used by <b>println()</b> when printing an
+   * XML object. This method produces the same results as using <b>format(2)</b>.
+   *
+   * @webref xml:method
+   * @webBrief Gets XML data as a String using default formatting
+   * @return the content
+   * @see XML#format(int)
+   */
   @Override
   public String toString() {
     //return format(2);

@@ -113,18 +113,18 @@ public class SPI {
   }
 
 
-  	/**
-	 * Closes the SPI interface</br>
-	 * </br>
-	 * It is normally not necessary to explicitly close SPI interfaces, as they are
-	 * closed automatically by the operating system when the sketch exits.</br>
-	 * </br>
-	 * Note: It is possible to have two or more objects using the same interface at
-	 * a time.
-	 * 
-	 * @webref
-	 * @webBrief Closes the SPI interface
-	 */
+  /**
+   * Closes the SPI interface</br>
+   * </br>
+   * It is normally not necessary to explicitly close SPI interfaces, as they are
+   * closed automatically by the operating system when the sketch exits.</br>
+   * </br>
+   * Note: It is possible to have two or more objects using the same interface at
+   * a time.
+   * 
+   * @webref
+   * @webBrief Closes the SPI interface
+   */
   public void close() {
     if (NativeInterface.isSimulated()) {
       return;
@@ -173,22 +173,22 @@ public class SPI {
   }
 
 
-  	/**
-	 * Configures the SPI interface<br/>
-	 * <br/>
-	 * The default setting is: 500000, SPI.MSBFIRST, SPI.MODE0
-	 * 
-	 * @param maxSpeed  maximum transmission rate in Hz, 500000 (500 kHz) is a
-	 *                  resonable default
-	 * @param dataOrder whether data is send with the first- or least-significant
-	 *                  bit first (SPI.MSBFIRST or SPI.LSBFIRST, the former is more
-	 *                  common)
-	 * @param mode      <a href=
-	 *                  "https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Clock_polarity_and_phase">SPI.MODE0
-	 *                  to SPI.MODE3</a>
-	 * @webref
-	 * @webBrief Configures the SPI interface
-	 */
+  /**
+   * Configures the SPI interface<br/>
+   * <br/>
+   * The default setting is: 500000, SPI.MSBFIRST, SPI.MODE0
+   * 
+   * @param maxSpeed  maximum transmission rate in Hz, 500000 (500 kHz) is a
+   *                  resonable default
+   * @param dataOrder whether data is send with the first- or least-significant
+   *                  bit first (SPI.MSBFIRST or SPI.LSBFIRST, the former is more
+   *                  common)
+   * @param mode      <a href=
+   *                  "https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Clock_polarity_and_phase">SPI.MODE0
+   *                  to SPI.MODE3</a>
+   * @webref
+   * @webBrief Configures the SPI interface
+   */
   public void settings(int maxSpeed, int dataOrder, int mode) {
     this.maxSpeed = maxSpeed;
     this.dataOrder = dataOrder;
@@ -196,17 +196,17 @@ public class SPI {
   }
 
 
-  	/**
-	 * Transfers data over the SPI bus<br/>
-	 * <br/>
-	 * With SPI, data is simultaneously being exchanged between the master device
-	 * and the slave device. For every byte that is being sent out, there's also one
-	 * byte being read in.
-	 * 
-	 * @param out bytes to send
-	 * @return bytes read in (array is the same length as out)
-	 * @webref Transfers data over the SPI bus
-	 */
+  /**
+   * Transfers data over the SPI bus<br/>
+   * <br/>
+   * With SPI, data is simultaneously being exchanged between the master device
+   * and the slave device. For every byte that is being sent out, there's also one
+   * byte being read in.
+   * 
+   * @param out bytes to send
+   * @return bytes read in (array is the same length as out)
+   * @webref Transfers data over the SPI bus
+   */
   public byte[] transfer(byte[] out) {
     if (NativeInterface.isSimulated()) {
       return new byte[out.length];

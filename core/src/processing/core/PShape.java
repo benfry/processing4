@@ -398,41 +398,41 @@ public class PShape implements PConstants {
     return name;
   }
 
-  	/**
-	 *
-	 * Returns a boolean value "true" if the image is set to be visible, "false" if
-	 * not. This value can be modified with the <b>setVisible()</b> method.<br />
-	 * <br />
-	 * The default visibility of a shape is usually controlled by whatever program
-	 * created the SVG file. For instance, this parameter is controlled by showing
-	 * or hiding the shape in the layers palette in Adobe Illustrator.
-	 *
-	 * @webref pshape:method
-	 * @usage web_application
-	 * @webBrief Returns a boolean value "true" if the image is set to be visible,
-	 *           "false" if not
-	 * @see PShape#setVisible(boolean)
-	 */
+  /**
+   *
+   * Returns a boolean value "true" if the image is set to be visible, "false" if
+   * not. This value can be modified with the <b>setVisible()</b> method.<br />
+   * <br />
+   * The default visibility of a shape is usually controlled by whatever program
+   * created the SVG file. For instance, this parameter is controlled by showing
+   * or hiding the shape in the layers palette in Adobe Illustrator.
+   *
+   * @webref pshape:method
+   * @usage web_application
+   * @webBrief Returns a boolean value "true" if the image is set to be visible,
+   *           "false" if not
+   * @see PShape#setVisible(boolean)
+   */
   public boolean isVisible() {
     return visible;
   }
 
 
-  	/**
-	 *
-	 * Sets the shape to be visible or invisible. This is determined by the value of
-	 * the <b>visible</b> parameter.<br />
-	 * <br />
-	 * The default visibility of a shape is usually controlled by whatever program
-	 * created the SVG file. For instance, this parameter is controlled by showing
-	 * or hiding the shape in the layers palette in Adobe Illustrator.
-	 *
-	 * @webref pshape:mathod
-	 * @usage web_application
-	 * @webBrief Sets the shape to be visible or invisible
-	 * @param visible "false" makes the shape invisible and "true" makes it visible
-	 * @see PShape#isVisible()
-	 */
+  /**
+   *
+   * Sets the shape to be visible or invisible. This is determined by the value of
+   * the <b>visible</b> parameter.<br />
+   * <br />
+   * The default visibility of a shape is usually controlled by whatever program
+   * created the SVG file. For instance, this parameter is controlled by showing
+   * or hiding the shape in the layers palette in Adobe Illustrator.
+   *
+   * @webref pshape:method
+   * @usage web_application
+   * @webBrief Sets the shape to be visible or invisible
+   * @param visible "false" makes the shape invisible and "true" makes it visible
+   * @see PShape#isVisible()
+   */
   public void setVisible(boolean visible) {
     this.visible = visible;
   }

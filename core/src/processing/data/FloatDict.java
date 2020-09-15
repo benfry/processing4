@@ -260,13 +260,13 @@ public class FloatDict {
   }
 
 
-  	/**
-	 * Return a copy of the internal keys array. In contrast to the <b>keys()</b>
-	 * method, this array can be modified.
-	 *
-	 * @webref floatdict:method
-	 * @webBrief Return a copy of the internal keys array
-	 */
+  /**
+   * Return a copy of the internal keys array. In contrast to the <b>keys()</b>
+   * method, this array can be modified.
+   *
+   * @webref floatdict:method
+   * @webBrief Return a copy of the internal keys array
+   */
   public String[] keyArray() {
     crop();
     return keyArray(null);
@@ -324,16 +324,16 @@ public class FloatDict {
   }
 
 
-  	/**
-	 * The version of this method without a parameter creates a new array and copies
-	 * each of the values into it. The version with the <b>float[]</b> parameters
-	 * fills an already-allocated array with the values (more efficient than
-	 * creating a new array each time). If 'array' is null, or not the same size as
-	 * the number of values, a new array will be allocated and returned.
-	 *
-	 * @webref floatdict:method
-	 * @webBrief Create a new array and copy each of the values into it
-	 */
+  /**
+   * The version of this method without a parameter creates a new array and copies
+   * each of the values into it. The version with the <b>float[]</b> parameters
+   * fills an already-allocated array with the values (more efficient than
+   * creating a new array each time). If 'array' is null, or not the same size as
+   * the number of values, a new array will be allocated and returned.
+   *
+   * @webref floatdict:method
+   * @webBrief Create a new array and copy each of the values into it
+   */
   public float[] valueArray() {
     crop();
     return valueArray(null);
@@ -414,13 +414,13 @@ public class FloatDict {
   }
 
 
-  	/**
-	 * Add to a value. If the key does not exist, an new pair is initialized with
-	 * the value supplied.
-	 * 
-	 * @webref floatdict:method
-	 * @webBrief Add to a value
-	 */
+  /**
+   * Add to a value. If the key does not exist, an new pair is initialized with
+   * the value supplied.
+   * 
+   * @webref floatdict:method
+   * @webBrief Add to a value
+   */
   public void add(String key, float amount) {
     int index = index(key);
     if (index == -1) {
@@ -693,13 +693,13 @@ public class FloatDict {
   }
 
 
-  	/**
-	 * Sort the keys alphabetically in reverse (ignoring case). Uses the value as a
-	 * tie-breaker (only really possible with a key that has a case change).
-	 *
-	 * @webref floatdict:method
-	 * @webBrief Sort the keys alphabetically in reverse
-	 */
+  /**
+   * Sort the keys alphabetically in reverse (ignoring case). Uses the value as a
+   * tie-breaker (only really possible with a key that has a case change).
+   *
+   * @webref floatdict:method
+   * @webBrief Sort the keys alphabetically in reverse
+   */
   public void sortKeysReverse() {
     sortImpl(true, true, true);
   }

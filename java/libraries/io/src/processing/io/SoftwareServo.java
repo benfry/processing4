@@ -81,20 +81,20 @@ public class SoftwareServo {
   }
 
 
-  	/**
-	 * Attaches a servo motor to a GPIO pin<br/>
-	 * <br/>
-	 * You must call this function before calling write(). Note that the servo motor
-	 * will only be instructed to move after the first time write() is called.<br/>
-	 * <br/>
-	 * The optional parameters minPulse and maxPulse control the minimum and maximum
-	 * pulse width durations. The default values, identical to those of Arduino's
-	 * Servo class, should be compatible with most servo motors.
-	 * 
-	 * @param pin GPIO pin
-	 * @webref
-	 * @webBrief Attaches a servo motor to a GPIO pin
-	 */
+  /**
+   * Attaches a servo motor to a GPIO pin<br/>
+   * <br/>
+   * You must call this function before calling write(). Note that the servo motor
+   * will only be instructed to move after the first time write() is called.<br/>
+   * <br/>
+   * The optional parameters minPulse and maxPulse control the minimum and maximum
+   * pulse width durations. The default values, identical to those of Arduino's
+   * Servo class, should be compatible with most servo motors.
+   * 
+   * @param pin GPIO pin
+   * @webref
+   * @webBrief Attaches a servo motor to a GPIO pin
+   */
   public void attach(int pin) {
     detach();
     this.pin = pin;
@@ -117,19 +117,19 @@ public class SoftwareServo {
   }
 
 
-  	/**
-	 * Moves a servo motor to a given orientation<br/>
-	 * <br/>
-	 * If you are using this class in combination with a continuous rotation servo,
-	 * different angles will result in the servo rotating forward or backward at
-	 * different speeds. For regular servo motors, this will instruct the servo to
-	 * rotate to and hold a specific angle.
-	 * 
-	 * @param angle angle in degrees (controls speed and direction on
-	 *              continuous-rotation servos)
-	 * @webref
-	 * @webBrief Moves a servo motor to a given orientation
-	 */
+  /**
+   * Moves a servo motor to a given orientation<br/>
+   * <br/>
+   * If you are using this class in combination with a continuous rotation servo,
+   * different angles will result in the servo rotating forward or backward at
+   * different speeds. For regular servo motors, this will instruct the servo to
+   * rotate to and hold a specific angle.
+   * 
+   * @param angle angle in degrees (controls speed and direction on
+   *              continuous-rotation servos)
+   * @webref
+   * @webBrief Moves a servo motor to a given orientation
+   */
   public void write(float angle) {
     if (attached() == false) {
       System.err.println("You need to call attach(pin) before write(angle).");
@@ -173,15 +173,15 @@ public class SoftwareServo {
   }
 
 
-  	/**
-	 * Detatches a servo motor from a GPIO pin<br/>
-	 * <br/>
-	 * Calling this method will stop the servo from moving or trying to hold the
-	 * current orientation.
-	 * 
-	 * @webref
-	 * @webBrief Detatches a servo motor from a GPIO pin
-	 */
+  /**
+   * Detatches a servo motor from a GPIO pin<br/>
+   * <br/>
+   * Calling this method will stop the servo from moving or trying to hold the
+   * current orientation.
+   * 
+   * @webref
+   * @webBrief Detatches a servo motor from a GPIO pin
+   */
   public void detach() {
     if (0 <= handle) {
       // stop thread

@@ -139,15 +139,15 @@ public class LED {
   }
 
 
-  	/**
-	 * Restores the previous state<br/>
-	 * <br/>
-	 * Without calling this function the LED will remain in the current state even
-	 * after the sketch has been closed.
-	 * 
-	 * @webref
-	 * @webBrief Restores the previous state
-	 */
+  /**
+   * Restores the previous state<br/>
+   * <br/>
+   * Without calling this function the LED will remain in the current state even
+   * after the sketch has been closed.
+   * 
+   * @webref
+   * @webBrief Restores the previous state
+   */
   public void close() {
     if (NativeInterface.isSimulated()) {
       return;

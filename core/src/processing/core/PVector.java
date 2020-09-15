@@ -196,18 +196,18 @@ public class PVector implements Serializable {
   }
 
 
-  	/**
-	 *
-	 * Returns a new 2D unit vector with a random direction. If you pass in
-	 * <b>this</b> as an argument, it will use the PApplet's random number
-	 * generator.
-	 *
-	 * @webref pvector:method
-	 * @usage web_application
-	 * @return the random PVector
-	 * @webBrief Make a new 2D unit vector with a random direction.
-	 * @see PVector#random3D()
-	 */
+  /**
+   *
+   * Returns a new 2D unit vector with a random direction. If you pass in
+   * <b>this</b> as an argument, it will use the PApplet's random number
+   * generator.
+   *
+   * @webref pvector:method
+   * @usage web_application
+   * @return the random PVector
+   * @webBrief Make a new 2D unit vector with a random direction.
+   * @see PVector#random3D()
+   */
   static public PVector random2D() {
     return random2D(null, null);
   }
@@ -246,18 +246,18 @@ public class PVector implements Serializable {
   }
 
 
-  	/**
-	 *
-	 * Returns a new 3D unit vector with a random direction. If you pass in
-	 * <b>this</b> as an argument, it will use the PApplet's random number
-	 * generator.
-	 *
-	 * @webref pvector:method
-	 * @usage web_application
-	 * @return the random PVector
-	 * @webBrief Make a new 3D unit vector with a random direction.
-	 * @see PVector#random2D()
-	 */
+  /**
+   *
+   * Returns a new 3D unit vector with a random direction. If you pass in
+   * <b>this</b> as an argument, it will use the PApplet's random number
+   * generator.
+   *
+   * @webref pvector:method
+   * @usage web_application
+   * @return the random PVector
+   * @webBrief Make a new 3D unit vector with a random direction.
+   * @see PVector#random2D()
+   */
   static public PVector random3D() {
     return random3D(null, null);
   }
@@ -887,32 +887,32 @@ public class PVector implements Serializable {
   }
 
 
-  	/**
-	 *
-	 * Calculates linear interpolation from one vector to another vector. (Just like
-	 * regular <b>lerp()</b>, but for vectors.)<br />
-	 * <br />
-	 * Note that there is one <em>static</em> version of this method, and two
-	 * <em>non-static</em> versions. The static version, <b>lerp(v1, v2, amt)</b> is
-	 * given the two vectors to interpolate and returns a new PVector object. The
-	 * static version is used by referencing the PVector class directly. (See the
-	 * middle example above.) The non-static versions, <b>lerp(v, amt)</b> and
-	 * <b>lerp(x, y, z, amt)</b>, do not create a new PVector, but transform the
-	 * values of the PVector on which they are called. These non-static versions
-	 * perform the same operation, but the former takes another vector as input,
-	 * while the latter takes three float values. (See the top and bottom examples
-	 * above, respectively.)
-	 *
-	 *
-	 * @webref pvector:method
-	 * @usage web_application
-	 * @webBrief Linear interpolate the vector to another vector
-	 * @param v   the vector to lerp to
-	 * @param amt The amount of interpolation; some value between 0.0 (old vector)
-	 *            and 1.0 (new vector). 0.1 is very near the old vector; 0.5 is
-	 *            halfway in between.
-	 * @see PApplet#lerp(float, float, float)
-	 */
+  /**
+   *
+   * Calculates linear interpolation from one vector to another vector. (Just like
+   * regular <b>lerp()</b>, but for vectors.)<br />
+   * <br />
+   * Note that there is one <em>static</em> version of this method, and two
+   * <em>non-static</em> versions. The static version, <b>lerp(v1, v2, amt)</b> is
+   * given the two vectors to interpolate and returns a new PVector object. The
+   * static version is used by referencing the PVector class directly. (See the
+   * middle example above.) The non-static versions, <b>lerp(v, amt)</b> and
+   * <b>lerp(x, y, z, amt)</b>, do not create a new PVector, but transform the
+   * values of the PVector on which they are called. These non-static versions
+   * perform the same operation, but the former takes another vector as input,
+   * while the latter takes three float values. (See the top and bottom examples
+   * above, respectively.)
+   *
+   *
+   * @webref pvector:method
+   * @usage web_application
+   * @webBrief Linear interpolate the vector to another vector
+   * @param v   the vector to lerp to
+   * @param amt The amount of interpolation; some value between 0.0 (old vector)
+   *            and 1.0 (new vector). 0.1 is very near the old vector; 0.5 is
+   *            halfway in between.
+   * @see PApplet#lerp(float, float, float)
+   */
   public PVector lerp(PVector v, float amt) {
     x = PApplet.lerp(x, v.x, amt);
     y = PApplet.lerp(y, v.y, amt);
