@@ -24,6 +24,8 @@ X   https://github.com/processing/processing4/issues/55
 X PDF broken in getImage()
 X   https://github.com/processing/processing4/issues/62
 X   https://github.com/processing/processing4/commit/624e9074aeb1d9e2e6b2943e35ffd97a90b8b737
+o pixelDensity() throws error in setup() (Sam couldn't reproduce)
+X   https://github.com/processing/processing4/issues/127
 
 contribs
 X remove redundant boxing and casting
@@ -51,8 +53,6 @@ _   https://github.com/processing/processing4/pull/98
 
 
 noted by Casey
-_ pixelDensity() throws error in setup() (Sam couldn't reproduce)
-_   https://github.com/processing/processing4/issues/127
 _ Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
 _   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
 _   https://github.com/processing/processing/issues/5983
