@@ -10,6 +10,7 @@ As with all releases, we'll do everything possible to avoid breaking API. Howeve
 
 ### alpha 2
 
+* See `changes.md` if you're using `surface.setResizable()` with this release on macOS and with P2D or P3D renderers.
 * The `static` versions of `selectInput()`, `selectOutput()`, and `selectFolder()` in `PApplet` have been removed. These were not documented, hopefully were not in use anywhere.
 * The `frame` object has been removed from `PApplet`. We've been warning folks to use `surface` since 2015, but we still should [warn users](https://github.com/processing/processing4/issues/59)
 * `PImage.checkAlpha()` is now `public` instead of `protected`
@@ -30,3 +31,13 @@ As with all releases, we'll do everything possible to avoid breaking API. Howeve
 ### alpha 1
 
 * Processing 4 will be 64-bit only. This is the overwhelming majority of users, and we don't have the necessary help to maintain and support 32-bit systems.
+
+
+## Build Changes
+
+* If you're using Eclipse, it'll complain about the lack of `jogl-all-src.jar`. Steps to create your own:
+
+        git clone --recurse-submodules git://jogamp.org/srv/scm/jogl.git jogl
+        cd jogl
+        git checkout 0779f229b0e9538c640b18b9a4e095af1f5a35b3
+        zip -r ../jogl-all-src.jar src
