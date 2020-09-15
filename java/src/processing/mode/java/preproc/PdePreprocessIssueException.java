@@ -1,10 +1,10 @@
 package processing.mode.java.preproc;
 
 
-import processing.mode.java.preproc.PdePreprocessIssue;
-
 /**
  * Exception indicating that a preprocessor issue was found.
+ * This is only used by classes in the test package, and needs to be moved.
+ * https://github.com/processing/processing4/issues/130
  */
 public class PdePreprocessIssueException extends RuntimeException {
 
