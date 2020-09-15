@@ -33,14 +33,16 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 
 /**
- * This class encapsulates a GLSL shader program, including a vertex
- * and a fragment shader. Based on the GLSLShader class from GLGraphics, which
- * in turn was originally based in the code by JohnG:
- * http://processing.org/discourse/beta/num_1159494801.html
+ * This class encapsulates a GLSL shader program, including a vertex and a
+ * fragment shader. It's compatible with the P2D and P3D renderers, but not with
+ * the default renderer. Use the <b>loadShader()</b> function to load your
+ * shader code. [Note: It's strongly encouraged to use <b>loadShader()</b> to
+ * create a PShader object, rather than calling the PShader constructor
+ * manually.]
  *
  * @webref rendering:shaders
  * @webBrief This class encapsulates a GLSL shader program, including a vertex
- * and a fragment shader.
+ *           and a fragment shader.
  */
 public class PShader implements PConstants {
   static protected final int POINT    = 0;
@@ -384,7 +386,8 @@ public class PShader implements PConstants {
   }
 
   /**
-   * Sets a variable within the shader
+   * Sets the uniform variables inside the shader to modify the effect while the 
+   * program is running.
    *
    * @webref rendering:shaders
    * @webBrief Sets a variable within the shader
