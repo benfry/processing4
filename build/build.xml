@@ -1069,6 +1069,13 @@
       <arg value="--file" />
       <arg value="processing-${version}-macosx.zip" />
     </exec>
+
+    <echo>
+      Check on notarization status with:
+
+      xcrun altool -u $PROCESSING_APPLE_ID -p $PROCESSING_APP_PASSWORD \
+        --notarization-info [the RequestUUID above]
+    </echo>
   </target>
 
   <target name="macosx-dist" if="macosx"
