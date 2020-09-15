@@ -1,15 +1,20 @@
 # Processing 4.0 alpha 2
 
-*Revision 1271 - 17 August 2020*
+*Revision 1271 - 15 September 2020*
 
 Several fixes for this round, plus working on the guts quite a bit to prepare for newer/faster/better rendering methods.
 
-The minimum system version for macOS (for the PDE and exported applications) is now set to 10.13.6 (the last update of High Sierra). Apple will likely be dropping support for High Sierra in late 2020, so we may make the minimum 10.14.x by the time 4.x ships.
+The minimum system version for macOS (for the PDE and exported applications) is now set to 10.13.6 (the last update of High Sierra). Apple will likely be dropping support for High Sierra in late 2020, so we may make Mojave (10.14) the minimum by the time Processing 4.x ships.
+
+
+### Known Issues
+
+* If you're using P2D or P3D on macOS, and have `surface.setResizable(true)` inside `setup()`, you'll need to (temporarily) move that into `draw()`. We had to do an ugly hack at release time due to issue [124](https://github.com/processing/processing4/issues/124). The ugly hack also involves the window flickering once when it first opens in this situation. We should have that fixed for the next release.
 
 
 ### Bug Fixes
 
-* Break buildMenu() into populateMenu() method to delay Debugger init [73](https://github.com/processing/processing4/issues/73)
+* Break `buildMenu()` into `populateMenu()` method to delay Debugger init [73](https://github.com/processing/processing4/issues/73)
 * Fix broken macOS build [83](https://github.com/processing/processing4/issues/83)
 * Bump JDK to 11.0.8, then rolled back to JDK 11.0.6 again [121](https://github.com/processing/processing4/issues/121), [123](https://github.com/processing/processing4/pull/123)
 * Make macOS notarization part of the build process [24](https://github.com/processing/processing4/issues/24)

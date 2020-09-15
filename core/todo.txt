@@ -33,10 +33,13 @@ critical
 X PImage save() mostly broken due to AWT refactor
 X Saving to PNG broken in anything but the default renderer
 X   https://github.com/processing/processing4/issues/80
-_ pixelDensity() throws error in setup()
-_   https://github.com/processing/processing4/issues/127
-_ JDK 11.0.7 not working with JOGL
+X Rendering broken with P2D/P3D, fixed with temporary hack
+X   https://github.com/processing/processing4/issues/124
+
+
+_ JDK 11.0.7+ workarounds/hacks in place, fix them
 _   https://github.com/processing/processing4/issues/124
+
 
 load/save image
 _ https://github.com/processing/processing4/wiki/Exorcising-AWT
@@ -48,6 +51,8 @@ _   https://github.com/processing/processing4/pull/98
 
 
 noted by Casey
+_ pixelDensity() throws error in setup() (Sam couldn't reproduce)
+_   https://github.com/processing/processing4/issues/127
 _ Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
 _   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
 _   https://github.com/processing/processing/issues/5983
@@ -55,6 +60,7 @@ _ Sketches on Windows/Linux don't take UI sizing into account
 _   https://github.com/processing/processing/issues/4894
 _   https://github.com/processing/processing/issues/4895
 _   https://github.com/processing/processing/issues/4897
+
 
 api changes
 _ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
