@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-20 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -113,6 +113,9 @@ public class PSurfaceJOGL implements PSurface {
   protected float[] currentPixelScale = {0, 0};
 
   protected boolean external = false;
+
+  // Workaround for https://github.com/processing/processing4/issues/124
+  static private boolean issue124 = PApplet.platform == PConstants.MACOS;
 
 
   public PSurfaceJOGL(PGraphics graphics) {
@@ -408,7 +411,11 @@ public class PSurfaceJOGL implements PSurface {
     window.setSurfaceScale(new float[] { surfaceScale, surfaceScale });
 
     window.setSize(sketchWidth * windowScaleFactor, sketchHeight * windowScaleFactor);
-    window.setResizable(true);
+    if (issue124) {
+      window.setResizable(true);
+    } else {
+      window.setResizable(false);
+    }
     setSize(sketchWidth, sketchHeight);
     if (fullScreen) {
       PApplet.hideMenuBar();
@@ -949,6 +956,11 @@ public class PSurfaceJOGL implements PSurface {
           pgl.endRender(sketch.sketchWindowColor());
         }
         PGraphicsOpenGL.completeFinishedPixelTransfers();
+
+        if (issue124) {
+          setResizable(false);
+          issue124 = false;
+        }
       }
 
       if (sketch.exitCalled()) {
