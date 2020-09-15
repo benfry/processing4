@@ -814,7 +814,8 @@ public class PApplet implements PConstants {
   OutputStream outputStream;
 
   // Background default needs to be different from the default value in
-  // PGraphics.backgroundColor, otherwise size(100, 100) bg spills over.
+  // PGraphics.backgroundColor, otherwise sketches that have size(100, 100)
+  // appear to be larger than they are, because the bg color matches.
   // https://github.com/processing/processing/issues/2297
   int windowColor = 0xffDDDDDD;
 
