@@ -46,7 +46,7 @@ import java.io.Serializable;
  * need to do some "vector" math, which is made easy by the methods inside the
  * <b>PVector</b> class.
  *
- *
+ * <h3>Advanced</h3>
  * A class to describe a two or three dimensional vector.
  * <p>
  * The result of all functions are applied to the vector itself, with the

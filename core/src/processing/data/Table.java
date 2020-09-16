@@ -55,6 +55,7 @@ import processing.core.PConstants;
  * "http://processing.github.io/processing-javadocs/core/processing/data/Table.html">Processing
  * Table Javadoc</a>.
  * 
+ * <h3>Advanced</h3>
  * <p>
  * Generic class for handling tabular data, typically from a CSV, TSV, or other
  * sort of spreadsheet file.

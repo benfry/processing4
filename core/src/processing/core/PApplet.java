@@ -6317,6 +6317,7 @@ public class PApplet implements PConstants {
    * to the function, so that the program is not waiting for additional input.
    * The callback is necessary because of how threading works.
    *
+   * <h3>Advanced</h3>
    * <pre>
    * void setup() {
    *   selectInput("Select a file to process:", "fileSelected");
@@ -11179,44 +11180,44 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Using the <b>beginShape()</b> and <b>endShape()</b> functions allow creating
-	 * more complex forms. <b>beginShape()</b> begins recording vertices for a shape
-	 * and <b>endShape()</b> stops recording. The value of the <b>kind</b> parameter
-	 * tells it which types of shapes to create from the provided vertices. With no
-	 * mode specified, the shape can be any irregular polygon. The parameters
-	 * available for beginShape() are POINTS, LINES, TRIANGLES, TRIANGLE_FAN,
-	 * TRIANGLE_STRIP, QUADS, and QUAD_STRIP. After calling the <b>beginShape()</b>
-	 * function, a series of <b>vertex()</b> commands must follow. To stop drawing
-	 * the shape, call <b>endShape()</b>. The <b>vertex()</b> function with two
-	 * parameters specifies a position in 2D and the <b>vertex()</b> function with
-	 * three parameters specifies a position in 3D. Each shape will be outlined with
-	 * the current stroke color and filled with the fill color. <br />
-	 * <br />
-	 * Transformations such as <b>translate()</b>, <b>rotate()</b>, and
-	 * <b>scale()</b> do not work within <b>beginShape()</b>. It is also not
-	 * possible to use other shapes, such as <b>ellipse()</b> or <b>rect()</b>
-	 * within <b>beginShape()</b>. <br />
-	 * <br />
-	 * The P2D and P3D renderers allow <b>stroke()</b> and <b>fill()</b> to be
-	 * altered on a per-vertex basis, but the default renderer does not. Settings
-	 * such as <b>strokeWeight()</b>, <b>strokeCap()</b>, and <b>strokeJoin()</b>
-	 * cannot be changed while inside a <b>beginShape()</b>/<b>endShape()</b> block
-	 * with any renderer.
-	 *
-	 * @webref shape:vertex
-	 * @webBrief Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
-	 *           creating more complex forms.
-	 * @param kind Either POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP,
-	 *             QUADS, or QUAD_STRIP
-	 * @see PShape
-	 * @see PGraphics#endShape()
-	 * @see PGraphics#vertex(float, float, float, float, float)
-	 * @see PGraphics#curveVertex(float, float, float)
-	 * @see PGraphics#bezierVertex(float, float, float, float, float, float, float,
-	 *      float, float)
-	 */
+  /**
+   *
+   * Using the <b>beginShape()</b> and <b>endShape()</b> functions allow creating
+   * more complex forms. <b>beginShape()</b> begins recording vertices for a shape
+   * and <b>endShape()</b> stops recording. The value of the <b>kind</b> parameter
+   * tells it which types of shapes to create from the provided vertices. With no
+   * mode specified, the shape can be any irregular polygon. The parameters
+   * available for beginShape() are POINTS, LINES, TRIANGLES, TRIANGLE_FAN,
+   * TRIANGLE_STRIP, QUADS, and QUAD_STRIP. After calling the <b>beginShape()</b>
+   * function, a series of <b>vertex()</b> commands must follow. To stop drawing
+   * the shape, call <b>endShape()</b>. The <b>vertex()</b> function with two
+   * parameters specifies a position in 2D and the <b>vertex()</b> function with
+   * three parameters specifies a position in 3D. Each shape will be outlined with
+   * the current stroke color and filled with the fill color. <br />
+   * <br />
+   * Transformations such as <b>translate()</b>, <b>rotate()</b>, and
+   * <b>scale()</b> do not work within <b>beginShape()</b>. It is also not
+   * possible to use other shapes, such as <b>ellipse()</b> or <b>rect()</b>
+   * within <b>beginShape()</b>. <br />
+   * <br />
+   * The P2D and P3D renderers allow <b>stroke()</b> and <b>fill()</b> to be
+   * altered on a per-vertex basis, but the default renderer does not. Settings
+   * such as <b>strokeWeight()</b>, <b>strokeCap()</b>, and <b>strokeJoin()</b>
+   * cannot be changed while inside a <b>beginShape()</b>/<b>endShape()</b> block
+   * with any renderer.
+   *
+   * @webref shape:vertex
+   * @webBrief Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
+   *           creating more complex forms.
+   * @param kind Either POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP,
+   *             QUADS, or QUAD_STRIP
+   * @see PShape
+   * @see PGraphics#endShape()
+   * @see PGraphics#vertex(float, float, float, float, float)
+   * @see PGraphics#curveVertex(float, float, float)
+   * @see PGraphics#bezierVertex(float, float, float, float, float, float, float,
+   *      float, float)
+   */
   public void beginShape(int kind) {
     if (recorder != null) recorder.beginShape(kind);
     g.beginShape(kind);
@@ -11233,24 +11234,24 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the current normal vector. Used for drawing three dimensional shapes and
-	 * surfaces, <b>normal()</b> specifies a vector perpendicular to a shape's
-	 * surface which, in turn, determines how lighting affects it. Processing
-	 * attempts to automatically assign normals to shapes, but since that's
-	 * imperfect, this is a better option when you want more control. This function
-	 * is identical to <b>glNormal3f()</b> in OpenGL.
-	 *
-	 * @webref lights_camera:lights
-	 * @webBrief Sets the current normal vector.
-	 * @param nx x direction
-	 * @param ny y direction
-	 * @param nz z direction
-	 * @see PGraphics#beginShape(int)
-	 * @see PGraphics#endShape(int)
-	 * @see PGraphics#lights()
-	 */
+  /**
+   *
+   * Sets the current normal vector. Used for drawing three dimensional shapes and
+   * surfaces, <b>normal()</b> specifies a vector perpendicular to a shape's
+   * surface which, in turn, determines how lighting affects it. Processing
+   * attempts to automatically assign normals to shapes, but since that's
+   * imperfect, this is a better option when you want more control. This function
+   * is identical to <b>glNormal3f()</b> in OpenGL.
+   *
+   * @webref lights_camera:lights
+   * @webBrief Sets the current normal vector.
+   * @param nx x direction
+   * @param ny y direction
+   * @param nz z direction
+   * @see PGraphics#beginShape(int)
+   * @see PGraphics#endShape(int)
+   * @see PGraphics#lights()
+   */
   public void normal(float nx, float ny, float nz) {
     if (recorder != null) recorder.normal(nx, ny, nz);
     g.normal(nx, ny, nz);
@@ -11293,23 +11294,23 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets the coordinate space for texture mapping. The default mode is
-	 * <b>IMAGE</b>, which refers to the actual coordinates of the image.
-	 * <b>NORMAL</b> refers to a normalized space of values ranging from 0 to 1.
-	 * This function only works with the P2D and P3D renderers.<br />
-	 * <br />
-	 * With <b>IMAGE</b>, if an image is 100 x 200 pixels, mapping the image onto
-	 * the entire size of a quad would require the points (0,0) (100, 0) (100,200)
-	 * (0,200). The same mapping in <b>NORMAL</b> is (0,0) (1,0) (1,1) (0,1).
-	 *
-	 * @webref image:textures
-	 * @webBrief Sets the coordinate space for texture mapping.
-	 * @param mode either IMAGE or NORMAL
-	 * @see PGraphics#texture(PImage)
-	 * @see PGraphics#textureWrap(int)
-	 */
+  /**
+   *
+   * Sets the coordinate space for texture mapping. The default mode is
+   * <b>IMAGE</b>, which refers to the actual coordinates of the image.
+   * <b>NORMAL</b> refers to a normalized space of values ranging from 0 to 1.
+   * This function only works with the P2D and P3D renderers.<br />
+   * <br />
+   * With <b>IMAGE</b>, if an image is 100 x 200 pixels, mapping the image onto
+   * the entire size of a quad would require the points (0,0) (100, 0) (100,200)
+   * (0,200). The same mapping in <b>NORMAL</b> is (0,0) (1,0) (1,1) (0,1).
+   *
+   * @webref image:textures
+   * @webBrief Sets the coordinate space for texture mapping.
+   * @param mode either IMAGE or NORMAL
+   * @see PGraphics#texture(PImage)
+   * @see PGraphics#textureWrap(int)
+   */
   public void textureMode(int mode) {
     if (recorder != null) recorder.textureMode(mode);
     g.textureMode(mode);
@@ -11335,26 +11336,26 @@ public class PApplet implements PConstants {
   }
 
 
-  	/**
-	 *
-	 * Sets a texture to be applied to vertex points. The <b>texture()</b> function
-	 * must be called between <b>beginShape()</b> and <b>endShape()</b> and before
-	 * any calls to <b>vertex()</b>. This function only works with the P2D and P3D
-	 * renderers.<br />
-	 * <br />
-	 * When textures are in use, the fill color is ignored. Instead, use
-	 * <b>tint()</b> to specify the color of the texture as it is applied to the
-	 * shape.
-	 *
-	 * @webref image:textures
-	 * @webBrief Sets a texture to be applied to vertex points.
-	 * @param image reference to a PImage object
-	 * @see PGraphics#textureMode(int)
-	 * @see PGraphics#textureWrap(int)
-	 * @see PGraphics#beginShape(int)
-	 * @see PGraphics#endShape(int)
-	 * @see PGraphics#vertex(float, float, float, float, float)
-	 */
+  /**
+   *
+   * Sets a texture to be applied to vertex points. The <b>texture()</b> function
+   * must be called between <b>beginShape()</b> and <b>endShape()</b> and before
+   * any calls to <b>vertex()</b>. This function only works with the P2D and P3D
+   * renderers.<br />
+   * <br />
+   * When textures are in use, the fill color is ignored. Instead, use
+   * <b>tint()</b> to specify the color of the texture as it is applied to the
+   * shape.
+   *
+   * @webref image:textures
+   * @webBrief Sets a texture to be applied to vertex points.
+   * @param image reference to a PImage object
+   * @see PGraphics#textureMode(int)
+   * @see PGraphics#textureWrap(int)
+   * @see PGraphics#beginShape(int)
+   * @see PGraphics#endShape(int)
+   * @see PGraphics#vertex(float, float, float, float, float)
+   */
   public void texture(PImage image) {
     if (recorder != null) recorder.texture(image);
     g.texture(image);

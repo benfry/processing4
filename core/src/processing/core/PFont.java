@@ -49,6 +49,7 @@ import java.util.HashMap;
  * To create a new font dynamically, use the <b>createFont()</b> function. Do
  * not use the syntax <b>new PFont()</b>.
  * 
+ * <h3>Advanced</h3>
  * <P>
  * Awful (and by that, I mean awesome) ASCII (non-)art for how this works:
  * 

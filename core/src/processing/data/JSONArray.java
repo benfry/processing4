@@ -50,6 +50,7 @@ import processing.core.PApplet;
  * be generated from scratch, dynamically, or using data from an existing file.  
  * JSON can also be output and saved to disk, as in the example above.
  * 
+ * <h3>Advanced</h3>
  * A JSONArray is an ordered sequence of values. Its external text form is a
  * string wrapped in square brackets with commas separating the values. The
  * internal form is an object having <code>get</code> and <code>opt</code>
