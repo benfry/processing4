@@ -53,7 +53,7 @@ import java.util.Map;
  * This library supports multiple SPI objects making use of the same SPI
  * interface.
  * 
- * @webref
+ * @webref SPI
  * @webBrief Opens an SPI interface as master
  */
 public class SPI {
@@ -95,7 +95,7 @@ public class SPI {
    *  Opens an SPI interface as master
    *  @param dev device name
    *  @see list
-   *  @webref
+   *  @webref SPI
    *  @webBrief Opens an SPI interface as master
    */
   public SPI(String dev) {
@@ -122,7 +122,7 @@ public class SPI {
    * Note: It is possible to have two or more objects using the same interface at
    * a time.
    * 
-   * @webref
+   * @webref SPI
    * @webBrief Closes the SPI interface
    */
   public void close() {
@@ -147,7 +147,7 @@ public class SPI {
   /**
    *  Lists all available SPI interfaces
    *  @return String array
-   *  @webref
+   *  @webref SPI
    *  @webBrief Lists all available SPI interfaces
    */
   public static String[] list() {
@@ -186,7 +186,7 @@ public class SPI {
    * @param mode      <a href=
    *                  "https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Clock_polarity_and_phase">SPI.MODE0
    *                  to SPI.MODE3</a>
-   * @webref
+   * @webref SPI
    * @webBrief Configures the SPI interface
    */
   public void settings(int maxSpeed, int dataOrder, int mode) {
@@ -205,7 +205,8 @@ public class SPI {
    * 
    * @param out bytes to send
    * @return bytes read in (array is the same length as out)
-   * @webref Transfers data over the SPI bus
+   * @webref SPI
+   * @webBrief Transfers data over the SPI bus
    */
   public byte[] transfer(byte[] out) {
     if (NativeInterface.isSimulated()) {

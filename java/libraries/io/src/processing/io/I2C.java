@@ -53,7 +53,7 @@ import java.util.Arrays;
  * passing it as an argument to
  * <a href="I2C_beginTransmission_.html">beginTransmission()</a>.
  * 
- * @webref
+ * @webref I2C
  * @webBrief Opens an I2C interface as master
  */
 public class I2C {
@@ -69,7 +69,7 @@ public class I2C {
    *  Opens an I2C interface as master
    *  @param dev interface name
    *  @see list
-   *  @webref
+   *  @webref I2C
    */
   public I2C(String dev) {
     NativeInterface.loadLibrary();
@@ -99,7 +99,7 @@ public class I2C {
    * @see write
    * @see read
    * @see endTransmission
-   * @webref 
+   * @webref I2C
    * @webBrief Begins a transmission to an attached device
    */
   public void beginTransmission(int slave) {
@@ -123,7 +123,7 @@ public class I2C {
    * Note: It is possible to have two or more object using the same interface at a
    * time.
    * 
-   * @webref
+   * @webref I2C
    * @webBrief Closes the I2C device.
    */
   public void close() {
@@ -154,7 +154,7 @@ public class I2C {
    * 
    * @see beginTransmission
    * @see write
-   * @webref
+   * @webref I2C
    * @webBrief Ends the current transmissions.
    */
   public void endTransmission() {
@@ -183,7 +183,7 @@ public class I2C {
   /**
    *  Lists all available I2C interfaces
    *  @return String array
-   *  @webref
+   *  @webref I2C
    *  @webBrief Lists all available I2C interfaces
    */
   public static String[] list() {
@@ -222,7 +222,7 @@ public class I2C {
    * @see beginTransmission
    * @see write
    * @see endTransmission
-   * @webref
+   * @webref I2C
    * @webBrief Read bytes from the attached device.
    */
   public byte[] read(int len) {
@@ -260,7 +260,7 @@ public class I2C {
    * @see beginTransmission
    * @see read
    * @see endTransmission
-   * @webref
+   * @webref I2C
    * @webBrief Add bytes to be written to the device.
    */
   public void write(byte[] out) {

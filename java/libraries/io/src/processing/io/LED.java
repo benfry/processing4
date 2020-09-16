@@ -44,7 +44,7 @@ import java.util.Arrays;
  * /sys/class/leds. You can also try running Processing as root user using
  * "sudo", but this is generally not recommended.
  * 
- * @webref
+ * @webref LED
  * @webBrief Opens a LED device
  */
 public class LED {
@@ -59,7 +59,8 @@ public class LED {
    *  Opens a LED device
    *  @param dev device name
    *  @see list
-   *  @webref Opens a LED device
+   *  @webref LED 
+   *  @webBrief Opens a LED device
    */
   public LED(String dev) {
     NativeInterface.loadLibrary();
@@ -118,7 +119,7 @@ public class LED {
   /**
    *  Sets the brightness
    *  @param bright 0.0 (off) to 1.0 (maximum)
-   *  @webref
+   *  @webref LED
    *  @webBrief Sets the brightness
    */
   public void brightness(float bright) {
@@ -145,7 +146,7 @@ public class LED {
    * Without calling this function the LED will remain in the current state even
    * after the sketch has been closed.
    * 
-   * @webref
+   * @webref LED
    * @webBrief Restores the previous state
    */
   public void close() {
@@ -171,7 +172,7 @@ public class LED {
   /**
    *  Lists all available LED devices
    *  @return String array
-   *  @webref
+   *  @webref LED
    *  @webBrief Lists all available LED devices
    */
   public static String[] list() {

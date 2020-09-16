@@ -41,7 +41,7 @@ import java.net.*;
  * commonly used so be sure to not select one of these. For example, web 
  * servers usually use port 80 and POP mail uses port 110.
  * 
- * @webref net
+ * @webref server
  * @usage application
  * @webBrief The server class is used to create server objects which send 
  * and receives data to and from its associated clients (other programs connected to it). 
@@ -117,7 +117,7 @@ public class Server implements Runnable {
    * 
    * Disconnect a particular client.
    * 
-   * @webref server:server
+   * @webref server
    * @webBrief Disconnect a particular client.
    * @param client the client to disconnect
    */
@@ -187,7 +187,7 @@ public class Server implements Runnable {
    * Returns <b>true</b> if this server is still active and hasn't run
    * into any trouble.
    * 
-   * @webref server:server
+   * @webref server
    * @webBrief Return true if this server is still active.
    */
   public boolean active() {

@@ -25,7 +25,7 @@ public class MethodWriter extends BaseWriter {
 		String filename = getAnchor(doc);
 		TemplateWriter templateWriter = new TemplateWriter();
 
-		ArrayList<String> syntax = templateWriter.writeLoopSyntax("method.syntax.partial.html", getSyntax(doc, getInstanceName(doc)));
+		ArrayList<String> syntax = templateWriter.writeLoopSyntax("method.syntax.partial", getSyntax(doc, getInstanceName(doc)));
 
 		JSONObject methodJSON = new JSONObject();
 
@@ -37,7 +37,7 @@ public class MethodWriter extends BaseWriter {
 
 		try
 			{
-				methodJSON.put("type", "function");
+				methodJSON.put("type", "method");
       			methodJSON.put("name", getName(doc));
       			methodJSON.put("description", getWebDescriptionFromSource(doc));
       			methodJSON.put("brief", getWebBriefFromSource(doc));

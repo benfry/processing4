@@ -35,7 +35,7 @@ import java.util.Arrays;
 /**
  * Opens a PWM channel
  * 
- *  @webref
+ *  @webref PWM
  *  @webBrief Opens a PWM channel
  */
 public class PWM {
@@ -48,7 +48,8 @@ public class PWM {
    *  Opens a PWM channel
    *  @param channel PWM channel
    *  @see list
-   *  @webref Opens a PWM channel
+   *  @webref PWM
+   *  @webBrief Opens a PWM channel
    */
   public PWM(String channel) {
     NativeInterface.loadLibrary();
@@ -94,7 +95,7 @@ public class PWM {
   /**
    *  Disables the PWM output
    *  
-   *  @webref
+   *  @webref PWM
    *  @webBrief Disables the PWM output
    */
   public void clear() {
@@ -116,7 +117,7 @@ public class PWM {
    * Without calling this function the channel will remain in the current state
    * even after the sketch has been closed.
    * 
-   * @webref
+   * @webref PWM
    * @webBrief Gives ownership of a channel back to the operating system
    */
   public void close() {
@@ -143,7 +144,7 @@ public class PWM {
   /**
    *  Lists all available PWM channels
    *  @return String array
-   *  @webref
+   *  @webref PWM
    *  @webBrief Lists all available PWM channels
    */
   public static String[] list() {
@@ -182,7 +183,7 @@ public class PWM {
    * 
    * @param period cycle period in Hz
    * @param duty   duty cycle, 0.0 (always off) to 1.0 (always on)
-   * @webref
+   * @webref PWM
    * @webBrief Enables the PWM output
    */
   public void set(int period, float duty) {

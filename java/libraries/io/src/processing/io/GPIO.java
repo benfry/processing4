@@ -32,7 +32,10 @@ import java.util.Map;
 
 
 /**
- *  @webref
+ * The GPIO class reads and writes from General Purpose I/O pins
+ * 
+ *  @webref GPIO
+ *  @webBrief The GPIO class reads and writes from General Purpose I/O pins
  */
 public class GPIO {
 
@@ -109,7 +112,7 @@ public class GPIO {
    *  @see noInterrupts
    *  @see interrupts
    *  @see releaseInterrupt
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Calls a function when the value of an input pin changes
    */
   public static void attachInterrupt(int pin, PApplet parent, String method, int mode) {
@@ -190,7 +193,7 @@ public class GPIO {
    *  @return GPIO.HIGH (1) or GPIO.LOW (0)
    *  @see pinMode
    *  @see digitalWrite
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Returns the value of an input pin
    */
   public static int digitalRead(int pin) {
@@ -231,7 +234,7 @@ public class GPIO {
    *  @param value GPIO.HIGH (1) or GPIO.LOW (0)
    *  @see pinMode
    *  @see digitalRead
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Sets an output pin to be either high or low
    */
   public static void digitalWrite(int pin, int value) {
@@ -337,7 +340,7 @@ public class GPIO {
    *  @see attachInterrupt
    *  @see noInterrupts
    *  @see releaseInterrupt
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Allows interrupts to happen
    */
   public static void interrupts() {
@@ -360,7 +363,7 @@ public class GPIO {
    *  @see attachInterrupt
    *  @see interrupts
    *  @see releaseInterrupt
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Prevents interrupts from happpening
    */
   public static void noInterrupts() {
@@ -389,7 +392,7 @@ public class GPIO {
    *  @see digitalRead
    *  @see digitalWrite
    *  @see releasePin
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Configures a pin to act either as input or output
    */
   public static void pinMode(int pin, int mode) {
@@ -469,7 +472,7 @@ public class GPIO {
    *  @see attachInterrupt
    *  @see noInterrupts
    *  @see interrupts
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Stops listening for interrupts on an input pin
    */
   public static void releaseInterrupt(int pin) {
@@ -499,7 +502,7 @@ public class GPIO {
    *  
    *  @param pin GPIO pin
    *  @see pinMode
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Gives ownership of a pin back to the operating system
    */
   public static void releasePin(int pin) {
@@ -536,7 +539,7 @@ public class GPIO {
    *  wait indefinitely until the input pin has changed to the desired state.
    *  @param pin GPIO pin
    *  @param mode what to wait for: GPIO.CHANGE, GPIO.FALLING or GPIO.RISING
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Waits for the value of an input pin to change
    */
   public static void waitFor(int pin, int mode) {
@@ -558,7 +561,7 @@ public class GPIO {
    *
    *  This function will throw a RuntimeException in case of a timeout.
    *  @param timeout don't wait more than timeout milliseconds
-   *  @webref
+   *  @webref GPIO
    *  @webBrief Waits for the value of an input pin to change
    */
   public static void waitFor(int pin, int mode, int timeout) {

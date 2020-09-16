@@ -188,7 +188,7 @@ public class Serial implements SerialPortEventListener {
    * Returns the number of bytes available.
    * 
    * @generate Serial_available.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Returns the number of bytes available.
    * @usage web_application
    */
@@ -200,7 +200,7 @@ public class Serial implements SerialPortEventListener {
   /**
    * Sets the number of bytes to buffer before calling serialEvent()
    * @generate Serial_buffer.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Sets the number of bytes to buffer before calling serialEvent()
    * @usage web_application
    * @param size number of bytes to buffer
@@ -214,7 +214,7 @@ public class Serial implements SerialPortEventListener {
    * Sets a specific byte to buffer until before calling <b>serialEvent()</b>.
    * 
    * @generate Serial_bufferUntil.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Sets a specific byte to buffer until before calling <b>serialEvent()</b>.
    * @usage web_application
    * @param inByte the value to buffer until
@@ -229,7 +229,7 @@ public class Serial implements SerialPortEventListener {
    * Empty the buffer, removes all the data stored there.
    *
    * @generate Serial_clear.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Empty the buffer, removes all the data stored there.
    * @usage web_application
    */
@@ -272,7 +272,7 @@ public class Serial implements SerialPortEventListener {
    * Same as read() but returns the very last value received
    * and clears the buffer. Useful when you just want the most
    * recent value sent over the port.
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Returns last byte received or -1 if there is none available.
    * @usage web_application
    */
@@ -294,7 +294,7 @@ public class Serial implements SerialPortEventListener {
    * Returns the last byte received as a char or -1 if there is none available.
    * 
    * @generate Serial_lastChar.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Returns the last byte received as a char or -1 if there is none available.
    * @usage web_application
    */
@@ -325,7 +325,7 @@ public class Serial implements SerialPortEventListener {
    * <b>available()</b> to see if data is available.
    * 
    * @generate Serial_read.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Returns a number between 0 and 255 for the next byte that's waiting in the buffer.
    * @usage web_application
    */
@@ -353,7 +353,7 @@ public class Serial implements SerialPortEventListener {
    * an int value for the number of bytes read. If more bytes are available than can fit into the 
    * <b>byteBuffer</b>, only those that fit are read.
    * @generate Serial_readBytes.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Reads a group of bytes from the buffer or <b>null</b> if there are none available.
    * @usage web_application
    */
@@ -445,7 +445,7 @@ public class Serial implements SerialPortEventListener {
    * area. If nothing is in the buffer, 0 is returned.
    * 
    * @generate Serial_readBytesUntil.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Reads from the port into a buffer of bytes up to and including a particular character. 
    * @usage web_application
    * @param inByte character designated to mark the end of the data
@@ -531,7 +531,7 @@ public class Serial implements SerialPortEventListener {
    * if nothing is there.
    *
    * @generate Serial_readChar.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Returns the next byte in the buffer as a char.
    * @usage web_application
    */
@@ -547,7 +547,7 @@ public class Serial implements SerialPortEventListener {
    * two-byte Unicode data), and send it as a byte array.
    *
    * @generate Serial_readString.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Returns all the data from the buffer as a String or <b>null</b> if there is nothing available.
    * @usage web_application
    */
@@ -569,7 +569,7 @@ public class Serial implements SerialPortEventListener {
    * String to a byte stream in the representation of your choice
    * (i.e. UTF8 or two-byte Unicode data), and send it as a byte array.
    *
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Combination of <b>readBytesUntil()</b> and <b>readString()</b>.
    * @usage web_application
    * @param inByte character designated to mark the end of the data
@@ -593,7 +593,7 @@ public class Serial implements SerialPortEventListener {
    * connection open and it's necessary to distinguish between the two.
    *
    * @generate serialEvent.xml
-   * @webref serial:events
+   * @webref serial_event
    * @webBrief Called when data is available.
    * @usage web_application
    * @param event the port where new data is available
@@ -678,7 +678,7 @@ public class Serial implements SerialPortEventListener {
    * Stops data communication on this port. Use to shut the connection when you're finished with the Serial.
    * 
    * @generate Serial_stop.xml
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Stops data communication on this port.
    * @usage web_application
    */
@@ -736,7 +736,7 @@ public class Serial implements SerialPortEventListener {
    * String to a byte stream in the representation of your choice
    * (i.e. UTF8 or two-byte Unicode data), and send it as a byte array.
    *
-   * @webref serial:serial
+   * @webref serial
    * @webBrief Writes bytes, chars, ints, bytes[], Strings to the serial port
    * @usage web_application
    * @param src data to write

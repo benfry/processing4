@@ -36,7 +36,7 @@ import java.net.*;
    * goes wrong with the connection, for example the host is not there or is 
    * listening on a different port, an exception is thrown.
    * 
- * @webref net
+ * @webref client
  * @webBrief The client class is used to create client Objects which connect to a server to exchange data. 
  * @instanceName client any variable of type Client
  * @usage Application
@@ -150,7 +150,7 @@ public class Client implements Runnable {
    * Disconnects from the server. Use to shut the connection when you're 
    * finished with the Client.
    * 
-   * @webref client:client
+   * @webref client
    * @webBrief Disconnects from the server
    * @usage application
    */
@@ -306,7 +306,7 @@ public class Client implements Runnable {
    * Returns <b>true</b> if this client is still active and hasn't run
    * into any trouble.
    * 
-   * @webref client:client
+   * @webref client
    * @webBrief Returns <b>true</b> if this client is still active
    * @usage application
    */
@@ -319,7 +319,7 @@ public class Client implements Runnable {
    * 
    * Returns the IP address of the computer to which the Client is attached.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Returns the IP address of the machine as a String
    */
@@ -336,7 +336,7 @@ public class Client implements Runnable {
    * Returns the number of bytes available. When any client has bytes 
    * available from the server, it returns the number of bytes.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Returns the number of bytes in the buffer waiting to be read
    */
@@ -351,7 +351,7 @@ public class Client implements Runnable {
    * 
    * Empty the buffer, removes all the data stored there.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Clears the buffer
    */
@@ -369,7 +369,7 @@ public class Client implements Runnable {
    * the buffer. Returns -1 if there is no byte, although this should be 
    * avoided by first cheacking <b>available()</b> to see if any data is available.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Returns a value from the buffer
    */
@@ -392,7 +392,7 @@ public class Client implements Runnable {
    * Returns the next byte in the buffer as a char. Returns <b>-1</b> or 
    * <b>0xffff</b> if nothing is there.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Returns the next byte in the buffer as a char
    */
@@ -420,7 +420,7 @@ public class Client implements Runnable {
    * a byte array on each read, but it's easier to use than
    * readBytes(byte b[]) (see below).
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Reads a group of bytes from the buffer.
    */
@@ -512,7 +512,7 @@ public class Client implements Runnable {
    * not large enough, -1 is returned and an error is printed to the message 
    * area. If nothing is in the buffer, 0 is returned.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Reads from the buffer of bytes up to and including a particular character
    * @param interesting character designated to mark the end of the data
@@ -602,7 +602,7 @@ public class Client implements Runnable {
    * representation of your choice (i.e. UTF8 or two-byte Unicode data), and 
    * send it as a byte array.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Returns the buffer as a String
    */
@@ -624,7 +624,7 @@ public class Client implements Runnable {
    * String to a byte stream in the representation of your choice
    * (i.e. UTF8 or two-byte Unicode data), and send it as a byte array.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief Returns the buffer as a String up to and including a particular character
    * @param interesting character designated to mark the end of the data
@@ -642,7 +642,7 @@ public class Client implements Runnable {
    * data to the specific client obtained from the Server <b>available()</b> 
    * method.
    * 
-   * @webref client:client
+   * @webref client
    * @usage application
    * @webBrief  Writes bytes, chars, ints, bytes[], Strings
    * @param data data to write

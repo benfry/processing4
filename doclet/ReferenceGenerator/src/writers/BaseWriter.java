@@ -272,7 +272,6 @@ public class BaseWriter {
 	{
 		TemplateWriter templateWriter = new TemplateWriter();
 		ArrayList<HashMap<String, String>> ret = new ArrayList<HashMap<String,String>>();
-		
 
 		for( MethodDoc methodDoc : doc.containingClass().methods() )
 		{
@@ -286,13 +285,18 @@ public class BaseWriter {
 				map.put("object", instanceName);
 
 				ArrayList<HashMap<String, String>> parameters = new ArrayList<HashMap<String,String>>();
+				String params="";
 				for( Parameter p : methodDoc.parameters() )
 				{
+					params = params + p.name() + ", ";
 					HashMap<String, String> paramMap = new HashMap<String, String>();
 					paramMap.put("parameter", p.name());
 					parameters.add(paramMap);
 				}
-				String params = templateWriter.writeLoop("method.parameter.partial.html", parameters, ", ");
+
+				if(params.endsWith(", ")){
+					params = params.substring(0, params.lastIndexOf(", "));
+				}
 
 				map.put("parameters", params);
 				if( ! ret.contains(map) )

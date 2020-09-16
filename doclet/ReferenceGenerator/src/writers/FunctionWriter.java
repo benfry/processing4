@@ -21,7 +21,7 @@ public class FunctionWriter extends BaseWriter {
 			String anchor = getAnchor(doc);
 			TemplateWriter templateWriter = new TemplateWriter();
 			
-			ArrayList<String> syntax = templateWriter.writeLoopSyntax("function.syntax.partial.html", getSyntax(doc, ""));
+			ArrayList<String> syntax = templateWriter.writeLoopSyntax("function.syntax.partial", getSyntax(doc, ""));
 
 			JSONObject functionJSON = new JSONObject();
 

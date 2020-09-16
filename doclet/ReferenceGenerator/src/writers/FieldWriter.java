@@ -53,7 +53,7 @@ public class FieldWriter extends BaseWriter {
 			} else {
 				fieldJSON.put("classanchor", getLocalAnchor(doc.containingClass()));
 				fieldJSON.put("parameters", getParentParam(doc));		
-				String syntax = templateWriter.writePartial("field.syntax.partial.html", getSyntax(doc));
+				String syntax = templateWriter.writePartial("field.syntax.partial", getSyntax(doc));
 				ArrayList<String> syntaxList = new ArrayList<String>();
 				syntaxList.add(syntax);
 				fieldJSON.put("syntax", syntaxList);	
