@@ -1,42 +1,4 @@
-1271 (4.0a2)
-X make edits to core so that awt can be flagged off, and lwjgl can run
-X   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
-X   add --disable-awt to PApplet.main()
-X fix for precision issues with PDF
-X   https://github.com/processing/processing/issues/5801#issuecomment-466632459
-X implement displayDensity(int), it's been returning the main display's value
-X show 'displays have separate spaces' notice in the console
-X   allows us to get rid of JOptionPane
-X show 'displays have separate spaces' message when the param is unset
-X   Catalina seems to have it un-set, but the default is the same
-X move selectInput/Output/Folder to ShimAWT class
-X remove the java.awt.Frame object from PApplet
-X move loadImage() into ShimAWT
-X desktopFile() and desktopPath() methods are supported, unless we find they're trouble
-X move ShimAWT.loadImage() to the PSurface subclasses
-X move all java.awt and javax.imageio out of PImage
-X make the switch to getModifiersEx() instead of getModifiers()
-X   pass all modifiers to the KeyEvent and MouseEvent constructors
-X   though they aren't even being stored, so what's the point?
-X   https://github.com/processing/processing4/issues/4
-X Remove all usage of AWT from PApplet
-X   https://github.com/processing/processing4/issues/55
-X PDF broken in getImage()
-X   https://github.com/processing/processing4/issues/62
-X   https://github.com/processing/processing4/commit/624e9074aeb1d9e2e6b2943e35ffd97a90b8b737
-o pixelDensity() throws error in setup() (Sam couldn't reproduce)
-X   https://github.com/processing/processing4/issues/127
-
-contribs
-X remove redundant boxing and casting
-X   https://github.com/processing/processing4/pull/51
-
-critical
-X PImage save() mostly broken due to AWT refactor
-X Saving to PNG broken in anything but the default renderer
-X   https://github.com/processing/processing4/issues/80
-X Rendering broken with P2D/P3D, fixed with temporary hack
-X   https://github.com/processing/processing4/issues/124
+1272 (4.0a3)
 
 
 _ JDK 11.0.7+ workarounds/hacks in place, fix them

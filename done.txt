@@ -1,3 +1,65 @@
+1271 (4.0a2)
+X break buildMenu() into populateMenu() method to delay Debugger init
+X   https://github.com/processing/processing4/issues/73
+X macOS build broken
+X   https://github.com/processing/processing4/issues/83
+X bump JDK to 11.0.8
+X Make macOS notarization part of the build process
+X   https://github.com/processing/processing4/issues/24
+X NullPointerException in ContributionManager.updateFlagged() on startup
+X   check for directory existence and read/write access on startup
+X   https://github.com/processing/processing/issues/6034
+
+sam
+X Resolve rewrite of pixelDensity to settings in preproc
+X   https://github.com/processing/processing4/pull/60
+X   https://github.com/processing/processing4/issues/58
+X Resolve PDF renderer parse issue in preproc
+X   https://github.com/processing/processing4/pull/68
+X   https://github.com/processing/processing4/issues/66
+X Bump JOGL 2.4 to the new release candidate (20200307)
+X   https://github.com/processing/processing4/pull/85
+X Remove debugging printout from Open Recent
+X   https://github.com/processing/processing4/issues/78
+X   https://github.com/processing/processing4/pull/79
+X Fix broken tests
+X   https://github.com/processing/processing4/issues/92
+X   https://github.com/processing/processing4/pull/93
+X Refactor out preproc.issue
+X   https://github.com/processing/processing4/pull/96
+X Debug button in the toolbar is currently broken
+X   https://github.com/processing/processing4/issues/94
+X   https://github.com/processing/processing4/pull/95
+X Fix WARNING: Illegal reflective access by processing.opengl.PSurfaceJOGL” on getContextCapabilities()
+X   https://github.com/processing/processing4/issues/50
+X   https://github.com/processing/processing4/pull/76
+X Migrate JSSC to sampottinger/jssc
+X   https://github.com/processing/processing4/issues/71
+X   https://github.com/processing/processing4/pull/75
+X Rewrite size call for all renderers
+X   https://github.com/processing/processing4/issues/90
+X   https://github.com/processing/processing4/pull/91
+X Switch to JFileChooser on Mac with VAqua
+X   https://github.com/processing/processing4/pull/88
+X cut/copy/paste while saving a sketch on OS X goes to the editor, not the save dialog
+X   https://github.com/processing/processing4/issues/77
+X implement the basics of dark mode for the Mac
+X   https://github.com/processing/processing4/issues/89
+X Color as return type is broken
+X   https://github.com/processing/processing4/issues/104
+X   https://github.com/processing/processing4/pull/105
+X Automated (jenkins) build broken because ant 1.10.7 download no longer available
+X   https://github.com/processing/processing4/issues/106
+X   https://github.com/processing/processing4/pull/107
+X Processing IDE interface too small on high-res Windows displays
+X   https://github.com/processing/processing4/issues/102
+X Ensure not trying to use Toolkit zoom before ready
+X   https://github.com/processing/processing4/pull/103
+X Zoom dialog fonts based on user scale setting
+X   https://github.com/processing/processing4/issues/111
+X   https://github.com/processing/processing4/pull/125
+
+
 1270 (4.0a1)
 X remove jdk.hash from build.xml
 X   need to make sure the downloader isn't relying on it
