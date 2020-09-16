@@ -822,11 +822,13 @@
 
     <!-- Replace libjli.dylib symlink with actual file.
          Deals with code signing issues on OS X 10.9.5+ -->
+    <!--
     <property name="jli.path" value="${contents.dir}/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/MacOS/libjli.dylib" />
     <delete file="${jli.path}" />
     <exec executable="cp">
       <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
     </exec>
+    -->
 
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
@@ -947,12 +949,17 @@
 
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--force" />
+
       <arg value="--sign" />
       <arg value="Developer ID Application" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
+
       <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
     </exec>
 
-    <!-- codesign can't work inside jars, so instead temporarily unpack the files
+    <!-- codesign can't work inside jars? so instead temporarily unpack the files
          that contain dylib entries, just before doing our big signing event -->
 
     <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
@@ -978,6 +985,9 @@
 
       <!-- remove all other signatures -->
       <arg value="--force" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
 
       <!-- recursively sign everything -->
       <arg value="--deep" />
@@ -1022,6 +1032,9 @@
 
       <!-- recursively sign everything -->
       <arg value="--deep" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
 
       <!-- enable the "hardened runtime" -->
       <arg value="--options" />
@@ -1073,8 +1086,7 @@
     <echo>
       Check on notarization status with:
 
-      xcrun altool -u $PROCESSING_APPLE_ID -p $PROCESSING_APP_PASSWORD \
-        --notarization-info [the RequestUUID above]
+      xcrun altool -u $PROCESSING_APPLE_ID -p $PROCESSING_APP_PASSWORD --notarization-info [the RequestUUID above]
     </echo>
   </target>
 
