@@ -23,6 +23,7 @@ import processing.core.PApplet;
  * a sorted copy, use list.copy().sort().
  *
  * @webref data:composite
+ * @webBrief Helper class for a list of ints.
  * @see FloatList
  * @see StringList
  */
@@ -131,7 +132,7 @@ public class IntList implements Iterable<Integer> {
    * Get the length of the list.
    *
    * @webref intlist:method
-   * @brief Get the length of the list
+   * @webBrief Get the length of the list
    */
   public int size() {
     return count;
@@ -155,7 +156,7 @@ public class IntList implements Iterable<Integer> {
    * Remove all entries from the list.
    *
    * @webref intlist:method
-   * @brief Remove all entries from the list
+   * @webBrief Remove all entries from the list
    */
   public void clear() {
     count = 0;
@@ -166,7 +167,7 @@ public class IntList implements Iterable<Integer> {
    * Get an entry at a particular index.
    *
    * @webref intlist:method
-   * @brief Get an entry at a particular index
+   * @webBrief Get an entry at a particular index
    */
   public int get(int index) {
     if (index >= this.count) {
@@ -177,12 +178,10 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Set the entry at a particular index. If the index is past the length of
-   * the list, it'll expand the list to accommodate, and fill the intermediate
-   * entries with 0s.
+   * Set the entry at a particular index.
    *
    * @webref intlist:method
-   * @brief Set the entry at a particular index
+   * @webBrief Set the entry at a particular index
    */
   public void set(int index, int what) {
     if (index >= count) {
@@ -216,7 +215,7 @@ public class IntList implements Iterable<Integer> {
    * Remove an element from the specified index
    *
    * @webref intlist:method
-   * @brief Remove an element from the specified index
+   * @webBrief Remove an element from the specified index
    */
   public int remove(int index) {
     if (index < 0 || index >= count) {
@@ -269,7 +268,7 @@ public class IntList implements Iterable<Integer> {
    * Add a new entry to the list.
    *
    * @webref intlist:method
-   * @brief Add a new entry to the list
+   * @webBrief Add a new entry to the list
    */
   public void append(int value) {
     if (count == data.length) {
@@ -443,8 +442,10 @@ public class IntList implements Iterable<Integer> {
 //  }
 
   /**
+   * Check if a number is a part of the data structure.
+   * 
    * @webref intlist:method
-   * @brief Check if a number is a part of the list
+   * @webBrief Check if a number is a part of the list
    */
   public boolean hasValue(int value) {
 //    if (indexCache == null) {
@@ -460,8 +461,10 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Add one to a value.
+   * 
    * @webref intlist:method
-   * @brief Add one to a value
+   * @webBrief Add one to a value
    */
   public void increment(int index) {
     if (count <= index) {
@@ -479,8 +482,10 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
+   * Add to a value.
+   * 
    * @webref intlist:method
-   * @brief Add to a value
+   * @webBrief Add to a value
    */
   public void add(int index, int amount) {
     if (index < count) {
@@ -491,8 +496,10 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Subtract from a value.
+   * 
    * @webref intlist:method
-   * @brief Subtract from a value
+   * @webBrief Subtract from a value
    */
   public void sub(int index, int amount) {
     if (index < count) {
@@ -503,8 +510,10 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Multiply a value.
+   * 
    * @webref intlist:method
-   * @brief Multiply a value
+   * @webBrief Multiply a value
    */
   public void mult(int index, int amount) {
     if (index < count) {
@@ -515,8 +524,10 @@ public class IntList implements Iterable<Integer> {
   }
 
   /**
+   * Divide a value.
+   * 
    * @webref intlist:method
-   * @brief Divide a value
+   * @webBrief Divide a value
    */
   public void div(int index, int amount) {
     if (index < count) {
@@ -538,8 +549,10 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
+   * Return the smallest value.
+   * 
    * @webref intlist:method
-   * @brief Return the smallest value
+   * @webBrief Return the smallest value
    */
   public int min() {
     checkMinMax("min");
@@ -568,8 +581,10 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
+   * Return the largest value.
+   * 
    * @webref intlist:method
-   * @brief Return the largest value
+   * @webBrief Return the largest value
    */
   public int max() {
     checkMinMax("max");
@@ -619,10 +634,10 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Sorts the array in place.
+   * Sorts the array, lowest to highest.
    *
    * @webref intlist:method
-   * @brief Sorts the array, lowest to highest
+   * @webBrief Sorts the array, lowest to highest
    */
   public void sort() {
     Arrays.sort(data, 0, count);
@@ -630,10 +645,11 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Reverse sort, orders values from highest to lowest.
+   * A sort in reverse. It's equivalent to running <b>sort()</b> and then 
+   * <b>reverse()</b>, but is more efficient than running each separately.
    *
    * @webref intlist:method
-   * @brief Reverse sort, orders values from highest to lowest
+   * @webBrief Reverse sort, orders values from highest to lowest
    */
   public void sortReverse() {
     new Sort() {
@@ -675,8 +691,10 @@ public class IntList implements Iterable<Integer> {
 //  }
 
   /**
+   * Reverse the order of the list.
+   * 
    * @webref intlist:method
-   * @brief Reverse the order of the list elements
+   * @webBrief Reverse the order of the list elements
    */
   public void reverse() {
     int ii = count - 1;
@@ -690,11 +708,10 @@ public class IntList implements Iterable<Integer> {
 
 
   /**
-   * Randomize the order of the list elements. Note that this does not
-   * obey the randomSeed() function in PApplet.
+   * Randomize the order of the list elements.
    *
    * @webref intlist:method
-   * @brief Randomize the order of the list elements
+   * @webBrief Randomize the order of the list elements
    */
   public void shuffle() {
     Random r = new Random();
@@ -770,7 +787,7 @@ public class IntList implements Iterable<Integer> {
    *
    * @return an array sized by the length of the list with each of the values.
    * @webref intlist:method
-   * @brief Create a new array with a copy of all the values
+   * @webBrief Create a new array with a copy of all the values
    */
   public int[] array() {
     return array(null);

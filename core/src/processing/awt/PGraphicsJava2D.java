@@ -993,13 +993,43 @@ public class PGraphicsJava2D extends PGraphics {
   // BLEND
 
   /**
-   * ( begin auto-generated from blendMode.xml )
    *
-   * This is a new reference entry for Processing 2.0. It will be updated shortly.
+   * Blends the pixels in the display window according to a defined mode. 
+   * There is a choice of the following modes to blend the source pixels (A) 
+   * with the ones of pixels already in the display window (B). Each pixel's 
+   * final color is the result of applying one of the blend modes with each 
+   * channel of (A) and (B) independently. The red channel is compared with 
+   * red, green with green, and blue with blue.<br />
+   * <br />
+   * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
+   * <br />
+   * ADD - additive blending with white clip: C = min(A*factor + B, 255)<br />
+   * <br />
+   * SUBTRACT - subtractive blending with black clip: C = max(B - A*factor, 0)<br />
+   * <br />
+   * DARKEST - only the darkest color succeeds: C = min(A*factor, B)<br />
+   * <br />
+   * LIGHTEST - only the lightest color succeeds: C = max(A*factor, B)<br />
+   * <br />
+   * DIFFERENCE - subtract colors from underlying image.<br />
+   * <br />
+   * EXCLUSION - similar to DIFFERENCE, but less extreme.<br />
+   * <br />
+   * MULTIPLY - multiply the colors, result will always be darker.<br />
+   * <br />
+   * SCREEN - opposite multiply, uses inverse values of the colors.<br />
+   * <br />
+   * REPLACE - the pixels entirely replace the others and don't utilize alpha (transparency) values<br />
+   * <br />
+   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b> 
+   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function 
+   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE, 
+   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might 
+   * not be available as well. 
    *
-   * ( end auto-generated )
    *
    * @webref Rendering
+   * @webBrief Blends the pixels in the display window according to a defined mode. 
    * @param mode the blending mode to use
    */
   @Override
