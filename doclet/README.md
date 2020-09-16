@@ -7,7 +7,7 @@ This is a custom Doclet that generates JSON files based on Javadoc comments in j
 The Doclet will run through the `.java` files in the `processing` repo and output `.json` files in the `processing-website` repo inside the `content/references/translations/en/` folder. In order for that to work, you must first have the following four repositories in the same root folder:
 
 - [`processing/processing4`](https://github.com/processing/processing4) (this repo)
-- [`processing/processing-website`](https://github.com/processing/processing-website)
+- [`processing/processing-website`](https://github.com/processing/processing-website) (this currently lives in the designsystemsinternational GitHub account)
 - [`processing/processing-sound`](https://github.com/processing/processing-sound)
 - [`processing/processing-video`](https://github.com/processing/processing-video)
 
