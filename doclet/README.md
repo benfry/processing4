@@ -1,51 +1,34 @@
-This is a custom doclet that based on the comments in java files generate json files with all the information 
-necessary for building the reference pages on the website. The references include the main processing references, 
-references for the libraries that come with the processing code as well as external libraries sound and video.
-In order for everything to be generated you need to have the following 4 repositories:
+# Doclet
 
-- processing
-- processing-website
-- sound
-- video 
+This is a custom Doclet that generates JSON files based on Javadoc comments in java files. These JSON files have all the information necessary for building the reference pages on [processing.org](https://processing.org). The Doclet will generate JSON reference files for all libraries that come with Processing as well as the external sound and video libraries.
 
-In order to build it you need to have java jdk 11 installed and set the JAVA_HOME variable to point to it:
+## How to use
 
-	```
-	export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.8.jdk/Contents/Home/
-	```
+The Doclet will run through the `.java` files in the `processing` repo and output `.json` files in the `processing-website` repo inside the `content/references/translations/en/` folder. In order for that to work, you must first have the following four repositories in the same root folder:
 
-jdk-11.0.8.jdk could be different depending on the exact version you have.
+- [`processing/processing4`](https://github.com/processing/processing4) (this repo)
+- [`processing/processing-website`](https://github.com/processing/processing-website)
+- [`processing/processing-sound`](https://github.com/processing/processing-sound)
+- [`processing/processing-video`](https://github.com/processing/processing-video)
 
-You also need to have [Apache Ant](https://ant.apache.org/manual/install.html) (version 1.8 or above).
+In order to run the Doclet, you need to have Java JDK 11 installed and set the `JAVA_HOME` environment variable to point to it. The name of the JDK file may vary depending on your exact version.
 
-Running the doclet:
+```
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk-11.0.8.jdk/Contents/Home/
+```
 
-1. in the processing/doclet/ReferenceGenerator folder run:
+You also need to have [Apache Ant](https://ant.apache.org/manual/install.html) installed in version 1.8 or above.
 
-	```
-	ant compile
-	```
+Now run the Doclet:
 
-2. in the same folder run: 
+1. First move into the `processing4/doclet/ReferenceGenerator` folder
+1. Run `ant compile`
+1. Run `./processingrefBuild.sh`
 
-	```
-	./processingrefBuild.sh 
-	```
+If you are only updating the processing reference and not the sound or video libraries, you can comment out the part related to those libraries in the `processingrefBuild.sh` file. Please remember to not commit these changes to the repo.
 
-If you are only changing processing references and not sound and video libraries you can remove the part related to 
-sound and video in processingrefBuild.sh, save the script and run it. If you do that do not stage the 
-processingrefBuild.sh script for commit.
+If you just want to test the Doclet without the `processing-website` repo, you can create the following folder structure in the root folder and see the files:
 
-If you do not have the processing-website repo and you just want to test the doclet create the following folder structure
-in the same root where you have processing source
-
-	```
-	processing-website/content/references/translations/en/
-	```
-
-So you end up having this folder structure in the root:
-
-	```
-	processing/
-	processing-website/content/references/translations/en/
-	```
+```
+processing-website/content/references/translations/en/
+```
