@@ -32,7 +32,29 @@ import java.util.Map;
 
 
 /**
- *  @webref
+ * Opens an SPI interface as master<br/>
+ * </br>
+ * Serial Peripheral Interface (SPI) is a serial bus, commonly used to
+ * communicate with sensors and memory devices. It uses four pins: MOSI (Master
+ * Out Slave In), MISO (Master In Slave Out), and SCLK (clock signal) - those
+ * three are shared among all devices on the bus - as well as one or more SS
+ * (Slave Select) pins, that are used for the master to signal to the slave
+ * device that it is the desired respondent for the transmission.<br/>
+ * <br/>
+ * The "master" device initiates a transfer by pulling the SS pin of the "slave"
+ * low, and begins outputting a clock signal. In SPI, both the "master" as well
+ * as the "slave" device output data at the same time. It is hence not possible
+ * to read data without writing some (even if it means outputting zeros or other
+ * dummy data).</br>
+ * </br>
+ * There are multiple possible configuration settings for SPI, see
+ * <a href="SPI_settings_.html">settings()</a> for details.</br>
+ * <br/>
+ * This library supports multiple SPI objects making use of the same SPI
+ * interface.
+ * 
+ * @webref SPI
+ * @webBrief Opens an SPI interface as master
  */
 public class SPI {
 
@@ -73,7 +95,8 @@ public class SPI {
    *  Opens an SPI interface as master
    *  @param dev device name
    *  @see list
-   *  @webref
+   *  @webref SPI
+   *  @webBrief Opens an SPI interface as master
    */
   public SPI(String dev) {
     NativeInterface.loadLibrary();
@@ -91,8 +114,16 @@ public class SPI {
 
 
   /**
-   *  Closes the SPI interface
-   *  @webref
+   * Closes the SPI interface</br>
+   * </br>
+   * It is normally not necessary to explicitly close SPI interfaces, as they are
+   * closed automatically by the operating system when the sketch exits.</br>
+   * </br>
+   * Note: It is possible to have two or more objects using the same interface at
+   * a time.
+   * 
+   * @webref SPI
+   * @webBrief Closes the SPI interface
    */
   public void close() {
     if (NativeInterface.isSimulated()) {
@@ -116,7 +147,8 @@ public class SPI {
   /**
    *  Lists all available SPI interfaces
    *  @return String array
-   *  @webref
+   *  @webref SPI
+   *  @webBrief Lists all available SPI interfaces
    */
   public static String[] list() {
     if (NativeInterface.isSimulated()) {
@@ -142,11 +174,20 @@ public class SPI {
 
 
   /**
-   *  Configures the SPI interface
-   *  @param maxSpeed maximum transmission rate in Hz, 500000 (500 kHz) is a resonable default
-   *  @param dataOrder whether data is send with the first- or least-significant bit first (SPI.MSBFIRST or SPI.LSBFIRST, the former is more common)
-   *  @param mode <a href="https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Clock_polarity_and_phase">SPI.MODE0 to SPI.MODE3</a>
-   *  @webref
+   * Configures the SPI interface<br/>
+   * <br/>
+   * The default setting is: 500000, SPI.MSBFIRST, SPI.MODE0
+   * 
+   * @param maxSpeed  maximum transmission rate in Hz, 500000 (500 kHz) is a
+   *                  resonable default
+   * @param dataOrder whether data is send with the first- or least-significant
+   *                  bit first (SPI.MSBFIRST or SPI.LSBFIRST, the former is more
+   *                  common)
+   * @param mode      <a href=
+   *                  "https://en.wikipedia.org/wiki/Serial_Peripheral_Interface_Bus#Clock_polarity_and_phase">SPI.MODE0
+   *                  to SPI.MODE3</a>
+   * @webref SPI
+   * @webBrief Configures the SPI interface
    */
   public void settings(int maxSpeed, int dataOrder, int mode) {
     this.maxSpeed = maxSpeed;
@@ -156,10 +197,16 @@ public class SPI {
 
 
   /**
-   *  Transfers data over the SPI bus
-   *  @param out bytes to send
-   *  @return bytes read in (array is the same length as out)
-   *  @webref
+   * Transfers data over the SPI bus<br/>
+   * <br/>
+   * With SPI, data is simultaneously being exchanged between the master device
+   * and the slave device. For every byte that is being sent out, there's also one
+   * byte being read in.
+   * 
+   * @param out bytes to send
+   * @return bytes read in (array is the same length as out)
+   * @webref SPI
+   * @webBrief Transfers data over the SPI bus
    */
   public byte[] transfer(byte[] out) {
     if (NativeInterface.isSimulated()) {

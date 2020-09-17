@@ -26,7 +26,17 @@ import processing.core.*;
 
 
 /**
- *  @webref
+ * Opens an RC servo motor connected to a GPIO pin<br/>
+ * </br>
+ * This library uses timers to control RC servo motors by means of pulse width
+ * modulation (PWM). While not as accurate as dedicated PWM hardware, it has
+ * shown to be sufficient for many applications.<br/>
+ * <br/>
+ * Connect the signal wire (typically colored yellow) to any available GPIO pin
+ * and control the servo's angle as shown in the example sketch.
+ * 
+ * @webref software_servo
+ * @webBrief Opens an RC servo motor connected to a GPIO pin
  */
 public class SoftwareServo {
 
@@ -44,7 +54,8 @@ public class SoftwareServo {
   /**
    *  Opens a servo motor
    *  @param parent typically use "this"
-   *  @webref
+   *  @webref software_servo
+   *  @webBrief Opens a servo motor
    */
   public SoftwareServo(PApplet parent) {
     NativeInterface.loadLibrary();
@@ -53,7 +64,7 @@ public class SoftwareServo {
 
   /**
    *  Closes a servo motor
-   *  @webref
+   *  
    */
   public void close() {
     detach();
@@ -70,9 +81,18 @@ public class SoftwareServo {
 
 
   /**
-   *  Attaches a servo motor to a GPIO pin
-   *  @param pin GPIO pin
-   *  @webref
+   * Attaches a servo motor to a GPIO pin<br/>
+   * <br/>
+   * You must call this function before calling write(). Note that the servo motor
+   * will only be instructed to move after the first time write() is called.<br/>
+   * <br/>
+   * The optional parameters minPulse and maxPulse control the minimum and maximum
+   * pulse width durations. The default values, identical to those of Arduino's
+   * Servo class, should be compatible with most servo motors.
+   * 
+   * @param pin GPIO pin
+   * @webref software_servo
+   * @webBrief Attaches a servo motor to a GPIO pin
    */
   public void attach(int pin) {
     detach();
@@ -83,10 +103,18 @@ public class SoftwareServo {
 
 
   /**
-   *  Attaches a servo motor to a GPIO pin using custom pulse widths
+   * Attaches a servo motor to a GPIO pin<br/>
+   * <br/>
+   * You must call this function before calling write(). Note that the servo motor
+   * will only be instructed to move after the first time write() is called.<br/>
+   * <br/>
+   * The optional parameters minPulse and maxPulse control the minimum and maximum
+   * pulse width durations. The default values, identical to those of Arduino's
+   * Servo class, should be compatible with most servo motors.
+   * 
    *  @param minPulse minimum pulse width in microseconds (default: 544, same as on Arduino)
    *  @param maxPulse maximum pulse width in microseconds (default: 2400, same as on Arduino)
-   *  @webref
+   *  @webref software_servo
    */
   public void attach(int pin, int minPulse, int maxPulse) {
     detach();
@@ -97,9 +125,17 @@ public class SoftwareServo {
 
 
   /**
-   *  Moves a servo motor to a given orientation
-   *  @param angle angle in degrees (controls speed and direction on continuous-rotation servos)
-   *  @webref
+   * Moves a servo motor to a given orientation<br/>
+   * <br/>
+   * If you are using this class in combination with a continuous rotation servo,
+   * different angles will result in the servo rotating forward or backward at
+   * different speeds. For regular servo motors, this will instruct the servo to
+   * rotate to and hold a specific angle.
+   * 
+   * @param angle angle in degrees (controls speed and direction on
+   *              continuous-rotation servos)
+   * @webref software_servo
+   * @webBrief Moves a servo motor to a given orientation
    */
   public void write(float angle) {
     if (attached() == false) {
@@ -136,7 +172,8 @@ public class SoftwareServo {
   /**
    *  Returns whether a servo motor is attached to a pin
    *  @return true if attached, false is not
-   *  @webref
+   *  @webref software_servo
+   *  @webBrief Returns whether a servo motor is attached to a pin
    */
   public boolean attached() {
     return (pin != -1);
@@ -144,8 +181,13 @@ public class SoftwareServo {
 
 
   /**
-   *  Detatches a servo motor from a GPIO pin
-   *  @webref
+   * Detatches a servo motor from a GPIO pin<br/>
+   * <br/>
+   * Calling this method will stop the servo from moving or trying to hold the
+   * current orientation.
+   * 
+   * @webref software_servo
+   * @webBrief Detatches a servo motor from a GPIO pin
    */
   public void detach() {
     if (0 <= handle) {

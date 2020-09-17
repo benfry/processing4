@@ -35,9 +35,24 @@ import java.util.HashMap;
 
 
 /**
- * Grayscale bitmap font class used by Processing.
+ * PFont is the font class for Processing. To create a font to use with
+ * Processing, select "Create Font..." from the Tools menu. This will create a
+ * font in the format Processing requires and also adds it to the current
+ * sketch's data directory. Processing displays fonts using the .vlw font
+ * format, which uses images for each letter, rather than defining them through
+ * vector data. The <b>loadFont()</b> function constructs a new font and
+ * <b>textFont()</b> makes a font active. The <b>list()</b> method creates a
+ * list of the fonts installed on the computer, which is useful information to
+ * use with the <b>createFont()</b> function for dynamically converting fonts
+ * into a format to use with Processing.<br />
+ * <br />
+ * To create a new font dynamically, use the <b>createFont()</b> function. Do
+ * not use the syntax <b>new PFont()</b>.
+ * 
+ * <h3>Advanced</h3>
  * <P>
  * Awful (and by that, I mean awesome) ASCII (non-)art for how this works:
+ * 
  * <PRE>
  *   |
  *   |                   height is the full used height of the image
@@ -55,7 +70,9 @@ import java.util.HashMap;
  *
  *   ^^^^^^^^^^^^^^ setWidth (width displaced by char)
  * </PRE>
+ * 
  * @webref typography
+ * @webBrief Grayscale bitmap font class used by Processing.
  * @see PApplet#loadFont(String)
  * @see PApplet#createFont(String, float, boolean, char[])
  * @see PGraphics#textFont(PFont)
@@ -869,19 +886,16 @@ public class PFont implements PConstants {
 
 
   /**
-   * ( begin auto-generated from PFont_list.xml )
    *
-   * Gets a list of the fonts installed on the system. The data is returned
-   * as a String array. This list provides the names of each font for input
-   * into <b>createFont()</b>, which allows Processing to dynamically format
-   * fonts. This function is meant as a tool for programming local
-   * applications and is not recommended for use in applets.
+   * Gets a list of the fonts installed on the system. The data is returned as a
+   * String array. This list provides the names of each font for input into
+   * <b>createFont()</b>, which allows Processing to dynamically format fonts.
    *
-   * ( end auto-generated )
    *
    * @webref pfont
+   * @webBrief Gets a list of the fonts installed on the system.
    * @usage application
-   * @brief     Gets a list of the fonts installed on the system
+   * @brief Gets a list of the fonts installed on the system
    */
   static public String[] list() {
     loadFonts();

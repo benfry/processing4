@@ -32,7 +32,10 @@ import java.util.Map;
 
 
 /**
- *  @webref
+ * The GPIO class reads and writes from General Purpose I/O pins
+ * 
+ *  @webref GPIO
+ *  @webBrief The GPIO class reads and writes from General Purpose I/O pins
  */
 public class GPIO {
 
@@ -89,7 +92,19 @@ public class GPIO {
 
 
   /**
-   *  Calls a function when the value of an input pin changes
+   *  Calls a function when the value of an input pin changes<br/>
+   *  <br/>
+   *  The sketch method provided must accept a single integer (int) parameter, which is the
+   *  number of the GPIO pin that the interrupt occured on. As this method might be called
+   *  at any time, including when drawing to the display window isn't permitted, it is best
+   *  to only set simple variables that are being responded to in the next draw() call, as
+   *  shown above. Calling functions of the Hardware I/O library at this point is certainly
+   *  possible.<br/>
+   *  <br/>
+   *  The mode parameter determines when the function will be called: GPIO.FALLING occurs 
+   *  when the level changes from high to low, GPIO.RISING when the level changes from low
+   *  to high, and GPIO.CHANGE when either occurs.
+   *
    *  @param pin GPIO pin
    *  @param parent typically use "this"
    *  @param method name of sketch method to call
@@ -97,7 +112,8 @@ public class GPIO {
    *  @see noInterrupts
    *  @see interrupts
    *  @see releaseInterrupt
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Calls a function when the value of an input pin changes
    */
   public static void attachInterrupt(int pin, PApplet parent, String method, int mode) {
     if (irqThreads.containsKey(pin)) {
@@ -167,12 +183,18 @@ public class GPIO {
 
 
   /**
-   *  Returns the value of an input pin
+   *  Returns the value of an input pin, which is either GPIO.HIGH (1) 
+   *  or GPIO.LOW (0)<br/>
+   *  <br/>
+   *  You need to set the pin to input by calling <a href="GPIO_pinMode_.html">
+   *  pinMode()</a> before calling this function.
+   *
    *  @param pin GPIO pin
    *  @return GPIO.HIGH (1) or GPIO.LOW (0)
    *  @see pinMode
    *  @see digitalWrite
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Returns the value of an input pin
    */
   public static int digitalRead(int pin) {
     checkValidPin(pin);
@@ -202,12 +224,18 @@ public class GPIO {
 
 
   /**
-   *  Sets an output pin to be either high or low
+   *  Sets an output pin to be either high or low<br/>
+   *  <br/>
+   *  You need to set the pin to output by calling <a href="GPIO_pinMode_.html">pinMode()</a> 
+   *  before calling this function. Unlike on Arduino, it is not possible to set a input pin's 
+   *  internal pull-up resistor using this function.
+   *
    *  @param pin GPIO pin
    *  @param value GPIO.HIGH (1) or GPIO.LOW (0)
    *  @see pinMode
    *  @see digitalRead
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Sets an output pin to be either high or low
    */
   public static void digitalWrite(int pin, int value) {
     checkValidPin(pin);
@@ -302,11 +330,18 @@ public class GPIO {
 
 
   /**
-   *  Allows interrupts to happen
+   *  Allows interrupts to happen<br/>
+   *  <br/>
+   *  You can use <a href="GPIO_noInterrupts_.html">noInterrupts()</a> 
+   *  and interrupts() in tandem to make sure no interrupts are occuring 
+   *  while your sketch is doing a particular task. By default, interrupts 
+   *  are enabled.
+   *
    *  @see attachInterrupt
    *  @see noInterrupts
    *  @see releaseInterrupt
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Allows interrupts to happen
    */
   public static void interrupts() {
     serveInterrupts = true;
@@ -314,11 +349,22 @@ public class GPIO {
 
 
   /**
-   *  Prevents interrupts from happpening
+   *  Prevents interrupts from happpening<br/>
+   *  <br/>
+   *  You can use noInterrupts() and <a href="GPIO_interrupts_.html">interrupts()</a> 
+   *  in tandem to make sure no interrupts are occuring while your sketch is doing a 
+   *  particular task.<br/>
+   *  br/>
+   *  While a method associated with a pin's interrupt is being executed, interrupts 
+   *  from the same pin are automatically prevented from occurring. Interrupts from 
+   *  other pins can still happen, however. If you also want to prevent those, put 
+   *  noInterrupts() at the beginning of your callback function and interrupts() at its end.
+   *  
    *  @see attachInterrupt
    *  @see interrupts
    *  @see releaseInterrupt
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Prevents interrupts from happpening
    */
   public static void noInterrupts() {
     serveInterrupts = false;
@@ -326,13 +372,28 @@ public class GPIO {
 
 
   /**
-   *  Configures a pin to act either as input or output
+   *  Configures a pin to act either as input (<b>INPUT</b>), or input with internal pull-up 
+   *  resistor (<b>INPUT_PULLUP</b>), or input with internal pull-down resistor (<b>INPUT_PULLDOWN</b>) 
+   *  or output (<b>OUTPUT</b>)<br/>
+   *  <br/>
+   *  Unlike on Arduino, where pins are implicitly set to inputs by default, it is necessary
+   *  to call this function for any pin you want to access, including input pins.<br/>
+   *  <br/>
+   *  Pull-up and pull-down resistors are very useful when connecting buttons and switches, 
+   *  since they will force the value of the pin in a specified electrical state when no 
+   *  electrical connection is made, and the pin would otherwise be left "floating".<br/>
+   *  <br/>
+   *  The ability to set (and clear) pull-up and pull-down resistors is currently limited 
+   *  to the Raspberry Pi running the Raspbian distribution. On other systems, a warning 
+   *  will be shown.
+   *  
    *  @param pin GPIO pin
    *  @param mode GPIO.INPUT, GPIO.INPUT_PULLUP, GPIO.INPUT_PULLDOWN, or GPIO.OUTPUT
    *  @see digitalRead
    *  @see digitalWrite
    *  @see releasePin
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Configures a pin to act either as input or output
    */
   public static void pinMode(int pin, int mode) {
     checkValidPin(pin);
@@ -406,11 +467,13 @@ public class GPIO {
 
   /**
    *  Stops listening for interrupts on an input pin
+   *
    *  @param pin GPIO pin
    *  @see attachInterrupt
    *  @see noInterrupts
    *  @see interrupts
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Stops listening for interrupts on an input pin
    */
   public static void releaseInterrupt(int pin) {
     Thread t = irqThreads.get(pin);
@@ -432,10 +495,15 @@ public class GPIO {
 
 
   /**
-   *  Gives ownership of a pin back to the operating system
+   *  Gives ownership of a pin back to the operating system<br/>
+   *  <br/>
+   *  Without calling this function, the pin will remain in the current 
+   *  state even after the sketch has been closed.
+   *  
    *  @param pin GPIO pin
    *  @see pinMode
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Gives ownership of a pin back to the operating system
    */
   public static void releasePin(int pin) {
     checkValidPin(pin);
@@ -459,10 +527,20 @@ public class GPIO {
 
 
   /**
-   *  Waits for the value of an input pin to change
+   *  Waits for the value of an input pin to change<br/>
+   *  <br/>
+   *  The mode parameter determines when the function will return: GPIO.FALLING occurs 
+   *  when the level changes from high to low, GPIO.RISING when the level changes from 
+   *  low to high, and GPIO.CHANGE when either occurs.<br/>
+   *  <br/>
+   *  The optional timeout parameter determines how many milliseconds the function will 
+   *  wait at the most. If the value of the input pin hasn't changed at this point, an 
+   *  exception is raised for this line. Without a timeout parameter the function will 
+   *  wait indefinitely until the input pin has changed to the desired state.
    *  @param pin GPIO pin
    *  @param mode what to wait for: GPIO.CHANGE, GPIO.FALLING or GPIO.RISING
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Waits for the value of an input pin to change
    */
   public static void waitFor(int pin, int mode) {
     waitFor(pin, mode, -1);
@@ -470,11 +548,21 @@ public class GPIO {
 
 
   /**
-   *  Waits for the value of an input pin to change
+   *  Waits for the value of an input pin to change<br/>
+   *  <br/>
+   *  The mode parameter determines when the function will return: GPIO.FALLING occurs 
+   *  when the level changes from high to low, GPIO.RISING when the level changes from 
+   *  low to high, and GPIO.CHANGE when either occurs.<br/>
+   *  <br/>
+   *  The optional timeout parameter determines how many milliseconds the function will 
+   *  wait at the most. If the value of the input pin hasn't changed at this point, an 
+   *  exception is raised for this line. Without a timeout parameter the function will 
+   *  wait indefinitely until the input pin has changed to the desired state.
    *
    *  This function will throw a RuntimeException in case of a timeout.
    *  @param timeout don't wait more than timeout milliseconds
-   *  @webref
+   *  @webref GPIO
+   *  @webBrief Waits for the value of an input pin to change
    */
   public static void waitFor(int pin, int mode, int timeout) {
     enableInterrupt(pin, mode);

@@ -33,7 +33,19 @@ import java.util.Arrays;
 
 
 /**
- *  @webref
+ * Opens a LED device.<br/>
+ * <br/>
+ * This class can control your computer's build-in LEDs, such as the ones
+ * commonly used to indicate the power status and disk activity.</br>
+ * <br/>
+ * Your operating system might not be set up to allow regular users to do this
+ * kind of modification. If this is the case you should install a so-called
+ * <i>udev rule</i> that relaxes the permissions for the files in
+ * /sys/class/leds. You can also try running Processing as root user using
+ * "sudo", but this is generally not recommended.
+ * 
+ * @webref LED
+ * @webBrief Opens a LED device
  */
 public class LED {
 
@@ -47,7 +59,8 @@ public class LED {
    *  Opens a LED device
    *  @param dev device name
    *  @see list
-   *  @webref
+   *  @webref LED 
+   *  @webBrief Opens a LED device
    */
   public LED(String dev) {
     NativeInterface.loadLibrary();
@@ -106,7 +119,8 @@ public class LED {
   /**
    *  Sets the brightness
    *  @param bright 0.0 (off) to 1.0 (maximum)
-   *  @webref
+   *  @webref LED
+   *  @webBrief Sets the brightness
    */
   public void brightness(float bright) {
     if (bright < 0.0 || 1.0 < bright) {
@@ -127,8 +141,13 @@ public class LED {
 
 
   /**
-   *  Restores the previous state
-   *  @webref
+   * Restores the previous state<br/>
+   * <br/>
+   * Without calling this function the LED will remain in the current state even
+   * after the sketch has been closed.
+   * 
+   * @webref LED
+   * @webBrief Restores the previous state
    */
   public void close() {
     if (NativeInterface.isSimulated()) {
@@ -153,7 +172,8 @@ public class LED {
   /**
    *  Lists all available LED devices
    *  @return String array
-   *  @webref
+   *  @webref LED
+   *  @webBrief Lists all available LED devices
    */
   public static String[] list() {
     if (NativeInterface.isSimulated()) {

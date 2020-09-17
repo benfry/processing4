@@ -33,7 +33,10 @@ import java.util.Arrays;
 
 
 /**
- *  @webref
+ * Opens a PWM channel
+ * 
+ *  @webref PWM
+ *  @webBrief Opens a PWM channel
  */
 public class PWM {
 
@@ -45,7 +48,8 @@ public class PWM {
    *  Opens a PWM channel
    *  @param channel PWM channel
    *  @see list
-   *  @webref
+   *  @webref PWM
+   *  @webBrief Opens a PWM channel
    */
   public PWM(String channel) {
     NativeInterface.loadLibrary();
@@ -90,7 +94,9 @@ public class PWM {
 
   /**
    *  Disables the PWM output
-   *  @webref
+   *  
+   *  @webref PWM
+   *  @webBrief Disables the PWM output
    */
   public void clear() {
     if (NativeInterface.isSimulated()) {
@@ -106,8 +112,13 @@ public class PWM {
 
 
   /**
-   *  Gives ownership of a channel back to the operating system
-   *  @webref
+   * Gives ownership of a channel back to the operating system<br/>
+   * <br/>
+   * Without calling this function the channel will remain in the current state
+   * even after the sketch has been closed.
+   * 
+   * @webref PWM
+   * @webBrief Gives ownership of a channel back to the operating system
    */
   public void close() {
     if (NativeInterface.isSimulated()) {
@@ -133,7 +144,8 @@ public class PWM {
   /**
    *  Lists all available PWM channels
    *  @return String array
-   *  @webref
+   *  @webref PWM
+   *  @webBrief Lists all available PWM channels
    */
   public static String[] list() {
     if (NativeInterface.isSimulated()) {
@@ -165,10 +177,14 @@ public class PWM {
 
 
   /**
-   *  Enables the PWM output
-   *  @param period cycle period in Hz
-   *  @param duty duty cycle, 0.0 (always off) to 1.0 (always on)
-   *  @webref
+   * Enables the PWM output<br/>
+   * <br/>
+   * When no period is specified, a default 1 kHz (1000 Hz) is used.
+   * 
+   * @param period cycle period in Hz
+   * @param duty   duty cycle, 0.0 (always off) to 1.0 (always on)
+   * @webref PWM
+   * @webBrief Enables the PWM output
    */
   public void set(int period, float duty) {
     if (NativeInterface.isSimulated()) {
@@ -206,7 +222,7 @@ public class PWM {
 
   /**
    *  Enables the PWM output with a preset period of 1 kHz
-   *  @webref
+   *  @nowebref
    */
   public void set(float duty) {
     set(1000, duty);
