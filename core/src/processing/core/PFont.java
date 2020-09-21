@@ -48,11 +48,11 @@ import java.util.HashMap;
  * <br />
  * To create a new font dynamically, use the <b>createFont()</b> function. Do
  * not use the syntax <b>new PFont()</b>.
- * 
+ *
  * <h3>Advanced</h3>
  * <P>
  * Awful (and by that, I mean awesome) ASCII (non-)art for how this works:
- * 
+ *
  * <PRE>
  *   |
  *   |                   height is the full used height of the image
@@ -70,7 +70,7 @@ import java.util.HashMap;
  *
  *   ^^^^^^^^^^^^^^ setWidth (width displaced by char)
  * </PRE>
- * 
+ *
  * @webref typography
  * @webBrief Grayscale bitmap font class used by Processing.
  * @see PApplet#loadFont(String)
@@ -765,57 +765,40 @@ public class PFont implements PConstants {
       shp.getPathIterator(null, detail);  // convert to line segments
 
     int contours = 0;
-    //boolean outer = true;
-//    boolean contour = false;
     while (!iter.isDone()) {
       int type = iter.currentSegment(iterPoints);
       switch (type) {
       case PathIterator.SEG_MOVETO:   // 1 point (2 vars) in textPoints
-//        System.out.println("moveto");
-//        if (!contour) {
         if (contours == 0) {
           s.beginShape();
         } else {
           s.beginContour();
-//          contour = true;
         }
         contours++;
         s.vertex(iterPoints[0], iterPoints[1]);
         break;
 
       case PathIterator.SEG_LINETO:   // 1 point
-//        System.out.println("lineto");
-//        PApplet.println(PApplet.subset(iterPoints, 0, 2));
         s.vertex(iterPoints[0], iterPoints[1]);
         break;
 
       case PathIterator.SEG_QUADTO:   // 2 points
-//        System.out.println("quadto");
-//        PApplet.println(PApplet.subset(iterPoints, 0, 4));
         s.quadraticVertex(iterPoints[0], iterPoints[1],
                           iterPoints[2], iterPoints[3]);
         break;
 
       case PathIterator.SEG_CUBICTO:  // 3 points
-//        System.out.println("cubicto");
-//        PApplet.println(iterPoints);
-        s.quadraticVertex(iterPoints[0], iterPoints[1],
-                          iterPoints[2], iterPoints[3],
-                          iterPoints[4], iterPoints[5]);
+        s.bezierVertex(iterPoints[0], iterPoints[1],
+                       iterPoints[2], iterPoints[3],
+                       iterPoints[4], iterPoints[5]);
         break;
 
       case PathIterator.SEG_CLOSE:
-//        System.out.println("close");
         if (contours > 1) {
-//        contours--;
-//        if (contours == 0) {
-////          s.endShape();
-//        } else {
           s.endContour();
         }
         break;
       }
-//      PApplet.println(iterPoints);
       iter.next();
     }
     s.endShape(CLOSE);
