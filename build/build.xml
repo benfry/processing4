@@ -766,25 +766,13 @@
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
 
-<!--
-    the old options; most of these are probably no longer useful
-        <key>apple.laf.useScreenMenuBar</key>
-        <string>true</string>
-        <key>apple.awt.showGrowBox</key>
-        <string>true</string>
-        <key>com.apple.smallTabs</key>
-        <string>true</string>
-        <key>apple.awt.Antialiasing</key>
-        <string>false</string>
-        <key>apple.awt.TextAntialiasing</key>
-        <string>true</string>
-        <key>com.apple.hwaccel</key>
-        <string>true</string>
-        <key>apple.awt.use-file-dialog-packages</key>
-        <string>false</string>
-        <key>apple.awt.graphics.UseQuartz</key>
-        <string>true</string>
--->
+      <!-- Required for video capture and microphone input
+           https://github.com/processing/processing-sound/issues/51
+           https://github.com/processing/processing-video/issues/134 -->
+      <plistentry key="NSCameraUsageDescription" type="string"
+                  value="The sketch you're running needs access to your video camera." />
+      <plistentry key="NSMicrophoneUsageDescription" type="string"
+                  value="The sketch you're running needs access to your microphone." />
     </bundleapp>
 
     <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" />
