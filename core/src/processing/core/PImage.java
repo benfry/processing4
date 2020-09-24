@@ -414,7 +414,7 @@ public class PImage implements PConstants, Cloneable {
    * is not currently used by any of the renderers, however the api is structured
    * this way in the hope of being able to use this to speed things up in the
    * future.
-   * 
+   *
    * @webref pimage:pixels
    * @webBrief Updates the image with the data in its <b>pixels[]</b> array.
    * @usage web_application
