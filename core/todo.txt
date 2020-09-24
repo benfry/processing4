@@ -4,12 +4,21 @@ X   https://github.com/processing/processing/pull/6081
 
 
 fixed in 4.x (close/lock these with final 4.0 release)
+_ AppKit errors from P2D/P3D
+_   https://github.com/processing/processing/issues/5880
 X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
 X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
 _   https://github.com/processing/processing/issues/5983
+_ Profile GL3bc is not available on X11GraphicsDevice
+_   https://github.com/processing/processing/issues/5476
 X Cannot run rotateZ() within the PShape class
 _   https://github.com/processing/processing/issues/5770
+_ size() not working on ubuntu 16 and processing 3.5.3
+_   https://github.com/processing/processing/issues/5912
 
+_ Complaints that size() is not working
+_   Windows: https://github.com/processing/processing/issues/6046
+_   Linux: https://github.com/processing/processing/issues/5912
 
 _ JDK 11.0.7+ workarounds/hacks in place, fix them
 _   https://github.com/processing/processing4/issues/124
@@ -124,6 +133,18 @@ _   test with JG's 13" retina laptop
 
 https://bkaradzic.github.io/bgfx/
 https://bkaradzic.github.io/bgfx/examples.html
+
+
+possible additions for 4.x?
+_ Tint on FX2D now works properly, and improved JavaFX/Scenebuilder integration
+_   https://github.com/processing/processing/pull/6051
+_ make offscreen PGraphicsFX2D work
+_   https://github.com/processing/processing/issues/4638
+_   https://github.com/processing/processing/pull/4698
+_ Add support for floating point textures to OpenGL (using a hint?)
+_   https://github.com/processing/processing/issues/3321
+_ Friendly Names for new Sketches (includes UI for switching it back)
+_   https://github.com/processing/processing/pull/6048
 
 
 from Casey

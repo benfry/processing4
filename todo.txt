@@ -1,11 +1,16 @@
 1272 (4.0a3)
 X make changes to get sound and video to prompt on Catalina
 X   also fix for exported applications
+X   added NSCameraUsageDescription and NSMicrophoneUsageDescription to Info.plist
+X   also for exported applications
+X audio and video broken on macOS b/c can't access mic/camera
+X   https://github.com/processing/processing-sound/issues/51
+
 
 _ startup chatter (from appbundler?)
 _   Processing[25059:13082813] int launch(char *, int, char **) Launchpath
 
-_ 'Basics' always open in examples list
+_ 'Basics' folder always open in examples list
 _ get vaqua back out of there
 
 _ need to fix this text:
@@ -15,15 +20,10 @@ _ also need spaces in the size command, per our guidelines
 _ JSSC binaries for windows_32 and windows_64 appear to be macOS files
 _   https://github.com/processing/processing4/issues/119
 
-X audio and video broken on macOS b/c can't access mic/camera
-_   https://github.com/processing/processing-sound/issues/51
+
+_ need an updated version of the video library
 _   https://github.com/processing/processing-video/issues/134
 _   workarounds https://gist.github.com/i3games/b063987dfb62baf5d0afda422631b480
-<key>NSCameraUsageDescription</key>
-<string>The sketch you're running needs access to your video camera.</string>
-<key>NSMicrophoneUsageDescription</key>
-<string>The sketch you're running needs access to your microphone.</string>
-https://developer.apple.com/documentation/avfoundation/cameras_and_media_capture/requesting_authorization_for_media_capture_on_macos
 _ helpful comment on video
 _   https://github.com/processing/processing-video/issues/134#issuecomment-617301980
 _   beta 4 works better, but only if replacing just the library folder
@@ -32,6 +32,17 @@ _   https://github.com/processing/processing-video/releases
 _ update appbundler? https://github.com/TheInfiniteKind/appbundler
 _   might be broken though https://github.com/TheInfiniteKind/appbundler/issues/70
 _   symlink https://github.com/TheInfiniteKind/appbundler/issues/1
+
+
+fixed in 4.x?
+_ HDPI support GNOME desktop
+_   https://github.com/processing/processing/issues/6059
+
+
+possible additions for 4.x?
+_ Friendly Names for new Sketches (includes UI for switching it back)
+_   https://github.com/processing/processing/pull/6048
+
 
 before final release
 _ Update graphics and visual design elements for 4.x
