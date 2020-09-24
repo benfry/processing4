@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="Processing Core" default="build">
 
-  <property environment="env"/>
+  <property environment="env" />
 
   <target name="clean" description="Clean out the build directories">
     <delete dir="bin" />
@@ -79,9 +79,9 @@
   </path>
 
   <macrodef name="compilecommon">
-    <attribute name="destdir"/>
-    <attribute name="srcdir"/>
-    <attribute name="classpath"/>
+    <attribute name="destdir" />
+    <attribute name="srcdir" />
+    <attribute name="classpath" />
     <sequential>
       <taskdef name="methods"
   	     classname="PAppletMethods"
@@ -107,7 +107,7 @@
   	   debug="true"
   	   destdir="@{destdir}"
   	   nowarn="true">
-        <classpath refid="@{classpath}"/>
+        <classpath refid="@{classpath}" />
         <src path="@{srcdir}" />
         <include name="processing/**" />
         <exclude name="processing/javafx/**" if="fx.unavailable" />
@@ -155,6 +155,14 @@
   <target name="build" depends="download-jogl, methods-build, compile"
           description="Build core library">
     <jar basedir="bin" destfile="library/core.jar" />
+  </target>
+
+  <target name="source-jar">
+    <property name="source.jar.path" location="core-sources.jar" />
+    <jar basedir="src" destfile="${source.jar.path}">
+      <fileset dir="src" includes="**/*.java" />
+    </jar>
+    <echo message="Wrote source jar to ${source.jar.path}" />
   </target>
 
 </project>
