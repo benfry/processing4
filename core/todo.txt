@@ -2,6 +2,7 @@
 X loadJSONObject/Array() now return null if the given file was not found
 X   https://github.com/processing/processing/pull/6081
 X remove zero width no-break space (U+FEFF) character with trim()
+X fix "illegal line" message when loading library with FEFF chars in properties file
 
 
 fixed in 4.x (close/lock these with final 4.0 release)
