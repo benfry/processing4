@@ -1,6 +1,6 @@
 # Processing 4.0
 
-Processing 4 is the next step for the project that makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to JDK 11 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this will be 4.0.
+Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to JDK 11 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this will be 4.0.
 
 We don't have a schedule for a final release. This work is being done by a very tiny number of volunteers working in their personal free time.
 
