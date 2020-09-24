@@ -168,9 +168,6 @@ editor.watcher.debug = false
 # The window of time (in milliseconds) in which a change won't be counted
 editor.watcher.window = 1500
 
-# allow vaqua on mac
-editor.allow_vaqua = true
-
 # Format and search engine to use for online queries
 search.format = https://google.com/search?q=%s
 
@@ -241,6 +238,9 @@ editor.untitled.suffix=yyMMdd
 # As always, people can override on their own, or the next step
 # is to do a Synth LAF that gives us something not awful.
 editor.laf.linux = javax.swing.plaf.nimbus.NimbusLookAndFeel
+
+# enable/disable vaqua on mac
+editor.laf.vaqua = false
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

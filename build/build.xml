@@ -421,7 +421,7 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
-    <include name="app/lib/VAqua7.jar" />
+    <include name="app/lib/VAqua8.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
@@ -720,7 +720,7 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
-      <classpath file="../app/lib/VAqua7.jar" />
+      <classpath file="../app/lib/VAqua8.jar" />
 
       <!-- plus core.jar... note that this is no longer shared -->
       <classpath file="../core/library/core.jar" />

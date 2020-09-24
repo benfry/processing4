@@ -7,6 +7,11 @@ X audio and video broken on macOS b/c can't access mic/camera
 X   https://github.com/processing/processing-sound/issues/51
 
 
+before release
+X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
+_   https://github.com/processing/processing4/issues/129
+
+
 _ startup chatter (from appbundler?)
 _   Processing[25059:13082813] int launch(char *, int, char **) Launchpath
 

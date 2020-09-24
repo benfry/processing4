@@ -112,7 +112,7 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      if (Platform.isMacOS() && Preferences.getBoolean("editor.allow_vaqua")) {
+      if (Platform.isMacOS() && Preferences.getBoolean("editor.laf.vaqua")) {
         UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
 
         Icon collapse = new MacTreeIcon(true);
