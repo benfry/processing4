@@ -1,6 +1,8 @@
 # Processing 4.0
 
-Processing 4 is an exciting next step for the project that makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to JDK 11 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this will be 4.0.
+Processing 4 is the next step for the project that makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to JDK 11 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this will be 4.0.
+
+We don't have a schedule for a final release. This work is being done by a very tiny number of volunteers working in their personal free time.
 
 
 ## API Changes
@@ -15,6 +17,7 @@ As with all releases, we'll do everything possible to avoid breaking API. Howeve
 * The `frame` object has been removed from `PApplet`. We've been warning folks to use `surface` since 2015, but we still should [warn users](https://github.com/processing/processing4/issues/59)
 * `PImage.checkAlpha()` is now `public` instead of `protected`
 * All AWT calls have been moved out of `PImage`, which may be a problem for anything that was relying on those internals
+    * For instance, `new PImage(java.awt.Image)` is no longer available. It was an undocumented method that was `public` only because it was required by subclasses.
 * Removed `MouseEvent.getClickCount()` and `MouseEvent.getAmount()`. These had been deprecated, not clear they were used anywhere.
 
 ### alpha 1
@@ -48,7 +51,7 @@ We'll eventually create a new wiki page with the build instructions, but for the
 
 You might have multiple versions of Java installed. Type `java -version` and if it says something other than 11, you'll need to set the `JAVA_HOME` environment variable.
 
-On macOS, you can use: 
+On macOS, you can use:
 
     export JAVA_HOME="`/usr/libexec/java_home -v 11`"
 
@@ -58,7 +61,7 @@ If you need to go back to Java 8 (i.e. to build Processing 3), you can use:
 
 On Windows and Linux, you can set `JAVA_HOME` to point at the installation the way you would any other environment variable.
 
-And again, we'll have more complete instructions later once the dust settles. 
+And again, we'll have more complete instructions later once the dust settles.
 
 ### Eclipse
 

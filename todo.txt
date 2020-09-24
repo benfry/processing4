@@ -39,6 +39,17 @@ _ can we get rid of pdexEnabled? does it work w/ java tabs?
 discuss with Andres
 _ Add language support to modes
 _   https://github.com/processing/processing4/pull/14
+_ next video release
+_   https://github.com/processing/processing-video/milestone/1
+_ video totally broken on macOS
+_   https://github.com/processing/processing-video/issues/134
+_   how to fix:
+_     https://github.com/processing/processing-video/issues/134#issuecomment-617301980
+_     beta 4 works better, but only if replacing just the library folder
+_     https://github.com/processing/processing-video/releases
+_   could make a script to do this process, but:
+_     1) weird to replace 'library' not the rest
+_     2) why the quarrantine hacks? will downloading a stream work?
 
 
 roadmap
@@ -54,12 +65,6 @@ _ 'Basics' folder always open in examples list
 
 
 _ need an updated version of the video library
-_   https://github.com/processing/processing-video/issues/134
-_   workarounds https://gist.github.com/i3games/b063987dfb62baf5d0afda422631b480
-_ helpful comment on video
-_   https://github.com/processing/processing-video/issues/134#issuecomment-617301980
-_   beta 4 works better, but only if replacing just the library folder
-_   https://github.com/processing/processing-video/releases
 
 https://github.com/processing/processing-video/releases/download/r6-v2.0-beta4/video-2.0-beta4.zip
 
