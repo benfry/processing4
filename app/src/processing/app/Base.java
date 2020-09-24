@@ -742,9 +742,10 @@ public class Base {
         // isn't completely set up yet. Also not gonna pop up a warning because
         // people may still be running different versions of Processing.
 
-      } catch (VerifyError ve) {
+      } catch (VerifyError | AbstractMethodError ve) {
         System.err.println("\"" + tool.getMenuTitle() + "\" is not " +
                            "compatible with this version of Processing");
+        Messages.loge("Incompatible Tool found during tool.init()", ve);
 
       } catch (NoSuchMethodError nsme) {
         System.err.println("\"" + tool.getMenuTitle() + "\" is not " +
@@ -758,18 +759,9 @@ public class Base {
         System.err.println("The " + ncdfe.getMessage() + " class is no longer available.");
         Messages.loge("Incompatible Tool found during tool.init()", ncdfe);
 
-      } catch (AbstractMethodError ame) {
-        System.err.println("\"" + tool.getMenuTitle() + "\" is not " +
-                           "compatible with this version of Processing");
-//        ame.printStackTrace();
-
-      } catch (Error err) {
+      } catch (Error | Exception e) {
         System.err.println("An error occurred inside \"" + tool.getMenuTitle() + "\"");
-        err.printStackTrace();
-
-      } catch (Exception ex) {
-        System.err.println("An exception occurred inside \"" + tool.getMenuTitle() + "\"");
-        ex.printStackTrace();
+        e.printStackTrace();
       }
     }
   }
@@ -894,11 +886,11 @@ public class Base {
         try {
           tool.run();
 
-        } catch (NoSuchMethodError nsme) {
-          activeEditor.statusError("\"" + tool.getMenuTitle() + "\" is not" +
-                                   "compatible with this version of Processing");
-          //nsme.printStackTrace();
-          Messages.loge("Incompatible tool found during tool.run()", nsme);
+        } catch (NoSuchMethodError | java.lang.NoClassDefFoundError ne) {
+          Messages.showWarning("Tool out of date",
+                               tool.getMenuTitle() + " is not compatible with this version of Processing.\n" +
+                               "Try updating the Mode or contact its author for a new version.", ne);
+          Messages.loge("Incompatible tool found during tool.run()", ne);
           item.setEnabled(false);
 
         } catch (Exception ex) {

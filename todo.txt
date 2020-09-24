@@ -7,6 +7,8 @@ X audio and video broken on macOS b/c can't access mic/camera
 X   https://github.com/processing/processing-sound/issues/51
 X 'ant source-jar' target added to core
 X   https://github.com/processing/processing4/issues/118
+X show Tool incompatibilities with a message dialog
+X   clean up a little of the internal error handling there
 
 
 contribs
@@ -28,10 +30,16 @@ _ JSSC binaries for windows_32 and windows_64 appear to be macOS files
 _   https://github.com/processing/processing4/issues/119
 _ Move PdePreprocessIssueException to the test package
 _   https://github.com/processing/processing4/issues/130
+_ can we get rid of pdexEnabled? does it work w/ java tabs?
+
 
 discuss with Andres
 _ Add language support to modes
 _   https://github.com/processing/processing4/pull/14
+
+
+roadmap
+_ Java 17 is the next LTS, arriving in September 2021
 
 
 already fixed in 4.x? (confirm/close on release)
@@ -97,11 +105,6 @@ _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
-
-
-questions
-_ can we get rid of pdexEnabled? does it work w/ java tabs?
-_ Java 17 is the next LTS, arriving in September 2021
 
 
 _ language server refactoring
