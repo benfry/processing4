@@ -8943,7 +8943,8 @@ public class PApplet implements PConstants {
    *
    * Removes whitespace characters from the beginning and end of a String. In
    * addition to standard whitespace characters such as space, carriage
-   * return, and tab, this function also removes the Unicode "nbsp" character.
+   * return, and tab, this function also removes the Unicode "nbsp" (U+00A0)
+   * character and the zero width no-break space (U+FEFF) character.
    *
    * @webref data:string_functions
    * @webBrief Removes whitespace characters from the beginning and end of a String.
@@ -8955,7 +8956,8 @@ public class PApplet implements PConstants {
     if (str == null) {
       return null;
     }
-    return str.replace('\u00A0', ' ').trim();
+    // remove nbsp *and* zero width no-break space
+    return str.replace('\u00A0', ' ').replace('\uFEFF', ' ').trim();
   }
 
 
