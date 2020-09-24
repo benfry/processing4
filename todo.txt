@@ -11,6 +11,8 @@ X show Tool incompatibilities with a message dialog
 X   clean up a little of the internal error handling there
 X add "var" keyword to highlighting
 X   https://github.com/processing/processing4/issues/114
+X prevent "illegal line" message when loading library with FEFF chars in properties file
+
 
 contribs
 X Updates and fixes for PDE_pt.properties (Portugese translation)
