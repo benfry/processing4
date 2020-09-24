@@ -38,6 +38,7 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 import processing.app.Base;
+import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.ui.Toolkit;
 
@@ -111,8 +112,7 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      boolean isMac = System.getProperty("os.name", "").startsWith("Mac OS");
-      if (isMac && Preferences.getBoolean("editor.allow_vaqua")) {
+      if (Platform.isMacOS() && Preferences.getBoolean("editor.allow_vaqua")) {
         UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
 
         Icon collapse = new MacTreeIcon(true);
