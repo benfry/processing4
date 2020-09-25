@@ -27,11 +27,22 @@ X   export.embed_java.for changed to export.include_java
 X   update text to macOS instead of Mac OS X
 X   install Java 11 should link to OpenJDK site
 X   set minimum version on Windows, fix JDK download URL
+o 'Basics' folder always open in examples list
+X   couldn't reproduce on another machine
 
 contribs
 X Updates and fixes for PDE_pt.properties (Portugese translation)
 X   https://github.com/processing/processing4/pull/133
 X   https://github.com/processing/processing4/pull/134
+
+4.0a2
+X automate notarization in the build process
+X   https://github.com/processing/processing4/issues/24
+
+
+already fixed in 4.x? (confirm/close on release)
+_ HDPI support GNOME desktop
+_   https://github.com/processing/processing/issues/6059
 
 
 decisions before release
@@ -64,32 +75,10 @@ _   how to fix:
 _     https://github.com/processing/processing-video/issues/134#issuecomment-617301980
 _     beta 4 works better, but only if replacing just the library folder
 _     https://github.com/processing/processing-video/releases
+_     https://github.com/processing/processing-video/releases/download/r6-v2.0-beta4/video-2.0-beta4.zip
 _   could make a script to do this process, but:
 _     1) weird to replace 'library' not the rest
 _     2) why the quarrantine hacks? will downloading a stream work?
-
-
-roadmap
-_ Java 17 is the next LTS, arriving in September 2021
-
-
-already fixed in 4.x? (confirm/close on release)
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
-
-
-_ 'Basics' folder always open in examples list
-
-
-_ need an updated version of the video library
-
-https://github.com/processing/processing-video/releases/download/r6-v2.0-beta4/video-2.0-beta4.zip
-
-_ update appbundler? https://github.com/TheInfiniteKind/appbundler
-_   might be broken though https://github.com/TheInfiniteKind/appbundler/issues/70
-_   symlink https://github.com/TheInfiniteKind/appbundler/issues/1
-_ startup chatter (from appbundler?)
-_   Processing[25059:13082813] int launch(char *, int, char **) Launchpath
 
 
 would like to fix
@@ -99,11 +88,20 @@ _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 _ launch/psk files/import from web editor (more details below)
 _ ability to switch mode in p5 w/o saving/closing/etc
+_ 'show sketch folder' weird when in temp folder
+_   ask to save first (sketch has not been saved yet)
+_   or make the temp folder part of the sketchbook
+_ same with adding files to an unsaved sketch, do we block that?
+
+
+high impact
+_ temp folders (particularly on Windows)
+_   a whole section down below about this
 
 
 sketch/launching
 _ what to double-click when opening p5 projects
-_   lack of a project file makes this a pain
+_   lack of a project file makes this a little bit of a headache
 _   dropping a sketch folder onto the PDE should also be implemented
 _ some type of sketch archive format for posting examples (.psk?)
 _   would be nice to open a sketch directly from a zip file
@@ -125,20 +123,22 @@ _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
+_   just skip the welcome screen on Windows hidpi dipslays?
 _ change help menu links to go to newer FAQ and the rest
 _ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
 _ better means of understanding Library/Mode/Tool usage
-_ automate notarization in the build process
-_   https://github.com/processing/processing4/issues/24
 _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
+_ update the docs repo
+_   check with Casey re: shallow clone or approach
+
+
+_ show the recommended sw version for users' platform on the download page
 
 
 open issues
 _ fixing undo
 _   https://github.com/processing/processing/issues/4775
-_ update the docs repo
-_   check with Casey re: shallow clone or approach
 _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
 _ further streamline the downloader
@@ -149,6 +149,7 @@ _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
 
 
+probably past 4.x
 _ language server refactoring
 _   https://github.com/processing/processing4/issues/117
 _   https://theia-ide.org/
@@ -160,27 +161,22 @@ _   https://github.com/processing/processing/issues/5893
 _ update installation guide for Linux
 _   https://github.com/processing/processing-docs/issues/645
 
-
 _ "Could not get the settings folder" message could be more helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
 _   then tell the user which folder to fix
 
-_ show the recommended sw version for users' platform on the download page
-_ just skip the welcome screen on Windows hidpi dipslays?
 
-_ refresh option for sketchbook
+_ when adding a new library, its examples aren't added to the list until restart
+_ refresh option for sketchbook (bottom of window)
 _ import option for sketchbook
-_ 'show sketch folder' weird when in temp folder
-_   ask to save first (sketch has not been saved yet)
-_   or make the temp folder part of the sketchbook
-_ same with adding files to an unsaved sketch, do we block that?
 
 
 contrib
 _ Saving sketch with the same name as a class
 _   https://github.com/processing/processing/pull/4033
 _ Pasting text into PDE results in "Clipboard does not contain a string"
+_   https://github.com/processing/processing/issues/3651
 _   https://github.com/processing/processing/pull/4040
 
 
@@ -1046,10 +1042,16 @@ _   big deal for psk and others
 _   this may already work with SingleInstance stuff
 
 
-DIST / Mac OS X
+DIST / macOS
 
+_ update appbundler? https://github.com/TheInfiniteKind/appbundler
+_   might be broken though https://github.com/TheInfiniteKind/appbundler/issues/70
+_   symlink https://github.com/TheInfiniteKind/appbundler/issues/1
+_ startup chatter (from appbundler?)
+_   Processing[25059:13082813] int launch(char *, int, char **) Launchpath
 _ Help Menu disabled on OS X (looks like a JVM bug)
 _   https://github.com/processing/processing/issues/4353#issuecomment-237715947
+_   still broken in 11.0.8
 _ Java bug prevents us from setting the dock name of a sketch run from the PDE
 _   https://github.com/processing/processing/issues/5045
 _ client properties
