@@ -18,7 +18,9 @@ X clean up Export to Application
 X   export should only do 64-bit (and no ARM)
 X   turned off 32-bit and ARM exports
 X   drop '64' from the folder name
-_   export.txt error "big fat lie" spew on export
+X   export.txt error "big fat lie" spew on export
+X     was including all dll and so files as if they'd been extracted
+X     also several .jar files from other platforms included
 _   the "embed Java" shouldn't be available unless the current platform is selected
 _   update text to macOS instead of Mac OS X
 _   install Java 11 should link to OpenJDK site
