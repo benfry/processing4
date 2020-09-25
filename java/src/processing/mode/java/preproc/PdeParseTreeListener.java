@@ -1028,7 +1028,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
           return;
         }
 
-        StringJoiner argJoiner = new StringJoiner(",");
+        StringJoiner argJoiner = new StringJoiner(", ");
         argJoiner.add(sketchWidth);
         argJoiner.add(sketchHeight);
 
