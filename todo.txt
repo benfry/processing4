@@ -14,6 +14,7 @@ X   https://github.com/processing/processing4/issues/114
 X prevent "illegal line" message when loading library with FEFF chars in properties file
 X fix revision number in exported code
 X   https://github.com/processing/processing4/issues/135
+X turn off 32-bit and ARM exports, drop '64' from the folder name
 
 
 contribs
@@ -33,7 +34,7 @@ _   https://github.com/processing/processing/pull/6048
 
 discuss with Sam
 _ preproc needs spaces in the size command, per our guidelines
-_   https://github.com/processing/processing4/issues/135
+_   https://github.com/processing/processing4/issues/136
 _ JSSC binaries for windows_32 and windows_64 appear to be macOS files
 _   https://github.com/processing/processing4/issues/119
 _ Move PdePreprocessIssueException to the test package

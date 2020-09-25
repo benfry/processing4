@@ -561,6 +561,8 @@ public class JavaBuild {
         final String arch = Platform.getNativeArch();
 
         if (Library.hasMultipleArch(platform, importedLibraries)) {
+          // removing 32-bit export for 4.0 alpha 3
+          /*
           // Don't try to export 32-bit on macOS, because it doesn't exist.
           if (platform != PConstants.MACOS) {
             // export the 32-bit version
@@ -569,11 +571,15 @@ public class JavaBuild {
               return false;
             }
           }
+          */
           // export the 64-bit version
-          folder = new File(sketch.getFolder(), "application." + platformName + "64");
+          //folder = new File(sketch.getFolder(), "application." + platformName + "64");
+          // No longer including the 64 suffix in 4.0a3 because it's all 64-bit
+          folder = new File(sketch.getFolder(), "application." + platformName);
           if (!exportApplication(folder, platform, "64", embedJava && (bits == 64) && "amd64".equals(arch))) {
             return false;
           }
+          /*
           if (platform == PConstants.LINUX) {
             // export the arm versions as well
             folder = new File(sketch.getFolder(), "application.linux-armv6hf");
@@ -585,6 +591,7 @@ public class JavaBuild {
               return false;
             }
           }
+          */
         } else { // just make a single one for this platform
           folder = new File(sketch.getFolder(), "application." + platformName);
           if (!exportApplication(folder, platform, "", embedJava)) {
