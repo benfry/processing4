@@ -646,13 +646,13 @@ public class JavaEditor extends Editor {
   final JButton cancelButton = new JButton(Language.text("prompt.cancel"));
 
   final JCheckBox windowsButton = new JCheckBox("Windows");
-  final JCheckBox macosxButton = new JCheckBox("Mac OS X");
+  final JCheckBox macosButton = new JCheckBox("Mac OS X");
   final JCheckBox linuxButton = new JCheckBox("Linux");
 
 
   protected void updateExportButton() {
     exportButton.setEnabled(windowsButton.isSelected() ||
-                            macosxButton.isSelected() ||
+                            macosButton.isSelected() ||
                             linuxButton.isSelected());
   }
 
@@ -699,16 +699,16 @@ public class JavaEditor extends Editor {
       // Make sure they don't have a previous 'true' setting for this
       Preferences.setBoolean(EXPORT_MACOSX, false);
     }
-    macosxButton.setSelected(Preferences.getBoolean(EXPORT_MACOSX));
-    macosxButton.addItemListener(new ItemListener() {
+    macosButton.setSelected(Preferences.getBoolean(EXPORT_MACOSX));
+    macosButton.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
-        Preferences.setBoolean(EXPORT_MACOSX, macosxButton.isSelected());
+        Preferences.setBoolean(EXPORT_MACOSX, macosButton.isSelected());
         updateExportButton();
       }
     });
     if (!Platform.isMacOS()) {
-      macosxButton.setEnabled(false);
-      macosxButton.setToolTipText(Language.text("export.tooltip.macosx"));
+      macosButton.setEnabled(false);
+      macosButton.setToolTipText(Language.text("export.tooltip.macosx"));
     }
 
     linuxButton.setSelected(Preferences.getBoolean(EXPORT_LINUX));
@@ -725,7 +725,7 @@ public class JavaEditor extends Editor {
     //platformPanel.setLayout(new BoxLayout(platformPanel, BoxLayout.X_AXIS));
     platformPanel.add(windowsButton);
     platformPanel.add(Box.createHorizontalStrut(6));
-    platformPanel.add(macosxButton);
+    platformPanel.add(macosButton);
     platformPanel.add(Box.createHorizontalStrut(6));
     platformPanel.add(linuxButton);
     platformPanel.setBorder(new TitledBorder(Language.text("export.platforms")));
@@ -824,39 +824,42 @@ public class JavaEditor extends Editor {
 
     String platformName = null;
     if (Platform.isMacOS()) {
-      platformName = "Mac OS X";
+      platformName = "macOS";
     } else if (Platform.isWindows()) {
       platformName = "Windows (" + Platform.getNativeBits() + "-bit)";
     } else if (Platform.isLinux()) {
       platformName = "Linux (" + Platform.getNativeBits() + "-bit)";
     }
 
-    boolean embed = Preferences.getBoolean("export.application.embed_java");
-    final String embedWarning =
-      "<html><div width=\"" + divWidth + "\"><font size=\"2\">" +
-//      "<html><body><font size=2>" +
+    final boolean embed =
+      Preferences.getBoolean("export.application.embed_java");
+    final String JDK_DOWNLOAD = "https://adoptopenjdk.net/";
+    final String warning1 =
+      "<html><div width=\"" + divWidth + "\"><font size=\"2\">";
+    final String warning2a =
       "Embedding Java will make the " + platformName + " application " +
       "larger, but it will be far more likely to work. " +
-      "Users on other platforms will need to " +
-      "<a href=\"\">install Java " + PApplet.javaPlatform + "</a>.";
-    final String nopeWarning =
-      "<html><div width=\"" + divWidth + "\"><font size=\"2\">" +
-//      "<html><body><font size=2>" +
-      "Users on all platforms will have to install the latest " +
-      "version of Java " + PApplet.javaPlatform +
-      " from <a href=\"\">http://java.com/download</a>. " +
-      "<br/>&nbsp;";
-      //"from <a href=\"http://java.com/download\">java.com/download</a>.";
+      "Users on other platforms will need to ";
+    final String warning2b =
+      "Users will need to ";
+    final String warning3 =
+      "<a href=\"" + JDK_DOWNLOAD + "\">install OpenJDK " +
+      PApplet.javaPlatform + "</a>.";
+//      "<br/>&nbsp;";
+    final String embedWarning = warning1 + warning2a + warning3;
+    final String nopeWarning = warning1 + warning2b + warning3;
+
     final JLabel warningLabel = new JLabel(embed ? embedWarning : nopeWarning);
     warningLabel.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent event) {
-        Platform.openURL("http://java.com/download");
+        Platform.openURL(JDK_DOWNLOAD);
       }
     });
     warningLabel.setBorder(new EmptyBorder(3, 13 + indent, 3, 13));
 
     final JCheckBox embedJavaButton =
-      new JCheckBox(Language.text("export.embed_java.for") + " " + platformName);
+      //new JCheckBox(Language.text("export.embed_java.for") + " " + platformName);
+      new JCheckBox(Language.interpolate("export.include_java", platformName));
     embedJavaButton.setSelected(embed);
     embedJavaButton.addItemListener(new ItemListener() {
       public void itemStateChanged(ItemEvent e) {
@@ -885,9 +888,10 @@ public class JavaEditor extends Editor {
 
       // gatekeeper: http://support.apple.com/kb/ht5290
       // for developers: https://developer.apple.com/developer-id/
+      final String APPLE_URL = "https://developer.apple.com/developer-id/";
       String thePain =
         //"<html><body><font size=2>" +
-        "In recent versions of OS X, Apple has introduced the \u201CGatekeeper\u201D system, " +
+        "In recent versions of macOS, Apple has introduced the \u201CGatekeeper\u201D system, " +
         "which makes it more difficult to run applications like those exported from Processing. ";
 
       if (new File("/usr/bin/codesign_allocate").exists()) {
@@ -899,12 +903,11 @@ public class JavaEditor extends Editor {
       } else {
         thePain +=
           "Gatekeeper requires applications to be \u201Csigned\u201D, or they will be reported as damaged. " +
-          "To prevent this message, install Xcode (and the Command Line Tools) from the App Store, or visit " +
-          "System Preferences \u2192 Security & Privacy and select Allow apps downloaded from: anywhere. ";
+          "To prevent this message, install Xcode (and the Command Line Tools) from the App Store. ";
       }
       thePain +=
         "To avoid the messages entirely, manually code sign your app. " +
-        "For more information: <a href=\"\">https://developer.apple.com/developer-id/</a>";
+        "For more information: <a href=\"\">" + APPLE_URL + "</a>";
 
       // xattr -d com.apple.quarantine thesketch.app
 

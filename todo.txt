@@ -21,13 +21,22 @@ X   drop '64' from the folder name
 X   export.txt error "big fat lie" spew on export
 X     was including all dll and so files as if they'd been extracted
 X     also several .jar files from other platforms included
-_   the "embed Java" shouldn't be available unless the current platform is selected
-_   update text to macOS instead of Mac OS X
-_   install Java 11 should link to OpenJDK site
+o   the "embed Java" shouldn't be available unless the current platform is selected
+X     changed text to be a little clearer
+X   export.embed_java.for changed to export.include_java
+X   update text to macOS instead of Mac OS X
+X   install Java 11 should link to OpenJDK site
 _   get rid of extra chatter with windows version:
 Compiling resources
 Linking
 Successfully created /Users/fry/Desktop/sketch_200925b/application.windows64/sketch_200925b.exe
+
+_ launch4j warnings
+WARNING: An illegal reflective access operation has occurred
+WARNING: Illegal reflective access by com.thoughtworks.xstream.core.util.Fields (file:/Users/fry/coconut/processing4/build/macosx/work/Processing.app/Contents/Java/modes/java/application/launch4j/lib/xstream.jar) to field java.util.Properties.defaults
+WARNING: Please consider reporting this to the maintainers of com.thoughtworks.xstream.core.util.Fields
+WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+WARNING: All illegal access operations will be denied in a future release
 
 
 contribs

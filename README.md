@@ -36,6 +36,11 @@ As with all releases, we'll do everything possible to avoid breaking API. Howeve
 * Processing 4 will be 64-bit only. This is the overwhelming majority of users, and we don't have the necessary help to maintain and support 32-bit systems.
 
 
+## Translation Updates
+
+* `export.embed_java.for` changed to `export.include_java` which also embeds a string for the platform for better localization support.
+
+
 ## Building the Code
 
 We'll eventually create a new wiki page with the build instructions, but for the time being, the instructions are:
