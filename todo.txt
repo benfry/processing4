@@ -26,18 +26,7 @@ X     changed text to be a little clearer
 X   export.embed_java.for changed to export.include_java
 X   update text to macOS instead of Mac OS X
 X   install Java 11 should link to OpenJDK site
-_   get rid of extra chatter with windows version:
-Compiling resources
-Linking
-Successfully created /Users/fry/Desktop/sketch_200925b/application.windows64/sketch_200925b.exe
-
-_ launch4j warnings
-WARNING: An illegal reflective access operation has occurred
-WARNING: Illegal reflective access by com.thoughtworks.xstream.core.util.Fields (file:/Users/fry/coconut/processing4/build/macosx/work/Processing.app/Contents/Java/modes/java/application/launch4j/lib/xstream.jar) to field java.util.Properties.defaults
-WARNING: Please consider reporting this to the maintainers of com.thoughtworks.xstream.core.util.Fields
-WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
-WARNING: All illegal access operations will be denied in a future release
-
+X   set minimum version on Windows, fix JDK download URL
 
 contribs
 X Updates and fixes for PDE_pt.properties (Portugese translation)
@@ -1048,6 +1037,8 @@ _ p5 assets need to be licensed differently from the source
 
 DIST / Windows
 
+_ Resolve “Successfully created” chatter and “illegal reflective access” errors from launch4j
+_   https://github.com/processing/processing4/issues/137
 _ does launching p5 from inside the .zip folder cause it to quit immediately?
 _   how can we provide an error message here?
 _ how to handle double-clicked files on windows?
