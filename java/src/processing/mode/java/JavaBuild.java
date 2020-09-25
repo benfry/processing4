@@ -45,8 +45,11 @@ import processing.mode.java.preproc.PreprocessorResult;
 
 
 public class JavaBuild {
-  public static final String PACKAGE_REGEX =
+  static public final String PACKAGE_REGEX =
     "(?:^|\\s|;)package\\s+(\\S+)\\;";
+
+  static public final String JAVA_DOWNLOAD_URL = "https://adoptopenjdk.net/";
+  static public final String MIN_JAVA_VERSION = "11.0.8";
 
   protected Sketch sketch;
   protected Mode mode;
@@ -713,39 +716,22 @@ public class JavaBuild {
 
     /// create the main .jar file
 
-//    HashMap<String,Object> zipFileContents = new HashMap<String,Object>();
-
     FileOutputStream zipOutputFile =
       new FileOutputStream(new File(jarFolder, sketch.getName() + ".jar"));
     ZipOutputStream zos = new ZipOutputStream(zipOutputFile);
-//    ZipEntry entry;
 
-    // add the manifest file so that the .jar can be double clickable
+    // add the manifest file so that the .jar can be double-clickable
+    // (not likely to work anymore these days [fry 200925])
     addManifest(zos);
 
-    // add the project's .class files to the jar
-    // (just grabs everything from the build directory,
-    // since there may be some inner classes)
-    // TODO this needs to be recursive (for packages)
-//    File classFiles[] = tempClassesFolder.listFiles(new FilenameFilter() {
-//      public boolean accept(File dir, String name) {
-//        return name.endsWith(".class");
-//      }
-//    });
-//    for (File file : classFiles) {
-//      entry = new ZipEntry(file.getName());
-//      zos.putNextEntry(entry);
-//      zos.write(Base.loadBytesRaw(file));
-//      zos.closeEntry();
-//    }
     addClasses(zos, binFolder);
 
     // add the data folder to the main jar file
 //    addDataFolder(zos);
-    // For 2.0a2, make the data folder a separate directory, rather than
-    // packaging potentially large files into the JAR. On OS X, we have to hide
-    // the folder inside the .app package, while Linux and Windows will have a
-    // 'data' folder next to 'lib'.
+    // For 2.0a2, make the data folder a separate directory,
+    // rather than packaging potentially large files into the JAR.
+    // On macOS, we have to hide the folder inside the .app package,
+    // while Linux and Windows will have a 'data' folder next to 'lib'.
     if (sketch.hasDataFolder()) {
       if (exportPlatform == PConstants.MACOS) {
         Util.copyDir(sketch.getDataFolder(), new File(jarFolder, "data"));
@@ -766,8 +752,6 @@ public class JavaBuild {
           String exportFilename = exportFile.getName();
           Util.copyFile(exportFile, new File(jarFolder, exportFilename));
           jarList.append(exportFilename);
-        } else {
-//          cp += codeList[i] + File.pathSeparator;
         }
       }
     }
@@ -920,7 +904,7 @@ public class JavaBuild {
       XML config = new XML("launch4jConfig");
       config.addChild("headerType").setContent("gui");
       config.addChild("dontWrapJar").setContent("true");
-      config.addChild("downloadUrl").setContent("http://java.com/download");
+      config.addChild("downloadUrl").setContent(JAVA_DOWNLOAD_URL);
 
       File exeFile = new File(destFolder, sketch.getName() + ".exe");
       config.addChild("outfile").setContent(exeFile.getAbsolutePath());
@@ -937,9 +921,7 @@ public class JavaBuild {
       if (embedJava) {
         jre.addChild("path").setContent("java");
       }
-      // Need u74 for a major JavaFX issue (upside-down display)
-      // https://github.com/processing/processing/issues/3795
-      jre.addChild("minVersion").setContent("1.8.0_74");
+      jre.addChild("minVersion").setContent(MIN_JAVA_VERSION);
       for (String opt : runOptions) {
         jre.addChild("opt").setContent(opt);
       }

@@ -833,7 +833,6 @@ public class JavaEditor extends Editor {
 
     final boolean embed =
       Preferences.getBoolean("export.application.embed_java");
-    final String JDK_DOWNLOAD = "https://adoptopenjdk.net/";
     final String warning1 =
       "<html><div width=\"" + divWidth + "\"><font size=\"2\">";
     final String warning2a =
@@ -843,16 +842,17 @@ public class JavaEditor extends Editor {
     final String warning2b =
       "Users will need to ";
     final String warning3 =
-      "<a href=\"" + JDK_DOWNLOAD + "\">install OpenJDK " +
-      PApplet.javaPlatform + "</a>.";
-//      "<br/>&nbsp;";
+      "<a href=\"" + JavaBuild.JAVA_DOWNLOAD_URL + "\">" +
+      "install OpenJDK " + PApplet.javaPlatform + "</a>.";  //"<br/>&nbsp;";
+
+    // both are needed because they change as the user hits the checkbox
     final String embedWarning = warning1 + warning2a + warning3;
     final String nopeWarning = warning1 + warning2b + warning3;
 
     final JLabel warningLabel = new JLabel(embed ? embedWarning : nopeWarning);
     warningLabel.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent event) {
-        Platform.openURL(JDK_DOWNLOAD);
+        Platform.openURL(JavaBuild.JAVA_DOWNLOAD_URL);
       }
     });
     warningLabel.setBorder(new EmptyBorder(3, 13 + indent, 3, 13));
