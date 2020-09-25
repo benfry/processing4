@@ -14,7 +14,18 @@ X   https://github.com/processing/processing4/issues/114
 X prevent "illegal line" message when loading library with FEFF chars in properties file
 X fix revision number in exported code
 X   https://github.com/processing/processing4/issues/135
-X turn off 32-bit and ARM exports, drop '64' from the folder name
+X clean up Export to Application
+X   export should only do 64-bit (and no ARM)
+X   turned off 32-bit and ARM exports
+X   drop '64' from the folder name
+_   export.txt error "big fat lie" spew on export
+_   the "embed Java" shouldn't be available unless the current platform is selected
+_   update text to macOS instead of Mac OS X
+_   install Java 11 should link to OpenJDK site
+_   get rid of extra chatter with windows version:
+Compiling resources
+Linking
+Successfully created /Users/fry/Desktop/sketch_200925b/application.windows64/sketch_200925b.exe
 
 
 contribs
