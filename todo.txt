@@ -35,6 +35,14 @@ X Updates and fixes for PDE_pt.properties (Portugese translation)
 X   https://github.com/processing/processing4/pull/133
 X   https://github.com/processing/processing4/pull/134
 
+Sam
+X preproc needs spaces in the size command, per our guidelines
+X   https://github.com/processing/processing4/issues/136
+X   https://github.com/processing/processing4/pull/138
+X Move PdePreprocessIssueException to the test package
+X   https://github.com/processing/processing4/issues/130
+X   https://github.com/processing/processing4/pull/139
+
 4.0a2
 X automate notarization in the build process
 X   https://github.com/processing/processing4/issues/24
@@ -55,12 +63,8 @@ _   https://github.com/processing/processing/pull/6048
 
 
 discuss with Sam
-_ preproc needs spaces in the size command, per our guidelines
-_   https://github.com/processing/processing4/issues/136
 _ JSSC binaries for windows_32 and windows_64 appear to be macOS files
 _   https://github.com/processing/processing4/issues/119
-_ Move PdePreprocessIssueException to the test package
-_   https://github.com/processing/processing4/issues/130
 _ can we get rid of pdexEnabled? does it work w/ java tabs?
 
 
