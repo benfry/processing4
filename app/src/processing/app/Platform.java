@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-20 The Processing Foundation
   Copyright (c) 2008-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -75,7 +75,8 @@ public class Platform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  static public boolean isInit() {
+
+  static public boolean isAvailable() {
     return inst != null;
   }
 
@@ -106,6 +107,16 @@ public class Platform {
 
   static public void setLookAndFeel() throws Exception {
     inst.setLookAndFeel();
+  }
+
+
+  static public void setInterfaceZoom() throws Exception {
+    inst.setInterfaceZoom();
+  }
+
+
+  static public float getSystemZoom() {
+    return inst == null ? 1 : inst.getSystemZoom();
   }
 
 
@@ -405,12 +416,4 @@ public class Platform {
   static public int unsetenv(String variable) {
     return inst.unsetenv(variable);
   }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  static public float getSystemZoom() {
-    return inst.getSystemZoom();
-  }
-
 }

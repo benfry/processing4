@@ -23,6 +23,8 @@ _ Complaints that size() is not working
 _   Windows: https://github.com/processing/processing/issues/6046
 _   Linux: https://github.com/processing/processing/issues/5912
 
+_ why does GL flash red when resizing?
+
 _ JDK 11.0.7+ workarounds/hacks in place, fix them
 _   https://github.com/processing/processing4/issues/124
 

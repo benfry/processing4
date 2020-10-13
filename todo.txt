@@ -29,6 +29,9 @@ X   install Java 11 should link to OpenJDK site
 X   set minimum version on Windows, fix JDK download URL
 o 'Basics' folder always open in examples list
 X   couldn't reproduce on another machine
+X Platform cleanup
+X   get rid of editor.laf.vaqua
+X   move macOS code out of DefaultPlatform and into MacPlatform
 
 contribs
 X Updates and fixes for PDE_pt.properties (Portugese translation)
@@ -46,6 +49,12 @@ X   https://github.com/processing/processing4/pull/139
 4.0a2
 X automate notarization in the build process
 X   https://github.com/processing/processing4/issues/24
+
+
+_ getSystemZoom() not available to splash screen
+_   https://github.com/processing/processing4/issues/145
+_   move all platform code out that doesn't require additional setup?
+_   i.e. all the things that rely on preferences can be inited separately (later)
 
 
 already fixed in 4.x? (confirm/close on release)

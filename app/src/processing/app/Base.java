@@ -195,8 +195,9 @@ public class Base {
       // Set the look and feel before opening the window
       try {
         Platform.setLookAndFeel();
+        Platform.setInterfaceZoom();
       } catch (Exception e) {
-        Messages.loge("Could not set the Look & Feel", e); //$NON-NLS-1$
+        Messages.loge("Error while setting up the interface", e); //$NON-NLS-1$
       }
 
       boolean sketchbookPrompt = false;
