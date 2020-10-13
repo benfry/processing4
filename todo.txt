@@ -29,9 +29,11 @@ X   install Java 11 should link to OpenJDK site
 X   set minimum version on Windows, fix JDK download URL
 o 'Basics' folder always open in examples list
 X   couldn't reproduce on another machine
-X Platform cleanup
-X   get rid of editor.laf.vaqua
-X   move macOS code out of DefaultPlatform and into MacPlatform
+X NullPointerException in getSystemZoom() on startup in alpha 2
+X   https://github.com/processing/processing4/issues/143
+X   fix includes Platform cleanup
+X     get rid of editor.laf.vaqua preference (use the laf pref)
+X     move macOS-specific code out of DefaultPlatform and into MacPlatform
 
 contribs
 X Updates and fixes for PDE_pt.properties (Portugese translation)
