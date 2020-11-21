@@ -370,7 +370,7 @@ public class ParserTests {
     expectGood("nosmooth");
   }
 
-  /*@Test
+  @Test
   public void testSmooth() {
     expectGood("smoothnoparam");
   }
@@ -378,6 +378,6 @@ public class ParserTests {
   @Test
   public void testSmoothWithParam() {
     expectGood("smoothparam");
-  }*/
+  }
 
 }

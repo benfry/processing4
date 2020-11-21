@@ -16,7 +16,7 @@ public class bug315g extends PApplet {
 
     public void setup() {
 /* size commented out by preprocessor */;
-smooth();
+/* smooth commented out by preprocessor */;
 int y;
 y = 60;
 int d;
@@ -25,7 +25,8 @@ ellipse(75, y, d, d);
         noLoop();
     }
 
-    public void settings() { size(480,120); }
+    public void settings() { size(480,120);
+smooth();}
 
     static public void main(String[] passedArgs) {
         String[] appletArgs = new String[] { "bug315g" };

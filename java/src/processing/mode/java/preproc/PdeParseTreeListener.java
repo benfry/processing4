@@ -75,6 +75,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private String sketchWidth;
   private String sketchHeight;
   private String pixelDensity;
+  private String smoothParam;
   private String sketchRenderer = null;
   private String sketchOutputFilename = null;
 
@@ -82,6 +83,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private boolean pixelDensityRequiresRewrite = false;
   private boolean sizeIsFullscreen = false;
   private boolean noSmoothRequiresRewrite = false;
+  private boolean smoothRequiresRewrite = false;
   private RewriteResult headerResult;
   private RewriteResult footerResult;
 
@@ -317,6 +319,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       handlePixelDensityCall(ctx);
     } else if (NO_SMOOTH_METHOD_NAME.equals(methodName)) {
       handleNoSmoothCall(ctx);
+    } else if (SMOOTH_METHOD_NAME.equals(methodName)) {
+      handleSmoothCall(ctx);
     }
   }
 
@@ -624,6 +628,20 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       if (argsContext.getChildCount() > 5) {
         sketchOutputFilename = argsContext.getChild(6).getText();
       }
+
+      if (argsContext.getChildCount() > 7) {
+        pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
+          Token token = ctx.getStart();
+          int line = token.getLine();
+          int charOffset = token.getCharPositionInLine();
+
+          listener.onError(new PdePreprocessIssue(
+            line,
+            charOffset,
+            PreprocessIssueMessageSimplifier.getLocalStr("editor.status.bad.size")
+          ));
+        });
+      }
     }
 
     if (isFullscreen) {
@@ -667,6 +685,38 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     delete(ctx.start, ctx.stop);
     insertAfter(ctx.stop, "/* noSmooth commented out by preprocessor */");
     noSmoothRequiresRewrite = true;
+  }
+
+  protected void handleSmoothCall(ParserRuleContext ctx) {
+    // Check that this is a call for processing and not a user defined size method.
+    if (!calledFromGlobalOrSetup(ctx)) {
+      return;
+    }
+
+    ParseTree argsContext = ctx.getChild(2);
+    if (argsContext.getChildCount() > 0) {
+      smoothParam = argsContext.getChild(0).getText();
+    } else {
+      smoothParam = "";
+    }
+
+    if (argsContext.getChildCount() > 2) {
+      pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
+        Token token = ctx.getStart();
+        int line = token.getLine();
+        int charOffset = token.getCharPositionInLine();
+
+        listener.onError(new PdePreprocessIssue(
+          line,
+          charOffset,
+          PreprocessIssueMessageSimplifier.getLocalStr("editor.status.bad.smooth")
+        ));
+      });
+    }
+
+    delete(ctx.start, ctx.stop);
+    insertAfter(ctx.stop, "/* smooth commented out by preprocessor */");
+    smoothRequiresRewrite = true;
   }
 
   protected boolean calledFromGlobalOrSetup(ParserRuleContext callContext) {
@@ -1017,6 +1067,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     boolean noRewriteRequired = !sizeRequiresRewrite;
     noRewriteRequired = noRewriteRequired && !pixelDensityRequiresRewrite;
     noRewriteRequired = noRewriteRequired && !noSmoothRequiresRewrite;
+    noRewriteRequired = noRewriteRequired && !smoothRequiresRewrite;
     if (noRewriteRequired) {
       return;
     }
@@ -1058,6 +1109,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     if (noSmoothRequiresRewrite) {
       settingsInner.add("noSmooth();");
+    }
+
+    if (smoothRequiresRewrite) {
+      settingsInner.add(String.format("smooth(%s);", smoothParam));
     }
 
     String newCode = String.format(settingsOuterTemplate, settingsInner.toString());
