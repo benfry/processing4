@@ -380,4 +380,9 @@ public class ParserTests {
     expectGood("smoothparam");
   }
 
+  @Test
+  public void testSmoothWithParamStatic() {
+    expectGood("smoothparamstatic");
+  }
+
 }
