@@ -630,17 +630,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       }
 
       if (argsContext.getChildCount() > 7) {
-        pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
-          Token token = ctx.getStart();
-          int line = token.getLine();
-          int charOffset = token.getCharPositionInLine();
-
-          listener.onError(new PdePreprocessIssue(
-            line,
-            charOffset,
-            PreprocessIssueMessageSimplifier.getLocalStr("editor.status.bad.size")
-          ));
-        });
+        thisRequiresRewrite = false; // Uesr may have overloaded size.
       }
     }
 
@@ -670,7 +660,12 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     }
 
     ParseTree argsContext = ctx.getChild(2);
+    if (argsContext.getChildCount() == 0 || argsContext.getChildCount() > 3) {
+      return; // User override of pixel density.
+    }
+
     pixelDensity = argsContext.getChild(0).getText();
+
     delete(ctx.start, ctx.stop);
     insertAfter(ctx.stop, "/* pixelDensity commented out by preprocessor */");
     pixelDensityRequiresRewrite = true;
@@ -680,6 +675,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     // Check that this is a call for processing and not a user defined method.
     if (!calledFromGlobalOrSetup(ctx)) {
       return;
+    }
+
+    ParseTree argsContext = ctx.getChild(2);
+    if (argsContext.getChildCount() > 0) {
+      return; // User override of noSmooth.
     }
 
     delete(ctx.start, ctx.stop);
@@ -694,24 +694,14 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     }
 
     ParseTree argsContext = ctx.getChild(2);
+    if (argsContext.getChildCount() > 2) {
+      return; // User may have overloaded smooth;
+    }
+
     if (argsContext.getChildCount() > 0) {
       smoothParam = argsContext.getChild(0).getText();
     } else {
       smoothParam = "";
-    }
-
-    if (argsContext.getChildCount() > 2) {
-      pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
-        Token token = ctx.getStart();
-        int line = token.getLine();
-        int charOffset = token.getCharPositionInLine();
-
-        listener.onError(new PdePreprocessIssue(
-          line,
-          charOffset,
-          PreprocessIssueMessageSimplifier.getLocalStr("editor.status.bad.smooth")
-        ));
-      });
     }
 
     delete(ctx.start, ctx.stop);
