@@ -14,28 +14,22 @@ import java.io.IOException;
 
 public class nosmooth extends PApplet {
 
-public void setup() {
-    /* size commented out by preprocessor */;
-    /* noSmooth commented out by preprocessor */;
+ public void setup(){
+  /* size commented out by preprocessor */;
+  /* noSmooth commented out by preprocessor */;
 }
 
-@Override public void draw() {
-    background(0);
-    fill(255,0,0);
-    ellipse(100,100,100,100);
-    fill(0,255,0);
-    ellipse(150,150,100,100);
-}
-
-class Test {
-    private void draw() {}
+ public void draw(){
+  background(0);
+  fill(255,0,0);
+  ellipse(100,100,100,100);
+  fill(0,255,0);
+  ellipse(150,150,100,100);
 }
 
 
-    public void settings() {
-        size(300,300, P2D);
-        noSmooth();
-    }
+    public void settings() { size(300, 300, P2D);
+noSmooth(); }
 
     static public void main(String[] passedArgs) {
         String[] appletArgs = new String[] { "nosmooth" };
