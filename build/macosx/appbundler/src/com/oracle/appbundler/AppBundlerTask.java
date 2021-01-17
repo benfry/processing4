@@ -508,7 +508,8 @@ public class AppBundlerTask extends Task {
 
                     (org.apache.tools.ant.types.Path) classPathRef.getReferencedObject(getProject());
 
-            Iterator<FileResource> iter = (Iterator<FileResource>)(Object)classpath.iterator();
+            @SuppressWarnings("unchecked")
+            Iterator<FileResource> iter = classpath.iterator();
             while(iter.hasNext()) {
                 FileResource resource = iter.next();
                 File source = resource.getFile();
