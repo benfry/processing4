@@ -862,8 +862,8 @@ public class PFont implements PConstants {
     for (int i = 33; i <= 126; i++) {
       CHARSET[index++] = (char)i;
     }
-    for (int i = 0; i < EXTRA_CHARS.length; i++) {
-      CHARSET[index++] = EXTRA_CHARS[i];
+    for (char extraChar : EXTRA_CHARS) {
+      CHARSET[index++] = extraChar;
     }
   }
 
