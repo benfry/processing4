@@ -5,6 +5,8 @@
 *~
 /build/shared/reference.zip
 
+*.x
+
 # temporary, until we complete the move to IntelliJ
 *.iml
 /.idea
