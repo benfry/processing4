@@ -3955,8 +3955,8 @@ public class PGraphics extends PImage implements PConstants {
                 0, 0, img.width, img.height);
 
     } else if (imageMode == CENTER) {
-      float x1 = a - img.width/2;
-      float y1 = b - img.height/2;
+      float x1 = a - (img.width >> 1);
+      float y1 = b - (img.height >> 1);
       imageImpl(img,
                 x1, y1, x1+img.width, y1+img.height,
                 0, 0, img.width, img.height);
@@ -4756,14 +4756,6 @@ public class PGraphics extends PImage implements PConstants {
 
     if (z != 0) translate(0, 0, -z);
   }
-
-
-  /**
-   * @param str the alphanumeric symbols to be displayed
-   */
-//  public void text(String str) {
-//    text(str, textX, textY, textZ);
-//  }
 
 
   /**
@@ -7568,7 +7560,7 @@ public class PGraphics extends PImage implements PConstants {
     backgroundGi = calcGi;
     backgroundBi = calcBi;
     backgroundAi = (format == RGB) ? 255 : calcAi;
-    backgroundAlpha = (format == RGB) ? false : calcAlpha;
+    backgroundAlpha = format != RGB && calcAlpha;
     backgroundColor = calcColor;
 
     backgroundImpl();
@@ -8553,7 +8545,6 @@ public class PGraphics extends PImage implements PConstants {
   /**
    * If there is running async save task for this file, blocks until it completes.
    * Has to be called on main thread because OpenGL overrides this and calls GL.
-   * @param filename
    */
   protected void awaitAsyncSaveCompletion(String filename) {
     if (asyncImageSaver != null) {
@@ -8592,7 +8583,7 @@ public class PGraphics extends PImage implements PConstants {
       saveExecutor.shutdown();
       try {
         saveExecutor.awaitTermination(5000, TimeUnit.SECONDS);
-      } catch (InterruptedException e) { }
+      } catch (InterruptedException ignored) { }
     }
 
 
@@ -8649,7 +8640,7 @@ public class PGraphics extends PImage implements PConstants {
         long delay = PApplet.round((lastTime + avgTimePerFrame - now) / 1e6f);
         try {
           if (delay > 0) Thread.sleep(delay);
-        } catch (InterruptedException e) { }
+        } catch (InterruptedException ignored) { }
       }
 
       lastFrameCount = target.parent.frameCount;
@@ -8701,7 +8692,7 @@ public class PGraphics extends PImage implements PConstants {
       if (taskWithSameFilename != null) {
         try {
           taskWithSameFilename.get();
-        } catch (InterruptedException | ExecutionException e) { }
+        } catch (InterruptedException | ExecutionException ignored) { }
       }
     }
 
