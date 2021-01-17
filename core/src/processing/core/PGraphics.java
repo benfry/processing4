@@ -3238,12 +3238,12 @@ public class PGraphics extends PImage implements PConstants {
 
     // step along Y axis
     for (int i = 1; i < vres; i++) {
-      float curradius = sinLUT[(int) angle % SINCOS_LENGTH];
-      float currY = cosLUT[(int) angle % SINCOS_LENGTH];
+      float currentRadius = sinLUT[(int) angle % SINCOS_LENGTH];
+      float currentY = cosLUT[(int) angle % SINCOS_LENGTH];
       for (int j = 0; j < ures; j++) {
-        sphereX[currVert] = cx[j] * curradius;
-        sphereY[currVert] = currY;
-        sphereZ[currVert++] = cz[j] * curradius;
+        sphereX[currVert] = cx[j] * currentRadius;
+        sphereY[currVert] = currentY;
+        sphereZ[currVert++] = cz[j] * currentRadius;
       }
       angle += angle_step;
     }
@@ -3271,7 +3271,7 @@ public class PGraphics extends PImage implements PConstants {
    * [toxi 031031] new sphere code. removed all multiplies with
    * radius, as scale() will take care of that anyway
    *
-   * [toxi 031223] updated sphere code (removed modulos)
+   * [toxi 031223] updated sphere code (removed modulo)
    * and introduced sphereAt(x,y,z,r)
    * to avoid additional translate()'s on the user/sketch side
    *
@@ -3874,7 +3874,7 @@ public class PGraphics extends PImage implements PConstants {
   /**
    *
    * Modifies the location from which images are drawn by changing the way in
-   * which parameters given to <b>image()</b> are intepreted.<br />
+   * which parameters given to <b>image()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>imageMode(CORNER)</b>, which interprets the second and
    * third parameters of <b>image()</b> as the upper-left corner of the image. If
@@ -5105,7 +5105,7 @@ public class PGraphics extends PImage implements PConstants {
   /**
    * This does a basic number formatting, to avoid the
    * generally ugly appearance of printing floats.
-   * Users who want more control should use their own nf() cmmand,
+   * Users who want more control should use their own nf() command,
    * or if they want the long, ugly version of float,
    * use String.valueOf() to convert the float to a String first.
    *
@@ -5167,14 +5167,15 @@ public class PGraphics extends PImage implements PConstants {
     PFont.Glyph glyph = textFont.getGlyph(ch);
     if (glyph != null) {
       if (textMode == MODEL) {
-        float high    = glyph.height     / (float) textFont.getSize();
-        float bwidth  = glyph.width      / (float) textFont.getSize();
-        float lextent = glyph.leftExtent / (float) textFont.getSize();
-        float textent = glyph.topExtent  / (float) textFont.getSize();
+        float floatSize = textFont.getSize();
+        float high = glyph.height / floatSize;
+        float wide = glyph.width / floatSize;
+        float leftExtent = glyph.leftExtent / floatSize;
+        float topExtent = glyph.topExtent  / floatSize;
 
-        float x1 = x + lextent * textSize;
-        float y1 = y - textent * textSize;
-        float x2 = x1 + bwidth * textSize;
+        float x1 = x + leftExtent * textSize;
+        float y1 = y - topExtent * textSize;
+        float x2 = x1 + wide * textSize;
         float y2 = y1 + high * textSize;
 
         textCharModelImpl(glyph.image,
@@ -5256,7 +5257,6 @@ public class PGraphics extends PImage implements PConstants {
     // TODO this can be optimized a bit
     for (int row = y0; row < y0 + h0; row++) {
       for (int col = x0; col < x0 + w0; col++) {
-        //int a1 = (fa * pixels1[row * textFont.twidth + col]) >> 8;
         int a1 = (fa * pixels1[row * glyph.width + col]) >> 8;
         int a2 = a1 ^ 0xff;
         //int p1 = pixels1[row * glyph.width + col];
@@ -5394,7 +5394,7 @@ public class PGraphics extends PImage implements PConstants {
    * a matrix stack. The <b>pushMatrix()</b> function saves the current
    * coordinate system to the stack and <b>popMatrix()</b> restores the prior
    * coordinate system. <b>pushMatrix()</b> and <b>popMatrix()</b> are used
-   * in conjuction with the other transformation functions and may be
+   * in conjunction with the other transformation functions and may be
    * embedded to control the scope of the transformations.
    *
    *
@@ -7380,7 +7380,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * Sets the specular color for lights. Like <b>fill()</b>, it affects only
    * the elements which are created after it in the code. Specular refers to
-   * light which bounces off a surface in a perferred direction (rather than
+   * light which bounces off a surface in a preferred direction (rather than
    * bouncing in all directions like a diffuse light) and is used for
    * creating highlights. The specular quality of a light interacts with the
    * specular material qualities set through the <b>specular()</b> and
@@ -7416,7 +7416,7 @@ public class PGraphics extends PImage implements PConstants {
    * the Processing window. The default background is light gray. This function is
    * typically used within <b>draw()</b> to clear the display window at the
    * beginning of each frame, but it can be used inside <b>setup()</b> to set the
-   * background on the first frame of animation or if the backgound need only be
+   * background on the first frame of animation or if the background need only be
    * set once. <br />
    * <br />
    * An image can also be used as the background for a sketch, although the
@@ -7712,8 +7712,8 @@ public class PGraphics extends PImage implements PConstants {
   // current colorMode settings.
 
   // Renderers that need to subclass any drawing properties such as fill or
-  // stroke will usally want to override methods like fillFromCalc (or the
-  // same for stroke, ambient, etc.) That way the color calcuations are
+  // stroke will usually want to override methods like fillFromCalc (or the
+  // same for stroke, ambient, etc.) That way the color calculations are
   // covered by this based PGraphics class, leaving only a single function
   // to override/implement in the subclass.
 
@@ -7848,7 +7848,7 @@ public class PGraphics extends PImage implements PConstants {
   /**
    * Unpacks AARRGGBB color for direct use with colorCalc.
    * <P>
-   * Handled here with its own function since this is indepenent
+   * Handled here with its own function since this is independent
    * of the color mode.
    * <P>
    * Strangely the old version of this code ignored the alpha
@@ -8009,7 +8009,7 @@ public class PGraphics extends PImage implements PConstants {
    * <br />
    * The <b>red()</b> function is easy to use and understand, but it is slower
    * than a technique called bit shifting. When working in <b>colorMode(RGB,
-   * 255)</b>, you can acheive the same results as <b>red()</b> but with greater
+   * 255)</b>, you can achieve the same results as <b>red()</b> but with greater
    * speed by using the right shift operator (<b>>></b>) with a bit mask. For
    * example, the following two lines of code are equivalent means of getting the
    * red value of the color value <b>c</b>:<br />
@@ -8049,7 +8049,7 @@ public class PGraphics extends PImage implements PConstants {
    * <br />
    * The <b>green()</b> function is easy to use and understand, but it is slower
    * than a technique called bit shifting. When working in <b>colorMode(RGB,
-   * 255)</b>, you can acheive the same results as <b>green()</b> but with greater
+   * 255)</b>, you can achieve the same results as <b>green()</b> but with greater
    * speed by using the right shift operator (<b>>></b>) with a bit mask. For
    * example, the following two lines of code are equivalent means of getting the
    * green value of the color value <b>c</b>:<br />
@@ -8311,7 +8311,7 @@ public class PGraphics extends PImage implements PConstants {
 
   //////////////////////////////////////////////////////////////
 
-  // BEGINRAW/ENDRAW
+  // BEGIN/END RAW
 
 
   /**
@@ -8627,7 +8627,7 @@ public class PGraphics extends PImage implements PConstants {
                                 final File file) {
       target.parent = renderer.parent;
 
-      // if running every frame, smooth the framerate
+      // if running every frame, smooth the frame rate
       if (target.parent.frameCount - 1 == lastFrameCount && TARGET_COUNT > 1) {
 
         // count with one less thread to reduce jitter
