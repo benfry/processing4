@@ -3416,7 +3416,7 @@ public class PApplet implements PConstants {
     //if (napTime > 0) {
     try {
       Thread.sleep(napTime);
-    } catch (InterruptedException e) { }
+    } catch (InterruptedException ignored) { }
     //}
     //}
   }
@@ -3533,7 +3533,7 @@ public class PApplet implements PConstants {
           /*int result =*/ p.waitFor();
           // Not installed will throw an IOException (JDK 1.4.2, Ubuntu 7.04)
           openLauncher = launcher;
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
       }
       if (openLauncher == null) {
         System.err.println("Could not find xdg-open, gnome-open, or kde-open: " +
