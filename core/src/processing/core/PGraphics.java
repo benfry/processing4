@@ -2663,7 +2663,7 @@ public class PGraphics extends PImage implements PConstants {
    * <br />
    * <b>rectMode(RADIUS)</b> also uses the first two parameters of <b>rect()</b>
    * as the shape's center point, but uses the third and fourth parameters to
-   * specify half of the shapes's width and height.<br />
+   * specify half of the shape's width and height.<br />
    * <br />
    * The parameter must be written in ALL CAPS because Processing is a
    * case-sensitive language.

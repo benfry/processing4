@@ -12051,7 +12051,7 @@ public class PApplet implements PConstants {
    * <br />
    * <b>rectMode(RADIUS)</b> also uses the first two parameters of <b>rect()</b>
    * as the shape's center point, but uses the third and fourth parameters to
-   * specify half of the shapes's width and height.<br />
+   * specify half of the shape's width and height.<br />
    * <br />
    * The parameter must be written in ALL CAPS because Processing is a
    * case-sensitive language.
@@ -12156,7 +12156,7 @@ public class PApplet implements PConstants {
    * <br />
    * <b>ellipseMode(RADIUS)</b> also uses the first two parameters of
    * <b>ellipse()</b> as the shape's center point, but uses the third and fourth
-   * parameters to specify half of the shapes's width and height.<br />
+   * parameters to specify half of the shape's width and height.<br />
    * <br />
    * <b>ellipseMode(CORNER)</b> interprets the first two parameters of
    * <b>ellipse()</b> as the upper-left corner of the shape, while the third and
@@ -12436,7 +12436,7 @@ public class PApplet implements PConstants {
    *
    *
    * <h3>Advanced</h3>
-   * Code submitted by Dave Bollinger (davol) for release 0136.
+   * Code submitted by Dave Bollinger (davbol) for release 0136.
    *
    * @webref shape:curves
    * @webBrief Calculates the tangent of a point on a Bezier curve.
@@ -12557,7 +12557,7 @@ public class PApplet implements PConstants {
    *
    *
    * @webref shape:curves
-   * @webBrief Evalutes the curve at point t for points a, b, c, d.
+   * @webBrief Evaluates the curve at point t for points a, b, c, d.
    * @param a coordinate of first control point
    * @param b coordinate of first point on the curve
    * @param c coordinate of second point on the curve
@@ -13194,7 +13194,7 @@ public class PApplet implements PConstants {
    * Method to draw text from an array of chars. This method will usually be
    * more efficient than drawing from a String object, because the String will
    * not be converted to a char array before drawing.
-   * @param chars the alphanumberic symbols to be displayed
+   * @param chars the alphanumeric symbols to be displayed
    * @param start array index at which to start writing characters
    * @param stop array index at which to stop writing characters
    */
@@ -13362,7 +13362,7 @@ public class PApplet implements PConstants {
    * understanding the concept of a matrix stack. The <b>pushMatrix()</b>
    * function saves the current coordinate system to the stack and
    * <b>popMatrix()</b> restores the prior coordinate system.
-   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjuction with
+   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjunction with
    * the other transformation functions and may be embedded to control the
    * scope of the transformations.
    *
@@ -13460,7 +13460,7 @@ public class PApplet implements PConstants {
    * Transformations apply to everything that happens after and subsequent
    * calls to the function accumulates the effect. For example, calling
    * <b>rotate(HALF_PI)</b> and then <b>rotate(HALF_PI)</b> is the same as
-   * <b>rotate(PI)</b>. All tranformations are reset when <b>draw()</b>
+   * <b>rotate(PI)</b>. All transformations are reset when <b>draw()</b>
    * begins again.
    * <br/> <br/>
    * Technically, <b>rotate()</b> multiplies the current transformation
