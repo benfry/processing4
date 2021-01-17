@@ -38,7 +38,7 @@ import java.awt.event.KeyEvent;
  * @usage Web &amp; Application
  */
 public interface PConstants {
-  
+
   int X = 0;
   int Y = 1;
   int Z = 2;
@@ -218,7 +218,7 @@ public interface PConstants {
 
 
   // used by split, all the standard whitespace chars
-  // (also includes unicode nbsp, that little bostage)
+  // (also includes unicode nbsp, that little !#$!#%)
 
   String WHITESPACE = " \t\n\r\f\u00A0";
 
