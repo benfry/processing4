@@ -216,7 +216,7 @@ public class PImage implements PConstants, Cloneable {
     // toxi: is it maybe better to init the image with max alpha enabled?
     //for(int i=0; i<pixels.length; i++) pixels[i]=0xffffffff;
     // fry: i'm opting for the full transparent image, which is how
-    // photoshop works, and our audience oughta be familiar with.
+    // photoshop works, and our audience will likely be familiar with.
     // also, i want to avoid having to set all those pixels since
     // in java it's super slow, and most using this fxn will be
     // setting all the pixels anyway.
@@ -1151,8 +1151,8 @@ public class PImage implements PConstants, Cloneable {
 
 
   protected void blurRGB(float r) {
-    int sum, cr, cg, cb; //, k;
-    int /*pixel,*/ read, ri, /*roff,*/ ym, ymi, /*riw,*/ bk0;
+    int sum, cr, cg, cb;
+    int read, ri, ym, ymi, bk0;
     int[] r2 = new int[pixels.length];
     int[] g2 = new int[pixels.length];
     int[] b2 = new int[pixels.length];
@@ -1383,7 +1383,7 @@ public class PImage implements PConstants, Cloneable {
         }
         if (lumDown > currLum) {
           result = colDown;
-          currLum = lumDown;
+//          currLum = lumDown;  // removed, unused assignment
         }
         outgoing[index++] = result;
       }
@@ -1452,7 +1452,7 @@ public class PImage implements PConstants, Cloneable {
         }
         if (lumDown < currLum) {
           result = colDown;
-          currLum = lumDown;
+//          currLum = lumDown;  // removed, unused assignment
         }
         outgoing[index++] = result;
       }
@@ -1533,7 +1533,7 @@ public class PImage implements PConstants, Cloneable {
    *     Clipped to 0..255, Photoshop calls this "Linear Burn",
    *     and Director calls it "Add Pin".
    *
-   * <LI>SUBTRACT - substractive blend with black clip:
+   * <LI>SUBTRACT - subtractive blend with black clip:
    *     <TT>C = max(B - A*factor, 0)</TT>.
    *     Clipped to 0..255, Photoshop calls this "Linear Dodge",
    *     and Director calls it "Subtract Pin".
@@ -1580,7 +1580,7 @@ public class PImage implements PConstants, Cloneable {
    * <TT>r1 + r2 - ((2 * r1 * r2) / 255)</TT> because <TT>255 == 1.0</TT>
    * not <TT>256 == 1.0</TT>. In other words, <TT>(255*255)>>8</TT> is not
    * the same as <TT>(255*255)/255</TT>. But for real-time use the shifts
-   * are preferrable, and the difference is insignificant for applications
+   * are preferable, and the difference is insignificant for applications
    * built with Processing.</P>
    *
    * @webref color:creating_reading
@@ -1683,8 +1683,8 @@ public class PImage implements PConstants, Cloneable {
    * @param sy Y coordinate of the source's upper left corner
    * @param sw source image width
    * @param sh source image height
-   * @param dx X coordinate of the destinations's upper left corner
-   * @param dy Y coordinate of the destinations's upper left corner
+   * @param dx X coordinate of the destination's upper left corner
+   * @param dy Y coordinate of the destination's upper left corner
    * @param dw destination image width
    * @param dh destination image height
    * @param mode Either BLEND, ADD, SUBTRACT, LIGHTEST, DARKEST, DIFFERENCE, EXCLUSION, MULTIPLY, SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, BURN
@@ -2699,7 +2699,7 @@ int testFunction(int dst, int src) {
 
 
   /**
-   * Soft Light (Pegtop)
+   * Soft Light (peg top)
    * O = (1 - D) * MULTIPLY(D, S) + D * SCREEN(D, S)
    * O = (1 - D) * DS + D * (1 - (1 - D)(1 - S))
    * O = 2DS + DD - 2DDS

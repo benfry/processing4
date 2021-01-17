@@ -15955,8 +15955,8 @@ public class PApplet implements PConstants {
    * @param sy Y coordinate of the source's upper left corner
    * @param sw source image width
    * @param sh source image height
-   * @param dx X coordinate of the destinations's upper left corner
-   * @param dy Y coordinate of the destinations's upper left corner
+   * @param dx X coordinate of the destination's upper left corner
+   * @param dy Y coordinate of the destination's upper left corner
    * @param dw destination image width
    * @param dh destination image height
    * @param mode Either BLEND, ADD, SUBTRACT, LIGHTEST, DARKEST, DIFFERENCE, EXCLUSION, MULTIPLY, SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, BURN
