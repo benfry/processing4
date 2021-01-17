@@ -2647,7 +2647,7 @@ public class PGraphics extends PImage implements PConstants {
   /**
    *
    * Modifies the location from which rectangles are drawn by changing the way in
-   * which parameters given to <b>rect()</b> are intepreted.<br />
+   * which parameters given to <b>rect()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>rectMode(CORNER)</b>, which interprets the first two
    * parameters of <b>rect()</b> as the upper-left corner of the shape, while the
@@ -2890,7 +2890,7 @@ public class PGraphics extends PImage implements PConstants {
    * <br />
    * <b>ellipseMode(RADIUS)</b> also uses the first two parameters of
    * <b>ellipse()</b> as the shape's center point, but uses the third and fourth
-   * parameters to specify half of the shapes's width and height.<br />
+   * parameters to specify half of the shape's width and height.<br />
    * <br />
    * <b>ellipseMode(CORNER)</b> interprets the first two parameters of
    * <b>ellipse()</b> as the upper-left corner of the shape, while the third and
@@ -3207,7 +3207,7 @@ public class PGraphics extends PImage implements PConstants {
 
 
   /**
-   * @param ures number of segments used longitudinally per full circle revolutoin
+   * @param ures number of segments used longitudinally per full circle revolution
    * @param vres number of segments used latitudinally from top to bottom
    */
   public void sphereDetail(int ures, int vres) {
@@ -3407,7 +3407,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * <h3>Advanced</h3>
-   * Code submitted by Dave Bollinger (davol) for release 0136.
+   * Code submitted by Dave Bollinger (davbol) for release 0136.
    *
    * @webref shape:curves
    * @webBrief Calculates the tangent of a point on a Bezier curve.
@@ -3567,7 +3567,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:curves
-   * @webBrief Evalutes the curve at point t for points a, b, c, d.
+   * @webBrief Evaluates the curve at point t for points a, b, c, d.
    * @param a coordinate of first control point
    * @param b coordinate of first point on the curve
    * @param c coordinate of second point on the curve
@@ -3690,7 +3690,7 @@ public class PGraphics extends PImage implements PConstants {
    * <P>
    * (This function is not optimized, since it's not expected to
    * be called all that often. there are many juicy and obvious
-   * opimizations in here, but it's probably better to keep the
+   * optimizations in here, but it's probably better to keep the
    * code more readable)
    */
   protected void curveInit() {
@@ -4784,7 +4784,7 @@ public class PGraphics extends PImage implements PConstants {
    * Method to draw text from an array of chars. This method will usually be
    * more efficient than drawing from a String object, because the String will
    * not be converted to a char array before drawing.
-   * @param chars the alphanumberic symbols to be displayed
+   * @param chars the alphanumeric symbols to be displayed
    * @param start array index at which to start writing characters
    * @param stop array index at which to stop writing characters
    */
@@ -5367,7 +5367,7 @@ public class PGraphics extends PImage implements PConstants {
    * understanding the concept of a matrix stack. The <b>pushMatrix()</b>
    * function saves the current coordinate system to the stack and
    * <b>popMatrix()</b> restores the prior coordinate system.
-   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjuction with
+   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjunction with
    * the other transformation functions and may be embedded to control the
    * scope of the transformations.
    *
@@ -5467,7 +5467,7 @@ public class PGraphics extends PImage implements PConstants {
    * Transformations apply to everything that happens after and subsequent
    * calls to the function accumulates the effect. For example, calling
    * <b>rotate(HALF_PI)</b> and then <b>rotate(HALF_PI)</b> is the same as
-   * <b>rotate(PI)</b>. All tranformations are reset when <b>draw()</b>
+   * <b>rotate(PI)</b>. All transformations are reset when <b>draw()</b>
    * begins again.
    * <br/> <br/>
    * Technically, <b>rotate()</b> multiplies the current transformation
@@ -7008,10 +7008,9 @@ public class PGraphics extends PImage implements PConstants {
   }
 
   /**
-   *
    * Sets the specular color of the materials used for shapes drawn to the
-   * screen, which sets the color of hightlights. Specular refers to light
-   * which bounces off a surface in a perferred direction (rather than
+   * screen, which sets the color of highlights. Specular refers to light
+   * which bounces off a surface in a preferred direction (rather than
    * bouncing in all directions like a diffuse light). Used in combination
    * with <b>emissive()</b>, <b>ambient()</b>, and <b>shininess()</b> in
    * setting the material properties of shapes.
@@ -7019,7 +7018,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:material_properties
    * @webBrief Sets the specular color of the materials used for shapes drawn to the
-   * screen, which sets the color of hightlights.
+   * screen, which sets the color of highlights.
    * @usage web_application
    * @param rgb color to set
    * @see PGraphics#lightSpecular(float, float, float)

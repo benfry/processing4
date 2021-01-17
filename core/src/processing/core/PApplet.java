@@ -11697,7 +11697,7 @@ public class PApplet implements PConstants {
    *
    * Limits the rendering to the boundaries of a rectangle defined
    * by the parameters. The boundaries are drawn based on the state
-   * of the <b>imageMode()</b> fuction, either CORNER, CORNERS, or CENTER.
+   * of the <b>imageMode()</b> function, either CORNER, CORNERS, or CENTER.
    *
    *
    * @webref rendering
@@ -12035,7 +12035,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Modifies the location from which rectangles are drawn by changing the way in
-   * which parameters given to <b>rect()</b> are intepreted.<br />
+   * which parameters given to <b>rect()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>rectMode(CORNER)</b>, which interprets the first two
    * parameters of <b>rect()</b> as the upper-left corner of the shape, while the
@@ -12148,7 +12148,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Modifies the location from which ellipses are drawn by changing the way in
-   * which parameters given to <b>ellipse()</b> are intepreted.<br />
+   * which parameters given to <b>ellipse()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>ellipseMode(CENTER)</b>, which interprets the first
    * two parameters of <b>ellipse()</b> as the shape's center point, while the
@@ -12336,7 +12336,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   * @param ures number of segments used longitudinally per full circle revolutoin
+   * @param ures number of segments used longitudinally per full circle revolution
    * @param vres number of segments used latitudinally from top to bottom
    */
   public void sphereDetail(int ures, int vres) {
@@ -13362,7 +13362,7 @@ public class PApplet implements PConstants {
    * understanding the concept of a matrix stack. The <b>pushMatrix()</b>
    * function saves the current coordinate system to the stack and
    * <b>popMatrix()</b> restores the prior coordinate system.
-   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjunction with
+   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjuction with
    * the other transformation functions and may be embedded to control the
    * scope of the transformations.
    *
@@ -13390,7 +13390,7 @@ public class PApplet implements PConstants {
    * a matrix stack. The <b>pushMatrix()</b> function saves the current
    * coordinate system to the stack and <b>popMatrix()</b> restores the prior
    * coordinate system. <b>pushMatrix()</b> and <b>popMatrix()</b> are used
-   * in conjunction with the other transformation functions and may be
+   * in conjuction with the other transformation functions and may be
    * embedded to control the scope of the transformations.
    *
    *
@@ -13759,6 +13759,7 @@ public class PApplet implements PConstants {
    * @webref transform
    * @webBrief Multiplies the current matrix by the one specified through the
    * parameters.
+   * @source
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#resetMatrix()
@@ -14777,9 +14778,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the specular color of the materials used for shapes drawn to the
-   * screen, which sets the color of hightlights. Specular refers to light
+   * screen, which sets the color of highlights. Specular refers to light
    * which bounces off a surface in a preferred direction (rather than
    * bouncing in all directions like a diffuse light). Used in combination
    * with <b>emissive()</b>, <b>ambient()</b>, and <b>shininess()</b> in
@@ -14788,7 +14788,7 @@ public class PApplet implements PConstants {
    *
    * @webref lights_camera:material_properties
    * @webBrief Sets the specular color of the materials used for shapes drawn to the
-   * screen, which sets the color of hightlights.
+   * screen, which sets the color of highlights.
    * @usage web_application
    * @param rgb color to set
    * @see PGraphics#lightSpecular(float, float, float)
@@ -15131,7 +15131,7 @@ public class PApplet implements PConstants {
    *
    * Sets the specular color for lights. Like <b>fill()</b>, it affects only
    * the elements which are created after it in the code. Specular refers to
-   * light which bounces off a surface in a preferred direction (rather than
+   * light which bounces off a surface in a perferred direction (rather than
    * bouncing in all directions like a diffuse light) and is used for
    * creating highlights. The specular quality of a light interacts with the
    * specular material qualities set through the <b>specular()</b> and
@@ -15955,8 +15955,8 @@ public class PApplet implements PConstants {
    * @param sy Y coordinate of the source's upper left corner
    * @param sw source image width
    * @param sh source image height
-   * @param dx X coordinate of the destination's upper left corner
-   * @param dy Y coordinate of the destination's upper left corner
+   * @param dx X coordinate of the destinations's upper left corner
+   * @param dy Y coordinate of the destinations's upper left corner
    * @param dw destination image width
    * @param dh destination image height
    * @param mode Either BLEND, ADD, SUBTRACT, LIGHTEST, DARKEST, DIFFERENCE, EXCLUSION, MULTIPLY, SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, BURN
