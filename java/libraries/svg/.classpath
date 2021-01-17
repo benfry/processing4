@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="library/batik-awt-util-1.8.jar"/>
-	<classpathentry kind="lib" path="library/batik-dom-1.8.jar"/>
-	<classpathentry kind="lib" path="library/batik-ext-1.8.jar"/>
-	<classpathentry kind="lib" path="library/batik-svggen-1.8.jar"/>
-	<classpathentry kind="lib" path="library/batik-util-1.8.jar"/>
-	<classpathentry kind="lib" path="library/batik-xml-1.8.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="library/batik-all-1.13.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/adoptopenjdk-11">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing4-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

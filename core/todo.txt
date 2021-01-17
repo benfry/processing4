@@ -4,7 +4,10 @@ X   https://github.com/processing/processing/pull/6081
 X remove zero width no-break space (U+FEFF) character with trim()
 X PShapeOpenGL setAttrib() warning says "setNormal()" instead of "setAttrib()"
 X   https://github.com/processing/processing4/issues/141
-
+X SVG Export
+X   update Batik to 1.13 (from 1.8)
+X   download it via direct link (don't check into repo)
+X   fixes incompatibilities with org.w3c.dom and Java 11
 
 fixed in 4.x (close/lock these with final 4.0 release)
 _ AppKit errors from P2D/P3D
