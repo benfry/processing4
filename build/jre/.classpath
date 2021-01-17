@@ -6,6 +6,6 @@
 			<attribute name="module" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/processing-app/lib/ant.jar"/>
+	<classpathentry kind="lib" path="/processing4-app/lib/ant.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
