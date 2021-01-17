@@ -634,15 +634,6 @@ public class PGraphics extends PImage implements PConstants {
 
   // ........................................................
 
-  /** The current font if a Java version of it is installed */
-  //protected Font textFontNative;
-
-  /** Metrics for the current native Java font */
-  //protected FontMetrics textFontNativeMetrics;
-
-//  /** Last text position, because text often mixed on lines together */
-//  protected float textX, textY, textZ;
-
   /**
    * Internal buffer used by the text() functions
    * because the String object is slow
@@ -781,21 +772,11 @@ public class PGraphics extends PImage implements PConstants {
     width = w;
     height = h;
 
-    /** {@link PImage.pixelFactor} set in {@link PImage#PImage()} */
     pixelWidth = width * pixelDensity;
     pixelHeight = height * pixelDensity;
 
-//    if (surface != null) {
-//      allocate();
-//    }
-//    reapplySettings();
     reapplySettings = true;
   }
-
-
-//  public void setSmooth(int level) {
-//    this.smooth = level;
-//  }
 
 
 //  /**
@@ -805,7 +786,7 @@ public class PGraphics extends PImage implements PConstants {
 
 
   /**
-   * Handle any takedown for this graphics context.
+   * Handle any shutdown for this graphics context.
    * <p>
    * This is called when a sketch is shut down and this renderer was
    * specified using the size() command, or inside endRecord() and
@@ -1128,10 +1109,10 @@ public class PGraphics extends PImage implements PConstants {
    * by not checking for errors while running. Undo with hint(ENABLE_OPENGL_ERROR_REPORT).
    * <br/> <br/>
    * hint(ENABLE_BUFFER_READING) - Depth and stencil buffers in P2D/P3D will be
-   * downsampled to make PGL#readPixels work with multisampling. Enabling this
+   * down-sampled to make PGL#readPixels work with multisampling. Enabling this
    * introduces some overhead, so if you experience bad performance, disable
    * multisampling with noSmooth() instead. This hint is not intended to be
-   * enabled and disabled repeatedely, so call this once in setup() or after
+   * enabled and disabled repeatedly, so call this once in setup() or after
    * creating your PGraphics2D/3D. You can restore the default with
    * hint(DISABLE_BUFFER_READING) if you don't plan to read depth from
    * this PGraphics anymore.
@@ -1145,12 +1126,6 @@ public class PGraphics extends PImage implements PConstants {
    * will not use separate threads for saving and will block until the image
    * is written to the drive. This was the default behavior in 3.0b7 and before.
    * To enable, call hint(ENABLE_ASYNC_SAVEFRAME).
-   * <br/> <br/>
-   * As of release 0149, unhint() has been removed in favor of adding
-   * additional ENABLE/DISABLE constants to reset the default behavior. This
-   * prevents the double negatives, and also reinforces which hints can be
-   * enabled or disabled.
-   *
    *
    * @webref rendering
    * @webBrief Set various hints and hacks for the renderer.
@@ -1638,11 +1613,11 @@ public class PGraphics extends PImage implements PConstants {
   }
 
 
-  /**
-   * Internal method to copy all style information for the given vertex.
-   * Can be overridden by subclasses to handle only properties pertinent to
-   * that renderer. (e.g. no need to copy the emissive color in P2D)
-   */
+//  /**
+//   * Internal method to copy all style information for the given vertex.
+//   * Can be overridden by subclasses to handle only properties pertinent to
+//   * that renderer. (e.g. no need to copy the emissive color in P2D)
+//   */
 //  protected void vertexStyle() {
 //  }
 
@@ -2056,7 +2031,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * Limits the rendering to the boundaries of a rectangle defined
    * by the parameters. The boundaries are drawn based on the state
-   * of the <b>imageMode()</b> fuction, either CORNER, CORNERS, or CENTER.
+   * of the <b>imageMode()</b> function, either CORNER, CORNERS, or CENTER.
    *
    *
    * @webref rendering
@@ -2188,7 +2163,7 @@ public class PGraphics extends PImage implements PConstants {
 
 
   protected void bezierVertexCheck(int shape, int vertexCount) {
-    if (shape == 0 || shape != POLYGON) {
+    if (shape != POLYGON) {
       throw new RuntimeException("beginShape() or beginShape(POLYGON) " +
                                  "must be used before bezierVertex() or quadraticVertex()");
     }
@@ -2907,7 +2882,7 @@ public class PGraphics extends PImage implements PConstants {
   /**
    *
    * Modifies the location from which ellipses are drawn by changing the way in
-   * which parameters given to <b>ellipse()</b> are intepreted.<br />
+   * which parameters given to <b>ellipse()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>ellipseMode(CENTER)</b>, which interprets the first
    * two parameters of <b>ellipse()</b> as the shape's center point, while the
@@ -3871,7 +3846,7 @@ public class PGraphics extends PImage implements PConstants {
       if (settingsInited) {
         // ignore if it's just a repeat of the current state
         if (this.smooth != quality) {
-          smoothWarning("smooth");
+          smoothWarning(quality == 0 ? "noSmooth" : "smooth");
         }
       } else {
         this.smooth = quality;
@@ -4270,7 +4245,7 @@ public class PGraphics extends PImage implements PConstants {
   protected PFont createFont(String name, float size,
                              boolean smooth, char[] charset) {
     String lowerName = name.toLowerCase();
-    Font baseFont = null;
+    Font baseFont;
 
     try {
       InputStream stream = null;
@@ -4946,7 +4921,7 @@ public class PGraphics extends PImage implements PConstants {
 //    // if the box is already too small, tell em to f off
 //    if (currentY > y2) return;
 
-    float spaceWidth = textWidth(' ');
+//    float spaceWidth = textWidth(' ');
 
     if (textBreakStart == null) {
       textBreakStart = new int[20];
@@ -4968,7 +4943,7 @@ public class PGraphics extends PImage implements PConstants {
 //        currentY = textSentence(textBuffer, sentenceStart, i,
 //                                lineX, boxWidth, currentY, y2, spaceWidth);
         boolean legit =
-          textSentence(textBuffer, sentenceStart, i, boxWidth, spaceWidth);
+          textSentence(textBuffer, sentenceStart, i, boxWidth);
         if (!legit) break;
 //      if (Float.isNaN(currentY)) break;  // word too big (or error)
 //      if (currentY > y2) break;  // past the box
@@ -5025,7 +5000,7 @@ public class PGraphics extends PImage implements PConstants {
    * @return false if cannot fit
    */
   protected boolean textSentence(char[] buffer, int start, int stop,
-                                 float boxWidth, float spaceWidth) {
+                                 float boxWidth) {
     float runningX = 0;
 
     // Keep track of this separately from index, since we'll need to back up
@@ -5073,7 +5048,8 @@ public class PGraphics extends PImage implements PConstants {
               int lastIndex = index;
               index = wordStart + 1;
               // walk to the right while things fit
-              while ((wordWidth = textWidthImpl(buffer, wordStart, index)) < boxWidth) {
+//              while ((wordWidth = textWidthImpl(buffer, wordStart, index)) < boxWidth) {
+              while (textWidthImpl(buffer, wordStart, index) < boxWidth) {
                 index++;
                 if (index > lastIndex) {  // Unreachable?
                   break;
@@ -5626,9 +5602,6 @@ public class PGraphics extends PImage implements PConstants {
    * <h3>Advanced</h3>
    * Rotate about a vector in space. Same as the glRotatef() function.
    * @nowebref
-   * @param x
-   * @param y
-   * @param z
    */
   public void rotate(float angle, float x, float y, float z) {
     showMissingWarning("rotate");
@@ -7654,31 +7627,6 @@ public class PGraphics extends PImage implements PConstants {
     popMatrix();
     popStyle();
   }
-
-
-  /**
-   * Callback to handle clearing the background when begin/endRaw is in use.
-   * Handled as separate function for OpenGL (or other) subclasses that
-   * override backgroundImpl() but still needs this to work properly.
-   */
-//  protected void backgroundRawImpl() {
-//    if (raw != null) {
-//      raw.colorMode(RGB, 1);
-//      raw.noStroke();
-//      raw.fill(backgroundR, backgroundG, backgroundB);
-//      raw.beginShape(TRIANGLES);
-//
-//      raw.vertex(0, 0);
-//      raw.vertex(width, 0);
-//      raw.vertex(0, height);
-//
-//      raw.vertex(width, 0);
-//      raw.vertex(width, height);
-//      raw.vertex(0, height);
-//
-//      raw.endShape();
-//    }
-//  }
 
 
 
