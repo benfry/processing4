@@ -284,15 +284,10 @@ public class PImage implements PConstants, Cloneable {
 
   //////////////////////////////////////////////////////////////
 
-  public PImage(int width, int height, int[] pixels, boolean requiresCheckAlpha, PApplet parent) {
-    initFromPixels(
-        width,
-        height,
-        pixels,
-        RGB,
-        1
-    );
 
+  public PImage(int width, int height, int[] pixels,
+                boolean requiresCheckAlpha, PApplet parent) {
+    initFromPixels(width, height, pixels, RGB,1);
     this.parent = parent;
 
     if (requiresCheckAlpha) {
@@ -300,7 +295,8 @@ public class PImage implements PConstants, Cloneable {
     }
   }
 
-  public PImage(int width, int height, int[] pixels, boolean requiresCheckAlpha, PApplet parent,
+  public PImage(int width, int height, int[] pixels,
+                boolean requiresCheckAlpha, PApplet parent,
                 int format, int factor) {
 
     initFromPixels(width, height, pixels, format, factor);
@@ -1054,7 +1050,8 @@ public class PImage implements PConstants, Cloneable {
    */
   protected void buildBlurKernel(float r) {
     int radius = (int) (r * 3.5f);
-    radius = (radius < 1) ? 1 : ((radius < 248) ? radius : 248);
+    if (radius < 1) radius = 1;
+    if (radius > 248) radius = 248;
     if (blurRadius != radius) {
       blurRadius = radius;
       blurKernelSize = 1 + blurRadius<<1;
@@ -2859,8 +2856,8 @@ int testFunction(int dst, int src) {
   }
 
   protected boolean saveTIFF(OutputStream output) {
-    // shutting off the warning, people can figure this out themselves
     /*
+    // shutting off this warning, people can figure this out themselves
     if (format != RGB) {
       System.err.println("Warning: only RGB information is saved with " +
                          ".tif files. Use .tga or .png for ARGB images and others.");
