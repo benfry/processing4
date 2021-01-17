@@ -365,4 +365,24 @@ public class ParserTests {
     expectGood("colorreturn");
   }
 
+  @Test
+  public void testNoSmooth() {
+    expectGood("nosmooth");
+  }
+
+  @Test
+  public void testSmooth() {
+    expectGood("smoothnoparam");
+  }
+
+  @Test
+  public void testSmoothWithParam() {
+    expectGood("smoothparam");
+  }
+
+  @Test
+  public void testSmoothWithParamStatic() {
+    expectGood("smoothparamstatic");
+  }
+
 }

@@ -12,24 +12,27 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 
-public class bug315g extends PApplet {
+public class smoothnoparam extends PApplet {
 
-    public void setup() {
-/* size commented out by preprocessor */;
-/* smooth commented out by preprocessor */;
-int y;
-y = 60;
-int d;
-d = 80;
-ellipse(75, y, d, d);
-        noLoop();
-    }
+ public void setup(){
+  /* size commented out by preprocessor */;
+  /* smooth commented out by preprocessor */;
+}
 
-    public void settings() { size(480,120);
-smooth();}
+ public void draw(){
+  background(0);
+  fill(255,0,0);
+  ellipse(100,100,100,100);
+  fill(0,255,0);
+  ellipse(150,150,100,100);
+}
+
+
+    public void settings() { size(300, 300, P2D);
+smooth(); }
 
     static public void main(String[] passedArgs) {
-        String[] appletArgs = new String[] { "bug315g" };
+        String[] appletArgs = new String[] { "smoothnoparam" };
         if (passedArgs != null) {
             PApplet.main(concat(appletArgs, passedArgs));
         } else {
