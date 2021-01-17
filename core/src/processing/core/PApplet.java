@@ -121,7 +121,7 @@ public class PApplet implements PConstants {
     if (name.contains("Mac")) {
       platform = MACOS;
 
-    } else if (name.indexOf("Windows") != -1) {
+    } else if (name.contains("Windows")) {
       platform = WINDOWS;
 
     } else if (name.equals("Linux")) {  // true for the ibm vm
@@ -3801,7 +3801,7 @@ public class PApplet implements PConstants {
       // once the next draw() has completed
       exitCalled = true;
 
-    } else if (!looping) {
+    } else {  // !looping
       // if not looping, shut down things explicitly,
       // because the main thread will be sleeping
       dispose();
@@ -3882,9 +3882,7 @@ public class PApplet implements PConstants {
       Method method = getClass().getMethod(name);
       method.invoke(this);
 
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
+    } catch (IllegalArgumentException | IllegalAccessException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {
       e.getTargetException().printStackTrace();
@@ -4404,7 +4402,7 @@ public class PApplet implements PConstants {
 
         case 'L':
           // print a 1D array of objects as individual elements
-          Object poo[] = (Object[]) what;
+          Object[] poo = (Object[]) what;
           for (int i = 0; i < poo.length; i++) {
             if (poo[i] instanceof String) {
               System.out.println("[" + i + "] \"" + poo[i] + "\"");
@@ -4415,49 +4413,49 @@ public class PApplet implements PConstants {
           break;
 
         case 'Z':  // boolean
-          boolean zz[] = (boolean[]) what;
+          boolean[] zz = (boolean[]) what;
           for (int i = 0; i < zz.length; i++) {
             System.out.println("[" + i + "] " + zz[i]);
           }
           break;
 
         case 'B':  // byte
-          byte bb[] = (byte[]) what;
+          byte[] bb = (byte[]) what;
           for (int i = 0; i < bb.length; i++) {
             System.out.println("[" + i + "] " + bb[i]);
           }
           break;
 
         case 'C':  // char
-          char cc[] = (char[]) what;
+          char[] cc = (char[]) what;
           for (int i = 0; i < cc.length; i++) {
             System.out.println("[" + i + "] '" + cc[i] + "'");
           }
           break;
 
         case 'I':  // int
-          int ii[] = (int[]) what;
+          int[] ii = (int[]) what;
           for (int i = 0; i < ii.length; i++) {
             System.out.println("[" + i + "] " + ii[i]);
           }
           break;
 
         case 'J':  // int
-          long jj[] = (long[]) what;
+          long[] jj = (long[]) what;
           for (int i = 0; i < jj.length; i++) {
             System.out.println("[" + i + "] " + jj[i]);
           }
           break;
 
         case 'F':  // float
-          float ff[] = (float[]) what;
+          float[] ff = (float[]) what;
           for (int i = 0; i < ff.length; i++) {
             System.out.println("[" + i + "] " + ff[i]);
           }
           break;
 
         case 'D':  // double
-          double dd[] = (double[]) what;
+          double[] dd = (double[]) what;
           for (int i = 0; i < dd.length; i++) {
             System.out.println("[" + i + "] " + dd[i]);
           }
@@ -5180,7 +5178,7 @@ public class PApplet implements PConstants {
     // for some reason (rounding error?) Math.random() * 3
     // can sometimes return '3' (once in ~30 million tries)
     // so a check was added to avoid the inclusion of 'howbig'
-    float value = 0;
+    float value;
     do {
       value = internalRandom.nextFloat() * high;
     } while (value == high);
@@ -5238,7 +5236,7 @@ public class PApplet implements PConstants {
   public final float random(float low, float high) {
     if (low >= high) return low;
     float diff = high - low;
-    float value = 0;
+    float value;
     // because of rounding error, can't just add low, otherwise it may hit high
     // https://github.com/processing/processing/issues/4551
     do {
@@ -5859,16 +5857,13 @@ public class PApplet implements PConstants {
   static public JSONObject loadJSONObject(File file) {
     // can't pass of createReader() to the constructor b/c of resource leak
     BufferedReader reader = createReader(file);
-    if (reader != null) {
-      JSONObject outgoing = new JSONObject(reader);
-      try {
-        reader.close();
-      } catch (IOException e) {  // not sure what would cause this
-        e.printStackTrace();
-      }
-      return outgoing;
+    JSONObject outgoing = new JSONObject(reader);
+    try {
+      reader.close();
+    } catch (IOException e) {  // not sure what would cause this
+      e.printStackTrace();
     }
-    return null;
+    return outgoing;
   }
 
 
@@ -5972,16 +5967,13 @@ public class PApplet implements PConstants {
   static public JSONArray loadJSONArray(File file) {
     // can't pass of createReader() to the constructor b/c of resource leak
     BufferedReader reader = createReader(file);
-    if (reader != null) {
-      JSONArray outgoing = new JSONArray(reader);
-      try {
-        reader.close();
-      } catch (IOException e) {  // not sure what would cause this
-        e.printStackTrace();
-      }
-      return outgoing;
+    JSONArray outgoing = new JSONArray(reader);
+    try {
+      reader.close();
+    } catch (IOException e) {  // not sure what would cause this
+      e.printStackTrace();
     }
-    return null;
+    return outgoing;
   }
 
 
@@ -7808,8 +7800,8 @@ public class PApplet implements PConstants {
    */
   static public void saveStrings(OutputStream output, String[] data) {
     PrintWriter writer = createWriter(output);
-    for (int i = 0; i < data.length; i++) {
-      writer.println(data[i]);
+    for (String item : data) {
+      writer.println(item);
     }
     writer.flush();
     writer.close();
@@ -7993,25 +7985,8 @@ public class PApplet implements PConstants {
       return new File(dataFolder, where);
     }
     // Windows, Linux, or when not using a Mac OS X .app file
-    File workingDirItem =
-      new File(sketchPath + File.separator + "data" + File.separator + where);
-//    if (workingDirItem.exists()) {
-    return workingDirItem;
-//    }
-//    // In some cases, the current working directory won't be set properly.
+    return new File(sketchPath + File.separator + "data" + File.separator + where);
   }
-
-
-  /**
-   * On Windows and Linux, this is simply the data folder. On Mac OS X, this is
-   * the path to the data folder buried inside Contents/Java
-   */
-//  public File inputFile(String where) {
-//  }
-
-
-//  public String inputPath(String where) {
-//  }
 
 
   /**
@@ -9575,8 +9550,9 @@ public class PApplet implements PConstants {
       } else {
         return Integer.parseInt(what.substring(0, offset));
       }
-    } catch (NumberFormatException e) { }
-    return otherwise;
+    } catch (NumberFormatException e) {
+      return otherwise;
+    }
   }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -13611,9 +13587,6 @@ public class PApplet implements PConstants {
    * <h3>Advanced</h3>
    * Rotate about a vector in space. Same as the glRotatef() function.
    * @nowebref
-   * @param x
-   * @param y
-   * @param z
    */
   public void rotate(float angle, float x, float y, float z) {
     if (recorder != null) recorder.rotate(angle, x, y, z);
@@ -13782,7 +13755,6 @@ public class PApplet implements PConstants {
    * @webref transform
    * @webBrief Multiplies the current matrix by the one specified through the
    * parameters.
-   * @source
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#resetMatrix()
