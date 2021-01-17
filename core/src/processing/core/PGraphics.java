@@ -105,7 +105,7 @@ import processing.opengl.PShader;
  * <h2>Using xxxxImpl() for subclassing smoothness</h2> The xxxImpl() methods
  * are generally renderer-specific handling for some subset if tasks for a
  * particular function (vague enough for you?) For instance, imageImpl() handles
- * drawing an image whose x/y/w/h and u/v coords have been specified, and screen
+ * drawing an image whose x/y/w/h and u/v coordinates have been specified, and screen
  * placement (independent of imageMode) has been determined. There's no point in
  * all renderers implementing the <tt>if (imageMode == BLAH)</tt>
  * placement/sizing logic, so that's handled by PGraphics, which then calls
@@ -7352,8 +7352,8 @@ public class PGraphics extends PImage implements PConstants {
    * falloff = 1 / (CONSTANT + d * LINEAR + (d*d) * QUADRATIC)<br />
    * <br />
    * Thinking about an ambient light with a falloff can be tricky. If you want a
-   * region of your scene to be lit ambiently with one color and another region to
-   * be lit ambiently with another color, you could use an ambient light with
+   * region of your scene to be ambient lit with one color and another region to
+   * be ambient lit with another color, you could use an ambient light with
    * location and falloff. You can think of it as a point light that doesn't care
    * which direction a surface is facing.
    *
@@ -8089,7 +8089,7 @@ public class PGraphics extends PImage implements PConstants {
    * <br />
    * The <b>blue()</b> function is easy to use and understand, but it is slower
    * than a technique called bit masking. When working in <b>colorMode(RGB,
-   * 255)</b>, you can acheive the same results as <b>blue()</b> but with greater
+   * 255)</b>, you can achieve the same results as <b>blue()</b> but with greater
    * speed by using a bit mask to remove the other color components. For example,
    * the following two lines of code are equivalent means of getting the blue
    * value of the color value <b>c</b>:<br />
