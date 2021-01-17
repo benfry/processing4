@@ -63,7 +63,7 @@ import processing.awt.ShimAWT;
  */
 public class PImage implements PConstants, Cloneable {
 
-  private static final byte TIFF_HEADER[] = {
+  private static final byte[] TIFF_HEADER = {
     77, 77, 0, 42, 0, 0, 0, 8, 0, 9, 0, -2, 0, 4, 0, 0, 0, 1, 0, 0,
     0, 0, 1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1,
     0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0, 3, 0, 0, 0, 122, 1, 6, 0, 3, 0,
@@ -148,14 +148,11 @@ public class PImage implements PConstants, Cloneable {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  // private fields
-  private int fracU, ifU, fracV, ifV, u1, u2, v1, v2, sX, sY, iw, iw1, ih1;
-  private int ul, ll, ur, lr, cUL, cLL, cUR, cLR;
+  private int ifV, sX, v1, v2, iw, iw1, ih1;
   private int srcXOffset, srcYOffset;
-  private int r, g, b, a;
   private int[] srcBuffer;
 
-  // fixed point precision is limited to 15 bits!!
+  // fixed point precision is limited to 15 bits
   static final int PRECISIONB = 15;
   static final int PRECISIONF = 1 << PRECISIONB;
   static final int PREC_MAXVAL = PRECISIONF-1;
@@ -205,7 +202,6 @@ public class PImage implements PConstants, Cloneable {
    */
   public PImage() {
     format = ARGB;  // default to ARGB images for release 0116
-    pixelDensity = 1;
   }
 
 
@@ -2027,6 +2023,7 @@ public class PImage implements PConstants, Cloneable {
 
     } else {
       // nearest neighbour scaling (++fast!)
+      int sY;
       switch (mode) {
 
       case BLEND:
@@ -2261,7 +2258,7 @@ public class PImage implements PConstants, Cloneable {
 
   private void filter_new_scanline() {
     sX = srcXOffset;
-    fracV = srcYOffset & PREC_MAXVAL;
+    int fracV = srcYOffset & PREC_MAXVAL;
     ifV = PREC_MAXVAL - fracV + 1;
     v1 = (srcYOffset >> PRECISIONB) * iw;
     v2 = min((srcYOffset >> PRECISIONB) + 1, ih1) * iw;
@@ -2269,14 +2266,18 @@ public class PImage implements PConstants, Cloneable {
 
 
   private int filter_bilinear() {
-    fracU = sX & PREC_MAXVAL;
-    ifU = PREC_MAXVAL - fracU + 1;
-    ul = (ifU * ifV) >> PRECISIONB;
-    ll = ifU - ul;
-    ur = ifV - ul;
-    lr = PREC_MAXVAL + 1 - ul - ll - ur;
-    u1 = (sX >> PRECISIONB);
-    u2 = min(u1 + 1, iw1);
+    int cUL, cLL, cUR, cLR;
+    int r, g, b, a;
+
+    // private fields
+    int fracU = sX & PREC_MAXVAL;
+    int ifU = PREC_MAXVAL - fracU + 1;
+    int ul = (ifU * ifV) >> PRECISIONB;
+    int ll = ifU - ul;
+    int ur = ifV - ul;
+    int lr = PREC_MAXVAL + 1 - ul - ll - ur;
+    int u1 = (sX >> PRECISIONB);
+    int u2 = min(u1 + 1, iw1);
 
     // get color values of the 4 neighbouring texels
     cUL = srcBuffer[v1 + u1];
@@ -2793,7 +2794,10 @@ int testFunction(int dst, int src) {
 
 
   static public PImage loadTIFF(InputStream input) {  // ignore
-    byte tiff[] = PApplet.loadBytes(input);
+    byte[] tiff = PApplet.loadBytes(input);
+    if (tiff == null) {
+      return null;
+    }
 
     if ((tiff[42] != tiff[102]) ||  // width/height in both places
         (tiff[43] != tiff[103])) {
@@ -3280,7 +3284,7 @@ int testFunction(int dst, int src) {
    * @param filename a sequence of letters and numbers
    */
   public boolean save(String filename) {  // ignore
-    boolean success = false;
+    boolean success;
 
     if (parent != null) {
       // use savePath(), so that the intermediate directories are created
