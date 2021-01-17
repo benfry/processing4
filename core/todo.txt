@@ -19,6 +19,9 @@ _   https://github.com/processing/processing/issues/5770
 _ size() not working on ubuntu 16 and processing 3.5.3
 _   https://github.com/processing/processing/issues/5912
 
+_ update P2D reference to make clear about drawing order and quality
+_   https://github.com/processing/processing/issues/5880
+
 _ Complaints that size() is not working
 _   Windows: https://github.com/processing/processing/issues/6046
 _   Linux: https://github.com/processing/processing/issues/5912
@@ -28,6 +31,8 @@ _ why does GL flash red when resizing?
 _ JDK 11.0.7+ workarounds/hacks in place, fix them
 _   https://github.com/processing/processing4/issues/124
 
+_ Skija bindings
+_   https://github.com/processing/processing4/issues/151
 
 load/save image
 _ https://github.com/processing/processing4/wiki/Exorcising-AWT

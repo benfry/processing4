@@ -52,6 +52,22 @@ X   https://github.com/processing/processing4/pull/139
 X automate notarization in the build process
 X   https://github.com/processing/processing4/issues/24
 
+_ disable "notifications" prompt on startup for macOS
+_   (we're not posting any notifications, at least for now)
+_   https://developer.apple.com/documentation/usernotifications
+_   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
+
+_ Apple Silicon release
+_   http://openjdk.java.net/jeps/391
+_   https://github.com/AdoptOpenJDK/openjdk-support/issues/146
+_   https://github.com/microsoft/openjdk-aarch64/releases
+_   https://www.azul.com/downloads/zulu-community/?version=java-11-lts&os=macos&architecture=arm-64-bit&package=jdk
+_   OpenGL available but deprecated on Apple Si
+_     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to_apple_silicon
+
+_ Movie maker .mov not compatible with quicktime player
+_   adding -pix_fmt yuv420p
+_   https://github.com/processing/processing/issues/6110
 
 _ getSystemZoom() not available to splash screen
 _   https://github.com/processing/processing4/issues/145
