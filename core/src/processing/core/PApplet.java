@@ -1544,11 +1544,13 @@ public class PApplet implements PConstants {
       RegisteredMethods meth = registerMap.get(name);
       if (meth == null) {
         die("No registered methods with the name " + name + "() were found.");
-      }
-      try {
-        meth.remove(target);
-      } catch (Exception e) {
-        die("Could not unregister " + name + "() for " + target, e);
+
+      } else {
+        try {
+          meth.remove(target);
+        } catch (Exception e) {
+          die("Could not unregister " + name + "() for " + target, e);
+        }
       }
     }
   }
@@ -2258,7 +2260,7 @@ public class PApplet implements PConstants {
     } catch (InvocationTargetException ite) {
       String msg = ite.getTargetException().getMessage();
       if ((msg != null) &&
-          (msg.indexOf("no jogl in java.library.path") != -1)) {
+          (msg.contains("no jogl in java.library.path"))) {
         // Is this true anymore, since the JARs contain the native libs?
         throw new RuntimeException("The jogl library folder needs to be " +
           "specified with -Djava.library.path=/path/to/jogl");
@@ -2445,9 +2447,9 @@ public class PApplet implements PConstants {
         frameRate = (float) (1.0 / avgFrameTimeSecs);
       }
 
-      if (frameCount != 0) {
-        handleMethods("pre");
-      }
+      //if (frameCount != 0) {  // always the case for this block
+      handleMethods("pre");
+      //}
 
       // use dmouseX/Y as previous mouse pos, since this is the
       // last position the mouse was in during the previous draw.
@@ -3889,8 +3891,6 @@ public class PApplet implements PConstants {
     } catch (NoSuchMethodException nsme) {
       System.err.println("There is no public " + name + "() method " +
                          "in the class " + getClass().getName());
-    } catch (Exception e) {
-      e.printStackTrace();
     }
   }
 
@@ -7877,9 +7877,12 @@ public class PApplet implements PConstants {
     // to the local disk using the sketch path, so this is safe here.
     // for 0120, added a try/catch anyways.
     try {
-      if (new File(where).isAbsolute()) return where;
-    } catch (Exception e) { }
-
+      if (new File(where).isAbsolute()) {
+        return where;
+      }
+    } catch (Exception e) {
+      // do nothing
+    }
     return sketchPath() + File.separator + where;
   }
 
@@ -8004,7 +8007,12 @@ public class PApplet implements PConstants {
       String parent = file.getParent();
       if (parent != null) {
         File unit = new File(parent);
-        if (!unit.exists()) unit.mkdirs();
+        if (!unit.exists()) {
+          boolean result = unit.mkdirs();
+          if (!result) {
+            System.err.println("Could not create " + unit);
+          }
+        }
       }
     } catch (SecurityException se) {
       System.err.println("You don't have permissions to create " +
@@ -8040,11 +8048,7 @@ public class PApplet implements PConstants {
 
 
   static public String urlEncode(String str) {
-    try {
-      return URLEncoder.encode(str, "UTF-8");
-    } catch (UnsupportedEncodingException e) {  // oh c'mon
-      return null;
-    }
+    return URLEncoder.encode(str, StandardCharsets.UTF_8);
   }
 
 
@@ -13358,7 +13362,7 @@ public class PApplet implements PConstants {
    * understanding the concept of a matrix stack. The <b>pushMatrix()</b>
    * function saves the current coordinate system to the stack and
    * <b>popMatrix()</b> restores the prior coordinate system.
-   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjuction with
+   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjunction with
    * the other transformation functions and may be embedded to control the
    * scope of the transformations.
    *
@@ -13386,7 +13390,7 @@ public class PApplet implements PConstants {
    * a matrix stack. The <b>pushMatrix()</b> function saves the current
    * coordinate system to the stack and <b>popMatrix()</b> restores the prior
    * coordinate system. <b>pushMatrix()</b> and <b>popMatrix()</b> are used
-   * in conjuction with the other transformation functions and may be
+   * in conjunction with the other transformation functions and may be
    * embedded to control the scope of the transformations.
    *
    *
@@ -14776,7 +14780,7 @@ public class PApplet implements PConstants {
    *
    * Sets the specular color of the materials used for shapes drawn to the
    * screen, which sets the color of hightlights. Specular refers to light
-   * which bounces off a surface in a perferred direction (rather than
+   * which bounces off a surface in a preferred direction (rather than
    * bouncing in all directions like a diffuse light). Used in combination
    * with <b>emissive()</b>, <b>ambient()</b>, and <b>shininess()</b> in
    * setting the material properties of shapes.
@@ -15127,7 +15131,7 @@ public class PApplet implements PConstants {
    *
    * Sets the specular color for lights. Like <b>fill()</b>, it affects only
    * the elements which are created after it in the code. Specular refers to
-   * light which bounces off a surface in a perferred direction (rather than
+   * light which bounces off a surface in a preferred direction (rather than
    * bouncing in all directions like a diffuse light) and is used for
    * creating highlights. The specular quality of a light interacts with the
    * specular material qualities set through the <b>specular()</b> and
@@ -15951,8 +15955,8 @@ public class PApplet implements PConstants {
    * @param sy Y coordinate of the source's upper left corner
    * @param sw source image width
    * @param sh source image height
-   * @param dx X coordinate of the destinations's upper left corner
-   * @param dy Y coordinate of the destinations's upper left corner
+   * @param dx X coordinate of the destination's upper left corner
+   * @param dy Y coordinate of the destination's upper left corner
    * @param dw destination image width
    * @param dh destination image height
    * @param mode Either BLEND, ADD, SUBTRACT, LIGHTEST, DARKEST, DIFFERENCE, EXCLUSION, MULTIPLY, SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, BURN
