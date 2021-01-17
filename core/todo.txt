@@ -9,7 +9,7 @@ X   update Batik to 1.13 (from 1.8)
 X   download it via direct link (don't check into repo)
 X   fixes incompatibilities with org.w3c.dom and Java 11
 
-fixed in 4.x (close/lock these with final 4.0 release)
+fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
 _ AppKit errors from P2D/P3D
 _   https://github.com/processing/processing/issues/5880
 X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
@@ -31,7 +31,7 @@ _   Linux: https://github.com/processing/processing/issues/5912
 
 _ why does GL flash red when resizing?
 
-_ JDK 11.0.7+ workarounds/hacks in place, fix them
+_ JDK 11.0.7+ blank screen issue... workarounds/hacks in place, fix them:
 _   https://github.com/processing/processing4/issues/124
 
 _ Skija bindings

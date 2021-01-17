@@ -47,10 +47,14 @@ X   https://github.com/processing/processing4/pull/138
 X Move PdePreprocessIssueException to the test package
 X   https://github.com/processing/processing4/issues/130
 X   https://github.com/processing/processing4/pull/139
+X Regression: smooth(4) shows “smooth() can only be used inside settings()” error
+X   https://github.com/processing/processing4/issues/149
+X   https://github.com/processing/processing4/pull/152
 
 4.0a2
 X automate notarization in the build process
 X   https://github.com/processing/processing4/issues/24
+
 
 _ disable "notifications" prompt on startup for macOS
 _   (we're not posting any notifications, at least for now)
@@ -65,7 +69,7 @@ _   https://www.azul.com/downloads/zulu-community/?version=java-11-lts&os=macos&
 _   OpenGL available but deprecated on Apple Si
 _     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to_apple_silicon
 
-_ Movie maker .mov not compatible with quicktime player
+_ MovieMaker .mov not compatible with QuicktTime Player
 _   adding -pix_fmt yuv420p
 _   https://github.com/processing/processing/issues/6110
 
@@ -80,7 +84,7 @@ _ HDPI support GNOME desktop
 _   https://github.com/processing/processing/issues/6059
 
 
-decisions before release
+decisions before final 4.0 release
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
 _ Some 3.x Tools not working because JavaFX isn't on the classpath
