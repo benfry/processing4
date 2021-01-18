@@ -35,11 +35,27 @@ X   fix includes Platform cleanup
 X     get rid of editor.laf.vaqua preference (use the laf pref)
 X     move macOS-specific code out of DefaultPlatform and into MacPlatform
 X update the splash screen to say 2021
+X video totally broken on macOS
+X   https://github.com/processing/processing-video/issues/134
+X   how to fix:
+X     https://github.com/processing/processing-video/issues/134#issuecomment-617301980
+X     beta 4 works better, but only if replacing just the library folder
+X     https://github.com/processing/processing-video/releases
+X     https://github.com/processing/processing-video/releases/download/r6-v2.0-beta4/video-2.0-beta4.zip
+X   could make a script to do this process, but:
+X     1) weird to replace 'library' not the rest
+X     2) why the quarrantine hacks? will downloading a stream work?
+X   still a little glitchy/slow to start
+X     need to update to version 2.x of the video library
 
 contribs
 X Updates and fixes for PDE_pt.properties (Portugese translation)
 X   https://github.com/processing/processing4/pull/133
 X   https://github.com/processing/processing4/pull/134
+X Small change in Portuguese translation
+X   https://github.com/processing/processing4/pull/147
+X correct alphabetical order for language list
+X   https://github.com/processing/processing4/pull/146
 
 Sam
 X preproc needs spaces in the size command, per our guidelines
@@ -55,6 +71,7 @@ X   https://github.com/processing/processing4/pull/152
 4.0a2
 X automate notarization in the build process
 X   https://github.com/processing/processing4/issues/24
+
 
 already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
@@ -77,7 +94,6 @@ _   OpenGL available but deprecated on Apple Si
 _     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to_apple_silicon
 
 _ MovieMaker .mov not compatible with QuicktTime Player
-_   adding -pix_fmt yuv420p
 _   https://github.com/processing/processing/issues/6110
 
 _ getSystemZoom() not available to splash screen
@@ -105,20 +121,10 @@ _ can we get rid of pdexEnabled? does it work w/ java tabs?
 
 
 discuss with Andres
-_ Add language support to modes
-_   https://github.com/processing/processing4/pull/14
 _ next video release
 _   https://github.com/processing/processing-video/milestone/1
-_ video totally broken on macOS
-_   https://github.com/processing/processing-video/issues/134
-_   how to fix:
-_     https://github.com/processing/processing-video/issues/134#issuecomment-617301980
-_     beta 4 works better, but only if replacing just the library folder
-_     https://github.com/processing/processing-video/releases
-_     https://github.com/processing/processing-video/releases/download/r6-v2.0-beta4/video-2.0-beta4.zip
-_   could make a script to do this process, but:
-_     1) weird to replace 'library' not the rest
-_     2) why the quarrantine hacks? will downloading a stream work?
+_ Add language support to modes
+_   https://github.com/processing/processing4/pull/14
 
 
 would like to fix
