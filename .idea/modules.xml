@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/doclet/ReferenceGenerator/ReferenceGenerator.iml" filepath="$PROJECT_DIR$/doclet/ReferenceGenerator/ReferenceGenerator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/processing4-app.iml" filepath="$PROJECT_DIR$/app/processing4-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/build/macosx/appbundler/processing4-appbundler.iml" filepath="$PROJECT_DIR$/build/macosx/appbundler/processing4-appbundler.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/processing4-core.iml" filepath="$PROJECT_DIR$/core/processing4-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/methods/processing4-core-preproc.iml" filepath="$PROJECT_DIR$/core/methods/processing4-core-preproc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/libraries/dxf/processing4-dxf.iml" filepath="$PROJECT_DIR$/java/libraries/dxf/processing4-dxf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/processing4-java.iml" filepath="$PROJECT_DIR$/java/processing4-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/build/jre/processing4-jre.iml" filepath="$PROJECT_DIR$/build/jre/processing4-jre.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/libraries/net/processing4-net.iml" filepath="$PROJECT_DIR$/java/libraries/net/processing4-net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/libraries/pdf/processing4-pdf.iml" filepath="$PROJECT_DIR$/java/libraries/pdf/processing4-pdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/libraries/serial/processing4-serial.iml" filepath="$PROJECT_DIR$/java/libraries/serial/processing4-serial.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/libraries/svg/processing4-svg.iml" filepath="$PROJECT_DIR$/java/libraries/svg/processing4-svg.iml" />
+      <module fileurl="file://$PROJECT_DIR$/build/shared/tools/MovieMaker/processing4-tools-moviemaker.iml" filepath="$PROJECT_DIR$/build/shared/tools/MovieMaker/processing4-tools-moviemaker.iml" />
+    </modules>
+  </component>
+</project>
