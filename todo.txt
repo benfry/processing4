@@ -55,6 +55,10 @@ X   https://github.com/processing/processing4/pull/152
 X automate notarization in the build process
 X   https://github.com/processing/processing4/issues/24
 
+already fixed in 4.x? (confirm/close on release)
+_ HDPI support GNOME desktop
+_   https://github.com/processing/processing/issues/6059
+
 
 _ disable "notifications" prompt on startup for macOS
 _   (we're not posting any notifications, at least for now)
@@ -77,11 +81,6 @@ _ getSystemZoom() not available to splash screen
 _   https://github.com/processing/processing4/issues/145
 _   move all platform code out that doesn't require additional setup?
 _   i.e. all the things that rely on preferences can be inited separately (later)
-
-
-already fixed in 4.x? (confirm/close on release)
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
 
 
 decisions before final 4.0 release
@@ -151,6 +150,8 @@ _ put the reference (and examples?) into .zip files
 _   unzipping the app takes forever
 _   see the 'examples' section below
 _ how are file associations handled in Linux? (for .pde, .psk)
+_ command line complaints
+_   https://github.com/processing/processing/issues/6129
 
 
 before final release

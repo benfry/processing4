@@ -54,7 +54,7 @@ _   https://github.com/processing/processing/issues/4897
 
 
 api changes
-_ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
+_ static versions of selectInput/selectOutput/selectFolder removed from PApplet
 _ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
 X   https://github.com/processing/processing4/issues/54
 _ protected PImage.checkAlpha() now public
