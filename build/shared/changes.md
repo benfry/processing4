@@ -1,3 +1,54 @@
+# Processing 4.0 alpha 3
+
+*Revision 1272 - 17 January 2021*
+
+Several bug fixes here, the most significant being video capture on macOS should be working again, and several OpenGL fixes that come with an updated release of JOGL. (Thanks to Sven Göthel, who continues working on it after many years.)
+
+### Known Issues
+
+* The ugly `surface.setResizable()` workaround in the previous release is now properly fixed.
+* Haven't had a chance to test much with macOS running on M1 machines. Chances are this should run in Rosetta mode, but I've not had time to find out.
+
+### Fixes and Updates
+
+* Video [was broken](https://github.com/processing/processing-video/issues/134) on macOS because of Apple's security changes.
+* Audio was [also broken](https://github.com/processing/processing-sound/issues/51) on macOS because of Apple security changes.
+* Fix `NullPointerException` in `getSystemZoom()` on startup in alpha 2. [143](https://github.com/processing/processing4/issues/143)
+
+### And More from Sam
+
+* Fix preprocessor spaces in the `size()` command to follow our guidelines. [136](https://github.com/processing/processing4/issues/136), [138](https://github.com/processing/processing4/pull/138)
+* Move `PdePreprocessIssueException` to the test package. [130](https://github.com/processing/processing4/issues/130), [139](https://github.com/processing/processing4/pull/139)
+* Fix regression where  `smooth(4)` was showing the “smooth() can only be used inside settings()” error. [149](https://github.com/processing/processing4/issues/149), [152](https://github.com/processing/processing4/pull/152)
+
+### Internal Additions
+
+* You can now create a “source” `.jar` file by typing `ant source-jar` inside the `core` directory. [118](https://github.com/processing/processing4/issues/118)
+* Automate macOS notarization in the build process (done in 4.0a2) [24](https://github.com/processing/processing4/issues/24)
+* Show Tool incompatibilities with a message dialog, and clean up a little of the internal error handling.
+* Prevent “illegal line” message when loading library with `0xFEFF` chars in a `.properties` file
+* Add `var` keyword to highlighting [114](https://github.com/processing/processing4/issues/114)
+* Fix revision number in exported code [135](https://github.com/processing/processing4/issues/135)
+* Fixes to `Platform` code
+    * Get rid of `editor.laf.vaqua` preference (use the `editor.laf` preference instead)
+    * Move macOS-specific code out of `DefaultPlatform` and into `MacPlatform`
+
+### Minor Tweaks
+
+* Update the splash screen to say 2021 before the pedants can find me
+* Clean up “Export to Application”
+    * Turned off 32-bit and ARM exports (no longer supported)
+    * Drop '64' from the folder name (everything 64-bit from now on)
+    * Remove “big fat lie“ error spew on export
+    * Too many `.dll` and `.jar` files were included
+    * Updates and text changes to be a little clearer
+    * Fixed links for Java 11
+    * Set minimum version on Windows, fix JDK download URL
+* Translation updates
+    * Updates and fixes for the Portugese translation [133](https://github.com/processing/processing4/pull/133), [134](https://github.com/processing/processing4/pull/134), [147](https://github.com/processing/processing4/pull/147)
+    * Correct alphabetical order for the language list. [146](https://github.com/processing/processing4/pull/146)
+
+
 # Processing 4.0 alpha 2
 
 *Revision 1271 - 15 September 2020*

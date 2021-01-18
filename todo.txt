@@ -1,10 +1,4 @@
 1272 (4.0a3)
-X make changes to get sound and video to prompt on Catalina
-X   also fix for exported applications
-X   added NSCameraUsageDescription and NSMicrophoneUsageDescription to Info.plist
-X   also for exported applications
-X audio and video broken on macOS b/c can't access mic/camera
-X   https://github.com/processing/processing-sound/issues/51
 X 'ant source-jar' target added to core
 X   https://github.com/processing/processing4/issues/118
 X show Tool incompatibilities with a message dialog
@@ -35,6 +29,14 @@ X   fix includes Platform cleanup
 X     get rid of editor.laf.vaqua preference (use the laf pref)
 X     move macOS-specific code out of DefaultPlatform and into MacPlatform
 X update the splash screen to say 2021
+
+video
+X make changes to get sound and video to prompt on Catalina
+X   also fix for exported applications
+X   added NSCameraUsageDescription and NSMicrophoneUsageDescription to Info.plist
+X   also for exported applications
+X audio and video broken on macOS b/c can't access mic/camera
+X   https://github.com/processing/processing-sound/issues/51
 X video totally broken on macOS
 X   https://github.com/processing/processing-video/issues/134
 X   how to fix:

@@ -13,7 +13,7 @@ X   https://github.com/processing/processing4/issues/124
 X   fixed with the new JOGL RC
 
 fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
-_ AppKit errors from P2D/P3D
+X AppKit errors from P2D/P3D
 _   https://github.com/processing/processing/issues/5880
 X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
 X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
@@ -22,8 +22,6 @@ _ Profile GL3bc is not available on X11GraphicsDevice
 _   https://github.com/processing/processing/issues/5476
 X Cannot run rotateZ() within the PShape class
 _   https://github.com/processing/processing/issues/5770
-_ size() not working on ubuntu 16 and processing 3.5.3
-_   https://github.com/processing/processing/issues/5912
 
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
