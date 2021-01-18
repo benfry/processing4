@@ -12,10 +12,15 @@
   <!-- the .jar file that's the actual dependency -->
   <property name="batik.jar" value="batik-all-${batik.version}.jar" />
 
-  <!-- URL for the version of Batik currently supported by this library.
-       This should probably be changed to (or at leas mirrored at) a
-       location on download.processing.org so it's available forever. -->
-  <property name="batik.url" value="https://apache.osuosl.org/xmlgraphics/batik/binaries/${batik.zip}" />
+  <!-- URL for the version of Batik currently supported by this library. -->
+  <property name="batik.url"
+            value="https://apache.osuosl.org/xmlgraphics/batik/binaries/${batik.zip}" />
+
+  <!-- Storing a "local" copy in case the original link goes dead. When updating
+       releases, please upload the new version to download.processing.org. -->
+  <property name="batik.url.backup"
+            value="https://download.processing.org/batik/${batik.zip}" />
+
 
   <available file="library/${batik.jar}" property="batik.present" />
 
