@@ -114,9 +114,6 @@ public class PSurfaceJOGL implements PSurface {
 
   protected boolean external = false;
 
-  // Workaround for https://github.com/processing/processing4/issues/124
-  static private boolean issue124 = PApplet.platform == PConstants.MACOS;
-
 
   public PSurfaceJOGL(PGraphics graphics) {
     this.graphics = graphics;
@@ -411,11 +408,7 @@ public class PSurfaceJOGL implements PSurface {
     window.setSurfaceScale(new float[] { surfaceScale, surfaceScale });
 
     window.setSize(sketchWidth * windowScaleFactor, sketchHeight * windowScaleFactor);
-    if (issue124) {
-      window.setResizable(true);
-    } else {
-      window.setResizable(false);
-    }
+    window.setResizable(false);
     setSize(sketchWidth, sketchHeight);
     if (fullScreen) {
       PApplet.hideMenuBar();
@@ -956,11 +949,6 @@ public class PSurfaceJOGL implements PSurface {
           pgl.endRender(sketch.sketchWindowColor());
         }
         PGraphicsOpenGL.completeFinishedPixelTransfers();
-
-        if (issue124) {
-          setResizable(false);
-          issue124 = false;
-        }
       }
 
       if (sketch.exitCalled()) {
