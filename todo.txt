@@ -1,4 +1,6 @@
 1273 (4.0a4)
+X replace about.bmp that was causing processing.exe to crash on startup
+X   https://github.com/processing/processing4/issues/156
 
 earlier
 o further streamline the downloader
