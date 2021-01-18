@@ -1,16 +1,5 @@
-1272 (4.0a3)
-X loadJSONObject/Array() now return null if the given file was not found
-X   https://github.com/processing/processing/pull/6081
-X remove zero width no-break space (U+FEFF) character with trim()
-X PShapeOpenGL setAttrib() warning says "setNormal()" instead of "setAttrib()"
-X   https://github.com/processing/processing4/issues/141
-X SVG Export
-X   update Batik to 1.13 (from 1.8)
-X   download it via direct link (don't check into repo)
-X   fixes incompatibilities with org.w3c.dom and Java 11
-X JDK 11.0.7+ blank screen issue... workarounds/hacks in place, fix them:
-X   https://github.com/processing/processing4/issues/124
-X   fixed with the new JOGL RC
+1273 (4.0a4)
+
 
 fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
 X AppKit errors from P2D/P3D
