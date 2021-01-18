@@ -1,33 +1,31 @@
 1273 (4.0a4)
 
+earlier
+o further streamline the downloader
+o   https://github.com/processing/processing4/issues/47
+o next video release
+o   https://github.com/processing/processing-video/milestone/1
+
 
 already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
 _   https://github.com/processing/processing/issues/6059
 
+
 _ remove the JRE Downloader
 _   https://github.com/processing/processing4/issues/155
 
-_ disable "notifications" prompt on startup for macOS
-_   (we're not posting any notifications, at least for now)
-_   https://developer.apple.com/documentation/usernotifications
-_   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
-
-_ Apple Silicon release
-_   http://openjdk.java.net/jeps/391
-_   https://github.com/AdoptOpenJDK/openjdk-support/issues/146
-_   https://github.com/microsoft/openjdk-aarch64/releases
-_   https://www.azul.com/downloads/zulu-community/?version=java-11-lts&os=macos&architecture=arm-64-bit&package=jdk
-_   OpenGL available but deprecated on Apple Si
-_     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to_apple_silicon
-
 _ MovieMaker .mov not compatible with QuicktTime Player
 _   https://github.com/processing/processing/issues/6110
-
-_ getSystemZoom() not available to splash screen
-_   https://github.com/processing/processing4/issues/145
-_   move all platform code out that doesn't require additional setup?
-_   i.e. all the things that rely on preferences can be inited separately (later)
+_   confirmed that after Mojave, the QTMovieModernizer went away (was 32-bit)
+_     https://support.apple.com/en-us/HT202884
+_   the modernizer would convert things to ProRes
+_     https://support.apple.com/en-us/HT202410
+_   possible other library: http://jcodec.org/
+_     https://github.com/jcodec/jcodec
+_   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
+_   jars: https://repo.maven.apache.org/maven2/org/jcodec/jcodec/0.2.5/
+_   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jcodec/samples/gen/SequenceEncoderDemo.java
 
 
 decisions before final 4.0 release
@@ -45,14 +43,8 @@ _   https://github.com/processing/processing/pull/6048
 discuss with Sam
 _ JSSC binaries for windows_32 and windows_64 appear to be macOS files
 _   https://github.com/processing/processing4/issues/119
-_ can we get rid of pdexEnabled? does it work w/ java tabs?
-
-
-discuss with Andres
-_ next video release
-_   https://github.com/processing/processing-video/milestone/1
-_ Add language support to modes
-_   https://github.com/processing/processing4/pull/14
+_ can we get rid of pdexEnabled? does the current code work w/ java tabs?
+_   https://github.com/processing/processing4/issues/157
 
 
 would like to fix
@@ -62,15 +54,61 @@ _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 _ launch/psk files/import from web editor (more details below)
 _ ability to switch mode in p5 w/o saving/closing/etc
+_   trying to save the user from themselves here is just messier than needed
 _ 'show sketch folder' weird when in temp folder
 _   ask to save first (sketch has not been saved yet)
 _   or make the temp folder part of the sketchbook
 _ same with adding files to an unsaved sketch, do we block that?
+_ Add language support to Modes
+_   https://github.com/processing/processing4/pull/14
+_   this was a small change; rebase not really needed since needs rewrite anyway
 
 
-high impact
+macos
+_ disable "notifications" prompt on startup for macOS
+_   (we're not posting any notifications, at least for now)
+_   https://developer.apple.com/documentation/usernotifications
+_   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
+_ Apple Silicon release
+_   http://openjdk.java.net/jeps/391
+_   https://github.com/AdoptOpenJDK/openjdk-support/issues/146
+_   https://github.com/microsoft/openjdk-aarch64/releases
+_   https://www.azul.com/downloads/zulu-community/?version=java-11-lts&os=macos&architecture=arm-64-bit&package=jdk
+_   OpenGL available but deprecated on Apple Si
+_     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to_apple_silicon
+
+
+windows
+_ we're turning off automatic UI scaling in Windows, should we turn it back on?
+_   using -Dsun.java2d.uiScale.enabled=false inside config.xml for launch4j
+_   this was for Java 9, and we should have better support now
+_   also check whether this is set on Linux
+_ Welcome screen doesn't size properly for HiDPI screens
+_   https://github.com/processing/processing/issues/4896
+_ getSystemZoom() not available to splash screen
+_   https://github.com/processing/processing4/issues/145
+_   move all platform code out that doesn't require additional setup?
+_   i.e. all the things that rely on preferences can be inited separately (later)
+_ “An error occurred while starting the application” with 4.0a3 on Windows
+_   fixed by bypassing launch4j... need to figure out what's going on
+_   https://github.com/processing/processing4/issues/156
+_   .\java\bin\java.exe -cp lib/pde.jar;core/library/core.jar;lib/jna.jar;lib/jna-platform.jar;lib/antlr-4.7.2-complete.jar;lib/ant.jar;lib/ant-launcher.jar -Djna.nosys=true -Dsun.java2d.uiScale.enabled=false -Djna.boot.library.path=lib -Djna.nounpack=true -Dsun.java2d.d3d=false -Dsun.java2d.ddoffscreen=false -Dsun.java2d.noddraw=true processing.app.Base
+_ launch4j doesn't work from folders with non-native charsets
+_   anything in CP1252 on an English Windows system is fine
+_   but anything else reports "font sadness" b/c it's using the system JRE
+_   https://github.com/processing/processing/issues/3543
+_   move to javapackager or another option?
+_   http://www.excelsiorjet.com/kb/35/howto-create-a-single-exe-from-your-java-application
+_ Export Application fails on machines w/ non-ASCII chars in user name
+_   at least give a warning about this?
+_   https://github.com/processing/processing/issues/4736
+_   related: https://github.com/processing/processing/issues/3543
+_ windows anti-malware leaves browser stuck at 100%
+_   https://github.com/processing/processing/issues/5893
 _ temp folders (particularly on Windows)
 _   a whole section down below about this
+_ sign releases on Windows to avoid SmartScreen warnings/errors
+_   https://github.com/processing/processing4/issues/25
 
 
 sketch/launching
@@ -90,8 +128,9 @@ _ put the reference (and examples?) into .zip files
 _   unzipping the app takes forever
 _   see the 'examples' section below
 _ how are file associations handled in Linux? (for .pde, .psk)
-_ command line complaints
-_   https://github.com/processing/processing/issues/6129
+_ when adding a new library, its examples aren't added to the list until restart
+_ refresh option for sketchbook (bottom of window)
+_ import option for sketchbook
 
 
 before final release
@@ -100,52 +139,45 @@ _   https://github.com/processing/processing4/issues/48
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
 _   just skip the welcome screen on Windows hidpi dipslays?
+_   better to launch a web browser
+_     also use id/ask for login to help understand community?
 _ change help menu links to go to newer FAQ and the rest
 _ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
 _ better means of understanding Library/Mode/Tool usage
-_ sign releases on Windows to avoid SmartScreen warnings/errors
-_   https://github.com/processing/processing4/issues/25
-_ update the docs repo
+
+
+web/docs
+_ create a processing4-docs repo
 _   check with Casey re: shallow clone or approach
-
-
 _ show the recommended sw version for users' platform on the download page
 
 
-open issues
 _ fixing undo
 _   https://github.com/processing/processing/issues/4775
 _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
-_ further streamline the downloader
-_   https://github.com/processing/processing4/issues/47
 _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
+_ command line complaints
+_   https://github.com/processing/processing/issues/6129
+_ update installation guide for Linux
+_   https://github.com/processing/processing-docs/issues/645
 
 
 probably past 4.x
 _ language server refactoring
 _   https://github.com/processing/processing4/issues/117
 _   https://theia-ide.org/
+_   https://medium.com/ballerina-techblog/implementing-a-language-server-how-hard-can-it-be-part-2-fa65a741aa23
 
 
-_ windows anti-malware leaves browser stuck at 100%
-_   https://github.com/processing/processing/issues/5893
-
-_ update installation guide for Linux
-_   https://github.com/processing/processing-docs/issues/645
 
 _ "Could not get the settings folder" message could be more helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
 _   then tell the user which folder to fix
-
-
-_ when adding a new library, its examples aren't added to the list until restart
-_ refresh option for sketchbook (bottom of window)
-_ import option for sketchbook
 
 
 contrib
@@ -162,14 +194,10 @@ _   https://github.com/processing/processing/issues/5786
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
 _   https://github.com/processing/processing/pull/5642
-_ sketch window placement not recorded
+_ sketch window resets position after each run (regression from 3.4?)
 _   https://github.com/processing/processing/issues/5781
 _ errors inside setup() aren't coming through at all?
 _   seen in Eclipse; have to turn on the debugger... same as #4703?
-_ Welcome screen doesn't size properly for HiDPI screens
-_   https://github.com/processing/processing/issues/4896
-_ sketch window resets position after each run (regression from 3.4?)
-_   https://github.com/processing/processing/issues/5781
 
 
 temp
@@ -244,22 +272,8 @@ _   https://github.com/processing/processing/commit/2ecdc36ac7c680eb36e271d17ad8
 _ patch to core classpath by Manindra?
 
 
-
-known issues
-_ launch4j doesn't work from folders with non-native charsets
-_   anything in CP1252 on an English Windows system is fine
-_   but anything else reports "font sadness" b/c it's using the system JRE
-_   https://github.com/processing/processing/issues/3543
-_   move to javapackager or another option?
-_   http://www.excelsiorjet.com/kb/35/howto-create-a-single-exe-from-your-java-application
-_ Export Application fails on machines w/ non-ASCII chars in user name
-_   at least give a warning about this?
-_   https://github.com/processing/processing/issues/4736
-_   related: https://github.com/processing/processing/issues/3543
-_ mouse events (i.e. toggle breakpoint) seem to be firing twice
-
-
 gui
+_ mouse events (i.e. toggle breakpoint) seem to be firing twice
 _ spacing of the updates number/circle in the lower right is off
 _   https://github.com/processing/processing/issues/4094
 _   https://github.com/processing/processing/pull/4097
