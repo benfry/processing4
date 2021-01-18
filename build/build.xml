@@ -79,48 +79,27 @@
     </and>
   </condition>
 
-  <!-- could prompt here to download the necessary JRE
-       (Windows/Linux) or JDK (on Mac OS X) -->
+  <!-- Could prompt here to download the necessary JDK... -->
 
   <property name="examples.dir"
             value="../../processing-docs/content/examples" />
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="8" />
-  <property name="jdk.build" value="10" />
+  <property name="jdk.update" value="9.1" />
+  <property name="jdk.build" value="1" />
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
-  <!-- as of 200815, gluon is currently working on 14.0, and has 11.0.8 available for
-       commercial clients as an LTS release, but 11.0.2 is the latest public version -->
+  <!-- As of 210117, Gluon has 11.0.8 available for commercial clients
+       as an LTS release, but 11.0.2 is the latest free/public version -->
   <property name="jfx.train" value="11" />
   <property name="jfx.version" value="0" />
   <property name="jfx.update" value="2" />
   <property name="jfx.build" value="0" />
 
   <property name="jfx.name" value="${jfx.train}.${jfx.version}.${jfx.update}" />
-
-
-  <!-- Figure out the JRE download location for Linux and Windows. -->
-  <!--
-  <condition property="jdk.file"
-             value="jdk-${jdk.short}-${target-platform}-i586.tar.gz">
-    <equals arg1="${jdk.data.model}" arg2="32" />
-  </condition>
-  <condition property="jdk.file"
-             value="jdk-${jdk.short}-${target-platform}-x64.tar.gz">
-    <equals arg1="${jdk.data.model}" arg2="64" />
-  </condition>
-  -->
-
-  <!-- JDK location for Mac OS X -->
-  <!--
-  <condition property="jdk.file" value="jdk-${jdk.short}-macosx-x64.dmg">
-    <equals arg1="${target-platform}" arg2="macosx" />
-  </condition>
-  -->
 
   <!-- These lists haven't been updated since Java 6. The new list:
        http://www.oracle.com/technetwork/java/javase/jdk-8-readme-2095710.html

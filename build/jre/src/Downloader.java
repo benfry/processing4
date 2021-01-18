@@ -34,7 +34,7 @@ public class Downloader extends Task {
   private String platform; // macos
   private int train;  // Java 11 (was 1 through Java 8)
   private int version;  // 0 (was 8 prior to Java 9)
-  private int update;  // Update 131
+  private String update;  // Update 131
   private int build;  // Build 11
 
   private String component;  // "jdk" or "jfx"
@@ -80,7 +80,7 @@ public class Downloader extends Task {
    *
    * @param update The update within the version to use like 1 for "11.0.1_13".
    */
-  public void setUpdate(int update) {
+  public void setUpdate(String update) {
     this.update = update;
   }
 
@@ -250,9 +250,9 @@ public class Downloader extends Task {
 
 
   static private String adoptOpenJdkUrl(String platform, String component,
-                                        int train, int version, int update,
+                                        int train, int version, String update,
                                         int build, String flavor) {
-    final String URL_FORMAT = "https://github.com/AdoptOpenJDK/openjdk%d-binaries/releases/download/jdk-%d.%d.%d%%2B%d/OpenJDK%dU-%s_%d.%d.%d_%d.%s";
+    final String URL_FORMAT = "https://github.com/AdoptOpenJDK/openjdk%d-binaries/releases/download/jdk-%d.%d.%s%%2B%d/OpenJDK%dU-%s_%d.%d.%s_%d.%s";
 
     String filename = null;
     switch (platform) {
@@ -286,9 +286,9 @@ public class Downloader extends Task {
 
 
   static private String gluonHqUrl(String platform, String component,
-                                   int train, int version, int update) {
+                                   int train, int version, String update) {
     final String URL_FORMAT =
-      "https://gluonhq.com/download/javafx-%d-%d-%d-sdk-%s/";
+      "https://gluonhq.com/download/javafx-%d-%d-%s-sdk-%s/";
 
     String platformShort;
     if (platform.contains("linux")) {
@@ -317,12 +317,12 @@ public class Downloader extends Task {
    * @param flavor The flavor like "macosx-x64.dmg".
    */
   static private String getLocalFilename(String component, int version,
-                                         int update, String flavor) {
+                                         String update, String flavor) {
     String versionStr;
-    if (update == 0) {
+    if (update.equals("0")) {
       versionStr = String.format("-%d-%s", version, flavor);
     } else {
-      versionStr = String.format("-%du%d-%s", version, update, flavor);
+      versionStr = String.format("-%du%s-%s", version, update, flavor);
     }
     return component + versionStr;
   }

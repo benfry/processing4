@@ -59,6 +59,9 @@ already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
 _   https://github.com/processing/processing/issues/6059
 
+file issues
+_ update the splash screen to say 2021
+_ remove the JRE Downloader
 
 _ disable "notifications" prompt on startup for macOS
 _   (we're not posting any notifications, at least for now)
@@ -86,6 +89,9 @@ _   i.e. all the things that rely on preferences can be inited separately (later
 decisions before final 4.0 release
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
+_   now with a release 9 to cover Big Sur
+_     https://violetlib.org/vaqua/downloads.html
+_   make the final call to remove, or put the libs on download.processing.org
 _ Some 3.x Tools not working because JavaFX isn't on the classpath
 _   https://github.com/processing/processing4/issues/110
 _ Friendly Names for new Sketches (includes UI for switching it back)
