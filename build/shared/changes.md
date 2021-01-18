@@ -2,11 +2,13 @@
 
 *Revision 1272 - 17 January 2021*
 
-Several bug fixes here, the most significant being video capture on macOS should be working again, and several OpenGL fixes that come with an updated release of JOGL. (Thanks to Sven Göthel, who continues working on it after many years.)
+Happy [Martin Luther King Day](https://en.wikipedia.org/wiki/Martin_Luther_King_Jr._Day)! (Or MLK Day Eve, if you're reading this on Sunday.)
+
+Several bug fixes and updates in this release, the most significant being video capture on macOS should be working again, and several OpenGL fixes that come with an updated release of JOGL. (Thanks to Sven Göthel, who continues working on it after many years.)
 
 ### Known Issues
 
-* The ugly `surface.setResizable()` workaround in the previous release is now properly fixed.
+* The ugly `surface.setResizable()` workaround in the previous release is now properly fixed. [124](https://github.com/processing/processing4/issues/124)
 * Haven't had a chance to test much with macOS running on M1 machines. Chances are this should run in Rosetta mode, but I've not had time to find out.
 
 ### Fixes and Updates
@@ -14,6 +16,15 @@ Several bug fixes here, the most significant being video capture on macOS should
 * Video [was broken](https://github.com/processing/processing-video/issues/134) on macOS because of Apple's security changes.
 * Audio was [also broken](https://github.com/processing/processing-sound/issues/51) on macOS because of Apple security changes.
 * Fix `NullPointerException` in `getSystemZoom()` on startup in alpha 2. [143](https://github.com/processing/processing4/issues/143)
+* `loadJSONObject()` and `loadJSONArray()` now return `null` if the given file was not found (in line with other `loadXxxx()` APIs. [6081](https://github.com/processing/processing/pull/6081)
+* Update the splash screen to say 2021 before the pedants can hunt me down.
+* Contribution translation updates (thank you!)
+    * Updates and fixes for the Portugese translation [133](https://github.com/processing/processing4/pull/133), [134](https://github.com/processing/processing4/pull/134), [147](https://github.com/processing/processing4/pull/147)
+    * Correct alphabetical order for the language list. [146](https://github.com/processing/processing4/pull/146)
+* Remove zero width no-break space `U+FEFF` character with `trim()`.
+* `PShapeOpenGL.setAttrib()` warning referenced `setNormal()` instead of `setAttrib()`. [141](https://github.com/processing/processing4/issues/141)
+* Add `var` keyword to highlighting [114](https://github.com/processing/processing4/issues/114)
+* Fix revision number in exported code [135](https://github.com/processing/processing4/issues/135)
 
 ### And More from Sam
 
@@ -24,18 +35,13 @@ Several bug fixes here, the most significant being video capture on macOS should
 ### Internal Additions
 
 * You can now create a “source” `.jar` file by typing `ant source-jar` inside the `core` directory. [118](https://github.com/processing/processing4/issues/118)
+* Update Batik from 1.8 to 1.13 inside SVG Export library. Fixes incompatibilities with Java 11.
 * Automate macOS notarization in the build process (done in 4.0a2) [24](https://github.com/processing/processing4/issues/24)
 * Show Tool incompatibilities with a message dialog, and clean up a little of the internal error handling.
 * Prevent “illegal line” message when loading library with `0xFEFF` chars in a `.properties` file
-* Add `var` keyword to highlighting [114](https://github.com/processing/processing4/issues/114)
-* Fix revision number in exported code [135](https://github.com/processing/processing4/issues/135)
 * Fixes to `Platform` code
     * Get rid of `editor.laf.vaqua` preference (use the `editor.laf` preference instead)
     * Move macOS-specific code out of `DefaultPlatform` and into `MacPlatform`
-
-### Minor Tweaks
-
-* Update the splash screen to say 2021 before the pedants can find me
 * Clean up “Export to Application”
     * Turned off 32-bit and ARM exports (no longer supported)
     * Drop '64' from the folder name (everything 64-bit from now on)
@@ -44,9 +50,6 @@ Several bug fixes here, the most significant being video capture on macOS should
     * Updates and text changes to be a little clearer
     * Fixed links for Java 11
     * Set minimum version on Windows, fix JDK download URL
-* Translation updates
-    * Updates and fixes for the Portugese translation [133](https://github.com/processing/processing4/pull/133), [134](https://github.com/processing/processing4/pull/134), [147](https://github.com/processing/processing4/pull/147)
-    * Correct alphabetical order for the language list. [146](https://github.com/processing/processing4/pull/146)
 
 
 # Processing 4.0 alpha 2
