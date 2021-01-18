@@ -24,10 +24,14 @@
     <subant buildpath="methods" target="dist" />
   </target>
 
-  <!-- Base URL for the current version of JOGL. This should probably be changed to
-       a location on download.processing.org so that we know it's available forever. -->
+  <!-- Base URL for the current version of JOGL. -->
   <property name="jogl.url"
-            value="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20200307/jar" />
+            value="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20210111/jar" />
+  <!-- This is for posterity, and is not used at present. When updating
+       the release, also make a copy of the files on download.processing.org
+       so that they can be retrieved even after the original link goes dead. -->
+  <property name="jogl.url.backup"
+            value="https://download.processing.org/jogl/v2.4.0-rc-20210111" />
 
   <available file="library/jogl-all.jar" property="jogl.present" />
 
