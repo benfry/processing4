@@ -34,6 +34,7 @@ X   https://github.com/processing/processing4/issues/143
 X   fix includes Platform cleanup
 X     get rid of editor.laf.vaqua preference (use the laf pref)
 X     move macOS-specific code out of DefaultPlatform and into MacPlatform
+X update the splash screen to say 2021
 
 contribs
 X Updates and fixes for PDE_pt.properties (Portugese translation)
@@ -59,9 +60,8 @@ already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
 _   https://github.com/processing/processing/issues/6059
 
-file issues
-_ update the splash screen to say 2021
 _ remove the JRE Downloader
+_   https://github.com/processing/processing4/issues/155
 
 _ disable "notifications" prompt on startup for macOS
 _   (we're not posting any notifications, at least for now)
