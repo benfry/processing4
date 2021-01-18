@@ -7,8 +7,8 @@
 
 ar  # Arabic
 de  # German, Deutsch
-en  # English, English
 el  # Greek
+en  # English, English
 es  # Spanish
 fr  # French, Français, Langue française
 it  # Italiano, Italian
