@@ -5814,7 +5814,12 @@ public class PApplet implements PConstants {
    * @see PApplet#saveJSONObject(JSONObject, String)
    */
   public JSONObject parseJSONObject(String input) {
-    return new JSONObject(new StringReader(input));
+    try {
+      return new JSONObject(new StringReader(input));
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
 
@@ -5902,31 +5907,36 @@ public class PApplet implements PConstants {
     return json.save(saveFile(filename), options);
   }
 
-/**
- * Takes a <b>String</b>, parses its contents, and returns a <b>JSONArray</b>.
- * If the <b>String</b> does not contain <b>JSONArray</b> data or cannot be
- * parsed, a <b>null</b> value is returned.<br />
- * <br />
- * <b>parseJSONArray()</b> is most useful when pulling data dynamically, such as
- * from third-party APIs. Normally, API results would be saved to a
- * <b>String</b>, and then can be converted to a structured <b>JSONArray</b>
- * using <b>parseJSONArray()</b>. Be sure to check if <b>null</b> is returned
- * before performing operations on the new <b>JSONArray</b> in case the
- * <b>String</b> content could not be parsed.<br />
- * <br />
- * If your data already exists as a <b>JSON</b> file in the data folder, it is
- * simpler to use <b>loadJSONArray()</b>.
- *
- * @webref input:files
- * @webBrief
- * @param input
- *          String to parse as a JSONArray
- * @see JSONObject
- * @see PApplet#loadJSONObject(String)
- * @see PApplet#saveJSONObject(JSONObject, String)
- */
+  /**
+   * Takes a <b>String</b>, parses its contents, and returns a <b>JSONArray</b>.
+   * If the <b>String</b> does not contain <b>JSONArray</b> data or cannot be
+   * parsed, a <b>null</b> value is returned.<br />
+   * <br />
+   * <b>parseJSONArray()</b> is most useful when pulling data dynamically, such as
+   * from third-party APIs. Normally, API results would be saved to a
+   * <b>String</b>, and then can be converted to a structured <b>JSONArray</b>
+   * using <b>parseJSONArray()</b>. Be sure to check if <b>null</b> is returned
+   * before performing operations on the new <b>JSONArray</b> in case the
+   * <b>String</b> content could not be parsed.<br />
+   * <br />
+   * If your data already exists as a <b>JSON</b> file in the data folder, it is
+   * simpler to use <b>loadJSONArray()</b>.
+   *
+   * @webref input:files
+   * @webBrief
+   * @param input
+   *          String to parse as a JSONArray
+   * @see JSONObject
+   * @see PApplet#loadJSONObject(String)
+   * @see PApplet#saveJSONObject(JSONObject, String)
+   */
   public JSONArray parseJSONArray(String input) {
-    return new JSONArray(new StringReader(input));
+    try {
+      return new JSONArray(new StringReader(input));
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
 
