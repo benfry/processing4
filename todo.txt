@@ -1,6 +1,22 @@
 1273 (4.0a4)
-X replace about.bmp that was causing processing.exe to crash on startup
+X “An error occurred while starting the application” with 4.0a3 on Windows
+X   replace about.bmp that was causing processing.exe to crash on startup
 X   https://github.com/processing/processing4/issues/156
+
+windows/scaling
+_ we're turning off automatic UI scaling in Windows, should we turn it back on?
+_   using -Dsun.java2d.uiScale.enabled=false inside config.xml for launch4j
+_   this was for Java 9, and we should have better support now
+_   also check whether this is set on Linux
+_ Welcome screen doesn't size properly for HiDPI screens
+_   https://github.com/processing/processing/issues/4896
+_ getSystemZoom() not available to splash screen
+_   https://github.com/processing/processing4/issues/145
+_   move all platform code out that doesn't require additional setup?
+_   i.e. all the things that rely on preferences can be inited separately (later)
+_ include JNA so that sketches can also scale properly?
+_   what happens re: getting scaled/high-res graphics?
+_   make that a preference? (and double the size by default?)
 
 earlier
 o further streamline the downloader
@@ -13,9 +29,16 @@ already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
 _   https://github.com/processing/processing/issues/6059
 
-
+_ Display Window doesn't remember its position
+_   https://github.com/processing/processing4/issues/158
+_   seems that --external not getting passed
+_     https://github.com/processing/processing/issues/5843
+_   https://github.com/processing/processing/issues/5781
 _ remove the JRE Downloader
 _   https://github.com/processing/processing4/issues/155
+_ editor breakpoints out of the .pde files
+_   https://github.com/processing/processing/issues/5848
+_   or at least avoid the multiple
 
 _ MovieMaker .mov not compatible with QuicktTime Player
 _   https://github.com/processing/processing/issues/6110
@@ -81,19 +104,7 @@ _     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to
 
 
 windows
-_ we're turning off automatic UI scaling in Windows, should we turn it back on?
-_   using -Dsun.java2d.uiScale.enabled=false inside config.xml for launch4j
-_   this was for Java 9, and we should have better support now
-_   also check whether this is set on Linux
-_ Welcome screen doesn't size properly for HiDPI screens
-_   https://github.com/processing/processing/issues/4896
-_ getSystemZoom() not available to splash screen
-_   https://github.com/processing/processing4/issues/145
-_   move all platform code out that doesn't require additional setup?
-_   i.e. all the things that rely on preferences can be inited separately (later)
-_ “An error occurred while starting the application” with 4.0a3 on Windows
-_   fixed by bypassing launch4j... need to figure out what's going on
-_   https://github.com/processing/processing4/issues/156
+_ go back to including a .bat file?
 _   .\java\bin\java.exe -cp lib/pde.jar;core/library/core.jar;lib/jna.jar;lib/jna-platform.jar;lib/antlr-4.7.2-complete.jar;lib/ant.jar;lib/ant-launcher.jar -Djna.nosys=true -Dsun.java2d.uiScale.enabled=false -Djna.boot.library.path=lib -Djna.nounpack=true -Dsun.java2d.d3d=false -Dsun.java2d.ddoffscreen=false -Dsun.java2d.noddraw=true processing.app.Base
 _ launch4j doesn't work from folders with non-native charsets
 _   anything in CP1252 on an English Windows system is fine

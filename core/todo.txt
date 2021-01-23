@@ -114,6 +114,8 @@ _   y coords on macOS seem to be one pixel off
 
 
 retina/hi-dpi/sizing
+_ notes from jetbrains
+_   https://intellij-support.jetbrains.com/hc/en-us/articles/360007994999-HiDPI-configuration
 _ implement sketch scaling into PApplet
 _   https://github.com/processing/processing/issues/4897
 _ Sketches on Windows don't take UI sizing into account
