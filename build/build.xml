@@ -79,15 +79,13 @@
     </and>
   </condition>
 
-  <!-- Could prompt here to download the necessary JDK... -->
-
   <property name="examples.dir"
             value="../../processing-docs/content/examples" />
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="9.1" />
-  <property name="jdk.build" value="1" />
+  <property name="jdk.update" value="10" />
+  <property name="jdk.build" value="9" />
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
