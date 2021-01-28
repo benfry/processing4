@@ -24,10 +24,7 @@ Now you are ready to run the doclet
 
 1. First `cd` into the `processing4/doclet/ReferenceGenerator` folder
 2. Run `ant compile`
-3. Run the script:
-
-- If you are updating a single repository, run `./processingrefBuild.sh processing`, `./processingrefBuild.sh sound` or `./processingrefBuild.sh video`
-- If you are updating all the repositories, run `./processingrefBuild.sh`
+3. Run `./processingrefBuild.sh` if you are updating all the repositories or `./processingrefBuild.sh processing`, `./processingrefBuild.sh sound` or `./processingrefBuild.sh video` if you are updating a single repository.
 
 If you just want to test the Doclet without the `processing-website` repo, you can create the following folder structure in the root folder and see the files:
 
