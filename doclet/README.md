@@ -22,8 +22,8 @@ You also need to have [Apache Ant](https://ant.apache.org/manual/install.html) i
 Now run the Doclet:
 
 1. First move into the `processing4/doclet/ReferenceGenerator` folder
-1. Run `ant compile`
-1. Run `./processingrefBuild.sh`
+2. Run `ant compile`
+3. Run `./processingrefBuild.sh` **note:if you want to run the script just for the main processing references(including libraries serial, net and io) you should run `./processingrefBuild.sh processing` and if you want to run the script for sound or video library you should run `./processingrefBuild.sh sound` or `./processingrefBuild.sh video`**
 
 If you are only updating the processing reference and not the sound or video libraries, you can comment out the part related to those libraries in the `processingrefBuild.sh` file. Please remember to not commit these changes to the repo.
 
