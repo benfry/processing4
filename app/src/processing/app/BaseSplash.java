@@ -15,6 +15,7 @@ public class BaseSplash {
       SplashWindow.splash(splashFile.toURI().toURL(), hidpi);
       SplashWindow.invokeMain("processing.app.Base", args);
       SplashWindow.disposeSplash();
+
     } catch (Exception e) {
       e.printStackTrace();
       // !@#!@$$! umm

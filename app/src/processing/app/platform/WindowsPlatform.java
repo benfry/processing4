@@ -636,13 +636,14 @@ public class WindowsPlatform extends DefaultPlatform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+
   public float getSystemZoom() {
     if (cachedDisplayScaling.isEmpty()) {
       cachedDisplayScaling = Optional.of(calculateSystemZoom());
     }
-
     return cachedDisplayScaling.get();
   }
+
 
   private float calculateSystemZoom() {
     WinDef.HDC hdc = GDI32.INSTANCE.CreateCompatibleDC(null);
@@ -659,5 +660,4 @@ public class WindowsPlatform extends DefaultPlatform {
 
     return logicalResolution / virtualResolution;
   }
-
 }

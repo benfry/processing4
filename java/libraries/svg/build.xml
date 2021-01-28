@@ -6,27 +6,66 @@
     <delete file="library/svg.jar" />
   </target>
 
-  <target name="compile" description="Compile sources">
+  <property name="batik.version" value="1.13" />
+  <!-- the .zip file to be downloaded -->
+  <property name="batik.zip" value="batik-bin-${batik.version}.zip" />
+  <!-- the .jar file that's the actual dependency -->
+  <property name="batik.jar" value="batik-all-${batik.version}.jar" />
+
+  <!-- URL for the version of Batik currently supported by this library. -->
+  <property name="batik.url"
+            value="https://apache.osuosl.org/xmlgraphics/batik/binaries/${batik.zip}" />
+
+  <!-- Storing a "local" copy in case the original link goes dead. When updating
+       releases, please upload the new version to download.processing.org. -->
+  <property name="batik.url.backup"
+            value="https://download.processing.org/batik/${batik.zip}" />
+
+
+  <available file="library/${batik.jar}" property="batik.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="batik.ignorable" value="false" else="true">
+    <isset property="batik.present" />
+  </condition>
+
+  <target name="download-batik" unless="batik.present">
+    <get src="${batik.url}" dest="."
+         ignoreerrors="${batik.ignorable}"
+         usetimestamp="true" />
+
+    <!-- <property name="zip.prefix" value="batik-${batik.version}/lib/${batik.jar}" /> -->
+    <property name="zip.prefix" value="batik-${batik.version}/lib" />
+
+    <!-- Formerly used batik-awt-util-1.8.jar, batik-dom-1.8.jar, batik-ext-1.8.jar,
+         batik-svggen-1.8.jar, batik-util-1.8.jar, batik-xml-1.8.jar but using
+         the big feller from now on since file size is less important, and there
+         were complaints about some .jar files not being available. -->
+    <unzip src="${batik.zip}" dest="library">
+      <patternset>
+        <!-- unzip a single jar from the zip.prefix subdirectory in the .zip -->
+        <include name="${zip.prefix}/${batik.jar}"/>
+      </patternset>
+      <mapper>
+        <!-- remove the zip.prefix from the path when saving the .jar -->
+        <globmapper from="${zip.prefix}/*" to="*"/>
+      </mapper>
+    </unzip>
+  </target>
+
+  <target name="compile" depends="download-batik" description="Compile sources">
     <condition property="core-built">
       <available file="../../../core/library/core.jar" />
     </condition>
     <fail unless="core-built" message="Please build the core library first and make sure it sits in ../../../core/library/core.jar" />
 
     <mkdir dir="bin" />
-    <javac source="11"
-	   target="11"
-	   srcdir="src" destdir="bin"
-	   encoding="UTF-8"
-	   includeAntRuntime="false"
-	   classpath="../../../core/library/core.jar;
-                      library/batik-awt-util-1.8.jar;
-                      library/batik-dom-1.8.jar;
-                      library/batik-ext-1.8.jar;
-                      library/batik-svggen-1.8.jar;
-                      library/batik-util-1.8.jar;
-                      library/batik-xml-1.8.jar"
-	   nowarn="true">
-    </javac>
+    <javac source="11" target="11"
+	         srcdir="src" destdir="bin"
+	         encoding="UTF-8"
+	         includeAntRuntime="false"
+	         classpath="../../../core/library/core.jar; library/${batik.jar};"
+	         nowarn="true" />
   </target>
 
   <target name="build" depends="compile" description="Build SVG library">

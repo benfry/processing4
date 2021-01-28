@@ -22,18 +22,23 @@
 
 package processing.app.platform;
 
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Desktop;
+import java.awt.Graphics;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.UIManager;
 
 import processing.app.Base;
 import processing.app.Messages;
-import processing.app.platform.DefaultPlatform;
+import processing.app.Preferences;
 import processing.app.ui.About;
 
 
@@ -94,6 +99,24 @@ public class MacPlatform extends DefaultPlatform {
         quitResponse.cancelQuit();
       }
     });
+  }
+
+
+  @Override
+  public void setLookAndFeel() throws Exception {
+    super.setLookAndFeel();
+
+    String laf = Preferences.get("editor.laf");
+    if ("org.violetlib.aqua.AquaLookAndFeel".equals(laf)) {
+      Icon collapse = new VAquaTreeIcon(true);
+      Icon open = new VAquaTreeIcon(false);
+      Icon leaf = new VAquaEmptyIcon();
+      UIManager.put("Tree.closedIcon", leaf);
+      UIManager.put("Tree.openIcon", leaf);
+      UIManager.put("Tree.collapsedIcon", open);
+      UIManager.put("Tree.expandedIcon", collapse);
+      UIManager.put("Tree.leafIcon", leaf);
+    }
   }
 
 
@@ -174,4 +197,80 @@ public class MacPlatform extends DefaultPlatform {
     return FileManager.findFolder(kUserDomain, kDocumentsFolderType);
   }
   */
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+  // VAQUA WORKAROUNDS FROM SAM
+
+
+  /**
+   * Spacer icon for macOS when using Vaqua.
+
+   * Due to potential rendering issues, this small spacer is used
+   * to ensure that rendering is stable while using Vaqua with non-standard
+   * Swing components. Without this, some sizing calculations non-standard
+   * components may fail or become unreliable.
+   */
+  class VAquaEmptyIcon implements Icon {
+    private final int SIZE = 1;
+
+    @Override
+    public int getIconWidth() {
+      return SIZE;
+    }
+
+    @Override
+    public int getIconHeight() {
+      return SIZE;
+    }
+
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) { }
+  }
+
+
+  /**
+   * Replacement tree icon for macOS when using Vaqua.
+   *
+   * Due to potential rendering issues with the regular tree icon set,
+   * this replacement tree icon for macOS ensures stable rendering when using
+   * Vaqua with non-standard swing components. Without this, some sizing
+   * calculations within non-standard components may fail or become unreliable.
+   */
+  private class VAquaTreeIcon implements Icon {
+    private final int SIZE = 12;
+    private final boolean isOpen;
+
+    /**
+     * Create a new tree icon.
+     *
+     * @param newIsOpen Flag indicating if the icon should be in the open or closed state at
+     *    construction. True if open false otherwise.
+     */
+    public VAquaTreeIcon(boolean newIsOpen) {
+      isOpen = newIsOpen;
+    }
+
+    @Override
+    public int getIconWidth() {
+      return SIZE;
+    }
+
+    @Override
+    public int getIconHeight() {
+      return SIZE;
+    }
+
+    @Override
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      g.setColor(Color.GRAY);
+
+      g.drawLine(x + SIZE / 2 - 3, y + SIZE / 2, x + SIZE / 2 + 3, y + SIZE / 2);
+
+      if (!isOpen) {
+        g.drawLine(x + SIZE / 2, y + SIZE / 2 - 3, x + SIZE / 2, y + SIZE / 2 + 3);
+      }
+    }
+  }
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <project name="Processing Core" default="build">
 
-  <property environment="env"/>
+  <property environment="env" />
 
   <target name="clean" description="Clean out the build directories">
     <delete dir="bin" />
@@ -24,10 +24,14 @@
     <subant buildpath="methods" target="dist" />
   </target>
 
-  <!-- Base URL for the current version of JOGL. This should probably be changed to
-       a location on download.processing.org so that we know it's available forever. -->
+  <!-- Base URL for the current version of JOGL. -->
   <property name="jogl.url"
-            value="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20200307/jar" />
+            value="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20210111/jar" />
+  <!-- This is for posterity, and is not used at present. When updating
+       the release, also make a copy of the files on download.processing.org
+       so that they can be retrieved even after the original link goes dead. -->
+  <property name="jogl.url.backup"
+            value="https://download.processing.org/jogl/v2.4.0-rc-20210111" />
 
   <available file="library/jogl-all.jar" property="jogl.present" />
 
@@ -79,9 +83,9 @@
   </path>
 
   <macrodef name="compilecommon">
-    <attribute name="destdir"/>
-    <attribute name="srcdir"/>
-    <attribute name="classpath"/>
+    <attribute name="destdir" />
+    <attribute name="srcdir" />
+    <attribute name="classpath" />
     <sequential>
       <taskdef name="methods"
   	     classname="PAppletMethods"
@@ -107,7 +111,7 @@
   	   debug="true"
   	   destdir="@{destdir}"
   	   nowarn="true">
-        <classpath refid="@{classpath}"/>
+        <classpath refid="@{classpath}" />
         <src path="@{srcdir}" />
         <include name="processing/**" />
         <exclude name="processing/javafx/**" if="fx.unavailable" />
@@ -155,6 +159,14 @@
   <target name="build" depends="download-jogl, methods-build, compile"
           description="Build core library">
     <jar basedir="bin" destfile="library/core.jar" />
+  </target>
+
+  <target name="source-jar">
+    <property name="source.jar.path" location="core-sources.jar" />
+    <jar basedir="src" destfile="${source.jar.path}">
+      <fileset dir="src" includes="**/*.java" />
+    </jar>
+    <echo message="Wrote source jar to ${source.jar.path}" />
   </target>
 
 </project>

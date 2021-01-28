@@ -62,7 +62,7 @@
   </target>
 
   <!-- Require Java 11 everywhere. -->
-  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java 11 is installed.">
+  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java 11 is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v 11`&quot;">
     <condition>
       <not>
         <or>
@@ -79,48 +79,27 @@
     </and>
   </condition>
 
-  <!-- could prompt here to download the necessary JRE
-       (Windows/Linux) or JDK (on Mac OS X) -->
+  <!-- Could prompt here to download the necessary JDK... -->
 
   <property name="examples.dir"
             value="../../processing-docs/content/examples" />
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="6" />
-  <property name="jdk.build" value="10" />
+  <property name="jdk.update" value="9.1" />
+  <property name="jdk.build" value="1" />
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
-  <!-- as of 200815, gluon is currently working on 14.0, and has 11.0.8 available for
-       commercial clients as an LTS release, but 11.0.2 is the latest public version -->
+  <!-- As of 210117, Gluon has 11.0.8 available for commercial clients
+       as an LTS release, but 11.0.2 is the latest free/public version -->
   <property name="jfx.train" value="11" />
   <property name="jfx.version" value="0" />
   <property name="jfx.update" value="2" />
   <property name="jfx.build" value="0" />
 
   <property name="jfx.name" value="${jfx.train}.${jfx.version}.${jfx.update}" />
-
-
-  <!-- Figure out the JRE download location for Linux and Windows. -->
-  <!--
-  <condition property="jdk.file"
-             value="jdk-${jdk.short}-${target-platform}-i586.tar.gz">
-    <equals arg1="${jdk.data.model}" arg2="32" />
-  </condition>
-  <condition property="jdk.file"
-             value="jdk-${jdk.short}-${target-platform}-x64.tar.gz">
-    <equals arg1="${jdk.data.model}" arg2="64" />
-  </condition>
-  -->
-
-  <!-- JDK location for Mac OS X -->
-  <!--
-  <condition property="jdk.file" value="jdk-${jdk.short}-macosx-x64.dmg">
-    <equals arg1="${target-platform}" arg2="macosx" />
-  </condition>
-  -->
 
   <!-- These lists haven't been updated since Java 6. The new list:
        http://www.oracle.com/technetwork/java/javase/jdk-8-readme-2095710.html
@@ -421,7 +400,7 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
-    <include name="app/lib/VAqua7.jar" />
+    <include name="app/lib/VAqua8.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
@@ -720,7 +699,7 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
-      <classpath file="../app/lib/VAqua7.jar" />
+      <classpath file="../app/lib/VAqua8.jar" />
 
       <!-- plus core.jar... note that this is no longer shared -->
       <classpath file="../core/library/core.jar" />
@@ -766,25 +745,13 @@
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
 
-<!--
-    the old options; most of these are probably no longer useful
-        <key>apple.laf.useScreenMenuBar</key>
-        <string>true</string>
-        <key>apple.awt.showGrowBox</key>
-        <string>true</string>
-        <key>com.apple.smallTabs</key>
-        <string>true</string>
-        <key>apple.awt.Antialiasing</key>
-        <string>false</string>
-        <key>apple.awt.TextAntialiasing</key>
-        <string>true</string>
-        <key>com.apple.hwaccel</key>
-        <string>true</string>
-        <key>apple.awt.use-file-dialog-packages</key>
-        <string>false</string>
-        <key>apple.awt.graphics.UseQuartz</key>
-        <string>true</string>
--->
+      <!-- Required for video capture and microphone input
+           https://github.com/processing/processing-sound/issues/51
+           https://github.com/processing/processing-video/issues/134 -->
+      <plistentry key="NSCameraUsageDescription" type="string"
+                  value="The sketch you're running needs access to your video camera." />
+      <plistentry key="NSMicrophoneUsageDescription" type="string"
+                  value="The sketch you're running needs access to your microphone." />
     </bundleapp>
 
     <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" />
@@ -822,11 +789,13 @@
 
     <!-- Replace libjli.dylib symlink with actual file.
          Deals with code signing issues on OS X 10.9.5+ -->
+    <!--
     <property name="jli.path" value="${contents.dir}/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/MacOS/libjli.dylib" />
     <delete file="${jli.path}" />
     <exec executable="cp">
       <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
     </exec>
+    -->
 
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
@@ -947,12 +916,17 @@
 
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--force" />
+
       <arg value="--sign" />
       <arg value="Developer ID Application" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
+
       <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
     </exec>
 
-    <!-- codesign can't work inside jars, so instead temporarily unpack the files
+    <!-- codesign can't work inside jars? so instead temporarily unpack the files
          that contain dylib entries, just before doing our big signing event -->
 
     <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
@@ -978,6 +952,9 @@
 
       <!-- remove all other signatures -->
       <arg value="--force" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
 
       <!-- recursively sign everything -->
       <arg value="--deep" />
@@ -1022,6 +999,9 @@
 
       <!-- recursively sign everything -->
       <arg value="--deep" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
 
       <!-- enable the "hardened runtime" -->
       <arg value="--options" />
@@ -1069,6 +1049,12 @@
       <arg value="--file" />
       <arg value="processing-${version}-macosx.zip" />
     </exec>
+
+    <echo>
+      Check on notarization status with:
+
+      xcrun altool -u $PROCESSING_APPLE_ID -p $PROCESSING_APP_PASSWORD --notarization-info [the RequestUUID above]
+    </echo>
   </target>
 
   <target name="macosx-dist" if="macosx"

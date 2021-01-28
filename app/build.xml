@@ -11,7 +11,7 @@
   <target name="download-vaqua">
 
     <get dest="lib" usetimestamp="true">
-      <url url="${vaqua.url}/7/VAqua7.jar" />
+      <url url="${vaqua.url}/8/VAqua8.jar" />
     </get>
 
   </target>
@@ -50,7 +50,7 @@
                       lib/ant-launcher.jar;
                       lib/jna.jar;
                       lib/jna-platform.jar;
-                      lib/VAqua7.jar"
+                      lib/VAqua8.jar"
 	   debug="on"
 	   nowarn="true">
       <src path="src" />

@@ -29,6 +29,8 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.Interval;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+
+import processing.app.Base;
 import processing.app.Preferences;
 import processing.core.PApplet;
 import processing.mode.java.ImportStatement;
@@ -48,8 +50,9 @@ import processing.mode.java.preproc.PdePreprocessor.Mode;
  */
 public class PdeParseTreeListener extends ProcessingBaseListener {
 
-  private static final String VERSION_STR = "3.0.0";
   private static final String SIZE_METHOD_NAME = "size";
+  private static final String SMOOTH_METHOD_NAME = "smooth";
+  private static final String NO_SMOOTH_METHOD_NAME = "noSmooth";
   private static final String PIXEL_DENSITY_METHOD_NAME = "pixelDensity";
   private static final String FULLSCREEN_METHOD_NAME = "fullScreen";
 
@@ -72,12 +75,15 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private String sketchWidth;
   private String sketchHeight;
   private String pixelDensity;
+  private String smoothParam;
   private String sketchRenderer = null;
   private String sketchOutputFilename = null;
 
   private boolean sizeRequiresRewrite = false;
   private boolean pixelDensityRequiresRewrite = false;
   private boolean sizeIsFullscreen = false;
+  private boolean noSmoothRequiresRewrite = false;
+  private boolean smoothRequiresRewrite = false;
   private RewriteResult headerResult;
   private RewriteResult footerResult;
 
@@ -309,10 +315,12 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     if (SIZE_METHOD_NAME.equals(methodName) || FULLSCREEN_METHOD_NAME.equals(methodName)) {
       handleSizeCall(ctx);
-    }
-
-    if (PIXEL_DENSITY_METHOD_NAME.equals(methodName)) {
+    } else if (PIXEL_DENSITY_METHOD_NAME.equals(methodName)) {
       handlePixelDensityCall(ctx);
+    } else if (NO_SMOOTH_METHOD_NAME.equals(methodName)) {
+      handleNoSmoothCall(ctx);
+    } else if (SMOOTH_METHOD_NAME.equals(methodName)) {
+      handleSmoothCall(ctx);
     }
   }
 
@@ -584,22 +592,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param ctx The context of the call.
    */
   protected void handleSizeCall(ParserRuleContext ctx) {
-    ParserRuleContext testCtx = ctx.getParent()
-        .getParent()
-        .getParent()
-        .getParent();
-
-    boolean isInGlobal =
-        testCtx instanceof ProcessingParser.StaticProcessingSketchContext;
-
-    boolean isInSetup;
-    if (!isInGlobal) {
-      ParserRuleContext methodDeclaration = testCtx.getParent()
-          .getParent();
-
-      isInSetup = isMethodSetup(methodDeclaration);
-    } else {
-      isInSetup = false;
+    // Check that this is the size call for processing and not a user defined size method.
+    if (!calledFromGlobalOrSetup(ctx)) {
+      return;
     }
 
     ParseTree argsContext = ctx.getChild(2);
@@ -609,41 +604,45 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     boolean isSize = ctx.getChild(0).getText().equals(SIZE_METHOD_NAME);
     boolean isFullscreen = ctx.getChild(0).getText().equals(FULLSCREEN_METHOD_NAME);
 
-    if (isInGlobal || isInSetup) {
+    if (isSize && argsContext.getChildCount() > 2) {
       thisRequiresRewrite = true;
 
-      if (isSize && argsContext.getChildCount() > 2) {
-        sketchWidth = argsContext.getChild(0).getText();
-        if (PApplet.parseInt(sketchWidth, -1) == -1 &&
-            !sketchWidth.equals("displayWidth")) {
-          thisRequiresRewrite = false;
-        }
-
-        sketchHeight = argsContext.getChild(2).getText();
-        if (PApplet.parseInt(sketchHeight, -1) == -1 &&
-            !sketchHeight.equals("displayHeight")) {
-          thisRequiresRewrite = false;
-        }
-
-        if (argsContext.getChildCount() > 3) {
-          sketchRenderer = argsContext.getChild(4).getText();
-        }
-
-        if (argsContext.getChildCount() > 5) {
-          sketchOutputFilename = argsContext.getChild(6).getText();
-        }
+      sketchWidth = argsContext.getChild(0).getText();
+      boolean invalidWidth = PApplet.parseInt(sketchWidth, -1) == -1;
+      invalidWidth = invalidWidth && !sketchWidth.equals("displayWidth");
+      if (invalidWidth) {
+        thisRequiresRewrite = false;
       }
 
-      if (isFullscreen) {
-        sketchWidth = "displayWidth";
-        sketchWidth = "displayHeight";
+      sketchHeight = argsContext.getChild(2).getText();
+      boolean invalidHeight = PApplet.parseInt(sketchHeight, -1) == -1;
+      invalidHeight = invalidHeight && !sketchHeight.equals("displayHeight");
+      if (invalidHeight) {
+        thisRequiresRewrite = false;
+      }
 
-        thisRequiresRewrite = true;
-        sizeIsFullscreen = true;
+      if (argsContext.getChildCount() > 3) {
+        sketchRenderer = argsContext.getChild(4).getText();
+      }
 
-        if (argsContext.getChildCount() > 0) {
-          sketchRenderer = argsContext.getChild(0).getText();
-        }
+      if (argsContext.getChildCount() > 5) {
+        sketchOutputFilename = argsContext.getChild(6).getText();
+      }
+
+      if (argsContext.getChildCount() > 7) {
+        thisRequiresRewrite = false; // Uesr may have overloaded size.
+      }
+    }
+
+    if (isFullscreen) {
+      sketchWidth = "displayWidth";
+      sketchWidth = "displayHeight";
+
+      thisRequiresRewrite = true;
+      sizeIsFullscreen = true;
+
+      if (argsContext.getChildCount() > 0) {
+        sketchRenderer = argsContext.getChild(0).getText();
       }
     }
 
@@ -655,32 +654,77 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   }
 
   protected void handlePixelDensityCall(ParserRuleContext ctx) {
-    ParserRuleContext testCtx = ctx.getParent()
+    // Check that this is a call for processing and not a user defined method.
+    if (!calledFromGlobalOrSetup(ctx)) {
+      return;
+    }
+
+    ParseTree argsContext = ctx.getChild(2);
+    if (argsContext.getChildCount() == 0 || argsContext.getChildCount() > 3) {
+      return; // User override of pixel density.
+    }
+
+    pixelDensity = argsContext.getChild(0).getText();
+
+    delete(ctx.start, ctx.stop);
+    insertAfter(ctx.stop, "/* pixelDensity commented out by preprocessor */");
+    pixelDensityRequiresRewrite = true;
+  }
+
+  protected void handleNoSmoothCall(ParserRuleContext ctx) {
+    // Check that this is a call for processing and not a user defined method.
+    if (!calledFromGlobalOrSetup(ctx)) {
+      return;
+    }
+
+    ParseTree argsContext = ctx.getChild(2);
+    if (argsContext.getChildCount() > 0) {
+      return; // User override of noSmooth.
+    }
+
+    delete(ctx.start, ctx.stop);
+    insertAfter(ctx.stop, "/* noSmooth commented out by preprocessor */");
+    noSmoothRequiresRewrite = true;
+  }
+
+  protected void handleSmoothCall(ParserRuleContext ctx) {
+    // Check that this is a call for processing and not a user defined size method.
+    if (!calledFromGlobalOrSetup(ctx)) {
+      return;
+    }
+
+    ParseTree argsContext = ctx.getChild(2);
+    if (argsContext.getChildCount() > 2) {
+      return; // User may have overloaded smooth;
+    }
+
+    if (argsContext.getChildCount() > 0) {
+      smoothParam = argsContext.getChild(0).getText();
+    } else {
+      smoothParam = "";
+    }
+
+    delete(ctx.start, ctx.stop);
+    insertAfter(ctx.stop, "/* smooth commented out by preprocessor */");
+    smoothRequiresRewrite = true;
+  }
+
+  protected boolean calledFromGlobalOrSetup(ParserRuleContext callContext) {
+    ParserRuleContext outerContext = callContext.getParent()
         .getParent()
         .getParent()
         .getParent();
 
-    boolean isInGlobal =
-        testCtx instanceof ProcessingParser.StaticProcessingSketchContext;
-
-    boolean isInSetup;
-    if (!isInGlobal) {
-      ParserRuleContext methodDeclaration = testCtx.getParent()
-          .getParent();
-
-      isInSetup = isMethodSetup(methodDeclaration);
-    } else {
-      isInSetup = false;
+    // Check static context first (global)
+    if (outerContext instanceof ProcessingParser.StaticProcessingSketchContext) {
+      return true;
     }
 
-    ParseTree argsContext = ctx.getChild(2);
+    // Otherwise check if method called form setup
+    ParserRuleContext methodDeclaration = outerContext.getParent()
+        .getParent();
 
-    if (isInGlobal || isInSetup) {
-      pixelDensity = argsContext.getChild(0).getText();
-      delete(ctx.start, ctx.stop);
-      insertAfter(ctx.stop, "/* pixelDensity commented out by preprocessor */");
-      pixelDensityRequiresRewrite = true;
-    }
+    return isMethodSetup(methodDeclaration);
   }
 
   /**
@@ -906,8 +950,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     String dateStr = new SimpleDateFormat("YYYY-MM-dd").format(new Date());
 
     String newCode = String.format(
-        "/* autogenerated by Processing preprocessor v%s on %s */",
-        VERSION_STR,
+        "/* autogenerated by Processing revision %04d on %s */",
+        Base.getRevision(),
         dateStr
     );
 
@@ -1009,10 +1053,16 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   protected void writeExtraFieldsAndMethods(PrintWriterWithEditGen classBodyWriter,
         RewriteResultBuilder resultBuilder) {
 
-    if (!sizeRequiresRewrite && !pixelDensityRequiresRewrite) {
+    // First check that a settings method is required at all
+    boolean noRewriteRequired = !sizeRequiresRewrite;
+    noRewriteRequired = noRewriteRequired && !pixelDensityRequiresRewrite;
+    noRewriteRequired = noRewriteRequired && !noSmoothRequiresRewrite;
+    noRewriteRequired = noRewriteRequired && !smoothRequiresRewrite;
+    if (noRewriteRequired) {
       return;
     }
 
+    // If needed, add the components via a string joiner.
     String settingsOuterTemplate = indent1 + "public void settings() { %s }";
 
     StringJoiner settingsInner = new StringJoiner("\n");
@@ -1027,7 +1077,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
           return;
         }
 
-        StringJoiner argJoiner = new StringJoiner(",");
+        StringJoiner argJoiner = new StringJoiner(", ");
         argJoiner.add(sketchWidth);
         argJoiner.add(sketchHeight);
 
@@ -1047,6 +1097,13 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       settingsInner.add(String.format("pixelDensity(%s);", pixelDensity));
     }
 
+    if (noSmoothRequiresRewrite) {
+      settingsInner.add("noSmooth();");
+    }
+
+    if (smoothRequiresRewrite) {
+      settingsInner.add(String.format("smooth(%s);", smoothParam));
+    }
 
     String newCode = String.format(settingsOuterTemplate, settingsInner.toString());
 

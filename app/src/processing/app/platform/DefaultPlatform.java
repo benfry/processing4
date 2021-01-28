@@ -23,17 +23,11 @@
 
 package processing.app.platform;
 
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Font;
-import java.awt.Graphics;
 import java.io.File;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 
-import javax.swing.Icon;
 import javax.swing.UIManager;
 
 import com.sun.jna.Library;
@@ -92,7 +86,6 @@ public class DefaultPlatform {
 
   Base base;
 
-  private final float ZOOM_DEFAULT_SIZING = 1;
 
   public void initBase(Base base) {
     this.base = base;
@@ -113,25 +106,14 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      boolean isMac = System.getProperty("os.name", "").startsWith("Mac OS");
-      if (isMac && Preferences.getBoolean("editor.allow_vaqua")) {
-        UIManager.setLookAndFeel("org.violetlib.aqua.AquaLookAndFeel");
-
-        Icon collapse = new MacTreeIcon(true);
-        Icon open = new MacTreeIcon(false);
-        Icon leaf = new MacEmptyIcon();
-        UIManager.put("Tree.closedIcon", leaf);
-        UIManager.put("Tree.openIcon", leaf);
-        UIManager.put("Tree.collapsedIcon", open);
-        UIManager.put("Tree.expandedIcon", collapse);
-        UIManager.put("Tree.leafIcon", leaf);
-      } else {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      }
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } else {
       UIManager.setLookAndFeel(laf);
     }
+  }
 
+
+  public void setInterfaceZoom() throws Exception {
     // Specify font when scaling is active.
     if (!Preferences.getBoolean("editor.zoom.auto")) {
       for (String widgetName : FONT_SCALING_WIDGETS) {
@@ -247,39 +229,10 @@ public class DefaultPlatform {
    *    125% (25% additional zoom).
    */
   public float getSystemZoom() {
-    return ZOOM_DEFAULT_SIZING;
+    return 1;
   }
 
-  /**
-   * Spacer icon for mac when using Vaqua.
-   *
-   * <p>
-   * Due to potential rendering issues, this small spacer is used to ensure that rendering is stable
-   * while using Vaqua with non-standard swing components. Without this, some sizing calculations
-   * non-standard components may fail or become unreliable.
-   * </p>
-   */
-  class MacEmptyIcon implements Icon {
-    private final int SIZE = 1;
 
-    /**
-     * Create a new single pixel spacer icon.
-     */
-    public MacEmptyIcon() {}
-
-    @Override
-    public int getIconWidth() {
-        return SIZE;
-    }
-
-    @Override
-    public int getIconHeight() {
-        return SIZE;
-    }
-
-    @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {}
-  }
 
   /**
    * Set the default font for the widget by the given name.
@@ -292,58 +245,12 @@ public class DefaultPlatform {
     String fontPropertyName = name + ".font";
 
     Font currentFont = (Font) UIManager.get(fontPropertyName);
-    System.out.println(currentFont);
+//    System.out.println(currentFont);
     float newSize = Toolkit.zoom(currentFont.getSize());
-    System.out.println(newSize);
+//    System.out.println(newSize);
     Font newFont = currentFont.deriveFont(newSize);
-    System.out.println(newFont);
+//    System.out.println(newFont);
 
     UIManager.put(fontPropertyName, newFont);
   }
-
-  /**
-   * Replacement tree icon for mac when using Vaqua.
-   *
-   * <p>
-   * Due to potential rendering issues with the regular tree icon set, this replacement tree icon
-   * for mac ensures stable rendering when using Vaqua with non-standard swing components. Without
-   * this, some sizing calculations within non-standard components may fail or become unreliable.
-   * </p>
-   */
-  private class MacTreeIcon implements Icon {
-    private final int SIZE = 12;
-    private final boolean isOpen;
-
-    /**
-     * Create a new tree icon.
-     *
-     * @param newIsOpen Flag indicating if the icon should be in the open or closed state at
-     *    construction. True if open false otherwise.
-     */
-    public MacTreeIcon(boolean newIsOpen) {
-      isOpen = newIsOpen;
-    }
-
-    @Override
-    public int getIconWidth() {
-        return SIZE;
-    }
-
-    @Override
-    public int getIconHeight() {
-        return SIZE;
-    }
-
-    @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-      g.setColor(Color.GRAY);
-
-      g.drawLine(x + SIZE / 2 - 3, y + SIZE / 2, x + SIZE / 2 + 3, y + SIZE / 2);
-
-      if (!isOpen) {
-        g.drawLine(x + SIZE / 2, y + SIZE / 2 - 3, x + SIZE / 2, y + SIZE / 2 + 3);
-      }
-    }
-  }
-
 }

@@ -1,39 +1,29 @@
-1271 (4.0a2)
-X make edits to core so that awt can be flagged off, and lwjgl can run
-X   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
-X   add --disable-awt to PApplet.main()
-X fix for precision issues with PDF
-X   https://github.com/processing/processing/issues/5801#issuecomment-466632459
-X implement displayDensity(int), it's been returning the main display's value
-X show 'displays have separate spaces' notice in the console
-X   allows us to get rid of JOptionPane
-X show 'displays have separate spaces' message when the param is unset
-X   Catalina seems to have it un-set, but the default is the same
-X move selectInput/Output/Folder to ShimAWT class
-X remove the java.awt.Frame object from PApplet
-X move loadImage() into ShimAWT
-X desktopFile() and desktopPath() methods are supported, unless we find they're trouble
-X move ShimAWT.loadImage() to the PSurface subclasses
-X move all java.awt and javax.imageio out of PImage
-X make the switch to getModifiersEx() instead of getModifiers()
-X   pass all modifiers to the KeyEvent and MouseEvent constructors
-X   though they aren't even being stored, so what's the point?
-X   https://github.com/processing/processing4/issues/4
-X Remove all usage of AWT from PApplet
-X   https://github.com/processing/processing4/issues/55
-X PDF broken in getImage()
-X   https://github.com/processing/processing4/issues/62
-X   https://github.com/processing/processing4/commit/624e9074aeb1d9e2e6b2943e35ffd97a90b8b737
+1273 (4.0a4)
 
-contribs
-X remove redundant boxing and casting
-X   https://github.com/processing/processing4/pull/51
 
-critical
-X PImage save() mostly broken due to AWT refactor
-X Saving to PNG broken in anything but the default renderer
-X   https://github.com/processing/processing4/issues/80
+fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
+X AppKit errors from P2D/P3D
+_   https://github.com/processing/processing/issues/5880
+X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
+X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
+_   https://github.com/processing/processing/issues/5983
+_ Profile GL3bc is not available on X11GraphicsDevice
+_   https://github.com/processing/processing/issues/5476
+X Cannot run rotateZ() within the PShape class
+_   https://github.com/processing/processing/issues/5770
 
+_ update P2D reference to make clear about drawing order and quality
+_   https://github.com/processing/processing/issues/5880
+
+_ Complaints that size() is not working
+_   Windows: https://github.com/processing/processing/issues/6046
+_   Linux: https://github.com/processing/processing/issues/5912
+
+_ why does GL flash red when resizing?
+
+
+_ Skija bindings
+_   https://github.com/processing/processing4/issues/151
 
 load/save image
 _ https://github.com/processing/processing4/wiki/Exorcising-AWT
@@ -44,8 +34,15 @@ _   https://github.com/processing/processing4/pull/97
 _   https://github.com/processing/processing4/pull/98
 
 
+noted by Casey
+_ Sketches on Windows/Linux don't take UI sizing into account
+_   https://github.com/processing/processing/issues/4894
+_   https://github.com/processing/processing/issues/4895
+_   https://github.com/processing/processing/issues/4897
+
+
 api changes
-_ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
+_ static versions of selectInput/selectOutput/selectFolder removed from PApplet
 _ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
 X   https://github.com/processing/processing4/issues/54
 _ protected PImage.checkAlpha() now public
@@ -133,6 +130,22 @@ _   AMD Radeon HD 6770M was in the Oracle bug report
 _   https://github.com/processing/processing/issues/2186
 _   https://bugs.openjdk.java.net/browse/JDK-8027391
 _   test with JG's 13" retina laptop
+
+
+https://bkaradzic.github.io/bgfx/
+https://bkaradzic.github.io/bgfx/examples.html
+
+
+possible additions for 4.x?
+_ Tint on FX2D now works properly, and improved JavaFX/Scenebuilder integration
+_   https://github.com/processing/processing/pull/6051
+_ make offscreen PGraphicsFX2D work
+_   https://github.com/processing/processing/issues/4638
+_   https://github.com/processing/processing/pull/4698
+_ Add support for floating point textures to OpenGL (using a hint?)
+_   https://github.com/processing/processing/issues/3321
+_ Friendly Names for new Sketches (includes UI for switching it back)
+_   https://github.com/processing/processing/pull/6048
 
 
 from Casey

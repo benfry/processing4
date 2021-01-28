@@ -54,7 +54,7 @@ import processing.core.PConstants;
  * Additional <b>Table</b> methods are documented in the <a href=
  * "http://processing.github.io/processing-javadocs/core/processing/data/Table.html">Processing
  * Table Javadoc</a>.
- * 
+ *
  * <h3>Advanced</h3>
  * <p>
  * Generic class for handling tabular data, typically from a CSV, TSV, or other
@@ -83,13 +83,6 @@ import processing.core.PConstants;
  */
 public class Table {
   protected int rowCount;
-  protected int allocCount;
-
-//  protected boolean skipEmptyRows = true;
-//  protected boolean skipCommentLines = true;
-//  protected String extension = null;
-//  protected boolean commaSeparatedValues = false;
-//  protected boolean awfulCSV = false;
 
   protected String missingString = null;
   protected int missingInt = 0;
@@ -2309,7 +2302,7 @@ public class Table {
 
 
   /**
-   * Removes all rows from a <b>Table</b>.  While all rows are removed, columns 
+   * Removes all rows from a <b>Table</b>.  While all rows are removed, columns
    * and column titles are maintained.
    *
    * @webref table:method
@@ -2485,7 +2478,7 @@ public class Table {
   }
 
 
-  /** 
+  /**
    * Removes a row from a <b>Table</b> object
    *
    * @webref table:method
@@ -2694,7 +2687,7 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
-   * Returns a reference to the specified <b>TableRow</b>.  The reference can then 
+   * Returns a reference to the specified <b>TableRow</b>.  The reference can then
    * be used to get and set values of the selected row, as illustrated in the example above.
    *
    * @webref table:method
@@ -2712,7 +2705,7 @@ public class Table {
 
 
   /**
-   * Gets all rows from the table.  Returns an iterator, so <b>for</b> must be 
+   * Gets all rows from the table.  Returns an iterator, so <b>for</b> must be
    * used to iterate through all the rows, as shown in the example above.
    *
    * @webref table:method
@@ -2724,7 +2717,7 @@ public class Table {
    * @see Table#matchRows(String, int)
    */
   public Iterable<TableRow> rows() {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         if (rowIterator == null) {
           rowIterator = new RowIterator(Table.this);
@@ -2740,7 +2733,7 @@ public class Table {
    * @nowebref
    */
   public Iterable<TableRow> rows(final int[] indices) {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         return new RowIndexIterator(Table.this, indices);
       }
@@ -3103,8 +3096,8 @@ public class Table {
 
 
   /**
-   * Retrieves an integer value from the <b>Table</b>'s specified row and column. 
-   * The row is specified by its ID, while the column may be specified by either 
+   * Retrieves an integer value from the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by either
    * its ID or title.
    *
    * @webref table:method
@@ -3144,8 +3137,8 @@ public class Table {
 
 
   /**
-   * Stores an integer value in the <b>Table</b>'s specified row and column. 
-   * The row is specified by its ID, while the column may be specified by 
+   * Stores an integer value in the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by
    * either its ID or title.
    *
    * @webref table:method
@@ -3287,8 +3280,8 @@ public class Table {
 
 
   /**
-   * Retrieves a float value from the <b>Table</b>'s specified row and column. 
-   * The row is specified by its ID, while the column may be specified by either 
+   * Retrieves a float value from the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by either
    * its ID or title.
    *
    * @webref table:method
@@ -3329,8 +3322,8 @@ public class Table {
 
 
   /**
-   * Stores a float value in the <b>Table</b>'s specified row and column. 
-   * The row is specified by its ID, while the column may be specified by 
+   * Stores a float value in the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by
    * either its ID or title.
    *
    * @webref table:method
@@ -3526,8 +3519,8 @@ public class Table {
 
 
   /**
-   * Retrieves a String value from the <b>Table</b>'s specified row and column. 
-   * The row is specified by its ID, while the column may be specified by either 
+   * Retrieves a String value from the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by either
    * its ID or title.
    *
    * @webref table:method
@@ -3582,8 +3575,8 @@ public class Table {
 
 
   /**
-   * Stores a String value in the <b>Table</b>'s specified row and column. 
-   * The row is specified by its ID, while the column may be specified by 
+   * Stores a String value in the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by
    * either its ID or title.
    *
    * @webref table:method
@@ -3616,7 +3609,7 @@ public class Table {
   }
 
   /**
-   * Retrieves all values in the specified column, and returns them as a String 
+   * Retrieves all values in the specified column, and returns them as a String
    * array.  The column may be specified by either its ID or title.
    *
    * @webref table:method
@@ -3761,9 +3754,9 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
-   * Finds the first row in the <b>Table</b> that contains the value provided, 
-   * and returns a reference to that row.  Even if multiple rows are possible 
-   * matches, only the first matching row is returned. The column to search may 
+   * Finds the first row in the <b>Table</b> that contains the value provided,
+   * and returns a reference to that row.  Even if multiple rows are possible
+   * matches, only the first matching row is returned. The column to search may
    * be specified by either its ID or title.
    *
    * @webref table:method
@@ -3791,9 +3784,9 @@ public class Table {
 
 
   /**
-   * Finds the rows in the <b>Table</b> that contain the value provided, 
-   * and returns references to those rows.  Returns an iterator, so <b>for</b> 
-   * must be used to iterate through all the rows, as shown in the example above. 
+   * Finds the rows in the <b>Table</b> that contain the value provided,
+   * and returns references to those rows.  Returns an iterator, so <b>for</b>
+   * must be used to iterate through all the rows, as shown in the example above.
    * The column to search may be specified by either its ID or title.
    *
    * @webref table:method
@@ -3807,7 +3800,7 @@ public class Table {
    * @see Table#matchRows(String, int)
    */
   public Iterable<TableRow> findRows(final String value, final int column) {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         return findRowIterator(value, column);
       }
@@ -3928,9 +3921,9 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
-   * Finds the first row in the <b>Table</b> that matches the regular expression 
-   * provided, and returns a reference to that row.  Even if multiple rows are 
-   * possible matches, only the first matching row is returned. The column to 
+   * Finds the first row in the <b>Table</b> that matches the regular expression
+   * provided, and returns a reference to that row.  Even if multiple rows are
+   * possible matches, only the first matching row is returned. The column to
    * search may be specified by either its ID or title.
    *
    * @webref table:method
@@ -3958,9 +3951,9 @@ public class Table {
 
 
   /**
-   * Finds the rows in the <b>Table</b> that match the regular expression provided, 
-   * and returns references to those rows.  Returns an iterator, so <b>for</b> 
-   * must be used to iterate through all the rows, as shown in the example above. 
+   * Finds the rows in the <b>Table</b> that match the regular expression provided,
+   * and returns references to those rows.  Returns an iterator, so <b>for</b>
+   * must be used to iterate through all the rows, as shown in the example above.
    * The column to search may be specified by either its ID or title.
    *
    * @webref table:method
@@ -3974,7 +3967,7 @@ public class Table {
    * @see Table#matchRow(String, int)
    */
   public Iterable<TableRow> matchRows(final String regexp, final int column) {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         return matchRowIterator(regexp, column);
       }
@@ -4154,9 +4147,9 @@ public class Table {
 
 
   /**
-   * Trims leading and trailing whitespace, such as spaces and tabs, from String 
-   * table values.  If no column is specified, then the values in all columns 
-   * and rows are trimmed.  A specific column may be referenced by either its ID 
+   * Trims leading and trailing whitespace, such as spaces and tabs, from String
+   * table values.  If no column is specified, then the values in all columns
+   * and rows are trimmed.  A specific column may be referenced by either its ID
    * or title.
    *
    * @webref table:method

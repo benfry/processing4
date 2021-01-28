@@ -1,15 +1,74 @@
+# Processing 4.0 alpha 3
+
+*Revision 1272 - 17 January 2021*
+
+Happy [Martin Luther King Day](https://en.wikipedia.org/wiki/Martin_Luther_King_Jr._Day)! (Or MLK Day Eve, if you're reading this on Sunday.)
+
+Several bug fixes and updates in this release, the most significant being video capture on macOS should be working again, and several OpenGL fixes that come with an updated release of JOGL. (Thanks to Sven Göthel, who continues working on it after many years.)
+
+### Known Issues
+
+* The ugly `surface.setResizable()` workaround in the previous release is now properly fixed. [124](https://github.com/processing/processing4/issues/124)
+* Haven't had a chance to test much with macOS running on M1 machines. Chances are this should run in Rosetta mode, but I've not had time to find out.
+
+### Fixes and Updates
+
+* Video [was broken](https://github.com/processing/processing-video/issues/134) on macOS because of Apple's security changes.
+* Audio was [also broken](https://github.com/processing/processing-sound/issues/51) on macOS because of Apple security changes.
+* Fix `NullPointerException` in `getSystemZoom()` on startup in alpha 2. [143](https://github.com/processing/processing4/issues/143)
+* `loadJSONObject()` and `loadJSONArray()` now return `null` if the given file was not found (in line with other `loadXxxx()` APIs. [6081](https://github.com/processing/processing/pull/6081)
+* Update the splash screen to say 2021 before the pedants can hunt me down.
+* Contribution translation updates (thank you!)
+    * Updates and fixes for the Portugese translation [133](https://github.com/processing/processing4/pull/133), [134](https://github.com/processing/processing4/pull/134), [147](https://github.com/processing/processing4/pull/147)
+    * Correct alphabetical order for the language list. [146](https://github.com/processing/processing4/pull/146)
+* Remove zero width no-break space `U+FEFF` character with `trim()`.
+* `PShapeOpenGL.setAttrib()` warning referenced `setNormal()` instead of `setAttrib()`. [141](https://github.com/processing/processing4/issues/141)
+* Add `var` keyword to highlighting [114](https://github.com/processing/processing4/issues/114)
+* Fix revision number in exported code [135](https://github.com/processing/processing4/issues/135)
+
+### And More from Sam
+
+* Fix preprocessor spaces in the `size()` command to follow our guidelines. [136](https://github.com/processing/processing4/issues/136), [138](https://github.com/processing/processing4/pull/138)
+* Move `PdePreprocessIssueException` to the test package. [130](https://github.com/processing/processing4/issues/130), [139](https://github.com/processing/processing4/pull/139)
+* Fix regression where  `smooth(4)` was showing the “smooth() can only be used inside settings()” error. [149](https://github.com/processing/processing4/issues/149), [152](https://github.com/processing/processing4/pull/152)
+
+### Internal Additions
+
+* You can now create a “source” `.jar` file by typing `ant source-jar` inside the `core` directory. [118](https://github.com/processing/processing4/issues/118)
+* Update Batik from 1.8 to 1.13 inside SVG Export library. Fixes incompatibilities with Java 11.
+* Automate macOS notarization in the build process (done in 4.0a2) [24](https://github.com/processing/processing4/issues/24)
+* Show Tool incompatibilities with a message dialog, and clean up a little of the internal error handling.
+* Prevent “illegal line” message when loading library with `0xFEFF` chars in a `.properties` file
+* Fixes to `Platform` code
+    * Get rid of `editor.laf.vaqua` preference (use the `editor.laf` preference instead)
+    * Move macOS-specific code out of `DefaultPlatform` and into `MacPlatform`
+* Clean up “Export to Application”
+    * Turned off 32-bit and ARM exports (no longer supported)
+    * Drop '64' from the folder name (everything 64-bit from now on)
+    * Remove “big fat lie“ error spew on export
+    * Too many `.dll` and `.jar` files were included
+    * Updates and text changes to be a little clearer
+    * Fixed links for Java 11
+    * Set minimum version on Windows, fix JDK download URL
+
+
 # Processing 4.0 alpha 2
 
-*Revision 1271 - 17 August 2020*
+*Revision 1271 - 15 September 2020*
 
 Several fixes for this round, plus working on the guts quite a bit to prepare for newer/faster/better rendering methods.
 
-The minimum system version for macOS (for the PDE and exported applications) is now set to 10.13.6 (the last update of High Sierra). Apple will likely be dropping support for High Sierra in late 2020, so we may make the minimum 10.14.x by the time 4.x ships.
+The minimum system version for macOS (for the PDE and exported applications) is now set to 10.13.6 (the last update of High Sierra). Apple will likely be dropping support for High Sierra in late 2020, so we may make Mojave (10.14) the minimum by the time Processing 4.x ships.
+
+
+### Known Issues
+
+* If you're using P2D or P3D on macOS, and have `surface.setResizable(true)` inside `setup()`, you'll need to (temporarily) move that into `draw()`. We had to do an ugly hack at release time due to issue [124](https://github.com/processing/processing4/issues/124). The ugly hack also involves the window flickering once when it first opens in this situation. We should have that fixed for the next release.
 
 
 ### Bug Fixes
 
-* Break buildMenu() into populateMenu() method to delay Debugger init [73](https://github.com/processing/processing4/issues/73)
+* Break `buildMenu()` into `populateMenu()` method to delay Debugger init [73](https://github.com/processing/processing4/issues/73)
 * Fix broken macOS build [83](https://github.com/processing/processing4/issues/83)
 * Bump JDK to 11.0.8, then rolled back to JDK 11.0.6 again [121](https://github.com/processing/processing4/issues/121), [123](https://github.com/processing/processing4/pull/123)
 * Make macOS notarization part of the build process [24](https://github.com/processing/processing4/issues/24)

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-20 The Processing Foundation
   Copyright (c) 2008-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -75,7 +75,8 @@ public class Platform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  static public boolean isInit() {
+
+  static public boolean isAvailable() {
     return inst != null;
   }
 
@@ -106,6 +107,16 @@ public class Platform {
 
   static public void setLookAndFeel() throws Exception {
     inst.setLookAndFeel();
+  }
+
+
+  static public void setInterfaceZoom() throws Exception {
+    inst.setInterfaceZoom();
+  }
+
+
+  static public float getSystemZoom() {
+    return inst == null ? 1 : inst.getSystemZoom();
   }
 
 
@@ -256,7 +267,6 @@ public class Platform {
    * returns true if Processing is running on a Mac OS X machine.
    */
   static public boolean isMacOS() {
-    //return PApplet.platform == PConstants.MACOSX;
     return System.getProperty("os.name").indexOf("Mac") != -1; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -265,7 +275,6 @@ public class Platform {
    * returns true if running on windows.
    */
   static public boolean isWindows() {
-    //return PApplet.platform == PConstants.WINDOWS;
     return System.getProperty("os.name").indexOf("Windows") != -1; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -274,7 +283,6 @@ public class Platform {
    * true if running on linux.
    */
   static public boolean isLinux() {
-    //return PApplet.platform == PConstants.LINUX;
     return System.getProperty("os.name").indexOf("Linux") != -1; //$NON-NLS-1$ //$NON-NLS-2$
   }
 
@@ -408,12 +416,4 @@ public class Platform {
   static public int unsetenv(String variable) {
     return inst.unsetenv(variable);
   }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  static public float getSystemZoom() {
-    return inst.getSystemZoom();
-  }
-
 }

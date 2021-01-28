@@ -121,7 +121,7 @@ public class PApplet implements PConstants {
     if (name.contains("Mac")) {
       platform = MACOS;
 
-    } else if (name.indexOf("Windows") != -1) {
+    } else if (name.contains("Windows")) {
       platform = WINDOWS;
 
     } else if (name.equals("Linux")) {  // true for the ibm vm
@@ -836,7 +836,8 @@ public class PApplet implements PConstants {
   OutputStream outputStream;
 
   // Background default needs to be different from the default value in
-  // PGraphics.backgroundColor, otherwise size(100, 100) bg spills over.
+  // PGraphics.backgroundColor, otherwise sketches that have size(100, 100)
+  // appear to be larger than they are, because the bg color matches.
   // https://github.com/processing/processing/issues/2297
   int windowColor = 0xffDDDDDD;
 
@@ -1543,11 +1544,13 @@ public class PApplet implements PConstants {
       RegisteredMethods meth = registerMap.get(name);
       if (meth == null) {
         die("No registered methods with the name " + name + "() were found.");
-      }
-      try {
-        meth.remove(target);
-      } catch (Exception e) {
-        die("Could not unregister " + name + "() for " + target, e);
+
+      } else {
+        try {
+          meth.remove(target);
+        } catch (Exception e) {
+          die("Could not unregister " + name + "() for " + target, e);
+        }
       }
     }
   }
@@ -2257,7 +2260,7 @@ public class PApplet implements PConstants {
     } catch (InvocationTargetException ite) {
       String msg = ite.getTargetException().getMessage();
       if ((msg != null) &&
-          (msg.indexOf("no jogl in java.library.path") != -1)) {
+          (msg.contains("no jogl in java.library.path"))) {
         // Is this true anymore, since the JARs contain the native libs?
         throw new RuntimeException("The jogl library folder needs to be " +
           "specified with -Djava.library.path=/path/to/jogl");
@@ -2444,9 +2447,9 @@ public class PApplet implements PConstants {
         frameRate = (float) (1.0 / avgFrameTimeSecs);
       }
 
-      if (frameCount != 0) {
-        handleMethods("pre");
-      }
+      //if (frameCount != 0) {  // always the case for this block
+      handleMethods("pre");
+      //}
 
       // use dmouseX/Y as previous mouse pos, since this is the
       // last position the mouse was in during the previous draw.
@@ -3413,7 +3416,7 @@ public class PApplet implements PConstants {
     //if (napTime > 0) {
     try {
       Thread.sleep(napTime);
-    } catch (InterruptedException e) { }
+    } catch (InterruptedException ignored) { }
     //}
     //}
   }
@@ -3530,7 +3533,7 @@ public class PApplet implements PConstants {
           /*int result =*/ p.waitFor();
           // Not installed will throw an IOException (JDK 1.4.2, Ubuntu 7.04)
           openLauncher = launcher;
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
       }
       if (openLauncher == null) {
         System.err.println("Could not find xdg-open, gnome-open, or kde-open: " +
@@ -3800,7 +3803,7 @@ public class PApplet implements PConstants {
       // once the next draw() has completed
       exitCalled = true;
 
-    } else if (!looping) {
+    } else {  // !looping
       // if not looping, shut down things explicitly,
       // because the main thread will be sleeping
       dispose();
@@ -3881,17 +3884,13 @@ public class PApplet implements PConstants {
       Method method = getClass().getMethod(name);
       method.invoke(this);
 
-    } catch (IllegalArgumentException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
+    } catch (IllegalArgumentException | IllegalAccessException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {
       e.getTargetException().printStackTrace();
     } catch (NoSuchMethodException nsme) {
       System.err.println("There is no public " + name + "() method " +
                          "in the class " + getClass().getName());
-    } catch (Exception e) {
-      e.printStackTrace();
     }
   }
 
@@ -4403,7 +4402,7 @@ public class PApplet implements PConstants {
 
         case 'L':
           // print a 1D array of objects as individual elements
-          Object poo[] = (Object[]) what;
+          Object[] poo = (Object[]) what;
           for (int i = 0; i < poo.length; i++) {
             if (poo[i] instanceof String) {
               System.out.println("[" + i + "] \"" + poo[i] + "\"");
@@ -4414,49 +4413,49 @@ public class PApplet implements PConstants {
           break;
 
         case 'Z':  // boolean
-          boolean zz[] = (boolean[]) what;
+          boolean[] zz = (boolean[]) what;
           for (int i = 0; i < zz.length; i++) {
             System.out.println("[" + i + "] " + zz[i]);
           }
           break;
 
         case 'B':  // byte
-          byte bb[] = (byte[]) what;
+          byte[] bb = (byte[]) what;
           for (int i = 0; i < bb.length; i++) {
             System.out.println("[" + i + "] " + bb[i]);
           }
           break;
 
         case 'C':  // char
-          char cc[] = (char[]) what;
+          char[] cc = (char[]) what;
           for (int i = 0; i < cc.length; i++) {
             System.out.println("[" + i + "] '" + cc[i] + "'");
           }
           break;
 
         case 'I':  // int
-          int ii[] = (int[]) what;
+          int[] ii = (int[]) what;
           for (int i = 0; i < ii.length; i++) {
             System.out.println("[" + i + "] " + ii[i]);
           }
           break;
 
         case 'J':  // int
-          long jj[] = (long[]) what;
+          long[] jj = (long[]) what;
           for (int i = 0; i < jj.length; i++) {
             System.out.println("[" + i + "] " + jj[i]);
           }
           break;
 
         case 'F':  // float
-          float ff[] = (float[]) what;
+          float[] ff = (float[]) what;
           for (int i = 0; i < ff.length; i++) {
             System.out.println("[" + i + "] " + ff[i]);
           }
           break;
 
         case 'D':  // double
-          double dd[] = (double[]) what;
+          double[] dd = (double[]) what;
           for (int i = 0; i < dd.length; i++) {
             System.out.println("[" + i + "] " + dd[i]);
           }
@@ -5179,7 +5178,7 @@ public class PApplet implements PConstants {
     // for some reason (rounding error?) Math.random() * 3
     // can sometimes return '3' (once in ~30 million tries)
     // so a check was added to avoid the inclusion of 'howbig'
-    float value = 0;
+    float value;
     do {
       value = internalRandom.nextFloat() * high;
     } while (value == high);
@@ -5237,7 +5236,7 @@ public class PApplet implements PConstants {
   public final float random(float low, float high) {
     if (low >= high) return low;
     float diff = high - low;
-    float value = 0;
+    float value;
     // because of rounding error, can't just add low, otherwise it may hit high
     // https://github.com/processing/processing/issues/4551
     do {
@@ -5839,13 +5838,16 @@ public class PApplet implements PConstants {
   public JSONObject loadJSONObject(String filename) {
     // can't pass of createReader() to the constructor b/c of resource leak
     BufferedReader reader = createReader(filename);
-    JSONObject outgoing = new JSONObject(reader);
-    try {
-      reader.close();
-    } catch (IOException e) {  // not sure what would cause this
-      e.printStackTrace();
+    if (reader != null) {
+      JSONObject outgoing = new JSONObject(reader);
+      try {
+        reader.close();
+      } catch (IOException e) {  // not sure what would cause this
+        e.printStackTrace();
+      }
+      return outgoing;
     }
-    return outgoing;
+    return null;
   }
 
 
@@ -5949,13 +5951,16 @@ public class PApplet implements PConstants {
   public JSONArray loadJSONArray(String filename) {
     // can't pass of createReader() to the constructor b/c of resource leak
     BufferedReader reader = createReader(filename);
-    JSONArray outgoing = new JSONArray(reader);
-    try {
-      reader.close();
-    } catch (IOException e) {  // not sure what would cause this
-      e.printStackTrace();
+    if (reader != null) {
+      JSONArray outgoing = new JSONArray(reader);
+      try {
+        reader.close();
+      } catch (IOException e) {  // not sure what would cause this
+        e.printStackTrace();
+      }
+      return outgoing;
     }
-    return outgoing;
+    return null;
   }
 
 
@@ -7795,8 +7800,8 @@ public class PApplet implements PConstants {
    */
   static public void saveStrings(OutputStream output, String[] data) {
     PrintWriter writer = createWriter(output);
-    for (int i = 0; i < data.length; i++) {
-      writer.println(data[i]);
+    for (String item : data) {
+      writer.println(item);
     }
     writer.flush();
     writer.close();
@@ -7872,9 +7877,12 @@ public class PApplet implements PConstants {
     // to the local disk using the sketch path, so this is safe here.
     // for 0120, added a try/catch anyways.
     try {
-      if (new File(where).isAbsolute()) return where;
-    } catch (Exception e) { }
-
+      if (new File(where).isAbsolute()) {
+        return where;
+      }
+    } catch (Exception e) {
+      // do nothing
+    }
     return sketchPath() + File.separator + where;
   }
 
@@ -7980,25 +7988,8 @@ public class PApplet implements PConstants {
       return new File(dataFolder, where);
     }
     // Windows, Linux, or when not using a Mac OS X .app file
-    File workingDirItem =
-      new File(sketchPath + File.separator + "data" + File.separator + where);
-//    if (workingDirItem.exists()) {
-    return workingDirItem;
-//    }
-//    // In some cases, the current working directory won't be set properly.
+    return new File(sketchPath + File.separator + "data" + File.separator + where);
   }
-
-
-  /**
-   * On Windows and Linux, this is simply the data folder. On Mac OS X, this is
-   * the path to the data folder buried inside Contents/Java
-   */
-//  public File inputFile(String where) {
-//  }
-
-
-//  public String inputPath(String where) {
-//  }
 
 
   /**
@@ -8016,7 +8007,12 @@ public class PApplet implements PConstants {
       String parent = file.getParent();
       if (parent != null) {
         File unit = new File(parent);
-        if (!unit.exists()) unit.mkdirs();
+        if (!unit.exists()) {
+          boolean result = unit.mkdirs();
+          if (!result) {
+            System.err.println("Could not create " + unit);
+          }
+        }
       }
     } catch (SecurityException se) {
       System.err.println("You don't have permissions to create " +
@@ -8052,11 +8048,7 @@ public class PApplet implements PConstants {
 
 
   static public String urlEncode(String str) {
-    try {
-      return URLEncoder.encode(str, "UTF-8");
-    } catch (UnsupportedEncodingException e) {  // oh c'mon
-      return null;
-    }
+    return URLEncoder.encode(str, StandardCharsets.UTF_8);
   }
 
 
@@ -8930,7 +8922,8 @@ public class PApplet implements PConstants {
    *
    * Removes whitespace characters from the beginning and end of a String. In
    * addition to standard whitespace characters such as space, carriage
-   * return, and tab, this function also removes the Unicode "nbsp" character.
+   * return, and tab, this function also removes the Unicode "nbsp" (U+00A0)
+   * character and the zero width no-break space (U+FEFF) character.
    *
    * @webref data:string_functions
    * @webBrief Removes whitespace characters from the beginning and end of a String.
@@ -8942,7 +8935,8 @@ public class PApplet implements PConstants {
     if (str == null) {
       return null;
     }
-    return str.replace('\u00A0', ' ').trim();
+    // remove nbsp *and* zero width no-break space
+    return str.replace('\u00A0', ' ').replace('\uFEFF', ' ').trim();
   }
 
 
@@ -9560,8 +9554,9 @@ public class PApplet implements PConstants {
       } else {
         return Integer.parseInt(what.substring(0, offset));
       }
-    } catch (NumberFormatException e) { }
-    return otherwise;
+    } catch (NumberFormatException e) {
+      return otherwise;
+    }
   }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -11319,13 +11314,13 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Defines if textures repeat or draw once within a texture map. 
-   * The two parameters are CLAMP (the default behavior) and REPEAT. 
+   * Defines if textures repeat or draw once within a texture map.
+   * The two parameters are CLAMP (the default behavior) and REPEAT.
    * This function only works with the P2D and P3D renderers.
    *
    *
    * @webref image:textures
-   * @webBrief Defines if textures repeat or draw once within a texture map. 
+   * @webBrief Defines if textures repeat or draw once within a texture map.
    * @param wrap Either CLAMP (default) or REPEAT
    * @see PGraphics#texture(PImage)
    * @see PGraphics#textureMode(int)
@@ -11441,18 +11436,18 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Use the <b>beginContour()</b> and <b>endContour()</b> function to 
-   * create negative shapes within shapes such as the center of the 
-   * letter 'O'. <b>beginContour()</b> begins recording vertices for the 
-   * shape and <b>endContour()</b> stops recording. The vertices that 
-   * define a negative shape must "wind" in the opposite direction from 
-   * the exterior shape. First draw vertices for the exterior shape in 
+   * Use the <b>beginContour()</b> and <b>endContour()</b> function to
+   * create negative shapes within shapes such as the center of the
+   * letter 'O'. <b>beginContour()</b> begins recording vertices for the
+   * shape and <b>endContour()</b> stops recording. The vertices that
+   * define a negative shape must "wind" in the opposite direction from
+   * the exterior shape. First draw vertices for the exterior shape in
    * clockwise order, then for internal shapes, draw vertices counterclockwise.<br />
    * <br />
-   * These functions can only be used within a <b>beginShape()</b>/<b>endShape()</b> 
-   * pair and transformations such as <b>translate()</b>, <b>rotate()</b>, and 
-   * <b>scale()</b> do not work within a <b>beginContour()</b>/<b>endContour()</b> 
-   * pair. It is also not possible to use other shapes, such as <b>ellipse()</b> 
+   * These functions can only be used within a <b>beginShape()</b>/<b>endShape()</b>
+   * pair and transformations such as <b>translate()</b>, <b>rotate()</b>, and
+   * <b>scale()</b> do not work within a <b>beginContour()</b>/<b>endContour()</b>
+   * pair. It is also not possible to use other shapes, such as <b>ellipse()</b>
    * or <b>rect()</b> within.
    *
    * @webref shape:vertex
@@ -11465,20 +11460,20 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Use the <b>beginContour()</b> and <b>endContour()</b> function to 
-   * create negative shapes within shapes such as the center of the 
-   * letter 'O'. <b>beginContour()</b> begins recording vertices for 
-   * the shape and <b>endContour()</b> stops recording. The vertices 
-   * that define a negative shape must "wind" in the opposite direction 
-   * from the exterior shape. First draw vertices for the exterior shape 
+   * Use the <b>beginContour()</b> and <b>endContour()</b> function to
+   * create negative shapes within shapes such as the center of the
+   * letter 'O'. <b>beginContour()</b> begins recording vertices for
+   * the shape and <b>endContour()</b> stops recording. The vertices
+   * that define a negative shape must "wind" in the opposite direction
+   * from the exterior shape. First draw vertices for the exterior shape
    * in clockwise order, then for internal shapes, draw vertices counterclockwise.<br />
    * <br />
-   * These functions can only be used within a <b>beginShape()</b>/<b>endShape()</b> 
-   * pair and transformations such as <b>translate()</b>, <b>rotate()</b>, and 
-   * <b>scale()</b> do not work within a <b>beginContour()</b>/<b>endContour()</b> 
-   * pair. It is also not possible to use other shapes, such as <b>ellipse()</b> 
-   * or <b>rect()</b> within. 
-   * 
+   * These functions can only be used within a <b>beginShape()</b>/<b>endShape()</b>
+   * pair and transformations such as <b>translate()</b>, <b>rotate()</b>, and
+   * <b>scale()</b> do not work within a <b>beginContour()</b>/<b>endContour()</b>
+   * pair. It is also not possible to use other shapes, such as <b>ellipse()</b>
+   * or <b>rect()</b> within.
+   *
    * @webref shape:vertex
    * @webBrief Stops recording vertices for the shape.
    */
@@ -11516,23 +11511,23 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Loads geometry into a variable of type <b>PShape</b>. SVG and OBJ 
-   * files may be loaded. To load correctly, the file must be located 
-   * in the data directory of the current sketch. In most cases, 
-   * <b>loadShape()</b> should be used inside <b>setup()</b> because 
+   * Loads geometry into a variable of type <b>PShape</b>. SVG and OBJ
+   * files may be loaded. To load correctly, the file must be located
+   * in the data directory of the current sketch. In most cases,
+   * <b>loadShape()</b> should be used inside <b>setup()</b> because
    * loading shapes inside <b>draw()</b> will reduce the speed of a sketch.<br />
    * <br />
-   * Alternatively, the file maybe be loaded from anywhere on the local 
-   * computer using an absolute path (something that starts with / on 
-   * Unix and Linux, or a drive letter on Windows), or the filename 
+   * Alternatively, the file maybe be loaded from anywhere on the local
+   * computer using an absolute path (something that starts with / on
+   * Unix and Linux, or a drive letter on Windows), or the filename
    * parameter can be a URL for a file found on a network.<br />
    * <br />
-   * If the file is not available or an error occurs, <b>null</b> will 
-   * be returned and an error message will be printed to the console. 
-   * The error message does not halt the program, however the null value 
-   * may cause a NullPointerException if your code does not check whether 
+   * If the file is not available or an error occurs, <b>null</b> will
+   * be returned and an error message will be printed to the console.
+   * The error message does not halt the program, however the null value
+   * may cause a NullPointerException if your code does not check whether
    * the value returned is null.<br />
-   * 
+   *
    * @webref shape
    * @webBrief Loads geometry into a variable of type <b>PShape</b>.
    * @param filename name of file to load, can be .svg or .obj
@@ -11553,35 +11548,35 @@ public class PApplet implements PConstants {
 
 
   /**
-   * The <b>createShape()</b> function is used to define a new shape. 
-   * Once created, this shape can be drawn with the <b>shape()</b> 
-   * function. The basic way to use the function defines new primitive 
-   * shapes. One of the following parameters are used as the first 
-   * parameter: <b>ELLIPSE</b>, <b>RECT</b>, <b>ARC</b>, <b>TRIANGLE</b>, 
-   * <b>SPHERE</b>, <b>BOX</b>, <b>QUAD</b>, or <b>LINE</b>. The 
-   * parameters for each of these different shapes are the same as their 
-   * corresponding functions: <b>ellipse()</b>, <b>rect()</b>, <b>arc()</b>, 
-   * <b>triangle()</b>, <b>sphere()</b>, <b>box()</b>, <b>quad()</b>, and 
+   * The <b>createShape()</b> function is used to define a new shape.
+   * Once created, this shape can be drawn with the <b>shape()</b>
+   * function. The basic way to use the function defines new primitive
+   * shapes. One of the following parameters are used as the first
+   * parameter: <b>ELLIPSE</b>, <b>RECT</b>, <b>ARC</b>, <b>TRIANGLE</b>,
+   * <b>SPHERE</b>, <b>BOX</b>, <b>QUAD</b>, or <b>LINE</b>. The
+   * parameters for each of these different shapes are the same as their
+   * corresponding functions: <b>ellipse()</b>, <b>rect()</b>, <b>arc()</b>,
+   * <b>triangle()</b>, <b>sphere()</b>, <b>box()</b>, <b>quad()</b>, and
    * <b>line()</b>. The first example above clarifies how this works.<br />
    * <br />
-   * Custom, unique shapes can be made by using <b>createShape()</b> without 
-   * a parameter. After the shape is started, the drawing attributes and 
-   * geometry can be set directly to the shape within the <b>beginShape()</b> 
-   * and <b>endShape()</b> methods. See the second example above for specifics, 
+   * Custom, unique shapes can be made by using <b>createShape()</b> without
+   * a parameter. After the shape is started, the drawing attributes and
+   * geometry can be set directly to the shape within the <b>beginShape()</b>
+   * and <b>endShape()</b> methods. See the second example above for specifics,
    * and the reference for <b>beginShape()</b> for all of its options.<br />
    * <br />
-   * The  <b>createShape()</b> function can also be used to make a complex 
-   * shape made of other shapes. This is called a "group" and it's created by 
-   * using the parameter <b>GROUP</b> as the first parameter. See the fourth 
+   * The  <b>createShape()</b> function can also be used to make a complex
+   * shape made of other shapes. This is called a "group" and it's created by
+   * using the parameter <b>GROUP</b> as the first parameter. See the fourth
    * example above to see how it works.<br />
    * <br />
-   * After using <b>createShape()</b>, stroke and fill color can be set by 
-   * calling methods like <b>setFill()</b> and <b>setStroke()</b>, as seen 
-   * in the examples above. The complete list of methods and fields for the 
+   * After using <b>createShape()</b>, stroke and fill color can be set by
+   * calling methods like <b>setFill()</b> and <b>setStroke()</b>, as seen
+   * in the examples above. The complete list of methods and fields for the
    * PShape class are in the <a href="http://processing.github.io/processing-javadocs/core/">Processing Javadoc</a>.
-   * 
+   *
    * @webref shape
-   * @webBrief The <b>createShape()</b> function is used to define a new shape. 
+   * @webBrief The <b>createShape()</b> function is used to define a new shape.
    * @see PShape
    * @see PShape#endShape()
    * @see PApplet#loadShape(String)
@@ -11606,25 +11601,25 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Loads a shader into the PShader object. The shader file must be 
-   * loaded in the sketch's "data" folder/directory to load correctly. 
-   * Shaders are compatible with the P2D and P3D renderers, but not 
+   * Loads a shader into the PShader object. The shader file must be
+   * loaded in the sketch's "data" folder/directory to load correctly.
+   * Shaders are compatible with the P2D and P3D renderers, but not
    * with the default renderer.<br />
    * <br />
-   * Alternatively, the file maybe be loaded from anywhere on the local 
-   * computer using an absolute path (something that starts with / on 
-   * Unix and Linux, or a drive letter on Windows), or the filename 
+   * Alternatively, the file maybe be loaded from anywhere on the local
+   * computer using an absolute path (something that starts with / on
+   * Unix and Linux, or a drive letter on Windows), or the filename
    * parameter can be a URL for a file found on a network.<br />
    * <br />
-   * If the file is not available or an error occurs, <b>null</b> will 
-   * be returned and an error message will be printed to the console. 
-   * The error message does not halt the program, however the null 
-   * value may cause a NullPointerException if your code does not check 
+   * If the file is not available or an error occurs, <b>null</b> will
+   * be returned and an error message will be printed to the console.
+   * The error message does not halt the program, however the null
+   * value may cause a NullPointerException if your code does not check
    * whether the value returned is null.<br />
    *
    *
    * @webref rendering:shaders
-   * @webBrief Loads a shader into the PShader object. 
+   * @webBrief Loads a shader into the PShader object.
    * @param fragFilename name of fragment shader file
    */
   public PShader loadShader(String fragFilename) {
@@ -11642,7 +11637,7 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Applies the shader specified by the parameters. It's compatible with 
+   * Applies the shader specified by the parameters. It's compatible with
    * the P2D and P3D renderers, but not with the default renderer.
    *
    *
@@ -11667,12 +11662,12 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Restores the default shaders. Code that runs after <b>resetShader()</b> 
+   * Restores the default shaders. Code that runs after <b>resetShader()</b>
    * will not be affected by previously defined shaders.
    *
    *
    * @webref rendering:shaders
-   * @webBrief Restores the default shaders. 
+   * @webBrief Restores the default shaders.
    */
   public void resetShader() {
     if (recorder != null) recorder.resetShader();
@@ -11702,7 +11697,7 @@ public class PApplet implements PConstants {
    *
    * Limits the rendering to the boundaries of a rectangle defined
    * by the parameters. The boundaries are drawn based on the state
-   * of the <b>imageMode()</b> fuction, either CORNER, CORNERS, or CENTER.
+   * of the <b>imageMode()</b> function, either CORNER, CORNERS, or CENTER.
    *
    *
    * @webref rendering
@@ -11735,11 +11730,11 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Blends the pixels in the display window according to a defined mode. 
-   * There is a choice of the following modes to blend the source pixels (A) 
-   * with the ones of pixels already in the display window (B). Each pixel's 
-   * final color is the result of applying one of the blend modes with each 
-   * channel of (A) and (B) independently. The red channel is compared with 
+   * Blends the pixels in the display window according to a defined mode.
+   * There is a choice of the following modes to blend the source pixels (A)
+   * with the ones of pixels already in the display window (B). Each pixel's
+   * final color is the result of applying one of the blend modes with each
+   * channel of (A) and (B) independently. The red channel is compared with
    * red, green with green, and blue with blue.<br />
    * <br />
    * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
@@ -11762,15 +11757,15 @@ public class PApplet implements PConstants {
    * <br />
    * REPLACE - the pixels entirely replace the others and don't utilize alpha (transparency) values<br />
    * <br />
-   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b> 
-   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function 
-   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE, 
-   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might 
-   * not be available as well. 
+   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b>
+   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function
+   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE,
+   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might
+   * not be available as well.
    *
    *
    * @webref rendering
-   * @webBrief Blends the pixels in the display window according to a defined mode. 
+   * @webBrief Blends the pixels in the display window according to a defined mode.
    * @param mode the blending mode to use
    */
   public void blendMode(int mode) {
@@ -11825,17 +11820,17 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Specifies vertex coordinates for quadratic Bezier curves. Each call 
-   * to <b>quadraticVertex()</b> defines the position of one control 
-   * point and one anchor point of a Bezier curve, adding a new segment 
-   * to a line or shape. The first time <b>quadraticVertex()</b> is used 
-   * within a <b>beginShape()</b> call, it must be prefaced with a call 
-   * to <b>vertex()</b> to set the first anchor point. This function must 
-   * be used between <b>beginShape()</b> and <b>endShape()</b> and only 
-   * when there is no MODE parameter specified to <b>beginShape()</b>. 
-   * Using the 3D version requires rendering with P3D (see the Environment 
+   * Specifies vertex coordinates for quadratic Bezier curves. Each call
+   * to <b>quadraticVertex()</b> defines the position of one control
+   * point and one anchor point of a Bezier curve, adding a new segment
+   * to a line or shape. The first time <b>quadraticVertex()</b> is used
+   * within a <b>beginShape()</b> call, it must be prefaced with a call
+   * to <b>vertex()</b> to set the first anchor point. This function must
+   * be used between <b>beginShape()</b> and <b>endShape()</b> and only
+   * when there is no MODE parameter specified to <b>beginShape()</b>.
+   * Using the 3D version requires rendering with P3D (see the Environment
    * reference for more information).
-   * 
+   *
    * @webref shape:vertex
    * @webBrief Specifies vertex coordinates for quadratic Bezier curves.
    * @param cx the x-coordinate of the control point
@@ -12020,7 +12015,7 @@ public class PApplet implements PConstants {
    * counter-clockwise around the defined shape.
    *
    * @webref shape:2d_primitives
-   * @webBrief A quad is a quadrilateral, a four sided polygon. 
+   * @webBrief A quad is a quadrilateral, a four sided polygon.
    * @param x1 x-coordinate of the first corner
    * @param y1 y-coordinate of the first corner
    * @param x2 x-coordinate of the second corner
@@ -12040,7 +12035,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Modifies the location from which rectangles are drawn by changing the way in
-   * which parameters given to <b>rect()</b> are intepreted.<br />
+   * which parameters given to <b>rect()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>rectMode(CORNER)</b>, which interprets the first two
    * parameters of <b>rect()</b> as the upper-left corner of the shape, while the
@@ -12056,7 +12051,7 @@ public class PApplet implements PConstants {
    * <br />
    * <b>rectMode(RADIUS)</b> also uses the first two parameters of <b>rect()</b>
    * as the shape's center point, but uses the third and fourth parameters to
-   * specify half of the shapes's width and height.<br />
+   * specify half of the shape's width and height.<br />
    * <br />
    * The parameter must be written in ALL CAPS because Processing is a
    * case-sensitive language.
@@ -12153,7 +12148,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Modifies the location from which ellipses are drawn by changing the way in
-   * which parameters given to <b>ellipse()</b> are intepreted.<br />
+   * which parameters given to <b>ellipse()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>ellipseMode(CENTER)</b>, which interprets the first
    * two parameters of <b>ellipse()</b> as the shape's center point, while the
@@ -12161,7 +12156,7 @@ public class PApplet implements PConstants {
    * <br />
    * <b>ellipseMode(RADIUS)</b> also uses the first two parameters of
    * <b>ellipse()</b> as the shape's center point, but uses the third and fourth
-   * parameters to specify half of the shapes's width and height.<br />
+   * parameters to specify half of the shape's width and height.<br />
    * <br />
    * <b>ellipseMode(CORNER)</b> interprets the first two parameters of
    * <b>ellipse()</b> as the upper-left corner of the shape, while the third and
@@ -12267,7 +12262,7 @@ public class PApplet implements PConstants {
    * function.
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws a circle to the screen. 
+   * @webBrief Draws a circle to the screen.
    * @param x x-coordinate of the ellipse
    * @param y y-coordinate of the ellipse
    * @param extent width and height of the ellipse by default
@@ -12341,7 +12336,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   * @param ures number of segments used longitudinally per full circle revolutoin
+   * @param ures number of segments used longitudinally per full circle revolution
    * @param vres number of segments used latitudinally from top to bottom
    */
   public void sphereDetail(int ures, int vres) {
@@ -12369,7 +12364,7 @@ public class PApplet implements PConstants {
    * [toxi 031031] new sphere code. removed all multiplies with
    * radius, as scale() will take care of that anyway
    *
-   * [toxi 031223] updated sphere code (removed modulos)
+   * [toxi 031223] updated sphere code (removed modulo)
    * and introduced sphereAt(x,y,z,r)
    * to avoid additional translate()'s on the user/sketch side
    *
@@ -12441,7 +12436,7 @@ public class PApplet implements PConstants {
    *
    *
    * <h3>Advanced</h3>
-   * Code submitted by Dave Bollinger (davol) for release 0136.
+   * Code submitted by Dave Bollinger (davbol) for release 0136.
    *
    * @webref shape:curves
    * @webBrief Calculates the tangent of a point on a Bezier curve.
@@ -12562,7 +12557,7 @@ public class PApplet implements PConstants {
    *
    *
    * @webref shape:curves
-   * @webBrief Evalutes the curve at point t for points a, b, c, d.
+   * @webBrief Evaluates the curve at point t for points a, b, c, d.
    * @param a coordinate of first control point
    * @param b coordinate of first point on the curve
    * @param c coordinate of second point on the curve
@@ -12718,7 +12713,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Modifies the location from which images are drawn by changing the way in
-   * which parameters given to <b>image()</b> are intepreted.<br />
+   * which parameters given to <b>image()</b> are interpreted.<br />
    * <br />
    * The default mode is <b>imageMode(CORNER)</b>, which interprets the second and
    * third parameters of <b>image()</b> as the upper-left corner of the image. If
@@ -12922,7 +12917,7 @@ public class PApplet implements PConstants {
    * the font.
    *
    *
-   * 
+   *
    * @webref typography:attributes
    * @webBrief Sets the current alignment for drawing text.
    * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
@@ -13199,7 +13194,7 @@ public class PApplet implements PConstants {
    * Method to draw text from an array of chars. This method will usually be
    * more efficient than drawing from a String object, because the String will
    * not be converted to a char array before drawing.
-   * @param chars the alphanumberic symbols to be displayed
+   * @param chars the alphanumeric symbols to be displayed
    * @param start array index at which to start writing characters
    * @param stop array index at which to stop writing characters
    */
@@ -13265,7 +13260,7 @@ public class PApplet implements PConstants {
   /**
    * This does a basic number formatting, to avoid the
    * generally ugly appearance of printing floats.
-   * Users who want more control should use their own nf() cmmand,
+   * Users who want more control should use their own nf() command,
    * or if they want the long, ugly version of float,
    * use String.valueOf() to convert the float to a String first.
    *
@@ -13367,7 +13362,7 @@ public class PApplet implements PConstants {
    * understanding the concept of a matrix stack. The <b>pushMatrix()</b>
    * function saves the current coordinate system to the stack and
    * <b>popMatrix()</b> restores the prior coordinate system.
-   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjuction with
+   * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjunction with
    * the other transformation functions and may be embedded to control the
    * scope of the transformations.
    *
@@ -13395,7 +13390,7 @@ public class PApplet implements PConstants {
    * a matrix stack. The <b>pushMatrix()</b> function saves the current
    * coordinate system to the stack and <b>popMatrix()</b> restores the prior
    * coordinate system. <b>pushMatrix()</b> and <b>popMatrix()</b> are used
-   * in conjuction with the other transformation functions and may be
+   * in conjunction with the other transformation functions and may be
    * embedded to control the scope of the transformations.
    *
    *
@@ -13465,7 +13460,7 @@ public class PApplet implements PConstants {
    * Transformations apply to everything that happens after and subsequent
    * calls to the function accumulates the effect. For example, calling
    * <b>rotate(HALF_PI)</b> and then <b>rotate(HALF_PI)</b> is the same as
-   * <b>rotate(PI)</b>. All tranformations are reset when <b>draw()</b>
+   * <b>rotate(PI)</b>. All transformations are reset when <b>draw()</b>
    * begins again.
    * <br/> <br/>
    * Technically, <b>rotate()</b> multiplies the current transformation
@@ -13596,9 +13591,6 @@ public class PApplet implements PConstants {
    * <h3>Advanced</h3>
    * Rotate about a vector in space. Same as the glRotatef() function.
    * @nowebref
-   * @param x
-   * @param y
-   * @param z
    */
   public void rotate(float angle, float x, float y, float z) {
     if (recorder != null) recorder.rotate(angle, x, y, z);
@@ -13687,7 +13679,7 @@ public class PApplet implements PConstants {
    *
    * @webref transform
    * @webBrief Shears a shape around the x-axis the amount specified by the
-   * <b>angle</b> parameter. 
+   * <b>angle</b> parameter.
    * @param angle angle of shear specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -13966,7 +13958,7 @@ public class PApplet implements PConstants {
    *
    *
    * @webref lights_camera:camera
-   * @webBrief Sets the position of the camera. 
+   * @webBrief Sets the position of the camera.
    * @see PGraphics#beginCamera()
    * @see PGraphics#endCamera()
    * @see PGraphics#frustum(float, float, float, float, float, float)
@@ -14074,7 +14066,7 @@ public class PApplet implements PConstants {
    *
    * @webref lights_camera:camera
    * @webBrief Sets a perspective projection applying foreshortening, making distant
-   * objects appear smaller than closer ones. 
+   * objects appear smaller than closer ones.
    */
   public void perspective() {
     if (recorder != null) recorder.perspective();
@@ -14786,10 +14778,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the specular color of the materials used for shapes drawn to the
-   * screen, which sets the color of hightlights. Specular refers to light
-   * which bounces off a surface in a perferred direction (rather than
+   * screen, which sets the color of highlights. Specular refers to light
+   * which bounces off a surface in a preferred direction (rather than
    * bouncing in all directions like a diffuse light). Used in combination
    * with <b>emissive()</b>, <b>ambient()</b>, and <b>shininess()</b> in
    * setting the material properties of shapes.
@@ -14797,7 +14788,7 @@ public class PApplet implements PConstants {
    *
    * @webref lights_camera:material_properties
    * @webBrief Sets the specular color of the materials used for shapes drawn to the
-   * screen, which sets the color of hightlights.
+   * screen, which sets the color of highlights.
    * @usage web_application
    * @param rgb color to set
    * @see PGraphics#lightSpecular(float, float, float)
@@ -14912,7 +14903,7 @@ public class PApplet implements PConstants {
    *
    * @webref lights_camera:lights
    * @webBrief Sets the default ambient light, directional light, falloff, and specular
-   * values. 
+   * values.
    * @usage web_application
    * @see PGraphics#ambientLight(float, float, float, float, float, float)
    * @see PGraphics#directionalLight(float, float, float, float, float, float)
@@ -15110,8 +15101,8 @@ public class PApplet implements PConstants {
    * falloff = 1 / (CONSTANT + d * LINEAR + (d*d) * QUADRATIC)<br />
    * <br />
    * Thinking about an ambient light with a falloff can be tricky. If you want a
-   * region of your scene to be lit ambiently with one color and another region to
-   * be lit ambiently with another color, you could use an ambient light with
+   * region of your scene to be ambient lit with one color and another region to
+   * be ambient lit with another color, you could use an ambient light with
    * location and falloff. You can think of it as a point light that doesn't care
    * which direction a surface is facing.
    *
@@ -15140,7 +15131,7 @@ public class PApplet implements PConstants {
    *
    * Sets the specular color for lights. Like <b>fill()</b>, it affects only
    * the elements which are created after it in the code. Specular refers to
-   * light which bounces off a surface in a perferred direction (rather than
+   * light which bounces off a surface in a preferred direction (rather than
    * bouncing in all directions like a diffuse light) and is used for
    * creating highlights. The specular quality of a light interacts with the
    * specular material qualities set through the <b>specular()</b> and
@@ -15171,7 +15162,7 @@ public class PApplet implements PConstants {
    * the Processing window. The default background is light gray. This function is
    * typically used within <b>draw()</b> to clear the display window at the
    * beginning of each frame, but it can be used inside <b>setup()</b> to set the
-   * background on the first frame of animation or if the backgound need only be
+   * background on the first frame of animation or if the background need only be
    * set once. <br />
    * <br />
    * An image can also be used as the background for a sketch, although the
@@ -15256,14 +15247,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Clears the pixels within a buffer. This function only works on 
-   * <b>PGraphics</b> objects created with the <b>createGraphics()</b> 
-   * function. Unlike the main graphics context (the display window), 
-   * pixels in additional graphics areas created with <b>createGraphics()</b> 
-   * can be entirely or partially transparent. This function clears 
-   * everything in a <b>PGraphics</b> object to make all of the pixels 
+   * Clears the pixels within a buffer. This function only works on
+   * <b>PGraphics</b> objects created with the <b>createGraphics()</b>
+   * function. Unlike the main graphics context (the display window),
+   * pixels in additional graphics areas created with <b>createGraphics()</b>
+   * can be entirely or partially transparent. This function clears
+   * everything in a <b>PGraphics</b> object to make all of the pixels
    * 100% transparent.
-   * 
+   *
    * @webref color:setting
    * @webBrief Clears the pixels within a buffer.
    */
@@ -15387,12 +15378,12 @@ public class PApplet implements PConstants {
    * <br />
    * The <b>red()</b> function is easy to use and understand, but it is slower
    * than a technique called bit shifting. When working in <b>colorMode(RGB,
-   * 255)</b>, you can acheive the same results as <b>red()</b> but with greater
+   * 255)</b>, you can achieve the same results as <b>red()</b> but with greater
    * speed by using the right shift operator (<b>>></b>) with a bit mask. For
    * example, the following two lines of code are equivalent means of getting the
    * red value of the color value <b>c</b>:<br />
    * <br />
-   * 
+   *
    * <pre>
    * float r1 = red(c); // Simpler, but slower to calculate
    * float r2 = c >> 16 & 0xFF; // Very fast to calculate
@@ -15425,12 +15416,12 @@ public class PApplet implements PConstants {
    * <br />
    * The <b>green()</b> function is easy to use and understand, but it is slower
    * than a technique called bit shifting. When working in <b>colorMode(RGB,
-   * 255)</b>, you can acheive the same results as <b>green()</b> but with greater
+   * 255)</b>, you can achieve the same results as <b>green()</b> but with greater
    * speed by using the right shift operator (<b>>></b>) with a bit mask. For
    * example, the following two lines of code are equivalent means of getting the
    * green value of the color value <b>c</b>:<br />
    * <br />
-   * 
+   *
    * <pre>
    * float g1 = green(c); // Simpler, but slower to calculate
    * float g2 = c >> 8 & 0xFF; // Very fast to calculate
@@ -15463,12 +15454,12 @@ public class PApplet implements PConstants {
    * <br />
    * The <b>blue()</b> function is easy to use and understand, but it is slower
    * than a technique called bit masking. When working in <b>colorMode(RGB,
-   * 255)</b>, you can acheive the same results as <b>blue()</b> but with greater
+   * 255)</b>, you can achieve the same results as <b>blue()</b> but with greater
    * speed by using a bit mask to remove the other color components. For example,
    * the following two lines of code are equivalent means of getting the blue
    * value of the color value <b>c</b>:<br />
    * <br />
-   * 
+   *
    * <pre>
    * float b1 = blue(c); // Simpler, but slower to calculate
    * float b2 = c & 0xFF; // Very fast to calculate
@@ -15964,8 +15955,8 @@ public class PApplet implements PConstants {
    * @param sy Y coordinate of the source's upper left corner
    * @param sw source image width
    * @param sh source image height
-   * @param dx X coordinate of the destinations's upper left corner
-   * @param dy Y coordinate of the destinations's upper left corner
+   * @param dx X coordinate of the destination's upper left corner
+   * @param dy Y coordinate of the destination's upper left corner
    * @param dw destination image width
    * @param dh destination image height
    * @param mode Either BLEND, ADD, SUBTRACT, LIGHTEST, DARKEST, DIFFERENCE, EXCLUSION, MULTIPLY, SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, BURN

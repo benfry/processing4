@@ -1757,7 +1757,7 @@ public class PShapeOpenGL extends PShape {
   @Override
   public void setAttrib(String name, int index, float... values) {
     if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setNormal()");
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
       return;
     }
 
@@ -1774,7 +1774,7 @@ public class PShapeOpenGL extends PShape {
   @Override
   public void setAttrib(String name, int index, int... values) {
     if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setNormal()");
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
       return;
     }
 
@@ -1791,7 +1791,7 @@ public class PShapeOpenGL extends PShape {
   @Override
   public void setAttrib(String name, int index, boolean... values) {
     if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setNormal()");
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
       return;
     }
 
