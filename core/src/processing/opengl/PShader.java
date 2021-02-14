@@ -1140,10 +1140,6 @@ public class PShader implements PConstants {
     shininessLoc = getAttributeLoc("shininess");
 
     directionLoc = getAttributeLoc("direction");
-
-    offsetLoc = getAttributeLoc("offset");
-
-    directionLoc = getAttributeLoc("direction");
     offsetLoc = getAttributeLoc("offset");
 
     loadedAttributes = true;
