@@ -3,7 +3,7 @@ X “An error occurred while starting the application” with 4.0a3 on Windows
 X   replace about.bmp that was causing processing.exe to crash on startup
 X   https://github.com/processing/processing4/issues/156
 X update to JDK 11.0.10
-X update to JNA 5.7.0
+X update from JNA 5.2.0 to 5.7.0
 X   was having trouble with "java.lang.UnsatisfiedLinkError: Unable to load library 'CoreServices': Native library (darwin/libCoreServices.dylib) not found in resource path"
 X   https://github.com/fathominfo/processing-p5js-mode/issues/26
 X implement auto-download for JNA updates
