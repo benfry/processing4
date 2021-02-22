@@ -7,6 +7,8 @@ X update from JNA 5.2.0 to 5.7.0
 X   was having trouble with "java.lang.UnsatisfiedLinkError: Unable to load library 'CoreServices': Native library (darwin/libCoreServices.dylib) not found in resource path"
 X   https://github.com/fathominfo/processing-p5js-mode/issues/26
 X implement auto-download for JNA updates
+X “Exception in thread "Contribution Uninstaller" NullPointerException” during Remove
+X   https://github.com/processing/processing4/issues/174
 
 
 windows/scaling
