@@ -138,8 +138,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
   /** Menu Actions updated on the opening of the edit menu. */
   protected List<UpdatableAction> editMenuUpdatable = new ArrayList<>();
 
-  /** The currently selected tab's undo manager */
+  /** The currently selected tab's undo manager and caret positions*/
   private UndoManager undo;
+  // maintain caret position during undo operations
+  private Stack<Integer> caretUndoStack = new Stack<>();
+  private Stack<Integer> caretRedoStack = new Stack<>();
   // used internally for every edit. Groups hotkey-event text manipulations and
   // groups  multi-character inputs into a single undos.
   private CompoundEdit compoundEdit;
@@ -148,9 +151,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   private TimerTask endUndoEvent;
   // true if inserting text, false if removing text
   private boolean isInserting;
-  // maintain caret position during undo operations
-  private final Stack<Integer> caretUndoStack = new Stack<>();
-  private final Stack<Integer> caretRedoStack = new Stack<>();
 
   private FindReplace find;
   JMenu toolsMenu;
@@ -1904,7 +1904,12 @@ public abstract class Editor extends JFrame implements RunnerListener {
 //    textarea.requestFocus();  // get the caret blinking
     textarea.requestFocusInWindow();  // required for caret blinking
 
+    // end edits in the previous tab
+    endTextEditHistory();
+    // update the UndoManager and caret positions to the selected tab
     this.undo = code.getUndo();
+    caretUndoStack = code.getCaretUndoStack();
+    caretRedoStack = code.getCaretRedoStack();
     undoAction.updateUndoState();
     redoAction.updateRedoState();
   }
