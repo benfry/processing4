@@ -10,6 +10,8 @@ X implement auto-download for JNA updates
 X “Exception in thread "Contribution Uninstaller" NullPointerException” during Remove
 X   https://github.com/processing/processing4/issues/174
 X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
+X need to set a nicer default font
+X   increases export size, but impact is so worth it
 
 earlier
 o further streamline the downloader
@@ -33,8 +35,6 @@ _ include JNA so that sketches can also scale properly?
 _   what happens re: getting scaled/high-res graphics?
 _   make that a preference? (and double the size by default?)
 
-_ need to set a nicer default font
-_   increases export size, but impact is so worth it
 _ new FloatList(float...)
 
 already fixed in 4.x? (confirm/close on release)

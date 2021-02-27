@@ -4237,7 +4237,18 @@ public class PGraphics extends PImage implements PConstants {
    * Used by PGraphics to remove the requirement for loading a font.
    */
   protected PFont createDefaultFont(float size) {
-    Font baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
+    Font baseFont;
+    try {
+      // For 4.0 alpha 4 and later, include a built-in font
+      InputStream input = getClass().getResourceAsStream("/font/ProcessingSansPro-Regular.ttf");
+      baseFont = Font.createFont(Font.TRUETYPE_FONT, input);
+
+    } catch (Exception e) {
+      // Fall back to how this was handled in 3.x, ugly!
+      e.printStackTrace(); // dammit
+      baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
+    }
+    // Create a PFont from this java.awt.Font
     return createFont(baseFont, size, true, null, false);
   }
 
