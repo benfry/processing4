@@ -9,6 +9,13 @@ X   https://github.com/fathominfo/processing-p5js-mode/issues/26
 X implement auto-download for JNA updates
 X “Exception in thread "Contribution Uninstaller" NullPointerException” during Remove
 X   https://github.com/processing/processing4/issues/174
+X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
+
+earlier
+o further streamline the downloader
+o   https://github.com/processing/processing4/issues/47
+o next video release
+o   https://github.com/processing/processing-video/milestone/1
 
 
 windows/scaling
@@ -26,12 +33,9 @@ _ include JNA so that sketches can also scale properly?
 _   what happens re: getting scaled/high-res graphics?
 _   make that a preference? (and double the size by default?)
 
-earlier
-o further streamline the downloader
-o   https://github.com/processing/processing4/issues/47
-o next video release
-o   https://github.com/processing/processing-video/milestone/1
-
+_ need to set a nicer default font
+_   increases export size, but impact is so worth it
+_ new FloatList(float...)
 
 already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
