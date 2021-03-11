@@ -1,5 +1,12 @@
 1273 (4.0a4)
 
+_ why does japplemenubar.JAppleMenuBar.hide(); still work?
+_   it calls SetSystemUIMode, which is part of Carbon (which was removed in Catalina)
+_     https://github.com/kritzikratzi/jAppleMenuBar/blob/master/src/native/jAppleMenuBar.m
+_   setPresentationOptions() seems to be the Cocoa equivalent
+_     https://www.cocoawithlove.com/2009/08/animating-window-to-fullscreen-on-mac.html
+_     https://bugzilla.mozilla.org/attachment.cgi?id=8616917&action=diff
+_   https://www.philipp.haussleiter.de/2012/09/building-native-macos-apps-with-java/
 
 fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
 X AppKit errors from P2D/P3D
