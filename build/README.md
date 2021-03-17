@@ -30,13 +30,13 @@ You can choose to install these yourself or use the following guides below:
 One will also need to clone the repository for Processing itself. Some users who are simply building Processing but not contributing to it may prefer a "shallow" clone which does not copy the full history of the repository:
 
 ```
-git clone --depth 1 https://github.com/processing/processing.git
+git clone --depth 1 https://github.com/processing/processing4.git
 ```
 
 Users that are developing for the project may require a full clone:
 
 ```
-git clone https://github.com/processing/processing.git
+git clone https://github.com/processing/processing4.git
 ```
 
 <br>
