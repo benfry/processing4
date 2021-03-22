@@ -1276,6 +1276,22 @@ public class PSurfaceAWT extends PSurfaceNone {
     // the 'amount' is the number of button clicks for a click event,
     // or the number of steps/clicks on the wheel for a mouse wheel event.
     int peCount = nativeEvent.getClickCount();
+    int peButton =  nativeEvent.getButton();
+
+    // Switching to getModifiersEx() for 4.0a2 because of Java 9 deprecation.
+    // Had trouble with this in the past and rolled it back because it was
+    // optional at the time. This time around, just need to iron out the issue.
+    // http://code.google.com/p/processing/issues/detail?id=1294
+    // http://code.google.com/p/processing/issues/detail?id=1332
+    final int modifiers = nativeEvent.getModifiersEx();
+
+    // for macOS, where ctrl-click is traditionally recognized as a right click
+    final int ctrl_click = InputEvent.CTRL_DOWN_MASK;
+    if ( (modifiers & ctrl_click) != 0) {
+      if (peButton == PConstants.MOUSE_LEFT && PApplet.platform == PConstants.MACOS) {
+        peButton = PConstants.MOUSE_RIGHT;
+      }
+    } 
 
     int peAction = 0;
     switch (nativeEvent.getID()) {
@@ -1300,38 +1316,13 @@ public class PSurfaceAWT extends PSurfaceNone {
     case java.awt.event.MouseEvent.MOUSE_EXITED:
       peAction = MouseEvent.EXIT;
       break;
-    //case java.awt.event.MouseWheelEvent.WHEEL_UNIT_SCROLL:
     case java.awt.event.MouseEvent.MOUSE_WHEEL:
       peAction = MouseEvent.WHEEL;
-      /*
-      if (preciseWheelMethod != null) {
-        try {
-          peAmount = ((Double) preciseWheelMethod.invoke(nativeEvent, (Object[]) null)).floatValue();
-        } catch (Exception e) {
-          preciseWheelMethod = null;
-        }
-      }
-      */
       peCount = ((MouseWheelEvent) nativeEvent).getWheelRotation();
       break;
     }
 
-    // Switching to getModifiersEx() for 4.0a2 because of Java 9 deprecation.
-    // Had trouble with this in the past and rolled it back because it was
-    // optional at the time. This time around, just need to iron out the issue.
-    // http://code.google.com/p/processing/issues/detail?id=1294
-    // http://code.google.com/p/processing/issues/detail?id=1332
-    int modifiers = nativeEvent.getModifiersEx();
-
-    int peButton = 0;
-    if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
-      peButton = PConstants.LEFT;
-    } else if ((modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
-      peButton = PConstants.CENTER;
-    } else if ((modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
-      peButton = PConstants.RIGHT;
-    }
-
+    
     sketch.postEvent(new MouseEvent(nativeEvent, nativeEvent.getWhen(),
                                     peAction, modifiers,
                                     nativeEvent.getX() / windowScaleFactor,
