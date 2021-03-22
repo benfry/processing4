@@ -2670,27 +2670,7 @@ public class PApplet implements PConstants {
       mouseY = event.getY();
     }
 
-    int button = event.getButton();
-
-    // If running on Mac OS, allow ctrl-click as right mouse.
-    if (PApplet.platform == PConstants.MACOS && event.getButton() == PConstants.LEFT) {
-      if (action == MouseEvent.PRESS && event.isControlDown()) {
-        macosxLeftButtonWithCtrlPressed = true;
-      }
-      if (macosxLeftButtonWithCtrlPressed) {
-        button = PConstants.RIGHT;
-        event = new MouseEvent(event.getNative(), event.getMillis(),
-                               event.getAction(), event.getModifiers(),
-                               event.getX(), event.getY(),
-                               button, event.getCount());
-      }
-      if (action == MouseEvent.RELEASE) {
-        macosxLeftButtonWithCtrlPressed = false;
-      }
-    }
-
-    // Get the (already processed) button code
-    mouseButton = button;
+    mouseButton = event.getButton();
 
     /*
     // Compatibility for older code (these have AWT object params, not P5)

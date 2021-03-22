@@ -1093,26 +1093,21 @@ public class PSurfaceJOGL implements PSurface {
   protected void nativeMouseEvent(com.jogamp.newt.event.MouseEvent nativeEvent,
                                   int peAction) {
     int modifiers = nativeEvent.getModifiers();
-    /*
-    int peModifiers = modifiers &
-                      (InputEvent.SHIFT_MASK |
-                       InputEvent.CTRL_MASK |
-                       InputEvent.META_MASK |
-                       InputEvent.ALT_MASK);
-     */
 
     int peButton = 0;
     switch (nativeEvent.getButton()) {
       case com.jogamp.newt.event.MouseEvent.BUTTON1:
-        peButton = PConstants.LEFT;
+        peButton = PConstants.MOUSE_LEFT;
         break;
       case com.jogamp.newt.event.MouseEvent.BUTTON2:
-        peButton = PConstants.CENTER;
+        peButton = PConstants.MOUSE_MIDDLE;
         break;
       case com.jogamp.newt.event.MouseEvent.BUTTON3:
-        peButton = PConstants.RIGHT;
+        peButton = PConstants.MOUSE_RIGHT;
         break;
     }
+
+
 
     int peCount = 0;
     if (peAction == MouseEvent.WHEEL) {
@@ -1127,6 +1122,9 @@ public class PSurfaceJOGL implements PSurface {
     int scale;
     if (PApplet.platform == PConstants.MACOS) {
       scale = (int) getCurrentPixelScale();
+      if (peButton == PConstants.MOUSE_LEFT && nativeEvent.isControlDown()) {
+        peButton = PConstants.MOUSE_RIGHT;
+      }
     } else {
       scale = (int) getPixelScale();
     }

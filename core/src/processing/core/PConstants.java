@@ -462,6 +462,12 @@ public interface PConstants {
   int CONTROL   = KeyEvent.VK_CONTROL;
   int SHIFT     = KeyEvent.VK_SHIFT;
 
+  // mouse buttons
+
+  int MOUSE_LEFT    = 1;
+  int MOUSE_MIDDLE  = 2;
+  int MOUSE_RIGHT   = 3;
+
 
   // orientations (only used on Android, ignored on desktop)
 
