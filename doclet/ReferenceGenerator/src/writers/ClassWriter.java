@@ -137,6 +137,9 @@ public class ClassWriter extends BaseWriter {
 			{
 				constructor = constructor.substring(0, constructor.length()-2) + ")";
 			}
+			else {
+				constructor += ")";
+			}
 			constructors.add(constructor);
 		}
 		return constructors;

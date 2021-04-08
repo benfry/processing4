@@ -11,17 +11,6 @@ REFERENCES_OUT_PATH=../../../processing-website/content/references/translations/
 echo "[REFERENCE GENERATOR] Source Path :: $PROCESSING_SRC_PATH"
 echo "[REFERENCE GENERATOR] Library Path :: $PROCESSING_LIB_PATH"
 
-
-echo "[REFERENCE GENERATOR] Removing previous version of the ref..."
-rm -rf $REFERENCES_OUT_PATH
-mkdir $REFERENCES_OUT_PATH
-mkdir $REFERENCES_OUT_PATH/processing
-mkdir $REFERENCES_OUT_PATH/io
-mkdir $REFERENCES_OUT_PATH/net
-mkdir $REFERENCES_OUT_PATH/serial
-mkdir $REFERENCES_OUT_PATH/sound
-mkdir $REFERENCES_OUT_PATH/video
-
 echo "[REFERENCE GENERATOR] Generating new javadocs..."
 javadoc -doclet ProcessingWeblet \
         -docletpath "bin/:lib/org.json.jar" \
