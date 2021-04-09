@@ -644,8 +644,8 @@ public class PApplet implements PConstants {
   /**
    *
    * Confirms if a Processing program is "focused", meaning that it is active
-   * and will accept input from mouse or keyboard. This variable is "true" if
-   * it is focused and "false" if not.
+   * and will accept input from mouse or keyboard. This variable is <b>true</b> if
+   * it is focused and <b>false</b> if not.
    *
    * @webref environment
    * @webBrief Confirms if a Processing program is "focused".
@@ -1077,23 +1077,23 @@ public class PApplet implements PConstants {
   * pixels on high resolutions screens like Apple Retina
   * displays and Windows High-DPI displays. This function
   * can only be run once within a program and it must be
-  * used right after size() in a program without a setup()
-  * and used within setup() when a program has one. The
-  * pixelDensity() should only be used with hardcoded
+  * used right after <b>size()</b> in a program without a <b>setup()</b>
+  * and used within <b>setup()</b> when a program has one. The
+  * <b>pixelDensity()</b> should only be used with hardcoded
   * numbers (in almost all cases this number will be 2)
-  * or in combination with displayDensity() as in the
+  * or in combination with <b>displayDensity()</b> as in the
   * third example above.
   *
   * When the pixel density is set to more than 1, it
   * changes all of the pixel operations including the way
-  * get(), set(), blend(), copy(), and updatePixels()
-  * all work. See the reference for pixelWidth and
+  * <b>get()</b>, <b>set()</b>, <b>blend()</b>, <b>copy()</b>, and <b>updatePixels()</b>
+  * all work. See the reference for <b>pixelWidth</b> and
   * pixelHeight for more information.
   *
-  * To use variables as the arguments to pixelDensity()
-  * function, place the pixelDensity() function within
-  * the settings() function. There is more information
-  * about this on the settings() reference page.
+  * To use variables as the arguments to <b>pixelDensity()</b>
+  * function, place the <b>pixelDensity()</b> function within
+  * the <b>settings()</b> function. There is more information
+  * about this on the <b>settings()</b> reference page.
   *
   * @webref environment
   * @webBrief It makes it possible for Processing to render using all of the
@@ -1151,36 +1151,36 @@ public class PApplet implements PConstants {
 
   /**
    * Draws all geometry with smooth (anti-aliased) edges.
-   * This behavior is the default, so smooth() only needs
+   * This behavior is the default, so <b>smooth()</b> only needs
    * to be used when a program needs to set the smoothing
    * in a different way. The level parameter increases
    * the amount of smoothness. This is the level of over
    * sampling applied to the graphics buffer.
    *
-   * With the P2D and P3D renderers, smooth(2) is the
+   * With the P2D and P3D renderers, <b>smooth(2)</b> is the
    * default, this is called "2x anti-aliasing." The code
-   * smooth(4) is used for 4x anti-aliasing and smooth(8)
+   * <b>smooth(4)</b> is used for 4x anti-aliasing and <b>smooth(8)</b>
    * is specified for "8x anti-aliasing." The maximum
    * anti-aliasing level is determined by the hardware of
-   * the machine that is running the software, so smooth(4)
-   * and smooth(8) will not work with every computer.
+   * the machine that is running the software, so <b>smooth(4)</b>
+   * and <b>smooth(8)</b> will not work with every computer.
    *
-   * The default renderer uses smooth(3) by default. This
+   * The default renderer uses <b>smooth(3)</b> by default. This
    * is bicubic smoothing. The other option for the default
-   * renderer is smooth(2), which is bilinear smoothing.
+   * renderer is <b>smooth(2)</b>, which is bilinear smoothing.
    *
-   * With Processing 3.0, smooth() is different than before.
-   * It was common to use smooth() and noSmooth() to turn on
+   * With Processing 3.0, <b>smooth()</b> is different than before.
+   * It was common to use <b>smooth()</b> and <b>noSmooth()</b> to turn on
    * and off antialiasing within a sketch. Now, because of
-   * how the software has changed, smooth() can only be set
+   * how the software has changed, <b>smooth()</b> can only be set
    * once within a sketch. It can be used either at the top
-   * of a sketch without a setup(), or after the size()
-   * function when used in a sketch with setup(). The
-   * noSmooth() function also follows the same rules.
+   * of a sketch without a <b>setup()</b>, or after the <b>size()</b>
+   * function when used in a sketch with <b>setup()</b>. The
+   * <b>noSmooth()</b> function also follows the same rules.
    *
-   * When smooth() is used with a PGraphics object, it should
+   * When <b>smooth()</b> is used with a PGraphics object, it should
    * be run right after the object is created with
-   * createGraphics(), as shown in the Reference in the third
+   * <b>createGraphics()</b>, as shown in the Reference in the third
    * example.
    *
    * @webref environment
@@ -1200,13 +1200,13 @@ public class PApplet implements PConstants {
    * Draws all geometry and fonts with jagged (aliased)
    * edges and images with hard edges between the pixels
    * when enlarged rather than interpolating pixels. Note
-   * that smooth() is active by default, so it is necessary
-   * to call noSmooth() to disable smoothing of geometry,
+   * that <b>smooth()</b> is active by default, so it is necessary
+   * to call <b>noSmooth()<b> to disable smoothing of geometry,
    * fonts, and images. Since the release of Processing 3.0,
-   * the noSmooth() function can only be run once for each
-   * sketch, either at the top of a sketch without a setup(),
-   * or after the size() function when used in a sketch with
-   * setup(). See the examples above for both scenarios.
+   * the <b>noSmooth()</b> function can only be run once for each
+   * sketch, either at the top of a sketch without a <b>setup()</b>,
+   * or after the <b>size()</b> function when used in a sketch with
+   * <b>setup()</b>. See the examples above for both scenarios.
    *
    * @webref environment
    * @webBrief Draws all geometry and fonts with jagged (aliased)
@@ -3391,22 +3391,22 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The delay() function causes the program to halt for a specified time.
+   * The <b>delay()</b> function causes the program to halt for a specified time.
    * Delay times are specified in thousandths of a second. For example,
-   * running delay(3000) will stop the program for three seconds and
-   * delay(500) will stop the program for a half-second.
+   * running <b>delay(3000)</b> will stop the program for three seconds and
+   * <b>delay(500)</b> will stop the program for a half-second.
    *
-   * The screen only updates when the end of draw() is reached, so delay()
-   * cannot be used to slow down drawing. For instance, you cannot use delay()
+   * The screen only updates when the end of <b>draw()</b> is reached, so <b>delay()</b>
+   * cannot be used to slow down drawing. For instance, you cannot use <b>delay()</b>
    * to control the timing of an animation.
    *
-   * The delay() function should only be used for pausing scripts (i.e.
+   * The <b>delay()</b> function should only be used for pausing scripts (i.e.
    * a script that needs to pause a few seconds before attempting a download,
    * or a sketch that needs to wait a few milliseconds before reading from
    * the serial port).
    *
    * @webref environment
-   * @webBrief The delay() function causes the program to halt for a specified time.
+   * @webBrief The <b>delay()</b> function causes the program to halt for a specified time.
    * @param napTime milliseconds to pause before running draw() again
    * @see PApplet#frameRate
    * @see PApplet#draw()
@@ -4368,7 +4368,7 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * The printArray() function writes array data to the text
+   * The <b>printArray()</b> function writes array data to the text
    * area of the Processing environment's console. A new line
    * is put between each element of the array. This function
    * can only print one dimensional arrays.
@@ -4378,7 +4378,7 @@ public class PApplet implements PConstants {
    *
    *
  * @webref output:text_area
- * @webBrief The printArray() function writes array data to the text
+ * @webBrief Writes array data to the text
  * area of the Processing environment's console.
  * @param what one-dimensional array
  * @usage IDE
@@ -4521,7 +4521,7 @@ public class PApplet implements PConstants {
    *
    * Squares a number (multiplies a number by itself). The result is always a
    * positive number, as multiplying two negative numbers always yields a
-   * positive result. For example, -1 * -1 = 1.
+   * positive result. For example, <b>-1 * -1 = 1.</b>
    *
    * @webref math:calculation
    * @webBrief Squares a number (multiplies a number by itself).
@@ -5011,7 +5011,7 @@ public class PApplet implements PConstants {
    * direction in space commonly used in computer graphics and linear
    * algebra. Because it has no "start" position, the magnitude of a vector
    * can be thought of as the distance from coordinate (0,0) to its (x,y)
-   * value. Therefore, mag() is a shortcut for writing "dist(0, 0, x, y)".
+   * value. Therefore, <b>mag()</b> is a shortcut for writing <b>dist(0, 0, x, y)</b>.
    *
    * @webref math:calculation
    * @webBrief Calculates the magnitude (or length) of a vector.
@@ -10389,7 +10389,7 @@ public class PApplet implements PConstants {
    * where 0.0 is equal to the first point, 0.1 is very near the first point,
    * 0.5 is halfway in between, etc. <br />
    * An amount below 0 will be treated as 0. Likewise, amounts above 1 will be
-   * capped at 1. This is different from the behavior of lerp(), but necessary
+   * capped at 1. This is different from the behavior of <b>lerp()</b>, but necessary
    * because otherwise numbers outside the range will produce strange and
    * unexpected colors.
    *
@@ -12010,7 +12010,7 @@ public class PApplet implements PConstants {
    *
    * A quad is a quadrilateral, a four sided polygon. It is similar to a
    * rectangle, but the angles between its edges are not constrained to
-   * ninety degrees. The first pair of parameters (x1,y1) sets the first
+   * ninety degrees. The first pair of parameters <b>(x1,y1)</b> sets the first
    * vertex and the subsequent pairs should proceed clockwise or
    * counter-clockwise around the defined shape.
    *
@@ -14012,7 +14012,7 @@ public class PApplet implements PConstants {
    * the clipping volume where left and right are the minimum and maximum x
    * values, top and bottom are the minimum and maximum y values, and near and far
    * are the minimum and maximum z values. If no parameters are given, the default
-   * is used: ortho(-width/2, width/2, -height/2, height/2).
+   * is used: <b>ortho(-width/2, width/2, -height/2, height/2)</b>.
    *
    *
    * @webref lights_camera:camera
@@ -14060,8 +14060,8 @@ public class PApplet implements PConstants {
    * accurately than orthographic projection. The version of perspective
    * without parameters sets the default perspective and the version with
    * four parameters allows the programmer to set the area precisely. The
-   * default values are: perspective(PI/3.0, width/height, cameraZ/10.0,
-   * cameraZ*10.0) where cameraZ is ((height/2.0) / tan(PI*60.0/360.0));
+   * default values are: <b>perspective(PI/3.0, width/height, cameraZ/10.0,
+   * cameraZ*10.0)</b> where cameraZ is <b>((height/2.0) / tan(PI*60.0/360.0));</b>
    *
    *
    * @webref lights_camera:camera
@@ -14233,8 +14233,8 @@ public class PApplet implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
@@ -14262,8 +14262,8 @@ public class PApplet implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
@@ -14291,8 +14291,8 @@ public class PApplet implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
@@ -14321,10 +14321,10 @@ public class PApplet implements PConstants {
    * <br /><br />
    * The style information controlled by the following functions are included
    * in the style:
-   * fill(), stroke(), tint(), strokeWeight(), strokeCap(), strokeJoin(),
-   * imageMode(), rectMode(), ellipseMode(), shapeMode(), colorMode(),
-   * textAlign(), textFont(), textMode(), textSize(), textLeading(),
-   * emissive(), specular(), shininess(), ambient()
+   * <b>fill()<b>, <b>stroke()</b>, <b>tint()</b>, <b>strokeWeight()</b>, <b>strokeCap()</b>,<b>strokeJoin()</b>,
+   * <b>imageMode()</b>, <b>rectMode()</b>, <b>ellipseMode()</b>, <b>shapeMode()</b>, <b>colorMode()</b>,
+   * <b>textAlign()</b>, <b>textFont()</b>, <b>textMode()</b>, <b>textSize()</b>, <b>textLeading()</b>,
+   * <b>emissive()</b>, <b>specular()</b>, <b>shininess()</b>, <b>ambient()</b>
    *
    *
    * @webref structure
@@ -14369,7 +14369,7 @@ public class PApplet implements PConstants {
    * Sets the width of the stroke used for lines, points, and the border around
    * shapes. All widths are set in units of pixels. <br />
    * <br />
-   * Using point() with strokeWeight(1) or smaller may draw nothing to the screen,
+   * Using <b>point()<b> with <b>strokeWeight(1)<b> or smaller may draw nothing to the screen,
    * depending on the graphics settings of the computer. Workarounds include
    * setting the pixel using <b>set()</s> or drawing the point using either
    * <b>circle()</b> or <b>square()</b>.
@@ -14471,7 +14471,7 @@ public class PApplet implements PConstants {
    * <br />
    * When drawing in 2D with the default renderer, you may need
    * <b>hint(ENABLE_STROKE_PURE)</b> to improve drawing quality (at the expense of
-   * performance). See the hint() documentation for more details.
+   * performance). See the <b>hint()</b> documentation for more details.
    *
    * @webref color:setting
    * @webBrief Sets the color used to draw lines and borders around shapes.
@@ -14893,10 +14893,10 @@ public class PApplet implements PConstants {
   /**
    *
    * Sets the default ambient light, directional light, falloff, and specular
-   * values. The defaults are ambientLight(128, 128, 128) and
-   * directionalLight(128, 128, 128, 0, 0, -1), lightFalloff(1, 0, 0), and
-   * lightSpecular(0, 0, 0). Lights need to be included in the draw() to
-   * remain persistent in a looping program. Placing them in the setup() of a
+   * values. The defaults are <b>ambientLight(128, 128, 128)</b> and
+   * <b>directionalLight(128, 128, 128, 0, 0, -1)</b>, </b>lightFalloff(1, 0, 0)</b>, and
+   * <b>lightSpecular(0, 0, 0)</b>. Lights need to be included in the <b>draw()</b> to
+   * remain persistent in a looping program. Placing them in the <b>setup()</b> of a
    * looping program will cause them to only have an effect the first time
    * through the loop.
    *
@@ -15906,16 +15906,16 @@ public class PApplet implements PConstants {
    * of the following modes to blend the colors of source pixels (A) with the
    * ones of pixels in the destination image (B):<br />
    * <br />
-   * BLEND - linear interpolation of colours: C = A*factor + B<br />
+   * BLEND - linear interpolation of colours: <b>C = A*factor + B</b><br />
    * <br />
-   * ADD - additive blending with white clip: C = min(A*factor + B, 255)<br />
+   * ADD - additive blending with white clip: <b>C = min(A*factor + B, 255)</b><br />
    * <br />
-   * SUBTRACT - subtractive blending with black clip: C = max(B - A*factor,
-   * 0)<br />
+   * SUBTRACT - subtractive blending with black clip: <b>C = max(B - A*factor,
+   * 0)</b><br />
    * <br />
-   * DARKEST - only the darkest colour succeeds: C = min(A*factor, B)<br />
+   * DARKEST - only the darkest colour succeeds: <b>C = min(A*factor, B)</b><br />
    * <br />
-   * LIGHTEST - only the lightest colour succeeds: C = max(A*factor, B)<br />
+   * LIGHTEST - only the lightest colour succeeds: <b>C = max(A*factor, B)</b><br />
    * <br />
    * DIFFERENCE - subtract colors from underlying image.<br />
    * <br />

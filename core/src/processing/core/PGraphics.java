@@ -871,7 +871,7 @@ public class PGraphics extends PImage implements PConstants {
 
   /**
    *
-   * Sets the default properties for a PGraphics object. It should be called
+   * Sets the default properties for a <b>PGraphics</b> object. It should be called
    * before anything is drawn into the object.
    *
    * <h3>Advanced</h3>
@@ -879,7 +879,7 @@ public class PGraphics extends PImage implements PConstants {
    * drawing anything.
    *
    * @webref pgraphics:method
-   * @webBrief Sets the default properties for a PGraphics object.
+   * @webBrief Sets the default properties for a <b>PGraphics</b> object.
    */
   public void beginDraw() {  // ignore
   }
@@ -887,7 +887,7 @@ public class PGraphics extends PImage implements PConstants {
 
   /**
    *
-   * Finalizes the rendering of a PGraphics object so that it can be shown on screen.
+   * Finalizes the rendering of a <b>PGraphics</b> object so that it can be shown on screen.
    *
    * <h3>Advanced</h3>
    * <p/>
@@ -895,7 +895,7 @@ public class PGraphics extends PImage implements PConstants {
    * you're finished drawing.
    *
    * @webref pgraphics:method
-   * @webBrief Finalizes the rendering of a PGraphics object so that it can be shown on screen.
+   * @webBrief Finalizes the rendering of a <b>PGraphics</b> object so that it can be shown on screen.
    * @brief Finalizes the rendering of a PGraphics object
    */
   public void endDraw() {  // ignore
@@ -1068,64 +1068,64 @@ public class PGraphics extends PImage implements PConstants {
    * manner across renderers. Many options will often graduate to standard
    * features instead of hints over time.
    * <br/> <br/>
-   * hint(ENABLE_OPENGL_4X_SMOOTH) - Enable 4x anti-aliasing for P3D. This
+   * <b>hint(ENABLE_OPENGL_4X_SMOOTH)</b>- Enable 4x anti-aliasing for P3D. This
    * can help force anti-aliasing if it has not been enabled by the user. On
    * some graphics cards, this can also be set by the graphics driver's
    * control panel, however not all cards make this available. This hint must
-   * be called immediately after the size() command because it resets the
-   * renderer, obliterating any settings and anything drawn (and like size(),
+   * be called immediately after the <b>size()</b> command because it resets the
+   * renderer, obliterating any settings and anything drawn (and like <b>size()</b>,
    * re-running the code that came before it again).
    * <br/> <br/>
-   * hint(DISABLE_OPENGL_2X_SMOOTH) - In Processing 1.0, Processing always
+   * <b>hint(DISABLE_OPENGL_2X_SMOOTH)</b> - In Processing 1.0, Processing always
    * enables 2x smoothing when the P3D renderer is used. This hint disables
    * the default 2x smoothing and returns the smoothing behavior found in
-   * earlier releases, where smooth() and noSmooth() could be used to enable
+   * earlier releases, where <b>smooth()</b> and <b>noSmooth()</b> could be used to enable
    * and disable smoothing, though the quality was inferior.
    * <br/> <br/>
-   * hint(ENABLE_NATIVE_FONTS) - Use the native version fonts when they are
+   * <b>hint(ENABLE_NATIVE_FONTS)</b> - Use the native version fonts when they are
    * installed, rather than the bitmapped version from a .vlw file. This is
    * useful with the default (or JAVA2D) renderer setting, as it will improve
    * font rendering speed. This is not enabled by default, because it can be
    * misleading while testing because the type will look great on your
    * machine (because you have the font installed) but lousy on others'
    * machines if the identical font is unavailable. This option can only be
-   * set per-sketch, and must be called before any use of textFont().
+   * set per-sketch, and must be called before any use of <b>textFont()</b>.
    * <br/> <br/>
-   * hint(DISABLE_DEPTH_TEST) - Disable the zbuffer, allowing you to draw on
+   * <b>hint(DISABLE_DEPTH_TEST)</b> - Disable the zbuffer, allowing you to draw on
    * top of everything at will. When depth testing is disabled, items will be
    * drawn to the screen sequentially, like a painting. This hint is most
    * often used to draw in 3D, then draw in 2D on top of it (for instance, to
    * draw GUI controls in 2D on top of a 3D interface). Starting in release
    * 0149, this will also clear the depth buffer. Restore the default with
-   * hint(ENABLE_DEPTH_TEST), but note that with the depth buffer cleared,
-   * any 3D drawing that happens later in draw() will ignore existing shapes
+   * <b>hint(ENABLE_DEPTH_TEST)</b>, but note that with the depth buffer cleared,
+   * any 3D drawing that happens later in <b>draw()</b> will ignore existing shapes
    * on the screen.
    * <br/> <br/>
-   * hint(ENABLE_DEPTH_SORT) - Enable primitive z-sorting of triangles and
+   * <b>hint(ENABLE_DEPTH_SORT)</b> - Enable primitive z-sorting of triangles and
    * lines in P3D and OPENGL. This can slow performance considerably, and the
-   * algorithm is not yet perfect. Restore the default with hint(DISABLE_DEPTH_SORT).
+   * algorithm is not yet perfect. Restore the default with <b>hint(DISABLE_DEPTH_SORT)</b>.
    * <br/> <br/>
-   * hint(DISABLE_OPENGL_ERROR_REPORT) - Speeds up the P3D renderer setting
-   * by not checking for errors while running. Undo with hint(ENABLE_OPENGL_ERROR_REPORT).
+   * <b>hint(DISABLE_OPENGL_ERROR_REPORT)</b> - Speeds up the P3D renderer setting
+   * by not checking for errors while running. Undo with <b>hint(ENABLE_OPENGL_ERROR_REPORT)</b>.
    * <br/> <br/>
-   * hint(ENABLE_BUFFER_READING) - Depth and stencil buffers in P2D/P3D will be
+   * <b>hint(ENABLE_BUFFER_READING)</b> - Depth and stencil buffers in P2D/P3D will be
    * down-sampled to make PGL#readPixels work with multisampling. Enabling this
    * introduces some overhead, so if you experience bad performance, disable
-   * multisampling with noSmooth() instead. This hint is not intended to be
-   * enabled and disabled repeatedly, so call this once in setup() or after
+   * multisampling with <b>noSmooth()</b> instead. This hint is not intended to be
+   * enabled and disabled repeatedly, so call this once in <b>setup()</b> or after
    * creating your PGraphics2D/3D. You can restore the default with
-   * hint(DISABLE_BUFFER_READING) if you don't plan to read depth from
-   * this PGraphics anymore.
+   * <b>hint(DISABLE_BUFFER_READING)</b> if you don't plan to read depth from
+   * this <b>PGraphics</b> anymore.
    * <br/> <br/>
-   * hint(ENABLE_KEY_REPEAT) - Auto-repeating key events are discarded
+   * <b>hint(ENABLE_KEY_REPEAT)</b> - Auto-repeating key events are discarded
    * by default (works only in P2D/P3D); use this hint to get all the key events
-   * (including auto-repeated). Call hint(DISABLE_KEY_REPEAT) to get events
+   * (including auto-repeated). Call <b>hint(DISABLE_KEY_REPEAT)</b> to get events
    * only when the key goes physically up or down.
    * <br/> <br/>
-   * hint(DISABLE_ASYNC_SAVEFRAME) - P2D/P3D only - save() and saveFrame()
+   * <b>hint(DISABLE_ASYNC_SAVEFRAME)</b> - P2D/P3D only - <b>save()</b> and <b>saveFrame()</b>
    * will not use separate threads for saving and will block until the image
    * is written to the drive. This was the default behavior in 3.0b7 and before.
-   * To enable, call hint(ENABLE_ASYNC_SAVEFRAME).
+   * To enable, call <b>hint(ENABLE_ASYNC_SAVEFRAME)</b>.
    *
    * @webref rendering
    * @webBrief Set various hints and hacks for the renderer.
@@ -2107,15 +2107,15 @@ public class PGraphics extends PImage implements PConstants {
    * channel of (A) and (B) independently. The red channel is compared with
    * red, green with green, and blue with blue.<br />
    * <br />
-   * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
+   * BLEND - linear interpolation of colors: <b>C = A*factor + B</b>. This is the default.<br />
    * <br />
-   * ADD - additive blending with white clip: C = min(A*factor + B, 255)<br />
+   * ADD - additive blending with white clip: <b>C = min(A*factor + B, 255)</b><br />
    * <br />
-   * SUBTRACT - subtractive blending with black clip: C = max(B - A*factor, 0)<br />
+   * SUBTRACT - subtractive blending with black clip: <b>C = max(B - A*factor, 0)</b><br />
    * <br />
-   * DARKEST - only the darkest color succeeds: C = min(A*factor, B)<br />
+   * DARKEST - only the darkest color succeeds: <b>C = min(A*factor, B)</b><br />
    * <br />
-   * LIGHTEST - only the lightest color succeeds: C = max(A*factor, B)<br />
+   * LIGHTEST - only the lightest color succeeds: <b>C = max(A*factor, B)</b><br />
    * <br />
    * DIFFERENCE - subtract colors from underlying image.<br />
    * <br />
@@ -5764,7 +5764,7 @@ public class PGraphics extends PImage implements PConstants {
    * Multiplies the current matrix by the one specified through the
    * parameters. This is very slow because it will try to calculate the
    * inverse of the transform, so avoid it whenever possible. The equivalent
-   * function in OpenGL is glMultMatrix().
+   * function in OpenGL is <b>glMultMatrix()</b>.
    *
    *
    * @webref transform
@@ -6034,7 +6034,7 @@ public class PGraphics extends PImage implements PConstants {
    * the clipping volume where left and right are the minimum and maximum x
    * values, top and bottom are the minimum and maximum y values, and near and far
    * are the minimum and maximum z values. If no parameters are given, the default
-   * is used: ortho(-width/2, width/2, -height/2, height/2).
+   * is used: <b>ortho(-width/2, width/2, -height/2, height/2)</b>.
    *
    *
    * @webref lights_camera:camera
@@ -6076,8 +6076,8 @@ public class PGraphics extends PImage implements PConstants {
    * accurately than orthographic projection. The version of perspective
    * without parameters sets the default perspective and the version with
    * four parameters allows the programmer to set the area precisely. The
-   * default values are: perspective(PI/3.0, width/height, cameraZ/10.0,
-   * cameraZ*10.0) where cameraZ is ((height/2.0) / tan(PI*60.0/360.0));
+   * default values are: <b>perspective(PI/3.0, width/height, cameraZ/10.0,
+   * cameraZ*10.0)</b> where cameraZ is <b>((height/2.0) / tan(PI*60.0/360.0))</b>
    *
    *
    * @webref lights_camera:camera
@@ -6254,8 +6254,8 @@ public class PGraphics extends PImage implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
@@ -6284,8 +6284,8 @@ public class PGraphics extends PImage implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
@@ -6314,8 +6314,8 @@ public class PGraphics extends PImage implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
@@ -6350,10 +6350,10 @@ public class PGraphics extends PImage implements PConstants {
    * <br /><br />
    * The style information controlled by the following functions are included
    * in the style:
-   * fill(), stroke(), tint(), strokeWeight(), strokeCap(), strokeJoin(),
-   * imageMode(), rectMode(), ellipseMode(), shapeMode(), colorMode(),
-   * textAlign(), textFont(), textMode(), textSize(), textLeading(),
-   * emissive(), specular(), shininess(), ambient()
+   * <b>fill()<b>, <b>stroke()</b>, <b>tint()</b>, <b>strokeWeight()</b>, <b>strokeCap()</b>,<b>strokeJoin()</b>,
+   * <b>imageMode()</b>, <b>rectMode()</b>, <b>ellipseMode()</b>, <b>shapeMode()</b>, <b>colorMode()</b>,
+   * <b>textAlign()</b>, <b>textFont()</b>, <b>textMode()</b>, <b>textSize()</b>, <b>textLeading()</b>,
+   * <b>emissive()</b>, <b>specular()</b>, <b>shininess()</b>, <b>ambient()</b>
    *
    *
    * @webref structure
@@ -7169,10 +7169,10 @@ public class PGraphics extends PImage implements PConstants {
   /**
    *
    * Sets the default ambient light, directional light, falloff, and specular
-   * values. The defaults are ambientLight(128, 128, 128) and
-   * directionalLight(128, 128, 128, 0, 0, -1), lightFalloff(1, 0, 0), and
-   * lightSpecular(0, 0, 0). Lights need to be included in the draw() to
-   * remain persistent in a looping program. Placing them in the setup() of a
+   * values. The defaults are <b>ambientLight(128, 128, 128)</b> and
+   * <b>directionalLight(128, 128, 128, 0, 0, -1)</b>, <b>lightFalloff(1, 0, 0)</b>, and
+   * <b>lightSpecular(0, 0, 0)</b>. Lights need to be included in the <b>draw()</b> to
+   * remain persistent in a looping program. Placing them in the <b>setup()</b> of a
    * looping program will cause them to only have an effect the first time
    * through the loop.
    *
@@ -8223,7 +8223,7 @@ public class PGraphics extends PImage implements PConstants {
    * equal to the first point, 0.1 is very near the first point, 0.5 is halfway in
    * between, etc. <br />
    * An amount below 0 will be treated as 0. Likewise, amounts above 1 will be
-   * capped at 1. This is different from the behavior of lerp(), but necessary
+   * capped at 1. This is different from the behavior of <b>lerp()</b>, but necessary
    * because otherwise numbers outside the range will produce strange and
    * unexpected colors.
    *

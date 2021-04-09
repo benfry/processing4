@@ -145,7 +145,7 @@ public class PShape implements PConstants {
 
   /**
    *
-   * The width of the PShape document.
+   * The width of the <b>PShape</b> document.
    *
    * @webref pshape:field
    * @usage web_application
@@ -155,7 +155,7 @@ public class PShape implements PConstants {
   public float width;
   /**
    *
-   * The height of the PShape document.
+   * The height of the <b>PShape</b> document.
    *
    * @webref pshape:field
    * @usage web_application
@@ -2005,7 +2005,7 @@ public class PShape implements PConstants {
   }
 
   /**
-   * Returns the number of children within the PShape.
+   * Returns the number of children within the <b>PShape</b>.
    * 
    * @webref
    * @webBrief Returns the number of children
@@ -2037,7 +2037,7 @@ public class PShape implements PConstants {
    *
    * @webref pshape:method
    * @usage web_application
-   * @webBrief Returns a child element of a shape as a PShape object
+   * @webBrief Returns a child element of a shape as a <b>PShape</b> object
    * @param index the layer position of the shape to get
    * @see PShape#addChild(PShape)
    */
@@ -2256,7 +2256,7 @@ public class PShape implements PConstants {
 
   /**
    * The <b>getVertexCount()</b> method returns the number of vertices that 
-   * make up a PShape. In the above example, the value 4 is returned by the 
+   * make up a <b>PShape</b>. In the above example, the value 4 is returned by the 
    * <b>getVertexCount()</b> method because 4 vertices are defined in 
    * <b>setup()</b>.
    * 
@@ -2274,7 +2274,7 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>getVertex()</b> method returns a PVector with the coordinates of 
+   * The <b>getVertex()</b> method returns a <b>PVector</b> with the coordinates of 
    * the vertex point located at the position defined by the <b>index</b> 
    * parameter. This method works when shapes are created as shown in the 
    * example above, but won't work properly when a shape is defined explicitly 
@@ -3309,7 +3309,7 @@ public class PShape implements PConstants {
 /**
    *
    * Replaces the current matrix of a shape with the identity matrix. The
-   * equivalent function in OpenGL is glLoadIdentity().
+   * equivalent function in OpenGL is <b>glLoadIdentity()</b>.
    *
    * @webref pshape:method
    * @webBrief Replaces the current matrix of a shape with the identity matrix
