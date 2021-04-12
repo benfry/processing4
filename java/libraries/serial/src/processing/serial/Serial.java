@@ -198,10 +198,10 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Sets the number of bytes to buffer before calling serialEvent()
+   * Sets the number of bytes to buffer before calling <b>serialEvent()</b>
    * @generate Serial_buffer.xml
    * @webref serial
-   * @webBrief Sets the number of bytes to buffer before calling serialEvent()
+   * @webBrief Sets the number of bytes to buffer before calling <b>serialEvent()</b>
    * @usage web_application
    * @param size number of bytes to buffer
    */
@@ -722,7 +722,7 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Writes bytes, chars, ints, bytes[], Strings to the serial port
+   * Writes <b>bytes</b>, <b>chars</b>, <b>ints</b>, <b>bytes[]</b>, <b>Strings</b> to the serial port
    * 
    * <h3>Advanced</h3>
    * Write a String to the output. Note that this doesn't account
@@ -737,7 +737,7 @@ public class Serial implements SerialPortEventListener {
    * (i.e. UTF8 or two-byte Unicode data), and send it as a byte array.
    *
    * @webref serial
-   * @webBrief Writes bytes, chars, ints, bytes[], Strings to the serial port
+   * @webBrief Writes <b>bytes</b>, <b>chars</b>, <b>ints</b>, <b>bytes[]</b>, <b>Strings</b> to the serial port
    * @usage web_application
    * @param src data to write
    */

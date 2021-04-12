@@ -52,7 +52,7 @@ import processing.core.PApplet;
 
 /**
  * A <b>JSONObject</b> stores JSON data with multiple name/value pairs. Values
- * can be numeric, Strings, booleans, other <b>JSONObject</b>s or
+ * can be numeric, <b>Strings</b>, <b>booleans</b>, other <b>JSONObject</b>s or
  * <b>JSONArray</b>s, or null. <b>JSONObject</b> and <b>JSONArray</b> objects
  * are quite similar and share most of the same methods; the primary difference
  * is that the latter stores an array of JSON objects, while the former
@@ -567,7 +567,7 @@ public class JSONObject {
 
 
   /**
-   * Gets the String value associated with the specified key.
+   * Gets the <b>String</b> value associated with the specified key.
    *
    * @webref jsonobject:method
    * @webBrief Gets the String value associated with the specified key

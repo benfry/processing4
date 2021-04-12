@@ -99,7 +99,7 @@ public interface TableRow {
   public double getDouble(String columnName);
 
   /**
-   * Stores a String value in the <b>TableRow</b>'s specified column. The column 
+   * Stores a <b>String</b> value in the <b>TableRow</b>'s specified column. The column 
    * may be specified by either its ID or title.
    *
    * @webref tablerow:method
@@ -116,7 +116,7 @@ public interface TableRow {
   public void setString(String columnName, String value);
 
   /**
-   * Stores an integer value in the <b>TableRow</b>'s specified column. The column 
+   * Stores an <b>integer</b> value in the <b>TableRow</b>'s specified column. The column 
    * may be specified by either its ID or title.
    * 
    * @webref tablerow:method
@@ -148,7 +148,7 @@ public interface TableRow {
   public void setLong(String columnName, long value);
 
   /**
-   * Stores a float value in the <b>TableRow</b>'s specified column. The column 
+   * Stores a <b>float</b> value in the <b>TableRow</b>'s specified column. The column 
    * may be specified by either its ID or title.
    *
    * @webref tablerow:method

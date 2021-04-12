@@ -279,7 +279,7 @@ public class JSONArray {
 
 
   /**
-   * Gets the String value associated with the specified index.
+   * Gets the <b>String</b> value associated with the specified index.
    *
    * @webref jsonarray:method
    * @webBrief Gets the String value associated with an index
@@ -562,11 +562,11 @@ public class JSONArray {
 
 
   /**
-   * Returns the entire <b>JSONArray</b> as an array of Strings.  
-   * (All values in the array must be of the String type.)
+   * Returns the entire <b>JSONArray</b> as an array of <b>Strings</b>.  
+   * (All values in the array must be of the <b>String</b> type.)
    *
    * @webref jsonarray:method
-   * @webBrief Returns the entire <b>JSONArray</b> as an array of Strings
+   * @webBrief Returns the entire <b>JSONArray</b> as an array of <b>Strings</b>
    * @see JSONArray#getIntArray()
    */
   public String[] getStringArray() {
@@ -579,11 +579,11 @@ public class JSONArray {
 
 
   /**
-   * Returns the entire <b>JSONArray</b> as an array of ints.  
+   * Returns the entire <b>JSONArray</b> as an array of <b>ints</b>.  
    * (All values in the array must be of the int type.)
    *
    * @webref jsonarray:method
-   * @webBrief Returns the entire <b>JSONArray</b> as an array of ints
+   * @webBrief Returns the entire <b>JSONArray</b> as an array of <b>ints</b>
    * @see JSONArray#getStringArray()
    */
   public int[] getIntArray() {
@@ -702,8 +702,8 @@ public class JSONArray {
 
   /**
    * Appends a new value to the <b>JSONArray</b>, increasing the array's length 
-   * by one. New values may be of the following types: int, float, String, 
-   * boolean, <b>JSONObject</b>, or <b>JSONArray</b>.
+   * by one. New values may be of the following types: <b>int</b>, <b>float</b>, <b>String</b>, 
+   * <b>boolean</b>, <b>JSONObject</b>, or <b>JSONArray</b>.
    *
    * @webref jsonarray:method
    * @webBrief Appends a value, increasing the array's length by one
@@ -1080,7 +1080,7 @@ public class JSONArray {
 
   /**
    * Removes the element from a <b>JSONArray</b> in the specified index position. 
-   * Returns either the value associated with the given index, or null, if there 
+   * Returns either the value associated with the given index, or <b>null</b>, if there 
    * is no value.
    *
    * @webref jsonarray:method

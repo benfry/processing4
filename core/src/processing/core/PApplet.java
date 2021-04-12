@@ -5530,9 +5530,9 @@ public class PApplet implements PConstants {
    * <br />
    * If the file is not available or an error occurs, <b>null</b> will be
    * returned and an error message will be printed to the console. The error
-   * message does not halt the program, however the null value may cause a
+   * message does not halt the program, however the <b>null</b> value may cause a
    * NullPointerException if your code does not check whether the value returned
-   * is null.<br />
+   * is <b>null</b>.<br />
    * <br />
    * The <b>extension</b> parameter is used to determine the image type in cases
    * where the image filename does not end with a proper extension. Specify the
@@ -5721,13 +5721,13 @@ public class PApplet implements PConstants {
 
   /**
    * Takes a String, parses its contents, and returns an XML object. If the
-   * String does not contain XML data or cannot be parsed, a null value is
+   * String does not contain XML data or cannot be parsed, a <b>null</b> value is
    * returned.<br />
    * <br />
    * <b>parseXML()</b> is most useful when pulling data dynamically, such as
    * from third-party APIs. Normally, API results would be saved to a String,
    * and then can be converted to a structured XML object using
-   * <b>parseXML()</b>. Be sure to check if null is returned before performing
+   * <b>parseXML()</b>. Be sure to check if <b>null</b> is returned before performing
    * operations on the new XML object, in case the String content could not be
    * parsed.<br />
    * <br />
@@ -6185,9 +6185,9 @@ public class PApplet implements PConstants {
    * <br />
    * If the file is not available or an error occurs, <b>null</b> will be
    * returned and an error message will be printed to the console. The error
-   * message does not halt the program, however the null value may cause a
+   * message does not halt the program, however the <b>null</b> value may cause a
    * NullPointerException if your code does not check whether the value returned
-   * is null.<br />
+   * is <b>null</b>.<br />
    * <br />
    * Use <b>createFont()</b> (instead of <b>loadFont()</b>) to enable vector
    * data to be used with the default renderer setting. This can be helpful when
@@ -6318,7 +6318,7 @@ public class PApplet implements PConstants {
   /**
    * Open a platform-specific file chooser dialog to select a file for input.
    * After the selection is made, the selected File will be passed to the
-   * 'callback' function. If the dialog is closed or canceled, null will be sent
+   * 'callback' function. If the dialog is closed or canceled, <b>null</b> will be sent
    * to the function, so that the program is not waiting for additional input.
    * The callback is necessary because of how threading works.
    *
@@ -6384,7 +6384,7 @@ public class PApplet implements PConstants {
   /**
    * Opens a platform-specific file chooser dialog to select a file for output.
    * After the selection is made, the selected File will be passed to the
-   * 'callback' function. If the dialog is closed or canceled, null will be sent
+   * 'callback' function. If the dialog is closed or canceled, <b>null</b> will be sent
    * to the function, so that the program is not waiting for additional input.
    * The callback is necessary because of how threading works.
    *
@@ -6912,7 +6912,7 @@ public class PApplet implements PConstants {
    * - The full path to a file to be opened locally (when running as an
    * application)<br />
    * <br />
-   * If the requested item doesn't exist, null is returned. If not online,
+   * If the requested item doesn't exist, <b>null</b> is returned. If not online,
    * this will also check to see if the user is asking for a file whose name
    * isn't properly capitalized. If capitalization is different, an error
    * will be printed to the console. This helps prevent issues that appear
@@ -7183,9 +7183,9 @@ public class PApplet implements PConstants {
    * <br />
    * If the file is not available or an error occurs, <b>null</b> will be
    * returned and an error message will be printed to the console. The error
-   * message does not halt the program, however the null value may cause a
+   * message does not halt the program, however the <b>null</b> value may cause a
    * NullPointerException if your code does not check whether the value returned
-   * is null.<br />
+   * is <b>null</b>.<br />
    *
    * @webref input:files
    * @webBrief Reads the contents of a file or url and places it in a byte
@@ -7401,9 +7401,9 @@ public class PApplet implements PConstants {
    * <br />
    * If the file is not available or an error occurs, <b>null</b> will be
    * returned and an error message will be printed to the console. The error
-   * message does not halt the program, however the null value may cause a
+   * message does not halt the program, however the <b>null</b> value may cause a
    * NullPointerException if your code does not check whether the value returned
-   * is null.<br />
+   * is <b>null</b>.<br />
    * <br />
    * Starting with Processing release 0134, all files loaded and saved by the
    * Processing API use UTF-8 encoding. In previous releases, the default
@@ -9149,12 +9149,12 @@ public class PApplet implements PConstants {
    *
    * This function is used to apply a regular expression to a piece of text, and
    * return matching groups (elements found inside parentheses) as a String
-   * array. If there are no matches, a null value will be returned. If no groups
+   * array. If there are no matches, a <b>null</b> value will be returned. If no groups
    * are specified in the regular expression, but the sequence matches, an array
    * of length 1 (with the matched text as the first element of the array) will
    * be returned.<br />
    * <br />
-   * To use the function, first check to see if the result is null. If the
+   * To use the function, first check to see if the result is <b>null</b>. If the
    * result is null, then the sequence did not match at all. If the sequence did
    * match, an array is returned.<br />
    * <br />
@@ -9173,7 +9173,7 @@ public class PApplet implements PConstants {
    * @webref data:string_functions
    * @webBrief The match() function is used to apply a regular expression to a
    *           piece of text, and return matching groups (elements found inside
-   *           parentheses) as a String array. No match will return null.
+   *           parentheses) as a <b>String</b> array. No match will return <b>null</b>.
    * @param str
    *          the String to be searched
    * @param regexp
@@ -9203,12 +9203,12 @@ public class PApplet implements PConstants {
    *
    * This function is used to apply a regular expression to a piece of text, and
    * return a list of matching groups (elements found inside parentheses) as a
-   * two-dimensional String array. If there are no matches, a null value will be
+   * two-dimensional String array. If there are no matches, a <b>null</b> value will be
    * returned. If no groups are specified in the regular expression, but the
    * sequence matches, a two dimensional array is still returned, but the second
    * dimension is only of length one.<br />
    * <br />
-   * To use the function, first check to see if the result is null. If the
+   * To use the function, first check to see if the result is <b>null</b>. If the
    * result is null, then the sequence did not match at all. If the sequence did
    * match, a 2D array is returned.<br />
    * <br />
@@ -11524,9 +11524,9 @@ public class PApplet implements PConstants {
    * <br />
    * If the file is not available or an error occurs, <b>null</b> will
    * be returned and an error message will be printed to the console.
-   * The error message does not halt the program, however the null value
+   * The error message does not halt the program, however the <b>null</b> value
    * may cause a NullPointerException if your code does not check whether
-   * the value returned is null.<br />
+   * the value returned is <b>null</b>.<br />
    *
    * @webref shape
    * @webBrief Loads geometry into a variable of type <b>PShape</b>.
@@ -11615,7 +11615,7 @@ public class PApplet implements PConstants {
    * be returned and an error message will be printed to the console.
    * The error message does not halt the program, however the null
    * value may cause a NullPointerException if your code does not check
-   * whether the value returned is null.<br />
+   * whether the value returned is <b>null</b>.<br />
    *
    *
    * @webref rendering:shaders

@@ -9,8 +9,8 @@ import processing.core.PApplet;
 
 
 /**
- * A simple class to use a String as a lookup for an String value. String "keys" 
- * are associated with String values.
+ * A simple class to use a <b>String</b> as a lookup for a <b>String</b> value. String "keys" 
+ * are associated with <b>String</b> values.
  *
  * @webref data:composite
  * @webBrief A simple class to use a String as a lookup for an String value

@@ -9,11 +9,11 @@ import processing.core.PApplet;
 
 
 /**
- * A simple class to use a String as a lookup for an int value. String "keys" are 
+ * A simple class to use a <b>String</b> as a lookup for an int value. String "keys" are 
  * associated with integer values.
  *
  * @webref data:composite
- * @webBrief A simple class to use a String as a lookup for an int value.
+ * @webBrief A simple class to use a <b>String</b> as a lookup for an int value.
  * @see FloatDict
  * @see StringDict
  */

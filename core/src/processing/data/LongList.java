@@ -710,7 +710,7 @@ public class LongList implements Iterable<Long> {
 
   /**
    * Randomize the order of the list elements. Note that this does not
-   * obey the randomSeed() function in PApplet.
+   * obey the <b>randomSeed()</b> function in PApplet.
    *
    * @webref intlist:method
    * @webBrief Randomize the order of the list elements
