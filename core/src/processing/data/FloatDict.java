@@ -14,7 +14,7 @@ import processing.core.PApplet;
  *
  * @webref data:composite
  * @webBrief A simple table class to use a <b>String</b> as a lookup for a float
- *           value.
+ *           value
  * @see IntDict
  * @see StringDict
  */

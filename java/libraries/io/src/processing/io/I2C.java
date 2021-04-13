@@ -124,7 +124,7 @@ public class I2C {
    * time.
    * 
    * @webref I2C
-   * @webBrief Closes the I2C device.
+   * @webBrief Closes the I2C device
    */
   public void close() {
     if (NativeInterface.isSimulated()) {
@@ -155,7 +155,7 @@ public class I2C {
    * @see beginTransmission
    * @see write
    * @webref I2C
-   * @webBrief Ends the current transmissions.
+   * @webBrief Ends the current transmissions
    */
   public void endTransmission() {
     if (!transmitting) {
@@ -223,7 +223,7 @@ public class I2C {
    * @see write
    * @see endTransmission
    * @webref I2C
-   * @webBrief Read bytes from the attached device.
+   * @webBrief Read bytes from the attached device
    */
   public byte[] read(int len) {
     if (!transmitting) {
@@ -261,7 +261,7 @@ public class I2C {
    * @see read
    * @see endTransmission
    * @webref I2C
-   * @webBrief Add bytes to be written to the device.
+   * @webBrief Add bytes to be written to the device
    */
   public void write(byte[] out) {
     if (!transmitting) {

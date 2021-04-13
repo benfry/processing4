@@ -76,7 +76,7 @@ import processing.core.PConstants;
  *
  * @webref data:composite
  * @webBrief Generic class for handling tabular data, typically from a CSV, TSV,
- *           or other sort of spreadsheet file.
+ *           or other sort of spreadsheet file
  * @see PApplet#loadTable(String)
  * @see PApplet#saveTable(Table, String)
  * @see TableRow
@@ -2285,10 +2285,10 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
-   * Returns the total number of rows in a table.
+   * Returns the total number of rows in a <b>Table</b>.
    *
    * @webref table:method
-   * @webBrief Returns the total number of rows in a table
+   * @webBrief Returns the total number of rows in a <b>Table</b>
    * @see Table#getColumnCount()
    */
   public int getRowCount() {

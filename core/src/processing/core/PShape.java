@@ -87,7 +87,7 @@ import java.util.Base64;
  * </p>
  *
  * @webref shape
- * @webBrief Datatype for storing shapes.
+ * @webBrief Datatype for storing shapes
  * @usage Web &amp; Application
  * @see PApplet#loadShape(String)
  * @see PApplet#createShape()
@@ -400,7 +400,7 @@ public class PShape implements PConstants {
 
   /**
    *
-   * Returns a boolean value "true" if the image is set to be visible, "false" if
+   * Returns a boolean value <b>true</b> if the image is set to be visible, <b>false</b> if
    * not. This value can be modified with the <b>setVisible()</b> method.<br />
    * <br />
    * The default visibility of a shape is usually controlled by whatever program
@@ -409,8 +409,8 @@ public class PShape implements PConstants {
    *
    * @webref pshape:method
    * @usage web_application
-   * @webBrief Returns a boolean value "true" if the image is set to be visible,
-   *           "false" if not
+   * @webBrief Returns a boolean value <b>true</b> if the image is set to be visible,
+   *           <b>false</b> if not
    * @see PShape#setVisible(boolean)
    */
   public boolean isVisible() {
@@ -781,7 +781,7 @@ public class PShape implements PConstants {
    * function. It's always and only used with <b>createShape()</b>. 
    * 
    * @webref pshape:method
-   * @webBrief Starts the creation of a new PShape
+   * @webBrief Starts the creation of a new <b>PShape</b>
    * @see PApplet#endShape()
    */
   public void beginShape() {
@@ -799,7 +799,7 @@ public class PShape implements PConstants {
    * function. It's always and only used with <b>createShape()</b>. 
    *
    * @webref pshape:method
-   * @webBrief Finishes the creation of a new PShape
+   * @webBrief Finishes the creation of a new <b>PShape</b>
    * @see PApplet#beginShape()
    */
   public void endShape() {

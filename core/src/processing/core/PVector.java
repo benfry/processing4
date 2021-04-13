@@ -62,7 +62,7 @@ import java.io.Serializable;
  * <a href="http://www.shiffman.net">Dan Shiffman</a>.
  *
  * @webref math
- * @webBrief A class to describe a two or three dimensional vector.
+ * @webBrief A class to describe a two or three dimensional vector
  */
 public class PVector implements Serializable {
   /**
@@ -205,7 +205,7 @@ public class PVector implements Serializable {
    * @webref pvector:method
    * @usage web_application
    * @return the random PVector
-   * @webBrief Make a new 2D unit vector with a random direction.
+   * @webBrief Make a new 2D unit vector with a random direction
    * @see PVector#random3D()
    */
   static public PVector random2D() {
@@ -255,7 +255,7 @@ public class PVector implements Serializable {
    * @webref pvector:method
    * @usage web_application
    * @return the random PVector
-   * @webBrief Make a new 3D unit vector with a random direction.
+   * @webBrief Make a new 3D unit vector with a random direction
    * @see PVector#random2D()
    */
   static public PVector random3D() {

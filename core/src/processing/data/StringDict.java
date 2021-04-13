@@ -13,7 +13,7 @@ import processing.core.PApplet;
  * are associated with <b>String</b> values.
  *
  * @webref data:composite
- * @webBrief A simple class to use a String as a lookup for an String value
+ * @webBrief A simple class to use a <b>String</b> as a lookup for an <b>String</b> value
  * @see IntDict
  * @see FloatDict
  */

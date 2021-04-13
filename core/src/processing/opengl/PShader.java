@@ -42,7 +42,7 @@ import java.util.HashMap;
  *
  * @webref rendering:shaders
  * @webBrief This class encapsulates a GLSL shader program, including a vertex
- *           and a fragment shader.
+ *           and a fragment shader
  */
 public class PShader implements PConstants {
   static protected final int POINT    = 0;

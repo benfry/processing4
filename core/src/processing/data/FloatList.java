@@ -18,7 +18,7 @@ import processing.core.PApplet;
  * a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
- * @webBrief Helper class for a list of floats.
+ * @webBrief Helper class for a list of floats
  * @see IntList
  * @see StringList
  */
@@ -678,7 +678,7 @@ public class FloatList implements Iterable<Float> {
    * <b>reverse()</b>, but is more efficient than running each separately.
    *
    * @webref floatlist:method
-   * @webBrief A sort in reverse.
+   * @webBrief A sort in reverse
    */
   public void sortReverse() {
     new Sort() {

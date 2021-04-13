@@ -13,7 +13,7 @@ import processing.core.PApplet;
  * associated with integer values.
  *
  * @webref data:composite
- * @webBrief A simple class to use a <b>String</b> as a lookup for an int value.
+ * @webBrief A simple class to use a <b>String</b> as a lookup for an int value
  * @see FloatDict
  * @see StringDict
  */

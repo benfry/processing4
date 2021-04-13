@@ -96,7 +96,7 @@ import processing.core.PApplet;
  * @author JSON.org
  * @version 2012-11-13
  * @webref data:composite
- * @webBrief A JSONArray is an ordered sequence of values.
+ * @webBrief A JSONArray is an ordered sequence of values
  * @see JSONObject
  * @see PApplet#loadJSONObject(String)
  * @see PApplet#loadJSONArray(String)
@@ -317,7 +317,7 @@ public class JSONArray {
    * Gets the int value associated with the specified index.
    *
    * @webref jsonarray:method
-   * @webBrief Gets the int value associated with the specified index.
+   * @webBrief Gets the int value associated with the specified index
    * @param index must be between 0 and length() - 1
    * @return The value.
    * @throws RuntimeException If the key is not found or if the value is not a number.
@@ -395,7 +395,7 @@ public class JSONArray {
    * Gets the float value associated with the specified index.
    *
    * @webref jsonarray:method
-   * @webBrief Gets the float value associated with the specified index.
+   * @webBrief Gets the float value associated with the specified index
    * @param index must be between 0 and length() - 1
    * @see JSONArray#getInt(int)
    * @see JSONArray#getString(int)
@@ -457,7 +457,7 @@ public class JSONArray {
    * Gets the boolean value associated with the specified index.
    *
    * @webref jsonarray:method
-   * @webBrief Gets the boolean value associated with the specified index.
+   * @webBrief Gets the boolean value associated with the specified index
    * @param index must be between 0 and length() - 1
    * @return      The truth.
    * @throws RuntimeException If there is no value for the index or if the
@@ -503,7 +503,7 @@ public class JSONArray {
    * Retrieves the <b>JSONArray</b> with the associated index value.
    *
    * @webref jsonobject:method
-   * @webBrief Retrieves the <b>JSONArray</b> with the associated index value.
+   * @webBrief Retrieves the <b>JSONArray</b> with the associated index value
    * @param index must be between 0 and length() - 1
    * @return A JSONArray value.
    * @throws RuntimeException If there is no value for the index. or if the
@@ -534,7 +534,7 @@ public class JSONArray {
    * Retrieves the <b>JSONObject</b> with the associated index value.
    *
    * @webref jsonobject:method
-   * @webBrief Retrieves the <b>JSONObject</b> with the associated index value.
+   * @webBrief Retrieves the <b>JSONObject</b> with the associated index value
    * @param index the index value of the object to get
    * @return A JSONObject value.
    * @throws RuntimeException If there is no value for the index or if the
@@ -862,7 +862,7 @@ public class JSONArray {
    * necessary to pad it out.
    *
    * @webref jsonarray:method
-   * @webBrief Inserts a new value into the <b>JSONArray</b> at the specified index position. 
+   * @webBrief Inserts a new value into the <b>JSONArray</b> at the specified index position
    * @param index an index value
    * @param value the value to assign
    * @return this.

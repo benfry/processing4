@@ -37,7 +37,7 @@ import java.net.*;
    * listening on a different port, an exception is thrown.
    * 
  * @webref client
- * @webBrief The client class is used to create client Objects which connect to a server to exchange data. 
+ * @webBrief The client class is used to create client Objects which connect to a server to exchange data
  * @instanceName client any variable of type Client
  * @usage Application
  * @see_external LIB_net/clientEvent
@@ -321,7 +321,7 @@ public class Client implements Runnable {
    * 
    * @webref client
    * @usage application
-   * @webBrief Returns the IP address of the machine as a String
+   * @webBrief Returns the IP address of the machine as a <b>String</b>
    */
   public String ip() {
     if (socket != null){
@@ -422,7 +422,7 @@ public class Client implements Runnable {
    * 
    * @webref client
    * @usage application
-   * @webBrief Reads a group of bytes from the buffer.
+   * @webBrief Reads a group of bytes from the buffer
    */
   public byte[] readBytes() {
     synchronized (bufferLock) {
@@ -596,7 +596,7 @@ public class Client implements Runnable {
 
   /**
    * 
-   * Returns the all the data from the buffer as a String. This method 
+   * Returns the all the data from the buffer as a <b>String</b>. This method 
    * assumes the incoming characters are ASCII. If you want to transfer 
    * Unicode data, first convert the String to a byte stream in the 
    * representation of your choice (i.e. UTF8 or two-byte Unicode data), and 
@@ -604,7 +604,7 @@ public class Client implements Runnable {
    * 
    * @webref client
    * @usage application
-   * @webBrief Returns the buffer as a String
+   * @webBrief Returns the buffer as a <b>String</b>
    */
   public String readString() {
     byte b[] = readBytes();
@@ -626,7 +626,7 @@ public class Client implements Runnable {
    * 
    * @webref client
    * @usage application
-   * @webBrief Returns the buffer as a String up to and including a particular character
+   * @webBrief Returns the buffer as a <b>String</b> up to and including a particular character
    * @param interesting character designated to mark the end of the data
    */
   public String readStringUntil(int interesting) {
@@ -644,7 +644,7 @@ public class Client implements Runnable {
    * 
    * @webref client
    * @usage application
-   * @webBrief  Writes bytes, chars, ints, bytes[], Strings
+   * @webBrief  Writes <b>bytes</b>, <b>chars</b>, <b>ints</b>, <b>bytes[]</b>, <b>Strings</b>
    * @param data data to write
    */
   public void write(int data) {  // will also cover char

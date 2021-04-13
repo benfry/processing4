@@ -50,7 +50,7 @@ import processing.core.PApplet;
  *
  * @webref data:composite
  * @webBrief This is the base class used for the Processing XML library,
- *           representing a single node of an <b>XML</b> tree.
+ *           representing a single node of an <b>XML</b> tree
  * @see PApplet#loadXML(String)
  * @see PApplet#parseXML(String)
  * @see PApplet#saveXML(XML, String)

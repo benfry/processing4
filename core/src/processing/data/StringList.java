@@ -17,7 +17,7 @@ import processing.core.PApplet;
  * a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
- * @webBrief Helper class for a list of Strings.
+ * @webBrief Helper class for a list of Strings
  * @see IntList
  * @see FloatList
  */

@@ -54,7 +54,7 @@ import processing.awt.ShimAWT;
  *
  *
  * @webref image
- * @webBrief Datatype for storing images.
+ * @webBrief Datatype for storing images
  * @usage Web &amp; Application
  * @instanceName pimg any object of type PImage
  * @see PApplet#loadImage(String)
@@ -96,7 +96,7 @@ public class PImage implements PConstants, Cloneable {
    *
    *
    * @webref image:pixels
-   * @webBrief Array containing the color of every pixel in the image.
+   * @webBrief Array containing the color of every pixel in the image
    * @usage web_application
    */
   public int[] pixels;
@@ -113,7 +113,7 @@ public class PImage implements PConstants, Cloneable {
    * The width of the image in units of pixels.
    *
    * @webref pimage:field
-   * @webBrief The width of the image in units of pixels.
+   * @webBrief The width of the image in units of pixels
    * @usage web_application
    */
   public int width;
@@ -123,7 +123,7 @@ public class PImage implements PConstants, Cloneable {
    * The height of the image in units of pixels.
    *
    * @webref pimage:field
-   * @webBrief The height of the image in units of pixels.
+   * @webBrief The height of the image in units of pixels
    * @usage web_application
    */
   public int height;
@@ -379,7 +379,7 @@ public class PImage implements PConstants, Cloneable {
    * copy all data into the pixels[] array
    *
    * @webref pimage:pixels
-   * @webBrief Loads the pixel data for the image into its <b>pixels[]</b> array.
+   * @webBrief Loads the pixel data for the image into its <b>pixels[]</b> array
    * @usage web_application
    */
   public void loadPixels() {  // ignore
@@ -408,7 +408,7 @@ public class PImage implements PConstants, Cloneable {
    * future.
    *
    * @webref pimage:pixels
-   * @webBrief Updates the image with the data in its <b>pixels[]</b> array.
+   * @webBrief Updates the image with the data in its <b>pixels[]</b> array
    * @usage web_application
    * @param x x-coordinate of the upper-left corner
    * @param y y-coordinate of the upper-left corner
@@ -474,7 +474,7 @@ public class PImage implements PConstants, Cloneable {
    * method, and call <b>resize()</b> on the PImage that is returned.
    *
    * @webref pimage:method
-   * @webBrief Resize the image to a new width and height.
+   * @webBrief Resize the image to a new width and height
    * @usage web_application
    * @param w the resized image width
    * @param h the resized image height
@@ -551,7 +551,7 @@ public class PImage implements PConstants, Cloneable {
    * pixels[] array directly.
    *
    * @webref image:pixels
-   * @webBrief Reads the color of any pixel or grabs a rectangle of pixels.
+   * @webBrief Reads the color of any pixel or grabs a rectangle of pixels
    * @usage web_application
    * @param x x-coordinate of the pixel
    * @param y y-coordinate of the pixel
@@ -1582,7 +1582,7 @@ public class PImage implements PConstants, Cloneable {
    *
    * @webref color:creating_reading
    * @webBrief Blends two color values together based on the blending mode given as the
-   * <b>MODE</b> parameter.
+   * <b>MODE</b> parameter
    * @usage web_application
    * @param c1 the first color to blend
    * @param c2 the second color to blend
@@ -1674,7 +1674,7 @@ public class PImage implements PConstants, Cloneable {
    *
    *
    * @webref image:pixels
-   * @webBrief Copies a pixel or rectangle of pixels using different blending modes.
+   * @webBrief Copies a pixel or rectangle of pixels using different blending modes
    * @param src an image variable referring to the source image
    * @param sx X coordinate of the source's upper left corner
    * @param sy Y coordinate of the source's upper left corner
@@ -3289,7 +3289,7 @@ int testFunction(int dst, int src) {
    * file with no error.
    *
    * @webref pimage:method
-   * @webBrief Saves the image to a TIFF, TARGA, PNG, or JPEG file.
+   * @webBrief Saves the image to a TIFF, TARGA, PNG, or JPEG file
    * @usage application
    * @param filename a sequence of letters and numbers
    */
