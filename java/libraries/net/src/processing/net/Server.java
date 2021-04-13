@@ -44,7 +44,7 @@ import java.net.*;
  * @webref server
  * @usage application
  * @webBrief The server class is used to create server objects which send 
- * and receives data to and from its associated clients (other programs connected to it). 
+ * and receives data to and from its associated clients (other programs connected to it)
  * @instanceName server  	any variable of type Server
  */
 public class Server implements Runnable {
@@ -118,7 +118,7 @@ public class Server implements Runnable {
    * Disconnect a particular client.
    * 
    * @webref server
-   * @webBrief Disconnect a particular client.
+   * @webBrief Disconnect a particular client
    * @param client the client to disconnect
    */
   public void disconnect(Client client) {
@@ -188,7 +188,7 @@ public class Server implements Runnable {
    * into any trouble.
    * 
    * @webref server
-   * @webBrief Return true if this server is still active.
+   * @webBrief Return <b>true</b> if this server is still active
    */
   public boolean active() {
     return thread != null;
@@ -215,7 +215,7 @@ public class Server implements Runnable {
    * Returns the next client in line with a new message.
    * 
    * @webref server
-   * @webBrief Returns the next client in line with a new message.
+   * @webBrief Returns the next client in line with a new message
    * @usage application
    */
   public Client available() {
@@ -255,7 +255,7 @@ public class Server implements Runnable {
    * is still running. Otherwise, it will be automatically be shut down by the 
    * host PApplet using dispose(), which is identical. 
    * @webref server
-   * @webBrief Disconnects all clients and stops the server.
+   * @webBrief Disconnects all clients and stops the server
    * @usage application
    */
   public void stop() {

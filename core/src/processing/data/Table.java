@@ -76,7 +76,7 @@ import processing.core.PConstants;
  *
  * @webref data:composite
  * @webBrief Generic class for handling tabular data, typically from a CSV, TSV,
- *           or other sort of spreadsheet file.
+ *           or other sort of spreadsheet file
  * @see PApplet#loadTable(String)
  * @see PApplet#saveTable(Table, String)
  * @see TableRow
@@ -1806,9 +1806,9 @@ public class Table {
    * Use <b>addColumn()</b> to add a new column to a <b>Table</b> object.
    * Typically, you will want to specify a title, so the column may be easily
    * referenced later by name. (If no title is specified, the new column's title
-   * will be null.) A column type may also be specified, in which case all values
-   * stored in this column must be of the same type (e.g., Table.INT or
-   * Table.FLOAT). If no type is specified, the default type of STRING is used.
+   * will be <b>null</b>.) A column type may also be specified, in which case all values
+   * stored in this column must be of the same type (e.g., <b>Table.INT</b> or
+   * <b>Table.FLOAT</b>). If no type is specified, the default type of <b>STRING</b> is used.
    *
    * @webref table:method
    * @webBrief Adds a new column to a table
@@ -1886,7 +1886,7 @@ public class Table {
   /**
    * Use <b>removeColumn()</b> to remove an existing column from a <b>Table</b>
    * object. The column to be removed may be identified by either its title (a
-   * String) or its index value (an int). <b>removeColumn(0)</b> would remove the
+   * <b>String</b>) or its index value (an <b>int</b>). <b>removeColumn(0)</b> would remove the
    * first column, <b>removeColumn(1)</b> would remove the second column, and so
    * on.
    *
@@ -2285,10 +2285,10 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
-   * Returns the total number of rows in a table.
+   * Returns the total number of rows in a <b>Table</b>.
    *
    * @webref table:method
-   * @webBrief Returns the total number of rows in a table
+   * @webBrief Returns the total number of rows in a <b>Table</b>
    * @see Table#getColumnCount()
    */
   public int getRowCount() {
@@ -3609,7 +3609,7 @@ public class Table {
   }
 
   /**
-   * Retrieves all values in the specified column, and returns them as a String
+   * Retrieves all values in the specified column, and returns them as a <b>String</b>
    * array.  The column may be specified by either its ID or title.
    *
    * @webref table:method

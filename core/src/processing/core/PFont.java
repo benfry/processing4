@@ -72,7 +72,7 @@ import java.util.HashMap;
  * </PRE>
  *
  * @webref typography
- * @webBrief Grayscale bitmap font class used by Processing.
+ * @webBrief Grayscale bitmap font class used by Processing
  * @see PApplet#loadFont(String)
  * @see PApplet#createFont(String, float, boolean, char[])
  * @see PGraphics#textFont(PFont)
@@ -876,7 +876,7 @@ public class PFont implements PConstants {
    *
    *
    * @webref pfont
-   * @webBrief Gets a list of the fonts installed on the system.
+   * @webBrief Gets a list of the fonts installed on the system
    * @usage application
    * @brief Gets a list of the fonts installed on the system
    */

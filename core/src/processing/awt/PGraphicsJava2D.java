@@ -1029,7 +1029,7 @@ public class PGraphicsJava2D extends PGraphics {
    *
    *
    * @webref Rendering
-   * @webBrief Blends the pixels in the display window according to a defined mode. 
+   * @webBrief Blends the pixels in the display window according to a defined mode
    * @param mode the blending mode to use
    */
   @Override
