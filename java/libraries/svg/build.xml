@@ -6,7 +6,7 @@
     <delete file="library/svg.jar" />
   </target>
 
-  <property name="batik.version" value="1.13" />
+  <property name="batik.version" value="1.14" />
   <!-- the .zip file to be downloaded -->
   <property name="batik.zip" value="batik-bin-${batik.version}.zip" />
   <!-- the .jar file that's the actual dependency -->

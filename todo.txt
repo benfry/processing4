@@ -19,6 +19,12 @@ o   https://github.com/processing/processing4/issues/47
 o next video release
 o   https://github.com/processing/processing-video/milestone/1
 
+contribs
+X many updates in the docs portion of the repo
+X   https://github.com/processing/processing4/pull/191
+
+_ when lib downloads (batik) go dead, fallback to the download.processing.org version
+_   or for now, tell users how to do it manually
 
 windows/scaling
 _ we're turning off automatic UI scaling in Windows, should we turn it back on?
