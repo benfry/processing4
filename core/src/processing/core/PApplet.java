@@ -6650,7 +6650,7 @@ public class PApplet implements PConstants {
       } else if (opt.startsWith("extension=")) {
         extensions = new String[] { opt.substring(10) };
       } else if (opt.startsWith("extensions=")) {
-        extensions = split(opt.substring(10), ',');
+        extensions = split(opt.substring(11), ',');
       } else if (opt.equals("files")) {
         directories = false;
       } else if (opt.equals("directories")) {

@@ -1,4 +1,6 @@
 1273 (4.0a4)
+X fix typo in extensions= arg
+
 
 _ why does japplemenubar.JAppleMenuBar.hide(); still work?
 _   it calls SetSystemUIMode, which is part of Carbon (which was removed in Catalina)
