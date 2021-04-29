@@ -1,7 +1,10 @@
 1273 (4.0a4)
 X fix typo in extensions= arg
 X update batik to 1.14
+X   https://github.com/processing/processing4/issues/179
 X   https://github.com/processing/processing4/issues/192
+X update the batik url
+X   https://github.com/processing/processing4/pull/183
 
 
 _ why does japplemenubar.JAppleMenuBar.hide(); still work?
