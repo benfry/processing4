@@ -14,7 +14,7 @@
 
   <!-- URL for the version of Batik currently supported by this library. -->
   <property name="batik.url"
-            value="https://apache.osuosl.org/xmlgraphics/batik/binaries/${batik.zip}" />
+            value="https://archive.apache.org/dist/xmlgraphics/batik/binaries/${batik.zip}" />
 
   <!-- Storing a "local" copy in case the original link goes dead. When updating
        releases, please upload the new version to download.processing.org. -->
