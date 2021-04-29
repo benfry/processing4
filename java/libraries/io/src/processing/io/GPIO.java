@@ -94,16 +94,16 @@ public class GPIO {
   /**
    *  Calls a function when the value of an input pin changes<br/>
    *  <br/>
-   *  The sketch method provided must accept a single integer (int) parameter, which is the
+   *  The sketch method provided must accept a single <b>integer</b> (int) parameter, which is the
    *  number of the GPIO pin that the interrupt occured on. As this method might be called
    *  at any time, including when drawing to the display window isn't permitted, it is best
-   *  to only set simple variables that are being responded to in the next draw() call, as
+   *  to only set simple variables that are being responded to in the next <b>draw()</b> call, as
    *  shown above. Calling functions of the Hardware I/O library at this point is certainly
    *  possible.<br/>
    *  <br/>
-   *  The mode parameter determines when the function will be called: GPIO.FALLING occurs 
-   *  when the level changes from high to low, GPIO.RISING when the level changes from low
-   *  to high, and GPIO.CHANGE when either occurs.
+   *  The mode parameter determines when the function will be called: <b>GPIO.FALLING</b> occurs 
+   *  when the level changes from high to low, <b>GPIO.RISING</b> when the level changes from low
+   *  to high, and <b>GPIO.CHANGE</b> when either occurs.
    *
    *  @param pin GPIO pin
    *  @param parent typically use "this"
@@ -333,7 +333,7 @@ public class GPIO {
    *  Allows interrupts to happen<br/>
    *  <br/>
    *  You can use <a href="GPIO_noInterrupts_.html">noInterrupts()</a> 
-   *  and interrupts() in tandem to make sure no interrupts are occuring 
+   *  and <b>interrupts()</b> in tandem to make sure no interrupts are occuring 
    *  while your sketch is doing a particular task. By default, interrupts 
    *  are enabled.
    *
@@ -351,7 +351,7 @@ public class GPIO {
   /**
    *  Prevents interrupts from happpening<br/>
    *  <br/>
-   *  You can use noInterrupts() and <a href="GPIO_interrupts_.html">interrupts()</a> 
+   *  You can use <b>noInterrupts()</b> and <a href="GPIO_interrupts_.html">interrupts()</a> 
    *  in tandem to make sure no interrupts are occuring while your sketch is doing a 
    *  particular task.<br/>
    *  br/>
@@ -529,9 +529,9 @@ public class GPIO {
   /**
    *  Waits for the value of an input pin to change<br/>
    *  <br/>
-   *  The mode parameter determines when the function will return: GPIO.FALLING occurs 
-   *  when the level changes from high to low, GPIO.RISING when the level changes from 
-   *  low to high, and GPIO.CHANGE when either occurs.<br/>
+   *  The mode parameter determines when the function will return: <b>GPIO.FALLING</b> occurs 
+   *  when the level changes from high to low, <b>GPIO.RISING</b> when the level changes from 
+   *  low to high, and <b>GPIO.CHANGE</b> when either occurs.<br/>
    *  <br/>
    *  The optional timeout parameter determines how many milliseconds the function will 
    *  wait at the most. If the value of the input pin hasn't changed at this point, an 
@@ -550,9 +550,9 @@ public class GPIO {
   /**
    *  Waits for the value of an input pin to change<br/>
    *  <br/>
-   *  The mode parameter determines when the function will return: GPIO.FALLING occurs 
-   *  when the level changes from high to low, GPIO.RISING when the level changes from 
-   *  low to high, and GPIO.CHANGE when either occurs.<br/>
+   *  The mode parameter determines when the function will return: <b>GPIO.FALLING</b> occurs 
+   *  when the level changes from high to low, <b>GPIO.RISING</b> when the level changes from 
+   *  low to high, and <b>GPIO.CHANGE</b> when either occurs.<br/>
    *  <br/>
    *  The optional timeout parameter determines how many milliseconds the function will 
    *  wait at the most. If the value of the input pin hasn't changed at this point, an 

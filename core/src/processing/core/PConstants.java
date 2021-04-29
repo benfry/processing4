@@ -135,7 +135,7 @@ public interface PConstants {
    *
    * @webref constants
    * @webBrief PI is a mathematical constant with the value
-   *           3.14159265358979323846.
+   *           3.14159265358979323846
    * @see PConstants#TWO_PI
    * @see PConstants#TAU
    * @see PConstants#HALF_PI
@@ -152,7 +152,7 @@ public interface PConstants {
    *
    * @webref constants
    * @webBrief HALF_PI is a mathematical constant with the value
-   *           1.57079632679489661923.
+   *           1.57079632679489661923
    * @see PConstants#PI
    * @see PConstants#TWO_PI
    * @see PConstants#TAU
@@ -168,7 +168,7 @@ public interface PConstants {
    * <b>sin()</b> and <b>cos()</b>.
    *
    * @webref constants
-   * @webBrief QUARTER_PI is a mathematical constant with the value 0.7853982.
+   * @webBrief QUARTER_PI is a mathematical constant with the value 0.7853982
    * @see PConstants#PI
    * @see PConstants#TWO_PI
    * @see PConstants#TAU
@@ -183,7 +183,7 @@ public interface PConstants {
    * <b>sin()</b> and <b>cos()</b>.
    *
    * @webref constants
-   * @webBrief TWO_PI is a mathematical constant with the value 6.28318530717958647693.
+   * @webBrief TWO_PI is a mathematical constant with the value 6.28318530717958647693
    * @see PConstants#PI
    * @see PConstants#TAU
    * @see PConstants#HALF_PI
@@ -199,7 +199,7 @@ public interface PConstants {
    * <b>cos()</b>.
    *
    * @webref constants
-   * @webBrief An alias for TWO_PI
+   * @webBrief An alias for <b>TWO_PI</b>
    * @see PConstants#PI
    * @see PConstants#TWO_PI
    * @see PConstants#HALF_PI

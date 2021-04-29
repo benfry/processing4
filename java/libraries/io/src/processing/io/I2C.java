@@ -124,7 +124,7 @@ public class I2C {
    * time.
    * 
    * @webref I2C
-   * @webBrief Closes the I2C device.
+   * @webBrief Closes the I2C device
    */
   public void close() {
     if (NativeInterface.isSimulated()) {
@@ -150,12 +150,12 @@ public class I2C {
    * <br/>
    * This executes any queued writes. <a href="I2C_read_.html">Read()</a>
    * implicitly ends the current transmission as well, hence calling
-   * endTransmission() afterwards is not necessary.
+   * <b>endTransmission()</b> afterwards is not necessary.
    * 
    * @see beginTransmission
    * @see write
    * @webref I2C
-   * @webBrief Ends the current transmissions.
+   * @webBrief Ends the current transmissions
    */
   public void endTransmission() {
     if (!transmitting) {
@@ -212,10 +212,10 @@ public class I2C {
   /**
    * Read bytes from the attached device<br/>
    * <br/>
-   * You must call beginTransmission() before calling this function. This function
+   * You must call <b>beginTransmission()</b> before calling this function. This function
    * also ends the current transmission and sends any data that was queued using
-   * write() before. It is not necessary to call
-   * <a href="I2C_endTransmission_.html">endTransmission()</a> after read().
+   * <b>write()</b> before. It is not necessary to call
+   * <a href="I2C_endTransmission_.html">endTransmission()</a> after <b>read()</b>.
    * 
    * @param len number of bytes to read
    * @return bytes read from device
@@ -223,7 +223,7 @@ public class I2C {
    * @see write
    * @see endTransmission
    * @webref I2C
-   * @webBrief Read bytes from the attached device.
+   * @webBrief Read bytes from the attached device
    */
   public byte[] read(int len) {
     if (!transmitting) {
@@ -253,15 +253,15 @@ public class I2C {
   /**
    * Add bytes to be written to the device<br/>
    * <br/>
-   * You must call beginTransmission() before calling this function. The actual
-   * writing takes part when read() or endTransmission() is being called.
+   * You must call <b>beginTransmission()</b> before calling this function. The actual
+   * writing takes part when <b>read()</b> or <b>endTransmission()</b> is being called.
    * 
    * @param out bytes to be written
    * @see beginTransmission
    * @see read
    * @see endTransmission
    * @webref I2C
-   * @webBrief Add bytes to be written to the device.
+   * @webBrief Add bytes to be written to the device
    */
   public void write(byte[] out) {
     if (!transmitting) {
