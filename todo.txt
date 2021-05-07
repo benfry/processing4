@@ -12,6 +12,7 @@ X   https://github.com/processing/processing4/issues/174
 X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
 X need to set a nicer default font
 X   increases export size, but impact is so worth it
+X Update JDK to 11.0.11+9
 
 earlier
 o further streamline the downloader
@@ -22,6 +23,7 @@ o   https://github.com/processing/processing-video/milestone/1
 contribs
 X many updates in the docs portion of the repo
 X   https://github.com/processing/processing4/pull/191
+
 
 _ when lib downloads (batik) go dead, fallback to the download.processing.org version
 _   or for now, tell users how to do it manually
