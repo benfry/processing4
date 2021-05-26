@@ -272,12 +272,17 @@ public class PFont implements PConstants {
     } else {
       // charset needs to be sorted to make index lookup run more quickly
       // http://dev.processing.org/bugs/show_bug.cgi?id=494
-      Arrays.sort(charset);
 
-      glyphs = new Glyph[charset.length];
+      // make copy of charset for sorting to not effect original array 
+      // fix for bug: https://github.com/processing/processing4/issues/197
+      char[] sortedCharset = Arrays.copyOf(charset, charset.length );
+
+      Arrays.sort(sortedCharset);
+
+      glyphs = new Glyph[sortedCharset.length];
 
       glyphCount = 0;
-      for (char c : charset) {
+      for (char c : sortedCharset) {
         if (font.canDisplay(c)) {
           Glyph glyf = new Glyph(c);
           if (glyf.value < 128) {
@@ -289,7 +294,7 @@ public class PFont implements PConstants {
       }
 
       // shorten the array if necessary
-      if (glyphCount != charset.length) {
+      if (glyphCount != sortedCharset.length) {
         glyphs = (Glyph[]) PApplet.subset(glyphs, 0, glyphCount);
       }
 
