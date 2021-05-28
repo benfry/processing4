@@ -1367,6 +1367,10 @@ public class PApplet implements PConstants {
 
     void handle(Object[] args) {
       for (int i = 0; i < count; i++) {
+        // skip nulled out object/method pairs
+        if (methods[i] == null || objects[i] == null) {
+          continue;
+        }
         try {
           methods[i].invoke(objects[i], args);
         } catch (Exception e) {
@@ -1412,24 +1416,17 @@ public class PApplet implements PConstants {
 
 
     /**
-     * Removes first object/method pair matched (and only the first,
+     * Null out the first object/method pair matched (and only the first,
      * must be called multiple times if object is registered multiple times).
-     * Does not shrink array afterwards, silently returns if method not found.
+     * Does not shrink array. Silently returns if method not found.
      */
 //    public void remove(Object object, Method method) {
 //      int index = findIndex(object, method);
     public void remove(Object object) {
       int index = findIndex(object);
       if (index != -1) {
-        // shift remaining methods by one to preserve ordering
-        count--;
-        for (int i = index; i < count; i++) {
-          objects[i] = objects[i+1];
-          methods[i] = methods[i+1];
-        }
-        // clean things out for the gc's sake
-        objects[count] = null;
-        methods[count] = null;
+        objects[index] = null;
+        methods[index] = null;
       }
     }
 
