@@ -1366,9 +1366,11 @@ public class PApplet implements PConstants {
 
 
     void handle(Object[] args) {
+      boolean nullsDetected = false;
       for (int i = 0; i < count; i++) {
         // skip nulled out object/method pairs
         if (methods[i] == null || objects[i] == null) {
+          nullsDetected = true;
           continue;
         }
         try {
@@ -1392,8 +1394,19 @@ public class PApplet implements PConstants {
           }
         }
       }
-    }
 
+      if (nullsDetected) {
+        int index;
+        while ((index = findIndex(null)) >= 0) {
+          // shift remaining methods by one to preserve ordering
+          count--;
+          for (int i = index; i < count; i++) {
+            objects[i] = objects[i+1];
+            methods[i] = methods[i+1];
+          }
+        }
+      }
+    }
 
     void add(Object object, Method method) {
       if (findIndex(object) == -1) {
