@@ -13,6 +13,9 @@ X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
 X need to set a nicer default font
 X   increases export size, but impact is so worth it
 X Update JDK to 11.0.11+9
+X modernize the RegisteredMethods code to use collections classes w/ concurrency
+X   https://github.com/processing/processing4/pull/199
+
 
 earlier
 o further streamline the downloader
@@ -74,6 +77,8 @@ _   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jco
 
 
 decisions before final 4.0 release
+_ automatically lock closed issues
+_   https://github.com/apps/lock
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
 _   now with a release 9 to cover Big Sur
@@ -104,7 +109,9 @@ _ 'show sketch folder' weird when in temp folder
 _   ask to save first (sketch has not been saved yet)
 _   or make the temp folder part of the sketchbook
 _ same with adding files to an unsaved sketch, do we block that?
-_ Add language support to Modes
+
+
+_ add language support to Modes (request from Andres)
 _   https://github.com/processing/processing4/pull/14
 _   this was a small change; rebase not really needed since needs rewrite anyway
 
@@ -187,6 +194,7 @@ _ show the recommended sw version for users' platform on the download page
 
 _ fixing undo
 _   https://github.com/processing/processing/issues/4775
+_   fix? https://github.com/processing/processing4/pull/175
 _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
 _ i18n support for Modes

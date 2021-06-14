@@ -30,11 +30,7 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.text.*;
 import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.*;
 import java.util.regex.*;
 import java.util.zip.*;
 
@@ -1342,33 +1338,36 @@ public class PApplet implements PConstants {
   //////////////////////////////////////////////////////////////
 
 
-  /** Map of registered methods, stored by name. */
-  HashMap<String, RegisteredMethods> registerMap =
-    new HashMap<>();
+  /** Map of registered methods, stored by method name. */
+  Map<String, RegisteredMethods> registerMap = new ConcurrentHashMap<>();
 
-  /** Lock when un/registering from multiple threads */
-  private final Object registerLock = new Object[0];
+
+  class RegisteredMethod {
+    Object object;
+    Method method;
+
+    RegisteredMethod(Object object, Method method) {
+      this.object = object;
+      this.method = method;
+    }
+  }
 
 
   class RegisteredMethods {
-    int count;
-    Object[] objects;
-    // Because the Method comes from the class being called,
-    // it will be unique for most, if not all, objects.
-    Method[] methods;
-    Object[] emptyArgs = new Object[] { };
+    Queue<RegisteredMethod> entries = new ConcurrentLinkedQueue<>();
 
+    final Object[] emptyArgs = new Object[] { };
 
     @SuppressWarnings("unused")
     void handle() {
       handle(emptyArgs);
     }
 
-
     void handle(Object[] args) {
-      for (int i = 0; i < count; i++) {
+      for (RegisteredMethod entry : entries) {
         try {
-          methods[i].invoke(objects[i], args);
+          //methods[i].invoke(objects[i], args);
+          entry.method.invoke(entry.object, args);
         } catch (Exception e) {
           // check for wrapped exception, get root exception
           Throwable t;
@@ -1392,18 +1391,8 @@ public class PApplet implements PConstants {
 
 
     void add(Object object, Method method) {
-      if (findIndex(object) == -1) {
-        if (objects == null) {
-          objects = new Object[5];
-          methods = new Method[5];
-
-        } else if (count == objects.length) {
-          objects = (Object[]) PApplet.expand(objects);
-          methods = (Method[]) PApplet.expand(methods);
-        }
-        objects[count] = object;
-        methods[count] = method;
-        count++;
+      if (!entries.contains(object)) {
+        entries.add(new RegisteredMethod(object, method));
       } else {
         die(method.getName() + "() already added for this instance of " +
             object.getClass().getName());
@@ -1416,37 +1405,8 @@ public class PApplet implements PConstants {
      * must be called multiple times if object is registered multiple times).
      * Does not shrink array afterwards, silently returns if method not found.
      */
-//    public void remove(Object object, Method method) {
-//      int index = findIndex(object, method);
     public void remove(Object object) {
-      int index = findIndex(object);
-      if (index != -1) {
-        // shift remaining methods by one to preserve ordering
-        count--;
-        for (int i = index; i < count; i++) {
-          objects[i] = objects[i+1];
-          methods[i] = methods[i+1];
-        }
-        // clean things out for the gc's sake
-        objects[count] = null;
-        methods[count] = null;
-      }
-    }
-
-
-//    protected int findIndex(Object object, Method method) {
-    protected int findIndex(Object object) {
-      for (int i = 0; i < count; i++) {
-        if (objects[i] == object) {
-//        if (objects[i] == object && methods[i].equals(method)) {
-          //objects[i].equals() might be overridden, so use == for safety
-          // since here we do care about actual object identity
-          //methods[i]==method is never true even for same method, so must use
-          // equals(), this should be safe because of object identity
-          return i;
-        }
-      }
-      return -1;
+      entries.remove(object);
     }
   }
 
@@ -1494,14 +1454,12 @@ public class PApplet implements PConstants {
     Class<?> c = o.getClass();
     try {
       Method method = c.getMethod(name);
-      synchronized (registerLock) {
-        RegisteredMethods meth = registerMap.get(name);
-        if (meth == null) {
-          meth = new RegisteredMethods();
-          registerMap.put(name, meth);
-        }
-        meth.add(o, method);
+      RegisteredMethods meth = registerMap.get(name);
+      if (meth == null) {
+        meth = new RegisteredMethods();
+        registerMap.put(name, meth);
       }
+      meth.add(o, method);
     } catch (NoSuchMethodException nsme) {
       die("There is no public " + name + "() method in the class " +
           o.getClass().getName());
@@ -1516,14 +1474,12 @@ public class PApplet implements PConstants {
     Class<?> c = o.getClass();
     try {
       Method method = c.getMethod(name, cargs);
-      synchronized (registerLock) {
-        RegisteredMethods meth = registerMap.get(name);
-        if (meth == null) {
-          meth = new RegisteredMethods();
-          registerMap.put(name, meth);
-        }
-        meth.add(o, method);
+      RegisteredMethods meth = registerMap.get(name);
+      if (meth == null) {
+        meth = new RegisteredMethods();
+        registerMap.put(name, meth);
       }
+      meth.add(o, method);
     } catch (NoSuchMethodException nsme) {
       die("There is no public " + name + "() method in the class " +
           o.getClass().getName());
@@ -1534,183 +1490,26 @@ public class PApplet implements PConstants {
   }
 
 
-//  public void registerMethod(String methodName, Object target, Object... args) {
-//    registerWithArgs(methodName, target, args);
-//  }
-
-
   public void unregisterMethod(String name, Object target) {
-    synchronized (registerLock) {
-      RegisteredMethods meth = registerMap.get(name);
-      if (meth == null) {
-        die("No registered methods with the name " + name + "() were found.");
+    RegisteredMethods meth = registerMap.get(name);
+    if (meth == null) {
+      die("No registered methods with the name " + name + "() were found.");
 
-      } else {
-        try {
-          meth.remove(target);
-        } catch (Exception e) {
-          die("Could not unregister " + name + "() for " + target, e);
-        }
+    } else {
+      try {
+        meth.remove(target);
+      } catch (Exception e) {
+        die("Could not unregister " + name + "() for " + target, e);
       }
     }
   }
 
   protected void handleMethods(String methodName, Object...args) {
-    synchronized (registerLock) {
-      RegisteredMethods meth = registerMap.get(methodName);
-      if (meth != null) {
-        meth.handle(args);
-      }
+    RegisteredMethods meth = registerMap.get(methodName);
+    if (meth != null) {
+      meth.handle(args);
     }
   }
-
-
-  /*
-  @Deprecated
-  public void registerSize(Object o) {
-    System.err.println("The registerSize() command is no longer supported.");
-//    Class<?> methodArgs[] = new Class[] { Integer.TYPE, Integer.TYPE };
-//    registerWithArgs(sizeMethods, "size", o, methodArgs);
-  }
-
-
-  @Deprecated
-  public void registerPre(Object o) {
-    registerNoArgs("pre", o);
-  }
-
-
-  @Deprecated
-  public void registerDraw(Object o) {
-    registerNoArgs("draw", o);
-  }
-
-
-  @Deprecated
-  public void registerPost(Object o) {
-    registerNoArgs("post", o);
-  }
-
-
-  @Deprecated
-  public void registerDispose(Object o) {
-    registerNoArgs("dispose", o);
-  }
-
-
-  @Deprecated
-  public void unregisterSize(Object o) {
-    System.err.println("The unregisterSize() command is no longer supported.");
-//    Class<?> methodArgs[] = new Class[] { Integer.TYPE, Integer.TYPE };
-//    unregisterWithArgs(sizeMethods, "size", o, methodArgs);
-  }
-
-
-  @Deprecated
-  public void unregisterPre(Object o) {
-    unregisterMethod("pre", o);
-  }
-
-
-  @Deprecated
-  public void unregisterDraw(Object o) {
-    unregisterMethod("draw", o);
-  }
-
-
-  @Deprecated
-  public void unregisterPost(Object o) {
-    unregisterMethod("post", o);
-  }
-
-
-  @Deprecated
-  public void unregisterDispose(Object o) {
-    unregisterMethod("dispose", o);
-  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  // Old methods with AWT API that should not be used.
-  // These were never implemented on Android so they're stored separately.
-
-  RegisteredMethods mouseEventMethods, keyEventMethods;
-
-
-  protected void reportDeprecation(Class<?> c, boolean mouse) {
-    if (g != null) {
-      PGraphics.showWarning("The class " + c.getName() +
-                            " is incompatible with Processing 2.0.");
-      PGraphics.showWarning("A library (or other code) is using register" +
-                            (mouse ? "Mouse" : "Key") + "Event() " +
-                            "which is no longer available.");
-      // This will crash with OpenGL, so quit anyway
-      if (g instanceof PGraphicsOpenGL) {
-        PGraphics.showWarning("Stopping the sketch because this code will " +
-                                          "not work correctly with OpenGL.");
-        throw new RuntimeException("This sketch uses a library that " +
-                                               "needs to be updated for Processing 2.0.");
-      }
-    }
-  }
-
-
-  @Deprecated
-  public void registerMouseEvent(Object o) {
-    Class<?> c = o.getClass();
-    reportDeprecation(c, true);
-    try {
-      Method method = c.getMethod("mouseEvent", new Class[] { java.awt.event.MouseEvent.class });
-      if (mouseEventMethods == null) {
-        mouseEventMethods = new RegisteredMethods();
-      }
-      mouseEventMethods.add(o, method);
-    } catch (Exception e) {
-      die("Could not register mouseEvent() for " + o, e);
-    }
-  }
-
-
-  @Deprecated
-  public void unregisterMouseEvent(Object o) {
-    try {
-//      Method method = o.getClass().getMethod("mouseEvent", new Class[] { MouseEvent.class });
-//      mouseEventMethods.remove(o, method);
-      mouseEventMethods.remove(o);
-    } catch (Exception e) {
-      die("Could not unregister mouseEvent() for " + o, e);
-    }
-  }
-
-
-  @Deprecated
-  public void registerKeyEvent(Object o) {
-    Class<?> c = o.getClass();
-    reportDeprecation(c, false);
-    try {
-      Method method = c.getMethod("keyEvent", new Class[] { java.awt.event.KeyEvent.class });
-      if (keyEventMethods == null) {
-        keyEventMethods = new RegisteredMethods();
-      }
-      keyEventMethods.add(o, method);
-    } catch (Exception e) {
-      die("Could not register keyEvent() for " + o, e);
-    }
-  }
-
-
-  @Deprecated
-  public void unregisterKeyEvent(Object o) {
-    try {
-//      Method method = o.getClass().getMethod("keyEvent", new Class[] { KeyEvent.class });
-//      keyEventMethods.remove(o, method);
-      keyEventMethods.remove(o);
-    } catch (Exception e) {
-      die("Could not unregister keyEvent() for " + o, e);
-    }
-  }
-  */
 
 
 
