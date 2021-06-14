@@ -8,6 +8,9 @@ X   https://github.com/processing/processing4/pull/183
 X calling unregisterMethod() on dispose from dispose() means concurrent mod
 o   https://github.com/processing/processing4/pull/199
 X   modernized the code a bit, checked in a version that queues to avoid list issue
+X Make parseJSONObject/Array return null when parsing fails
+X   https://github.com/processing/processing4/issues/165
+X   https://github.com/processing/processing4/pull/166
 
 
 _ cursor(PImage) broken everywhere because PImage.getNative() returns null

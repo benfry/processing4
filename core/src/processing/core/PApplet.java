@@ -5629,7 +5629,12 @@ public class PApplet implements PConstants {
    * @see PApplet#saveJSONObject(JSONObject, String)
    */
   public JSONObject parseJSONObject(String input) {
-    return new JSONObject(new StringReader(input));
+    try {
+      return new JSONObject(new StringReader(input));
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
 
@@ -5741,7 +5746,12 @@ public class PApplet implements PConstants {
  * @see PApplet#saveJSONObject(JSONObject, String)
  */
   public JSONArray parseJSONArray(String input) {
-    return new JSONArray(new StringReader(input));
+    try {
+      return new JSONArray(new StringReader(input));
+    } catch (RuntimeException e) {
+      e.printStackTrace();
+      return null;
+    }
   }
 
 
