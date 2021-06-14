@@ -18,6 +18,8 @@ X   https://github.com/processing/processing4/pull/199
 X don't sort user's charset array when calling createFont()
 X   https://github.com/processing/processing4/issues/197
 X   https://github.com/processing/processing4/pull/198
+X add PVector.setHeading() for parity with p5.js
+X   https://github.com/processing/processing4/issues/193
 
 
 earlier

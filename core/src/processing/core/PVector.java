@@ -345,7 +345,7 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Copies the components of the vector and returns the result as a <b>PVector</b>. 
+   * Copies the components of the vector and returns the result as a <b>PVector</b>.
    *
    *
    * @webref pvector:method
@@ -865,6 +865,14 @@ public class PVector implements Serializable {
   @Deprecated
   public float heading2D() {
     return heading();
+  }
+
+
+  public PVector setHeading(float angle) {
+    float m = mag();
+    x = m * Math.cos(a);
+    y = m * Math.sin(a);
+    return this;
   }
 
 
