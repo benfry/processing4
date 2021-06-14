@@ -25,6 +25,7 @@
 package processing.app;
 
 import java.io.*;
+import java.util.Stack;
 
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -64,7 +65,15 @@ public class SketchCode {
    * Editor.undo will be set to this object when this code is the tab
    * that's currently the front.
    */
-  private UndoManager undo = new UndoManager();
+  private final UndoManager undo = new UndoManager();
+
+  /**
+   * Caret positions for this tab.
+   * Editor.caretUndoStack and Editor.caretRedoStack will be set to these
+   * when this code is the tab that's currently the front.
+   */
+  private final Stack<Integer> caretUndoStack = new Stack<>();
+  private final Stack<Integer> caretRedoStack = new Stack<>();
 
   /** What was on top of the undo stack when last saved. */
 //  private UndoableEdit lastEdit;
@@ -238,6 +247,13 @@ public class SketchCode {
     return undo;
   }
 
+  public Stack<Integer> getCaretRedoStack() {
+    return caretRedoStack;
+  }
+
+  public Stack<Integer> getCaretUndoStack() {
+    return caretUndoStack;
+  }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
