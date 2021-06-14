@@ -22,7 +22,6 @@ X   https://github.com/processing/processing4/pull/198
 X add PVector.setHeading() for parity with p5.js
 X   https://github.com/processing/processing4/issues/193
 
-
 earlier
 o further streamline the downloader
 o   https://github.com/processing/processing4/issues/47
@@ -35,7 +34,9 @@ X   https://github.com/processing/processing4/pull/191
 X fixing undo
 X   fix? https://github.com/processing/processing4/pull/175
 _   https://github.com/processing/processing/issues/4775
-
+X tweak the number of updates based on Akarshit's attempt
+X   https://github.com/processing/processing4/issues/201
+X   https://github.com/processing/processing/pull/4097
 
 _ when lib downloads (batik) go dead, fallback to the download.processing.org version
 _   or for now, tell users how to do it manually

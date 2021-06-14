@@ -24,6 +24,10 @@ _   https://github.com/processing/processing4/issues/181
 _   https://github.com/processing/processing4/pull/188
 
 
+_ setting surface size needs to happen outside draw()
+_   https://github.com/processing/processing4/issues/162
+_   https://github.com/processing/processing4/issues/186
+
 _ why does japplemenubar.JAppleMenuBar.hide(); still work?
 _   it calls SetSystemUIMode, which is part of Carbon (which was removed in Catalina)
 _     https://github.com/kritzikratzi/jAppleMenuBar/blob/master/src/native/jAppleMenuBar.m
