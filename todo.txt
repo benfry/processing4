@@ -24,10 +24,10 @@ X   https://github.com/processing/processing4/issues/193
 X automatically lock closed issues
 X   https://github.com/apps/lock
 X Display Window doesn't remember its position
+X   seems that --external not getting passed
 X   https://github.com/processing/processing4/issues/158
-_   seems that --external not getting passed
-_     https://github.com/processing/processing/issues/5843
-_   https://github.com/processing/processing/issues/5781
+X   https://github.com/processing/processing/issues/5843
+X   https://github.com/processing/processing/issues/5781
 
 earlier
 o further streamline the downloader
