@@ -40,6 +40,10 @@ X tweak the number of updates based on Akarshit's attempt
 X   https://github.com/processing/processing4/issues/201
 X   https://github.com/processing/processing/pull/4097
 
+regressions
+_ Code completion not working
+_   https://github.com/processing/processing4/issues/177
+
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
 _   https://github.com/processing/processing/issues/4214

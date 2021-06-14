@@ -13,18 +13,19 @@ X   https://github.com/processing/processing4/issues/165
 X   https://github.com/processing/processing4/pull/166
 
 
+regressions
 _ cursor(PImage) broken everywhere because PImage.getNative() returns null
 _   https://github.com/processing/processing4/issues/180
 _ PImage.resize() not working
 _   https://github.com/processing/processing4/issues/200
 _   two simple examples added to the issue that can be used for tests
-
 _ mouseButton not set correctly on mouseReleased() with Java2D
 _   https://github.com/processing/processing4/issues/181
 _   https://github.com/processing/processing4/pull/188
 
 
 _ setting surface size needs to happen outside draw()
+_   surface.setSize() sadness etc
 _   https://github.com/processing/processing4/issues/162
 _   https://github.com/processing/processing4/issues/186
 
@@ -74,6 +75,14 @@ _ Sketches on Windows/Linux don't take UI sizing into account
 _   https://github.com/processing/processing/issues/4894
 _   https://github.com/processing/processing/issues/4895
 _   https://github.com/processing/processing/issues/4897
+
+from Casey
+_ Math for BLEND incorrect in the reference?
+_   https://github.com/processing/processing-docs/issues/762
+_ .setAngle() for PVector?
+_   https://github.com/processing/processing-docs/issues/744
+_ How much of the attrib*() functions should be documented?
+_   https://github.com/processing/processing-docs/issues/172
 
 
 api changes
@@ -184,15 +193,6 @@ _ Add support for floating point textures to OpenGL (using a hint?)
 _   https://github.com/processing/processing/issues/3321
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
-
-
-from Casey
-_ Math for BLEND incorrect in the reference?
-_   https://github.com/processing/processing-docs/issues/762
-_ .setAngle() for PVector?
-_   https://github.com/processing/processing-docs/issues/744
-_ How much of the attrib*() functions should be documented?
-_   https://github.com/processing/processing-docs/issues/172
 
 
 misc

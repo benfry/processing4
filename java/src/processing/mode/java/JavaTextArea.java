@@ -514,7 +514,7 @@ public class JavaTextArea extends PdeTextArea {
    */
   protected void showSuggestion(DefaultListModel<CompletionCandidate> listModel, String subWord) {
     // TODO can this be ListModel instead? why is size() in DefaultListModel
-    // different from getSize() in ListModel (or are they, really?)
+    //      different from getSize() in ListModel (or are they, really?)
     hideSuggestion();
 
     if (listModel.size() != 0) {
