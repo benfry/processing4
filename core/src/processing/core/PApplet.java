@@ -1355,7 +1355,7 @@ public class PApplet implements PConstants {
 
   class RegisteredMethods {
     Queue<RegisteredMethod> entries = new ConcurrentLinkedQueue<>();
-
+    Set<Object> removals = null;
     final Object[] emptyArgs = new Object[] { };
 
     @SuppressWarnings("unused")
@@ -1364,6 +1364,11 @@ public class PApplet implements PConstants {
     }
 
     void handle(Object[] args) {
+      // Queue removed entries until done iterating, i.e. so the Video Library
+      // can call unregisterMethod("dispose") from inside its dispose() method
+      // https://github.com/processing/processing4/pull/199
+      removals = ConcurrentHashMap.newKeySet();
+
       for (RegisteredMethod entry : entries) {
         try {
           //methods[i].invoke(objects[i], args);
@@ -1387,6 +1392,11 @@ public class PApplet implements PConstants {
           }
         }
       }
+      // Clear the entries queued for removal (if any)
+      for (Object object : removals) {
+        entries.remove(object);
+      }
+      removals = null;  // clear this out
     }
 
 
@@ -1406,7 +1416,12 @@ public class PApplet implements PConstants {
      * Does not shrink array afterwards, silently returns if method not found.
      */
     public void remove(Object object) {
-      entries.remove(object);
+      if (removals != null) {
+        entries.remove(object);
+      } else {
+        // Currently iterating the list of methods, remove this afterwards
+        removals.add(object);
+      }
     }
   }
 

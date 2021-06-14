@@ -5,6 +5,18 @@ X   https://github.com/processing/processing4/issues/179
 X   https://github.com/processing/processing4/issues/192
 X update the batik url
 X   https://github.com/processing/processing4/pull/183
+X calling unregisterMethod() on dispose from dispose() means concurrent mod
+o   https://github.com/processing/processing4/pull/199
+X   modernized the code a bit, checked in a version that queues to avoid list issue
+
+
+_ PImage.resize() not working
+_   https://github.com/processing/processing4/issues/200
+_   two simple examples added to the issue that can be used for tests
+
+_ mouseButton not set correctly on mouseReleased() with Java2D
+_   https://github.com/processing/processing4/issues/181
+_   https://github.com/processing/processing4/pull/188
 
 
 _ why does japplemenubar.JAppleMenuBar.hide(); still work?
