@@ -1416,7 +1416,7 @@ public class PApplet implements PConstants {
      * Does not shrink array afterwards, silently returns if method not found.
      */
     public void remove(Object object) {
-      if (removals != null) {
+      if (removals == null) {
         entries.remove(object);
       } else {
         // Currently iterating the list of methods, remove this afterwards
