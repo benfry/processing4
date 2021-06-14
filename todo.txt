@@ -23,6 +23,11 @@ X add PVector.setHeading() for parity with p5.js
 X   https://github.com/processing/processing4/issues/193
 X automatically lock closed issues
 X   https://github.com/apps/lock
+X Display Window doesn't remember its position
+X   https://github.com/processing/processing4/issues/158
+_   seems that --external not getting passed
+_     https://github.com/processing/processing/issues/5843
+_   https://github.com/processing/processing/issues/5781
 
 earlier
 o further streamline the downloader
@@ -70,11 +75,6 @@ already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
 _   https://github.com/processing/processing/issues/6059
 
-_ Display Window doesn't remember its position
-_   https://github.com/processing/processing4/issues/158
-_   seems that --external not getting passed
-_     https://github.com/processing/processing/issues/5843
-_   https://github.com/processing/processing/issues/5781
 _ remove the JRE Downloader
 _   https://github.com/processing/processing4/issues/155
 _ editor breakpoints out of the .pde files
