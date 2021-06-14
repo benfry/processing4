@@ -15,6 +15,9 @@ X   increases export size, but impact is so worth it
 X Update JDK to 11.0.11+9
 X modernize the RegisteredMethods code to use collections classes w/ concurrency
 X   https://github.com/processing/processing4/pull/199
+X don't sort user's charset array when calling createFont()
+X   https://github.com/processing/processing4/issues/197
+X   https://github.com/processing/processing4/pull/198
 
 
 earlier
