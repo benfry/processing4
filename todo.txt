@@ -10,6 +10,7 @@ X implement auto-download for JNA updates
 X “Exception in thread "Contribution Uninstaller" NullPointerException” during Remove
 X   https://github.com/processing/processing4/issues/174
 X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
+X   https://github.com/processing/processing4/issues/159
 X need to set a nicer default font
 X   increases export size, but impact is so worth it
 X Update JDK to 11.0.11+9
