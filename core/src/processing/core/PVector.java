@@ -870,8 +870,8 @@ public class PVector implements Serializable {
 
   public PVector setHeading(float angle) {
     float m = mag();
-    x = m * Math.cos(a);
-    y = m * Math.sin(a);
+    x = (float) (m * Math.cos(angle));
+    y = (float) (m * Math.sin(angle));
     return this;
   }
 
