@@ -1,3 +1,79 @@
+# Processing 4.0 alpha 4
+
+*Revision 1273 - 15 June 2021*
+
+Happy birthday to my goddaughter Kelsey! Let's celebrate with another alpha release.
+
+This should be a bit more stable than the last round. I've rolled back some of the more aggressive anti-AWT changes (bad for longevity, good for compatibility) so images in particular are now behaving better.
+
+But enough of that, let's go to the phone lines:
+
+
+### What bugs have been fixed; why should I care?
+
+* Sketch window location is saved once again: re-running a sketch will open the window in the same location. This was broken for a while! [#158](https://github.com/processing/processing4/issues/158), [#5843](https://github.com/processing/processing/issues/5843), [#5781](https://github.com/processing/processing/issues/5781)
+
+* When using multiple monitors, new Editor windows will open on the same display as the most recently opened Editor window. [#205](https://github.com/processing/processing4/issues/205), formerly [#1566](https://github.com/processing/processing/issues/1566)
+
+* A major Undo fix, this may even be [the big one](https://github.com/processing/processing/issues/4775), but it's not confirmed. (Please help confirm!) [#175](https://github.com/processing/processing4/pull/175)
+
+
+### Were you too hasty with exorcising AWT?
+
+* `cursor(PImage)` broken everywhere because `PImage.getNative()` returns `null` [#180](https://github.com/processing/processing4/issues/180)
+
+* `PImage.resize()` not working properly. [#200](https://github.com/processing/processing4/issues/200)
+
+* `copy()` not working correctly. [#169](https://github.com/processing/processing4/issues/169)
+
+
+### Did you find any particularly niggling, but small issues?
+
+* Catch `NoClassDefError` in `Platform.deleteFile()` (still unclear of its cause) on Big Sur. [#159](https://github.com/processing/processing4/issues/159), [#6185](https://github.com/processing/processing/issues/6185)
+
+* Fixed `Exception in thread "Contribution Uninstaller" NullPointerException` when removing an installed contribution. [#174](https://github.com/processing/processing4/issues/174)
+
+* If the default display is selected in the Preferences window, store that, rather than its number. It was discovered that plugging in a second display could bump the “default” display to number 2, even while it was still selected. Yay!
+
+* Sort out calling `unregisterMethod()` for `dispose` from `dispose()` makes for bad state situation. [#199](https://github.com/processing/processing4/pull/199)
+
+
+### How about contributions from the community?
+
++ Don't sort user's charset array when calling `createFont()`. [#197](https://github.com/processing/processing4/issues/197), [#198](https://github.com/processing/processing4/pull/198)
+
+* Some exciting things are on the way for the documentation and web site. [#191](https://github.com/processing/processing4/pull/191)
+
+* Update Batik to 1.14. [#179](https://github.com/processing/processing4/issues/179), [#192](https://github.com/processing/processing4/issues/192), [#183](https://github.com/processing/processing4/pull/183)
+
+* Tweak the circle for number of updates based on Akarshit's initial attempt. [#201](https://github.com/processing/processing4/issues/201), [#4097](https://github.com/processing/processing/pull/4097)
+
+* Make `parseJSONObject()` and `parseJSONArray()` return `null` when parsing fails. [#165](https://github.com/processing/processing4/issues/165), [#166](https://github.com/processing/processing4/pull/166)
+
+
+### Is there anything new?
+
++ Added `PVector.setHeading()` for parity with p5.js. [#193](https://github.com/processing/processing4/issues/193)
+
+* The default font (what you get if `textFont()` isnot used) has been changed to Source Sans instead of Lucida Sans. I just couldn't take Lucida any longer.
+
+
+### Were there any internal changes I probably won't notice?
+
+* Updated to JDK 11.0.11+9
+
+* Update from JNA 5.2.0 to 5.7.0
+
+* Modernize the RegisteredMethods code to use collections classes w/ concurrency. [#199](https://github.com/processing/processing4/pull/199)
+
+* Set closed issues to [automatically lock](https://github.com/dessant/lock-threads) after they've been closed for 30 days. (This has no effect on open issues, only closed ones.) Actually this one you may have noticed if you had a lot of notifications turned on.
+
+* Slowly transitioning some of the older code to newer syntax (lambda functions, etc). This is not a priority for anyone else: it's being done slowly, and as a chance to do code review on some very old work.
+
+
+* Fix `textMode(SHAPE) is not supported by this renderer` message with SVG Export. [#202](https://github.com/processing/processing4/issues/202), [#6169](https://github.com/processing/processing/issues/6169)
+
+
 # Processing 4.0 alpha 3
 
 *Revision 1272 - 17 January 2021*

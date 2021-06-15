@@ -52,8 +52,6 @@ X   https://github.com/processing/processing4/issues/201
 X   https://github.com/processing/processing/pull/4097
 
 
-
-
 may be fixed
 _ Undo feature may have undesired results (4.0a4)
 _   https://github.com/processing/processing/issues/4775
@@ -92,11 +90,16 @@ _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 
 
+should be in for 4.x
 _ remove the JRE Downloader
 _   https://github.com/processing/processing4/issues/155
 _ editor breakpoints out of the .pde files
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
+_ Add ability to move ~/.processing directory
+_   use ~/.config as parent, or $XDG_CONFIG_HOME
+o   https://github.com/processing/processing/issues/6115 (moved)
+_   https://github.com/processing/processing4/issues/203
 
 _ MovieMaker .mov not compatible with QuicktTime Player
 _   https://github.com/processing/processing/issues/6110
@@ -112,10 +115,6 @@ _   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jco
 
 
 decisions before final 4.0 release
-_ Add ability to move ~/.processing directory
-_   use ~/.config as parent, or $XDG_CONFIG_HOME
-o   https://github.com/processing/processing/issues/6115 (moved)
-_   https://github.com/processing/processing4/issues/203
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
 _   now with a release 9 to cover Big Sur
@@ -249,7 +248,6 @@ _ language server refactoring
 _   https://github.com/processing/processing4/issues/117
 _   https://theia-ide.org/
 _   https://medium.com/ballerina-techblog/implementing-a-language-server-how-hard-can-it-be-part-2-fa65a741aa23
-
 
 
 _ "Could not get the settings folder" message could be more helpful
@@ -448,7 +446,6 @@ _ drop XP support (but improve Windows 8 support? ouch)
 _ improve error message when creating a tab with the same name
 _   right now it's generic, based on "a file exists"
 _ don't allow users to create 'blah.java' when 'blah.pde' already in sketch
-
 
 
 sketchbook
