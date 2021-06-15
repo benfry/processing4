@@ -77,8 +77,10 @@ public class ClassWriter extends BaseWriter {
 			
 				for (MethodDoc m : classDoc.methods()) {
 					if(needsWriting(m)){
-						MethodWriter.write((HashMap<String, String>)vars.clone(), m, classname, folderName);				
-						methodSet.add(getPropertyInfo(m));
+						if (!classname.equals("PGraphics") || getName(m).equals("beginDraw()") || getName(m).equals("endDraw()")) {
+							MethodWriter.write((HashMap<String, String>)vars.clone(), m, classname, folderName);				
+							methodSet.add(getPropertyInfo(m));
+						}
 					}
 				}
 				

@@ -11,7 +11,7 @@ REFERENCES_OUT_PATH=../../../processing-website/content/references/translations/
 echo "[REFERENCE GENERATOR] Source Path :: $PROCESSING_SRC_PATH"
 echo "[REFERENCE GENERATOR] Library Path :: $PROCESSING_LIB_PATH"
 
-# You can pass one argument "sound" or "video" (without the "") to generate those libraries separately
+# You can pass one argument "sound" or "video" to generate those libraries separately
 # or "processing" to generate the core without the sound and video libraries
 # if there is no argument it will generate everything
 if [ $# -eq 0 ]

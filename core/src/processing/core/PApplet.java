@@ -259,13 +259,13 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * When <b>pixelDensity(2)</d> is used to make use of a high resolution
+   * When <b>pixelDensity(2)</b> is used to make use of a high resolution
    * display (called a Retina display on OS X or high-dpi on Windows and
    * Linux), the width and height of the sketch do not change, but the
    * number of pixels is doubled. As a result, all operations that use pixels
    * (like <b>loadPixels()</b>, <b>get()</b>, <b>set()</b>, etc.) happen
    * in this doubled space. As a convenience, the variables <b>pixelWidth</b>
-   * and <b>pixelHeight<b> hold the actual width and height of the sketch
+   * and <b>pixelHeight</b> hold the actual width and height of the sketch
    * in pixels. This is useful for any sketch that uses the <b>pixels[]</b>
    * array, for instance, because the number of elements in the array will
    * be <b>pixelWidth*pixelHeight</b>, not <b>width*height</b>.
@@ -282,13 +282,13 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * When <b>pixelDensity(2)</d> is used to make use of a high resolution
+   * When <b>pixelDensity(2)</b> is used to make use of a high resolution
    * display (called a Retina display on OS X or high-dpi on Windows and
    * Linux), the width and height of the sketch do not change, but the
    * number of pixels is doubled. As a result, all operations that use pixels
    * (like <b>loadPixels()</b>, <b>get()</b>, <b>set()</b>, etc.) happen
    * in this doubled space. As a convenience, the variables <b>pixelWidth</b>
-   * and <b>pixelHeight<b> hold the actual width and height of the sketch
+   * and <b>pixelHeight</b> hold the actual width and height of the sketch
    * in pixels. This is useful for any sketch that uses the <b>pixels[]</b>
    * array, for instance, because the number of elements in the array will
    * be <b>pixelWidth*pixelHeight</b>, not <b>width*height</b>.
