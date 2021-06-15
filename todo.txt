@@ -11,7 +11,7 @@ X “Exception in thread "Contribution Uninstaller" NullPointerException” duri
 X   https://github.com/processing/processing4/issues/174
 X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
 X   https://github.com/processing/processing4/issues/159
-_   https://github.com/processing/processing/issues/6185
+X   https://github.com/processing/processing/issues/6185
 X need to set a nicer default font
 X   increases export size, but impact is so worth it
 X Update JDK to 11.0.11+9
@@ -39,12 +39,17 @@ contribs
 X many updates in the docs portion of the repo
 X   https://github.com/processing/processing4/pull/191
 X fixing undo
-X   fix? https://github.com/processing/processing4/pull/175
-_   https://github.com/processing/processing/issues/4775
+X   https://github.com/processing/processing4/pull/175
 X tweak the number of updates based on Akarshit's attempt
 X   https://github.com/processing/processing4/issues/201
 X   https://github.com/processing/processing/pull/4097
 
+
+may be fixed
+_ Undo feature may have undesired results (4.0a4)
+_   https://github.com/processing/processing/issues/4775
+_ HDPI support GNOME desktop
+_   https://github.com/processing/processing/issues/6059
 
 regressions
 _ Code completion not working
@@ -77,9 +82,6 @@ _   make that a preference? (and double the size by default?)
 _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 
-already fixed in 4.x? (confirm/close on release)
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
 
 _ remove the JRE Downloader
 _   https://github.com/processing/processing4/issues/155
