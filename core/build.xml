@@ -126,6 +126,7 @@
         <fileset dir="src">
           <include name="processing/opengl/shaders/*.glsl" />
           <include name="processing/opengl/cursors/*.png" />
+          <include name="font/ProcessingSansPro-*" />
           <include name="icon/*.png" />
         </fileset>
       </copy>

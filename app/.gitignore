@@ -1,2 +1,5 @@
 bin
 pde.jar
+
+jna.jar
+jna-platform.jar

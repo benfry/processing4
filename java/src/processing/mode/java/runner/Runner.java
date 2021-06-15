@@ -85,16 +85,24 @@ public class Runner implements MessageConsumer {
 
   public Runner(JavaBuild build, RunnerListener listener) throws SketchException {
     this.listener = listener;
-//    this.sketch = sketch;
     this.build = build;
 
     checkLocalHost();
 
-    if (listener instanceof JavaEditor) {
-      this.editor = (JavaEditor) listener;
-      sketchErr = editor.getConsole().getErr();
-      sketchOut = editor.getConsole().getOut();
-    } else {
+    if (listener instanceof RunnerListenerEdtAdapter) {
+      // RunnerListener gets wrapped so that it behaves on the EDT.
+      // Need to extract the wrapped Object and see if it's a Java Editor,
+      // in which case we'll be passing additional parameters to the PApplet.
+      // https://github.com/processing/processing/issues/5843
+      RunnerListener wrapped = ((RunnerListenerEdtAdapter) listener).getWrapped();
+      if (wrapped instanceof JavaEditor) {
+        editor = (JavaEditor) wrapped;
+        sketchErr = editor.getConsole().getErr();
+        sketchOut = editor.getConsole().getOut();
+      }
+    }
+    // If it's not a JavaEditor, then we don't redirect to a console.
+    if (editor == null) {
       sketchErr = System.err;
       sketchOut = System.out;
     }
@@ -466,9 +474,7 @@ public class Runner implements MessageConsumer {
         }
         params.append(PApplet.ARGS_EXTERNAL);
       }
-
       params.append(PApplet.ARGS_DISPLAY + "=" + runDisplay);
-
 
       if (present) {
         params.append(PApplet.ARGS_PRESENT);
@@ -495,6 +501,7 @@ public class Runner implements MessageConsumer {
     if (args != null) {
       params.append(args);
     }
+
     // Pass back the whole list
     return params;
   }

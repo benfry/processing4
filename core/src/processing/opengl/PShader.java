@@ -37,12 +37,12 @@ import java.util.HashMap;
  * fragment shader. It's compatible with the P2D and P3D renderers, but not with
  * the default renderer. Use the <b>loadShader()</b> function to load your
  * shader code. [Note: It's strongly encouraged to use <b>loadShader()</b> to
- * create a PShader object, rather than calling the PShader constructor
+ * create a <b>PShader</b> object, rather than calling the <b>PShader</b> constructor
  * manually.]
  *
  * @webref rendering:shaders
  * @webBrief This class encapsulates a GLSL shader program, including a vertex
- *           and a fragment shader.
+ *           and a fragment shader
  */
 public class PShader implements PConstants {
   static protected final int POINT    = 0;

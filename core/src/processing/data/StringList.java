@@ -9,15 +9,15 @@ import java.util.Random;
 import processing.core.PApplet;
 
 /**
- * Helper class for a list of Strings. Lists are designed to have some of the
- * features of ArrayLists, but to maintain the simplicity and efficiency of
+ * Helper class for a list of <b>Strings</b>. Lists are designed to have some of the
+ * features of <b>ArrayLists</b>, but to maintain the simplicity and efficiency of
  * working with arrays.
  *
- * Functions like sort() and shuffle() always act on the list itself. To get
- * a sorted copy, use list.copy().sort().
+ * Functions like <b>sort()</b> and <b>shuffle()</b> always act on the list itself. To get
+ * a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
- * @webBrief Helper class for a list of Strings.
+ * @webBrief Helper class for a list of Strings
  * @see IntList
  * @see FloatList
  */
@@ -149,7 +149,7 @@ public class StringList implements Iterable<String> {
   /**
    * Set the entry at a particular index. If the index is past the length of
    * the list, it'll expand the list to accommodate, and fill the intermediate
-   * entries with "null".
+   * entries with <b>null</b>.
    *
    * @webref stringlist:method
    * @webBrief Set an entry at a particular index

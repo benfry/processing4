@@ -72,7 +72,7 @@ import java.util.HashMap;
  * </PRE>
  *
  * @webref typography
- * @webBrief Grayscale bitmap font class used by Processing.
+ * @webBrief Grayscale bitmap font class used by Processing
  * @see PApplet#loadFont(String)
  * @see PApplet#createFont(String, float, boolean, char[])
  * @see PGraphics#textFont(PFont)
@@ -267,17 +267,18 @@ public class PFont implements PConstants {
 
     if (charset == null) {
       lazy = true;
-//      lazyFont = font;
 
     } else {
-      // charset needs to be sorted to make index lookup run more quickly
+      // The charset needs to be sorted to make index lookup run quickly
       // http://dev.processing.org/bugs/show_bug.cgi?id=494
-      Arrays.sort(charset);
+      // First make copy of charset[] so the user's array is not modified
+      // https://github.com/processing/processing4/issues/197
+      char[] sortedCharset = Arrays.copyOf(charset, charset.length);
+      Arrays.sort(sortedCharset);
 
-      glyphs = new Glyph[charset.length];
-
+      glyphs = new Glyph[sortedCharset.length];
       glyphCount = 0;
-      for (char c : charset) {
+      for (char c : sortedCharset) {
         if (font.canDisplay(c)) {
           Glyph glyf = new Glyph(c);
           if (glyf.value < 128) {
@@ -289,31 +290,9 @@ public class PFont implements PConstants {
       }
 
       // shorten the array if necessary
-      if (glyphCount != charset.length) {
+      if (glyphCount != sortedCharset.length) {
         glyphs = (Glyph[]) PApplet.subset(glyphs, 0, glyphCount);
       }
-
-      // foreign font, so just make ascent the max topExtent
-      // for > 1.0.9, not doing this anymore.
-      // instead using getAscent() and getDescent() values for these cases.
-//      if ((ascent == 0) && (descent == 0)) {
-//        //for (int i = 0; i < charCount; i++) {
-//        for (Glyph glyph : glyphs) {
-//          char cc = (char) glyph.value;
-//          //char cc = (char) glyphs[i].value;
-//          if (Character.isWhitespace(cc) ||
-//              (cc == '\u00A0') || (cc == '\u2007') || (cc == '\u202F')) {
-//            continue;
-//          }
-//          if (glyph.topExtent > ascent) {
-//            ascent = glyph.topExtent;
-//          }
-//          int d = -glyph.topExtent + glyph.height;
-//          if (d > descent) {
-//            descent = d;
-//          }
-//        }
-//      }
     }
 
     // If not already created, just create these two characters to calculate
@@ -876,7 +855,7 @@ public class PFont implements PConstants {
    *
    *
    * @webref pfont
-   * @webBrief Gets a list of the fonts installed on the system.
+   * @webBrief Gets a list of the fonts installed on the system
    * @usage application
    * @brief Gets a list of the fonts installed on the system
    */

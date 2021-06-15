@@ -9,14 +9,69 @@
   </target>
 
   <target name="download-vaqua">
-
     <get dest="lib" usetimestamp="true">
       <url url="${vaqua.url}/8/VAqua8.jar" />
     </get>
-
   </target>
 
-  <target name="compile" description="Compile sources" depends="download-vaqua">
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- Current version of JNA that works with Processing -->
+  <property name="jna.version" value="5.7.0" />
+  <!-- the .zip file to be downloaded -->
+  <property name="jna.zip" value="${jna.version}.zip" />
+  <!-- the .jar file that's the actual dependency -->
+  <!-- <property name="batik.jar" value="batik-all-${batik.version}.jar" /> -->
+
+  <!-- URL for the version of Batik currently supported by this library.
+       This should probably be changed to (or at leas mirrored at) a
+       location on download.processing.org so it's available forever. -->
+  <property name="jna.url"
+            value="https://github.com/java-native-access/jna/archive/${jna.zip}" />
+
+  <fileset id="jna.files" dir="lib">
+    <include name="jna.jar" />
+    <include name="jna-platform.jar" />
+  </fileset>
+
+  <condition property="jna.present">
+    <resourcecount refid="jna.files" when="eq" count="2" />
+  </condition>
+  <!-- <available file="lib/jna.jar" property="jna.present" /> -->
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="jna.ignorable" value="false" else="true">
+    <isset property="jna.present" />
+  </condition>
+
+  <target name="download-jna" unless="jna.present">
+    <get src="${jna.url}" dest="."
+         ignoreerrors="${jna.ignorable}"
+         usetimestamp="true" />
+
+    <property name="zip.prefix" value="jna-${jna.version}/dist" />
+
+    <!-- Formerly used batik-awt-util-1.8.jar, batik-dom-1.8.jar, batik-ext-1.8.jar,
+         batik-svggen-1.8.jar, batik-util-1.8.jar, batik-xml-1.8.jar but using
+         the big feller from now on since file size is less important, and there
+         were complaints about some .jar files not being available. -->
+    <unzip src="${jna.zip}" dest="lib">
+      <patternset>
+        <!-- unzip a single jar from the zip.prefix subdirectory in the .zip -->
+        <include name="${zip.prefix}/jna.jar" />
+        <include name="${zip.prefix}/jna-platform.jar" />
+      </patternset>
+      <mapper>
+        <!-- remove the zip.prefix from the path when saving the .jar -->
+        <globmapper from="${zip.prefix}/*" to="*" />
+      </mapper>
+    </unzip>
+    <delete file="${jna.zip}" />
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <target name="compile" description="Compile sources" depends="download-vaqua, download-jna">
     <condition property="core-built">
       <available file="../core/library/core.jar" />
     </condition>

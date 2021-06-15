@@ -83,10 +83,10 @@ public class SoftwareServo {
   /**
    * Attaches a servo motor to a GPIO pin<br/>
    * <br/>
-   * You must call this function before calling write(). Note that the servo motor
-   * will only be instructed to move after the first time write() is called.<br/>
+   * You must call this function before calling <b>write()</b>. Note that the servo motor
+   * will only be instructed to move after the first time <b>write()</b> is called.<br/>
    * <br/>
-   * The optional parameters minPulse and maxPulse control the minimum and maximum
+   * The optional parameters <b>minPulse</b> and <b>maxPulse</b> control the minimum and maximum
    * pulse width durations. The default values, identical to those of Arduino's
    * Servo class, should be compatible with most servo motors.
    * 
@@ -105,8 +105,8 @@ public class SoftwareServo {
   /**
    * Attaches a servo motor to a GPIO pin<br/>
    * <br/>
-   * You must call this function before calling write(). Note that the servo motor
-   * will only be instructed to move after the first time write() is called.<br/>
+   * You must call this function before calling <b>write()</b>. Note that the servo motor
+   * will only be instructed to move after the first time <b>write()</b> is called.<br/>
    * <br/>
    * The optional parameters minPulse and maxPulse control the minimum and maximum
    * pulse width durations. The default values, identical to those of Arduino's

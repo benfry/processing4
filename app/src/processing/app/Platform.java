@@ -385,12 +385,20 @@ public class Platform {
    * @throws IOException
    */
   static public boolean deleteFile(File file) throws IOException {
-    FileUtils fu = FileUtils.getInstance();
-    if (fu.hasTrash()) {
-      fu.moveToTrash(new File[] { file });
-      return true;
+    try {
+      FileUtils fu = FileUtils.getInstance();
+      if (fu.hasTrash()) {
+        fu.moveToTrash(new File[]{file});
+        return true;
+      }
+    } catch (Throwable t) {
+      // On macOS getting NoClassDefFoundError inside JNA on Big Sur.
+      // (Can't find com.sun.jna.platform.mac.MacFileUtils$FileManager)
+      // Just adding a catch-all here so that it does the fall-through below.
+      System.err.println(t.getMessage());
+    }
 
-    } else if (file.isDirectory()) {
+    if (file.isDirectory()) {
       Util.removeDir(file);
       return true;
 

@@ -513,14 +513,16 @@ public class ContributionListing {
         count++;
       }
     }
-    for (Library lib : base.getActiveEditor().getMode().contribLibraries) {
-      if (hasUpdates(lib)) {
-        count++;
+    if (base.getActiveEditor() != null) {
+      for (Library lib : base.getActiveEditor().getMode().contribLibraries) {
+        if (hasUpdates(lib)) {
+          count++;
+        }
       }
-    }
-    for (Library lib : base.getActiveEditor().getMode().coreLibraries) {
-      if (hasUpdates(lib)) {
-        count++;
+      for (Library lib : base.getActiveEditor().getMode().coreLibraries) {
+        if (hasUpdates(lib)) {
+          count++;
+        }
       }
     }
     for (ToolContribution tc : base.getToolContribs()) {

@@ -11,8 +11,8 @@ REFERENCES_OUT_PATH=../../../processing-website/content/references/translations/
 echo "[REFERENCE GENERATOR] Source Path :: $PROCESSING_SRC_PATH"
 echo "[REFERENCE GENERATOR] Library Path :: $PROCESSING_LIB_PATH"
 
-#you can pass one argument "sound" or "video" to generate those libraries separately
-#if there is no argument it will generate everything
+# You can pass one argument "sound" or "video" to generate those libraries separately
+# if there is no argument it will generate everything
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied, generating everything"
@@ -34,7 +34,7 @@ if [ $# -eq 0 ]
     			$PROCESSING_LIB_PATH/serial/src/processing/serial/*.java \
     			$PROCESSING_LIB_PATH/../../../processing-video/src/processing/video/*.java \
     			$PROCESSING_LIB_PATH/../../../processing-sound/src/processing/sound/*.java"
-  elif [ $1 = "processing" ] 
+  elif [ $1 = "processing" ]
   then
     echo "Generating processing references"
     echo "[REFERENCE GENERATOR] Removing previous version of the ref..."
@@ -53,7 +53,7 @@ if [ $# -eq 0 ]
           $PROCESSING_LIB_PATH/io/src/processing/io/*.java \
           $PROCESSING_LIB_PATH/net/src/processing/net/*.java \
           $PROCESSING_LIB_PATH/serial/src/processing/serial/*.java"
-  else 
+  else
   	echo "Generating $1 library"
   	echo "[REFERENCE GENERATOR] Removing previous version of the ref..."
   	rm -rf $REFERENCES_OUT_PATH/$1

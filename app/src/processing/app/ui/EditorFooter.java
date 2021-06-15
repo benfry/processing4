@@ -289,12 +289,16 @@ public class EditorFooter extends Box {
         FontRenderContext frc = g2.getFontRenderContext();
         final int GAP = Toolkit.zoom(5);
         final String updateLabel = "Updates";
-        String updatesStr = "" + updateCount;
+        //String updatesStr = " " + updateCount + " ";
+        String updatesStr = " " + ((int) (Math.random() * 25)) + " ";
         double countWidth = font.getStringBounds(updatesStr, frc).getWidth();
+        double countHeight = font.getStringBounds(updatesStr, frc).getHeight();
         if (fontAscent > countWidth) {
           countWidth = fontAscent;
         }
-        float diameter = (float) (countWidth * 1.65f);
+        // Using a variant of https://github.com/processing/processing/pull/4097
+        final float CIRCULAR_PADDING = 1.5f;
+        float diameter = (float) (2 * (Math.max(countHeight, countWidth)/2 + CIRCULAR_PADDING));
         float ex = getWidth() - Editor.RIGHT_GUTTER - diameter;
         float ey = (getHeight() - diameter) / 2;
         g2.setColor(updateColor);

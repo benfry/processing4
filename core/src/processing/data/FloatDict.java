@@ -9,12 +9,12 @@ import processing.core.PApplet;
 
 
 /**
- * A simple class to use a String as a lookup for an float value. String "keys"
+ * A simple class to use a <b>String</b> as a lookup for a float value. String "keys"
  * are associated with floating-point values.
  *
  * @webref data:composite
- * @webBrief A simple table class to use a String as a lookup for an float
- *           value.
+ * @webBrief A simple table class to use a <b>String</b> as a lookup for a float
+ *           value
  * @see IntDict
  * @see StringDict
  */
@@ -415,7 +415,7 @@ public class FloatDict {
 
 
   /**
-   * Add to a value. If the key does not exist, an new pair is initialized with
+   * Add to a value. If the key does not exist, a new pair is initialized with
    * the value supplied.
    * 
    * @webref floatdict:method

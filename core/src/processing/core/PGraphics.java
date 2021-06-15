@@ -146,7 +146,7 @@ import processing.opengl.PShader;
  *
  * @webref rendering
  * @webBrief Main graphics and rendering context, as well as the base API
- *           implementation for processing "core".
+ *           implementation for processing "core"
  * @instanceName graphics any object of the type PGraphics
  * @usage Web &amp; Application
  * @see PApplet#createGraphics(int, int, String)
@@ -871,7 +871,7 @@ public class PGraphics extends PImage implements PConstants {
 
   /**
    *
-   * Sets the default properties for a PGraphics object. It should be called
+   * Sets the default properties for a <b>PGraphics</b> object. It should be called
    * before anything is drawn into the object.
    *
    * <h3>Advanced</h3>
@@ -879,7 +879,7 @@ public class PGraphics extends PImage implements PConstants {
    * drawing anything.
    *
    * @webref pgraphics:method
-   * @webBrief Sets the default properties for a PGraphics object.
+   * @webBrief Sets the default properties for a <b>PGraphics</b> object
    */
   public void beginDraw() {  // ignore
   }
@@ -887,7 +887,7 @@ public class PGraphics extends PImage implements PConstants {
 
   /**
    *
-   * Finalizes the rendering of a PGraphics object so that it can be shown on screen.
+   * Finalizes the rendering of a <b>PGraphics</b> object so that it can be shown on screen.
    *
    * <h3>Advanced</h3>
    * <p/>
@@ -895,7 +895,7 @@ public class PGraphics extends PImage implements PConstants {
    * you're finished drawing.
    *
    * @webref pgraphics:method
-   * @webBrief Finalizes the rendering of a PGraphics object so that it can be shown on screen.
+   * @webBrief Finalizes the rendering of a <b>PGraphics</b> object so that it can be shown on screen
    * @brief Finalizes the rendering of a PGraphics object
    */
   public void endDraw() {  // ignore
@@ -1068,67 +1068,67 @@ public class PGraphics extends PImage implements PConstants {
    * manner across renderers. Many options will often graduate to standard
    * features instead of hints over time.
    * <br/> <br/>
-   * hint(ENABLE_OPENGL_4X_SMOOTH) - Enable 4x anti-aliasing for P3D. This
+   * <b>hint(ENABLE_OPENGL_4X_SMOOTH)</b>- Enable 4x anti-aliasing for P3D. This
    * can help force anti-aliasing if it has not been enabled by the user. On
    * some graphics cards, this can also be set by the graphics driver's
    * control panel, however not all cards make this available. This hint must
-   * be called immediately after the size() command because it resets the
-   * renderer, obliterating any settings and anything drawn (and like size(),
+   * be called immediately after the <b>size()</b> command because it resets the
+   * renderer, obliterating any settings and anything drawn (and like <b>size()</b>,
    * re-running the code that came before it again).
    * <br/> <br/>
-   * hint(DISABLE_OPENGL_2X_SMOOTH) - In Processing 1.0, Processing always
+   * <b>hint(DISABLE_OPENGL_2X_SMOOTH)</b> - In Processing 1.0, Processing always
    * enables 2x smoothing when the P3D renderer is used. This hint disables
    * the default 2x smoothing and returns the smoothing behavior found in
-   * earlier releases, where smooth() and noSmooth() could be used to enable
+   * earlier releases, where <b>smooth()</b> and <b>noSmooth()</b> could be used to enable
    * and disable smoothing, though the quality was inferior.
    * <br/> <br/>
-   * hint(ENABLE_NATIVE_FONTS) - Use the native version fonts when they are
+   * <b>hint(ENABLE_NATIVE_FONTS)</b> - Use the native version fonts when they are
    * installed, rather than the bitmapped version from a .vlw file. This is
    * useful with the default (or JAVA2D) renderer setting, as it will improve
    * font rendering speed. This is not enabled by default, because it can be
    * misleading while testing because the type will look great on your
    * machine (because you have the font installed) but lousy on others'
    * machines if the identical font is unavailable. This option can only be
-   * set per-sketch, and must be called before any use of textFont().
+   * set per-sketch, and must be called before any use of <b>textFont()</b>.
    * <br/> <br/>
-   * hint(DISABLE_DEPTH_TEST) - Disable the zbuffer, allowing you to draw on
+   * <b>hint(DISABLE_DEPTH_TEST)</b> - Disable the zbuffer, allowing you to draw on
    * top of everything at will. When depth testing is disabled, items will be
    * drawn to the screen sequentially, like a painting. This hint is most
    * often used to draw in 3D, then draw in 2D on top of it (for instance, to
    * draw GUI controls in 2D on top of a 3D interface). Starting in release
    * 0149, this will also clear the depth buffer. Restore the default with
-   * hint(ENABLE_DEPTH_TEST), but note that with the depth buffer cleared,
-   * any 3D drawing that happens later in draw() will ignore existing shapes
+   * <b>hint(ENABLE_DEPTH_TEST)</b>, but note that with the depth buffer cleared,
+   * any 3D drawing that happens later in <b>draw()</b> will ignore existing shapes
    * on the screen.
    * <br/> <br/>
-   * hint(ENABLE_DEPTH_SORT) - Enable primitive z-sorting of triangles and
+   * <b>hint(ENABLE_DEPTH_SORT)</b> - Enable primitive z-sorting of triangles and
    * lines in P3D and OPENGL. This can slow performance considerably, and the
-   * algorithm is not yet perfect. Restore the default with hint(DISABLE_DEPTH_SORT).
+   * algorithm is not yet perfect. Restore the default with <b>hint(DISABLE_DEPTH_SORT)</b>.
    * <br/> <br/>
-   * hint(DISABLE_OPENGL_ERROR_REPORT) - Speeds up the P3D renderer setting
-   * by not checking for errors while running. Undo with hint(ENABLE_OPENGL_ERROR_REPORT).
+   * <b>hint(DISABLE_OPENGL_ERROR_REPORT)</b> - Speeds up the P3D renderer setting
+   * by not checking for errors while running. Undo with <b>hint(ENABLE_OPENGL_ERROR_REPORT)</b>.
    * <br/> <br/>
-   * hint(ENABLE_BUFFER_READING) - Depth and stencil buffers in P2D/P3D will be
+   * <b>hint(ENABLE_BUFFER_READING)</b> - Depth and stencil buffers in P2D/P3D will be
    * down-sampled to make PGL#readPixels work with multisampling. Enabling this
    * introduces some overhead, so if you experience bad performance, disable
-   * multisampling with noSmooth() instead. This hint is not intended to be
-   * enabled and disabled repeatedly, so call this once in setup() or after
+   * multisampling with <b>noSmooth()</b> instead. This hint is not intended to be
+   * enabled and disabled repeatedly, so call this once in <b>setup()</b> or after
    * creating your PGraphics2D/3D. You can restore the default with
-   * hint(DISABLE_BUFFER_READING) if you don't plan to read depth from
-   * this PGraphics anymore.
+   * <b>hint(DISABLE_BUFFER_READING)</b> if you don't plan to read depth from
+   * this <b>PGraphics</b> anymore.
    * <br/> <br/>
-   * hint(ENABLE_KEY_REPEAT) - Auto-repeating key events are discarded
+   * <b>hint(ENABLE_KEY_REPEAT)</b> - Auto-repeating key events are discarded
    * by default (works only in P2D/P3D); use this hint to get all the key events
-   * (including auto-repeated). Call hint(DISABLE_KEY_REPEAT) to get events
+   * (including auto-repeated). Call <b>hint(DISABLE_KEY_REPEAT)</b> to get events
    * only when the key goes physically up or down.
    * <br/> <br/>
-   * hint(DISABLE_ASYNC_SAVEFRAME) - P2D/P3D only - save() and saveFrame()
+   * <b>hint(DISABLE_ASYNC_SAVEFRAME)</b> - P2D/P3D only - <b>save()</b> and <b>saveFrame()</b>
    * will not use separate threads for saving and will block until the image
    * is written to the drive. This was the default behavior in 3.0b7 and before.
-   * To enable, call hint(ENABLE_ASYNC_SAVEFRAME).
+   * To enable, call <b>hint(ENABLE_ASYNC_SAVEFRAME)</b>.
    *
    * @webref rendering
-   * @webBrief Set various hints and hacks for the renderer.
+   * @webBrief Set various hints and hacks for the renderer
    * @param which name of the hint to be enabled or disabled
    * @see PGraphics
    * @see PApplet#createGraphics(int, int, String, String)
@@ -1194,7 +1194,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref shape:vertex
    * @webBrief Using the <b>beginShape()</b> and <b>endShape()</b> functions allow
-   *           creating more complex forms.
+   *           creating more complex forms
    * @param kind Either POINTS, LINES, TRIANGLES, TRIANGLE_FAN, TRIANGLE_STRIP,
    *             QUADS, or QUAD_STRIP
    * @see PShape
@@ -1228,7 +1228,7 @@ public class PGraphics extends PImage implements PConstants {
    * is identical to <b>glNormal3f()</b> in OpenGL.
    *
    * @webref lights_camera:lights
-   * @webBrief Sets the current normal vector.
+   * @webBrief Sets the current normal vector
    * @param nx x direction
    * @param ny y direction
    * @param nz z direction
@@ -1297,7 +1297,7 @@ public class PGraphics extends PImage implements PConstants {
    * (0,200). The same mapping in <b>NORMAL</b> is (0,0) (1,0) (1,1) (0,1).
    *
    * @webref image:textures
-   * @webBrief Sets the coordinate space for texture mapping.
+   * @webBrief Sets the coordinate space for texture mapping
    * @param mode either IMAGE or NORMAL
    * @see PGraphics#texture(PImage)
    * @see PGraphics#textureWrap(int)
@@ -1317,7 +1317,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref image:textures
-   * @webBrief Defines if textures repeat or draw once within a texture map.
+   * @webBrief Defines if textures repeat or draw once within a texture map
    * @param wrap Either CLAMP (default) or REPEAT
    * @see PGraphics#texture(PImage)
    * @see PGraphics#textureMode(int)
@@ -1339,7 +1339,7 @@ public class PGraphics extends PImage implements PConstants {
    * shape.
    *
    * @webref image:textures
-   * @webBrief Sets a texture to be applied to vertex points.
+   * @webBrief Sets a texture to be applied to vertex points
    * @param image reference to a PImage object
    * @see PGraphics#textureMode(int)
    * @see PGraphics#textureWrap(int)
@@ -1593,7 +1593,7 @@ public class PGraphics extends PImage implements PConstants {
  * changed with <b>textureMode()</b>.
  *
  * @webref shape:vertex
- * @webBrief All shapes are constructed by connecting a series of vertices.
+ * @webBrief All shapes are constructed by connecting a series of vertices
  * @param x x-coordinate of the vertex
  * @param y y-coordinate of the vertex
  * @param z z-coordinate of the vertex
@@ -1679,7 +1679,7 @@ public class PGraphics extends PImage implements PConstants {
    * or <b>rect()</b> within.
    *
    * @webref shape:vertex
-   * @webBrief Begins recording vertices for the shape.
+   * @webBrief Begins recording vertices for the shape
    */
   public void beginContour() {
     showMissingWarning("beginContour");
@@ -1702,7 +1702,7 @@ public class PGraphics extends PImage implements PConstants {
    * or <b>rect()</b> within.
    *
    * @webref shape:vertex
-   * @webBrief Stops recording vertices for the shape.
+   * @webBrief Stops recording vertices for the shape
    */
   public void endContour() {
     showMissingWarning("endContour");
@@ -1724,7 +1724,7 @@ public class PGraphics extends PImage implements PConstants {
    * beginning and the end).
    *
    * @webref shape:vertex
-   * @webBrief the companion to <b>beginShape()</b> and may only be called after <b>beginShape()</b>.
+   * @webBrief the companion to <b>beginShape()</b> and may only be called after <b>beginShape()</b>
    * @param mode use CLOSE to close the shape
    * @see PShape
    * @see PGraphics#beginShape(int)
@@ -1758,7 +1758,7 @@ public class PGraphics extends PImage implements PConstants {
    * the value returned is null.<br />
    *
    * @webref shape
-   * @webBrief Loads geometry into a variable of type <b>PShape</b>.
+   * @webBrief Loads geometry into a variable of type <b>PShape</b>
    * @param filename name of file to load, can be .svg or .obj
    * @see PShape
    * @see PApplet#createShape()
@@ -1812,7 +1812,7 @@ public class PGraphics extends PImage implements PConstants {
    * PShape class are in the <a href="http://processing.github.io/processing-javadocs/core/">Processing Javadoc</a>.
    *
    * @webref shape
-   * @webBrief The <b>createShape()</b> function is used to define a new shape.
+   * @webBrief The <b>createShape()</b> function is used to define a new shape
    * @see PShape
    * @see PShape#endShape()
    * @see PApplet#loadShape(String)
@@ -1933,7 +1933,7 @@ public class PGraphics extends PImage implements PConstants {
   // SHADERS
 
   /**
-   * Loads a shader into the PShader object. The shader file must be
+   * Loads a shader into the <b>PShader</b> object. The shader file must be
    * loaded in the sketch's "data" folder/directory to load correctly.
    * Shaders are compatible with the P2D and P3D renderers, but not
    * with the default renderer.<br />
@@ -1951,7 +1951,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref rendering:shaders
-   * @webBrief Loads a shader into the PShader object.
+   * @webBrief Loads a shader into the <b>PShader</b> object
    * @param fragFilename name of fragment shader file
    */
   public PShader loadShader(String fragFilename) {
@@ -1976,7 +1976,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref rendering:shaders
-   * @webBrief Applies the shader specified by the parameters.
+   * @webBrief Applies the shader specified by the parameters
    * @param shader name of shader file
    */
   public void shader(PShader shader) {
@@ -1999,7 +1999,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref rendering:shaders
-   * @webBrief Restores the default shaders.
+   * @webBrief Restores the default shaders
    */
   public void resetShader() {
     showMissingWarning("resetShader");
@@ -2036,7 +2036,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref rendering
    * @webBrief Limits the rendering to the boundaries of a rectangle defined
-   * by the parameters.
+   * by the parameters
    * @param a x-coordinate of the rectangle, by default
    * @param b y-coordinate of the rectangle, by default
    * @param c width of the rectangle, by default
@@ -2086,7 +2086,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref rendering
-   * @webBrief Disables the clipping previously started by the <b>clip()</b> function.
+   * @webBrief Disables the clipping previously started by the <b>clip()</b> function
    */
   public void noClip() {
     showMissingWarning("noClip");
@@ -2107,15 +2107,15 @@ public class PGraphics extends PImage implements PConstants {
    * channel of (A) and (B) independently. The red channel is compared with
    * red, green with green, and blue with blue.<br />
    * <br />
-   * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
+   * BLEND - linear interpolation of colors: <b>C = A*factor + B</b>. This is the default.<br />
    * <br />
-   * ADD - additive blending with white clip: C = min(A*factor + B, 255)<br />
+   * ADD - additive blending with white clip: <b>C = min(A*factor + B, 255)</b><br />
    * <br />
-   * SUBTRACT - subtractive blending with black clip: C = max(B - A*factor, 0)<br />
+   * SUBTRACT - subtractive blending with black clip: <b>C = max(B - A*factor, 0)</b><br />
    * <br />
-   * DARKEST - only the darkest color succeeds: C = min(A*factor, B)<br />
+   * DARKEST - only the darkest color succeeds: <b>C = min(A*factor, B)</b><br />
    * <br />
-   * LIGHTEST - only the lightest color succeeds: C = max(A*factor, B)<br />
+   * LIGHTEST - only the lightest color succeeds: <b>C = max(A*factor, B)</b><br />
    * <br />
    * DIFFERENCE - subtract colors from underlying image.<br />
    * <br />
@@ -2135,7 +2135,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref rendering
-   * @webBrief Blends the pixels in the display window according to a defined mode.
+   * @webBrief Blends the pixels in the display window according to a defined mode
    * @param mode the blending mode to use
    */
   public void blendMode(int mode) {
@@ -2215,7 +2215,7 @@ public class PGraphics extends PImage implements PConstants {
    * for more information).
    *
  * @webref shape:vertex
- * @webBrief Specifies vertex coordinates for Bezier curves.
+ * @webBrief Specifies vertex coordinates for Bezier curves
  * @param x2 the x-coordinate of the 1st control point
  * @param y2 the y-coordinate of the 1st control point
  * @param z2 the z-coordinate of the 1st control point
@@ -2276,7 +2276,7 @@ public class PGraphics extends PImage implements PConstants {
    * reference for more information).
    *
    * @webref shape:vertex
-   * @webBrief Specifies vertex coordinates for quadratic Bezier curves.
+   * @webBrief Specifies vertex coordinates for quadratic Bezier curves
    * @param cx the x-coordinate of the control point
    * @param cy the y-coordinate of the control point
    * @param x3 the x-coordinate of the anchor point
@@ -2360,7 +2360,7 @@ public class PGraphics extends PImage implements PConstants {
    *
   *
   * @webref shape:vertex
-  * @webBrief Specifies vertex coordinates for curves.
+  * @webBrief Specifies vertex coordinates for curves
   * @param x the x-coordinate of the vertex
   * @param y the y-coordinate of the vertex
   * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
@@ -2521,7 +2521,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws a point, a coordinate in space at the dimension of one pixel.
+   * @webBrief Draws a point, a coordinate in space at the dimension of one pixel
    * @param x x-coordinate of the point
    * @param y y-coordinate of the point
    * @see PGraphics#stroke(int)
@@ -2554,7 +2554,7 @@ public class PGraphics extends PImage implements PConstants {
    * parameter in combination with <b>size()</b> as shown in the above example.
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws a line (a direct path between two points) to the screen.
+   * @webBrief Draws a line (a direct path between two points) to the screen
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
    * @param x2 x-coordinate of the second point
@@ -2590,7 +2590,7 @@ public class PGraphics extends PImage implements PConstants {
    * second point, and the last two arguments specify the third point.
    *
    * @webref shape:2d_primitives
-   * @webBrief A triangle is a plane created by connecting three points.
+   * @webBrief A triangle is a plane created by connecting three points
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
    * @param x2 x-coordinate of the second point
@@ -2618,7 +2618,7 @@ public class PGraphics extends PImage implements PConstants {
    * counter-clockwise around the defined shape.
    *
    * @webref shape:2d_primitives
-   * @webBrief A quad is a quadrilateral, a four sided polygon.
+   * @webBrief A quad is a quadrilateral, a four sided polygon
    * @param x1 x-coordinate of the first corner
    * @param y1 y-coordinate of the first corner
    * @param x2 x-coordinate of the second corner
@@ -2669,7 +2669,7 @@ public class PGraphics extends PImage implements PConstants {
    * case-sensitive language.
    *
    * @webref shape:attributes
-   * @webBrief Modifies the location from which rectangles draw.
+   * @webBrief Modifies the location from which rectangles draw
    * @param mode either CORNER, CORNERS, CENTER, or RADIUS
    * @see PGraphics#rect(float, float, float, float)
    */
@@ -2696,7 +2696,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws a rectangle to the screen.
+   * @webBrief Draws a rectangle to the screen
    * @param a x-coordinate of the rectangle by default
    * @param b y-coordinate of the rectangle by default
    * @param c width of the rectangle by default
@@ -2861,7 +2861,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws a square to the screen.
+   * @webBrief Draws a square to the screen
    * @param x x-coordinate of the rectangle by default
    * @param y y-coordinate of the rectangle by default
    * @param extent width and height of the rectangle by default
@@ -2906,7 +2906,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref shape:attributes
    * @webBrief The origin of the ellipse is modified by the <b>ellipseMode()</b>
-   *           function.
+   *           function
    * @param mode either CENTER, RADIUS, CORNER, or CORNERS
    * @see PApplet#ellipse(float, float, float, float)
    * @see PApplet#arc(float, float, float, float, float, float)
@@ -2924,7 +2924,7 @@ public class PGraphics extends PImage implements PConstants {
    * be changed with the <b>ellipseMode()</b> function.
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws an ellipse (oval) in the display window.
+   * @webBrief Draws an ellipse (oval) in the display window
    * @param a x-coordinate of the ellipse
    * @param b y-coordinate of the ellipse
    * @param c width of the ellipse by default
@@ -2991,7 +2991,7 @@ public class PGraphics extends PImage implements PConstants {
    * arc yourself with <b>beginShape()</b>/<b>endShape()</b> or a <b>PShape</b>.
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws an arc in the display window.
+   * @webBrief Draws an arc in the display window
    * @param a     x-coordinate of the arc's ellipse
    * @param b     y-coordinate of the arc's ellipse
    * @param c     width of the arc's ellipse by default
@@ -3077,7 +3077,7 @@ public class PGraphics extends PImage implements PConstants {
    * function.
    *
    * @webref shape:2d_primitives
-   * @webBrief Draws a circle to the screen.
+   * @webBrief Draws a circle to the screen
    * @param x x-coordinate of the ellipse
    * @param y y-coordinate of the ellipse
    * @param extent width and height of the ellipse by default
@@ -3095,12 +3095,12 @@ public class PGraphics extends PImage implements PConstants {
 
   /**
    *
-   * A box is an extruded rectangle. A box with equal dimension on all sides
+   * A box is an extruded <b>rectangle</b>. A box with equal dimension on all sides
    * is a cube.
    *
    *
    * @webref shape:3d_primitives
-   * @webBrief A box is an extruded rectangle.
+   * @webBrief A box is an extruded <b>rectangle</b>
    * @param size dimension of the box in all dimensions (creates a cube)
    * @see PGraphics#sphere(float)
    */
@@ -3198,7 +3198,7 @@ public class PGraphics extends PImage implements PConstants {
    * @param res number of segments (minimum 3) used per full circle revolution
    * @webref shape:3d_primitives
    * @webBrief Controls the detail used to render a sphere by adjusting the number of
-   * vertices of the sphere mesh.
+   * vertices of the sphere mesh
    * @see PGraphics#sphere(float)
    */
   public void sphereDetail(int res) {
@@ -3279,7 +3279,7 @@ public class PGraphics extends PImage implements PConstants {
    * </PRE>
    *
    * @webref shape:3d_primitives
-   * @webBrief A sphere is a hollow ball made from tessellated triangles.
+   * @webBrief A sphere is a hollow ball made from tessellated triangles
    * @param r the radius of the sphere
    * @see PGraphics#sphereDetail(int)
    */
@@ -3385,7 +3385,7 @@ public class PGraphics extends PImage implements PConstants {
    * endShape();</PRE>
    *
    * @webref shape:curves
-   * @webBrief Evaluates the Bezier at point t for points a, b, c, d.
+   * @webBrief Evaluates the Bezier at point t for points a, b, c, d
    * @param a coordinate of first point on the curve
    * @param b coordinate of first control point
    * @param c coordinate of second control point
@@ -3410,7 +3410,7 @@ public class PGraphics extends PImage implements PConstants {
    * Code submitted by Dave Bollinger (davbol) for release 0136.
    *
    * @webref shape:curves
-   * @webBrief Calculates the tangent of a point on a Bezier curve.
+   * @webBrief Calculates the tangent of a point on a Bezier curve
    * @param a coordinate of first point on the curve
    * @param b coordinate of first control point
    * @param c coordinate of second control point
@@ -3449,7 +3449,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:curves
-   * @webBrief Sets the resolution at which Beziers display.
+   * @webBrief Sets the resolution at which Beziers display
    * @param detail resolution of the curves
    * @see PGraphics#curve(float, float, float, float, float, float, float, float,
    *      float, float, float, float)
@@ -3520,7 +3520,7 @@ public class PGraphics extends PImage implements PConstants {
    * <PRE>bezier(x1, y1, cx, cy, cx, cy, x2, y2);</PRE>
    *
    * @webref shape:curves
-   * @webBrief Draws a Bezier curve on the screen.
+   * @webBrief Draws a Bezier curve on the screen
    * @param x1 coordinates for the first anchor point
    * @param y1 coordinates for the first anchor point
    * @param z1 coordinates for the first anchor point
@@ -3567,7 +3567,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:curves
-   * @webBrief Evaluates the curve at point t for points a, b, c, d.
+   * @webBrief Evaluates the curve at point t for points a, b, c, d
    * @param a coordinate of first control point
    * @param b coordinate of first point on the curve
    * @param c coordinate of second point on the curve
@@ -3604,7 +3604,7 @@ public class PGraphics extends PImage implements PConstants {
    * Code thanks to Dave Bollinger (Bug #715)
    *
    * @webref shape:curves
-   * @webBrief Calculates the tangent of a point on a curve.
+   * @webBrief Calculates the tangent of a point on a curve
    * @param a coordinate of first point on the curve
    * @param b coordinate of first control point
    * @param c coordinate of second control point
@@ -3638,7 +3638,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:curves
-   * @webBrief Sets the resolution at which curves display.
+   * @webBrief Sets the resolution at which curves display
    * @param detail resolution of the curves
    * @see PGraphics#curve(float, float, float, float, float, float, float, float, float, float, float, float)
    * @see PGraphics#curveVertex(float, float)
@@ -3663,7 +3663,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref shape:curves
    * @webBrief Modifies the quality of forms created with <b>curve()</b> and
-   *           <b>curveVertex()</b>.
+   *           <b>curveVertex()</b>
    * @param tightness amount of deformation from the original vertices
    * @see PGraphics#curve(float, float, float, float, float, float, float, float,
    *      float, float, float, float)
@@ -3756,7 +3756,7 @@ public class PGraphics extends PImage implements PConstants {
    * </PRE>
    *
    * @webref shape:curves
-   * @webBrief Draws a curved line on the screen.
+   * @webBrief Draws a curved line on the screen
    * @param x1 coordinates for the beginning control point
    * @param y1 coordinates for the beginning control point
    * @param x2 coordinates for the first point
@@ -3894,7 +3894,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref image:loading_displaying
-   * @webBrief Modifies the location from which images draw.
+   * @webBrief Modifies the location from which images draw
    * @param mode either CORNER, CORNERS, or CENTER
    * @see PApplet#loadImage(String, String)
    * @see PImage
@@ -3933,7 +3933,7 @@ public class PGraphics extends PImage implements PConstants {
    * renderer, smooth() will also improve image quality of resized images.
    *
    * @webref image:loading_displaying
-   * @webBrief Displays images to the screen.
+   * @webBrief Displays images to the screen
    * @param img the image to display
    * @param a   x-coordinate of the image by default
    * @param b   y-coordinate of the image by default
@@ -4106,7 +4106,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:loading_displaying
-   * @webBrief Modifies the location from which shapes draw.
+   * @webBrief Modifies the location from which shapes draw
    * @param mode either CORNER, CORNERS, CENTER
    * @see PShape
    * @see PGraphics#shape(PShape)
@@ -4150,7 +4150,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:loading_displaying
-   * @webBrief Displays shapes to the screen.
+   * @webBrief Displays shapes to the screen
    * @param shape the shape to display
    * @param x     x-coordinate of the shape
    * @param y     y-coordinate of the shape
@@ -4237,7 +4237,18 @@ public class PGraphics extends PImage implements PConstants {
    * Used by PGraphics to remove the requirement for loading a font.
    */
   protected PFont createDefaultFont(float size) {
-    Font baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
+    Font baseFont;
+    try {
+      // For 4.0 alpha 4 and later, include a built-in font
+      InputStream input = getClass().getResourceAsStream("/font/ProcessingSansPro-Regular.ttf");
+      baseFont = Font.createFont(Font.TRUETYPE_FONT, input);
+
+    } catch (Exception e) {
+      // Fall back to how this was handled in 3.x, ugly!
+      e.printStackTrace(); // dammit
+      baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
+    }
+    // Create a PFont from this java.awt.Font
     return createFont(baseFont, size, true, null, false);
   }
 
@@ -4315,7 +4326,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref typography:attributes
-   * @webBrief Sets the current alignment for drawing text.
+   * @webBrief Sets the current alignment for drawing text
    * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
    * @param alignY vertical alignment, either TOP, BOTTOM, CENTER, or BASELINE
    * @see PApplet#loadFont(String)
@@ -4338,7 +4349,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref typography:metrics
-   * @webBrief Returns ascent of the current font at its current size.
+   * @webBrief Returns ascent of the current font at its current size
    * @see PGraphics#textDescent()
    */
   public float textAscent() {
@@ -4355,7 +4366,7 @@ public class PGraphics extends PImage implements PConstants {
    * useful for determining the height of the font below the baseline.
    *
    * @webref typography:metrics
-   * @webBrief Returns descent of the current font at its current size.
+   * @webBrief Returns descent of the current font at its current size
    * @see PGraphics#textAscent()
    */
   public float textDescent() {
@@ -4387,7 +4398,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref typography:loading_displaying
    * @webBrief Sets the current font that will be drawn with the <b>text()</b>
-   *           function.
+   *           function
    * @param which any variable of the type PFont
    * @see PApplet#createFont(String, float, boolean)
    * @see PApplet#loadFont(String)
@@ -4477,7 +4488,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref typography:attributes
-   * @webBrief Sets the spacing between lines of text in units of pixels.
+   * @webBrief Sets the spacing between lines of text in units of pixels
    * @param leading the size in pixels for spacing between lines
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -4509,7 +4520,7 @@ public class PGraphics extends PImage implements PConstants {
    * <b>beginRaw()</b>.
    *
    * @webref typography:attributes
-   * @webBrief Sets the way text draws to the screen.
+   * @webBrief Sets the way text draws to the screen
    * @param mode either MODEL or SHAPE
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -4554,7 +4565,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref typography:attributes
-   * @webBrief Sets the current font size.
+   * @webBrief Sets the current font size
    * @param size the size of the letters in units of pixels
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -4617,7 +4628,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref typography:attributes
-   * @webBrief Calculates and returns the width of any character or text string.
+   * @webBrief Calculates and returns the width of any character or text string
    * @param str the String of characters to measure
    * @see PApplet#loadFont(String)
    * @see PFont#PFont
@@ -4704,7 +4715,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref typography:loading_displaying
-   * @webBrief Draws text to the screen.
+   * @webBrief Draws text to the screen
    * @param c the alphanumeric character to be displayed
    * @param x x-coordinate of text
    * @param y y-coordinate of text
@@ -5308,7 +5319,7 @@ public class PGraphics extends PImage implements PConstants {
    * @webref structure
    * @webBrief The <b>push()</b> function saves the current drawing style
    * settings and transformations, while <b>pop()</b> restores these
-   * settings.
+   * settings
    * @see PGraphics#pop()
    */
   public void push() {
@@ -5345,7 +5356,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref structure
    * @webBrief The <b>pop()</b> function restores the previous drawing style
-   * settings and transformations after <b>push()</b> has changed them.
+   * settings and transformations after <b>push()</b> has changed them
    * @see PGraphics#push()
    */
   public void pop() {
@@ -5373,7 +5384,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref transform
-   * @webBrief Pushes the current transformation matrix onto the matrix stack.
+   * @webBrief Pushes the current transformation matrix onto the matrix stack
    * @see PGraphics#popMatrix()
    * @see PGraphics#translate(float, float, float)
    * @see PGraphics#scale(float)
@@ -5399,7 +5410,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref transform
-   * @webBrief Pops the current transformation matrix off the matrix stack.
+   * @webBrief Pops the current transformation matrix off the matrix stack
    * @see PGraphics#pushMatrix()
    */
   public void popMatrix() {
@@ -5432,7 +5443,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref transform
-   * @webBrief Specifies an amount to displace objects within the display window.
+   * @webBrief Specifies an amount to displace objects within the display window
    * @param x left/right translation
    * @param y up/down translation
    * @see PGraphics#popMatrix()
@@ -5476,7 +5487,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref transform
-   * @webBrief Rotates a shape the amount specified by the <b>angle</b> parameter.
+   * @webBrief Rotates a shape the amount specified by the <b>angle</b> parameter
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -5509,7 +5520,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref transform
    * @webBrief Rotates a shape around the x-axis the amount specified by the
-   * <b>angle</b> parameter.
+   * <b>angle</b> parameter
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -5542,7 +5553,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref transform
    * @webBrief Rotates a shape around the y-axis the amount specified by the
-   * <b>angle</b> parameter.
+   * <b>angle</b> parameter
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -5575,7 +5586,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref transform
    * @webBrief Rotates a shape around the z-axis the amount specified by the
-   * <b>angle</b> parameter.
+   * <b>angle</b> parameter
    * @param angle angle of rotation specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -5620,7 +5631,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref transform
    * @webBrief Increases or decreases the size of a shape by expanding and
-   *           contracting vertices.
+   *           contracting vertices
    * @param s percentage to scale the object
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
@@ -5678,7 +5689,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref transform
    * @webBrief Shears a shape around the x-axis the amount specified by the
-   * <b>angle</b> parameter.
+   * <b>angle</b> parameter
    * @param angle angle of shear specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -5712,7 +5723,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref transform
    * @webBrief Shears a shape around the y-axis the amount specified by the
-   * <b>angle</b> parameter.
+   * <b>angle</b> parameter
    * @param angle angle of shear specified in radians
    * @see PGraphics#popMatrix()
    * @see PGraphics#pushMatrix()
@@ -5738,7 +5749,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref transform
-   * @webBrief Replaces the current matrix with the identity matrix.
+   * @webBrief Replaces the current matrix with the identity matrix
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#applyMatrix(PMatrix)
@@ -5753,12 +5764,12 @@ public class PGraphics extends PImage implements PConstants {
    * Multiplies the current matrix by the one specified through the
    * parameters. This is very slow because it will try to calculate the
    * inverse of the transform, so avoid it whenever possible. The equivalent
-   * function in OpenGL is glMultMatrix().
+   * function in OpenGL is <b>glMultMatrix()</b>.
    *
    *
    * @webref transform
    * @webBrief Multiplies the current matrix by the one specified through the
-   * parameters.
+   * parameters
    * @source
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
@@ -5889,7 +5900,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref transform
    * @webBrief Prints the current matrix to the Console (the text window at the bottom
-   * of Processing).
+   * of Processing)
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#resetMatrix()
@@ -5926,7 +5937,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:camera
    * @webBrief The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
-   * advanced customization of the camera space.
+   * advanced customization of the camera space
    * @see PGraphics#camera()
    * @see PGraphics#endCamera()
    * @see PGraphics#applyMatrix(PMatrix)
@@ -5947,7 +5958,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:camera
    * @webBrief The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
-   * advanced customization of the camera space.
+   * advanced customization of the camera space
    * @see PGraphics#beginCamera()
    * @see PGraphics#camera(float, float, float, float, float, float, float, float, float)
    */
@@ -5969,7 +5980,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:camera
-   * @webBrief Sets the position of the camera.
+   * @webBrief Sets the position of the camera
    * @see PGraphics#beginCamera()
    * @see PGraphics#endCamera()
    * @see PGraphics#frustum(float, float, float, float, float, float)
@@ -6002,7 +6013,7 @@ public class PGraphics extends PImage implements PConstants {
    *
  * @webref lights_camera:camera
  * @webBrief Prints the current camera matrix to the Console (the text window at the
- * bottom of Processing).
+ * bottom of Processing)
  * @see PGraphics#camera(float, float, float, float, float, float, float, float, float)
  */
   public void printCamera() {
@@ -6023,12 +6034,12 @@ public class PGraphics extends PImage implements PConstants {
    * the clipping volume where left and right are the minimum and maximum x
    * values, top and bottom are the minimum and maximum y values, and near and far
    * are the minimum and maximum z values. If no parameters are given, the default
-   * is used: ortho(-width/2, width/2, -height/2, height/2).
+   * is used: <b>ortho(-width/2, width/2, -height/2, height/2)</b>.
    *
    *
    * @webref lights_camera:camera
    * @webBrief Sets an orthographic projection and defines a parallel clipping
-   *           volume.
+   *           volume
    */
   public void ortho() {
     showMissingWarning("ortho");
@@ -6065,13 +6076,13 @@ public class PGraphics extends PImage implements PConstants {
    * accurately than orthographic projection. The version of perspective
    * without parameters sets the default perspective and the version with
    * four parameters allows the programmer to set the area precisely. The
-   * default values are: perspective(PI/3.0, width/height, cameraZ/10.0,
-   * cameraZ*10.0) where cameraZ is ((height/2.0) / tan(PI*60.0/360.0));
+   * default values are: <b>perspective(PI/3.0, width/height, cameraZ/10.0,
+   * cameraZ*10.0)</b> where cameraZ is <b>((height/2.0) / tan(PI*60.0/360.0))</b>
    *
    *
    * @webref lights_camera:camera
    * @webBrief Sets a perspective projection applying foreshortening, making distant
-   * objects appear smaller than closer ones.
+   * objects appear smaller than closer ones
    */
   public void perspective() {
     showMissingWarning("perspective");
@@ -6111,7 +6122,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:camera
-   * @webBrief Sets a perspective matrix defined through the parameters.
+   * @webBrief Sets a perspective matrix defined through the parameters
    * @param left   left coordinate of the clipping plane
    * @param right  right coordinate of the clipping plane
    * @param bottom bottom coordinate of the clipping plane
@@ -6138,7 +6149,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:camera
-   * @webBrief Prints the current projection matrix to the Console.
+   * @webBrief Prints the current projection matrix to the Console
    * @see PGraphics#camera(float, float, float, float, float, float, float, float, float)
    */
   public void printProjection() {
@@ -6160,7 +6171,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:coordinates
    * @webBrief Takes a three-dimensional X, Y, Z position and returns the X value for
-   * where it will appear on a (two-dimensional) screen.
+   * where it will appear on a (two-dimensional) screen
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @see PGraphics#screenY(float, float, float)
@@ -6180,7 +6191,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:coordinates
    * @webBrief Takes a three-dimensional X, Y, Z position and returns the Y value for
-   * where it will appear on a (two-dimensional) screen.
+   * where it will appear on a (two-dimensional) screen
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @see PGraphics#screenX(float, float, float)
@@ -6219,7 +6230,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:coordinates
    * @webBrief Takes a three-dimensional X, Y, Z position and returns the Z value for
-   * where it will appear on a (two-dimensional) screen.
+   * where it will appear on a (two-dimensional) screen
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -6243,13 +6254,13 @@ public class PGraphics extends PImage implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
    * @webref lights_camera:coordinates
-   * @webBrief Returns the three-dimensional X, Y, Z position in model space.
+   * @webBrief Returns the three-dimensional X, Y, Z position in model space
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -6273,13 +6284,13 @@ public class PGraphics extends PImage implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
    * @webref lights_camera:coordinates
-   * @webBrief Returns the three-dimensional X, Y, Z position in model space.
+   * @webBrief Returns the three-dimensional X, Y, Z position in model space
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -6303,13 +6314,13 @@ public class PGraphics extends PImage implements PConstants {
    * In the example, the <b>modelX()</b>, <b>modelY()</b>, and
    * <b>modelZ()</b> functions record the location of a box in space after
    * being placed using a series of translate and rotate commands. After
-   * popMatrix() is called, those transformations no longer apply, but the
-   * (x, y, z) coordinate returned by the model functions is used to place
+   * <b>popMatrix()</b> is called, those transformations no longer apply, but the
+   * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
    *
    * @webref lights_camera:coordinates
-   * @webBrief Returns the three-dimensional X, Y, Z position in model space.
+   * @webBrief Returns the three-dimensional X, Y, Z position in model space
    * @param x 3D x-coordinate to be mapped
    * @param y 3D y-coordinate to be mapped
    * @param z 3D z-coordinate to be mapped
@@ -6339,14 +6350,14 @@ public class PGraphics extends PImage implements PConstants {
    * <br /><br />
    * The style information controlled by the following functions are included
    * in the style:
-   * fill(), stroke(), tint(), strokeWeight(), strokeCap(), strokeJoin(),
-   * imageMode(), rectMode(), ellipseMode(), shapeMode(), colorMode(),
-   * textAlign(), textFont(), textMode(), textSize(), textLeading(),
-   * emissive(), specular(), shininess(), ambient()
+   * <b>fill()<b>, <b>stroke()</b>, <b>tint()</b>, <b>strokeWeight()</b>, <b>strokeCap()</b>,<b>strokeJoin()</b>,
+   * <b>imageMode()</b>, <b>rectMode()</b>, <b>ellipseMode()</b>, <b>shapeMode()</b>, <b>colorMode()</b>,
+   * <b>textAlign()</b>, <b>textFont()</b>, <b>textMode()</b>, <b>textSize()</b>, <b>textLeading()</b>,
+   * <b>emissive()</b>, <b>specular()</b>, <b>shininess()</b>, <b>ambient()</b>
    *
    *
    * @webref structure
-   * @webBrief Saves the current style settings and <b>popStyle()</b> restores the prior settings.
+   * @webBrief Saves the current style settings and <b>popStyle()</b> restores the prior settings
    * @see PGraphics#popStyle()
    */
   public void pushStyle() {
@@ -6536,7 +6547,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref shape:attributes
    * @webBrief Sets the width of the stroke used for lines, points, and the border
-   *           around shapes.
+   *           around shapes
    * @param weight the weight (in pixels) of the stroke
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#strokeJoin(int)
@@ -6554,7 +6565,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref shape:attributes
-   * @webBrief Sets the style of the joints which connect line segments.
+   * @webBrief Sets the style of the joints which connect line segments
    * @param join either MITER, BEVEL, ROUND
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#strokeWeight(float)
@@ -6574,7 +6585,7 @@ public class PGraphics extends PImage implements PConstants {
    * <b>strokeCap(SQUARE)</b> (no cap) causes points to become invisible.
    *
    * @webref shape:attributes
-   * @webBrief Sets the style for rendering line endings.
+   * @webBrief Sets the style for rendering line endings
    * @param cap either SQUARE, PROJECT, or ROUND
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#strokeWeight(float)
@@ -6599,7 +6610,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref color:setting
-   * @webBrief Disables drawing the stroke (outline).
+   * @webBrief Disables drawing the stroke (outline)
    * @see PGraphics#stroke(int, float)
    * @see PGraphics#fill(float, float, float, float)
    * @see PGraphics#noFill()
@@ -6633,7 +6644,7 @@ public class PGraphics extends PImage implements PConstants {
    * performance). See the hint() documentation for more details.
    *
    * @webref color:setting
-   * @webBrief Sets the color used to draw lines and borders around shapes.
+   * @webBrief Sets the color used to draw lines and borders around shapes
    * @param rgb color value in hexadecimal notation
    * @see PGraphics#noStroke()
    * @see PGraphics#strokeWeight(float)
@@ -6721,7 +6732,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref image:loading_displaying
    * @webBrief Removes the current fill value for displaying images and reverts to
-   * displaying images with their original hues.
+   * displaying images with their original hues
    * @usage web_application
    * @see PGraphics#tint(float, float, float, float)
    * @see PGraphics#image(PImage, float, float, float, float)
@@ -6758,7 +6769,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref image:loading_displaying
-   * @webBrief Sets the fill value for displaying images.
+   * @webBrief Sets the fill value for displaying images
    * @usage web_application
    * @param rgb color value in hexadecimal notation
    * @see PGraphics#noTint()
@@ -6838,7 +6849,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref color:setting
-   * @webBrief Disables filling geometry.
+   * @webBrief Disables filling geometry
    * @usage web_application
    * @see PGraphics#fill(float, float, float, float)
    * @see PGraphics#stroke(int, float)
@@ -6873,7 +6884,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref color:setting
-   * @webBrief Sets the color used to fill shapes.
+   * @webBrief Sets the color used to fill shapes
    * @usage web_application
    * @param rgb color variable or hex value
    * @see PGraphics#noFill()
@@ -6961,7 +6972,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:material_properties
-   * @webBrief Sets the ambient reflectance for shapes drawn to the screen.
+   * @webBrief Sets the ambient reflectance for shapes drawn to the screen
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#emissive(float, float, float)
@@ -7018,7 +7029,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:material_properties
    * @webBrief Sets the specular color of the materials used for shapes drawn to the
-   * screen, which sets the color of highlights.
+   * screen, which sets the color of highlights
    * @usage web_application
    * @param rgb color to set
    * @see PGraphics#lightSpecular(float, float, float)
@@ -7077,7 +7088,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:material_properties
-   * @webBrief Sets the amount of gloss in the surface of shapes.
+   * @webBrief Sets the amount of gloss in the surface of shapes
    * @usage web_application
    * @param shine degree of shininess
    * @see PGraphics#emissive(float, float, float)
@@ -7098,7 +7109,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:material_properties
    * @webBrief Sets the emissive color of the material used for drawing shapes drawn to
-   * the screen.
+   * the screen
    * @usage web_application
    * @param rgb color to set
    * @see PGraphics#ambient(float, float, float)
@@ -7158,17 +7169,17 @@ public class PGraphics extends PImage implements PConstants {
   /**
    *
    * Sets the default ambient light, directional light, falloff, and specular
-   * values. The defaults are ambientLight(128, 128, 128) and
-   * directionalLight(128, 128, 128, 0, 0, -1), lightFalloff(1, 0, 0), and
-   * lightSpecular(0, 0, 0). Lights need to be included in the draw() to
-   * remain persistent in a looping program. Placing them in the setup() of a
+   * values. The defaults are <b>ambientLight(128, 128, 128)</b> and
+   * <b>directionalLight(128, 128, 128, 0, 0, -1)</b>, <b>lightFalloff(1, 0, 0)</b>, and
+   * <b>lightSpecular(0, 0, 0)</b>. Lights need to be included in the <b>draw()</b> to
+   * remain persistent in a looping program. Placing them in the <b>setup()</b> of a
    * looping program will cause them to only have an effect the first time
    * through the loop.
    *
    *
    * @webref lights_camera:lights
    * @webBrief Sets the default ambient light, directional light, falloff, and specular
-   * values.
+   * values
    * @usage web_application
    * @see PGraphics#ambientLight(float, float, float, float, float, float)
    * @see PGraphics#directionalLight(float, float, float, float, float, float)
@@ -7189,7 +7200,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:lights
-   * @webBrief Disable all lighting.
+   * @webBrief Disable all lighting
    * @usage web_application
    * @see PGraphics#lights()
    */
@@ -7210,7 +7221,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:lights
-   * @webBrief Adds an ambient light.
+   * @webBrief Adds an ambient light
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -7251,7 +7262,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:lights
-   * @webBrief Adds a directional light.
+   * @webBrief Adds a directional light
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -7280,7 +7291,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:lights
-   * @webBrief Adds a point light.
+   * @webBrief Adds a point light
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -7313,7 +7324,7 @@ public class PGraphics extends PImage implements PConstants {
    * that cone.
    *
    * @webref lights_camera:lights
-   * @webBrief Adds a spot light.
+   * @webBrief Adds a spot light
    * @usage web_application
    * @param v1            red or hue value (depending on current color mode)
    * @param v2            green or saturation value (depending on current color
@@ -7360,7 +7371,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref lights_camera:lights
    * @webBrief Sets the falloff rates for point lights, spot lights, and ambient
-   *           lights.
+   *           lights
    * @usage web_application
    * @param constant  constant value or determining falloff
    * @param linear    linear value for determining falloff
@@ -7388,7 +7399,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref lights_camera:lights
-   * @webBrief Sets the specular color for lights.
+   * @webBrief Sets the specular color for lights
    * @usage web_application
    * @param v1 red or hue value (depending on current color mode)
    * @param v2 green or saturation value (depending on current color mode)
@@ -7445,7 +7456,7 @@ public class PGraphics extends PImage implements PConstants {
    * </p>
    *
    * @webref color:setting
-   * @webBrief Sets the color used for the background of the Processing window.
+   * @webBrief Sets the color used for the background of the Processing window
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#stroke(float)
@@ -7541,7 +7552,7 @@ public class PGraphics extends PImage implements PConstants {
    * 100% transparent.
    *
    * @webref color:setting
-   * @webBrief Clears the pixels within a buffer.
+   * @webBrief Clears the pixels within a buffer
    */
   public void clear() {
     background(0, 0, 0, 0);
@@ -7647,7 +7658,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref color:setting
-   * @webBrief Changes the way Processing interprets color data.
+   * @webBrief Changes the way Processing interprets color data
    * @usage web_application
    * @param mode Either RGB or HSB, corresponding to Red/Green/Blue and
    *             Hue/Saturation/Brightness
@@ -7984,7 +7995,7 @@ public class PGraphics extends PImage implements PConstants {
    * Extracts the alpha value from a color.
    *
    * @webref color:creating_reading
-   * @webBrief Extracts the alpha value from a color.
+   * @webBrief Extracts the alpha value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -8023,7 +8034,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref color:creating_reading
    * @webBrief Extracts the red value from a color, scaled to match current
-   *           <b>colorMode()</b>.
+   *           <b>colorMode()</b>
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#green(int)
@@ -8063,7 +8074,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref color:creating_reading
    * @webBrief Extracts the green value from a color, scaled to match current
-   *           <b>colorMode()</b>.
+   *           <b>colorMode()</b>
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -8103,7 +8114,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * @webref color:creating_reading
    * @webBrief Extracts the blue value from a color, scaled to match current
-   *           <b>colorMode()</b>.
+   *           <b>colorMode()</b>
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -8126,7 +8137,7 @@ public class PGraphics extends PImage implements PConstants {
    * Extracts the hue value from a color.
    *
    * @webref color:creating_reading
-   * @webBrief Extracts the hue value from a color.
+   * @webBrief Extracts the hue value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -8151,7 +8162,7 @@ public class PGraphics extends PImage implements PConstants {
    * Extracts the saturation value from a color.
    *
    * @webref color:creating_reading
-   * @webBrief Extracts the saturation value from a color.
+   * @webBrief Extracts the saturation value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -8177,7 +8188,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    *
    * @webref color:creating_reading
-   * @webBrief Extracts the brightness value from a color.
+   * @webBrief Extracts the brightness value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
    * @see PGraphics#red(int)
@@ -8212,14 +8223,14 @@ public class PGraphics extends PImage implements PConstants {
    * equal to the first point, 0.1 is very near the first point, 0.5 is halfway in
    * between, etc. <br />
    * An amount below 0 will be treated as 0. Likewise, amounts above 1 will be
-   * capped at 1. This is different from the behavior of lerp(), but necessary
+   * capped at 1. This is different from the behavior of <b>lerp()</b>, but necessary
    * because otherwise numbers outside the range will produce strange and
    * unexpected colors.
    *
    *
    * @webref color:creating_reading
-   * @webBrief Calculates a color or colors between two color at a specific
-   *           increment.
+   * @webBrief Calculates a <b>color</b> or <b>colors</b> between two <b>colors</b> at a specific
+   *           increment
    * @usage web_application
    * @param c1  interpolate from this color
    * @param c2  interpolate to this color

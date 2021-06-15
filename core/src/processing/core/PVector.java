@@ -62,7 +62,7 @@ import java.io.Serializable;
  * <a href="http://www.shiffman.net">Dan Shiffman</a>.
  *
  * @webref math
- * @webBrief A class to describe a two or three dimensional vector.
+ * @webBrief A class to describe a two or three dimensional vector
  */
 public class PVector implements Serializable {
   /**
@@ -138,7 +138,7 @@ public class PVector implements Serializable {
   /**
    *
    * Sets the x, y, and z component of the vector using two or three separate
-   * variables, the data from a PVector, or the values from a float array.
+   * variables, the data from a <b>PVector</b>, or the values from a float array.
    *
    *
    * @webref pvector:method
@@ -205,7 +205,7 @@ public class PVector implements Serializable {
    * @webref pvector:method
    * @usage web_application
    * @return the random PVector
-   * @webBrief Make a new 2D unit vector with a random direction.
+   * @webBrief Make a new 2D unit vector with a random direction
    * @see PVector#random3D()
    */
   static public PVector random2D() {
@@ -255,7 +255,7 @@ public class PVector implements Serializable {
    * @webref pvector:method
    * @usage web_application
    * @return the random PVector
-   * @webBrief Make a new 3D unit vector with a random direction.
+   * @webBrief Make a new 3D unit vector with a random direction
    * @see PVector#random2D()
    */
   static public PVector random3D() {
@@ -345,7 +345,7 @@ public class PVector implements Serializable {
 
   /**
    *
-   * Copies the components of the vector and returns the result as a PVector. 
+   * Copies the components of the vector and returns the result as a <b>PVector</b>.
    *
    *
    * @webref pvector:method
@@ -420,7 +420,7 @@ public class PVector implements Serializable {
    *
    * Adds x, y, and z components to a vector, adds one vector to another, or adds
    * two independent vectors together. The version of the method that adds two
-   * vectors together is a static method and returns a new PVector, the others act
+   * vectors together is a static method and returns a new <b>PVector</b>, the others act
    * directly on the vector itself. See the examples for more context.
    *
    *
@@ -488,7 +488,7 @@ public class PVector implements Serializable {
    *
    * Subtracts x, y, and z components from a vector, subtracts one vector from
    * another, or subtracts two independent vectors. The version of the method that
-   * substracts two vectors is a static method and returns a PVector, the others
+   * substracts two vectors is a static method and returns a <b>PVector</b>, the others
    * act directly on the vector. See the examples for more context. In all cases,
    * the second vector (v2) is subtracted from the first (v1), resulting in v1-v2.
    *
@@ -557,8 +557,8 @@ public class PVector implements Serializable {
    *
    * Multiplies a vector by a scalar. The version of the method that uses a float
    * acts directly on the vector upon which it is called (as in the first example
-   * above). The versions that receive both a PVector and a float as arguments are
-   * static methods, and each returns a new PVector that is the result of the
+   * above). The versions that receive both a <b>PVector</b> and a float as arguments are
+   * static methods, and each returns a new <b>PVector</b> that is the result of the
    * multiplication operation. Both examples above produce the same visual output.
    *
    *
@@ -601,8 +601,8 @@ public class PVector implements Serializable {
    *
    * Divides a vector by a scalar. The version of the method that uses a float
    * acts directly on the vector upon which it is called (as in the first example
-   * above). The version that receives both a PVector and a float as arguments is
-   * a static methods, and returns a new PVector that is the result of the
+   * above). The version that receives both a <b>PVector</b> and a <b>float</b> as arguments is
+   * a static methods, and returns a new <b>PVector</b> that is the result of the
    * division operation. Both examples above produce the same visual output.
    *
    * @webref pvector:method
@@ -868,6 +868,14 @@ public class PVector implements Serializable {
   }
 
 
+  public PVector setHeading(float angle) {
+    float m = mag();
+    x = (float) (m * Math.cos(angle));
+    y = (float) (m * Math.sin(angle));
+    return this;
+  }
+
+
   /**
    *
    * Rotate the vector by an angle (only 2D vectors), magnitude remains the same
@@ -898,7 +906,7 @@ public class PVector implements Serializable {
    * static version is used by referencing the PVector class directly. (See the
    * middle example above.) The non-static versions, <b>lerp(v, amt)</b> and
    * <b>lerp(x, y, z, amt)</b>, do not create a new PVector, but transform the
-   * values of the PVector on which they are called. These non-static versions
+   * values of the <b>PVector</b> on which they are called. These non-static versions
    * perform the same operation, but the former takes another vector as input,
    * while the latter takes three float values. (See the top and bottom examples
    * above, respectively.)

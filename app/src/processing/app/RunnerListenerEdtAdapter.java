@@ -10,6 +10,11 @@ public class RunnerListenerEdtAdapter implements RunnerListener {
     this.wrapped = wrapped;
   }
 
+  /** Need the original object so we can see if it's a JavaEditor */
+  public RunnerListener getWrapped() {
+    return wrapped;
+  }
+
   @Override
   public void statusError(String message) {
     EventQueue.invokeLater(() -> wrapped.statusError(message));

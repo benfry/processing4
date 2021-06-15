@@ -96,7 +96,7 @@ import processing.core.PApplet;
  * @author JSON.org
  * @version 2012-11-13
  * @webref data:composite
- * @webBrief A JSONArray is an ordered sequence of values.
+ * @webBrief A JSONArray is an ordered sequence of values
  * @see JSONObject
  * @see PApplet#loadJSONObject(String)
  * @see PApplet#loadJSONArray(String)
@@ -279,7 +279,7 @@ public class JSONArray {
 
 
   /**
-   * Gets the String value associated with the specified index.
+   * Gets the <b>String</b> value associated with the specified index.
    *
    * @webref jsonarray:method
    * @webBrief Gets the String value associated with an index
@@ -317,7 +317,7 @@ public class JSONArray {
    * Gets the int value associated with the specified index.
    *
    * @webref jsonarray:method
-   * @webBrief Gets the int value associated with the specified index.
+   * @webBrief Gets the int value associated with the specified index
    * @param index must be between 0 and length() - 1
    * @return The value.
    * @throws RuntimeException If the key is not found or if the value is not a number.
@@ -395,7 +395,7 @@ public class JSONArray {
    * Gets the float value associated with the specified index.
    *
    * @webref jsonarray:method
-   * @webBrief Gets the float value associated with the specified index.
+   * @webBrief Gets the float value associated with the specified index
    * @param index must be between 0 and length() - 1
    * @see JSONArray#getInt(int)
    * @see JSONArray#getString(int)
@@ -457,7 +457,7 @@ public class JSONArray {
    * Gets the boolean value associated with the specified index.
    *
    * @webref jsonarray:method
-   * @webBrief Gets the boolean value associated with the specified index.
+   * @webBrief Gets the boolean value associated with the specified index
    * @param index must be between 0 and length() - 1
    * @return      The truth.
    * @throws RuntimeException If there is no value for the index or if the
@@ -503,7 +503,7 @@ public class JSONArray {
    * Retrieves the <b>JSONArray</b> with the associated index value.
    *
    * @webref jsonobject:method
-   * @webBrief Retrieves the <b>JSONArray</b> with the associated index value.
+   * @webBrief Retrieves the <b>JSONArray</b> with the associated index value
    * @param index must be between 0 and length() - 1
    * @return A JSONArray value.
    * @throws RuntimeException If there is no value for the index. or if the
@@ -534,7 +534,7 @@ public class JSONArray {
    * Retrieves the <b>JSONObject</b> with the associated index value.
    *
    * @webref jsonobject:method
-   * @webBrief Retrieves the <b>JSONObject</b> with the associated index value.
+   * @webBrief Retrieves the <b>JSONObject</b> with the associated index value
    * @param index the index value of the object to get
    * @return A JSONObject value.
    * @throws RuntimeException If there is no value for the index or if the
@@ -562,11 +562,11 @@ public class JSONArray {
 
 
   /**
-   * Returns the entire <b>JSONArray</b> as an array of Strings.  
-   * (All values in the array must be of the String type.)
+   * Returns the entire <b>JSONArray</b> as an array of <b>Strings</b>.  
+   * (All values in the array must be of the <b>String</b> type.)
    *
    * @webref jsonarray:method
-   * @webBrief Returns the entire <b>JSONArray</b> as an array of Strings
+   * @webBrief Returns the entire <b>JSONArray</b> as an array of <b>Strings</b>
    * @see JSONArray#getIntArray()
    */
   public String[] getStringArray() {
@@ -579,11 +579,11 @@ public class JSONArray {
 
 
   /**
-   * Returns the entire <b>JSONArray</b> as an array of ints.  
+   * Returns the entire <b>JSONArray</b> as an array of <b>ints</b>.  
    * (All values in the array must be of the int type.)
    *
    * @webref jsonarray:method
-   * @webBrief Returns the entire <b>JSONArray</b> as an array of ints
+   * @webBrief Returns the entire <b>JSONArray</b> as an array of <b>ints</b>
    * @see JSONArray#getStringArray()
    */
   public int[] getIntArray() {
@@ -702,8 +702,8 @@ public class JSONArray {
 
   /**
    * Appends a new value to the <b>JSONArray</b>, increasing the array's length 
-   * by one. New values may be of the following types: int, float, String, 
-   * boolean, <b>JSONObject</b>, or <b>JSONArray</b>.
+   * by one. New values may be of the following types: <b>int</b>, <b>float</b>, <b>String</b>, 
+   * <b>boolean</b>, <b>JSONObject</b>, or <b>JSONArray</b>.
    *
    * @webref jsonarray:method
    * @webBrief Appends a value, increasing the array's length by one
@@ -862,7 +862,7 @@ public class JSONArray {
    * necessary to pad it out.
    *
    * @webref jsonarray:method
-   * @webBrief Inserts a new value into the <b>JSONArray</b> at the specified index position. 
+   * @webBrief Inserts a new value into the <b>JSONArray</b> at the specified index position
    * @param index an index value
    * @param value the value to assign
    * @return this.
@@ -1080,7 +1080,7 @@ public class JSONArray {
 
   /**
    * Removes the element from a <b>JSONArray</b> in the specified index position. 
-   * Returns either the value associated with the given index, or null, if there 
+   * Returns either the value associated with the given index, or <b>null</b>, if there 
    * is no value.
    *
    * @webref jsonarray:method

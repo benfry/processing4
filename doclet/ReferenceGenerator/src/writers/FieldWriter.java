@@ -22,16 +22,22 @@ public class FieldWriter extends BaseWriter {
 	
 	public static void write(HashMap<String, String> vars, FieldDoc doc, String classname) throws IOException
 	{
-		String filename = getAnchor(doc);
 		TemplateWriter templateWriter = new TemplateWriter();
 
 		JSONObject fieldJSON = new JSONObject();
 
+		String fieldName;
+		if (getName(doc).contains("[]"))  {
+			fieldName = getName(doc).replace("[]", "");
+		} else {
+			fieldName = getName(doc);
+		}
+
 		String fileName;
 		if (classname != "") {
-			fileName = jsonDir + classname + "_" + getName(doc) + ".json";
+			fileName = jsonDir + classname + "_" + fieldName + ".json";
 		} else {
-			fileName = jsonDir + getName(doc) + ".json";
+			fileName = jsonDir + fieldName + ".json";
 		}
 
 		Tag[] tags = doc.tags(Shared.i().getWebrefTagName());
@@ -40,7 +46,6 @@ public class FieldWriter extends BaseWriter {
 
 		try
 		{
-			fieldJSON.put("type", "field");
 			fieldJSON.put("description", getWebDescriptionFromSource(doc));
 			fieldJSON.put("brief", getWebBriefFromSource(doc));
 			fieldJSON.put("category", category);
@@ -49,8 +54,9 @@ public class FieldWriter extends BaseWriter {
 			fieldJSON.put("related", getRelated(doc));
 		
 			if(Shared.i().isRootLevel(doc.containingClass())){
-				fieldJSON.put("classname", "");
+				fieldJSON.put("type", "other");
 			} else {
+				fieldJSON.put("type", "field");
 				fieldJSON.put("classanchor", getLocalAnchor(doc.containingClass()));
 				fieldJSON.put("parameters", getParentParam(doc));		
 				String syntax = templateWriter.writePartial("field.syntax.partial", getSyntax(doc));
