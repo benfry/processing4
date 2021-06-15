@@ -1,41 +1,4 @@
-1273 (4.0a4)
-X fix typo in extensions= arg
-X update batik to 1.14
-X   https://github.com/processing/processing4/issues/179
-X   https://github.com/processing/processing4/issues/192
-X update the batik url
-X   https://github.com/processing/processing4/pull/183
-X calling unregisterMethod() on dispose from dispose() means concurrent mod
-o   https://github.com/processing/processing4/pull/199
-X   modernized the code a bit, checked in a version that queues to avoid list issue
-X Make parseJSONObject/Array return null when parsing fails
-X   https://github.com/processing/processing4/issues/165
-X   https://github.com/processing/processing4/pull/166
-X "textMode(SHAPE) is not supported by this renderer" message
-X   https://github.com/processing/processing4/issues/202
-X   formerly https://github.com/processing/processing/issues/6169
-X add PVector.setHeading() for parity with p5.js
-X   https://github.com/processing/processing4/issues/193
-o .setAngle() for PVector?
-X   https://github.com/processing/processing-docs/issues/744
-o Math for BLEND incorrect in the reference?
-o   https://github.com/processing/processing-docs/issues/762
-o How much of the attrib*() functions should be documented?
-o   https://github.com/processing/processing-docs/issues/172
-
-get less ambitious with PImage
-X cursor(PImage) broken everywhere because PImage.getNative() returns null
-X   https://github.com/processing/processing4/issues/180
-X PImage.resize() not working
-X   https://github.com/processing/processing4/issues/200
-X   two simple examples added to the issue that can be used for tests
-X copy() not working correctly
-X   https://github.com/processing/processing4/issues/169
-
-false alarm
-X setting which display to use does not work
-X   https://github.com/processing/processing4/issues/187
-X   working, though display numbers might be weird
+1274 (4.0a5)
 
 
 regressions

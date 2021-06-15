@@ -1,3 +1,57 @@
+1273 (4.0a4)
+X “An error occurred while starting the application” with 4.0a3 on Windows
+X   replace about.bmp that was causing processing.exe to crash on startup
+X   https://github.com/processing/processing4/issues/156
+X update to JDK 11.0.10
+X update from JNA 5.2.0 to 5.7.0
+X   was having trouble with "java.lang.UnsatisfiedLinkError: Unable to load library 'CoreServices': Native library (darwin/libCoreServices.dylib) not found in resource path"
+X   https://github.com/fathominfo/processing-p5js-mode/issues/26
+X implement auto-download for JNA updates
+X “Exception in thread "Contribution Uninstaller" NullPointerException” during Remove
+X   https://github.com/processing/processing4/issues/174
+X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
+X   https://github.com/processing/processing4/issues/159
+X   https://github.com/processing/processing/issues/6185
+X need to set a nicer default font
+X   increases export size, but impact is so worth it
+X Update JDK to 11.0.11+9
+X modernize the RegisteredMethods code to use collections classes w/ concurrency
+X   https://github.com/processing/processing4/pull/199
+X don't sort user's charset array when calling createFont()
+X   https://github.com/processing/processing4/issues/197
+X   https://github.com/processing/processing4/pull/198
+X automatically lock closed issues
+X   https://github.com/apps/lock
+X   https://github.com/dessant/lock-threads-app
+X Display Window doesn't remember its position
+X   seems that --external not getting passed
+X   https://github.com/processing/processing4/issues/158
+X   https://github.com/processing/processing/issues/5843
+X   https://github.com/processing/processing/issues/5781
+X store -1 as display number when using the default
+X   ran into weird situation where '1' was renumbered by adding a screen
+X   so the default was now the external display
+X a little modernizing/cleanup in Base, converting things to lambda functions
+X editor windows always open on display 1
+X   https://github.com/processing/processing/issues/1566
+X   rewrote EditorState to better handle devices and clean it up
+
+earlier
+o further streamline the downloader
+o   https://github.com/processing/processing4/issues/47
+o next video release
+o   https://github.com/processing/processing-video/milestone/1
+
+contribs
+X many updates in the docs portion of the repo
+X   https://github.com/processing/processing4/pull/191
+X fixing undo
+X   https://github.com/processing/processing4/pull/175
+X tweak the number of updates based on Akarshit's attempt
+X   https://github.com/processing/processing4/issues/201
+X   https://github.com/processing/processing/pull/4097
+
+
 1272 (4.0a3)
 X 'ant source-jar' target added to core
 X   https://github.com/processing/processing4/issues/118
