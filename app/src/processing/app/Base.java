@@ -107,53 +107,49 @@ public class Base {
 
 
   static public void main(final String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-        public void run() {
-          try {
-            createAndShowGUI(args);
+    EventQueue.invokeLater(() -> {
+      try {
+        createAndShowGUI(args);
 
-          } catch (Throwable t) {
-            // Windows Defender has been insisting on destroying each new
-            // release by removing core.jar and other files. Yay!
-            // https://github.com/processing/processing/issues/5537
-            if (Platform.isWindows()) {
-              String mess = t.getMessage();
-              String missing = null;
-              if (mess.contains("Could not initialize class com.sun.jna.Native")) {
-                missing = "jnidispatch.dll";
-              } else if (mess.contains("NoClassDefFoundError: processing/core/PApplet")) {
-                missing = "core.jar";
-              }
-              if (missing != null) {
-                Messages.showError("Necessary files are missing",
-                                   "A file required by Processing (" + missing + ") is missing.\n\n" +
-                                   "Make sure that you're not trying to run Processing from inside\n" +
-                                   "the .zip file you downloaded, and check that Windows Defender\n" +
-                                   "hasn't removed files from the Processing folder.\n\n" +
-                                   "(It sometimes flags parts of Processing as a trojan or virus.\n" +
-                                   "It is neither, but Microsoft has ignored our pleas for help.)", t);
-              }
-            }
-            Messages.showTrace("Unknown Problem",
-                               "A serious error happened during startup. Please report:\n" +
-                               "http://github.com/processing/processing/issues/new", t, true);
+      } catch (Throwable t) {
+        // Windows Defender has been insisting on destroying each new
+        // release by removing core.jar and other files. Yay!
+        // https://github.com/processing/processing/issues/5537
+        if (Platform.isWindows()) {
+          String mess = t.getMessage();
+          String missing = null;
+          if (mess.contains("Could not initialize class com.sun.jna.Native")) {
+            missing = "jnidispatch.dll";
+          } else if (mess.contains("NoClassDefFoundError: processing/core/PApplet")) {
+            missing = "core.jar";
+          }
+          if (missing != null) {
+            Messages.showError("Necessary files are missing",
+                               "A file required by Processing (" + missing + ") is missing.\n\n" +
+                               "Make sure that you're not trying to run Processing from inside\n" +
+                               "the .zip file you downloaded, and check that Windows Defender\n" +
+                               "hasn't removed files from the Processing folder.\n\n" +
+                               "(It sometimes flags parts of Processing as a trojan or virus.\n" +
+                               "It is neither, but Microsoft has ignored our pleas for help.)", t);
           }
         }
+        Messages.showTrace("Unknown Problem",
+                           "A serious error happened during startup. Please report:\n" +
+                           "http://github.com/processing/processing/issues/new", t, true);
+      }
     });
   }
 
 
   static private void createAndShowGUI(String[] args) {
-    try {
-      File versionFile = Platform.getContentFile("lib/version.txt");
-      if (versionFile.exists()) {
-        String version = PApplet.loadStrings(versionFile)[0];
-        if (!version.equals(VERSION_NAME)) {
-          VERSION_NAME = version;
+    File versionFile = Platform.getContentFile("lib/version.txt");
+    if (versionFile != null && versionFile.exists()) {
+      String[] lines = PApplet.loadStrings(versionFile);
+      if (lines != null && lines.length > 0) {
+        if (!VERSION_NAME.equals(lines[0])) {
+          VERSION_NAME = lines[0];
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
     }
 
     Platform.init();
