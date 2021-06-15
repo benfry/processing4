@@ -11,6 +11,7 @@ X “Exception in thread "Contribution Uninstaller" NullPointerException” duri
 X   https://github.com/processing/processing4/issues/174
 X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
 X   https://github.com/processing/processing4/issues/159
+_   https://github.com/processing/processing/issues/6185
 X need to set a nicer default font
 X   increases export size, but impact is so worth it
 X Update JDK to 11.0.11+9
@@ -53,6 +54,9 @@ _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
 _   https://github.com/processing/processing/issues/4214
 
+_ exporting on Linux is setting the wrong path? or an extra subfolder is used?
+_   https://github.com/processing/processing/issues/6182
+
 _ when lib downloads (batik) go dead, fallback to the download.processing.org version
 _   or for now, tell users how to do it manually
 
@@ -70,6 +74,8 @@ _   i.e. all the things that rely on preferences can be inited separately (later
 _ include JNA so that sketches can also scale properly?
 _   what happens re: getting scaled/high-res graphics?
 _   make that a preference? (and double the size by default?)
+_ pixelDensity() not working in exported Windows applications
+_   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 
 already fixed in 4.x? (confirm/close on release)
 _ HDPI support GNOME desktop
@@ -117,6 +123,8 @@ _   https://github.com/processing/processing4/issues/157
 
 
 would like to fix
+_ better command line support/basic language server support?
+_   make it easier to use with other editors
 _ detach sketch name and folder name (use sketch.properties)
 _   better for git, etc
 _   single file thing is long gone

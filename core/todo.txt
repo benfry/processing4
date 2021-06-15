@@ -11,6 +11,14 @@ X   modernized the code a bit, checked in a version that queues to avoid list is
 X Make parseJSONObject/Array return null when parsing fails
 X   https://github.com/processing/processing4/issues/165
 X   https://github.com/processing/processing4/pull/166
+X "textMode(SHAPE) is not supported by this renderer" message
+X   https://github.com/processing/processing4/issues/202
+X   formerly https://github.com/processing/processing/issues/6169
+
+may be fixed
+_ Profile GL4bc is not available on X11GraphicsDevice
+_   https://github.com/processing/processing/issues/6160
+_   https://github.com/processing/processing/issues/6154
 
 
 regressions
