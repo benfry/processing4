@@ -16,27 +16,29 @@ X   https://github.com/processing/processing4/issues/202
 X   formerly https://github.com/processing/processing/issues/6169
 X add PVector.setHeading() for parity with p5.js
 X   https://github.com/processing/processing4/issues/193
-X .setAngle() for PVector?
+o .setAngle() for PVector?
 X   https://github.com/processing/processing-docs/issues/744
 o Math for BLEND incorrect in the reference?
 o   https://github.com/processing/processing-docs/issues/762
 o How much of the attrib*() functions should be documented?
 o   https://github.com/processing/processing-docs/issues/172
 
+get less ambitious with PImage
+X cursor(PImage) broken everywhere because PImage.getNative() returns null
+X   https://github.com/processing/processing4/issues/180
+X PImage.resize() not working
+X   https://github.com/processing/processing4/issues/200
+X   two simple examples added to the issue that can be used for tests
+X copy() not working correctly
+X   https://github.com/processing/processing4/issues/169
+
 
 regressions
 _ (unconfirmed) setting which display to use does not work
 _   https://github.com/processing/processing4/issues/187
-_ cursor(PImage) broken everywhere because PImage.getNative() returns null
-_   https://github.com/processing/processing4/issues/180
-_ PImage.resize() not working
-_   https://github.com/processing/processing4/issues/200
-_   two simple examples added to the issue that can be used for tests
 _ mouseButton not set correctly on mouseReleased() with Java2D
 _   https://github.com/processing/processing4/issues/181
 _   https://github.com/processing/processing4/pull/188
-_ copy() not working correctly
-_   https://github.com/processing/processing4/issues/169
 
 
 _ setting surface size needs to happen outside draw()

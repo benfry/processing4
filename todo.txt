@@ -22,6 +22,7 @@ X   https://github.com/processing/processing4/issues/197
 X   https://github.com/processing/processing4/pull/198
 X automatically lock closed issues
 X   https://github.com/apps/lock
+X   https://github.com/dessant/lock-threads-app
 X Display Window doesn't remember its position
 X   seems that --external not getting passed
 X   https://github.com/processing/processing4/issues/158
@@ -112,6 +113,9 @@ _ Some 3.x Tools not working because JavaFX isn't on the classpath
 _   https://github.com/processing/processing4/issues/110
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
+_ add language support to Modes (request from Andres)
+_   https://github.com/processing/processing4/pull/14
+_   this was a small change; rebase not really needed since needs rewrite anyway
 
 
 discuss with Sam
@@ -132,15 +136,12 @@ _ launch/psk files/import from web editor (more details below)
 _ ability to switch mode in p5 w/o saving/closing/etc
 _   trying to save the user from themselves here is just messier than needed
 _   https://github.com/processing/processing4/issues/189
-_ 'show sketch folder' weird when in temp folder
-_   ask to save first (sketch has not been saved yet)
-_   or make the temp folder part of the sketchbook
-_ same with adding files to an unsaved sketch, do we block that?
-
-
-_ add language support to Modes (request from Andres)
-_   https://github.com/processing/processing4/pull/14
-_   this was a small change; rebase not really needed since needs rewrite anyway
+_ cleaning up the temp file handling
+_   'show sketch folder' weird when in temp folder
+_     ask to save first (sketch has not been saved yet)
+_     or make the temp folder part of the sketchbook
+_   same with adding files to an unsaved sketch, do we block that?
+_ remove code.google.com URLs with Github URLs (numbers are in sync)
 
 
 macos
