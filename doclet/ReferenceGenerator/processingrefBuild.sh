@@ -11,20 +11,13 @@ REFERENCES_OUT_PATH=../../../processing-website/content/references/translations/
 echo "[REFERENCE GENERATOR] Source Path :: $PROCESSING_SRC_PATH"
 echo "[REFERENCE GENERATOR] Library Path :: $PROCESSING_LIB_PATH"
 
-# You can pass one argument "sound" or "video" to generate those libraries separately
+# You can pass one argument "sound" or "video" (without the "") to generate those libraries separately
+# or "processing" to generate the core without the sound and video libraries
 # if there is no argument it will generate everything
 if [ $# -eq 0 ]
   then
     echo "No arguments supplied, generating everything"
     echo "[REFERENCE GENERATOR] Removing previous version of the ref..."
-	  rm -rf $REFERENCES_OUT_PATH
-	  mkdir $REFERENCES_OUT_PATH
-	  mkdir $REFERENCES_OUT_PATH/processing
-	  mkdir $REFERENCES_OUT_PATH/io
-	  mkdir $REFERENCES_OUT_PATH/net
-	  mkdir $REFERENCES_OUT_PATH/serial
-	  mkdir $REFERENCES_OUT_PATH/sound
-	  mkdir $REFERENCES_OUT_PATH/video
     FOLDERS="$PROCESSING_SRC_PATH/processing/core/*.java \
     			$PROCESSING_SRC_PATH/processing/data/*.java \
     			$PROCESSING_SRC_PATH/processing/event/*.java \
@@ -38,14 +31,6 @@ if [ $# -eq 0 ]
   then
     echo "Generating processing references"
     echo "[REFERENCE GENERATOR] Removing previous version of the ref..."
-    rm -rf $REFERENCES_OUT_PATH/processing
-    rm -rf $REFERENCES_OUT_PATH/io
-    rm -rf $REFERENCES_OUT_PATH/net
-    rm -rf $REFERENCES_OUT_PATH/serial
-    mkdir $REFERENCES_OUT_PATH/processing
-    mkdir $REFERENCES_OUT_PATH/io
-    mkdir $REFERENCES_OUT_PATH/net
-    mkdir $REFERENCES_OUT_PATH/serial
     FOLDERS="$PROCESSING_SRC_PATH/processing/core/*.java \
           $PROCESSING_SRC_PATH/processing/data/*.java \
           $PROCESSING_SRC_PATH/processing/event/*.java \
@@ -56,8 +41,6 @@ if [ $# -eq 0 ]
   else
   	echo "Generating $1 library"
   	echo "[REFERENCE GENERATOR] Removing previous version of the ref..."
-  	rm -rf $REFERENCES_OUT_PATH/$1
-  	mkdir $REFERENCES_OUT_PATH/$1
   	FOLDERS="$PROCESSING_LIB_PATH/../../../processing-$1/src/processing/$1/*.java"
 fi
 
