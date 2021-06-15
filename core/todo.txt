@@ -32,10 +32,13 @@ X   two simple examples added to the issue that can be used for tests
 X copy() not working correctly
 X   https://github.com/processing/processing4/issues/169
 
+false alarm
+X setting which display to use does not work
+X   https://github.com/processing/processing4/issues/187
+X   working, though display numbers might be weird
+
 
 regressions
-_ (unconfirmed) setting which display to use does not work
-_   https://github.com/processing/processing4/issues/187
 _ mouseButton not set correctly on mouseReleased() with Java2D
 _   https://github.com/processing/processing4/issues/181
 _   https://github.com/processing/processing4/pull/188
@@ -62,8 +65,6 @@ X   https://github.com/processing/processing/issues/5880
 X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
 X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
 _   https://github.com/processing/processing/issues/5983
-_ Profile GL3bc is not available on X11GraphicsDevice
-_   https://github.com/processing/processing/issues/5476
 X Cannot run rotateZ() within the PShape class
 _   https://github.com/processing/processing/issues/5770
 _ Profile GL4bc is not available on X11GraphicsDevice

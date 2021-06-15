@@ -77,6 +77,7 @@ public class PreferencesFrame {
   JComboBox<String> languageSelectionBox;
 
   int displayCount;
+  int defaultDisplayNum;
 
   String[] monoFontFamilies;
   JComboBox<String> fontSelectionBox;
@@ -620,13 +621,19 @@ public class PreferencesFrame {
     // The preference will have already been reset when the window was created
     if (displaySelectionBox.isEnabled()) {
       int oldDisplayNum = Preferences.getInteger("run.display");
-      int displayNum = -1;
+      int displayNum = -1;  // use the default display
       for (int d = 0; d < displaySelectionBox.getItemCount(); d++) {
         if (displaySelectionBox.getSelectedIndex() == d) {
-          displayNum = d + 1;
+          if (d == defaultDisplayNum-1) {
+            // if it's the default display, store -1 instead of its index,
+            // because displays can get renumbered when others are attached
+            displayNum = -1;
+          } else {
+            displayNum = d + 1;
+          }
         }
       }
-      if ((displayNum != -1) && (displayNum != oldDisplayNum)) {
+      if (displayNum != oldDisplayNum) {
         Preferences.setInteger("run.display", displayNum); //$NON-NLS-1$
         // Reset the location of the sketch, the window has changed
         for (Editor editor : base.getEditors()) {
@@ -719,12 +726,12 @@ public class PreferencesFrame {
     sketchbookLocationField.setText(Preferences.getSketchbookPath());
     checkUpdatesBox.setSelected(Preferences.getBoolean("update.check")); //$NON-NLS-1$
 
-    int defaultDisplayNum = updateDisplayList();
+    defaultDisplayNum = updateDisplayList();
     int displayNum = Preferences.getInteger("run.display"); //$NON-NLS-1$
-    //if (displayNum > 0 && displayNum <= displayCount) {
     if (displayNum < 1 || displayNum > displayCount) {
+      // set the display on close instead; too much weird logic here
+      //Preferences.setInteger("run.display", displayNum);
       displayNum = defaultDisplayNum;
-      Preferences.setInteger("run.display", displayNum);
     }
     displaySelectionBox.setSelectedIndex(displayNum-1);
 
