@@ -35,6 +35,8 @@ public class MethodWriter extends BaseWriter {
 		String category = getCategory(tags[0]);
 		String subcategory = getSubcategory(tags[0]);
 
+		if (!classname.equals("PGraphics") || getName(doc).equals("beginDraw()") || getName(doc).equals("endDraw()")) {
+
 		try
 			{
 				methodJSON.put("type", "method");
@@ -71,6 +73,8 @@ public class MethodWriter extends BaseWriter {
          	file.close();
       	} catch (IOException e) {
          	e.printStackTrace();
+      	}
+
       	}
 	}
 	
