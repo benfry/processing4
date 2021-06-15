@@ -269,40 +269,30 @@ public class Base {
   // https://github.com/processing/processing/issues/4997
   static private void checkDriverBug() {
     if (System.getProperty("os.name").contains("Windows 10")) {
-      new Thread(new Runnable() {
-        public void run() {
-          try {
-            Process p = Runtime.getRuntime().exec("powershell Get-WmiObject Win32_PnPSignedDriver| select devicename, driverversion | where {$_.devicename -like \\\"*nvidia*\\\"}");
-            BufferedReader reader = PApplet.createReader(p.getInputStream());
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-              if (line.contains("3.7849")) {
-                EventQueue.invokeLater(new Runnable() {
-                  public void run() {
-                    Messages.showWarning("NVIDIA screwed up",
-                                         "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                         "otherwise you won't be able to run any sketches. Update here:\n" +
-                                         "http://nvidia.custhelp.com/app/answers/detail/a_id/4378\n" +
-                                         "or read background about the issue at this link:\n" +
-                                         "https://github.com/processing/processing/issues/4853");
-                  }
-                });
-              } else if (line.contains("3.8165")) {
-                EventQueue.invokeLater(new Runnable() {
-                  public void run() {
-                    Messages.showWarning("NVIDIA screwed up again",
-                                         "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                         "otherwise you won't be able to run any sketches. Update here:\n" +
-                                         "http://nvidia.custhelp.com/app/answers/detail/a_id/4453/\n" +
-                                         "or read background about the issue at this link:\n" +
-                                         "https://github.com/processing/processing/issues/4997");
-                  }
-                });
-              }
+      new Thread(() -> {
+        try {
+          Process p = Runtime.getRuntime().exec("powershell Get-WmiObject Win32_PnPSignedDriver| select devicename, driverversion | where {$_.devicename -like \\\"*nvidia*\\\"}");
+          BufferedReader reader = PApplet.createReader(p.getInputStream());
+          String line;
+          while ((line = reader.readLine()) != null) {
+            if (line.contains("3.7849")) {
+              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up",
+                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
+                                   "otherwise you won't be able to run any sketches. Update here:\n" +
+                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4378\n" +
+                                   "or read background about the issue at this link:\n" +
+                                   "https://github.com/processing/processing/issues/4853"));
+            } else if (line.contains("3.8165")) {
+              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up again",
+                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
+                                   "otherwise you won't be able to run any sketches. Update here:\n" +
+                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4453/\n" +
+                                   "or read background about the issue at this link:\n" +
+                                   "https://github.com/processing/processing/issues/4997"));
             }
-          } catch (Exception e) {
-            Messages.loge("Problem checking NVIDIA driver", e);
           }
+        } catch (Exception e) {
+          Messages.loge("Problem checking NVIDIA driver", e);
         }
       }).start();
     }
@@ -436,36 +426,19 @@ public class Base {
     defaultFileMenu = new JMenu(Language.text("menu.file"));
 
     JMenuItem item = Toolkit.newJMenuItem(Language.text("menu.file.new"), 'N');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleNew();
-        }
-      });
+    item.addActionListener(e -> handleNew());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.open"), 'O');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleOpenPrompt();
-        }
-      });
+    item.addActionListener(e -> handleOpenPrompt());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        getNextMode().showSketchbookFrame();
-      }
-    });
+    item.addActionListener(e -> getNextMode().showSketchbookFrame());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        thinkDifferentExamples();
-      }
-    });
+    item.addActionListener(e -> thinkDifferentExamples());
     defaultFileMenu.add(item);
 
     return defaultFileMenu;
@@ -516,12 +489,9 @@ public class Base {
         if (!known.containsKey(folder)) {
           try {
             contribModes.add(new ModeContribution(this, folder, null));
-          } catch (NoSuchMethodError nsme) {
+          } catch (NoSuchMethodError | NoClassDefFoundError ne) {
             System.err.println(folder.getName() + " is not compatible with this version of Processing");
-            if (DEBUG) nsme.printStackTrace();
-          } catch (NoClassDefFoundError ncdfe) {
-            System.err.println(folder.getName() + " is not compatible with this version of Processing");
-            if (DEBUG) ncdfe.printStackTrace();
+            if (DEBUG) ne.printStackTrace();
           } catch (InvocationTargetException ite) {
             System.err.println(folder.getName() + " could not be loaded and may not compatible with this version of Processing");
             if (DEBUG) ite.printStackTrace();
@@ -837,11 +807,7 @@ public class Base {
     }
 
     JMenuItem item = new JMenuItem(Language.text("menu.tools.add_tool"));
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openTools();
-      }
-    });
+    item.addActionListener(e -> ContributionManager.openTools());
     toolsMenu.add(item);
   }
 
@@ -872,24 +838,21 @@ public class Base {
   JMenuItem createToolItem(final Tool tool) { //, Map<String, JMenuItem> toolItems) {
     String title = tool.getMenuTitle();
     final JMenuItem item = new JMenuItem(title);
-    item.addActionListener(new ActionListener() {
+    item.addActionListener(e -> {
+      try {
+        tool.run();
 
-      public void actionPerformed(ActionEvent e) {
-        try {
-          tool.run();
+      } catch (NoSuchMethodError | NoClassDefFoundError ne) {
+        Messages.showWarning("Tool out of date",
+                             tool.getMenuTitle() + " is not compatible with this version of Processing.\n" +
+                             "Try updating the Mode or contact its author for a new version.", ne);
+        Messages.loge("Incompatible tool found during tool.run()", ne);
+        item.setEnabled(false);
 
-        } catch (NoSuchMethodError | java.lang.NoClassDefFoundError ne) {
-          Messages.showWarning("Tool out of date",
-                               tool.getMenuTitle() + " is not compatible with this version of Processing.\n" +
-                               "Try updating the Mode or contact its author for a new version.", ne);
-          Messages.loge("Incompatible tool found during tool.run()", ne);
-          item.setEnabled(false);
-
-        } catch (Exception ex) {
-          activeEditor.statusError("An error occurred inside \"" + tool.getMenuTitle() + "\"");
-          ex.printStackTrace();
-          item.setEnabled(false);
-        }
+      } catch (Exception ex) {
+        activeEditor.statusError("An error occurred inside \"" + tool.getMenuTitle() + "\"");
+        ex.printStackTrace();
+        item.setEnabled(false);
       }
     });
     //toolItems.put(title, item);
@@ -906,8 +869,7 @@ public class Base {
 
 
   public List<Mode> getModeList() {
-    List<Mode> allModes = new ArrayList<>();
-    allModes.addAll(Arrays.asList(coreModes));
+    List<Mode> allModes = new ArrayList<>(Arrays.asList(coreModes));
     if (modeContribs != null) {
       for (ModeContribution contrib : modeContribs) {
         allModes.add(contrib.getMode());
@@ -923,10 +885,8 @@ public class Base {
 
 
   private List<Contribution> getInstalledContribs() {
-    List<Contribution> contributions = new ArrayList<>();
-
     List<ModeContribution> modeContribs = getModeContribs();
-    contributions.addAll(modeContribs);
+    List<Contribution> contributions = new ArrayList<>(modeContribs);
 
     for (ModeContribution modeContrib : modeContribs) {
       Mode mode = modeContrib.getMode();
@@ -1169,8 +1129,8 @@ public class Base {
    */
   public void handleNew() {
     try {
-      File newbieDir = null;
-      String newbieName = null;
+      File newbieDir;
+      String newbieName;
 
       // In 0126, untitled sketches will begin in the temp folder,
       // and then moved to a new location because Save will default to Save As.
@@ -1182,7 +1142,7 @@ public class Base {
       // Use a generic name like sketch_031008a, the date plus a char
       int index = 0;
       String format = Preferences.get("editor.untitled.suffix");
-      String suffix = null;
+      String suffix;
       if (format == null) {
         Calendar cal = Calendar.getInstance();
         int day = cal.get(Calendar.DAY_OF_MONTH);  // 1..31
@@ -1269,16 +1229,14 @@ public class Base {
         new FileDialog(activeEditor, prompt, FileDialog.LOAD);
 
       // Only show .pde files as eligible bachelors
-      openDialog.setFilenameFilter(new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-          // confirmed to be working properly [fry 110128]
-          for (String ext : extensions) {
-            if (name.toLowerCase().endsWith("." + ext)) { //$NON-NLS-1$
-              return true;
-            }
+      openDialog.setFilenameFilter((dir, name) -> {
+        // confirmed to be working properly [fry 110128]
+        for (String ext : extensions) {
+          if (name.toLowerCase().endsWith("." + ext)) { //$NON-NLS-1$
+            return true;
           }
-          return false;
         }
+        return false;
       });
 
       openDialog.setVisible(true);
@@ -1630,11 +1588,7 @@ public class Base {
    * to prevent the interface from locking up until the menus are done.
    */
   protected void rebuildSketchbookMenusAsync() {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        rebuildSketchbookMenus();
-      }
-    });
+    EventQueue.invokeLater(this::rebuildSketchbookMenus);
   }
 
 
@@ -1738,27 +1692,21 @@ public class Base {
     // Alphabetize the list, since it's not always alpha order
     Arrays.sort(list, String.CASE_INSENSITIVE_ORDER);
 
-    ActionListener listener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          String path = e.getActionCommand();
-          if (new File(path).exists()) {
-            boolean replace = replaceExisting;
-            if ((e.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
-              replace = !replace;
-            }
-//            if (replace) {
-//              handleOpenReplace(path);
-//            } else {
-            handleOpen(path);
-//            }
-          } else {
-            Messages.showWarning("Sketch Disappeared",
-                                 "The selected sketch no longer exists.\n" +
-                                 "You may need to restart Processing to update\n" +
-                                 "the sketchbook menu.", null);
-          }
+    ActionListener listener = e -> {
+      String path = e.getActionCommand();
+      if (new File(path).exists()) {
+        boolean replace = replaceExisting;
+        if ((e.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
+          replace = !replace;
         }
-      };
+        handleOpen(path);
+      } else {
+        Messages.showWarning("Sketch Disappeared",
+                             "The selected sketch no longer exists.\n" +
+                             "You may need to restart Processing to update\n" +
+                             "the sketchbook menu.", null);
+      }
+    };
     // offers no speed improvement
     //menu.addActionListener(listener);
 
