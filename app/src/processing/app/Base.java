@@ -166,7 +166,7 @@ public class Base {
     Console.startup();
 
     // Set the debug flag based on a file being present in the settings folder
-    File debugFile = getSettingsFile("debug.txt");
+    File debugFile = getSettingsFile("debug");
     /*
     if (debugFile.isDirectory()) {
       // if it's a directory, it's a leftover from older releases, clear it
