@@ -59,7 +59,6 @@ public class Base {
   static private final int REVISION = 1273;
   /** This might be replaced by main() if there's a lib/version.txt file. */
   static private String VERSION_NAME = "1273"; //$NON-NLS-1$
-  /** Set true if this a proper release rather than a numbered revision. */
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true
@@ -81,7 +80,7 @@ public class Base {
 
   /** List of currently active editors. */
   protected List<Editor> editors =
-    Collections.synchronizedList(new ArrayList<Editor>());
+    Collections.synchronizedList(new ArrayList<>());
   protected Editor activeEditor;
   /** A lone file menu to be used when all sketch windows are closed. */
   protected JMenu defaultFileMenu;
@@ -97,10 +96,6 @@ public class Base {
 
   protected List<ModeContribution> modeContribs;
   protected List<ExamplesContribution> exampleContribs;
-
-  private JMenu sketchbookMenu;
-
-//  private Recent recent;
 
   // Used by handleOpen(), this saves the chooser to remember the directory.
   // Doesn't appear to be necessary with the AWT native file dialog.
@@ -1221,7 +1216,7 @@ public class Base {
         newbieName = prefix + suffix + ((char) ('a' + index));
         // Also sanitize the name since it might do strange things on
         // non-English systems that don't use this sort of date format.
-        // http://code.google.com/p/processing/issues/detail?id=283
+        // https://github.com/processing/processing/issues/322
         newbieName = Sketch.sanitizeName(newbieName);
         newbieDir = new File(newbieParentDir, newbieName);
         index++;
@@ -1664,12 +1659,6 @@ public class Base {
       mode.rebuildExamplesFrame();
       mode.rebuildSketchbookFrame();
     }
-  }
-
-
-  protected void rebuildSketchbookMenu() {
-    sketchbookMenu.removeAll();
-    populateSketchbookMenu(sketchbookMenu);
   }
 
 
