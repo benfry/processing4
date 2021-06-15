@@ -31,6 +31,10 @@ X   https://github.com/processing/processing/issues/5781
 X store -1 as display number when using the default
 X   ran into weird situation where '1' was renumbered by adding a screen
 X   so the default was now the external display
+X a little modernizing/cleanup in Base, converting things to lambda functions
+X editor windows always open on display 1
+X   https://github.com/processing/processing/issues/1566
+X   rewrote EditorState to better handle devices and clean it up
 
 earlier
 o further streamline the downloader
@@ -48,8 +52,6 @@ X   https://github.com/processing/processing4/issues/201
 X   https://github.com/processing/processing/pull/4097
 
 
-_ editor windows always open on display 1
-_   https://github.com/processing/processing/issues/1566
 
 
 may be fixed
@@ -112,7 +114,8 @@ _   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jco
 decisions before final 4.0 release
 _ Add ability to move ~/.processing directory
 _   use ~/.config as parent, or $XDG_CONFIG_HOME
-_   https://github.com/processing/processing/issues/6115
+o   https://github.com/processing/processing/issues/6115 (moved)
+_   https://github.com/processing/processing4/issues/203
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
 _   now with a release 9 to cover Big Sur

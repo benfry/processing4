@@ -1296,7 +1296,7 @@ public class Base {
    *         can be set by the caller
    */
   public Editor handleOpen(String path, boolean untitled) {
-    return handleOpen(path, untitled, new EditorState(editors));
+    return handleOpen(path, untitled, EditorState.nextEditor(editors));
   }
 
 

@@ -15,14 +15,18 @@ We don't have a schedule for a final release. This work is being done by a [tiny
 As with all releases, we'll do everything possible to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
 
 
+### alpha 4
+
+* `EditorState(List<Editor> editors)` changed to `EditorState.nextEditor(List<Editor> editors)`, reflecting its nature as closer to a factory method (that makes use of the Editor list) than a constructor that will also be storing information about the list of Editor objects in the created object.
+
 ### alpha 2
 
 * See `changes.md` if you're using `surface.setResizable()` with this release on macOS and with P2D or P3D renderers.
 * The `static` versions of `selectInput()`, `selectOutput()`, and `selectFolder()` in `PApplet` have been removed. These were not documented, hopefully were not in use anywhere.
-* The `frame` object has been removed from `PApplet`. We've been warning folks to use `surface` since 2015, but we still should [warn users](https://github.com/processing/processing4/issues/59)
+* The `frame` object has been removed from `PApplet`. We've been warning folks to use `surface` since 2015, but we still should [warn users](https://github.com/processing/processing4/issues/59) or maybe provide an easy way to update code.
 * `PImage.checkAlpha()` is now `public` instead of `protected`
 * All AWT calls have been moved out of `PImage`, which may be a problem for anything that was relying on those internals
-    * For instance, `new PImage(java.awt.Image)` is no longer available. It was an undocumented method that was `public` only because it was required by subclasses.
+    * ~~For instance, `new PImage(java.awt.Image)` is no longer available. It was an undocumented method that was `public` only because it was required by subclasses.~~ As of alpha 4, this is back, because it wasn't deprecated in 3.x, and is likely to break too many things.
 * Removed `MouseEvent.getClickCount()` and `MouseEvent.getAmount()`. These had been deprecated, not clear they were used anywhere.
 
 ### alpha 1
