@@ -49,7 +49,7 @@ public class JavaBuild {
     "(?:^|\\s|;)package\\s+(\\S+)\\;";
 
   static public final String JAVA_DOWNLOAD_URL = "https://adoptopenjdk.net/";
-  static public final String MIN_JAVA_VERSION = "11.0.8";
+  static public final String MIN_JAVA_VERSION = "11.0.11";
 
   protected Sketch sketch;
   protected Mode mode;
@@ -883,6 +883,7 @@ public class JavaBuild {
 
     } else if (exportPlatform == PConstants.WINDOWS) {
       File buildFile = new File(destFolder, "launch4j-build.xml");
+      System.out.println(buildFile);
       File configFile = new File(destFolder, "launch4j-config.xml");
 
       XML project = new XML("project");

@@ -22,7 +22,7 @@ X   https://developer.apple.com/documentation/bundleresources/entitlements/com_a
 X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_camera
 X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_microphone
 X   https://github.com/processing/processing4/commit/7b75acf2799f61c9c22233f38ee73c07635cea14
-
+X update to launch4j 3.14, fixing Export to Application on Windows
 
 _ make sure we're not embedding webkit with all JFX apps
 _ check FX2D applications on Windows and Linux
