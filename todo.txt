@@ -6,6 +6,10 @@ X refresh appbundler code a little
 X   disable "Launchpath: /path/to/Processing.app/Contents/PlugIns/jdk-11.0.11+9/Contents/Home/lib/jli/libjli.dylib" console message on startup
 X   update macOS SDK references in appbundler code
 X   fix compilation problem in appbundler iterator
+X fix FX2D applications on macOS
+X   they didn't properly have their library.path set
+X   dylib files were not included in the export
+_ check FX2D applications on Windows and Linux
 
 
 may be fixed
