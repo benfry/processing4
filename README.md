@@ -9,6 +9,7 @@ We don't have a schedule for a final release. This work is being done by a [tiny
 
 * We're currently using JDK 11, which is a “Long Term Support” (LTS) release. Java 17 is the next LTS, and we'll switch to that when it arrives in September 2021.
 
+* The current release runs (well?) on Apple Silicon using Rosetta. We are currently unable to move to a fully native version for Apple Silicon because of other libraries that we rely upon (JavaFX, JOGL, etc). Once those are ready, we'll need to do additional work to add Apple Silicon as a target (the way we added 64-bit instead of 32-bit, or ARM instead of Intel on Linux.) If there are updates on this issue, you'll find them [here](https://github.com/processing/processing4/issues/128).
 
 ## API Changes
 
@@ -18,7 +19,7 @@ As with all releases, we'll do everything possible to avoid breaking API. Howeve
 ### alpha 5
 
 * Bumping the minimum system version for macOS to 10.14.6.
-* Not new to alpha 5, but after Java 8, Oracle removed JavaFX from the JDK. Unfortunately, this breaks any Tool that uses the JavaFX library (there are two of them that we know of). One workaround would be to make the Tool launch your code as a separate Java application, using the classpath (and native library path) of the processing.core files. Get in touch if you need more input on how to do this.
+* Moved from the 11.0.2 LTS version of JavaFX to the in-progress version 16. This fixes a [garbled text](https://bugs.openjdk.java.net/browse/JDK-8234916) issue that was breaking Tools that used JavaFX.
 
 ### alpha 4
 
