@@ -24,7 +24,7 @@
   <!-- (Can't use ant.version because that conflicts w/ the built-in variable) -->
   <!-- <property name="ant.version" value="1.8.2" /> -->
   <!-- <echoproperties /> -->
-  <property name="ant.version.num" value="1.8.2" />
+  <property name="ant.version.num" value="1.10.10" />
   <!-- the .zip file to be downloaded -->
   <property name="ant.zip" value="apache-ant-${ant.version.num}-bin.zip" />
 
