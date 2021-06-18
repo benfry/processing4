@@ -699,8 +699,11 @@
       <classpath file="../app/lib/ant-launcher.jar" />
       <classpath file="../app/lib/VAqua8.jar" />
 
+      <!-- With the 4.0a5 release, appbundler was changed to recursively walk
+           the Java folder for all .jar files, so entries from "core" get picked
+           up too, including core.jar and the JavaFX jars. -->
       <!-- plus core.jar... note that this is no longer shared -->
-      <classpath file="../core/library/core.jar" />
+      <!-- <classpath file="../core/library/core.jar" /> -->
 
       <arch name="x86_64"/>
       <!-- no support for this with Java 7 from Oracle -->

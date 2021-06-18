@@ -6,9 +6,16 @@ X refresh appbundler code a little
 X   disable "Launchpath: /path/to/Processing.app/Contents/PlugIns/jdk-11.0.11+9/Contents/Home/lib/jli/libjli.dylib" console message on startup
 X   update macOS SDK references in appbundler code
 X   fix compilation problem in appbundler iterator
+X   walk subfolders in the export to avoid duplicated core.jar and to include JavaFX
 X fix FX2D applications on macOS
 X   they didn't properly have their library.path set
 X   dylib files were not included in the export
+X Some 3.x Tools not working because JavaFX isn't on the classpath
+X   https://github.com/processing/processing4/issues/110
+X   https://github.com/processing/processing4/pull/112
+
+_ garbled text in JavaFX
+_   https://bugs.openjdk.java.net/browse/JDK-8234916
 _ check FX2D applications on Windows and Linux
 
 
@@ -80,8 +87,6 @@ _   https://github.com/processing/processing4/issues/129
 _   now with a release 9 to cover Big Sur
 _     https://violetlib.org/vaqua/downloads.html
 _   make the final call to remove, or put the libs on download.processing.org
-_ Some 3.x Tools not working because JavaFX isn't on the classpath
-_   https://github.com/processing/processing4/issues/110
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
 _ add language support to Modes (request from Andres)

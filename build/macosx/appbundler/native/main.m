@@ -414,7 +414,7 @@ int launch(char *commandName, int progargc, char *progargv[]) {
         DLog(@"Main Class Name: '%@'", mainClassName);
     }
 
-    // If a jar file is defined as launcher, disacard the javaPath
+    // If a jar file is defined as launcher, discard the javaPath
     if ( jarlauncher != nil ) {
         [classPath appendFormat:@":%@/%@", javaPath, jarlauncher];
     } else {
@@ -426,7 +426,11 @@ int launch(char *commandName, int progargc, char *progargv[]) {
 
             [classPath appendFormat:@"%@/Classes", javaPath];
             NSFileManager *defaultFileManager = [NSFileManager defaultManager];
-            NSArray *javaDirectoryContents = [defaultFileManager contentsOfDirectoryAtPath:javaPath error:nil];
+            // original, non-recursive version:
+            // https://developer.apple.com/documentation/foundation/nsfilemanager/1414584-contentsofdirectoryatpath
+            // changed to recursive version to walk the 'core' folder
+            // https://developer.apple.com/documentation/foundation/nsfilemanager/1417353-subpathsofdirectoryatpath
+            NSArray *javaDirectoryContents = [defaultFileManager subpathsOfDirectoryAtPath:javaPath error:nil];
             if (javaDirectoryContents == nil) {
                 [[NSException exceptionWithName:@JAVA_LAUNCH_ERROR
                                          reason:NSLocalizedString(@"JavaDirectoryNotFound", @UNSPECIFIED_ERROR)
