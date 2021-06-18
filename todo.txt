@@ -13,9 +13,13 @@ X   dylib files were not included in the export
 X Some 3.x Tools not working because JavaFX isn't on the classpath
 X   https://github.com/processing/processing4/issues/110
 X   https://github.com/processing/processing4/pull/112
+X garbled text in JavaFX
+X   https://bugs.openjdk.java.net/browse/JDK-8234916
+X bump JavaFX to 16, no longer the LTS version, but fixes garbled text
+X   and 11.0.8 is not available
 
-_ garbled text in JavaFX
-_   https://bugs.openjdk.java.net/browse/JDK-8234916
+
+_ make sure we're not embedding webkit with all JFX apps
 _ check FX2D applications on Windows and Linux
 
 

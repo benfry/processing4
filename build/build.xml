@@ -92,12 +92,17 @@
 
   <!-- As of 210117, Gluon has 11.0.8 available for commercial clients
        as an LTS release, but 11.0.2 is the latest free/public version -->
+  <!--
   <property name="jfx.train" value="11" />
   <property name="jfx.version" value="0" />
   <property name="jfx.update" value="2" />
   <property name="jfx.build" value="0" />
 
   <property name="jfx.name" value="${jfx.train}.${jfx.version}.${jfx.update}" />
+  -->
+
+  <!-- with 16, there's no 16.0.3 it's just "16" -->
+  <property name="jfx.name" value="16" />
 
   <!-- These lists haven't been updated since Java 6. The new list:
        http://www.oracle.com/technetwork/java/javase/jdk-8-readme-2095710.html
@@ -234,9 +239,7 @@
       <property name="jdk.data.model" value="@{datamodel}" />
 
       <property name="jfx.path.zip" value="${target-platform}/jfx-${jfx.name}.zip" />
-
       <property name="jfx.path.dist" value="${target-platform}/javafx-sdk-${jfx.name}" />
-
       <property name="jfx.path.lib" value="${jfx.path.dist}/lib" />
 
       <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz">
@@ -335,7 +338,7 @@
 
     <condition property="jdk.downloader"
                value="${target-platform}-i586.tar.gz">
-        <equals arg1="${jdk.data.model}" arg2="32" />
+      <equals arg1="${jdk.data.model}" arg2="32" />
     </condition>
     <condition property="jdk.downloader"
                value="${target-platform}-x64.tar.gz">
@@ -355,6 +358,26 @@
   <target name="jfx-download" depends="jfx-check, downloader-setup"
           unless="jfx.zip.downloaded">
 
+    <condition property="jfx.platform" value="linux">
+      <equals arg1="${target-platform}" arg2="linux" />
+    </condition>
+
+    <condition property="jfx.platform" value="mac">
+      <equals arg1="${target-platform}" arg2="macosx" />
+    </condition>
+
+    <condition property="jfx.platform" value="windows">
+      <equals arg1="${target-platform}" arg2="windows" />
+    </condition>
+
+    <property name="jfx.url"
+              value="https://gluonhq.com/download/javafx-${jfx.name}-sdk-${jfx.platform}" />
+
+    <echo message="${jfx.platform} ${jfx.name} ${jfx.url}" />
+    <get src="${jfx.url}"
+             dest="${jfx.path.zip}"
+             usetimestamp="true" />
+    <!--
     <downloader component="jfx"
                 train="${jfx.train}"
                 version="${jfx.version}"
@@ -363,6 +386,7 @@
                 build="1"
                 flavor="${target-platform}${jdk.data.model}.zip"
                 path="${jfx.path.zip}" />
+    -->
   </target>
 
   <!-- Set the version of Java that must be present to build. -->
@@ -750,6 +774,12 @@
            Not recommended, to use those, but making it possible since some Tools
            rely on JavaFX. (The OpenGL support is only incidental.) -->
       <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/core/library" />
+
+      <!-- Necessary to avoid complaints because JavaFX wants to be a module -->
+      <option value="--module-path=$APP_ROOT/Contents/Java/core/library" />
+      <!-- Ironically, appears to be unnecessary to specify which modules,
+           presumably because they're already on the CLASSPATH. -->
+      <!-- <option value="- -add-modules=javafx.base,javafx.graphics" /> -->
 
       <!-- Required for video capture and microphone input
            https://github.com/processing/processing-sound/issues/51
