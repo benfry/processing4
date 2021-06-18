@@ -17,6 +17,11 @@ X garbled text in JavaFX
 X   https://bugs.openjdk.java.net/browse/JDK-8234916
 X bump JavaFX to 16, no longer the LTS version, but fixes garbled text
 X   and 11.0.8 is not available
+X add more entitlements in an attempt to fix audio/video capture
+X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_audio-input
+X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_camera
+X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_microphone
+X   https://github.com/processing/processing4/commit/7b75acf2799f61c9c22233f38ee73c07635cea14
 
 
 _ make sure we're not embedding webkit with all JFX apps
