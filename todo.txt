@@ -2,6 +2,10 @@
 X update JNA from 5.7.0 to 5.8.0
 X bump minimum system version to 10.14.6
 X remove ant binary from repo, update from 1.8.2 to 1.10.10
+X refresh appbundler code a little
+X   disable "Launchpath: /path/to/Processing.app/Contents/PlugIns/jdk-11.0.11+9/Contents/Home/lib/jli/libjli.dylib" console message on startup
+X   update macOS SDK references in appbundler code
+X   fix compilation problem in appbundler iterator
 
 
 may be fixed
