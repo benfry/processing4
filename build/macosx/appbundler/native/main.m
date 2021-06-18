@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
         result = 0;
     } @catch (NSException *exception) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert setAlertStyle:NSCriticalAlertStyle];
+        [alert setAlertStyle:NSAlertStyleCritical];
         [alert setMessageText:[exception reason]];
         [alert runModal];
 
@@ -241,7 +241,8 @@ int launch(char *commandName, int progargc, char *progargv[]) {
         libjliPath = [javaDylib fileSystemRepresentation];
     }
 
-    DLog(@"Launchpath: %s", libjliPath);
+    // Disable chatty log message that looks like an error in the Console
+    //DLog(@"Launchpath: %s", libjliPath);
 
     void *libJLI = dlopen(libjliPath, RTLD_LAZY);
 
