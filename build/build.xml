@@ -168,6 +168,7 @@
        However, we're now looking into using JavaFX as the default 2D
        renderer for 3.0. So in 3.0a8, we're no longer removing javafx. -->
 
+  <!--
   <fileset dir="${target-platform}/work/java" id="javafx-basics">
     <include name="THIRDPARTYLICENSEREADME-JAVAFX.txt" />
     <include name="lib/javafx.properties" />
@@ -216,6 +217,7 @@
     <include name="lib/amd64/libjfxwebkit.so" />
     <include name="lib/amd64/libprism-es2.so" />
   </fileset>
+  -->
 
   <!--
   <echo message="${java.class.path}" />
