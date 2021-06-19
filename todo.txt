@@ -26,7 +26,14 @@ X update to launch4j 3.14, fixing Export to Application on Windows
 X change defaults to get away from JFileChooser; it's awful
 X working on JavaFX on Windows, more runtime problems, needing exports
 X Export to Application with FX2D apps working on Windows
+X make sure we're not embedding webkit with all JFX apps
+X   maybe just remove it from the main download as well
+X   remove javafx-swt.jar and javafx.web.jar / also their .so files
+X more checking FX2D (and application export) on Windows
 
+
+_ move JavaFX to its own library, too many weird quirks that it includes
+_   build bits should be in core/build.xml or javafx/build.xml
 _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
 _ Only specify --modules-path when running JavaFX apps
@@ -34,13 +41,10 @@ _   https://github.com/processing/processing4/issues/209
 
 
 for next release
+_ debug JavaFX and Export to Application on Linux
 _ Code completion not working
 _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
-_ make sure we're not embedding webkit with all JFX apps
-_   maybe just remove it from the main download as well
-_   remove javafx-swt.jar and javafx.web.jar / also their .so files
-_ check FX2D (and application export) on Windows and Linux
 
 
 may be fixed

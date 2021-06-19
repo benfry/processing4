@@ -104,124 +104,25 @@
   <!-- with 16, there's no 16.0.3 it's just "16" -->
   <property name="jfx.name" value="16" />
 
-  <!-- These lists haven't been updated since Java 6. The new list:
-       http://www.oracle.com/technetwork/java/javase/jdk-8-readme-2095710.html
-       Please help: https://github.com/processing/processing/issues/3288 -->
+  <!-- Before 4.0a5, these included longer lists of files to remove in order
+       to keep downloads and exported applications smaller. With Java 11,
+       it's a losing battle, so we're only removing the worst offenders.
+       https://github.com/processing/processing/issues/3288 -->
 
   <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
-    <include name="Java/core/library/libjfxwebkit.dylib" />
+    <include name="PlugIns/jdk-${jdk.esoteric}+${jdk.build}/Contents/Home/lib/src.zip" />
+    <!-- <include name="Java/core/library/libjfxwebkit.dylib" /> -->
   </fileset>
 
   <fileset dir="windows/work" id="jdk-optional-windows">
-    <include name="java/lib/ext/dnsns.jar" />
-
-    <include name="java/bin/dtplugin" />
-    <include name="java/bin/plugin2" />
-
-    <include name="java/bin/kinit.exe" />
-    <include name="java/bin/klist.exe" />
-    <include name="java/bin/ktab.exe" />
-
-    <include name="java/bin/keytool" /> <!-- needed for Android -->
-    <include name="java/bin/orbd" />
-    <include name="java/bin/policytool" />
-    <include name="java/bin/rmid" />
-    <include name="java/bin/rmiregistry" />
-    <include name="java/bin/servertool" />
-    <include name="java/bin/tnameserv" />
-
-    <include name="java/bin/javaws.exe" />
-    <include name="java/lib/javaws.jar" />
-
-    <include name="java/lib/cmm/PYCC.pf" />
-
     <include name="java/lib/src.zip" />
-
-    <include name="core/library/jfxwebkit.dll" />
+    <!-- <include name="core/library/jfxwebkit.dll" /> -->
   </fileset>
 
   <fileset dir="linux/work" id="jdk-optional-linux">
-    <include name="java/bin/keytool" /> <!-- needed for Android -->
-
-    <include name="java/lib/ext/dnsns.jar" />
-
-    <include name="java/bin/orbd" />
-    <include name="java/bin/policytool" />
-    <include name="java/bin/rmid" />
-    <include name="java/bin/rmiregistry" />
-    <include name="java/bin/servertool" />
-    <include name="java/bin/tnameserv" />
-
-    <include name="java/bin/javaws" />
-    <include name="java/lib/javaws.jar" />
-
     <include name="java/lib/src.zip" />
-
-    <include name="core/library/libjfxwebkit.so" />
-
-    <include name="java/lib/cmm/PYCC.pf" />
+    <!-- <include name="core/library/libjfxwebkit.so" /> -->
   </fileset>
-
-  <!-- Unused JavaFX files that can be removed from the JRE on Windows
-       and Linux. On Mac OS X, this is removed by the appbundler task.
-       www.oracle.com/technetwork/java/javase/jdk-7-readme-429198.html
-       However, we're now looking into using JavaFX as the default 2D
-       renderer for 3.0. So in 3.0a8, we're no longer removing javafx. -->
-
-  <!--
-  <fileset dir="${target-platform}/work/java" id="javafx-basics">
-    <include name="THIRDPARTYLICENSEREADME-JAVAFX.txt" />
-    <include name="lib/javafx.properties" />
-    <include name="lib/jfxrt.jar" />
-    <include name="lib/security/javafx.policy" />
-  </fileset>
-
-  <fileset dir="windows/work/java" id="javafx-windows">
-    <include name="bin/decora-sse.dll" />
-    <include name="bin/fxplugins.dll" />
-    <include name="bin/glass.dll" />
-    <include name="bin/glib-lite.dll" />
-    <include name="bin/gstreamer-lite.dll" />
-    <include name="bin/javafx-font.dll" />
-    <include name="bin/javafx-iio.dll" />
-    <include name="bin/jfxmedia.dll" />
-    <include name="bin/jfxwebkit.dll" />
-    <include name="bin/libxml2.dll" />
-    <include name="bin/libxslt.dll" />
-  </fileset>
-
-  <fileset dir="linux/work/java" id="javafx-linux-32">
-    <include name="lib/i386/fxavcodecplugin-52.so" />
-    <include name="lib/i386/fxavcodecplugin-53.so" />
-    <include name="lib/i386/fxplugins.so" />
-    <include name="lib/i386/libglass.so" />
-    <include name="lib/i386/libgstplugins-lite.so" />
-    <include name="lib/i386/libgstreamer-lite.so" />
-    <include name="lib/i386/libjavafx-font.so" />
-    <include name="lib/i386/libjavafx-iio.so" />
-    <include name="lib/i386/libjfxmedia.so" />
-    <include name="lib/i386/libjfxwebkit.so" />
-    <include name="lib/i386/libprism-es2.so" />
-  </fileset>
-
-  <fileset dir="linux/work/java" id="javafx-linux-64">
-    <include name="lib/amd64/fxavcodecplugin-52.so" />
-    <include name="lib/amd64/fxavcodecplugin-53.so" />
-    <include name="lib/amd64/fxplugins.so" />
-    <include name="lib/amd64/libglass.so" />
-    <include name="lib/amd64/libgstplugins-lite.so" />
-    <include name="lib/amd64/libgstreamer-lite.so" />
-    <include name="lib/amd64/libjavafx-font.so" />
-    <include name="lib/amd64/libjavafx-iio.so" />
-    <include name="lib/amd64/libjfxmedia.so" />
-    <include name="lib/amd64/libjfxwebkit.so" />
-    <include name="lib/amd64/libprism-es2.so" />
-  </fileset>
-  -->
-
-  <!--
-  <echo message="${java.class.path}" />
-  -->
 
   <!-- Macro to help set the platform ant vars appropriately -->
   <macrodef name="settarget">
@@ -261,9 +162,22 @@
       <if>
         <equals arg1="${jfx.available}" arg2="true" />
         <then>
-          <!-- Extract JFX -->
+          <!-- Extract JavaFX -->
           <echo message="Target jfx: ${jfx.path.zip}"/>
-          <unzip dest="${target-platform}" src="${jfx.path.zip}" overwrite="true"/>
+          <unzip dest="${target-platform}" src="${jfx.path.zip}" overwrite="true">
+            <patternset>
+              <!-- These two aren't supported/used anyway -->
+              <!-- javafx.web.jar, javafx-swt.jar -->
+              <exclude name="**/javafx.web.jar" />
+              <exclude name="**/javafx-swt.jar" />
+              <!-- The web library isn't included because this library is massive.
+                   Remove libjfxwebkit.dylib, libjfxwebkit.so, jfxwebkit.dll -->
+              <exclude name="**/*jfxwebkit.*" />
+              <!-- Not using this either -->
+              <exclude name="**/src.zip" />
+            </patternset>
+          </unzip>
+          <!-- <fail message="should be clean inside ${target-platform}" /> -->
         </then>
       </if>
     </sequential>
