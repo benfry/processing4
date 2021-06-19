@@ -25,6 +25,7 @@ X   https://github.com/processing/processing4/commit/7b75acf2799f61c9c22233f38ee
 X update to launch4j 3.14, fixing Export to Application on Windows
 X change defaults to get away from JFileChooser; it's awful
 X working on JavaFX on Windows, more runtime problems, needing exports
+X Export to Application with FX2D apps working on Windows
 
 _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
