@@ -41,7 +41,9 @@
 
     <!-- Java 9+ handles high DPI internally so OS display scaling -->
     <!-- can cause display issues with custom rendering swing elements. -->
-    <opt>-Dsun.java2d.uiScale.enabled=true</opt>
+    <!-- <opt>-Dsun.java2d.uiScale.enabled=true</opt> -->
+    <!-- Disabling the line above for 4.0 alpha 5, which scales the
+         interface properly on startup (preventing the tiny splash) -->
 
     <!-- Deal with jokers who install JOGL, ANTLR, etc system-wide -->
     <!-- <opt>-Djava.ext.dirs="%EXEDIR%\\java\\lib\\ext"</opt> -->
