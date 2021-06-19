@@ -373,6 +373,20 @@ public class Runner implements MessageConsumer {
 
     params.append(javaLibraryPathParam);
 
+    // TODO this should only happen with sketches using the JavaFX library
+    // https://github.com/processing/processing4/issues/209
+    params.append("--module-path");
+    params.append(build.getModulePath());
+    params.append("--add-modules");
+    //params.append("javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web");
+    params.append("javafx.base,javafx.graphics,javafx.swing");
+    // TODO Presumably, we need to move away from com.sun.* classes?
+    // https://github.com/processing/processing4/issues/208
+    params.append("--add-exports");
+    params.append("javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED");
+    params.append("--add-exports");
+    params.append("javafx.graphics/com.sun.glass.ui=ALL-UNNAMED");
+
     params.append("-cp");
     params.append(build.getClassPath());
 

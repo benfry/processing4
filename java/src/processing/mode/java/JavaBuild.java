@@ -440,6 +440,13 @@ public class JavaBuild {
   }
 
 
+  /** Returns the dummy "module" path so that JavaFX doesn't complain. */
+  public String getModulePath() {
+    // Just set this to the main core/library directory to pick up JavaFX
+    return mode.getCoreLibrary().getLibraryPath();
+  }
+
+
   /** Return the java.library.path for this sketch (for all the native DLLs etc). */
   public String getJavaLibraryPath() {
     return javaLibraryPath;

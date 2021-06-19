@@ -24,6 +24,7 @@ X   https://developer.apple.com/documentation/bundleresources/entitlements/com_a
 X   https://github.com/processing/processing4/commit/7b75acf2799f61c9c22233f38ee73c07635cea14
 X update to launch4j 3.14, fixing Export to Application on Windows
 X change defaults to get away from JFileChooser; it's awful
+X working on JavaFX on Windows, more runtime problems, needing exports
 
 
 for next release
@@ -32,6 +33,7 @@ _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
 _ make sure we're not embedding webkit with all JFX apps
 _   maybe just remove it from the main download as well
+_   remove javafx-swt.jar and javafx.web.jar / also their .so files
 _ check FX2D (and application export) on Windows and Linux
 
 
