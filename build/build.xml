@@ -1025,7 +1025,7 @@
     <delete dir="${unpack.gluegen}" />
     <delete dir="${unpack.jssc}" />
 
-    <!-- sign the outher application, now that we've finished all the contents -->
+    <!-- sign the outer application, now that we've finished all the contents -->
     <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
