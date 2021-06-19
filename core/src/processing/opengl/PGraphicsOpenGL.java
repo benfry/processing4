@@ -9234,7 +9234,12 @@ public class PGraphicsOpenGL extends PGraphics {
       pointOffsets = new float[2 * PGL.DEFAULT_TESS_VERTICES];
       pointIndices = new short[PGL.DEFAULT_TESS_VERTICES];
 
-      polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+
+      // STREAM TEST 3 - BEGIN
+      if (renderMode == IMMEDIATE)
+        polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+      // STREAM TEST 3 - END
+
       polyColorsBuffer = PGL.allocateIntBuffer(polyColors);
       polyNormalsBuffer = PGL.allocateFloatBuffer(polyNormals);
       polyTexCoordsBuffer = PGL.allocateFloatBuffer(polyTexCoords);
@@ -9683,7 +9688,11 @@ public class PGraphicsOpenGL extends PGraphics {
       float[] temp = new float[4 * n];
       PApplet.arrayCopy(polyVertices, 0, temp, 0, 4 * polyVertexCount);
       polyVertices = temp;
-      polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+
+      // STREAM TEST 4 - BEGIN
+      if (renderMode == IMMEDIATE)
+        polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+      // STREAM TEST 4 - END
     }
 
     void expandPolyColors(int n) {
@@ -9881,7 +9890,11 @@ public class PGraphicsOpenGL extends PGraphics {
       float[] temp = new float[4 * polyVertexCount];
       PApplet.arrayCopy(polyVertices, 0, temp, 0, 4 * polyVertexCount);
       polyVertices = temp;
-      polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+
+      // STREAM TEST 5 - BEGIN
+      if (renderMode == IMMEDIATE)
+        polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+      // STREAM TEST 5 - BEGIN
     }
 
     void trimPolyColors() {

@@ -41,6 +41,7 @@ import processing.opengl.PGraphicsOpenGL.Tessellator;
 import processing.opengl.PGraphicsOpenGL.VertexAttribute;
 
 import java.nio.Buffer;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -3923,12 +3924,18 @@ public class PShapeOpenGL extends PShape {
     int sizef = size * PGL.SIZEOF_FLOAT;
     int sizei = size * PGL.SIZEOF_INT;
 
-    tessGeo.updatePolyVerticesBuffer();
+    // STREAM TEST 1 - BEGIN
+    PApplet.println("Stream buffer");
     if (bufPolyVertex == null)
       bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef,
-                   tessGeo.polyVerticesBuffer, glUsage);
+    pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef, null, glUsage);
+    ByteBuffer buffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY);
+    tessGeo.polyVerticesBuffer = buffer.asFloatBuffer();
+    tessGeo.updatePolyVerticesBuffer();
+    pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+    // STREAM TEST 1 - END
+
 
     tessGeo.updatePolyColorsBuffer();
     if (bufPolyColor == null)
@@ -4129,12 +4136,22 @@ public class PShapeOpenGL extends PShape {
 
   protected void updateGeometryImpl() {
     if (modifiedPolyVertices) {
+      // STREAM TEST 2 - BEGIN
+      pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
+      ByteBuffer buffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY);
+      tessGeo.polyVerticesBuffer = buffer.asFloatBuffer();
+
       int offset = firstModifiedPolyVertex;
       int size = lastModifiedPolyVertex - offset + 1;
-      copyPolyVertices(offset, size);
+      tessGeo.updatePolyVerticesBuffer(offset, size);
       modifiedPolyVertices = false;
       firstModifiedPolyVertex = PConstants.MAX_INT;
       lastModifiedPolyVertex = PConstants.MIN_INT;
+
+      pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+      pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
+      // STREAM TEST 2 - END
+
     }
     if (modifiedPolyColors) {
       int offset = firstModifiedPolyColor;
@@ -4259,7 +4276,6 @@ public class PShapeOpenGL extends PShape {
 
 
   protected void copyPolyVertices(int offset, int size) {
-    tessGeo.updatePolyVerticesBuffer(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
     tessGeo.polyVerticesBuffer.position(4 * offset);
     pgl.bufferSubData(PGL.ARRAY_BUFFER, 4 * offset * PGL.SIZEOF_FLOAT,
