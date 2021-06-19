@@ -934,6 +934,16 @@ public class JavaBuild {
         jre.addChild("opt").setContent(opt);
       }
 
+      final String[] fxOptions = new String[]{
+        "--module-path=" + getModulePath(),
+        "--add-modules=javafx.base,javafx.graphics,javafx.swing",
+        "--add-exports=javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED",
+        "--add-exports=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"
+      };
+      for (String opt : fxOptions) {
+        jre.addChild("opt").setContent(opt);
+      }
+
       config.save(configFile);
       project.save(buildFile);
       if (!buildWindowsLauncher(buildFile, "windows")) {
