@@ -23,9 +23,16 @@ X   https://developer.apple.com/documentation/bundleresources/entitlements/com_a
 X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_microphone
 X   https://github.com/processing/processing4/commit/7b75acf2799f61c9c22233f38ee73c07635cea14
 X update to launch4j 3.14, fixing Export to Application on Windows
+X change defaults to get away from JFileChooser; it's awful
 
+
+for next release
+_ Code completion not working
+_   https://github.com/processing/processing4/issues/177
+_   confirmed not working from Sam's repo either
 _ make sure we're not embedding webkit with all JFX apps
-_ check FX2D applications on Windows and Linux
+_   maybe just remove it from the main download as well
+_ check FX2D (and application export) on Windows and Linux
 
 
 may be fixed
@@ -34,10 +41,7 @@ _   https://github.com/processing/processing/issues/4775
 _ HDPI support GNOME desktop
 _   https://github.com/processing/processing/issues/6059
 
-regressions
-_ Code completion not working
-_   https://github.com/processing/processing4/issues/177
-
+_ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
 _   https://github.com/processing/processing/issues/4214

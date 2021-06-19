@@ -74,7 +74,12 @@ recent.count = 10
 
 # Default to the native (AWT) file selector where possible
 chooser.files.native = true
-chooser.files.native.macosx = false # except on mac where it's broken
+# We were shutting this off on macOS because it broke Copy/Paste:
+# https://github.com/processing/processing/issues/1035
+# https://github.com/processing/processing4/issues/77
+# But changing this for 4.0 alpha 5, because the JFileChooser is awful,
+# and even worse on Big Sur, and worse than the Copy/Paste issue.
+#chooser.files.native.macosx = false
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
