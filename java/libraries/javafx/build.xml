@@ -7,7 +7,10 @@
 
   <target name="clean" description="Clean the build directories">
     <delete dir="bin" />
-    <delete file="${library.path}/javafx.jar" />
+    <!-- <delete file="${library.path}/javafx.jar" /> -->
+    <!-- Remove everything, which includes javafx.jar and files extracted from
+         GluonHQ downloads, but those can be reproduced from the downloaded zips. -->
+    <delete dir="${library.path}" />
   </target>
 
   <condition property="fx.unavailable" value="true">
@@ -129,10 +132,11 @@
     </unzip>
   </target>
 
+  <!--
   <target name="clean-javafx">
     <delete dir="." includes="**/javafx-*-sdk*.zip" />
-    <delete dir="${library.path}" />
   </target>
+  -->
 
   <target name="download-javafx">
     <property name="gluon.version" value="16" />
