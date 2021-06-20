@@ -40,6 +40,10 @@ X move JavaFX to its own library, too many weird quirks that it includes
 o   build bits should be in core/build.xml or javafx/build.xml
 X   by moving it out, all the strangeness of download and import is outside core
 
+_ "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
+
+_ add JavaFX library to IntelliJ
+
 _ fix modules path warning for Tools in the PDE
 _ update for new modules path when running from the PDE
 _ update modules path when exporting application

@@ -566,10 +566,11 @@
       <!-- <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/core/library" /> -->
       <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx64" />
 
-      <!-- Necessary to avoid complaints because JavaFX wants to be a module -->
-      <option value="--module-path=$APP_ROOT/Contents/Java/core/library" />
-      <!-- Ironically, appears to be unnecessary to specify which modules,
-           presumably because they're already on the CLASSPATH. -->
+      <!-- Necessary to avoid complaints because JavaFX wants to be a module.
+           TODO However, not quite working after moving javafx to its own library. -->
+      <option value="--module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library" />
+
+      <!-- TODO Still needs work, it may have only been working b/c of old libs -->
       <!-- <option value="- -add-modules=javafx.base,javafx.graphics" /> -->
 
       <!-- Required for video capture and microphone input
