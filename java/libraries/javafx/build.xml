@@ -1,0 +1,355 @@
+<?xml version="1.0"?>
+<project name="Processing JavaFX renderer" default="build">
+
+  <!-- using 'location' here will resolve to an absolute path -->
+  <property name="core.path" location="../../../core/library/core.jar" />
+  <property name="library.path" location="./library" />
+
+  <target name="clean" description="Clean the build directories">
+    <delete dir="bin" />
+    <delete file="${library.path}/javafx.jar" />
+  </target>
+
+  <condition property="fx.unavailable" value="true">
+    <or>
+      <equals arg1="${os.arch}" arg2="arm" />
+      <equals arg1="${os.arch}" arg2="aarch64" />
+    </or>
+  </condition>
+
+  <!-- JavaFX got removed from the Oracle's JDK for arm and Java 11 -->
+  <condition property="jfx.available" value="true">
+    <and>
+      <not><equals arg1="${os.arch}" arg2="arm" /></not>
+    </and>
+  </condition>
+
+  <!-- - - - - - -->
+
+  <!-- As of 210117, Gluon has 11.0.8 available for commercial clients
+       as an LTS release, but 11.0.2 is the latest free/public version -->
+  <!--
+  <property name="jfx.train" value="11" />
+  <property name="jfx.version" value="0" />
+  <property name="jfx.update" value="2" />
+  <property name="jfx.build" value="0" />
+
+  <property name="jfx.name" value="${jfx.train}.${jfx.version}.${jfx.update}" />
+  -->
+
+  <!-- with 16, there's no 16.0.3 it's just "16" -->
+  <!-- <property name="jfx.name" value="16" /> -->
+
+  <!-- Before 4.0a5, these included longer lists of files to remove in order
+       to keep downloads and exported applications smaller. With Java 11,
+       it's a losing battle, so we're only removing the worst offenders.
+       https://github.com/processing/processing/issues/3288 -->
+
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!--
+  https://gluonhq.com/products/javafx/
+  # use the download file specified by the server
+  wget -\-content-disposition 'https://gluonhq.com/download/javafx-16-sdk-mac'
+  wget -\-content-disposition 'https://gluonhq.com/download/javafx-16-sdk-windows'
+  wget -\-content-disposition 'https://gluonhq.com/download/javafx-16-sdk-linux'
+
+  src (and therefore .jar files?) appear to be identical except for com.sun.javafx.runtime.VersionInfo which has a BUILD_TIMESTAMP variable
+
+  https://gluonhq.com/download/javafx-16-sdk-mac
+  https://gluonhq.com/download/javafx-16-sdk-windows
+  https://gluonhq.com/download/javafx-16-sdk-linux
+  -->
+
+  <!-- JavaFX got removed from the Oracle's JDK for ARM and Java 11.
+       There are arm32 and aarch64 builds for Linux (compatible with the Pi?)
+       but they're Early Access releases of JavaFX 17.
+       Downloads page is at https://gluonhq.com/products/javafx/
+
+       The links for the Apple Silicon and ARM Linux versions:
+       https://gluonhq.com/download/javafx-17-ea-sdk-mac-aarch64
+       https://gluonhq.com/download/javafx-17-ea-sdk-linux-aarch64
+       https://gluonhq.com/download/javafx-17-ea-sdk-linux-arm32
+
+       These could be better than nothing, but it's a different set of .jar files
+       (that would be identical across these three), but different from the main
+       versions. Not a good way to mix, unless have unique JARs for each platform,
+       which would be ~60 MB extra (for platforms that are < 2% usage). -->
+
+  <target name="retrieve-gluon">
+    <get src="https://gluonhq.com/download/${gluon.base}"
+         dest="${gluon.base}.zip"
+         usetimestamp="true" />
+
+    <available file="${library.path}/javafx.base.jar"
+               property="javafx.jars.exist" />
+
+    <antcall target="unzip-gluon-jars" />
+    <antcall target="unzip-gluon-natives" />
+  </target>
+
+  <target name="unzip-gluon-jars" unless="${javafx.jars.exist}">
+    <echo message="Extracting jars from ${gluon.base}.zip" />
+    <!-- should javafx.properties be copyed? is it used for anything? [fry 210620] -->
+
+    <!-- https://ant.apache.org/manual/Tasks/unzip.html -->
+    <unzip dest="${library.path}" src="${gluon.base}.zip" overwrite="true">
+      <patternset>
+        <include name="**/*.jar" />
+        <!-- These two aren't supported/used -->
+        <exclude name="**/javafx.web.jar" />
+        <exclude name="**/javafx-swt.jar" />
+      </patternset>
+
+      <!-- remove prefixes from folder paths when extracting -->
+      <mapper type="flatten" />
+    </unzip>
+  </target>
+
+  <target name="unzip-gluon-natives">
+    <echo message="Extracting ${gluon.base}.zip to ${natives.path}" />
+
+    <unzip dest="${natives.path}" src="${gluon.base}.zip" overwrite="true">
+      <patternset>
+        <include name="**/*.dll" />
+        <include name="**/*.dylib" />
+        <include name="**/*.so" />
+        <!-- The web library isn't included because this library is massive.
+             Remove libjfxwebkit.dylib, libjfxwebkit.so, jfxwebkit.dll -->
+        <exclude name="**/*jfxwebkit.*" />
+
+        <!-- Not using this either, but since we're using include, no need for this -->
+        <!-- <exclude name="**/src.zip" /> -->
+      </patternset>
+
+      <!-- Ignore folder structure, which also helps because as of 210620,
+           the Windows build has a different folder for the binaries. -->
+      <mapper type="flatten" />
+    </unzip>
+  </target>
+
+  <target name="clean-javafx">
+    <delete dir="." includes="**/javafx-*-sdk*.zip" />
+    <delete dir="${library.path}" />
+  </target>
+
+  <target name="download-javafx">
+    <property name="gluon.version" value="16" />
+    <!-- http://ant.apache.org/manual/Tasks/tempfile.html -->
+    <!-- <tempfile property="temp.zip" destDir="${java.io.tmpdir}" suffix=".zip" /> -->
+
+    <!-- javafx-${gluon.version}-sdk-${gluon.platform} -->
+    <antcall target="retrieve-gluon">
+      <param name="gluon.base" value="javafx-16-sdk-mac" />
+      <!-- extract the .jar files from the first javafx we run across -->
+      <!-- <param name="skip.jars" value="true" /> -->
+      <param name="natives.path" value="${library.path}/macosx64" />
+    </antcall>
+
+    <antcall target="retrieve-gluon">
+      <param name="gluon.base" value="javafx-${gluon.version}-sdk-windows" />
+      <param name="natives.path" value="${library.path}/windows64" />
+    </antcall>
+
+    <antcall target="retrieve-gluon">
+      <param name="gluon.base" value="javafx-${gluon.version}-sdk-linux" />
+      <param name="natives.path" value="${library.path}/linux64" />
+    </antcall>
+  </target>
+
+    <!--
+    <antcall target="gluon-download">
+    </antcall>
+
+    <get src="https://gluonhq.com/download/javafx-${gluon.version}-sdk-mac"
+         dest="${temp.zip}"
+         usetimestamp="true" />
+
+    <antcall target="unzip-gluon-natives">
+      <param name="source.zip" value="${temp.zip}" />
+      <param name="target.path" value="${library.path}/macosx" />
+    </antcall>
+
+    <get src="https://gluonhq.com/download/javafx-${gluon.version}-sdk-windows"
+         dest="${temp.zip}"
+         usetimestamp="true" />
+    -->
+
+  <!-- <tempfile property="temp.file" destDir="${java.io.tmpdir}" prefix="build"/> -->
+
+  <!--
+  <antcall target="gluon-download">
+    <param name="gluon.version" value="16" />
+    <param name="gluon.version" value="16" />
+  </antcall>
+  -->
+
+  <!--
+  <target name="jfx-download" depends="jfx-check, downloader-setup"
+          unless="jfx.zip.downloaded">
+
+    <condition property="jfx.platform" value="linux">
+      <equals arg1="${target-platform}" arg2="linux" />
+    </condition>
+
+    <condition property="jfx.platform" value="mac">
+      <equals arg1="${target-platform}" arg2="macosx" />
+    </condition>
+
+    <condition property="jfx.platform" value="windows">
+      <equals arg1="${target-platform}" arg2="windows" />
+    </condition>
+
+    <property name="jfx.url"
+              value="https://gluonhq.com/download/javafx-${jfx.name}-sdk-${jfx.platform}" />
+
+    <echo message="${jfx.platform} ${jfx.name} ${jfx.url}" />
+    <get src="${jfx.url}"
+             dest="${jfx.path.zip}"
+             usetimestamp="true" />
+  </target>
+  -->
+
+    <!--
+    <downloader component="jfx"
+                train="${jfx.train}"
+                version="${jfx.version}"
+                platform="${target-platform}${jdk.data.model}"
+                update="${jfx.update}"
+                build="1"
+                flavor="${target-platform}${jdk.data.model}.zip"
+                path="${jfx.path.zip}" />
+    -->
+
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+
+  <macrodef name="preparejfx">
+    <sequential>
+      <if>
+        <equals arg1="${jfx.available}" arg2="true" />
+        <then>
+          <!-- Extract JavaFX -->
+          <echo message="Target jfx: ${jfx.path.zip}"/>
+          <unzip dest="${target-platform}" src="${jfx.path.zip}" overwrite="true">
+            <patternset>
+              <!-- These two aren't supported/used anyway -->
+              <!-- javafx.web.jar, javafx-swt.jar -->
+              <exclude name="**/javafx.web.jar" />
+              <exclude name="**/javafx-swt.jar" />
+              <!-- The web library isn't included because this library is massive.
+                   Remove libjfxwebkit.dylib, libjfxwebkit.so, jfxwebkit.dll -->
+              <exclude name="**/*jfxwebkit.*" />
+              <!-- Not using this either -->
+              <exclude name="**/src.zip" />
+            </patternset>
+          </unzip>
+          <!-- <fail message="should be clean inside ${target-platform}" /> -->
+        </then>
+      </if>
+    </sequential>
+  </macrodef>
+
+  <!-- Use native copy command due to binary file corruption.
+       See https://ant.apache.org/manual/Tasks/copy.html#encoding.
+       Extraneous files removed later. -->
+  <!--
+  <macrodef name="nativecopy">
+    <attribute name="src"/>
+    <attribute name="dest"/>
+    <sequential>
+
+      <local name="src-abs"/>
+      <local name="dest-abs"/>
+      <local name="src-local"/>
+      <local name="dest-local"/>
+
+      <property name="src-abs" value="${basedir}/@{src}"/>
+      <property name="dest-abs" value="${basedir}/@{dest}"/>
+
+      <if>
+        <equals arg1="${host-platform}" arg2="windows" />
+        <then>
+          <propertyregex property="src-local"
+               input="${src-abs}"
+               regexp="/"
+               replace="\\\\"
+               global="true" />
+          <propertyregex property="dest-local"
+              input="${dest-abs}"
+              regexp="/"
+              replace="\\\\"
+              global="true" />
+
+          <echo message="Native copy of ${src-local} to ${dest-local}" />
+          <exec executable="cmd">
+            <arg line="/C xcopy /s/Y ${src-local} ${dest-local}" />
+          </exec>
+        </then>
+      </if>
+
+      <if>
+        <not><equals arg1="${host-platform}" arg2="windows" /></not>
+        <then>
+          <echo message="Native copy of ${src-abs} to ${dest-abs}" />
+          <exec executable="sh">
+            <arg line="-c 'cp ${src-abs} ${dest-abs}'"/>
+          </exec>
+        </then>
+      </if>
+    </sequential>
+  </macrodef>
+  -->
+
+    <!-- Pull in OpenJFX (separated from mainline Java in JDK 11). -->
+    <!--
+    <if>
+      <equals arg1="${jfx.available}" arg2="true" />
+      <then>
+
+        <nativecopy
+          src="${jfx.path.lib}/*.jar"
+          dest="windows/work/core/library" />
+        <nativecopy
+          src="${jfx.path.dist}/bin/*.dll"
+          dest="windows/work/core/library" />
+
+        <mkdir dir="windows/work/java/legal/openjfx" />
+
+        <copy todir="windows/work/java/legal/openjfx" overwrite="true">
+          <fileset dir="${jfx.path.dist}/legal" includes="**"/>
+        </copy>
+
+        <delete failonerror="false" dir="${jfx.path.dist}" />
+      </then>
+    </if>
+    -->
+
+  <target name="compile" depends="download-javafx" description="Compile sources">
+    <condition property="core-built">
+      <available file="${core.path}" />
+    </condition>
+    <fail unless="core-built"
+          message="Please build the core library first: expecting core.jar at ${core.path}" />
+
+    <mkdir dir="bin" />
+    <javac source="11" target="11"
+           srcdir="src" destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           classpath="../../../core/library/core.jar;
+                      library/javafx.base.jar;
+                      library/javafx.controls.jar;
+                      library/javafx.fxml.jar;
+                      library/javafx.graphics.jar;
+                      library/javafx.media.jar;
+                      library/javafx.swing.jar"
+           nowarn="true" />
+  </target>
+
+  <target name="build" depends="compile" description="Build JavaFX renderer">
+    <jar basedir="bin" destfile="library/javafx.jar" />
+  </target>
+</project>
