@@ -124,7 +124,8 @@ public class PShapeOpenGL extends PShape {
   protected VertexBuffer bufPointIndex;
 
   // Testing this field, not use as it might go away...
-  public int glUsage = PGL.STATIC_DRAW;
+  public int glUsage = PGL.DYNAMIC_DRAW;
+  public boolean glStream = true;
 
   // ........................................................
 
@@ -1605,12 +1606,20 @@ public class PShapeOpenGL extends PShape {
   public int getVertexCount() {
     if (family == GROUP) return 0; // Group shapes don't have vertices
     else {
-      if (family == PRIMITIVE || family == PATH) {
-        // the input geometry of primitive and path shapes is built during
-        // tessellation
-        updateTessellation();
+      if (root.tessUpdate) {
+        if (root.tessKind == TRIANGLES) {
+          return lastPolyVertex - firstPolyVertex + 1;
+        } else {
+          return 0;
+        }
+      } else {
+        if (family == PRIMITIVE || family == PATH) {
+          // the input geometry of primitive and path shapes is built during
+          // tessellation
+          updateTessellation();
+        }
+        return inGeo.vertexCount;
       }
-      return inGeo.vertexCount;
     }
   }
 
@@ -1620,9 +1629,18 @@ public class PShapeOpenGL extends PShape {
     if (vec == null) {
       vec = new PVector();
     }
-    vec.x = inGeo.vertices[3 * index + 0];
-    vec.y = inGeo.vertices[3 * index + 1];
-    vec.z = inGeo.vertices[3 * index + 2];
+    if (root.tessUpdate) {
+      if (root.tessKind == TRIANGLES) {
+        int tessIdx = firstPolyVertex + index;
+        vec.x = tessGeo.polyVertices[4 * tessIdx + 0];
+        vec.y = tessGeo.polyVertices[4 * tessIdx + 1];
+        vec.z = tessGeo.polyVertices[4 * tessIdx + 2];
+      }
+    } else {
+      vec.x = inGeo.vertices[3 * index + 0];
+      vec.y = inGeo.vertices[3 * index + 1];
+      vec.z = inGeo.vertices[3 * index + 2];
+    }
     return vec;
   }
 
@@ -1658,29 +1676,40 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    // TODO: in certain cases (kind = TRIANGLE, etc) the correspondence between
-    // input and tessellated vertices is 1-1, so in those cases re-tessellation
-    // wouldn't be necessary. But in order to reasonable take care of that
-    // situation, we would need a complete rethinking of the rendering architecture
-    // in Processing :-)
-    if (family == PATH) {
-      if (vertexCodes != null && vertexCodeCount > 0 &&
-          vertexCodes[index] != VERTEX) {
-        PGraphics.showWarning(NOT_A_SIMPLE_VERTEX, "setVertex()");
-        return;
-      }
-      vertices[index][X] = x;
-      vertices[index][Y] = y;
-      if (is3D && vertices[index].length > 2) {
-        // P3D allows to modify 2D shapes, ignoring the Z coordinate.
-        vertices[index][Z] = z;
+    if (root.tessUpdate) {
+      if (root.tessKind == TRIANGLES) {
+        int tessIdx = firstPolyVertex + index;
+        tessGeo.polyVertices[4 * tessIdx + 0] = x;
+        tessGeo.polyVertices[4 * tessIdx + 1] = y;
+        tessGeo.polyVertices[4 * tessIdx + 2] = z;
+        if (tessIdx < firstModifiedPolyVertex) firstModifiedPolyVertex = tessIdx;
+        if (tessIdx > lastModifiedPolyVertex) lastModifiedPolyVertex = tessIdx;
       }
     } else {
-      inGeo.vertices[3 * index + 0] = x;
-      inGeo.vertices[3 * index + 1] = y;
-      inGeo.vertices[3 * index + 2] = z;
+      // TODO: in certain cases (kind = TRIANGLE, etc) the correspondence between
+      // input and tessellated vertices is 1-1, so in those cases re-tessellation
+      // wouldn't be necessary. But in order to reasonable take care of that
+      // situation, we would need a complete rethinking of the rendering architecture
+      // in Processing :-)
+      if (family == PATH) {
+        if (vertexCodes != null && vertexCodeCount > 0 &&
+            vertexCodes[index] != VERTEX) {
+          PGraphics.showWarning(NOT_A_SIMPLE_VERTEX, "setVertex()");
+          return;
+        }
+        vertices[index][X] = x;
+        vertices[index][Y] = y;
+        if (is3D && vertices[index].length > 2) {
+          // P3D allows to modify 2D shapes, ignoring the Z coordinate.
+          vertices[index][Z] = z;
+        }
+      } else {
+        inGeo.vertices[3 * index + 0] = x;
+        inGeo.vertices[3 * index + 1] = y;
+        inGeo.vertices[3 * index + 2] = z;
+      }
+      markForTessellation();
     }
-    markForTessellation();
   }
 
 
@@ -1839,7 +1868,16 @@ public class PShapeOpenGL extends PShape {
   @Override
   public int getFill(int index) {
     if (family != GROUP && image == null) {
-      return PGL.nativeToJavaARGB(inGeo.colors[index]);
+      if (root.tessUpdate) {
+        if (root.tessKind == TRIANGLES) {
+          int tessIdx = firstPolyVertex + index;
+          return PGL.nativeToJavaARGB(tessGeo.polyColors[tessIdx]);
+        } else {
+          return 0;
+        }
+      } else {
+        return PGL.nativeToJavaARGB(inGeo.colors[index]);
+      }
     } else {
       return 0;
     }
@@ -1925,8 +1963,18 @@ public class PShapeOpenGL extends PShape {
     }
 
     if (image == null) {
-      inGeo.colors[index] = PGL.javaToNativeARGB(fill);
-      markForTessellation();
+      if (root.tessUpdate) {
+        if (root.tessKind == TRIANGLES) {
+          int tessIdx = firstPolyVertex + index;
+          tessGeo.polyColors[tessIdx] = PGL.javaToNativeARGB(fill);
+          setModifiedPolyColors(tessIdx, tessIdx);
+          if (tessIdx < firstModifiedPolyColor) firstModifiedPolyColor = tessIdx;
+          if (tessIdx > lastModifiedPolyColor) lastModifiedPolyColor = tessIdx;
+        }
+      } else {
+        inGeo.colors[index] = PGL.javaToNativeARGB(fill);
+        markForTessellation();
+      }
     }
   }
 
@@ -2839,7 +2887,7 @@ public class PShapeOpenGL extends PShape {
       }
 
       if (tessGeo == null) {
-        tessGeo = PGraphicsOpenGL.newTessGeometry(pg, polyAttribs, PGraphicsOpenGL.RETAINED);
+        tessGeo = PGraphicsOpenGL.newTessGeometry(pg, polyAttribs, PGraphicsOpenGL.RETAINED, true);
       }
       tessGeo.clear();
 
@@ -4008,6 +4056,25 @@ public class PShapeOpenGL extends PShape {
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
   }
 
+  protected void initPolyBuffersStream() {
+    PApplet.println("Stream buffer");
+
+    int size = tessGeo.polyVertexCount;
+    int sizef = size * PGL.SIZEOF_FLOAT;
+    int sizei = size * PGL.SIZEOF_INT;
+    ByteBuffer buffer;
+
+    if (bufPolyVertex == null)
+      bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
+    pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef, null, glUsage);
+    buffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY);
+    tessGeo.polyVerticesBuffer = buffer.asFloatBuffer();
+    tessGeo.updatePolyVerticesBuffer();
+    pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+
+    // ...
+  }
 
   protected void initLineBuffers() {
     int size = tessGeo.lineVertexCount;
@@ -4137,21 +4204,18 @@ public class PShapeOpenGL extends PShape {
   protected void updateGeometryImpl() {
     if (modifiedPolyVertices) {
       // STREAM TEST 2 - BEGIN
+      int offset = firstModifiedPolyVertex;
+      int size = lastModifiedPolyVertex - offset + 1;
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
       ByteBuffer buffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY);
       tessGeo.polyVerticesBuffer = buffer.asFloatBuffer();
-
-      int offset = firstModifiedPolyVertex;
-      int size = lastModifiedPolyVertex - offset + 1;
       tessGeo.updatePolyVerticesBuffer(offset, size);
       modifiedPolyVertices = false;
       firstModifiedPolyVertex = PConstants.MAX_INT;
       lastModifiedPolyVertex = PConstants.MIN_INT;
-
       pgl.unmapBuffer(PGL.ARRAY_BUFFER);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
       // STREAM TEST 2 - END
-
     }
     if (modifiedPolyColors) {
       int offset = firstModifiedPolyColor;
@@ -4666,6 +4730,77 @@ public class PShapeOpenGL extends PShape {
       }
     } else {
       super.styles(g);
+    }
+  }
+
+
+  ///////////////////////////////////////////////////////////
+
+  //
+
+  //  Tessellation update mode
+
+  boolean tessUpdate = false;
+  int tessKind;
+
+  @Override
+  public void beginTessUpdate(int kind) {
+    if (!root.tessUpdate) {
+      updateTessellation();
+      root.tessUpdate = true;
+      root.tessKind = kind;
+
+      int size = tessGeo.polyVertexCount;
+      int sizef = size * PGL.SIZEOF_FLOAT;
+      int sizei = size * PGL.SIZEOF_INT;
+
+      if (root.tessKind == TRIANGLES) {
+        if (bufPolyVertex == null) {
+          bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+          pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
+          pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef, null, glUsage);
+          tessGeo.polyVerticesBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+          tessGeo.updatePolyVerticesBuffer();
+        } else {
+          pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
+          tessGeo.polyVerticesBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+        }
+
+        if (bufPolyColor == null) {
+          bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+          pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
+          pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, glUsage);
+          tessGeo.polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          tessGeo.updatePolyColorsBuffer();
+        } else {
+          pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
+          tessGeo.polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+        }
+
+
+        // ...
+      }
+
+      pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
+
+    }
+  }
+
+  @Override
+  public void endTessUpdate() {
+    if (root.tessUpdate) {
+      if (root.tessKind == TRIANGLES) {
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
+        tessGeo.updatePolyVerticesBuffer();
+        pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
+        tessGeo.updatePolyColorsBuffer();
+        pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+
+        // ...
+      }
+      root.tessUpdate = false;
     }
   }
 

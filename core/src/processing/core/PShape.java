@@ -623,19 +623,19 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>beginContour()</b> and <b>endContour()</b> methods make it 
-   * possible to define shapes with other shapes cut out of them. For 
-   * example, the inside of a letter 'O'. These two functions are always 
-   * used together, you'll never use one without the other. Between them, 
-   * define the geometry you want to create. As you'll see when you run 
-   * the example above, the second smaller shape is cut out of the first 
+   * The <b>beginContour()</b> and <b>endContour()</b> methods make it
+   * possible to define shapes with other shapes cut out of them. For
+   * example, the inside of a letter 'O'. These two functions are always
+   * used together, you'll never use one without the other. Between them,
+   * define the geometry you want to create. As you'll see when you run
+   * the example above, the second smaller shape is cut out of the first
    * larger shape.<br />
    * <br />
-   * The exterior shape and the interior contour must <em>wind</em> in 
-   * opposite directions. This means that if the points of the geometry 
-   * for the exterior shape are described in a clockwise order, the points 
-   * on the interior shape are defined in a counterclockwise order. 
-   * 
+   * The exterior shape and the interior contour must <em>wind</em> in
+   * opposite directions. This means that if the points of the geometry
+   * for the exterior shape are described in a clockwise order, the points
+   * on the interior shape are defined in a counterclockwise order.
+   *
    * @webref shape:vertex
    * @webBrief Starts a new contour
    * @see PShape#endContour()
@@ -671,18 +671,18 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>beginContour()</b> and <b>endContour()</b> methods make 
-   * it possible to define shapes with other shapes cut out of them. 
-   * For example, the inside of a letter 'O'. These two functions are 
-   * always used together, you'll never use one without the other. 
-   * Between them, define the geometry you want to create. As you'll 
-   * see when you run the example above, the second smaller shape is 
+   * The <b>beginContour()</b> and <b>endContour()</b> methods make
+   * it possible to define shapes with other shapes cut out of them.
+   * For example, the inside of a letter 'O'. These two functions are
+   * always used together, you'll never use one without the other.
+   * Between them, define the geometry you want to create. As you'll
+   * see when you run the example above, the second smaller shape is
    * cut out of the first larger shape.<br />
    * <br />
-   * The exterior shape and the interior contour must <em>wind</em> 
-   * in opposite directions. This means that if the points of the 
-   * geometry for the exterior shape are described in a clockwise order, 
-   * the points on the interior shape are defined in a counterclockwise order. 
+   * The exterior shape and the interior contour must <em>wind</em>
+   * in opposite directions. This means that if the points of the
+   * geometry for the exterior shape are described in a clockwise order,
+   * the points on the interior shape are defined in a counterclockwise order.
    *
    * @webref shape:vertex
    * @webBrief Ends a contour
@@ -735,6 +735,14 @@ public class PShape implements PConstants {
     }
   }
 
+  public void beginTessUpdate(int kind) {
+
+  }
+
+
+  public void endTessUpdate() {
+
+  }
 
   public void vertex(float x, float y, float u, float v) {
   }
@@ -777,9 +785,9 @@ public class PShape implements PConstants {
 
 
   /**
-   * This method is used to start a custom shape created with the <b>createShape()</b> 
-   * function. It's always and only used with <b>createShape()</b>. 
-   * 
+   * This method is used to start a custom shape created with the <b>createShape()</b>
+   * function. It's always and only used with <b>createShape()</b>.
+   *
    * @webref pshape:method
    * @webBrief Starts the creation of a new <b>PShape</b>
    * @see PApplet#endShape()
@@ -795,8 +803,8 @@ public class PShape implements PConstants {
   }
 
   /**
-   * This method is used to complete a custom shape created with the <b>createShape()</b> 
-   * function. It's always and only used with <b>createShape()</b>. 
+   * This method is used to complete a custom shape created with the <b>createShape()</b>
+   * function. It's always and only used with <b>createShape()</b>.
    *
    * @webref pshape:method
    * @webBrief Finishes the creation of a new <b>PShape</b>
@@ -2006,7 +2014,7 @@ public class PShape implements PConstants {
 
   /**
    * Returns the number of children within the <b>PShape</b>.
-   * 
+   *
    * @webref
    * @webBrief Returns the number of children
    */
@@ -2081,9 +2089,9 @@ public class PShape implements PConstants {
 
   // can't be just 'add' because that suggests additive geometry
   /**
-   * Adds a child PShape to a parent PShape that is defined as a GROUP. 
-   * In the example, the three shapes <b>path</b>, <b>rectangle</b>, 
-   * and <b>circle</b> are added to a parent PShape variable named 
+   * Adds a child PShape to a parent PShape that is defined as a GROUP.
+   * In the example, the three shapes <b>path</b>, <b>rectangle</b>,
+   * and <b>circle</b> are added to a parent PShape variable named
    * <b>house</b> that is a GROUP.
    * @webref pshape:method
    * @webBrief Adds a new child
@@ -2255,11 +2263,11 @@ public class PShape implements PConstants {
   }
 
   /**
-   * The <b>getVertexCount()</b> method returns the number of vertices that 
-   * make up a <b>PShape</b>. In the above example, the value 4 is returned by the 
-   * <b>getVertexCount()</b> method because 4 vertices are defined in 
+   * The <b>getVertexCount()</b> method returns the number of vertices that
+   * make up a <b>PShape</b>. In the above example, the value 4 is returned by the
+   * <b>getVertexCount()</b> method because 4 vertices are defined in
    * <b>setup()</b>.
-   * 
+   *
    * @webref pshape:method
    * @webBrief Returns the total number of vertices as an int
    * @see PShape#getVertex(int)
@@ -2274,12 +2282,12 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>getVertex()</b> method returns a <b>PVector</b> with the coordinates of 
-   * the vertex point located at the position defined by the <b>index</b> 
-   * parameter. This method works when shapes are created as shown in the 
-   * example above, but won't work properly when a shape is defined explicitly 
+   * The <b>getVertex()</b> method returns a <b>PVector</b> with the coordinates of
+   * the vertex point located at the position defined by the <b>index</b>
+   * parameter. This method works when shapes are created as shown in the
+   * example above, but won't work properly when a shape is defined explicitly
    * (e.g. <b>createShape(RECT, 20, 20, 80, 80)</b>.
-   * 
+   *
    * @webref pshape:method
    * @webBrief Returns the vertex at the index position
    * @param index the location of the vertex
@@ -2326,11 +2334,11 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>setVertex()</b> method defines the coordinates of the vertex point 
-   * located at the position defined by the <b>index</b> parameter. This method 
-   * works when shapes are created as shown in the example above, but won't work 
+   * The <b>setVertex()</b> method defines the coordinates of the vertex point
+   * located at the position defined by the <b>index</b> parameter. This method
+   * works when shapes are created as shown in the example above, but won't work
    * properly when a shape is defined explicitly (e.g. <b>createShape(RECT, 20, 20, 80, 80)</b>.
-   * 
+   *
    * @webref pshape:method
    * @webBrief Sets the vertex at the index position
    * @param index the location of the vertex

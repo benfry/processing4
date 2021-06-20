@@ -577,7 +577,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
     polyAttribs = newAttributeMap();
     inGeo = newInGeometry(this, polyAttribs, IMMEDIATE);
-    tessGeo = newTessGeometry(this, polyAttribs, IMMEDIATE);
+    tessGeo = newTessGeometry(this, polyAttribs, IMMEDIATE, false);
     texCache = newTexCache(this);
 
     projection = new PMatrix3D();
@@ -7382,8 +7382,8 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
   static protected TessGeometry newTessGeometry(PGraphicsOpenGL pg,
-                                                AttributeMap attr, int mode) {
-    return new TessGeometry(pg, attr, mode);
+                                                AttributeMap attr, int mode, boolean stream) {
+    return new TessGeometry(pg, attr, mode, stream);
   }
 
 
@@ -9123,6 +9123,7 @@ public class PGraphicsOpenGL extends PGraphics {
   // Holds tessellated data for polygon, line and point geometry.
   static protected class TessGeometry {
     int renderMode;
+    boolean bufferStream;
     PGraphicsOpenGL pg;
     AttributeMap polyAttribs;
 
@@ -9202,10 +9203,11 @@ public class PGraphicsOpenGL extends PGraphics {
     HashMap<String, int[]> ipolyAttribs = new HashMap<>();
     HashMap<String, byte[]> bpolyAttribs = new HashMap<>();
 
-    TessGeometry(PGraphicsOpenGL pg, AttributeMap attr, int mode) {
+    TessGeometry(PGraphicsOpenGL pg, AttributeMap attr, int mode, boolean stream) {
       this.pg = pg;
       this.polyAttribs = attr;
       renderMode = mode;
+      bufferStream = stream;
       allocate();
     }
 
@@ -9236,7 +9238,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
       // STREAM TEST 3 - BEGIN
-      if (renderMode == IMMEDIATE)
+      if (!bufferStream)
         polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
       // STREAM TEST 3 - END
 
@@ -9690,8 +9692,7 @@ public class PGraphicsOpenGL extends PGraphics {
       polyVertices = temp;
 
       // STREAM TEST 4 - BEGIN
-      if (renderMode == IMMEDIATE)
-        polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+      if (!bufferStream) polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
       // STREAM TEST 4 - END
     }
 
@@ -9892,8 +9893,7 @@ public class PGraphicsOpenGL extends PGraphics {
       polyVertices = temp;
 
       // STREAM TEST 5 - BEGIN
-      if (renderMode == IMMEDIATE)
-        polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+      if (renderMode == IMMEDIATE) polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
       // STREAM TEST 5 - BEGIN
     }
 
