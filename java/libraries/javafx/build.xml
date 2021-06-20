@@ -148,7 +148,7 @@
       <param name="gluon.base" value="javafx-16-sdk-mac" />
       <!-- extract the .jar files from the first javafx we run across -->
       <!-- <param name="skip.jars" value="true" /> -->
-      <param name="natives.path" value="${library.path}/macosx64" />
+      <param name="natives.path" value="${library.path}/macosx" />
     </antcall>
 
     <antcall target="retrieve-gluon">

@@ -853,7 +853,7 @@ public class JavaBuild {
 
       String lines[] = PApplet.loadStrings(plistTemplate);
       for (int i = 0; i < lines.length; i++) {
-        if (lines[i].indexOf("@@") != -1) {
+        if (lines[i].contains("@@")) {
           StringBuilder sb = new StringBuilder(lines[i]);
           int index = 0;
           while ((index = sb.indexOf("@@jvm_runtime@@")) != -1) {

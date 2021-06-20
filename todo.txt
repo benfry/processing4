@@ -44,6 +44,10 @@ _ "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
 
 _ add JavaFX library to IntelliJ
 
+_ macosx vs macosx64 in JavaFX
+_   the latter is making the export fail because it won't embed a Java VM
+_   may be because it's exporting twice and overwriting? or 64 takes precedence?
+
 _ fix modules path warning for Tools in the PDE
 _ update for new modules path when running from the PDE
 _ update modules path when exporting application
