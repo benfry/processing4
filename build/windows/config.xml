@@ -23,21 +23,26 @@
     <cp>lib/ant.jar</cp>
     <cp>lib/ant-launcher.jar</cp>
 
-    <cp>core/library/javafx.base.jar</cp>
-    <cp>core/library/javafx.controls.jar</cp>
-    <cp>core/library/javafx.fxml.jar</cp>
-    <cp>core/library/javafx.graphics.jar</cp>
-    <cp>core/library/javafx.media.jar</cp>
-    <cp>core/library/javafx.swing.jar</cp>
     <!-- <cp>%EXEDIR%/java/lib/tools.jar</cp> -->
+
+    <cp>modes/java/libraries/javafx/library/javafx.base.jar</cp>
+    <cp>modes/java/libraries/javafx/library/javafx.controls.jar</cp>
+    <cp>modes/java/libraries/javafx/library/javafx.fxml.jar</cp>
+    <cp>modes/java/libraries/javafx/library/javafx.graphics.jar</cp>
+    <cp>modes/java/libraries/javafx/library/javafx.media.jar</cp>
+    <cp>modes/java/libraries/javafx/library/javafx.swing.jar</cp>
   </classPath>
   <jre>
     <path>java</path>
     <!-- Make it possible access JavaFX and JOGL libraries for Tools,
          Modes, etc. Not recommended, but making it possible because
          some Tools rely on JavaFX. (OpenGL is only incidental.) -->
-    <opt>-Djava.library.path=lib;core/library</opt>
-    <opt>--module-path=core/library</opt>
+    <!-- <opt>-Djava.library.path=lib;core/library</opt> -->
+    <!-- <opt>-\-module-path=core/library</opt> -->
+    <!-- Make it possible access JavaFX for Tools, Modes, etc. Not recommended,
+         but making it possible for 4.x because some Tools rely on JavaFX. -->
+    <opt>-Djava.library.path=lib;modes/java/libraries/javafx/library</opt>
+    <opt>--module-path=modes/java/libraries/javafx/library/windows64</opt>
 
     <!-- Java 9+ handles high DPI internally so OS display scaling -->
     <!-- can cause display issues with custom rendering swing elements. -->

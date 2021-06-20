@@ -36,10 +36,16 @@ X   https://github.com/processing/processing/issues/3288
 o   these will change again for Java 11, so wait until then
 X   opting not to do so
 X   https://github.com/processing/processing4/issues/210
+X move JavaFX to its own library, too many weird quirks that it includes
+o   build bits should be in core/build.xml or javafx/build.xml
+X   by moving it out, all the strangeness of download and import is outside core
 
+_ fix modules path warning for Tools in the PDE
+_ update for new modules path when running from the PDE
+_ update modules path when exporting application
 
-_ move JavaFX to its own library, too many weird quirks that it includes
-_   build bits should be in core/build.xml or javafx/build.xml
+_ automatically import JavaFX if FX2D is in sketch? or tell user?
+
 _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
 _ Only specify --modules-path when running JavaFX apps
