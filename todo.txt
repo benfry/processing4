@@ -30,6 +30,12 @@ X make sure we're not embedding webkit with all JFX apps
 X   maybe just remove it from the main download as well
 X   remove javafx-swt.jar and javafx.web.jar / also their .so files
 X more checking FX2D (and application export) on Windows
+o update list of optional JRE files for Java 8
+o   Andres provided some updates
+X   https://github.com/processing/processing/issues/3288
+o   these will change again for Java 11, so wait until then
+X   opting not to do so
+X   https://github.com/processing/processing4/issues/210
 
 
 _ move JavaFX to its own library, too many weird quirks that it includes
@@ -150,13 +156,6 @@ _ disable "notifications" prompt on startup for macOS
 _   (we're not posting any notifications, at least for now)
 _   https://developer.apple.com/documentation/usernotifications
 _   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
-_ Apple Silicon release
-_   http://openjdk.java.net/jeps/391
-_   https://github.com/AdoptOpenJDK/openjdk-support/issues/146
-_   https://github.com/microsoft/openjdk-aarch64/releases
-_   https://www.azul.com/downloads/zulu-community/?version=java-11-lts&os=macos&architecture=arm-64-bit&package=jdk
-_   OpenGL available but deprecated on Apple Si
-_     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to_apple_silicon
 
 
 windows
@@ -388,10 +387,6 @@ _   https://github.com/processing/processing/issues/5023
 
 
 pde/build
-_ update list of optional JRE files for Java 8
-_   Andres provided some updates
-_   https://github.com/processing/processing/issues/3288
-_   these will change again for Java 11, so wait until then
 _ fix appbundler problems due to rollback
 _   https://github.com/processing/processing/issues/3790
 _   the rollback re-introduces two bugs (serial export and scrolling)
