@@ -357,8 +357,9 @@ public class Runner implements MessageConsumer {
       //params.append("-Dcom.apple.mrj.application.apple.menu.about.name=" +
       //              build.getSketchClassName());
     } else if (Platform.isWindows()) {
-      // No scaling of swing (see #5753) on zoomed displays until some issues regarding JEP 263
-      // with rendering artifacts are sorted out.
+      // No scaling of Swing on zoomed displays until some issues
+      // regarding JEP 263 with rendering artifacts are sorted out.
+      // https://github.com/processing/processing/issues/5753
       params.append("-Dsun.java2d.uiScale=1");
     }
 
