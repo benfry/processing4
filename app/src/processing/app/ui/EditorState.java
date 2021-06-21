@@ -97,24 +97,6 @@ public class EditorState {
   }
 
 
-  /*
-  EditorState(String info) throws IOException {
-    String[] pieces = PApplet.split(info, ',');
-    editorBounds = new Rectangle(Integer.parseInt(pieces[0]),
-                                 Integer.parseInt(pieces[1]),
-                                 Integer.parseInt(pieces[2]),
-                                 Integer.parseInt(pieces[3]));
-
-    dividerLocation = Integer.parseInt(pieces[4]);
-
-    deviceBounds = new Rectangle(Integer.parseInt(pieces[5]),
-                                 Integer.parseInt(pieces[6]),
-                                 Integer.parseInt(pieces[7]),
-                                 Integer.parseInt(pieces[8]));
-  }
-  */
-
-
   public String toString() {
     return (editorBounds.x + "," +
             editorBounds.y + "," +
@@ -123,34 +105,6 @@ public class EditorState {
             dividerLocation + "," +
             deviceConfig);
   }
-
-  /*
-//   * Returns a GraphicsConfiguration so that a new Editor Frame can be
-//   * constructed. First tries to match the bounds for this state information
-//   * to an existing config (nominally, a display) and if that doesn't work,
-//   * then returns the default configuration/default display.
-  GraphicsConfiguration checkConfig() {
-    if (deviceBounds != null) {
-      GraphicsEnvironment graphicsEnvironment =
-        GraphicsEnvironment.getLocalGraphicsEnvironment();
-      GraphicsDevice[] screenDevices = graphicsEnvironment.getScreenDevices();
-      for (GraphicsDevice device : screenDevices) {
-        GraphicsConfiguration[] configurations = device.getConfigurations();
-        for (GraphicsConfiguration config : configurations) {
-//          if (config.getDevice().getIDstring().equals(deviceName)) {
-          if (config.getBounds().equals(deviceBounds)) {
-            System.out.println("found config " + config + " " + deviceBounds);
-            System.out.println("device name is " + config.getDevice().getIDstring());
-            return config;
-          }
-        }
-      }
-    }
-    System.out.println("using default config");
-    // otherwise go to the default config
-    return defaultConfig();
-  }
-  */
 
 
   public GraphicsConfiguration getConfig() {
@@ -161,10 +115,7 @@ public class EditorState {
   static GraphicsConfiguration getDefaultConfig() {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice device = ge.getDefaultScreenDevice();
-    GraphicsConfiguration config = device.getDefaultConfiguration();
-//    deviceName = device.getIDstring();
-//    deviceBounds = config.getBounds();
-    return config;
+    return device.getDefaultConfiguration();
   }
 
 
@@ -210,7 +161,7 @@ public class EditorState {
       dividerLocation = lastOpened.getDividerLocation();
 
       if (!deviceBounds.contains(editorBounds)) {
-        // Warp the next window to a randomish location on screen.
+        // Warp the next window to a random-ish location on screen.
         editorBounds.x = deviceBounds.x +
           (int) (Math.random() * (deviceBounds.width - defaultWidth));
         editorBounds.y = deviceBounds.y +
@@ -222,18 +173,6 @@ public class EditorState {
       }
     }
   }
-
-
-  /*
-  void update(Editor editor) {
-    editorBounds = editor.getBounds();
-    dividerLocation = editor.getDividerLocation();
-    GraphicsConfiguration config = editor.getGraphicsConfiguration();
-    deviceBounds = config.getBounds();
-//      GraphicsDevice device = config.getDevice();
-    deviceName = config.getDevice().getIDstring();
-  }
-  */
 
 
   void apply(Editor editor) {
@@ -252,26 +191,4 @@ public class EditorState {
     // added if it's something that would be necessary (i.e. to store windows and
     // re-open them on when re-opening Processing)
   }
-
-
-//  void write(PrintWriter writer) {
-////      writer.print(path);
-//    writer.print('\t');
-//    writeRect(writer, editorBounds);
-////      writer.print('\t');
-////      writer.print(deviceName);
-//    writer.print('\t');
-//    writeRect(writer, deviceBounds);
-//  }
-//
-//
-//  void writeRect(PrintWriter writer, Rectangle rect) {
-//    writer.print(rect.x);
-//    writer.print('\t');
-//    writer.print(rect.y);
-//    writer.print('\t');
-//    writer.print(rect.width);
-//    writer.print('\t');
-//    writer.print(rect.height);
-//  }
 }
