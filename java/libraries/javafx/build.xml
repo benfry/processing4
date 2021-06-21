@@ -237,31 +237,33 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
 
+  <!--
   <macrodef name="preparejfx">
     <sequential>
       <if>
         <equals arg1="${jfx.available}" arg2="true" />
         <then>
-          <!-- Extract JavaFX -->
+          <!- - Extract JavaFX - ->
           <echo message="Target jfx: ${jfx.path.zip}"/>
           <unzip dest="${target-platform}" src="${jfx.path.zip}" overwrite="true">
             <patternset>
-              <!-- These two aren't supported/used anyway -->
-              <!-- javafx.web.jar, javafx-swt.jar -->
+              <!- - These two aren't supported/used anyway - ->
+              <!- - javafx.web.jar, javafx-swt.jar - ->
               <exclude name="**/javafx.web.jar" />
               <exclude name="**/javafx-swt.jar" />
-              <!-- The web library isn't included because this library is massive.
-                   Remove libjfxwebkit.dylib, libjfxwebkit.so, jfxwebkit.dll -->
+              <!- - The web library isn't included because this library is massive.
+                   Remove libjfxwebkit.dylib, libjfxwebkit.so, jfxwebkit.dll - ->
               <exclude name="**/*jfxwebkit.*" />
-              <!-- Not using this either -->
+              <!- - Not using this either - ->
               <exclude name="**/src.zip" />
             </patternset>
           </unzip>
-          <!-- <fail message="should be clean inside ${target-platform}" /> -->
+          <!- - <fail message="should be clean inside ${target-platform}" /> - ->
         </then>
       </if>
     </sequential>
   </macrodef>
+  -->
 
   <!-- Use native copy command due to binary file corruption.
        See https://ant.apache.org/manual/Tasks/copy.html#encoding.
@@ -345,18 +347,35 @@
     <fail unless="core-built"
           message="Please build the core library first: expecting core.jar at ${core.path}" />
 
+    <!--
+    <condition property="javafx.jar.path" value="library/linux64">
+      <equals arg1="${target-platform}" arg2="linux" />
+    </condition>
+
+    <condition property="javafx.jar.path" value="library/macosx">
+      <equals arg1="${target-platform}" arg2="macosx" />
+    </condition>
+
+    <condition property="javafx.jar.path" value="library/windows64">
+      <equals arg1="${target-platform}" arg2="windows" />
+    </condition>
+    -->
+
+    <!-- just pick a platform; this should be sufficient for building -->
+    <property name="javafx.jar.path" value="library/macosx" />
+
     <mkdir dir="bin" />
     <javac source="11" target="11"
            srcdir="src" destdir="bin"
            encoding="UTF-8"
            includeAntRuntime="false"
-           classpath="../../../core/library/core.jar;
-                      library/javafx.base.jar;
-                      library/javafx.controls.jar;
-                      library/javafx.fxml.jar;
-                      library/javafx.graphics.jar;
-                      library/javafx.media.jar;
-                      library/javafx.swing.jar"
+           classpath="${core.path};
+                      ${javafx.jar.path}/javafx.base.jar;
+                      ${javafx.jar.path}/javafx.controls.jar;
+                      ${javafx.jar.path}/javafx.fxml.jar;
+                      ${javafx.jar.path}/javafx.graphics.jar;
+                      ${javafx.jar.path}/javafx.media.jar;
+                      ${javafx.jar.path}/javafx.swing.jar"
            nowarn="true" />
   </target>
 
