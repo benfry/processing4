@@ -433,8 +433,8 @@ public class PGraphicsFX2D extends PGraphics {
     context.beginPath();
     PathIterator pi = s.getPathIterator(null);
     while (!pi.isDone()) {
-      int pitype = pi.currentSegment(pathCoordsBuffer);
-      switch (pitype) {
+      int piType = pi.currentSegment(pathCoordsBuffer);
+      switch (piType) {
         case PathIterator.SEG_MOVETO:
           context.moveTo(pathCoordsBuffer[0], pathCoordsBuffer[1]);
           break;
@@ -454,7 +454,7 @@ public class PGraphicsFX2D extends PGraphics {
           context.closePath();
           break;
         default:
-          showWarning("Unknown segment type " + pitype);
+          showWarning("Unknown segment type " + piType);
       }
       pi.next();
     }
@@ -833,7 +833,7 @@ public class PGraphicsFX2D extends PGraphics {
     float sweep = stop - start;
 
     // The defaults, before 2.0b7, were to stroke as Arc2D.OPEN, and then fill
-    // using Arc2D.PIE. That's a little wonky, but it's here for compatability.
+    // using Arc2D.PIE. That's a little wonky, but it's here for compatibility.
     ArcType fillMode = ArcType.ROUND;  // Arc2D.PIE
     ArcType strokeMode = ArcType.OPEN;
 
@@ -1093,7 +1093,7 @@ public class PGraphicsFX2D extends PGraphics {
       int targetType = ARGB;
       boolean opaque = (tintColor & 0xFF000000) == 0xFF000000;
       if (source.format == RGB) {
-        if (!tint || (tint && opaque)) {
+        if (!tint || opaque) {
           //bufferType = BufferedImage.TYPE_INT_RGB;
           targetType = RGB;
         }
@@ -1155,8 +1155,7 @@ public class PGraphicsFX2D extends PGraphics {
 //          RescaleOp op = new RescaleOp(scales, offsets, null);
 //          op.filter(image, image);
 
-        //} else if (bufferType == BufferedImage.TYPE_INT_ARGB) {
-        } else if (targetType == ARGB) {
+        } else {  // targetType == ARGB
           if (source.format == RGB &&
               (tintColor & 0xffffff) == 0xffffff) {
             int hi = tintColor & 0xff000000;
@@ -1288,7 +1287,7 @@ public class PGraphicsFX2D extends PGraphics {
 
   //////////////////////////////////////////////////////////////
 
-  // TEXT ATTRIBTUES
+  // TEXT ATTRIBUTES
 
 
   protected FontCache fontCache = new FontCache();
@@ -1374,14 +1373,14 @@ public class PGraphicsFX2D extends PGraphics {
 
     // keeps all created fonts for reuse up to MAX_CACHE_SIZE limit
     // when the limit is reached, the least recently used font is removed
-    // TODO: this should be based on memory consumtion
+    // TODO: this should be based on memory consumption
     final LinkedHashMap<Key, FontInfo> cache =
-        new LinkedHashMap<Key, FontInfo>(16, 0.75f, true) {
-      @Override
-      protected boolean removeEldestEntry(Map.Entry<Key, FontInfo> eldest) {
-        return size() > MAX_CACHE_SIZE;
-      }
-    };
+      new LinkedHashMap<>(16, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Key, FontInfo> eldest) {
+          return size() > MAX_CACHE_SIZE;
+        }
+      };
 
     // key for retrieving fonts from cache; don't use for insertion,
     // every font has to have its own new Key instance
@@ -1540,7 +1539,7 @@ public class PGraphicsFX2D extends PGraphics {
 
   protected PImage getTintedGlyphImage(PFont.Glyph glyph, int tintColor) {
     if (textFontInfo.tintCache == null) {
-      textFontInfo.tintCache = new LinkedHashMap<Integer, PImage[]>(16, 0.75f, true) {
+      textFontInfo.tintCache = new LinkedHashMap<>(16, 0.75f, true) {
         @Override
         protected boolean removeEldestEntry(Map.Entry<Integer, PImage[]> eldest) {
           return size() > FontInfo.MAX_CACHED_COLORS_PER_FONT;
@@ -1571,14 +1570,15 @@ public class PGraphicsFX2D extends PGraphics {
     PFont.Glyph glyph = textFont.getGlyph(ch);
     if (glyph != null) {
       if (textMode == MODEL) {
-        float high    = glyph.height     / (float) textFont.getSize();
-        float bwidth  = glyph.width      / (float) textFont.getSize();
-        float lextent = glyph.leftExtent / (float) textFont.getSize();
-        float textent = glyph.topExtent  / (float) textFont.getSize();
+        float bitmapSize = (float) textFont.getSize();
+        float high = glyph.height / bitmapSize;
+        float wide  = glyph.width / bitmapSize;
+        float leftExtent = glyph.leftExtent / bitmapSize;
+        float topExtent = glyph.topExtent / bitmapSize;
 
-        float x1 = x + lextent * textSize;
-        float y1 = y - textent * textSize;
-        float x2 = x1 + bwidth * textSize;
+        float x1 = x + leftExtent * textSize;
+        float y1 = y - topExtent * textSize;
+        float x2 = x1 + wide * textSize;
         float y2 = y1 + high * textSize;
 
         PImage glyphImage = (fillColor == 0xFFFFFFFF) ?
@@ -2033,7 +2033,7 @@ public class PGraphicsFX2D extends PGraphics {
   public void backgroundImpl() {
 
     // if pixels are modified, we don't flush them (just mark them flushed)
-    // because they would be immediatelly overwritten by the background anyway
+    // because they would be immediately overwritten by the background anyway
     modified = false;
     loaded = false;
 
