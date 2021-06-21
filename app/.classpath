@@ -11,7 +11,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/ant.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="/processing4-core/library-test/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="lib/VAqua7.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing4-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

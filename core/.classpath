@@ -8,8 +8,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="library/jogl-all.jar" sourcepath="library/jogl-all-src.jar"/>
 	<classpathentry kind="lib" path="library/gluegen-rt.jar"/>
-	<classpathentry kind="lib" path="library/javafx.graphics.jar"/>
-	<classpathentry kind="lib" path="library/javafx.base.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX11"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
