@@ -25,12 +25,14 @@
 
     <!-- <cp>%EXEDIR%/java/lib/tools.jar</cp> -->
 
+    <!--
     <cp>modes/java/libraries/javafx/library/javafx.base.jar</cp>
     <cp>modes/java/libraries/javafx/library/javafx.controls.jar</cp>
     <cp>modes/java/libraries/javafx/library/javafx.fxml.jar</cp>
     <cp>modes/java/libraries/javafx/library/javafx.graphics.jar</cp>
     <cp>modes/java/libraries/javafx/library/javafx.media.jar</cp>
     <cp>modes/java/libraries/javafx/library/javafx.swing.jar</cp>
+    -->
   </classPath>
   <jre>
     <path>java</path>
@@ -42,7 +44,8 @@
     <!-- Make it possible access JavaFX for Tools, Modes, etc. Not recommended,
          but making it possible for 4.x because some Tools rely on JavaFX. -->
     <opt>-Djava.library.path=lib;modes/java/libraries/javafx/library/windows64</opt>
-    <opt>--module-path=modes/java/libraries/javafx/library</opt>
+    <opt>--module-path=modes/java/libraries/javafx/library/windows64</opt>
+    <opt>--add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing</opt>
 
     <!-- Java 9+ handles high DPI internally so OS display scaling -->
     <!-- can cause display issues with custom rendering swing elements. -->
