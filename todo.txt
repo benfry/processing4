@@ -39,18 +39,29 @@ X   https://github.com/processing/processing4/issues/210
 X move JavaFX to its own library, too many weird quirks that it includes
 o   build bits should be in core/build.xml or javafx/build.xml
 X   by moving it out, all the strangeness of download and import is outside core
+X add JavaFX library to IntelliJ
+X #@$*$& the JavaFX jars are ever-so-slightly different between platforms
 
-_ "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
-_   we were probably spared the warnings because the older JARs were hanging around
 
-_ add JavaFX library to IntelliJ
+for next release
+_ debug JavaFX and Export to Application on Windows
+_   this was working on Saturday, now broken after the move to a separate library
+_ debug JavaFX and Export to Application on Linux
+_ Code completion not working
+_   https://github.com/processing/processing4/issues/177
+_   confirmed not working from Sam's repo either
+
+
+_ lots more cleanup to do in javafx/build.xml
 
 _ macosx vs macosx64 in JavaFX
 _   the latter is making the export fail because it won't embed a Java VM
 _   may be because it's exporting twice and overwriting? or 64 takes precedence?
 
 _ fix modules path warning for Tools in the PDE
-_ update for new modules path when running from the PDE
+_   "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
+_   we were probably spared the warnings because the older JARs were hanging around
+
 _ update modules path when exporting application
 
 _ automatically import JavaFX if FX2D is in sketch? or tell user?
@@ -59,13 +70,6 @@ _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
 _ Only specify --modules-path when running JavaFX apps
 _   https://github.com/processing/processing4/issues/209
-
-
-for next release
-_ debug JavaFX and Export to Application on Linux
-_ Code completion not working
-_   https://github.com/processing/processing4/issues/177
-_   confirmed not working from Sam's repo either
 
 
 may be fixed

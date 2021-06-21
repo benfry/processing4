@@ -85,20 +85,25 @@
          dest="${gluon.base}.zip"
          usetimestamp="true" />
 
-    <available file="${library.path}/javafx.base.jar"
+<!--     <available file="${library.path}/javafx.base.jar"
                property="javafx.jars.exist" />
-
+ -->
     <antcall target="unzip-gluon-jars" />
     <antcall target="unzip-gluon-natives" />
   </target>
 
   <!-- extract the .jar files from the first javafx we run across -->
-  <target name="unzip-gluon-jars" unless="${javafx.jars.exist}">
+  <!-- <target name="unzip-gluon-jars" unless="${javafx.jars.exist}"> -->
+  <target name="unzip-gluon-jars">
     <echo message="Extracting jars from ${gluon.base}.zip" />
     <!-- should javafx.properties be copyed? is it used for anything? [fry 210620] -->
 
     <!-- https://ant.apache.org/manual/Tasks/unzip.html -->
-    <unzip dest="${library.path}" src="${gluon.base}.zip" overwrite="true">
+    <!-- <unzip dest="${library.path}" src="${gluon.base}.zip" overwrite="true"> -->
+    <!-- !#($*#! the builds have *slightly* different classes in each release
+         (WinPlatformFactory not in macOS .jar... FFS it 1100 bytes of glue code)
+         So the .jar files go into the native subdirectories as well. -->
+    <unzip dest="${natives.path}" src="${gluon.base}.zip" overwrite="true">
       <patternset>
         <include name="**/*.jar" />
         <!-- These two aren't supported/used -->
