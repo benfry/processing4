@@ -92,6 +92,7 @@
     <antcall target="unzip-gluon-natives" />
   </target>
 
+  <!-- extract the .jar files from the first javafx we run across -->
   <target name="unzip-gluon-jars" unless="${javafx.jars.exist}">
     <echo message="Extracting jars from ${gluon.base}.zip" />
     <!-- should javafx.properties be copyed? is it used for anything? [fry 210620] -->
@@ -140,14 +141,15 @@
 
   <target name="download-javafx">
     <property name="gluon.version" value="16" />
+    <!-- current Early Access version, includes support for other architectures -->
+    <!-- <property name="gluon.version" value="17-ea" /> -->
+
     <!-- http://ant.apache.org/manual/Tasks/tempfile.html -->
     <!-- <tempfile property="temp.zip" destDir="${java.io.tmpdir}" suffix=".zip" /> -->
 
     <!-- javafx-${gluon.version}-sdk-${gluon.platform} -->
     <antcall target="retrieve-gluon">
-      <param name="gluon.base" value="javafx-16-sdk-mac" />
-      <!-- extract the .jar files from the first javafx we run across -->
-      <!-- <param name="skip.jars" value="true" /> -->
+      <param name="gluon.base" value="javafx-${gluon.version}-sdk-mac" />
       <param name="natives.path" value="${library.path}/macosx" />
     </antcall>
 
