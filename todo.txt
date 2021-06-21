@@ -41,6 +41,7 @@ o   build bits should be in core/build.xml or javafx/build.xml
 X   by moving it out, all the strangeness of download and import is outside core
 
 _ "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
+_   we were probably spared the warnings because the older JARs were hanging around
 
 _ add JavaFX library to IntelliJ
 

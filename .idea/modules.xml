@@ -9,6 +9,7 @@
       <module fileurl="file://$PROJECT_DIR$/core/methods/processing4-core-preproc.iml" filepath="$PROJECT_DIR$/core/methods/processing4-core-preproc.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/libraries/dxf/processing4-dxf.iml" filepath="$PROJECT_DIR$/java/libraries/dxf/processing4-dxf.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/processing4-java.iml" filepath="$PROJECT_DIR$/java/processing4-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/java/libraries/javafx/processing4-javafx.iml" filepath="$PROJECT_DIR$/java/libraries/javafx/processing4-javafx.iml" />
       <module fileurl="file://$PROJECT_DIR$/build/jre/processing4-jre.iml" filepath="$PROJECT_DIR$/build/jre/processing4-jre.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/libraries/net/processing4-net.iml" filepath="$PROJECT_DIR$/java/libraries/net/processing4-net.iml" />
       <module fileurl="file://$PROJECT_DIR$/java/libraries/pdf/processing4-pdf.iml" filepath="$PROJECT_DIR$/java/libraries/pdf/processing4-pdf.iml" />
