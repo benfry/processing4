@@ -371,8 +371,6 @@ public class Base {
     // menu works on Mac OS X (since it needs examplesFolder to be set).
     Platform.initBase(this);
 
-//    toolsFolder = getContentFile("tools");
-
 //    // Check if there were previously opened sketches to be restored
 //    boolean opened = restoreSketches();
     boolean opened = false;
@@ -1079,7 +1077,7 @@ public class Base {
       }
       return null;
     }
-    final Mode[] modes = possibleModes.toArray(new Mode[possibleModes.size()]);
+    final Mode[] modes = possibleModes.toArray(new Mode[0]);
     final String message = preferredMode == null ?
       (nextMode.getTitle() + " Mode can't open ." + extension + " files, " +
        "but you have one or more modes\ninstalled that can. " +
@@ -1996,7 +1994,7 @@ public class Base {
     File sketchbookFolder = null;
     try {
       sketchbookFolder = Platform.getDefaultSketchbookFolder();
-    } catch (Exception e) { }
+    } catch (Exception ignored) { }
 
     if (sketchbookFolder == null) {
       Messages.showError("No sketchbook",
