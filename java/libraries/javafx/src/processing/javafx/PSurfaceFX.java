@@ -885,6 +885,8 @@ public class PSurfaceFX implements PSurface {
         button = PConstants.CENTER;
         break;
       case NONE:
+      case BACK:
+      case FORWARD:
         // not currently handled
         break;
     }
