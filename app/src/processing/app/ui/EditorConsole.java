@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -161,7 +161,7 @@ public class EditorConsole extends JScrollPane {
     StyleConstants.setAlignment(standard, StyleConstants.ALIGN_LEFT);
     consoleDoc.setParagraphAttributes(0, 0, standard, true);
 
-    Font font = Preferences.getFont("console.font");
+    Font font = Preferences.getFont("editor.font", "console.font.size");
 
     // build styles for different types of console output
     Color bgColor = mode.getColor("console.color");

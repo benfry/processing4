@@ -36,23 +36,45 @@ X   https://github.com/processing/processing/issues/3288
 o   these will change again for Java 11, so wait until then
 X   opting not to do so
 X   https://github.com/processing/processing4/issues/210
+X changes to how getFont() works for Preferences
+X   this may have been the cause of the old ghost NPEs on startup?
+
+X turn off chooser.files.native on macOS
+# We were shutting this off on macOS because it broke Copy/Paste:
+# https://github.com/processing/processing/issues/1035
+# https://github.com/processing/processing4/issues/77
+# But changing this for 4.0 alpha 5, because the JFileChooser is awful,
+# and even worse on Big Sur, and worse than the Copy/Paste issue.
+
+javafx
 X move JavaFX to its own library, too many weird quirks that it includes
 o   build bits should be in core/build.xml or javafx/build.xml
 X   by moving it out, all the strangeness of download and import is outside core
 X add JavaFX library to IntelliJ
 X #@$*$& the JavaFX jars are ever-so-slightly different between platforms
+X Only specify --modules-path when running JavaFX apps
+X   https://github.com/processing/processing4/issues/209
+_ lots more cleanup to do in javafx/build.xml
 
+
+_ "Could not run" "For more information, read revisions.txt and Help → Troubleshooting."
+_   need to drop revisions.txt here and just reference Troubleshooting
 
 for next release
 _ debug JavaFX and Export to Application on Windows
 _   this was working on Saturday, now broken after the move to a separate library
+_   now "Art Station" is broken because it actually creates an FX2D sketch
+_     (and FX2D isn't on the classpath by default)
 _ debug JavaFX and Export to Application on Linux
 _ Code completion not working
 _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
 
+_ replace bug numbers
+_   http://dev.processing.org/bugs/show_bug.cgi?id=1188
+_   with http://processing.org/bugs/bugzilla/1188.html
+_   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
-_ lots more cleanup to do in javafx/build.xml
 
 _ macosx vs macosx64 in JavaFX
 _   the latter is making the export fail because it won't embed a Java VM
@@ -68,9 +90,8 @@ _ automatically import JavaFX if FX2D is in sketch? or tell user?
 
 _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
-_ Only specify --modules-path when running JavaFX apps
-_   https://github.com/processing/processing4/issues/209
-
+_ Implement support Java “modules” and clean up JavaFX-specific workarounds
+_   https://github.com/processing/processing4/issues/212
 
 may be fixed
 _ Undo feature may have undesired results (4.0a4)
@@ -167,7 +188,6 @@ _   'show sketch folder' weird when in temp folder
 _     ask to save first (sketch has not been saved yet)
 _     or make the temp folder part of the sketchbook
 _   same with adding files to an unsaved sketch, do we block that?
-_ remove code.google.com URLs with Github URLs (numbers are in sync)
 
 
 macos

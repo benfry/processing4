@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -156,10 +156,11 @@ public class PreferencesFrame {
 
     JLabel fontSizelabel = new JLabel(Language.text("preferences.editor_font_size")+": ");
     fontSizeField = new JComboBox<>(FONT_SIZES);
+    fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
 
     JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size")+": ");
     consoleFontSizeField = new JComboBox<>(FONT_SIZES);
-    fontSizeField.setSelectedItem(Preferences.getFont("editor.font.size"));
+    consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
 
 
     // Interface scale: [ 100% ] (requires restart of Processing)
@@ -673,10 +674,6 @@ public class PreferencesFrame {
       fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
     }
 
-    Preferences.setBoolean("editor.zoom.auto", zoomAutoBox.isSelected());
-    Preferences.set("editor.zoom",
-                    String.valueOf(zoomSelectionBox.getSelectedItem()));
-
     try {
       Object selection = consoleFontSizeField.getSelectedItem();
       if (selection instanceof String) {
@@ -689,6 +686,10 @@ public class PreferencesFrame {
       Messages.log("Ignoring invalid font size " + consoleFontSizeField); //$NON-NLS-1$
       consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
     }
+
+    Preferences.setBoolean("editor.zoom.auto", zoomAutoBox.isSelected());
+    Preferences.set("editor.zoom",
+                    String.valueOf(zoomSelectionBox.getSelectedItem()));
 
     Preferences.setColor("run.present.bgcolor", presentColor.getBackground());
 

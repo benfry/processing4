@@ -361,6 +361,18 @@ public class Preferences {
   }
 
 
+  static public Font getFont(String familyAttr, String sizeAttr) {
+    int fontSize = getInteger(sizeAttr);
+
+    if (familyAttr.equals("processing.mono")) {
+      return Toolkit.getMonoFont(fontSize, Font.PLAIN);
+    }
+    return new Font(familyAttr, Font.PLAIN, fontSize);
+  }
+
+
+  // Parse a font from "name,style,size" (not used anymore?)
+  /*
   // Identical version found in Settings.java
   static public Font getFont(String attr) {
     try {
@@ -413,6 +425,7 @@ public class Preferences {
     }
     return new Font("Dialog", Font.PLAIN, 12);
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
