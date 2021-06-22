@@ -86,7 +86,7 @@ public class JavaBuild {
   /**
    * Run the build inside a temporary build folder. Used for run/present.
    * @return null if compilation failed, main class name if not
-   * @throws SketchException
+   * @throws SketchException details of where the build choked
    */
   public String build(boolean sizeWarning) throws SketchException {
     return build(sketch.makeTempFolder(), sketch.makeTempFolder(), sizeWarning);
@@ -150,7 +150,7 @@ public class JavaBuild {
    * @param packageName null, or the package name that should be used as default
    * @param preprocessor the preprocessor object ready to do the work
    * @return main PApplet class name found during preprocess, or null if error
-   * @throws SketchException
+   * @throws SketchException details of where the preprocessing failed
    */
   public String preprocess(File srcFolder,
                            String packageName,
@@ -232,11 +232,8 @@ public class JavaBuild {
       outputFolder.mkdirs();
 //      Base.openFolder(outputFolder);
       final File java = new File(outputFolder, sketch.getName() + ".java");
-      final PrintWriter stream = PApplet.createWriter(java);
-      try {
+      try (PrintWriter stream = PApplet.createWriter(java)) {
         result = preprocessor.write(stream, bigCode.toString(), codeFolderPackages);
-      } finally {
-        stream.close();
       }
     } catch (SketchException pe) {
       // RunnerExceptions are caught here and re-thrown, so that they don't
@@ -295,9 +292,8 @@ public class JavaBuild {
         // If someone insists on unnecessarily repeating the code folder
         // import, don't show an error for it.
         if (codeFolderPackages != null) {
-          String itemPkg = entry;
           for (String pkg : codeFolderPackages) {
-            if (pkg.equals(itemPkg)) {
+            if (pkg.equals(entry)) {
               found = true;
               break;
             }
@@ -866,7 +862,7 @@ public class JavaBuild {
       File plistFile = new File(dotAppFolder, "Contents/Info.plist");
       PrintWriter pw = PApplet.createWriter(plistFile);
 
-      String lines[] = PApplet.loadStrings(plistTemplate);
+      String[] lines = PApplet.loadStrings(plistTemplate);
       for (int i = 0; i < lines.length; i++) {
         if (lines[i].contains("@@")) {
           StringBuilder sb = new StringBuilder(lines[i]);
@@ -1070,7 +1066,7 @@ public class JavaBuild {
       int result = -1;
       try {
         result = p.waitFor();
-      } catch (InterruptedException e) { }
+      } catch (InterruptedException ignored) { }
       // returns 0 if installed, 2 if not (-1 if exception)
       xcodeInstalled = (result == 0);
     }
@@ -1157,25 +1153,22 @@ public class JavaBuild {
 
 
   protected void addClasses(ZipOutputStream zos, File dir, String rootPath) throws IOException {
-    File files[] = dir.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return (name.charAt(0) != '.');
-      }
-    });
-    for (File sub : files) {
-      String relativePath = sub.getAbsolutePath().substring(rootPath.length());
-//      System.out.println("relative path is " + relativePath);
+    File[] files = dir.listFiles((dir1, name) -> (name.charAt(0) != '.'));
+    if (files != null) {
+      for (File sub : files) {
+        String relativePath = sub.getAbsolutePath().substring(rootPath.length());
 
-      if (sub.isDirectory()) {
-        addClasses(zos, sub, rootPath);
+        if (sub.isDirectory()) {
+          addClasses(zos, sub, rootPath);
 
-      } else if (sub.getName().endsWith(".class")) {
+        } else if (sub.getName().endsWith(".class")) {
 //        System.out.println("  adding item " + relativePath);
-        ZipEntry entry = new ZipEntry(relativePath);
-        zos.putNextEntry(entry);
-        //zos.write(Base.loadBytesRaw(sub));
-        PApplet.saveStream(zos, new FileInputStream(sub));
-        zos.closeEntry();
+          ZipEntry entry = new ZipEntry(relativePath);
+          zos.putNextEntry(entry);
+          //zos.write(Base.loadBytesRaw(sub));
+          PApplet.saveStream(zos, new FileInputStream(sub));
+          zos.closeEntry();
+        }
       }
     }
   }
@@ -1217,21 +1210,18 @@ public class JavaBuild {
     throws IOException {
     String[] pieces = PApplet.split(path, File.pathSeparatorChar);
 
-    for (int i = 0; i < pieces.length; i++) {
-      if (pieces[i].length() == 0) continue;
+    for (String piece : pieces) {
+      if (piece.length() == 0) continue;
 
       // is it a jar file or directory?
-      if (pieces[i].toLowerCase().endsWith(".jar") ||
-          pieces[i].toLowerCase().endsWith(".zip")) {
+      if (piece.toLowerCase().endsWith(".jar") ||
+              piece.toLowerCase().endsWith(".zip")) {
         try {
-          ZipFile file = new ZipFile(pieces[i]);
+          ZipFile file = new ZipFile(piece);
           Enumeration<?> entries = file.entries();
           while (entries.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
-            if (entry.isDirectory()) {
-              // actually 'continue's for all dir entries
-
-            } else {
+            if (!entry.isDirectory()) {
               String entryName = entry.getName();
               // ignore contents of the META-INF folders
               if (entryName.indexOf("META-INF") == 0) continue;
@@ -1243,7 +1233,7 @@ public class JavaBuild {
               ZipEntry entree = new ZipEntry(entryName);
 
               zos.putNextEntry(entree);
-              byte buffer[] = new byte[(int) entry.getSize()];
+              byte[] buffer = new byte[(int) entry.getSize()];
               InputStream is = file.getInputStream(entry);
 
               int offset = 0;
@@ -1262,11 +1252,11 @@ public class JavaBuild {
           file.close();
 
         } catch (IOException e) {
-          System.err.println("Error in file " + pieces[i]);
+          System.err.println("Error in file " + piece);
           e.printStackTrace();
         }
       } else {  // not a .jar or .zip, prolly a directory
-        File dir = new File(pieces[i]);
+        File dir = new File(piece);
         // but must be a dir, since it's one of several paths
         // just need to check if it exists
         if (dir.exists()) {
@@ -1286,31 +1276,35 @@ public class JavaBuild {
                                                           String sofar,
                                                           ZipOutputStream zos)
     throws IOException {
-    String files[] = dir.list();
-    for (int i = 0; i < files.length; i++) {
-      // ignore . .. and .DS_Store
-      if (files[i].charAt(0) == '.') continue;
+    String[] files = dir.list();
+    if (files != null) {
+      for (String filename : files) {
+        // ignore . .. and .DS_Store
+        if (filename.charAt(0) == '.') continue;
 
-      File sub = new File(dir, files[i]);
-      String nowfar = (sofar == null) ?
-        files[i] : (sofar + "/" + files[i]);
+        File sub = new File(dir, filename);
+        String nowfar = (sofar == null) ?
+                filename : (sofar + "/" + filename);
 
-      if (sub.isDirectory()) {
-        packClassPathIntoZipFileRecursive(sub, nowfar, zos);
+        if (sub.isDirectory()) {
+          packClassPathIntoZipFileRecursive(sub, nowfar, zos);
 
-      } else {
-        // don't add .jar and .zip files, since they only work
-        // inside the root, and they're unpacked
-        if (!files[i].toLowerCase().endsWith(".jar") &&
-            !files[i].toLowerCase().endsWith(".zip") &&
-            files[i].charAt(0) != '.') {
-          ZipEntry entry = new ZipEntry(nowfar);
-          zos.putNextEntry(entry);
-          //zos.write(Base.loadBytesRaw(sub));
-          PApplet.saveStream(zos, new FileInputStream(sub));
-          zos.closeEntry();
+        } else {
+          // don't add .jar and .zip files, since they only work
+          // inside the root, and they're unpacked
+          if (!filename.toLowerCase().endsWith(".jar") &&
+                  !filename.toLowerCase().endsWith(".zip") &&
+                  filename.charAt(0) != '.') {
+            ZipEntry entry = new ZipEntry(nowfar);
+            zos.putNextEntry(entry);
+            //zos.write(Base.loadBytesRaw(sub));
+            PApplet.saveStream(zos, new FileInputStream(sub));
+            zos.closeEntry();
+          }
         }
       }
+    } else {
+      System.err.println("Could not read from " + dir);
     }
   }
 }
