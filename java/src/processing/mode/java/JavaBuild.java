@@ -283,9 +283,11 @@ public class JavaBuild {
           importedLibraries.add(library);
           // don't add the JavaFX libraries to the classpath
           // https://github.com/processing/processing4/issues/212
-          if (!library.getName().equals("JavaFX")) {
-            classPath += library.getClassPath();
-          }
+          // Disabling this after all, because we need our javafx.jar (PGraphicsJavaFX)
+          // and the JavaFX .jars are safely tucked into a "modules" subfolder
+          //if (!library.getName().equals("JavaFX")) {
+          classPath += library.getClassPath();
+          //}
           javaLibraryPath += File.pathSeparator + library.getNativePath();
         }
       } else {
