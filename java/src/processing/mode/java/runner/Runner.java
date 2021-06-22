@@ -205,7 +205,7 @@ public class Runner implements MessageConsumer {
 
   /**
    * Additional access to the virtual machine. TODO: may not be needed
-   * @return debugge VM or null if not running
+   * @return debugger VM or null if not running
    */
   public VirtualMachine vm() {
     return vm;
@@ -367,34 +367,29 @@ public class Runner implements MessageConsumer {
     // librariesClassPath will always have sep char prepended
     String javaLibraryPath = build.getJavaLibraryPath();
 
-    String javaLibraryPathParam = "-Djava.library.path=" +
-                  javaLibraryPath +
-                  File.pathSeparator +
-                  System.getProperty("java.library.path");
+    String javaLibraryPathParam =
+      "-Djava.library.path=" + javaLibraryPath +
+      File.pathSeparator +
+      System.getProperty("java.library.path");
 
     params.append(javaLibraryPathParam);
 
-    // TODO this should only happen with sketches using the JavaFX library
-    // https://github.com/processing/processing4/issues/209
-    params.append("--module-path");
-    params.append(build.getModulePath());
-    params.append("--add-modules");
-    //params.append("javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web");
-    params.append("javafx.base,javafx.graphics,javafx.swing");
-    // TODO Presumably, we need to move away from com.sun.* classes?
-    // https://github.com/processing/processing4/issues/208
-    params.append("--add-exports");
-    params.append("javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED");
-    params.append("--add-exports");
-    params.append("javafx.graphics/com.sun.glass.ui=ALL-UNNAMED");
+    Library javafx = build.findJavaFX();
+    if (javafx != null) {
+      // The .jar files are in the same directory as the natives for windows64 et al,
+      // because the .jar files are ever-so-slightly different per-platform.
+      File modulesFolder = new File(javafx.getNativePath(), "modules");
+      for (String arg : JavaBuild.getArgsJavaFX(modulesFolder.getAbsolutePath())) {
+        params.append(arg);
+      }
+    }
 
     params.append("-cp");
     params.append(build.getClassPath());
 
     // enable assertions
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1188
+    // http://processing.org/bugs/bugzilla/1188.html
     params.append("-ea");
-    //PApplet.println(PApplet.split(sketch.classPath, ':'));
 
     return params;
   }

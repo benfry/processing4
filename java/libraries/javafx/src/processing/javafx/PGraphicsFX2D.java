@@ -1570,7 +1570,7 @@ public class PGraphicsFX2D extends PGraphics {
     PFont.Glyph glyph = textFont.getGlyph(ch);
     if (glyph != null) {
       if (textMode == MODEL) {
-        float bitmapSize = (float) textFont.getSize();
+        float bitmapSize = textFont.getSize();
         float high = glyph.height / bitmapSize;
         float wide  = glyph.width / bitmapSize;
         float leftExtent = glyph.leftExtent / bitmapSize;

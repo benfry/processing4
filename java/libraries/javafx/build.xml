@@ -95,7 +95,8 @@
   <!-- extract the .jar files from the first javafx we run across -->
   <!-- <target name="unzip-gluon-jars" unless="${javafx.jars.exist}"> -->
   <target name="unzip-gluon-jars">
-    <echo message="Extracting jars from ${gluon.base}.zip" />
+    <property name="modules.path" value="${platform.path}/modules" />
+    <echo message="Extracting jars from ${gluon.base}.zip to ${modules.path}" />
     <!-- should javafx.properties be copyed? is it used for anything? [fry 210620] -->
 
     <!-- https://ant.apache.org/manual/Tasks/unzip.html -->
@@ -103,7 +104,7 @@
     <!-- !#($*#! the builds have *slightly* different classes in each release
          (WinPlatformFactory not in macOS .jar... FFS it 1100 bytes of glue code)
          So the .jar files go into the native subdirectories as well. -->
-    <unzip dest="${natives.path}" src="${gluon.base}.zip" overwrite="true">
+    <unzip dest="${modules.path}" src="${gluon.base}.zip" overwrite="true">
       <patternset>
         <include name="**/*.jar" />
         <!-- These two aren't supported/used -->
@@ -117,9 +118,9 @@
   </target>
 
   <target name="unzip-gluon-natives">
-    <echo message="Extracting ${gluon.base}.zip to ${natives.path}" />
+    <echo message="Extracting native libs from ${gluon.base}.zip to ${platform.path}" />
 
-    <unzip dest="${natives.path}" src="${gluon.base}.zip" overwrite="true">
+    <unzip dest="${platform.path}" src="${gluon.base}.zip" overwrite="true">
       <patternset>
         <include name="**/*.dll" />
         <include name="**/*.dylib" />
@@ -155,17 +156,17 @@
     <!-- javafx-${gluon.version}-sdk-${gluon.platform} -->
     <antcall target="retrieve-gluon">
       <param name="gluon.base" value="javafx-${gluon.version}-sdk-mac" />
-      <param name="natives.path" value="${library.path}/macosx" />
+      <param name="platform.path" value="${library.path}/macosx" />
     </antcall>
 
     <antcall target="retrieve-gluon">
       <param name="gluon.base" value="javafx-${gluon.version}-sdk-windows" />
-      <param name="natives.path" value="${library.path}/windows64" />
+      <param name="platform.path" value="${library.path}/windows64" />
     </antcall>
 
     <antcall target="retrieve-gluon">
       <param name="gluon.base" value="javafx-${gluon.version}-sdk-linux" />
-      <param name="natives.path" value="${library.path}/linux64" />
+      <param name="platform.path" value="${library.path}/linux64" />
     </antcall>
   </target>
 
@@ -361,8 +362,8 @@
     </condition>
     -->
 
-    <!-- just pick a platform; this should be sufficient for building -->
-    <property name="javafx.jar.path" value="library/macosx" />
+    <!-- just pick a platform; any should be sufficient for building -->
+    <property name="javafx.jar.path" value="library/macosx/modules" />
 
     <mkdir dir="bin" />
     <javac source="11" target="11"

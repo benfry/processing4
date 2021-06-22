@@ -281,7 +281,11 @@ public class JavaBuild {
       if (library != null) {
         if (!importedLibraries.contains(library)) {
           importedLibraries.add(library);
-          classPath += library.getClassPath();
+          // don't add the JavaFX libraries to the classpath
+          // https://github.com/processing/processing4/issues/212
+          if (!library.getName().equals("JavaFX")) {
+            classPath += library.getClassPath();
+          }
           javaLibraryPath += File.pathSeparator + library.getNativePath();
         }
       } else {
@@ -440,13 +444,13 @@ public class JavaBuild {
   }
 
 
-  /** Returns the dummy "module" path so that JavaFX doesn't complain. */
-  public String getModulePath() {
-    // Just set this to the main core/library directory to pick up JavaFX
-    //return mode.getCoreLibrary().getLibraryPath();
-    File folder = new File(mode.getFolder(), "libraries/javafx/library");
-    return folder.getAbsolutePath();
-  }
+//  /** Returns the dummy "module" path so that JavaFX doesn't complain. */
+//  public String getModulePath() {
+//    // Just set this to the main core/library directory to pick up JavaFX
+//    //return mode.getCoreLibrary().getLibraryPath();
+//    File folder = new File(mode.getFolder(), "libraries/javafx/library");
+//    return folder.getAbsolutePath();
+//  }
 
 
   /** Return the java.library.path for this sketch (for all the native DLLs etc). */
@@ -831,6 +835,14 @@ public class JavaBuild {
       runOptions.append("-Djava.library.path=\"%EXEDIR%\\lib\"");
     }
 
+    Library javafx = findJavaFX();
+    if (javafx != null) {
+      String modulePath = exportPlatform == PConstants.MACOS ?
+        "$APP_ROOT/Contents/Java/modules" : "lib/modules";
+      for (String opt : getArgsJavaFX(modulePath)) {
+        runOptions.append(opt);
+      }
+    }
 
     /// macosx: write out Info.plist (template for classpath, etc)
 
@@ -842,6 +854,7 @@ public class JavaBuild {
         runOptionsXML.append("</string>");
         runOptionsXML.append('\n');
       }
+
 
       String PLIST_TEMPLATE = "Info.plist.tmpl";
       File plistTemplate = new File(sketch.getFolder(), PLIST_TEMPLATE);
@@ -935,16 +948,13 @@ public class JavaBuild {
       for (String opt : runOptions) {
         jre.addChild("opt").setContent(opt);
       }
-
-      final String[] fxOptions = new String[]{
-        "--module-path=" + getModulePath(),
-        "--add-modules=javafx.base,javafx.graphics,javafx.swing",
-        "--add-exports=javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED",
-        "--add-exports=javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"
-      };
-      for (String opt : fxOptions) {
-        jre.addChild("opt").setContent(opt);
+      /*
+      if (javafx != null) {
+        for (String opt : getArgsJavaFX("lib")) {
+          jre.addChild("opt").setContent(opt);
+        }
       }
+      */
 
       config.save(configFile);
       project.save(buildFile);
@@ -1018,6 +1028,34 @@ public class JavaBuild {
 
     /// goodbye
     return true;
+  }
+
+
+  // This is a workaround until a more complete solution is found.
+  public Library findJavaFX() {
+    for (Library library : getImportedLibraries()) {
+      if (library.getName().equals("JavaFX")) {
+        return library;
+      }
+    }
+    return null;
+  }
+
+
+  static public String[] getArgsJavaFX(String modulePath) {
+    return new String[] {
+      "--module-path", modulePath,
+
+      // Full list of modules, let's not commit to all of these unless
+      // a compelling argument is made or a reason presents itself.
+      //"javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+      "--add-modules", "javafx.base,javafx.graphics,javafx.swing",
+
+      // TODO Presumably, this is only because com.sun.* classes are being used?
+      // https://github.com/processing/processing4/issues/208
+      "--add-exports", "javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED",
+      "--add-exports", "javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"
+    };
   }
 
 

@@ -56,9 +56,15 @@ X Only specify --modules-path when running JavaFX apps
 X   https://github.com/processing/processing4/issues/209
 _ lots more cleanup to do in javafx/build.xml
 
+major font cleanup
+X JDK fonts have been removed; fonts folder too? (not seeing it in the JDK)
+X   https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522
+X more reliable loading of default mono fonts
+X processing.mono used in preferences.txt
+X remove Preferences.getFont(), deal with incorrect usage
+X   getFont("editor.font") was returning getFont("editor.font.size")
 
-_ "Could not run" "For more information, read revisions.txt and Help → Troubleshooting."
-_   need to drop revisions.txt here and just reference Troubleshooting
+
 
 for next release
 _ debug JavaFX and Export to Application on Windows
@@ -66,9 +72,17 @@ _   this was working on Saturday, now broken after the move to a separate librar
 _   now "Art Station" is broken because it actually creates an FX2D sketch
 _     (and FX2D isn't on the classpath by default)
 _ debug JavaFX and Export to Application on Linux
+_ fix modules path warning for Tools in the PDE
+_   "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
+_   we were probably spared the warnings because the older JARs were hanging around
+_ update modules path when exporting application
+_ automatically import JavaFX if FX2D is in sketch? or tell user?
 _ Code completion not working
 _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
+_ "Could not run" "For more information, read revisions.txt and Help → Troubleshooting."
+_   need to drop revisions.txt here and just reference Troubleshooting
+
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
@@ -80,13 +94,6 @@ _ macosx vs macosx64 in JavaFX
 _   the latter is making the export fail because it won't embed a Java VM
 _   may be because it's exporting twice and overwriting? or 64 takes precedence?
 
-_ fix modules path warning for Tools in the PDE
-_   "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
-_   we were probably spared the warnings because the older JARs were hanging around
-
-_ update modules path when exporting application
-
-_ automatically import JavaFX if FX2D is in sketch? or tell user?
 
 _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
