@@ -513,11 +513,14 @@
       <classpath file="../app/lib/ant-launcher.jar" />
       <classpath file="../app/lib/VAqua8.jar" />
 
-      <!-- With the 4.0a5 release, appbundler was changed to recursively walk
-           the Java folder for all .jar files, so entries from "core" get picked
-           up too, including core.jar and the JavaFX jars. -->
-      <!-- plus core.jar... note that this is no longer shared -->
-      <!-- <classpath file="../core/library/core.jar" /> -->
+
+      <!-- Creates a copy of core.jar, but that's simplest for now. For 4.0a5
+           development, appbundler was briefly changed to recursively walk the
+           "Java" folder for all .jar files, so entries from "core" got picked
+           up too, including core.jar and the JavaFX jars. But that wasn't the
+           right solution for JavaFX (class path and modules path can't mix),
+           so had to revert and we're back to duplicating core.jar -->
+      <classpath file="../core/library/core.jar" />
 
       <arch name="x86_64"/>
       <!-- no support for this with Java 7 from Oracle -->
@@ -560,15 +563,12 @@
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
 
-      <!-- Make it possible to get to JavaFX and JOGL libraries for Tools, Modes, etc.
-           Not recommended, to use those, but making it possible since some Tools
-           rely on JavaFX. (The OpenGL support is only incidental.) -->
-      <!-- <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/core/library" /> -->
-      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx64" />
+      <!-- Make it possible to get to JavaFX for Tools, Modes, etc. Not recommended,
+           to use those, but making it possible since some Tools rely on JavaFX. -->
+      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx" />
 
-      <!-- Necessary to avoid complaints because JavaFX wants to be a module.
-           TODO However, not quite working after moving javafx to its own library. -->
-      <option value="--module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library" />
+      <!-- Necessary to avoid complaints because JavaFX wants to be a module. -->
+      <option value="--module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx/modules" />
 
       <!-- TODO Still needs work, it may have only been working b/c of old libs -->
       <!-- <option value="- -add-modules=javafx.base,javafx.graphics" /> -->

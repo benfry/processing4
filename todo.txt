@@ -65,8 +65,11 @@ X remove Preferences.getFont(), deal with incorrect usage
 X   getFont("editor.font") was returning getFont("editor.font.size")
 
 
-
 for next release
+_ JavaFX now throws Exception on run b/c natives aren't present
+_   why are the jars even there? how is module path getting set?
+_ gonna have to cut loose running Tools from the PDE
+_   or make it possible to embed a JavaFX sketch, and the rest will work?
 _ debug JavaFX and Export to Application on Windows
 _   this was working on Saturday, now broken after the move to a separate library
 _   now "Art Station" is broken because it actually creates an FX2D sketch
@@ -83,6 +86,12 @@ _   confirmed not working from Sam's repo either
 _ "Could not run" "For more information, read revisions.txt and Help → Troubleshooting."
 _   need to drop revisions.txt here and just reference Troubleshooting
 
+_ fix height of font size dropdown
+
+_ do a test to see if PApplet extends PSketch breaks libraries
+
+_ remove the PDE classpath from sketches
+_   causing it to include incomplete JFX, other misc; too confusing
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
