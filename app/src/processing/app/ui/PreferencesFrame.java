@@ -113,14 +113,12 @@ public class PreferencesFrame {
     sketchbookLocationField = new JTextField(40);
 
     browseButton = new JButton(Language.getPrompt("browse"));
-    browseButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          File dflt = new File(sketchbookLocationField.getText());
-          ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
-                               "sketchbookCallback", dflt,
-                               PreferencesFrame.this);
-        }
-      });
+    browseButton.addActionListener(e -> {
+      File defaultLocation = new File(sketchbookLocationField.getText());
+      ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
+                           "sketchbookCallback", defaultLocation,
+                           PreferencesFrame.this);
+    });
 
 
     // Language: [ English ] (requires restart of Processing)
@@ -168,12 +166,7 @@ public class PreferencesFrame {
     JLabel zoomLabel = new JLabel(Language.text("preferences.zoom") + ": ");
 
     zoomAutoBox = new JCheckBox(Language.text("preferences.zoom.auto"));
-    zoomAutoBox.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent e) {
-        zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected());
-      }
-    });
+    zoomAutoBox.addChangeListener(e -> zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected()));
 
     zoomSelectionBox = new JComboBox<>();
     zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.array()));
@@ -203,20 +196,12 @@ public class PreferencesFrame {
       public void removeUpdate(DocumentEvent e) {
         final String colorValue = presentColorHex.getText().toUpperCase();
         if (colorValue.length() == 7 && (colorValue.startsWith("#")))
-          EventQueue.invokeLater(new Runnable() {
-            public void run() {
-              presentColorHex.setText(colorValue.substring(1));
-            }
-          });
+          EventQueue.invokeLater(() -> presentColorHex.setText(colorValue.substring(1)));
         if (colorValue.length() == 6 &&
             colorValue.matches("[0123456789ABCDEF]*")) {
           presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
           if (!colorValue.equals(presentColorHex.getText()))
-            EventQueue.invokeLater(new Runnable() {
-              public void run() {
-                presentColorHex.setText(colorValue);
-              }
-            });
+            EventQueue.invokeLater(() -> presentColorHex.setText(colorValue));
         }
       }
 
@@ -224,20 +209,12 @@ public class PreferencesFrame {
       public void insertUpdate(DocumentEvent e) {
         final String colorValue = presentColorHex.getText().toUpperCase();
         if (colorValue.length() == 7 && (colorValue.startsWith("#")))
-          EventQueue.invokeLater(new Runnable() {
-            public void run() {
-              presentColorHex.setText(colorValue.substring(1));
-            }
-          });
+          EventQueue.invokeLater(() -> presentColorHex.setText(colorValue.substring(1)));
         if (colorValue.length() == 6
             && colorValue.matches("[0123456789ABCDEF]*")) {
           presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
           if (!colorValue.equals(presentColorHex.getText()))
-            EventQueue.invokeLater(new Runnable() {
-              public void run() {
-                presentColorHex.setText(colorValue);
-              }
-            });
+            EventQueue.invokeLater(() -> presentColorHex.setText(colorValue));
         }
       }
 
@@ -246,16 +223,12 @@ public class PreferencesFrame {
 
     selector = new ColorChooser(frame, false,
                                 Preferences.getColor("run.present.bgcolor"),
-                                Language.text("prompt.ok"),
-                                new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        String colorValue = selector.getHexColor();
-        colorValue = colorValue.substring(1);  // remove the #
-        presentColorHex.setText(colorValue);
-        presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
-        selector.hide();
-      }
+                                Language.text("prompt.ok"), e -> {
+      String colorValue = selector.getHexColor();
+      colorValue = colorValue.substring(1);  // remove the #
+      presentColorHex.setText(colorValue);
+      presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
+      selector.hide();
     });
 
     presentColor.addMouseListener(new MouseAdapter() {
@@ -295,9 +268,7 @@ public class PreferencesFrame {
 
     errorCheckerBox =
       new JCheckBox(Language.text("preferences.continuously_check"));
-    errorCheckerBox.addItemListener(e -> {
-      warningsCheckerBox.setEnabled(errorCheckerBox.isSelected());
-    });
+    errorCheckerBox.addItemListener(e -> warningsCheckerBox.setEnabled(errorCheckerBox.isSelected()));
 
 
     // [ ] Show Warnings - PDE X
@@ -323,12 +294,7 @@ public class PreferencesFrame {
 
     memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory")+": ");
     memoryField = new JTextField(4);
-    memoryOverrideBox.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent e) {
-        memoryField.setEnabled(memoryOverrideBox.isSelected());
-      }
-    });
+    memoryOverrideBox.addChangeListener(e -> memoryField.setEnabled(memoryOverrideBox.isSelected()));
     JLabel mbLabel = new JLabel("MB");
 
 
@@ -390,19 +356,13 @@ public class PreferencesFrame {
     // [  OK  ] [ Cancel ]
 
     okButton = new JButton(Language.getPrompt("ok"));
-    okButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          applyFrame();
-          disposeFrame();
-        }
-      });
+    okButton.addActionListener(e -> {
+      applyFrame();
+      disposeFrame();
+    });
 
     JButton cancelButton = new JButton(Language.getPrompt("cancel"));
-    cancelButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          disposeFrame();
-        }
-      });
+    cancelButton.addActionListener(e -> disposeFrame());
 
     final int buttonWidth = Toolkit.getButtonWidth();
     layout.setHorizontalGroup(layout.createSequentialGroup() // sequential group for border + mainContent + border
@@ -538,11 +498,7 @@ public class PreferencesFrame {
       }
     });
 
-    ActionListener disposer = new ActionListener() {
-      public void actionPerformed(ActionEvent actionEvent) {
-        disposeFrame();
-      }
-    };
+    ActionListener disposer = actionEvent -> disposeFrame();
     // finish up
 
     Toolkit.registerWindowCloseKeys(frame.getRootPane(), disposer);
@@ -649,7 +605,9 @@ public class PreferencesFrame {
     try {
       memoryMax = Integer.parseInt(memoryField.getText().trim());
       // make sure memory setting isn't too small
-      if (memoryMax < memoryMin) memoryMax = memoryMin;
+      if (memoryMax < memoryMin) {
+        memoryMax = memoryMin;
+      }
       Preferences.setInteger("run.options.memory.maximum", memoryMax); //$NON-NLS-1$
     } catch (NumberFormatException e) {
       System.err.println("Ignoring bad memory setting");
@@ -722,8 +680,6 @@ public class PreferencesFrame {
     warningsCheckerBox.setSelected(Preferences.getBoolean("pdex.warningsEnabled"));
     warningsCheckerBox.setEnabled(errorCheckerBox.isSelected());
     codeCompletionBox.setSelected(Preferences.getBoolean("pdex.completion"));
-    //codeCompletionTriggerBox.setSelected(Preferences.getBoolean("pdex.completion.trigger"));
-    //codeCompletionTriggerBox.setEnabled(codeCompletionBox.isSelected());
     importSuggestionsBox.setSelected(Preferences.getBoolean("pdex.suggest.imports"));
     deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
 
@@ -741,11 +697,7 @@ public class PreferencesFrame {
 
     // This takes a while to load, so run it from a separate thread
     //EventQueue.invokeLater(new Runnable() {
-    new Thread(new Runnable() {
-      public void run() {
-        initFontList();
-      }
-    }).start();
+    new Thread(this::initFontList).start();
 
     fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
     consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
@@ -788,41 +740,38 @@ public class PreferencesFrame {
   }
 
 
-  /**
-   * I have some ideas on how we could make Swing even more obtuse for the
-   * most basic usage scenarios. Is there someone on the team I can contact?
-   * Are you an Oracle staffer reading this? This could be your meal ticket.
-   */
-  static class FontNamer extends JLabel implements ListCellRenderer<Font> {
-    public Component getListCellRendererComponent(JList<? extends Font> list,
-                                                  Font value, int index,
-                                                  boolean isSelected,
-                                                  boolean cellHasFocus) {
-      setText(value.getFamily() + " / " + value.getName() + " (" + value.getPSName() + ")");
-      return this;
-    }
-  }
+//  /**
+//   * I have some ideas on how we could make Swing even more obtuse for the
+//   * most basic usage scenarios. Is there someone on the team I can contact?
+//   * Are you an Oracle staffer reading this? This could be your meal ticket.
+//   */
+//  static class FontNamer extends JLabel implements ListCellRenderer<Font> {
+//    public Component getListCellRendererComponent(JList<? extends Font> list,
+//                                                  Font value, int index,
+//                                                  boolean isSelected,
+//                                                  boolean cellHasFocus) {
+//      setText(value.getFamily() + " / " + value.getName() + " (" + value.getPSName() + ")");
+//      return this;
+//    }
+//  }
 
 
   void initFontList() {
     if (monoFontFamilies == null) {
       monoFontFamilies = Toolkit.getMonoFontFamilies();
 
-      EventQueue.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          fontSelectionBox.setModel(new DefaultComboBoxModel<>(monoFontFamilies));
-          String family = Preferences.get("editor.font.family");
-          if ("processing.mono".equals(family)) {
-            family = Toolkit.getMonoFontName();
-          }
-
-          // Set a reasonable default, in case selecting the family fails
-          fontSelectionBox.setSelectedItem("Monospaced");
-          // Now try to select the family (will fail silently, see prev line)
-          fontSelectionBox.setSelectedItem(family);
-          fontSelectionBox.setEnabled(true);
+      EventQueue.invokeLater(() -> {
+        fontSelectionBox.setModel(new DefaultComboBoxModel<>(monoFontFamilies));
+        String family = Preferences.get("editor.font.family");
+        if ("processing.mono".equals(family)) {
+          family = Toolkit.getMonoFontName();
         }
+
+        // Set a reasonable default, in case selecting the family fails
+        fontSelectionBox.setSelectedItem("Monospaced");
+        // Now try to select the family (will fail silently, see prev line)
+        fontSelectionBox.setSelectedItem(family);
+        fontSelectionBox.setEnabled(true);
       });
     }
   }
