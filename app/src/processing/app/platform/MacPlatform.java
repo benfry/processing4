@@ -22,10 +22,7 @@
 
 package processing.app.platform;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Graphics;
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,11 +32,13 @@ import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import processing.app.Base;
 import processing.app.Messages;
 import processing.app.Preferences;
 import processing.app.ui.About;
+import processing.app.ui.Toolkit;
 
 
 /**
@@ -106,8 +105,14 @@ public class MacPlatform extends DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     super.setLookAndFeel();
 
-    String laf = Preferences.get("editor.laf");
-    if ("org.violetlib.aqua.AquaLookAndFeel".equals(laf)) {
+    String laf = UIManager.getLookAndFeel().getClass().getName();
+    if ("com.apple.laf.AquaLookAndFeel".equals(laf)) {
+      //setUIFont(new FontUIResource(".AppleSystemUIFont", Font.PLAIN, 12));
+      // oh my god, the kerning, the tracking, my eyes...
+      //setUIFont(new FontUIResource(".SFNS-Regular", Font.PLAIN, 13));
+      //setUIFont(new FontUIResource(Toolkit.getSansFont(14, Font.PLAIN)));
+
+    } else if ("org.violetlib.aqua.AquaLookAndFeel".equals(laf)) {
       Icon collapse = new VAquaTreeIcon(true);
       Icon open = new VAquaTreeIcon(false);
       Icon leaf = new VAquaEmptyIcon();
@@ -116,6 +121,17 @@ public class MacPlatform extends DefaultPlatform {
       UIManager.put("Tree.collapsedIcon", open);
       UIManager.put("Tree.expandedIcon", collapse);
       UIManager.put("Tree.leafIcon", leaf);
+    }
+  }
+
+
+  // Rewritten from https://stackoverflow.com/a/7434935
+  static private void setUIFont(FontUIResource f) {
+    for (Object key : UIManager.getLookAndFeelDefaults().keySet()) {
+      Object value = UIManager.get(key);
+      if (value instanceof FontUIResource) {
+        UIManager.put(key, f);
+      }
     }
   }
 
