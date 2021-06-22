@@ -114,13 +114,9 @@ editor.zoom = 100%
 # automatically set based on system dpi (only helps on Windows)
 editor.zoom.auto = true
 
-# font size for editor
-#editor.font = Monospaced,plain,12
-# Monaco is nicer on Mac OS X, so use that explicitly
-#editor.font.macosx = Monaco,plain,10
-# trying for a built-in, consistent monospace for 2.0
-#editor.font = processing.mono,plain,12
-editor.font.family = Source Code Pro
+# Use the default monospace font included in lib/fonts.
+# (As of Processing 4 alpha 5, that's Source Code Pro)
+editor.font.family = processing.mono
 editor.font.size = 12
 
 # To reset everyone's default, replaced editor.antialias with editor.smooth
@@ -177,9 +173,6 @@ editor.watcher.window = 1500
 search.format = https://google.com/search?q=%s
 
 # font choice and size for the console
-#console.font = Monospaced,plain,11
-#console.font.macosx = Monaco,plain,10
-#console.font = processing.mono,plain,12
 console.font.size = 12
 
 # number of lines to show by default

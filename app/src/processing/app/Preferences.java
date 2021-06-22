@@ -361,17 +361,22 @@ public class Preferences {
   }
 
 
-  static public Font getFont(String familyAttr, String sizeAttr) {
+  static public Font getFont(String familyAttr, String sizeAttr, int style) {
     int fontSize = getInteger(sizeAttr);
 
-    if (familyAttr.equals("processing.mono")) {
-      return Toolkit.getMonoFont(fontSize, Font.PLAIN);
+    String fontFamily = get(familyAttr);
+    if ("processing.mono".equals(fontFamily) ||
+        Toolkit.getMonoFontName().equals(fontFamily)) {
+      return Toolkit.getMonoFont(fontSize, style);
     }
-    return new Font(familyAttr, Font.PLAIN, fontSize);
+    return new Font(familyAttr, style, fontSize);
   }
 
 
   // Parse a font from "name,style,size" (not used anymore?)
+  // Up until 4.0 alpha 5, this was incorrectly being called on non-existing params
+  // i.e. getFont("editor.font"), which was returning "12" because it was
+  // somehow using "editor.font.size" as a fallback for "editor.font"
   /*
   // Identical version found in Settings.java
   static public Font getFont(String attr) {

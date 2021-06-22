@@ -1002,6 +1002,7 @@ public class Toolkit {
   static Font sansBoldFont;
 
 
+  /** Get the name of the default (built-in) monospaced font. */
   static public String getMonoFontName() {
     if (monoFont == null) {
       // create a dummy version if the font has never been loaded (rare)
@@ -1011,6 +1012,13 @@ public class Toolkit {
   }
 
 
+  /**
+   * Get the Font object of the default (built-in) monospaced font.
+   * As of 4.x, this is Source Code Pro and ships in lib/fonts because
+   * it looks like JDK 11 no longer has (supports?) a "fonts" subfolder
+   * (or at least, its cross-platform implementation is inconsistent).
+   * https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522
+   */
   static public Font getMonoFont(int size, int style) {
     if (monoFont == null) {
       try {

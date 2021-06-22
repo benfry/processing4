@@ -134,12 +134,13 @@ public class EditorConsole extends JScrollPane {
    * Update the font family and sizes based on the Preferences window.
    */
   protected void updateAppearance() {
-    String fontFamily = Preferences.get("editor.font.family");
-    int fontSize = Toolkit.zoom(Preferences.getInteger("console.font.size"));
-    StyleConstants.setFontFamily(stdStyle, fontFamily);
-    StyleConstants.setFontSize(stdStyle, fontSize);
-    StyleConstants.setFontFamily(errStyle, fontFamily);
-    StyleConstants.setFontSize(errStyle, fontSize);
+    Font font = Preferences.getFont("editor.font.family", "console.font.size", Font.PLAIN);
+
+    StyleConstants.setFontFamily(stdStyle, font.getFamily());
+    StyleConstants.setFontSize(stdStyle, font.getSize());
+    StyleConstants.setFontFamily(errStyle, font.getFamily());
+    StyleConstants.setFontSize(errStyle, font.getSize());
+
     clear();  // otherwise we'll have mixed fonts
   }
 
@@ -155,8 +156,6 @@ public class EditorConsole extends JScrollPane {
     StyleConstants.setAlignment(standard, StyleConstants.ALIGN_LEFT);
     consoleDoc.setParagraphAttributes(0, 0, standard, true);
 
-    Font font = Preferences.getFont("editor.font", "console.font.size");
-
     // build styles for different types of console output
     Color bgColor = mode.getColor("console.color");
     Color fgColorOut = mode.getColor("console.output.color");
@@ -165,6 +164,8 @@ public class EditorConsole extends JScrollPane {
     // Make things line up with the Editor above. If this is ever removed,
     // setBorder(null) should be called instead. The defaults are nasty.
     setBorder(new MatteBorder(0, Editor.LEFT_GUTTER, 0, 0, bgColor));
+
+    Font font = Preferences.getFont("editor.font.family", "console.font.size", Font.PLAIN);
 
     stdStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(stdStyle, fgColorOut);

@@ -658,6 +658,9 @@ public class PreferencesFrame {
     // Don't change anything if the user closes the window before fonts load
     if (fontSelectionBox.isEnabled()) {
       String fontFamily = (String) fontSelectionBox.getSelectedItem();
+      if (Toolkit.getMonoFontName().equals(fontFamily)) {
+        fontFamily = "processing.mono";
+      }
       Preferences.set("editor.font.family", fontFamily);
     }
 
@@ -749,8 +752,8 @@ public class PreferencesFrame {
 
     boolean zoomAuto = Preferences.getBoolean("editor.zoom.auto");
     if (zoomAuto) {
-      zoomAutoBox.setSelected(zoomAuto);
-      zoomSelectionBox.setEnabled(!zoomAuto);
+      zoomAutoBox.setSelected(true);
+      zoomSelectionBox.setEnabled(false);
     }
     String zoomSel = Preferences.get("editor.zoom");
     int zoomIndex = Toolkit.zoomOptions.index(zoomSel);
@@ -810,6 +813,9 @@ public class PreferencesFrame {
         public void run() {
           fontSelectionBox.setModel(new DefaultComboBoxModel<>(monoFontFamilies));
           String family = Preferences.get("editor.font.family");
+          if ("processing.mono".equals(family)) {
+            family = Toolkit.getMonoFontName();
+          }
 
           // Set a reasonable default, in case selecting the family fails
           fontSelectionBox.setSelectedItem("Monospaced");

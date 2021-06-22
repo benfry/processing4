@@ -118,6 +118,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
     setForeground(defaults.fgcolor);
     setBackground(defaults.bgcolor);
 
+    /*
     // Ensure that our monospaced font is loaded
     // https://github.com/processing/processing/pull/4639
     Toolkit.getMonoFontName();
@@ -132,6 +133,9 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       plainFont = new Font(fontFamily, Font.PLAIN, fontSize);
     }
     boldFont = new Font(fontFamily, Font.BOLD, fontSize);
+     */
+    plainFont = Preferences.getFont("editor.font.family", "editor.font.size", Font.PLAIN);
+    boldFont = Preferences.getFont("editor.font.family", "editor.font.size", Font.BOLD);
     antialias = Preferences.getBoolean("editor.smooth");
 
     // moved from setFont() override (never quite comfortable w/ that override)
@@ -693,8 +697,6 @@ public class TextAreaPainter extends JComponent implements TabExpander {
    * @param line The line segment
    * @param tokens The token list for the line
    * @param styles The syntax style list
-   * @param expander The tab expander used to determine tab stops. May
-   * be null
    * @param gfx The graphics context
    * @param x The x co-ordinate
    * @param y The y co-ordinate
