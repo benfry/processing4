@@ -113,5 +113,5 @@ else
   fi
   cd "$APPDIR"
 
-  java -splash:lib/about-1x.png -Djna.nosys=true --module-path=core/library -Xmx512m processing.app.Base "$SKETCH" &
+  java -splash:lib/about-1x.png -Djna.nosys=true -Djava.library.path=lib:modes/java/libraries/javafx/library/linux64 --module-path=modes/java/libraries/javafx/library/linux64 --add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing -Xmx512m processing.app.Base "$SKETCH" &
 fi
