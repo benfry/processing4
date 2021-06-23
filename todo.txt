@@ -46,6 +46,8 @@ X    But changing this for 4.0 alpha 5, because the JFileChooser is awful,
 X    and even worse on Big Sur, and worse than the Copy/Paste issue.
 X "Could not run" "For more information, read revisions.txt and Help → Troubleshooting."
 X   need to drop revisions.txt here and just reference Troubleshooting
+X NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
+X   https://github.com/processing/processing4/issues/154
 
 javafx
 X move JavaFX to its own library, too many weird quirks that it includes
@@ -88,6 +90,7 @@ _ automatically import JavaFX if FX2D is in sketch? or tell user?
 _ Code completion not working
 _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
+_ change application signature from Pde3 to Pde4 (and package name as well)
 
 _ fix height of font size dropdown
 _ You need to use "Import Library" to add processing.javafx.PGraphicsJavaFX

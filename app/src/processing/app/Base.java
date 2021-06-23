@@ -120,7 +120,10 @@ public class Base {
           String missing = null;
           if (mess.contains("Could not initialize class com.sun.jna.Native")) {
             missing = "jnidispatch.dll";
-          } else if (mess.contains("NoClassDefFoundError: processing/core/PApplet")) {
+          } else if (t instanceof NoClassDefFoundError &&
+                     mess.contains("processing/core/PApplet")) {
+            // Had to change how this was called
+            // https://github.com/processing/processing4/issues/154
             missing = "core.jar";
           }
           if (missing != null) {
