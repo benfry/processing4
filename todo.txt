@@ -81,19 +81,27 @@ X processing.mono used in preferences.txt
 X remove Preferences.getFont(), deal with incorrect usage
 X   getFont("editor.font") was returning getFont("editor.font.size")
 
-_ better default fonts for Swing; argh
-_   file an issue with the images
-https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
+windows/scaling
+X we're turning off automatic UI scaling in Windows, should we turn it back on?
+X   using -Dsun.java2d.uiScale.enabled=false inside config.xml for launch4j
+X   this was for Java 9, and we should have better support now
+X   also check whether this is set on Linux
+X Welcome screen doesn't size properly for HiDPI screens
+X   https://github.com/processing/processing/issues/4896
+X getSystemZoom() not available to splash screen
+X   https://github.com/processing/processing4/issues/145
+X   move all platform code out that doesn't require additional setup?
+X   i.e. all the things that rely on preferences can be inited separately (later)
+
 
 for next release
-_ automatically import JavaFX if FX2D is in sketch? or tell user?
+_ You need to use "Import Library" to add processing.javafx.PGraphicsJavaFX
+_   automatically import JavaFX if FX2D is in sketch? or tell user?
 _ Code completion not working
 _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
 _ change application signature from Pde3 to Pde4 (and package name as well)
 
-_ fix height of font size dropdown
-_ You need to use "Import Library" to add processing.javafx.PGraphicsJavaFX
 
 _ do a test to see if PApplet extends PSketch breaks libraries
 
@@ -105,11 +113,16 @@ _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
 _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
+ui is ugly on macOS
+_ fix height of font size dropdown
+_ better default fonts for Swing; argh
+_   file an issue with the images
+https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
 
 _ macosx vs macosx64 in JavaFX
 _   the latter is making the export fail because it won't embed a Java VM
 _   may be because it's exporting twice and overwriting? or 64 takes precedence?
-
+_ what should macos-aarch64 be called?
 
 _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
@@ -134,16 +147,6 @@ _ when lib downloads (batik) go dead, fallback to the download.processing.org ve
 _   or for now, tell users how to do it manually
 
 windows/scaling
-_ we're turning off automatic UI scaling in Windows, should we turn it back on?
-_   using -Dsun.java2d.uiScale.enabled=false inside config.xml for launch4j
-_   this was for Java 9, and we should have better support now
-_   also check whether this is set on Linux
-_ Welcome screen doesn't size properly for HiDPI screens
-_   https://github.com/processing/processing/issues/4896
-_ getSystemZoom() not available to splash screen
-_   https://github.com/processing/processing4/issues/145
-_   move all platform code out that doesn't require additional setup?
-_   i.e. all the things that rely on preferences can be inited separately (later)
 _ include JNA so that sketches can also scale properly?
 _   what happens re: getting scaled/high-res graphics?
 _   make that a preference? (and double the size by default?)
@@ -215,7 +218,7 @@ _   same with adding files to an unsaved sketch, do we block that?
 
 macos
 _ disable "notifications" prompt on startup for macOS
-_   (we're not posting any notifications, at least for now)
+_   we're not posting any, can we suppress the "allow notifications" message?
 _   https://developer.apple.com/documentation/usernotifications
 _   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
 
