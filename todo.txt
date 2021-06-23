@@ -48,6 +48,8 @@ X "Could not run" "For more information, read revisions.txt and Help → Trouble
 X   need to drop revisions.txt here and just reference Troubleshooting
 X NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
 X   https://github.com/processing/processing4/issues/154
+X change application signature from Pde3 to Pde4
+X   also change the bundle identifier to avoid conflicts with 3
 
 javafx
 X move JavaFX to its own library, too many weird quirks that it includes
@@ -100,7 +102,6 @@ for next release
 _ Code completion not working
 _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
-_ change application signature from Pde3 to Pde4 (and package name as well)
 
 
 _ do a test to see if PApplet extends PSketch breaks libraries
@@ -1200,40 +1201,6 @@ _   need to make sure that it's ok to write to logs dir..
 _      probably being removed from future OS X versions
 _ Exiting a sketch with Command-Q or File > Quit doesn't call stop() on OS X
 _   https://github.com/processing/processing/issues/186
-_ investigate the sandboxing situation on OS X
-_   http://developer.apple.com/library/mac/#documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW1
-most sandbox violations are triggered by attempts to read/write to the
-filesystem without user intervention (eg. without using an open/save
-dialog)  and/or from places outside the container (eg.
-~/Library/Containers/yourapp/...).
-A violation is also triggered by trying to execute an external process
-from Java (ex. using Runtime.exec()).
-If you look at the list of entitlements your application can have on
-the Apple site(*) you can think whether your application is performing
-an operation that would require enabling a specific entitlement, like
-connecting to a network, printing, interacting with a usb or bluetooth
-device, etc..
-I encountered this problem too, I forgot to add it to my guide....
-If you sign all the files in the bundle it won't work as codesign
-doesn't follow the symlinks.
-First sign your bundle:
-codesign --verbose -f -s "$SIGNATURE_APP" \
-  --entitlements $ENTITLEMENTS \
-  $YOUR_APP.app
-Then sign all the libraries:
-find $YOUR_APP/Contents/ -type f \
-  \( -name "*.jar" -or -name "*.dylib"\) \
-  -exec codesign --verbose -f -s "$SIGNATURE_APP" \
-  --entitlements $ENTITLEMENTS {} \;
-Finally you can create the package:
-productbuild --component YOUR_APP.app /Applications \
-  --sign "$SIGNATURE_INST" YOUR_APP.pkg
-You can test if the package work with this command:
-sudo installer -store -pkg $YOUR_APP.pkg -target /
-You can also verify all libraries have been signed
-find YOUR_APP/Contents/ -type f \
-   \( -name "*.jar" -or -name "*.dylib"\) \
-  -exec codesign --verbose --verify {} \;
 
 
 DIST / Linux
