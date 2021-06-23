@@ -763,12 +763,13 @@ public class PreferencesFrame {
       EventQueue.invokeLater(() -> {
         fontSelectionBox.setModel(new DefaultComboBoxModel<>(monoFontFamilies));
         String family = Preferences.get("editor.font.family");
+        String defaultName = Toolkit.getMonoFontName();
         if ("processing.mono".equals(family)) {
-          family = Toolkit.getMonoFontName();
+          family = defaultName;
         }
 
         // Set a reasonable default, in case selecting the family fails
-        fontSelectionBox.setSelectedItem("Monospaced");
+        fontSelectionBox.setSelectedItem(defaultName);
         // Now try to select the family (will fail silently, see prev line)
         fontSelectionBox.setSelectedItem(family);
         fontSelectionBox.setEnabled(true);
