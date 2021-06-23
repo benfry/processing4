@@ -71,7 +71,9 @@ X fix modules path warning for Tools in the PDE
 X   "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
 X   we were probably spared the warnings because the older JARs were hanging around
 X update modules path when exporting application
-_ lots more cleanup to do in javafx/build.xml
+X You need to use "Import Library" to add processing.javafx.PGraphicsJavaFX
+o   automatically import JavaFX if FX2D is in sketch? or tell user?
+X   concerned about auto-import being too unreliable
 
 major font cleanup
 X JDK fonts have been removed; fonts folder too? (not seeing it in the JDK)
@@ -95,8 +97,6 @@ X   i.e. all the things that rely on preferences can be inited separately (later
 
 
 for next release
-_ You need to use "Import Library" to add processing.javafx.PGraphicsJavaFX
-_   automatically import JavaFX if FX2D is in sketch? or tell user?
 _ Code completion not working
 _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
@@ -104,6 +104,8 @@ _ change application signature from Pde3 to Pde4 (and package name as well)
 
 
 _ do a test to see if PApplet extends PSketch breaks libraries
+
+_ lots more cleanup to do in javafx/build.xml
 
 _ remove the PDE classpath from sketches
 _   causing it to include incomplete JFX, other misc; too confusing

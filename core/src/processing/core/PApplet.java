@@ -2092,12 +2092,12 @@ public class PApplet implements PConstants {
       }
 
     } catch (ClassNotFoundException cnfe) {
-//      if (cnfe.getMessage().indexOf("processing.opengl.PGraphicsOpenGL") != -1) {
-//        throw new RuntimeException(openglError +
-//                                   " (The library .jar file is missing.)");
-//      } else {
+      // Clarify the error mesage for less confusion on 4.x
+      if (renderer.equals(FX2D)) {
+        renderer = "JavaFX";
+      }
       if (external) {
-        throw new RuntimeException("You need to use \"Import Library\" " +
+        throw new RuntimeException("Please use Sketch \u2192 Import Library " +
                                    "to add " + renderer + " to your sketch.");
       } else {
         throw new RuntimeException("The " + renderer +
