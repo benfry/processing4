@@ -104,8 +104,6 @@ _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
 
 
-_ do a test to see if PApplet extends PSketch breaks libraries
-
 _ lots more cleanup to do in javafx/build.xml
 
 _ remove the PDE classpath from sketches
@@ -192,6 +190,11 @@ _   https://github.com/processing/processing/pull/6048
 _ add language support to Modes (request from Andres)
 _   https://github.com/processing/processing4/pull/14
 _   this was a small change; rebase not really needed since needs rewrite anyway
+_ change the license from GPL
+_   then pass through the source to update licenses
+_   add Processing Foundation as 2012-15
+_   update license info to state gplv2 not v3
+_   run through that online license checker
 
 
 discuss with Sam
@@ -477,10 +480,6 @@ _ break out Mode-specific options to their own panels in prefs
 _   Mode should just provide a panel for their prefs
 _ make the build fail if git pull on processing-docs fails
 _ remove "save before running" message
-_ pass through the source to update licenses
-_   add Processing Foundation as 2012-15
-_   update license info to state gplv2 not v3
-_   run through that online license checker
 _ save() and saveAs() need to be refactored
 _   https://github.com/processing/processing/issues/3843
 _ clean out the repo

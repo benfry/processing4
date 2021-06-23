@@ -1,4 +1,6 @@
 1274 (4.0a5)
+X do a test to see if PApplet extends PSketch breaks libraries
+X   seems to be working
 
 
 regressions

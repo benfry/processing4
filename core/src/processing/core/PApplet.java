@@ -82,6 +82,7 @@ import processing.opengl.*;
  * than working around legacy Java code.
  */
 public class PApplet implements PConstants {
+//public class PApplet extends PSketch {  // possible in the next alpha
   /** Full name of the Java version (i.e. 1.5.0_11). */
   static public final String javaVersionName =
     System.getProperty("java.version");
