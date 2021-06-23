@@ -131,9 +131,9 @@ public class Base {
                                "A file required by Processing (" + missing + ") is missing.\n\n" +
                                "Make sure that you're not trying to run Processing from inside\n" +
                                "the .zip file you downloaded, and check that Windows Defender\n" +
-                               "hasn't removed files from the Processing folder.\n\n" +
-                               "(It sometimes flags parts of Processing as a trojan or virus.\n" +
-                               "It is neither, but Microsoft has ignored our pleas for help.)", t);
+                               "has not removed files from the Processing folder.\n\n" +
+                               "(Defender sometimes flags parts of Processing as malware.\n" +
+                               "It is not, but Microsoft has ignored our pleas for help.)", t);
           }
         }
         Messages.showTrace("Unknown Problem",
