@@ -112,26 +112,21 @@ public class CompletionGenerator {
     }
 
     if (vdfs != null) {
-      CompletionCandidate ret[] = new CompletionCandidate[vdfs.size()];
+      CompletionCandidate[] outgoing = new CompletionCandidate[vdfs.size()];
       int i = 0;
       for (VariableDeclarationFragment vdf : vdfs) {
 //        ret[i++] = new CompletionCandidate(getNodeAsString2(vdf), "", "",
 //                                           CompletionCandidate.LOCAL_VAR);
-        ret[i++] = new CompletionCandidate(vdf);
+        outgoing[i++] = new CompletionCandidate(vdf);
       }
-      return ret;
+      return outgoing;
     }
-
     return null;
   }
 
   /**
    * Find the parent of the expression in a().b, this would give me the return
-   * type of a(), so that we can find all children of a() begininng with b
-   *
-   * @param nearestNode
-   * @param expression
-   * @return
+   * type of a(), so that we can find all children of a() beginning with b
    */
   public static ASTNode resolveExpression(ASTNode nearestNode,
                                           ASTNode expression, boolean noCompare) {
@@ -191,9 +186,6 @@ public class CompletionGenerator {
    * Finds the type of the expression in foo.bar().a().b, this would give me the
    * type of b if it exists in return type of a(). If noCompare is true,
    * it'll return type of a()
-   * @param nearestNode
-   * @param astNode
-   * @return
    */
   public static ClassMember resolveExpression3rdParty(PreprocSketch ps, ASTNode nearestNode,
                                                       ASTNode astNode, boolean noCompare) {
@@ -475,12 +467,8 @@ public class CompletionGenerator {
 
   /**
    * For a().abc.a123 this would return a123
-   *
-   * @param expression
-   * @return
    */
-  public static ASTNode getChildExpression(ASTNode expression) {
-//    ASTNode anode = null;
+  static public ASTNode getChildExpression(ASTNode expression) {
     if (expression instanceof SimpleName) {
       return expression;
     } else if (expression instanceof FieldAccess) {
@@ -497,8 +485,7 @@ public class CompletionGenerator {
     return null;
   }
 
-  public static ASTNode getParentExpression(ASTNode expression) {
-//  ASTNode anode = null;
+  static public ASTNode getParentExpression(ASTNode expression) {
     if (expression instanceof SimpleName) {
       return expression;
     } else if (expression instanceof FieldAccess) {
@@ -518,18 +505,13 @@ public class CompletionGenerator {
 
   /**
    * Loads classes from .jar files in sketch classpath
-   *
-   * @param typeName
-   * @param child
-   * @param noCompare
-   * @return
    */
-  public static ArrayList<CompletionCandidate> getMembersForType(PreprocSketch ps,
+  public static List<CompletionCandidate> getMembersForType(PreprocSketch ps,
                                                                  String typeName,
                                                                  String child,
                                                                  boolean noCompare,
                                                                  boolean staticOnly) {
-    ArrayList<CompletionCandidate> candidates = new ArrayList<>();
+    List<CompletionCandidate> candidates = new ArrayList<>();
     log("In GMFT(), Looking for match " + child
         + " in class " + typeName + " noCompare " + noCompare + " staticOnly "
         + staticOnly);
@@ -561,7 +543,7 @@ public class CompletionGenerator {
       {
         FieldDeclaration[] fields = td.getFields();
         for (FieldDeclaration field : fields) {
-          if (staticOnly && !isStatic(field.modifiers())) {
+          if (staticOnly && notStatic(field.modifiers())) {
             continue;
           }
           List<VariableDeclarationFragment> vdfs = field.fragments();
@@ -576,7 +558,7 @@ public class CompletionGenerator {
       {
         MethodDeclaration[] methods = td.getMethods();
         for (MethodDeclaration method : methods) {
-          if (staticOnly && !isStatic(method.modifiers())) {
+          if (staticOnly && notStatic(method.modifiers())) {
             continue;
           }
           if (noCompare) {
@@ -616,7 +598,7 @@ public class CompletionGenerator {
         log("Couldn't find class " + tehClass.getTypeAsString());
         return candidates;
       }
-      log("Loaded " + probableClass.toString());
+      log("Loaded " + probableClass);
     }
     for (Method method : probableClass.getMethods()) {
       if (!Modifier.isStatic(method.getModifiers()) && staticOnly) {
@@ -668,19 +650,17 @@ public class CompletionGenerator {
     return candidates;
   }
 
-  private static boolean isStatic(List<org.eclipse.jdt.core.dom.Modifier> modifiers) {
+  private static boolean notStatic(List<org.eclipse.jdt.core.dom.Modifier> modifiers) {
     for (org.eclipse.jdt.core.dom.Modifier m : modifiers) {
-      if (m.isStatic()) return true;
+      if (m.isStatic()) return false;
     }
-    return false;
+    return true;
   }
 
 
   /**
    * Searches for the particular class in the default list of imports as well as
    * the Sketch classpath
-   * @param className
-   * @return
    */
   protected static Class<?> findClassIfExists(PreprocSketch ps, String className){
     if (className == null){
@@ -903,8 +883,6 @@ public class CompletionGenerator {
 
   /**
    * Fetches line number of the node in its CompilationUnit.
-   * @param node
-   * @return
    */
   public static int getLineNumber(ASTNode node) {
     return ((CompilationUnit) node.getRoot()).getLineNumber(node
@@ -933,9 +911,6 @@ public class CompletionGenerator {
    * Give this thing a {@link Name} instance - a {@link SimpleName} from the
    * ASTNode for ex, and it tries its level best to locate its declaration in
    * the AST. It really does.
-   *
-   * @param findMe
-   * @return
    */
   protected static ASTNode findDeclaration(Name findMe) {
 
@@ -1128,9 +1103,6 @@ public class CompletionGenerator {
 
   /**
    * A variation of findDeclaration() but accepts an alternate parent ASTNode
-   * @param findMe
-   * @param alternateParent
-   * @return
    */
   protected static ASTNode findDeclaration2(Name findMe, ASTNode alternateParent) {
     ASTNode declaringClass;
@@ -1464,9 +1436,6 @@ public class CompletionGenerator {
 
   /**
    * Find the SimpleType from FD, SVD, VDS, etc
-   *
-   * @param node
-   * @return
    */
   public static SimpleType extracTypeInfo(ASTNode node) {
     if (node == null) {
@@ -1638,22 +1607,22 @@ public class CompletionGenerator {
       value = ((MethodInvocation) node).getName().toString() + " | "
           + className;
     else if (node instanceof FieldDeclaration)
-      value = node.toString() + " FldDecl | ";
+      value = node + " FldDecl | ";
     else if (node instanceof SingleVariableDeclaration)
       value = ((SingleVariableDeclaration) node).getName() + " - "
           + ((SingleVariableDeclaration) node).getType() + " | SVD ";
     else if (node instanceof ExpressionStatement)
-      value = node.toString() + className;
+      value = node + className;
     else if (node instanceof SimpleName)
       value = ((SimpleName) node).getFullyQualifiedName() + " | " + className;
     else if (node instanceof QualifiedName)
-      value = node.toString() + " | " + className;
+      value = node + " | " + className;
     else if(node instanceof FieldAccess)
-      value = node.toString() + " | ";
+      value = node + " | ";
     else if (className.startsWith("Variable"))
-      value = node.toString() + " | " + className;
+      value = node + " | " + className;
     else if (className.endsWith("Type"))
-      value = node.toString() + " | " + className;
+      value = node + " | " + className;
     value += " [" + node.getStartPosition() + ","
         + (node.getStartPosition() + node.getLength()) + "]";
     value += " Line: "
@@ -1725,10 +1694,6 @@ public class CompletionGenerator {
 
   /**
    * The main function that calculates possible code completion candidates
-   *
-   * @param pdePhrase
-   * @param line
-   * @param lineStartNonWSOffset
    */
   public List<CompletionCandidate> preparePredictions(final PreprocSketch ps,
                                                       final String pdePhrase,
@@ -1829,16 +1794,13 @@ public class CompletionGenerator {
           if (td.getStructuralProperty(TypeDeclaration.SUPERCLASS_TYPE_PROPERTY) != null) {
             SimpleType st = (SimpleType) td.getStructuralProperty(TypeDeclaration.SUPERCLASS_TYPE_PROPERTY);
             log("Superclass " + st.getName());
-            ArrayList<CompletionCandidate> tempCandidates =
+            List<CompletionCandidate> tempCandidates =
                 getMembersForType(ps, st.getName().toString(), phrase, false, false);
-            for (CompletionCandidate can : tempCandidates) {
-              candidates.add(can);
-            }
-            //findDeclaration(st.getName())
+            candidates.addAll(tempCandidates);
           }
         }
         List<StructuralPropertyDescriptor> sprops =
-            nearestNode.structuralPropertiesForType();
+          nearestNode.structuralPropertiesForType();
         for (StructuralPropertyDescriptor sprop : sprops) {
           ASTNode cnode;
           if (!sprop.isChildListProperty()) {
@@ -1918,7 +1880,7 @@ public class CompletionGenerator {
             expr.astNode.getNodeType() == ASTNode.SIMPLE_TYPE;
         boolean isMethod = expr.method != null;
         boolean staticOnly = !isMethod && !isArray && !isSimpleType;
-        log("Expr is " + expr.toString());
+        log("Expr is " + expr);
         String lookFor = (noCompare || (childExpr == null)) ?
             "" : childExpr.toString();
         candidates = getMembersForType(ps, expr, lookFor, noCompare, staticOnly);
