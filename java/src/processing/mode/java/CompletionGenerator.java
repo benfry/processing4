@@ -1333,19 +1333,12 @@ public class CompletionGenerator {
    */
   public static class ClassMember {
     private Field field;
-
     private Method method;
-
     private Constructor<?> cons;
-
     private Class<?> thisclass;
-
     private String stringVal;
-
     private String classType;
-
     private ASTNode astNode;
-
     private ASTNode declaringNode;
 
     public ClassMember(Class<?> m) {
