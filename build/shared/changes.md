@@ -1,6 +1,6 @@
 # Processing 4.0 alpha 5
 
-* Revision 1274 – 24 June 2021*
+*Revision 1274 – 24 June 2021*
 
 Sneaking a release out the door the morning before our company meeting. Don't tell my boss, he's kind of a jerk.
 
@@ -44,7 +44,7 @@ Sneaking a release out the door the morning before our company meeting. Don't te
 
 * Rebuilt the `appbundler` tool for macOS to handle some recent changes, and disabled some logging chatter as well.
 
-* Update to launch4j 3.14, fixing Export to Application on Windows
+* Update to launch4j 3.14, fixing Export to Application on Windows.
 
 
 # Processing 4.0 alpha 4
