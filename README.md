@@ -21,6 +21,8 @@ The full list of changes can be seen in the release notes for each version, this
 
 ### Alpha 5
 
+* Known bug: code completion is currently broken. Any updates will be posted [here](https://github.com/processing/processing4/issues/177).
+
 * Moved from the 11.0.2 LTS version of JavaFX to the in-progress version 16. This fixes a [garbled text](https://bugs.openjdk.java.net/browse/JDK-8234916) issue that was breaking Tools that used JavaFX.
 
 * The minimum system version for macOS (for the PDE and exported applications) is now set to 10.14.6 (the last update of Mojave). 10.13 (High Sierra) is no longer supported by Apple as of September or December 2020 (depending on what you read), and for our sanity, we're dropping it as well.
