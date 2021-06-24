@@ -50,6 +50,8 @@ X NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
 X   https://github.com/processing/processing4/issues/154
 X change application signature from Pde3 to Pde4
 X   also change the bundle identifier to avoid conflicts with 3
+X remove template.app from macOS build
+X   was no longer in use, and causing notarization problems
 
 javafx
 X move JavaFX to its own library, too many weird quirks that it includes
