@@ -1,3 +1,8 @@
+1274 (4.0a5)
+X do a test to see if PApplet extends PSketch breaks libraries
+X   seems to be working
+
+
 1273 (4.0a4)
 X fix typo in extensions= arg
 X update batik to 1.14
