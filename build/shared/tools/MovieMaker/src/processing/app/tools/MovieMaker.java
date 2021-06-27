@@ -25,6 +25,7 @@ import processing.app.Base;
 import processing.app.Language;
 
 import ch.randelshofer.gui.datatransfer.FileTextFieldTransferHandler;
+import processing.app.Platform;
 
 
 /**
@@ -51,7 +52,8 @@ public class MovieMaker extends JFrame implements Tool {
   public void init(Base base) {
     //engine = new QuickTimeEngine(this);
     engine = new FFmpegEngine(this);
-    initComponents(base.getActiveEditor() == null);
+    //initComponents(base.getActiveEditor() == null);
+    initComponents(base == null);
 
     ((JComponent) getContentPane()).setBorder(new EmptyBorder(12, 18, 18, 18));
     imageFolderField.setTransferHandler(new FileTextFieldTransferHandler(JFileChooser.DIRECTORIES_ONLY));
@@ -475,6 +477,9 @@ public class MovieMaker extends JFrame implements Tool {
 
   static public void main(String[] args) {
     EventQueue.invokeLater(() -> {
+      Base.setCommandLine();
+      Platform.init();
+
       MovieMaker m = new MovieMaker();
       m.init(null);
       m.setVisible(true);

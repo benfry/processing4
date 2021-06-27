@@ -9,13 +9,13 @@
   <target name="compile" description="Compile sources">
     <mkdir dir="bin" />
     <javac target="1.8"
-	   source="1.8"
-	   srcdir="src"
-	   destdir="bin"
-	   encoding="UTF-8"
-	   includeAntRuntime="false"
-	   classpath="../../../../app/bin"
-	   nowarn="true">
+           source="1.8"
+           srcdir="src"
+           destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           classpath="../../../../app/bin"
+           nowarn="true">
       <compilerclasspath path="../../../../java/mode/org.eclipse.jdt.core.jar;
                                ../../../../java/mode/jdtCompilerAdapter.jar" />
     </javac>
@@ -24,5 +24,20 @@
   <target name="build" depends="compile" description="Build Movie Maker Tool">
     <mkdir dir="tool" />
     <jar basedir="bin" destfile="tool/MovieMaker.jar" />
+  </target>
+
+  <!-- java -cp tool/MovieMaker.jar:../../../../app/bin:../../../../core/bin processing.app.tools.MovieMaker  -->
+
+  <!-- classpath="tool/MovieMaker.jar;
+                  ../../../../app/bin;
+                  ../../../../core/bin" -->
+  <target name="run" depends="build" description="Run standalone for development">
+    <java classname="processing.app.tools.MovieMaker" fork="true">
+      <classpath>
+        <pathelement location="tool/MovieMaker.jar" />
+        <pathelement location="../../../../app/bin" />
+        <pathelement location="../../../../core/bin" />
+      </classpath>
+    </java>
   </target>
 </project>
