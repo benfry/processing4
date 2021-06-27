@@ -1,7 +1,36 @@
 1275 (4.0a6)
 X remove java.class.path when launching code from inside the PDE
 X   should prevent conflicts, avoid papering over other bugs
+_ was fixed in the source for 4.0a5, but may not have been included in the dist
+_   NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
+_   https://github.com/processing/processing4/issues/154
 
+moviemaker
+X MovieMaker .mov not compatible with QuicktTime Player
+X   https://github.com/processing/processing/issues/6110
+X   notes in the bug about what's going on
+X   confirmed that after Mojave, the QTMovieModernizer went away (was 32-bit)
+_     https://support.apple.com/en-us/HT202884
+X   the modernizer would convert things to ProRes
+_     https://support.apple.com/en-us/HT202410
+o   possible other library: http://jcodec.org/
+o     https://github.com/jcodec/jcodec
+o   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
+o   jars: https://repo.maven.apache.org/maven2/org/jcodec/jcodec/0.2.5/
+o   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jcodec/samples/gen/SequenceEncoderDemo.java
+X incorporating ffmpeg
+X   the essentials build for macos64, just one file:
+X     https://evermeet.cx/ffmpeg/ffmpeg-4.4.7z
+X     https://evermeet.cx/ffmpeg/ffmpeg-4.4.zip (!)
+X     via https://evermeet.cx/ffmpeg/
+X   release essentials for windows64, multiple files:
+X     https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.7z
+X     https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip
+X       ffmpeg-4.4-essentials_build/bin/ffmpeg.exe is our man
+X     via https://www.gyan.dev/ffmpeg/builds/
+X   linux64
+X     https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+X     via https://johnvansickle.com/ffmpeg/ also has arm and others
 
 contribs
 X Module javafx.base not found on Linux
@@ -76,31 +105,6 @@ _ Add ability to move ~/.processing directory
 _   use ~/.config as parent, or $XDG_CONFIG_HOME
 o   https://github.com/processing/processing/issues/6115 (moved)
 _   https://github.com/processing/processing4/issues/203
-
-_ MovieMaker .mov not compatible with QuicktTime Player
-_   https://github.com/processing/processing/issues/6110
-_   confirmed that after Mojave, the QTMovieModernizer went away (was 32-bit)
-_     https://support.apple.com/en-us/HT202884
-_   the modernizer would convert things to ProRes
-_     https://support.apple.com/en-us/HT202410
-_   possible other library: http://jcodec.org/
-_     https://github.com/jcodec/jcodec
-_   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
-_   jars: https://repo.maven.apache.org/maven2/org/jcodec/jcodec/0.2.5/
-_   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jcodec/samples/gen/SequenceEncoderDemo.java
-
-the essentials build for macos64, just one file:
-  https://evermeet.cx/ffmpeg/ffmpeg-4.4.7z
-  https://evermeet.cx/ffmpeg/ffmpeg-4.4.zip (!)
-  via https://evermeet.cx/ffmpeg/
-release essentials for windows64, multiple files:
-  https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.7z
-  https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip
-    ffmpeg-4.4-essentials_build/bin/ffmpeg.exe is our man
-  via https://www.gyan.dev/ffmpeg/builds/
-linux64
-  https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
-  via https://johnvansickle.com/ffmpeg/ also has arm and others
 
 
 decisions before final 4.0 release
