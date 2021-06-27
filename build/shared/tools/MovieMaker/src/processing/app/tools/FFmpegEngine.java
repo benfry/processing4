@@ -14,7 +14,8 @@ import java.util.regex.Pattern;
 
 
 class FFmpegEngine {
-  Pattern framePattern = Pattern.compile("\\sframe=(\\d+)\\s");
+  //Pattern framePattern = Pattern.compile("\\sframe=(\\d+)\\s");
+  Pattern framePattern = Pattern.compile("^frame=(\\d+)$");
 
   Component parent;
   String ffmpegPath;
@@ -149,8 +150,10 @@ class FFmpegEngine {
       cmd.add("-vf");
       cmd.add(formatArgs);
 
+      // https://www.ffmpeg.org/ffmpeg-formats.html#gif-2
       cmd.add("-loop");
-      cmd.add(formatName.contains("loop") ? "1" : "0");
+      // -1 means no loop, 0 means infinite loop (1+ means number of loops?)
+      cmd.add(formatName.contains("loop") ? "0" : "-1");
 
       if (!outputPath.toLowerCase().endsWith(".gif")) {
         outputPath += ".gif";
@@ -180,8 +183,10 @@ class FFmpegEngine {
         int frameCount = Integer.parseInt(m.group(1));
         // this was used to show which (input) image file was being handled
         //progress.setNote(Language.interpolate("movie_maker.progress.processing", inputName));
-        System.out.println(frameCount + " of " + imgFiles.length);
+//        System.out.println(frameCount + " of " + imgFiles.length);
         progress.setProgress(frameCount);
+//      } else {
+//        System.out.println(">>>" + line + "<<<");
       }
     });
 
@@ -189,7 +194,11 @@ class FFmpegEngine {
     new Thread(errorGobbler).start();
     try {
       int result = p.waitFor();
-      System.out.println(result);
+      //System.out.println("encoding result was " + result);
+      if (result != 0) {
+        throw new IOException("Unknown error while creating movie. " +
+                              "(FFmpeg result was " + result + ")");
+      }
       progress.close();
 
     } catch (InterruptedException ignored) {  }
