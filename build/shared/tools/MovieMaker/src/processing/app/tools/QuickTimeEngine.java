@@ -19,6 +19,39 @@ import ch.randelshofer.media.mp3.MP3AudioInputStream;
 import ch.randelshofer.media.quicktime.QuickTimeWriter;
 
 
+/**
+ * Code that's specific to the original QuickTime writer, which no longer
+ * works on macOS 10.15 and later, because Apple has removed support for
+ * most compression types (Animation, etc) that are not MPEG.
+ * <p>
+ * Originally hacked from Werner Randelshofer's QuickTimeWriter demo.
+ * That source code can be found <a href="http://www.randelshofer.ch/blog/2010/10/writing-quicktime-movies-in-pure-java/">here</a>.
+ * <p>
+ * A more up-to-date version of the project is
+ * <a href="http://www.randelshofer.ch/monte/">here</a>.
+ * Problem is, it's too big, so we don't want to merge it into our code.
+ * <p>
+ * Broken out as a separate project because the license (CC) probably isn't
+ * compatible with the rest of Processing and we don't want any confusion.
+ * <p>
+ * Added JAI ImageIO to support lots of other image file formats [131008].
+ * Also copied the Processing TGA implementation.
+ * <p>
+ * Added support for the gamma ('gama') atom [131008].
+ * <p>
+ * A few more notes on the implementation:
+ * <ul>
+ * <li> The dialog box is super ugly. It's a hacked up version of the previous
+ *      interface, but I'm too scared to pull that GUI layout code apart.
+ * <li> The 'None' compressor seems to have bugs, so just disabled it instead.
+ * <li> The 'pass through' option seems to be broken, so it's been removed.
+ *      In its place is an option to use the same width/height as the originals.
+ * <li> When this new 'pass through' is set, there's some nastiness with how
+ *      the 'final' width/height variables are passed to the movie maker.
+ *      This is an easy fix but needs a couple minutes.
+ * </ul>
+ * Ben Fry 2011-09-06, updated 2013-10-09, and again on 2021-06-27
+ */
 class QuickTimeEngine {
   Component parent;
 
@@ -216,13 +249,8 @@ class QuickTimeEngine {
       if (prevImgDuration != 0) {
         qtOut.writeFrame(0, prevImg, prevImgDuration);
       }
-//      if (streaming.equals("fastStart")) {
-//        qtOut.toWebOptimizedMovie(movieFile, false);
-//        tmpFile.delete();
-//      } else if (streaming.equals("fastStartCompressed")) {
       qtOut.toWebOptimizedMovie(movieFile, true);
       tmpFile.delete();
-//      }
       qtOut.close();
       qtOut = null;
     } finally {

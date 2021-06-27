@@ -28,37 +28,14 @@ import ch.randelshofer.gui.datatransfer.FileTextFieldTransferHandler;
 
 
 /**
- * Hacked from Werner Randelshofer's QuickTimeWriter demo. The original version
- * can be found <a href="http://www.randelshofer.ch/blog/2010/10/writing-quicktime-movies-in-pure-java/">here</a>.
- * <p>
- * A more up-to-date version of the project is
- * <a href="http://www.randelshofer.ch/monte/">here</a>.
- * Problem is, it's too big, so we don't want to merge it into our code.
- * <p>
- * Broken out as a separate project because the license (CC) probably isn't
- * compatible with the rest of Processing and we don't want any confusion.
- * <p>
- * Added JAI ImageIO to support lots of other image file formats [131008].
- * Also copied the Processing TGA implementation.
- * <p>
- * Added support for the gamma ('gama') atom [131008].
- * <p>
- * A few more notes on the implementation:
- * <ul>
- * <li> The dialog box is super ugly. It's a hacked up version of the previous
- *      interface, but I'm too scared to pull that GUI layout code apart.
- * <li> The 'None' compressor seems to have bugs, so just disabled it instead.
- * <li> The 'pass through' option seems to be broken, so it's been removed.
- *      In its place is an option to use the same width/height as the originals.
- * <li> When this new 'pass through' is set, there's some nastiness with how
- *      the 'final' width/height variables are passed to the movie maker.
- *      This is an easy fix but needs a couple minutes.
- * </ul>
- * Ben Fry 2011-09-06, updated 2013-10-09
+ * Tool for creating movie files from sequences of images.
+ * Originally hacked from Werner Randelshofer's QuickTimeWriter demo,
+ * reorganized for Processing 4 to instead use FFmpeg.
  */
 public class MovieMaker extends JFrame implements Tool {
   private Preferences prefs;
-  private QuickTimeEngine engine;
+  //private QuickTimeEngine engine;
+  private FFmpegEngine engine;
 
 
   public String getMenuTitle() {
@@ -72,7 +49,8 @@ public class MovieMaker extends JFrame implements Tool {
 
 
   public void init(Base base) {
-    engine = new QuickTimeEngine(this);
+    //engine = new QuickTimeEngine(this);
+    engine = new FFmpegEngine(this);
     initComponents(base.getActiveEditor() == null);
 
     ((JComponent) getContentPane()).setBorder(new EmptyBorder(12, 18, 18, 18));
