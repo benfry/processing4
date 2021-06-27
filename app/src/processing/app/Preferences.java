@@ -369,7 +369,7 @@ public class Preferences {
         Toolkit.getMonoFontName().equals(fontFamily)) {
       return Toolkit.getMonoFont(fontSize, style);
     }
-    return new Font(familyAttr, style, fontSize);
+    return new Font(fontFamily, style, fontSize);
   }
 
 
