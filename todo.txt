@@ -1,4 +1,6 @@
 1275 (4.0a6)
+X remove java.class.path when launching code from inside the PDE
+X   should prevent conflicts, avoid papering over other bugs
 
 
 contribs

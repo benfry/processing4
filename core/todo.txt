@@ -6,6 +6,7 @@ _ mouseButton not set correctly on mouseReleased() with Java2D
 _   https://github.com/processing/processing4/issues/181
 _   https://github.com/processing/processing4/pull/188
 
+_ put opengl libs for core into platform-specific subfolders?
 
 _ setting surface size needs to happen outside draw()
 _   surface.setSize() sadness etc

@@ -308,6 +308,11 @@ public class JavaBuild {
       }
     }
 
+    // Turning this off after 4.0 alpha 5, to see if everything still works.
+    // Including this classpath is really problematic (many possible conflicts,
+    // these are classes that won't be available on export, etc etc...)
+    // Also avoids accidentally hiding other potential classpath bugs.
+    /*
     // Finally, add the regular Java CLASSPATH. This contains everything
     // imported by the PDE itself (core.jar, pde.jar, quaqua.jar) which may
     // in fact be more of a problem.
@@ -317,6 +322,7 @@ public class JavaBuild {
       javaClassPath = javaClassPath.substring(1, javaClassPath.length() - 1);
     }
     classPath += File.pathSeparator + javaClassPath;
+    */
 
     // But make sure that there isn't anything in there that's missing,
     // otherwise ECJ will complain and die. For instance, Java 1.7 (or maybe
