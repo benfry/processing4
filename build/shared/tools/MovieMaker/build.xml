@@ -1,10 +1,63 @@
 <?xml version="1.0"?>
 <project name="Movie Maker Tool" default="build">
 
+  <!-- set things up to make sure we have necessary ffmpeg files -->
+
+  <condition property="platform" value="macos">
+    <os family="mac" />
+  </condition>
+
+  <condition property="platform" value="windows">
+    <os family="windows" />
+  </condition>
+
+  <condition property="platform" value="linux">
+    <and>
+      <os family="unix" />
+      <not>
+        <os family="mac" />
+      </not>
+    </and>
+  </condition>
+
+  <condition property="ffmpeg.filename" value="ffmpeg.exe" else="ffmpeg">
+    <os family="windows" />
+  </condition>
+
+  <property name="ffmpeg.version" value="4.4" />
+  <!-- Using download.processing.org because the static builds are
+       from several locations, and are all packaged differently.
+       This could be automated, but too much effort relative to utility. -->
+  <property name="ffmpeg.url"
+            value="https://download.processing.org/ffmpeg/${ffmpeg.version}/$ffmpeg-${platform}-${os.arch}.gz" />
+
+  <property name="ffmpeg.gz" value="ffmpeg-${ffmpeg.version}.gz" />
+  <available file="${ffmpeg.gz}" property="ffmpeg.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="ffmpeg.ignorable" value="false" else="true">
+    <isset property="ffmpeg.present" />
+  </condition>
+
+
+  <!-- target for downloading ffmpeg binary -->
+
+  <target name="download-ffmpeg" unless="ffmpeg.present">
+    <get src="${ffmpeg.url}"
+         dest="${ffmpeg.gz}"
+         ignoreerrors="${ffmpeg.ignorable}"
+         usetimestamp="true" />
+
+    <gunzip src="${ffmpeg.gz}" dest="${ffmpeg.filename}" />
+  </target>
+
   <target name="clean" description="Clean the build directories">
     <delete dir="bin" />
     <delete file="tool/MovieMaker.jar" />
   </target>
+
+
+  <!-- compiling the Tool itself -->
 
   <target name="compile" description="Compile sources">
     <mkdir dir="bin" />
@@ -21,7 +74,7 @@
     </javac>
   </target>
 
-  <target name="build" depends="compile" description="Build Movie Maker Tool">
+  <target name="build" depends="compile, download-ffmpeg" description="Build Movie Maker Tool">
     <mkdir dir="tool" />
     <jar basedir="bin" destfile="tool/MovieMaker.jar" />
   </target>
