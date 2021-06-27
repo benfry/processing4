@@ -152,9 +152,9 @@ public class MovieMaker extends JFrame implements Tool {
         setVisible(false);
       }
     });
-    setTitle(Language.text("movie_maker.title"));
+    setTitle(Language.text("movie_maker.two.title"));
 
-    JLabel aboutLabel = new JLabel(Language.text("movie_maker.blurb"));
+    JLabel aboutLabel = new JLabel(Language.text("movie_maker.two.blurb"));
     imageFolderHelpLabel.setText(Language.text("movie_maker.image_folder_help_label"));
     chooseImageFolderButton.setText(Language.text("movie_maker.choose_button"));
     //chooseImageFolderButton.addActionListener(formListener);
