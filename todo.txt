@@ -36,6 +36,8 @@ contribs
 X Module javafx.base not found on Linux
 X   https://github.com/processing/processing4/issues/214
 X   https://github.com/processing/processing4/pull/215
+X After selecting a font other than Source Code Pro, font went to a default
+X   https://github.com/processing/processing4/pull/216
 
 
 for next release
