@@ -89,6 +89,19 @@ _   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
 _   jars: https://repo.maven.apache.org/maven2/org/jcodec/jcodec/0.2.5/
 _   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jcodec/samples/gen/SequenceEncoderDemo.java
 
+the essentials build for macos64, just one file:
+  https://evermeet.cx/ffmpeg/ffmpeg-4.4.7z
+  https://evermeet.cx/ffmpeg/ffmpeg-4.4.zip (!)
+  via https://evermeet.cx/ffmpeg/
+release essentials for windows64, multiple files:
+  https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.7z
+  https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip
+    ffmpeg-4.4-essentials_build/bin/ffmpeg.exe is our man
+  via https://www.gyan.dev/ffmpeg/builds/
+linux64
+  https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+  via https://johnvansickle.com/ffmpeg/ also has arm and others
+
 
 decisions before final 4.0 release
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
