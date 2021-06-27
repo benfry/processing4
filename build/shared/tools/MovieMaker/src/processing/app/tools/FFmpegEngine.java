@@ -6,6 +6,7 @@ import processing.app.Platform;
 import javax.swing.*;
 import java.awt.Component;
 import java.io.*;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -161,15 +162,18 @@ class FFmpegEngine {
     }
 
     cmd.add(outputPath);
-    //final String outputName = new File(outputPath).getName();
+    final String outputName = new File(outputPath).getName();
 
     // pass cmd to Runtime exec
     // read the output and set the progress bar
     // show a message (success/failure) when complete
 
+    final String maxCount = nfc(imgFiles.length);
     final ProgressMonitor progress = new ProgressMonitor(parent,
-      Language.interpolate("movie_maker.progress.creating_file_name", movieFile.getName()),
-      Language.text("movie_maker.progress.creating_output_file"),
+      Language.interpolate("movie_maker.progress.creating_file_name", outputName),
+      //Language.text("movie_maker.progress.creating_output_file"),
+      //Language.interpolate("movie_maker.progress.handling_frame", 0, imgFiles.length),
+      Language.interpolate("movie_maker.progress.handling_frame", maxCount, maxCount),
       0, imgFiles.length);
 
     // https://stackoverflow.com/a/33386692
@@ -183,6 +187,8 @@ class FFmpegEngine {
         int frameCount = Integer.parseInt(m.group(1));
         // this was used to show which (input) image file was being handled
         //progress.setNote(Language.interpolate("movie_maker.progress.processing", inputName));
+        progress.setNote(Language.interpolate("movie_maker.progress.handling_frame",
+                         nfc(frameCount + 1), nfc(imgFiles.length)));
 //        System.out.println(frameCount + " of " + imgFiles.length);
         progress.setProgress(frameCount);
 //      } else {
@@ -217,5 +223,15 @@ class FFmpegEngine {
     public void run() {
       new BufferedReader(new InputStreamReader(inputStream)).lines().forEach(consumeInputLine);
     }
+  }
+
+
+  static NumberFormat formatter = NumberFormat.getInstance();
+
+  static String nfc(int num) {
+//    if (formatter == null) {
+//      formatter = NumberFormat.getInstance();
+//    }
+    return formatter.format(num);
   }
 }
