@@ -57,6 +57,9 @@ class FFmpegEngine {
     List<String> cmd = new ArrayList<>();
     cmd.add(ffmpegPath);
 
+    // delete the file if it already exists
+    cmd.add("-y");
+
     // set frame rate
     cmd.add("-r");
     cmd.add(String.valueOf(fps));
@@ -70,6 +73,8 @@ class FFmpegEngine {
     cmd.add("0");
 
     // use the concatenation filter to read our entries from a file
+    // https://trac.ffmpeg.org/wiki/Concatenate
+    // (not enough to simply specify -i with a .txt file)
     cmd.add("-f");
     cmd.add("concat");
 
@@ -83,15 +88,29 @@ class FFmpegEngine {
     }
 
     if (formatName.startsWith("MPEG-4")) {
-      // -vcodec libx264 -crf 25 -pix_fmt yuv420p ~/Desktop/output.mp4
+      // slideshow: http://trac.ffmpeg.org/wiki/Slideshow
+      // options for compatibility: https://superuser.com/a/424024
+
+      if (soundFile != null) {
+        cmd.add("-i");
+        cmd.add(soundFile.getAbsolutePath());
+      }
 
       // use the h.264 video codec
       cmd.add("-vcodec");
       cmd.add("libx264");
 
+      if (formatName.contains("lossless")) {
+        // https://trac.ffmpeg.org/wiki/Encode/H.264
+        cmd.add("-preset");
+        // can also use "veryslow" for better compression
+        cmd.add("ultrafast");
+        cmd.add("-crf");
+        cmd.add("0");
+      }
       // high quality images
       cmd.add("-crf");
-      cmd.add("25");
+      cmd.add("21");  // 18 to 25, with 18 the lowest
 
       // make compatible with QuickTime and others
       cmd.add("-pix_fmt");
@@ -102,6 +121,15 @@ class FFmpegEngine {
         cmd.add("-vf");
         cmd.add(formatArgs);
       }
+
+      if (soundFile != null) {
+        cmd.add("-acodec");
+        cmd.add("aac");
+      }
+
+      // move container metadata to the beginning of the file
+      cmd.add("-movflags");
+      cmd.add("faststart");
 
       if (!outputPath.toLowerCase().endsWith(".mp4")) {
         outputPath += ".mp4";
@@ -125,5 +153,7 @@ class FFmpegEngine {
     }
 
     // pass cmd to Runtime exec
+    // read the output and set the progress bar
+    // show a message (success/failure) when complete
   }
 }
