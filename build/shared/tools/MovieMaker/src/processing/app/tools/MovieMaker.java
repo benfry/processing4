@@ -58,7 +58,7 @@ import ch.randelshofer.gui.datatransfer.FileTextFieldTransferHandler;
  */
 public class MovieMaker extends JFrame implements Tool {
   private Preferences prefs;
-  private QuickTimeMovieEngine engine;
+  private QuickTimeEngine engine;
 
 
   public String getMenuTitle() {
@@ -72,7 +72,7 @@ public class MovieMaker extends JFrame implements Tool {
 
 
   public void init(Base base) {
-    engine = new QuickTimeMovieEngine(this);
+    engine = new QuickTimeEngine(this);
     initComponents(base.getActiveEditor() == null);
 
     ((JComponent) getContentPane()).setBorder(new EmptyBorder(12, 18, 18, 18));

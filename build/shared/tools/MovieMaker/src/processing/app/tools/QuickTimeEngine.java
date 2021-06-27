@@ -19,11 +19,11 @@ import ch.randelshofer.media.mp3.MP3AudioInputStream;
 import ch.randelshofer.media.quicktime.QuickTimeWriter;
 
 
-class QuickTimeMovieEngine {
+class QuickTimeEngine {
   Component parent;
 
 
-  QuickTimeMovieEngine(Component parent) {
+  QuickTimeEngine(Component parent) {
     this.parent = parent;
   }
 
