@@ -335,6 +335,12 @@
       <fileset dir="shared/tools" />
     </copy>
 
+    <!-- make sure ffmpeg/ffmpeg.exe have exec permission -->
+    <condition property="ffmpeg.binary" value="ffmpeg.exe" else="ffmpeg">
+      <os family="windows" />
+    </condition>
+    <chmod file="${target.path}/tools/MovieMaker/tool/${ffmpeg.binary}" perm="ugo+x" />
+
     <copy todir="${target.path}/modes/java" preservelastmodified="true">
       <fileset dir="../java">
         <!-- don't include LWJGL, it's not operational -->

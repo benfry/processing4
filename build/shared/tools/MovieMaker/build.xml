@@ -20,7 +20,7 @@
     </and>
   </condition>
 
-  <condition property="ffmpeg.filename" value="ffmpeg.exe" else="ffmpeg">
+  <condition property="ffmpeg.binary" value="tool/ffmpeg.exe" else="tool/ffmpeg">
     <os family="windows" />
   </condition>
 
@@ -29,7 +29,7 @@
        from several locations, and are all packaged differently.
        This could be automated, but too much effort relative to utility. -->
   <property name="ffmpeg.url"
-            value="https://download.processing.org/ffmpeg/${ffmpeg.version}/$ffmpeg-${platform}-${os.arch}.gz" />
+            value="https://download.processing.org/ffmpeg/${ffmpeg.version}/ffmpeg-${platform}-${os.arch}.gz" />
 
   <property name="ffmpeg.gz" value="ffmpeg-${ffmpeg.version}.gz" />
   <available file="${ffmpeg.gz}" property="ffmpeg.present" />
@@ -47,8 +47,11 @@
          dest="${ffmpeg.gz}"
          ignoreerrors="${ffmpeg.ignorable}"
          usetimestamp="true" />
+  </target>
 
-    <gunzip src="${ffmpeg.gz}" dest="${ffmpeg.filename}" />
+  <target name="prepare-ffmpeg" depends="download-ffmpeg">
+    <gunzip src="${ffmpeg.gz}" dest="${ffmpeg.binary}" />
+    <chmod file="${ffmpeg.binary}" perm="ugo+x" />
   </target>
 
   <target name="clean" description="Clean the build directories">
@@ -74,7 +77,7 @@
     </javac>
   </target>
 
-  <target name="build" depends="compile, download-ffmpeg" description="Build Movie Maker Tool">
+  <target name="build" depends="compile, prepare-ffmpeg" description="Build Movie Maker Tool">
     <mkdir dir="tool" />
     <jar basedir="bin" destfile="tool/MovieMaker.jar" />
   </target>
