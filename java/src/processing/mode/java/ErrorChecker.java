@@ -32,15 +32,15 @@ class ErrorChecker {
   // Delay delivering error check result after last sketch change #2677
   private final static long DELAY_BEFORE_UPDATE = 650;
 
-  private ScheduledExecutorService scheduler;
+  final private ScheduledExecutorService scheduler;
   private volatile ScheduledFuture<?> scheduledUiUpdate = null;
   private volatile long nextUiUpdate = 0;
-  private volatile boolean enabled = true;
+  private volatile boolean enabled;
 
   private final Consumer<PreprocSketch> errorHandlerListener = this::handleSketchProblems;
 
-  private JavaEditor editor;
-  private PreprocService pps;
+  final private JavaEditor editor;
+  final private PreprocService pps;
 
 
   public ErrorChecker(JavaEditor editor, PreprocService pps) {
@@ -85,8 +85,6 @@ class ErrorChecker {
     Map<String, String[]> suggCache =
         JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
 
-    final List<Problem> problems = new ArrayList<>();
-
     IProblem[] iproblems;
     if (ps.compilationUnit == null) {
       iproblems = new IProblem[0];
@@ -94,7 +92,7 @@ class ErrorChecker {
       iproblems = ps.compilationUnit.getProblems();
     }
 
-    problems.addAll(ps.otherProblems);
+    final List<Problem> problems = new ArrayList<>(ps.otherProblems);
 
     if (problems.isEmpty()) { // Check for curly quotes
       List<JavaProblem> curlyQuoteProblems = checkForCurlyQuotes(ps);
