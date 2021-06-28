@@ -69,16 +69,14 @@ class ASTViewer {
 
     tree.addTreeSelectionListener(e -> {
       if (tree.getLastSelectedPathComponent() != null) {
-        DefaultMutableTreeNode tnode =
+        DefaultMutableTreeNode treeNode =
           (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-        if (tnode.getUserObject() instanceof ASTNode) {
-          ASTNode node = (ASTNode) tnode.getUserObject();
+        if (treeNode.getUserObject() instanceof ASTNode) {
+          ASTNode node = (ASTNode) treeNode.getUserObject();
           pps.whenDone(ps -> {
             SketchInterval si = ps.mapJavaToSketch(node);
             if (!ps.inRange(si)) return;
-            EventQueue.invokeLater(() -> {
-              editor.highlight(si.tabIndex, si.startTabOffset, si.stopTabOffset);
-            });
+            EventQueue.invokeLater(() -> editor.highlight(si.tabIndex, si.startTabOffset, si.stopTabOffset));
           });
         }
       }
