@@ -15,8 +15,7 @@ import java.util.regex.Pattern;
 
 
 class FFmpegEngine {
-  //Pattern framePattern = Pattern.compile("\\sframe=(\\d+)\\s");
-  Pattern framePattern = Pattern.compile("^frame=(\\d+)$");
+  static Pattern framePattern = Pattern.compile("^frame=(\\d+)$");
 
   Component parent;
   String ffmpegPath;
@@ -37,7 +36,8 @@ class FFmpegEngine {
 
   String[] getFormats() {
     return new String[] {
-      "MPEG-4", "MPEG-4 (lossless)", "Animated GIF", "Animated GIF (looping)"
+      "MPEG-4", "MPEG-4 (Lossless 4:2:0)", "MPEG-4 (Lossless 4:4:4)",
+      "Animated GIF", "Animated GIF (Loop)"
     };
   }
 
@@ -109,21 +109,42 @@ class FFmpegEngine {
       cmd.add("-vcodec");
       cmd.add("libx264");
 
-      if (formatName.contains("lossless")) {
+      if (formatName.contains("4:2:0")) {
+        // Best compatibility with QuickTime, macOS, and others
+        cmd.add("-pix_fmt");
+        cmd.add("yuv420p");
+
         // https://trac.ffmpeg.org/wiki/Encode/H.264
         cmd.add("-preset");
         // can also use "veryslow" for better compression
         cmd.add("ultrafast");
+
         cmd.add("-crf");
         cmd.add("0");
-      }
-      // high quality images
-      cmd.add("-crf");
-      cmd.add("21");  // 18 to 25, with 18 the lowest
 
-      // make compatible with QuickTime and others
-      cmd.add("-pix_fmt");
-      cmd.add("yuv420p");
+      } else if (formatName.contains("4:4:4")) {
+        // Based on https://stackoverflow.com/a/18506577
+        // Not compatible with QuickTime and macOS, but works in VLC
+        cmd.add("-pix_fmt");
+        cmd.add("yuv444p");
+
+        cmd.add("-profile:v");
+        cmd.add("high444");
+
+        cmd.add("-preset:v");
+        cmd.add("slow");
+
+        cmd.add("-crf");
+        cmd.add("0");
+
+      } else {
+        cmd.add("-pix_fmt");
+        cmd.add("yuv420p");
+
+        // decent quality images
+        cmd.add("-crf");
+        cmd.add("21");  // 18 to 25, with 18 the lowest
+      }
 
       // if there's a resize, specify it and the type of scaling
       if (width != 0 && height != 0) {
@@ -154,7 +175,7 @@ class FFmpegEngine {
       // https://www.ffmpeg.org/ffmpeg-formats.html#gif-2
       cmd.add("-loop");
       // -1 means no loop, 0 means infinite loop (1+ means number of loops?)
-      cmd.add(formatName.contains("loop") ? "0" : "-1");
+      cmd.add(formatName.contains("Loop") ? "0" : "-1");
 
       if (!outputPath.toLowerCase().endsWith(".gif")) {
         outputPath += ".gif";
