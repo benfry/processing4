@@ -36,9 +36,7 @@ import javax.swing.plaf.FontUIResource;
 
 import processing.app.Base;
 import processing.app.Messages;
-import processing.app.Preferences;
 import processing.app.ui.About;
-import processing.app.ui.Toolkit;
 
 
 /**
@@ -73,13 +71,9 @@ public class MacPlatform extends DefaultPlatform {
     defaultMenuBar.add(fileMenu);
     desktop.setDefaultMenuBar(defaultMenuBar);
 
-    desktop.setAboutHandler((event) -> {
-      new About(null);
-    });
+    desktop.setAboutHandler((event) -> new About(null));
 
-    desktop.setPreferencesHandler((event) -> {
-      base.handlePrefs();
-    });
+    desktop.setPreferencesHandler((event) -> base.handlePrefs());
 
     desktop.setOpenFileHandler((event) -> {
       for (File file : event.getFiles()) {
@@ -126,17 +120,6 @@ public class MacPlatform extends DefaultPlatform {
   }
 
 
-  // Rewritten from https://stackoverflow.com/a/7434935
-  static private void setUIFont(FontUIResource f) {
-    for (Object key : UIManager.getLookAndFeelDefaults().keySet()) {
-      Object value = UIManager.get(key);
-      if (value instanceof FontUIResource) {
-        UIManager.put(key, f);
-      }
-    }
-  }
-
-
   public File getSettingsFolder() throws Exception {
     return new File(getLibraryFolder(), "Processing");
   }
@@ -166,13 +149,13 @@ public class MacPlatform extends DefaultPlatform {
 
 
   // TODO I suspect this won't work much longer, since access to the user's
-  // home directory seems verboten on more recent macOS versions [fry 191008]
+  //      home directory seems verboten on more recent macOS versions [fry 191008]
   protected String getLibraryFolder() throws FileNotFoundException {
     return System.getProperty("user.home") + "/Library";
   }
 
 
-  // see notes on getLibraryFolder()
+  // TODO see note on getLibraryFolder()
   protected String getDocumentsFolder() throws FileNotFoundException {
     return System.getProperty("user.home") + "/Documents";
   }
@@ -229,7 +212,7 @@ public class MacPlatform extends DefaultPlatform {
    * Swing components. Without this, some sizing calculations non-standard
    * components may fail or become unreliable.
    */
-  class VAquaEmptyIcon implements Icon {
+  static class VAquaEmptyIcon implements Icon {
     private final int SIZE = 1;
 
     @Override
@@ -255,7 +238,7 @@ public class MacPlatform extends DefaultPlatform {
    * Vaqua with non-standard swing components. Without this, some sizing
    * calculations within non-standard components may fail or become unreliable.
    */
-  private class VAquaTreeIcon implements Icon {
+  static private class VAquaTreeIcon implements Icon {
     private final int SIZE = 12;
     private final boolean isOpen;
 
