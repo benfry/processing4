@@ -111,6 +111,7 @@ public class MacPlatform extends DefaultPlatform {
       // oh my god, the kerning, the tracking, my eyes...
       //setUIFont(new FontUIResource(".SFNS-Regular", Font.PLAIN, 13));
       //setUIFont(new FontUIResource(Toolkit.getSansFont(14, Font.PLAIN)));
+      //setUIFont(new FontUIResource("Roboto-Regular", Font.PLAIN, 13));
 
     } else if ("org.violetlib.aqua.AquaLookAndFeel".equals(laf)) {
       Icon collapse = new VAquaTreeIcon(true);
