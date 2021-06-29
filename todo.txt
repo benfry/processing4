@@ -1,6 +1,8 @@
 1275 (4.0a6)
 X remove java.class.path when launching code from inside the PDE
 X   should prevent conflicts, avoid papering over other bugs
+X remove the PDE classpath from sketches
+X   causing it to include incomplete JFX, other misc; too confusing
 X add ui.font.family and ui.font.size as preferences
 
 readme
@@ -50,9 +52,8 @@ _   confirmed not working from Sam's repo either
 _ move ISSUE_TEMPLATE to .github subfolder
 _ lots more cleanup to do in javafx/build.xml
 
-
-_ remove the PDE classpath from sketches
-_   causing it to include incomplete JFX, other misc; too confusing
+_ startup is so incredibly slow
+_   the splash screen comes up fairly quickly, so what gives?
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
