@@ -1,6 +1,9 @@
 1275 (4.0a6)
 X remove java.class.path when launching code from inside the PDE
 X   should prevent conflicts, avoid papering over other bugs
+X add ui.font.family and ui.font.size as preferences
+
+readme
 _ was fixed in the source for 4.0a5, but may not have been included in the dist
 _   NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
 _   https://github.com/processing/processing4/issues/154
