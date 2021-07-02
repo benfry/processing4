@@ -51,6 +51,7 @@ _   https://github.com/processing/processing4/issues/177
 _   confirmed not working from Sam's repo either
 _ move ISSUE_TEMPLATE to .github subfolder
 _ lots more cleanup to do in javafx/build.xml
+_ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
 _ remove jdt.compiler.jar from subprojects
 _   no longer using JRE (doesn't exist), so it's not needed
