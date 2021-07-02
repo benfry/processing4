@@ -1,19 +1,6 @@
 package processing.app.tools;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.*;
-import java.util.Arrays;
-import java.util.prefs.Preferences;
-
-import javax.swing.*;
-import javax.swing.border.EmptyBorder;
-import javax.swing.filechooser.FileSystemView;
-
 import processing.app.Base;
-import processing.app.Language;
-
-import processing.app.Platform;
 
 
 public class ThemeEngine implements Tool {
