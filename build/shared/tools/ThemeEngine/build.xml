@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<project name="Theme Engine" default="build">
+
+  <property name="jar.path" location="tool/ThemeEngine.jar" />
+  <property name="app.bin.path" location="../../../../app/bin" />
+  <property name="core.bin.path" location="../../../../core/bin" />
+
+  <target name="clean" description="Clean the build directories">
+    <delete dir="bin" />
+    <delete file="${jar.path}" />
+  </target>
+
+  <target name="compile" description="Compile sources">
+    <mkdir dir="bin" />
+    <javac target="11"
+           source="11"
+           srcdir="src"
+           destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           nowarn="true">
+      <classpath>
+        <pathelement location="${app.bin.path}" />
+        <pathelement location="${core.bin.path}" />
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="build" depends="compile" description="Build Movie Maker Tool">
+    <mkdir dir="tool" />
+    <jar basedir="bin" destfile="${jar.path}" />
+  </target>
+
+  <target name="run" depends="build" description="Run standalone for development">
+    <java classname="processing.app.tools.ThemeEngine" fork="true">
+      <classpath>
+        <pathelement location="${jar.path}" />
+        <pathelement location="${app.bin.path}" />
+        <pathelement location="${core.bin.path}" />
+      </classpath>
+    </java>
+  </target>
+</project>
