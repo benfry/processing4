@@ -419,7 +419,6 @@ public class PreprocService {
           .forEach(result.otherProblems::add);
 
       result.hasSyntaxErrors = true;
-      return result.build();
     }
 
     // Save off the imports

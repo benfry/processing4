@@ -1693,6 +1693,10 @@ public class CompletionGenerator {
                                                       final int lineNumber) {
     Messages.log("* preparePredictions");
 
+    if (ps.compilationUnit.types().size() == 0) {
+      return new ArrayList<>();
+    }
+
     ASTNode astRootNode = (ASTNode) ps.compilationUnit.types().get(0);
 
     // If the parsed code contains pde enhancements, take 'em out.
