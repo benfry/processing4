@@ -158,7 +158,6 @@
                       lib/VAqua9.jar"
            debug="on"
            nowarn="true">
-      <compilerarg value="-Xlint:unchecked" />
       <compilerarg value="-Xlint:deprecation" />
       <src path="src" />
     </javac>
