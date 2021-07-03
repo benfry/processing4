@@ -1,7 +1,6 @@
 package processing.app.tools;
 
 import processing.app.Base;
-import processing.app.Preferences;
 import processing.app.ui.Editor;
 
 
