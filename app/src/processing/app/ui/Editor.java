@@ -47,7 +47,6 @@ import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
@@ -147,7 +146,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   // groups  multi-character inputs into a single undos.
   private CompoundEdit compoundEdit;
   // timer to decide when to group characters into an undo
-  private Timer timer;
+  private final Timer timer;
   private TimerTask endUndoEvent;
   // true if inserting text, false if removing text
   private boolean isInserting;
@@ -156,7 +155,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   JMenu toolsMenu;
   JMenu modePopup;
 
-  Image backgroundGradient;
+  //Image backgroundGradient;
 
   protected List<Problem> problems = Collections.emptyList();
 
@@ -280,11 +279,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
         }
       });
     }
-    textarea.addCaretListener(new CaretListener() {
-      public void caretUpdate(CaretEvent e) {
-        updateEditorStatus();
-      }
-    });
+    textarea.addCaretListener(e -> updateEditorStatus());
 
     footer = createFooter();
 
@@ -468,8 +463,8 @@ public abstract class Editor extends JFrame implements RunnerListener {
         if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
           List list = (List)
             transferable.getTransferData(DataFlavor.javaFileListFlavor);
-          for (int i = 0; i < list.size(); i++) {
-            File file = (File) list.get(i);
+          for (Object o : list) {
+            File file = (File) o;
             if (sketch.addFile(file)) {
               successful++;
             }
@@ -479,17 +474,21 @@ public abstract class Editor extends JFrame implements RunnerListener {
           // this method of moving files.
           String data = (String)transferable.getTransferData(uriListFlavor);
           String[] pieces = PApplet.splitTokens(data, "\r\n");
-          for (int i = 0; i < pieces.length; i++) {
-            if (pieces[i].startsWith("#")) continue;
+          for (String piece : pieces) {
+            if (piece.startsWith("#")) continue;
 
             String path = null;
-            if (pieces[i].startsWith("file:///")) {
-              path = pieces[i].substring(7);
-            } else if (pieces[i].startsWith("file:/")) {
-              path = pieces[i].substring(5);
+            if (piece.startsWith("file:///")) {
+              path = piece.substring(7);
+            } else if (piece.startsWith("file:/")) {
+              path = piece.substring(5);
             }
-            if (sketch.addFile(new File(path))) {
-              successful++;
+            if (path != null) {
+              if (sketch.addFile(new File(path))) {
+                successful++;
+              }
+            } else {
+              System.err.println("Path not found for: " + data);
             }
           }
         }
@@ -529,19 +528,17 @@ public abstract class Editor extends JFrame implements RunnerListener {
     ButtonGroup modeGroup = new ButtonGroup();
     for (final Mode m : base.getModeList()) {
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(m.getTitle());
-      item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if (!sketch.isModified()) {
-            if (!base.changeMode(m)) {
-              reselectMode();
-              Messages.showWarning(Language.text("warn.cannot_change_mode.title"),
-                                   Language.interpolate("warn.cannot_change_mode.body", m));
-            }
-          } else {
+      item.addActionListener(e -> {
+        if (!sketch.isModified()) {
+          if (!base.changeMode(m)) {
             reselectMode();
-            Messages.showWarning("Save",
-                                 "Please save the sketch before changing the mode.");
+            Messages.showWarning(Language.text("warn.cannot_change_mode.title"),
+                                 Language.interpolate("warn.cannot_change_mode.body", m));
           }
+        } else {
+          reselectMode();
+          Messages.showWarning("Save",
+                               "Please save the sketch before changing the mode.");
         }
       });
       modePopup.add(item);
@@ -553,11 +550,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     modePopup.addSeparator();
     JMenuItem addLib = new JMenuItem(Language.text("toolbar.add_mode"));
-    addLib.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openModes();
-      }
-    });
+    addLib.addActionListener(e -> ContributionManager.openModes());
     modePopup.add(addLib);
 
     Toolkit.setMenuMnemsInside(modePopup);
@@ -569,7 +562,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   private void reselectMode() {
     for (Component c : getModePopup().getComponents()) {
       if (c instanceof JRadioButtonMenuItem) {
-        if (((JRadioButtonMenuItem)c).getText() == mode.getTitle()) {
+        if (((JRadioButtonMenuItem) c).getText().equals(mode.getTitle())) {
           ((JRadioButtonMenuItem)c).setSelected(true);
           break;
         }
@@ -752,63 +745,34 @@ public abstract class Editor extends JFrame implements RunnerListener {
     JMenu fileMenu = new JMenu(Language.text("menu.file"));
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.new"), 'N');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          base.handleNew();
-        }
-      });
+    item.addActionListener(e -> base.handleNew());
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.open"), 'O');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          base.handleOpenPrompt();
-        }
-      });
+    item.addActionListener(e -> base.handleOpenPrompt());
     fileMenu.add(item);
 
 //    fileMenu.add(base.getSketchbookMenu());
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        mode.showSketchbookFrame();
-      }
-    });
+    item.addActionListener(e -> mode.showSketchbookFrame());
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        mode.showExamplesFrame();
-      }
-    });
+    item.addActionListener(e -> mode.showExamplesFrame());
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.close"), 'W');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        base.handleClose(Editor.this, false);
-      }
-    });
+    item.addActionListener(e -> base.handleClose(Editor.this, false));
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.save"), 'S');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        handleSave(false);
-      }
-    });
+    item.addActionListener(e -> handleSave(false));
 //    saveMenuItem = item;
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.save_as"), 'S');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        handleSaveAs();
-      }
-    });
+    item.addActionListener(e -> handleSaveAs());
 //    saveAsMenuItem = item;
     fileMenu.add(item);
 
@@ -820,19 +784,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
     fileMenu.addSeparator();
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.page_setup"), 'P');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        handlePageSetup();
-      }
-    });
+    item.addActionListener(e -> handlePageSetup());
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.print"), 'P');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        handlePrint();
-      }
-    });
+    item.addActionListener(e -> handlePrint());
     fileMenu.add(item);
 
     // Mac OS X already has its own preferences and quit menu.
@@ -841,21 +797,13 @@ public abstract class Editor extends JFrame implements RunnerListener {
       fileMenu.addSeparator();
 
       item = Toolkit.newJMenuItem(Language.text("menu.file.preferences"), ',');
-      item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          base.handlePrefs();
-        }
-      });
+      item.addActionListener(e -> base.handlePrefs());
       fileMenu.add(item);
 
       fileMenu.addSeparator();
 
       item = Toolkit.newJMenuItem(Language.text("menu.file.quit"), 'Q');
-      item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          base.handleQuit();
-        }
-      });
+      item.addActionListener(e -> base.handleQuit());
       fileMenu.add(item);
     }
     return fileMenu;
@@ -902,11 +850,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     menu.add(item);
 
     item = Toolkit.newJMenuItem(Language.text("menu.edit.select_all"), 'A');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          textarea.selectAll();
-        }
-      });
+    item.addActionListener(e -> textarea.selectAll());
     menu.add(item);
 
     /*
@@ -942,54 +886,36 @@ public abstract class Editor extends JFrame implements RunnerListener {
     menu.addSeparator();
 
     item = Toolkit.newJMenuItem(Language.text("menu.edit.auto_format"), 'T');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleAutoFormat();
-        }
-    });
+    item.addActionListener(e -> handleAutoFormat());
     menu.add(item);
 
     item = Toolkit.newJMenuItemExt("menu.edit.comment_uncomment");
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleCommentUncomment();
-        }
-    });
+    item.addActionListener(e -> handleCommentUncomment());
     menu.add(item);
 
     item = Toolkit.newJMenuItemExt("menu.edit.increase_indent");
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleIndentOutdent(true);
-        }
-    });
+    item.addActionListener(e -> handleIndentOutdent(true));
     menu.add(item);
 
     item = Toolkit.newJMenuItemExt("menu.edit.decrease_indent");
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleIndentOutdent(false);
-        }
-    });
+    item.addActionListener(e -> handleIndentOutdent(false));
     menu.add(item);
 
     menu.addSeparator();
 
     item = Toolkit.newJMenuItem(Language.text("menu.edit.find"), 'F');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if (find == null) {
-            find = new FindReplace(Editor.this);
-          }
-          // https://github.com/processing/processing/issues/3457
-          String selection = getSelectedText();
-          if (selection != null && selection.length() != 0 &&
-              !selection.contains("\n")) {
-            find.setFindText(selection);
-          }
-          find.setVisible(true);
-        }
-      });
+    item.addActionListener(e -> {
+      if (find == null) {
+        find = new FindReplace(Editor.this);
+      }
+      // https://github.com/processing/processing/issues/3457
+      String selection = getSelectedText();
+      if (selection != null && selection.length() != 0 &&
+          !selection.contains("\n")) {
+        find.setFindText(selection);
+      }
+      find.setVisible(true);
+    });
     menu.add(item);
 
     UpdatableAction action;
@@ -1049,20 +975,12 @@ public abstract class Editor extends JFrame implements RunnerListener {
     sketchMenu.add(mode.getImportMenu());
 
     item = Toolkit.newJMenuItem(Language.text("menu.sketch.show_sketch_folder"), 'K');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          Platform.openFolder(sketch.getFolder());
-        }
-      });
+    item.addActionListener(e -> Platform.openFolder(sketch.getFolder()));
     sketchMenu.add(item);
     item.setEnabled(Platform.openFolderAvailable());
 
     item = new JMenuItem(Language.text("menu.sketch.add_file"));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          sketch.handleAddFile();
-        }
-      });
+    item.addActionListener(e -> sketch.handleAddFile());
     sketchMenu.add(item);
 
     if (runItems != null && runItems.length != 0) {
@@ -1071,11 +989,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     sketchMenu.addMenuListener(new MenuListener() {
       // Menu Listener that populates the menu only when the menu is opened
-      Map<Sketch, JMenuItem> itemMap = new HashMap<>();
+      final Map<Sketch, JMenuItem> itemMap = new HashMap<>();
 
       @Override
       public void menuSelected(MenuEvent event) {
-        Set<JMenuItem> unseen = new HashSet(itemMap.values());
+        Set<JMenuItem> unseen = new HashSet<>(itemMap.values());
 
         for (final Editor editor : base.getEditors()) {
           Sketch sketch = editor.getSketch();
@@ -1099,13 +1017,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
           item.setText(name);
 
           // Action listener to bring the appropriate sketch in front
-          item.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              editor.setState(Frame.NORMAL);
-              editor.setVisible(true);
-              editor.toFront();
-            }
+          item.addActionListener(e -> {
+            editor.setState(Frame.NORMAL);
+            editor.setVisible(true);
+            editor.toFront();
           });
 
           // Disabling for now, might be problematic [fry 200117]
@@ -1288,8 +1203,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
   /**
    * Given the .html file, displays it in the default browser.
-   *
-   * @param file
    */
   public void showReferenceFile(File file) {
     try {
@@ -1317,7 +1230,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * Subclass if you want to have setEnabled(canDo()); called when your menu
    * is opened.
    */
-  abstract class UpdatableAction extends AbstractAction {
+  static abstract class UpdatableAction extends AbstractAction {
     public UpdatableAction(String name) {
       super(name);
     }
@@ -1873,27 +1786,24 @@ public abstract class Editor extends JFrame implements RunnerListener {
       });
 
       // connect the undo listener to the editor
-      document.addUndoableEditListener(new UndoableEditListener() {
+      document.addUndoableEditListener(e -> {
+        // if an edit is in progress, reset the timer
+        if (endUndoEvent != null) {
+          endUndoEvent.cancel();
+          endUndoEvent = null;
+          startTimerEvent();
+        }
 
-          public void undoableEditHappened(UndoableEditEvent e) {
-            // if an edit is in progress, reset the timer
-            if (endUndoEvent != null) {
-              endUndoEvent.cancel();
-              endUndoEvent = null;
-              startTimerEvent();
-            }
+        // if this edit is just getting started, create a compound edit
+        if (compoundEdit == null) {
+          startCompoundEdit();
+          startTimerEvent();
+        }
 
-            // if this edit is just getting started, create a compound edit
-            if (compoundEdit == null) {
-              startCompoundEdit();
-              startTimerEvent();
-            }
-
-            compoundEdit.addEdit(e.getEdit());
-            undoAction.updateUndoState();
-            redoAction.updateRedoState();
-          }
-        });
+        compoundEdit.addEdit(e.getEdit());
+        undoAction.updateUndoState();
+        redoAction.updateRedoState();
+      });
     }
 
     // update the document object that's in use
@@ -2312,7 +2222,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   /**
    * Check the current selection for reference. If no selection is active,
    * expand the current selection.
-   * @return
    */
   protected String referenceCheck(boolean selectIfFound) {
     int start = textarea.getSelectionStart();
@@ -2509,8 +2418,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
       // on macosx, setting the destructive property places this option
       // away from the others at the lefthand side
-      pane.putClientProperty("Quaqua.OptionPane.destructiveOption",
-                             Integer.valueOf(2));
+      pane.putClientProperty("Quaqua.OptionPane.destructiveOption", 2);
 
       JDialog dialog = pane.createDialog(this, null);
       dialog.setVisible(true);
@@ -2665,11 +2573,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
       handleSaveImpl();
 
     } else {
-      EventQueue.invokeLater(new Runnable() {
-          public void run() {
-            handleSaveImpl();
-          }
-        });
+      EventQueue.invokeLater(this::handleSaveImpl);
     }
     return true;
   }
@@ -2852,8 +2756,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
       if (sc.getDocument() != null) {
         try {
           sc.setProgram(sc.getDocumentText());
-        } catch (BadLocationException e) {
-        }
+        } catch (BadLocationException ignored) { }
       }
     }
 
@@ -3241,79 +3144,43 @@ public abstract class Editor extends JFrame implements RunnerListener {
       JMenuItem item;
 
       cutItem = new JMenuItem(Language.text("menu.edit.cut"));
-      cutItem.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handleCut();
-          }
-      });
+      cutItem.addActionListener(e -> handleCut());
       this.add(cutItem);
 
       copyItem = new JMenuItem(Language.text("menu.edit.copy"));
-      copyItem.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handleCopy();
-          }
-        });
+      copyItem.addActionListener(e -> handleCopy());
       this.add(copyItem);
 
       discourseItem = new JMenuItem(Language.text("menu.edit.copy_as_html"));
-      discourseItem.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handleCopyAsHTML();
-          }
-        });
+      discourseItem.addActionListener(e -> handleCopyAsHTML());
       this.add(discourseItem);
 
       pasteItem = new JMenuItem(Language.text("menu.edit.paste"));
-      pasteItem.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handlePaste();
-          }
-        });
+      pasteItem.addActionListener(e -> handlePaste());
       this.add(pasteItem);
 
       item = new JMenuItem(Language.text("menu.edit.select_all"));
-      item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleSelectAll();
-        }
-      });
+      item.addActionListener(e -> handleSelectAll());
       this.add(item);
 
       this.addSeparator();
 
       item = new JMenuItem(Language.text("menu.edit.comment_uncomment"));
-      item.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handleCommentUncomment();
-          }
-      });
+      item.addActionListener(e -> handleCommentUncomment());
       this.add(item);
 
       item = new JMenuItem("\u2192 " + Language.text("menu.edit.increase_indent"));
-      item.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handleIndentOutdent(true);
-          }
-      });
+      item.addActionListener(e -> handleIndentOutdent(true));
       this.add(item);
 
       item = new JMenuItem("\u2190 " + Language.text("menu.edit.decrease_indent"));
-      item.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handleIndentOutdent(false);
-          }
-      });
+      item.addActionListener(e -> handleIndentOutdent(false));
       this.add(item);
 
       this.addSeparator();
 
       referenceItem = new JMenuItem(Language.text("find_in_reference"));
-      referenceItem.addActionListener(new ActionListener() {
-          public void actionPerformed(ActionEvent e) {
-            handleFindReference();
-          }
-        });
+      referenceItem.addActionListener(e -> handleFindReference());
       this.add(referenceItem);
 
       Toolkit.setMenuMnemonics(this);
