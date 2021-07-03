@@ -1,6 +1,8 @@
 package processing.app.tools;
 
 import processing.app.Base;
+import processing.app.Preferences;
+import processing.app.ui.Editor;
 
 
 public class ThemeEngine implements Tool {
@@ -19,5 +21,10 @@ public class ThemeEngine implements Tool {
 
   public void run() {
     //setVisible(true);
+    //Preferences.init();
+    for (Editor editor : base.getEditors()) {
+      System.out.println("Updating settings for " + editor.getSketch().getName());
+      editor.applyPreferences();
+    }
   }
 }

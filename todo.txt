@@ -4,6 +4,7 @@ X   should prevent conflicts, avoid papering over other bugs
 X remove the PDE classpath from sketches
 X   causing it to include incomplete JFX, other misc; too confusing
 X add ui.font.family and ui.font.size as preferences
+X Editor.applyPreferences() was protected, now public
 
 readme
 _ was fixed in the source for 4.0a5, but may not have been included in the dist

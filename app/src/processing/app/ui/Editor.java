@@ -663,7 +663,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * the app is just starting up, or the user just finished messing
    * with things in the Preferences window.
    */
-  protected void applyPreferences() {
+  public void applyPreferences() {
     // Update fonts and other items controllable from the prefs
     textarea.getPainter().updateAppearance();
     textarea.repaint();

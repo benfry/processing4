@@ -2316,7 +2316,7 @@ public class JavaEditor extends Editor {
 
 
   @Override
-  protected void applyPreferences() {
+  public void applyPreferences() {
     super.applyPreferences();
 
     if (jmode != null) {
