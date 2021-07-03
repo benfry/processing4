@@ -16,17 +16,17 @@ import java.util.zip.*;
  */
 public class WebServer implements HttpConstants {
 
-    /* Where worker threads stand idle */
-    static Vector threads = new Vector();
+  /* Where worker threads stand idle */
+  static final Vector<WebServerWorker> threads = new Vector<>();
 
-    /* the web server's virtual root */
-    //static File root;
+  /* the web server's virtual root */
+  //static File root;
 
-    /* timeout on client connections */
-    static int timeout = 10000;
+  /* timeout on client connections */
+  static int timeout = 10000;
 
-    /* max # worker threads */
-    static int workers = 5;
+  /* max # worker threads */
+  static int workers = 5;
 
 //    static PrintStream log = System.out;
 
@@ -88,77 +88,57 @@ public class WebServer implements HttpConstants {
     */
 
 
-    /* print to stdout */
-//    protected static void p(String s) {
-//        System.out.println(s);
-//    }
+  /* print to the log file */
+  protected static void log(String s) {
+    if (Base.DEBUG) {
+      System.out.println(s);
+    }
+  }
 
-    /* print to the log file */
-    protected static void log(String s) {
-      if (false) {
-        System.out.println(s);
-      }
-//        synchronized (log) {
-//            log.println(s);
-//            log.flush();
-//        }
+
+  static public int launch(String zipPath) throws IOException {
+    final ZipFile zip = new ZipFile(zipPath);
+    final Map<String, ZipEntry> entries = new HashMap<>();
+    Enumeration<? extends ZipEntry> en = zip.entries();
+    while (en.hasMoreElements()) {
+      ZipEntry entry = en.nextElement();
+      entries.put(entry.getName(), entry);
     }
 
+    // start worker threads
+    for (int i = 0; i < workers; ++i) {
+      WebServerWorker w = new WebServerWorker(zip, entries);
+      Thread t = new Thread(w, "Web Server Worker #" + i);
+      t.start();
+      threads.addElement(w);
+    }
 
-    //public static void main(String[] a) throws Exception {
-    static public int launch(String zipPath) throws IOException {
-      final ZipFile zip = new ZipFile(zipPath);
-      final Map<String, ZipEntry> entries = new HashMap<String, ZipEntry>();
-      Enumeration en = zip.entries();
-      while (en.hasMoreElements()) {
-        ZipEntry entry = (ZipEntry) en.nextElement();
-        entries.put(entry.getName(), entry);
-      }
+    final int port = 8080;
 
-//        if (a.length > 0) {
-//            port = Integer.parseInt(a[0]);
-//        }
-//        loadProps();
-//        printProps();
-        // start worker threads
-        for (int i = 0; i < workers; ++i) {
-            WebServerWorker w = new WebServerWorker(zip, entries);
-            Thread t = new Thread(w, "Web Server Worker #" + i);
-            t.start();
-            threads.addElement(w);
-        }
-
-        final int port = 8080;
-
-        //SwingUtilities.invokeLater(new Runnable() {
-        Runnable r = new Runnable() {
-          public void run() {
-            try {
-              ServerSocket ss = new ServerSocket(port);
-              while (true) {
-                Socket s = ss.accept();
-                WebServerWorker w = null;
-                synchronized (threads) {
-                  if (threads.isEmpty()) {
-                    WebServerWorker ws = new WebServerWorker(zip, entries);
-                    ws.setSocket(s);
-                    (new Thread(ws, "additional worker")).start();
-                  } else {
-                    w = (WebServerWorker) threads.elementAt(0);
-                    threads.removeElementAt(0);
-                    w.setSocket(s);
-                  }
-                }
-              }
-            } catch (IOException e) {
-              e.printStackTrace();
+    Runnable r = () -> {
+      try {
+        ServerSocket ss = new ServerSocket(port);
+        while (true) {
+          Socket s = ss.accept();
+          synchronized (threads) {
+            if (threads.isEmpty()) {
+              WebServerWorker ws = new WebServerWorker(zip, entries);
+              ws.setSocket(s);
+              (new Thread(ws, "additional worker")).start();
+            } else {
+              WebServerWorker w = threads.elementAt(0);
+              threads.removeElementAt(0);
+              w.setSocket(s);
             }
           }
-        };
-        new Thread(r).start();
-//        });
-        return port;
-    }
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    };
+    new Thread(r).start();
+    return port;
+  }
 }
 
 
@@ -213,13 +193,12 @@ class WebServerWorker /*extends WebServer*/ implements HttpConstants, Runnable {
              * than numHandler connections.
              */
             s = null;
-            Vector pool = WebServer.threads;
-            synchronized (pool) {
-                if (pool.size() >= WebServer.workers) {
+            synchronized (WebServer.threads) {
+                if (WebServer.threads.size() >= WebServer.workers) {
                     /* too many threads, exit this one */
                     return;
                 } else {
-                    pool.addElement(this);
+                  WebServer.threads.addElement(this);
                 }
             }
         }
@@ -241,7 +220,7 @@ class WebServerWorker /*extends WebServer*/ implements HttpConstants, Runnable {
         try {
           // We only support HTTP GET/HEAD, and don't support any fancy HTTP
           // options, so we're only interested really in the first line.
-            int nread = 0, r = 0;
+            int nread = 0, r;
 
 outerloop:
             while (nread < BUF_SIZE) {
@@ -286,7 +265,7 @@ outerloop:
                 return;
             }
 
-            int i = 0;
+            int i;
             /* find the file name, from:
              * GET /foo/bar.html HTTP/1.0
              * extract "/foo/bar.html"
@@ -339,8 +318,8 @@ outerloop:
 
 
     boolean printHeaders(ZipEntry targ, PrintStream ps) throws IOException {
-      boolean ret = false;
-      int rCode = 0;
+      boolean ret;
+      int rCode;
       if (targ == null) {
           rCode = HTTP_NOT_FOUND;
           ps.print("HTTP/1.0 " + HTTP_NOT_FOUND + " Not Found");
@@ -387,9 +366,10 @@ outerloop:
   }
 
 
+    /*
     boolean printHeaders(File targ, PrintStream ps) throws IOException {
-        boolean ret = false;
-        int rCode = 0;
+        boolean ret;
+        int rCode;
         if (!targ.exists()) {
             rCode = HTTP_NOT_FOUND;
             ps.print("HTTP/1.0 " + HTTP_NOT_FOUND + " Not Found");
@@ -430,6 +410,7 @@ outerloop:
         }
         return ret;
     }
+    */
 
 
     void send404(PrintStream ps) throws IOException {
@@ -442,8 +423,9 @@ outerloop:
     }
 
 
+    /*
     void sendFile(File targ, PrintStream ps) throws IOException {
-        InputStream is = null;
+        InputStream is;
         ps.write(EOL);
         if (targ.isDirectory()) {
             listDirectory(targ, ps);
@@ -453,21 +435,20 @@ outerloop:
         }
         sendFile(is, ps);
     }
+    */
 
 
     void sendFile(InputStream is, PrintStream ps) throws IOException {
-        try {
-            int n;
-            while ((n = is.read(buf)) > 0) {
-                ps.write(buf, 0, n);
-            }
-        } finally {
-            is.close();
+      try (is) {
+        int n;
+        while ((n = is.read(buf)) > 0) {
+          ps.write(buf, 0, n);
         }
+      }
     }
 
     /* mapping of file extensions to content-types */
-    static Map<String, String> map = new HashMap<String, String>();
+    static Map<String, String> map = new HashMap<>();
 
     static {
         fillMap();
@@ -508,7 +489,8 @@ outerloop:
         setSuffix(".pl", "text/plain");
     }
 
-    void listDirectory(File dir, PrintStream ps) throws IOException {
+    /*
+    void listDirectory(File dir, PrintStream ps) {
         ps.println("<TITLE>Directory listing</TITLE><P>\n");
         ps.println("<A HREF=\"..\">Parent Directory</A><BR>\n");
         String[] list = dir.list();
@@ -522,51 +504,51 @@ outerloop:
         }
         ps.println("<P><HR><BR><I>" + (new Date()) + "</I>");
     }
-
+    */
 }
 
 
 interface HttpConstants {
-    /** 2XX: generally "OK" */
-    public static final int HTTP_OK = 200;
-    public static final int HTTP_CREATED = 201;
-    public static final int HTTP_ACCEPTED = 202;
-    public static final int HTTP_NOT_AUTHORITATIVE = 203;
-    public static final int HTTP_NO_CONTENT = 204;
-    public static final int HTTP_RESET = 205;
-    public static final int HTTP_PARTIAL = 206;
+    /* 2XX: generally "OK" */
+    int HTTP_OK = 200;
+//    int HTTP_CREATED = 201;
+//    int HTTP_ACCEPTED = 202;
+//    int HTTP_NOT_AUTHORITATIVE = 203;
+//    int HTTP_NO_CONTENT = 204;
+//    int HTTP_RESET = 205;
+//    int HTTP_PARTIAL = 206;
 
-    /** 3XX: relocation/redirect */
-    public static final int HTTP_MULT_CHOICE = 300;
-    public static final int HTTP_MOVED_PERM = 301;
-    public static final int HTTP_MOVED_TEMP = 302;
-    public static final int HTTP_SEE_OTHER = 303;
-    public static final int HTTP_NOT_MODIFIED = 304;
-    public static final int HTTP_USE_PROXY = 305;
+    /* 3XX: relocation/redirect */
+//    int HTTP_MULT_CHOICE = 300;
+//    int HTTP_MOVED_PERM = 301;
+//    int HTTP_MOVED_TEMP = 302;
+//    int HTTP_SEE_OTHER = 303;
+//    int HTTP_NOT_MODIFIED = 304;
+//    int HTTP_USE_PROXY = 305;
 
-    /** 4XX: client error */
-    public static final int HTTP_BAD_REQUEST = 400;
-    public static final int HTTP_UNAUTHORIZED = 401;
-    public static final int HTTP_PAYMENT_REQUIRED = 402;
-    public static final int HTTP_FORBIDDEN = 403;
-    public static final int HTTP_NOT_FOUND = 404;
-    public static final int HTTP_BAD_METHOD = 405;
-    public static final int HTTP_NOT_ACCEPTABLE = 406;
-    public static final int HTTP_PROXY_AUTH = 407;
-    public static final int HTTP_CLIENT_TIMEOUT = 408;
-    public static final int HTTP_CONFLICT = 409;
-    public static final int HTTP_GONE = 410;
-    public static final int HTTP_LENGTH_REQUIRED = 411;
-    public static final int HTTP_PRECON_FAILED = 412;
-    public static final int HTTP_ENTITY_TOO_LARGE = 413;
-    public static final int HTTP_REQ_TOO_LONG = 414;
-    public static final int HTTP_UNSUPPORTED_TYPE = 415;
+    /* 4XX: client error */
+//    int HTTP_BAD_REQUEST = 400;
+//    int HTTP_UNAUTHORIZED = 401;
+//    int HTTP_PAYMENT_REQUIRED = 402;
+//    int HTTP_FORBIDDEN = 403;
+    int HTTP_NOT_FOUND = 404;
+    int HTTP_BAD_METHOD = 405;
+//    int HTTP_NOT_ACCEPTABLE = 406;
+//    int HTTP_PROXY_AUTH = 407;
+//    int HTTP_CLIENT_TIMEOUT = 408;
+//    int HTTP_CONFLICT = 409;
+//    int HTTP_GONE = 410;
+//    int HTTP_LENGTH_REQUIRED = 411;
+//    int HTTP_PRECON_FAILED = 412;
+//    int HTTP_ENTITY_TOO_LARGE = 413;
+//    int HTTP_REQ_TOO_LONG = 414;
+//    int HTTP_UNSUPPORTED_TYPE = 415;
 
-    /** 5XX: server error */
-    public static final int HTTP_SERVER_ERROR = 500;
-    public static final int HTTP_INTERNAL_ERROR = 501;
-    public static final int HTTP_BAD_GATEWAY = 502;
-    public static final int HTTP_UNAVAILABLE = 503;
-    public static final int HTTP_GATEWAY_TIMEOUT = 504;
-    public static final int HTTP_VERSION = 505;
+    /* 5XX: server error */
+//    int HTTP_SERVER_ERROR = 500;
+//    int HTTP_INTERNAL_ERROR = 501;
+//    int HTTP_BAD_GATEWAY = 502;
+//    int HTTP_UNAVAILABLE = 503;
+//    int HTTP_GATEWAY_TIMEOUT = 504;
+//    int HTTP_VERSION = 505;
 }
