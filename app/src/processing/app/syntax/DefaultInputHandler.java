@@ -11,10 +11,9 @@ package processing.app.syntax;
 
 import javax.swing.KeyStroke;
 import java.awt.event.*;
-import java.awt.Toolkit;
 import java.util.Map;
 import java.util.HashMap;
-import java.util.StringTokenizer;
+
 
 /**
  * The default input handler. It maps sequences of keystrokes into actions
@@ -23,15 +22,14 @@ import java.util.StringTokenizer;
  * @version $Id$
  */
 public class DefaultInputHandler extends InputHandler {
-  private Map bindings;
-  private Map currentBindings;
+  final private Map<KeyStroke, ActionListener> bindings;
 
 
   /**
    * Creates a new input handler with no key bindings defined.
    */
   public DefaultInputHandler() {
-    bindings = currentBindings = new HashMap();
+    bindings = new HashMap<>();
   }
 
 
@@ -90,27 +88,9 @@ public class DefaultInputHandler extends InputHandler {
    * @param action The action
    */
   public void addKeyBinding(String keyBinding, ActionListener action) {
-    Map current = bindings;
-
-    StringTokenizer st = new StringTokenizer(keyBinding);
-    while (st.hasMoreTokens()) {
-      KeyStroke keyStroke = parseKeyStroke(st.nextToken());
-      if (keyStroke == null)
-        return;
-
-      if (st.hasMoreTokens()) {
-        Object o = current.get(keyStroke);
-        if (o instanceof Map) {
-          current = (Map)o;
-        } else {
-          o = new HashMap();
-          // what the hell? putting a Map in here? [fry 210703]
-          current.put(keyStroke,o);
-          current = (Map)o;
-        }
-      } else {
-        current.put(keyStroke,action);
-      }
+    KeyStroke keyStroke = parseKeyStroke(keyBinding);
+    if (keyStroke != null) {
+      bindings.put(keyStroke, action);
     }
   }
 
@@ -159,22 +139,14 @@ public class DefaultInputHandler extends InputHandler {
       return;
     }
 
-    // don't get command-s or other menu key equivs on mac
+    // Don't get command-s or other menu key equivalents on macOS
     // unless it's something that's specifically bound (cmd-left or right)
     if ((modifiers & InputEvent.META_MASK) != 0) {
       KeyStroke keyStroke = KeyStroke.getKeyStroke(keyCode, modifiers);
-      if (currentBindings.get(keyStroke) == null) {
+      if (bindings.get(keyStroke) == null) {
         return;
       }
     }
-
-    /*
-    char keyChar = evt.getKeyChar();
-    System.out.println("code=" + keyCode + " char=" + keyChar +
-           " charint=" + ((int)keyChar));
-    System.out.println("other codes " + KeyEvent.VK_ALT + " " +
-           KeyEvent.VK_META);
-    */
 
     if ((modifiers & ~InputEvent.SHIFT_MASK) != 0
       || evt.isActionKey()
@@ -189,35 +161,10 @@ public class DefaultInputHandler extends InputHandler {
       }
 
       KeyStroke keyStroke = KeyStroke.getKeyStroke(keyCode, modifiers);
-      Object o = currentBindings.get(keyStroke);
-      if (o == null) {
-        // Don't beep if the user presses some
-        // key we don't know about unless a
-        // prefix is active. Otherwise it will
-        // beep when caps lock is pressed, etc.
-        if (currentBindings != bindings) {
-          Toolkit.getDefaultToolkit().beep();
-          // F10 should be passed on, but C+e F10
-          // shouldn't
-          repeatCount = 0;
-          repeat = false;
-          evt.consume();
-        }
-        currentBindings = bindings;
-        return;
-      } else if (o instanceof ActionListener) {
-        currentBindings = bindings;
-
-        executeAction(((ActionListener)o),
-          evt.getSource(),null);
-
+      ActionListener o = bindings.get(keyStroke);
+      if (o != null) {
+        executeAction(o, evt.getSource(), null);
         evt.consume();
-        return;
-
-      } else if (o instanceof Map) {
-        currentBindings = (Map) o;
-        evt.consume();
-        return;
       }
     }
   }
@@ -242,18 +189,12 @@ public class DefaultInputHandler extends InputHandler {
     if (c != KeyEvent.CHAR_UNDEFINED) {
       if (c >= 0x20 && c != 0x7f) {
         KeyStroke keyStroke = KeyStroke.getKeyStroke(Character.toUpperCase(c));
-        Object o = currentBindings.get(keyStroke);
+        ActionListener o = bindings.get(keyStroke);
 
-        if (o instanceof Map) {
-          currentBindings = (Map) o;
-          return;
-        } else if (o instanceof ActionListener) {
-          currentBindings = bindings;
-          executeAction((ActionListener) o, evt.getSource(), String.valueOf(c));
+        if (o != null) {
+          executeAction(o, evt.getSource(), String.valueOf(c));
           return;
         }
-
-        currentBindings = bindings;
 
         if (grabAction != null) {
           handleGrabAction(evt);
@@ -327,8 +268,7 @@ public class DefaultInputHandler extends InputHandler {
       int ch;
 
       try {
-        ch = KeyEvent.class.getField("VK_".concat(key))
-          .getInt(null);
+        ch = KeyEvent.class.getField("VK_".concat(key)).getInt(null);
       } catch (Exception e) {
         System.err.println("Invalid key stroke: " + keyStroke);
         return null;
@@ -339,6 +279,6 @@ public class DefaultInputHandler extends InputHandler {
 
 
   private DefaultInputHandler(DefaultInputHandler copy) {
-    bindings = currentBindings = copy.bindings;
+    bindings = copy.bindings;
   }
 }

@@ -5,6 +5,9 @@ X remove the PDE classpath from sketches
 X   causing it to include incomplete JFX, other misc; too confusing
 X add ui.font.family and ui.font.size as preferences
 X Editor.applyPreferences() was protected, now public
+X remove compound key actions (which were undocumented and not in use)
+X   clears up a lot of complexity in DefaultInputHandler
+X   if someone wants this, they could recreate it in a subclass
 
 readme
 _ was fixed in the source for 4.0a5, but may not have been included in the dist
@@ -108,6 +111,12 @@ _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 
 
 should be in for 4.x
+_ jeditsyntax is a mess of old-style getModifiers()
+_   would like to switch this over, but needs to be tested a lot
+_ Switch to getModifiersEx() in `processing.app`
+_   https://github.com/processing/processing4/issues/67
+_ command line complaints
+_   https://github.com/processing/processing/issues/6129
 _ remove the JRE Downloader
 _   https://github.com/processing/processing4/issues/155
 _ editor breakpoints out of the .pde files
@@ -237,10 +246,6 @@ _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
 _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
-_ Switch to getModifiersEx() in `processing.app`
-_   https://github.com/processing/processing4/issues/67
-_ command line complaints
-_   https://github.com/processing/processing/issues/6129
 _ update installation guide for Linux
 _   https://github.com/processing/processing-docs/issues/645
 
