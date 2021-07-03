@@ -69,8 +69,8 @@ public class PreprocessorResult {
    * @param newSketchHeight The height of the sketch in pixels or special value like displayWidth;
    */
   public PreprocessorResult(PdePreprocessor.Mode newProgramType, int newHeaderOffset,
-        String newClassName, List<ImportStatement> newImportStatements, List<TextTransform.Edit> newEdits,
-        String newSketchWidth, String newSketchHeight) {
+        String newClassName, List<ImportStatement> newImportStatements,
+        List<TextTransform.Edit> newEdits, String newSketchWidth, String newSketchHeight) {
 
     if (newClassName == null) {
       throw new RuntimeException("Could not find main class");
@@ -82,6 +82,38 @@ public class PreprocessorResult {
     programType = newProgramType;
     edits = newEdits;
     preprocessIssues = new ArrayList<>();
+
+    sketchWidth = newSketchWidth;
+    sketchHeight = newSketchHeight;
+  }
+
+  /**
+   * Create a new preprocessing result with errors
+   *
+   * @param newProgramType The type of program that has be preprocessed.
+   * @param newHeaderOffset The offset (in number of chars) from the start of the program at which
+   *    the header finishes.
+   * @param newClassName The name of the class containing the sketch.
+   * @param newImportStatements The imports required for the sketch including defaults and core imports.
+   * @param newEdits The edits made during preprocessing.
+   * @param newSketchWidth The width of the sketch in pixels or special value like displayWidth;
+   * @param newSketchHeight The height of the sketch in pixels or special value like displayWidth;
+   */
+  public PreprocessorResult(PdePreprocessor.Mode newProgramType, int newHeaderOffset,
+        String newClassName, List<ImportStatement> newImportStatements,
+        List<TextTransform.Edit> newEdits, String newSketchWidth, String newSketchHeight,
+        List<PdePreprocessIssue> newPreprocessIssues) {
+
+    if (newClassName == null) {
+      throw new RuntimeException("Could not find main class");
+    }
+
+    headerOffset = newHeaderOffset;
+    className = newClassName;
+    importStatements = newImportStatements;
+    programType = newProgramType;
+    edits = newEdits;
+    preprocessIssues = newPreprocessIssues;
 
     sketchWidth = newSketchWidth;
     sketchHeight = newSketchHeight;
