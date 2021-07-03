@@ -105,6 +105,7 @@ public class DefaultInputHandler extends InputHandler
                                 else
                                 {
                                         o = new HashMap();
+                                        // what the hell? putting a Map in here? [fry 210703]
                                         current.put(keyStroke,o);
                                         current = (Map)o;
                                 }
