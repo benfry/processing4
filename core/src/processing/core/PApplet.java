@@ -1343,7 +1343,7 @@ public class PApplet implements PConstants {
   Map<String, RegisteredMethods> registerMap = new ConcurrentHashMap<>();
 
 
-  class RegisteredMethod {
+  static class RegisteredMethod {
     Object object;
     Method method;
 
@@ -4049,10 +4049,10 @@ public class PApplet implements PConstants {
       if (o == null) {
         sb.append("null");
       } else {
-        sb.append(o.toString());
+        sb.append(o);
       }
     }
-    System.out.print(sb.toString());
+    System.out.print(sb);
   }
 
 
@@ -4177,7 +4177,7 @@ public class PApplet implements PConstants {
     } else if (what.getClass().isArray()) {
       printArray(what);
     } else {
-      System.out.println(what.toString());
+      System.out.println(what);
       System.out.flush();
     }
   }
@@ -9477,7 +9477,7 @@ public class PApplet implements PConstants {
   static final public float parseFloat(String what, float otherwise) {
     try {
       return Float.parseFloat(what);
-    } catch (NumberFormatException e) { }
+    } catch (NumberFormatException ignored) { }
 
     return otherwise;
   }
