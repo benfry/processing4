@@ -55,13 +55,13 @@ public class Preferences {
   static Map<String, String> defaults;
   static Map<String, String> table = new HashMap<>();
   static File preferencesFile;
-  private static boolean initalized = false;
+  private static boolean initialized = false;
 
 
 //  /** @return true if the sketchbook file did not exist */
 //  static public boolean init() {
   static public void init() {
-    initalized = true;
+    initialized = true;
     // start by loading the defaults, in case something
     // important was deleted from the user prefs
     try {
@@ -133,7 +133,7 @@ public class Preferences {
    * For testing, pretend to load preferences without a real file.
    */
   static public void skipInit() {
-    initalized = true;
+    initialized = true;
   }
 
 
@@ -191,7 +191,7 @@ public class Preferences {
 
   /**
    * @param key original key (may include platform extension)
-   * @param value
+   * @param value the value that goes with the key
    * @param specific where to put the key/value pairs for *this* platform
    * @return true if a platform-specific key
    */
@@ -205,7 +205,7 @@ public class Preferences {
           key = key.substring(0, key.lastIndexOf(ext));
           // store this for later overrides
           specific.put(key, value);
-        } else {
+        //} else {
           // ignore platform-specific defaults for other platforms,
           // but return 'true' because it needn't be added to the big list
         }
@@ -226,12 +226,14 @@ public class Preferences {
       try {
         File dir = preferencesFile.getParentFile();
         File preferencesTemp = File.createTempFile("preferences", ".txt", dir);
-        preferencesTemp.setWritable(true, false);
+        if (!preferencesTemp.setWritable(true, false)) {
+          throw new IOException("Could not set " + preferencesTemp + " writable");
+        }
 
         // Fix for 0163 to properly use Unicode when writing preferences.txt
         PrintWriter writer = PApplet.createWriter(preferencesTemp);
 
-        String[] keyList = table.keySet().toArray(new String[table.size()]);
+        String[] keyList = table.keySet().toArray(new String[0]);
         // Sorting is really helpful for debugging, diffing, and finding keys
         keyList = PApplet.sort(keyList);
         for (String key : keyList) {
@@ -270,9 +272,9 @@ public class Preferences {
   // all the information from preferences.txt
 
   static public String get(String attribute /*, String defaultValue */) {
-    if (!initalized) {
+    if (!initialized) {
       throw new RuntimeException(
-        "Tried reading preferences prior to initalization."
+        "Tried reading preferences prior to initialization."
       );
     }
     return table.get(attribute);
@@ -320,22 +322,6 @@ public class Preferences {
 
   static public int getInteger(String attribute /*, int defaultValue*/) {
     return Integer.parseInt(get(attribute));
-
-    /*
-    String value = get(attribute, null);
-    if (value == null) return defaultValue;
-
-    try {
-      return Integer.parseInt(value);
-    } catch (NumberFormatException e) {
-      // ignored will just fall through to returning the default
-      System.err.println("expecting an integer: " + attribute + " = " + value);
-    }
-    return defaultValue;
-    //if (value == null) return defaultValue;
-    //return (value == null) ? defaultValue :
-    //Integer.parseInt(value);
-    */
   }
 
 
@@ -350,7 +336,7 @@ public class Preferences {
     if ((s != null) && (s.indexOf("#") == 0)) { //$NON-NLS-1$
       try {
         parsed = new Color(Integer.parseInt(s.substring(1), 16));
-      } catch (Exception e) { }
+      } catch (Exception ignored) { }
     }
     return parsed;
   }
@@ -371,66 +357,6 @@ public class Preferences {
     }
     return new Font(fontFamily, style, fontSize);
   }
-
-
-  // Parse a font from "name,style,size" (not used anymore?)
-  // Up until 4.0 alpha 5, this was incorrectly being called on non-existing params
-  // i.e. getFont("editor.font"), which was returning "12" because it was
-  // somehow using "editor.font.size" as a fallback for "editor.font"
-  /*
-  // Identical version found in Settings.java
-  static public Font getFont(String attr) {
-    try {
-      boolean replace = false;
-      String value = get(attr);
-      if (value == null) {
-        // use the default font instead
-        value = getDefault(attr);
-        replace = true;
-      }
-
-      String[] pieces = PApplet.split(value, ',');
-
-      if (pieces.length != 3) {
-        value = getDefault(attr);
-        pieces = PApplet.split(value, ',');
-        replace = true;
-      }
-
-      String name = pieces[0];
-      int style = Font.PLAIN;  // equals zero
-      if (pieces[1].indexOf("bold") != -1) { //$NON-NLS-1$
-        style |= Font.BOLD;
-      }
-      if (pieces[1].indexOf("italic") != -1) { //$NON-NLS-1$
-        style |= Font.ITALIC;
-      }
-      int size = PApplet.parseInt(pieces[2], 12);
-
-      // replace bad font with the default from lib/preferences.txt
-      if (replace) {
-        set(attr, value);
-      }
-
-      if (!name.startsWith("processing.")) {
-        return new Font(name, style, size);
-
-      } else {
-        if (pieces[0].equals("processing.sans")) {
-          return Toolkit.getSansFont(size, style);
-        } else if (pieces[0].equals("processing.mono")) {
-          return Toolkit.getMonoFont(size, style);
-        }
-      }
-
-    } catch (Exception e) {
-      // Adding try/catch block because this may be where
-      // a lot of startup crashes are happening.
-      Messages.log("Error with font " + get(attr) + " for attribute " + attr);
-    }
-    return new Font("Dialog", Font.PLAIN, 12);
-  }
-  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
