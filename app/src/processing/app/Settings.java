@@ -46,10 +46,10 @@ public class Settings {
    * parses properly, we need to be able to get back to a clean version of that
    * setting so we can recover.
    */
-  HashMap<String,String> defaults;
+  Map<String, String> defaults;
 
   /** Table of attributes/values. */
-  HashMap<String,String> table = new HashMap<String,String>();;
+  Map<String, String> table = new HashMap<>();
 
   /** Associated file for this settings data. */
   File file;
@@ -63,7 +63,7 @@ public class Settings {
     }
 
     // clone the hash table
-    defaults = (HashMap<String,String>) table.clone();
+    defaults = new HashMap<>(table);
   }
 
 
@@ -74,17 +74,21 @@ public class Settings {
 
   public void load(File additions) {
     String[] lines = PApplet.loadStrings(additions);
-    for (String line : lines) {
-      if ((line.length() == 0) ||
+    if (lines != null) {
+      for (String line : lines) {
+        if ((line.length() == 0) ||
           (line.charAt(0) == '#')) continue;
 
-      // this won't properly handle = signs being in the text
-      int equals = line.indexOf('=');
-      if (equals != -1) {
-        String key = line.substring(0, equals).trim();
-        String value = line.substring(equals + 1).trim();
-        table.put(key, value);
+        // this won't properly handle = signs being in the text
+        int equals = line.indexOf('=');
+        if (equals != -1) {
+          String key = line.substring(0, equals).trim();
+          String value = line.substring(equals + 1).trim();
+          table.put(key, value);
+        }
       }
+    } else {
+      Messages.loge(additions + " could not be read");
     }
 
     // check for platform-specific properties in the defaults
@@ -165,8 +169,7 @@ public class Settings {
       try {
         int v = Integer.parseInt(s.substring(1), 16);
         parsed = new Color(v);
-      } catch (Exception e) {
-      }
+      } catch (Exception ignored) { }
     }
     return parsed;
   }
@@ -198,10 +201,10 @@ public class Settings {
 
       String name = pieces[0];
       int style = Font.PLAIN;  // equals zero
-      if (pieces[1].indexOf("bold") != -1) { //$NON-NLS-1$
+      if (pieces[1].contains("bold")) { //$NON-NLS-1$
         style |= Font.BOLD;
       }
-      if (pieces[1].indexOf("italic") != -1) { //$NON-NLS-1$
+      if (pieces[1].contains("italic")) { //$NON-NLS-1$
         style |= Font.ITALIC;
       }
       int size = PApplet.parseInt(pieces[2], 12);
