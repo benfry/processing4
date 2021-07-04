@@ -255,9 +255,20 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   /**
    * Get the result of the last preprocessing.
    *
+   * @param issues The errors (if any) encountered.
    * @return The result of the last preprocessing.
    */
   public PreprocessorResult getResult() {
+    return getResult(new ArrayList<>());
+  }
+
+  /**
+   * Get the result of the last preprocessing with optional error.
+   *
+   * @param issues The errors (if any) encountered.
+   * @return The result of the last preprocessing.
+   */
+  public PreprocessorResult getResult(List<PdePreprocessIssue> issues) {
     List<ImportStatement> allImports = new ArrayList<>();
 
     allImports.addAll(coreImports);
@@ -277,7 +288,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         allImports,
         allEdits,
         sketchWidth,
-        sketchHeight
+        sketchHeight,
+        issues
     );
   }
 
