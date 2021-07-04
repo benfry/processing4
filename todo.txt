@@ -10,9 +10,9 @@ X   clears up a lot of complexity in DefaultInputHandler
 X   if someone wants this, they could recreate it in a subclass
 
 readme
-_ was fixed in the source for 4.0a5, but may not have been included in the dist
-_   NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
-_   https://github.com/processing/processing4/issues/154
+X was fixed in the source for 4.0a5, but may not have been included in the dist
+X   NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
+X   https://github.com/processing/processing4/issues/154
 
 moviemaker
 X MovieMaker .mov not compatible with QuicktTime Player
@@ -54,7 +54,10 @@ X   https://github.com/processing/processing4/issues/177
 X   confirmed not working from Sam's repo either
 X   https://github.com/processing/processing4/pull/219
 
+
 for next release
+_ fix up modifiers for key events (after completing mouse) in Java2D
+_ set args for JavaFX and OpenGL for the mouse and key events
 _ move ISSUE_TEMPLATE to .github subfolder
 _ lots more cleanup to do in javafx/build.xml
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)

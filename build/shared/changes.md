@@ -1,3 +1,14 @@
+# Processing 4.0 alpha 6
+
+*Revision 1275 – XX July 2021*
+
+Code completion is back!
+
+### Bug Fixes
+
+* A more useful message for the `NoClassDefError: processing/core/PApplet` startup error on Windows was in the alpha 5 source, but may not have made it into the actual release. [#154](https://github.com/processing/processing4/issues/154)
+
+
 # Processing 4.0 alpha 5
 
 *Revision 1274 – 24 June 2021*
