@@ -522,7 +522,7 @@ public class PApplet implements PConstants {
   // been released already. Otherwise the events are inconsistent, e.g.
   // Left Pressed - Left Drag - CTRL Pressed - Right Drag - Right Released.
   // See: https://github.com/processing/processing/issues/5672
-  private boolean macosxLeftButtonWithCtrlPressed;
+  private boolean macosCtrlClick;
 
 
   /** @deprecated Use a mouse event handler that passes an event instead. */
@@ -2467,13 +2467,13 @@ public class PApplet implements PConstants {
    * overloaded to do something more useful.
    */
   protected void handleMouseEvent(MouseEvent event) {
-    // http://dev.processing.org/bugs/show_bug.cgi?id=170
+    // https://processing.org/bugs/bugzilla/170.html
     // also prevents mouseExited() on the mac from hosing the mouse
     // position, because x/y are bizarre values on the exit event.
     // see also the id check below.. both of these go together.
     // Not necessary to set mouseX/Y on RELEASE events because the
     // actual position will have been set by a PRESS or DRAG event.
-    // However, PRESS events might come without a preceeding move,
+    // However, PRESS events might come without a preceding move,
     // if the sketch window gains focus on that PRESS.
     final int action = event.getAction();
     if (action == MouseEvent.DRAG ||
@@ -2487,20 +2487,33 @@ public class PApplet implements PConstants {
 
     int button = event.getButton();
 
-    // If running on Mac OS, allow ctrl-click as right mouse.
-    if (PApplet.platform == PConstants.MACOS && event.getButton() == PConstants.LEFT) {
+    // If running on Mac OS, allow ctrl-click as right mouse click.
+    // Handled inside PApplet so that the same logic need not be redone
+    // for each Surface independently, since the code seems to be identical:
+    // no native code backing Surface objects (AWT, JavaFX, JOGL) handle it.
+    if (PApplet.platform == PConstants.MACOS &&
+        button == PConstants.LEFT) {
       if (action == MouseEvent.PRESS && event.isControlDown()) {
-        macosxLeftButtonWithCtrlPressed = true;
+        // The ctrl key may only be down during the press, but we need to store
+        // it so that the drag or release still is considered a right-click.
+        macosCtrlClick = true;
       }
-      if (macosxLeftButtonWithCtrlPressed) {
+      if (macosCtrlClick) {
         button = PConstants.RIGHT;
+        // Recreate the Event object as a right-click, and unset the CTRL flag,
+        // since it's not a ctrl-right-click, it's just a right click.
+        int modifiers = event.getModifiers() & ~Event.CTRL;
         event = new MouseEvent(event.getNative(), event.getMillis(),
-                               event.getAction(), event.getModifiers(),
+                               event.getAction(), modifiers,
                                event.getX(), event.getY(),
                                button, event.getCount());
       }
-      if (action == MouseEvent.RELEASE) {
-        macosxLeftButtonWithCtrlPressed = false;
+      if (action == MouseEvent.CLICK) {
+        // Un-set the variable for the next time around.
+        // (This won't affect the current event being handled.)
+        // Changed to CLICK instead of RELEASE for 4.0a6, because the click
+        // event will fire after the press/drag/release events have fired.
+        macosCtrlClick = false;
       }
     }
 

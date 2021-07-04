@@ -1,10 +1,8 @@
 1275 (4.0a6)
+X mouseButton not set correctly on mouseReleased() with Java2D
+X   https://github.com/processing/processing4/issues/181
+o   https://github.com/processing/processing4/pull/188
 
-
-regressions
-_ mouseButton not set correctly on mouseReleased() with Java2D
-_   https://github.com/processing/processing4/issues/181
-_   https://github.com/processing/processing4/pull/188
 
 _ put opengl libs for core into platform-specific subfolders?
 

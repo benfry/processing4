@@ -55,6 +55,7 @@ import processing.core.PConstants;
 import processing.core.PGraphics;
 import processing.core.PImage;
 import processing.core.PSurfaceNone;
+import processing.event.Event;
 import processing.event.KeyEvent;
 import processing.event.MouseEvent;
 
@@ -561,7 +562,7 @@ public class PSurfaceAWT extends PSurfaceNone {
 
     if (fullScreen) {
       frame.invalidate();
-    } else {
+//    } else {
 //      frame.pack();
     }
 
@@ -677,7 +678,7 @@ public class PSurfaceAWT extends PSurfaceNone {
         }
         frame.setIconImages(iconImages);
 
-      } catch (Exception e) { }  // harmless; keep this to ourselves
+      } catch (Exception ignored) { }  // harmless; keep this to ourselves
 
     } else {  // handle OS X differently
       if (!dockIconSpecified()) {  // don't override existing -Xdock param
@@ -1147,27 +1148,24 @@ public class PSurfaceAWT extends PSurfaceNone {
    * in cases where frame.setResizable(true) is called.
    */
   private void setupFrameResizeListener() {
-    frame.addWindowStateListener(new WindowStateListener() {
-      @Override
-      // Detecting when the frame is resized in order to handle the frame
-      // maximization bug in OSX:
-      // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8036935
-      public void windowStateChanged(WindowEvent e) {
-        // This seems to be firing when dragging the window on OS X
+    // Detecting when the frame is resized in order to handle the frame
+// maximization bug in OSX:
+// http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8036935
+    frame.addWindowStateListener(e -> {
+      // This seems to be firing when dragging the window on OS X
+      // https://github.com/processing/processing/issues/3092
+      if (Frame.MAXIMIZED_BOTH == e.getNewState()) {
+        // Supposedly, sending the frame to back and then front is a
+        // workaround for this bug:
+        // http://stackoverflow.com/a/23897602
+        // but is not working for me...
+        //frame.toBack();
+        //frame.toFront();
+        // Packing the frame works, but that causes the window to collapse
+        // on OS X when the window is dragged. Changing to addNotify() for
         // https://github.com/processing/processing/issues/3092
-        if (Frame.MAXIMIZED_BOTH == e.getNewState()) {
-          // Supposedly, sending the frame to back and then front is a
-          // workaround for this bug:
-          // http://stackoverflow.com/a/23897602
-          // but is not working for me...
-          //frame.toBack();
-          //frame.toFront();
-          // Packing the frame works, but that causes the window to collapse
-          // on OS X when the window is dragged. Changing to addNotify() for
-          // https://github.com/processing/processing/issues/3092
-          //frame.pack();
-          frame.addNotify();
-        }
+        //frame.pack();
+        frame.addNotify();
       }
     });
 
@@ -1319,21 +1317,39 @@ public class PSurfaceAWT extends PSurfaceNone {
     // Switching to getModifiersEx() for 4.0a2 because of Java 9 deprecation.
     // Had trouble with this in the past and rolled it back because it was
     // optional at the time. This time around, just need to iron out the issue.
-    // http://code.google.com/p/processing/issues/detail?id=1294
-    // http://code.google.com/p/processing/issues/detail?id=1332
+    // https://github.com/processing/processing/issues/1332
+    // https://github.com/processing/processing/issues/1370
     int modifiers = nativeEvent.getModifiersEx();
 
     int peButton = 0;
-    if ((modifiers & InputEvent.BUTTON1_DOWN_MASK) != 0) {
+    // Technically should be java.awt.event.MouseEvent.BUTTON1 through BUTTON3
+    // but those are equal to 1, 2, and 3, and this is more readable.
+    if (nativeEvent.getButton() == 1) {
       peButton = PConstants.LEFT;
-    } else if ((modifiers & InputEvent.BUTTON2_DOWN_MASK) != 0) {
+    } else if (nativeEvent.getButton() == 2) {
       peButton = PConstants.CENTER;
-    } else if ((modifiers & InputEvent.BUTTON3_DOWN_MASK) != 0) {
+    } else if (nativeEvent.getButton() == 3) {
       peButton = PConstants.RIGHT;
     }
 
+    // getModifiersEx() has different constants, so need to re-map
+    // to the masks we're using in processing.event.Event
+    int peModifiers = 0;
+    if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
+      peModifiers |= Event.SHIFT;
+    }
+    if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
+      peModifiers |= Event.CTRL;
+    }
+    if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
+      peModifiers |= Event.META;
+    }
+    if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
+      peModifiers |= Event.ALT;
+    }
+
     sketch.postEvent(new MouseEvent(nativeEvent, nativeEvent.getWhen(),
-                                    peAction, modifiers,
+                                    peAction, peModifiers,
                                     nativeEvent.getX() / windowScaleFactor,
                                     nativeEvent.getY() / windowScaleFactor,
                                     peButton,
@@ -1357,21 +1373,24 @@ public class PSurfaceAWT extends PSurfaceNone {
 
     int modifiers = event.getModifiersEx();
 
-    /*
-//    int peModifiers = event.getModifiersEx() &
-//      (InputEvent.SHIFT_DOWN_MASK |
-//       InputEvent.CTRL_DOWN_MASK |
-//       InputEvent.META_DOWN_MASK |
-//       InputEvent.ALT_DOWN_MASK);
-    int peModifiers = event.getModifiers() &
-      (InputEvent.SHIFT_MASK |
-       InputEvent.CTRL_MASK |
-       InputEvent.META_MASK |
-       InputEvent.ALT_MASK);
-     */
-
+    // getModifiersEx() has different constants, so need to re-map
+    // to the masks we're using in processing.event.Event.
+    // If authors want more detail, they can use the native object.
+    int peModifiers = 0;
+    if ((modifiers & InputEvent.SHIFT_DOWN_MASK) != 0) {
+      peModifiers |= Event.SHIFT;
+    }
+    if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0) {
+      peModifiers |= Event.CTRL;
+    }
+    if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
+      peModifiers |= Event.META;
+    }
+    if ((modifiers & InputEvent.ALT_DOWN_MASK) != 0) {
+      peModifiers |= Event.ALT;
+    }
     sketch.postEvent(new KeyEvent(event, event.getWhen(),
-                                  peAction, modifiers,
+                                  peAction, peModifiers,
                                   event.getKeyChar(), event.getKeyCode()));
   }
 
@@ -1413,12 +1432,7 @@ public class PSurfaceAWT extends PSurfaceNone {
       }
     });
 
-    canvas.addMouseWheelListener(new MouseWheelListener() {
-
-      public void mouseWheelMoved(MouseWheelEvent e) {
-        nativeMouseEvent(e);
-      }
-    });
+    canvas.addMouseWheelListener(this::nativeMouseEvent);
 
     canvas.addKeyListener(new KeyListener() {
 
