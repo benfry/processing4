@@ -48,11 +48,13 @@ X   https://github.com/processing/processing4/pull/215
 X After selecting a font other than Source Code Pro, font went to a default
 X   https://github.com/processing/processing4/pull/216
 
+sam
+X Code completion not working
+X   https://github.com/processing/processing4/issues/177
+X   confirmed not working from Sam's repo either
+X   https://github.com/processing/processing4/pull/219
 
 for next release
-_ Code completion not working
-_   https://github.com/processing/processing4/issues/177
-_   confirmed not working from Sam's repo either
 _ move ISSUE_TEMPLATE to .github subfolder
 _ lots more cleanup to do in javafx/build.xml
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
