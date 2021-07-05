@@ -5,7 +5,7 @@ Processing 4 makes important updates to the code to prepare the platform for its
 
 ## Roadmap
 
-We don't have a schedule for a final release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2021-06-14&type=c) who continue working on it, unpaid, because they care about it.
+We don't have a schedule for a final release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2021-12-31&type=c) who continue working on it, unpaid, because they care about it.
 
 * We're currently using JDK 11, which is a “Long Term Support” (LTS) release. Java 17 is the next LTS, and we'll switch to that when it arrives in September 2021.
 
