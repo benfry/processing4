@@ -3,6 +3,13 @@ X mouseButton not set correctly on mouseReleased() with Java2D
 X   https://github.com/processing/processing4/issues/181
 o   https://github.com/processing/processing4/pull/188
 
+cleaning
+o Skija bindings
+o   https://github.com/processing/processing4/issues/151
+o size() issues on Mojave? (3.4 works, 3.5.3 does not)
+X   https://github.com/processing/processing/issues/5791
+X   closed for now; unable to confirm anything in the thread
+
 
 _ put opengl libs for core into platform-specific subfolders?
 
@@ -45,9 +52,6 @@ _   Linux: https://github.com/processing/processing/issues/5912
 
 _ why does GL flash red when resizing?
 
-
-_ Skija bindings
-_   https://github.com/processing/processing4/issues/151
 
 load/save image
 _ https://github.com/processing/processing4/wiki/Exorcising-AWT
@@ -97,7 +101,7 @@ _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
 _   https://github.com/processing/processing4/issues/52
-_ Better resolution for frame/surface methods
+_ Better solution for frame/surface methods
 _   https://github.com/processing/processing4/issues/53
 _ Remove frame from PApplet
 _   https://github.com/processing/processing4/issues/54
@@ -112,9 +116,6 @@ _   https://github.com/processing/processing4/issues/56
 
 
 high-ish
-_ size() issues on Mojave? (3.4 works, 3.5.3 does not)
-_   https://github.com/processing/processing/issues/5791
-_   closed for now; unable to confirm anything in the thread
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
 _ make setting the window icon automatic, based on files in local dirs
