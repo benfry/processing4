@@ -11,6 +11,7 @@ X   if someone wants this, they could recreate it in a subclass
 X remove jdt.compiler.jar from subprojects
 X   no longer using JRE (doesn't exist), so it's not needed
 o   can we remove it altogether, or is it used by the PDE?
+X remove lots of dead/unused parts of javafx/build.xml
 
 readme
 X was fixed in the source for 4.0a5, but may not have been included in the dist
@@ -62,7 +63,6 @@ for next release
 _ fix up modifiers for key events (after completing mouse) in Java2D
 _ set args for JavaFX and OpenGL for the mouse and key events
 _ move ISSUE_TEMPLATE to .github subfolder
-_ lots more cleanup to do in javafx/build.xml
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
 
