@@ -64,17 +64,14 @@
 
   <target name="compile" description="Compile sources">
     <mkdir dir="bin" />
-    <javac target="1.8"
-           source="1.8"
+    <javac target="11"
+           source="11"
            srcdir="src"
            destdir="bin"
            encoding="UTF-8"
            includeAntRuntime="false"
            classpath="../../../../app/bin"
-           nowarn="true">
-      <compilerclasspath path="../../../../java/mode/org.eclipse.jdt.core.jar;
-                               ../../../../java/mode/jdtCompilerAdapter.jar" />
-    </javac>
+           nowarn="true" />
   </target>
 
   <target name="build" depends="compile, prepare-ffmpeg" description="Build Movie Maker Tool">

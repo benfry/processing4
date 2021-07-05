@@ -6,24 +6,22 @@
     <delete file="library/io.jar" />
   </target>
 
+  <property name="core.path" location="../../../core/library/core.jar" />
+
   <target name="compile" description="Compile sources">
     <condition property="core-built">
-      <available file="../../../core/library/core.jar" />
+      <available file="${core.path}" />
     </condition>
-    <fail unless="core-built" message="Please build the core library first and make sure it sits in ../../../core/library/core.jar" />
+    <fail unless="core-built" message="Please build the core library first and make sure it is located at ${core.path}" />
 
     <mkdir dir="bin" />
     <javac source="11"
-	   target="11"
-	   srcdir="src" destdir="bin"
-	   encoding="UTF-8"
-	   includeAntRuntime="false"
-	   classpath="../../../core/library/core.jar"
-	   nowarn="true"
-	   compiler="org.eclipse.jdt.core.JDTCompilerAdapter">
-      <compilerclasspath path="../../mode/org.eclipse.jdt.core.jar;
-                               ../../mode/jdtCompilerAdapter.jar" />
-    </javac>
+	         target="11"
+	         srcdir="src" destdir="bin"
+	         encoding="UTF-8"
+	         includeAntRuntime="false"
+	         classpath="${core.path}"
+	         nowarn="true" />
   </target>
 
   <target name="build" depends="compile" description="Build I/O library">

@@ -8,6 +8,9 @@ X Editor.applyPreferences() was protected, now public
 X remove compound key actions (which were undocumented and not in use)
 X   clears up a lot of complexity in DefaultInputHandler
 X   if someone wants this, they could recreate it in a subclass
+X remove jdt.compiler.jar from subprojects
+X   no longer using JRE (doesn't exist), so it's not needed
+o   can we remove it altogether, or is it used by the PDE?
 
 readme
 X was fixed in the source for 4.0a5, but may not have been included in the dist
@@ -62,9 +65,6 @@ _ move ISSUE_TEMPLATE to .github subfolder
 _ lots more cleanup to do in javafx/build.xml
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
-_ remove jdt.compiler.jar from subprojects
-_   no longer using JRE (doesn't exist), so it's not needed
-_   can we remove it altogether, or is it used by the PDE?
 
 _ startup is so incredibly slow
 _   the splash screen comes up fairly quickly, so what gives?
