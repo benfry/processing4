@@ -635,12 +635,10 @@ public class BaseWriter {
 	}
 
 	public static String getSubcategory(Tag webref){
-		String firstPart = webref.text().split("\\s")[0];
-		String[] parts = firstPart.split(":");
-		if( parts.length > 1 ){
-			return parts[1];
-		}
-		return "";
+		String subcategory;
+		if (webref.text().split(":").length > 1) subcategory = webref.text().split(":")[1];
+		else subcategory = "";
+		return subcategory;
 	}
 
 }

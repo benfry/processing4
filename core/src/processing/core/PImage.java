@@ -1580,7 +1580,7 @@ public class PImage implements PConstants, Cloneable {
    * are preferable, and the difference is insignificant for applications
    * built with Processing.</P>
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Blends two color values together based on the blending mode given as the
    * <b>MODE</b> parameter
    * @usage web_application

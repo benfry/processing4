@@ -3060,7 +3060,7 @@ public class PApplet implements PConstants {
    * This is a function, rather than a variable, because it may
    * change multiple times per frame.
    *
-   * @webref input:time_date
+   * @webref input:time date
    * @webBrief Returns the number of milliseconds (thousandths of a second) since
    * starting an applet
    * @see PApplet#second()
@@ -3080,7 +3080,7 @@ public class PApplet implements PConstants {
    * Processing communicates with the clock on your computer. The
    * <b>second()</b> function returns the current second as a value from 0 - 59.
    *
-   * @webref input:time_date
+   * @webref input:time date
    * @webBrief Returns the current second as a value from 0 - 59
    * @see PApplet#millis()
    * @see PApplet#minute()
@@ -3099,7 +3099,7 @@ public class PApplet implements PConstants {
    * <b>minute()</b> function returns the current minute as a value from 0 - 59.
    *
    *
-   * @webref input:time_date
+   * @webref input:time date
    * @webBrief Returns the current minute as a value from 0 - 59
    * @see PApplet#millis()
    * @see PApplet#second()
@@ -3118,7 +3118,7 @@ public class PApplet implements PConstants {
    * Processing communicates with the clock on your computer. The
    * <b>hour()</b> function returns the current hour as a value from 0 - 23.
    *
-   * @webref input:time_date
+   * @webref input:time date
    * @webBrief Returns the current hour as a value from 0 - 23
    * @see PApplet#millis()
    * @see PApplet#second()
@@ -3144,7 +3144,7 @@ public class PApplet implements PConstants {
    * If you're looking for the day of the week (M-F or whatever)
    * or day of the year (1..365) then use java's Calendar.get()
    *
-   * @webref input:time_date
+   * @webref input:time date
    * @webBrief Returns the current day as a value from 1 - 31
    * @see PApplet#millis()
    * @see PApplet#second()
@@ -3163,7 +3163,7 @@ public class PApplet implements PConstants {
    * <b>month()</b> function returns the current month as a value from 1 - 12.
    *
    *
-   * @webref input:time_date
+   * @webref input:time date
    * @webBrief Returns the current month as a value from 1 - 12
    * @see PApplet#millis()
    * @see PApplet#second()
@@ -3184,7 +3184,7 @@ public class PApplet implements PConstants {
    * 2004, 2005, etc).
    *
    *
-   * @webref input:time_date
+   * @webref input:time date
    * @webBrief Returns the current year as an integer (2003,
    * 2004, 2005, etc)
    * @see PApplet#millis()
@@ -3987,7 +3987,7 @@ public class PApplet implements PConstants {
  * frames per second). It should also be noted, that a print() within a for loop
  * can sometimes lock up the program, and cause the sketch to freeze.
  *
- * @webref output:text_area
+ * @webref output:text area
  * @webBrief Writes to the console area of the Processing environment
  * @usage IDE
  * @param what
@@ -4086,7 +4086,7 @@ public class PApplet implements PConstants {
    * frames per second). It should also be noted, that a println() within a for
    * loop can sometimes lock up the program, and cause the sketch to freeze.
    *
-   * @webref output:text_area
+   * @webref output:text area
    * @webBrief Writes to the text area of the Processing environment's console
    * @usage IDE
    * @see PApplet#print(byte)
@@ -4192,7 +4192,7 @@ public class PApplet implements PConstants {
    * real-time output (such as at 60 frames per second).
    *
    *
- * @webref output:text_area
+ * @webref output:text area
  * @webBrief Writes array data to the text
  * area of the Processing environment's console.
  * @param what one-dimensional array
@@ -5362,7 +5362,7 @@ public class PApplet implements PConstants {
    * interpret the HTML as image data.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Loads an image into a variable of type <b>PImage</b>
    * @param filename
    *          name of file to load, can be .gif, .jpg, .tga, or a handful of
@@ -5417,7 +5417,7 @@ public class PApplet implements PConstants {
    * extension as the second parameter to <b>requestImage()</b>.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Loads images on a separate thread so that your sketch does not
    *           freeze while images load during <b>setup()</b>
    * @param filename
@@ -6019,7 +6019,7 @@ public class PApplet implements PConstants {
    * many font sizes are needed, or when using any renderer based on the default
    * renderer, such as the PDF library.
    *
-   * @webref typography:loading_displaying
+   * @webref typography:loading & displaying
    * @webBrief Loads a font into a variable of type <b>PFont</b>
    * @param filename
    *          name of the font to load
@@ -6084,7 +6084,7 @@ public class PApplet implements PConstants {
    * poor when exporting if the sketch does not include the .otf or .ttf file,
    * and the requested font is not available on the machine running the sketch.
    *
-   * @webref typography:loading_displaying
+   * @webref typography:loading & displaying
    * @webBrief Dynamically converts a font to the format used by Processing
    * @param name
    *          name of the font to load
@@ -7903,7 +7903,7 @@ public class PApplet implements PConstants {
    * sorted. <!--As of release 0126, the alphabetical ordering is case
    * insensitive.-->
    *
-   * @webref data:array_functions
+   * @webref data:array functions
    * @webBrief Sorts an array of numbers from smallest to largest and puts an
    *           array of words in alphabetical order
    * @param list
@@ -8001,7 +8001,7 @@ public class PApplet implements PConstants {
    * "https://docs.oracle.com/javase/8/docs/api/java/lang/System.html#arraycopy-java.lang.Object-int-java.lang.Object-int-int-">System.arraycopy()</a>
    * method, so most things that apply there are inherited.
    *
-   * @webref data:array_functions
+   * @webref data:array functions
    * @webBrief Copies an array (or part of an array) to another array
    * @param src
    *          the source array
@@ -8076,7 +8076,7 @@ public class PApplet implements PConstants {
    * (SomeClass[]) expand(originalArray)</em>
    *
    *
-   * @webref data:array_functions
+   * @webref data:array functions
    * @webBrief Increases the size of an array
    * @param list
    *          the array to expand
@@ -8196,7 +8196,7 @@ public class PApplet implements PConstants {
    * items = (SomeClass[]) append(originalArray, element)</em>.
    *
    *
-   * @webref data:array_functions
+   * @webref data:array functions
    * @webBrief Expands an array by one element and adds data to the new position
    * @param array array to append
    * @param value new data for the array
@@ -8250,7 +8250,7 @@ public class PApplet implements PConstants {
    * items = (SomeClass[]) shorten(originalArray)</em>.
    *
    *
-   * @webref data:array_functions
+   * @webref data:array functions
    * @webBrief Decreases an array by one element and returns the shortened array
    * @param list array to shorten
    * @see PApplet#append(byte[], byte)
@@ -8300,7 +8300,7 @@ public class PApplet implements PConstants {
    * be cast to the object array's data type. For example: <em>SomeClass[] items
    * = (SomeClass[]) splice(array1, array2, index)</em>
    *
-   * @webref data:array_functions
+   * @webref data:array functions
    * @webBrief Inserts a value or array of values into an existing array
    * @param list
    *          array to splice into
@@ -8474,7 +8474,7 @@ public class PApplet implements PConstants {
   * cast to the object array's data type. For example: <em>SomeClass[] items =
   * (SomeClass[]) subset(originalArray, 0, 4)</em>
   *
-  * @webref data:array_functions
+  * @webref data:array functions
   * @webBrief Extracts an array of elements from an existing array
   * @param list
   *          array to extract from
@@ -8599,7 +8599,7 @@ public class PApplet implements PConstants {
   * cast to the object array's data type. For example: <em>SomeClass[] items =
   * (SomeClass[]) concat(array1, array2)</em>.
   *
-  * @webref data:array_functions
+  * @webref data:array functions
   * @webBrief Concatenates two arrays
   * @param a
   *          first array to concatenate
@@ -8667,7 +8667,7 @@ public class PApplet implements PConstants {
    *
    * Reverses the order of an array.
    *
-  * @webref data:array_functions
+  * @webref data:array functions
   * @webBrief Reverses the order of an array
   * @param list booleans[], bytes[], chars[], ints[], floats[], or Strings[]
   * @see PApplet#sort(String[], int)
@@ -10088,7 +10088,7 @@ public class PApplet implements PConstants {
    * More about how colors are stored can be found in the reference for the
    * <a href="color_datatype.html">color</a> datatype.
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Creates colors for storing in variables of the <b>color</b>
    *           datatype
    * @param gray
@@ -10219,7 +10219,7 @@ public class PApplet implements PConstants {
    * unexpected colors.
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Calculates a <b>color</b> or <b>colors</b> between two <b>colors</b> at a specific
    *           increment
    * @usage web_application
@@ -11747,7 +11747,7 @@ public class PApplet implements PConstants {
    * <b>circle()</b> or <b>square()</b>.
    *
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a point, a coordinate in space at the dimension of one pixel
    * @param x x-coordinate of the point
    * @param y y-coordinate of the point
@@ -11780,7 +11780,7 @@ public class PApplet implements PConstants {
    * Drawing this shape in 3D with the <b>z</b> parameter requires the P3D
    * parameter in combination with <b>size()</b> as shown in the above example.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a line (a direct path between two points) to the screen
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
@@ -11814,7 +11814,7 @@ public class PApplet implements PConstants {
    * arguments specify the first point, the middle two arguments specify the
    * second point, and the last two arguments specify the third point.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief A triangle is a plane created by connecting three points
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
@@ -11839,7 +11839,7 @@ public class PApplet implements PConstants {
    * vertex and the subsequent pairs should proceed clockwise or
    * counter-clockwise around the defined shape.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief A quad is a quadrilateral, a four sided polygon
    * @param x1 x-coordinate of the first corner
    * @param y1 y-coordinate of the first corner
@@ -11909,7 +11909,7 @@ public class PApplet implements PConstants {
    * clockwise around the rectangle.
    *
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a rectangle to the screen
    * @param a x-coordinate of the rectangle by default
    * @param b y-coordinate of the rectangle by default
@@ -11956,7 +11956,7 @@ public class PApplet implements PConstants {
    * <b>rectMode()</b> function.
    *
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a square to the screen
    * @param x x-coordinate of the rectangle by default
    * @param y y-coordinate of the rectangle by default
@@ -12015,7 +12015,7 @@ public class PApplet implements PConstants {
    * third and fourth parameters set the shape's width and height. The origin may
    * be changed with the <b>ellipseMode()</b> function.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws an ellipse (oval) in the display window
    * @param a x-coordinate of the ellipse
    * @param b y-coordinate of the ellipse
@@ -12049,7 +12049,7 @@ public class PApplet implements PConstants {
    * you're having an issue with how arcs are rendered, you'll need to draw the
    * arc yourself with <b>beginShape()</b>/<b>endShape()</b> or a <b>PShape</b>.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws an arc in the display window
    * @param a     x-coordinate of the arc's ellipse
    * @param b     y-coordinate of the arc's ellipse
@@ -12086,7 +12086,7 @@ public class PApplet implements PConstants {
    * and height. The origin may be changed with the <b>ellipseMode()</b>
    * function.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a circle to the screen
    * @param x x-coordinate of the ellipse
    * @param y y-coordinate of the ellipse
@@ -12106,7 +12106,7 @@ public class PApplet implements PConstants {
    * is a cube.
    *
    *
-   * @webref shape:3d_primitives
+   * @webref shape:3d primitives
    * @webBrief A box is an extruded <b>rectangle</b>
    * @param size dimension of the box in all dimensions (creates a cube)
    * @see PGraphics#sphere(float)
@@ -12149,7 +12149,7 @@ public class PApplet implements PConstants {
    * Code for enhanced u/v version from davbol [080801].
    *
    * @param res number of segments (minimum 3) used per full circle revolution
-   * @webref shape:3d_primitives
+   * @webref shape:3d primitives
    * @webBrief Controls the detail used to render a sphere by adjusting the number of
    * vertices of the sphere mesh
    * @see PGraphics#sphere(float)
@@ -12196,7 +12196,7 @@ public class PApplet implements PConstants {
    * [davbol 080801] now using separate sphereDetailU/V
    * </PRE>
    *
-   * @webref shape:3d_primitives
+   * @webref shape:3d primitives
    * @webBrief A sphere is a hollow ball made from tessellated triangles
    * @param r the radius of the sphere
    * @see PGraphics#sphereDetail(int)
@@ -12557,7 +12557,7 @@ public class PApplet implements PConstants {
    * case-sensitive language.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Modifies the location from which images draw
    * @param mode either CORNER, CORNERS, or CENTER
    * @see PApplet#loadImage(String, String)
@@ -12591,7 +12591,7 @@ public class PApplet implements PConstants {
    * <h3>Advanced</h3> Starting with release 0124, when using the default (JAVA2D)
    * renderer, smooth() will also improve image quality of resized images.
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Displays images to the screen
    * @param img the image to display
    * @param a   x-coordinate of the image by default
@@ -12649,7 +12649,7 @@ public class PApplet implements PConstants {
    * Processing is a case sensitive language.
    *
    *
-   * @webref shape:loading_displaying
+   * @webref shape:loading & displaying
    * @webBrief Modifies the location from which shapes draw
    * @param mode either CORNER, CORNERS, CENTER
    * @see PShape
@@ -12680,7 +12680,7 @@ public class PApplet implements PConstants {
    * can be used to change the way these parameters are interpreted.
    *
    *
-   * @webref shape:loading_displaying
+   * @webref shape:loading & displaying
    * @webBrief Displays shapes to the screen
    * @param shape the shape to display
    * @param x     x-coordinate of the shape
@@ -12808,7 +12808,7 @@ public class PApplet implements PConstants {
    * <br />
    *
    *
-   * @webref typography:loading_displaying
+   * @webref typography:loading & displaying
    * @webBrief Sets the current font that will be drawn with the <b>text()</b>
    *           function
    * @param which any variable of the type PFont
@@ -12969,7 +12969,7 @@ public class PApplet implements PConstants {
    * be used instead. (See the third example above.)
    *
    *
-   * @webref typography:loading_displaying
+   * @webref typography:loading & displaying
    * @webBrief Draws text to the screen
    * @param c the alphanumeric character to be displayed
    * @param x x-coordinate of text
@@ -14364,7 +14364,7 @@ public class PApplet implements PConstants {
    * displaying images with their original hues.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Removes the current fill value for displaying images and reverts to
    * displaying images with their original hues
    * @usage web_application
@@ -14403,7 +14403,7 @@ public class PApplet implements PConstants {
    * in 3D.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Sets the fill value for displaying images
    * @usage web_application
    * @param rgb color value in hexadecimal notation
@@ -14568,7 +14568,7 @@ public class PApplet implements PConstants {
    * and <b>shininess()</b> in setting the material properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the ambient reflectance for shapes drawn to the screen
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -14611,7 +14611,7 @@ public class PApplet implements PConstants {
    * setting the material properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the specular color of the materials used for shapes drawn to the
    * screen, which sets the color of highlights
    * @usage web_application
@@ -14656,7 +14656,7 @@ public class PApplet implements PConstants {
    * setting the material properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the amount of gloss in the surface of shapes
    * @usage web_application
    * @param shine degree of shininess
@@ -14678,7 +14678,7 @@ public class PApplet implements PConstants {
    * properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the emissive color of the material used for drawing shapes drawn to
    * the screen
    * @usage web_application
@@ -15179,7 +15179,7 @@ public class PApplet implements PConstants {
    *
    * Extracts the alpha value from a color.
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the alpha value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -15215,7 +15215,7 @@ public class PApplet implements PConstants {
    * </pre>
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the red value from a color, scaled to match current
    *           <b>colorMode()</b>
    * @usage web_application
@@ -15253,7 +15253,7 @@ public class PApplet implements PConstants {
    * </pre>
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the green value from a color, scaled to match current
    *           <b>colorMode()</b>
    * @usage web_application
@@ -15291,7 +15291,7 @@ public class PApplet implements PConstants {
    * </pre>
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the blue value from a color, scaled to match current
    *           <b>colorMode()</b>
    * @usage web_application
@@ -15313,7 +15313,7 @@ public class PApplet implements PConstants {
    *
    * Extracts the hue value from a color.
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the hue value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -15333,7 +15333,7 @@ public class PApplet implements PConstants {
    *
    * Extracts the saturation value from a color.
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the saturation value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -15354,7 +15354,7 @@ public class PApplet implements PConstants {
    * Extracts the brightness value from a color.
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the brightness value from a color
    * @usage web_application
    * @param rgb any value of the color datatype

@@ -2520,7 +2520,7 @@ public class PGraphics extends PImage implements PConstants {
    * <b>circle()</b> or <b>square()</b>.
    *
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a point, a coordinate in space at the dimension of one pixel
    * @param x x-coordinate of the point
    * @param y y-coordinate of the point
@@ -2553,7 +2553,7 @@ public class PGraphics extends PImage implements PConstants {
    * Drawing this shape in 3D with the <b>z</b> parameter requires the P3D
    * parameter in combination with <b>size()</b> as shown in the above example.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a line (a direct path between two points) to the screen
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
@@ -2589,7 +2589,7 @@ public class PGraphics extends PImage implements PConstants {
    * arguments specify the first point, the middle two arguments specify the
    * second point, and the last two arguments specify the third point.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief A triangle is a plane created by connecting three points
    * @param x1 x-coordinate of the first point
    * @param y1 y-coordinate of the first point
@@ -2617,7 +2617,7 @@ public class PGraphics extends PImage implements PConstants {
    * vertex and the subsequent pairs should proceed clockwise or
    * counter-clockwise around the defined shape.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief A quad is a quadrilateral, a four sided polygon
    * @param x1 x-coordinate of the first corner
    * @param y1 y-coordinate of the first corner
@@ -2695,7 +2695,7 @@ public class PGraphics extends PImage implements PConstants {
    * clockwise around the rectangle.
    *
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a rectangle to the screen
    * @param a x-coordinate of the rectangle by default
    * @param b y-coordinate of the rectangle by default
@@ -2860,7 +2860,7 @@ public class PGraphics extends PImage implements PConstants {
    * <b>rectMode()</b> function.
    *
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a square to the screen
    * @param x x-coordinate of the rectangle by default
    * @param y y-coordinate of the rectangle by default
@@ -2923,7 +2923,7 @@ public class PGraphics extends PImage implements PConstants {
    * third and fourth parameters set the shape's width and height. The origin may
    * be changed with the <b>ellipseMode()</b> function.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws an ellipse (oval) in the display window
    * @param a x-coordinate of the ellipse
    * @param b y-coordinate of the ellipse
@@ -2990,7 +2990,7 @@ public class PGraphics extends PImage implements PConstants {
    * you're having an issue with how arcs are rendered, you'll need to draw the
    * arc yourself with <b>beginShape()</b>/<b>endShape()</b> or a <b>PShape</b>.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws an arc in the display window
    * @param a     x-coordinate of the arc's ellipse
    * @param b     y-coordinate of the arc's ellipse
@@ -3076,7 +3076,7 @@ public class PGraphics extends PImage implements PConstants {
    * and height. The origin may be changed with the <b>ellipseMode()</b>
    * function.
    *
-   * @webref shape:2d_primitives
+   * @webref shape:2d primitives
    * @webBrief Draws a circle to the screen
    * @param x x-coordinate of the ellipse
    * @param y y-coordinate of the ellipse
@@ -3099,7 +3099,7 @@ public class PGraphics extends PImage implements PConstants {
    * is a cube.
    *
    *
-   * @webref shape:3d_primitives
+   * @webref shape:3d primitives
    * @webBrief A box is an extruded <b>rectangle</b>
    * @param size dimension of the box in all dimensions (creates a cube)
    * @see PGraphics#sphere(float)
@@ -3196,7 +3196,7 @@ public class PGraphics extends PImage implements PConstants {
    * Code for enhanced u/v version from davbol [080801].
    *
    * @param res number of segments (minimum 3) used per full circle revolution
-   * @webref shape:3d_primitives
+   * @webref shape:3d primitives
    * @webBrief Controls the detail used to render a sphere by adjusting the number of
    * vertices of the sphere mesh
    * @see PGraphics#sphere(float)
@@ -3278,7 +3278,7 @@ public class PGraphics extends PImage implements PConstants {
    * [davbol 080801] now using separate sphereDetailU/V
    * </PRE>
    *
-   * @webref shape:3d_primitives
+   * @webref shape:3d primitives
    * @webBrief A sphere is a hollow ball made from tessellated triangles
    * @param r the radius of the sphere
    * @see PGraphics#sphereDetail(int)
@@ -3893,7 +3893,7 @@ public class PGraphics extends PImage implements PConstants {
    * case-sensitive language.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Modifies the location from which images draw
    * @param mode either CORNER, CORNERS, or CENTER
    * @see PApplet#loadImage(String, String)
@@ -3932,7 +3932,7 @@ public class PGraphics extends PImage implements PConstants {
    * <h3>Advanced</h3> Starting with release 0124, when using the default (JAVA2D)
    * renderer, smooth() will also improve image quality of resized images.
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Displays images to the screen
    * @param img the image to display
    * @param a   x-coordinate of the image by default
@@ -4105,7 +4105,7 @@ public class PGraphics extends PImage implements PConstants {
    * Processing is a case sensitive language.
    *
    *
-   * @webref shape:loading_displaying
+   * @webref shape:loading & displaying
    * @webBrief Modifies the location from which shapes draw
    * @param mode either CORNER, CORNERS, CENTER
    * @see PShape
@@ -4149,7 +4149,7 @@ public class PGraphics extends PImage implements PConstants {
    * can be used to change the way these parameters are interpreted.
    *
    *
-   * @webref shape:loading_displaying
+   * @webref shape:loading & displaying
    * @webBrief Displays shapes to the screen
    * @param shape the shape to display
    * @param x     x-coordinate of the shape
@@ -4396,7 +4396,7 @@ public class PGraphics extends PImage implements PConstants {
    * <br />
    *
    *
-   * @webref typography:loading_displaying
+   * @webref typography:loading & displaying
    * @webBrief Sets the current font that will be drawn with the <b>text()</b>
    *           function
    * @param which any variable of the type PFont
@@ -4714,7 +4714,7 @@ public class PGraphics extends PImage implements PConstants {
    * be used instead. (See the third example above.)
    *
    *
-   * @webref typography:loading_displaying
+   * @webref typography:loading & displaying
    * @webBrief Draws text to the screen
    * @param c the alphanumeric character to be displayed
    * @param x x-coordinate of text
@@ -6730,7 +6730,7 @@ public class PGraphics extends PImage implements PConstants {
    * displaying images with their original hues.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Removes the current fill value for displaying images and reverts to
    * displaying images with their original hues
    * @usage web_application
@@ -6768,7 +6768,7 @@ public class PGraphics extends PImage implements PConstants {
    * in 3D.
    *
    *
-   * @webref image:loading_displaying
+   * @webref image:loading & displaying
    * @webBrief Sets the fill value for displaying images
    * @usage web_application
    * @param rgb color value in hexadecimal notation
@@ -6971,7 +6971,7 @@ public class PGraphics extends PImage implements PConstants {
    * and <b>shininess()</b> in setting the material properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the ambient reflectance for shapes drawn to the screen
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -7027,7 +7027,7 @@ public class PGraphics extends PImage implements PConstants {
    * setting the material properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the specular color of the materials used for shapes drawn to the
    * screen, which sets the color of highlights
    * @usage web_application
@@ -7087,7 +7087,7 @@ public class PGraphics extends PImage implements PConstants {
    * setting the material properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the amount of gloss in the surface of shapes
    * @usage web_application
    * @param shine degree of shininess
@@ -7107,7 +7107,7 @@ public class PGraphics extends PImage implements PConstants {
    * properties of shapes.
    *
    *
-   * @webref lights_camera:material_properties
+   * @webref lights_camera:material properties
    * @webBrief Sets the emissive color of the material used for drawing shapes drawn to
    * the screen
    * @usage web_application
@@ -7994,7 +7994,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * Extracts the alpha value from a color.
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the alpha value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -8032,7 +8032,7 @@ public class PGraphics extends PImage implements PConstants {
    * </pre>
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the red value from a color, scaled to match current
    *           <b>colorMode()</b>
    * @usage web_application
@@ -8072,7 +8072,7 @@ public class PGraphics extends PImage implements PConstants {
    * </pre>
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the green value from a color, scaled to match current
    *           <b>colorMode()</b>
    * @usage web_application
@@ -8112,7 +8112,7 @@ public class PGraphics extends PImage implements PConstants {
    * </pre>
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the blue value from a color, scaled to match current
    *           <b>colorMode()</b>
    * @usage web_application
@@ -8136,7 +8136,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * Extracts the hue value from a color.
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the hue value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -8161,7 +8161,7 @@ public class PGraphics extends PImage implements PConstants {
    *
    * Extracts the saturation value from a color.
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the saturation value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -8187,7 +8187,7 @@ public class PGraphics extends PImage implements PConstants {
    * Extracts the brightness value from a color.
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Extracts the brightness value from a color
    * @usage web_application
    * @param rgb any value of the color datatype
@@ -8228,7 +8228,7 @@ public class PGraphics extends PImage implements PConstants {
    * unexpected colors.
    *
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Calculates a <b>color</b> or <b>colors</b> between two <b>colors</b> at a specific
    *           increment
    * @usage web_application
