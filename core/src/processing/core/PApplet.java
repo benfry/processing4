@@ -15590,7 +15590,7 @@ public class PApplet implements PConstants {
    * which will make the image into a "correct" grayscale by
    * performing a proper luminance-based conversion.
    *
-   * @webref pimage:method
+   * @webref image:pixels
    * @webBrief Masks part of an image with another image as an alpha channel
    * @usage web_application
    * @param img image to use as the mask
