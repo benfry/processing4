@@ -1395,6 +1395,7 @@ public class PApplet implements PConstants {
       }
       // Clear the entries queued for removal (if any)
       for (Object object : removals) {
+        //noinspection SuspiciousMethodCalls
         entries.remove(object);
       }
       removals = null;  // clear this out
@@ -1402,6 +1403,7 @@ public class PApplet implements PConstants {
 
 
     void add(Object object, Method method) {
+      //noinspection SuspiciousMethodCalls
       if (!entries.contains(object)) {
         entries.add(new RegisteredMethod(object, method));
       } else {
@@ -1418,6 +1420,7 @@ public class PApplet implements PConstants {
      */
     public void remove(Object object) {
       if (removals == null) {
+        //noinspection SuspiciousMethodCalls
         entries.remove(object);
       } else {
         // Currently iterating the list of methods, remove this afterwards
@@ -9107,16 +9110,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Convert a char to a boolean. 'T', 't', and '1' will become the
-   * boolean value true, while 'F', 'f', or '0' will become false.
-   */
-  /*
-  static final public boolean parseBoolean(char what) {
-    return ((what == 't') || (what == 'T') || (what == '1'));
-  }
-  */
-
-  /**
    * <p>Convert an integer to a boolean. Because of how Java handles upgrading
    * numbers, this will also cover byte and char (as they will upgrade to
    * an int without any sort of explicit cast).</p>
@@ -9127,13 +9120,6 @@ public class PApplet implements PConstants {
     return (what != 0);
   }
 
-  /*
-  // removed because this makes no useful sense
-  static final public boolean parseBoolean(float what) {
-    return (what != 0);
-  }
-  */
-
   /**
    * Convert the string "true" or "false" to a boolean.
    * @return true if 'what' is "true" or "TRUE", false otherwise
@@ -9143,34 +9129,6 @@ public class PApplet implements PConstants {
   }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  /*
-  // removed, no need to introduce strange syntax from other languages
-  static final public boolean[] parseBoolean(char what[]) {
-    boolean outgoing[] = new boolean[what.length];
-    for (int i = 0; i < what.length; i++) {
-      outgoing[i] =
-        ((what[i] == 't') || (what[i] == 'T') || (what[i] == '1'));
-    }
-    return outgoing;
-  }
-  */
-
-  /**
-   * Convert a byte array to a boolean array. Each element will be
-   * evaluated identical to the integer case, where a byte equal
-   * to zero will return false, and any other value will return true.
-   * @return array of boolean elements
-   */
-  /*
-  static final public boolean[] parseBoolean(byte what[]) {
-    boolean outgoing[] = new boolean[what.length];
-    for (int i = 0; i < what.length; i++) {
-      outgoing[i] = (what[i] != 0);
-    }
-    return outgoing;
-  }
-  */
 
   /**
    * Convert an int array to a boolean array. An int equal
@@ -9184,17 +9142,6 @@ public class PApplet implements PConstants {
     }
     return outgoing;
   }
-
-  /*
-  // removed, not necessary... if necessary, convert to int array first
-  static final public boolean[] parseBoolean(float what[]) {
-    boolean outgoing[] = new boolean[what.length];
-    for (int i = 0; i < what.length; i++) {
-      outgoing[i] = (what[i] != 0);
-    }
-    return outgoing;
-  }
-  */
 
   static final public boolean[] parseBoolean(String[] what) {
     boolean[] outgoing = new boolean[what.length];
@@ -9221,13 +9168,6 @@ public class PApplet implements PConstants {
   static final public byte parseByte(float what) {
     return (byte) what;
   }
-
-  /*
-  // nixed, no precedent
-  static final public byte[] parseByte(String what) {  // note: array[]
-    return what.getBytes();
-  }
-  */
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -9263,23 +9203,7 @@ public class PApplet implements PConstants {
     return outgoing;
   }
 
-  /*
-  static final public byte[][] parseByte(String what[]) {  // note: array[][]
-    byte outgoing[][] = new byte[what.length][];
-    for (int i = 0; i < what.length; i++) {
-      outgoing[i] = what[i].getBytes();
-    }
-    return outgoing;
-  }
-  */
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  /*
-  static final public char parseChar(boolean what) {  // 0/1 or T/F ?
-    return what ? 't' : 'f';
-  }
-  */
 
   static final public char parseChar(byte what) {
     return (char) (what & 0xff);
@@ -9289,27 +9213,7 @@ public class PApplet implements PConstants {
     return (char) what;
   }
 
-  /*
-  static final public char parseChar(float what) {  // nonsensical
-    return (char) what;
-  }
-
-  static final public char[] parseChar(String what) {  // note: array[]
-    return what.toCharArray();
-  }
-  */
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  /*
-  static final public char[] parseChar(boolean what[]) {  // 0/1 or T/F ?
-    char outgoing[] = new char[what.length];
-    for (int i = 0; i < what.length; i++) {
-      outgoing[i] = what[i] ? 't' : 'f';
-    }
-    return outgoing;
-  }
-  */
 
   static final public char[] parseChar(byte[] what) {
     char[] outgoing = new char[what.length];
@@ -9326,24 +9230,6 @@ public class PApplet implements PConstants {
     }
     return outgoing;
   }
-
-  /*
-  static final public char[] parseChar(int[] what) {
-    char[] outgoing = new char[what.length];
-    for (int i = 0; i < what.length; i++) {
-      outgoing[i] = (char) what[i];
-    }
-    return outgoing;
-  }
-
-  static final public char[][] parseChar(String what[]) {  // note: array[][]
-    char outgoing[][] = new char[what.length][];
-    for (int i = 0; i < what.length; i++) {
-      outgoing[i] = what[i].toCharArray();
-    }
-    return outgoing;
-  }
-  */
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -9468,12 +9354,6 @@ public class PApplet implements PConstants {
   }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  /*
-  static final public float parseFloat(boolean what) {
-    return what ? 1 : 0;
-  }
-  */
 
   /**
    * Convert an int to a float value. Also handles bytes because of
