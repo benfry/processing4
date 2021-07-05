@@ -15,6 +15,8 @@ X remove lots of dead/unused parts of javafx/build.xml
 X fix up modifiers for key events (after completing mouse) in Java2D
 X set args for JavaFX and OpenGL for the mouse and key events
 X   make sure that everything is set properly, also for keys
+X move ISSUE_TEMPLATE to .github subfolder
+X   https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/manually-creating-a-single-issue-template-for-your-repository
 
 readme
 X was fixed in the source for 4.0a5, but may not have been included in the dist
@@ -63,7 +65,6 @@ X   https://github.com/processing/processing4/pull/219
 
 
 for next release
-_ move ISSUE_TEMPLATE to .github subfolder
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
 
@@ -88,7 +89,7 @@ _ what should macos-aarch64 be called?
 
 _ Remove usage of com.sun.* in JavaFX library
 _   https://github.com/processing/processing4/issues/208
-_ Implement support Java “modules” and clean up JavaFX-specific workarounds
+_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
 
 may be fixed
