@@ -71,7 +71,7 @@ public class PSurfaceAWT extends PSurfaceNone {
   // Trying Frame again with a11 to see if this avoids some Swing nastiness.
   // In the past, AWT Frames caused some problems on Windows and Linux,
   // but those may not be a problem for our reworked PSurfaceAWT class.
-  Frame frame;
+  JFrame frame;
 
   // Note that x and y may not be zero, depending on the display configuration
   Rectangle screenRect;
@@ -188,7 +188,6 @@ public class PSurfaceAWT extends PSurfaceNone {
 
   public class SmoothCanvas extends Canvas {
     private Dimension oldSize = new Dimension(0, 0);
-    private Dimension newSize = new Dimension(0, 0);
 
 
     // Turns out getParent() returns a JPanel on a JFrame. Yech.
@@ -219,68 +218,26 @@ public class PSurfaceAWT extends PSurfaceNone {
     @Override
     public void validate() {
       super.validate();
-      newSize.width = getWidth();
-      newSize.height = getHeight();
-//      if (oldSize.equals(newSize)) {
-////        System.out.println("validate() return " + oldSize);
-//        return;
-//      } else {
+      Dimension newSize = getSize();
       if (!oldSize.equals(newSize)) {
-//        System.out.println("validate() render old=" + oldSize + " -> new=" + newSize);
         oldSize = newSize;
         sketch.setSize(newSize.width / windowScaleFactor, newSize.height / windowScaleFactor);
-//        try {
         render();
-//        } catch (IllegalStateException ise) {
-//          System.out.println(ise.getMessage());
-//        }
       }
     }
 
 
     @Override
     public void update(Graphics g) {
-//      System.out.println("updating");
       paint(g);
     }
 
 
     @Override
     public void paint(Graphics screen) {
-//      System.out.println("painting");
-//      if (useStrategy) {
       render();
-      /*
-      if (graphics != null) {
-        System.out.println("drawing to screen " + canvas);
-        screen.drawImage(graphics.image, 0, 0, sketchWidth, sketchHeight, null);
-      }
-      */
-
-//      } else {
-////        new Exception("painting").printStackTrace(System.out);
-////        if (graphics.image != null) { // && !sketch.insideDraw) {
-//        if (onscreen != null) {
-////          synchronized (graphics.image) {
-//          // Needs the width/height to be set so that retina images are properly scaled down
-////          screen.drawImage(graphics.image, 0, 0, sketchWidth, sketchHeight, null);
-//          synchronized (offscreenLock) {
-//            screen.drawImage(onscreen, 0, 0, sketchWidth, sketchHeight, null);
-//          }
-//        }
-//      }
     }
   }
-
-    /*
-    @Override
-    public void addNotify() {
-//      System.out.println("adding notify");
-      super.addNotify();
-      // prior to Java 7 on OS X, this no longer works [121222]
-//    createBufferStrategy(2);
-    }
-    */
 
 
   synchronized protected void render() {
@@ -292,7 +249,6 @@ public class PSurfaceAWT extends PSurfaceNone {
       BufferStrategy strategy = canvas.getBufferStrategy();
       if (strategy != null) {
         // Render single frame
-//        try {
         do {
           // The following loop ensures that the contents of the drawing buffer
           // are consistent in case the underlying surface was recreated
@@ -311,65 +267,6 @@ public class PSurfaceAWT extends PSurfaceNone {
       }
     }
   }
-
-
-  /*
-  protected void blit() {
-    // Other folks that call render() (i.e. paint()) are already on the EDT.
-    // We need to be using the EDT since we're messing with the Canvas
-    // object and BufferStrategy and friends.
-    //EventQueue.invokeLater(new Runnable() {
-    //public void run() {
-    //((SmoothCanvas) canvas).render();
-    //}
-    //});
-
-    if (useStrategy) {
-      // Not necessary to be on the EDT to update BufferStrategy
-      //((SmoothCanvas) canvas).render();
-      render();
-    } else {
-      if (graphics.image != null) {
-        BufferedImage graphicsImage = (BufferedImage) graphics.image;
-        if (offscreen == null ||
-          offscreen.getWidth() != graphicsImage.getWidth() ||
-          offscreen.getHeight() != graphicsImage.getHeight()) {
-          System.out.println("creating new image");
-          offscreen = (BufferedImage)
-            canvas.createImage(graphicsImage.getWidth(),
-                               graphicsImage.getHeight());
-//          off = offscreen.getGraphics();
-        }
-//        synchronized (offscreen) {
-        Graphics2D off = (Graphics2D) offscreen.getGraphics();
-//        off.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1));
-        off.drawImage(graphicsImage, 0, 0, null);
-//        }
-        off.dispose();
-        synchronized (offscreenLock) {
-          BufferedImage temp = onscreen;
-          onscreen = offscreen;
-          offscreen = temp;
-        }
-        canvas.repaint();
-      }
-    }
-  }
-  */
-
-
-  /*
-  @Override
-  public int displayDensity() {
-    return shim.displayDensity();
-  }
-
-
-  @Override
-  public int displayDensity(int display) {
-    return shim.displayDensity(display);
-  }
-  */
 
 
   @Override
@@ -398,28 +295,6 @@ public class PSurfaceAWT extends PSurfaceNone {
   public void initOffscreen(PApplet sketch) {
     this.sketch = sketch;
   }
-
-  /*
-  public Frame initOffscreen() {
-    Frame dummy = new Frame();
-    dummy.pack();  // get legit AWT graphics
-    // but don't show it
-    return dummy;
-  }
-  */
-
-  /*
-  @Override
-  public Component initComponent(PApplet sketch) {
-    this.sketch = sketch;
-
-    // needed for getPreferredSize() et al
-    sketchWidth = sketch.sketchWidth();
-    sketchHeight = sketch.sketchHeight();
-
-    return canvas;
-  }
-  */
 
 
   @Override
@@ -505,11 +380,7 @@ public class PSurfaceAWT extends PSurfaceNone {
 //      backgroundColor = WINDOW_BGCOLOR;
 //    }
     final Color windowColor = new Color(sketch.sketchWindowColor(), false);
-    if (frame instanceof JFrame) {
-      ((JFrame) frame).getContentPane().setBackground(windowColor);
-    } else {
-      frame.setBackground(windowColor);
-    }
+    frame.getContentPane().setBackground(windowColor);
 
     // Put the p5 logo in the Frame's corner to override the Java coffee cup.
     setProcessingIcon(frame);
@@ -1440,11 +1311,9 @@ public class PSurfaceAWT extends PSurfaceNone {
         nativeKeyEvent(e);
       }
 
-
       public void keyReleased(java.awt.event.KeyEvent e) {
         nativeKeyEvent(e);
       }
-
 
       public void keyTyped(java.awt.event.KeyEvent e) {
         nativeKeyEvent(e);
@@ -1464,37 +1333,6 @@ public class PSurfaceAWT extends PSurfaceNone {
       }
     });
   }
-
-
-  /*
-  public void addListeners(Component comp) {
-    comp.addMouseListener(this);
-    comp.addMouseWheelListener(this);
-    comp.addMouseMotionListener(this);
-    comp.addKeyListener(this);
-    comp.addFocusListener(this);
-  }
-
-
-  public void removeListeners(Component comp) {
-    comp.removeMouseListener(this);
-    comp.removeMouseWheelListener(this);
-    comp.removeMouseMotionListener(this);
-    comp.removeKeyListener(this);
-    comp.removeFocusListener(this);
-  }
-  */
-
-
-//  /**
-//   * Call to remove, then add, listeners to a component.
-//   * Avoids issues with double-adding.
-//   */
-//  public void updateListeners(Component comp) {
-//    removeListeners(comp);
-//    addListeners(comp);
-//  }
-
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -1582,10 +1420,5 @@ public class PSurfaceAWT extends PSurfaceNone {
         render();
       }
     };
-  }
-
-
-  void debug(String format, Object ... args) {
-    System.out.format(format + "%n", args);
   }
 }
