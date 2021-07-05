@@ -9,6 +9,11 @@ o   https://github.com/processing/processing4/issues/151
 o size() issues on Mojave? (3.4 works, 3.5.3 does not)
 X   https://github.com/processing/processing/issues/5791
 X   closed for now; unable to confirm anything in the thread
+o Complaints that size() is not working
+X   Windows: https://github.com/processing/processing/issues/6046
+X   Linux: https://github.com/processing/processing/issues/5912
+X   can't reproduce, may be fixed with display= changes in alpha 4
+X   reports that open and closing Preferences fixed it?
 
 
 _ put opengl libs for core into platform-specific subfolders?
@@ -19,13 +24,6 @@ _   https://github.com/processing/processing4/issues/162
 _   https://github.com/processing/processing4/issues/186
 _   https://github.com/processing/processing/issues/4129
 
-_ why does japplemenubar.JAppleMenuBar.hide(); still work?
-_   it calls SetSystemUIMode, which is part of Carbon (which was removed in Catalina)
-_     https://github.com/kritzikratzi/jAppleMenuBar/blob/master/src/native/jAppleMenuBar.m
-_   setPresentationOptions() seems to be the Cocoa equivalent
-_     https://www.cocoawithlove.com/2009/08/animating-window-to-fullscreen-on-mac.html
-_     https://bugzilla.mozilla.org/attachment.cgi?id=8616917&action=diff
-_   https://www.philipp.haussleiter.de/2012/09/building-native-macos-apps-with-java/
 
 
 should be fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
@@ -33,9 +31,9 @@ X AppKit errors from P2D/P3D
 X   https://github.com/processing/processing/issues/5880
 X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
 X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
-_   https://github.com/processing/processing/issues/5983
+X   https://github.com/processing/processing/issues/5983
 X Cannot run rotateZ() within the PShape class
-_   https://github.com/processing/processing/issues/5770
+X   https://github.com/processing/processing/issues/5770
 _ Profile GL4bc is not available on X11GraphicsDevice
 _   https://github.com/processing/processing/issues/6160
 _   https://github.com/processing/processing/issues/6154
@@ -45,10 +43,6 @@ _   https://github.com/processing/processing/issues/5476
 
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
-
-_ Complaints that size() is not working
-_   Windows: https://github.com/processing/processing/issues/6046
-_   Linux: https://github.com/processing/processing/issues/5912
 
 _ why does GL flash red when resizing?
 
@@ -95,6 +89,8 @@ _ implement openLink() in PSurfaceJOGL
 
 
 before final release
+_ replace japplemenubar with something that's more likely to work in the future
+_   https://github.com/processing/processing4/issues/221
 _ Warn users or provide auto-fix when `frame` is used in a sketch
 _   https://github.com/processing/processing4/issues/59
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
