@@ -17,6 +17,10 @@ X set args for JavaFX and OpenGL for the mouse and key events
 X   make sure that everything is set properly, also for keys
 X move ISSUE_TEMPLATE to .github subfolder
 X   https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/manually-creating-a-single-issue-template-for-your-repository
+o ability to switch mode in p5 w/o saving/closing/etc
+X   trying to save the user from themselves here is just messier than needed
+X   opt to open a new editor window rather than weird error messages
+X   https://github.com/processing/processing4/issues/189
 
 readme
 X was fixed in the source for 4.0a5, but may not have been included in the dist
@@ -170,9 +174,6 @@ _   better for git, etc
 _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 _ launch/psk files/import from web editor (more details below)
-_ ability to switch mode in p5 w/o saving/closing/etc
-_   trying to save the user from themselves here is just messier than needed
-_   https://github.com/processing/processing4/issues/189
 _ cleaning up the temp file handling
 _   'show sketch folder' weird when in temp folder
 _     ask to save first (sketch has not been saved yet)

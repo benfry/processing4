@@ -940,9 +940,7 @@ public class Base {
 
 
   /**
-   * The call has already checked to make sure this sketch is not modified,
-   * now change the mode.
-   * @return true if mode is changed.
+   * @return true if mode is changed within this window (false if new window)
    */
   public boolean changeMode(Mode mode) {
     Mode oldMode = activeEditor.getMode();
@@ -950,25 +948,22 @@ public class Base {
       Sketch sketch = activeEditor.getSketch();
       nextMode = mode;
 
-      if (sketch.isUntitled()) {
+      if (sketch.isModified()) {
+        handleNew();  // don't bother with error messages, just switch
+        return false;
+
+      } else if (sketch.isUntitled()) {
         // The current sketch is empty, just close and start fresh.
         // (Otherwise the editor would lose its 'untitled' status.)
         handleClose(activeEditor, true);
         handleNew();
 
       } else {
-        // If the current editor contains file extensions that the new mode can handle, then
-        // write a sketch.properties file with the new mode specified, and reopen.
-        boolean newModeCanHandleCurrentSource = true;
-        for (final SketchCode code : sketch.getCode()) {
-          if (!mode.validExtension(code.getExtension())) {
-            newModeCanHandleCurrentSource = false;
-            break;
-          }
-        }
-        if (!newModeCanHandleCurrentSource) {
-          return false;
-        } else {
+        // If the current sketch contains file extensions that the new mode
+        // can handle, then write a sketch.properties file with the new mode
+        // specified, and reopen. (Really only useful for Java <-> Android)
+        //if (isCompatible(sketch, mode)) {
+        if (mode.canEdit(sketch)) {
           final File props = new File(sketch.getCodeFolder(), "sketch.properties");
           saveModeSettings(props, nextMode);
           handleClose(activeEditor, true);
@@ -980,11 +975,27 @@ public class Base {
             handleOpen(sketch.getMainFilePath());
             return false;
           }
+        } else {
+          handleNew();  // create a new window with the new Mode
+          return false;
         }
+      }
+    }
+    // Against all (or at least most) odds, we were able to reassign the Mode
+    return true;
+  }
+
+
+  /*
+  private boolean isCompatible(Sketch sketch, Mode mode) {
+    for (final SketchCode code : sketch.getCode()) {
+      if (!mode.validExtension(code.getExtension())) {
+        return false;
       }
     }
     return true;
   }
+  */
 
 
   private static class ModeInfo {

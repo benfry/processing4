@@ -529,6 +529,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     for (final Mode m : base.getModeList()) {
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(m.getTitle());
       item.addActionListener(e -> {
+        /*
         if (!sketch.isModified()) {
           if (!base.changeMode(m)) {
             reselectMode();
@@ -539,6 +540,14 @@ public abstract class Editor extends JFrame implements RunnerListener {
           reselectMode();
           Messages.showWarning("Save",
                                "Please save the sketch before changing the mode.");
+        }
+        */
+        //if (sketch.isModified() || !base.changeMode(m)) {
+        if (!base.changeMode(m)) {
+          // Returns false if unable to change the mode in this window
+          // (which will open a new window with the new Mode), in which case
+          // re-select the menu item b/c Java changes it automatically.
+          reselectMode();
         }
       });
       modePopup.add(item);
