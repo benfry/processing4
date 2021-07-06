@@ -106,9 +106,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
   // File and sketch menus for re-inserting items
   private JMenu fileMenu;
-//  private JMenuItem saveMenuItem;
-//  private JMenuItem saveAsMenuItem;
-
   private JMenu sketchMenu;
 
   protected EditorHeader header;
@@ -210,51 +207,12 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     buildMenuBar();
 
-    /*
-    //backgroundGradient = Toolkit.getLibImage("vertical-gradient.png");
-    backgroundGradient = mode.getGradient("editor", 400, 400);
-    JPanel contentPain = new JPanel() {
-      @Override
-      public void paintComponent(Graphics g) {
-//        super.paintComponent(g);
-        Dimension dim = getSize();
-        g.drawImage(backgroundGradient, 0, 0, dim.width, dim.height, this);
-//        g.setColor(Color.RED);
-//        g.fillRect(0, 0, dim.width, dim.height);
-      }
-    };
-    */
-    //contentPain.setBorder(new EmptyBorder(0, 0, 0, 0));
-    //System.out.println(contentPain.getBorder());
     JPanel contentPain = new JPanel();
-
-//    JFrame f = new JFrame();
-//    f.setContentPane(new JPanel() {
-//      @Override
-//      public void paintComponent(Graphics g) {
-////        super.paintComponent(g);
-//        Dimension dim = getSize();
-//        g.drawImage(backgroundGradient, 0, 0, dim.width, dim.height, this);
-////        g.setColor(Color.RED);
-////        g.fillRect(0, 0, dim.width, dim.height);
-//      }
-//    });
-//    f.setResizable(true);
-//    f.setVisible(true);
-
-    //Container contentPain = getContentPane();
     setContentPane(contentPain);
     contentPain.setLayout(new BorderLayout());
-//    JPanel pain = new JPanel();
-//    pain.setOpaque(false);
-//    pain.setLayout(new BorderLayout());
-//    contentPain.add(pain, BorderLayout.CENTER);
-//    contentPain.setBorder(new EmptyBorder(10, 10, 10, 10));
 
     Box box = Box.createVerticalBox();
     Box upper = Box.createVerticalBox();
-//    upper.setOpaque(false);
-//    box.setOpaque(false);
 
     rebuildModePopup();
     toolbar = createToolbar();
@@ -393,23 +351,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
-  /*
-  protected List<ToolContribution> getCoreTools() {
-    return coreTools;
-  }
-
-
-  public List<ToolContribution> getToolContribs() {
-    return contribTools;
-  }
-
-
-  public void removeToolContrib(ToolContribution tc) {
-    contribTools.remove(tc);
-  }
-  */
-
-
   protected JEditTextArea createTextArea() {
     return new JEditTextArea(new PdeTextAreaDefaults(mode),
                              new PdeInputHandler(this));
@@ -461,7 +402,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
           new DataFlavor("text/uri-list;class=java.lang.String");
 
         if (transferable.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-          List list = (List)
+          List<?> list = (List<?>)
             transferable.getTransferData(DataFlavor.javaFileListFlavor);
           for (Object o : list) {
             File file = (File) o;
@@ -565,6 +506,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     Toolkit.setMenuMnemsInside(modePopup);
   }
 
+
   // Re-select the old checkbox, because it was automatically
   // updated by Java, even though the Mode could not be changed.
   // https://github.com/processing/processing/issues/2615
@@ -579,25 +521,15 @@ public abstract class Editor extends JFrame implements RunnerListener {
     }
   }
 
+
   public JPopupMenu getModePopup() {
     return modePopup.getPopupMenu();
   }
 
 
-//  public JMenu getModeMenu() {
-//    return modePopup;
-//  }
-
-
   public EditorConsole getConsole() {
     return console;
   }
-
-
-
-//  public Settings getTheme() {
-//    return mode.getTheme();
-//  }
 
 
   public EditorHeader createHeader() {
@@ -620,31 +552,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   abstract public Formatter createFormatter();
-
-
-//  protected void setPlacement(int[] location) {
-//    setBounds(location[0], location[1], location[2], location[3]);
-//    if (location[4] != 0) {
-//      splitPane.setDividerLocation(location[4]);
-//    }
-//  }
-//
-//
-//  protected int[] getPlacement() {
-//    int[] location = new int[5];
-//
-//    // Get the dimensions of the Frame
-//    Rectangle bounds = getBounds();
-//    location[0] = bounds.x;
-//    location[1] = bounds.y;
-//    location[2] = bounds.width;
-//    location[3] = bounds.height;
-//
-//    // Get the current placement of the divider
-//    location[4] = splitPane.getDividerLocation();
-//
-//    return location;
-//  }
 
 
   protected void setDividerLocation(int pos) {
@@ -671,43 +578,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     textarea.repaint();
 
     console.updateAppearance();
-
-    // All of this code was specific to using an external editor.
-    /*
-//    // apply the setting for 'use external editor'
-//    boolean external = Preferences.getBoolean("editor.external");
-//    textarea.setEditable(!external);
-//    saveMenuItem.setEnabled(!external);
-//    saveAsMenuItem.setEnabled(!external);
-
-    TextAreaPainter painter = textarea.getPainter();
-//    if (external) {
-//      // disable line highlight and turn off the caret when disabling
-//      Color color = mode.getColor("editor.external.bgcolor");
-//      painter.setBackground(color);
-//      painter.setLineHighlightEnabled(false);
-//      textarea.setCaretVisible(false);
-//    } else {
-    Color color = mode.getColor("editor.bgcolor");
-    painter.setBackground(color);
-    boolean highlight = Preferences.getBoolean("editor.linehighlight");
-    painter.setLineHighlightEnabled(highlight);
-    textarea.setCaretVisible(true);
-//    }
-
-    // apply changes to the font size for the editor
-//    painter.setFont(Preferences.getFont("editor.font"));
-
-    // in case tab expansion stuff has changed
-    // removing this, just checking prefs directly instead
-//    listener.applyPreferences();
-
-    // in case moved to a new location
-    // For 0125, changing to async version (to be implemented later)
-    //sketchbook.rebuildMenus();
-    // For 0126, moved into Base, which will notify all editors.
-    //base.rebuildMenusAsync();
-     */
   }
 
 
@@ -2461,6 +2331,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     final String defaultName = parentName + "." + mode.getDefaultExtension();
     final File altFile = new File(file.getParent(), defaultName);
 
+    //noinspection StatementWithEmptyBody
     if (defaultName.equals(file.getName())) {
       // no beef with this guy
     } else if (altFile.exists()) {
@@ -2512,7 +2383,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
         }
 
         // remove the original file, so user doesn't get confused
-        origPdeFile.delete();
+        if (!origPdeFile.delete()) {
+          Messages.loge("Could not delete " + origPdeFile);
+        }
 
         // update with the new path
         path = properPdeFile.getAbsolutePath();
@@ -2612,10 +2485,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
   public boolean handleSaveAs() {
     statusNotice(Language.text("editor.status.saving"));
     try {
-      if (sketch.saveAs()) {
+      //noinspection StatementWithEmptyBody
+      if (!sketch.saveAs()) {
+        // No longer showing "Done" message except in cases where a
+        // progress bar is necessary. Message will come from Sketch.
         //statusNotice(Language.text("editor.status.saving.done"));
-        // status is now printed from Sketch so that "Done Saving."
-        // is only printed after Save As when progress bar is shown.
       } else {
         statusNotice(Language.text("editor.status.saving.canceled"));
         return false;
@@ -2626,29 +2500,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     }
     return true;
   }
-
-
-  /*
-  public void handleSaveAs() {
-    statusNotice(Language.text("editor.status.saving"));
-    sketch.saveAs();
-  }
-
-
-  public void handleSaveAsSuccess() {
-    statusNotice(Language.text("editor.status.saving.done"));
-  }
-
-
-  public void handleSaveAsCanceled() {
-    statusNotice(Language.text("editor.status.saving.canceled"));
-  }
-
-
-  public void handleSaveAsError(Exception e) {
-    statusError(e);
-  }
-  */
 
 
   /**
@@ -2675,7 +2526,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     StringBuilder html = new StringBuilder("<html><body>");
     for (SketchCode tab : sketch.getCode()) {
-      html.append("<b>" + tab.getPrettyName() + "</b><br>");
+      html.append("<b>");
+      html.append(tab.getPrettyName());
+      html.append("</b><br>");
       html.append(textarea.getTextAsHtml((SyntaxDocument)tab.getDocument()));
       html.append("<br>");
     }
@@ -3197,24 +3050,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     // if no text is selected, disable copy and cut menu items
     public void show(Component component, int x, int y) {
-//      if (textarea.isSelectionActive()) {
-//        cutItem.setEnabled(true);
-//        copyItem.setEnabled(true);
-//        discourseItem.setEnabled(true);
-//
-////        String sel = textarea.getSelectedText().trim();
-////        String referenceFile = mode.lookupReference(sel);
-////        referenceItem.setEnabled(referenceFile != null);
-//
-//      } else {
-//        cutItem.setEnabled(false);
-//        copyItem.setEnabled(false);
-//        discourseItem.setEnabled(false);
-////        referenceItem.setEnabled(false);
-//      }
-
       // Centralize the checks for each item at the Action.
-//      boolean active = textarea.isSelectionActive();
       cutItem.setEnabled(cutAction.canDo());
       copyItem.setEnabled(copyAction.canDo());
       discourseItem.setEnabled(copyAsHtmlAction.canDo());
