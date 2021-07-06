@@ -100,7 +100,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   /**
    * Get CompositionTextPainter, creating one if it doesn't exist.
    */
-   public CompositionTextPainter getCompositionTextpainter() {
+   public CompositionTextPainter getCompositionTextPainter() {
      if (compositionTextPainter == null) {
        compositionTextPainter = new CompositionTextPainter(textArea);
      }

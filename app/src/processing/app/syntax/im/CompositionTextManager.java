@@ -95,7 +95,7 @@ public class CompositionTextManager {
    */
   public void processCompositionText(AttributedCharacterIterator text, int committed_count) {
     int layoutCaretPosition = initialCaretPosition + committed_count;
-    CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextpainter();
+    CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextPainter();
     compositionPainter.setComposedTextLayout(getTextLayout(text, committed_count), layoutCaretPosition);
     int textLength = text.getEndIndex() - text.getBeginIndex() - committed_count;
     StringBuilder unCommitedStringBuf = new StringBuilder(textLength);
@@ -140,7 +140,7 @@ public class CompositionTextManager {
     if(committed_count == 0){
       removeNotCommittedText(text);
     }
-    CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextpainter();
+    CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextPainter();
     compositionPainter.invalidateComposedTextLayout(initialCaretPosition + committed_count);
     prevComposeString = "";
     isInputProcess = false;
