@@ -108,7 +108,6 @@ public class PdeTextAreaPainter extends TextAreaPainter {
    * then the line (background color and text).
    *
    * @param gfx the graphics context
-   * @param tokenMarker
    * @param line 0-based line number
    * @param x horizontal position
    */
@@ -145,8 +144,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       int y = textArea.lineToY(line) + fm.getLeading() + fm.getMaxDescent();
 
       try {
-        String badCode = null;
-        String goodCode = null;
+        String badCode;
+        String goodCode;
         try {
           SyntaxDocument doc = textArea.getDocument();
           badCode = doc.getText(wiggleStart, wiggleStop - wiggleStart);
