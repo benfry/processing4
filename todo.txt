@@ -60,6 +60,9 @@ X   https://github.com/processing/processing4/issues/214
 X   https://github.com/processing/processing4/pull/215
 X After selecting a font other than Source Code Pro, font went to a default
 X   https://github.com/processing/processing4/pull/216
+X move doclet to separate repo
+X   https://github.com/processing/processing4/issues/218
+X   https://github.com/processing/processing4/pull/222
 
 sam
 X Code completion not working
@@ -137,8 +140,6 @@ _ Add ability to move ~/.processing directory
 _   use ~/.config as parent, or $XDG_CONFIG_HOME
 o   https://github.com/processing/processing/issues/6115 (moved)
 _   https://github.com/processing/processing4/issues/203
-_ Move doclet to separate repository
-_   https://github.com/processing/processing4/issues/218
 
 
 decisions before final 4.0 release
