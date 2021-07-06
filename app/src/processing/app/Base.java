@@ -25,7 +25,6 @@ package processing.app;
 
 import java.awt.EventQueue;
 import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -79,7 +78,7 @@ public class Base {
   static File untitledFolder;
 
   /** List of currently active editors. */
-  protected List<Editor> editors =
+  final protected List<Editor> editors =
     Collections.synchronizedList(new ArrayList<>());
   protected Editor activeEditor;
   /** A lone file menu to be used when all sketch windows are closed. */
@@ -447,22 +446,18 @@ public class Base {
 
 
   void buildCoreModes() {
-    Mode javaMode =
+    ModeContribution javaModeContrib =
       ModeContribution.load(this, Platform.getContentFile("modes/java"),
-                            getDefaultModeIdentifier()).getMode();
+                            getDefaultModeIdentifier());
+    if (javaModeContrib == null) {
+      Messages.showError("Startup Error",
+                "Could not load Java Mode, please reinstall Processing.",
+                         new Exception("ModeContribution.load() was null"));
 
-    // PDE X calls getModeList() while it's loading, so coreModes must be set
-    coreModes = new Mode[] { javaMode };
-
-    /*
-    Mode pdexMode =
-      ModeContribution.load(this, getContentFile("modes/ExperimentalMode"), //$NON-NLS-1$
-                            "processing.mode.experimental.ExperimentalMode").getMode(); //$NON-NLS-1$
-
-    // Safe to remove the old Java mode here?
-    //coreModes = new Mode[] { pdexMode };
-    coreModes = new Mode[] { pdexMode, javaMode };
-    */
+    } else {
+      // PDE X calls getModeList() while it's loading, so coreModes must be set
+      coreModes = new Mode[] { javaModeContrib.getMode() };
+    }
   }
 
 
@@ -668,9 +663,11 @@ public class Base {
   }
 
 
+  /*
   public void removeToolContrib(ToolContribution tc) {
     contribTools.remove(tc);
   }
+  */
 
 
   public void rebuildToolList() {
@@ -745,25 +742,6 @@ public class Base {
   }
 
 
-  /*
-    Iterator<Editor> editorIter = base.getEditors().iterator();
-    while (editorIter.hasNext()) {
-      Editor editor = editorIter.next();
-      List<ToolContribution> contribTools = editor.getToolContribs();
-      for (ToolContribution toolContrib : contribTools) {
-        if (toolContrib.getName().equals(this.name)) {
-          try {
-            ((URLClassLoader) toolContrib.loader).close();
-            editor.removeToolContrib(toolContrib);
-            break;
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-      }
-   */
-
-
   public void clearToolMenus() {
     for (Editor ed : editors) {
       ed.clearToolMenu();
@@ -776,17 +754,7 @@ public class Base {
     if (internalTools == null) {
       rebuildToolList();
     }
-//    coreTools = ToolContribution.loadAll(Base.getToolsFolder());
-//    contribTools = ToolContribution.loadAll(Base.getSketchbookToolsFolder());
 
-//    Collections.sort(coreTools);
-//    Collections.sort(contribTools);
-//    Collections.sort(coreTools, new Comparator<ToolContribution>() {
-//      @Override
-//      public int compare(ToolContribution o1, ToolContribution o2) {
-//        return o1.getMenuTitle().compareTo(o2.getMenuTitle());
-//      }
-//    });
     toolsMenu.removeAll();
     for (Tool tool : internalTools) {
       toolsMenu.add(createToolItem(tool));
@@ -1584,13 +1552,13 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /**
-   * Asynchronous version of menu rebuild to be used on save and rename
-   * to prevent the interface from locking up until the menus are done.
-   */
-  protected void rebuildSketchbookMenusAsync() {
-    EventQueue.invokeLater(this::rebuildSketchbookMenus);
-  }
+//  /**
+//   * Asynchronous version of menu rebuild to be used on save and rename
+//   * to prevent the interface from locking up until the menus are done.
+//   */
+//  protected void rebuildSketchbookMenusAsync() {
+//    EventQueue.invokeLater(this::rebuildSketchbookMenus);
+//  }
 
 
   public void thinkDifferentExamples() {
@@ -1616,8 +1584,8 @@ public class Base {
   public void populateSketchbookMenu(JMenu menu) {
     boolean found = false;
     try {
-      found = addSketches(menu, sketchbookFolder, false);
-    } catch (IOException e) {
+      found = addSketches(menu, sketchbookFolder);
+    } catch (Exception e) {
       Messages.showWarning("Sketchbook Menu Error",
                            "An error occurred while trying to list the sketchbook.", e);
     }
@@ -1664,8 +1632,7 @@ public class Base {
    * should replace the sketch in the current window, or false when the
    * sketch should open in a new window.
    */
-  protected boolean addSketches(JMenu menu, File folder,
-                                final boolean replaceExisting) throws IOException {
+  protected boolean addSketches(JMenu menu, File folder) {
     // skip .DS_Store files, etc (this shouldn't actually be necessary)
     if (!folder.isDirectory()) {
       return false;
@@ -1696,10 +1663,12 @@ public class Base {
     ActionListener listener = e -> {
       String path = e.getActionCommand();
       if (new File(path).exists()) {
+        /*
         boolean replace = replaceExisting;
         if ((e.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
           replace = !replace;
         }
+        */
         handleOpen(path);
       } else {
         Messages.showWarning("Sketch Disappeared",
@@ -1736,7 +1705,7 @@ public class Base {
           // not a sketch folder, but maybe a subfolder containing sketches
           JMenu submenu = new JMenu(name);
           // needs to be separate var otherwise would set ifound to false
-          boolean anything = addSketches(submenu, subfolder, replaceExisting);
+          boolean anything = addSketches(submenu, subfolder);
           if (anything && !name.equals("old")) { //Don't add old contributions
             menu.add(submenu);
             found = true;
@@ -1855,6 +1824,7 @@ public class Base {
   /**
    * Return a File from inside the Processing 'lib' folder.
    */
+  @SuppressWarnings("RedundantThrows")
   static public File getLibFile(String filename) throws IOException {
     return new File(Platform.getContentFile("lib"), filename);
   }
@@ -2002,20 +1972,20 @@ public class Base {
     if (sketchbookFolder == null) {
       Messages.showError("No sketchbook",
                          "Problem while trying to get the sketchbook", null);
-    }
 
-    // create the folder if it doesn't exist already
-    boolean result = true;
-    if (!sketchbookFolder.exists()) {
-      result = sketchbookFolder.mkdirs();
-    }
+    } else {
+      // create the folder if it doesn't exist already
+      boolean result = true;
+      if (!sketchbookFolder.exists()) {
+        result = sketchbookFolder.mkdirs();
+      }
 
-    if (!result) {
-      Messages.showError("You forgot your sketchbook",
-                         "Processing cannot run because it could not\n" +
-                         "create a folder to store your sketchbook.", null);
+      if (!result) {
+        Messages.showError("You forgot your sketchbook",
+                           "Processing cannot run because it could not\n" +
+                           "create a folder to store your sketchbook.", null);
+      }
     }
-
     return sketchbookFolder;
   }
 }

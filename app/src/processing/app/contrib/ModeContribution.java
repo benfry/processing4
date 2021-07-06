@@ -78,7 +78,6 @@ public class ModeContribution extends LocalContribution {
    * @param base the base object that this will be tied to
    * @param folder location inside the sketchbook modes folder or contrib
    * @param className name of class and full package, or null to use default
-   * @throws Exception
    */
   public ModeContribution(Base base, File folder,
                            String className) throws Exception {
@@ -87,7 +86,7 @@ public class ModeContribution extends LocalContribution {
     if (className != null) {
       Class<?> modeClass = loader.loadClass(className);
       Messages.log("Got mode class " + modeClass);
-      Constructor con = modeClass.getConstructor(Base.class, File.class);
+      Constructor<?> con = modeClass.getConstructor(Base.class, File.class);
       mode = (Mode) con.newInstance(base, folder);
       mode.setClassLoader(loader);
       if (base != null) {
@@ -133,7 +132,7 @@ public class ModeContribution extends LocalContribution {
     File modeDirectory = new File(folder, getTypeName());
     if (modeDirectory.exists()) {
       Messages.log("checking mode folder regarding class name " + className);
-      // If no class name specified, search the main <modename>.jar for the
+      // If no class name specified, search the main <ModeName>.jar for the
       // full name package and mode name.
       if (className == null) {
         String shortName = folder.getName();
@@ -167,9 +166,9 @@ public class ModeContribution extends LocalContribution {
             File modeFolder = installedModes.get(modeImport).getFolder();
             File[] archives = Util.listJarFiles(new File(modeFolder, "mode"));
             if (archives != null && archives.length > 0) {
-              for (int i = 0; i < archives.length; i++) {
+              for (File archive : archives) {
                 // Base.log("Adding jar dependency: " + archives[i].getAbsolutePath());
-                extraUrls.add(archives[i].toURI().toURL());
+                extraUrls.add(archive.toURI().toURL());
               }
             }
           } else {
@@ -199,8 +198,6 @@ public class ModeContribution extends LocalContribution {
 
         loader = new URLClassLoader(urlList);
         Messages.log("loading above JARs with loader " + loader);
-//        System.out.println("listing classes for loader " + loader);
-//        listClasses(loader);
       }
     }
 
