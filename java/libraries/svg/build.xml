@@ -51,6 +51,7 @@
         <globmapper from="${zip.prefix}/*" to="*"/>
       </mapper>
     </unzip>
+    <delete file="${batik.zip}" />
   </target>
 
   <target name="compile" depends="download-batik" description="Compile sources">

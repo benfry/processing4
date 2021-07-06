@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -28,8 +28,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -107,11 +105,7 @@ public class EditorConsole extends JScrollPane {
     if (flushTimer == null) {
       // periodically post buffered messages to the console
       // should the interval come from the preferences file?
-      flushTimer = new Timer(250, new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          flush();
-        }
-      });
+      flushTimer = new Timer(250, evt -> flush());
       flushTimer.start();
     }
   }
@@ -140,12 +134,13 @@ public class EditorConsole extends JScrollPane {
    * Update the font family and sizes based on the Preferences window.
    */
   protected void updateAppearance() {
-    String fontFamily = Preferences.get("editor.font.family");
-    int fontSize = Toolkit.zoom(Preferences.getInteger("console.font.size"));
-    StyleConstants.setFontFamily(stdStyle, fontFamily);
-    StyleConstants.setFontSize(stdStyle, fontSize);
-    StyleConstants.setFontFamily(errStyle, fontFamily);
-    StyleConstants.setFontSize(errStyle, fontSize);
+    Font font = Preferences.getFont("editor.font.family", "console.font.size", Font.PLAIN);
+
+    StyleConstants.setFontFamily(stdStyle, font.getFamily());
+    StyleConstants.setFontSize(stdStyle, font.getSize());
+    StyleConstants.setFontFamily(errStyle, font.getFamily());
+    StyleConstants.setFontSize(errStyle, font.getSize());
+
     clear();  // otherwise we'll have mixed fonts
   }
 
@@ -161,8 +156,6 @@ public class EditorConsole extends JScrollPane {
     StyleConstants.setAlignment(standard, StyleConstants.ALIGN_LEFT);
     consoleDoc.setParagraphAttributes(0, 0, standard, true);
 
-    Font font = Preferences.getFont("console.font");
-
     // build styles for different types of console output
     Color bgColor = mode.getColor("console.color");
     Color fgColorOut = mode.getColor("console.output.color");
@@ -171,6 +164,8 @@ public class EditorConsole extends JScrollPane {
     // Make things line up with the Editor above. If this is ever removed,
     // setBorder(null) should be called instead. The defaults are nasty.
     setBorder(new MatteBorder(0, Editor.LEFT_GUTTER, 0, 0, bgColor));
+
+    Font font = Preferences.getFont("editor.font.family", "console.font.size", Font.PLAIN);
 
     stdStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(stdStyle, fgColorOut);
@@ -223,27 +218,51 @@ public class EditorConsole extends JScrollPane {
   }
 
 
-  public void message(String what, boolean err) {
+  /**
+   * Check whether this console message should be suppressed, usually
+   * to avoid user confusion with irrelevant debugging messages.
+   * @param what Text of the error message
+   * @param err true if stderr, false if stdout
+   * @return true if the message can be ignored/skipped
+   */
+  private boolean suppressMessage(String what, boolean err) {
     if (err && (what.contains("invalid context 0x0") || (what.contains("invalid drawable")))) {
       // Respectfully declining... This is a quirk of more recent releases of
       // Java on Mac OS X, but is widely reported as the source of any other
       // bug or problem that a user runs into. It may well be a Processing
       // bug, but until we know, we're suppressing the messages.
+      return true;
+
     } else if (err && what.contains("is calling TIS/TSM in non-main thread environment")) {
       // Error message caused by JOGL since macOS 10.13.4, cannot fix at the moment so silencing it:
       // https://github.com/processing/processing/issues/5462
       // Some discussion on the Apple's developer forums seems to suggest that is not serious:
       // https://forums.developer.apple.com/thread/105244
+      return true;
+
     } else if (err && what.contains("NSWindow drag regions should only be invalidated on the Main Thread")) {
       // Keep hiding warnings triggered by JOGL on recent macOS versions (this is from 10.14 onwards I think).
+      return true;
+
     } else if (err && what.contains("Make pbuffer:")) {
-      // Remove initalization warning from LWJGL.
+      // Remove initialization warning from LWJGL.
+      return true;
+
     } else if (err && what.contains("XInitThreads() called for concurrent")) {
       // "Info: XInitThreads() called for concurrent Thread support" message on Linux
+      return true;
+
     } else if (!err && what.contains("Listening for transport dt_socket at address")) {
       // Message from the JVM about the socket launch for debug
       // Listening for transport dt_socket at address: 8727
-    } else {
+      return true;
+    }
+    return false;
+  }
+
+
+  public void message(String what, boolean err) {
+    if (!suppressMessage(what, err)) {
       // Append a piece of text to the console. Swing components are NOT
       // thread-safe, and since the MessageSiphon instantiates new threads,
       // and in those callbacks, they often print output to stdout and stderr,
@@ -277,7 +296,7 @@ public class EditorConsole extends JScrollPane {
       this.err = err;
     }
 
-    public void write(byte b[], int offset, int length) {
+    public void write(byte[] b, int offset, int length) {
       message(new String(b, offset, length), err);
     }
 
@@ -367,42 +386,9 @@ class BufferedStyledDocument extends DefaultStyledDocument {
 
   /** insert the buffered strings */
   public void insertAll() {
-    /*
-    // each line is ~3 elements
-    int tooMany = elements.size() - maxLineCount*3;
-    if (tooMany > 0) {
-      try {
-        remove(0, getLength()); // clear the document first
-      } catch (BadLocationException ble) {
-        ble.printStackTrace();
-      }
-      Console.systemOut("skipping " + elements.size());
-      for (int i = 0; i < tooMany; i++) {
-        elements.remove();
-      }
-    }
-    */
     ElementSpec[] elementArray = elements.toArray(new ElementSpec[0]);
 
     try {
-      /*
-      // check how many lines have been used so far
-      // if too many, shave off a few lines from the beginning
-      Element element = super.getDefaultRootElement();
-      int lineCount = element.getElementCount();
-      int overage = lineCount - maxLineCount;
-      if (overage > 0) {
-        // if 1200 lines, and 1000 lines is max,
-        // find the position of the end of the 200th line
-        //systemOut.println("overage is " + overage);
-        Element lineElement = element.getElement(overage);
-        if (lineElement == null) return;  // do nuthin
-
-        int endOffset = lineElement.getEndOffset();
-        // remove to the end of the 200th line
-        super.remove(0, endOffset);
-      }
-      */
       synchronized (insertLock) {
         checkLength();
         insert(getLength(), elementArray);

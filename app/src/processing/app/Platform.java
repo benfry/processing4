@@ -210,7 +210,10 @@ public class Platform {
    * Return the value of the os.arch property
    */
   static public String getNativeArch() {
-    // This will return "arm" for 32-bit ARM, "aarch64" for 64-bit ARM (both on Linux)
+    // This will return "arm" for 32-bit ARM on Linux,
+    // and "aarch64" for 64-bit ARM on Linux (rpi) and Apple Silicon
+    // (the latter only when using a native 64-bit ARM VM on macOS,
+    // which as of 4.0 alpha 5 is not being used b/c of missing libs).
     return System.getProperty("os.arch");
   }
 

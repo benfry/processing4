@@ -69,6 +69,7 @@ public class RuntimePathBuilder {
   /**
    * The modules comprising the Java standard modules.
    */
+  @SuppressWarnings("SpellCheckingInspection")
   protected static final String[] STANDARD_MODULES = {
       "java.base.jmod",
       "java.compiler.jmod",
@@ -445,17 +446,18 @@ public class RuntimePathBuilder {
    * @param sketch The sketch provided by the user.
    * @return List of classpath and/or module path entries.
    */
-  protected List<String> buildLibrarySketchPath(JavaMode mode, List<ImportStatement> imports,
-        Sketch sketch) {
+  protected List<String> buildLibrarySketchPath(JavaMode mode,
+                                                List<ImportStatement> imports,
+                                                Sketch sketch) {
 
     StringJoiner classPathBuilder = new StringJoiner(File.pathSeparator);
 
     imports.stream()
         .map(ImportStatement::getPackageName)
-        .filter(pckg -> !isIgnorableForSketchPath(pckg))
-        .map(pckg -> {
+        .filter(pkg -> !isIgnorableForSketchPath(pkg))
+        .map(pkg -> {
           try {
-            return mode.getLibrary(pckg);
+            return mode.getLibrary(pkg);
           } catch (SketchException e) {
             return null;
           }
@@ -604,7 +606,7 @@ public class RuntimePathBuilder {
    *
    * Note that these are protected so that they can be tested. The interface below defines a
    * strategy for determining path elements. An optional caching object which allows for path
-   * invalidatino is also defined below.
+   * invalidation is also defined below.
    */
 
   /**
@@ -641,8 +643,8 @@ public class RuntimePathBuilder {
    */
   protected static class CachedRuntimePathFactory implements RuntimePathFactoryStrategy {
 
-    private AtomicReference<List<String>> cachedResult;
-    private RuntimePathFactoryStrategy innerStrategy;
+    final private AtomicReference<List<String>> cachedResult;
+    final private RuntimePathFactoryStrategy innerStrategy;
 
     /**
      * Create a new cache around {RuntimePathFactoryStrategy}.

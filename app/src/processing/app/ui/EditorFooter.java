@@ -289,8 +289,8 @@ public class EditorFooter extends Box {
         FontRenderContext frc = g2.getFontRenderContext();
         final int GAP = Toolkit.zoom(5);
         final String updateLabel = "Updates";
-        //String updatesStr = " " + updateCount + " ";
-        String updatesStr = " " + ((int) (Math.random() * 25)) + " ";
+        // String updatesStr = " " + ((int) (Math.random() * 25)) + " ";  // testing
+        String updatesStr = " " + updateCount + " ";
         double countWidth = font.getStringBounds(updatesStr, frc).getWidth();
         double countHeight = font.getStringBounds(updatesStr, frc).getHeight();
         if (fontAscent > countWidth) {

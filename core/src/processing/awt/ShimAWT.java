@@ -1,14 +1,8 @@
 package processing.awt;
 
-import java.awt.Desktop;
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.Frame;
-import java.awt.HeadlessException;
-import java.awt.Image;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.color.ColorSpace;
-import java.awt.image.BufferedImage;
+import java.awt.image.*;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -16,10 +10,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
-import java.awt.DisplayMode;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.geom.AffineTransform;
 
 import javax.imageio.IIOImage;
@@ -154,6 +144,182 @@ public class ShimAWT implements PConstants {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static public void fromNativeImage(Image img, PImage out) {
+    out.format = RGB;
+    out.pixels = null;
+
+    if (img instanceof BufferedImage) {
+      BufferedImage bi = (BufferedImage) img;
+      out.width = bi.getWidth();
+      out.height = bi.getHeight();
+
+      int type = bi.getType();
+      if (type == BufferedImage.TYPE_3BYTE_BGR ||
+        type == BufferedImage.TYPE_4BYTE_ABGR) {
+        out.pixels = new int[out.width * out.height];
+        bi.getRGB(0, 0, out.width, out.height, out.pixels, 0, out.width);
+        if (type == BufferedImage.TYPE_4BYTE_ABGR) {
+          out.format = ARGB;
+//        } else {
+//          opaque();
+        }
+      } else {
+        DataBuffer db = bi.getRaster().getDataBuffer();
+        if (db instanceof DataBufferInt) {
+          out.pixels = ((DataBufferInt) db).getData();
+          if (type == BufferedImage.TYPE_INT_ARGB) {
+            out.format = ARGB;
+//          } else if (type == BufferedImage.TYPE_INT_RGB) {
+//            opaque();
+          }
+        }
+      }
+    }
+    if ((out.pixels != null) && (out.format == RGB)) {
+      for (int i = 0; i < out.pixels.length; i++) {
+        out.pixels[i] |= 0xFF000000;
+      }
+    }
+    // Implements fall-through if not DataBufferInt above, or not a
+    // known type, or not DataBufferInt for the data itself.
+    if (out.pixels == null) {  // go the old school Java 1.0 route
+      out.width = img.getWidth(null);
+      out.height = img.getHeight(null);
+      out.pixels = new int[out.width * out.height];
+      PixelGrabber pg =
+        new PixelGrabber(img, 0, 0, out.width, out.height, out.pixels, 0, out.width);
+      try {
+        pg.grabPixels();
+      } catch (InterruptedException e) { }
+    }
+    out.pixelDensity = 1;
+    out.pixelWidth = out.width;
+    out.pixelHeight = out.height;
+  }
+
+
+//  /** Set the high bits of all pixels to opaque. */
+//  protected void opaque() {
+//    for (int i = 0; i < pixels.length; i++) {
+//      pixels[i] = 0xFF000000 | pixels[i];
+//    }
+//  }
+
+
+  static public Object getNativeImage(PImage img) {
+    img.loadPixels();
+    int type = (img.format == RGB) ?
+      BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+    BufferedImage image =
+      new BufferedImage(img.pixelWidth, img.pixelHeight, type);
+    WritableRaster wr = image.getRaster();
+    wr.setDataElements(0, 0, img.pixelWidth, img.pixelHeight, img.pixels);
+    return image;
+  }
+
+
+  static public void resizeImage(PImage img, int w, int h) {  // ignore
+    if (w <= 0 && h <= 0) {
+      throw new IllegalArgumentException("width or height must be > 0 for resize");
+    }
+
+    if (w == 0) {  // Use height to determine relative size
+      float diff = (float) h / (float) img.height;
+      w = (int) (img.width * diff);
+    } else if (h == 0) {  // Use the width to determine relative size
+      float diff = (float) w / (float) img.width;
+      h = (int) (img.height * diff);
+    }
+
+    BufferedImage bimg =
+      shrinkImage((BufferedImage) img.getNative(), w*img.pixelDensity, h*img.pixelDensity);
+
+    PImage temp = new PImageAWT(bimg);
+    img.pixelWidth = temp.width;
+    img.pixelHeight = temp.height;
+
+    // Get the resized pixel array
+    img.pixels = temp.pixels;
+
+    img.width = img.pixelWidth / img.pixelDensity;
+    img.height = img.pixelHeight / img.pixelDensity;
+
+    // Mark the pixels array as altered
+    img.updatePixels();
+  }
+
+
+  // Adapted from getFasterScaledInstance() method from page 111 of
+  // "Filthy Rich Clients" by Chet Haase and Romain Guy
+  // Additional modifications and simplifications have been added,
+  // plus a fix to deal with an infinite loop if images are expanded.
+  // https://github.com/processing/processing/issues/1501
+  static private BufferedImage shrinkImage(BufferedImage img,
+                                           int targetWidth, int targetHeight) {
+    int type = (img.getTransparency() == Transparency.OPAQUE) ?
+      BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+    BufferedImage outgoing = img;
+    BufferedImage scratchImage = null;
+    Graphics2D g2 = null;
+    int prevW = outgoing.getWidth();
+    int prevH = outgoing.getHeight();
+    boolean isTranslucent = img.getTransparency() != Transparency.OPAQUE;
+
+    // Use multi-step technique: start with original size, then scale down in
+    // multiple passes with drawImage() until the target size is reached
+    int w = img.getWidth();
+    int h = img.getHeight();
+
+    do {
+      if (w > targetWidth) {
+        w /= 2;
+        // if this is the last step, do the exact size
+        if (w < targetWidth) {
+          w = targetWidth;
+        }
+      } else if (targetWidth >= w) {
+        w = targetWidth;
+      }
+      if (h > targetHeight) {
+        h /= 2;
+        if (h < targetHeight) {
+          h = targetHeight;
+        }
+      } else if (targetHeight >= h) {
+        h = targetHeight;
+      }
+      if (scratchImage == null || isTranslucent) {
+        // Use a single scratch buffer for all iterations and then copy
+        // to the final, correctly-sized image before returning
+        scratchImage = new BufferedImage(w, h, type);
+        g2 = scratchImage.createGraphics();
+      }
+      g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+      g2.drawImage(outgoing, 0, 0, w, h, 0, 0, prevW, prevH, null);
+      prevW = w;
+      prevH = h;
+      outgoing = scratchImage;
+    } while (w != targetWidth || h != targetHeight);
+
+    if (g2 != null) {
+      g2.dispose();
+    }
+
+    // If we used a scratch buffer that is larger than our target size,
+    // create an image of the right size and copy the results into it
+    if (targetWidth != outgoing.getWidth() ||
+      targetHeight != outgoing.getHeight()) {
+      scratchImage = new BufferedImage(targetWidth, targetHeight, type);
+      g2 = scratchImage.createGraphics();
+      g2.drawImage(outgoing, 0, 0, null);
+      g2.dispose();
+      outgoing = scratchImage;
+    }
+    return outgoing;
+  }
 
 
   static protected String[] loadImageFormats;  // list of ImageIO formats
@@ -509,7 +675,7 @@ public class ShimAWT implements PConstants {
 
 
  /**
-  * @param display the display number to check
+  * display - the display number to check
   * (1-indexed to match the Preferences dialog box)
   */
   /*

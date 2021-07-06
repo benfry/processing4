@@ -4237,15 +4237,20 @@ public class PGraphics extends PImage implements PConstants {
    * Used by PGraphics to remove the requirement for loading a font.
    */
   protected PFont createDefaultFont(float size) {
-    Font baseFont;
+    Font baseFont = null;
     try {
       // For 4.0 alpha 4 and later, include a built-in font
       InputStream input = getClass().getResourceAsStream("/font/ProcessingSansPro-Regular.ttf");
-      baseFont = Font.createFont(Font.TRUETYPE_FONT, input);
+      if (input != null) {
+        baseFont = Font.createFont(Font.TRUETYPE_FONT, input);
+      }
 
     } catch (Exception e) {
       // Fall back to how this was handled in 3.x, ugly!
       e.printStackTrace(); // dammit
+    }
+
+    if (baseFont == null) {
       baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
     }
     // Create a PFont from this java.awt.Font
@@ -5770,7 +5775,6 @@ public class PGraphics extends PImage implements PConstants {
    * @webref transform
    * @webBrief Multiplies the current matrix by the one specified through the
    * parameters
-   * @source
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#resetMatrix()
@@ -8592,6 +8596,7 @@ public class PGraphics extends PImage implements PConstants {
     public void dispose() { // ignore
       saveExecutor.shutdown();
       try {
+        //noinspection ResultOfMethodCallIgnored
         saveExecutor.awaitTermination(5000, TimeUnit.SECONDS);
       } catch (InterruptedException ignored) { }
     }

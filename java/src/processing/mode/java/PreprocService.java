@@ -93,13 +93,11 @@ public class PreprocService {
       complete(null); // initialization block
     }};
 
-  private volatile boolean enabled = true;
+  private volatile boolean enabled;
 
   /**
    * Create a new preprocessing service to support an editor.
-   *
-   * @param editor The editor that will be supported by this service and to which issues should be
-   *    reported.
+   * @param editor The editor supported by this service and receives issues.
    */
   public PreprocService(JavaEditor editor) {
     this.editor = editor;
@@ -139,7 +137,7 @@ public class PreprocService {
           try {
             runningCallbacks.get(TIMEOUT_MILLIS, TimeUnit.MILLISECONDS);
             runningCallbacks = null;
-          } catch (TimeoutException e) { }
+          } catch (TimeoutException ignored) { }
         }
 
         synchronized (requestLock) {
@@ -189,7 +187,7 @@ public class PreprocService {
   }
 
   /**
-   * Indicate to this service that the sketch libarries have changed.
+   * Indicate to this service that the sketch libraries have changed.
    */
   public void notifyLibrariesChanged() {
     Messages.log("PPS: notified libraries changed");
@@ -201,7 +199,7 @@ public class PreprocService {
    * Indicate to this service that the folder housing sketch code has changed.
    */
   public void notifyCodeFolderChanged() {
-    Messages.log("PPS: snotified code folder changed");
+    Messages.log("PPS: notified code folder changed");
     codeFolderChanged.set(true);
     notifySketchChanged();
   }
@@ -255,8 +253,6 @@ public class PreprocService {
    * Note that this callback will only be executed once and it is distinct from registering a
    * listener below which will receive all future updates.
    * </p>
-   *
-   * @param callback
    */
   public void whenDoneBlocking(Consumer<PreprocSketch> callback) {
     if (!enabled) return;
@@ -272,11 +268,11 @@ public class PreprocService {
   /// LISTENERS ----------------------------------------------------------------
 
 
-  private Set<Consumer<PreprocSketch>> listeners = new CopyOnWriteArraySet<>();
+  private final Set<Consumer<PreprocSketch>> listeners = new CopyOnWriteArraySet<>();
 
   /**
-   * Register a consumer that will receive all {PreprocessedSketch}es produced from this service.
-   *
+   * Register a consumer that will receive all {PreprocessedSketch}es
+   * produced from this service.
    * @param listener The listener to receive all future {PreprocessedSketch}es.
    */
   public void registerListener(Consumer<PreprocSketch> listener) {
@@ -423,7 +419,6 @@ public class PreprocService {
           .forEach(result.otherProblems::add);
 
       result.hasSyntaxErrors = true;
-      return result.build();
     }
 
     // Save off the imports
@@ -491,8 +486,8 @@ public class PreprocService {
     CompilationUnit compilableCU = (CompilationUnit) parser.createAST(null);
 
     // Get syntax problems from compilable AST
-    result.hasSyntaxErrors |= Arrays.stream(compilableCU.getProblems())
-        .anyMatch(IProblem::isError);
+    result.hasSyntaxErrors |=
+      Arrays.stream(compilableCU.getProblems()).anyMatch(IProblem::isError);
 
     // Generate bindings after getting problems - avoids
     // 'missing type' errors when there are syntax problems
@@ -507,8 +502,8 @@ public class PreprocService {
 
     // Get compilation problems
     List<IProblem> bindingsProblems = Arrays.asList(bindingsCU.getProblems());
-    result.hasCompilationErrors = bindingsProblems.stream()
-        .anyMatch(IProblem::isError);
+    result.hasCompilationErrors =
+      bindingsProblems.stream().anyMatch(IProblem::isError);
 
     // Update builder
     result.offsetMapper = parsableMapper.thenMapping(compilableMapper);
@@ -586,9 +581,9 @@ public class PreprocService {
 
 
 
-  /// CLASSPATHS ---------------------------------------------------------------
+  /// CLASS PATHS --------------------------------------------------------------
 
-  private RuntimePathBuilder runtimePathBuilder = new RuntimePathBuilder();
+  private final RuntimePathBuilder runtimePathBuilder = new RuntimePathBuilder();
 
   /// --------------------------------------------------------------------------
 

@@ -1,43 +1,22 @@
-1273 (4.0a4)
-X fix typo in extensions= arg
-X update batik to 1.14
-X   https://github.com/processing/processing4/issues/179
-X   https://github.com/processing/processing4/issues/192
-X update the batik url
-X   https://github.com/processing/processing4/pull/183
-X calling unregisterMethod() on dispose from dispose() means concurrent mod
-o   https://github.com/processing/processing4/pull/199
-X   modernized the code a bit, checked in a version that queues to avoid list issue
-X Make parseJSONObject/Array return null when parsing fails
-X   https://github.com/processing/processing4/issues/165
-X   https://github.com/processing/processing4/pull/166
-X "textMode(SHAPE) is not supported by this renderer" message
-X   https://github.com/processing/processing4/issues/202
-X   formerly https://github.com/processing/processing/issues/6169
-X add PVector.setHeading() for parity with p5.js
-X   https://github.com/processing/processing4/issues/193
-X .setAngle() for PVector?
-X   https://github.com/processing/processing-docs/issues/744
-o Math for BLEND incorrect in the reference?
-o   https://github.com/processing/processing-docs/issues/762
-o How much of the attrib*() functions should be documented?
-o   https://github.com/processing/processing-docs/issues/172
+1275 (4.0a6)
+X mouseButton not set correctly on mouseReleased() with Java2D
+X   https://github.com/processing/processing4/issues/181
+o   https://github.com/processing/processing4/pull/188
+
+cleaning
+o Skija bindings
+o   https://github.com/processing/processing4/issues/151
+o size() issues on Mojave? (3.4 works, 3.5.3 does not)
+X   https://github.com/processing/processing/issues/5791
+X   closed for now; unable to confirm anything in the thread
+o Complaints that size() is not working
+X   Windows: https://github.com/processing/processing/issues/6046
+X   Linux: https://github.com/processing/processing/issues/5912
+X   can't reproduce, may be fixed with display= changes in alpha 4
+X   reports that open and closing Preferences fixed it?
 
 
-regressions
-_ (unconfirmed) setting which display to use does not work
-_   https://github.com/processing/processing4/issues/187
-_ cursor(PImage) broken everywhere because PImage.getNative() returns null
-_   https://github.com/processing/processing4/issues/180
-_ PImage.resize() not working
-_   https://github.com/processing/processing4/issues/200
-_   two simple examples added to the issue that can be used for tests
-_ mouseButton not set correctly on mouseReleased() with Java2D
-_   https://github.com/processing/processing4/issues/181
-_   https://github.com/processing/processing4/pull/188
-_ copy() not working correctly
-_   https://github.com/processing/processing4/issues/169
-
+_ put opengl libs for core into platform-specific subfolders?
 
 _ setting surface size needs to happen outside draw()
 _   surface.setSize() sadness etc
@@ -45,13 +24,6 @@ _   https://github.com/processing/processing4/issues/162
 _   https://github.com/processing/processing4/issues/186
 _   https://github.com/processing/processing/issues/4129
 
-_ why does japplemenubar.JAppleMenuBar.hide(); still work?
-_   it calls SetSystemUIMode, which is part of Carbon (which was removed in Catalina)
-_     https://github.com/kritzikratzi/jAppleMenuBar/blob/master/src/native/jAppleMenuBar.m
-_   setPresentationOptions() seems to be the Cocoa equivalent
-_     https://www.cocoawithlove.com/2009/08/animating-window-to-fullscreen-on-mac.html
-_     https://bugzilla.mozilla.org/attachment.cgi?id=8616917&action=diff
-_   https://www.philipp.haussleiter.de/2012/09/building-native-macos-apps-with-java/
 
 
 should be fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
@@ -59,11 +31,9 @@ X AppKit errors from P2D/P3D
 X   https://github.com/processing/processing/issues/5880
 X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
 X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
-_   https://github.com/processing/processing/issues/5983
-_ Profile GL3bc is not available on X11GraphicsDevice
-_   https://github.com/processing/processing/issues/5476
+X   https://github.com/processing/processing/issues/5983
 X Cannot run rotateZ() within the PShape class
-_   https://github.com/processing/processing/issues/5770
+X   https://github.com/processing/processing/issues/5770
 _ Profile GL4bc is not available on X11GraphicsDevice
 _   https://github.com/processing/processing/issues/6160
 _   https://github.com/processing/processing/issues/6154
@@ -74,15 +44,8 @@ _   https://github.com/processing/processing/issues/5476
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
 
-_ Complaints that size() is not working
-_   Windows: https://github.com/processing/processing/issues/6046
-_   Linux: https://github.com/processing/processing/issues/5912
-
 _ why does GL flash red when resizing?
 
-
-_ Skija bindings
-_   https://github.com/processing/processing4/issues/151
 
 load/save image
 _ https://github.com/processing/processing4/wiki/Exorcising-AWT
@@ -126,13 +89,15 @@ _ implement openLink() in PSurfaceJOGL
 
 
 before final release
+_ replace japplemenubar with something that's more likely to work in the future
+_   https://github.com/processing/processing4/issues/221
 _ Warn users or provide auto-fix when `frame` is used in a sketch
 _   https://github.com/processing/processing4/issues/59
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
 _   https://github.com/processing/processing4/issues/52
-_ Better resolution for frame/surface methods
+_ Better solution for frame/surface methods
 _   https://github.com/processing/processing4/issues/53
 _ Remove frame from PApplet
 _   https://github.com/processing/processing4/issues/54
@@ -147,9 +112,6 @@ _   https://github.com/processing/processing4/issues/56
 
 
 high-ish
-_ size() issues on Mojave? (3.4 works, 3.5.3 does not)
-_   https://github.com/processing/processing/issues/5791
-_   closed for now; unable to confirm anything in the thread
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
 _ make setting the window icon automatic, based on files in local dirs

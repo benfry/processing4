@@ -92,11 +92,20 @@ public class PImageAWT extends PImage {
   }
 
 
+  /** Set the high bits of all pixels to opaque. */
+  protected void opaque() {
+    for (int i = 0; i < pixels.length; i++) {
+      pixels[i] = 0xFF000000 | pixels[i];
+    }
+  }
+
+
   /**
    * Use the getNative() method instead, which allows library interfaces to be
    * written in a cross-platform fashion for desktop, Android, and others.
    * This is still included for PGraphics objects, which may need the image.
    */
+  @Override
   public Image getImage() {  // ignore
     return (Image) getNative();
   }
@@ -153,7 +162,7 @@ public class PImageAWT extends PImage {
   // "Filthy Rich Clients" by Chet Haase and Romain Guy
   // Additional modifications and simplifications have been added,
   // plus a fix to deal with an infinite loop if images are expanded.
-  // http://code.google.com/p/processing/issues/detail?id=1463
+  // https://github.com/processing/processing/issues/1501
   static private BufferedImage shrinkImage(BufferedImage img,
                                            int targetWidth, int targetHeight) {
     int type = (img.getTransparency() == Transparency.OPAQUE) ?

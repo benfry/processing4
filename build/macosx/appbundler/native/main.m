@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
         result = 0;
     } @catch (NSException *exception) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert setAlertStyle:NSCriticalAlertStyle];
+        [alert setAlertStyle:NSAlertStyleCritical];
         [alert setMessageText:[exception reason]];
         [alert runModal];
 
@@ -241,7 +241,8 @@ int launch(char *commandName, int progargc, char *progargv[]) {
         libjliPath = [javaDylib fileSystemRepresentation];
     }
 
-    DLog(@"Launchpath: %s", libjliPath);
+    // Disable chatty log message that looks like an error in the Console
+    //DLog(@"Launchpath: %s", libjliPath);
 
     void *libJLI = dlopen(libjliPath, RTLD_LAZY);
 
@@ -413,19 +414,26 @@ int launch(char *commandName, int progargc, char *progargv[]) {
         DLog(@"Main Class Name: '%@'", mainClassName);
     }
 
-    // If a jar file is defined as launcher, disacard the javaPath
+    // If a jar file is defined as launcher, discard the javaPath
     if ( jarlauncher != nil ) {
         [classPath appendFormat:@":%@/%@", javaPath, jarlauncher];
     } else {
 
         NSArray *cp = [infoDictionary objectForKey:@JVM_CLASSPATH_KEY];
         if (cp == nil) {
-
             // Implicit classpath, so use the contents of the "Java" folder to build an explicit classpath
 
             [classPath appendFormat:@"%@/Classes", javaPath];
             NSFileManager *defaultFileManager = [NSFileManager defaultManager];
+            // original, non-recursive version:
+            // https://developer.apple.com/documentation/foundation/nsfilemanager/1414584-contentsofdirectoryatpath
             NSArray *javaDirectoryContents = [defaultFileManager contentsOfDirectoryAtPath:javaPath error:nil];
+
+            // changed to recursive version to walk the 'core' folder
+            // https://developer.apple.com/documentation/foundation/nsfilemanager/1417353-subpathsofdirectoryatpath
+            // NSArray *javaDirectoryContents = [defaultFileManager subpathsOfDirectoryAtPath:javaPath error:nil];
+            // moving back away from this because we need the 'modules' directory off the classpath
+
             if (javaDirectoryContents == nil) {
                 [[NSException exceptionWithName:@JAVA_LAUNCH_ERROR
                                          reason:NSLocalizedString(@"JavaDirectoryNotFound", @UNSPECIFIED_ERROR)

@@ -48,38 +48,37 @@ public class ASTUtils {
     ASTNode node = getASTNodeAt(root, startJavaOffset, stopJavaOffset);
 
     SimpleName result = null;
-
-    if (node == null) {
-      result = null;
-    } else if (node.getNodeType() == ASTNode.SIMPLE_NAME) {
-      result = (SimpleName) node;
-    } else {
-      // Return SimpleName with highest coverage
-      List<SimpleName> simpleNames = getSimpleNameChildren(node);
-      if (!simpleNames.isEmpty()) {
-        // Compute coverage <selection x node>
-        int[] coverages = simpleNames.stream()
+    if (node != null) {
+      if (node.getNodeType() == ASTNode.SIMPLE_NAME) {
+        result = (SimpleName) node;
+      } else {
+        // Return SimpleName with highest coverage
+        List<SimpleName> simpleNames = getSimpleNameChildren(node);
+        if (!simpleNames.isEmpty()) {
+          // Compute coverage <selection x node>
+          int[] coverages = simpleNames.stream()
             .mapToInt(name -> {
               int start = name.getStartPosition();
               int stop = start + name.getLength();
               return Math.min(stop, stopJavaOffset) -
-                  Math.max(startJavaOffset, start);
+                Math.max(startJavaOffset, start);
             })
             .toArray();
-        // Select node with highest coverage
-        int maxIndex = IntStream.range(0, simpleNames.size())
+          // Select node with highest coverage
+          int maxIndex = IntStream.range(0, simpleNames.size())
             .filter(i -> coverages[i] >= 0)
             .reduce((i, j) -> coverages[i] > coverages[j] ? i : j)
             .orElse(-1);
-        if (maxIndex == -1) return null;
-        result = simpleNames.get(maxIndex);
+          if (maxIndex == -1) return null;
+          result = simpleNames.get(maxIndex);
+        }
       }
     }
 
     if (result == null) {
       Messages.log("no simple name found");
     } else {
-      Messages.log("found " + node.toString());
+      Messages.log("found " + node);
     }
     return result;
   }
@@ -165,19 +164,19 @@ public class ASTUtils {
 
 
   protected static List<SimpleName> findAllOccurrences(ASTNode root, String bindingKey) {
-    List<SimpleName> occurences = new ArrayList<>();
+    List<SimpleName> occurrences = new ArrayList<>();
     root.getRoot().accept(new ASTVisitor() {
       @Override
       public boolean visit(SimpleName name) {
         IBinding binding = resolveBinding(name);
         if (binding != null && bindingKey.equals(binding.getKey())) {
-          occurences.add(name);
+          occurrences.add(name);
         }
         return super.visit(name);
       }
     });
 
-    return occurences;
+    return occurrences;
   }
 
 }

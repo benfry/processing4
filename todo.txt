@@ -1,54 +1,108 @@
-1273 (4.0a4)
-X “An error occurred while starting the application” with 4.0a3 on Windows
-X   replace about.bmp that was causing processing.exe to crash on startup
-X   https://github.com/processing/processing4/issues/156
-X update to JDK 11.0.10
-X update from JNA 5.2.0 to 5.7.0
-X   was having trouble with "java.lang.UnsatisfiedLinkError: Unable to load library 'CoreServices': Native library (darwin/libCoreServices.dylib) not found in resource path"
-X   https://github.com/fathominfo/processing-p5js-mode/issues/26
-X implement auto-download for JNA updates
-X “Exception in thread "Contribution Uninstaller" NullPointerException” during Remove
-X   https://github.com/processing/processing4/issues/174
-X catch NoClassDefError in Platform.deleteFile() (still unclear of its cause)
-X   https://github.com/processing/processing4/issues/159
-_   https://github.com/processing/processing/issues/6185
-X need to set a nicer default font
-X   increases export size, but impact is so worth it
-X Update JDK to 11.0.11+9
-X modernize the RegisteredMethods code to use collections classes w/ concurrency
-X   https://github.com/processing/processing4/pull/199
-X don't sort user's charset array when calling createFont()
-X   https://github.com/processing/processing4/issues/197
-X   https://github.com/processing/processing4/pull/198
-X automatically lock closed issues
-X   https://github.com/apps/lock
-X Display Window doesn't remember its position
-X   seems that --external not getting passed
-X   https://github.com/processing/processing4/issues/158
-X   https://github.com/processing/processing/issues/5843
-X   https://github.com/processing/processing/issues/5781
+1275 (4.0a6)
+X remove java.class.path when launching code from inside the PDE
+X   should prevent conflicts, avoid papering over other bugs
+X remove the PDE classpath from sketches
+X   causing it to include incomplete JFX, other misc; too confusing
+X add ui.font.family and ui.font.size as preferences
+X Editor.applyPreferences() was protected, now public
+X remove compound key actions (which were undocumented and not in use)
+X   clears up a lot of complexity in DefaultInputHandler
+X   if someone wants this, they could recreate it in a subclass
+X remove jdt.compiler.jar from subprojects
+X   no longer using JRE (doesn't exist), so it's not needed
+o   can we remove it altogether, or is it used by the PDE?
+X remove lots of dead/unused parts of javafx/build.xml
+X fix up modifiers for key events (after completing mouse) in Java2D
+X set args for JavaFX and OpenGL for the mouse and key events
+X   make sure that everything is set properly, also for keys
+X move ISSUE_TEMPLATE to .github subfolder
+X   https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/manually-creating-a-single-issue-template-for-your-repository
+o ability to switch mode in p5 w/o saving/closing/etc
+X   trying to save the user from themselves here is just messier than needed
+X   opt to open a new editor window rather than weird error messages
+X   https://github.com/processing/processing4/issues/189
 
-earlier
-o further streamline the downloader
-o   https://github.com/processing/processing4/issues/47
-o next video release
-o   https://github.com/processing/processing-video/milestone/1
+readme
+X was fixed in the source for 4.0a5, but may not have been included in the dist
+X   NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
+X   https://github.com/processing/processing4/issues/154
+
+moviemaker
+X MovieMaker .mov not compatible with QuicktTime Player
+X   https://github.com/processing/processing/issues/6110
+X   notes in the bug about what's going on
+X   confirmed that after Mojave, the QTMovieModernizer went away (was 32-bit)
+_     https://support.apple.com/en-us/HT202884
+X   the modernizer would convert things to ProRes
+_     https://support.apple.com/en-us/HT202410
+o   possible other library: http://jcodec.org/
+o     https://github.com/jcodec/jcodec
+o   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
+o   jars: https://repo.maven.apache.org/maven2/org/jcodec/jcodec/0.2.5/
+o   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jcodec/samples/gen/SequenceEncoderDemo.java
+X incorporating ffmpeg
+X   the essentials build for macos64, just one file:
+X     https://evermeet.cx/ffmpeg/ffmpeg-4.4.7z
+X     https://evermeet.cx/ffmpeg/ffmpeg-4.4.zip (!)
+X     via https://evermeet.cx/ffmpeg/
+X   release essentials for windows64, multiple files:
+X     https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.7z
+X     https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip
+X       ffmpeg-4.4-essentials_build/bin/ffmpeg.exe is our man
+X     via https://www.gyan.dev/ffmpeg/builds/
+X   linux64
+X     https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+X     via https://johnvansickle.com/ffmpeg/ also has arm and others
 
 contribs
-X many updates in the docs portion of the repo
-X   https://github.com/processing/processing4/pull/191
-X fixing undo
-X   fix? https://github.com/processing/processing4/pull/175
+X Module javafx.base not found on Linux
+X   https://github.com/processing/processing4/issues/214
+X   https://github.com/processing/processing4/pull/215
+X After selecting a font other than Source Code Pro, font went to a default
+X   https://github.com/processing/processing4/pull/216
+
+sam
+X Code completion not working
+X   https://github.com/processing/processing4/issues/177
+X   confirmed not working from Sam's repo either
+X   https://github.com/processing/processing4/pull/219
+
+
+for next release
+_ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
+
+
+_ startup is so incredibly slow
+_   the splash screen comes up fairly quickly, so what gives?
+
+_ replace bug numbers
+_   http://dev.processing.org/bugs/show_bug.cgi?id=1188
+_   with http://processing.org/bugs/bugzilla/1188.html
+_   also code.google.com URLs with Github URLs (numbers are sorta in sync)
+
+ui is ugly on macOS
+_ fix height of font size dropdown
+_ better default fonts for Swing; argh
+_   file an issue with the images
+https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
+
+_ macosx vs macosx64 in JavaFX
+_   the latter is making the export fail because it won't embed a Java VM
+_   may be because it's exporting twice and overwriting? or 64 takes precedence?
+_ what should macos-aarch64 be called?
+
+_ Remove usage of com.sun.* in JavaFX library
+_   https://github.com/processing/processing4/issues/208
+_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
+_   https://github.com/processing/processing4/issues/212
+
+may be fixed
+_ Undo feature may have undesired results (4.0a4)
 _   https://github.com/processing/processing/issues/4775
-X tweak the number of updates based on Akarshit's attempt
-X   https://github.com/processing/processing4/issues/201
-X   https://github.com/processing/processing/pull/4097
+_ HDPI support GNOME desktop
+_   https://github.com/processing/processing/issues/6059
 
-
-regressions
-_ Code completion not working
-_   https://github.com/processing/processing4/issues/177
-
+_ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
 _   https://github.com/processing/processing/issues/4214
@@ -60,58 +114,49 @@ _ when lib downloads (batik) go dead, fallback to the download.processing.org ve
 _   or for now, tell users how to do it manually
 
 windows/scaling
-_ we're turning off automatic UI scaling in Windows, should we turn it back on?
-_   using -Dsun.java2d.uiScale.enabled=false inside config.xml for launch4j
-_   this was for Java 9, and we should have better support now
-_   also check whether this is set on Linux
-_ Welcome screen doesn't size properly for HiDPI screens
-_   https://github.com/processing/processing/issues/4896
-_ getSystemZoom() not available to splash screen
-_   https://github.com/processing/processing4/issues/145
-_   move all platform code out that doesn't require additional setup?
-_   i.e. all the things that rely on preferences can be inited separately (later)
 _ include JNA so that sketches can also scale properly?
 _   what happens re: getting scaled/high-res graphics?
 _   make that a preference? (and double the size by default?)
 _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 
-already fixed in 4.x? (confirm/close on release)
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
 
+should be in for 4.x
+_ jeditsyntax is a mess of old-style getModifiers()
+_   would like to switch this over, but needs to be tested a lot
+_ Switch to getModifiersEx() in `processing.app`
+_   https://github.com/processing/processing4/issues/67
+_ command line complaints
+_   https://github.com/processing/processing/issues/6129
 _ remove the JRE Downloader
 _   https://github.com/processing/processing4/issues/155
 _ editor breakpoints out of the .pde files
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
-
-_ MovieMaker .mov not compatible with QuicktTime Player
-_   https://github.com/processing/processing/issues/6110
-_   confirmed that after Mojave, the QTMovieModernizer went away (was 32-bit)
-_     https://support.apple.com/en-us/HT202884
-_   the modernizer would convert things to ProRes
-_     https://support.apple.com/en-us/HT202410
-_   possible other library: http://jcodec.org/
-_     https://github.com/jcodec/jcodec
-_   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
-_   jars: https://repo.maven.apache.org/maven2/org/jcodec/jcodec/0.2.5/
-_   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jcodec/samples/gen/SequenceEncoderDemo.java
+_ Add ability to move ~/.processing directory
+_   use ~/.config as parent, or $XDG_CONFIG_HOME
+o   https://github.com/processing/processing/issues/6115 (moved)
+_   https://github.com/processing/processing4/issues/203
+_ Move doclet to separate repository
+_   https://github.com/processing/processing4/issues/218
 
 
 decisions before final 4.0 release
-_ Add ability to move ~/.processing directory
-_   use ~/.config as parent, or $XDG_CONFIG_HOME
-_   https://github.com/processing/processing/issues/6115
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
 _   now with a release 9 to cover Big Sur
 _     https://violetlib.org/vaqua/downloads.html
 _   make the final call to remove, or put the libs on download.processing.org
-_ Some 3.x Tools not working because JavaFX isn't on the classpath
-_   https://github.com/processing/processing4/issues/110
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
+_ add language support to Modes (request from Andres)
+_   https://github.com/processing/processing4/pull/14
+_   this was a small change; rebase not really needed since needs rewrite anyway
+_ change the license from GPL
+_   then pass through the source to update licenses
+_   add Processing Foundation as 2012-15
+_   update license info to state gplv2 not v3
+_   run through that online license checker
 
 
 discuss with Sam
@@ -129,32 +174,18 @@ _   better for git, etc
 _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 _ launch/psk files/import from web editor (more details below)
-_ ability to switch mode in p5 w/o saving/closing/etc
-_   trying to save the user from themselves here is just messier than needed
-_   https://github.com/processing/processing4/issues/189
-_ 'show sketch folder' weird when in temp folder
-_   ask to save first (sketch has not been saved yet)
-_   or make the temp folder part of the sketchbook
-_ same with adding files to an unsaved sketch, do we block that?
-
-
-_ add language support to Modes (request from Andres)
-_   https://github.com/processing/processing4/pull/14
-_   this was a small change; rebase not really needed since needs rewrite anyway
+_ cleaning up the temp file handling
+_   'show sketch folder' weird when in temp folder
+_     ask to save first (sketch has not been saved yet)
+_     or make the temp folder part of the sketchbook
+_   same with adding files to an unsaved sketch, do we block that?
 
 
 macos
 _ disable "notifications" prompt on startup for macOS
-_   (we're not posting any notifications, at least for now)
+_   we're not posting any, can we suppress the "allow notifications" message?
 _   https://developer.apple.com/documentation/usernotifications
 _   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
-_ Apple Silicon release
-_   http://openjdk.java.net/jeps/391
-_   https://github.com/AdoptOpenJDK/openjdk-support/issues/146
-_   https://github.com/microsoft/openjdk-aarch64/releases
-_   https://www.azul.com/downloads/zulu-community/?version=java-11-lts&os=macos&architecture=arm-64-bit&package=jdk
-_   OpenGL available but deprecated on Apple Si
-_     https://developer.apple.com/documentation/xcode/porting_your_macos_apps_to_apple_silicon
 
 
 windows
@@ -223,10 +254,6 @@ _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
 _   https://github.com/processing/processing4/issues/9
 _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
-_ Switch to getModifiersEx() in `processing.app`
-_   https://github.com/processing/processing4/issues/67
-_ command line complaints
-_   https://github.com/processing/processing/issues/6129
 _ update installation guide for Linux
 _   https://github.com/processing/processing-docs/issues/645
 
@@ -236,7 +263,6 @@ _ language server refactoring
 _   https://github.com/processing/processing4/issues/117
 _   https://theia-ide.org/
 _   https://medium.com/ballerina-techblog/implementing-a-language-server-how-hard-can-it-be-part-2-fa65a741aa23
-
 
 
 _ "Could not get the settings folder" message could be more helpful
@@ -327,9 +353,6 @@ _ library compilations not ordered properly w/ sorting
 _   do we still support library compilations? that was from 2016
 _   https://github.com/processing/processing/issues/4630
 
-_ editor windows always open on display 1
-_   https://github.com/processing/processing/issues/1566
-
 
 needs review
 _ createPreprocessor() added to JavaEditor, creating a mess
@@ -390,10 +413,6 @@ _   https://github.com/processing/processing/issues/5023
 
 
 pde/build
-_ update list of optional JRE files for Java 8
-_   Andres provided some updates
-_   https://github.com/processing/processing/issues/3288
-_   these will change again for Java 11, so wait until then
 _ fix appbundler problems due to rollback
 _   https://github.com/processing/processing/issues/3790
 _   the rollback re-introduces two bugs (serial export and scrolling)
@@ -416,10 +435,6 @@ _ break out Mode-specific options to their own panels in prefs
 _   Mode should just provide a panel for their prefs
 _ make the build fail if git pull on processing-docs fails
 _ remove "save before running" message
-_ pass through the source to update licenses
-_   add Processing Foundation as 2012-15
-_   update license info to state gplv2 not v3
-_   run through that online license checker
 _ save() and saveAs() need to be refactored
 _   https://github.com/processing/processing/issues/3843
 _ clean out the repo
@@ -438,7 +453,6 @@ _ drop XP support (but improve Windows 8 support? ouch)
 _ improve error message when creating a tab with the same name
 _   right now it's generic, based on "a file exists"
 _ don't allow users to create 'blah.java' when 'blah.pde' already in sketch
-
 
 
 sketchbook
@@ -1141,40 +1155,6 @@ _   need to make sure that it's ok to write to logs dir..
 _      probably being removed from future OS X versions
 _ Exiting a sketch with Command-Q or File > Quit doesn't call stop() on OS X
 _   https://github.com/processing/processing/issues/186
-_ investigate the sandboxing situation on OS X
-_   http://developer.apple.com/library/mac/#documentation/Miscellaneous/Reference/EntitlementKeyReference/Chapters/EnablingAppSandbox.html#//apple_ref/doc/uid/TP40011195-CH4-SW1
-most sandbox violations are triggered by attempts to read/write to the
-filesystem without user intervention (eg. without using an open/save
-dialog)  and/or from places outside the container (eg.
-~/Library/Containers/yourapp/...).
-A violation is also triggered by trying to execute an external process
-from Java (ex. using Runtime.exec()).
-If you look at the list of entitlements your application can have on
-the Apple site(*) you can think whether your application is performing
-an operation that would require enabling a specific entitlement, like
-connecting to a network, printing, interacting with a usb or bluetooth
-device, etc..
-I encountered this problem too, I forgot to add it to my guide....
-If you sign all the files in the bundle it won't work as codesign
-doesn't follow the symlinks.
-First sign your bundle:
-codesign --verbose -f -s "$SIGNATURE_APP" \
-  --entitlements $ENTITLEMENTS \
-  $YOUR_APP.app
-Then sign all the libraries:
-find $YOUR_APP/Contents/ -type f \
-  \( -name "*.jar" -or -name "*.dylib"\) \
-  -exec codesign --verbose -f -s "$SIGNATURE_APP" \
-  --entitlements $ENTITLEMENTS {} \;
-Finally you can create the package:
-productbuild --component YOUR_APP.app /Applications \
-  --sign "$SIGNATURE_INST" YOUR_APP.pkg
-You can test if the package work with this command:
-sudo installer -store -pkg $YOUR_APP.pkg -target /
-You can also verify all libraries have been signed
-find YOUR_APP/Contents/ -type f \
-   \( -name "*.jar" -or -name "*.dylib"\) \
-  -exec codesign --verbose --verify {} \;
 
 
 DIST / Linux

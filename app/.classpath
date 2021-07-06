@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/adoptopenjdk-11">
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/adoptopenjdk-11">
 		<attributes>
 			<attribute name="module" value="true"/>
 		</attributes>
@@ -11,7 +11,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/ant.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="/processing4-core/library-test/junit-4.8.1.jar"/>
-	<classpathentry kind="lib" path="lib/VAqua7.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing4-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

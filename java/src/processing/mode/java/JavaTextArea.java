@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
-import javax.swing.SwingWorker;
 
 import processing.app.Messages;
 import processing.app.Platform;
@@ -170,6 +169,8 @@ public class JavaTextArea extends PdeTextArea {
   private void processCompletionKeys(final KeyEvent event) {
     char keyChar = event.getKeyChar();
     int keyCode = event.getKeyCode();
+
+    //noinspection StatementWithEmptyBody
     if (keyChar == KeyEvent.VK_ENTER ||
         keyChar == KeyEvent.VK_ESCAPE ||
         keyChar == KeyEvent.VK_TAB ||
@@ -200,7 +201,7 @@ public class JavaTextArea extends PdeTextArea {
           //}
         }
       } else {
-        hideSuggestion(); // hide on spacebar
+        hideSuggestion(); // hide on space bar
       }
     } else {
       if (JavaMode.codeCompletionsEnabled) {
@@ -224,15 +225,12 @@ public class JavaTextArea extends PdeTextArea {
 
   CompletionGenerator suggestionGenerator;
 
-  SwingWorker<Void, Void> suggestionWorker = null;
-
   volatile boolean suggestionRunning = false;
   volatile boolean suggestionRequested = false;
 
   /**
    * Retrieves the current word typed just before the caret.
    * Then triggers code completion for that word.
-   * @param evt - the KeyEvent which triggered this method
    */
   protected void fetchPhrase() {
     if (suggestionRunning) {
@@ -291,7 +289,7 @@ public class JavaTextArea extends PdeTextArea {
     getJavaEditor().getPreprocessingService().whenDone(ps -> {
       int lineNumber = ps.tabOffsetToJavaLine(codeIndex, lineStartOffset);
 
-      String phrase = null;
+      String phrase;
       DefaultListModel<CompletionCandidate> defListModel = null;
 
       try {
@@ -379,7 +377,7 @@ public class JavaTextArea extends PdeTextArea {
     final int currentCharIndex = lineText.length() - 1;
 
     { // Check if the caret is in the comment
-      int commentStart = lineText.indexOf("//", 0);
+      int commentStart = lineText.indexOf("//");
       if (commentStart >= 0 && currentCharIndex > commentStart) {
         return null;
       }
@@ -470,6 +468,7 @@ public class JavaTextArea extends PdeTextArea {
         case '[':
           break parseLoop; // End of scope
         case ']': // Grab the whole region in square brackets
+        case ')': // Grab the whole region in brackets
           position = isInBrackets.previousClearBit(position-1);
           break;
         case '(':
@@ -478,9 +477,6 @@ public class JavaTextArea extends PdeTextArea {
             break;
           }
           break parseLoop; // End of scope
-        case ')': // Grab the whole region in brackets
-          position = isInBrackets.previousClearBit(position-1);
-          break;
         case '"': // Grab the whole literal and quit
           position = isInLiteral.previousClearBit(position - 1);
           break parseLoop;
@@ -499,7 +495,7 @@ public class JavaTextArea extends PdeTextArea {
     position++;
 
     // Extract phrase
-    String phrase = lineText.substring(position, lineText.length()).trim();
+    String phrase = lineText.substring(position).trim();
     Messages.log(phrase);
 
     if (phrase.length() == 0 || Character.isDigit(phrase.charAt(0))) {

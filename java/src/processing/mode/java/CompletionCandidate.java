@@ -33,10 +33,10 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 
 // TODO when building the label in some variants in this file,
-// getReturnType2() is used instead of getReturnType().
-// need to check whether that's identical in how it performs,
-// and if so, use makeLabel() and makeCompletion() more [fry 180326]
-// https://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Freference%2Fapi%2Forg%2Feclipse%2Fjdt%2Fcore%2Fdom%2FMethodDeclaration.html
+//      getReturnType2() is used instead of getReturnType().
+//      need to check whether that's identical in how it performs,
+//      and if so, use makeLabel() and makeCompletion() more [fry 180326]
+//      https://help.eclipse.org/neon/index.jsp?topic=%2Forg.eclipse.jdt.doc.isv%2Freference%2Fapi%2Forg%2Feclipse%2Fjdt%2Fcore%2Fdom%2FMethodDeclaration.html
 
 public class CompletionCandidate implements Comparable<CompletionCandidate> {
   private final String elementName;
@@ -56,7 +56,7 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
 
   CompletionCandidate(Method method) {
     // return value ignored? [fry 180326]
-    method.getDeclaringClass().getName();
+    //method.getDeclaringClass().getName();
     elementName = method.getName();
     label = makeLabel(method);
     completion = makeCompletion(method);
@@ -140,7 +140,7 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
 
 
   CompletionCandidate(Field f) {
-    f.getDeclaringClass().getName();
+    //f.getDeclaringClass().getName();
     elementName = f.getName();
     type = PREDEF_FIELD;
     label = "<html>" +
@@ -171,9 +171,11 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
   }
 
 
+  /*
   Object getWrappedObject() {
     return wrappedObject;
   }
+  */
 
 
   public String getElementName() {
@@ -288,7 +290,8 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
       }
       labelBuilder.append(')');
       if (method.getReturnType() != null) {
-        labelBuilder.append(" : " + method.getReturnType().getSimpleName());
+        labelBuilder.append(" : ");
+        labelBuilder.append(method.getReturnType().getSimpleName());
       }
 
       labelBuilder.append(" - <font color=#777777>");

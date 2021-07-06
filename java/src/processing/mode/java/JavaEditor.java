@@ -1687,10 +1687,8 @@ public class JavaEditor extends Editor {
   /**
    * Returns a list of AvailableContributions of those libraries that the user
    * wants imported, but that are not installed.
-   *
-   * @param importHeaders
    */
-  private List<AvailableContribution> getNotInstalledAvailableLibs(ArrayList<String> importHeadersList) {
+  private List<AvailableContribution> getNotInstalledAvailableLibs(List<String> importHeadersList) {
     Map<String, Contribution> importMap =
       ContributionListing.getInstance().getLibrariesByImportHeader();
     List<AvailableContribution> libList = new ArrayList<>();
@@ -2316,7 +2314,7 @@ public class JavaEditor extends Editor {
 
 
   @Override
-  protected void applyPreferences() {
+  public void applyPreferences() {
     super.applyPreferences();
 
     if (jmode != null) {

@@ -24,6 +24,7 @@
 
 package processing.core;
 
+import java.awt.Image;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -257,11 +258,27 @@ public class PImage implements PConstants, Cloneable {
     this.width = width;
     this.height = height;
     this.format = format;
-    this.pixelDensity = factor;
 
+    pixelDensity = factor;
     pixelWidth = width * pixelDensity;
     pixelHeight = height * pixelDensity;
-    this.pixels = new int[pixelWidth * pixelHeight];
+
+    pixels = new int[pixelWidth * pixelHeight];
+  }
+
+
+  private void init(int width, int height, int format, int factor,
+                    int[] pixels) {  // ignore
+    this.width = width;
+    this.height = height;
+    this.format = format;
+
+    pixelDensity = factor;
+    // these weren't being set in 4.0a3, why? [fry 210615]
+    pixelWidth = width * pixelDensity;
+    pixelHeight = height * pixelDensity;
+
+    this.pixels = pixels;
   }
 
 
@@ -287,7 +304,7 @@ public class PImage implements PConstants, Cloneable {
 
   public PImage(int width, int height, int[] pixels,
                 boolean requiresCheckAlpha, PApplet parent) {
-    initFromPixels(width, height, pixels, RGB,1);
+    init(width, height, RGB,1, pixels);
     this.parent = parent;
 
     if (requiresCheckAlpha) {
@@ -298,8 +315,7 @@ public class PImage implements PConstants, Cloneable {
   public PImage(int width, int height, int[] pixels,
                 boolean requiresCheckAlpha, PApplet parent,
                 int format, int factor) {
-
-    initFromPixels(width, height, pixels, format, factor);
+    init(width, height, format, factor, pixels);
     this.parent = parent;
 
     if (requiresCheckAlpha) {
@@ -307,17 +323,27 @@ public class PImage implements PConstants, Cloneable {
     }
   }
 
-  private void initFromPixels(int width, int height, int[] pixels, int format, int factor) {
-    this.width = width;
-    this.height = height;
-    this.format = format;
-    this.pixelDensity = factor;
-    this.pixels = pixels;
+
+  @Deprecated
+  public PImage(Image img) {
+    ShimAWT.fromNativeImage(img, this);
+  }
+
+
+  /**
+   * Use the getNative() method instead, which allows library interfaces to be
+   * written in a cross-platform fashion for desktop, Android, and others.
+   * This is still included for PGraphics objects, which may need the image.
+   */
+  @Deprecated
+  public Image getImage() {  // ignore
+    return (Image) getNative();
   }
 
 
   public Object getNative() {  // ignore
-    return null;
+    // TODO temporary solution for maximum backwards compatibility
+    return ShimAWT.getNativeImage(this);
   }
 
 
@@ -481,7 +507,8 @@ public class PImage implements PConstants, Cloneable {
    * @see PImage#get(int, int, int, int)
    */
   public void resize(int w, int h) {  // ignore
-    throw new RuntimeException("resize() not implemented for this PImage type");
+    //throw new RuntimeException("resize() not implemented for this PImage type");
+    ShimAWT.resizeImage(this, w, h);
   }
 
 
@@ -1030,14 +1057,6 @@ public class PImage implements PConstants, Cloneable {
                                      "filter(DILATE, param)");
     }
     updatePixels();  // mark as modified
-  }
-
-
-  /** Set the high bits of all pixels to opaque. */
-  protected void opaque() {
-    for (int i = 0; i < pixels.length; i++) {
-      pixels[i] = 0xFF000000 | pixels[i];
-    }
   }
 
 
@@ -3357,11 +3376,11 @@ int testFunction(int dst, int src) {
    * @param path must be a full path (not relative or simply a filename)
    */
   protected boolean saveImpl(String path) {
-    // TODO Imperfect/temporary solution for alpha 2.
+    // TODO Imperfect/temporary solution for current 4.x releases
     // https://github.com/processing/processing4/wiki/Exorcising-AWT
-    if (!PApplet.disableAWT) {
-      return ShimAWT.saveImage(this, path);
-    }
-    return false;
+    //if (!PApplet.disableAWT) {  // TODO necessary? will this trigger NEWT?
+    return ShimAWT.saveImage(this, path);
+    //}
+    //return false;
   }
 }

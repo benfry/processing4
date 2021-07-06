@@ -22,10 +22,7 @@
 
 package processing.app.platform;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Desktop;
-import java.awt.Graphics;
+import java.awt.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,10 +32,10 @@ import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import processing.app.Base;
 import processing.app.Messages;
-import processing.app.Preferences;
 import processing.app.ui.About;
 
 
@@ -74,13 +71,9 @@ public class MacPlatform extends DefaultPlatform {
     defaultMenuBar.add(fileMenu);
     desktop.setDefaultMenuBar(defaultMenuBar);
 
-    desktop.setAboutHandler((event) -> {
-      new About(null);
-    });
+    desktop.setAboutHandler((event) -> new About(null));
 
-    desktop.setPreferencesHandler((event) -> {
-      base.handlePrefs();
-    });
+    desktop.setPreferencesHandler((event) -> base.handlePrefs());
 
     desktop.setOpenFileHandler((event) -> {
       for (File file : event.getFiles()) {
@@ -106,8 +99,15 @@ public class MacPlatform extends DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     super.setLookAndFeel();
 
-    String laf = Preferences.get("editor.laf");
-    if ("org.violetlib.aqua.AquaLookAndFeel".equals(laf)) {
+    String laf = UIManager.getLookAndFeel().getClass().getName();
+    if ("com.apple.laf.AquaLookAndFeel".equals(laf)) {
+      //setUIFont(new FontUIResource(".AppleSystemUIFont", Font.PLAIN, 12));
+      // oh my god, the kerning, the tracking, my eyes...
+      //setUIFont(new FontUIResource(".SFNS-Regular", Font.PLAIN, 13));
+      //setUIFont(new FontUIResource(Toolkit.getSansFont(14, Font.PLAIN)));
+      //setUIFont(new FontUIResource("Roboto-Regular", Font.PLAIN, 13));
+
+    } else if ("org.violetlib.aqua.AquaLookAndFeel".equals(laf)) {
       Icon collapse = new VAquaTreeIcon(true);
       Icon open = new VAquaTreeIcon(false);
       Icon leaf = new VAquaEmptyIcon();
@@ -149,13 +149,13 @@ public class MacPlatform extends DefaultPlatform {
 
 
   // TODO I suspect this won't work much longer, since access to the user's
-  // home directory seems verboten on more recent macOS versions [fry 191008]
+  //      home directory seems verboten on more recent macOS versions [fry 191008]
   protected String getLibraryFolder() throws FileNotFoundException {
     return System.getProperty("user.home") + "/Library";
   }
 
 
-  // see notes on getLibraryFolder()
+  // TODO see note on getLibraryFolder()
   protected String getDocumentsFolder() throws FileNotFoundException {
     return System.getProperty("user.home") + "/Documents";
   }
@@ -212,7 +212,7 @@ public class MacPlatform extends DefaultPlatform {
    * Swing components. Without this, some sizing calculations non-standard
    * components may fail or become unreliable.
    */
-  class VAquaEmptyIcon implements Icon {
+  static class VAquaEmptyIcon implements Icon {
     private final int SIZE = 1;
 
     @Override
@@ -238,7 +238,7 @@ public class MacPlatform extends DefaultPlatform {
    * Vaqua with non-standard swing components. Without this, some sizing
    * calculations within non-standard components may fail or become unreliable.
    */
-  private class VAquaTreeIcon implements Icon {
+  static private class VAquaTreeIcon implements Icon {
     private final int SIZE = 12;
     private final boolean isOpen;
 

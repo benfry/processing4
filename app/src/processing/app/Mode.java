@@ -949,6 +949,17 @@ public abstract class Mode {
     return validExtension(f.getName().substring(dot + 1));
   }
 
+
+  public boolean canEdit(Sketch sketch) {
+    for (final SketchCode code : sketch.getCode()) {
+      if (!validExtension(code.getExtension())) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
   /**
    * Check this extension (no dots, please) against the list of valid
    * extensions.

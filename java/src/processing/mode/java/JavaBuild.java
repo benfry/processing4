@@ -49,7 +49,7 @@ public class JavaBuild {
     "(?:^|\\s|;)package\\s+(\\S+)\\;";
 
   static public final String JAVA_DOWNLOAD_URL = "https://adoptopenjdk.net/";
-  static public final String MIN_JAVA_VERSION = "11.0.8";
+  static public final String MIN_JAVA_VERSION = "11.0.11";
 
   protected Sketch sketch;
   protected Mode mode;
@@ -86,7 +86,7 @@ public class JavaBuild {
   /**
    * Run the build inside a temporary build folder. Used for run/present.
    * @return null if compilation failed, main class name if not
-   * @throws SketchException
+   * @throws SketchException details of where the build choked
    */
   public String build(boolean sizeWarning) throws SketchException {
     return build(sketch.makeTempFolder(), sketch.makeTempFolder(), sizeWarning);
@@ -150,7 +150,7 @@ public class JavaBuild {
    * @param packageName null, or the package name that should be used as default
    * @param preprocessor the preprocessor object ready to do the work
    * @return main PApplet class name found during preprocess, or null if error
-   * @throws SketchException
+   * @throws SketchException details of where the preprocessing failed
    */
   public String preprocess(File srcFolder,
                            String packageName,
@@ -232,11 +232,8 @@ public class JavaBuild {
       outputFolder.mkdirs();
 //      Base.openFolder(outputFolder);
       final File java = new File(outputFolder, sketch.getName() + ".java");
-      final PrintWriter stream = PApplet.createWriter(java);
-      try {
+      try (PrintWriter stream = PApplet.createWriter(java)) {
         result = preprocessor.write(stream, bigCode.toString(), codeFolderPackages);
-      } finally {
-        stream.close();
       }
     } catch (SketchException pe) {
       // RunnerExceptions are caught here and re-thrown, so that they don't
@@ -281,7 +278,13 @@ public class JavaBuild {
       if (library != null) {
         if (!importedLibraries.contains(library)) {
           importedLibraries.add(library);
+          // don't add the JavaFX libraries to the classpath
+          // https://github.com/processing/processing4/issues/212
+          // Disabling this after all, because we need our javafx.jar (PGraphicsJavaFX)
+          // and the JavaFX .jars are safely tucked into a "modules" subfolder
+          //if (!library.getName().equals("JavaFX")) {
           classPath += library.getClassPath();
+          //}
           javaLibraryPath += File.pathSeparator + library.getNativePath();
         }
       } else {
@@ -289,9 +292,8 @@ public class JavaBuild {
         // If someone insists on unnecessarily repeating the code folder
         // import, don't show an error for it.
         if (codeFolderPackages != null) {
-          String itemPkg = entry;
           for (String pkg : codeFolderPackages) {
-            if (pkg.equals(itemPkg)) {
+            if (pkg.equals(entry)) {
               found = true;
               break;
             }
@@ -306,6 +308,11 @@ public class JavaBuild {
       }
     }
 
+    // Turning this off after 4.0 alpha 5, to see if everything still works.
+    // Including this classpath is really problematic (many possible conflicts,
+    // these are classes that won't be available on export, etc etc...)
+    // Also avoids accidentally hiding other potential classpath bugs.
+    /*
     // Finally, add the regular Java CLASSPATH. This contains everything
     // imported by the PDE itself (core.jar, pde.jar, quaqua.jar) which may
     // in fact be more of a problem.
@@ -315,6 +322,7 @@ public class JavaBuild {
       javaClassPath = javaClassPath.substring(1, javaClassPath.length() - 1);
     }
     classPath += File.pathSeparator + javaClassPath;
+    */
 
     // But make sure that there isn't anything in there that's missing,
     // otherwise ECJ will complain and die. For instance, Java 1.7 (or maybe
@@ -438,6 +446,15 @@ public class JavaBuild {
   public String getClassPath() {
     return classPath;
   }
+
+
+//  /** Returns the dummy "module" path so that JavaFX doesn't complain. */
+//  public String getModulePath() {
+//    // Just set this to the main core/library directory to pick up JavaFX
+//    //return mode.getCoreLibrary().getLibraryPath();
+//    File folder = new File(mode.getFolder(), "libraries/javafx/library");
+//    return folder.getAbsolutePath();
+//  }
 
 
   /** Return the java.library.path for this sketch (for all the native DLLs etc). */
@@ -822,6 +839,14 @@ public class JavaBuild {
       runOptions.append("-Djava.library.path=\"%EXEDIR%\\lib\"");
     }
 
+    Library javafx = findJavaFX();
+    if (javafx != null) {
+      String modulePath = exportPlatform == PConstants.MACOS ?
+        "$APP_ROOT/Contents/Java/modules" : "lib/modules";
+      for (String opt : getArgsJavaFX(modulePath)) {
+        runOptions.append(opt);
+      }
+    }
 
     /// macosx: write out Info.plist (template for classpath, etc)
 
@@ -834,6 +859,7 @@ public class JavaBuild {
         runOptionsXML.append('\n');
       }
 
+
       String PLIST_TEMPLATE = "Info.plist.tmpl";
       File plistTemplate = new File(sketch.getFolder(), PLIST_TEMPLATE);
       if (!plistTemplate.exists()) {
@@ -842,9 +868,9 @@ public class JavaBuild {
       File plistFile = new File(dotAppFolder, "Contents/Info.plist");
       PrintWriter pw = PApplet.createWriter(plistFile);
 
-      String lines[] = PApplet.loadStrings(plistTemplate);
+      String[] lines = PApplet.loadStrings(plistTemplate);
       for (int i = 0; i < lines.length; i++) {
-        if (lines[i].indexOf("@@") != -1) {
+        if (lines[i].contains("@@")) {
           StringBuilder sb = new StringBuilder(lines[i]);
           int index = 0;
           while ((index = sb.indexOf("@@jvm_runtime@@")) != -1) {
@@ -883,6 +909,7 @@ public class JavaBuild {
 
     } else if (exportPlatform == PConstants.WINDOWS) {
       File buildFile = new File(destFolder, "launch4j-build.xml");
+      System.out.println(buildFile);
       File configFile = new File(destFolder, "launch4j-config.xml");
 
       XML project = new XML("project");
@@ -925,6 +952,13 @@ public class JavaBuild {
       for (String opt : runOptions) {
         jre.addChild("opt").setContent(opt);
       }
+      /*
+      if (javafx != null) {
+        for (String opt : getArgsJavaFX("lib")) {
+          jre.addChild("opt").setContent(opt);
+        }
+      }
+      */
 
       config.save(configFile);
       project.save(buildFile);
@@ -1001,6 +1035,34 @@ public class JavaBuild {
   }
 
 
+  // This is a workaround until a more complete solution is found.
+  public Library findJavaFX() {
+    for (Library library : getImportedLibraries()) {
+      if (library.getName().equals("JavaFX")) {
+        return library;
+      }
+    }
+    return null;
+  }
+
+
+  static public String[] getArgsJavaFX(String modulePath) {
+    return new String[] {
+      "--module-path", modulePath,
+
+      // Full list of modules, let's not commit to all of these unless
+      // a compelling argument is made or a reason presents itself.
+      //"javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
+      "--add-modules", "javafx.base,javafx.graphics,javafx.swing",
+
+      // TODO Presumably, this is only because com.sun.* classes are being used?
+      // https://github.com/processing/processing4/issues/208
+      "--add-exports", "javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED",
+      "--add-exports", "javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"
+    };
+  }
+
+
   static Boolean xcodeInstalled;
 
   static protected boolean isXcodeInstalled() {
@@ -1010,7 +1072,7 @@ public class JavaBuild {
       int result = -1;
       try {
         result = p.waitFor();
-      } catch (InterruptedException e) { }
+      } catch (InterruptedException ignored) { }
       // returns 0 if installed, 2 if not (-1 if exception)
       xcodeInstalled = (result == 0);
     }
@@ -1097,25 +1159,22 @@ public class JavaBuild {
 
 
   protected void addClasses(ZipOutputStream zos, File dir, String rootPath) throws IOException {
-    File files[] = dir.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return (name.charAt(0) != '.');
-      }
-    });
-    for (File sub : files) {
-      String relativePath = sub.getAbsolutePath().substring(rootPath.length());
-//      System.out.println("relative path is " + relativePath);
+    File[] files = dir.listFiles((dir1, name) -> (name.charAt(0) != '.'));
+    if (files != null) {
+      for (File sub : files) {
+        String relativePath = sub.getAbsolutePath().substring(rootPath.length());
 
-      if (sub.isDirectory()) {
-        addClasses(zos, sub, rootPath);
+        if (sub.isDirectory()) {
+          addClasses(zos, sub, rootPath);
 
-      } else if (sub.getName().endsWith(".class")) {
+        } else if (sub.getName().endsWith(".class")) {
 //        System.out.println("  adding item " + relativePath);
-        ZipEntry entry = new ZipEntry(relativePath);
-        zos.putNextEntry(entry);
-        //zos.write(Base.loadBytesRaw(sub));
-        PApplet.saveStream(zos, new FileInputStream(sub));
-        zos.closeEntry();
+          ZipEntry entry = new ZipEntry(relativePath);
+          zos.putNextEntry(entry);
+          //zos.write(Base.loadBytesRaw(sub));
+          PApplet.saveStream(zos, new FileInputStream(sub));
+          zos.closeEntry();
+        }
       }
     }
   }
@@ -1157,21 +1216,18 @@ public class JavaBuild {
     throws IOException {
     String[] pieces = PApplet.split(path, File.pathSeparatorChar);
 
-    for (int i = 0; i < pieces.length; i++) {
-      if (pieces[i].length() == 0) continue;
+    for (String piece : pieces) {
+      if (piece.length() == 0) continue;
 
       // is it a jar file or directory?
-      if (pieces[i].toLowerCase().endsWith(".jar") ||
-          pieces[i].toLowerCase().endsWith(".zip")) {
+      if (piece.toLowerCase().endsWith(".jar") ||
+              piece.toLowerCase().endsWith(".zip")) {
         try {
-          ZipFile file = new ZipFile(pieces[i]);
+          ZipFile file = new ZipFile(piece);
           Enumeration<?> entries = file.entries();
           while (entries.hasMoreElements()) {
             ZipEntry entry = (ZipEntry) entries.nextElement();
-            if (entry.isDirectory()) {
-              // actually 'continue's for all dir entries
-
-            } else {
+            if (!entry.isDirectory()) {
               String entryName = entry.getName();
               // ignore contents of the META-INF folders
               if (entryName.indexOf("META-INF") == 0) continue;
@@ -1183,7 +1239,7 @@ public class JavaBuild {
               ZipEntry entree = new ZipEntry(entryName);
 
               zos.putNextEntry(entree);
-              byte buffer[] = new byte[(int) entry.getSize()];
+              byte[] buffer = new byte[(int) entry.getSize()];
               InputStream is = file.getInputStream(entry);
 
               int offset = 0;
@@ -1202,11 +1258,11 @@ public class JavaBuild {
           file.close();
 
         } catch (IOException e) {
-          System.err.println("Error in file " + pieces[i]);
+          System.err.println("Error in file " + piece);
           e.printStackTrace();
         }
       } else {  // not a .jar or .zip, prolly a directory
-        File dir = new File(pieces[i]);
+        File dir = new File(piece);
         // but must be a dir, since it's one of several paths
         // just need to check if it exists
         if (dir.exists()) {
@@ -1226,31 +1282,35 @@ public class JavaBuild {
                                                           String sofar,
                                                           ZipOutputStream zos)
     throws IOException {
-    String files[] = dir.list();
-    for (int i = 0; i < files.length; i++) {
-      // ignore . .. and .DS_Store
-      if (files[i].charAt(0) == '.') continue;
+    String[] files = dir.list();
+    if (files != null) {
+      for (String filename : files) {
+        // ignore . .. and .DS_Store
+        if (filename.charAt(0) == '.') continue;
 
-      File sub = new File(dir, files[i]);
-      String nowfar = (sofar == null) ?
-        files[i] : (sofar + "/" + files[i]);
+        File sub = new File(dir, filename);
+        String nowfar = (sofar == null) ?
+                filename : (sofar + "/" + filename);
 
-      if (sub.isDirectory()) {
-        packClassPathIntoZipFileRecursive(sub, nowfar, zos);
+        if (sub.isDirectory()) {
+          packClassPathIntoZipFileRecursive(sub, nowfar, zos);
 
-      } else {
-        // don't add .jar and .zip files, since they only work
-        // inside the root, and they're unpacked
-        if (!files[i].toLowerCase().endsWith(".jar") &&
-            !files[i].toLowerCase().endsWith(".zip") &&
-            files[i].charAt(0) != '.') {
-          ZipEntry entry = new ZipEntry(nowfar);
-          zos.putNextEntry(entry);
-          //zos.write(Base.loadBytesRaw(sub));
-          PApplet.saveStream(zos, new FileInputStream(sub));
-          zos.closeEntry();
+        } else {
+          // don't add .jar and .zip files, since they only work
+          // inside the root, and they're unpacked
+          if (!filename.toLowerCase().endsWith(".jar") &&
+                  !filename.toLowerCase().endsWith(".zip") &&
+                  filename.charAt(0) != '.') {
+            ZipEntry entry = new ZipEntry(nowfar);
+            zos.putNextEntry(entry);
+            //zos.write(Base.loadBytesRaw(sub));
+            PApplet.saveStream(zos, new FileInputStream(sub));
+            zos.closeEntry();
+          }
         }
       }
+    } else {
+      System.err.println("Could not read from " + dir);
     }
   }
 }

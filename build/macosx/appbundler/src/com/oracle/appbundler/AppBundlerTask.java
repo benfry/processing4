@@ -55,6 +55,7 @@ import org.apache.tools.ant.DirectoryScanner;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
 import org.apache.tools.ant.types.Reference;
+import org.apache.tools.ant.types.Resource;
 import org.apache.tools.ant.types.resources.FileResource;
 
 /**
@@ -505,13 +506,11 @@ public class AppBundlerTask extends Task {
     private void copyClassPathRefEntries(File javaDirectory) throws IOException {
         if(classPathRef != null) {
             org.apache.tools.ant.types.Path classpath =
+                (org.apache.tools.ant.types.Path) classPathRef.getReferencedObject(getProject());
 
-                    (org.apache.tools.ant.types.Path) classPathRef.getReferencedObject(getProject());
-
-            @SuppressWarnings("unchecked")
-            Iterator<FileResource> iter = classpath.iterator();
-            while(iter.hasNext()) {
-                FileResource resource = iter.next();
+            Iterator<Resource> iter = classpath.iterator();
+            while (iter.hasNext()) {
+                FileResource resource = (FileResource) iter.next();
                 File source = resource.getFile();
                 File destination = new File(javaDirectory, source.getName());
                 copy(source, destination);
