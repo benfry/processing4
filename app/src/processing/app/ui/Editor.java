@@ -2951,6 +2951,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
+  /*
   public void repaintErrorBar() {
     errorColumn.repaint();
   }
@@ -2959,6 +2960,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   public void showConsole() {
     footer.setPanel(console);
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
