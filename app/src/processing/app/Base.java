@@ -118,6 +118,7 @@ public class Base {
           String mess = t.getMessage();
           String missing = null;
           if (mess.contains("Could not initialize class com.sun.jna.Native")) {
+            //noinspection SpellCheckingInspection
             missing = "jnidispatch.dll";
           } else if (t instanceof NoClassDefFoundError &&
                      mess.contains("processing/core/PApplet")) {
@@ -269,6 +270,7 @@ public class Base {
   // https://github.com/processing/processing/issues/4853
   // Or maybe not, if NVIDIA keeps doing this [fry 170423]
   // https://github.com/processing/processing/issues/4997
+  @SuppressWarnings("SpellCheckingInspection")
   static private void checkDriverBug() {
     if (System.getProperty("os.name").contains("Windows 10")) {
       new Thread(() -> {
@@ -909,7 +911,7 @@ public class Base {
 
 
   /**
-   * Create or modify a sketch.proprties file to specify the given Mode.
+   * Create or modify a sketch.properties file to specify the given Mode.
    */
   private void saveModeSettings(final File sketchProps, final Mode mode) {
     try {
@@ -1129,9 +1131,6 @@ public class Base {
         int month = cal.get(Calendar.MONTH);  // 0..11
         suffix = months[month] + PApplet.nf(day, 2);
       } else {
-        //SimpleDateFormat formatter = new SimpleDateFormat("yyMMdd");
-        //SimpleDateFormat formatter = new SimpleDateFormat("MMMdd");
-        //String purty = formatter.format(new Date()).toLowerCase();
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         suffix = formatter.format(new Date());
       }
@@ -1160,19 +1159,12 @@ public class Base {
       } while (newbieDir.exists() || new File(sketchbookFolder, newbieName).exists());
 
       // Make the directory for the new sketch
-      newbieDir.mkdirs();
+      if (!newbieDir.mkdirs()) {
+        throw new IOException("Could not create directory " + newbieDir);
+      }
 
       // Add any template files from the Mode itself
       File newbieFile = nextMode.addTemplateFiles(newbieDir, newbieName);
-
-      /*
-      // Make an empty pde file
-      File newbieFile =
-        new File(newbieDir, newbieName + "." + nextMode.getDefaultExtension()); //$NON-NLS-1$
-      if (!newbieFile.createNewFile()) {
-        throw new IOException(newbieFile + " already exists.");
-      }
-      */
 
       // Create sketch properties file if it's not the default mode.
       if (!nextMode.equals(getDefaultMode())) {
@@ -1437,7 +1429,7 @@ public class Base {
 //      if (Preferences.getBoolean("sketchbook.closing_last_window_quits") ||
 //          (editor.untitled && !editor.getSketch().isModified())) {
       if (Platform.isMacOS()) {
-        // If the central menubar isn't supported on this OS X JVM,
+        // If the central menu bar isn't supported on this macOS JVM,
         // we have to do the old behavior. Yuck!
         if (defaultFileMenu == null) {
           Object[] options = { Language.text("prompt.ok"), Language.text("prompt.cancel") };
@@ -1715,7 +1707,7 @@ public class Base {
         } else {
           // not a sketch folder, but maybe a subfolder containing sketches
           JMenu submenu = new JMenu(name);
-          // needs to be separate var otherwise would set ifound to false
+          // needs to be separate var otherwise would set found to false
           boolean anything = addSketches(submenu, subfolder);
           if (anything && !name.equals("old")) { //Don't add old contributions
             menu.add(submenu);
@@ -1784,11 +1776,11 @@ public class Base {
 
         } else {
           // not a sketch folder, but maybe a subfolder containing sketches
-          DefaultMutableTreeNode subnode = new DefaultMutableTreeNode(name);
-          // needs to be separate var otherwise would set ifound to false
-          boolean anything = addSketches(subnode, subfolder, examples);
+          DefaultMutableTreeNode subNode = new DefaultMutableTreeNode(name);
+          // needs to be separate var otherwise would set found to false
+          boolean anything = addSketches(subNode, subfolder, examples);
           if (anything) {
-            node.add(subnode);
+            node.add(subNode);
             found = true;
           }
         }
@@ -1917,7 +1909,12 @@ public class Base {
       sketchbookFolder = getDefaultSketchbookFolder();
       Preferences.setSketchbookPath(sketchbookFolder.getAbsolutePath());
       if (!sketchbookFolder.exists()) {
-        sketchbookFolder.mkdirs();
+        if (!sketchbookFolder.mkdirs()) {
+          Messages.showError("Could not create sketchbook",
+                             "Unable to create a sketchbook folder at\n" +
+                             sketchbookFolder + "\n" +
+                             "Try creating a folder at that path and restart Processing.", null);
+        }
       }
     }
     makeSketchbookSubfolders();
@@ -1935,12 +1932,21 @@ public class Base {
   /**
    * Create the libraries, modes, tools, examples folders in the sketchbook.
    */
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   static protected void makeSketchbookSubfolders() {
+    // ignore result; mkdirs() will return false if the folder already exists
     getSketchbookLibrariesFolder().mkdirs();
     getSketchbookToolsFolder().mkdirs();
     getSketchbookModesFolder().mkdirs();
     getSketchbookExamplesFolder().mkdirs();
     getSketchbookTemplatesFolder().mkdirs();
+
+    /*
+      Messages.showWarning("Could not create folder",
+                           "Could not create the libraries, tools, modes, examples, and templates\n" +
+                           "folders inside " + sketchbookFolder + "\n" +
+                           "Try creating them manually to determine the problem.", null);
+    */
   }
 
 
