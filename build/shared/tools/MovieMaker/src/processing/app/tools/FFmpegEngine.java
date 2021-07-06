@@ -36,8 +36,12 @@ class FFmpegEngine {
 
   String[] getFormats() {
     return new String[] {
-      "MPEG-4", "MPEG-4 (Lossless 4:2:0)", "MPEG-4 (Lossless 4:4:4)",
-      "Animated GIF", "Animated GIF (Loop)"
+      "MPEG-4",
+      "MPEG-4 (Lossless 4:2:0)",
+      "MPEG-4 (Lossless 4:4:4)",
+      "Apple ProRes 4444",
+      "Animated GIF",
+      "Animated GIF (Loop)"
     };
   }
 
@@ -96,14 +100,14 @@ class FFmpegEngine {
       formatArgs += ",scale=" + width + ":" + height + ":flags=lanczos";
     }
 
+    if (soundFile != null && !formatName.contains("GIF")) {
+      cmd.add("-i");
+      cmd.add(soundFile.getAbsolutePath());
+    }
+
     if (formatName.startsWith("MPEG-4")) {
       // slideshow: http://trac.ffmpeg.org/wiki/Slideshow
       // options for compatibility: https://superuser.com/a/424024
-
-      if (soundFile != null) {
-        cmd.add("-i");
-        cmd.add(soundFile.getAbsolutePath());
-      }
 
       // use the h.264 video codec
       cmd.add("-vcodec");
@@ -163,6 +167,34 @@ class FFmpegEngine {
 
       if (!outputPath.toLowerCase().endsWith(".mp4")) {
         outputPath += ".mp4";
+      }
+
+    } else if (formatName.contains("ProRes 4444")) {
+      // https://ottverse.com/ffmpeg-convert-to-apple-prores-422-4444-hq/
+      // https://avpres.net/FFmpeg/im_ProRes.html
+
+      cmd.add("-c:v");
+      cmd.add("prores_ks");
+
+      cmd.add("-profile:v");
+      cmd.add("4");
+
+      cmd.add("-vendor");
+      cmd.add("apl0");
+
+      cmd.add("-bits_per_mb");
+      cmd.add("8000");
+
+      cmd.add("-pix_fmt");
+      cmd.add("yuva444p10le");
+
+      if (soundFile != null) {
+        cmd.add("-c:a");
+        cmd.add("copy");
+      }
+
+      if (!outputPath.toLowerCase().endsWith(".mov")) {
+        outputPath += ".mov";
       }
 
     } else if (formatName.startsWith("Animated GIF")) {

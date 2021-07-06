@@ -4,7 +4,6 @@ X   should prevent conflicts, avoid papering over other bugs
 X remove the PDE classpath from sketches
 X   causing it to include incomplete JFX, other misc; too confusing
 X add ui.font.family and ui.font.size as preferences
-X Editor.applyPreferences() was protected, now public
 X remove compound key actions (which were undocumented and not in use)
 X   clears up a lot of complexity in DefaultInputHandler
 X   if someone wants this, they could recreate it in a subclass
@@ -12,15 +11,19 @@ X remove jdt.compiler.jar from subprojects
 X   no longer using JRE (doesn't exist), so it's not needed
 o   can we remove it altogether, or is it used by the PDE?
 X remove lots of dead/unused parts of javafx/build.xml
-X fix up modifiers for key events (after completing mouse) in Java2D
-X set args for JavaFX and OpenGL for the mouse and key events
-X   make sure that everything is set properly, also for keys
 X move ISSUE_TEMPLATE to .github subfolder
 X   https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/manually-creating-a-single-issue-template-for-your-repository
 o ability to switch mode in p5 w/o saving/closing/etc
 X   trying to save the user from themselves here is just messier than needed
 X   opt to open a new editor window rather than weird error messages
 X   https://github.com/processing/processing4/issues/189
+X add ProRes 4444 support to Movie Maker
+
+api changes
+X Editor.applyPreferences() was protected, now public
+X removed Editor.repaintErrorBar() and Editor.showConsole()
+X   does not appear to be in use anywhere, easy to add back
+X rename TextAreaPainter.getCompositionTextpainter() to getCompositionTextPainter()
 
 readme
 X was fixed in the source for 4.0a5, but may not have been included in the dist
@@ -32,9 +35,9 @@ X MovieMaker .mov not compatible with QuicktTime Player
 X   https://github.com/processing/processing/issues/6110
 X   notes in the bug about what's going on
 X   confirmed that after Mojave, the QTMovieModernizer went away (was 32-bit)
-_     https://support.apple.com/en-us/HT202884
+X     https://support.apple.com/en-us/HT202884
 X   the modernizer would convert things to ProRes
-_     https://support.apple.com/en-us/HT202410
+o     https://support.apple.com/en-us/HT202410
 o   possible other library: http://jcodec.org/
 o     https://github.com/jcodec/jcodec
 o   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
@@ -232,9 +235,11 @@ _ refresh option for sketchbook (bottom of window)
 _ import option for sketchbook
 
 
-before final release
+before final 4.0 release
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
+_ using svg images for res-indep icons/gui
+_   https://stackoverflow.com/a/2495712
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
 _   just skip the welcome screen on Windows hidpi dipslays?
@@ -1183,8 +1188,6 @@ _   separate ant target, but only require them for dist
 _   as separate targets, folks can build explicitly if they'd like
 _   processing-docs/java_generate/ReferenceGenerator/processingrefBuild.sh
 _   remove reference.zip from main repo
-_ using svg images for res-indep icons/gui
-_   http://stackoverflow.com/questions/2495501/swing-batik-create-an-imageicon-from-an-svg-file
 _ nurbs or other architecture stuff
 _ force indentation - implement an option for beginners especially
 _ indents and loops
