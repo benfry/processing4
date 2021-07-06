@@ -100,44 +100,44 @@ public class EditorHeader extends JComponent {
     updateMode();
 
     addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent e) {
-          int x = e.getX();
-          int y = e.getY();
+      public void mousePressed(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
 
-          if ((x > menuLeft) && (x < menuRight)) {
-            popup.show(EditorHeader.this, x, y);
-          } else {
-            Sketch sketch = editor.getSketch();
-            for (Tab tab : tabs) {
-              if (tab.contains(x)) {
-                sketch.setCurrentCode(tab.index);
-                repaint();
-              }
+        if ((x > menuLeft) && (x < menuRight)) {
+          popup.show(EditorHeader.this, x, y);
+        } else {
+          Sketch sketch = editor.getSketch();
+          for (Tab tab : tabs) {
+            if (tab.contains(x)) {
+              sketch.setCurrentCode(tab.index);
+              repaint();
             }
           }
         }
+      }
 
-        public void mouseExited(MouseEvent e) {
-          // only clear if it's been set
-          if (lastNoticeName != null) {
-            // only clear if it's the same as what we set it to
-            editor.clearNotice(lastNoticeName);
-            lastNoticeName = null;
-          }
+      public void mouseExited(MouseEvent e) {
+        // only clear if it's been set
+        if (lastNoticeName != null) {
+          // only clear if it's the same as what we set it to
+          editor.clearNotice(lastNoticeName);
+          lastNoticeName = null;
         }
+      }
     });
 
     addMouseMotionListener(new MouseMotionAdapter() {
         public void mouseMoved(MouseEvent e) {
-          int x = e.getX();
-          for (Tab tab : tabs) {
-            if (tab.contains(x) && !tab.textVisible) {
-              lastNoticeName = editor.getSketch().getCode(tab.index).getPrettyName();
-              editor.statusNotice(lastNoticeName);
-            }
-          }
+      int x = e.getX();
+      for (Tab tab : tabs) {
+        if (tab.contains(x) && !tab.textVisible) {
+          lastNoticeName = editor.getSketch().getCode(tab.index).getPrettyName();
+          editor.statusNotice(lastNoticeName);
         }
-      });
+      }
+      }
+    });
   }
 
 
