@@ -21,9 +21,11 @@ public class ThemeEngine implements Tool {
   public void run() {
     //setVisible(true);
     //Preferences.init();
+
     for (Editor editor : base.getEditors()) {
-      System.out.println("Updating settings for " + editor.getSketch().getName());
-      editor.applyPreferences();
+      System.out.println("Updating theme for " + editor.getSketch().getName());
+      //editor.applyPreferences();
+      editor.updateTheme();
     }
   }
 }

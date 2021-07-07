@@ -54,8 +54,6 @@ import processing.core.PApplet;
 public class MarkerColumn extends JPanel {
   protected Editor editor;
 
-//  static final int WIDE = 12;
-
   private Color errorColor;
   private Color warningColor;
 
@@ -66,21 +64,24 @@ public class MarkerColumn extends JPanel {
   public MarkerColumn(Editor editor, int height) {
     this.editor = editor;
 
-    Mode mode = editor.getMode();
-    errorColor = mode.getColor("editor.column.error.color");
-    warningColor = mode.getColor("editor.column.warning.color");
+    updateTheme();
 
     addMouseListener(new MouseAdapter() {
       public void mouseClicked(MouseEvent e) {
         scrollToMarkerAt(e.getY());
       }
     });
-
     addMouseMotionListener(new MouseMotionAdapter() {
       public void mouseMoved(final MouseEvent e) {
         showMarkerHover(e.getY());
       }
     });
+  }
+
+
+  protected void updateTheme() {
+    errorColor = Theme.getColor("editor.column.error.color");
+    warningColor = Theme.getColor("editor.column.warning.color");
   }
 
 

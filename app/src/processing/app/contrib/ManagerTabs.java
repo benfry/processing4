@@ -40,6 +40,7 @@ import javax.swing.border.EmptyBorder;
 
 import processing.app.Base;
 import processing.app.Mode;
+import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
 
@@ -100,14 +101,14 @@ public class ManagerTabs extends Box {
     // But use the default (Java) mode settings just in case.
     mode = base.getDefaultMode();
 
-    textColor[SELECTED] = mode.getColor("manager.tab.text.selected.color");
-    textColor[UNSELECTED] = mode.getColor("manager.tab.text.unselected.color");
-    font = mode.getFont("manager.tab.text.font");
+    textColor[SELECTED] = Theme.getColor("manager.tab.text.selected.color");
+    textColor[UNSELECTED] = Theme.getColor("manager.tab.text.unselected.color");
+    font = Theme.getFont("manager.tab.text.font");
 
-    tabColor[SELECTED] = mode.getColor("manager.tab.selected.color");
-    tabColor[UNSELECTED] = mode.getColor("manager.tab.unselected.color");
+    tabColor[SELECTED] = Theme.getColor("manager.tab.selected.color");
+    tabColor[UNSELECTED] = Theme.getColor("manager.tab.unselected.color");
 
-    gradient = mode.makeGradient("manager.tab", Toolkit.zoom(400), HIGH);
+    gradient = Theme.makeGradient("manager.tab", Toolkit.zoom(400), HIGH);
 
     setBorder(new EmptyBorder(BORDER, BORDER, BORDER, BORDER));
 

@@ -10,6 +10,7 @@
 package processing.app.syntax;
 
 import java.awt.Color;
+import java.util.StringTokenizer;
 
 
 /**
@@ -30,6 +31,21 @@ public class SyntaxStyle {
   public SyntaxStyle(Color color, boolean bold) {
     this.color = color;
     this.bold = bold;
+  }
+
+
+  static public SyntaxStyle fromString(String str) {
+    StringTokenizer st = new StringTokenizer(str, ",");
+
+    String s = st.nextToken();
+    if (s.indexOf("#") == 0) s = s.substring(1);
+    Color color = new Color(Integer.parseInt(s, 16));
+
+    s = st.nextToken();
+    boolean bold = s.contains("bold");
+    //boolean italic = s.contains("italic");
+
+    return new SyntaxStyle(color, bold);
   }
 
   

@@ -185,6 +185,9 @@ public class Base {
     // run static initialization that grabs all the prefs
     Preferences.init();
 
+    // get colors for ui elements (after prefs, since depends on font choices)
+    Theme.init();
+
     if (!SingleInstance.alreadyRunning(args)) {
       // Set the look and feel before opening the window
       try {

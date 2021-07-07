@@ -133,7 +133,7 @@ public class EditorConsole extends JScrollPane {
   /**
    * Update the font family and sizes based on the Preferences window.
    */
-  protected void updateAppearance() {
+  protected void updateTheme() {
     Font font = Preferences.getFont("editor.font.family", "console.font.size", Font.PLAIN);
 
     StyleConstants.setFontFamily(stdStyle, font.getFamily());
@@ -157,9 +157,9 @@ public class EditorConsole extends JScrollPane {
     consoleDoc.setParagraphAttributes(0, 0, standard, true);
 
     // build styles for different types of console output
-    Color bgColor = mode.getColor("console.color");
-    Color fgColorOut = mode.getColor("console.output.color");
-    Color fgColorErr = mode.getColor("console.error.color");
+    Color bgColor = Theme.getColor("console.color");
+    Color fgColorOut = Theme.getColor("console.output.color");
+    Color fgColorErr = Theme.getColor("console.error.color");
 
     // Make things line up with the Editor above. If this is ever removed,
     // setBorder(null) should be called instead. The defaults are nasty.

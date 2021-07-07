@@ -73,11 +73,11 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
     setCursor(Cursor.getPredefinedCursor(Cursor.TEXT_CURSOR));
 
-    updateAppearance();
+    updateTheme();
   }
 
 
-  protected void updateAppearance() {
+  protected void updateTheme() {
     setForeground(defaults.fgcolor);
     setBackground(defaults.bgcolor);
 

@@ -190,11 +190,12 @@ public abstract class Mode {
   }
 
 
-  /**
-   * Setup additional elements that are only required when running with a GUI,
-   * rather than from the command-line. Note that this will not be called when
-   * the Mode is used from the command line (because Base will be null).
-   */
+//  /**
+//   * Setup additional elements that are only required when running with a GUI,
+//   * rather than from the command-line. Note that this will not be called when
+//   * the Mode is used from the command line (because Base will be null).
+//   */
+  /*
   public void setupGUI() {
     try {
       // First load the default theme data for the whole PDE.
@@ -226,6 +227,7 @@ public abstract class Mode {
                          "Could not load theme.txt, please re-install Processing", e);
     }
   }
+  */
 
 
   public File getContentFile(String path) {
@@ -795,12 +797,14 @@ public abstract class Mode {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+  /*
   // Get attributes/values from the theme.txt file. To discourage burying this
   // kind of information in code where it doesn't belong (and is difficult to
   // track down), these don't have a "default" option as a second parameter.
 
 
-  /** @since 3.0a6 */
+  // removing, this doesn't seem to have been in use
+  /// @since 3.0a6
   public String getString(String attribute) {
     return theme.get(attribute);
   }
@@ -878,6 +882,7 @@ public abstract class Mode {
 //    }
     return outgoing;
   }
+   */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

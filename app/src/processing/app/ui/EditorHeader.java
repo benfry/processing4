@@ -97,7 +97,7 @@ public class EditorHeader extends JComponent {
   public EditorHeader(Editor eddie) {
     this.editor = eddie;
 
-    updateMode();
+    updateTheme();
 
     addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
@@ -141,21 +141,19 @@ public class EditorHeader extends JComponent {
   }
 
 
-  public void updateMode() {
-    Mode mode = editor.getMode();
+  public void updateTheme() {
+    textColor[SELECTED] = Theme.getColor("header.text.selected.color");
+    textColor[UNSELECTED] = Theme.getColor("header.text.unselected.color");
+    font = Theme.getFont("header.text.font");
 
-    textColor[SELECTED] = mode.getColor("header.text.selected.color");
-    textColor[UNSELECTED] = mode.getColor("header.text.unselected.color");
-    font = mode.getFont("header.text.font");
+    tabColor[SELECTED] = Theme.getColor("header.tab.selected.color");
+    tabColor[UNSELECTED] = Theme.getColor("header.tab.unselected.color");
 
-    tabColor[SELECTED] = mode.getColor("header.tab.selected.color");
-    tabColor[UNSELECTED] = mode.getColor("header.tab.unselected.color");
-
-    arrowColor = mode.getColor("header.tab.arrow.color");
+    arrowColor = Theme.getColor("header.tab.arrow.color");
     //modifiedColor = mode.getColor("editor.selection.color");
-    modifiedColor = mode.getColor("header.tab.modified.color");
+    modifiedColor = Theme.getColor("header.tab.modified.color");
 
-    gradient = mode.makeGradient("header", 400, HIGH);
+    gradient = Theme.makeGradient("header", 400, HIGH);
   }
 
 

@@ -28,6 +28,7 @@ import javax.swing.*;
 
 import processing.app.*;
 import processing.app.ui.Editor;
+import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
 
@@ -109,9 +110,11 @@ public class ManagerFrame {
 
     frame.setResizable(true);
 
-    Container c = frame.getContentPane();
-    c.add(tabs);
-    c.setBackground(base.getDefaultMode().getColor("manager.tab.background"));
+//    Container c = frame.getContentPane();
+//    c.add(tabs);
+//    c.setBackground(Theme.getColor("manager.tab.background"));
+    frame.getContentPane().add(tabs);
+    updateTheme();
 
     frame.validate();
     frame.repaint();
@@ -121,6 +124,11 @@ public class ManagerFrame {
 
     frame.pack();
     frame.setLocationRelativeTo(null);
+  }
+
+
+  protected void updateTheme() {
+    frame.getContentPane().setBackground(Theme.getColor("manager.tab.background"));
   }
 
 
@@ -142,20 +150,16 @@ public class ManagerFrame {
       }
     });
     // handle window closing commands for ctrl/cmd-W or hitting ESC.
-    Toolkit.registerWindowCloseKeys(frame.getRootPane(), new ActionListener() {
-      public void actionPerformed(ActionEvent actionEvent) {
-        disposeFrame();
-      }
-    });
+    Toolkit.registerWindowCloseKeys(frame.getRootPane(), actionEvent -> disposeFrame());
 
     frame.getContentPane().addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {
-        //System.out.println(e);
-        KeyStroke wc = Toolkit.WINDOW_CLOSE_KEYSTROKE;
-        if ((e.getKeyCode() == KeyEvent.VK_ESCAPE)
-          || (KeyStroke.getKeyStrokeForEvent(e).equals(wc))) {
-          disposeFrame();
-        }
+      //System.out.println(e);
+      KeyStroke wc = Toolkit.WINDOW_CLOSE_KEYSTROKE;
+      if ((e.getKeyCode() == KeyEvent.VK_ESCAPE)
+        || (KeyStroke.getKeyStrokeForEvent(e).equals(wc))) {
+        disposeFrame();
+      }
       }
     });
   }

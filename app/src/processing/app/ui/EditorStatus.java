@@ -125,7 +125,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
     super(ui);
     this.editor = editor;
     empty();
-    updateMode();
+    updateTheme();
 
     addMouseListener(new MouseAdapter() {
 
@@ -219,27 +219,26 @@ public class EditorStatus extends BasicSplitPaneDivider {
   }
 
 
-  public void updateMode() {
-    Mode mode = editor.getMode();
-
-    urlColor = mode.getColor("status.url.fgcolor");
+  protected void updateTheme() {
+    urlColor = Theme.getColor("status.url.fgcolor");
 
     fgColor = new Color[] {
-      mode.getColor("status.notice.fgcolor"),
-      mode.getColor("status.error.fgcolor"),
-      mode.getColor("status.error.fgcolor"),
-      mode.getColor("status.warning.fgcolor"),
-      mode.getColor("status.warning.fgcolor")
+      Theme.getColor("status.notice.fgcolor"),
+      Theme.getColor("status.error.fgcolor"),
+      Theme.getColor("status.error.fgcolor"),
+      Theme.getColor("status.warning.fgcolor"),
+      Theme.getColor("status.warning.fgcolor")
     };
 
     bgColor = new Color[] {
-      mode.getColor("status.notice.bgcolor"),
-      mode.getColor("status.error.bgcolor"),
-      mode.getColor("status.error.bgcolor"),
-      mode.getColor("status.warning.bgcolor"),
-      mode.getColor("status.warning.bgcolor")
+      Theme.getColor("status.notice.bgcolor"),
+      Theme.getColor("status.error.bgcolor"),
+      Theme.getColor("status.error.bgcolor"),
+      Theme.getColor("status.warning.bgcolor"),
+      Theme.getColor("status.warning.bgcolor")
     };
 
+    Mode mode = editor.getMode();
     bgImage = new Image[] {
       mode.loadImage("/lib/status/notice.png"),
       mode.loadImage("/lib/status/error.png"),
@@ -248,8 +247,8 @@ public class EditorStatus extends BasicSplitPaneDivider {
       mode.loadImage("/lib/status/warning.png")
     };
 
-    font = mode.getFont("status.font");
-    glyphFont = mode.getFont("status.emoji.font");
+    font = Theme.getFont("status.font");
+    glyphFont = Theme.getFont("status.emoji.font");
     metrics = null;
   }
 

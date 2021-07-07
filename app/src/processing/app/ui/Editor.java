@@ -247,7 +247,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
 //    if (pta != null) {
 //      pta.setMode(mode);
 //    }
-    updateAppearance();
 
     splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upper, footer);
 
@@ -271,7 +270,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
         status = new EditorStatus(this, Editor.this);
         return status;
       }
-
 
       @Override
       public void finishDraggingTo(int location) {
@@ -303,6 +301,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
     textarea.addKeyListener(toolbar);
 
     contentPain.setTransferHandler(new FileDropHandler());
+
+    // set all fonts and colors
+    updateTheme();
 
     // Finish preparing Editor
     pack();
@@ -342,19 +343,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     // Enable window resizing (which allows for full screen button)
     setResizable(true);
-  }
-
-
-  public void updateAppearance() {
-    /*
-    PdeTextArea pta = getPdeTextArea();
-    // will be null if a subclass has overridden createTextArea()
-    // to return something besides a PdeTextArea
-    if (pta != null) {
-      pta.updateAppearance();
-    }
-    */
-    textarea.updateAppearance();
   }
 
 
@@ -552,6 +540,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
+  /**
+   * Rebuild the Toolbar after turning debug on/off.
+   */
   public void rebuildToolbar() {
     toolbar.rebuild();
     toolbar.revalidate();  // necessary to handle sub-components
@@ -580,11 +571,39 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * with things in the Preferences window.
    */
   public void applyPreferences() {
-    // Update fonts and other items controllable from the prefs
-//    textarea.getPainter().updateAppearance();
-//    textarea.repaint();
-    textarea.updateAppearance();
-    console.updateAppearance();
+    // Even though this is only updating the theme (colors, icons), subclasses
+    // use this to apply other preferences (i.e. error checking changes in Java Mode).
+    updateTheme();
+
+//    // Update fonts and other items controllable from the prefs
+////    textarea.getPainter().updateAppearance();
+////    textarea.repaint();
+//    textarea.updateTheme();
+//    console.updateTheme();
+  }
+
+
+  public void updateTheme() {
+    /*
+    PdeTextArea pta = getPdeTextArea();
+    // will be null if a subclass has overridden createTextArea()
+    // to return something besides a PdeTextArea
+    if (pta != null) {
+      pta.updateAppearance();
+    }
+    */
+    header.updateTheme();
+    toolbar.updateTheme();
+    textarea.updateTheme();
+    errorColumn.updateTheme();
+    status.updateTheme();
+    console.updateTheme();
+    errorTable.updateTheme();
+
+    toolTipFont = Toolkit.getSansFont(Toolkit.zoom(9), Font.PLAIN);
+    toolTipTextColor = Theme.getColor("errors.selection.fgcolor");
+    toolTipWarningColor = Theme.getColor("errors.selection.warning.bgcolor");
+    toolTipErrorColor = Theme.getColor("errors.selection.error.bgcolor");
   }
 
 
@@ -2973,28 +2992,21 @@ public abstract class Editor extends JFrame implements RunnerListener {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static Font font;
-  static Color textColor;
-  static Color bgColorWarning;
-  static Color bgColorError;
+  static Font toolTipFont;
+  static Color toolTipTextColor;
+  static Color toolTipWarningColor;
+  static Color toolTipErrorColor;
 
 
   public void statusToolTip(JComponent comp, String message, boolean error) {
-    if (font == null) {
-      font = Toolkit.getSansFont(Toolkit.zoom(9), Font.PLAIN);
-      textColor = mode.getColor("errors.selection.fgcolor");
-      bgColorWarning = mode.getColor("errors.selection.warning.bgcolor");
-      bgColorError = mode.getColor("errors.selection.error.bgcolor");
-    }
-
-    Color bgColor = error ? bgColorError : bgColorWarning;
+    Color bgColor = error ? toolTipErrorColor : toolTipWarningColor;
     int m = Toolkit.zoom(3);
     String css =
       String.format("margin: %d %d %d %d; ", -m, -m, -m, -m) +
       String.format("padding: %d %d %d %d; ", m, m, m, m) +
       "background: #" + PApplet.hex(bgColor.getRGB(), 8).substring(2) + ";" +
-      "font-family: " + font.getFontName() + ", sans-serif;" +
-      "font-size: " + font.getSize() + "px;";
+      "font-family: " + toolTipFont.getFontName() + ", sans-serif;" +
+      "font-size: " + toolTipFont.getSize() + "px;";
     String content =
       "<html> <div style='" + css + "'>" + message + "</div> </html>";
     comp.setToolTipText(content);

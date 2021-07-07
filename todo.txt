@@ -18,6 +18,15 @@ X   trying to save the user from themselves here is just messier than needed
 X   opt to open a new editor window rather than weird error messages
 X   https://github.com/processing/processing4/issues/189
 X add ProRes 4444 support to Movie Maker
+X major theme changes
+X   move theme out of Mode and into its own Theme class
+X   remove setMode()/updateAppearance(), replace with updateTheme()
+X   Theme has static access, update throughout the code
+X   pieces in place to handle updates to theme while still running
+X   ignore theme.txt for Modes (no longer a Mode thing)
+X   move syntax colors out of preferences.txt and into theme.txt
+X     (because it can also be accessed via the sketchbook)
+_   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
 
 api changes
 X Editor.applyPreferences() was protected, now public

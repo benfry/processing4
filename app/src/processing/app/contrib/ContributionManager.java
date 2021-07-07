@@ -141,14 +141,6 @@ public class ContributionManager {
 
   /**
    * Non-blocking call to download and install a contribution in a new thread.
-   *
-   * @param url
-   *          Direct link to the contribution.
-   * @param toBeReplaced
-   *          The Contribution that will be replaced by this library being
-   *          installed (e.g. an advertised version of a contribution, or the
-   *          old version of a contribution that is being updated). Must not be
-   *          null.
    */
   static void downloadAndInstall(final Base base,
                                  final URL url,

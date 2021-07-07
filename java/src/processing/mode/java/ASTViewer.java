@@ -50,7 +50,7 @@ class ASTViewer {
         return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus);
       }
     };
-    tree.setCellRenderer(new ZoomTreeCellRenderer(editor.getMode()));
+    tree.setCellRenderer(new ZoomTreeCellRenderer());
     window.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentHidden(ComponentEvent e) {

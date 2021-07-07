@@ -78,8 +78,6 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
     base = editor.getBase();
     mode = editor.getMode();
 
-    gradient = mode.makeGradient("toolbar", Toolkit.zoom(400), HIGH);
-
     rebuild();
   }
 
@@ -92,8 +90,6 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
     box.add(Box.createHorizontalStrut(Editor.LEFT_GUTTER));
 
     rolloverLabel = new JLabel();
-    rolloverLabel.setFont(mode.getFont("toolbar.rollover.font"));
-    rolloverLabel.setForeground(mode.getColor("toolbar.rollover.color"));
 
     for (EditorButton button : buttons) {
       box.add(button);
@@ -122,6 +118,16 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
     setLayout(new BorderLayout());
     add(box, BorderLayout.CENTER);
+
+    updateTheme();
+  }
+
+
+  public void updateTheme() {
+    gradient = Theme.makeGradient("toolbar", Toolkit.zoom(400), HIGH);
+
+    rolloverLabel.setFont(Theme.getFont("toolbar.rollover.font"));
+    rolloverLabel.setForeground(Theme.getColor("toolbar.rollover.color"));
   }
 
 
@@ -298,32 +304,32 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
     Color backgroundColor;
     Color outlineColor;
 
-
-    @SuppressWarnings("deprecation")
     public ModeSelector() {
       title = mode.getTitle(); //.toUpperCase();
-      titleFont = mode.getFont("mode.title.font");
-      titleColor = mode.getColor("mode.title.color");
+
+      addMouseListener(new MouseAdapter() {
+        public void mousePressed(MouseEvent event) {
+        JPopupMenu popup = editor.getModePopup();
+        popup.show(ModeSelector.this, event.getX(), event.getY());
+        }
+      });
+
+      updateTheme();
+    }
+
+    public void updateTheme() {
+      titleFont = Theme.getFont("mode.title.font");
+      titleColor = Theme.getColor("mode.title.color");
 
       // getGraphics() is null and no offscreen yet
       titleWidth = getToolkit().getFontMetrics(titleFont).stringWidth(title);
 
-      addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent event) {
-          JPopupMenu popup = editor.getModePopup();
-          popup.show(ModeSelector.this, event.getX(), event.getY());
-        }
-      });
-
-      //background = mode.getGradient("reversed", 100, EditorButton.DIM);
-      backgroundColor = mode.getColor("mode.background.color");
-      outlineColor = mode.getColor("mode.outline.color");
+      backgroundColor = Theme.getColor("mode.background.color");
+      outlineColor = Theme.getColor("mode.outline.color");
     }
 
     @Override
     public void paintComponent(Graphics screen) {
-//      Toolkit.debugOpacity(this);
-
       Dimension size = getSize();
       width = 0;
       if (width != size.width || height != size.height) {
@@ -334,10 +340,6 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
       Graphics g = offscreen.getGraphics();
       Graphics2D g2 = Toolkit.prepareGraphics(g);
-      //Toolkit.clearGraphics(g, width, height);
-//      g.clearRect(0, 0, width, height);
-//      g.setColor(Color.GREEN);
-//      g.fillRect(0, 0, width, height);
 
       g.setFont(titleFont);
       if (titleAscent == 0) {

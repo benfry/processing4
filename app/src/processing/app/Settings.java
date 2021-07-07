@@ -106,7 +106,12 @@ public class Settings {
 
 
   public void save() {
-    PrintWriter writer = PApplet.createWriter(file);
+    save(file);  // save back to the original file
+  }
+
+
+  public void save(File outputFile) {
+    PrintWriter writer = PApplet.createWriter(outputFile);
 
     for (String key : table.keySet()) {
       writer.println(key + "=" + table.get(key));

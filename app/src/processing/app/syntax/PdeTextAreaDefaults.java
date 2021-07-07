@@ -26,6 +26,7 @@
 package processing.app.syntax;
 
 import processing.app.*;
+import processing.app.ui.Theme;
 
 
 /**
@@ -50,45 +51,45 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
     rows = 5;
 
     styles = new SyntaxStyle[Token.ID_COUNT];
-    updateAppearance(mode);
+    updateTheme();
   }
 
 
-  protected void updateAppearance(Mode mode) {
-    fgcolor = mode.getColor("editor.fgcolor");
-    bgcolor = mode.getColor("editor.bgcolor");
+  protected void updateTheme() {
+    fgcolor = Theme.getColor("editor.fgcolor");
+    bgcolor = Theme.getColor("editor.bgcolor");
 
-    styles[Token.COMMENT1] = mode.getStyle("comment1");
-    styles[Token.COMMENT2] = mode.getStyle("comment2");
+    styles[Token.COMMENT1] = Theme.getStyle("comment1");
+    styles[Token.COMMENT2] = Theme.getStyle("comment2");
 
-    styles[Token.KEYWORD1] = mode.getStyle("keyword1");
-    styles[Token.KEYWORD2] = mode.getStyle("keyword2");
-    styles[Token.KEYWORD3] = mode.getStyle("keyword3");
-    styles[Token.KEYWORD4] = mode.getStyle("keyword4");
-    styles[Token.KEYWORD5] = mode.getStyle("keyword5");
-    styles[Token.KEYWORD6] = mode.getStyle("keyword6");
+    styles[Token.KEYWORD1] = Theme.getStyle("keyword1");
+    styles[Token.KEYWORD2] = Theme.getStyle("keyword2");
+    styles[Token.KEYWORD3] = Theme.getStyle("keyword3");
+    styles[Token.KEYWORD4] = Theme.getStyle("keyword4");
+    styles[Token.KEYWORD5] = Theme.getStyle("keyword5");
+    styles[Token.KEYWORD6] = Theme.getStyle("keyword6");
 
-    styles[Token.FUNCTION1] = mode.getStyle("function1");
-    styles[Token.FUNCTION2] = mode.getStyle("function2");
-    styles[Token.FUNCTION3] = mode.getStyle("function3");
-    styles[Token.FUNCTION4] = mode.getStyle("function4");
+    styles[Token.FUNCTION1] = Theme.getStyle("function1");
+    styles[Token.FUNCTION2] = Theme.getStyle("function2");
+    styles[Token.FUNCTION3] = Theme.getStyle("function3");
+    styles[Token.FUNCTION4] = Theme.getStyle("function4");
 
-    styles[Token.LITERAL1] = mode.getStyle("literal1");
-    styles[Token.LITERAL2] = mode.getStyle("literal2");
+    styles[Token.LITERAL1] = Theme.getStyle("literal1");
+    styles[Token.LITERAL2] = Theme.getStyle("literal2");
 
-    styles[Token.LABEL] = mode.getStyle("label");
-    styles[Token.OPERATOR] = mode.getStyle("operator");
+    styles[Token.LABEL] = Theme.getStyle("label");
+    styles[Token.OPERATOR] = Theme.getStyle("operator");
 
     // area that's not in use by the text (replaced with tildes)
-    styles[Token.INVALID] = mode.getStyle("invalid");
+    styles[Token.INVALID] = Theme.getStyle("invalid");
 
-    caretColor = mode.getColor("editor.caret.color");
-    selectionColor = mode.getColor("editor.selection.color");
-    lineHighlight = mode.getBoolean("editor.linehighlight");
-    lineHighlightColor = mode.getColor("editor.linehighlight.color");
-    bracketHighlight = mode.getBoolean("editor.brackethighlight");
-    bracketHighlightColor = mode.getColor("editor.brackethighlight.color");
-    eolMarkers = mode.getBoolean("editor.eolmarkers");
-    eolMarkerColor = mode.getColor("editor.eolmarkers.color");
+    caretColor = Theme.getColor("editor.caret.color");
+    selectionColor = Theme.getColor("editor.selection.color");
+    lineHighlight = Theme.getBoolean("editor.linehighlight");
+    lineHighlightColor = Theme.getColor("editor.linehighlight.color");
+    bracketHighlight = Theme.getBoolean("editor.brackethighlight");
+    bracketHighlightColor = Theme.getColor("editor.brackethighlight.color");
+    eolMarkers = Theme.getBoolean("editor.eolmarkers");
+    eolMarkerColor = Theme.getColor("editor.eolmarkers.color");
   }
 }

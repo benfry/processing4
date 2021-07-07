@@ -80,7 +80,7 @@ public class ModeContribution extends LocalContribution {
    * @param className name of class and full package, or null to use default
    */
   public ModeContribution(Base base, File folder,
-                           String className) throws Exception {
+                          String className) throws Exception {
     super(folder);
     className = initLoader(base, className);
     if (className != null) {
@@ -89,9 +89,9 @@ public class ModeContribution extends LocalContribution {
       Constructor<?> con = modeClass.getConstructor(Base.class, File.class);
       mode = (Mode) con.newInstance(base, folder);
       mode.setClassLoader(loader);
-      if (base != null) {
-        mode.setupGUI();
-      }
+//      if (base != null) {
+//        mode.setupGUI();
+//      }
     }
   }
 

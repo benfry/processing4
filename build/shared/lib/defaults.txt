@@ -247,38 +247,6 @@ editor.laf.linux = javax.swing.plaf.nimbus.NimbusLookAndFeel
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# TEXT - KEYWORDS, LITERALS
-# For an explanation of these tags, see Token.java:
-# processing/app/src/processing/app/syntax/Token.java
-
-editor.token.function1.style = #006699,plain
-editor.token.function2.style = #006699,plain
-editor.token.function3.style = #669900,plain
-editor.token.function4.style = #006699,bold
-
-editor.token.keyword1.style = #33997e,plain
-editor.token.keyword2.style = #33997e,plain
-editor.token.keyword3.style = #669900,plain
-editor.token.keyword4.style = #d94a7a,plain
-editor.token.keyword5.style = #e2661a,plain
-editor.token.keyword6.style = #33997e,plain
-
-editor.token.literal1.style = #7D4793,plain
-editor.token.literal2.style = #718a62,plain
-
-editor.token.operator.style = #006699,plain
-
-editor.token.label.style = #666666,bold
-
-editor.token.comment1.style = #666666,plain
-editor.token.comment2.style = #666666,plain
-
-editor.token.invalid.style = #666666,bold
-
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 # which platforms to export by default
 #export.application.platform.windows = true
 #export.application.platform.macosx = true

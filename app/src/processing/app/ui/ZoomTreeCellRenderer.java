@@ -33,8 +33,8 @@ import processing.app.Mode;
 
 public class ZoomTreeCellRenderer extends DefaultTreeCellRenderer {
 
-  public ZoomTreeCellRenderer(Mode mode) {
-    setFont(mode.getFont("tree.font"));
+  public ZoomTreeCellRenderer() {
+    setFont(Theme.getFont("tree.font"));
   }
 
   @Override
