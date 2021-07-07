@@ -152,7 +152,7 @@ public class PreferencesFrame {
 
     // Editor font size [ 12 ]  Console font size [ 10 ]
 
-    JLabel fontSizelabel = new JLabel(Language.text("preferences.editor_font_size")+": ");
+    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size")+": ");
     fontSizeField = new JComboBox<>(FONT_SIZES);
     fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
 
@@ -381,7 +381,7 @@ public class PreferencesFrame {
                       .addComponent(fontSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
           .addGroup(GroupLayout.Alignment.LEADING,
                        layout.createSequentialGroup()
-                      .addComponent(fontSizelabel)
+                      .addComponent(fontSizeLabel)
                       .addComponent(fontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                       .addComponent(consoleFontSizeLabel)
                       .addComponent(consoleFontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -425,7 +425,7 @@ public class PreferencesFrame {
           .addComponent(preferencePathLabel)
           .addComponent(preferenceHintLabel)
           .addGroup(GroupLayout.Alignment.TRAILING,layout.createSequentialGroup() // Trailing so that the buttons are to the right
-                      .addComponent(okButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth) // Ok and Cancel buttton are now of size BUTTON_WIDTH
+                      .addComponent(okButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth) // Ok and Cancel button are now of size BUTTON_WIDTH
                       .addComponent(cancelButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth)
           ))
       .addGap(Toolkit.BORDER)
@@ -445,7 +445,7 @@ public class PreferencesFrame {
                   addComponent(fontLabel)
                   .addComponent(fontSelectionBox))
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(fontSizelabel)
+                  .addComponent(fontSizeLabel)
                   .addComponent(fontSizeField)
                   .addComponent(consoleFontSizeLabel)
                   .addComponent(consoleFontSizeField))
