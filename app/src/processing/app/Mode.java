@@ -56,15 +56,13 @@ public abstract class Mode {
   protected Map<String, String> keywordToReference = new HashMap<>();
 
   protected Settings theme;
-//  protected Formatter formatter;
-//  protected Tool formatter;
 
   // maps imported packages to their library folder
   protected Map<String, List<Library>> importToLibraryTable;
 
   // these menus are shared so that they needn't be rebuilt for all windows
   // each time a sketch is created, renamed, or moved.
-  protected JMenu examplesMenu;  // this is for the menubar, not the toolbar
+//  protected JMenu examplesMenu;  // this is for the menubar, not the toolbar
   protected JMenu importMenu;
 
   protected ExamplesFrame examplesFrame;
@@ -91,9 +89,9 @@ public abstract class Mode {
    */
   protected ClassLoader classLoader;
 
-  static final int BACKGROUND_WIDTH = 1025;
-  static final int BACKGROUND_HEIGHT = 65;
-  protected Image backgroundImage;
+//  static final int BACKGROUND_WIDTH = 1025;
+//  static final int BACKGROUND_HEIGHT = 65;
+//  protected Image backgroundImage;
 
 //  public Mode(Base base, File folder) {
 //    this(base, folder, base.getSketchbookLibrariesFolder());
@@ -140,10 +138,11 @@ public abstract class Mode {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   protected void loadKeywords(File keywordFile,
                               String commentPrefix) throws IOException {
     BufferedReader reader = PApplet.createReader(keywordFile);
-    String line = null;
+    String line;
     while ((line = reader.readLine()) != null) {
       if (!line.trim().startsWith(commentPrefix)) {
         // Was difficult to make sure that mode authors were properly doing
@@ -169,7 +168,7 @@ public abstract class Mode {
               // for StringList.size() and others, but not vice-versa.
               // https://github.com/processing/processing/issues/4224
               boolean seen = keywordToReference.containsKey(keyword);
-              if (!seen || (seen && keyword.equals(htmlFilename))) {
+              if (!seen || keyword.equals(htmlFilename)) {
                 keywordToReference.put(keyword, htmlFilename);
               }
             }
@@ -466,29 +465,17 @@ public abstract class Mode {
     //System.out.println("rebuilding toolbar menu");
     // Add the single "Open" item
     item = Toolkit.newJMenuItem("Open...", 'O');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          base.handleOpenPrompt();
-        }
-      });
+    item.addActionListener(e -> base.handleOpenPrompt());
     toolbarMenu.add(item);
 
     insertToolbarRecentMenu();
 
     item = Toolkit.newJMenuItemShift("Examples...", 'O');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        showExamplesFrame();
-      }
-    });
+    item.addActionListener(e -> showExamplesFrame());
     toolbarMenu.add(item);
 
     item = new JMenuItem(Language.text("examples.add_examples"));
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openExamples();
-      }
-    });
+    item.addActionListener(e -> ContributionManager.openExamples());
     toolbarMenu.add(item);
 
     // Add a list of all sketches and subfolders
@@ -560,21 +547,13 @@ public abstract class Mode {
     }
 
     JMenuItem addLib = new JMenuItem(Language.text("menu.library.add_library"));
-    addLib.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openLibraries();
-      }
-    });
+    addLib.addActionListener(e -> ContributionManager.openLibraries());
     importMenu.add(addLib);
     importMenu.addSeparator();
 
     rebuildLibraryList();
 
-    ActionListener listener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        base.activeEditor.handleImportLibrary(e.getActionCommand());
-      }
-    };
+    ActionListener listener = e -> base.activeEditor.handleImportLibrary(e.getActionCommand());
 
 //    try {
 //      pw = new PrintWriter(new FileWriter(System.getProperty("user.home") + "/Desktop/libs.csv"));
@@ -647,11 +626,7 @@ public abstract class Mode {
    * and how they appear in the examples window.
    */
   public File[] getExampleCategoryFolders() {
-    return examplesFolder.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return dir.isDirectory() && name.charAt(0) != '.';
-      }
-    });
+    return examplesFolder.listFiles((dir, name) -> dir.isDirectory() && name.charAt(0) != '.');
   }
 
 
@@ -789,6 +764,7 @@ public abstract class Mode {
    * @since 3.2
    * @param code the code for which we need a TokenMarker
    */
+  @SuppressWarnings("unused")
   public TokenMarker getTokenMarker(SketchCode code) {
     return getTokenMarker();
   }
@@ -863,7 +839,7 @@ public abstract class Mode {
     Color color = new Color(Integer.parseInt(s, 16));
 
     s = st.nextToken();
-    boolean bold = (s.indexOf("bold") != -1);
+    boolean bold = s.contains("bold");
 //    boolean italic = (s.indexOf("italic") != -1);
 
 //    return new SyntaxStyle(color, italic, bold);
@@ -966,8 +942,8 @@ public abstract class Mode {
    */
   public boolean validExtension(String what) {
     String[] ext = getExtensions();
-    for (int i = 0; i < ext.length; i++) {
-      if (ext[i].equals(what)) return true;
+    for (String s : ext) {
+      if (s.equals(what)) return true;
     }
     return false;
   }
@@ -1044,7 +1020,11 @@ public abstract class Mode {
         }
       }
       // Create a fresh output folder (needed before preproc is run next)
-      targetFolder.mkdirs();
+      if (!targetFolder.exists()) {
+        if (!targetFolder.mkdirs()) {
+          Messages.loge("Could not create " + targetFolder);
+        }
+      }
     }
   }
 
