@@ -96,11 +96,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     "                                                                     " +
     "                                                                     ";
 
-  /**
-   * true if this file has not yet been given a name by the user
-   */
-//  private boolean untitled;
-
   private PageFormat pageFormat;
   private PrinterJob printerJob;
 
@@ -139,8 +134,8 @@ public abstract class Editor extends JFrame implements RunnerListener {
   // maintain caret position during undo operations
   private Stack<Integer> caretUndoStack = new Stack<>();
   private Stack<Integer> caretRedoStack = new Stack<>();
-  // used internally for every edit. Groups hotkey-event text manipulations and
-  // groups  multi-character inputs into a single undos.
+  // Used internally for every edit. Groups hot key event text manipulations
+  // and multi-character inputs into a single undo objects.
   private CompoundEdit compoundEdit;
   // timer to decide when to group characters into an undo
   private final Timer timer;
@@ -151,8 +146,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   private FindReplace find;
   JMenu toolsMenu;
   JMenu modePopup;
-
-  //Image backgroundGradient;
 
   protected List<Problem> problems = Collections.emptyList();
 
@@ -173,9 +166,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
     // add listener to handle window close box hit event
     addWindowListener(new WindowAdapter() {
         public void windowClosing(WindowEvent e) {
-          base.handleClose(Editor.this, false);
+      base.handleClose(Editor.this, false);
         }
-      });
+    });
     // don't close the window when clicked, the app will take care
     // of that via the handleQuitInternal() methods
     // http://dev.processing.org/bugs/show_bug.cgi?id=440
@@ -184,24 +177,24 @@ public abstract class Editor extends JFrame implements RunnerListener {
     // When bringing a window to front, let the Base know
     addWindowListener(new WindowAdapter() {
 
-        public void windowActivated(WindowEvent e) {
-          base.handleActivated(Editor.this);
-          fileMenu.insert(Recent.getMenu(), 2);
-          Toolkit.setMenuMnemsInside(fileMenu);
+      public void windowActivated(WindowEvent e) {
+        base.handleActivated(Editor.this);
+        fileMenu.insert(Recent.getMenu(), 2);
+        Toolkit.setMenuMnemsInside(fileMenu);
 
-          mode.insertImportMenu(sketchMenu);
-          Toolkit.setMenuMnemsInside(sketchMenu);
-          mode.insertToolbarRecentMenu();
-        }
+        mode.insertImportMenu(sketchMenu);
+        Toolkit.setMenuMnemsInside(sketchMenu);
+        mode.insertToolbarRecentMenu();
+      }
 
-        public void windowDeactivated(WindowEvent e) {
-          // TODO call handleActivated(null)? or do we run the risk of the
-          // deactivate call for old window being called after the activate?
-          fileMenu.remove(Recent.getMenu());
-          mode.removeImportMenu(sketchMenu);
-          mode.removeToolbarRecentMenu();
-        }
-      });
+      public void windowDeactivated(WindowEvent e) {
+        // TODO call handleActivated(null)? or do we run the risk of the
+        //      deactivate call for old window being called after the activate?
+        fileMenu.remove(Recent.getMenu());
+        mode.removeImportMenu(sketchMenu);
+        mode.removeToolbarRecentMenu();
+      }
+    });
 
     timer = new Timer();
 
@@ -250,10 +243,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
     upper.add(editorPanel);
 
     // set colors and fonts for the painter object
-    PdeTextArea pta = getPdeTextArea();
-    if (pta != null) {
-      pta.setMode(mode);
-    }
+//    PdeTextArea pta = getPdeTextArea();
+//    if (pta != null) {
+//      pta.setMode(mode);
+//    }
+    updateAppearance();
 
     splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, upper, footer);
 
@@ -348,6 +342,19 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     // Enable window resizing (which allows for full screen button)
     setResizable(true);
+  }
+
+
+  public void updateAppearance() {
+    /*
+    PdeTextArea pta = getPdeTextArea();
+    // will be null if a subclass has overridden createTextArea()
+    // to return something besides a PdeTextArea
+    if (pta != null) {
+      pta.updateAppearance();
+    }
+    */
+    textarea.updateAppearance();
   }
 
 
@@ -574,9 +581,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
    */
   public void applyPreferences() {
     // Update fonts and other items controllable from the prefs
-    textarea.getPainter().updateAppearance();
-    textarea.repaint();
-
+//    textarea.getPainter().updateAppearance();
+//    textarea.repaint();
+    textarea.updateAppearance();
     console.updateAppearance();
   }
 

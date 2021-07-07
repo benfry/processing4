@@ -4,7 +4,7 @@
   PdeTextAreaDefaults - grabs font/color settings for the editor
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-14 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-03 Massachusetts Institute of Technology
 
@@ -49,10 +49,14 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
     // http://code.google.com/p/processing/issues/detail?id=1275
     rows = 5;
 
+    styles = new SyntaxStyle[Token.ID_COUNT];
+    updateAppearance(mode);
+  }
+
+
+  protected void updateAppearance(Mode mode) {
     fgcolor = mode.getColor("editor.fgcolor");
     bgcolor = mode.getColor("editor.bgcolor");
-
-    styles = new SyntaxStyle[Token.ID_COUNT];
 
     styles[Token.COMMENT1] = mode.getStyle("comment1");
     styles[Token.COMMENT2] = mode.getStyle("comment2");

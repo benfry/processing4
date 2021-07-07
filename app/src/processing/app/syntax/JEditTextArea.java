@@ -183,6 +183,15 @@ public class JEditTextArea extends JComponent
   }
 
 
+  public void updateAppearance() {
+    // This default version will update the fonts and not much else.
+    // It's expected to always be overridden by the PdeTextArea version,
+    // but it's here if a Mode author *really* must avoid PdeTextArea.
+    painter.updateAppearance();
+    repaint();
+  }
+
+
   /**
    * Override this to provide your own painter for this {@link JEditTextArea}.
    * @return a newly constructed {@link TextAreaPainter}.

@@ -82,11 +82,12 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
   /**
    * Loads theme for TextAreaPainter. This is handled here because in the olden
-   * days, Modes had different visual design. Now, these are just pulling the
-   * defaults from the standard theme, though there may be minor additions or
-   * overrides added in a Mode's own theme.txt file.
+   * days, Modes had different visual design from one another. Now, these are
+   * just pulling the defaults from the standard theme, though there may be
+   * minor additions or overrides added in a Mode's own theme.txt file.
    */
-  public void setMode(Mode mode) {
+  //public void setMode(Mode mode) {
+  protected void updateAppearance(Mode mode) {
     errorUnderlineColor = mode.getColor("editor.error.underline.color");
     warningUnderlineColor = mode.getColor("editor.warning.underline.color");
 
@@ -97,6 +98,14 @@ public class PdeTextAreaPainter extends TextAreaPainter {
                                 gutterTextColor.getBlue(),
                                 96);
     gutterLineHighlightColor = mode.getColor("editor.gutter.linehighlight.color");
+
+    // pull in changes for syntax style, as well as foreground and background color
+    if (defaults instanceof PdeTextAreaDefaults) {
+      ((PdeTextAreaDefaults) defaults).updateAppearance(mode);
+    }
+
+    // needs to happen after PdeTextAreaDefaults.updateAppearance(mode)
+    super.updateAppearance();
   }
 
 

@@ -77,7 +77,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   }
 
 
-  public void updateAppearance() {
+  protected void updateAppearance() {
     setForeground(defaults.fgcolor);
     setBackground(defaults.bgcolor);
 

@@ -77,8 +77,16 @@ public class PdeTextArea extends JEditTextArea {
   }
 
 
+  /*
   public void setMode(Mode mode) {
     ((PdeTextAreaPainter) painter).setMode(mode);
+  }
+  */
+
+  @Override
+  public void updateAppearance() {
+    ((PdeTextAreaPainter) painter).updateAppearance(editor.getMode());
+    repaint();
   }
 
 
