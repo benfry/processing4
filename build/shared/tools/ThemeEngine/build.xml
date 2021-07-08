@@ -5,6 +5,9 @@
   <property name="app.bin.path" location="../../../../app/bin" />
   <property name="core.bin.path" location="../../../../core/bin" />
 
+  <property name="javafx.path"
+            location="../../../../java/libraries/javafx/library/macosx" />
+
   <target name="clean" description="Clean the build directories">
     <delete dir="bin" />
     <delete file="${jar.path}" />
@@ -22,21 +25,31 @@
       <classpath>
         <pathelement location="${app.bin.path}" />
         <pathelement location="${core.bin.path}" />
+
+        <fileset dir="${javafx.path}/modules">
+          <include name="**/*.jar" />
+        </fileset>
       </classpath>
     </javac>
   </target>
 
-  <target name="build" depends="compile" description="Build Movie Maker Tool">
+  <target name="build" depends="compile" description="Build Theme Engine Tool">
     <mkdir dir="tool" />
     <jar basedir="bin" destfile="${jar.path}" />
   </target>
 
   <target name="run" depends="build" description="Run standalone for development">
-    <java classname="processing.app.tools.ThemeEngine" fork="true">
+    <java classname="processing.app.tools.WebFrame" fork="true">
+      <sysproperty key="java.library.path" value="${javafx.path}" />
+
       <classpath>
         <pathelement location="${jar.path}" />
         <pathelement location="${app.bin.path}" />
         <pathelement location="${core.bin.path}" />
+
+        <fileset dir="${javafx.path}/modules">
+          <include name="**/*.jar" />
+        </fileset>
       </classpath>
     </java>
   </target>
