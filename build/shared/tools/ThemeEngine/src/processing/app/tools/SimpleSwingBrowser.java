@@ -32,13 +32,9 @@
 package processing.app.tools;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
-import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebEvent;
 import javafx.scene.web.WebView;
 
 import javax.swing.*;
@@ -48,6 +44,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import static javafx.concurrent.Worker.State.FAILED;
+
 
 public class SimpleSwingBrowser extends JFrame {
 
@@ -71,12 +68,7 @@ public class SimpleSwingBrowser extends JFrame {
   private void initComponents() {
     createScene();
 
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        loadURL(txtURL.getText());
-      }
-    };
+    ActionListener al = e -> loadURL(txtURL.getText());
 
     btnGo.addActionListener(al);
     txtURL.addActionListener(al);
@@ -107,101 +99,47 @@ public class SimpleSwingBrowser extends JFrame {
 
 
   private void createScene() {
-    Platform.runLater(new Runnable() {
-      @Override
-      public void run() {
-        WebView view = new WebView();
-        engine = view.getEngine();
+    Platform.runLater(() -> {
+			WebView view = new WebView();
+			engine = view.getEngine();
 
-        engine.titleProperty().addListener(new ChangeListener<String>() {
-          @Override
-          public void changed(ObservableValue<? extends String> observable, String oldValue, final String newValue) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                SimpleSwingBrowser.this.setTitle(newValue);
-              }
-            });
-          }
-        });
+			engine.titleProperty().addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> SimpleSwingBrowser.this.setTitle(newValue)));
 
-        engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
-          @Override
-          public void handle(final WebEvent<String> event) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                lblStatus.setText(event.getData());
-              }
-            });
-          }
-        });
+			engine.setOnStatusChanged(event -> SwingUtilities.invokeLater(() -> lblStatus.setText(event.getData())));
 
-        engine.locationProperty().addListener(new ChangeListener<String>() {
-          @Override
-          public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                txtURL.setText(newValue);
-              }
-            });
-          }
-        });
+			engine.locationProperty().addListener((ov, oldValue, newValue) -> SwingUtilities.invokeLater(() -> txtURL.setText(newValue)));
 
-        engine.getLoadWorker().workDoneProperty().addListener(new ChangeListener<Number>() {
-          @Override
-          public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, final Number newValue) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                progressBar.setValue(newValue.intValue());
-              }
-            });
-          }
-        });
+			engine.getLoadWorker().workDoneProperty().addListener((observableValue, oldValue, newValue) -> SwingUtilities.invokeLater(() -> progressBar.setValue(newValue.intValue())));
 
-        engine.getLoadWorker()
-            .exceptionProperty()
-            .addListener(new ChangeListener<Throwable>() {
+			engine.getLoadWorker()
+				.exceptionProperty()
+				.addListener((o, old, value) -> {
+					if (engine.getLoadWorker().getState() == FAILED) {
+						SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+						panel,
+						(value != null)
+						? engine.getLocation() + "\n" + value.getMessage()
+						: engine.getLocation() + "\nUnexpected error.",
+						"Loading error...",
+						JOptionPane.ERROR_MESSAGE));
+					}
+				});
 
-              public void changed(ObservableValue<? extends Throwable> o, Throwable old, final Throwable value) {
-                if (engine.getLoadWorker().getState() == FAILED) {
-                  SwingUtilities.invokeLater(new Runnable() {
-                    @Override
-                    public void run() {
-                      JOptionPane.showMessageDialog(
-                      panel,
-                      (value != null)
-                      ? engine.getLocation() + "\n" + value.getMessage()
-                      : engine.getLocation() + "\nUnexpected error.",
-                      "Loading error...",
-                      JOptionPane.ERROR_MESSAGE);
-                    }
-                  });
-                }
-              }
-            });
-
-        jfxPanel.setScene(new Scene(view));
-      }
-    });
+			jfxPanel.setScene(new Scene(view));
+		});
   }
 
 
   public void loadURL(final String url) {
-    Platform.runLater(new Runnable() {
-      @Override
-      public void run() {
-        String tmp = toURL(url);
+    Platform.runLater(() -> {
+			String tmp = toURL(url);
 
-        if (tmp == null) {
-          tmp = toURL("http://" + url);
-        }
+			if (tmp == null) {
+				tmp = toURL("http://" + url);
+			}
 
-        engine.load(tmp);
-      }
-    });
+			engine.load(tmp);
+		});
   }
 
 
@@ -215,13 +153,10 @@ public class SimpleSwingBrowser extends JFrame {
 
 
   public static void main(String[] args) {
-    SwingUtilities.invokeLater(new Runnable() {
-
-      public void run() {
-        SimpleSwingBrowser browser = new SimpleSwingBrowser();
-        browser.setVisible(true);
-        browser.loadURL("http://oracle.com");
-      }
-    });
+    SwingUtilities.invokeLater(() -> {
+			SimpleSwingBrowser browser = new SimpleSwingBrowser();
+			browser.setVisible(true);
+			browser.loadURL("http://oracle.com");
+		});
   }
 }
