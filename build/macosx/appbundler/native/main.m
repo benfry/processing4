@@ -423,7 +423,9 @@ int launch(char *commandName, int progargc, char *progargv[]) {
         if (cp == nil) {
             // Implicit classpath, so use the contents of the "Java" folder to build an explicit classpath
 
-            [classPath appendFormat:@"%@/Classes", javaPath];
+            // This causes the Classes folder to be required. Removing for 4.0 alpha 6.
+            //[classPath appendFormat:@"%@/Classes", javaPath];
+
             NSFileManager *defaultFileManager = [NSFileManager defaultManager];
             // original, non-recursive version:
             // https://developer.apple.com/documentation/foundation/nsfilemanager/1414584-contentsofdirectoryatpath

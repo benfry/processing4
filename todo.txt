@@ -27,6 +27,7 @@ X   ignore theme.txt for Modes (no longer a Mode thing)
 X   move syntax colors out of preferences.txt and into theme.txt
 X     (because it can also be accessed via the sketchbook)
 _   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
+X remove extra material from Tools folders before export
 
 api changes
 X Editor.applyPreferences() was protected, now public
@@ -136,7 +137,7 @@ _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 
 
-should be in for 4.x
+before 4.x final
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
 _ Switch to getModifiersEx() in `processing.app`
@@ -152,7 +153,8 @@ _ Add ability to move ~/.processing directory
 _   use ~/.config as parent, or $XDG_CONFIG_HOME
 o   https://github.com/processing/processing/issues/6115 (moved)
 _   https://github.com/processing/processing4/issues/203
-
+_ remove jai_imageio.jar from MovieMaker
+_   also clean out the other unused class files and src
 
 decisions before final 4.0 release
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
