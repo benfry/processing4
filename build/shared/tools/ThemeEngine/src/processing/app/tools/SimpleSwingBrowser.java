@@ -51,177 +51,177 @@ import static javafx.concurrent.Worker.State.FAILED;
 
 public class SimpleSwingBrowser extends JFrame {
 
-	private final JFXPanel jfxPanel = new JFXPanel();
-	private WebEngine engine;
+  private final JFXPanel jfxPanel = new JFXPanel();
+  private WebEngine engine;
 
-	private final JPanel panel = new JPanel(new BorderLayout());
-	private final JLabel lblStatus = new JLabel();
+  private final JPanel panel = new JPanel(new BorderLayout());
+  private final JLabel lblStatus = new JLabel();
 
-	private final JButton btnGo = new JButton("Go");
-	private final JTextField txtURL = new JTextField();
-	private final JProgressBar progressBar = new JProgressBar();
-
-
-	public SimpleSwingBrowser() {
-		super();
-		initComponents();
-	}
+  private final JButton btnGo = new JButton("Go");
+  private final JTextField txtURL = new JTextField();
+  private final JProgressBar progressBar = new JProgressBar();
 
 
-	private void initComponents() {
-		createScene();
-
-		ActionListener al = new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				loadURL(txtURL.getText());
-			}
-		};
-
-		btnGo.addActionListener(al);
-		txtURL.addActionListener(al);
-
-		progressBar.setPreferredSize(new Dimension(150, 18));
-		progressBar.setStringPainted(true);
-
-		JPanel topBar = new JPanel(new BorderLayout(5, 0));
-		topBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
-		topBar.add(txtURL, BorderLayout.CENTER);
-		topBar.add(btnGo, BorderLayout.EAST);
-
-		JPanel statusBar = new JPanel(new BorderLayout(5, 0));
-		statusBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
-		statusBar.add(lblStatus, BorderLayout.CENTER);
-		statusBar.add(progressBar, BorderLayout.EAST);
-
-		panel.add(topBar, BorderLayout.NORTH);
-		panel.add(jfxPanel, BorderLayout.CENTER);
-		panel.add(statusBar, BorderLayout.SOUTH);
-
-		getContentPane().add(panel);
-
-		setPreferredSize(new Dimension(1024, 600));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		pack();
-	}
+  public SimpleSwingBrowser() {
+    super();
+    initComponents();
+  }
 
 
-	private void createScene() {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				WebView view = new WebView();
-				engine = view.getEngine();
+  private void initComponents() {
+    createScene();
 
-				engine.titleProperty().addListener(new ChangeListener<String>() {
-					@Override
-					public void changed(ObservableValue<? extends String> observable, String oldValue, final String newValue) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								SimpleSwingBrowser.this.setTitle(newValue);
-							}
-						});
-					}
-				});
+    ActionListener al = new ActionListener() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        loadURL(txtURL.getText());
+      }
+    };
 
-				engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
-					@Override
-					public void handle(final WebEvent<String> event) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								lblStatus.setText(event.getData());
-							}
-						});
-					}
-				});
+    btnGo.addActionListener(al);
+    txtURL.addActionListener(al);
 
-				engine.locationProperty().addListener(new ChangeListener<String>() {
-					@Override
-					public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								txtURL.setText(newValue);
-							}
-						});
-					}
-				});
+    progressBar.setPreferredSize(new Dimension(150, 18));
+    progressBar.setStringPainted(true);
 
-				engine.getLoadWorker().workDoneProperty().addListener(new ChangeListener<Number>() {
-					@Override
-					public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, final Number newValue) {
-						SwingUtilities.invokeLater(new Runnable() {
-							@Override
-							public void run() {
-								progressBar.setValue(newValue.intValue());
-							}
-						});
-					}
-				});
+    JPanel topBar = new JPanel(new BorderLayout(5, 0));
+    topBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
+    topBar.add(txtURL, BorderLayout.CENTER);
+    topBar.add(btnGo, BorderLayout.EAST);
 
-				engine.getLoadWorker()
-						.exceptionProperty()
-						.addListener(new ChangeListener<Throwable>() {
+    JPanel statusBar = new JPanel(new BorderLayout(5, 0));
+    statusBar.setBorder(BorderFactory.createEmptyBorder(3, 5, 3, 5));
+    statusBar.add(lblStatus, BorderLayout.CENTER);
+    statusBar.add(progressBar, BorderLayout.EAST);
 
-							public void changed(ObservableValue<? extends Throwable> o, Throwable old, final Throwable value) {
-								if (engine.getLoadWorker().getState() == FAILED) {
-									SwingUtilities.invokeLater(new Runnable() {
-										@Override
-										public void run() {
-											JOptionPane.showMessageDialog(
-											panel,
-											(value != null)
-											? engine.getLocation() + "\n" + value.getMessage()
-											: engine.getLocation() + "\nUnexpected error.",
-											"Loading error...",
-											JOptionPane.ERROR_MESSAGE);
-										}
-									});
-								}
-							}
-						});
+    panel.add(topBar, BorderLayout.NORTH);
+    panel.add(jfxPanel, BorderLayout.CENTER);
+    panel.add(statusBar, BorderLayout.SOUTH);
 
-				jfxPanel.setScene(new Scene(view));
-			}
-		});
-	}
+    getContentPane().add(panel);
+
+    setPreferredSize(new Dimension(1024, 600));
+    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    pack();
+  }
 
 
-	public void loadURL(final String url) {
-		Platform.runLater(new Runnable() {
-			@Override
-			public void run() {
-				String tmp = toURL(url);
+  private void createScene() {
+    Platform.runLater(new Runnable() {
+      @Override
+      public void run() {
+        WebView view = new WebView();
+        engine = view.getEngine();
 
-				if (tmp == null) {
-					tmp = toURL("http://" + url);
-				}
+        engine.titleProperty().addListener(new ChangeListener<String>() {
+          @Override
+          public void changed(ObservableValue<? extends String> observable, String oldValue, final String newValue) {
+            SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                SimpleSwingBrowser.this.setTitle(newValue);
+              }
+            });
+          }
+        });
 
-				engine.load(tmp);
-			}
-		});
-	}
+        engine.setOnStatusChanged(new EventHandler<WebEvent<String>>() {
+          @Override
+          public void handle(final WebEvent<String> event) {
+            SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                lblStatus.setText(event.getData());
+              }
+            });
+          }
+        });
+
+        engine.locationProperty().addListener(new ChangeListener<String>() {
+          @Override
+          public void changed(ObservableValue<? extends String> ov, String oldValue, final String newValue) {
+            SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                txtURL.setText(newValue);
+              }
+            });
+          }
+        });
+
+        engine.getLoadWorker().workDoneProperty().addListener(new ChangeListener<Number>() {
+          @Override
+          public void changed(ObservableValue<? extends Number> observableValue, Number oldValue, final Number newValue) {
+            SwingUtilities.invokeLater(new Runnable() {
+              @Override
+              public void run() {
+                progressBar.setValue(newValue.intValue());
+              }
+            });
+          }
+        });
+
+        engine.getLoadWorker()
+            .exceptionProperty()
+            .addListener(new ChangeListener<Throwable>() {
+
+              public void changed(ObservableValue<? extends Throwable> o, Throwable old, final Throwable value) {
+                if (engine.getLoadWorker().getState() == FAILED) {
+                  SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                      JOptionPane.showMessageDialog(
+                      panel,
+                      (value != null)
+                      ? engine.getLocation() + "\n" + value.getMessage()
+                      : engine.getLocation() + "\nUnexpected error.",
+                      "Loading error...",
+                      JOptionPane.ERROR_MESSAGE);
+                    }
+                  });
+                }
+              }
+            });
+
+        jfxPanel.setScene(new Scene(view));
+      }
+    });
+  }
 
 
-	private static String toURL(String str) {
-		try {
-			return new URL(str).toExternalForm();
-		} catch (MalformedURLException exception) {
-			return null;
-		}
-	}
+  public void loadURL(final String url) {
+    Platform.runLater(new Runnable() {
+      @Override
+      public void run() {
+        String tmp = toURL(url);
+
+        if (tmp == null) {
+          tmp = toURL("http://" + url);
+        }
+
+        engine.load(tmp);
+      }
+    });
+  }
 
 
-	public static void main(String[] args) {
-		SwingUtilities.invokeLater(new Runnable() {
+  private static String toURL(String str) {
+    try {
+      return new URL(str).toExternalForm();
+    } catch (MalformedURLException exception) {
+      return null;
+    }
+  }
 
-			public void run() {
-				SimpleSwingBrowser browser = new SimpleSwingBrowser();
-				browser.setVisible(true);
-				browser.loadURL("http://oracle.com");
-			}
-		});
-	}
+
+  public static void main(String[] args) {
+    SwingUtilities.invokeLater(new Runnable() {
+
+      public void run() {
+        SimpleSwingBrowser browser = new SimpleSwingBrowser();
+        browser.setVisible(true);
+        browser.loadURL("http://oracle.com");
+      }
+    });
+  }
 }
