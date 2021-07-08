@@ -79,7 +79,7 @@
       <patternset>
         <include name="**/*.jar" />
         <!-- These two aren't supported/used -->
-        <exclude name="**/javafx.web.jar" />
+        <!-- <exclude name="**/javafx.web.jar" /> -->
         <exclude name="**/javafx-swt.jar" />
       </patternset>
 
@@ -98,7 +98,7 @@
         <include name="**/*.so" />
         <!-- The webkit library isn't included because this library is massive.
              Remove libjfxwebkit.dylib, libjfxwebkit.so, jfxwebkit.dll -->
-        <exclude name="**/*jfxwebkit.*" />
+        <!-- <exclude name="**/*jfxwebkit.*" /> -->
 
         <!-- Not using this either, but since we're using 'include', no need for it -->
         <!-- <exclude name="**/src.zip" /> -->
