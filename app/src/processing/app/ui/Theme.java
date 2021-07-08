@@ -42,10 +42,6 @@ public class Theme {
   static Settings theme;
 
   static public void init() {
-    load();
-  }
-
-  static public void load() {
     try {
       File inputFile = Platform.getContentFile("lib/theme.txt");
       if (inputFile == null) {
@@ -54,6 +50,8 @@ public class Theme {
       // First load the default theme data for the whole PDE.
       theme = new Settings(inputFile);
 
+      // A spot-check of Modes shows that theme.txt is not being overridden,
+      // so removing this (questionable, warned against) capability for 4.0a6.
       /*
       // The mode-specific theme.txt file should only contain additions,
       // and in extremely rare cases, it might override entries from the
@@ -66,21 +64,29 @@ public class Theme {
       }
       */
 
-      // https://github.com/processing/processing/issues/5445
-      File sketchbookTheme = getSketchbookFile();
-//        new File(Base.getSketchbookFolder(), "theme.txt");
-      if (sketchbookTheme.exists()) {
-        theme.load(sketchbookTheme);
-      }
-
       // other things that have to be set explicitly for the defaults
       theme.setColor("run.window.bgcolor", SystemColor.control);
+
+      // pull in the version from the user's sketchbook folder
+      load();
 
     } catch (IOException e) {
       Messages.showError("Problem loading theme.txt",
         "Could not load theme.txt, please re-install Processing", e);
     }
   }
+
+
+  /**
+   * Load theme.txt from the user's sketchbook folder.
+   */
+  static public void load() {
+    File sketchbookTheme = getSketchbookFile();
+    if (sketchbookTheme.exists()) {
+      theme.load(sketchbookTheme);
+    }
+  }
+
 
   static public void save() {
     theme.save(getSketchbookFile());
