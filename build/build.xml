@@ -595,7 +595,8 @@
                   value="The sketch you're running needs access to your microphone." />
     </bundleapp>
 
-    <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" />
+    <!-- Changed the native app to no longer look for this folder. -->
+    <!-- <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" /> -->
 
     <!-- Temporary fix until new appbundler is included again after solving
          https://github.com/processing/processing/issues/3359
