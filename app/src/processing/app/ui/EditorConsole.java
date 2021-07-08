@@ -37,7 +37,6 @@ import javax.swing.border.MatteBorder;
 import javax.swing.text.*;
 
 import processing.app.Console;
-import processing.app.Mode;
 import processing.app.Preferences;
 
 
@@ -74,7 +73,7 @@ public class EditorConsole extends JScrollPane {
     consoleTextPane = new JTextPane(consoleDoc);
     consoleTextPane.setEditable(false);
 
-    updateMode();
+    updateTheme();
 
     setViewportView(consoleTextPane);
 
@@ -130,27 +129,7 @@ public class EditorConsole extends JScrollPane {
   }
 
 
-  /**
-   * Update the font family and sizes based on the Preferences window.
-   */
   protected void updateTheme() {
-    Font font = Preferences.getFont("editor.font.family", "console.font.size", Font.PLAIN);
-
-    StyleConstants.setFontFamily(stdStyle, font.getFamily());
-    StyleConstants.setFontSize(stdStyle, font.getSize());
-    StyleConstants.setFontFamily(errStyle, font.getFamily());
-    StyleConstants.setFontSize(errStyle, font.getSize());
-
-    clear();  // otherwise we'll have mixed fonts
-  }
-
-
-  /**
-   * Change coloring, fonts, etc in response to a mode change.
-   */
-  protected void updateMode() {
-    Mode mode = editor.getMode();
-
     // necessary?
     MutableAttributeSet standard = new SimpleAttributeSet();
     StyleConstants.setAlignment(standard, StyleConstants.ALIGN_LEFT);
