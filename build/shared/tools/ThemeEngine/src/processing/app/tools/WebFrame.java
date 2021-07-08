@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+import static javafx.concurrent.Worker.State.FAILED;
+
 
 public class WebFrame extends JFrame {
 
@@ -65,12 +67,30 @@ public class WebFrame extends JFrame {
 
   private void createScene() {
     Platform.runLater(() -> {
-      //Scene scene = new Scene();
-
       WebView view = new WebView();
       engine = view.getEngine();
 
-      engine.titleProperty().addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> WebFrame.this.setTitle(newValue)));
+      engine.setOnStatusChanged(event -> SwingUtilities.invokeLater(() -> lblStatus.setText(event.getData())));
+
+      engine.locationProperty().addListener((ov, oldValue, newValue) -> SwingUtilities.invokeLater(() -> txtURL.setText(newValue)));
+
+      engine.getLoadWorker().workDoneProperty().addListener((observableValue, oldValue, newValue) -> SwingUtilities.invokeLater(() -> progressBar.setValue(newValue.intValue())));
+
+      engine.getLoadWorker()
+        .exceptionProperty()
+        .addListener((o, old, value) -> {
+          if (engine.getLoadWorker().getState() == FAILED) {
+            SwingUtilities.invokeLater(() -> JOptionPane.showMessageDialog(
+              panel,
+              (value != null)
+                ? engine.getLocation() + "\n" + value.getMessage()
+                : engine.getLocation() + "\nUnexpected error.",
+              "Loading error...",
+              JOptionPane.ERROR_MESSAGE));
+          }
+        });
+
+      jfxPanel.setScene(new Scene(view));
     });
   }
 
