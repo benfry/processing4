@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 
+import com.sun.javafx.webkit.WebConsoleListener;
+
 import static javafx.concurrent.Worker.State.FAILED;
 
 
@@ -89,6 +91,11 @@ public class WebFrame extends JFrame {
               JOptionPane.ERROR_MESSAGE));
           }
         });
+
+      // FireBug Lite is another option: https://stackoverflow.com/a/9405733
+      WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId) -> {
+        System.out.println("console: " + message + " [" + sourceId + " - " + lineNumber + "]");
+      });
 
       jfxPanel.setScene(new Scene(view));
     });
