@@ -171,16 +171,28 @@ public class Settings {
   }
 
 
+  /**
+   * Parse a color from a Settings file. Values are hexadecimal in either
+   * #RRGGBB (for opaque) or 0xAARRGGBB format (to include alpha).
+   */
   public Color getColor(String attribute) {
-    Color parsed = null;
+    Color outgoing = null;
     String s = get(attribute);
-    if ((s != null) && (s.indexOf("#") == 0)) {
+    if (s != null) {
       try {
-        int v = Integer.parseInt(s.substring(1), 16);
-        parsed = new Color(v);
+        if (s.startsWith("#")) {
+          // parse a 6-digit hex color
+          outgoing = new Color(Integer.parseInt(s.substring(1), 16));
+        } else if (s.startsWith("0x")) {
+          int v = Integer.parseInt(s.substring(2), 16);
+          outgoing = new Color(v, true);
+        }
       } catch (Exception ignored) { }
     }
-    return parsed;
+    if (outgoing == null) {
+      System.err.println("Could not parse color " + s + " for " + attribute);
+    }
+    return outgoing;
   }
 
 
