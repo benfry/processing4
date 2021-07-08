@@ -113,7 +113,10 @@ public class Settings {
   public void save(File outputFile) {
     PrintWriter writer = PApplet.createWriter(outputFile);
 
-    for (String key : table.keySet()) {
+    String[] keyList = table.keySet().toArray(new String[0]);
+    // Sorting is really helpful for debugging, diffing, and finding keys
+    keyList = PApplet.sort(keyList);
+    for (String key : keyList) {
       writer.println(key + "=" + table.get(key));
     }
 
@@ -162,6 +165,7 @@ public class Settings {
   }
 
 
+  @SuppressWarnings("unused")
   public void setInteger(String key, int value) {
     set(key, String.valueOf(value));
   }
