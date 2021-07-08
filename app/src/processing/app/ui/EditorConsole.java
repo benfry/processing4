@@ -225,37 +225,41 @@ public class EditorConsole extends JScrollPane {
    * @param err true if stderr, false if stdout
    * @return true if the message can be ignored/skipped
    */
+  @SuppressWarnings("RedundantIfStatement")
   private boolean suppressMessage(String what, boolean err) {
-    if (err && (what.contains("invalid context 0x0") || (what.contains("invalid drawable")))) {
-      // Respectfully declining... This is a quirk of more recent releases of
-      // Java on Mac OS X, but is widely reported as the source of any other
-      // bug or problem that a user runs into. It may well be a Processing
-      // bug, but until we know, we're suppressing the messages.
-      return true;
+    if (err) {
+      if (what.contains("invalid context 0x0") || (what.contains("invalid drawable"))) {
+        // Respectfully declining... This is a quirk of more recent releases of
+        // Java on Mac OS X, but is widely reported as the source of any other
+        // bug or problem that a user runs into. It may well be a Processing
+        // bug, but until we know, we're suppressing the messages.
+        return true;
 
-    } else if (err && what.contains("is calling TIS/TSM in non-main thread environment")) {
-      // Error message caused by JOGL since macOS 10.13.4, cannot fix at the moment so silencing it:
-      // https://github.com/processing/processing/issues/5462
-      // Some discussion on the Apple's developer forums seems to suggest that is not serious:
-      // https://forums.developer.apple.com/thread/105244
-      return true;
+      } else if (what.contains("is calling TIS/TSM in non-main thread environment")) {
+        // Error message caused by JOGL since macOS 10.13.4, cannot fix at the moment so silencing it:
+        // https://github.com/processing/processing/issues/5462
+        // Some discussion on the Apple's developer forums seems to suggest that is not serious:
+        // https://forums.developer.apple.com/thread/105244
+        return true;
 
-    } else if (err && what.contains("NSWindow drag regions should only be invalidated on the Main Thread")) {
-      // Keep hiding warnings triggered by JOGL on recent macOS versions (this is from 10.14 onwards I think).
-      return true;
+      } else if (what.contains("NSWindow drag regions should only be invalidated on the Main Thread")) {
+        // Keep hiding warnings triggered by JOGL on recent macOS versions (this is from 10.14 onwards I think).
+        return true;
 
-    } else if (err && what.contains("Make pbuffer:")) {
-      // Remove initialization warning from LWJGL.
-      return true;
+      } else if (what.contains("Make pbuffer:")) {
+        // Remove initialization warning from LWJGL.
+        return true;
 
-    } else if (err && what.contains("XInitThreads() called for concurrent")) {
-      // "Info: XInitThreads() called for concurrent Thread support" message on Linux
-      return true;
-
-    } else if (!err && what.contains("Listening for transport dt_socket at address")) {
-      // Message from the JVM about the socket launch for debug
-      // Listening for transport dt_socket at address: 8727
-      return true;
+      } else if (what.contains("XInitThreads() called for concurrent")) {
+        // "Info: XInitThreads() called for concurrent Thread support" message on Linux
+        return true;
+      }
+    } else {  // !err
+      if (what.contains("Listening for transport dt_socket at address")) {
+        // Message from the JVM about the socket launch for debug
+        // Listening for transport dt_socket at address: 8727
+        return true;
+      }
     }
     return false;
   }
@@ -369,15 +373,6 @@ class BufferedStyledDocument extends DefaultStyledDocument {
         needLineBreak = true;
         str = str.substring(str.indexOf('\n') + 1); // eat the line
       }
-      /*
-      while (queuedLineCount.get() > maxLineCount) {
-        Console.systemOut("too many: " + queuedLineCount);
-        ElementSpec elem = elements.remove();
-        if (elem.getType() == ElementSpec.EndTagType) {
-          queuedLineCount.decrementAndGet();
-        }
-      }
-      */
     }
     if (elements.size() > 1000) {
       insertAll();
