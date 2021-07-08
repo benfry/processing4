@@ -583,8 +583,7 @@
       <!-- Necessary to avoid complaints because JavaFX wants to be a module. -->
       <option value="--module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx/modules" />
 
-      <!-- TODO Still needs work, it may have only been working b/c of old libs -->
-      <!-- <option value="- -add-modules=javafx.base,javafx.graphics" /> -->
+      <option value="--add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" />
 
       <!-- Required for video capture and microphone input
            https://github.com/processing/processing-sound/issues/51
