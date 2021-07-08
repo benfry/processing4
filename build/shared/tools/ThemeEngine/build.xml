@@ -39,7 +39,8 @@
   </target>
 
   <target name="run" depends="build" description="Run standalone for development">
-    <java classname="processing.app.tools.WebFrame" fork="true">
+    <!-- <java classname="processing.app.tools.WebFrame" fork="true"> -->
+    <java classname="processing.app.tools.SimpleSwingBrowser" fork="true">
       <sysproperty key="java.library.path" value="${javafx.path}" />
 
       <classpath>
