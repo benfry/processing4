@@ -62,7 +62,8 @@ public class WebFrame extends JFrame {
     getContentPane().add(panel);
 
     setPreferredSize(new Dimension(1024, 600));
-    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    //setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     pack();
   }
 
@@ -92,18 +93,23 @@ public class WebFrame extends JFrame {
           }
         });
 
-      // FireBug Lite is another option: https://stackoverflow.com/a/9405733
-      WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId) -> {
-        System.out.println("console: " + message + " [" + sourceId + " - " + lineNumber + "]");
-      });
-
       jfxPanel.setScene(new Scene(view));
     });
   }
 
 
-  public void loadURL(final String url) {
+  void loadURL(final String url) {
     Platform.runLater(() -> engine.load(url));
+  }
+
+
+  void addDebug() {
+    Platform.runLater(() -> {
+      // FireBug Lite is another option: https://stackoverflow.com/a/9405733
+      WebConsoleListener.setDefaultListener((webView, message, lineNumber, sourceId) -> {
+        System.out.println("console: " + message + " [" + sourceId + " - " + lineNumber + "]");
+      });
+    });
   }
 
 
@@ -132,11 +138,19 @@ public class WebFrame extends JFrame {
   */
 
 
-  static public void main(String[] args) {
+  static WebFrame init() {
     WebFrame wf = new WebFrame();
     wf.setLocationRelativeTo(null);
     wf.setVisible(true);
 //    wf.loadURL("http://download.processing.org/contribs");
     wf.loadURL("https://learn.fathom.info/palettemaker/");
+    return wf;
+  }
+
+
+  static public void main(String[] args) {
+    WebFrame wf = init();
+    wf.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    wf.addDebug();
   }
 }

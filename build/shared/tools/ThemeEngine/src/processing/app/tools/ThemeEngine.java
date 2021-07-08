@@ -18,6 +18,7 @@ public class ThemeEngine implements Tool {
 
   public void init(Base base) {
     this.base = base;
+    //WebFrame.init();
   }
 
 
