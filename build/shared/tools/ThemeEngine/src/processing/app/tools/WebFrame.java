@@ -1,18 +1,15 @@
 package processing.app.tools;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.embed.swing.JFXPanel;
+import javafx.scene.Scene;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.net.MalformedURLException;
-import java.net.URL;
+
 
 public class WebFrame extends JFrame {
 
@@ -36,12 +33,7 @@ public class WebFrame extends JFrame {
   private void initComponents() {
     createScene();
 
-    ActionListener al = new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        loadURL(txtURL.getText());
-      }
-    };
+    ActionListener al = e -> loadURL(txtURL.getText());
 
     btnGo.addActionListener(al);
     txtURL.addActionListener(al);
@@ -72,41 +64,33 @@ public class WebFrame extends JFrame {
 
 
   private void createScene() {
-    Platform.runLater(new Runnable() {
-      @Override
-      public void run() {
-        WebView view = new WebView();
-        engine = view.getEngine();
+    Platform.runLater(() -> {
+      //Scene scene = new Scene();
 
-        engine.titleProperty().addListener(new ChangeListener<String>() {
-          @Override
-          public void changed(ObservableValue<? extends String> observable,
-                              String oldValue, final String newValue) {
-            SwingUtilities.invokeLater(new Runnable() {
-              @Override
-              public void run() {
-                WebFrame.this.setTitle(newValue);
-              }
-            });
-          }
-        });
-      }
+      WebView view = new WebView();
+      engine = view.getEngine();
+
+      engine.titleProperty().addListener((observable, oldValue, newValue) -> SwingUtilities.invokeLater(() -> WebFrame.this.setTitle(newValue)));
     });
   }
 
 
   public void loadURL(final String url) {
-    Platform.runLater(new Runnable() {
-      @Override public void run() {
-        String tmp = toURL(url);
+    Platform.runLater(() -> engine.load(url));
+  }
 
-        if (url == null) {
-          tmp = toURL("http://" + url);
-        }
 
-        System.out.println("loading " + url);
-        engine.load(tmp);
+  /*
+  public void loadURL(final String url) {
+    Platform.runLater(() -> {
+      String tmp = toURL(url);
+
+      if (url == null) {
+        tmp = toURL("http://" + url);
       }
+
+      System.out.println("loading " + url);
+      engine.load(tmp);
     });
   }
 
@@ -118,6 +102,7 @@ public class WebFrame extends JFrame {
       return null;
     }
   }
+  */
 
 
   static public void main(String[] args) {
@@ -125,6 +110,6 @@ public class WebFrame extends JFrame {
     wf.setLocationRelativeTo(null);
     wf.setVisible(true);
 //    wf.loadURL("http://download.processing.org/contribs");
-//    wf.loadURL("https://learn.fathom.info/palettemaker/");
+    wf.loadURL("https://learn.fathom.info/palettemaker/");
   }
 }
