@@ -608,10 +608,10 @@ class DetailPanel extends JPanel {
 
     if (contrib != null) {
       updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
-      updateButton.setEnabled(!contribListing.hasListDownloadFailed());
+      updateButton.setEnabled(contribListing.listDownloadSuccessful());
     }
     installRemoveButton.setVisible(isSelected() || installRemoveButton.getText().equals(Language.text("contrib.remove")) || updateInProgress);
-    installRemoveButton.setEnabled(installRemoveButton.getText().equals(Language.text("contrib.remove")) ||!contribListing.hasListDownloadFailed());
+    installRemoveButton.setEnabled(installRemoveButton.getText().equals(Language.text("contrib.remove")) || contribListing.listDownloadSuccessful());
     reorganizePaneComponents();
 
     /*

@@ -25,8 +25,6 @@ package processing.app;
 
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.WritableRaster;
 import java.io.*;
 import java.util.*;
 import java.util.List;
@@ -44,7 +42,6 @@ import processing.app.ui.Recent;
 import processing.app.ui.SketchbookFrame;
 import processing.app.ui.Toolkit;
 import processing.core.PApplet;
-import processing.core.PConstants;
 
 
 public abstract class Mode {
@@ -435,7 +432,6 @@ public abstract class Mode {
 
   public JMenu getToolbarMenu() {
     if (toolbarMenu == null) {
-//      toolbarMenu = new JMenu();
       rebuildToolbarMenu();
     }
     return toolbarMenu;
