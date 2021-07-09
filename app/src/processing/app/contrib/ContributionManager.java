@@ -296,16 +296,19 @@ public class ContributionManager {
    */
   static private void handleUpdateFailedMarkers(final AvailableContribution c) {
     File typeFolder = c.getType().getSketchbookFolder();
-
-    File[] folderList = typeFolder.listFiles();
-    if (folderList != null) {
-      for (File contribDir : folderList) {
-        if (contribDir.isDirectory()) {
-          File propsFile = new File(contribDir, c.getType() + ".properties");
-          if (propsFile.exists()) {
-            StringDict props = Util.readSettings(propsFile);
-            if (c.getName().equals(props.get("name"))) {
-              return;
+    if (typeFolder != null) {
+      File[] folderList = typeFolder.listFiles();
+      if (folderList != null) {
+        for (File contribDir : folderList) {
+          if (contribDir.isDirectory()) {
+            File propsFile = new File(contribDir, c.getType() + ".properties");
+            if (propsFile.exists()) {
+              StringDict props = Util.readSettings(propsFile);
+              if (props != null) {
+                if (c.getName().equals(props.get("name"))) {
+                  return;
+                }
+              }
             }
           }
         }
@@ -383,13 +386,10 @@ public class ContributionManager {
 
             if (contribution != null) {
               try {
-                EventQueue.invokeAndWait(new Runnable() {
-                  @Override
-                  public void run() {
-                    listing.replaceContribution(contrib, contribution);
-                    base.refreshContribs(contribution.getType());
-                    base.setUpdatesAvailable(listing.countUpdates(base));
-                  }
+                EventQueue.invokeAndWait(() -> {
+                  listing.replaceContribution(contrib, contribution);
+                  base.refreshContribs(contribution.getType());
+                  base.setUpdatesAvailable(listing.countUpdates(base));
                 });
               } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -513,7 +513,7 @@ public class ContributionManager {
     updateFlagged(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
-    SwingWorker s = new SwingWorker<Void, Void>() {
+    SwingWorker<Void, Void> s = new SwingWorker<>() {
 
       @Override
       protected Void doInBackground() throws Exception {
@@ -539,8 +539,6 @@ public class ContributionManager {
    * Deletes the icky tmp folders that were left over from installs and updates
    * in the previous run of Processing. Needed to be called only on the tools
    * and modes sketchbook folders.
-   *
-   * @param root
    */
   static private void deleteTemp(File root) {
     String pattern = root.getName().substring(0, 4) + "\\d*" + "tmp";
@@ -558,13 +556,10 @@ public class ContributionManager {
   /**
    * Deletes all the modes/tools/libs that are flagged for removal.
    */
-  static private void deleteFlagged(File root) throws Exception {
-    File[] markedForDeletion = root.listFiles(new FileFilter() {
-      public boolean accept(File folder) {
-        return (folder.isDirectory() &&
-                LocalContribution.isDeletionFlagged(folder));
-      }
-    });
+  static private void deleteFlagged(File root) {
+    File[] markedForDeletion = root.listFiles(folder ->
+      (folder.isDirectory() && LocalContribution.isDeletionFlagged(folder))
+    );
     if (markedForDeletion != null) {
       for (File folder : markedForDeletion) {
         Util.removeDir(folder);
@@ -615,9 +610,9 @@ public class ContributionManager {
     List<AvailableContribution> updateContribsList = new LinkedList<>();
 
     // TODO This is bad code... This root.getName() stuff to get the folder
-    // type, plus "libraries.properties" (not the correct file name).
-    // Not sure the function here so I'm not fixing it at the moment,
-    // but this whole function could use some cleaning. [fry 180105]
+    //      type, plus "libraries.properties" (not the correct file name).
+    //      Not sure the function here so I'm not fixing it at the moment,
+    //      but this whole function could use some cleaning. [fry 180105]
 
     String type = root.getName().substring(root.getName().lastIndexOf('/') + 1);
     String propFileName = null;
@@ -739,6 +734,7 @@ public class ContributionManager {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  /*
   static int getTypeIndex(ContributionType contributionType) {
     int index;
     if (contributionType == ContributionType.LIBRARY) {
@@ -754,4 +750,5 @@ public class ContributionManager {
     }
     return index;
   }
+  */
 }

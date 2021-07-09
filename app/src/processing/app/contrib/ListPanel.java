@@ -29,7 +29,6 @@ import java.util.Map.Entry;
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.border.Border;
-import javax.swing.event.*;
 import javax.swing.table.*;
 
 import processing.app.Base;
@@ -139,20 +138,19 @@ implements Scrollable, ContributionListing.ChangeListener {
     table.setAutoCreateRowSorter(false);
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent event) {
-          //TODO this executes 2 times when clicked and 1 time when traversed using arrow keys
-          //Ideally this should always be true but while clearing the table something fishy is going on
-          if (table.getSelectedRow() != -1) {
-            setSelectedPanel(panelByContribution.get(table.getValueAt(table
-              .getSelectedRow(), 0)));
-            // Preventing the focus to move out of filterField after typing every character
-            if (!contributionTab.filterHasFocus()) {
-              table.requestFocusInWindow();
-            }
-          }
+    table.getSelectionModel().addListSelectionListener(event -> {
+      // TODO this executes 2 times when clicked and 1 time when traversed
+      //      using arrow keys. Ideally this should always be true but while
+      //      clearing the table something fishy is going on. [Akarshit 150704]
+      if (table.getSelectedRow() != -1) {
+        setSelectedPanel(panelByContribution.get(table.getValueAt(table
+          .getSelectedRow(), 0)));
+        // Preventing the focus to move out of filterField after typing every character
+        if (!contributionTab.filterHasFocus()) {
+          table.requestFocusInWindow();
         }
-      });
+      }
+    });
 
     sorter = new TableRowSorter<>(model);
     table.setRowSorter(sorter);
@@ -187,7 +185,8 @@ implements Scrollable, ContributionListing.ChangeListener {
     return pos;
   }
 
-  class ContribHeaderRenderer extends DefaultTableCellRenderer {
+
+  static class ContribHeaderRenderer extends DefaultTableCellRenderer {
 
     public ContribHeaderRenderer() {
       setHorizontalTextPosition(LEFT);
@@ -363,16 +362,16 @@ implements Scrollable, ContributionListing.ChangeListener {
       if (sentence == null) {
         text.append("</font>");
       } else {
-        int i = 0;
-        for (i = 0; i < sentence.length(); i++) {
-          currentWidth += fontMetrics.charWidth(sentence.charAt(i));
+        int index;
+        for (index = 0; index < sentence.length(); index++) {
+          currentWidth += fontMetrics.charWidth(sentence.charAt(index));
           if (currentWidth >= colSize) {
             break;
           }
         }
-        text.append(" | </font>").append(sentence, 0, i);
+        text.append(" | </font>").append(sentence, 0, index);
         // Adding ellipses only if text doesn't fits into the column
-        if(i != sentence.length()) {
+        if (index != sentence.length()) {
           text.append("...");
         }
       }
@@ -424,7 +423,7 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
   }
 
-  protected class ContributionTableModel extends AbstractTableModel {
+  static class ContributionTableModel extends AbstractTableModel {
 
     ContributionColumn[] columns = { ContributionColumn.STATUS, ContributionColumn.NAME, ContributionColumn.AUTHOR };
     boolean sectionsEnabled;
@@ -468,9 +467,11 @@ implements Scrollable, ContributionListing.ChangeListener {
       return ContributionListing.getInstance().allContributions.stream().skip(rowIndex).findFirst().orElse(null);
     }
 
+    /*
     public void setColumns(ContributionColumn[] columns) {
       this.columns = columns;
     }
+    */
 
     public void enableSections(boolean enable) {
       this.sectionsEnabled = enable;
