@@ -576,6 +576,8 @@
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
 
+      <!-- <option value="-agentpath:/Applications/YourKit-Java-Profiler-2021.3.app/Contents/Resources/bin/mac/libyjpagent.dylib=disablestacktelemetry,exceptions=disable" /> -->
+
       <!-- Make it possible to get to JavaFX for Tools, Modes, etc. Not recommended,
            to use those, but making it possible since some Tools rely on JavaFX. -->
       <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx" />

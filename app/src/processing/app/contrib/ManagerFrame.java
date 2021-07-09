@@ -63,6 +63,7 @@ public class ManagerFrame {
   public ManagerFrame(Base base) {
     this.base = base;
 
+//    long t1 = System.currentTimeMillis();
     final int smallSize = Toolkit.zoom(12);
     final int normalSize = Toolkit.zoom(14);
     SMALL_PLAIN = Toolkit.getSansFont(smallSize, Font.PLAIN);
@@ -70,11 +71,21 @@ public class ManagerFrame {
     NORMAL_PLAIN = Toolkit.getSansFont(normalSize, Font.PLAIN);
     NORMAL_BOLD = Toolkit.getSansFont(normalSize, Font.BOLD);
 
+    // TODO Optimize these inits... unfortunately it needs to run on the EDT,
+    //      and Swing is a piece of s*t, so it's gonna be slow with lots of contribs.
+    //      All the time is being used up between t2 and t3.
+    //      In particular, load everything and then fire the update events.
+    //      Also, don't pull all the colors over and over again.
+//    long t2 = System.currentTimeMillis();
     librariesTab = new ContributionTab(this, ContributionType.LIBRARY);
     modesTab = new ContributionTab(this, ContributionType.MODE);
     toolsTab = new ContributionTab(this, ContributionType.TOOL);
     examplesTab = new ContributionTab(this, ContributionType.EXAMPLES);
+//    long t3 = System.currentTimeMillis();
     updatesTab = new UpdateContributionTab(this);
+
+//    long t4 = System.currentTimeMillis();
+//    System.out.println("ManagerFrame.<init> " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3));
   }
 
 

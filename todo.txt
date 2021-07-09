@@ -89,9 +89,6 @@ for next release
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
 
-_ startup is so incredibly slow
-_   the splash screen comes up fairly quickly, so what gives?
-
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
@@ -173,6 +170,11 @@ _   then pass through the source to update licenses
 _   add Processing Foundation as 2012-15
 _   update license info to state gplv2 not v3
 _   run through that online license checker
+
+after initial 4.0 release
+_ startup is so incredibly slow
+X   the splash screen comes up fairly quickly, so what gives?
+_   lots of EDT thread stuff, particularly with loading contribs
 
 
 discuss with Sam

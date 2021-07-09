@@ -32,11 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Map.Entry;
 
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import processing.app.contrib.*;
@@ -145,6 +141,8 @@ public class Base {
 
 
   static private void createAndShowGUI(String[] args) {
+//    long t1 = System.currentTimeMillis();
+
     File versionFile = Platform.getContentFile("lib/version.txt");
     if (versionFile != null && versionFile.exists()) {
       String[] lines = PApplet.loadStrings(versionFile);
@@ -185,8 +183,11 @@ public class Base {
     // run static initialization that grabs all the prefs
     Preferences.init();
 
+
     // get colors for ui elements (after prefs, since depends on font choices)
     Theme.init();
+
+//    long t2 = System.currentTimeMillis();
 
     if (!SingleInstance.alreadyRunning(args)) {
       // Set the look and feel before opening the window
@@ -196,6 +197,8 @@ public class Base {
       } catch (Exception e) {
         Messages.loge("Error while setting up the interface", e); //$NON-NLS-1$
       }
+
+//      long t3 = System.currentTimeMillis();
 
       boolean sketchbookPrompt = false;
       if (Preferences.getBoolean("welcome.show")) {
@@ -219,6 +222,8 @@ public class Base {
         }
       }
 
+//      long t4 = System.currentTimeMillis();
+
       // Get the sketchbook path, and make sure it's set properly
       locateSketchbookFolder();
 
@@ -232,10 +237,14 @@ public class Base {
                            "That's gonna prevent us from continuing.", e);
       }
 
+//      long t5 = System.currentTimeMillis();
+//      long t6 = 0;
+
       Messages.log("About to create Base..."); //$NON-NLS-1$
       try {
         final Base base = new Base(args);
         Messages.log("Base() constructor succeeded");
+//        t6 = System.currentTimeMillis();
 
         // Prevent more than one copy of the PDE from running.
         SingleInstance.startServer(base);
@@ -265,6 +274,9 @@ public class Base {
                            "An error occurred during startup.", t, true);
       }
       Messages.log("Done creating Base..."); //$NON-NLS-1$
+
+//      long t10 = System.currentTimeMillis();
+//      System.out.println("startup took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) + " " + (t5-t4) + " " + (t6-t5) + " " + (t10-t6) + " ms");
     }
   }
 
@@ -340,18 +352,29 @@ public class Base {
 
 
   public Base(String[] args) throws Exception {
+//    long t1 = System.currentTimeMillis();
+    // TODO Taking 3-5 seconds with several things installed, which is unacceptable.
+    //      Will take longer to optimize because most needs to run on the EDT.
     ContributionManager.init(this);
+//      } catch (Exception e) {
+//        Messages.showWarning("Contribution Manager Error",
+//                    "Error while setting up the Contribution Manager. Please report.", e);
+//      }
+//    });
 
+//    long t2 = System.currentTimeMillis();
     buildCoreModes();
     rebuildContribModes();
     rebuildContribExamples();
 
+//    long t3 = System.currentTimeMillis();
     // Needs to happen after the sketchbook folder has been located.
     // Also relies on the modes to be loaded so it knows what can be
     // marked as an example.
 //    recent = new Recent(this);
     Recent.init(this);
 
+//    long t4 = System.currentTimeMillis();
     String lastModeIdentifier = Preferences.get("mode.last"); //$NON-NLS-1$
     if (lastModeIdentifier == null) {
       nextMode = getDefaultMode();
@@ -371,12 +394,16 @@ public class Base {
 
     //contributionManagerFrame = new ContributionManagerDialog();
 
+//    long t5 = System.currentTimeMillis();
+
     // Make sure ThinkDifferent has library examples too
     nextMode.rebuildLibraryList();
 
     // Put this after loading the examples, so that building the default file
     // menu works on Mac OS X (since it needs examplesFolder to be set).
     Platform.initBase(this);
+
+//    long t6 = System.currentTimeMillis();
 
 //    // Check if there were previously opened sketches to be restored
 //    boolean opened = restoreSketches();
@@ -405,6 +432,8 @@ public class Base {
       }
     }
 
+//    long t7 = System.currentTimeMillis();
+
     // Create a new empty window (will be replaced with any files to be opened)
     if (!opened) {
       Messages.log("Calling handleNew() to open a new window");
@@ -413,11 +442,16 @@ public class Base {
       Messages.log("No handleNew(), something passed on the command line");
     }
 
+//    long t8 = System.currentTimeMillis();
+
     // check for updates
     new UpdateCheck(this);
 
     ContributionListing cl = ContributionListing.getInstance();
     cl.downloadAvailableList(this, new ContribProgressMonitor() { });
+//    long t9 = System.currentTimeMillis();
+//    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
+//      " " + (t5-t4) + " 6-5=" + (t6-t5) + " " + (t7-t6) + " " + (t8-t7) + " " + (t9-t8) + " ms");
   }
 
 
@@ -1113,6 +1147,7 @@ public class Base {
    * Create a new untitled document in a new sketch window.
    */
   public void handleNew() {
+//    long t1 = System.currentTimeMillis();
     try {
       File newbieDir;
       String newbieName;
@@ -1175,7 +1210,10 @@ public class Base {
       }
 
       String path = newbieFile.getAbsolutePath();
+//      long t2 = System.currentTimeMillis();
       /*Editor editor =*/ handleOpen(path, true);
+//      long t3 = System.currentTimeMillis();
+//      System.out.println("handleNew " + (t2-t1) + " " + (t3-t2));
 
     } catch (IOException e) {
       Messages.showWarning("That's new to me",
