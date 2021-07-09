@@ -88,6 +88,7 @@ X   https://github.com/processing/processing4/pull/219
 for next release
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
+_ "No library found for org.w3c.dom"
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
@@ -254,6 +255,7 @@ _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
 _ using svg images for res-indep icons/gui
 _   https://stackoverflow.com/a/2495712
+_ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
 _   just skip the welcome screen on Windows hidpi dipslays?
