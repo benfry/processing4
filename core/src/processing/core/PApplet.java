@@ -184,7 +184,7 @@ public class PApplet implements PConstants {
 
   /**
    * Path to sketch folder. Previously undocumented, made private in 3.0a5
-   * so that people use the sketchPath() method and it's inited properly.
+   * so that people use the sketchPath() method and it's initialized properly.
    * Call sketchPath() once to set the default.
    */
   private String sketchPath;
@@ -1344,6 +1344,7 @@ public class PApplet implements PConstants {
   Map<String, RegisteredMethods> registerMap = new ConcurrentHashMap<>();
 
 
+  /*
   static class RegisteredMethod {
     Object object;
     Method method;
@@ -1353,13 +1354,27 @@ public class PApplet implements PConstants {
       this.method = method;
     }
   }
+  */
 
 
   class RegisteredMethods {
-    // This is an ordered collection because the order of calls
-    // likely matters, or at a minimum, needs to be stable.
-    Queue<RegisteredMethod> entries = new ConcurrentLinkedQueue<>();
+    /**
+     * List of the objects for which the method is registered.
+     * This is an ordered collection because the order of calls
+     * likely matters, or at a minimum, needs to be stable.
+     */
+    Queue<Object> entries = new ConcurrentLinkedQueue<>();
+
+    /**
+     * A reference to the Method inside each Object, stored so that we're
+     * not redoing the same reflection call inside a tight loop like draw().
+     */
+    Map<Object, Method> methods = new ConcurrentHashMap<>();
+
+    /** While handle() is being called, store any removals in this Set. */
     Set<Object> removals = null;
+
+    /** Create and store this once. */
     final Object[] emptyArgs = new Object[] { };
 
     @SuppressWarnings("unused")
@@ -1373,10 +1388,11 @@ public class PApplet implements PConstants {
       // https://github.com/processing/processing4/pull/199
       removals = ConcurrentHashMap.newKeySet();
 
-      for (RegisteredMethod entry : entries) {
+      for (Object entry : entries) {
         try {
           //methods[i].invoke(objects[i], args);
-          entry.method.invoke(entry.object, args);
+          //entry.method.invoke(entry.object, args);
+          methods.get(entry).invoke(entry, args);
         } catch (Exception e) {
           // check for wrapped exception, get root exception
           Throwable t;
@@ -1398,17 +1414,17 @@ public class PApplet implements PConstants {
       }
       // Clear the entries queued for removal (if any)
       for (Object object : removals) {
-        //noinspection SuspiciousMethodCalls
         entries.remove(object);
+        methods.remove(object);
       }
       removals = null;  // clear this out
     }
 
 
     void add(Object object, Method method) {
-      //noinspection SuspiciousMethodCalls
       if (!entries.contains(object)) {
-        entries.add(new RegisteredMethod(object, method));
+        entries.add(object);
+        methods.put(object, method);
       } else {
         die(method.getName() + "() already added for this instance of " +
             object.getClass().getName());
@@ -1421,11 +1437,11 @@ public class PApplet implements PConstants {
      * must be called multiple times if object is registered multiple times).
      */
     public void remove(Object object) {
-      // If the removals list is null, that means we're not currently iterating
-      // the entries, so it's safe to remove the entry immediately.
       if (removals == null) {
-        //noinspection SuspiciousMethodCalls
+        // If the removals list is null, that means we're not currently iterating
+        // the entries, so it's safe to remove the entry immediately.
         entries.remove(object);
+        methods.remove(object);
       } else {
         // Currently iterating the list of methods, remove this afterwards
         removals.add(object);
