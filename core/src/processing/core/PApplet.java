@@ -1356,6 +1356,8 @@ public class PApplet implements PConstants {
 
 
   class RegisteredMethods {
+    // This is an ordered collection because the order of calls
+    // likely matters, or at a minimum, needs to be stable.
     Queue<RegisteredMethod> entries = new ConcurrentLinkedQueue<>();
     Set<Object> removals = null;
     final Object[] emptyArgs = new Object[] { };
@@ -1417,9 +1419,10 @@ public class PApplet implements PConstants {
     /**
      * Removes first object/method pair matched (and only the first,
      * must be called multiple times if object is registered multiple times).
-     * Does not shrink array afterwards, silently returns if method not found.
      */
     public void remove(Object object) {
+      // If the removals list is null, that means we're not currently iterating
+      // the entries, so it's safe to remove the entry immediately.
       if (removals == null) {
         //noinspection SuspiciousMethodCalls
         entries.remove(object);
