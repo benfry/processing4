@@ -20,54 +20,49 @@ import java.io.File;
  */
 public class Splash extends JFrame {
   static private Splash instance;
-  private Image image;
+  private final Image image;
 
-
-  private boolean paintCalled = false;
 
   private Splash(File imageFile, boolean hidpi) {
     this.image =
       Toolkit.getDefaultToolkit().createImage(imageFile.getAbsolutePath());
 
-    // Load the image
-    MediaTracker mt = new MediaTracker(this);
-    mt.addImage(image,0);
+    MediaTracker tracker = new MediaTracker(this);
+    tracker.addImage(image,0);
     try {
-      mt.waitForID(0);
-    } catch(InterruptedException ie){}
+      tracker.waitForID(0);
+    } catch (InterruptedException ignored) { }
 
-    // Abort on failure
-    if (mt.isErrorID(0)) {
+    if (tracker.isErrorID(0)) {
+      // Abort on failure
       setSize(0,0);
       System.err.println("Warning: SplashWindow couldn't load splash image.");
-      synchronized(this) {
-        paintCalled = true;
+      synchronized (this) {
         notifyAll();
       }
     } else {
-      // Center the window on the screen
       final int imgWidth = image.getWidth(this);
       final int imgHeight = image.getHeight(this);
       final int imgScale = hidpi ? 2 : 1;
 
-      setUndecorated(true);
-
       JComponent comp = new JComponent() {
+        final int wide = imgWidth / imgScale;
+        final int high = imgHeight / imgScale;
+
         public void paintComponent(Graphics g) {
-          System.out.println("drawing " + getSize() + " " + Splash.this.getSize());
-          g.drawImage(image, 0, 0, imgWidth / imgScale, imgHeight / imgScale, this);
+          g.drawImage(image, 0, 0, wide, high, this);
         }
 
         public Dimension getPreferredSize() {
-          return new Dimension(imgWidth / imgScale, imgHeight / imgScale);
+          return new Dimension(wide, high);
         }
       };
       comp.setSize(imgWidth, imgHeight);
-      setLayout(new FlowLayout());
+      setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
       getContentPane().add(comp);
+      setUndecorated(true);  // before pack()
       pack();
-
-      setLocationRelativeTo(null);
+      setLocationRelativeTo(null);  // center on screen
     }
   }
 
@@ -102,9 +97,7 @@ public class Splash extends JFrame {
         .invoke(null, new Object[] { args });
 
     } catch (Exception e) {
-      InternalError error = new InternalError("Failed to invoke main method");
-      error.initCause(e);
-      throw error;
+      throw new InternalError("Failed to invoke main method", e);
     }
   }
 
