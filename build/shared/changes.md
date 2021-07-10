@@ -2,7 +2,11 @@
 
 *Revision 1275 – 10 July 2021*
 
-Code completion is back! Includes an all new Movie Maker creates MP4s and Animated GIFs! And a new color scheme sure to bring out the cranks!
+Code completion is back!
+
+Added a new Movie Maker that creates MP4s and Animated GIFs!
+
+And a new color scheme sure to bring out the cranks!
 
 
 ### New Features
