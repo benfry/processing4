@@ -17,7 +17,10 @@ o ability to switch mode in p5 w/o saving/closing/etc
 X   trying to save the user from themselves here is just messier than needed
 X   opt to open a new editor window rather than weird error messages
 X   https://github.com/processing/processing4/issues/189
-X add ProRes 4444 support to Movie Maker
+X remove extra material from Tools folders before export
+X Fix "No library found for org.w3c.dom"
+
+theme
 X major theme changes
 X   move theme out of Mode and into its own Theme class
 X   remove setMode()/updateAppearance(), replace with updateTheme()
@@ -26,14 +29,12 @@ X   pieces in place to handle updates to theme while still running
 X   ignore theme.txt for Modes (no longer a Mode thing)
 X   move syntax colors out of preferences.txt and into theme.txt
 X     (because it can also be accessed via the sketchbook)
-_   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
-X remove extra material from Tools folders before export
+X   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
 X add support for 0x alpha colors in Settings/theme.txt
 X first round of design refresh (not final!)
 X   https://github.com/processing/processing4/issues/48
 X   https://github.com/processing/processing4/wiki/Themes
 X theme.txt in sketchbook folder was not being applied on startup
-X Fix "No library found for org.w3c.dom"
 
 api changes
 X Editor.applyPreferences() was protected, now public
@@ -72,6 +73,7 @@ X     via https://www.gyan.dev/ffmpeg/builds/
 X   linux64
 X     https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
 X     via https://johnvansickle.com/ffmpeg/ also has arm and others
+X add ProRes 4444 support to Movie Maker
 
 contribs
 X Module javafx.base not found on Linux

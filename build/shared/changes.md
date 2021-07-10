@@ -1,17 +1,77 @@
 # Processing 4.0 alpha 6
 
-*Revision 1275 – XX July 2021*
+*Revision 1275 – 10 July 2021*
 
-Code completion is back! 
+Code completion is back! Includes an all new Movie Maker creates MP4s and Animated GIFs! And a new color scheme sure to bring out the cranks!
+
 
 ### New Features
 
-* Movie Maker has been rewritten and much improved! It can now directly create high quality MPEG-4 videos and Animated GIFs. Due to Apple [removing support for most video codecs](https://support.apple.com/en-us/HT202884) after macOS Mojave, we could no longer export QuickTime videos. The new Tool uses [FFmpeg](https://ffmpeg.org/) behind the scenes. The Tool also supports [Apple ProRes 4444](https://support.apple.com/en-us/HT202410), which is very high quality, and incidentally, the format that Apple's “QTMovieModernizer” formerly used to re-encode “legacy” video formats.
+* Movie Maker has been rewritten and much improved! It can now directly create high quality MPEG-4 videos and Animated GIFs. Due to Apple [removing support for most video codecs](https://support.apple.com/en-us/HT202884) after macOS Mojave, we could no longer export QuickTime videos. The new Tool uses [FFmpeg](https://ffmpeg.org/) behind the scenes. The Tool also supports [Apple ProRes 4444](https://support.apple.com/en-us/HT202410), which is very high quality, and incidentally, the format that Apple's “QTMovieModernizer” formerly used to re-encode “legacy” video formats. [#6110](https://github.com/processing/processing/issues/6110)
+
+
+### Themes
+
+* We've started work on refreshing the design. This round has a new set of colors. If you like them, great! If not, please hold your complaints. The internet doesn't need more negativity! We know some people won't like it, and we're [still working on it](https://twitter.com/ben_fry/status/1409968426093735941). We think you'll be happy with the final version. [#48](https://github.com/processing/processing4/issues/48)
+
+* In the meantime, if you'd like to customize the colors, instructions are [here](https://github.com/processing/processing4/wiki/Themes).
+
+* Major work underway for improvements to how the visual theme is handled. Stay tuned!
+
+* Add `ui.font.family` and `ui.font.size` as preferences.
+
+* Added support for `0x` numbers to support alpha colors in `theme.txt`.
 
 
 ### Bug Fixes
 
+* Code completion is fixed. Thanks [Sam](https://github.com/sampottinger)! [#177](https://github.com/processing/processing4/issues/177), [#219](https://github.com/processing/processing4/pull/219)
+
+* `mouseButton` was not set correctly on `mouseReleased()` with Java2D. [#181](https://github.com/processing/processing4/issues/181)
+
 * A more useful message for the `NoClassDefError: processing/core/PApplet` startup error on Windows was in the alpha 5 source, but may not have made it into the actual release. [#154](https://github.com/processing/processing4/issues/154)
+
+* Fix `Module javafx.base not found` on Linux. Thanks [letorbi](https://github.com/letorbi). [#214](https://github.com/processing/processing4/issues/214), [#215](https://github.com/processing/processing4/pull/215)
+
+* After selecting a font other than Source Code Pro, font went to a default. [#216](https://github.com/processing/processing4/pull/216)
+
+* `unregisterMethod()` was broken. [#223](https://github.com/processing/processing4/issues/223)
+
+* Fixed "No library found for org.w3c.dom" message when using that (built-in) package.
+
+
+### Changes
+
+* When changing to an incompatible Mode, just open a new window instead of giving the user a potentially confusing error message about it. [#189](https://github.com/processing/processing4/issues/189)
+
+
+### API Changes
+
+None of these should break anything, but if they do, please let us know!
+
+* `Editor.applyPreferences()` was `protected`, now it's `public`.
+
+* Removed `Editor.repaintErrorBar()` and `Editor.showConsole()` because they didn't appear to be in use. Holler if this breaks anything.
+
+* Renamed `TextAreaPainter.getCompositionTextpainter()` to `getCompositionTextPainter()`.
+
+
+### Internal Changes
+
+* Removed `java.class.path` when launching code from inside the PDE. This should prevent conflicts, and avoid introducing problems when using Export to Application.
+
+* Removed compound key actions (which were undocumented and not in use). This clears up a lot of complexity in `DefaultInputHandler`.
+
+* Remove `jdt.compiler.jar` from subprojects.
+
+* Cleaned up lots of dead/unused parts of `javafx/build.xml`.
+
+* Move `ISSUE_TEMPLATE` to the `.github` subfolder.
+
+* Removed extra files from Tools folders for the download.
+
+* Moved doclet to separate repo. Thanks DSI! [#218](https://github.com/processing/processing4/issues/218), [#222](https://github.com/processing/processing4/pull/222)
+
 
 
 # Processing 4.0 alpha 5
