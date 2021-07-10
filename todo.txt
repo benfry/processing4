@@ -19,6 +19,7 @@ X   opt to open a new editor window rather than weird error messages
 X   https://github.com/processing/processing4/issues/189
 X remove extra material from Tools folders before export
 X Fix "No library found for org.w3c.dom"
+X only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
 theme
 X major theme changes
@@ -91,9 +92,6 @@ X   https://github.com/processing/processing4/issues/177
 X   confirmed not working from Sam's repo either
 X   https://github.com/processing/processing4/pull/219
 
-
-for next release
-_ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
