@@ -336,8 +336,8 @@
     <copy todir="${target.path}/tools" preservelastmodified="true">
       <fileset dir="shared/tools">
         <patternset>
-          <!-- <include name="MovieMaker/tool/**" /> -->
-          <include name="**/tool/**" />
+          <include name="MovieMaker/tool/**" />
+          <!-- <include name="**/tool/**" /> -->
         </patternset>
       </fileset>
     </copy>

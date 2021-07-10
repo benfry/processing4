@@ -30,9 +30,10 @@ _   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
 X remove extra material from Tools folders before export
 X add support for 0x alpha colors in Settings/theme.txt
 X first round of design refresh (not final!)
-_   https://github.com/processing/processing4/issues/48
+X   https://github.com/processing/processing4/issues/48
+X   https://github.com/processing/processing4/wiki/Themes
 X theme.txt in sketchbook folder was not being applied on startup
-X Fix "No library found for org.w3c.dom"X colors
+X Fix "No library found for org.w3c.dom"
 
 api changes
 X Editor.applyPreferences() was protected, now public
