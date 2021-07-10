@@ -15,7 +15,7 @@
   <icon>application.ico</icon>
   <classPath>
     <!-- <mainClass>processing.app.Base</mainClass> -->
-    <mainClass>processing.app.BaseSplash</mainClass>
+    <mainClass>processing.app.ui.Splash</mainClass>
     <cp>core/library/core.jar</cp>
 
     <cp>lib/pde.jar</cp>
