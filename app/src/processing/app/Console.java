@@ -85,8 +85,6 @@ public class Console {
       SimpleDateFormat formatter = new SimpleDateFormat("yyMMdd_HHmmss");
       // Moving away from a random string in 0256 (and adding hms) because
       // the random digits looked like times anyway, causing confusion.
-      //String randy = String.format("%04d", (int) (1000 * Math.random()));
-      //final String stamp = formatter.format(new Date()) + "_" + randy;
       final String stamp = formatter.format(new Date());
 
       File consoleDir = Base.getSettingsFile("console");
@@ -199,7 +197,7 @@ public class Console {
 
   static class ConsoleStream extends OutputStream {
     boolean err; // whether stderr or stdout
-    byte single[] = new byte[1];
+    byte[] single = new byte[1];
 
     public ConsoleStream(boolean err) {
       this.err = err;
@@ -209,11 +207,11 @@ public class Console {
 
     public void flush() { }
 
-    public void write(byte b[]) {  // appears never to be used
+    public void write(byte[] b) {  // appears never to be used
       write(b, 0, b.length);
     }
 
-    public void write(byte b[], int offset, int length) {
+    public void write(byte[] b, int offset, int length) {
       // First write to the original stdout/stderr
       if (err) {
         systemErr.write(b, offset, length);
@@ -241,7 +239,7 @@ public class Console {
       }
     }
 
-    public void writeFile(byte b[], int offset, int length) {
+    public void writeFile(byte[] b, int offset, int length) {
       final OutputStream echo = err ? stderrFile : stdoutFile;
       if (echo != null) {
         try {
