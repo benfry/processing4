@@ -352,7 +352,7 @@
       <fileset dir="../java">
         <!-- don't include LWJGL, it's not operational -->
         <exclude name="libraries/lwjgl/**" />
-
+        <exclude name="**/javafx-*sdk*.zip" />
         <exclude name="reference.zip" />
         <exclude name="**/._*" />
       </fileset>
