@@ -821,6 +821,7 @@
           <include name="modes/java/application/template-app/Contents/MacOS/JavaApplicationStub" />
           <include name="modes/java/application/launch4j/bin/windres" />
           <include name="modes/java/application/launch4j/bin/ld" />
+          <include name="tools/MovieMaker/tool/ffmpeg" />
         </patternset>
       </fileset>
     </apply>
