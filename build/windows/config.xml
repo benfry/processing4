@@ -14,7 +14,8 @@
   <manifest></manifest>
   <icon>application.ico</icon>
   <classPath>
-    <mainClass>processing.app.Base</mainClass>
+    <!-- <mainClass>processing.app.Base</mainClass> -->
+    <mainClass>processing.app.BaseSplash</mainClass>
     <cp>core/library/core.jar</cp>
 
     <cp>lib/pde.jar</cp>
@@ -78,12 +79,14 @@
     <!-- increase available memory for PDE X -->
     <maxHeapSize>512</maxHeapSize>
   </jre>
+  <!--
   <splash>
     <file>about.bmp</file>
     <waitForWindow>true</waitForWindow>
     <timeout>60</timeout>
     <timeoutErr>false</timeoutErr>
   </splash>
+  -->
   <messages>
     <startupErr>An error occurred while starting the application.</startupErr>
     <bundledJreErr>This application was configured to use a bundled Java Runtime Environment but the runtime is missing or corrupted. If running from a folder with non-ASCII characters, try moving this folder to another location.</bundledJreErr>
