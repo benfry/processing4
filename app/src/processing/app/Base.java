@@ -183,10 +183,6 @@ public class Base {
     // run static initialization that grabs all the prefs
     Preferences.init();
 
-
-    // get colors for ui elements (after prefs, since depends on font choices)
-    Theme.init();
-
 //    long t2 = System.currentTimeMillis();
 
     if (!SingleInstance.alreadyRunning(args)) {
@@ -199,33 +195,15 @@ public class Base {
       }
 
 //      long t3 = System.currentTimeMillis();
-
-      boolean sketchbookPrompt = false;
-      if (Preferences.getBoolean("welcome.show")) {
-        // only ask once about split sketchbooks
-        if (!Preferences.getBoolean("welcome.seen")) {
-          // Check if there's a 2.0 sketchbook present
-          String oldPath = Preferences.getOldSketchbookPath();
-          if (oldPath != null) {
-            String newPath = Preferences.getSketchbookPath();
-            // If newPath is null, this is the first run of any 3.x version
-            if (newPath == null) {
-              sketchbookPrompt = true;
-
-            } else if (oldPath.equals(newPath)) {
-              // If both exist and are identical, then the user has used
-              // pre-releases of 3.x and needs to be warned about the
-              // larger changes in this release.
-              sketchbookPrompt = true;
-            }
-          }
-        }
-      }
-
 //      long t4 = System.currentTimeMillis();
 
       // Get the sketchbook path, and make sure it's set properly
       locateSketchbookFolder();
+
+      // Load colors for UI elements. This must happen after Preferences.init()
+      // (so that fonts are set) and locateSketchbookFolder() so that a
+      // theme.txt file in the user's sketchbook folder is picked up.
+      Theme.init();
 
       // Create a location for untitled sketches
       try {
@@ -249,18 +227,7 @@ public class Base {
         // Prevent more than one copy of the PDE from running.
         SingleInstance.startServer(base);
 
-        // Needs to be shown after the first editor window opens, so that it
-        // shows up on top, and doesn't prevent an editor window from opening.
-        if (Preferences.getBoolean("welcome.show")) {
-          try {
-            new Welcome(base, sketchbookPrompt);
-          } catch (IOException e) {
-            Messages.showTrace("Unwelcoming",
-                               "Please report this error to\n" +
-                               "https://github.com/processing/processing/issues", e, false);
-          }
-        }
-
+        handleWelcomeScreen(base);
         checkDriverBug();
 
       } catch (Throwable t) {
@@ -277,6 +244,43 @@ public class Base {
 
 //      long t10 = System.currentTimeMillis();
 //      System.out.println("startup took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) + " " + (t5-t4) + " " + (t6-t5) + " " + (t10-t6) + " ms");
+    }
+  }
+
+
+  static private void handleWelcomeScreen(Base base) {
+    boolean sketchbookPrompt = false;
+    if (Preferences.getBoolean("welcome.show")) {
+      // only ask once about split sketchbooks
+      if (!Preferences.getBoolean("welcome.seen")) {
+        // Check if there's a 2.0 sketchbook present
+        String oldPath = Preferences.getOldSketchbookPath();
+        if (oldPath != null) {
+          String newPath = Preferences.getSketchbookPath();
+          // If newPath is null, this is the first run of any 3.x version
+          if (newPath == null) {
+            sketchbookPrompt = true;
+
+          } else if (oldPath.equals(newPath)) {
+            // If both exist and are identical, then the user has used
+            // pre-releases of 3.x and needs to be warned about the
+            // larger changes in this release.
+            sketchbookPrompt = true;
+          }
+        }
+      }
+    }
+
+    // Needs to be shown after the first editor window opens, so that it
+    // shows up on top, and doesn't prevent an editor window from opening.
+    if (Preferences.getBoolean("welcome.show")) {
+      try {
+        new Welcome(base, sketchbookPrompt);
+      } catch (IOException e) {
+        Messages.showTrace("Unwelcoming",
+          "Please report this error to\n" +
+            "https://github.com/processing/processing/issues", e, false);
+      }
     }
   }
 

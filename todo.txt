@@ -30,6 +30,7 @@ _   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
 X remove extra material from Tools folders before export
 X add support for 0x alpha colors in Settings/theme.txt
 X first round of design refresh (not final!)
+X theme.txt in sketchbook folder was not being applied on startup
 
 api changes
 X Editor.applyPreferences() was protected, now public
