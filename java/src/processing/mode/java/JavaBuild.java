@@ -401,6 +401,10 @@ public class JavaBuild {
     if (pkg.startsWith("processing.event.")) return true;
     if (pkg.startsWith("processing.opengl.")) return true;
 
+    if (pkg.startsWith("org.omg")) return true;
+    if (pkg.startsWith("org.w3c.dom")) return true;
+    if (pkg.startsWith("org.xml.sax")) return true;
+
     return false;
   }
 

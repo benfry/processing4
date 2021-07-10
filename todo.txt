@@ -30,7 +30,9 @@ _   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
 X remove extra material from Tools folders before export
 X add support for 0x alpha colors in Settings/theme.txt
 X first round of design refresh (not final!)
+_   https://github.com/processing/processing4/issues/48
 X theme.txt in sketchbook folder was not being applied on startup
+X Fix "No library found for org.w3c.dom"X colors
 
 api changes
 X Editor.applyPreferences() was protected, now public
@@ -90,8 +92,6 @@ X   https://github.com/processing/processing4/pull/219
 for next release
 _ only export 'tool' subfolder for Movie Maker (and Theme Engine?)
 
-_ "No library found for org.w3c.dom"
-
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
@@ -139,6 +139,19 @@ _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 
 
 before 4.x final
+_ Update graphics and visual design elements for 4.x
+_   https://github.com/processing/processing4/issues/48
+_ using svg images for res-indep icons/gui
+_   https://stackoverflow.com/a/2495712
+_ SVG library, show a warning when using style instead of presentation attributes
+_ Welcome screen or not?
+_   set a new preference for it, so people see it
+_   just skip the welcome screen on Windows hidpi dipslays?
+_   better to launch a web browser
+_     also use id/ask for login to help understand community?
+_ change help menu links to go to newer FAQ and the rest
+_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
 _ Switch to getModifiersEx() in `processing.app`
@@ -250,22 +263,6 @@ _ how are file associations handled in Linux? (for .pde, .psk)
 _ when adding a new library, its examples aren't added to the list until restart
 _ refresh option for sketchbook (bottom of window)
 _ import option for sketchbook
-
-
-before final 4.0 release
-_ Update graphics and visual design elements for 4.x
-_   https://github.com/processing/processing4/issues/48
-_ using svg images for res-indep icons/gui
-_   https://stackoverflow.com/a/2495712
-_ SVG library, show a warning when using style instead of presentation attributes
-_ Welcome screen or not?
-_   set a new preference for it, so people see it
-_   just skip the welcome screen on Windows hidpi dipslays?
-_   better to launch a web browser
-_     also use id/ask for login to help understand community?
-_ change help menu links to go to newer FAQ and the rest
-_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
-_ better means of understanding Library/Mode/Tool usage
 
 
 web/docs
