@@ -837,7 +837,6 @@ public class Toolkit {
   static public int zoom(int pixels) {
     if (zoom == 0) {
       zoom = parseZoom();
-      System.out.println(zoom);
     }
     // Deal with 125% scaling badness
     // https://github.com/processing/processing/issues/4902
