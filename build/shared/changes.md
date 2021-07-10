@@ -12,11 +12,13 @@ Code completion is back! Includes an all new Movie Maker creates MP4s and Animat
 
 ### Themes
 
-* We've started work on refreshing the design. This round has a new set of colors. If you like them, great! If not, please hold your complaints. The internet doesn't need more negativity! We know some people won't like it, and we're [still working on it](https://twitter.com/ben_fry/status/1409968426093735941). We think you'll be happy with the final version—we have some exciting updates that we aren't yet ready to share. [#48](https://github.com/processing/processing4/issues/48)
+* We've started work on refreshing the design. This round has a new set of colors. If you like them, great! If not, please hold your complaints. The internet doesn't need more negativity! We know some people won't like it, and we're [still working on it](https://twitter.com/ben_fry/status/1409968426093735941). We think you'll be happy with the final version—we have some exciting updates that we aren't yet ready to share, and it will all make more sense as the system comes together. [#48](https://github.com/processing/processing4/issues/48)
 
 * In the meantime, if you'd like to customize the colors, instructions are [here](https://github.com/processing/processing4/wiki/Themes).
 
-* Major work underway for improvements to how the visual theme is handled. Stay tuned!
+* The "4" icon and the current "About" screen are only placeholders. I was tired of looking at the 3.x design, and also needed to be able to tell the versions apart from one another. It's also necessary to start the replacement process: figuring out what things need to be updated when we incorporate the real versions.
+
+* All that said, major work underway for improvements to how the visual theme is handled. We hope to ship with a dark mode option as well. Stay tuned!
 
 * Add `ui.font.family` and `ui.font.size` as preferences.
 
