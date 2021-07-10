@@ -10,7 +10,7 @@ Code completion is back! Includes an all new Movie Maker creates MP4s and Animat
 * Movie Maker has been rewritten and much improved! It can now directly create high quality MPEG-4 videos and Animated GIFs. Due to Apple [removing support for most video codecs](https://support.apple.com/en-us/HT202884) after macOS Mojave, we could no longer export QuickTime videos. The new Tool uses [FFmpeg](https://ffmpeg.org/) behind the scenes. The Tool also supports [Apple ProRes 4444](https://support.apple.com/en-us/HT202410), which is very high quality, and incidentally, the format that Apple's “QTMovieModernizer” formerly used to re-encode “legacy” video formats. [#6110](https://github.com/processing/processing/issues/6110)
 
 
-### Themes
+### Design and Themes
 
 * We've started work on refreshing the design. This round has a new set of colors. If you like them, great! If not, please hold your complaints. The internet doesn't need more negativity! We know some people won't like it, and we're [still working on it](https://twitter.com/ben_fry/status/1409968426093735941). We think you'll be happy with the final version—we have some exciting updates that we aren't yet ready to share, and it will all make more sense as the system comes together. [#48](https://github.com/processing/processing4/issues/48)
 
@@ -19,6 +19,8 @@ Code completion is back! Includes an all new Movie Maker creates MP4s and Animat
 * The "4" icon and the current "About" screen are only placeholders. I was tired of looking at the 3.x design, and also needed to be able to tell the versions apart from one another. It's also necessary to start the replacement process: figuring out what things need to be updated when we incorporate the real versions.
 
 * All that said, major work underway for improvements to how the visual theme is handled. We hope to ship with a dark mode option as well. Stay tuned!
+
+* The splash screen handler has been rewritten because the Windows version in launch4j was too brittle. The downside is that it's a fraction of a second slower to show up, but the upside is that hi-res Linux and Windows displays get a nice 2x version instead of the crunchy low-fi (not in a good way) version.
 
 * Add `ui.font.family` and `ui.font.size` as preferences.
 

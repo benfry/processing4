@@ -20,6 +20,8 @@ X   https://github.com/processing/processing4/issues/189
 X remove extra material from Tools folders before export
 X Fix "No library found for org.w3c.dom"
 X only export 'tool' subfolder for Movie Maker (and Theme Engine?)
+X redo splash screen handler
+X   make the splash screen work in 2x on Windows and Linux
 
 theme
 X major theme changes
