@@ -51,9 +51,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1275;
+  static private final int REVISION = 1276;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1275"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1276"; //$NON-NLS-1$
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true
