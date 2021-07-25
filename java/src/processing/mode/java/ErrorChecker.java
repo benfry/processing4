@@ -89,7 +89,7 @@ class ErrorChecker {
     if (ps.compilationUnit == null) {
       iproblems = new IProblem[0];
     } else {
-      iproblems = ps.compilationUnit.getProblems();
+      iproblems = ps.iproblems;
     }
 
     final List<Problem> problems = new ArrayList<>(ps.otherProblems);
@@ -117,6 +117,8 @@ class ErrorChecker {
           // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=405780
           .filter(iproblem -> !iproblem.getMessage()
               .contains("Syntax error, insert \":: IdentifierOrNew\""))
+          .filter(iproblem -> !iproblem.getMessage()
+              .contains("must be defined in its own file"))
           // Transform into our Problems
           .map(iproblem -> {
             JavaProblem p = convertIProblem(iproblem, ps);

@@ -353,7 +353,7 @@ public class PreprocService {
     // Combine code into one buffer
     int numLines = 1;
     IntList tabStartsList = new IntList();
-    List<SketchCode> javaFiles = new ArrayList<>();
+    List<JavaSketchCode> javaFiles = new ArrayList<>();
     List<Integer> tabLineStarts = new ArrayList<>();
     for (SketchCode sc : sketch.getCode()) {
       if (sc.isExtension("pde")) {
@@ -376,7 +376,14 @@ public class PreprocService {
         numLines += SourceUtil.getCount(newPieceBuilt, "\n");
         workBuffer.append(newPieceBuilt);
       } else if (sc.isExtension("java")) {
-        javaFiles.add(sc);
+        tabStartsList.append(workBuffer.length());
+        tabLineStarts.add(numLines);
+
+        javaFiles.add(new JavaSketchCode(sc, tabStartsList.size()-1));
+
+        String newPieceBuilt = "\n//Skip java file\n";
+        numLines += SourceUtil.getCount(newPieceBuilt, "\n");
+        workBuffer.append(newPieceBuilt);
       }
     }
     result.tabStartOffsets = tabStartsList.array();
@@ -500,15 +507,15 @@ public class PreprocService {
 
     // Generate bindings after getting problems - avoids
     // 'missing type' errors when there are syntax problems
-    CompilationUnit bindingsCU;
+    FinalCompileResults finalCompile;
     if (javaFiles.size() == 0) {
-      bindingsCU = compileInMemory(
+      finalCompile = compileInMemory(
           compilableStage,
           className,
           result.classPathArray
       );
     } else {
-      bindingsCU = compileFromDisk(
+      finalCompile = compileFromDisk(
           compilableStage,
           className,
           result.classPathArray,
@@ -517,14 +524,16 @@ public class PreprocService {
     }
 
     // Get compilation problems
-    List<IProblem> bindingsProblems = Arrays.asList(bindingsCU.getProblems());
+    List<IProblem> bindingsProblems = finalCompile.getProblems();
     result.hasCompilationErrors =
       bindingsProblems.stream().anyMatch(IProblem::isError);
 
     // Update builder
     result.offsetMapper = parsableMapper.thenMapping(compilableMapper);
     result.javaCode = compilableStage;
-    result.compilationUnit = bindingsCU;
+    result.compilationUnit = finalCompile.getCompilationUnit();
+    result.javaFileMapping = finalCompile.getJavaFileMapping();
+    result.iproblems = finalCompile.getProblems();
 
     // Build it
     return result.build();
@@ -532,7 +541,7 @@ public class PreprocService {
 
   /// FINAL COMPILATION -------------------------------------------------------
 
-  private CompilationUnit compileInMemory(String compilableStage,
+  private FinalCompileResults compileInMemory(String compilableStage,
       String className, String[] classPathArray) {
 
     parser.setSource(compilableStage.toCharArray());
@@ -542,13 +551,18 @@ public class PreprocService {
     parser.setUnitName(className);
     parser.setEnvironment(classPathArray, null, null, false);
     parser.setResolveBindings(true);
-    return (CompilationUnit) parser.createAST(null);
+
+    CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+    List<IProblem> problems = Arrays.asList(compilationUnit.getProblems());
+    return new FinalCompileResults(compilationUnit, problems, new HashMap<>());
   }
 
-  private CompilationUnit compileFromDisk(String compilableStage,
-      String className, String[] classPathArray, List<SketchCode> javaFiles) {
+  private FinalCompileResults compileFromDisk(String compilableStage,
+      String className, String[] classPathArray,
+      List<JavaSketchCode> javaFiles) {
 
     List<Path> temporaryFilesList = new ArrayList<>();
+    Map<String, Integer> javaFileMapping = new HashMap<>();
 
     // Prepare preprocessor
     parser.setKind(ASTParser.K_COMPILATION_UNIT);
@@ -564,8 +578,9 @@ public class PreprocService {
     temporaryFilesList.add(mainTemporaryFile);
 
     // Write temporary java files
-    for (SketchCode javaFile : javaFiles) {
-      Path newPath = createTemporaryFile(javaFile.getProgram());
+    for (JavaSketchCode javaFile : javaFiles) {
+      Path newPath = createTemporaryFile(javaFile.getSketchCode().getProgram());
+      javaFileMapping.put(newPath.toString(), javaFile.getTabIndex());
       temporaryFilesList.add(newPath);
     }
 
@@ -577,7 +592,8 @@ public class PreprocService {
     }
 
     // Compile
-    MutableCompiledUnit compiledHolder = new MutableCompiledUnit();;
+    final MutableCompiledUnit compiledHolder = new MutableCompiledUnit();
+    final List<IProblem> problems = new ArrayList<>();
     parser.createASTs(
         temporaryFilesArray,
         null,
@@ -586,6 +602,12 @@ public class PreprocService {
           public void acceptAST(String source, CompilationUnit ast) {
             if (source.equals(mainSource)) {
               compiledHolder.set(ast);
+            }
+
+            for (IProblem problem : ast.getProblems()) {
+              System.out.println("Found problem in " + source);
+              System.out.println(problem);
+              problems.add(problem);
             }
           }
         },
@@ -596,7 +618,11 @@ public class PreprocService {
     deleteFiles(temporaryFilesList);
 
     // Return
-    return compiledHolder.get();
+    return new FinalCompileResults(
+        compiledHolder.get(),
+        problems,
+        javaFileMapping
+    );
   }
 
   private Path createTemporaryFile(String content) {
@@ -629,6 +655,51 @@ public class PreprocService {
     public CompilationUnit get() {
       return compilationUnit;
     }
+  }
+
+  private class FinalCompileResults {
+    private final CompilationUnit compilationUnit;
+    private final List<IProblem> problems;
+    private final Map<String, Integer> javaFileMapping;
+
+    public FinalCompileResults(CompilationUnit newCompilationUnit,
+        List<IProblem> newProblems, Map<String, Integer> newJavaFileMapping) {
+
+      compilationUnit = newCompilationUnit;
+      problems = newProblems;
+      javaFileMapping = newJavaFileMapping;
+    }
+
+    public CompilationUnit getCompilationUnit() {
+      return compilationUnit;
+    }
+
+    public List<IProblem> getProblems() {
+      return problems;
+    }
+
+    public Map<String, Integer> getJavaFileMapping() {
+      return javaFileMapping;
+    }
+  }
+
+  private class JavaSketchCode {
+    private SketchCode sketchCode;
+    private int tabIndex;
+
+    public JavaSketchCode(SketchCode newSketchCode, int newTabIndex) {
+      sketchCode = newSketchCode;
+      tabIndex = newTabIndex;
+    }
+
+    public SketchCode getSketchCode() {
+      return sketchCode;
+    }
+
+    public int getTabIndex() {
+      return tabIndex;
+    }
+
   }
 
   /// IMPORTS -----------------------------------------------------------------
