@@ -93,7 +93,7 @@ public class PreprocService {
       complete(null); // initialization block
     }};
 
-  private volatile boolean enabled;
+  private volatile boolean enabled = true;
 
   /**
    * Create a new preprocessing service to support an editor.
@@ -101,7 +101,6 @@ public class PreprocService {
    */
   public PreprocService(JavaEditor editor) {
     this.editor = editor;
-    enabled = !editor.hasJavaTabs();
 
     // Register listeners for first run
     whenDone(this::fireListeners);
@@ -349,7 +348,7 @@ public class PreprocService {
     IntList tabStartsList = new IntList();
     List<Integer> tabLineStarts = new ArrayList<>();
     for (SketchCode sc : sketch.getCode()) {
-      if (sc.isExtension("pde")) {
+      if (sc.isExtension("pde") || sc.isExtension("java")) {
         tabStartsList.append(workBuffer.length());
         tabLineStarts.add(numLines);
 
@@ -586,21 +585,6 @@ public class PreprocService {
   private final RuntimePathBuilder runtimePathBuilder = new RuntimePathBuilder();
 
   /// --------------------------------------------------------------------------
-
-
-  /**
-   * Emit events and update internal state (isEnabled) if java tabs added or modified.
-   *
-   * @param hasJavaTabs True if java tabs are in the sketch and false otherwise.
-   */
-  public void handleHasJavaTabsChange(boolean hasJavaTabs) {
-    enabled = !hasJavaTabs;
-    if (enabled) {
-      notifySketchChanged();
-    } else {
-      preprocessingTask.cancel(false);
-    }
-  }
 
 
   static private final Map<String, String> COMPILER_OPTIONS;

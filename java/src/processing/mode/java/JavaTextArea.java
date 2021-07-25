@@ -141,14 +141,12 @@ public class JavaTextArea extends PdeTextArea {
     super.processKeyEvent(evt);
 
     // code completion disabled if Java tabs present
-    if (!getJavaEditor().hasJavaTabs()) {
-      if (evt.getID() == KeyEvent.KEY_TYPED) {
-        processCompletionKeys(evt);
-      } else if (!Platform.isMacOS() && evt.getID() == KeyEvent.KEY_RELEASED) {
-        processCompletionKeys(evt);
-      } else if (Platform.isMacOS() && evt.getID() == KeyEvent.KEY_RELEASED) {
-        processControlSpace(evt);
-      }
+    if (evt.getID() == KeyEvent.KEY_TYPED) {
+      processCompletionKeys(evt);
+    } else if (!Platform.isMacOS() && evt.getID() == KeyEvent.KEY_RELEASED) {
+      processCompletionKeys(evt);
+    } else if (Platform.isMacOS() && evt.getID() == KeyEvent.KEY_RELEASED) {
+      processControlSpace(evt);
     }
   }
 
