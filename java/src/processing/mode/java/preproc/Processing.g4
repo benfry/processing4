@@ -4,7 +4,7 @@
  *	- changes main entry point to reflect sketch types 'static' | 'active'
  *	- adds support for type converter functions like "int()"
  *	- adds pseudo primitive type "color"
- *	- adds HTML hex notation with hash symbol: #ff5522 
+ *	- adds HTML hex notation with hash symbol: #ff5522
  */
 
 grammar Processing;
@@ -47,8 +47,8 @@ variableDeclaratorId
 // https://github.com/processing/processing/issues/93
 // prevent from types being used as variable names
 warnTypeAsVariableName
-    :   primitiveType ('[' ']')* { 
-            notifyErrorListeners("Type names are not allowed as variable names: "+$primitiveType.text); 
+    :   primitiveType ('[' ']')* {
+            notifyErrorListeners("Type names are not allowed as variable names: "+$primitiveType.text);
         }
     ;
 
@@ -127,4 +127,3 @@ LINE_COMMENT
     ;
 
 CHAR_LITERAL:       '\'' (~['\\\r\n] | EscapeSequence)* '\''; // A bit nasty but let JDT tackle invalid chars
-

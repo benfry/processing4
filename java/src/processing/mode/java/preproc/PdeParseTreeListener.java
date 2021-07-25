@@ -317,6 +317,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     footerResult = prepareFooter(rewriter, length);
   }
 
+  public void exitPackageDeclaration(ProcessingParser.PackageDeclarationContext ctx) {
+      delete(ctx.start, ctx.stop);
+  }
+
   /**
    * Endpoint for ANTLR to call when finished parsing a method invocatino.
    *
