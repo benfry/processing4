@@ -74,7 +74,6 @@ public class Compiler {
 
     String[] sourceFiles = Util.listFiles(build.getSrcFolder(), false, ".java");
     String[] command = PApplet.concat(baseCommand, sourceFiles);
-    //PApplet.println(command);
 
     try {
       // Load errors into a local StringBuilder

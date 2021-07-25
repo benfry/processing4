@@ -21,7 +21,11 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 package processing.mode.java;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,6 +52,9 @@ import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FileASTRequestor;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IType;
 
 import processing.app.Messages;
 import processing.app.Sketch;
@@ -346,9 +353,10 @@ public class PreprocService {
     // Combine code into one buffer
     int numLines = 1;
     IntList tabStartsList = new IntList();
+    List<SketchCode> javaFiles = new ArrayList<>();
     List<Integer> tabLineStarts = new ArrayList<>();
     for (SketchCode sc : sketch.getCode()) {
-      if (sc.isExtension("pde") || sc.isExtension("java")) {
+      if (sc.isExtension("pde")) {
         tabStartsList.append(workBuffer.length());
         tabLineStarts.add(numLines);
 
@@ -367,6 +375,8 @@ public class PreprocService {
         String newPieceBuilt = newPiece.toString();
         numLines += SourceUtil.getCount(newPieceBuilt, "\n");
         workBuffer.append(newPieceBuilt);
+      } else if (sc.isExtension("java")) {
+        javaFiles.add(sc);
       }
     }
     result.tabStartOffsets = tabStartsList.array();
@@ -490,14 +500,21 @@ public class PreprocService {
 
     // Generate bindings after getting problems - avoids
     // 'missing type' errors when there are syntax problems
-    parser.setSource(compilableStageChars);
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setCompilerOptions(COMPILER_OPTIONS);
-    parser.setStatementsRecovery(true);
-    parser.setUnitName(className);
-    parser.setEnvironment(result.classPathArray, null, null, false);
-    parser.setResolveBindings(true);
-    CompilationUnit bindingsCU = (CompilationUnit) parser.createAST(null);
+    CompilationUnit bindingsCU;
+    if (javaFiles.size() == 0) {
+      bindingsCU = compileInMemory(
+          compilableStage,
+          className,
+          result.classPathArray
+      );
+    } else {
+      bindingsCU = compileFromDisk(
+          compilableStage,
+          className,
+          result.classPathArray,
+          javaFiles
+      );
+    }
 
     // Get compilation problems
     List<IProblem> bindingsProblems = Arrays.asList(bindingsCU.getProblems());
@@ -513,6 +530,106 @@ public class PreprocService {
     return result.build();
   }
 
+  /// FINAL COMPILATION -------------------------------------------------------
+
+  private CompilationUnit compileInMemory(String compilableStage,
+      String className, String[] classPathArray) {
+
+    parser.setSource(compilableStage.toCharArray());
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    parser.setUnitName(className);
+    parser.setEnvironment(classPathArray, null, null, false);
+    parser.setResolveBindings(true);
+    return (CompilationUnit) parser.createAST(null);
+  }
+
+  private CompilationUnit compileFromDisk(String compilableStage,
+      String className, String[] classPathArray, List<SketchCode> javaFiles) {
+
+    List<Path> temporaryFilesList = new ArrayList<>();
+
+    // Prepare preprocessor
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+    parser.setUnitName(className);
+    parser.setEnvironment(classPathArray, null, null, false);
+    parser.setResolveBindings(true);
+
+    // Write compilable processing file
+    Path mainTemporaryFile = createTemporaryFile(compilableStage);
+    final String mainSource = mainTemporaryFile.toString();
+    temporaryFilesList.add(mainTemporaryFile);
+
+    // Write temporary java files
+    for (SketchCode javaFile : javaFiles) {
+      Path newPath = createTemporaryFile(javaFile.getProgram());
+      temporaryFilesList.add(newPath);
+    }
+
+    // Convert paths
+    int numFiles = temporaryFilesList.size();
+    String[] temporaryFilesArray = new String[numFiles];
+    for (int i = 0; i < numFiles; i++) {
+      temporaryFilesArray[i] = temporaryFilesList.get(i).toString();
+    }
+
+    // Compile
+    MutableCompiledUnit compiledHolder = new MutableCompiledUnit();;
+    parser.createASTs(
+        temporaryFilesArray,
+        null,
+        new String[] {},
+        new FileASTRequestor() {
+          public void acceptAST(String source, CompilationUnit ast) {
+            if (source.equals(mainSource)) {
+              compiledHolder.set(ast);
+            }
+          }
+        },
+        null
+    );
+
+    // Delete
+    deleteFiles(temporaryFilesList);
+
+    // Return
+    return compiledHolder.get();
+  }
+
+  private Path createTemporaryFile(String content) {
+    try {
+      Path tempFile = Files.createTempFile(null, null);
+      Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
+      return tempFile;
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot write to temporary folder.");
+    }
+  }
+
+  private void deleteFiles(List<Path> paths) {
+    try {
+      for (Path path : paths) {
+        Files.delete(path);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot delete from temporary folder.");
+    }
+  }
+
+  private class MutableCompiledUnit {
+    private CompilationUnit compilationUnit;
+
+    public void set(CompilationUnit newUnit) {
+      compilationUnit = newUnit;
+    }
+
+    public CompilationUnit get() {
+      return compilationUnit;
+    }
+  }
 
   /// IMPORTS -----------------------------------------------------------------
 

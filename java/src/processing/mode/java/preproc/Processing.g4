@@ -30,12 +30,12 @@ javaProcessingSketch
     ;
 
 staticProcessingSketch
-    :   (importDeclaration | blockStatement)* EOF
+    :   (packageDeclaration | importDeclaration | blockStatement)* EOF
     ;
 
 // active mode, has function definitions
 activeProcessingSketch
-	:	(importDeclaration | classBodyDeclaration)* EOF
+	:	(packageDeclaration | importDeclaration | classBodyDeclaration)* EOF
 	;
 
 variableDeclaratorId
