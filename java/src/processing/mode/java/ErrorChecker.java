@@ -110,15 +110,7 @@ class ErrorChecker {
       List<Problem> cuProblems = iproblems.stream()
           // Filter Warnings if they are not enabled
           .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
-          // Hide a useless error which is produced when a line ends with
-          // an identifier without a semicolon. "Missing a semicolon" is
-          // also produced and is preferred over this one.
-          // (Syntax error, insert ":: IdentifierOrNew" to complete Expression)
-          // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=405780
-          .filter(iproblem -> !iproblem.getMessage()
-              .contains("Syntax error, insert \":: IdentifierOrNew\""))
-          .filter(iproblem -> !iproblem.getMessage()
-              .contains("must be defined in its own file"))
+          .filter(iproblem -> !(isIgnorableProblem(iproblem)))
           // Transform into our Problems
           .map(iproblem -> {
             JavaProblem p = convertIProblem(iproblem, ps);
@@ -152,6 +144,38 @@ class ErrorChecker {
     };
     scheduledUiUpdate =
       scheduler.schedule(uiUpdater, delay, TimeUnit.MILLISECONDS);
+  }
+
+
+  /**
+   * Determine if a problem can be suppressed from the user.
+   *
+   * <p>
+   * Determine if one can ignore an errors where an ignorable error is one
+   * "fixed" in later pipeline steps but can make JDT angry or do not actually
+   * cause issues when reaching javac.
+   * </p>
+   *
+   * @return True if ignoreable and false otherwise.
+   */
+  static private boolean isIgnorableProblem(IProblem iproblem) {
+    String message = iproblem.getMessage();
+
+    // Hide a useless error which is produced when a line ends with
+    // an identifier without a semicolon. "Missing a semicolon" is
+    // also produced and is preferred over this one.
+    // (Syntax error, insert ":: IdentifierOrNew" to complete Expression)
+    // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=405780
+    boolean ignorable = message.contains(
+        "Syntax error, insert \":: IdentifierOrNew\""
+    );
+
+    // It's ok if the file names do not line up during preprocessing.
+    ignorable = ignorable || message.contains(
+        "must be defined in its own file"
+    );
+
+    return ignorable;
   }
 
 

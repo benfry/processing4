@@ -81,8 +81,8 @@ public class PreprocSketch {
           javaFileMapping.get(originalFile),
           iproblem.getSourceStart(),
           iproblem.getSourceEnd() + 1,
-          iproblem.getSourceStart(), // Is outside sketch code
-          iproblem.getSourceEnd() + 1  // Is outside sketch code
+          iproblem.getSourceStart(), // Is outside main sketch code
+          iproblem.getSourceEnd() + 1  // Is outside main sketch code
       );
     } else {
       return mapJavaToSketch(

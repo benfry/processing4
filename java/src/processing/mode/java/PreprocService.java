@@ -483,6 +483,7 @@ public class PreprocService {
     OffsetMapper parsableMapper = toParsable.getMapper();
 
     // Create intermediate AST for advanced preprocessing
+    // Wait on .java tabs due to speed since they don't go through preproc.
     CompileResults parseableCompile = compileInMemory(
         parsableStage,
         className,
@@ -496,13 +497,14 @@ public class PreprocService {
     toCompilable.addAll(SourceUtil.preprocessAST(parsableCU));
 
     // Transform code to compilable state
+    // Again, wait on .java tabs due to speed since they don't go through
+    // the preprocessor.
     String compilableStage = toCompilable.apply();
     OffsetMapper compilableMapper = toCompilable.getMapper();
-    char[] compilableStageChars = compilableStage.toCharArray();
 
     // Create compilable AST to get syntax problems
     CompileResults compileableCompile = compileInMemory(
-        compilableStageChars,
+        compilableStage,
         className,
         result.classPathArray,
         false
@@ -514,7 +516,8 @@ public class PreprocService {
       Arrays.stream(compilableCU.getProblems()).anyMatch(IProblem::isError);
 
     // Generate bindings after getting problems - avoids
-    // 'missing type' errors when there are syntax problems
+    // 'missing type' errors when there are syntax problems.
+    // Introduce .java tabs here for type resolution.
     CompileResults bindingsCompile;
     if (javaFiles.size() == 0) {
       bindingsCompile = compileInMemory(
@@ -599,6 +602,7 @@ public class PreprocService {
       String className, String[] classPathArray,
       List<JavaSketchCode> javaFiles, boolean resolveBindings) {
 
+    ProcessingASTRequester astRequester;
     List<Path> temporaryFilesList = new ArrayList<>();
     Map<String, Integer> javaFileMapping = new HashMap<>();
 
@@ -625,12 +629,12 @@ public class PreprocService {
     }
 
     // Compile
-    ProcessingASTRequester processingRequester = new ProcessingASTRequester();
+    astRequester = new ProcessingASTRequester(mainSource);
     parser.createASTs(
         temporaryFilesArray,
         null,
         new String[] {},
-        processingRequester,
+        astRequester,
         null
     );
 
@@ -639,8 +643,8 @@ public class PreprocService {
 
     // Return
     return new CompileResults(
-        processingRequester.getCompilationUnit(),
-        processingRequester.getProblems(),
+        astRequester.getMainCompilationUnit(),
+        astRequester.getProblems(),
         javaFileMapping
     );
   }
