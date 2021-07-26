@@ -85,9 +85,9 @@ class ErrorChecker {
     Map<String, String[]> suggCache =
         JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
 
-    IProblem[] iproblems;
+    List<IProblem> iproblems;
     if (ps.compilationUnit == null) {
-      iproblems = new IProblem[0];
+      iproblems = new ArrayList<>();
     } else {
       iproblems = ps.iproblems;
     }
@@ -107,7 +107,7 @@ class ErrorChecker {
     if (problems.isEmpty()) {
       AtomicReference<ClassPath> searchClassPath = new AtomicReference<>(null);
 
-      List<Problem> cuProblems = Arrays.stream(iproblems)
+      List<Problem> cuProblems = iproblems.stream()
           // Filter Warnings if they are not enabled
           .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
           // Hide a useless error which is produced when a line ends with
