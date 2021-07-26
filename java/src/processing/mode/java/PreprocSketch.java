@@ -74,9 +74,10 @@ public class PreprocSketch {
 
   public SketchInterval mapJavaToSketch(IProblem iproblem) {
     String originalFile = new String(iproblem.getOriginatingFileName());
-    boolean isJavaFile = javaFileMapping.containsKey(originalFile);
+    boolean isJavaTab = javaFileMapping.containsKey(originalFile);
 
-    if (isJavaFile) {
+    // If is a ".java" tab, do not need to map into combined sketch source.
+    if (isJavaTab) {
       return new SketchInterval(
           javaFileMapping.get(originalFile),
           iproblem.getSourceStart(),

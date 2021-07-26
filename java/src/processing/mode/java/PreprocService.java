@@ -361,15 +361,7 @@ public class PreprocService {
         tabLineStarts.add(numLines);
 
         StringBuilder newPiece = new StringBuilder();
-        if (sc.getDocument() != null) {
-          try {
-            newPiece.append(sc.getDocumentText());
-          } catch (BadLocationException e) {
-            e.printStackTrace();
-          }
-        } else {
-          newPiece.append(sc.getProgram());
-        }
+        newPiece.append(getSketchTabContents(sc));
         newPiece.append('\n');
 
         String newPieceBuilt = newPiece.toString();
@@ -552,6 +544,29 @@ public class PreprocService {
     return result.build();
   }
 
+  /**
+   * Get the updated (and possibly unsaved) code from a sketch tab.
+   *
+   * @param sketchCode The tab from which to content program contents.
+   * @return Updated program contents.
+   */
+  private String getSketchTabContents(SketchCode sketchCode) {
+    String code = null;
+    if (sketchCode.getDocument() != null) {
+      try {
+        code = sketchCode.getDocumentText();
+      } catch (BadLocationException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (code == null) {
+      code = sketchCode.getProgram();
+    }
+
+    return code;
+  }
+
   /// COMPILATION -----------------------------------------------------------
 
   /**
@@ -614,9 +629,10 @@ public class PreprocService {
     final String mainSource = mainTemporaryFile.toString();
     temporaryFilesList.add(mainTemporaryFile);
 
-    // Write temporary java files
+    // Write temporary java files as tab may be unsaved
     for (JavaSketchCode javaFile : javaFiles) {
-      Path newPath = createTemporaryFile(javaFile.getSketchCode().getProgram());
+      String tabContents = getSketchTabContents(javaFile.getSketchCode());
+      Path newPath = createTemporaryFile(tabContents);
       javaFileMapping.put(newPath.toString(), javaFile.getTabIndex());
       temporaryFilesList.add(newPath);
     }
