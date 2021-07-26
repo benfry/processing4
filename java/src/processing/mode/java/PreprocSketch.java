@@ -77,8 +77,6 @@ public class PreprocSketch {
     boolean isJavaFile = javaFileMapping.containsKey(originalFile);
 
     if (isJavaFile) {
-      System.out.println("**-**");
-      System.out.println(javaFileMapping.get(originalFile));
       return new SketchInterval(
           javaFileMapping.get(originalFile),
           iproblem.getSourceStart(),
