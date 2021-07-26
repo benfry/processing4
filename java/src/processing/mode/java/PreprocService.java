@@ -570,7 +570,7 @@ public class PreprocService {
   /// COMPILATION -----------------------------------------------------------
 
   /**
-   * Perform compilation with binding on a transformed Processing sketch.
+   * Perform compilation on a transformed Processing sketch.
    *
    * <p>
    * Perform compilation with optional binding on a transformed Processing
@@ -597,11 +597,11 @@ public class PreprocService {
   }
 
   /**
-   * Perform compilation with binding on a sketch of multiple files.
+   * Perform compilation on a sketch with ".java" tabs.
    *
    * <p>
-   * Perform compilation with binding on a transformed Processing sketch that
-   * contains Java files beyond the generated sketch after preprocessing.
+   * Perform compilation with optional binding on a transformed Processing sketch
+   * containing Java files beyond the generated sketch after preprocessing.
    * </p>
    *
    * @param sketchSource Full processing sketch source code without the
