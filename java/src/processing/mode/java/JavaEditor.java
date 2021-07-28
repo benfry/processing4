@@ -78,9 +78,6 @@ public class JavaEditor extends Editor {
 
 //  static final int ERROR_TAB_INDEX = 0;
 
-  private boolean hasJavaTabs;
-  private boolean javaTabWarned;
-
   protected PreprocService preprocService;
 
   protected Debugger debugger;
@@ -89,8 +86,6 @@ public class JavaEditor extends Editor {
   final private ShowUsage usage;
   final private Rename rename;
   final private ErrorChecker errorChecker;
-
-  private boolean pdexEnabled;
 
   // set true to show AST debugging window
   static private final boolean SHOW_AST_VIEWER = false;
@@ -116,8 +111,6 @@ public class JavaEditor extends Editor {
     // setting breakpoints will flag sketch as modified, so override this here
     getSketch().setModified(false);
 
-    hasJavaTabs = checkForJavaTabs();
-
     /*
     // hack to add a JPanel to the right-hand side of the text area
     JPanel textAndError = new JPanel();
@@ -135,8 +128,6 @@ public class JavaEditor extends Editor {
     */
 
     preprocService = new PreprocService(this);
-
-    pdexEnabled = !hasJavaTabs();
 
 //    long t5 = System.currentTimeMillis();
 
@@ -201,23 +192,8 @@ public class JavaEditor extends Editor {
         super.rebuild();
 
         // after Rename and New Tab, we may have new .java tabs
-        boolean newHasJavaTabs = checkForJavaTabs();
-        boolean hasJavaTabsChanged = hasJavaTabs != newHasJavaTabs;
-        hasJavaTabs = newHasJavaTabs;
 
         if (preprocService != null) {
-          if (hasJavaTabsChanged) {
-            preprocService.handleHasJavaTabsChange(hasJavaTabs);
-            pdexEnabled = !hasJavaTabs;
-            if (!pdexEnabled) {
-              usage.hide();
-            }
-
-            if (hasJavaTabs) {
-              setProblemList(Collections.emptyList());
-            }
-          }
-
           int currentTabCount = sketch.getCodeCount();
           if (currentTabCount != previousTabCount) {
             previousTabCount = currentTabCount;
@@ -2156,12 +2132,6 @@ public class JavaEditor extends Editor {
     frmImportSuggest.setVisible(true);
   }
 
-
-  public boolean hasJavaTabs() {
-    return hasJavaTabs;
-  }
-
-
   /**
    * Checks if the sketch contains java tabs. If it does, the editor ain't
    * built for it, yet. Also, user should really start looking at a full IDE
@@ -2170,13 +2140,6 @@ public class JavaEditor extends Editor {
   private boolean checkForJavaTabs() {
     for (SketchCode code : getSketch().getCode()) {
       if (code.getExtension().equals("java")) {
-        if (!javaTabWarned) {
-          System.out.println(getSketch().getName() + " contains .java tabs. ");
-          System.out.println("Some editor features (like completion " +
-                             "and error checking) will be disabled.");
-          //Base.showWarning("Cannot debug advanced sketches", msg);
-          javaTabWarned = true;
-        }
         return true;
       }
     }

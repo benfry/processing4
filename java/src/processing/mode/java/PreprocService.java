@@ -21,7 +21,11 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 package processing.mode.java;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,6 +52,9 @@ import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.FileASTRequestor;
+import org.eclipse.jdt.core.ICompilationUnit;
+import org.eclipse.jdt.core.IType;
 
 import processing.app.Messages;
 import processing.app.Sketch;
@@ -93,7 +100,7 @@ public class PreprocService {
       complete(null); // initialization block
     }};
 
-  private volatile boolean enabled;
+  private volatile boolean enabled = true;
 
   /**
    * Create a new preprocessing service to support an editor.
@@ -101,7 +108,6 @@ public class PreprocService {
    */
   public PreprocService(JavaEditor editor) {
     this.editor = editor;
-    enabled = !editor.hasJavaTabs();
 
     // Register listeners for first run
     whenDone(this::fireListeners);
@@ -347,6 +353,7 @@ public class PreprocService {
     // Combine code into one buffer
     int numLines = 1;
     IntList tabStartsList = new IntList();
+    List<JavaSketchCode> javaFiles = new ArrayList<>();
     List<Integer> tabLineStarts = new ArrayList<>();
     for (SketchCode sc : sketch.getCode()) {
       if (sc.isExtension("pde")) {
@@ -354,18 +361,23 @@ public class PreprocService {
         tabLineStarts.add(numLines);
 
         StringBuilder newPiece = new StringBuilder();
-        if (sc.getDocument() != null) {
-          try {
-            newPiece.append(sc.getDocumentText());
-          } catch (BadLocationException e) {
-            e.printStackTrace();
-          }
-        } else {
-          newPiece.append(sc.getProgram());
-        }
+        newPiece.append(getSketchTabContents(sc));
         newPiece.append('\n');
 
         String newPieceBuilt = newPiece.toString();
+        numLines += SourceUtil.getCount(newPieceBuilt, "\n");
+        workBuffer.append(newPieceBuilt);
+      } else if (sc.isExtension("java")) {
+        tabStartsList.append(workBuffer.length());
+        tabLineStarts.add(numLines);
+
+        javaFiles.add(new JavaSketchCode(sc, tabStartsList.size()-1));
+
+        String newPieceBuilt = String.format(
+            "\n// Skip java file %s.\n",
+            sc.getFileName()
+        );
+
         numLines += SourceUtil.getCount(newPieceBuilt, "\n");
         workBuffer.append(newPieceBuilt);
       }
@@ -463,57 +475,412 @@ public class PreprocService {
     OffsetMapper parsableMapper = toParsable.getMapper();
 
     // Create intermediate AST for advanced preprocessing
-    parser.setSource(parsableStage.toCharArray());
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setCompilerOptions(COMPILER_OPTIONS);
-    parser.setStatementsRecovery(true);
-    CompilationUnit parsableCU = (CompilationUnit) parser.createAST(null);
+    // Wait on .java tabs due to speed since they don't go through preproc.
+    CompileResults parseableCompile = compileInMemory(
+        parsableStage,
+        className,
+        result.classPathArray,
+        false
+    );
+    CompilationUnit parsableCU = parseableCompile.getCompilationUnit();
 
     // Prepare advanced transforms which operate on AST
     TextTransform toCompilable = new TextTransform(parsableStage);
     toCompilable.addAll(SourceUtil.preprocessAST(parsableCU));
 
     // Transform code to compilable state
+    // Again, wait on .java tabs due to speed since they don't go through
+    // the preprocessor.
     String compilableStage = toCompilable.apply();
     OffsetMapper compilableMapper = toCompilable.getMapper();
-    char[] compilableStageChars = compilableStage.toCharArray();
 
     // Create compilable AST to get syntax problems
-    parser.setSource(compilableStageChars);
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setCompilerOptions(COMPILER_OPTIONS);
-    parser.setStatementsRecovery(true);
-    CompilationUnit compilableCU = (CompilationUnit) parser.createAST(null);
+    CompileResults compileableCompile = compileInMemory(
+        compilableStage,
+        className,
+        result.classPathArray,
+        false
+    );
+    CompilationUnit compilableCU = compileableCompile.getCompilationUnit();
 
     // Get syntax problems from compilable AST
     result.hasSyntaxErrors |=
       Arrays.stream(compilableCU.getProblems()).anyMatch(IProblem::isError);
 
     // Generate bindings after getting problems - avoids
-    // 'missing type' errors when there are syntax problems
-    parser.setSource(compilableStageChars);
-    parser.setKind(ASTParser.K_COMPILATION_UNIT);
-    parser.setCompilerOptions(COMPILER_OPTIONS);
-    parser.setStatementsRecovery(true);
-    parser.setUnitName(className);
-    parser.setEnvironment(result.classPathArray, null, null, false);
-    parser.setResolveBindings(true);
-    CompilationUnit bindingsCU = (CompilationUnit) parser.createAST(null);
+    // 'missing type' errors when there are syntax problems.
+    // Introduce .java tabs here for type resolution.
+    CompileResults bindingsCompile;
+    if (javaFiles.size() == 0) {
+      bindingsCompile = compileInMemory(
+          compilableStage,
+          className,
+          result.classPathArray,
+          true
+      );
+    } else {
+      bindingsCompile = compileFromDisk(
+          compilableStage,
+          className,
+          result.classPathArray,
+          javaFiles,
+          true
+      );
+    }
 
     // Get compilation problems
-    List<IProblem> bindingsProblems = Arrays.asList(bindingsCU.getProblems());
+    List<IProblem> bindingsProblems = bindingsCompile.getProblems();
     result.hasCompilationErrors =
       bindingsProblems.stream().anyMatch(IProblem::isError);
 
     // Update builder
     result.offsetMapper = parsableMapper.thenMapping(compilableMapper);
     result.javaCode = compilableStage;
-    result.compilationUnit = bindingsCU;
+    result.compilationUnit = bindingsCompile.getCompilationUnit();
+    result.javaFileMapping = bindingsCompile.getJavaFileMapping();
+    result.iproblems = bindingsCompile.getProblems();
 
     // Build it
     return result.build();
   }
 
+  /**
+   * Get the updated (and possibly unsaved) code from a sketch tab.
+   *
+   * @param sketchCode The tab from which to content program contents.
+   * @return Updated program contents.
+   */
+  private String getSketchTabContents(SketchCode sketchCode) {
+    String code = null;
+    if (sketchCode.getDocument() != null) {
+      try {
+        code = sketchCode.getDocumentText();
+      } catch (BadLocationException e) {
+        e.printStackTrace();
+      }
+    }
+
+    if (code == null) {
+      code = sketchCode.getProgram();
+    }
+
+    return code;
+  }
+
+  /// COMPILATION -----------------------------------------------------------
+
+  /**
+   * Perform compilation on a transformed Processing sketch.
+   *
+   * <p>
+   * Perform compilation with optional binding on a transformed Processing
+   * sketch that is fully described in a single in a single in memory string.
+   * </p>
+   *
+   * @param sketchSource Full processing sketch source code.
+   * @param className The name of the class enclosing the sketch.
+   * @param classPathArray List of classpath entries.
+   * @param resolveBindings Flag indicating if compilation should happen with
+   *    binding resolution.
+   * @return The results of compilation with binding.
+   */
+  private CompileResults compileInMemory(String sketchSource, String className,
+      String[] classPathArray, boolean resolveBindings) {
+
+    // Prepare parser
+    parser.setSource(sketchSource.toCharArray());
+    setupParser(resolveBindings, className, classPathArray);
+
+    CompilationUnit compilationUnit = (CompilationUnit) parser.createAST(null);
+    List<IProblem> problems = Arrays.asList(compilationUnit.getProblems());
+    return new CompileResults(compilationUnit, problems, new HashMap<>());
+  }
+
+  /**
+   * Perform compilation on a sketch with ".java" tabs.
+   *
+   * <p>
+   * Perform compilation with optional binding on a transformed Processing sketch
+   * containing Java files beyond the generated sketch after preprocessing.
+   * </p>
+   *
+   * @param sketchSource Full processing sketch source code without the
+   *    ".java" tabs.
+   * @param className The name of the class enclosing the sketch.
+   * @param classPathArray List of classpath entries.
+   * @param javaFiles Information about the java files.
+   * @param resolveBindings Flag indicating if compilation should happen with
+   *    binding resolution.
+   * @return The results of compilation with binding.
+   */
+  private CompileResults compileFromDisk(String sketchSource,
+      String className, String[] classPathArray,
+      List<JavaSketchCode> javaFiles, boolean resolveBindings) {
+
+    ProcessingASTRequester astRequester;
+    List<Path> temporaryFilesList = new ArrayList<>();
+    Map<String, Integer> javaFileMapping = new HashMap<>();
+
+    // Prepare parser
+    setupParser(resolveBindings, className, classPathArray);
+
+    // Write compilable processing file
+    Path mainTemporaryFile = createTemporaryFile(sketchSource);
+    final String mainSource = mainTemporaryFile.toString();
+    temporaryFilesList.add(mainTemporaryFile);
+
+    // Write temporary java files as tab may be unsaved
+    for (JavaSketchCode javaFile : javaFiles) {
+      String tabContents = getSketchTabContents(javaFile.getSketchCode());
+      Path newPath = createTemporaryFile(tabContents);
+      javaFileMapping.put(newPath.toString(), javaFile.getTabIndex());
+      temporaryFilesList.add(newPath);
+    }
+
+    // Convert paths
+    int numFiles = temporaryFilesList.size();
+    String[] temporaryFilesArray = new String[numFiles];
+    for (int i = 0; i < numFiles; i++) {
+      temporaryFilesArray[i] = temporaryFilesList.get(i).toString();
+    }
+
+    // Compile
+    astRequester = new ProcessingASTRequester(mainSource);
+    parser.createASTs(
+        temporaryFilesArray,
+        null,
+        new String[] {},
+        astRequester,
+        null
+    );
+
+    // Delete
+    deleteTemporaryFiles(temporaryFilesList);
+
+    // Return
+    return new CompileResults(
+        astRequester.getMainCompilationUnit(),
+        astRequester.getProblems(),
+        javaFileMapping
+    );
+  }
+
+  /**
+   * Setup the parser compiler options and optionally bindings information.
+   *
+   * @param resolveBindings Flag indicating if bindings should be resolved /
+   *    checked for things like missing types.
+   * @param className The name of the class enclosing the sketch.
+   * @param classPathArray List of classpath entries.
+   */
+  private void setupParser(boolean resolveBindings, String className,
+      String[] classPathArray) {
+
+    parser.setKind(ASTParser.K_COMPILATION_UNIT);
+    parser.setCompilerOptions(COMPILER_OPTIONS);
+    parser.setStatementsRecovery(true);
+
+    if (resolveBindings) {
+      parser.setUnitName(className);
+      parser.setEnvironment(classPathArray, null, null, false);
+      parser.setResolveBindings(true);
+    }
+  }
+
+  /**
+   * Create a temporary file for compilation with compileFromDisk.
+   *
+   * <p>
+   * Create a temporary file for compilation with compileFromDisk where it may
+   * be necessary to provide multiple files (like in the case of .java tabs) to
+   * JDT.
+   * </p>
+   *
+   * @param content The content to write to the temporary file.
+   * @return Path to the newly created temporary file.
+   */
+  private Path createTemporaryFile(String content) {
+    try {
+      Path tempFile = Files.createTempFile(null, null);
+      Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
+      return tempFile;
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot write to temporary folder.");
+    }
+  }
+
+  /**
+   * Delete temporary files used for compileFromDisk.
+   *
+   * @param paths The temporary files to remove.
+   */
+  private void deleteTemporaryFiles(List<Path> paths) {
+    try {
+      for (Path path : paths) {
+        Files.delete(path);
+      }
+    } catch (IOException e) {
+      throw new RuntimeException("Cannot delete from temporary folder.");
+    }
+  }
+
+  /**
+   * JDT AST requestor for compileFromDisk.
+   *
+   * <p>
+   * Abstract syntax tree requestor for the JDT useful for compileFromDisk where
+   * there may be ".java" tabs in addition to the single combined ".pde" source.
+   * This requestor will collect problems from all files but hold onto the AST
+   * for the sketch's combined PDE code (not ".java" tabs).
+   * </p>
+   */
+  private class ProcessingASTRequester extends FileASTRequestor {
+    private final String mainSource;
+    private final List<IProblem> problems;
+    private CompilationUnit mainCompilationUnit;
+
+    /**
+     * Create a new requester filtering for a target file.
+     *
+     * @param newMainSource The file (likely temporary file) that contains the
+     *    PDE main sketch code.
+     */
+    public ProcessingASTRequester(String newMainSource) {
+      mainSource = newMainSource;
+      problems = new ArrayList<>();
+    }
+
+    /**
+     * Callback for a new AST.
+     *
+     * @param source The file from which the AST was built.
+     * @param ast The newly built AST as a compilation unit.
+     */
+    public void acceptAST(String source, CompilationUnit ast) {
+      if (source.equals(mainSource)) {
+        mainCompilationUnit = ast;
+      }
+
+      for (IProblem problem : ast.getProblems()) {
+        problems.add(problem);
+      }
+    }
+
+    /**
+     * Get problems found from all source files.
+     *
+     * @return Problems found across all files.
+     */
+    public List<IProblem> getProblems() {
+      return problems;
+    }
+
+    /**
+     * Get the CompilationUnit (AST) associated with the combined PDE source.
+     *
+     * @return Compilation unit associated with the combined PDE source
+     *    (excludes ".java" tabs).
+     */
+    public CompilationUnit getMainCompilationUnit() {
+      return mainCompilationUnit;
+    }
+  }
+
+  /**
+   * Data structure holding the results of compilation.
+   */
+  private class CompileResults {
+    private final CompilationUnit compilationUnit;
+    private final List<IProblem> problems;
+    private final Map<String, Integer> javaFileMapping;
+
+    /**
+     * Create a new record of compilation.
+     *
+     * @param newCompilationUnit The main compilation unit associated with the
+     *    combined PDE sources (excludes ".java" tabs).
+     * @param newProblems The problems found across all tabs (PDS or .java).
+     * @param newJavaFileMapping Mapping from java temporary file name to tab
+     *    number for ".java" tabs.
+     */
+    public CompileResults(CompilationUnit newCompilationUnit,
+        List<IProblem> newProblems, Map<String, Integer> newJavaFileMapping) {
+
+      compilationUnit = newCompilationUnit;
+      problems = newProblems;
+      javaFileMapping = newJavaFileMapping;
+    }
+
+    /**
+     * Get the main compilation unit.
+     *
+     * @return The main compilation unit for the combined PDE sources. This is
+     *    typically the entire sketch except if there are ".java" tabs which
+     *    are excluded from this compilation unit as they may be in different
+     *    packages.
+     */
+    public CompilationUnit getCompilationUnit() {
+      return compilationUnit;
+    }
+
+    /**
+     * Get problems found in compilation.
+     *
+     * @return Problems found across all files (PDE or ".java" tabs).
+     */
+    public List<IProblem> getProblems() {
+      return problems;
+    }
+
+    /**
+     * Get mapping from ".java" temporary file to tab index.
+     *
+     * @return To deal with unsaved ".java" file changes, this mapping indicates
+     *    into what temporary file a ".java" tab ended up to the tab index for
+     *    that file.
+     */
+    public Map<String, Integer> getJavaFileMapping() {
+      return javaFileMapping;
+    }
+  }
+
+  /**
+   * SketchCode (tab of sketch) which is a ".java" tab.
+   */
+  private class JavaSketchCode {
+    private SketchCode sketchCode;
+    private int tabIndex;
+
+    /**
+     * Create a new record of a ".java" tab inside a sketch.
+     *
+     * @param newSketchCode The SketchCode to be decorated.
+     * @param newTabIndex The index of the tab.
+     */
+    public JavaSketchCode(SketchCode newSketchCode, int newTabIndex) {
+      sketchCode = newSketchCode;
+      tabIndex = newTabIndex;
+    }
+
+    /**
+     * Get the sketch tab.
+     *
+     * @return SketchCode The tab and its contents.
+     */
+    public SketchCode getSketchCode() {
+      return sketchCode;
+    }
+
+    /**
+     * Get the index of the tab.
+     *
+     * @return The index of this ".java" tab within the sketch.
+     */
+    public int getTabIndex() {
+      return tabIndex;
+    }
+
+  }
 
   /// IMPORTS -----------------------------------------------------------------
 
@@ -586,21 +953,6 @@ public class PreprocService {
   private final RuntimePathBuilder runtimePathBuilder = new RuntimePathBuilder();
 
   /// --------------------------------------------------------------------------
-
-
-  /**
-   * Emit events and update internal state (isEnabled) if java tabs added or modified.
-   *
-   * @param hasJavaTabs True if java tabs are in the sketch and false otherwise.
-   */
-  public void handleHasJavaTabsChange(boolean hasJavaTabs) {
-    enabled = !hasJavaTabs;
-    if (enabled) {
-      notifySketchChanged();
-    } else {
-      preprocessingTask.cancel(false);
-    }
-  }
 
 
   static private final Map<String, String> COMPILER_OPTIONS;
