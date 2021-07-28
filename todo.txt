@@ -1,6 +1,22 @@
 1276 (4.0a7)
 
 
+Sam updates
+X can we get rid of pdexEnabled? does the current code work w/ java tabs?
+X   https://github.com/processing/processing4/issues/157
+X   https://github.com/processing/processing4/pull/230
+
+
+_ IDE cursor position is wrong if font size is changed in preferences on macOS
+_   https://github.com/processing/processing4/issues/194
+_ IDE cursor position on Windows goes weird if display scaling used
+_   https://github.com/processing/processing4/issues/226
+
+
+pdex.completion=true doesn't turn on completion,
+but pdex.completion.trigger=true does
+https://github.com/processing/processing/issues/5691
+
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
@@ -45,6 +61,8 @@ _   what happens re: getting scaled/high-res graphics?
 _   make that a preference? (and double the size by default?)
 _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
+_ was looking crunchy on low-dpi screen set to 125%
+_   was this due to the args change in alpha 5?
 
 
 before 4.x final
@@ -105,8 +123,6 @@ _   lots of EDT thread stuff, particularly with loading contribs
 discuss with Sam
 _ JSSC binaries for windows_32 and windows_64 appear to be macOS files
 _   https://github.com/processing/processing4/issues/119
-_ can we get rid of pdexEnabled? does the current code work w/ java tabs?
-_   https://github.com/processing/processing4/issues/157
 
 
 would like to fix
