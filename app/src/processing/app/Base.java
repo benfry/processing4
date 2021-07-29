@@ -159,12 +159,12 @@ public class Base {
 
     // Set the debug flag based on a file being present in the settings folder
     File debugFile = getSettingsFile("debug");
-    /*
-    if (debugFile.isDirectory()) {
-      // if it's a directory, it's a leftover from older releases, clear it
-      Util.removeDir(debugFile);
-    } else*/
-    if (debugFile.exists()) {
+
+    // If it's a directory, it's a leftover from much older releases
+    // (2.x? 3.x?) that wrote DebugMode.log files into this directory.
+    // Could remove the directory, but it's harmless enough that it's
+    // not worth deleting files in case something could go wrong.
+    if (debugFile.exists() && debugFile.isFile()) {
       DEBUG = true;
     }
 

@@ -1,5 +1,6 @@
 1276 (4.0a7)
-
+X really chatty console messages for people with old settings directories
+X   ignore 'debug' entry in prefs dir if it's a leftover DebugMode directory
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
