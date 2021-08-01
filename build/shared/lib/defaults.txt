@@ -328,20 +328,20 @@ proxy.socks.port=
 proxy.system=true
 
 # PDE X
-pdex.autoSave.autoSaveByDefault=true
-pdex.autoSave.autoSaveEnabled=false
-pdex.autoSave.promptDisplay=true
-pdex.autoSaveInterval=5
-pdex.dbgOutput=false
-pdex.errorCheckEnabled=true
-pdex.warningsEnabled=true
-pdex.writeErrorLogs=false
+pdex.errorCheckEnabled = true
+pdex.warningsEnabled = true
+pdex.writeErrorLogs = false
 
-# Set to false to disable ctrl/cmd-click jump to definition
-pdex.inspectMode.hotkey=true
+pdex.autoSave.autoSaveEnabled = false
+pdex.autoSaveInterval = 5
+pdex.autoSave.promptDisplay = true
+pdex.autoSave.autoSaveByDefault = true
+
 # Enable auto-completion when hitting ctrl-space
 pdex.completion = false
 # Trigger happy version of completion that fires more often
 pdex.completion.trigger = false
 # Suggest libraries to import when a class is undefined/unavailable
 pdex.suggest.imports = true
+# Set to false to disable ctrl/cmd-click jump to definition
+pdex.inspectMode.hotkey=true
