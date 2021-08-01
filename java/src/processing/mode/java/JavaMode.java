@@ -22,9 +22,7 @@
 
 package processing.mode.java;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -101,12 +99,6 @@ public class JavaMode extends Mode {
     if (coreLibrary == null) {
       File coreFolder = Platform.getContentFile("core");
       coreLibrary = new Library(coreFolder);
-//      try {
-//        coreLibrary = getLibrary("processing.core");
-//        System.out.println("core found at " + coreLibrary.getLibraryPath());
-//      } catch (SketchException e) {
-//        Base.log("Serious problem while locating processing.core", e);
-//      }
     }
     return coreLibrary;
   }
@@ -207,33 +199,6 @@ public class JavaMode extends Mode {
   }
 
 
-  /*
-  // TODO Why is this necessary? Why isn't Sketch.isModified() used?
-  static private boolean isSketchModified(Sketch sketch) {
-    for (SketchCode sc : sketch.getCode()) {
-      if (sc.isModified()) {
-        return true;
-      }
-    }
-    return false;
-  }
-  */
-
-
-//  public void handleStop() {
-//    if (runtime != null) {
-//      runtime.close();  // kills the window
-//      runtime = null; // will this help?
-//    }
-//  }
-
-
-//  public boolean handleExportApplet(Sketch sketch) throws SketchException, IOException {
-//    JavaBuild build = new JavaBuild(sketch);
-//    return build.exportApplet();
-//  }
-
-
   public boolean handleExportApplication(Sketch sketch) throws SketchException, IOException {
     JavaBuild build = new JavaBuild(sketch);
     return build.exportApplication();
@@ -254,54 +219,10 @@ public class JavaMode extends Mode {
 
   // Merged from ExperimentalMode
 
-  /*
-  void initLogger() {
-    final boolean VERBOSE_LOGGING = true;
-    final int LOG_SIZE = 512 * 1024; // max log file size (in bytes)
-
-    Logger globalLogger = Logger.getLogger("");
-    //Logger logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME); // doesn't work on os x
-    if (VERBOSE_LOGGING) {
-      globalLogger.setLevel(Level.INFO);
-    } else {
-      globalLogger.setLevel(Level.WARNING);
-    }
-
-    // enable logging to file
-    try {
-      // settings is writable for built-in modes, mode folder is not writable
-      File logFolder = Base.getSettingsFile("debug");
-      if (!logFolder.exists()) {
-        logFolder.mkdir();
-      }
-      File logFile = new File(logFolder, "DebugMode.%g.log");
-      Handler handler = new FileHandler(logFile.getAbsolutePath(), LOG_SIZE, 10, false);
-      globalLogger.addHandler(handler);
-
-    } catch (IOException ex) {
-      Logger.getLogger(JavaMode.class.getName()).log(Level.SEVERE, null, ex);
-    } catch (SecurityException ex) {
-      Logger.getLogger(JavaMode.class.getName()).log(Level.SEVERE, null, ex);
-    }
-  }
-  */
-
-
-  //ImageIcon classIcon, fieldIcon, methodIcon, localVarIcon;
-
-//  protected void loadIcons() {
-//    String iconPath = getContentFile("data").getAbsolutePath() + File.separator + "icons";
-//    classIcon = new ImageIcon(iconPath + File.separator + "class_obj.png");
-//    methodIcon = new ImageIcon(iconPath + File.separator + "methpub_obj.png");
-//    fieldIcon = new ImageIcon(iconPath + File.separator + "field_protected_obj.png");
-//    localVarIcon = new ImageIcon(iconPath + File.separator + "field_default_obj.png");
-//  }
-
 
   static public volatile boolean errorCheckEnabled = true;
   static public volatile boolean warningsEnabled = true;
   static public volatile boolean codeCompletionsEnabled = true;
-  static public volatile boolean debugOutputEnabled = false;
   static public volatile boolean errorLogsEnabled = false;
   static public volatile boolean autoSaveEnabled = true;
   static public volatile boolean autoSavePromptEnabled = true;
@@ -309,17 +230,11 @@ public class JavaMode extends Mode {
   static public volatile boolean ccTriggerEnabled = false;
   static public volatile boolean importSuggestEnabled = true;
   static public volatile boolean inspectModeHotkeyEnabled = true;
+
   static public int autoSaveInterval = 3; //in minutes
-
-
-  /**
-   * After how many typed characters, code completion is triggered
-   */
-  volatile public static int codeCompletionTriggerLength = 1;
 
   static public final String prefErrorCheck = "pdex.errorCheckEnabled";
   static public final String prefWarnings = "pdex.warningsEnabled";
-  static public final String prefDebugOP = "pdex.dbgOutput";
   static public final String prefErrorLogs = "pdex.writeErrorLogs";
   static public final String prefAutoSaveInterval = "pdex.autoSaveInterval";
   static public final String prefAutoSave = "pdex.autoSave.autoSaveEnabled";
@@ -332,7 +247,6 @@ public class JavaMode extends Mode {
   static public final String SUGGEST_IMPORTS_PREF = "pdex.suggest.imports";
   static public final String INSPECT_MODE_HOTKEY_PREF = "pdex.inspectMode.hotkey";
 
-//  static volatile public boolean enableTweak = false;
 
   /**
    * Stores the white list/black list of allowed/blacklisted imports. These are defined in
@@ -417,14 +331,10 @@ public class JavaMode extends Mode {
       Preferences.setBoolean(prefWarnings, warningsEnabled);
     if (Preferences.get(COMPLETION_PREF) == null)
       Preferences.setBoolean(COMPLETION_PREF, codeCompletionsEnabled);
-    if (Preferences.get(prefDebugOP) == null)
-//      Preferences.setBoolean(prefDebugOP, DEBUG);
     if (Preferences.get(prefErrorLogs) == null)
       Preferences.setBoolean(prefErrorLogs, errorLogsEnabled);
     if (Preferences.get(prefAutoSaveInterval) == null)
       Preferences.setInteger(prefAutoSaveInterval, autoSaveInterval);
-//    if(Preferences.get(prefUntitledAutoSave) == null)
-//      Preferences.setBoolean(prefUntitledAutoSave,untitledAutoSaveEnabled);
     if (Preferences.get(prefAutoSave) == null)
       Preferences.setBoolean(prefAutoSave, autoSaveEnabled);
     if (Preferences.get(prefAutoSavePrompt) == null)
