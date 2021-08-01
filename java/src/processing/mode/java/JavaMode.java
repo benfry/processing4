@@ -25,10 +25,7 @@ package processing.mode.java;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import processing.app.*;
@@ -301,6 +298,61 @@ public class JavaMode extends Mode {
   }
 
 
+  // While not pretty, loading from a file, and the necessary error-handling
+  // is even uglier. And we're not modifying these externally anyway.
+  private void loadSuggestionsMap() {
+    Collections.addAll(includedSuggestions,
+      "processing.core.PApplet",
+      "processing.core.PFont",
+      "processing.core.PGraphics",
+      "processing.core.PImage",
+      "processing.core.PMatrix2D",
+      "processing.core.PMatrix3D",
+      "processing.core.PStyle",
+      "processing.core.PVector",
+      "processing.core.PShape",
+      "processing.core.PGraphicsJava2D",
+      "processing.core.PGraphics2D",
+      "processing.core.PGraphics3D",
+      "processing.data.FloatDict",
+      "processing.data.FloatList",
+      "processing.data.IntDict",
+      "processing.data.IntList",
+      "processing.data.JSONArray",
+      "processing.data.JSONObject",
+      "processing.data.StringDict",
+      "processing.data.StringList",
+      "processing.data.Table",
+      "processing.data.XML",
+      "processing.event.Event",
+      "processing.event.KeyEvent",
+      "processing.event.MouseEvent",
+      "processing.event.TouchEvent",
+      "processing.opengl.PShader",
+      "processing.opengl.PGL",
+
+      "java.util.ArrayList",
+      "java.io.BufferedReader",
+      "java.util.HashMap",
+      "java.io.PrintWriter",
+      "java.lang.String"
+    );
+
+    Collections.addAll(excludedSuggestions,
+    "processing.core.PGraphicsRetina2D",
+      "processing.core.PShapeOBJ",
+      "processing.core.PShapeSVG",
+      "processing.data.Sort",
+      "processing.opengl.FrameBuffer",
+      "processing.opengl.LinePath",
+      "processing.opengl.LinePath.PathIterator",
+      "processing.opengl.LineStroker",
+      "processing.opengl.PGraphicsOpenGL"
+    );
+  }
+
+
+  /*
   private void loadSuggestionsMap() {
     File suggestionsFile = new File(getFolder(), "suggestions.txt");
     if (suggestionsFile.exists()) {
@@ -331,4 +383,5 @@ public class JavaMode extends Mode {
       Messages.loge("Suggestions file not found at " + suggestionsFile);
     }
   }
+  */
 }
