@@ -438,9 +438,4 @@ public class JavaMode extends Mode {
     if (Preferences.get(INSPECT_MODE_HOTKEY_PREF) == null)
       Preferences.setBoolean(INSPECT_MODE_HOTKEY_PREF, inspectModeHotkeyEnabled);
   }
-
-
-  static public void main(String[] args) {
-    processing.app.Base.main(args);
-  }
 }
