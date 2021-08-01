@@ -1305,13 +1305,13 @@ public class CompletionGenerator {
     if (isImported) return false;
 
     if (impName.startsWith("processing")) {
-      if (JavaMode.checkSuggestion("include", impName)) {
+      if (JavaMode.includeSuggestion(impName)) {
         return false;
-      } else if (JavaMode.checkSuggestion("exclude", impName)) {
+      } else if (JavaMode.excludeSuggestion(impName)) {
         return true;
       }
     } else if (impName.startsWith("java")) {
-      if (JavaMode.checkSuggestion("include", impName)) {
+      if (JavaMode.includeSuggestion(impName)) {
         return false;
       }
     }

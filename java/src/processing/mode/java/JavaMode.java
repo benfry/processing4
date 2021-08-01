@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import processing.app.*;
 import processing.app.ui.Editor;
@@ -53,6 +54,7 @@ public class JavaMode extends Mode {
 
 //    initLogger();
     loadPreferences();
+    loadSuggestionsMap();
   }
 
 
@@ -239,13 +241,26 @@ public class JavaMode extends Mode {
    * Stores the white list/black list of allowed/blacklisted imports.
    * These are defined in suggestions.txt in java mode folder.
    */
-  static private final Map<String, Set<String>> suggestionsMap = new HashMap<>();
+  static private final Set<String> includedSuggestions = ConcurrentHashMap.newKeySet();
+  static private final Set<String> excludedSuggestions = ConcurrentHashMap.newKeySet();
 
 
+  static boolean includeSuggestion(String impName) {
+    return includedSuggestions.contains(impName);
+  }
+
+
+  static boolean excludeSuggestion(String impName) {
+    return excludedSuggestions.contains(impName);
+  }
+
+
+  /*
   static boolean checkSuggestion(String mapName, String impName) {
     return suggestionsMap.containsKey(mapName) &&
       suggestionsMap.get(mapName).contains(impName);
   }
+  */
 
 
   public void loadPreferences() {
@@ -264,8 +279,6 @@ public class JavaMode extends Mode {
     ccTriggerEnabled = Preferences.getBoolean(COMPLETION_TRIGGER_PREF);
     importSuggestEnabled = Preferences.getBoolean(SUGGEST_IMPORTS_PREF);
     inspectModeHotkeyEnabled = Preferences.getBoolean(INSPECT_MODE_HOTKEY_PREF);
-
-    loadSuggestionsMap();
   }
 
 
@@ -294,21 +307,22 @@ public class JavaMode extends Mode {
       String[] lines = PApplet.loadStrings(suggestionsFile);
       if (lines != null) {
         for (String line : lines) {
-          if (!line.trim().startsWith("#")) {
+          line = line.trim();
+          if (line.length() > 0 && !line.startsWith("#")) {
             int equals = line.indexOf('=');
             if (equals != -1) {
-              // Looks like multiple versions of the same key are possible,
-              // so can't just use our Settings class.
               String key = line.substring(0, equals).trim();
-              String val = line.substring(equals + 1).trim();
+              String value = line.substring(equals + 1).trim();
 
-              if (suggestionsMap.containsKey(key)) {
-                suggestionsMap.get(key).add(val);
+              if (key.equals("include")) {
+                includedSuggestions.add(value);
+              } else if (key.equals("exclude")) {
+                excludedSuggestions.add(value);
               } else {
-                HashSet<String> set = new HashSet<>();
-                set.add(val);
-                suggestionsMap.put(key, set);
+                Messages.loge("Should be include or exclude: " + key);
               }
+            } else {
+              Messages.loge("Bad line found in suggestions file: " + line);
             }
           }
         }
