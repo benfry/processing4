@@ -22,14 +22,13 @@
 
 package processing.mode.java;
 
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import javax.swing.SwingUtilities;
 
 import processing.app.*;
 import processing.app.ui.Editor;
@@ -116,14 +115,12 @@ public class JavaMode extends Mode {
     String appletClassName = build.build(true);
     if (appletClassName != null) {
       final Runner runtime = new Runner(build, listener);
-      new Thread(new Runnable() {
-        public void run() {
-          // these block until finished
-          if (present) {
-            runtime.present(null);
-          } else {
-            runtime.launch(null);
-          }
+      new Thread(() -> {
+        // these block until finished
+        if (present) {
+          runtime.present(null);
+        } else {
+          runtime.launch(null);
         }
       }).start();
       return runtime;
@@ -161,36 +158,25 @@ public class JavaMode extends Mode {
 
     if (appletClassName != null) {
       final Runner runtime = new Runner(build, listener);
-      new Thread(new Runnable() {
-        public void run() {
-          // these block until finished
-//          if (present) {
-//            runtime.present(null);
-//          } else {
-          runtime.launch(null);
-//          }
-          // next lines are executed when the sketch quits
-          if (launchInteractive) {
-            // fix swing deadlock issue: https://github.com/processing/processing/issues/3928
-            SwingUtilities.invokeLater(new Runnable() {
-              public void run() {
-                editor.initEditorCode(parser.allHandles, false);
-                editor.stopTweakMode(parser.allHandles);
-              }
-            });
-          }
+      new Thread(() -> {
+        runtime.launch(null);
+        // next lines are executed when the sketch quits
+        if (launchInteractive) {
+          // fix swing deadlock issue: https://github.com/processing/processing/issues/3928
+          EventQueue.invokeLater(() -> {
+            editor.initEditorCode(parser.allHandles, false);
+            editor.stopTweakMode(parser.allHandles);
+          });
         }
       }).start();
 
       if (launchInteractive) {
         // fix swing deadlock issue: https://github.com/processing/processing/issues/3928
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            // replace editor code with baseCode
-            editor.initEditorCode(parser.allHandles, false);
-            editor.updateInterface(parser.allHandles, parser.colorBoxes);
-            editor.startTweakMode();
-          }
+        EventQueue.invokeLater(() -> {
+          // replace editor code with baseCode
+          editor.initEditorCode(parser.allHandles, false);
+          editor.updateInterface(parser.allHandles, parser.colorBoxes);
+          editor.startTweakMode();
         });
       }
       return runtime;
