@@ -38,6 +38,7 @@ import processing.app.ui.Editor;
 import processing.app.ui.EditorException;
 import processing.app.ui.EditorState;
 
+import processing.core.PApplet;
 import processing.mode.java.runner.Runner;
 import processing.mode.java.tweak.SketchParser;
 
@@ -376,44 +377,34 @@ public class JavaMode extends Mode {
     Preferences.setBoolean(INSPECT_MODE_HOTKEY_PREF, inspectModeHotkeyEnabled);
   }
 
-  public void loadSuggestionsMap() {
-    File suggestionsListFile = new File(getFolder() + File.separator
-        + suggestionsFileName);
-    if (!suggestionsListFile.exists()) {
-      Messages.loge("Suggestions file not found! "
-          + suggestionsListFile.getAbsolutePath());
-      return;
-    }
 
-    try {
-      BufferedReader br = new BufferedReader(
-                                             new FileReader(suggestionsListFile));
-      while (true) {
-        String line = br.readLine();
-        if (line == null) {
-          break;
-        }
-        line = line.trim();
-        if (line.startsWith("#")) {
-          continue;
-        } else {
-          if (line.contains("=")) {
-            String key = line.split("=")[0];
-            String val = line.split("=")[1];
-            if (suggestionsMap.containsKey(key)) {
-              suggestionsMap.get(key).add(val);
-            } else {
-              HashSet<String> set = new HashSet<>();
-              set.add(val);
-              suggestionsMap.put(key, set);
+  private void loadSuggestionsMap() {
+    File suggestionsListFile = new File(getFolder(), suggestionsFileName);
+    if (suggestionsListFile.exists()) {
+      String[] lines = PApplet.loadStrings(suggestionsListFile);
+      if (lines != null) {
+        for (String line : lines) {
+          if (!line.trim().startsWith("#")) {
+            int equals = line.indexOf('=');
+            if (equals != -1) {
+              // Looks like multiple versions of the same key are possible,
+              // so can't just use our Settings class.
+              String key = line.substring(0, equals).trim();
+              String val = line.substring(equals + 1).trim();
+
+              if (suggestionsMap.containsKey(key)) {
+                suggestionsMap.get(key).add(val);
+              } else {
+                HashSet<String> set = new HashSet<>();
+                set.add(val);
+                suggestionsMap.put(key, set);
+              }
             }
           }
         }
       }
-      br.close();
-    } catch (IOException e) {
-      Messages.loge("IOException while reading suggestions file:"
-          + suggestionsListFile.getAbsolutePath());
+    } else {
+      Messages.loge("Suggestions file not found at " + suggestionsListFile);
     }
   }
 
