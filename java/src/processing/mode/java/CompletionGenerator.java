@@ -1289,8 +1289,7 @@ public class CompletionGenerator {
   }
 
 
-  protected static boolean ignorableSuggestionImport(PreprocSketch ps, String impName) {
-
+  static protected boolean ignorableSuggestionImport(PreprocSketch ps, String impName) {
     String impNameLc = impName.toLowerCase();
 
     List<ImportStatement> programImports = ps.programImports;
@@ -1305,17 +1304,14 @@ public class CompletionGenerator {
 
     if (isImported) return false;
 
-    final String include = "include";
-    final String exclude = "exclude";
-
     if (impName.startsWith("processing")) {
-      if (JavaMode.suggestionsMap.containsKey(include) && JavaMode.suggestionsMap.get(include).contains(impName)) {
+      if (JavaMode.checkSuggestion("include", impName)) {
         return false;
-      } else if (JavaMode.suggestionsMap.containsKey(exclude) && JavaMode.suggestionsMap.get(exclude).contains(impName)) {
+      } else if (JavaMode.checkSuggestion("exclude", impName)) {
         return true;
       }
     } else if (impName.startsWith("java")) {
-      if (JavaMode.suggestionsMap.containsKey(include) && JavaMode.suggestionsMap.get(include).contains(impName)) {
+      if (JavaMode.checkSuggestion("include", impName)) {
         return false;
       }
     }

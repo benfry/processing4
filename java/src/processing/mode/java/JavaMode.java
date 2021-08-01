@@ -235,10 +235,17 @@ public class JavaMode extends Mode {
 
 
   /**
-   * Stores the white list/black list of allowed/blacklisted imports. These are defined in
-   * suggestions.txt in java mode folder.
+   * Stores the white list/black list of allowed/blacklisted imports.
+   * These are defined in suggestions.txt in java mode folder.
    */
-  static public final Map<String, Set<String>> suggestionsMap = new HashMap<>();
+  static private final Map<String, Set<String>> suggestionsMap = new HashMap<>();
+
+
+  static boolean checkSuggestion(String mapName, String impName) {
+    return suggestionsMap.containsKey(mapName) &&
+      JavaMode.suggestionsMap.get(mapName).contains(impName);
+  }
+
 
   public void loadPreferences() {
     Messages.log("Load PDEX prefs");
@@ -246,10 +253,8 @@ public class JavaMode extends Mode {
     errorCheckEnabled = Preferences.getBoolean(prefErrorCheck);
     warningsEnabled = Preferences.getBoolean(prefWarnings);
     codeCompletionsEnabled = Preferences.getBoolean(COMPLETION_PREF);
-//    DEBUG = Preferences.getBoolean(prefDebugOP);
     errorLogsEnabled = Preferences.getBoolean(prefErrorLogs);
     autoSaveInterval = Preferences.getInteger(prefAutoSaveInterval);
-//    untitledAutoSaveEnabled = Preferences.getBoolean(prefUntitledAutoSave);
     autoSaveEnabled = Preferences.getBoolean(prefAutoSave);
     autoSavePromptEnabled = Preferences.getBoolean(prefAutoSavePrompt);
     defaultAutoSaveEnabled = Preferences.getBoolean(prefDefaultAutoSave);
@@ -265,10 +270,8 @@ public class JavaMode extends Mode {
     Preferences.setBoolean(prefErrorCheck, errorCheckEnabled);
     Preferences.setBoolean(prefWarnings, warningsEnabled);
     Preferences.setBoolean(COMPLETION_PREF, codeCompletionsEnabled);
-//    Preferences.setBoolean(prefDebugOP, DEBUG);
     Preferences.setBoolean(prefErrorLogs, errorLogsEnabled);
     Preferences.setInteger(prefAutoSaveInterval, autoSaveInterval);
-//    Preferences.setBoolean(prefUntitledAutoSave,untitledAutoSaveEnabled);
     Preferences.setBoolean(prefAutoSave, autoSaveEnabled);
     Preferences.setBoolean(prefAutoSavePrompt, autoSavePromptEnabled);
     Preferences.setBoolean(prefDefaultAutoSave, defaultAutoSaveEnabled);
