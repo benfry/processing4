@@ -664,7 +664,6 @@ public class PreferencesFrame {
     Preferences.setBoolean("pdex.errorCheckEnabled", errorCheckerBox.isSelected());
     Preferences.setBoolean("pdex.warningsEnabled", warningsCheckerBox.isSelected());
     Preferences.setBoolean("pdex.completion", codeCompletionBox.isSelected());
-//    Preferences.setBoolean("pdex.completion.trigger", codeCompletionTriggerBox.isSelected());
     Preferences.setBoolean("pdex.suggest.imports", importSuggestionsBox.isSelected());
 
     for (Editor editor : base.getEditors()) {
