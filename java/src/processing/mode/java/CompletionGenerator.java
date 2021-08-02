@@ -73,8 +73,7 @@ public class CompletionGenerator {
   }
 
 
-  public static CompletionCandidate[] checkForTypes(ASTNode node) {
-
+  static private CompletionCandidate[] checkForTypes(ASTNode node) {
     List<VariableDeclarationFragment> vdfs = null;
     switch (node.getNodeType()) {
     case ASTNode.TYPE_DECLARATION:
@@ -188,7 +187,7 @@ public class CompletionGenerator {
    * type of b if it exists in return type of a(). If noCompare is true,
    * it'll return type of a()
    */
-  static public ClassMember resolveExpression3rdParty(PreprocSketch ps, ASTNode nearestNode,
+  static private ClassMember resolveExpression3rdParty(PreprocSketch ps, ASTNode nearestNode,
                                                       ASTNode astNode, boolean noCompare) {
     log("Resolve 3rdParty expr-- " + getNodeAsString(astNode)
         + " nearest node " + getNodeAsString(nearestNode));
@@ -744,7 +743,7 @@ public class CompletionGenerator {
     return tehClass;
   }
 
-  static ClassMember definedIn3rdPartyClass(PreprocSketch ps, String className,String memberName){
+  static ClassMember definedIn3rdPartyClass(PreprocSketch ps, String className, String memberName){
     Class<?> probableClass = findClassIfExists(ps, className);
     if (probableClass == null) {
       log("Couldn't load " + className);
@@ -912,7 +911,7 @@ public class CompletionGenerator {
    * ASTNode for ex, and it tries its level best to locate its declaration in
    * the AST. It really does.
    */
-  static protected ASTNode findDeclaration(Name findMe) {
+  static private ASTNode findDeclaration(Name findMe) {
     // WARNING: You're entering the Rube Goldberg territory of Experimental Mode.
     // To debug this code, thou must take the Recursive Leap of Faith.
 
@@ -1102,7 +1101,7 @@ public class CompletionGenerator {
   /**
    * A variation of findDeclaration() but accepts an alternate parent ASTNode
    */
-  static protected ASTNode findDeclaration2(Name findMe, ASTNode alternateParent) {
+  static private ASTNode findDeclaration2(Name findMe, ASTNode alternateParent) {
     ASTNode declaringClass;
     ASTNode parent = findMe.getParent();
     ASTNode ret;
@@ -1287,7 +1286,7 @@ public class CompletionGenerator {
   }
 
 
-  protected boolean ignorableSuggestionImport(PreprocSketch ps, String impName) {
+  private boolean ignorableSuggestionImport(PreprocSketch ps, String impName) {
     String impNameLc = impName.toLowerCase();
 
     List<ImportStatement> programImports = ps.programImports;
@@ -1424,7 +1423,7 @@ public class CompletionGenerator {
   /**
    * Find the SimpleType from FD, SVD, VDS, etc
    */
-  static SimpleType extracTypeInfo(ASTNode node) {
+  static private SimpleType extracTypeInfo(ASTNode node) {
     if (node == null) {
       return null;
     }
@@ -1477,7 +1476,7 @@ public class CompletionGenerator {
   }
 
 
-  static protected ASTNode definedIn(ASTNode node, String name,
+  static private ASTNode definedIn(ASTNode node, String name,
                                    ArrayList<Integer> constrains) {
     if (node == null)
       return null;
@@ -1664,7 +1663,7 @@ public class CompletionGenerator {
   /// Predictions --------------------------------------------------------------
 
 
-  protected static List<CompletionCandidate> trimCandidates(String newWord, List<CompletionCandidate> candidates) {
+  static private List<CompletionCandidate> trimCandidates(String newWord, List<CompletionCandidate> candidates) {
     ArrayList<CompletionCandidate> newCandidate = new ArrayList<>();
     newWord = newWord.toLowerCase();
     for (CompletionCandidate comp : candidates) {
@@ -1676,8 +1675,8 @@ public class CompletionGenerator {
     return newCandidate;
   }
 
-  protected List<CompletionCandidate> candidates;
-  protected String lastPredictedPhrase = " ";
+  private List<CompletionCandidate> candidates;
+  private String lastPredictedPhrase = " ";
 
   /**
    * The main function that calculates possible code completion candidates

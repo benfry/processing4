@@ -4,6 +4,10 @@ X   ignore 'debug' entry in prefs dir if it's a leftover DebugMode directory
 X IDE cursor position on Windows goes weird if display scaling used
 X   https://github.com/processing/processing4/issues/226
 X cleaning up suggestions.txt handling and related code
+X report of completions being broken
+o   pdex.completion=true doesn't turn on completion,
+o   but pdex.completion.trigger=true does
+X   https://github.com/processing/processing/issues/5691
 
 
 Sam updates
@@ -14,11 +18,6 @@ X   https://github.com/processing/processing4/pull/230
 
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   https://github.com/processing/processing4/issues/194
-
-
-pdex.completion=true doesn't turn on completion,
-but pdex.completion.trigger=true does
-https://github.com/processing/processing/issues/5691
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
