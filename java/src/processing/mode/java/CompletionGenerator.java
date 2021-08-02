@@ -64,8 +64,10 @@ import com.google.classpath.RegExpResourceFilter;
 
 @SuppressWarnings({ "unchecked" })
 public class CompletionGenerator {
+  JavaMode mode;
 
-  public CompletionGenerator() {
+  public CompletionGenerator(JavaMode mode) {
+    this.mode = mode;
     //addCompletionPopupListner();
     //loadJavaDoc();
   }
@@ -1285,7 +1287,7 @@ public class CompletionGenerator {
   }
 
 
-  static protected boolean ignorableSuggestionImport(PreprocSketch ps, String impName) {
+  protected boolean ignorableSuggestionImport(PreprocSketch ps, String impName) {
     String impNameLc = impName.toLowerCase();
 
     List<ImportStatement> programImports = ps.programImports;
@@ -1301,13 +1303,13 @@ public class CompletionGenerator {
     if (isImported) return false;
 
     if (impName.startsWith("processing")) {
-      if (JavaMode.includeSuggestion(impName)) {
+      if (mode.includeSuggestion(impName)) {
         return false;
-      } else if (JavaMode.excludeSuggestion(impName)) {
+      } else if (mode.excludeSuggestion(impName)) {
         return true;
       }
     } else if (impName.startsWith("java")) {
-      if (JavaMode.includeSuggestion(impName)) {
+      if (mode.includeSuggestion(impName)) {
         return false;
       }
     }

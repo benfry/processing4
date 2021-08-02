@@ -33,7 +33,6 @@ import processing.app.ui.Editor;
 import processing.app.ui.EditorException;
 import processing.app.ui.EditorState;
 
-import processing.core.PApplet;
 import processing.mode.java.runner.Runner;
 import processing.mode.java.tweak.SketchParser;
 
@@ -49,7 +48,6 @@ public class JavaMode extends Mode {
   public JavaMode(Base base, File folder) {
     super(base, folder);
 
-//    initLogger();
     loadPreferences();
     loadSuggestionsMap();
   }
@@ -238,16 +236,16 @@ public class JavaMode extends Mode {
    * Stores the white list/black list of allowed/blacklisted imports.
    * These are defined in suggestions.txt in java mode folder.
    */
-  static private final Set<String> includedSuggestions = ConcurrentHashMap.newKeySet();
-  static private final Set<String> excludedSuggestions = ConcurrentHashMap.newKeySet();
+  private final Set<String> includedSuggestions = ConcurrentHashMap.newKeySet();
+  private final Set<String> excludedSuggestions = ConcurrentHashMap.newKeySet();
 
 
-  static boolean includeSuggestion(String impName) {
+  boolean includeSuggestion(String impName) {
     return includedSuggestions.contains(impName);
   }
 
 
-  static boolean excludeSuggestion(String impName) {
+  boolean excludeSuggestion(String impName) {
     return excludedSuggestions.contains(impName);
   }
 
@@ -298,10 +296,15 @@ public class JavaMode extends Mode {
   }
 
 
-  // While not pretty, loading from a file, and the necessary error-handling
-  // is even uglier. And we're not modifying these externally anyway.
   private void loadSuggestionsMap() {
-    Collections.addAll(includedSuggestions,
+    Collections.addAll(includedSuggestions, getSuggestionIncludeList());
+    Collections.addAll(excludedSuggestions, getSuggestionExcludeList());
+  }
+
+
+  // broken out so that it can be overridden by Android, etc
+  protected String[] getSuggestionIncludeList() {
+    return new String[] {
       "processing.core.PApplet",
       "processing.core.PFont",
       "processing.core.PGraphics",
@@ -336,10 +339,14 @@ public class JavaMode extends Mode {
       "java.util.HashMap",
       "java.io.PrintWriter",
       "java.lang.String"
-    );
+    };
+  }
 
-    Collections.addAll(excludedSuggestions,
-    "processing.core.PGraphicsRetina2D",
+
+  // broken out so that it can be overridden by Android, etc
+  protected String[] getSuggestionExcludeList() {
+    return new String[] {
+      "processing.core.PGraphicsRetina2D",
       "processing.core.PShapeOBJ",
       "processing.core.PShapeSVG",
       "processing.data.Sort",
@@ -348,7 +355,7 @@ public class JavaMode extends Mode {
       "processing.opengl.LinePath.PathIterator",
       "processing.opengl.LineStroker",
       "processing.opengl.PGraphicsOpenGL"
-    );
+    };
   }
 
 

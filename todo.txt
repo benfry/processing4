@@ -3,6 +3,7 @@ X really chatty console messages for people with old settings directories
 X   ignore 'debug' entry in prefs dir if it's a leftover DebugMode directory
 X IDE cursor position on Windows goes weird if display scaling used
 X   https://github.com/processing/processing4/issues/226
+X cleaning up suggestions.txt handling and related code
 
 
 Sam updates

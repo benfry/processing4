@@ -52,8 +52,7 @@ public class JavaTextArea extends PdeTextArea {
   public JavaTextArea(TextAreaDefaults defaults, JavaEditor editor) {
     super(defaults, new JavaInputHandler(editor), editor);
 
-    suggestionGenerator = new CompletionGenerator();
-
+    suggestionGenerator = new CompletionGenerator((JavaMode) editor.getMode());
     tweakMode = false;
   }
 
