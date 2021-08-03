@@ -1110,16 +1110,7 @@ public class Toolkit {
    * the Preferences window, and can be used by HTMLEditorKit for WebFrame).
    */
   static private Font createFont(String filename, int size) throws IOException, FontFormatException {
-    boolean registerFont = false;
-
-    // try the JRE font directory first
-    File fontFile = new File(System.getProperty("java.home"), "lib/fonts/" + filename);
-
-    // else fall back to our own content dir
-    if (!fontFile.exists()) {
-      fontFile = Platform.getContentFile("lib/fonts/" + filename);
-      registerFont = true;
-    }
+    File fontFile = Platform.getContentFile("lib/fonts/" + filename);
 
     if (!fontFile.exists()) {
       String msg = "Could not find required fonts. ";
@@ -1135,15 +1126,12 @@ public class Toolkit {
       Messages.showError("Font Sadness", msg, null);
     }
 
-
     BufferedInputStream input = new BufferedInputStream(new FileInputStream(fontFile));
     Font font = Font.createFont(Font.TRUETYPE_FONT, input);
     input.close();
 
-    if (registerFont) {
-      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      ge.registerFont(font);
-    }
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    ge.registerFont(font);
 
     return font.deriveFont((float) size);
   }
