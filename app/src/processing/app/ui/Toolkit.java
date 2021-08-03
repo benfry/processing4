@@ -318,7 +318,7 @@ public class Toolkit {
     final FontMetrics fm = fmTmp; // Hack for accessing variable in comparator.
 
     final Comparator<Character> charComparator = new Comparator<>() {
-      char[] baddies = "qypgjaeiouQAEIOU".toCharArray();
+      final char[] baddies = "qypgjaeiouQAEIOU".toCharArray();
       public int compare(Character ch1, Character ch2) {
         // Discriminates against descenders for readability, per MS
         // Human Interface Guide, and vowels per MS and Gnome.
@@ -483,7 +483,7 @@ public class Toolkit {
     for (Component c : menu.getComponents()) {
       if (c instanceof JMenuItem) items.add((JMenuItem)c);
     }
-    setMenuMnemonics(items.toArray(new JMenuItem[items.size()]));
+    setMenuMnemonics(items.toArray(new JMenuItem[0]));
   }
 
 
@@ -535,8 +535,8 @@ public class Toolkit {
    */
   static public ImageIcon getLibIcon(String filename) {
     File file = Platform.getContentFile("lib/" + filename);
-    if (!file.exists()) {
-//      System.err.println("does not exist: " + file);
+    if (file == null || !file.exists()) {
+      Messages.loge("does not exist: " + file);
       return null;
     }
     return new ImageIcon(file.getAbsolutePath());
@@ -562,8 +562,7 @@ public class Toolkit {
       return null;
     }
 
-    ImageIcon outgoing = new ImageIcon(file.getAbsolutePath()) {
-
+    return new ImageIcon(file.getAbsolutePath()) {
       @Override
       public int getIconWidth() {
         return Toolkit.zoom(super.getIconWidth()) / scale;
@@ -583,7 +582,6 @@ public class Toolkit {
         g.drawImage(getImage(), x, y, getIconWidth(), getIconHeight(), imageObserver);
       }
     };
-    return outgoing;
   }
 
 
@@ -1112,7 +1110,7 @@ public class Toolkit {
   static private Font createFont(String filename, int size) throws IOException, FontFormatException {
     File fontFile = Platform.getContentFile("lib/fonts/" + filename);
 
-    if (!fontFile.exists()) {
+    if (fontFile == null || !fontFile.exists()) {
       String msg = "Could not find required fonts. ";
       // This gets the JAVA_HOME for the *local* copy of the JRE installed with
       // Processing. If it's not using the local JRE, it may be because of this

@@ -8,13 +8,23 @@ X report of completions being broken
 o   pdex.completion=true doesn't turn on completion,
 o   but pdex.completion.trigger=true does
 X   https://github.com/processing/processing/issues/5691
-
+X remove code for pulling fonts from JAVA_HOME/lib/fonts
+X   no longer exists in Java 11
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
 X   https://github.com/processing/processing4/issues/157
 X   https://github.com/processing/processing4/pull/230
 
+
+_ change Messages.loge() to Messages.err()
+
+_ Toolkit.getSansFont() will use the internal ProcessingSansPro font
+_   which means it gets used inside ManagerFrame, and prevents the theme from updating the font
+
+_ auto-complete not triggering, workaround as pref?
+_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
+_   https://github.com/processing/processing/issues/5691
 
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   https://github.com/processing/processing4/issues/194
@@ -28,7 +38,10 @@ ui is ugly on macOS
 _ fix height of font size dropdown in prefs (why one pixel off?)
 _ better default fonts for Swing; argh
 _   file an issue with the images
-https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
+_     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
+_   Space Grotesk and Mono?
+_     https://fonts.google.com/specimen/Space+Mono
+_     https://fonts.google.com/specimen/Space+Grotesk
 
 _ macosx vs macosx64 in JavaFX
 _   the latter is making the export fail because it won't embed a Java VM
