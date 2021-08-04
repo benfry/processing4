@@ -598,7 +598,13 @@ public abstract class Editor extends JFrame implements RunnerListener {
     errorColumn.updateTheme();
     status.updateTheme();
     console.updateTheme();
-    errorTable.updateTheme();
+
+    // Not all Modes will have an error table (that's why it's addErrorTable()
+    // and not createErrorTable() and called by default).
+    // https://github.com/jdf/processing.py/issues/382#issuecomment-892269678
+    if (errorTable != null) {
+      errorTable.updateTheme();
+    }
 
     toolTipFont = Toolkit.getSansFont(Toolkit.zoom(9), Font.PLAIN);
     toolTipTextColor = Theme.getColor("errors.selection.fgcolor");
