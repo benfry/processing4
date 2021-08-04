@@ -421,16 +421,21 @@ int launch(char *commandName, int progargc, char *progargv[]) {
 
         NSArray *cp = [infoDictionary objectForKey:@JVM_CLASSPATH_KEY];
         if (cp == nil) {
-
             // Implicit classpath, so use the contents of the "Java" folder to build an explicit classpath
 
-            [classPath appendFormat:@"%@/Classes", javaPath];
+            // This causes the Classes folder to be required. Removing for 4.0 alpha 6.
+            //[classPath appendFormat:@"%@/Classes", javaPath];
+
             NSFileManager *defaultFileManager = [NSFileManager defaultManager];
             // original, non-recursive version:
             // https://developer.apple.com/documentation/foundation/nsfilemanager/1414584-contentsofdirectoryatpath
+            NSArray *javaDirectoryContents = [defaultFileManager contentsOfDirectoryAtPath:javaPath error:nil];
+
             // changed to recursive version to walk the 'core' folder
             // https://developer.apple.com/documentation/foundation/nsfilemanager/1417353-subpathsofdirectoryatpath
-            NSArray *javaDirectoryContents = [defaultFileManager subpathsOfDirectoryAtPath:javaPath error:nil];
+            // NSArray *javaDirectoryContents = [defaultFileManager subpathsOfDirectoryAtPath:javaPath error:nil];
+            // moving back away from this because we need the 'modules' directory off the classpath
+
             if (javaDirectoryContents == nil) {
                 [[NSException exceptionWithName:@JAVA_LAUNCH_ERROR
                                          reason:NSLocalizedString(@"JavaDirectoryNotFound", @UNSPECIFIED_ERROR)

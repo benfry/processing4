@@ -121,11 +121,6 @@ public class ContributionManager {
         out.close();
         success = true;
       }
-    } catch (SocketTimeoutException ste) {
-      if (progress != null) {
-        progress.error(ste);
-        progress.cancel();
-      }
     } catch (IOException ioe) {
       if (progress != null) {
         progress.error(ioe);
@@ -141,14 +136,6 @@ public class ContributionManager {
 
   /**
    * Non-blocking call to download and install a contribution in a new thread.
-   *
-   * @param url
-   *          Direct link to the contribution.
-   * @param toBeReplaced
-   *          The Contribution that will be replaced by this library being
-   *          installed (e.g. an advertised version of a contribution, or the
-   *          old version of a contribution that is being updated). Must not be
-   *          null.
    */
   static void downloadAndInstall(final Base base,
                                  final URL url,
@@ -157,89 +144,84 @@ public class ContributionManager {
                                  final ContribProgressBar installProgress,
                                  final StatusPanel status) {
     // TODO: replace with SwingWorker [jv]
-    new Thread(new Runnable() {
-      public void run() {
-        String filename = url.getFile();
-        filename = filename.substring(filename.lastIndexOf('/') + 1);
+    new Thread(() -> {
+      String filename = url.getFile();
+      filename = filename.substring(filename.lastIndexOf('/') + 1);
+      try {
+        File contribZip = File.createTempFile("download", filename);
+        contribZip.setWritable(true);  // necessary?
+
         try {
-          File contribZip = File.createTempFile("download", filename);
-          contribZip.setWritable(true);  // necessary?
+          download(url, null, contribZip, downloadProgress);
 
-          try {
-            download(url, null, contribZip, downloadProgress);
+          if (!downloadProgress.isCanceled() && !downloadProgress.isError()) {
+            installProgress.startTask(Language.text("contrib.progress.installing"), ContribProgressMonitor.UNKNOWN);
+            final LocalContribution contribution =
+              ad.install(base, contribZip, false, status);
 
-            if (!downloadProgress.isCanceled() && !downloadProgress.isError()) {
-              installProgress.startTask(Language.text("contrib.progress.installing"), ContribProgressMonitor.UNKNOWN);
-              final LocalContribution contribution =
-                ad.install(base, contribZip, false, status);
-
-              if (contribution != null) {
-                try {
-                  // TODO: run this in SwingWorker done() [jv]
-                  EventQueue.invokeAndWait(new Runnable() {
-                    @Override
-                    public void run() {
-                      listing.replaceContribution(ad, contribution);
-                      /*
-                      if (contribution.getType() == ContributionType.MODE) {
-                        List<ModeContribution> contribModes = editor.getBase().getModeContribs();
-                        if (!contribModes.contains(contribution)) {
-                          contribModes.add((ModeContribution) contribution);
-                        }
-                      }
-                      */
-                      base.refreshContribs(contribution.getType());
-                      base.setUpdatesAvailable(listing.countUpdates(base));
+            if (contribution != null) {
+              try {
+                // TODO: run this in SwingWorker done() [jv]
+                EventQueue.invokeAndWait(() -> {
+                  listing.replaceContribution(ad, contribution);
+                  /*
+                  if (contribution.getType() == ContributionType.MODE) {
+                    List<ModeContribution> contribModes = editor.getBase().getModeContribs();
+                    if (!contribModes.contains(contribution)) {
+                      contribModes.add((ModeContribution) contribution);
                     }
-                  });
-                } catch (InterruptedException e) {
-                  e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                  throw (Exception) e.getCause();
-                }
+                  }
+                  */
+                  base.refreshContribs(contribution.getType());
+                  base.setUpdatesAvailable(listing.countUpdates(base));
+                });
+              } catch (InterruptedException e) {
+                e.printStackTrace();
+              } catch (InvocationTargetException e) {
+                throw (Exception) e.getCause();
               }
-              installProgress.finished();
+            }
+            installProgress.finished();
 
+          } else {
+            if (downloadProgress.exception instanceof SocketTimeoutException) {
+              status.setErrorMessage(Language
+                .interpolate("contrib.errors.contrib_download.timeout",
+                             ad.getName()));
             } else {
-              if (downloadProgress.exception instanceof SocketTimeoutException) {
-                status.setErrorMessage(Language
-                  .interpolate("contrib.errors.contrib_download.timeout",
-                               ad.getName()));
-              } else {
-                status.setErrorMessage(Language
-                  .interpolate("contrib.errors.download_and_install",
-                               ad.getName()));
-              }
+              status.setErrorMessage(Language
+                .interpolate("contrib.errors.download_and_install",
+                             ad.getName()));
             }
-            contribZip.delete();
-
-          } catch (Exception e) {
-            String msg = null;
-            if (e instanceof RuntimeException) {
-              Throwable cause = ((RuntimeException) e).getCause();
-              if (cause instanceof NoClassDefFoundError ||
-                  cause instanceof NoSuchMethodError) {
-                msg = "This item is not compatible with this version of Processing";
-              } else if (cause instanceof UnsupportedClassVersionError) {
-                msg = "This item needs to be recompiled for Java " +
-                  PApplet.javaPlatform;
-              }
-            }
-
-            if (msg == null) {
-              msg = Language.interpolate("contrib.errors.download_and_install", ad.getName());
-              // Something unexpected, so print the trace
-              e.printStackTrace();
-            }
-            status.setErrorMessage(msg);
-            downloadProgress.cancel();
-            installProgress.cancel();
           }
-        } catch (IOException e) {
-          status.setErrorMessage(Language.text("contrib.errors.temporary_directory"));
+          contribZip.delete();
+
+        } catch (Exception e) {
+          String msg = null;
+          if (e instanceof RuntimeException) {
+            Throwable cause = e.getCause();
+            if (cause instanceof NoClassDefFoundError ||
+                cause instanceof NoSuchMethodError) {
+              msg = "This item is not compatible with this version of Processing";
+            } else if (cause instanceof UnsupportedClassVersionError) {
+              msg = "This item needs to be recompiled for Java " +
+                PApplet.javaPlatform;
+            }
+          }
+
+          if (msg == null) {
+            msg = Language.interpolate("contrib.errors.download_and_install", ad.getName());
+            // Something unexpected, so print the trace
+            e.printStackTrace();
+          }
+          status.setErrorMessage(msg);
           downloadProgress.cancel();
           installProgress.cancel();
         }
+      } catch (IOException e) {
+        status.setErrorMessage(Language.text("contrib.errors.temporary_directory"));
+        downloadProgress.cancel();
+        installProgress.cancel();
       }
     }, "Contribution Installer").start();
   }
@@ -258,54 +240,49 @@ public class ContributionManager {
   static void downloadAndInstallOnStartup(final Base base, final URL url,
                                           final AvailableContribution ad) {
     // TODO: replace with SwingWorker [jv]
-    new Thread(new Runnable() {
-      public void run() {
-        String filename = url.getFile();
-        filename = filename.substring(filename.lastIndexOf('/') + 1);
+    new Thread(() -> {
+      String filename = url.getFile();
+      filename = filename.substring(filename.lastIndexOf('/') + 1);
+      try {
+        File contribZip = File.createTempFile("download", filename);
+        contribZip.setWritable(true); // necessary?
+
         try {
-          File contribZip = File.createTempFile("download", filename);
-          contribZip.setWritable(true); // necessary?
+          download(url, null, contribZip, null);
 
-          try {
-            download(url, null, contribZip, null);
+          final LocalContribution contribution = ad.install(base, contribZip,
+                                                      false, null);
 
-            final LocalContribution contribution = ad.install(base, contribZip,
-                                                        false, null);
-
-            if (contribution != null) {
-              try {
-                // TODO: run this in SwingWorker done() [jv]
-                EventQueue.invokeAndWait(new Runnable() {
-                  @Override
-                  public void run() {
-                    listing.replaceContribution(ad, contribution);
-                    base.refreshContribs(contribution.getType());
-                    base.setUpdatesAvailable(listing.countUpdates(base));
-                  }
-                });
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-                if (cause instanceof RuntimeException) {
-                  throw (RuntimeException) cause;
-                } else {
-                  cause.printStackTrace();
-                }
+          if (contribution != null) {
+            try {
+              // TODO: run this in SwingWorker done() [jv]
+              EventQueue.invokeAndWait(() -> {
+                listing.replaceContribution(ad, contribution);
+                base.refreshContribs(contribution.getType());
+                base.setUpdatesAvailable(listing.countUpdates(base));
+              });
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            } catch (InvocationTargetException e) {
+              Throwable cause = e.getCause();
+              if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+              } else {
+                cause.printStackTrace();
               }
             }
-
-            contribZip.delete();
-            handleUpdateFailedMarkers(ad, filename.substring(0, filename.lastIndexOf('.')));
-
-          } catch (Exception e) {
-            String arg = "contrib.startup.errors.download_install";
-            System.err.println(Language.interpolate(arg, ad.getName()));
           }
-        } catch (IOException e) {
-          String arg = "contrib.startup.errors.temp_dir";
+
+          contribZip.delete();
+          handleUpdateFailedMarkers(ad);
+
+        } catch (Exception e) {
+          String arg = "contrib.startup.errors.download_install";
           System.err.println(Language.interpolate(arg, ad.getName()));
         }
+      } catch (IOException e) {
+        String arg = "contrib.startup.errors.temp_dir";
+        System.err.println(Language.interpolate(arg, ad.getName()));
       }
     }, "Contribution Installer").start();
   }
@@ -316,31 +293,23 @@ public class ContributionManager {
    * If not, it adds a marker file so that the next time Processing is started,
    * installPreviouslyFailed() can install the contribution.
    * @param c the contribution just installed
-   * @param filename name of the folder for the contribution
    */
-  static private void handleUpdateFailedMarkers(final AvailableContribution c,
-                                                String filename) {
+  static private void handleUpdateFailedMarkers(final AvailableContribution c) {
     File typeFolder = c.getType().getSketchbookFolder();
-
-    for (File contribDir : typeFolder.listFiles()) {
-      if (contribDir.isDirectory()) {
-        /*
-        File[] contents = contribDir.listFiles(new FilenameFilter() {
-
-          @Override
-          public boolean accept(File dir, String file) {
-            return file.equals(c.getType() + ".properties");
-          }
-        });
-        if (contents.length > 0 && Util.readSettings(contents[0]).get("name").equals(c.getName())) {
-          return;
-        }
-        */
-        File propsFile = new File(contribDir, c.getType() + ".properties");
-        if (propsFile.exists()) {
-          StringDict props = Util.readSettings(propsFile);
-          if (c.getName().equals(props.get("name"))) {
-            return;
+    if (typeFolder != null) {
+      File[] folderList = typeFolder.listFiles();
+      if (folderList != null) {
+        for (File contribDir : folderList) {
+          if (contribDir.isDirectory()) {
+            File propsFile = new File(contribDir, c.getType() + ".properties");
+            if (propsFile.exists()) {
+              StringDict props = Util.readSettings(propsFile);
+              if (props != null) {
+                if (c.getName().equals(props.get("name"))) {
+                  return;
+                }
+              }
+            }
           }
         }
       }
@@ -359,7 +328,7 @@ public class ContributionManager {
    * Blocking call to download and install a set of libraries. Used when a list
    * of libraries have to be installed while forcing the user to not modify
    * anything and providing feedback via the console status area, such as when
-   * the user tries to run a sketch that imports uninstaled libraries.
+   * the user tries to run a sketch that imports uninstalled libraries.
    *
    * @param list The list of AvailableContributions to be downloaded and installed.
    */
@@ -417,13 +386,10 @@ public class ContributionManager {
 
             if (contribution != null) {
               try {
-                EventQueue.invokeAndWait(new Runnable() {
-                  @Override
-                  public void run() {
-                    listing.replaceContribution(contrib, contribution);
-                    base.refreshContribs(contribution.getType());
-                    base.setUpdatesAvailable(listing.countUpdates(base));
-                  }
+                EventQueue.invokeAndWait(() -> {
+                  listing.replaceContribution(contrib, contribution);
+                  base.refreshContribs(contribution.getType());
+                  base.setUpdatesAvailable(listing.countUpdates(base));
                 });
               } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -547,7 +513,7 @@ public class ContributionManager {
     updateFlagged(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
-    SwingWorker s = new SwingWorker<Void, Void>() {
+    SwingWorker<Void, Void> s = new SwingWorker<>() {
 
       @Override
       protected Void doInBackground() throws Exception {
@@ -573,8 +539,6 @@ public class ContributionManager {
    * Deletes the icky tmp folders that were left over from installs and updates
    * in the previous run of Processing. Needed to be called only on the tools
    * and modes sketchbook folders.
-   *
-   * @param root
    */
   static private void deleteTemp(File root) {
     String pattern = root.getName().substring(0, 4) + "\\d*" + "tmp";
@@ -592,13 +556,10 @@ public class ContributionManager {
   /**
    * Deletes all the modes/tools/libs that are flagged for removal.
    */
-  static private void deleteFlagged(File root) throws Exception {
-    File[] markedForDeletion = root.listFiles(new FileFilter() {
-      public boolean accept(File folder) {
-        return (folder.isDirectory() &&
-                LocalContribution.isDeletionFlagged(folder));
-      }
-    });
+  static private void deleteFlagged(File root) {
+    File[] markedForDeletion = root.listFiles(folder ->
+      (folder.isDirectory() && LocalContribution.isDeletionFlagged(folder))
+    );
     if (markedForDeletion != null) {
       for (File folder : markedForDeletion) {
         Util.removeDir(folder);
@@ -612,11 +573,7 @@ public class ContributionManager {
    * auto-update the previous time Processing was started up.
    */
   static private void installPreviouslyFailed(Base base, File root) throws Exception {
-    File[] installList = root.listFiles(new FileFilter() {
-      public boolean accept(File folder) {
-        return folder.isFile();
-      }
-    });
+    File[] installList = root.listFiles(folder -> folder.isFile());
 
     // https://github.com/processing/processing/issues/5823
     if (installList != null) {
@@ -625,9 +582,7 @@ public class ContributionManager {
           if (file.getName().equals(contrib.getName())) {
             file.delete();
             installOnStartUp(base, contrib);
-            EventQueue.invokeAndWait(() -> {
-              listing.replaceContribution(contrib, contrib);
-            });
+            EventQueue.invokeAndWait(() -> listing.replaceContribution(contrib, contrib));
           }
         }
       }
@@ -648,20 +603,16 @@ public class ContributionManager {
       throw new Exception("Please fix read/write permissions for " + root);
     }
 
-    File[] markedForUpdate = root.listFiles(new FileFilter() {
-      public boolean accept(File folder) {
-        return (folder.isDirectory() &&
-                LocalContribution.isUpdateFlagged(folder));
-      }
-    });
+    File[] markedForUpdate = root.listFiles(folder ->
+      (folder.isDirectory() && LocalContribution.isUpdateFlagged(folder)));
 
     List<String> updateContribsNames = new ArrayList<>();
     List<AvailableContribution> updateContribsList = new LinkedList<>();
 
     // TODO This is bad code... This root.getName() stuff to get the folder
-    // type, plus "libraries.properties" (not the correct file name).
-    // Not sure the function here so I'm not fixing it at the moment,
-    // but this whole function could use some cleaning. [fry 180105]
+    //      type, plus "libraries.properties" (not the correct file name).
+    //      Not sure the function here so I'm not fixing it at the moment,
+    //      but this whole function could use some cleaning. [fry 180105]
 
     String type = root.getName().substring(root.getName().lastIndexOf('/') + 1);
     String propFileName = null;
@@ -671,10 +622,15 @@ public class ContributionManager {
     else if (type.equalsIgnoreCase("modes"))
       propFileName = "mode.properties";
 
-    for (File folder : markedForUpdate) {
-      StringDict props = Util.readSettings(new File(folder, propFileName));
-      updateContribsNames.add(props.get("name"));
-      Util.removeDir(folder);
+    if (markedForUpdate != null) {
+      for (File folder : markedForUpdate) {
+        StringDict props = Util.readSettings(new File(folder, propFileName));
+        String name = props.get("name");
+        if (name != null) {  // should not happen, but...
+          updateContribsNames.add(name);
+        }
+        Util.removeDir(folder);
+      }
     }
 
     for (AvailableContribution contrib : listing.advertisedContributions) {
@@ -707,14 +663,12 @@ public class ContributionManager {
   }
 
 
-  static private void clearRestartFlags(File root) throws Exception {
-    File[] folderList = root.listFiles(new FileFilter() {
-      public boolean accept(File folder) {
-        return folder.isDirectory();
+  static private void clearRestartFlags(File root) {
+    File[] folderList = root.listFiles(File::isDirectory);
+    if (folderList != null) {
+      for (File folder : folderList) {
+        LocalContribution.clearRestartFlags(folder);
       }
-    });
-    for (File folder : folderList) {
-      LocalContribution.clearRestartFlags(folder);
     }
   }
 
@@ -726,9 +680,14 @@ public class ContributionManager {
 
 
   static public void init(Base base) throws Exception {
+//    long t1 = System.currentTimeMillis();
     listing = ContributionListing.getInstance(); // Moved here to make sure it runs on EDT [jv 170121]
+//    long t2 = System.currentTimeMillis();
     managerDialog = new ManagerFrame(base);
+//    long t3 = System.currentTimeMillis();
     cleanup(base);
+//    long t4 = System.currentTimeMillis();
+//    System.out.println("ContributionManager.init() " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3));
   }
 
 
@@ -775,6 +734,7 @@ public class ContributionManager {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  /*
   static int getTypeIndex(ContributionType contributionType) {
     int index;
     if (contributionType == ContributionType.LIBRARY) {
@@ -790,4 +750,5 @@ public class ContributionManager {
     }
     return index;
   }
+  */
 }

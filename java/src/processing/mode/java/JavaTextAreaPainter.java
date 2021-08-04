@@ -63,9 +63,7 @@ public class JavaTextAreaPainter extends PdeTextAreaPainter {
   // TWEAK MODE
 
 
-	protected int horizontalAdjustment = 0;
-
-	public boolean tweakMode = false;
+	public boolean tweakMode;
 	public List<List<Handle>> handles;
 	public List<List<ColorControlBox>> colorBoxes;
 
@@ -310,7 +308,7 @@ public class JavaTextAreaPainter extends PdeTextAreaPainter {
 
 
 	static private String replaceString(String str, int start, int end, String put) {
-		return str.substring(0, start) + put + str.substring(end, str.length());
+		return str.substring(0, start) + put + str.substring(end);
 	}
 
 

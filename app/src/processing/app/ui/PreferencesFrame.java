@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -113,14 +113,12 @@ public class PreferencesFrame {
     sketchbookLocationField = new JTextField(40);
 
     browseButton = new JButton(Language.getPrompt("browse"));
-    browseButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          File dflt = new File(sketchbookLocationField.getText());
-          ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
-                               "sketchbookCallback", dflt,
-                               PreferencesFrame.this);
-        }
-      });
+    browseButton.addActionListener(e -> {
+      File defaultLocation = new File(sketchbookLocationField.getText());
+      ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
+                           "sketchbookCallback", defaultLocation,
+                           PreferencesFrame.this);
+    });
 
 
     // Language: [ English ] (requires restart of Processing)
@@ -154,12 +152,19 @@ public class PreferencesFrame {
 
     // Editor font size [ 12 ]  Console font size [ 10 ]
 
-    JLabel fontSizelabel = new JLabel(Language.text("preferences.editor_font_size")+": ");
+    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size")+": ");
     fontSizeField = new JComboBox<>(FONT_SIZES);
+    fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
 
     JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size")+": ");
     consoleFontSizeField = new JComboBox<>(FONT_SIZES);
-    fontSizeField.setSelectedItem(Preferences.getFont("editor.font.size"));
+    consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
+
+    // Sizing is screwed up on macOS, bug has been open since 2017
+    // https://github.com/processing/processing4/issues/232
+    // https://bugs.openjdk.java.net/browse/JDK-8179076
+    fontSizeField.setEditable(true);
+    consoleFontSizeField.setEditable(true);
 
 
     // Interface scale: [ 100% ] (requires restart of Processing)
@@ -167,12 +172,7 @@ public class PreferencesFrame {
     JLabel zoomLabel = new JLabel(Language.text("preferences.zoom") + ": ");
 
     zoomAutoBox = new JCheckBox(Language.text("preferences.zoom.auto"));
-    zoomAutoBox.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent e) {
-        zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected());
-      }
-    });
+    zoomAutoBox.addChangeListener(e -> zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected()));
 
     zoomSelectionBox = new JComboBox<>();
     zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.array()));
@@ -202,20 +202,12 @@ public class PreferencesFrame {
       public void removeUpdate(DocumentEvent e) {
         final String colorValue = presentColorHex.getText().toUpperCase();
         if (colorValue.length() == 7 && (colorValue.startsWith("#")))
-          EventQueue.invokeLater(new Runnable() {
-            public void run() {
-              presentColorHex.setText(colorValue.substring(1));
-            }
-          });
+          EventQueue.invokeLater(() -> presentColorHex.setText(colorValue.substring(1)));
         if (colorValue.length() == 6 &&
             colorValue.matches("[0123456789ABCDEF]*")) {
           presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
           if (!colorValue.equals(presentColorHex.getText()))
-            EventQueue.invokeLater(new Runnable() {
-              public void run() {
-                presentColorHex.setText(colorValue);
-              }
-            });
+            EventQueue.invokeLater(() -> presentColorHex.setText(colorValue));
         }
       }
 
@@ -223,20 +215,12 @@ public class PreferencesFrame {
       public void insertUpdate(DocumentEvent e) {
         final String colorValue = presentColorHex.getText().toUpperCase();
         if (colorValue.length() == 7 && (colorValue.startsWith("#")))
-          EventQueue.invokeLater(new Runnable() {
-            public void run() {
-              presentColorHex.setText(colorValue.substring(1));
-            }
-          });
+          EventQueue.invokeLater(() -> presentColorHex.setText(colorValue.substring(1)));
         if (colorValue.length() == 6
             && colorValue.matches("[0123456789ABCDEF]*")) {
           presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
           if (!colorValue.equals(presentColorHex.getText()))
-            EventQueue.invokeLater(new Runnable() {
-              public void run() {
-                presentColorHex.setText(colorValue);
-              }
-            });
+            EventQueue.invokeLater(() -> presentColorHex.setText(colorValue));
         }
       }
 
@@ -245,16 +229,12 @@ public class PreferencesFrame {
 
     selector = new ColorChooser(frame, false,
                                 Preferences.getColor("run.present.bgcolor"),
-                                Language.text("prompt.ok"),
-                                new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        String colorValue = selector.getHexColor();
-        colorValue = colorValue.substring(1);  // remove the #
-        presentColorHex.setText(colorValue);
-        presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
-        selector.hide();
-      }
+                                Language.text("prompt.ok"), e -> {
+      String colorValue = selector.getHexColor();
+      colorValue = colorValue.substring(1);  // remove the #
+      presentColorHex.setText(colorValue);
+      presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
+      selector.hide();
     });
 
     presentColor.addMouseListener(new MouseAdapter() {
@@ -294,9 +274,7 @@ public class PreferencesFrame {
 
     errorCheckerBox =
       new JCheckBox(Language.text("preferences.continuously_check"));
-    errorCheckerBox.addItemListener(e -> {
-      warningsCheckerBox.setEnabled(errorCheckerBox.isSelected());
-    });
+    errorCheckerBox.addItemListener(e -> warningsCheckerBox.setEnabled(errorCheckerBox.isSelected()));
 
 
     // [ ] Show Warnings - PDE X
@@ -322,12 +300,7 @@ public class PreferencesFrame {
 
     memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory")+": ");
     memoryField = new JTextField(4);
-    memoryOverrideBox.addChangeListener(new ChangeListener() {
-      @Override
-      public void stateChanged(ChangeEvent e) {
-        memoryField.setEnabled(memoryOverrideBox.isSelected());
-      }
-    });
+    memoryOverrideBox.addChangeListener(e -> memoryField.setEnabled(memoryOverrideBox.isSelected()));
     JLabel mbLabel = new JLabel("MB");
 
 
@@ -389,19 +362,13 @@ public class PreferencesFrame {
     // [  OK  ] [ Cancel ]
 
     okButton = new JButton(Language.getPrompt("ok"));
-    okButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          applyFrame();
-          disposeFrame();
-        }
-      });
+    okButton.addActionListener(e -> {
+      applyFrame();
+      disposeFrame();
+    });
 
     JButton cancelButton = new JButton(Language.getPrompt("cancel"));
-    cancelButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          disposeFrame();
-        }
-      });
+    cancelButton.addActionListener(e -> disposeFrame());
 
     final int buttonWidth = Toolkit.getButtonWidth();
     layout.setHorizontalGroup(layout.createSequentialGroup() // sequential group for border + mainContent + border
@@ -420,7 +387,7 @@ public class PreferencesFrame {
                       .addComponent(fontSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
           .addGroup(GroupLayout.Alignment.LEADING,
                        layout.createSequentialGroup()
-                      .addComponent(fontSizelabel)
+                      .addComponent(fontSizeLabel)
                       .addComponent(fontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                       .addComponent(consoleFontSizeLabel)
                       .addComponent(consoleFontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -464,7 +431,7 @@ public class PreferencesFrame {
           .addComponent(preferencePathLabel)
           .addComponent(preferenceHintLabel)
           .addGroup(GroupLayout.Alignment.TRAILING,layout.createSequentialGroup() // Trailing so that the buttons are to the right
-                      .addComponent(okButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth) // Ok and Cancel buttton are now of size BUTTON_WIDTH
+                      .addComponent(okButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth) // Ok and Cancel button are now of size BUTTON_WIDTH
                       .addComponent(cancelButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth)
           ))
       .addGap(Toolkit.BORDER)
@@ -484,7 +451,7 @@ public class PreferencesFrame {
                   addComponent(fontLabel)
                   .addComponent(fontSelectionBox))
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(fontSizelabel)
+                  .addComponent(fontSizeLabel)
                   .addComponent(fontSizeField)
                   .addComponent(consoleFontSizeLabel)
                   .addComponent(consoleFontSizeField))
@@ -537,11 +504,7 @@ public class PreferencesFrame {
       }
     });
 
-    ActionListener disposer = new ActionListener() {
-      public void actionPerformed(ActionEvent actionEvent) {
-        disposeFrame();
-      }
-    };
+    ActionListener disposer = actionEvent -> disposeFrame();
     // finish up
 
     Toolkit.registerWindowCloseKeys(frame.getRootPane(), disposer);
@@ -550,23 +513,16 @@ public class PreferencesFrame {
     frame.pack();
     frame.setLocationRelativeTo(null);
 
-    // Workaround for OS X, which breaks the layout when these are set earlier
-    // https://github.com/processing/processing/issues/3212
-    fontSizeField.setEditable(true);
-    consoleFontSizeField.setEditable(true);
-
     // handle window closing commands for ctrl/cmd-W or hitting ESC.
-
     pain.addKeyListener(new KeyAdapter() {
-        public void keyPressed(KeyEvent e) {
-          //System.out.println(e);
-          KeyStroke wc = Toolkit.WINDOW_CLOSE_KEYSTROKE;
-          if ((e.getKeyCode() == KeyEvent.VK_ESCAPE) ||
-              (KeyStroke.getKeyStrokeForEvent(e).equals(wc))) {
-            disposeFrame();
-          }
+      public void keyPressed(KeyEvent e) {
+        KeyStroke wc = Toolkit.WINDOW_CLOSE_KEYSTROKE;
+        if ((e.getKeyCode() == KeyEvent.VK_ESCAPE) ||
+            (KeyStroke.getKeyStrokeForEvent(e).equals(wc))) {
+          disposeFrame();
         }
-      });
+      }
+    });
   }
 
 
@@ -648,7 +604,9 @@ public class PreferencesFrame {
     try {
       memoryMax = Integer.parseInt(memoryField.getText().trim());
       // make sure memory setting isn't too small
-      if (memoryMax < memoryMin) memoryMax = memoryMin;
+      if (memoryMax < memoryMin) {
+        memoryMax = memoryMin;
+      }
       Preferences.setInteger("run.options.memory.maximum", memoryMax); //$NON-NLS-1$
     } catch (NumberFormatException e) {
       System.err.println("Ignoring bad memory setting");
@@ -657,6 +615,9 @@ public class PreferencesFrame {
     // Don't change anything if the user closes the window before fonts load
     if (fontSelectionBox.isEnabled()) {
       String fontFamily = (String) fontSelectionBox.getSelectedItem();
+      if (Toolkit.getMonoFontName().equals(fontFamily)) {
+        fontFamily = "processing.mono";
+      }
       Preferences.set("editor.font.family", fontFamily);
     }
 
@@ -673,10 +634,6 @@ public class PreferencesFrame {
       fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
     }
 
-    Preferences.setBoolean("editor.zoom.auto", zoomAutoBox.isSelected());
-    Preferences.set("editor.zoom",
-                    String.valueOf(zoomSelectionBox.getSelectedItem()));
-
     try {
       Object selection = consoleFontSizeField.getSelectedItem();
       if (selection instanceof String) {
@@ -690,6 +647,10 @@ public class PreferencesFrame {
       consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
     }
 
+    Preferences.setBoolean("editor.zoom.auto", zoomAutoBox.isSelected());
+    Preferences.set("editor.zoom",
+                    String.valueOf(zoomSelectionBox.getSelectedItem()));
+
     Preferences.setColor("run.present.bgcolor", presentColor.getBackground());
 
     Preferences.setBoolean("editor.input_method_support", inputMethodBox.isSelected()); //$NON-NLS-1$
@@ -702,7 +663,6 @@ public class PreferencesFrame {
     Preferences.setBoolean("pdex.errorCheckEnabled", errorCheckerBox.isSelected());
     Preferences.setBoolean("pdex.warningsEnabled", warningsCheckerBox.isSelected());
     Preferences.setBoolean("pdex.completion", codeCompletionBox.isSelected());
-//    Preferences.setBoolean("pdex.completion.trigger", codeCompletionTriggerBox.isSelected());
     Preferences.setBoolean("pdex.suggest.imports", importSuggestionsBox.isSelected());
 
     for (Editor editor : base.getEditors()) {
@@ -718,8 +678,6 @@ public class PreferencesFrame {
     warningsCheckerBox.setSelected(Preferences.getBoolean("pdex.warningsEnabled"));
     warningsCheckerBox.setEnabled(errorCheckerBox.isSelected());
     codeCompletionBox.setSelected(Preferences.getBoolean("pdex.completion"));
-    //codeCompletionTriggerBox.setSelected(Preferences.getBoolean("pdex.completion.trigger"));
-    //codeCompletionTriggerBox.setEnabled(codeCompletionBox.isSelected());
     importSuggestionsBox.setSelected(Preferences.getBoolean("pdex.suggest.imports"));
     deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
 
@@ -737,19 +695,15 @@ public class PreferencesFrame {
 
     // This takes a while to load, so run it from a separate thread
     //EventQueue.invokeLater(new Runnable() {
-    new Thread(new Runnable() {
-      public void run() {
-        initFontList();
-      }
-    }).start();
+    new Thread(this::initFontList).start();
 
     fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
     consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
 
     boolean zoomAuto = Preferences.getBoolean("editor.zoom.auto");
     if (zoomAuto) {
-      zoomAutoBox.setSelected(zoomAuto);
-      zoomSelectionBox.setEnabled(!zoomAuto);
+      zoomAutoBox.setSelected(true);
+      zoomSelectionBox.setEnabled(false);
     }
     String zoomSel = Preferences.get("editor.zoom");
     int zoomIndex = Toolkit.zoomOptions.index(zoomSel);
@@ -784,38 +738,39 @@ public class PreferencesFrame {
   }
 
 
-  /**
-   * I have some ideas on how we could make Swing even more obtuse for the
-   * most basic usage scenarios. Is there someone on the team I can contact?
-   * Are you an Oracle staffer reading this? This could be your meal ticket.
-   */
-  static class FontNamer extends JLabel implements ListCellRenderer<Font> {
-    public Component getListCellRendererComponent(JList<? extends Font> list,
-                                                  Font value, int index,
-                                                  boolean isSelected,
-                                                  boolean cellHasFocus) {
-      setText(value.getFamily() + " / " + value.getName() + " (" + value.getPSName() + ")");
-      return this;
-    }
-  }
+//  /**
+//   * I have some ideas on how we could make Swing even more obtuse for the
+//   * most basic usage scenarios. Is there someone on the team I can contact?
+//   * Are you an Oracle staffer reading this? This could be your meal ticket.
+//   */
+//  static class FontNamer extends JLabel implements ListCellRenderer<Font> {
+//    public Component getListCellRendererComponent(JList<? extends Font> list,
+//                                                  Font value, int index,
+//                                                  boolean isSelected,
+//                                                  boolean cellHasFocus) {
+//      setText(value.getFamily() + " / " + value.getName() + " (" + value.getPSName() + ")");
+//      return this;
+//    }
+//  }
 
 
   void initFontList() {
     if (monoFontFamilies == null) {
       monoFontFamilies = Toolkit.getMonoFontFamilies();
 
-      EventQueue.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          fontSelectionBox.setModel(new DefaultComboBoxModel<>(monoFontFamilies));
-          String family = Preferences.get("editor.font.family");
-
-          // Set a reasonable default, in case selecting the family fails
-          fontSelectionBox.setSelectedItem("Monospaced");
-          // Now try to select the family (will fail silently, see prev line)
-          fontSelectionBox.setSelectedItem(family);
-          fontSelectionBox.setEnabled(true);
+      EventQueue.invokeLater(() -> {
+        fontSelectionBox.setModel(new DefaultComboBoxModel<>(monoFontFamilies));
+        String family = Preferences.get("editor.font.family");
+        String defaultName = Toolkit.getMonoFontName();
+        if ("processing.mono".equals(family)) {
+          family = defaultName;
         }
+
+        // Set a reasonable default, in case selecting the family fails
+        fontSelectionBox.setSelectedItem(defaultName);
+        // Now try to select the family (will fail silently, see prev line)
+        fontSelectionBox.setSelectedItem(family);
+        fontSelectionBox.setEnabled(true);
       });
     }
   }

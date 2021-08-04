@@ -25,10 +25,14 @@ package processing.app.platform;
 
 import java.awt.Desktop;
 import java.awt.Font;
+import java.awt.font.TextAttribute;
 import java.io.File;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -110,6 +114,28 @@ public class DefaultPlatform {
     } else {
       UIManager.setLookAndFeel(laf);
     }
+
+    // If the default has been overridden in the preferences, set the font
+    String fontName = Preferences.get("ui.font.family");
+    int fontSize = Preferences.getInteger("ui.font.size");
+    if (!"Dialog".equals(fontName) || fontSize != 12) {
+      setUIFont(new FontUIResource(fontName, Font.PLAIN, fontSize));
+//      Map<TextAttribute, Object> attributes = new HashMap<>();
+//      attributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+//      Font font = new Font(fontName, Font.PLAIN, fontSize).deriveFont(attributes);
+//      setUIFont(new FontUIResource(font));
+    }
+  }
+
+
+  // Rewritten from https://stackoverflow.com/a/7434935
+  static private void setUIFont(FontUIResource f) {
+    for (Object key : UIManager.getLookAndFeelDefaults().keySet()) {
+      Object value = UIManager.get(key);
+      if (value instanceof FontUIResource) {
+        UIManager.put(key, f);
+      }
+    }
   }
 
 
@@ -120,8 +146,11 @@ public class DefaultPlatform {
         scaleDefaultFont(widgetName);
       }
 
-      UIManager.put("Label.font", new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
-      UIManager.put("TextField.font", new Font("Dialog", Font.PLAIN, Toolkit.zoom(12)));
+      String fontName = Preferences.get("ui.font.family");
+      int fontSize = Preferences.getInteger("ui.font.size");
+      FontUIResource uiFont = new FontUIResource(fontName, Font.PLAIN, Toolkit.zoom(fontSize));
+      UIManager.put("Label.font", uiFont);
+      UIManager.put("TextField.font", uiFont);
     }
   }
 

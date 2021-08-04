@@ -119,7 +119,7 @@ public class SketchbookFrame extends JFrame {
     }
 
     // Special cell renderer that takes the UI zoom into account
-    tree.setCellRenderer(new ZoomTreeCellRenderer(mode));
+    tree.setCellRenderer(new ZoomTreeCellRenderer());
 
     // Check whether sketch book is empty or not
     TreeModel treeModel = tree.getModel();

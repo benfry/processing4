@@ -194,13 +194,13 @@ public class InputMethodSupport implements InputMethodRequests, InputMethodListe
         textArea.getInputHandler().handleInputMethodCommit();
       }
 
-      CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextpainter();
+      CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextPainter();
       Messages.log("textArea.getCaretPosition() + committed_count: " + (textArea.getCaretPosition() + committedCount));
       compositionPainter.setComposedTextLayout(getTextLayout(text, committedCount), textArea.getCaretPosition() + committedCount);
       compositionPainter.setCaret(event.getCaret());
 
     } else {  // otherwise hide the input method
-      CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextpainter();
+      CompositionTextPainter compositionPainter = textArea.getPainter().getCompositionTextPainter();
       compositionPainter.setComposedTextLayout(null, 0);
       compositionPainter.setCaret(null);
     }

@@ -1,3 +1,203 @@
+1275 (4.0a6)
+X remove java.class.path when launching code from inside the PDE
+X   should prevent conflicts, avoid papering over other bugs
+X remove the PDE classpath from sketches
+X   causing it to include incomplete JFX, other misc; too confusing
+X add ui.font.family and ui.font.size as preferences
+X remove compound key actions (which were undocumented and not in use)
+X   clears up a lot of complexity in DefaultInputHandler
+X   if someone wants this, they could recreate it in a subclass
+X remove jdt.compiler.jar from subprojects
+X   no longer using JRE (doesn't exist), so it's not needed
+o   can we remove it altogether, or is it used by the PDE?
+X remove lots of dead/unused parts of javafx/build.xml
+X move ISSUE_TEMPLATE to .github subfolder
+X   https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/manually-creating-a-single-issue-template-for-your-repository
+o ability to switch mode in p5 w/o saving/closing/etc
+X   trying to save the user from themselves here is just messier than needed
+X   opt to open a new editor window rather than weird error messages
+X   https://github.com/processing/processing4/issues/189
+X remove extra material from Tools folders before export
+X Fix "No library found for org.w3c.dom"
+X only export 'tool' subfolder for Movie Maker (and Theme Engine?)
+X redo splash screen handler
+X   make the splash screen work in 2x on Windows and Linux
+X remove 1.0 on the console during startup (debug message from Toolkit)
+
+theme
+X major theme changes
+X   move theme out of Mode and into its own Theme class
+X   remove setMode()/updateAppearance(), replace with updateTheme()
+X   Theme has static access, update throughout the code
+X   pieces in place to handle updates to theme while still running
+X   ignore theme.txt for Modes (no longer a Mode thing)
+X   move syntax colors out of preferences.txt and into theme.txt
+X     (because it can also be accessed via the sketchbook)
+X   https://github.com/processing/processing/wiki/Dark-Theme-for-PDE
+X add support for 0x alpha colors in Settings/theme.txt
+X first round of design refresh (not final!)
+X   https://github.com/processing/processing4/issues/48
+X   https://github.com/processing/processing4/wiki/Themes
+X theme.txt in sketchbook folder was not being applied on startup
+
+api changes
+X Editor.applyPreferences() was protected, now public
+X removed Editor.repaintErrorBar() and Editor.showConsole()
+X   does not appear to be in use anywhere, easy to add back
+X rename TextAreaPainter.getCompositionTextpainter() to getCompositionTextPainter()
+
+readme
+X was fixed in the source for 4.0a5, but may not have been included in the dist
+X   NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
+X   https://github.com/processing/processing4/issues/154
+
+moviemaker
+X MovieMaker .mov not compatible with QuicktTime Player
+X   https://github.com/processing/processing/issues/6110
+X   notes in the bug about what's going on
+X   confirmed that after Mojave, the QTMovieModernizer went away (was 32-bit)
+X     https://support.apple.com/en-us/HT202884
+X   the modernizer would convert things to ProRes
+o     https://support.apple.com/en-us/HT202410
+o   possible other library: http://jcodec.org/
+o     https://github.com/jcodec/jcodec
+o   listing: https://search.maven.org/artifact/org.jcodec/jcodec/0.2.5/jar
+o   jars: https://repo.maven.apache.org/maven2/org/jcodec/jcodec/0.2.5/
+o   demo: https://github.com/jcodec/jcodec/blob/master/samples/main/java/org/jcodec/samples/gen/SequenceEncoderDemo.java
+X incorporating ffmpeg
+X   the essentials build for macos64, just one file:
+X     https://evermeet.cx/ffmpeg/ffmpeg-4.4.7z
+X     https://evermeet.cx/ffmpeg/ffmpeg-4.4.zip (!)
+X     via https://evermeet.cx/ffmpeg/
+X   release essentials for windows64, multiple files:
+X     https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.7z
+X     https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip
+X       ffmpeg-4.4-essentials_build/bin/ffmpeg.exe is our man
+X     via https://www.gyan.dev/ffmpeg/builds/
+X   linux64
+X     https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz
+X     via https://johnvansickle.com/ffmpeg/ also has arm and others
+X add ProRes 4444 support to Movie Maker
+
+contribs
+X Module javafx.base not found on Linux
+X   https://github.com/processing/processing4/issues/214
+X   https://github.com/processing/processing4/pull/215
+X After selecting a font other than Source Code Pro, font went to a default
+X   https://github.com/processing/processing4/pull/216
+X move doclet to separate repo
+X   https://github.com/processing/processing4/issues/218
+X   https://github.com/processing/processing4/pull/222
+
+sam
+X Code completion not working
+X   https://github.com/processing/processing4/issues/177
+X   confirmed not working from Sam's repo either
+X   https://github.com/processing/processing4/pull/219
+
+
+1274 (4.0a5)
+X update JNA from 5.7.0 to 5.8.0
+X bump minimum system version to 10.14.6
+X remove ant binary from repo, update from 1.8.2 to 1.10.10
+X refresh appbundler code a little
+X   disable "Launchpath: /path/to/Processing.app/Contents/PlugIns/jdk-11.0.11+9/Contents/Home/lib/jli/libjli.dylib" console message on startup
+X   update macOS SDK references in appbundler code
+X   fix compilation problem in appbundler iterator
+X   walk subfolders in the export to avoid duplicated core.jar and to include JavaFX
+X fix FX2D applications on macOS
+X   they didn't properly have their library.path set
+X   dylib files were not included in the export
+X Some 3.x Tools not working because JavaFX isn't on the classpath
+X   https://github.com/processing/processing4/issues/110
+X   https://github.com/processing/processing4/pull/112
+X garbled text in JavaFX
+X   https://bugs.openjdk.java.net/browse/JDK-8234916
+X bump JavaFX to 16, no longer the LTS version, but fixes garbled text
+X   and 11.0.8 is not available
+X add more entitlements in an attempt to fix audio/video capture
+X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_audio-input
+X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_camera
+X   https://developer.apple.com/documentation/bundleresources/entitlements/com_apple_security_device_microphone
+X   https://github.com/processing/processing4/commit/7b75acf2799f61c9c22233f38ee73c07635cea14
+X update to launch4j 3.14, fixing Export to Application on Windows
+X change defaults to get away from JFileChooser; it's awful
+X working on JavaFX on Windows, more runtime problems, needing exports
+X Export to Application with FX2D apps working on Windows
+X make sure we're not embedding webkit with all JFX apps
+X   maybe just remove it from the main download as well
+X   remove javafx-swt.jar and javafx.web.jar / also their .so files
+X more checking FX2D (and application export) on Windows
+o update list of optional JRE files for Java 8
+o   Andres provided some updates
+X   https://github.com/processing/processing/issues/3288
+o   these will change again for Java 11, so wait until then
+X   opting not to do so
+X   https://github.com/processing/processing4/issues/210
+X changes to how getFont() works for Preferences
+X   this may have been the cause of the old ghost NPEs on startup?
+X turn off chooser.files.native on macOS
+X   We were shutting this off on macOS because it broke Copy/Paste:
+o    https://github.com/processing/processing/issues/1035
+o    https://github.com/processing/processing4/issues/77
+X    But changing this for 4.0 alpha 5, because the JFileChooser is awful,
+X    and even worse on Big Sur, and worse than the Copy/Paste issue.
+X "Could not run" "For more information, read revisions.txt and Help → Troubleshooting."
+X   need to drop revisions.txt here and just reference Troubleshooting
+X NoClassDefError: processing/core/PApplet when starting 4.0a2 on Windows 10
+X   https://github.com/processing/processing4/issues/154
+X change application signature from Pde3 to Pde4
+X   also change the bundle identifier to avoid conflicts with 3
+X remove template.app from macOS build
+X   was no longer in use, and causing notarization problems
+
+javafx
+X move JavaFX to its own library, too many weird quirks that it includes
+o   build bits should be in core/build.xml or javafx/build.xml
+X   by moving it out, all the strangeness of download and import is outside core
+X add JavaFX library to IntelliJ
+X #@$*$& the JavaFX jars are ever-so-slightly different between platforms
+X Only specify --modules-path when running JavaFX apps
+X   https://github.com/processing/processing4/issues/209
+X JavaFX now throws Exception on run b/c natives aren't present
+X   why are the jars even there? how is module path getting set?
+o gonna have to cut loose running Tools from the PDE
+o   or make it possible to embed a JavaFX sketch, and the rest will work?
+X   working from the PDE, though not FX2D sketches
+X debug JavaFX and Export to Application on Windows
+X   this was working on Saturday, now broken after the move to a separate library
+/   now "Art Station" is broken because it actually creates an FX2D sketch
+X     (and FX2D isn't on the classpath by default)
+X debug JavaFX and Export to Application on Linux
+X fix modules path warning for Tools in the PDE
+X   "WARNING: Unsupported JavaFX configuration" when running Tools that use JavaFX
+X   we were probably spared the warnings because the older JARs were hanging around
+X update modules path when exporting application
+X You need to use "Import Library" to add processing.javafx.PGraphicsJavaFX
+o   automatically import JavaFX if FX2D is in sketch? or tell user?
+X   concerned about auto-import being too unreliable
+
+major font cleanup
+X JDK fonts have been removed; fonts folder too? (not seeing it in the JDK)
+X   https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522
+X more reliable loading of default mono fonts
+X processing.mono used in preferences.txt
+X remove Preferences.getFont(), deal with incorrect usage
+X   getFont("editor.font") was returning getFont("editor.font.size")
+
+windows/scaling
+X we're turning off automatic UI scaling in Windows, should we turn it back on?
+X   using -Dsun.java2d.uiScale.enabled=false inside config.xml for launch4j
+X   this was for Java 9, and we should have better support now
+X   also check whether this is set on Linux
+X Welcome screen doesn't size properly for HiDPI screens
+X   https://github.com/processing/processing/issues/4896
+X getSystemZoom() not available to splash screen
+X   https://github.com/processing/processing4/issues/145
+X   move all platform code out that doesn't require additional setup?
+X   i.e. all the things that rely on preferences can be inited separately (later)
+
+
 1273 (4.0a4)
 X “An error occurred while starting the application” with 4.0a3 on Windows
 X   replace about.bmp that was causing processing.exe to crash on startup

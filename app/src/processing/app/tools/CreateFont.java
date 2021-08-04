@@ -106,7 +106,7 @@ public class CreateFont extends JFrame implements Tool {
     pain.add(textarea);
 
     // don't care about families starting with . or #
-    // also ignore dialog, dialoginput, monospaced, serif, sansserif
+    // also ignore Dialog, DialogInput, Monospaced, Serif, SansSerif
 
     // getFontList is deprecated in 1.4, so this has to be used
     //long t = System.currentTimeMillis();
@@ -115,55 +115,14 @@ public class CreateFont extends JFrame implements Tool {
     Font[] fonts = ge.getAllFonts();
     //System.out.println("font startup took " + (System.currentTimeMillis() - t) + " ms");
 
-    /*
-    if (false) {
-      ArrayList<Font> fontList = new ArrayList<Font>();
-      File folderList = new File("/Users/fry/coconut/sys/fonts/web");
-      for (File folder : folderList.listFiles()) {
-        if (folder.isDirectory()) {
-          File[] items = folder.listFiles(new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-              if (name.charAt(0) == '.') return false;
-              return (name.toLowerCase().endsWith(".ttf") ||
-                      name.toLowerCase().endsWith(".otf"));
-            }
-          });
-          for (File fontFile : items) {
-            try {
-              FileInputStream fis = new FileInputStream(fontFile);
-              BufferedInputStream input = new BufferedInputStream(fis);
-              Font font = Font.createFont(Font.TRUETYPE_FONT, input);
-              input.close();
-              fontList.add(font);
-
-            } catch (Exception e) {
-              System.out.println("Ignoring " + fontFile.getName());
-            }
-          }
-        }
-      }
-//      fonts = new Font[fontList.size()];
-//      fontList.toArray(fonts);
-      fonts = fontList.toArray(new Font[fontList.size()]);
-    }
-    */
-
     String[] fontList = new String[fonts.length];
-    table = new HashMap<String,Font>();
+    table = new HashMap<>();
 
     int index = 0;
-    for (int i = 0; i < fonts.length; i++) {
-      //String psname = fonts[i].getPSName();
-      //if (psname == null) System.err.println("ps name is null");
-
+    for (Font value : fonts) {
       try {
-        fontList[index++] = fonts[i].getPSName();
-        table.put(fonts[i].getPSName(), fonts[i]);
-        // Checking into http://processing.org/bugs/bugzilla/407.html
-        // and https://github.com/processing/processing/issues/1727
-//        if (fonts[i].getPSName().contains("Helv")) {
-//          System.out.println(fonts[i].getPSName() + " -> " + fonts[i]);
-//        }
+        fontList[index++] = value.getPSName();
+        table.put(value.getPSName(), value);
       } catch (Exception e) {
         // Sometimes fonts cause lots of trouble.
         // http://code.google.com/p/processing/issues/detail?id=442
@@ -174,16 +133,14 @@ public class CreateFont extends JFrame implements Tool {
     list = new String[index];
     System.arraycopy(fontList, 0, list, 0, index);
 
-    fontSelector = new JList<String>(list);
-    fontSelector.addListSelectionListener(new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent e) {
-          if (e.getValueIsAdjusting() == false) {
-            selection = fontSelector.getSelectedIndex();
-            okButton.setEnabled(true);
-            update();
-          }
-        }
-      });
+    fontSelector = new JList<>(list);
+    fontSelector.addListSelectionListener(e -> {
+      if (!e.getValueIsAdjusting()) {
+        selection = fontSelector.getSelectedIndex();
+        okButton.setEnabled(true);
+        update();
+      }
+    });
 
     fontSelector.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     fontSelector.setVisibleRowCount(12);
@@ -215,53 +172,30 @@ public class CreateFont extends JFrame implements Tool {
     panel.add(sizeSelector);
 
     smoothBox = new JCheckBox(Language.text("create_font.smooth"));
-    smoothBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          smooth = smoothBox.isSelected();
-          update();
-        }
-      });
+    smoothBox.addActionListener(e -> {
+      smooth = smoothBox.isSelected();
+      update();
+    });
     smoothBox.setSelected(smooth);
     panel.add(smoothBox);
 
-//    allBox = new JCheckBox("All Characters");
-//    allBox.addActionListener(new ActionListener() {
-//        public void actionPerformed(ActionEvent e) {
-//          all = allBox.isSelected();
-//        }
-//      });
-//    allBox.setSelected(all);
-//    panel.add(allBox);
     charsetButton = new JButton(Language.text("create_font.characters"));
-    charsetButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        //showCharacterList();
-        charSelector.setVisible(true);
-      }
-    });
+    charsetButton.addActionListener(e -> charSelector.setVisible(true));
     panel.add(charsetButton);
 
     pain.add(panel);
 
-    JPanel filestuff = new JPanel();
-    filestuff.add(new JLabel(Language.text("create_font.filename") + ":"));
-    filestuff.add(filenameField = new JTextField(20));
-    filestuff.add(new JLabel(".vlw"));
-    pain.add(filestuff);
+    JPanel fileStuff = new JPanel();
+    fileStuff.add(new JLabel(Language.text("create_font.filename") + ":"));
+    fileStuff.add(filenameField = new JTextField(20));
+    fileStuff.add(new JLabel(".vlw"));
+    pain.add(fileStuff);
 
     JPanel buttons = new JPanel();
     JButton cancelButton = new JButton(Language.text("prompt.cancel"));
-    cancelButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          setVisible(false);
-        }
-      });
+    cancelButton.addActionListener(e -> setVisible(false));
     okButton = new JButton(Language.text("prompt.ok"));
-    okButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          build();
-        }
-      });
+    okButton.addActionListener(e -> build());
     okButton.setEnabled(false);
 
     buttons.add(cancelButton);
@@ -270,11 +204,7 @@ public class CreateFont extends JFrame implements Tool {
 
     JRootPane root = getRootPane();
     root.setDefaultButton(okButton);
-    ActionListener disposer = new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-          setVisible(false);
-        }
-      };
+    ActionListener disposer = actionEvent -> setVisible(false);
     Toolkit.registerWindowCloseKeys(root, disposer);
     Toolkit.setIcon(this);
 
@@ -287,10 +217,6 @@ public class CreateFont extends JFrame implements Tool {
 
     fontSelector.setSelectedIndex(0);
 
-//    Dimension screen = Toolkit.getScreenSize();
-//    windowSize = getSize();
-//    setLocation((screen.width - windowSize.width) / 2,
-//                (screen.height - windowSize.height) / 2);
     setLocationRelativeTo(null);
 
     // create this behind the scenes
@@ -304,35 +230,35 @@ public class CreateFont extends JFrame implements Tool {
 
 
   public void update() {
-    int fontsize = 0;
+    int fontSize = 0;
     try {
-      fontsize = Integer.parseInt(sizeSelector.getText().trim());
+      fontSize = Integer.parseInt(sizeSelector.getText().trim());
       //System.out.println("'" + sizeSelector.getText() + "'");
-    } catch (NumberFormatException e2) { }
+    } catch (NumberFormatException ignored) { }
 
     // if a deselect occurred, selection will be -1
-    if ((fontsize > 0) && (fontsize < 256) && (selection != -1)) {
-      //font = new Font(list[selection], Font.PLAIN, fontsize);
+    if ((fontSize > 0) && (fontSize < 256) && (selection != -1)) {
+      //font = new Font(list[selection], Font.PLAIN, fontSize);
       Font instance = table.get(list[selection]);
-//      font = instance.deriveFont(Font.PLAIN, fontsize);
-      font = instance.deriveFont((float) fontsize);
+//      font = instance.deriveFont(Font.PLAIN, fontSize);
+      font = instance.deriveFont((float) fontSize);
       //System.out.println("setting font to " + font);
       sample.setFont(font);
 
       String filenameSuggestion = list[selection].replace(' ', '_');
-      filenameSuggestion += "-" + fontsize;
+      filenameSuggestion += "-" + fontSize;
       filenameField.setText(filenameSuggestion);
     }
   }
 
 
   public void build() {
-    int fontsize = 0;
+    int fontSize = 0;
     try {
-      fontsize = Integer.parseInt(sizeSelector.getText().trim());
-    } catch (NumberFormatException e) { }
+      fontSize = Integer.parseInt(sizeSelector.getText().trim());
+    } catch (NumberFormatException ignored) { }
 
-    if (fontsize <= 0) {
+    if (fontSize <= 0) {
       JOptionPane.showMessageDialog(this, "Bad font size, try again.",
                                     "Badness", JOptionPane.WARNING_MESSAGE);
       return;
@@ -350,7 +276,7 @@ public class CreateFont extends JFrame implements Tool {
 
     try {
       Font instance = table.get(list[selection]);
-      font = instance.deriveFont(Font.PLAIN, fontsize);
+      font = instance.deriveFont(Font.PLAIN, fontSize);
       //PFont f = new PFont(font, smooth, all ? null : PFont.CHARSET);
       PFont f = new PFont(font, smooth, charSelector.getCharacters());
 
@@ -370,27 +296,6 @@ public class CreateFont extends JFrame implements Tool {
 
     setVisible(false);
   }
-
-
-//  /**
-//   * make the window vertically resizable
-//   */
-//  public Dimension getMaximumSize() {
-//    return new Dimension(windowSize.width, 2000);
-//  }
-//
-//
-//  public Dimension getMinimumSize() {
-//    return windowSize;
-//  }
-
-
-  /*
-  public void show(File targetFolder) {
-    this.targetFolder = targetFolder;
-    show();
-  }
-  */
 }
 
 
@@ -487,7 +392,7 @@ class CharacterSelector extends JFrame {
     super(Language.text("create_font.character_selector"));
 
     charsetList = new CheckBoxList();
-    DefaultListModel<JCheckBox> model = new DefaultListModel<JCheckBox>();
+    DefaultListModel<JCheckBox> model = new DefaultListModel<>();
     charsetList.setModel(model);
     for (String item : blockNames) {
       model.addElement(new JCheckBox(item));
@@ -516,13 +421,8 @@ class CharacterSelector extends JFrame {
     textarea.setFont(new Font("Dialog", Font.PLAIN, 12));
     pain.add(textarea);
 
-    ActionListener listener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        //System.out.println("action " + unicodeCharsButton.isSelected());
-        //unicodeBlockScroller.setEnabled(unicodeCharsButton.isSelected());
-        charsetList.setEnabled(unicodeCharsButton.isSelected());
-      }
-    };
+    ActionListener listener =
+      e -> charsetList.setEnabled(unicodeCharsButton.isSelected());
     defaultCharsButton =
       new JRadioButton(Language.text("create_font.default_characters"));
     allCharsButton =
@@ -553,12 +453,6 @@ class CharacterSelector extends JFrame {
     pain.add(rightStuff);
     pain.add(Box.createVerticalStrut(13));
 
-//    pain.add(radioPanel);
-
-//    pain.add(defaultCharsButton);
-//    pain.add(allCharsButton);
-//    pain.add(unicodeCharsButton);
-
     defaultCharsButton.setSelected(true);
     charsetList.setEnabled(false);
 
@@ -568,22 +462,14 @@ class CharacterSelector extends JFrame {
 
     JPanel buttons = new JPanel();
     JButton okButton = new JButton(Language.text("prompt.ok"));
-    okButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          setVisible(false);
-        }
-      });
+    okButton.addActionListener(e -> setVisible(false));
     okButton.setEnabled(true);
     buttons.add(okButton);
     pain.add(buttons);
 
     JRootPane root = getRootPane();
     root.setDefaultButton(okButton);
-    ActionListener disposer = new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-          setVisible(false);
-        }
-      };
+    ActionListener disposer = actionEvent -> setVisible(false);
     Toolkit.registerWindowCloseKeys(root, disposer);
     Toolkit.setIcon(this);
 
@@ -608,10 +494,10 @@ class CharacterSelector extends JFrame {
         charset[i] = (char) i;
       }
     } else {
-      DefaultListModel model = (DefaultListModel) charsetList.getModel();
+      ListModel<JCheckBox> model = charsetList.getModel();
       int index = 0;
       for (int i = 0; i < BLOCKS.length; i++) {
-        if (((JCheckBox) model.get(i)).isSelected()) {
+        if (model.getElementAt(i).isSelected()) {
           for (int j = blockStart[i]; j <= blockStop[i]; j++) {
             charset[index++] = (char) j;
           }
@@ -792,8 +678,6 @@ class CharacterSelector extends JFrame {
       blockStop[i] = PApplet.unhex(line.substring(6, 10));
       blockNames[i] = line.substring(12);
     }
-//    PApplet.println(codePointStop);
-//    PApplet.println(codePoints);
   }
 }
 
@@ -827,14 +711,12 @@ class CheckBoxList extends JList<JCheckBox> {
   }
 
 
-  protected class CellRenderer implements ListCellRenderer {
-    public Component getListCellRendererComponent(JList list, Object value,
+  protected class CellRenderer implements ListCellRenderer<JCheckBox> {
+    public Component getListCellRendererComponent(JList<? extends JCheckBox> list, JCheckBox checkbox,
                                                   int index, boolean isSelected,
                                                   boolean cellHasFocus) {
-      JCheckBox checkbox = (JCheckBox) value;
       checkbox.setBackground(isSelected ? getSelectionBackground() : getBackground());
       checkbox.setForeground(isSelected ? getSelectionForeground() : getForeground());
-      //checkbox.setEnabled(isEnabled());
       checkbox.setEnabled(list.isEnabled());
       checkbox.setFont(getFont());
       checkbox.setFocusPainted(false);

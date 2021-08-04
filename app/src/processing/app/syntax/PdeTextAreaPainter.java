@@ -33,9 +33,9 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Segment;
 import javax.swing.text.Utilities;
 
-import processing.app.Mode;
 import processing.app.Problem;
 import processing.app.ui.Editor;
+import processing.app.ui.Theme;
 
 
 /**
@@ -82,21 +82,31 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
   /**
    * Loads theme for TextAreaPainter. This is handled here because in the olden
-   * days, Modes had different visual design. Now, these are just pulling the
-   * defaults from the standard theme, though there may be minor additions or
-   * overrides added in a Mode's own theme.txt file.
+   * days, Modes had different visual design from one another. Now, these are
+   * just pulling the defaults from the standard theme, though there may be
+   * minor additions or overrides added in a Mode's own theme.txt file.
    */
-  public void setMode(Mode mode) {
-    errorUnderlineColor = mode.getColor("editor.error.underline.color");
-    warningUnderlineColor = mode.getColor("editor.warning.underline.color");
+  //public void setMode(Mode mode) {
+  @Override
+  protected void updateTheme() {
+    errorUnderlineColor = Theme.getColor("editor.error.underline.color");
+    warningUnderlineColor = Theme.getColor("editor.warning.underline.color");
 
-    gutterTextFont = mode.getFont("editor.gutter.text.font");
-    gutterTextColor = mode.getColor("editor.gutter.text.color");
+    gutterTextFont = Theme.getFont("editor.gutter.text.font");
+    gutterTextColor = Theme.getColor("editor.gutter.text.color");
     gutterPastColor = new Color(gutterTextColor.getRed(),
                                 gutterTextColor.getGreen(),
                                 gutterTextColor.getBlue(),
                                 96);
-    gutterLineHighlightColor = mode.getColor("editor.gutter.linehighlight.color");
+    gutterLineHighlightColor = Theme.getColor("editor.gutter.linehighlight.color");
+
+    // pull in changes for syntax style, as well as foreground and background color
+    if (defaults instanceof PdeTextAreaDefaults) {
+      ((PdeTextAreaDefaults) defaults).updateTheme();
+    }
+
+    // needs to happen *after* PdeTextAreaDefaults.updateTheme()
+    super.updateTheme();
   }
 
 
@@ -108,7 +118,6 @@ public class PdeTextAreaPainter extends TextAreaPainter {
    * then the line (background color and text).
    *
    * @param gfx the graphics context
-   * @param tokenMarker
    * @param line 0-based line number
    * @param x horizontal position
    */
@@ -145,8 +154,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       int y = textArea.lineToY(line) + fm.getLeading() + fm.getMaxDescent();
 
       try {
-        String badCode = null;
-        String goodCode = null;
+        String badCode;
+        String goodCode;
         try {
           SyntaxDocument doc = textArea.getDocument();
           badCode = doc.getText(wiggleStart, wiggleStop - wiggleStart);

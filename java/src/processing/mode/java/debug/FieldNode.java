@@ -56,9 +56,9 @@ public class FieldNode extends VariableNode {
     try {
       obj.setValue(field, value);
     } catch (InvalidTypeException ite) {
-      Messages.loge(null, ite);
+      Messages.err(null, ite);
     } catch (ClassNotLoadedException cnle) {
-      Messages.loge(null, cnle);
+      Messages.err(null, cnle);
     }
     this.value = value;
   }

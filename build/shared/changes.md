@@ -1,3 +1,136 @@
+# Processing 4.0 alpha 6
+
+*Revision 1275 – 10 July 2021*
+
+Code completion is back!
+
+Added a new Movie Maker that creates MP4s and Animated GIFs!
+
+And a new color scheme sure to bring out the cranks!
+
+
+### New Features
+
+* Movie Maker has been rewritten and much improved! It can now directly create high quality MPEG-4 videos and Animated GIFs. Due to Apple [removing support for most video codecs](https://support.apple.com/en-us/HT202884) after macOS Mojave, we could no longer export QuickTime videos. The new Tool uses [FFmpeg](https://ffmpeg.org/) behind the scenes. The Tool also supports [Apple ProRes 4444](https://support.apple.com/en-us/HT202410), which is very high quality, and incidentally, the format that Apple's “QTMovieModernizer” formerly used to re-encode “legacy” video formats. [#6110](https://github.com/processing/processing/issues/6110)
+
+
+### Design and Themes
+
+* We've started work on refreshing the design. This round has a new set of colors. If you like them, great! If not, please hold your complaints. The internet doesn't need more negativity! We know some people won't like it, and we're [still working on it](https://twitter.com/ben_fry/status/1409968426093735941). We think you'll be happy with the final version—we have some exciting updates that we aren't yet ready to share, and it will all make more sense as the system comes together. [#48](https://github.com/processing/processing4/issues/48)
+
+* In the meantime, if you'd like to customize the colors, instructions are [here](https://github.com/processing/processing4/wiki/Themes).
+
+* The "4" icon and the current "About" screen are only placeholders. I was tired of looking at the 3.x design, and also needed to be able to tell the versions apart from one another. It's also necessary to start the replacement process: figuring out what things need to be updated when we incorporate the real versions.
+
+* All that said, major work underway for improvements to how the visual theme is handled. We hope to ship with a dark mode option as well. Stay tuned!
+
+* The splash screen handler has been rewritten because the Windows version in launch4j was too brittle. The downside is that it's a fraction of a second slower to show up, but the upside is that hi-res Linux and Windows displays get a nice 2x version instead of the crunchy low-fi (not in a good way) version.
+
+* Add `ui.font.family` and `ui.font.size` as preferences.
+
+* Added support for `0x` numbers to support alpha colors in `theme.txt`.
+
+
+### Bug Fixes
+
+* Code completion is fixed. Thanks [Sam](https://github.com/sampottinger)! [#177](https://github.com/processing/processing4/issues/177), [#219](https://github.com/processing/processing4/pull/219)
+
+* `mouseButton` was not set correctly on `mouseReleased()` with Java2D. [#181](https://github.com/processing/processing4/issues/181)
+
+* A more useful message for the `NoClassDefError: processing/core/PApplet` startup error on Windows was in the alpha 5 source, but may not have made it into the actual release. [#154](https://github.com/processing/processing4/issues/154)
+
+* Fix `Module javafx.base not found` on Linux. Thanks [letorbi](https://github.com/letorbi). [#214](https://github.com/processing/processing4/issues/214), [#215](https://github.com/processing/processing4/pull/215)
+
+* After selecting a font other than Source Code Pro, font went to a default. [#216](https://github.com/processing/processing4/pull/216)
+
+* `unregisterMethod()` was broken. [#223](https://github.com/processing/processing4/issues/223)
+
+* Fixed "No library found for org.w3c.dom" message when using that (built-in) package.
+
+
+### Changes
+
+* When changing to an incompatible Mode, just open a new window instead of giving the user a potentially confusing error message about it. [#189](https://github.com/processing/processing4/issues/189)
+
+
+### API Changes
+
+None of these should break anything, but if they do, please let us know!
+
+* `Editor.applyPreferences()` was `protected`, now it's `public`.
+
+* Removed `Editor.repaintErrorBar()` and `Editor.showConsole()` because they didn't appear to be in use. Holler if this breaks anything.
+
+* Renamed `TextAreaPainter.getCompositionTextpainter()` to `getCompositionTextPainter()`.
+
+
+### Internal Changes
+
+* Removed `java.class.path` when launching code from inside the PDE. This should prevent conflicts, and avoid introducing problems when using Export to Application.
+
+* Removed compound key actions (which were undocumented and not in use). This clears up a lot of complexity in `DefaultInputHandler`.
+
+* Remove `jdt.compiler.jar` from subprojects.
+
+* Cleaned up lots of dead/unused parts of `javafx/build.xml`.
+
+* Move `ISSUE_TEMPLATE` to the `.github` subfolder.
+
+* Removed extra files from Tools folders for the download.
+
+* Moved doclet to separate repo. Thanks DSI! [#218](https://github.com/processing/processing4/issues/218), [#222](https://github.com/processing/processing4/pull/222)
+
+
+
+# Processing 4.0 alpha 5
+
+*Revision 1274 – 24 June 2021*
+
+Sneaking a release out the door the morning before our company meeting. Don't tell my boss, he's kind of a jerk.
+
+
+### Known Bugs
+
+* Code completion is currently broken. Any updates will be posted [here](https://github.com/processing/processing4/issues/177).
+
+* Plenty of other issues being tracked in the [Processing 4](https://github.com/processing/processing4/issues) and [Processing 3](https://github.com/processing/processing/issues) repositories. Please help!
+
+
+### Updates and Additions
+
+* Added a [few more](https://github.com/processing/processing4/commit/7b75acf2799f61c9c22233f38ee73c07635cea14) “entitlements” to the macOS release that may help with using the Video and Sound libraries, especially on Big Sur.
+
+* Moved from the 11.0.2 LTS version of JavaFX to the in-progress version 16. This fixes a [garbled text](https://bugs.openjdk.java.net/browse/JDK-8234916) issue that was breaking Tools that used JavaFX.
+
+* JavaFX has been moved out of core and into a separate library. After Java 8, it's no longer part of the JDK, so it requires additional files that were formerly included by default. The Processing version of that library comes in at 180 MB, which seems excessive to include with every project, regardless of whether it's used. (And that's not including the full Webkit implementation, which adds \~80 MB per platform.)
+
+* JavaFX is back and working again! This also fixes some Tools that relied on it, and Export to Application should be working as well. [#110](https://github.com/processing/processing4/issues/110), [#112](https://github.com/processing/processing4/pull/112), [#3288](https://github.com/processing/processing/issues/3288), [#209](https://github.com/processing/processing4/issues/209), [#210](https://github.com/processing/processing4/issues/210)
+
+
+### Other Fixes and Changes
+
+* Major font cleanup inside Preferences. It appears that the “Monospace” font may be [missing or broken](https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522) with OpenJDK 11. Does it show a random sans serif for you? Let us know if it does. But aside from that, the Editor and Console font should be behaving a little more reliably.
+
+* The Windows splash screen should no longer be tiny. Still sorting out some hidpi issues on Windows, but this one might make things a bit less quirky. [#4896](https://github.com/processing/processing/issues/4896), [#145](https://github.com/processing/processing4/issues/145)
+
+* Better handling of `NoClassDefError: processing/core/PApplet` on startup with Windows 10. [#154](https://github.com/processing/processing4/issues/154)
+
+* No longer using `JFileChooser` on macOS; it's too awful. This means a Copy/Paste issue comes back, but the cure was worse than the disease. [#1035](https://github.com/processing/processing/issues/1035), [#77](https://github.com/processing/processing4/issues/77)
+
+
+### Internal Changes
+
+* The minimum system version for macOS (for the PDE and exported applications) is now set to 10.14.6 (the last update of Mojave). 10.13 (High Sierra) is no longer supported by Apple as of September or December 2020 (depending on what you read), and for our sanity, we're dropping it as well.
+
+* Updated JNA from 5.7.0 to 5.8.0.
+
+* Remove the ant binary from the repo, updated the version we're using from 1.8.2 to 1.10.10.
+
+* Rebuilt the `appbundler` tool for macOS to handle some recent changes, and disabled some logging chatter as well.
+
+* Update to launch4j 3.14, fixing Export to Application on Windows.
+
+
 # Processing 4.0 alpha 4
 
 *Revision 1273 - 15 June 2021*

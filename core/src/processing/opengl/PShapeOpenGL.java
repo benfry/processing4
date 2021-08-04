@@ -1399,6 +1399,7 @@ public class PShapeOpenGL extends PShape {
       } else {
         transform.scale(args[0], args[1]);
         PGraphicsOpenGL.invScale((PMatrix2D)transformInv, args[0], args[1]);
+        tessellated = false; // Quick fix for https://github.com/processing/processing4/issues/217
       }
       break;
     case MATRIX:

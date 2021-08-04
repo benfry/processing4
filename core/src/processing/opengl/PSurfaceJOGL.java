@@ -1092,7 +1092,10 @@ public class PSurfaceJOGL implements PSurface {
 
   protected void nativeMouseEvent(com.jogamp.newt.event.MouseEvent nativeEvent,
                                   int peAction) {
+    // SHIFT, CTRL, META, and ALT are identical to the processing.event.Event,
+    // so the modifiers are left intact here.
     int modifiers = nativeEvent.getModifiers();
+    // Could limit to just the specific modifiers, but why bother?
     /*
     int peModifiers = modifiers &
                       (InputEvent.SHIFT_MASK |
@@ -1159,6 +1162,7 @@ public class PSurfaceJOGL implements PSurface {
 
   protected void nativeKeyEvent(com.jogamp.newt.event.KeyEvent nativeEvent,
                                 int peAction) {
+    // SHIFT, CTRL, META, and ALT are identical to processing.event.Event
     int modifiers = nativeEvent.getModifiers();
 //    int peModifiers = nativeEvent.getModifiers() &
 //                      (InputEvent.SHIFT_MASK |

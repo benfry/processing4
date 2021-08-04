@@ -32,15 +32,15 @@ class ErrorChecker {
   // Delay delivering error check result after last sketch change #2677
   private final static long DELAY_BEFORE_UPDATE = 650;
 
-  private ScheduledExecutorService scheduler;
+  final private ScheduledExecutorService scheduler;
   private volatile ScheduledFuture<?> scheduledUiUpdate = null;
   private volatile long nextUiUpdate = 0;
-  private volatile boolean enabled = true;
+  private volatile boolean enabled;
 
   private final Consumer<PreprocSketch> errorHandlerListener = this::handleSketchProblems;
 
-  private JavaEditor editor;
-  private PreprocService pps;
+  final private JavaEditor editor;
+  final private PreprocService pps;
 
 
   public ErrorChecker(JavaEditor editor, PreprocService pps) {
@@ -85,16 +85,14 @@ class ErrorChecker {
     Map<String, String[]> suggCache =
         JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
 
-    final List<Problem> problems = new ArrayList<>();
-
-    IProblem[] iproblems;
+    List<IProblem> iproblems;
     if (ps.compilationUnit == null) {
-      iproblems = new IProblem[0];
+      iproblems = new ArrayList<>();
     } else {
-      iproblems = ps.compilationUnit.getProblems();
+      iproblems = ps.iproblems;
     }
 
-    problems.addAll(ps.otherProblems);
+    final List<Problem> problems = new ArrayList<>(ps.otherProblems);
 
     if (problems.isEmpty()) { // Check for curly quotes
       List<JavaProblem> curlyQuoteProblems = checkForCurlyQuotes(ps);
@@ -109,16 +107,10 @@ class ErrorChecker {
     if (problems.isEmpty()) {
       AtomicReference<ClassPath> searchClassPath = new AtomicReference<>(null);
 
-      List<Problem> cuProblems = Arrays.stream(iproblems)
+      List<Problem> cuProblems = iproblems.stream()
           // Filter Warnings if they are not enabled
           .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
-          // Hide a useless error which is produced when a line ends with
-          // an identifier without a semicolon. "Missing a semicolon" is
-          // also produced and is preferred over this one.
-          // (Syntax error, insert ":: IdentifierOrNew" to complete Expression)
-          // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=405780
-          .filter(iproblem -> !iproblem.getMessage()
-              .contains("Syntax error, insert \":: IdentifierOrNew\""))
+          .filter(iproblem -> !(isIgnorableProblem(iproblem)))
           // Transform into our Problems
           .map(iproblem -> {
             JavaProblem p = convertIProblem(iproblem, ps);
@@ -152,6 +144,38 @@ class ErrorChecker {
     };
     scheduledUiUpdate =
       scheduler.schedule(uiUpdater, delay, TimeUnit.MILLISECONDS);
+  }
+
+
+  /**
+   * Determine if a problem can be suppressed from the user.
+   *
+   * <p>
+   * Determine if one can ignore an errors where an ignorable error is one
+   * "fixed" in later pipeline steps but can make JDT angry or do not actually
+   * cause issues when reaching javac.
+   * </p>
+   *
+   * @return True if ignoreable and false otherwise.
+   */
+  static private boolean isIgnorableProblem(IProblem iproblem) {
+    String message = iproblem.getMessage();
+
+    // Hide a useless error which is produced when a line ends with
+    // an identifier without a semicolon. "Missing a semicolon" is
+    // also produced and is preferred over this one.
+    // (Syntax error, insert ":: IdentifierOrNew" to complete Expression)
+    // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=405780
+    boolean ignorable = message.contains(
+        "Syntax error, insert \":: IdentifierOrNew\""
+    );
+
+    // It's ok if the file names do not line up during preprocessing.
+    ignorable = ignorable || message.contains(
+        "must be defined in its own file"
+    );
+
+    return ignorable;
   }
 
 

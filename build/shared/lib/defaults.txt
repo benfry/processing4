@@ -95,6 +95,9 @@ platform.auto_file_type_associations = true
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
+# default font used for UI elements
+ui.font.family = Dialog
+ui.font.size = 12
 
 # default size for the main window
 editor.window.width.default = 700
@@ -114,13 +117,9 @@ editor.zoom = 100%
 # automatically set based on system dpi (only helps on Windows)
 editor.zoom.auto = true
 
-# font size for editor
-#editor.font = Monospaced,plain,12
-# Monaco is nicer on Mac OS X, so use that explicitly
-#editor.font.macosx = Monaco,plain,10
-# trying for a built-in, consistent monospace for 2.0
-#editor.font = processing.mono,plain,12
-editor.font.family = Source Code Pro
+# Use the default monospace font included in lib/fonts.
+# (As of Processing 4 alpha 5, that's Source Code Pro)
+editor.font.family = processing.mono
 editor.font.size = 12
 
 # To reset everyone's default, replaced editor.antialias with editor.smooth
@@ -177,9 +176,6 @@ editor.watcher.window = 1500
 search.format = https://google.com/search?q=%s
 
 # font choice and size for the console
-#console.font = Monospaced,plain,11
-#console.font.macosx = Monaco,plain,10
-#console.font = processing.mono,plain,12
 console.font.size = 12
 
 # number of lines to show by default
@@ -246,38 +242,6 @@ editor.laf.linux = javax.swing.plaf.nimbus.NimbusLookAndFeel
 
 # use this to enable the VAqua Look and Feel (may be removed later)
 #editor.laf.macosx = org.violetlib.aqua.AquaLookAndFeel
-
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
-# TEXT - KEYWORDS, LITERALS
-# For an explanation of these tags, see Token.java:
-# processing/app/src/processing/app/syntax/Token.java
-
-editor.token.function1.style = #006699,plain
-editor.token.function2.style = #006699,plain
-editor.token.function3.style = #669900,plain
-editor.token.function4.style = #006699,bold
-
-editor.token.keyword1.style = #33997e,plain
-editor.token.keyword2.style = #33997e,plain
-editor.token.keyword3.style = #669900,plain
-editor.token.keyword4.style = #d94a7a,plain
-editor.token.keyword5.style = #e2661a,plain
-editor.token.keyword6.style = #33997e,plain
-
-editor.token.literal1.style = #7D4793,plain
-editor.token.literal2.style = #718a62,plain
-
-editor.token.operator.style = #006699,plain
-
-editor.token.label.style = #666666,bold
-
-editor.token.comment1.style = #666666,plain
-editor.token.comment2.style = #666666,plain
-
-editor.token.invalid.style = #666666,bold
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -364,20 +328,20 @@ proxy.socks.port=
 proxy.system=true
 
 # PDE X
-pdex.autoSave.autoSaveByDefault=true
-pdex.autoSave.autoSaveEnabled=false
-pdex.autoSave.promptDisplay=true
-pdex.autoSaveInterval=5
-pdex.dbgOutput=false
-pdex.errorCheckEnabled=true
-pdex.warningsEnabled=true
-pdex.writeErrorLogs=false
+pdex.errorCheckEnabled = true
+pdex.warningsEnabled = true
+pdex.writeErrorLogs = false
 
-# Set to false to disable ctrl/cmd-click jump to definition
-pdex.inspectMode.hotkey=true
+pdex.autoSave.autoSaveEnabled = false
+pdex.autoSaveInterval = 5
+pdex.autoSave.promptDisplay = true
+pdex.autoSave.autoSaveByDefault = true
+
 # Enable auto-completion when hitting ctrl-space
 pdex.completion = false
 # Trigger happy version of completion that fires more often
 pdex.completion.trigger = false
 # Suggest libraries to import when a class is undefined/unavailable
 pdex.suggest.imports = true
+# Set to false to disable ctrl/cmd-click jump to definition
+pdex.inspectMode.hotkey=true

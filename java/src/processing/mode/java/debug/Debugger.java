@@ -1547,15 +1547,15 @@ public class Debugger {
 
   private void loge(String msg, Throwable t) {
     if (t != null) {
-      Messages.loge(getClass().getName() + " " + msg, t);
+      Messages.err(getClass().getName() + " " + msg, t);
     } else {
-      Messages.loge(getClass().getName() + " " + msg);
+      Messages.err(getClass().getName() + " " + msg);
     }
   }
 
 
   static private void logitse(Throwable t) {
-    Messages.loge("incompatible thread state?", t);
+    Messages.err("incompatible thread state?", t);
   }
 
 
@@ -1607,7 +1607,7 @@ public class Debugger {
       } catch (VMDisconnectedException e) {
         Messages.log("VMEventReader quit on VM disconnect");
       } catch (Exception e) {
-        Messages.loge("VMEventReader quit", e);
+        Messages.err("VMEventReader quit", e);
       }
     }
   }

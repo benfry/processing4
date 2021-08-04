@@ -105,6 +105,7 @@ public class PImageAWT extends PImage {
    * written in a cross-platform fashion for desktop, Android, and others.
    * This is still included for PGraphics objects, which may need the image.
    */
+  @Override
   public Image getImage() {  // ignore
     return (Image) getNative();
   }

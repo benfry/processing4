@@ -46,10 +46,10 @@ public class Settings {
    * parses properly, we need to be able to get back to a clean version of that
    * setting so we can recover.
    */
-  HashMap<String,String> defaults;
+  Map<String, String> defaults;
 
   /** Table of attributes/values. */
-  HashMap<String,String> table = new HashMap<String,String>();;
+  Map<String, String> table = new HashMap<>();
 
   /** Associated file for this settings data. */
   File file;
@@ -63,7 +63,7 @@ public class Settings {
     }
 
     // clone the hash table
-    defaults = (HashMap<String,String>) table.clone();
+    defaults = new HashMap<>(table);
   }
 
 
@@ -74,17 +74,21 @@ public class Settings {
 
   public void load(File additions) {
     String[] lines = PApplet.loadStrings(additions);
-    for (String line : lines) {
-      if ((line.length() == 0) ||
+    if (lines != null) {
+      for (String line : lines) {
+        if ((line.length() == 0) ||
           (line.charAt(0) == '#')) continue;
 
-      // this won't properly handle = signs being in the text
-      int equals = line.indexOf('=');
-      if (equals != -1) {
-        String key = line.substring(0, equals).trim();
-        String value = line.substring(equals + 1).trim();
-        table.put(key, value);
+        // this won't properly handle = signs being in the text
+        int equals = line.indexOf('=');
+        if (equals != -1) {
+          String key = line.substring(0, equals).trim();
+          String value = line.substring(equals + 1).trim();
+          table.put(key, value);
+        }
       }
+    } else {
+      Messages.err(additions + " could not be read");
     }
 
     // check for platform-specific properties in the defaults
@@ -102,9 +106,17 @@ public class Settings {
 
 
   public void save() {
-    PrintWriter writer = PApplet.createWriter(file);
+    save(file);  // save back to the original file
+  }
 
-    for (String key : table.keySet()) {
+
+  public void save(File outputFile) {
+    PrintWriter writer = PApplet.createWriter(outputFile);
+
+    String[] keyList = table.keySet().toArray(new String[0]);
+    // Sorting is really helpful for debugging, diffing, and finding keys
+    keyList = PApplet.sort(keyList);
+    for (String key : keyList) {
       writer.println(key + "=" + table.get(key));
     }
 
@@ -153,22 +165,34 @@ public class Settings {
   }
 
 
+  @SuppressWarnings("unused")
   public void setInteger(String key, int value) {
     set(key, String.valueOf(value));
   }
 
 
+  /**
+   * Parse a color from a Settings file. Values are hexadecimal in either
+   * #RRGGBB (for opaque) or 0xAARRGGBB format (to include alpha).
+   */
   public Color getColor(String attribute) {
-    Color parsed = null;
+    Color outgoing = null;
     String s = get(attribute);
-    if ((s != null) && (s.indexOf("#") == 0)) {
+    if (s != null) {
       try {
-        int v = Integer.parseInt(s.substring(1), 16);
-        parsed = new Color(v);
-      } catch (Exception e) {
-      }
+        if (s.startsWith("#")) {
+          // parse a 6-digit hex color
+          outgoing = new Color(Integer.parseInt(s.substring(1), 16));
+        } else if (s.startsWith("0x")) {
+          int v = Integer.parseInt(s.substring(2), 16);
+          outgoing = new Color(v, true);
+        }
+      } catch (Exception ignored) { }
     }
-    return parsed;
+    if (outgoing == null) {
+      System.err.println("Could not parse color " + s + " for " + attribute);
+    }
+    return outgoing;
   }
 
 
@@ -198,10 +222,10 @@ public class Settings {
 
       String name = pieces[0];
       int style = Font.PLAIN;  // equals zero
-      if (pieces[1].indexOf("bold") != -1) { //$NON-NLS-1$
+      if (pieces[1].contains("bold")) { //$NON-NLS-1$
         style |= Font.BOLD;
       }
-      if (pieces[1].indexOf("italic") != -1) { //$NON-NLS-1$
+      if (pieces[1].contains("italic")) { //$NON-NLS-1$
         style |= Font.ITALIC;
       }
       int size = PApplet.parseInt(pieces[2], 12);

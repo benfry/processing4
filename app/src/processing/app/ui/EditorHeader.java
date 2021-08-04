@@ -63,8 +63,8 @@ public class EditorHeader extends JComponent {
   // (total tab width will be this plus TEXT_MARGIN*2)
   static final int NO_TEXT_WIDTH = Toolkit.zoom(16);
 
-  Color textColor[] = new Color[2];
-  Color tabColor[] = new Color[2];
+  Color[] textColor = new Color[2];
+  Color[] tabColor = new Color[2];
   Color modifiedColor;
   Color arrowColor;
 
@@ -97,65 +97,63 @@ public class EditorHeader extends JComponent {
   public EditorHeader(Editor eddie) {
     this.editor = eddie;
 
-    updateMode();
+    updateTheme();
 
     addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent e) {
-          int x = e.getX();
-          int y = e.getY();
+      public void mousePressed(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
 
-          if ((x > menuLeft) && (x < menuRight)) {
-            popup.show(EditorHeader.this, x, y);
-          } else {
-            Sketch sketch = editor.getSketch();
-            for (Tab tab : tabs) {
-              if (tab.contains(x)) {
-                sketch.setCurrentCode(tab.index);
-                repaint();
-              }
+        if ((x > menuLeft) && (x < menuRight)) {
+          popup.show(EditorHeader.this, x, y);
+        } else {
+          Sketch sketch = editor.getSketch();
+          for (Tab tab : tabs) {
+            if (tab.contains(x)) {
+              sketch.setCurrentCode(tab.index);
+              repaint();
             }
           }
         }
+      }
 
-        public void mouseExited(MouseEvent e) {
-          // only clear if it's been set
-          if (lastNoticeName != null) {
-            // only clear if it's the same as what we set it to
-            editor.clearNotice(lastNoticeName);
-            lastNoticeName = null;
-          }
+      public void mouseExited(MouseEvent e) {
+        // only clear if it's been set
+        if (lastNoticeName != null) {
+          // only clear if it's the same as what we set it to
+          editor.clearNotice(lastNoticeName);
+          lastNoticeName = null;
         }
+      }
     });
 
     addMouseMotionListener(new MouseMotionAdapter() {
         public void mouseMoved(MouseEvent e) {
-          int x = e.getX();
-          for (Tab tab : tabs) {
-            if (tab.contains(x) && !tab.textVisible) {
-              lastNoticeName = editor.getSketch().getCode(tab.index).getPrettyName();
-              editor.statusNotice(lastNoticeName);
-            }
-          }
+      int x = e.getX();
+      for (Tab tab : tabs) {
+        if (tab.contains(x) && !tab.textVisible) {
+          lastNoticeName = editor.getSketch().getCode(tab.index).getPrettyName();
+          editor.statusNotice(lastNoticeName);
         }
-      });
+      }
+      }
+    });
   }
 
 
-  public void updateMode() {
-    Mode mode = editor.getMode();
+  public void updateTheme() {
+    textColor[SELECTED] = Theme.getColor("header.text.selected.color");
+    textColor[UNSELECTED] = Theme.getColor("header.text.unselected.color");
+    font = Theme.getFont("header.text.font");
 
-    textColor[SELECTED] = mode.getColor("header.text.selected.color");
-    textColor[UNSELECTED] = mode.getColor("header.text.unselected.color");
-    font = mode.getFont("header.text.font");
+    tabColor[SELECTED] = Theme.getColor("header.tab.selected.color");
+    tabColor[UNSELECTED] = Theme.getColor("header.tab.unselected.color");
 
-    tabColor[SELECTED] = mode.getColor("header.tab.selected.color");
-    tabColor[UNSELECTED] = mode.getColor("header.tab.unselected.color");
-
-    arrowColor = mode.getColor("header.tab.arrow.color");
+    arrowColor = Theme.getColor("header.tab.arrow.color");
     //modifiedColor = mode.getColor("editor.selection.color");
-    modifiedColor = mode.getColor("header.tab.modified.color");
+    modifiedColor = Theme.getColor("header.tab.modified.color");
 
-    gradient = mode.makeGradient("header", 400, HIGH);
+    gradient = Theme.makeGradient("header", 400, HIGH);
   }
 
 
@@ -238,8 +236,8 @@ public class EditorHeader extends JComponent {
       Arrays.sort(visitOrder);  // sort on when visited
 
       // Keep shrinking the tabs one-by-one until things fit properly
-      for (int i = 0; i < visitOrder.length; i++) {
-        tabs[visitOrder[i].index].textVisible = false;
+      for (Tab tab : visitOrder) {
+        tabs[tab.index].textVisible = false;
         if (placeTabs(Editor.LEFT_GUTTER, tabMax, null)) {
           break;
         }
@@ -526,11 +524,8 @@ public class EditorHeader extends JComponent {
     if (sketch != null) {
       menu.addSeparator();
 
-      ActionListener jumpListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          editor.getSketch().setCurrentCode(e.getActionCommand());
-        }
-      };
+      ActionListener jumpListener =
+        e -> editor.getSketch().setCurrentCode(e.getActionCommand());
       for (SketchCode code : sketch.getCode()) {
         item = new JMenuItem(code.getPrettyName());
         item.addActionListener(jumpListener);
@@ -542,9 +537,11 @@ public class EditorHeader extends JComponent {
   }
 
 
+  /*
   public void deselectMenu() {
     repaint();
   }
+  */
 
 
   public Dimension getPreferredSize() {
@@ -565,7 +562,7 @@ public class EditorHeader extends JComponent {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static class Tab implements Comparable {
+  static class Tab implements Comparable<Tab> {
     int index;
     int left;
     int right;
@@ -583,8 +580,7 @@ public class EditorHeader extends JComponent {
     }
 
     // sort by the last time visited
-    public int compareTo(Object o) {
-      Tab other = (Tab) o;
+    public int compareTo(Tab other) {
       // do this here to deal with situation where both are 0
       if (lastVisited == other.lastVisited) {
         return 0;

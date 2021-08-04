@@ -1,3 +1,31 @@
+1275 (4.0a6)
+X mouseButton not set correctly on mouseReleased() with Java2D
+X   https://github.com/processing/processing4/issues/181
+o   https://github.com/processing/processing4/pull/188
+X fix up modifiers for key events (after completing mouse) in Java2D
+X set args for JavaFX and OpenGL for the mouse and key events
+X   make sure that everything is set properly, also for keys
+X unregisterMethod() was broken
+X   https://github.com/processing/processing4/issues/223
+
+cleaning
+o Skija bindings
+o   https://github.com/processing/processing4/issues/151
+o size() issues on Mojave? (3.4 works, 3.5.3 does not)
+X   https://github.com/processing/processing/issues/5791
+X   closed for now; unable to confirm anything in the thread
+o Complaints that size() is not working
+X   Windows: https://github.com/processing/processing/issues/6046
+X   Linux: https://github.com/processing/processing/issues/5912
+X   can't reproduce, may be fixed with display= changes in alpha 4
+X   reports that open and closing Preferences fixed it?
+
+
+1274 (4.0a5)
+X do a test to see if PApplet extends PSketch breaks libraries
+X   seems to be working
+
+
 1273 (4.0a4)
 X fix typo in extensions= arg
 X update batik to 1.14

@@ -146,8 +146,9 @@ implements MouseListener, MouseMotionListener, ActionListener {
 
     // It looks like ActionEvent expects old-style modifiers,
     // so the e.getModifiers() call here may be correct.
-    // TODO Look into how this is getting used in Modes,
-    // and either update or add ignore to the deprecation [fry 191008]
+    // TODO Look into how this is getting used in Modes, and either
+    //      update or add ignore to the deprecation [fry 191008]
+    //      https://github.com/processing/processing4/issues/67
     actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
                                     null, e.getModifiers()));
   }

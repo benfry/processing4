@@ -64,15 +64,17 @@
   <path id="classpath.base">
     <pathelement location="library/jogl-all.jar" />
     <pathelement location="library/gluegen-rt.jar" />
-    <pathelement location="library/javafx-swt.jar" />
+
+    <!-- <pathelement location="library/javafx-swt.jar" /> -->
     <pathelement location="library/javafx.base.jar" />
     <pathelement location="library/javafx.controls.jar" />
     <pathelement location="library/javafx.fxml.jar" />
     <pathelement location="library/javafx.graphics.jar" />
     <pathelement location="library/javafx.media.jar" />
+    <!-- error? it's not a .jar, but is this how config is handled? [fry 210619] -->
     <pathelement location="library/javafx.properties" />
     <pathelement location="library/javafx.swing.jar" />
-    <pathelement location="library/javafx.web.jar" />
+    <!-- <pathelement location="library/javafx.web.jar" /> -->
   </path>
 
   <path id="classpath.test">

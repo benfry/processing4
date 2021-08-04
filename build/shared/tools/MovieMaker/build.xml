@@ -1,28 +1,96 @@
 <?xml version="1.0"?>
 <project name="Movie Maker Tool" default="build">
 
+  <!-- set things up to make sure we have necessary ffmpeg files -->
+
+  <condition property="platform" value="macos">
+    <os family="mac" />
+  </condition>
+
+  <condition property="platform" value="windows">
+    <os family="windows" />
+  </condition>
+
+  <condition property="platform" value="linux">
+    <and>
+      <os family="unix" />
+      <not>
+        <os family="mac" />
+      </not>
+    </and>
+  </condition>
+
+  <condition property="ffmpeg.binary" value="tool/ffmpeg.exe" else="tool/ffmpeg">
+    <os family="windows" />
+  </condition>
+
+  <property name="ffmpeg.version" value="4.4" />
+  <!-- Using download.processing.org because the static builds are
+       from several locations, and are all packaged differently.
+       This could be automated, but too much effort relative to utility. -->
+  <property name="ffmpeg.url"
+            value="https://download.processing.org/ffmpeg/${ffmpeg.version}/ffmpeg-${platform}-${os.arch}.gz" />
+
+  <property name="ffmpeg.gz" value="ffmpeg-${ffmpeg.version}.gz" />
+  <available file="${ffmpeg.gz}" property="ffmpeg.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="ffmpeg.ignorable" value="false" else="true">
+    <isset property="ffmpeg.present" />
+  </condition>
+
+
+  <!-- target for downloading ffmpeg binary -->
+
+  <target name="download-ffmpeg" unless="ffmpeg.present">
+    <get src="${ffmpeg.url}"
+         dest="${ffmpeg.gz}"
+         ignoreerrors="${ffmpeg.ignorable}"
+         usetimestamp="true" />
+  </target>
+
+  <target name="prepare-ffmpeg" depends="download-ffmpeg">
+    <gunzip src="${ffmpeg.gz}" dest="${ffmpeg.binary}" />
+    <chmod file="${ffmpeg.binary}" perm="ugo+x" />
+  </target>
+
   <target name="clean" description="Clean the build directories">
     <delete dir="bin" />
     <delete file="tool/MovieMaker.jar" />
   </target>
 
+
+  <!-- compiling the Tool itself -->
+
   <target name="compile" description="Compile sources">
     <mkdir dir="bin" />
-    <javac target="1.8"
-	   source="1.8"
-	   srcdir="src"
-	   destdir="bin"
-	   encoding="UTF-8"
-	   includeAntRuntime="false"
-	   classpath="../../../../app/bin"
-	   nowarn="true">
-      <compilerclasspath path="../../../../java/mode/org.eclipse.jdt.core.jar;
-                               ../../../../java/mode/jdtCompilerAdapter.jar" />
-    </javac>
+    <javac target="11"
+           source="11"
+           srcdir="src"
+           destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           classpath="../../../../app/bin"
+           nowarn="true" />
   </target>
 
-  <target name="build" depends="compile" description="Build Movie Maker Tool">
+  <target name="build" depends="compile, prepare-ffmpeg" description="Build Movie Maker Tool">
     <mkdir dir="tool" />
     <jar basedir="bin" destfile="tool/MovieMaker.jar" />
+  </target>
+
+  <!-- java -cp tool/MovieMaker.jar:../../../../app/bin:../../../../core/bin processing.app.tools.MovieMaker  -->
+
+  <!-- classpath="tool/MovieMaker.jar;
+                  ../../../../app/bin;
+                  ../../../../core/bin" -->
+  <target name="run" depends="build" description="Run standalone for development">
+    <java classname="processing.app.tools.MovieMaker" fork="true">
+      <classpath>
+        <pathelement location="tool/MovieMaker.jar" />
+        <pathelement location="../../../../app/bin" />
+        <pathelement location="../../../../core/bin" />
+      </classpath>
+    </java>
   </target>
 </project>

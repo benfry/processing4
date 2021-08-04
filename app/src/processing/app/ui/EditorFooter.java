@@ -163,20 +163,20 @@ public class EditorFooter extends Box {
   public void updateMode() {
     Mode mode = editor.getMode();
 
-    textColor[SELECTED] = mode.getColor("footer.text.selected.color");
-    textColor[UNSELECTED] = mode.getColor("footer.text.unselected.color");
-    font = mode.getFont("footer.text.font");
+    textColor[SELECTED] = Theme.getColor("footer.text.selected.color");
+    textColor[UNSELECTED] = Theme.getColor("footer.text.unselected.color");
+    font = Theme.getFont("footer.text.font");
 
-    tabColor[SELECTED] = mode.getColor("footer.tab.selected.color");
-    tabColor[UNSELECTED] = mode.getColor("footer.tab.unselected.color");
+    tabColor[SELECTED] = Theme.getColor("footer.tab.selected.color");
+    tabColor[UNSELECTED] = Theme.getColor("footer.tab.unselected.color");
 
-    updateColor = mode.getColor("footer.updates.color");
+    updateColor = Theme.getColor("footer.updates.color");
 
-    gradient = mode.makeGradient("footer", 400, HIGH);
+    gradient = Theme.makeGradient("footer", 400, HIGH);
     // Set the default background color in case the window size reported
     // incorrectly by the OS, or we miss an update event of some kind
     // https://github.com/processing/processing/issues/3919
-    bgColor = mode.getColor("footer.gradient.bottom");
+    bgColor = Theme.getColor("footer.gradient.bottom");
     setBackground(bgColor);
   }
 

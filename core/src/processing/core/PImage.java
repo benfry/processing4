@@ -842,7 +842,7 @@ public class PImage implements PConstants, Cloneable {
    * which will make the image into a "correct" grayscale by
    * performing a proper luminance-based conversion.
    *
-   * @webref pimage:method
+   * @webref image:pixels
    * @webBrief Masks part of an image with another image as an alpha channel
    * @usage web_application
    * @param img image to use as the mask
@@ -1599,7 +1599,7 @@ public class PImage implements PConstants, Cloneable {
    * are preferable, and the difference is insignificant for applications
    * built with Processing.</P>
    *
-   * @webref color:creating_reading
+   * @webref color:creating & reading
    * @webBrief Blends two color values together based on the blending mode given as the
    * <b>MODE</b> parameter
    * @usage web_application

@@ -69,6 +69,7 @@ public class RuntimePathBuilder {
   /**
    * The modules comprising the Java standard modules.
    */
+  @SuppressWarnings("SpellCheckingInspection")
   protected static final String[] STANDARD_MODULES = {
       "java.base.jmod",
       "java.compiler.jmod",
@@ -256,21 +257,21 @@ public class RuntimePathBuilder {
   }
 
   /**
-   * Invalidate all of the runtime path caches associated with sketch libraries.
+   * Invalidate all the runtime path caches associated with sketch libraries.
    */
   public void markLibrariesChanged() {
     invalidateAll(libraryDependentCaches);
   }
 
   /**
-   * Invalidate all of the runtime path caches associated with sketch library imports.
+   * Invalidate all the runtime path caches associated with sketch library imports.
    */
   public void markLibraryImportsChanged() {
     invalidateAll(libraryImportsDependentCaches);
   }
 
   /**
-   * Invalidate all of the runtime path caches associated with the code folder having changed.
+   * Invalidate all the runtime path caches associated with the code folder having changed.
    */
   public void markCodeFolderChanged() {
     invalidateAll(codeFolderDependentCaches);
@@ -323,7 +324,7 @@ public class RuntimePathBuilder {
           try {
             return Paths.get(path).toUri().toURL();
           } catch (MalformedURLException e) {
-            Messages.loge("malformed URL when preparing sketch classloader", e);
+            Messages.err("malformed URL when preparing sketch classloader", e);
             return null;
           }
         })
@@ -445,17 +446,18 @@ public class RuntimePathBuilder {
    * @param sketch The sketch provided by the user.
    * @return List of classpath and/or module path entries.
    */
-  protected List<String> buildLibrarySketchPath(JavaMode mode, List<ImportStatement> imports,
-        Sketch sketch) {
+  protected List<String> buildLibrarySketchPath(JavaMode mode,
+                                                List<ImportStatement> imports,
+                                                Sketch sketch) {
 
     StringJoiner classPathBuilder = new StringJoiner(File.pathSeparator);
 
     imports.stream()
         .map(ImportStatement::getPackageName)
-        .filter(pckg -> !isIgnorableForSketchPath(pckg))
-        .map(pckg -> {
+        .filter(pkg -> !isIgnorableForSketchPath(pkg))
+        .map(pkg -> {
           try {
-            return mode.getLibrary(pckg);
+            return mode.getLibrary(pkg);
           } catch (SketchException e) {
             return null;
           }
@@ -554,9 +556,7 @@ public class RuntimePathBuilder {
 
   /**
    * Determine if a package is ignorable because it is standard.
-   *
-   * Determine if a package is ignorable on the sketch path because it is standard. This is
-   * different than being ignorable in imports recommendations.
+   * This is different from being ignorable in imports recommendations.
    *
    * @param packageName The name of the package to evaluate.
    * @return True if the package is part of standard Java (like java.lang.*). False otherwise.
@@ -568,8 +568,8 @@ public class RuntimePathBuilder {
   /**
    * Find a fully qualified jar name.
    *
-   * @param jarName The jar name like "javafx.base.jar" for which a fully qualified entry should be
-   *    created.
+   * @param jarName The jar name like "javafx.base.jar" for which a
+   *                fully qualified entry should be created.
    * @return The fully qualified classpath entry like ".../Processing.app/Contents/PlugIns/
    *    adoptopenjdk-11.0.1.jdk/Contents/Home/lib/javafx.base.jar"
    */
@@ -604,7 +604,7 @@ public class RuntimePathBuilder {
    *
    * Note that these are protected so that they can be tested. The interface below defines a
    * strategy for determining path elements. An optional caching object which allows for path
-   * invalidatino is also defined below.
+   * invalidation is also defined below.
    */
 
   /**
@@ -641,8 +641,8 @@ public class RuntimePathBuilder {
    */
   protected static class CachedRuntimePathFactory implements RuntimePathFactoryStrategy {
 
-    private AtomicReference<List<String>> cachedResult;
-    private RuntimePathFactoryStrategy innerStrategy;
+    final private AtomicReference<List<String>> cachedResult;
+    final private RuntimePathFactoryStrategy innerStrategy;
 
     /**
      * Create a new cache around {RuntimePathFactoryStrategy}.
