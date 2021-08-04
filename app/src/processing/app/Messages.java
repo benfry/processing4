@@ -328,7 +328,7 @@ public class Messages {
 
   static public void logf(String message, Object... args) {
     if (Base.DEBUG) {
-      System.out.println(String.format(message, args));
+      System.out.printf(message, args);
     }
   }
 
