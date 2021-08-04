@@ -100,7 +100,7 @@ public class EditorFooter extends Box {
     super(BoxLayout.Y_AXIS);
     this.editor = eddie;
 
-    updateMode();
+    updateTheme();
 
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
@@ -160,7 +160,7 @@ public class EditorFooter extends Box {
   }
 
 
-  public void updateMode() {
+  public void updateTheme() {
     textColor[SELECTED] = Theme.getColor("footer.text.selected.color");
     textColor[UNSELECTED] = Theme.getColor("footer.text.unselected.color");
     font = Theme.getFont("footer.text.font");

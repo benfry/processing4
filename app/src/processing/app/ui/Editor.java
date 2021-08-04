@@ -598,6 +598,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     errorColumn.updateTheme();
     status.updateTheme();
     console.updateTheme();
+    footer.updateTheme();
 
     // Not all Modes will have an error table (that's why it's addErrorTable()
     // and not createErrorTable() and called by default).

@@ -17,11 +17,17 @@ o fix height of font size dropdown in prefs (why one pixel off?)
 X   file prefs combo box issue
 o   https://github.com/processing/processing4/issues/232
 X change Messages.loge() to Messages.err()
+X only call errorTable.updateTheme() if it's not null
+X update EditorFooter.updateMode() to EditorFooter.updateTheme()
+X   add it to the code called by Editor.updateTheme()
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
 X   https://github.com/processing/processing4/issues/157
 X   https://github.com/processing/processing4/pull/230
+
+before release
+_ update the README for alpha 6 (and this release too, when ready)
 
 
 _ dealing with reference.zip and web server
