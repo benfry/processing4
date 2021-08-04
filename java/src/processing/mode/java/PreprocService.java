@@ -53,8 +53,6 @@ import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.FileASTRequestor;
-import org.eclipse.jdt.core.ICompilationUnit;
-import org.eclipse.jdt.core.IType;
 
 import processing.app.Messages;
 import processing.app.Sketch;
@@ -154,7 +152,7 @@ public class PreprocService {
           }
         }
       } catch (Exception e) {
-        Messages.loge("problem in preprocessor service loop", e);
+        Messages.err("problem in preprocessor service loop", e);
       }
     }
     Messages.log("PPS: Bye!");
@@ -224,7 +222,7 @@ public class PreprocService {
           .thenAcceptBothAsync(lastCallback, (ps, a) -> callback.accept(ps))
           // Make sure exception in callback won't cancel whole callback chain
           .handleAsync((res, e) -> {
-            if (e != null) Messages.loge("PPS: exception in callback", e);
+            if (e != null) Messages.err("PPS: exception in callback", e);
             return res;
           });
       return lastCallback;
@@ -314,7 +312,7 @@ public class PreprocService {
       try {
         listener.accept(ps);
       } catch (Exception e) {
-        Messages.loge("error when firing preprocessing listener", e);
+        Messages.err("error when firing preprocessing listener", e);
       }
     }
   }
@@ -734,7 +732,7 @@ public class PreprocService {
    * for the sketch's combined PDE code (not ".java" tabs).
    * </p>
    */
-  private class ProcessingASTRequester extends FileASTRequestor {
+  static private class ProcessingASTRequester extends FileASTRequestor {
     private final String mainSource;
     private final List<IProblem> problems;
     private CompilationUnit mainCompilationUnit;

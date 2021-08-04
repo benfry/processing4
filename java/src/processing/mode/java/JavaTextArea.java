@@ -335,7 +335,7 @@ public class JavaTextArea extends PdeTextArea {
           }
         });
       } catch (Exception e) {
-        Messages.loge("error while preparing suggestions", e);
+        Messages.err("error while preparing suggestions", e);
       }
     });
   }

@@ -96,7 +96,6 @@ public class CompletionPanel {
    * @param subWord - Partial word which triggered the code completion and which needs to be completed
    * @param items - completion candidates
    * @param location - Point location where popup list is to be displayed
-   * @param dedit
    */
   public CompletionPanel(final JEditTextArea textarea,
                          int position, String subWord,
@@ -377,7 +376,7 @@ public class CompletionPanel {
           }
         }
 
-        Messages.loge(subWord + " <= subword, Inserting suggestion=> " +
+        Messages.err(subWord + " <= subword, Inserting suggestion=> " +
           selectedSuggestion + " Current sub: " + currentSubword);
         if (currentSubword.length() > 0) {
           textarea.getDocument().remove(insertionPosition - currentSubwordLen,

@@ -27,7 +27,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -1326,7 +1325,7 @@ public class JavaEditor extends Editor {
       // this method gets called twice when saving sketch for the first time
       // once with new name and another with old(causing NPE). Keep an eye out
       // for potential issues. See #2675. TODO:
-      Messages.loge("Illegal tab name to addBreakpointComments() " + tabFilename);
+      Messages.err("Illegal tab name to addBreakpointComments() " + tabFilename);
       return;
     }
     List<LineBreakpoint> bps = debugger.getBreakpoints(tab.getFileName());
@@ -1349,7 +1348,7 @@ public class JavaEditor extends Editor {
       tab.setProgram(code);
       tab.save();
     } catch (IOException ex) {
-      Messages.loge(null, ex);
+      Messages.err(null, ex);
     }
   }
 

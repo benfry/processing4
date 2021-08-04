@@ -95,7 +95,7 @@ class ASTViewer {
   void buildAndUpdateTree(PreprocSketch ps) {
     CompilationUnit cu = ps.compilationUnit;
     if (cu.types().isEmpty()){
-      Messages.loge("No Type found in CU");
+      Messages.err("No Type found in CU");
       return;
     }
 

@@ -88,7 +88,7 @@ public class Settings {
         }
       }
     } else {
-      Messages.loge(additions + " could not be read");
+      Messages.err(additions + " could not be read");
     }
 
     // check for platform-specific properties in the defaults

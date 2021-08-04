@@ -536,7 +536,7 @@ public class Toolkit {
   static public ImageIcon getLibIcon(String filename) {
     File file = Platform.getContentFile("lib/" + filename);
     if (file == null || !file.exists()) {
-      Messages.loge("does not exist: " + file);
+      Messages.err("does not exist: " + file);
       return null;
     }
     return new ImageIcon(file.getAbsolutePath());
@@ -1032,7 +1032,7 @@ public class Toolkit {
           sansBoldFont = new Font("Monospaced", Font.BOLD, size);
         }
       } catch (Exception e) {
-        Messages.loge("Could not load mono font", e);
+        Messages.err("Could not load mono font", e);
         monoFont = new Font("Monospaced", Font.PLAIN, size);
         monoBoldFont = new Font("Monospaced", Font.BOLD, size);
       }
@@ -1080,7 +1080,7 @@ public class Toolkit {
           sansBoldFont = new Font("SansSerif", Font.BOLD, size);
         }
       } catch (Exception e) {
-        Messages.loge("Could not load sans font", e);
+        Messages.err("Could not load sans font", e);
         sansFont = new Font("SansSerif", Font.PLAIN, size);
         sansBoldFont = new Font("SansSerif", Font.BOLD, size);
       }

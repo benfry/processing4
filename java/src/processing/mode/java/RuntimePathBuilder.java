@@ -257,21 +257,21 @@ public class RuntimePathBuilder {
   }
 
   /**
-   * Invalidate all of the runtime path caches associated with sketch libraries.
+   * Invalidate all the runtime path caches associated with sketch libraries.
    */
   public void markLibrariesChanged() {
     invalidateAll(libraryDependentCaches);
   }
 
   /**
-   * Invalidate all of the runtime path caches associated with sketch library imports.
+   * Invalidate all the runtime path caches associated with sketch library imports.
    */
   public void markLibraryImportsChanged() {
     invalidateAll(libraryImportsDependentCaches);
   }
 
   /**
-   * Invalidate all of the runtime path caches associated with the code folder having changed.
+   * Invalidate all the runtime path caches associated with the code folder having changed.
    */
   public void markCodeFolderChanged() {
     invalidateAll(codeFolderDependentCaches);
@@ -324,7 +324,7 @@ public class RuntimePathBuilder {
           try {
             return Paths.get(path).toUri().toURL();
           } catch (MalformedURLException e) {
-            Messages.loge("malformed URL when preparing sketch classloader", e);
+            Messages.err("malformed URL when preparing sketch classloader", e);
             return null;
           }
         })
@@ -556,9 +556,7 @@ public class RuntimePathBuilder {
 
   /**
    * Determine if a package is ignorable because it is standard.
-   *
-   * Determine if a package is ignorable on the sketch path because it is standard. This is
-   * different than being ignorable in imports recommendations.
+   * This is different from being ignorable in imports recommendations.
    *
    * @param packageName The name of the package to evaluate.
    * @return True if the package is part of standard Java (like java.lang.*). False otherwise.
@@ -570,8 +568,8 @@ public class RuntimePathBuilder {
   /**
    * Find a fully qualified jar name.
    *
-   * @param jarName The jar name like "javafx.base.jar" for which a fully qualified entry should be
-   *    created.
+   * @param jarName The jar name like "javafx.base.jar" for which a
+   *                fully qualified entry should be created.
    * @return The fully qualified classpath entry like ".../Processing.app/Contents/PlugIns/
    *    adoptopenjdk-11.0.1.jdk/Contents/Home/lib/javafx.base.jar"
    */

@@ -2332,7 +2332,7 @@ public class JEditTextArea extends JComponent
         try {
           select(getMarkPosition(), xyToOffset(evt.getX(), evt.getY()));
         } catch (ArrayIndexOutOfBoundsException e) {
-          Messages.loge("xToOffset problem", e);
+          Messages.err("xToOffset problem", e);
         }
       } else {
         int line = yToLine(evt.getY());

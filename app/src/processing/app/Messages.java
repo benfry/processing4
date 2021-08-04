@@ -29,8 +29,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import processing.app.ui.Editor;
-
 public class Messages {
   /**
    * "No cookie for you" type messages. Nothing fatal or all that
@@ -190,26 +188,14 @@ public class Messages {
 
 
 
+  /*
   // incomplete
   static public int showYesNoCancelQuestion(Editor editor, String title,
                                             String primary, String secondary) {
     if (!Platform.isMacOS()) {
-      int result =
-        JOptionPane.showConfirmDialog(null, primary + "\n" + secondary, title,
-                                      JOptionPane.YES_NO_CANCEL_OPTION,
-                                      JOptionPane.QUESTION_MESSAGE);
-      return result;
-//    if (result == JOptionPane.YES_OPTION) {
-//
-//    } else if (result == JOptionPane.NO_OPTION) {
-//      return true;  // ok to continue
-//
-//    } else if (result == JOptionPane.CANCEL_OPTION) {
-//      return false;
-//
-//    } else {
-//      throw new IllegalStateException();
-//    }
+      return JOptionPane.showConfirmDialog(null, primary + "\n" + secondary, title,
+                                           JOptionPane.YES_NO_CANCEL_OPTION,
+                                           JOptionPane.QUESTION_MESSAGE);
 
     } else {
       // Pane formatting adapted from the Quaqua guide
@@ -236,8 +222,7 @@ public class Messages {
 
       // on macosx, setting the destructive property places this option
       // away from the others at the lefthand side
-      pane.putClientProperty("Quaqua.OptionPane.destructiveOption",
-                             Integer.valueOf(2));
+      pane.putClientProperty("Quaqua.OptionPane.destructiveOption", 2);
 
       JDialog dialog = pane.createDialog(editor, null);
       dialog.setVisible(true);
@@ -254,6 +239,7 @@ public class Messages {
       }
     }
   }
+  */
 
 
   static public int showYesNoQuestion(Frame editor, String title,
@@ -347,19 +333,19 @@ public class Messages {
   }
 
 
-  static public void loge(String message, Throwable e) {
+  static public void err(String message) {
+    err(message, null);
+  }
+
+
+  static public void err(String message, Throwable e) {
     if (Base.DEBUG) {
       if (message != null) {
         System.err.println(message);
       }
-      e.printStackTrace();
-    }
-  }
-
-
-  static public void loge(String message) {
-    if (Base.DEBUG) {
-      System.err.println(message);
+      if (e != null) {
+        e.printStackTrace();
+      }
     }
   }
 }

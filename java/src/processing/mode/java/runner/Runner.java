@@ -288,11 +288,11 @@ public class Runner implements MessageConsumer {
           try {
             Thread.sleep(100);
           } catch (InterruptedException ie) {
-            Messages.loge(getClass().getName() + " interrupted", ie);
+            Messages.err(getClass().getName() + " interrupted", ie);
 //            ie.printStackTrace(sketchErr);
           }
         } catch (IOException e) {
-          Messages.loge(getClass().getName() + " while attaching to VM", e);
+          Messages.err(getClass().getName() + " while attaching to VM", e);
         }
       }
 //    } catch (IOException exc) {

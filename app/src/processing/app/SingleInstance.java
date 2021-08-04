@@ -47,7 +47,6 @@ public class SingleInstance {
    * Returns true if there's an instance of Processing already running.
    * Will not return true unless this code was able to successfully
    * contact the already running instance to have it launch sketches.
-   * @param filename Path to the PDE file that was opened, null if double-clicked
    * @return true if successfully launched on the other instance
    */
   static boolean alreadyRunning(String[] args) {
@@ -108,14 +107,14 @@ public class SingleInstance {
               }
 //              }
             } catch (IOException e) {
-              Messages.loge("SingleInstance error while listening", e);
+              Messages.err("SingleInstance error while listening", e);
             }
           }
         }
       }, "SingleInstance Server").start();
 
     } catch (IOException e) {
-      Messages.loge("Could not create single instance server.", e);
+      Messages.err("Could not create single instance server.", e);
     }
   }
 
@@ -143,7 +142,7 @@ public class SingleInstance {
         return true;
       }
     } catch (IOException e) {
-      Messages.loge("Error sending commands to other instance", e);
+      Messages.err("Error sending commands to other instance", e);
     }
     Messages.log("Processing is not already running (or could not connect)");
     return false;

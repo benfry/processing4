@@ -1023,7 +1023,7 @@ public abstract class Mode {
       // Create a fresh output folder (needed before preproc is run next)
       if (!targetFolder.exists()) {
         if (!targetFolder.mkdirs()) {
-          Messages.loge("Could not create " + targetFolder);
+          Messages.err("Could not create " + targetFolder);
         }
       }
     }

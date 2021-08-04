@@ -10,6 +10,13 @@ o   but pdex.completion.trigger=true does
 X   https://github.com/processing/processing/issues/5691
 X remove code for pulling fonts from JAVA_HOME/lib/fonts
 X   no longer exists in Java 11
+o exporting on Linux is setting the wrong path? or an extra subfolder is used?
+X   https://github.com/processing/processing/issues/6182
+X   checked, seems to be working
+o fix height of font size dropdown in prefs (why one pixel off?)
+X   file prefs combo box issue
+o   https://github.com/processing/processing4/issues/232
+X change Messages.loge() to Messages.err()
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
@@ -17,16 +24,16 @@ X   https://github.com/processing/processing4/issues/157
 X   https://github.com/processing/processing4/pull/230
 
 
-_ change Messages.loge() to Messages.err()
+_ dealing with reference.zip
+_ psk files, doing that for examples
 
-_ Toolkit.getSansFont() will use the internal ProcessingSansPro font
-_   which means it gets used inside ManagerFrame, and prevents the theme from updating the font
 
 _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
 
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
+_   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
 
 _ replace bug numbers
@@ -35,7 +42,11 @@ _   with http://processing.org/bugs/bugzilla/1188.html
 _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
 ui is ugly on macOS
-_ fix height of font size dropdown in prefs (why one pixel off?)
+_ sort out ui.font plus the other fonts inside theme.txt
+_   Toolkit.getSansFont() will use the internal ProcessingSansPro font
+_     which means it gets used inside ManagerFrame, and prevents the theme from updating the font
+_   while that font could exist in theme.txt, getSansFont() also handles the language fallback version
+_     which perhaps, that pref should come from the translations: i.e. some sort of override setting
 _ better default fonts for Swing; argh
 _   file an issue with the images
 _     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
@@ -63,9 +74,6 @@ _ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
 _   https://github.com/processing/processing/issues/4214
-
-_ exporting on Linux is setting the wrong path? or an extra subfolder is used?
-_   https://github.com/processing/processing/issues/6182
 
 _ when lib downloads (batik) go dead, fallback to the download.processing.org version
 _   or for now, tell users how to do it manually

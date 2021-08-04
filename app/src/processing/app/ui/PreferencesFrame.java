@@ -160,6 +160,12 @@ public class PreferencesFrame {
     consoleFontSizeField = new JComboBox<>(FONT_SIZES);
     consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
 
+    // Sizing is screwed up on macOS, bug has been open since 2017
+    // https://github.com/processing/processing4/issues/232
+    // https://bugs.openjdk.java.net/browse/JDK-8179076
+    fontSizeField.setEditable(true);
+    consoleFontSizeField.setEditable(true);
+
 
     // Interface scale: [ 100% ] (requires restart of Processing)
 
@@ -507,23 +513,16 @@ public class PreferencesFrame {
     frame.pack();
     frame.setLocationRelativeTo(null);
 
-    // Workaround for OS X, which breaks the layout when these are set earlier
-    // https://github.com/processing/processing/issues/3212
-    fontSizeField.setEditable(true);
-    consoleFontSizeField.setEditable(true);
-
     // handle window closing commands for ctrl/cmd-W or hitting ESC.
-
     pain.addKeyListener(new KeyAdapter() {
-        public void keyPressed(KeyEvent e) {
-          //System.out.println(e);
-          KeyStroke wc = Toolkit.WINDOW_CLOSE_KEYSTROKE;
-          if ((e.getKeyCode() == KeyEvent.VK_ESCAPE) ||
-              (KeyStroke.getKeyStrokeForEvent(e).equals(wc))) {
-            disposeFrame();
-          }
+      public void keyPressed(KeyEvent e) {
+        KeyStroke wc = Toolkit.WINDOW_CLOSE_KEYSTROKE;
+        if ((e.getKeyCode() == KeyEvent.VK_ESCAPE) ||
+            (KeyStroke.getKeyStrokeForEvent(e).equals(wc))) {
+          disposeFrame();
         }
-      });
+      }
+    });
   }
 
 

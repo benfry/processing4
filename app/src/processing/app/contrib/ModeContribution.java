@@ -66,7 +66,7 @@ public class ModeContribution extends LocalContribution {
         // For the built-in modes, don't print the exception, just log it
         // for debugging. This should be impossible for most users to reach,
         // but it helps us load experimental mode when it's available.
-        Messages.loge("ModeContribution.load() failed for " + searchName, err);
+        Messages.err("ModeContribution.load() failed for " + searchName, err);
       }
     }
     return null;

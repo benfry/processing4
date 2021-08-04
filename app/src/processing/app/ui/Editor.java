@@ -2410,7 +2410,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
         // remove the original file, so user doesn't get confused
         if (!origPdeFile.delete()) {
-          Messages.loge("Could not delete " + origPdeFile);
+          Messages.err("Could not delete " + origPdeFile);
         }
 
         // update with the new path

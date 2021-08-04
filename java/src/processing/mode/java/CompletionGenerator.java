@@ -1750,7 +1750,7 @@ public class CompletionGenerator {
     ASTNode testnode = parser.createAST(null);
     //Base.loge("PREDICTION PARSER PROBLEMS: " + parser);
     // Find closest ASTNode of the document to this word
-    Messages.loge("Typed: " + phrase + "|" + " temp Node type: " + testnode.getClass().getSimpleName());
+    Messages.err("Typed: " + phrase + "|" + " temp Node type: " + testnode.getClass().getSimpleName());
     if(testnode instanceof MethodInvocation){
       MethodInvocation mi = (MethodInvocation)testnode;
       log(mi.getName() + "," + mi.getExpression() + "," + mi.typeArguments().size());
@@ -1762,7 +1762,7 @@ public class CompletionGenerator {
       // Make sure nearestNode is not NULL if couldn't find a closest node
       nearestNode = astRootNode;
     }
-    Messages.loge(lineNumber + " Nearest ASTNode to PRED "
+    Messages.err(lineNumber + " Nearest ASTNode to PRED "
                       + getNodeAsString(nearestNode));
 
     candidates = new ArrayList<>();
@@ -1770,7 +1770,7 @@ public class CompletionGenerator {
     // Determine the expression typed
 
     if (testnode instanceof SimpleName && !noCompare) {
-      Messages.loge("One word expression " + getNodeAsString(testnode));
+      Messages.err("One word expression " + getNodeAsString(testnode));
       //==> Simple one word exprssion - so is just an identifier
 
       // Bottom up traversal of the AST to look for possible definitions at
@@ -1850,7 +1850,7 @@ public class CompletionGenerator {
     } else {
       // ==> Complex expression of type blah.blah2().doIt,etc
       // Have to resolve it by carefully traversing AST of testNode
-      Messages.loge("Complex expression " + getNodeAsString(testnode));
+      Messages.err("Complex expression " + getNodeAsString(testnode));
       log("candidates empty");
       ASTNode childExpr = getChildExpression(testnode);
       log("Parent expression : " + getParentExpression(testnode));
