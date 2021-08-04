@@ -24,8 +24,10 @@ X   https://github.com/processing/processing4/issues/157
 X   https://github.com/processing/processing4/pull/230
 
 
-_ dealing with reference.zip
+_ dealing with reference.zip and web server
+_   web server confirmed to be working, but should check w/ new docs
 _ psk files, doing that for examples
+_   250 example (folders), would cut ~8-900 files to just those 250
 
 
 _ auto-complete not triggering, workaround as pref?
