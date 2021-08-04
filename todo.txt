@@ -44,9 +44,11 @@ _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 ui is ugly on macOS
 _ sort out ui.font plus the other fonts inside theme.txt
 _   Toolkit.getSansFont() will use the internal ProcessingSansPro font
-_     which means it gets used inside ManagerFrame, and prevents the theme from updating the font
-_   while that font could exist in theme.txt, getSansFont() also handles the language fallback version
-_     which perhaps, that pref should come from the translations: i.e. some sort of override setting
+_     which means it gets used inside ManagerFrame,
+_     and prevents the theme from updating the font
+_   while that font could exist in theme.txt,
+_     getSansFont() also handles the language fallback version
+_     which perhaps, that pref should come from the translations: i.e. an override setting
 _ better default fonts for Swing; argh
 _   file an issue with the images
 _     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
