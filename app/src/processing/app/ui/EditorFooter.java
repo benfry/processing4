@@ -161,8 +161,6 @@ public class EditorFooter extends Box {
 
 
   public void updateMode() {
-    Mode mode = editor.getMode();
-
     textColor[SELECTED] = Theme.getColor("footer.text.selected.color");
     textColor[UNSELECTED] = Theme.getColor("footer.text.unselected.color");
     font = Theme.getFont("footer.text.font");

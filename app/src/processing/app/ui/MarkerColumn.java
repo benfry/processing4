@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 
 import javax.swing.JPanel;
 
-import processing.app.Mode;
 import processing.app.Problem;
 import processing.app.Sketch;
 import processing.app.SketchCode;

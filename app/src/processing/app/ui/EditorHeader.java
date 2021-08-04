@@ -33,7 +33,6 @@ import javax.swing.*;
 
 import processing.app.Language;
 import processing.app.Messages;
-import processing.app.Mode;
 import processing.app.Platform;
 import processing.app.Sketch;
 import processing.app.SketchCode;
