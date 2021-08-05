@@ -548,6 +548,18 @@
                       role="Editor">
       </bundledocument>
 
+      <bundledocument extensions="pskz"
+                      icon="macosx/document.icns"
+                      name="Processing Sketch Bundle"
+                      role="Editor">
+      </bundledocument>
+
+      <bundledocument extensions="pcbz"
+                      icon="macosx/document.icns"
+                      name="Processing Contribution Bundle"
+                      role="None">
+      </bundledocument>
+
       <!-- !@#*&$ the @2x splash screen implementation was removed by Oracle -->
       <!-- tiffutil -cathidpicheck about.png about\@2x.png -out about.tiff -->
       <!--<option value="-splash:$APP_ROOT/Contents/Java/lib/about.png" />-->

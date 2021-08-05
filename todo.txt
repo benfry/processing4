@@ -20,14 +20,55 @@ X change Messages.loge() to Messages.err()
 X only call errorTable.updateTheme() if it's not null
 X update EditorFooter.updateMode() to EditorFooter.updateTheme()
 X   add it to the code called by Editor.updateTheme()
+_ update to latest JDK 11
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
 X   https://github.com/processing/processing4/issues/157
 X   https://github.com/processing/processing4/pull/230
 
+cleaning
+o look into LCD rendering problems w/ Java (see if Lion still a problem)
+o   fonts were showing up with very different fatness
+o put stdout/stderr into ~/Library/Logs
+o   and have a .log extension so it can be browsed properly
+o   need to make sure that it's ok to write to logs dir..
+o     probably being removed from future OS X versions
+
 before release
 _ update the README for alpha 6 (and this release too, when ready)
+
+
+_ don't allow "Show Sketch Folder" for untitled sketches
+
+sketch/launching
+_ should it be pskz, pcbz? psk for the sketch file to double-click?
+_   pdez as a sketch bundle?
+_ launch/psk files/import from web editor (more details below)
+_ cleaning up the temp file handling
+_   'show sketch folder' weird when in temp folder
+_     ask to save first (sketch has not been saved yet)
+_     or make the temp folder part of the sketchbook
+_   same with adding files to an unsaved sketch, do we block that?
+_ what to double-click when opening p5 projects
+_   lack of a project file makes this a little bit of a headache
+_   dropping a sketch folder onto the PDE should also be implemented
+_ some type of sketch archive format for posting examples (.psk?)
+_   would be nice to open a sketch directly from a zip file
+_   https://github.com/processing/processing/issues/73
+_   maybe just open from a zip file, since psk doesn't help anything
+_   also have a means of importing sketches
+_     https://github.com/processing/processing/issues/3987
+_   also see several notes below re: examples
+_ add means to import .zip files from file/url into sketchbook, library, etc.
+_   super easy given current code implementation, might help usability
+_ put the reference (and examples?) into .zip files
+_   unzipping the app takes forever
+_   see the 'examples' section below
+_ how are file associations handled in Linux? (for .pde, .psk)
+_ when adding a new library, its examples aren't added to the list until restart
+_ refresh option for sketchbook (bottom of window)
+_ import option for sketchbook (button to select files/folders/etc)
 
 
 _ dealing with reference.zip and web server
@@ -165,19 +206,7 @@ _ detach sketch name and folder name (use sketch.properties)
 _   better for git, etc
 _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
-_ launch/psk files/import from web editor (more details below)
-_ cleaning up the temp file handling
-_   'show sketch folder' weird when in temp folder
-_     ask to save first (sketch has not been saved yet)
-_     or make the temp folder part of the sketchbook
-_   same with adding files to an unsaved sketch, do we block that?
 
-
-macos
-_ disable "notifications" prompt on startup for macOS
-_   we're not posting any, can we suppress the "allow notifications" message?
-_   https://developer.apple.com/documentation/usernotifications
-_   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
 
 
 windows
@@ -199,28 +228,6 @@ _ temp folders (particularly on Windows)
 _   a whole section down below about this
 _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
-
-
-sketch/launching
-_ what to double-click when opening p5 projects
-_   lack of a project file makes this a little bit of a headache
-_   dropping a sketch folder onto the PDE should also be implemented
-_ some type of sketch archive format for posting examples (.psk?)
-_   would be nice to open a sketch directly from a zip file
-_   https://github.com/processing/processing/issues/73
-_   maybe just open from a zip file, since psk doesn't help anything
-_   also have a means of importing sketches
-_     https://github.com/processing/processing/issues/3987
-_   also see several notes below re: examples
-_ add means to import .zip files from file/url into sketchbook, library, etc.
-_   super easy given current code implementation, might help usability
-_ put the reference (and examples?) into .zip files
-_   unzipping the app takes forever
-_   see the 'examples' section below
-_ how are file associations handled in Linux? (for .pde, .psk)
-_ when adding a new library, its examples aren't added to the list until restart
-_ refresh option for sketchbook (bottom of window)
-_ import option for sketchbook
 
 
 web/docs
@@ -1092,11 +1099,24 @@ _   this may already work with SingleInstance stuff
 
 DIST / macOS
 
+appbundler
 _ update appbundler? https://github.com/TheInfiniteKind/appbundler
 _   might be broken though https://github.com/TheInfiniteKind/appbundler/issues/70
 _   symlink https://github.com/TheInfiniteKind/appbundler/issues/1
 _ startup chatter (from appbundler?)
 _   Processing[25059:13082813] int launch(char *, int, char **) Launchpath
+_ Find a long-term solution for OS X bundler to address signing/symlink issues
+_   https://github.com/processing/processing/issues/2967
+_ appbundler improvements
+_   don't re-copy JRE into work folder if already exists
+_   implement a splash screen
+
+others
+_ disable "notifications" prompt on startup for macOS
+_   https://github.com/processing/processing4/issues/234
+_   we're not posting any, can we suppress the "allow notifications" message?
+_   https://developer.apple.com/documentation/usernotifications
+_   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
 _ Help Menu disabled on OS X (looks like a JVM bug)
 _   https://github.com/processing/processing/issues/4353#issuecomment-237715947
 _   still broken in 11.0.8
@@ -1107,11 +1127,6 @@ _   https://developer.apple.com/library/mac/technotes/tn2007/tn2196.html
 _ built-in images: http://nadeausoftware.com/articles/2008/12/mac_java_tip_how_access_mac_specific_nsimage_icons
 _ Update QuickLook plugin for Processing 3
 _   https://github.com/processing/processing/issues/3261
-_ Find a long-term solution for OS X bundler to address signing/symlink issues
-_   https://github.com/processing/processing/issues/2967
-_ appbundler improvements
-_   don't re-copy JRE into work folder if already exists
-_   implement a splash screen
 _ more OS X-specific hackery for improved appearance
 _   https://developer.apple.com/library/mac/technotes/tn2007/tn2196.html
 _ possible better option for doing retina?
@@ -1121,17 +1136,11 @@ _   http://lwjgl.org/forum/index.php/topic,4711.225.html
 _ change cmd line for OS X to use symlink?
 _   otherwise updates are going to require reinstall..
 _   or that it's gonna need to parse and say "update command line?"
-_ look into LCD rendering problems w/ Java (see if Lion still a problem)
-_   fonts were showing up with very different fatness
 _ we're breaking some mac human interface guidelines
 _   should be using a menu factory to create menubar for all sub-windows
 _   http://developer.apple.com/technotes/tn/tn2042.html
 _   and the general warning dialogs are just ass ugly
 _   (i.e. we really need those replacements for JOptionPane)
-_ put stdout/stderr into ~/Library/Logs
-_   and have a .log extension so it can be browsed properly
-_   need to make sure that it's ok to write to logs dir..
-_      probably being removed from future OS X versions
 _ Exiting a sketch with Command-Q or File > Quit doesn't call stop() on OS X
 _   https://github.com/processing/processing/issues/186
 

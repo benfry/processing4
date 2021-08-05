@@ -46,7 +46,7 @@ import processing.data.StringList;
  * The base class for the main processing application.
  * Primary role of this class is for platform identification and
  * general interaction with the system (launching URLs, loading
- * files and images, etc) that comes from that.
+ * files and images, etc.) that comes from that.
  */
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
@@ -54,6 +54,9 @@ public class Base {
   static private final int REVISION = 1276;
   /** This might be replaced by main() if there's a lib/version.txt file. */
   static private String VERSION_NAME = "1276"; //$NON-NLS-1$
+
+  static final String SKETCH_BUNDLE_EXT = ".pskz";
+  static final String CONTRIB_BUNDLE_EXT = ".pcbz";
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true
@@ -168,7 +171,7 @@ public class Base {
       DEBUG = true;
     }
 
-    // Use native popups so they don't look so crappy on OS X
+    // Use native popups so they don't look crappy on macOS
     JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
     // Don't put anything above this line that might make GUI,
@@ -285,7 +288,7 @@ public class Base {
   }
 
 
-  // Remove this code in a couple months [fry 170211]
+  // Remove this code in a couple of months [fry 170211]
   // https://github.com/processing/processing/issues/4853
   // Or maybe not, if NVIDIA keeps doing this [fry 170423]
   // https://github.com/processing/processing/issues/4997
@@ -1302,6 +1305,41 @@ public class Base {
    * Open a sketch from the path specified. Do not use for untitled sketches.
    */
   public Editor handleOpen(String path) {
+    if (path.endsWith(SKETCH_BUNDLE_EXT)) {
+      File zipFile = new File(path);
+      try {
+        File destFolder = File.createTempFile("zip", "tmp", untitledFolder);
+        if (!destFolder.delete() || !destFolder.mkdirs()) {
+          // Hard to imagine why this would happen, but...
+          System.err.println("Could not create temporary folder " + destFolder);
+          return null;
+        }
+        Util.unzip(zipFile, destFolder);
+        File[] fileList = destFolder.listFiles(File::isDirectory);
+        if (fileList != null) {
+          if (fileList.length == 1) {
+            File sketchFile = checkSketchFolder(fileList[0]);
+            if (sketchFile != null) {
+              return handleOpen(sketchFile.getAbsolutePath(), true);
+            }
+          } else {
+            System.err.println("Expecting one folder inside " +
+              SKETCH_BUNDLE_EXT + " file, found " + fileList.length + ".");
+          }
+        } else {
+          System.err.println("Could not read " + destFolder);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return null;  // no luck
+
+    } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
+      // TODO Install a contrib here
+      return null;
+
+    }
+
     return handleOpen(path, false);
   }
 
@@ -1645,35 +1683,6 @@ public class Base {
   }
 
 
-  /*
-  public JMenu getRecentMenu() {
-    return recent.getMenu();
-  }
-
-
-  public JMenu getToolbarRecentMenu() {
-    return recent.getToolbarMenu();
-  }
-
-
-  public void handleRecent(Editor editor) {
-    recent.handle(editor);
-  }
-
-
-  public void handleRecentRename(Editor editor, String oldPath) {
-    recent.handleRename(editor, oldPath);
-  }
-
-
-  // Called before a sketch is renamed so that its old name is
-  // no longer in the menu.
-  public void removeRecent(Editor editor) {
-    recent.remove(editor);
-  }
-  */
-
-
   /**
    * Scan a folder recursively, and add any sketches found to the menu
    * specified. Set the openReplaces parameter to true when opening the sketch
@@ -1711,12 +1720,6 @@ public class Base {
     ActionListener listener = e -> {
       String path = e.getActionCommand();
       if (new File(path).exists()) {
-        /*
-        boolean replace = replaceExisting;
-        if ((e.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
-          replace = !replace;
-        }
-        */
         handleOpen(path);
       } else {
         Messages.showWarning("Sketch Disappeared",
@@ -1730,34 +1733,40 @@ public class Base {
 
     boolean found = false;
 
-//    for (int i = 0; i < list.length; i++) {
-//      if ((list[i].charAt(0) == '.') ||
-//          list[i].equals("CVS")) continue;
     for (String name : list) {
       if (name.charAt(0) == '.') {
         continue;
       }
 
-      File subfolder = new File(folder, name);
-      if (subfolder.isDirectory()) {
-        File entry = checkSketchFolder(subfolder, name);
-        if (entry != null) {
+      // TODO Is this necessary any longer? This seems gross [fry 210804]
+      if (name.equals("old")) {  // Don't add old contributions
+        continue;
+      }
 
-          JMenuItem item = new JMenuItem(name);
-          item.addActionListener(listener);
-          item.setActionCommand(entry.getAbsolutePath());
-          menu.add(item);
+      File entry = new File(folder, name);
+      File sketchFile = null;
+      if (entry.isDirectory()) {
+        sketchFile = checkSketchFolder(entry);
+      } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
+        name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
+        sketchFile = entry;
+      }
+
+      if (sketchFile != null) {
+        JMenuItem item = new JMenuItem(name);
+        item.addActionListener(listener);
+        item.setActionCommand(sketchFile.getAbsolutePath());
+        menu.add(item);
+        found = true;
+
+      } else if (entry.isDirectory()) {
+        // not a sketch folder, but may be a subfolder containing sketches
+        JMenu submenu = new JMenu(name);
+        // needs to be separate var otherwise would set found to false
+        boolean anything = addSketches(submenu, entry);
+        if (anything) {
+          menu.add(submenu);
           found = true;
-
-        } else {
-          // not a sketch folder, but maybe a subfolder containing sketches
-          JMenu submenu = new JMenu(name);
-          // needs to be separate var otherwise would set found to false
-          boolean anything = addSketches(submenu, subfolder);
-          if (anything && !name.equals("old")) { //Don't add old contributions
-            menu.add(submenu);
-            found = true;
-          }
         }
       }
     }
@@ -1765,6 +1774,10 @@ public class Base {
   }
 
 
+  /**
+   * Mostly identical to the JMenu version above, however the rules are
+   * slightly different for how examples are handled, etc.
+   */
   public boolean addSketches(DefaultMutableTreeNode node, File folder,
                              boolean examples) throws IOException {
     // skip .DS_Store files, etc (this shouldn't actually be necessary)
@@ -1809,25 +1822,30 @@ public class Base {
         continue;
       }
 
-      File subfolder = new File(folder, name);
-      if (subfolder.isDirectory()) {
-        File entry = checkSketchFolder(subfolder, name);
-        if (entry != null) {
-          DefaultMutableTreeNode item =
-            new DefaultMutableTreeNode(new SketchReference(name, entry));
+      File entry = new File(folder, name);
+      File sketchFile = null;
+      if (entry.isDirectory()) {
+        sketchFile = checkSketchFolder(entry);
+      } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
+        name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
+        sketchFile = entry;
+      }
 
-          node.add(item);
+      if (sketchFile != null) {
+        DefaultMutableTreeNode item =
+          new DefaultMutableTreeNode(new SketchReference(name, sketchFile));
+
+        node.add(item);
+        found = true;
+
+      } else if (entry.isDirectory()) {
+        // not a sketch folder, but maybe a subfolder containing sketches
+        DefaultMutableTreeNode subNode = new DefaultMutableTreeNode(name);
+        // needs to be separate var otherwise would set found to false
+        boolean anything = addSketches(subNode, entry, examples);
+        if (anything) {
+          node.add(subNode);
           found = true;
-
-        } else {
-          // not a sketch folder, but maybe a subfolder containing sketches
-          DefaultMutableTreeNode subNode = new DefaultMutableTreeNode(name);
-          // needs to be separate var otherwise would set found to false
-          boolean anything = addSketches(subNode, subfolder, examples);
-          if (anything) {
-            node.add(subNode);
-            found = true;
-          }
         }
       }
     }
@@ -1840,10 +1858,10 @@ public class Base {
    * Because the default mode will be the first in the list, this will always
    * prefer that one over the others.
    */
-  File checkSketchFolder(File subfolder, String item) {
+  private File checkSketchFolder(File folder) {
     for (Mode mode : getModeList()) {
-      File entry = new File(subfolder, item + "." + mode.getDefaultExtension()); //$NON-NLS-1$
-      // if a .pde file of the same prefix as the folder exists..
+      // Test whether a .pde file of the same name as its parent folder exists.
+      File entry = new File(folder, folder.getName() + "." + mode.getDefaultExtension()); //$NON-NLS-1$
       if (entry.exists()) {
         return entry;
       }
