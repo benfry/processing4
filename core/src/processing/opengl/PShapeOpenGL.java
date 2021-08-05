@@ -122,7 +122,6 @@ public class PShapeOpenGL extends PShape {
   protected VertexBuffer bufPointAttrib;
   protected VertexBuffer bufPointIndex;
 
-  // Testing this field, not use as it might go away...
   public int glUsage = PGL.DYNAMIC_DRAW;
   public boolean glStream = true;
 
@@ -1647,18 +1646,33 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public float getVertexX(int index) {
+    if (root.tessUpdate) {
+      if (root.tessKind == TRIANGLES) {
+        return tessGeo.polyVertices[4 * (firstPolyVertex + index) + 0];
+      }
+    }
     return inGeo.vertices[3 * index + 0];
   }
 
 
   @Override
   public float getVertexY(int index) {
+    if (root.tessUpdate) {
+      if (root.tessKind == TRIANGLES) {
+        return tessGeo.polyVertices[4 * (firstPolyVertex + index) + 1];
+      }
+    }
     return inGeo.vertices[3 * index + 1];
   }
 
 
   @Override
   public float getVertexZ(int index) {
+    if (root.tessUpdate) {
+      if (root.tessKind == TRIANGLES) {
+        return tessGeo.polyVertices[4 * (firstPolyVertex + index) + 2];
+      }
+    }
     return inGeo.vertices[3 * index + 2];
   }
 
@@ -1748,27 +1762,43 @@ public class PShapeOpenGL extends PShape {
     if (vec == null) {
       vec = new PVector();
     }
-    vec.x = inGeo.normals[3 * index + 0];
-    vec.y = inGeo.normals[3 * index + 1];
-    vec.z = inGeo.normals[3 * index + 2];
+    if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
+      vec.x = tessGeo.polyNormals[3 * tessIdx + 0];
+      vec.y = tessGeo.polyNormals[3 * tessIdx + 1];
+      vec.z = tessGeo.polyNormals[3 * tessIdx + 2];
+    } else {
+      vec.x = inGeo.normals[3 * index + 0];
+      vec.y = inGeo.normals[3 * index + 1];
+      vec.z = inGeo.normals[3 * index + 2];
+    }
     return vec;
   }
 
 
   @Override
   public float getNormalX(int index) {
+    if (root.tessUpdate) {
+      return tessGeo.polyNormals[3 * (firstPolyVertex + index) + 0];
+    }
     return inGeo.normals[3 * index + 0];
   }
 
 
   @Override
   public float getNormalY(int index) {
+    if (root.tessUpdate) {
+      return tessGeo.polyNormals[3 * (firstPolyVertex + index) + 1];
+    }
     return inGeo.normals[3 * index + 1];
   }
 
 
   @Override
   public float getNormalZ(int index) {
+    if (root.tessUpdate) {
+      return tessGeo.polyNormals[3 * (firstPolyVertex + index) + 2];
+    }
     return inGeo.normals[3 * index + 2];
   }
 
@@ -1780,9 +1810,17 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    inGeo.normals[3 * index + 0] = nx;
-    inGeo.normals[3 * index + 1] = ny;
-    inGeo.normals[3 * index + 2] = nz;
+    if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
+      tessGeo.polyNormals[3 * tessIdx + 0] = nx;
+      tessGeo.polyNormals[3 * tessIdx + 1] = ny;
+      tessGeo.polyNormals[3 * tessIdx + 2] = nz;
+      root.setModifiedPolyNormals(tessIdx, tessIdx);
+    } else {
+      inGeo.normals[3 * index + 0] = nx;
+      inGeo.normals[3 * index + 1] = ny;
+      inGeo.normals[3 * index + 2] = nz;
+    }
     markForTessellation();
   }
 
@@ -1840,12 +1878,18 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public float getTextureU(int index) {
+    if (root.tessUpdate) {
+      return tessGeo.polyTexCoords[2 * (firstPolyVertex + index) + 0];
+    }
     return inGeo.texcoords[2 * index + 0];
   }
 
 
   @Override
   public float getTextureV(int index) {
+    if (root.tessUpdate) {
+      return tessGeo.polyTexCoords[2 * (firstPolyVertex + index) + 1];
+    }
     return inGeo.texcoords[2 * index + 1];
   }
 
@@ -1861,10 +1905,16 @@ public class PShapeOpenGL extends PShape {
       u /= image.width;
       v /= image.height;
     }
-    inGeo.texcoords[2 * index + 0] = u;
-    inGeo.texcoords[2 * index + 1] = v;
-
-    markForTessellation();
+    if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
+      tessGeo.polyTexCoords[2 * tessIdx + 0] = u;
+      tessGeo.polyTexCoords[2 * tessIdx + 1] = v;
+      root.setModifiedPolyTexCoords(tessIdx, tessIdx);
+    } else {
+      inGeo.texcoords[2 * index + 0] = u;
+      inGeo.texcoords[2 * index + 1] = v;
+      markForTessellation();
+    }
   }
 
 
@@ -1872,12 +1922,7 @@ public class PShapeOpenGL extends PShape {
   public int getFill(int index) {
     if (family != GROUP && image == null) {
       if (root.tessUpdate) {
-        if (root.tessKind == TRIANGLES) {
-          int tessIdx = firstPolyVertex + index;
-          return PGL.nativeToJavaARGB(tessGeo.polyColors[tessIdx]);
-        } else {
-          return 0;
-        }
+        return PGL.nativeToJavaARGB(tessGeo.polyColors[firstPolyVertex + index]);
       } else {
         return PGL.nativeToJavaARGB(inGeo.colors[index]);
       }
@@ -1967,11 +2012,9 @@ public class PShapeOpenGL extends PShape {
 
     if (image == null) {
       if (root.tessUpdate) {
-        if (root.tessKind == TRIANGLES) {
-          int tessIdx = firstPolyVertex + index;
-          tessGeo.polyColors[tessIdx] = PGL.javaToNativeARGB(fill);
-          root.setModifiedPolyColors(tessIdx, tessIdx);
-        }
+        int tessIdx = firstPolyVertex + index;
+        tessGeo.polyColors[tessIdx] = PGL.javaToNativeARGB(fill);
+        root.setModifiedPolyColors(tessIdx, tessIdx);
       } else {
         inGeo.colors[index] = PGL.javaToNativeARGB(fill);
         markForTessellation();
@@ -1983,7 +2026,11 @@ public class PShapeOpenGL extends PShape {
   @Override
   public int getTint(int index) {
     if (family != GROUP && image != null) {
-      return PGL.nativeToJavaARGB(inGeo.colors[index]);
+      if (root.tessUpdate) {
+        return PGL.nativeToJavaARGB(tessGeo.polyColors[firstPolyVertex + index]);
+      } else {
+        return PGL.nativeToJavaARGB(inGeo.colors[index]);
+      }
     } else {
       return 0;
     }
@@ -2060,8 +2107,14 @@ public class PShapeOpenGL extends PShape {
     }
 
     if (image != null) {
-      inGeo.colors[index] = PGL.javaToNativeARGB(tint);
-      markForTessellation();
+      if (root.tessUpdate) {
+        int tessIdx = firstPolyVertex + index;
+        tessGeo.polyColors[tessIdx] = PGL.javaToNativeARGB(tint);
+        root.setModifiedPolyColors(tessIdx, tessIdx);
+      } else {
+        inGeo.colors[index] = PGL.javaToNativeARGB(tint);
+        markForTessellation();
+      }
     }
   }
 
