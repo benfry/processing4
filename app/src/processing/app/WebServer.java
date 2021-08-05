@@ -139,6 +139,15 @@ public class WebServer implements HttpConstants {
     new Thread(r).start();
     return port;
   }
+
+
+  static public void main(String[] args) {
+    try {
+      launch(args[0]);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }
 
 

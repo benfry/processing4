@@ -25,11 +25,8 @@ package processing.app.platform;
 
 import java.awt.Desktop;
 import java.awt.Font;
-import java.awt.font.TextAttribute;
 import java.io.File;
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;

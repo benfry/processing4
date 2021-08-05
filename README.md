@@ -21,7 +21,7 @@ The full list of changes can be seen in the release notes for each version, this
 
 ### Alpha 5
 
-* Known bug: code completion is currently broken. Any updates will be posted [here](https://github.com/processing/processing4/issues/177).
+* ~~Known bug: code completion is currently broken. Any updates will be posted [here](https://github.com/processing/processing4/issues/177).~~ Fixed in alpha 6.
 
 * Moved from the 11.0.2 LTS version of JavaFX to the in-progress version 16. This fixes a [garbled text](https://bugs.openjdk.java.net/browse/JDK-8234916) issue that was breaking Tools that used JavaFX.
 

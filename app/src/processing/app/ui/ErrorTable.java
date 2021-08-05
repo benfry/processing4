@@ -24,7 +24,6 @@ package processing.app.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -57,14 +56,6 @@ public class ErrorTable extends JTable {
   static final int TAB_COLUMN = 2;
   static final int LINE_COLUMN = 3;
 
-  Font headerFont;
-  Color headerColor;
-  Color headerBgColor;
-
-//  Font rowFont;
-//  Color rowColor;
-//  Color rowBgColor;
-
 
   public ErrorTable(final Editor editor) {
     super(new DefaultTableModel(columnNames, 0));
@@ -72,10 +63,6 @@ public class ErrorTable extends JTable {
     setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     this.editor = editor;
-    //JTableHeader header = getTableHeader();
-    //Mode mode = editor.getMode();
-    //header.setDefaultRenderer(new GradyHeaderRenderer(mode));
-    //setDefaultRenderer(Object.class, new GradyRowRenderer(mode));
     updateTheme();
 
     //setShowGrid(false);
@@ -89,10 +76,6 @@ public class ErrorTable extends JTable {
     columnModel.getColumn(PROBLEM_COLUMN).setPreferredWidth(400);
     columnModel.getColumn(TAB_COLUMN).setPreferredWidth(100);
     columnModel.getColumn(LINE_COLUMN).setPreferredWidth(50);
-//    // the other columns are just a preference
-//    for (int i = 1; i < columnModel.getColumnCount(); i++) {
-//      columnModel.getColumn(i).setPreferredWidth(columnWidths[i]);
-//    }
 
     addMouseListener(new MouseAdapter() {
       @Override

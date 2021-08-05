@@ -28,8 +28,6 @@ import java.util.Optional;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeCellRenderer;
 
-import processing.app.Mode;
-
 
 public class ZoomTreeCellRenderer extends DefaultTreeCellRenderer {
 
