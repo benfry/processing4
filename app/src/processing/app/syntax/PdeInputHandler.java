@@ -63,9 +63,9 @@ public class PdeInputHandler extends DefaultInputHandler {
    * Not recommended, but included for API compatibility.
    */
   public PdeInputHandler() {
-    // Use option on mac for text edit controls that are ctrl on Windows/Linux.
-    // (i.e. ctrl-left/right is option-left/right on OS X)
-    String mod = Platform.isMacOS() ? "A" : "C";
+    // Use option on macOS for many text edit controls that are ctrl on Windows/Linux.
+    // (i.e. ctrl-left/right on Windows/Linux is option-left/right on macOS)
+    String altOrCtrl = Platform.isMacOS() ? "A" : "C";
 
     // right now, ctrl-up/down is select up/down, but mod should be
     // used instead, because the mac expects it to be option(alt)
@@ -83,11 +83,11 @@ public class PdeInputHandler extends DefaultInputHandler {
     addKeyBinding("DELETE", InputHandler.DELETE);
     addKeyBinding("S+DELETE", InputHandler.DELETE);
 
-    // the following two were changed for 0122 for better mac/pc compatability
-    addKeyBinding(mod + "+BACK_SPACE", InputHandler.BACKSPACE_WORD);  // 0122
-    addKeyBinding(mod + "S+BACK_SPACE", InputHandler.BACKSPACE_WORD);  // 0215
-    addKeyBinding(mod + "+DELETE", InputHandler.DELETE_WORD);  // 0122
-    addKeyBinding(mod + "S+DELETE", InputHandler.DELETE_WORD);  // 0215
+    // the following two were changed for 0122 for better mac/pc compatibility
+    addKeyBinding(altOrCtrl + "+BACK_SPACE", InputHandler.BACKSPACE_WORD);  // 0122
+    addKeyBinding(altOrCtrl + "S+BACK_SPACE", InputHandler.BACKSPACE_WORD);  // 0215
+    addKeyBinding(altOrCtrl + "+DELETE", InputHandler.DELETE_WORD);  // 0122
+    addKeyBinding(altOrCtrl + "S+DELETE", InputHandler.DELETE_WORD);  // 0215
 
     // handled by listener, don't bother here
     //addKeyBinding("ENTER", InputHandler.INSERT_BREAK);
@@ -95,7 +95,7 @@ public class PdeInputHandler extends DefaultInputHandler {
 
     addKeyBinding("INSERT", InputHandler.OVERWRITE);
 
-    // http://dev.processing.org/bugs/show_bug.cgi?id=162
+    // https://processing.org/bugs/bugzilla/162.html
     // added for 0176, though the bindings do not appear relevant for osx
     if (Preferences.getBoolean("editor.keys.alternative_cut_copy_paste")) {
       addKeyBinding("C+INSERT", InputHandler.CLIPBOARD_COPY);
@@ -131,8 +131,8 @@ public class PdeInputHandler extends DefaultInputHandler {
       // Additional OS X key bindings added for 0215.
       // Also note that two more are added above and marked 0215.
       // http://code.google.com/p/processing/issues/detail?id=1354
-      // Could not find a proper Apple guide, but a partial reference is here:
-      // http://guides.macrumors.com/Keyboard_shortcuts&section=10#Text_Shortcuts
+      // "Mac keyboard shortcuts" document from Apple:
+      // https://support.apple.com/en-us/HT201236
 
       // control-A  move to start of current paragraph
       addKeyBinding("C+A", InputHandler.HOME);
@@ -169,17 +169,19 @@ public class PdeInputHandler extends DefaultInputHandler {
       // control-Y  paste text previously deleted with control-K
     }
 
-    if (Platform.isMacOS()) {
-      addKeyBinding("M+LEFT", InputHandler.HOME);
-      addKeyBinding("M+RIGHT", InputHandler.END);
-      addKeyBinding("MS+LEFT", InputHandler.SELECT_HOME); // 0122
-      addKeyBinding("MS+RIGHT", InputHandler.SELECT_END);  // 0122
-    } else {
-      addKeyBinding("C+LEFT", InputHandler.HOME);  // 0122
-      addKeyBinding("C+RIGHT", InputHandler.END);  // 0122
-      addKeyBinding("CS+HOME", InputHandler.SELECT_HOME); // 0122
-      addKeyBinding("CS+END", InputHandler.SELECT_END);  // 0122
-    }
+    String metaOrCtrl = Platform.isMacOS() ? "M" : "C";
+
+    addKeyBinding(metaOrCtrl + "+LEFT", InputHandler.HOME);
+    addKeyBinding(metaOrCtrl + "+RIGHT", InputHandler.END);
+    addKeyBinding(metaOrCtrl + "S+LEFT", InputHandler.SELECT_HOME); // 0122
+    addKeyBinding(metaOrCtrl + "S+RIGHT", InputHandler.SELECT_END);  // 0122
+
+    addKeyBinding(metaOrCtrl + "+UP", InputHandler.DOCUMENT_HOME);  // 1276
+    addKeyBinding(metaOrCtrl + "+DOWN", InputHandler.DOCUMENT_END);  // 1276
+    addKeyBinding(metaOrCtrl + "S+UP", InputHandler.SELECT_DOC_HOME);
+    addKeyBinding(metaOrCtrl + "S+DOWN", InputHandler.SELECT_DOC_END);
+
+    //
 
     addKeyBinding("PAGE_UP", InputHandler.PREV_PAGE);
     addKeyBinding("PAGE_DOWN", InputHandler.NEXT_PAGE);
@@ -188,26 +190,21 @@ public class PdeInputHandler extends DefaultInputHandler {
 
     addKeyBinding("LEFT", InputHandler.PREV_CHAR);
     addKeyBinding("S+LEFT", InputHandler.SELECT_PREV_CHAR);
-    addKeyBinding(mod + "+LEFT", InputHandler.PREV_WORD);
-    addKeyBinding(mod + "S+LEFT", InputHandler.SELECT_PREV_WORD);
+    addKeyBinding(altOrCtrl + "+LEFT", InputHandler.PREV_WORD);
+    addKeyBinding(altOrCtrl + "S+LEFT", InputHandler.SELECT_PREV_WORD);
     addKeyBinding("RIGHT", InputHandler.NEXT_CHAR);
     addKeyBinding("S+RIGHT", InputHandler.SELECT_NEXT_CHAR);
-    addKeyBinding(mod + "+RIGHT", InputHandler.NEXT_WORD);
-    addKeyBinding(mod + "S+RIGHT", InputHandler.SELECT_NEXT_WORD);
+    addKeyBinding(altOrCtrl + "+RIGHT", InputHandler.NEXT_WORD);
+    addKeyBinding(altOrCtrl + "S+RIGHT", InputHandler.SELECT_NEXT_WORD);
 
     addKeyBinding("UP", InputHandler.PREV_LINE);
-    addKeyBinding(mod + "+UP", InputHandler.PREV_LINE);  // p5
+    addKeyBinding(altOrCtrl + "+UP", InputHandler.PREV_LINE);  // p5
     addKeyBinding("S+UP", InputHandler.SELECT_PREV_LINE);
     addKeyBinding("DOWN", InputHandler.NEXT_LINE);
-    addKeyBinding(mod + "+DOWN", InputHandler.NEXT_LINE);  // p5
+    addKeyBinding(altOrCtrl + "+DOWN", InputHandler.NEXT_LINE);  // p5
     addKeyBinding("S+DOWN", InputHandler.SELECT_NEXT_LINE);
 
-    addKeyBinding("MS+UP", InputHandler.SELECT_DOC_HOME);
-    addKeyBinding("CS+UP", InputHandler.SELECT_DOC_HOME);
-    addKeyBinding("MS+DOWN", InputHandler.SELECT_DOC_END);
-    addKeyBinding("CS+DOWN", InputHandler.SELECT_DOC_END);
-
-    addKeyBinding(mod + "+ENTER", InputHandler.REPEAT);
+    addKeyBinding(altOrCtrl + "+ENTER", InputHandler.REPEAT);
   }
 
 

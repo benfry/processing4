@@ -20,6 +20,8 @@ X change Messages.loge() to Messages.err()
 X only call errorTable.updateTheme() if it's not null
 X update EditorFooter.updateMode() to EditorFooter.updateTheme()
 X   add it to the code called by Editor.updateTheme()
+X implement cmd/ctrl-up and cmd/ctrl-down (shift version was there already, weird)
+X   standard key shortcuts on macOS https://support.apple.com/en-us/HT201236
 _ update to latest JDK 11
 
 Sam updates
@@ -69,6 +71,9 @@ _ how are file associations handled in Linux? (for .pde, .psk)
 _ when adding a new library, its examples aren't added to the list until restart
 _ refresh option for sketchbook (bottom of window)
 _ import option for sketchbook (button to select files/folders/etc)
+
+
+_ key shortcuts broken on Katherine's laptop
 
 
 _ dealing with reference.zip and web server
