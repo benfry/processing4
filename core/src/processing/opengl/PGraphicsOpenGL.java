@@ -9236,30 +9236,30 @@ public class PGraphicsOpenGL extends PGraphics {
       pointOffsets = new float[2 * PGL.DEFAULT_TESS_VERTICES];
       pointIndices = new short[PGL.DEFAULT_TESS_VERTICES];
 
-
       // STREAM TEST 3 - BEGIN
-      if (!bufferStream)
+      if (!bufferStream) {
         polyVerticesBuffer = PGL.allocateFloatBuffer(polyVertices);
+
+        polyColorsBuffer = PGL.allocateIntBuffer(polyColors);
+        polyNormalsBuffer = PGL.allocateFloatBuffer(polyNormals);
+        polyTexCoordsBuffer = PGL.allocateFloatBuffer(polyTexCoords);
+        polyAmbientBuffer = PGL.allocateIntBuffer(polyAmbient);
+        polySpecularBuffer = PGL.allocateIntBuffer(polySpecular);
+        polyEmissiveBuffer = PGL.allocateIntBuffer(polyEmissive);
+        polyShininessBuffer = PGL.allocateFloatBuffer(polyShininess);
+        polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
+
+        lineVerticesBuffer = PGL.allocateFloatBuffer(lineVertices);
+        lineColorsBuffer = PGL.allocateIntBuffer(lineColors);
+        lineDirectionsBuffer = PGL.allocateFloatBuffer(lineDirections);
+        lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
+
+        pointVerticesBuffer = PGL.allocateFloatBuffer(pointVertices);
+        pointColorsBuffer = PGL.allocateIntBuffer(pointColors);
+        pointOffsetsBuffer = PGL.allocateFloatBuffer(pointOffsets);
+        pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
+      }
       // STREAM TEST 3 - END
-
-      polyColorsBuffer = PGL.allocateIntBuffer(polyColors);
-      polyNormalsBuffer = PGL.allocateFloatBuffer(polyNormals);
-      polyTexCoordsBuffer = PGL.allocateFloatBuffer(polyTexCoords);
-      polyAmbientBuffer = PGL.allocateIntBuffer(polyAmbient);
-      polySpecularBuffer = PGL.allocateIntBuffer(polySpecular);
-      polyEmissiveBuffer = PGL.allocateIntBuffer(polyEmissive);
-      polyShininessBuffer = PGL.allocateFloatBuffer(polyShininess);
-      polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
-
-      lineVerticesBuffer = PGL.allocateFloatBuffer(lineVertices);
-      lineColorsBuffer = PGL.allocateIntBuffer(lineColors);
-      lineDirectionsBuffer = PGL.allocateFloatBuffer(lineDirections);
-      lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
-
-      pointVerticesBuffer = PGL.allocateFloatBuffer(pointVertices);
-      pointColorsBuffer = PGL.allocateIntBuffer(pointColors);
-      pointOffsetsBuffer = PGL.allocateFloatBuffer(pointOffsets);
-      pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
 
       clear();
     }
@@ -9268,15 +9268,27 @@ public class PGraphicsOpenGL extends PGraphics {
       if (attrib.type == PGL.FLOAT && !fpolyAttribs.containsKey(attrib.name)) {
         float[] temp = new float[attrib.tessSize * PGL.DEFAULT_TESS_VERTICES];
         fpolyAttribs.put(attrib.name, temp);
-        polyAttribBuffers.put(attrib.name, PGL.allocateFloatBuffer(temp));
+        if (!bufferStream) {
+          polyAttribBuffers.put(attrib.name, PGL.allocateFloatBuffer(temp));
+        } else {
+          polyAttribBuffers.put(attrib.name, null);
+        }
       } else if (attrib.type == PGL.INT && !ipolyAttribs.containsKey(attrib.name)) {
         int[] temp = new int[attrib.tessSize * PGL.DEFAULT_TESS_VERTICES];
         ipolyAttribs.put(attrib.name, temp);
-        polyAttribBuffers.put(attrib.name, PGL.allocateIntBuffer(temp));
+        if (!bufferStream) {
+          polyAttribBuffers.put(attrib.name, PGL.allocateIntBuffer(temp));
+        } else {
+          polyAttribBuffers.put(attrib.name, null);
+        }
       } else if (attrib.type == PGL.BOOL && !bpolyAttribs.containsKey(attrib.name)) {
         byte[] temp = new byte[attrib.tessSize * PGL.DEFAULT_TESS_VERTICES];
         bpolyAttribs.put(attrib.name, temp);
-        polyAttribBuffers.put(attrib.name, PGL.allocateByteBuffer(temp));
+        if (!bufferStream) {
+          polyAttribBuffers.put(attrib.name, PGL.allocateByteBuffer(temp));
+        } else {
+          polyAttribBuffers.put(attrib.name, null);
+        }
       }
     }
 
@@ -9511,6 +9523,97 @@ public class PGraphicsOpenGL extends PGraphics {
       return last - first + 1;
     }
 
+
+    // -----------------------------------------------------------------
+    //
+    // Buffer-mapping methods
+
+    protected void mapPolyVerticesBuffer() {
+      polyVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+    }
+
+    protected void mapPolyColorsBuffer() {
+      polyColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+    }
+
+
+    protected void initPolyVerticesBuffer(int usage, boolean onlymap, boolean unmap) {
+      PGL pgl = pg.pgl;
+      int sizef = polyVertexCount * PGL.SIZEOF_FLOAT;
+      if (bufferStream) {
+        if (onlymap) {
+          mapPolyVerticesBuffer();
+        } else {
+          pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef, null, usage);
+          mapPolyVerticesBuffer();
+          updatePolyVerticesBuffer();
+        }
+        if (unmap) {
+          pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+        }
+      } else {
+        pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef, polyVerticesBuffer, usage);
+      }
+    }
+
+    protected void finalPolyVerticesBuffer(int first, int last) {
+      if (0 <= first && first <= last) updatePolyVerticesBuffer(first, last - first + 1);
+      pg.pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+    }
+
+    protected void initPolyColorsBuffer(int usage, boolean onlymap, boolean unmap) {
+      PGL pgl = pg.pgl;
+      int sizei = polyVertexCount * PGL.SIZEOF_INT;
+      if (bufferStream) {
+        if (onlymap) {
+          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+        } else {
+          pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
+          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          updatePolyColorsBuffer();
+        }
+        if (unmap) {
+          pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+        }
+      } else {
+        pgl.bufferData(PGL.ARRAY_BUFFER, sizei, polyColorsBuffer, usage);
+      }
+    }
+
+    protected void finalPolyColorsBuffer(int first, int last) {
+      if (0 <= first && first <= last) updatePolyColorsBuffer(first, last - first + 1);
+      pg.pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+    }
+
+    protected void copyPolyVertices(int offset, int size) {
+      PGL pgl = pg.pgl;
+      if (bufferStream) {
+        mapPolyVerticesBuffer();
+        updatePolyVerticesBuffer(offset, size);
+        pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+      } else {
+        updatePolyVerticesBuffer(offset, size);
+        polyVerticesBuffer.position(4 * offset);
+        pgl.bufferSubData(PGL.ARRAY_BUFFER, 4 * offset * PGL.SIZEOF_FLOAT, 4 * size * PGL.SIZEOF_FLOAT, polyVerticesBuffer);
+        polyVerticesBuffer.rewind();
+      }
+    }
+
+    protected void copyPolyColors(int offset, int size) {
+      PGL pgl = pg.pgl;
+      if (bufferStream) {
+        mapPolyColorsBuffer();
+        updatePolyColorsBuffer(offset, size);
+        pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+      } else {
+        updatePolyColorsBuffer(offset, size);
+        polyColorsBuffer.position(offset);
+        pgl.bufferSubData(PGL.ARRAY_BUFFER, offset * PGL.SIZEOF_INT, size * PGL.SIZEOF_INT, polyColorsBuffer);
+        polyColorsBuffer.rewind();
+      }
+    }
+
+
     // -----------------------------------------------------------------
     //
     // Methods to prepare buffers for relative read/write operations
@@ -9520,8 +9623,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void updatePolyVerticesBuffer(int offset, int size) {
-      PGL.updateFloatBuffer(polyVerticesBuffer, polyVertices,
-                            4 * offset, 4 * size);
+      PGL.updateFloatBuffer(polyVerticesBuffer, polyVertices, 4 * offset, 4 * size);
     }
 
     protected void updatePolyColorsBuffer() {
@@ -9537,8 +9639,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void updatePolyNormalsBuffer(int offset, int size) {
-      PGL.updateFloatBuffer(polyNormalsBuffer, polyNormals,
-                            3 * offset, 3 * size);
+      PGL.updateFloatBuffer(polyNormalsBuffer, polyNormals, 3 * offset, 3 * size);
     }
 
     protected void updatePolyTexCoordsBuffer() {
@@ -9546,8 +9647,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void updatePolyTexCoordsBuffer(int offset, int size) {
-      PGL.updateFloatBuffer(polyTexCoordsBuffer, polyTexCoords,
-                            2 * offset, 2 * size);
+      PGL.updateFloatBuffer(polyTexCoordsBuffer, polyTexCoords, 2 * offset, 2 * size);
     }
 
     protected void updatePolyAmbientBuffer() {
@@ -9619,8 +9719,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void updateLineVerticesBuffer(int offset, int size) {
-      PGL.updateFloatBuffer(lineVerticesBuffer, lineVertices,
-                            4 * offset, 4 * size);
+      PGL.updateFloatBuffer(lineVerticesBuffer, lineVertices, 4 * offset, 4 * size);
     }
 
     protected void updateLineColorsBuffer() {
@@ -9636,8 +9735,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void updateLineDirectionsBuffer(int offset, int size) {
-      PGL.updateFloatBuffer(lineDirectionsBuffer, lineDirections,
-                            4 * offset, 4 * size);
+      PGL.updateFloatBuffer(lineDirectionsBuffer, lineDirections, 4 * offset, 4 * size);
     }
 
     protected void updateLineIndicesBuffer() {
@@ -9653,8 +9751,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void updatePointVerticesBuffer(int offset, int size) {
-      PGL.updateFloatBuffer(pointVerticesBuffer, pointVertices,
-                            4 * offset, 4 * size);
+      PGL.updateFloatBuffer(pointVerticesBuffer, pointVertices, 4 * offset, 4 * size);
     }
 
     protected void updatePointColorsBuffer() {
@@ -9670,8 +9767,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void updatePointOffsetsBuffer(int offset, int size) {
-      PGL.updateFloatBuffer(pointOffsetsBuffer, pointOffsets,
-                            2 * offset, 2 * size);
+      PGL.updateFloatBuffer(pointOffsetsBuffer, pointOffsets, 2 * offset, 2 * size);
     }
 
     protected void updatePointIndicesBuffer() {

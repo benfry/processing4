@@ -735,14 +735,6 @@ public class PShape implements PConstants {
     }
   }
 
-  public void beginTessUpdate(int kind) {
-
-  }
-
-
-  public void endTessUpdate() {
-
-  }
 
   public void vertex(float x, float y, float u, float v) {
   }
@@ -2189,8 +2181,22 @@ public class PShape implements PConstants {
   }
 
 
+  /**
+   * Returns a PShape holding the tessellated geometry of this shape,
+   * composed entirely of triangles.
+   */
   public PShape getTessellation() {
     return null;
+  }
+
+
+  public void beginTessUpdate(int kind) {
+
+  }
+
+
+  public void endTessUpdate() {
+
   }
 
 
