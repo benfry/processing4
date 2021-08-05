@@ -38,7 +38,7 @@ public class VertexBuffer {
   boolean index;
 
   protected PGL pgl;                // The interface between Processing and OpenGL.
-  protected int context;            // The context that created this texture.
+  protected int context;            // The context that created this resource.
   private GLResourceVertexBuffer glres;
 
   VertexBuffer(PGraphicsOpenGL pg, int target, int ncoords, int esize) {

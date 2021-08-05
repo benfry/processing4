@@ -105,7 +105,7 @@ public class PShapeOpenGL extends PShape {
   protected VertexBuffer bufPolyVertex;
   protected VertexBuffer bufPolyColor;
   protected VertexBuffer bufPolyNormal;
-  protected VertexBuffer bufPolyTexcoord;
+  protected VertexBuffer bufPolyTexCoord;
   protected VertexBuffer bufPolyAmbient;
   protected VertexBuffer bufPolySpecular;
   protected VertexBuffer bufPolyEmissive;
@@ -255,8 +255,8 @@ public class PShapeOpenGL extends PShape {
   protected int lastModifiedPolyColor;
   protected int firstModifiedPolyNormal;
   protected int lastModifiedPolyNormal;
-  protected int firstModifiedPolyTexcoord;
-  protected int lastModifiedPolyTexcoord;
+  protected int firstModifiedPolyTexCoord;
+  protected int lastModifiedPolyTexCoord;
   protected int firstModifiedPolyAmbient;
   protected int lastModifiedPolyAmbient;
   protected int firstModifiedPolySpecular;
@@ -319,7 +319,7 @@ public class PShapeOpenGL extends PShape {
     bufPolyVertex = null;
     bufPolyColor = null;
     bufPolyNormal = null;
-    bufPolyTexcoord = null;
+    bufPolyTexCoord = null;
     bufPolyAmbient = null;
     bufPolySpecular = null;
     bufPolyEmissive = null;
@@ -1685,11 +1685,6 @@ public class PShapeOpenGL extends PShape {
         root.setModifiedPolyVertices(tessIdx, tessIdx);
       }
     } else {
-      // TODO: in certain cases (kind = TRIANGLE, etc) the correspondence between
-      // input and tessellated vertices is 1-1, so in those cases re-tessellation
-      // wouldn't be necessary. But in order to reasonable take care of that
-      // situation, we would need a complete rethinking of the rendering architecture
-      // in Processing :-)
       if (family == PATH) {
         if (vertexCodes != null && vertexCodeCount > 0 &&
             vertexCodes[index] != VERTEX) {
@@ -1711,7 +1706,6 @@ public class PShapeOpenGL extends PShape {
     }
   }
 
-
   @Override
   public void setVertex(int index, PVector vec) {
     if (openShape) {
@@ -1719,23 +1713,33 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    if (family == PATH) {
-      if (vertexCodes != null && vertexCodeCount > 0 &&
-          vertexCodes[index] != VERTEX) {
-        PGraphics.showWarning(NOT_A_SIMPLE_VERTEX, "setVertex()");
-        return;
-      }
-      vertices[index][X] = vec.x;
-      vertices[index][Y] = vec.y;
-      if (is3D && vertices[index].length > 2) {
-        vertices[index][Z] = vec.z;
+    if (root.tessUpdate) {
+      if (root.tessKind == TRIANGLES) {
+        int tessIdx = firstPolyVertex + index;
+        tessGeo.polyVertices[4 * tessIdx + 0] = vec.x;
+        tessGeo.polyVertices[4 * tessIdx + 1] = vec.y;
+        tessGeo.polyVertices[4 * tessIdx + 2] = vec.z;
+        root.setModifiedPolyVertices(tessIdx, tessIdx);
       }
     } else {
-      inGeo.vertices[3 * index + 0] = vec.x;
-      inGeo.vertices[3 * index + 1] = vec.y;
-      inGeo.vertices[3 * index + 2] = vec.z;
+      if (family == PATH) {
+        if (vertexCodes != null && vertexCodeCount > 0 &&
+            vertexCodes[index] != VERTEX) {
+          PGraphics.showWarning(NOT_A_SIMPLE_VERTEX, "setVertex()");
+          return;
+        }
+        vertices[index][X] = vec.x;
+        vertices[index][Y] = vec.y;
+        if (is3D && vertices[index].length > 2) {
+          vertices[index][Z] = vec.z;
+        }
+      } else {
+        inGeo.vertices[3 * index + 0] = vec.x;
+        inGeo.vertices[3 * index + 1] = vec.y;
+        inGeo.vertices[3 * index + 2] = vec.z;
+      }
+      markForTessellation();
     }
-    markForTessellation();
   }
 
 
@@ -1966,9 +1970,7 @@ public class PShapeOpenGL extends PShape {
         if (root.tessKind == TRIANGLES) {
           int tessIdx = firstPolyVertex + index;
           tessGeo.polyColors[tessIdx] = PGL.javaToNativeARGB(fill);
-          setModifiedPolyColors(tessIdx, tessIdx);
-          if (tessIdx < firstModifiedPolyColor) firstModifiedPolyColor = tessIdx;
-          if (tessIdx > lastModifiedPolyColor) lastModifiedPolyColor = tessIdx;
+          root.setModifiedPolyColors(tessIdx, tessIdx);
         }
       } else {
         inGeo.colors[index] = PGL.javaToNativeARGB(fill);
@@ -2793,6 +2795,36 @@ public class PShapeOpenGL extends PShape {
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
         tessGeo.initPolyColorsBuffer(glUsage, !createBuffer, false);
 
+        createBuffer = bufPolyNormal == null;
+        if (createBuffer) bufPolyNormal = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyNormal.glId);
+        tessGeo.initPolyNormalsBuffer(glUsage, !createBuffer, false);
+
+        createBuffer = bufPolyTexCoord == null;
+        if (createBuffer) bufPolyTexCoord = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexCoord.glId);
+        tessGeo.initPolyTexCoordsBuffer(glUsage, !createBuffer, false);
+
+        createBuffer = bufPolyAmbient == null;
+        if (createBuffer) bufPolyAmbient = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyAmbient.glId);
+        tessGeo.initPolyAmbientBuffer(glUsage, !createBuffer, false);
+
+        createBuffer = bufPolySpecular == null;
+        if (createBuffer) bufPolySpecular = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolySpecular.glId);
+        tessGeo.initPolySpecularBuffer(glUsage, !createBuffer, false);
+
+        createBuffer = bufPolyEmissive == null;
+        if (createBuffer) bufPolyEmissive = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyEmissive.glId);
+        tessGeo.initPolyEmissiveBuffer(glUsage, !createBuffer, false);
+
+        createBuffer = bufPolyShininess == null;
+        if (createBuffer) bufPolyShininess = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
+        tessGeo.initPolyShininessBuffer(glUsage, !createBuffer, false);
+
         // ...
       }
 
@@ -2809,6 +2841,24 @@ public class PShapeOpenGL extends PShape {
 
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
         tessGeo.finalPolyColorsBuffer(firstModifiedPolyColor, lastModifiedPolyColor);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyNormal.glId);
+        tessGeo.finalPolyNormalsBuffer(firstModifiedPolyNormal, lastModifiedPolyNormal);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexCoord.glId);
+        tessGeo.finalPolyTexCoordsBuffer(firstModifiedPolyTexCoord, lastModifiedPolyTexCoord);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyAmbient.glId);
+        tessGeo.finalPolyAmbientBuffer(firstModifiedPolyAmbient, lastModifiedPolyAmbient);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolySpecular.glId);
+        tessGeo.finalPolySpecularBuffer(firstModifiedPolySpecular, lastModifiedPolySpecular);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyEmissive.glId);
+        tessGeo.finalPolyEmissiveBuffer(firstModifiedPolyEmissive, lastModifiedPolyEmissive);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
+        tessGeo.finalPolyShininessBuffer(firstModifiedPolyShininess, lastModifiedPolyShininess);
 
         // ...
       }
@@ -2897,8 +2947,8 @@ public class PShapeOpenGL extends PShape {
     lastModifiedPolyColor = PConstants.MIN_INT;
     firstModifiedPolyNormal = PConstants.MAX_INT;
     lastModifiedPolyNormal = PConstants.MIN_INT;
-    firstModifiedPolyTexcoord = PConstants.MAX_INT;
-    lastModifiedPolyTexcoord = PConstants.MIN_INT;
+    firstModifiedPolyTexCoord = PConstants.MAX_INT;
+    lastModifiedPolyTexCoord = PConstants.MIN_INT;
     firstModifiedPolyAmbient = PConstants.MAX_INT;
     lastModifiedPolyAmbient = PConstants.MIN_INT;
     firstModifiedPolySpecular = PConstants.MAX_INT;
@@ -4014,68 +4064,46 @@ public class PShapeOpenGL extends PShape {
 
 
   protected void initPolyBuffers() {
-    int size = tessGeo.polyVertexCount;
-    int sizef = size * PGL.SIZEOF_FLOAT;
-    int sizei = size * PGL.SIZEOF_INT;
-
-
-    if (bufPolyVertex == null)
-      bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+    if (bufPolyVertex == null) bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
     tessGeo.initPolyVerticesBuffer(glUsage, false, true);
 
-    tessGeo.updatePolyColorsBuffer();
-    if (bufPolyColor == null)
-      bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+    if (bufPolyColor == null) bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
     tessGeo.initPolyColorsBuffer(glUsage, false, true);
 
-
-
-
-
-    tessGeo.updatePolyNormalsBuffer();
-    if (bufPolyNormal == null)
-      bufPolyNormal = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT);
+    if (bufPolyNormal == null) bufPolyNormal = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyNormal.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, 3 * sizef, tessGeo.polyNormalsBuffer, glUsage);
+    tessGeo.initPolyNormalsBuffer(glUsage, false, true);
 
-    tessGeo.updatePolyTexCoordsBuffer();
-    if (bufPolyTexcoord == null)
-      bufPolyTexcoord = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
-    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexcoord.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, 2 * sizef, tessGeo.polyTexCoordsBuffer, glUsage);
+    if (bufPolyTexCoord == null) bufPolyTexCoord = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
+    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexCoord.glId);
+    tessGeo.initPolyTexCoordsBuffer(glUsage, false, true);
 
-    tessGeo.updatePolyAmbientBuffer();
-    if (bufPolyAmbient == null)
-      bufPolyAmbient = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+    if (bufPolyAmbient == null) bufPolyAmbient = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyAmbient.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, sizei, tessGeo.polyAmbientBuffer, glUsage);
+    tessGeo.initPolyAmbientBuffer(glUsage, false, true);
 
-    tessGeo.updatePolySpecularBuffer();
-    if (bufPolySpecular == null)
-      bufPolySpecular = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+    if (bufPolySpecular == null) bufPolySpecular = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolySpecular.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, sizei, tessGeo.polySpecularBuffer, glUsage);
+    tessGeo.initPolySpecularBuffer(glUsage, false, true);
 
-    tessGeo.updatePolyEmissiveBuffer();
-    if (bufPolyEmissive == null)
-      bufPolyEmissive = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+    if (bufPolyEmissive == null) bufPolyEmissive = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyEmissive.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, sizei, tessGeo.polyEmissiveBuffer, glUsage);
+    tessGeo.initPolyEmissiveBuffer(glUsage, false, true);
 
-    tessGeo.updatePolyShininessBuffer();
-    if (bufPolyShininess == null)
-      bufPolyShininess = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT);
+    if (bufPolyShininess == null) bufPolyShininess = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, sizef, tessGeo.polyShininessBuffer, glUsage);
+    tessGeo.initPolyShininessBuffer(glUsage, false, true);
 
     for (String name: polyAttribs.keySet()) {
       VertexAttribute attrib = polyAttribs.get(name);
       tessGeo.updateAttribBuffer(attrib.name);
       if (!attrib.bufferCreated()) attrib.createBuffer(pgl);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
-      pgl.bufferData(PGL.ARRAY_BUFFER, attrib.sizeInBytes(size), tessGeo.polyAttribBuffers.get(name), glUsage);
+      pgl.bufferData(PGL.ARRAY_BUFFER,
+                     attrib.sizeInBytes(tessGeo.polyVertexCount),
+                     tessGeo.polyAttribBuffers.get(name), glUsage);
     }
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
@@ -4177,7 +4205,7 @@ public class PShapeOpenGL extends PShape {
       bufPolyVertex.dispose();
       bufPolyColor.dispose();
       bufPolyNormal.dispose();
-      bufPolyTexcoord.dispose();
+      bufPolyTexCoord.dispose();
       bufPolyAmbient.dispose();
       bufPolySpecular.dispose();
       bufPolyEmissive.dispose();
@@ -4242,12 +4270,12 @@ public class PShapeOpenGL extends PShape {
       lastModifiedPolyNormal = PConstants.MIN_INT;
     }
     if (modifiedPolyTexCoords) {
-      int offset = firstModifiedPolyTexcoord;
-      int size = lastModifiedPolyTexcoord - offset + 1;
+      int offset = firstModifiedPolyTexCoord;
+      int size = lastModifiedPolyTexCoord - offset + 1;
       copyPolyTexCoords(offset, size);
       modifiedPolyTexCoords = false;
-      firstModifiedPolyTexcoord = PConstants.MAX_INT;
-      lastModifiedPolyTexcoord = PConstants.MIN_INT;
+      firstModifiedPolyTexCoord = PConstants.MAX_INT;
+      lastModifiedPolyTexCoord = PConstants.MIN_INT;
     }
     if (modifiedPolyAmbient) {
       int offset = firstModifiedPolyAmbient;
@@ -4374,7 +4402,7 @@ public class PShapeOpenGL extends PShape {
 
   protected void copyPolyTexCoords(int offset, int size) {
     tessGeo.updatePolyTexCoordsBuffer(offset, size);
-    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexcoord.glId);
+    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexCoord.glId);
     tessGeo.polyTexCoordsBuffer.position(2 * offset);
     pgl.bufferSubData(PGL.ARRAY_BUFFER, 2 * offset * PGL.SIZEOF_FLOAT,
                       2 * size * PGL.SIZEOF_FLOAT, tessGeo.polyTexCoordsBuffer);
@@ -4530,8 +4558,8 @@ public class PShapeOpenGL extends PShape {
 
 
   protected void setModifiedPolyTexCoords(int first, int last) {
-    if (first < firstModifiedPolyTexcoord) firstModifiedPolyTexcoord = first;
-    if (last > lastModifiedPolyTexcoord) lastModifiedPolyTexcoord = last;
+    if (first < firstModifiedPolyTexCoord) firstModifiedPolyTexCoord = first;
+    if (last > lastModifiedPolyTexCoord) lastModifiedPolyTexCoord = last;
     modifiedPolyTexCoords = true;
     modified = true;
   }
@@ -5026,7 +5054,7 @@ public class PShapeOpenGL extends PShape {
       }
 
       if (tex != null || needTexCoords) {
-        shader.setTexcoordAttribute(root.bufPolyTexcoord.glId, 2, PGL.FLOAT,
+        shader.setTexcoordAttribute(root.bufPolyTexCoord.glId, 2, PGL.FLOAT,
                                     0, 2 * voffset * PGL.SIZEOF_FLOAT);
         shader.setTexture(tex);
       }
