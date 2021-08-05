@@ -548,13 +548,13 @@
                       role="Editor">
       </bundledocument>
 
-      <bundledocument extensions="pskz"
+      <bundledocument extensions="pdez"
                       icon="macosx/document.icns"
                       name="Processing Sketch Bundle"
                       role="Editor">
       </bundledocument>
 
-      <bundledocument extensions="pcbz"
+      <bundledocument extensions="pdex"
                       icon="macosx/document.icns"
                       name="Processing Contribution Bundle"
                       role="None">
