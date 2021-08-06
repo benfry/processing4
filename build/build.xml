@@ -586,7 +586,7 @@
       <bundledocument extensions="pdex"
                       icon="macosx/document.icns"
                       name="Processing Contribution Bundle"
-                      role="None">
+                      role="Viewer">
       </bundledocument>
 
       <!-- !@#*&$ the @2x splash screen implementation was removed by Oracle -->
