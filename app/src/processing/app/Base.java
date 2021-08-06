@@ -23,13 +23,13 @@
 
 package processing.app;
 
-import java.awt.EventQueue;
-import java.awt.FileDialog;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.*;
@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import processing.app.contrib.*;
 import processing.app.tools.Tool;
 import processing.app.ui.*;
+import processing.app.ui.Toolkit;
 import processing.core.*;
 import processing.data.StringList;
 
@@ -1340,16 +1341,47 @@ public class Base {
       return null;  // no luck
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
-      try {
-        // TODO should probably prompt the user first
-        LocalContribution contrib =
-          AvailableContribution.install(this, new File(path));
-        if (contrib == null) {
-          System.err.println("Could not install a contrib from " + path);
+      EventQueue.invokeLater(() -> {
+        Frame frame = getActiveEditor();
+        if (frame == null) {
+          frame = new Frame(); // just use a dummy
         }
-      } catch (IOException e) {
-        Messages.err("Error while installing " + path, e);
-      }
+        File contribFile = new File(path);
+        String baseName = contribFile.getName();
+        baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
+        int result =
+          Messages.showYesNoQuestion(frame, "How to Handle " + CONTRIB_BUNDLE_EXT,
+            "Install " + baseName + "?",
+            "Libraries, Modes, and Tools should<br>" +
+              "only be installed from trusted sources.");
+        if (result == JOptionPane.YES_OPTION) {
+          try {
+            JOptionPane pane = new JOptionPane();
+            pane.setMessage("Installing " + baseName + "...");
+            JProgressBar progress = new JProgressBar();
+            progress.setIndeterminate(true);
+            pane.add(progress, 1);
+            JDialog dialog = pane.createDialog(frame, "One Moment Please");
+            dialog.setModal(false);
+            dialog.setVisible(true);
+
+            // do the work of the actual install
+            LocalContribution contrib =
+              AvailableContribution.install(this, new File(path));
+
+              //ProgressMonitor pm = new ProgressMonitor(frame, "Installing " + baseName + "...", null, 0, 100)
+            // close the progress monitor
+            dialog.dispose();
+            //pm.close();
+
+            if (contrib == null) {
+              Messages.showWarning("Error During Installation", "Could not install contrib from " + path);
+            }
+          } catch (IOException e) {
+            Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e);
+          }
+        }
+      });
       return null;
     }
 
