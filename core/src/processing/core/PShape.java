@@ -2447,6 +2447,20 @@ public class PShape implements PConstants {
   }
 
 
+  public float[] getAttrib(String name, int index, float[] values) {
+    return values;
+  }
+
+
+  public int[] getAttrib(String name, int index, int[] values) {
+    return null;
+  }
+
+
+  public boolean[] getAttrib(String name, int index, boolean[] values) {
+    return null;
+  }
+
 
   public void setAttrib(String name, int index, float... values) {
   }

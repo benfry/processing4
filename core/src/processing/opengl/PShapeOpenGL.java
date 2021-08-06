@@ -1868,18 +1868,55 @@ public class PShapeOpenGL extends PShape {
 
 
   @Override
+  public float[] getAttrib(String name, int index, float[] values) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+    float[] array = inGeo.fattribs.get(name);
+    if (values == null || values.length < attrib.size) values = new float[attrib.size];
+    PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+    return values;
+  }
+
+
+  @Override
+  public int[] getAttrib(String name, int index, int[] values) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+    int[] array = inGeo.iattribs.get(name);
+    if (values == null || values.length < attrib.size) values = new int[attrib.size];
+    PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+    return values;
+  }
+
+
+  @Override
+  public boolean[] getAttrib(String name, int index, boolean[] values) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+    byte[] array = inGeo.battribs.get(name);
+    if (values == null || values.length < attrib.size) values = new boolean[attrib.size];
+    for (int i = 0; i < values.length; i++) {
+      values[i] = (array[attrib.size * index + i]!=0);
+    }
+    return values;
+  }
+
+
+  @Override
   public void setAttrib(String name, int index, float... values) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
       return;
     }
 
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.FLOAT,
-                                        values.length);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.FLOAT, values.length);
+    if (attrib.size != values.length)
+      throw new RuntimeException("Length of values array is different from attribute size");
     float[] array = inGeo.fattribs.get(name);
-    for (int i = 0; i < values.length; i++) {
-      array[attrib.size * index + i] = values[i];
-    }
+    PApplet.arrayCopy(values, 0, array, attrib.size * index, attrib.size);
     markForTessellation();
   }
 
@@ -1891,12 +1928,11 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.INT,
-                                        values.length);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.INT, values.length);
+    if (attrib.size != values.length)
+      throw new RuntimeException("Length of values array is different from attribute size");
     int[] array = inGeo.iattribs.get(name);
-    for (int i = 0; i < values.length; i++) {
-      array[attrib.size * index + i] = values[i];
-    }
+    PApplet.arrayCopy(values, 0, array, attrib.size * index, attrib.size);
     markForTessellation();
   }
 
@@ -1908,8 +1944,9 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.BOOL,
-                                        values.length);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.BOOL, values.length);
+    if (attrib.size != values.length)
+      throw new RuntimeException("Length of values array is different from attribute size");
     byte[] array = inGeo.battribs.get(name);
     for (int i = 0; i < values.length; i++) {
       array[attrib.size * index + i] = (byte)(values[i]?1:0);

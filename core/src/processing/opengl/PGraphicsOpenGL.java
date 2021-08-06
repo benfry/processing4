@@ -172,6 +172,9 @@ public class PGraphicsOpenGL extends PGraphics {
   static public String OPENGL_EXTENSIONS;
   static public String GLSL_VERSION;
 
+  // Testing...
+  static public boolean useStreamBufferInImmediateMode = false;
+
   // ........................................................
 
   // Shaders
@@ -577,7 +580,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
     polyAttribs = newAttributeMap();
     inGeo = newInGeometry(this, polyAttribs, IMMEDIATE);
-    tessGeo = newTessGeometry(this, polyAttribs, IMMEDIATE, false);
+    tessGeo = newTessGeometry(this, polyAttribs, IMMEDIATE, useStreamBufferInImmediateMode);
     texCache = newTexCache(this);
 
     projection = new PMatrix3D();
@@ -1227,8 +1230,9 @@ public class PGraphicsOpenGL extends PGraphics {
     int sizef = size * PGL.SIZEOF_FLOAT;
     int sizei = size * PGL.SIZEOF_INT;
 
-    tessGeo.updatePolyVerticesBuffer();
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
+//    tessGeo.copyPolyVertices();
+    tessGeo.updatePolyVerticesBuffer();
     pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef,
                    tessGeo.polyVerticesBuffer, PGL.STATIC_DRAW);
 
@@ -9604,6 +9608,17 @@ public class PGraphicsOpenGL extends PGraphics {
     protected void finalPolyVerticesBuffer(int first, int last) {
       if (0 <= first && first <= last) updatePolyVerticesBuffer(first, last - first + 1);
       pg.pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+    }
+
+    protected void copyPolyVertices() {
+      PGL pgl = pg.pgl;
+      if (bufferStream) {
+
+
+      } else {
+        updatePolyVerticesBuffer();
+        pgl.bufferData(PGL.ARRAY_BUFFER, 4 * polyVertexCount * PGL.SIZEOF_FLOAT, polyVerticesBuffer, PGL.STATIC_DRAW);
+      }
     }
 
     protected void copyPolyVertices(int offset, int size) {
