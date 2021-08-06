@@ -20,7 +20,13 @@ X change Messages.loge() to Messages.err()
 X only call errorTable.updateTheme() if it's not null
 X update EditorFooter.updateMode() to EditorFooter.updateTheme()
 X   add it to the code called by Editor.updateTheme()
-_ update to latest JDK 11
+X implement cmd/ctrl-up and cmd/ctrl-down (shift version was there already, weird)
+X   standard key shortcuts on macOS https://support.apple.com/en-us/HT201236
+X update to JDK 11.0.12+7
+X rewrite download handler to just use a simple <get>
+_   remove the rest of the jre downloader code
+X initial code to install a contrib from a pdex file
+_   test to make sure it's behaving properly
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
@@ -38,6 +44,7 @@ o     probably being removed from future OS X versions
 before release
 _ update the README for alpha 6 (and this release too, when ready)
 
+_ add issue for implementing the Linux file associations in install.sh
 
 _ don't allow "Show Sketch Folder" for untitled sketches
 
@@ -69,6 +76,9 @@ _ how are file associations handled in Linux? (for .pde, .psk)
 _ when adding a new library, its examples aren't added to the list until restart
 _ refresh option for sketchbook (bottom of window)
 _ import option for sketchbook (button to select files/folders/etc)
+
+
+_ key shortcuts broken on Katherine's laptop
 
 
 _ dealing with reference.zip and web server

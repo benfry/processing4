@@ -55,8 +55,8 @@ public class Base {
   /** This might be replaced by main() if there's a lib/version.txt file. */
   static private String VERSION_NAME = "1276"; //$NON-NLS-1$
 
-  static final String SKETCH_BUNDLE_EXT = ".pskz";
-  static final String CONTRIB_BUNDLE_EXT = ".pcbz";
+  static final public String SKETCH_BUNDLE_EXT = ".pskz";
+  static final public String CONTRIB_BUNDLE_EXT = ".pcbz";
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true
@@ -231,7 +231,7 @@ public class Base {
         SingleInstance.startServer(base);
 
         handleWelcomeScreen(base);
-        checkDriverBug();
+        //checkDriverBug();  // that was 2017, right?
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
@@ -288,6 +288,7 @@ public class Base {
   }
 
 
+  /*
   // Remove this code in a couple of months [fry 170211]
   // https://github.com/processing/processing/issues/4853
   // Or maybe not, if NVIDIA keeps doing this [fry 170423]
@@ -323,6 +324,7 @@ public class Base {
       }).start();
     }
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -1235,14 +1237,17 @@ public class Base {
    */
   public void handleOpenPrompt() {
     final StringList extensions = new StringList();
+
+    // Add support for pdez files
+    extensions.append(SKETCH_BUNDLE_EXT);
+
+    // Add the extensions for each installed Mode
     for (Mode mode : getModeList()) {
       extensions.append(mode.getDefaultExtension());
     }
 
-
     final String prompt = Language.text("open");
 
-    // don't use native dialogs on Linux (or anyone else w/ override)
     if (Preferences.getBoolean("chooser.files.native")) {  //$NON-NLS-1$
       // use the front-most window frame for placing file dialog
       FileDialog openDialog =
@@ -1271,8 +1276,8 @@ public class Base {
     } else {
       if (openChooser == null) {
         openChooser = new JFileChooser();
+        openChooser.setDialogTitle(prompt);
       }
-      openChooser.setDialogTitle(prompt);
 
       openChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
         public boolean accept(File file) {
@@ -1335,9 +1340,17 @@ public class Base {
       return null;  // no luck
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
-      // TODO Install a contrib here
+      try {
+        // TODO should probably prompt the user first
+        LocalContribution contrib =
+          AvailableContribution.install(this, new File(path));
+        if (contrib == null) {
+          System.err.println("Could not install a contrib from " + path);
+        }
+      } catch (IOException e) {
+        Messages.err("Error while installing " + path, e);
+      }
       return null;
-
     }
 
     return handleOpen(path, false);

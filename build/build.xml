@@ -77,8 +77,8 @@
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="11" />
-  <property name="jdk.build" value="9" />
+  <property name="jdk.update" value="12" />
+  <property name="jdk.build" value="7" />
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
@@ -158,6 +158,34 @@
   <target name="jdk-download" depends="jdk-check, downloader-setup"
           unless="jdk.tgz.downloaded">
 
+    <!-- Windows is the outlier with the .zip extension (the others are .tar.gz) -->
+    <condition property="jdk.download.ext" value="zip" else="tar.gz">
+      <os family="windows" />
+    </condition>
+
+    <!-- platform prop works for Windows and Linux, but 'macosx' needs to be 'mac' -->
+    <condition property="jdk.download.os" value="mac" else="${platform}">
+      <os family="mac" />
+    </condition>
+
+    <!-- As of 2021-08-05 things moving from AdoptOpenJDK to Adoptium -->
+
+    <!--
+      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.12_7.tar.gz
+
+      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_windows_hotspot_11.0.12_7.zip
+
+      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
+    -->
+
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.tar.gz" />
+
+    <get src="${jdk.download.url}"
+         dest="${jdk.tgz.path}"
+         ignoreerrors="false"
+         usetimestamp="true" />
+
+    <!--
     <condition property="jdk.downloader"
                value="${target-platform}-i586.tar.gz">
       <equals arg1="${jdk.data.model}" arg2="32" />
@@ -175,6 +203,7 @@
                 build="${jdk.build}"
                 flavor="${jdk.downloader}"
                 path="${jdk.tgz.path}" />
+              -->
   </target>
 
   <!-- Set the version of Java that must be present to build. -->
@@ -548,13 +577,13 @@
                       role="Editor">
       </bundledocument>
 
-      <bundledocument extensions="pskz"
+      <bundledocument extensions="pdez"
                       icon="macosx/document.icns"
                       name="Processing Sketch Bundle"
                       role="Editor">
       </bundledocument>
 
-      <bundledocument extensions="pcbz"
+      <bundledocument extensions="pdex"
                       icon="macosx/document.icns"
                       name="Processing Contribution Bundle"
                       role="None">
