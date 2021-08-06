@@ -41,8 +41,13 @@ o   and have a .log extension so it can be browsed properly
 o   need to make sure that it's ok to write to logs dir..
 o     probably being removed from future OS X versions
 
-before release
+before alpha 7/beta 1
 _ update the README for alpha 6 (and this release too, when ready)
+
+_ prompt before installing extensions to pde?
+_ show progress dialog while installing extensions
+
+_ need icons for .pde, .pdex, .pdez
 
 _ add issue for implementing the Linux file associations in install.sh
 
