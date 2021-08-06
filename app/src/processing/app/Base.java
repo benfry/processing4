@@ -55,8 +55,8 @@ public class Base {
   /** This might be replaced by main() if there's a lib/version.txt file. */
   static private String VERSION_NAME = "1276"; //$NON-NLS-1$
 
-  static final String SKETCH_BUNDLE_EXT = ".pskz";
-  static final String CONTRIB_BUNDLE_EXT = ".pcbz";
+  static final public String SKETCH_BUNDLE_EXT = ".pskz";
+  static final public String CONTRIB_BUNDLE_EXT = ".pcbz";
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true

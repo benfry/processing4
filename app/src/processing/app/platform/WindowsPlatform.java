@@ -32,10 +32,7 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.platform.win32.*;
 
-import processing.app.Base;
-import processing.app.Messages;
-import processing.app.Preferences;
-import processing.app.Util;
+import processing.app.*;
 import processing.app.platform.WindowsRegistry.REGISTRY_ROOT_KEY;
 
 import processing.core.PApplet;
@@ -56,7 +53,12 @@ import processing.core.PApplet;
 public class WindowsPlatform extends DefaultPlatform {
 
   static final String APP_NAME = "Processing";
-  static final String[] APP_EXTENSIONS = { ".pde", ".pyde" };
+  static final String[] APP_EXTENSIONS = {
+    // This could iterate through each Mode and call getDefaultExtension(),
+    // however if p5jsMode were installed, .js files would be automatically
+    // associated with Processing on each run, which would be... not great.
+    ".pde", ".pyde", Base.SKETCH_BUNDLE_EXT, Base.CONTRIB_BUNDLE_EXT
+  };
   static final String REG_OPEN_COMMAND =
     System.getProperty("user.dir").replace('/', '\\') +
     "\\" + APP_NAME.toLowerCase() + ".exe \"%1\"";
@@ -344,13 +346,13 @@ public class WindowsPlatform extends DefaultPlatform {
 
 
   /** Get the Users\name\AppData\Roaming path to write settings files. */
-  static private String getAppDataPath() throws Exception {
+  static private String getAppDataPath() {
     return Shell32Util.getSpecialFolderPath(ShlObj.CSIDL_APPDATA, true);
   }
 
 
   /** Get the Users\name\AppData\Local path as a settings fallback. */
-  static private String getLocalAppDataPath() throws Exception {
+  static private String getLocalAppDataPath() {
     return Shell32Util.getSpecialFolderPath(ShlObj.CSIDL_LOCAL_APPDATA, true);
   }
 
@@ -365,7 +367,7 @@ public class WindowsPlatform extends DefaultPlatform {
   }
 
 
-  static private String getDocumentsPath() throws Exception {
+  static private String getDocumentsPath() {
     return Shell32Util.getSpecialFolderPath(ShlObj.CSIDL_MYDOCUMENTS, true);
   }
 
