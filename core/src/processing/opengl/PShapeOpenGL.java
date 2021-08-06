@@ -2880,9 +2880,35 @@ public class PShapeOpenGL extends PShape {
 
         // Add generic attribs
       } else if (kind == LINES) {
+        createBuffer = bufLineVertex == null;
+        if (createBuffer) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
+        tessGeo.initLineVerticesBuffer(glUsage, !createBuffer, false);
 
+        createBuffer = bufLineColor == null;
+        if (createBuffer) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
+        tessGeo.initLineColorsBuffer(glUsage, !createBuffer, false);
+
+        createBuffer = bufLineAttrib == null;
+        if (createBuffer) bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
+        tessGeo.initLineDirectionsBuffer(glUsage, !createBuffer, false);
       } else if (kind == POINTS) {
+        createBuffer = bufPointVertex == null;
+        if (createBuffer) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
+        tessGeo.initPointVerticesBuffer(glUsage, !createBuffer, false);
 
+        createBuffer = bufPointColor == null;
+        if (createBuffer) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
+        tessGeo.initPointColorsBuffer(glUsage, !createBuffer, false);
+
+        createBuffer = bufPointAttrib == null;
+        if (createBuffer) bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
+        tessGeo.initPointOffsetsBuffer(glUsage, !createBuffer, false);
       }
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
@@ -2919,9 +2945,23 @@ public class PShapeOpenGL extends PShape {
 
         // Add generic attribs
       } else if (kind == LINES) {
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
+        tessGeo.finalLineVerticesBuffer(firstModifiedLineVertex, lastModifiedLineVertex);
 
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
+        tessGeo.finalLineColorsBuffer(firstModifiedLineColor, lastModifiedLineColor);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
+        tessGeo.finalLineDirectionsBuffer(firstModifiedLineAttribute, lastModifiedLineAttribute);
       } else if (kind == POINTS) {
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
+        tessGeo.finalPointVerticesBuffer(firstModifiedPointVertex, lastModifiedPointVertex);
 
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
+        tessGeo.finalPointColorsBuffer(firstModifiedPointColor, lastModifiedPointColor);
+
+        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
+        tessGeo.finalPointOffsetsBuffer(firstModifiedPointAttribute, lastModifiedPointAttribute);
       }
       root.tessUpdate = false;
 
@@ -4181,43 +4221,17 @@ public class PShapeOpenGL extends PShape {
   }
 
   protected void initLineBuffers() {
-    int size = tessGeo.lineVertexCount;
-    int sizef = size * PGL.SIZEOF_FLOAT;
-    int sizei = size * PGL.SIZEOF_INT;
-
-//    if (bufLineVertex == null) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-//    tessGeo.initLineVerticesBuffer(glUsage, false, true);
-    tessGeo.updateLineVerticesBuffer();
-    if (bufLineVertex == null)
-      bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+    if (bufLineVertex == null) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef,
-                   tessGeo.lineVerticesBuffer, glUsage);
+    tessGeo.initLineVerticesBuffer(glUsage, false, true);
 
-
-//    if (bufLineColor == null) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT)
-//        pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-//    tessGeo.initLineColorsBuffer(glUsage, false, true);
-    tessGeo.updateLineColorsBuffer();
-    if (bufLineColor == null)
-      bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+    if (bufLineColor == null) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, sizei,
-                   tessGeo.lineColorsBuffer, glUsage);
+    tessGeo.initLineColorsBuffer(glUsage, false, true);
 
-
-//    if (bufLineAttrib == null) bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-//    tessGeo.initLineAttribsBuffer(glUsage, false, true);
-    tessGeo.updateLineDirectionsBuffer();
-    if (bufLineAttrib == null)
-      bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+    if (bufLineAttrib == null) bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef,
-                   tessGeo.lineDirectionsBuffer, glUsage);
-
-
+    tessGeo.initLineDirectionsBuffer(glUsage, false, true);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
@@ -4234,43 +4248,17 @@ public class PShapeOpenGL extends PShape {
 
 
   protected void initPointBuffers() {
-    int size = tessGeo.pointVertexCount;
-    int sizef = size * PGL.SIZEOF_FLOAT;
-    int sizei = size * PGL.SIZEOF_INT;
-
-//    if (bufPointVertex == null) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-//    tessGeo.initPointVerticesBuffer(glUsage, false, true);
-    tessGeo.updatePointVerticesBuffer();
-    if (bufPointVertex == null)
-      bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+    if (bufPointVertex == null) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef,
-                   tessGeo.pointVerticesBuffer, glUsage);
+    tessGeo.initPointVerticesBuffer(glUsage, false, true);
 
-
-//    if (bufPointColor == null) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-//    tessGeo.initPointColorsBuffer(glUsage, false, true);
-    tessGeo.updatePointColorsBuffer();
-    if (bufPointColor == null)
-      bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
+    if (bufPointColor == null) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, sizei,
-                   tessGeo.pointColorsBuffer, glUsage);
+    tessGeo.initPointColorsBuffer(glUsage, false, true);
 
-
-//    if (bufPointAttrib == null) bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-//    tessGeo.initLineAttribsBuffer(glUsage, false, true);
-    tessGeo.updatePointOffsetsBuffer();
-    if (bufPointAttrib == null)
-      bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
+    if (bufPointAttrib == null) bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-    pgl.bufferData(PGL.ARRAY_BUFFER, 2 * sizef,
-                   tessGeo.pointOffsetsBuffer, glUsage);
-
-
+    tessGeo.initPointOffsetsBuffer(glUsage, false, true);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
@@ -4531,85 +4519,43 @@ public class PShapeOpenGL extends PShape {
 
 
   protected void copyLineVertices(int offset, int size) {
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-//    tessGeo.copyLineVertices(offset, size);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-    tessGeo.updateLineVerticesBuffer(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-    tessGeo.lineVerticesBuffer.position(4 * offset);
-    pgl.bufferSubData(PGL.ARRAY_BUFFER, 4 * offset * PGL.SIZEOF_FLOAT,
-                      4 * size * PGL.SIZEOF_FLOAT, tessGeo.lineVerticesBuffer);
-    tessGeo.lineVerticesBuffer.rewind();
+    tessGeo.copyLineVertices(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
   }
 
 
   protected void copyLineColors(int offset, int size) {
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-//    tessGeo.copyLineColors(offset, size);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-    tessGeo.updateLineColorsBuffer(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-    tessGeo.lineColorsBuffer.position(offset);
-    pgl.bufferSubData(PGL.ARRAY_BUFFER, offset * PGL.SIZEOF_INT,
-                      size * PGL.SIZEOF_INT, tessGeo.lineColorsBuffer);
-    tessGeo.lineColorsBuffer.rewind();
+    tessGeo.copyLineColors(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
   }
 
 
   protected void copyLineAttributes(int offset, int size) {
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-//    tessGeo.copyLineAttribs(offset, size);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-    tessGeo.updateLineDirectionsBuffer(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-    tessGeo.lineDirectionsBuffer.position(4 * offset);
-    pgl.bufferSubData(PGL.ARRAY_BUFFER, 4 * offset * PGL.SIZEOF_FLOAT,
-                      4 * size * PGL.SIZEOF_FLOAT, tessGeo.lineDirectionsBuffer);
-    tessGeo.lineDirectionsBuffer.rewind();
+    tessGeo.copyLineDirections(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
   }
 
 
   protected void copyPointVertices(int offset, int size) {
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-//    tessGeo.copyPointVertices(offset, size);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-    tessGeo.updatePointVerticesBuffer(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-    tessGeo.pointVerticesBuffer.position(4 * offset);
-    pgl.bufferSubData(PGL.ARRAY_BUFFER, 4 * offset * PGL.SIZEOF_FLOAT,
-                      4 * size * PGL.SIZEOF_FLOAT, tessGeo.pointVerticesBuffer);
-    tessGeo.pointVerticesBuffer.rewind();
+    tessGeo.copyPointVertices(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
   }
 
 
   protected void copyPointColors(int offset, int size) {
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-//    tessGeo.copyPointColors(offset, size);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-    tessGeo.updatePointColorsBuffer(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-    tessGeo.pointColorsBuffer.position(offset);
-    pgl.bufferSubData(PGL.ARRAY_BUFFER, offset * PGL.SIZEOF_INT,
-                      size * PGL.SIZEOF_INT,tessGeo.pointColorsBuffer);
-    tessGeo.pointColorsBuffer.rewind();
+    tessGeo.copyPointColors(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
   }
 
 
   protected void copyPointAttributes(int offset, int size) {
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-//    tessGeo.copyPointAttribs(offset, size);
-//    pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-    tessGeo.updatePointOffsetsBuffer(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-    tessGeo.pointOffsetsBuffer.position(2 * offset);
-    pgl.bufferSubData(PGL.ARRAY_BUFFER, 2 * offset * PGL.SIZEOF_FLOAT,
-                      2 * size * PGL.SIZEOF_FLOAT, tessGeo.pointOffsetsBuffer);
-    tessGeo.pointOffsetsBuffer.rewind();
+    tessGeo.copyPointOffsets(offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
   }
 
@@ -4849,13 +4795,6 @@ public class PShapeOpenGL extends PShape {
   //
 
   // Rendering methods
-
-
-  /*
-  public void draw() {
-    draw(pg);
-  }
-  */
 
 
   @Override
