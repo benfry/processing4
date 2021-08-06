@@ -2190,6 +2190,11 @@ public class PShape implements PConstants {
   }
 
 
+  public void beginTessUpdate() {
+    beginTessUpdate(TRIANGLES);
+  }
+
+
   public void beginTessUpdate(int kind) {
 
   }

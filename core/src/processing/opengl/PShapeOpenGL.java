@@ -1608,6 +1608,10 @@ public class PShapeOpenGL extends PShape {
       if (root.tessUpdate) {
         if (root.tessKind == TRIANGLES) {
           return lastPolyVertex - firstPolyVertex + 1;
+        } else if (root.tessKind == LINES) {
+          return lastLineVertex - firstLineVertex + 1;
+        } else if (root.tessKind == POINTS) {
+          return lastPointVertex - firstPointVertex + 1;
         } else {
           return 0;
         }
@@ -1629,11 +1633,17 @@ public class PShapeOpenGL extends PShape {
       vec = new PVector();
     }
     if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
       if (root.tessKind == TRIANGLES) {
-        int tessIdx = firstPolyVertex + index;
         vec.x = tessGeo.polyVertices[4 * tessIdx + 0];
         vec.y = tessGeo.polyVertices[4 * tessIdx + 1];
         vec.z = tessGeo.polyVertices[4 * tessIdx + 2];
+      } else if (root.tessKind == LINES) {
+        vec.x = tessGeo.lineVertices[4 * tessIdx + 0];
+        vec.y = tessGeo.lineVertices[4 * tessIdx + 1];
+      } else if (root.tessKind == POINTS) {
+        vec.x = tessGeo.pointVertices[4 * tessIdx + 0];
+        vec.y = tessGeo.pointVertices[4 * tessIdx + 1];
       }
     } else {
       vec.x = inGeo.vertices[3 * index + 0];
@@ -1647,8 +1657,15 @@ public class PShapeOpenGL extends PShape {
   @Override
   public float getVertexX(int index) {
     if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
       if (root.tessKind == TRIANGLES) {
-        return tessGeo.polyVertices[4 * (firstPolyVertex + index) + 0];
+        return tessGeo.polyVertices[4 * tessIdx + 0];
+      } else if (root.tessKind == LINES) {
+        return tessGeo.lineVertices[4 * tessIdx + 0];
+      } else if (root.tessKind == POINTS) {
+        return tessGeo.pointVertices[4 * tessIdx + 0];
+      } else {
+        return 0;
       }
     }
     return inGeo.vertices[3 * index + 0];
@@ -1658,8 +1675,15 @@ public class PShapeOpenGL extends PShape {
   @Override
   public float getVertexY(int index) {
     if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
       if (root.tessKind == TRIANGLES) {
-        return tessGeo.polyVertices[4 * (firstPolyVertex + index) + 1];
+        return tessGeo.polyVertices[4 * tessIdx + 1];
+      } else if (root.tessKind == LINES) {
+        return tessGeo.lineVertices[4 * tessIdx + 1];
+      } else if (root.tessKind == POINTS) {
+        return tessGeo.pointVertices[4 * tessIdx + 1];
+      } else {
+        return 0;
       }
     }
     return inGeo.vertices[3 * index + 1];
@@ -1671,6 +1695,8 @@ public class PShapeOpenGL extends PShape {
     if (root.tessUpdate) {
       if (root.tessKind == TRIANGLES) {
         return tessGeo.polyVertices[4 * (firstPolyVertex + index) + 2];
+      } else {
+        return 0;
       }
     }
     return inGeo.vertices[3 * index + 2];
@@ -1691,12 +1717,20 @@ public class PShapeOpenGL extends PShape {
     }
 
     if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
       if (root.tessKind == TRIANGLES) {
-        int tessIdx = firstPolyVertex + index;
         tessGeo.polyVertices[4 * tessIdx + 0] = x;
         tessGeo.polyVertices[4 * tessIdx + 1] = y;
         tessGeo.polyVertices[4 * tessIdx + 2] = z;
         root.setModifiedPolyVertices(tessIdx, tessIdx);
+      } else if (root.tessKind == LINES) {
+        tessGeo.lineVertices[4 * tessIdx + 0] = x;
+        tessGeo.lineVertices[4 * tessIdx + 1] = y;
+        root.setModifiedLineVertices(tessIdx, tessIdx);
+      } else if (root.tessKind == POINTS) {
+        tessGeo.pointVertices[4 * tessIdx + 0] = x;
+        tessGeo.pointVertices[4 * tessIdx + 1] = y;
+        root.setModifiedPointVertices(tessIdx, tessIdx);
       }
     } else {
       if (family == PATH) {
@@ -1728,12 +1762,20 @@ public class PShapeOpenGL extends PShape {
     }
 
     if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
       if (root.tessKind == TRIANGLES) {
-        int tessIdx = firstPolyVertex + index;
         tessGeo.polyVertices[4 * tessIdx + 0] = vec.x;
         tessGeo.polyVertices[4 * tessIdx + 1] = vec.y;
         tessGeo.polyVertices[4 * tessIdx + 2] = vec.z;
         root.setModifiedPolyVertices(tessIdx, tessIdx);
+      } else if (root.tessKind == LINES) {
+        tessGeo.lineVertices[4 * tessIdx + 0] = vec.x;
+        tessGeo.lineVertices[4 * tessIdx + 1] = vec.y;
+        root.setModifiedLineVertices(tessIdx, tessIdx);
+      } else if (root.tessKind == POINTS) {
+        tessGeo.pointVertices[4 * tessIdx + 0] = vec.x;
+        tessGeo.pointVertices[4 * tessIdx + 1] = vec.y;
+        root.setModifiedPointVertices(tessIdx, tessIdx);
       }
     } else {
       if (family == PATH) {
@@ -2227,8 +2269,33 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    inGeo.strokeColors[index] = PGL.javaToNativeARGB(stroke);
-    markForTessellation();
+    if (root.tessUpdate) {
+      if (hasLines) {
+        if (is3D()) {
+          int tessIdx = firstLineVertex + index;
+          tessGeo.lineColors[tessIdx] = PGL.javaToNativeARGB(stroke);
+          root.setModifiedLineColors(tessIdx, tessIdx);
+        } else if (is2D()) {
+          int tessIdx = firstLineVertex + index;
+          tessGeo.polyColors[tessIdx] = PGL.javaToNativeARGB(stroke);
+          root.setModifiedPolyColors(tessIdx, tessIdx);
+        }
+      }
+      if (hasPoints) {
+        if (is3D()) {
+          int tessIdx = firstPointVertex + index;
+          tessGeo.lineColors[tessIdx] = PGL.javaToNativeARGB(stroke);
+          root.setModifiedPointColors(tessIdx, tessIdx);
+        } else if (is2D()) {
+          int tessIdx = firstPointVertex + index;
+          tessGeo.polyColors[tessIdx] = PGL.javaToNativeARGB(stroke);
+          root.setModifiedPolyColors(tessIdx, tessIdx);
+        }
+      }
+    } else {
+      inGeo.strokeColors[index] = PGL.javaToNativeARGB(stroke);
+      markForTessellation();
+    }
   }
 
 
@@ -2362,7 +2429,11 @@ public class PShapeOpenGL extends PShape {
   @Override
   public int getAmbient(int index) {
     if (family != GROUP) {
-      return PGL.nativeToJavaARGB(inGeo.ambient[index]);
+      if (root.tessUpdate) {
+        return PGL.nativeToJavaARGB(tessGeo.polyAmbient[firstPolyVertex + index]);
+      } else {
+        return PGL.nativeToJavaARGB(inGeo.ambient[index]);
+      }
     } else {
       return 0;
     }
@@ -2418,8 +2489,14 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    inGeo.ambient[index] = PGL.javaToNativeARGB(ambient);
-    markForTessellation();
+    if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
+      tessGeo.polyAmbient[tessIdx] = PGL.javaToNativeARGB(ambient);
+      root.setModifiedPolyAmbient(tessIdx, tessIdx);
+    } else {
+      inGeo.ambient[index] = PGL.javaToNativeARGB(ambient);
+      markForTessellation();
+    }
     setAmbient = true;
   }
 
@@ -2427,7 +2504,11 @@ public class PShapeOpenGL extends PShape {
   @Override
   public int getSpecular(int index) {
     if (family == GROUP) {
-      return PGL.nativeToJavaARGB(inGeo.specular[index]);
+      if (root.tessUpdate) {
+        return PGL.nativeToJavaARGB(tessGeo.polySpecular[firstPolyVertex + index]);
+      } else {
+        return PGL.nativeToJavaARGB(inGeo.specular[index]);
+      }
     } else {
       return 0;
     }
@@ -2482,15 +2563,26 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    inGeo.specular[index] = PGL.javaToNativeARGB(specular);
-    markForTessellation();
+    if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
+      tessGeo.polySpecular[tessIdx] = PGL.javaToNativeARGB(specular);
+      root.setModifiedPolySpecular(tessIdx, tessIdx);
+    } else {
+      inGeo.specular[index] = PGL.javaToNativeARGB(specular);
+      markForTessellation();
+    }
   }
 
 
   @Override
   public int getEmissive(int index) {
     if (family == GROUP) {
-      return PGL.nativeToJavaARGB(inGeo.emissive[index]);
+      if (root.tessUpdate) {
+        return PGL.nativeToJavaARGB(tessGeo.polyEmissive[firstPolyVertex + index]);
+      } else {
+        return PGL.nativeToJavaARGB(inGeo.emissive[index]);
+      }
+
     } else {
       return 0;
     }
@@ -2545,15 +2637,25 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    inGeo.emissive[index] = PGL.javaToNativeARGB(emissive);
-    markForTessellation();
+    if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
+      tessGeo.polyEmissive[tessIdx] = PGL.javaToNativeARGB(emissive);
+      root.setModifiedPolyEmissive(tessIdx, tessIdx);
+    } else {
+      inGeo.emissive[index] = PGL.javaToNativeARGB(emissive);
+      markForTessellation();
+    }
   }
 
 
   @Override
   public float getShininess(int index) {
     if (family == GROUP) {
-      return inGeo.shininess[index];
+      if (root.tessUpdate) {
+        return tessGeo.polyShininess[firstPolyVertex + index];
+      } else {
+        return inGeo.shininess[index];
+      }
     } else {
       return 0;
     }
@@ -2606,8 +2708,14 @@ public class PShapeOpenGL extends PShape {
       return;
     }
 
-    inGeo.shininess[index] = shine;
-    markForTessellation();
+    if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
+      tessGeo.polyShininess[tessIdx] = shininess;
+      root.setModifiedPolyShininess(tessIdx, tessIdx);
+    } else {
+      inGeo.shininess[index] = shine;
+      markForTessellation();
+    }
   }
 
   ///////////////////////////////////////////////////////////
@@ -2834,7 +2942,7 @@ public class PShapeOpenGL extends PShape {
     if (!root.tessUpdate) {
       updateTessellation();
       root.tessUpdate = true;
-      root.tessKind = kind;
+      root.tessKind = is2D() ? TRIANGLES : kind;
 
       boolean createBuffer;
       if (root.tessKind == TRIANGLES) {
