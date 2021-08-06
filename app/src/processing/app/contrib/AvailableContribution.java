@@ -92,14 +92,13 @@ public class AvailableContribution extends Contribution {
    * @param status
    *          the StatusPanel. Pass null if this function is called for an
    *          install-on-startup
-   * @return
    */
   public LocalContribution install(Base base, File contribArchive,
                                    boolean confirmReplace, StatusPanel status) {
     // Unzip the file into the modes, tools, or libraries folder inside the
     // sketchbook. Unzipping to /tmp is problematic because it may be on
     // another file system, so move/rename operations will break.
-    File tempFolder = null;
+    File tempFolder;
 
     try {
       tempFolder = type.createTempFolder();
@@ -110,21 +109,10 @@ public class AvailableContribution extends Contribution {
     }
     Util.unzip(contribArchive, tempFolder);
 
-    // Now go looking for a legit contrib inside what's been unpacked.
-    File contribFolder = null;
-
-    /*
-    if (!type.isCandidate(tempFolder)) {
-      if (status != null) {
-        status.setErrorMessage(Language.interpolate("contrib.errors.needs_repackage", getName(), type.getTitle()));
-      }
-      return null;
-    }
-    */
 
     LocalContribution installedContrib = null;
     // Find the first legitimate folder in what we just unzipped
-    contribFolder = type.findCandidate(tempFolder);
+    File contribFolder = type.findCandidate(tempFolder);
     if (contribFolder == null) {
       if (status != null) {
         status.setErrorMessage(Language.interpolate("contrib.errors.no_contribution_found", type));
@@ -136,7 +124,7 @@ public class AvailableContribution extends Contribution {
                                propFile.getName() +
                                ", please contact the author for a fix.");
 
-      } else if (writePropertiesFile(propFile)) {
+      } else if (rewritePropertiesFile(propFile)) {
         // contribFolder now has a legit contribution, load it to get info.
         LocalContribution newContrib = type.load(base, contribFolder);
 
@@ -158,6 +146,7 @@ public class AvailableContribution extends Contribution {
 
         // Delete the newContrib, do a garbage collection, hope and pray
         // that Java will unlock the temp folder on Windows now
+        //noinspection UnusedAssignment
         newContrib = null;
         System.gc();
 
@@ -208,7 +197,7 @@ public class AvailableContribution extends Contribution {
    * aren't overwritten, since the properties file may be more recent than the
    * contributions.txt file.
    */
-  public boolean writePropertiesFile(File propFile) {
+  private boolean rewritePropertiesFile(File propFile) {
     try {
       StringDict properties = Util.readSettings(propFile);
 
@@ -329,9 +318,6 @@ public class AvailableContribution extends Contribution {
         writer.close();
       }
       return true;
-
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
 
     } catch (IOException e) {
       e.printStackTrace();
