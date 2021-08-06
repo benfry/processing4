@@ -23,11 +23,11 @@
 package processing.app.contrib;
 
 import java.io.*;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
-import processing.app.Base;
-import processing.app.Language;
-import processing.app.Platform;
-import processing.app.Util;
+import processing.app.*;
 import processing.core.PApplet;
 import processing.data.StringDict;
 import processing.data.StringList;
@@ -83,6 +83,43 @@ public class AvailableContribution extends Contribution {
   }
 
 
+  static ContributionType matchContribType(String path) {
+    String filename = path.substring(path.lastIndexOf('/') + 1);
+    for (ContributionType type : ContributionType.values()) {
+      if (filename.equals(type.getPropertiesName())) {
+        return type;
+      }
+    }
+    return null;
+  }
+
+
+  static public LocalContribution install(Base base, File contribArchive) throws IOException {
+    AvailableContribution ac = null;
+
+    ZipFile zf = new ZipFile(contribArchive);
+    Enumeration entries = zf.entries();
+    while (entries.hasMoreElements()) {
+      ZipEntry entry = (ZipEntry) entries.nextElement();
+      String name = entry.getName();
+      if (name.endsWith(".properties")) {
+        ContributionType type = matchContribType(name);
+        if (type != null) {
+          StringDict params = new StringDict(PApplet.createReader(zf.getInputStream(entry)));
+          ac = new AvailableContribution(type, params);
+          break;
+        }
+      }
+    }
+    zf.close();
+
+    if (ac != null) {
+      return ac.install(base, contribArchive, false, null);
+    }
+    return null;
+  }
+
+
   /**
    * @param contribArchive
    *          a zip file containing the library to install
@@ -108,7 +145,6 @@ public class AvailableContribution extends Contribution {
       return null;
     }
     Util.unzip(contribArchive, tempFolder);
-
 
     LocalContribution installedContrib = null;
     // Find the first legitimate folder in what we just unzipped

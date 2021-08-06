@@ -1340,9 +1340,17 @@ public class Base {
       return null;  // no luck
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
-      // TODO Install a contrib here
+      try {
+        // TODO should probably prompt the user first
+        LocalContribution contrib =
+          AvailableContribution.install(this, new File(path));
+        if (contrib == null) {
+          System.err.println("Could not install a contrib from " + path);
+        }
+      } catch (IOException e) {
+        Messages.err("Error while installing " + path, e);
+      }
       return null;
-
     }
 
     return handleOpen(path, false);

@@ -25,6 +25,8 @@ X   standard key shortcuts on macOS https://support.apple.com/en-us/HT201236
 X update to JDK 11.0.12+7
 X rewrite download handler to just use a simple <get>
 _   remove the rest of the jre downloader code
+X initial code to install a contrib from a pdex file
+_   test to make sure it's behaving properly
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
@@ -42,6 +44,7 @@ o     probably being removed from future OS X versions
 before release
 _ update the README for alpha 6 (and this release too, when ready)
 
+_ add issue for implementing the Linux file associations in install.sh
 
 _ don't allow "Show Sketch Folder" for untitled sketches
 
