@@ -3065,7 +3065,7 @@ public class PShapeOpenGL extends PShape {
   private int tessKind;
 
   @Override
-  public void beginTessUpdate(int kind) {
+  public void beginTessellationUpdate(int kind) {
     if (!root.tessUpdate) {
       updateTessellation();
       root.tessUpdate = true;
@@ -3151,7 +3151,7 @@ public class PShapeOpenGL extends PShape {
   }
 
   @Override
-  public void endTessUpdate() {
+  public void endTessellationUpdate() {
     if (root.tessUpdate) {
       if (root.tessKind == TRIANGLES) {
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
