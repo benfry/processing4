@@ -9250,18 +9250,18 @@ public class PGraphicsOpenGL extends PGraphics {
         polySpecularBuffer = PGL.allocateIntBuffer(polySpecular);
         polyEmissiveBuffer = PGL.allocateIntBuffer(polyEmissive);
         polyShininessBuffer = PGL.allocateFloatBuffer(polyShininess);
-        polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
 
         lineVerticesBuffer = PGL.allocateFloatBuffer(lineVertices);
         lineColorsBuffer = PGL.allocateIntBuffer(lineColors);
         lineDirectionsBuffer = PGL.allocateFloatBuffer(lineDirections);
-        lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
 
         pointVerticesBuffer = PGL.allocateFloatBuffer(pointVertices);
         pointColorsBuffer = PGL.allocateIntBuffer(pointColors);
         pointOffsetsBuffer = PGL.allocateFloatBuffer(pointOffsets);
-        pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
       }
+      polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
+      lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
+      pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
 
       clear();
     }
@@ -10599,21 +10599,21 @@ public class PGraphicsOpenGL extends PGraphics {
       float[] temp = new float[4 * lineVertexCount];
       PApplet.arrayCopy(lineVertices, 0, temp, 0, 4 * lineVertexCount);
       lineVertices = temp;
-      lineVerticesBuffer = PGL.allocateFloatBuffer(lineVertices);
+      if (!bufferStream) lineVerticesBuffer = PGL.allocateFloatBuffer(lineVertices);
     }
 
     void trimLineColors() {
       int[] temp = new int[lineVertexCount];
       PApplet.arrayCopy(lineColors, 0, temp, 0, lineVertexCount);
       lineColors = temp;
-      lineColorsBuffer = PGL.allocateIntBuffer(lineColors);
+      if (!bufferStream) lineColorsBuffer = PGL.allocateIntBuffer(lineColors);
     }
 
     void trimLineDirections() {
       float[] temp = new float[4 * lineVertexCount];
       PApplet.arrayCopy(lineDirections, 0, temp, 0, 4 * lineVertexCount);
       lineDirections = temp;
-      lineDirectionsBuffer = PGL.allocateFloatBuffer(lineDirections);
+      if (!bufferStream) lineDirectionsBuffer = PGL.allocateFloatBuffer(lineDirections);
     }
 
     void trimLineIndices() {
@@ -10627,21 +10627,21 @@ public class PGraphicsOpenGL extends PGraphics {
       float[] temp = new float[4 * pointVertexCount];
       PApplet.arrayCopy(pointVertices, 0, temp, 0, 4 * pointVertexCount);
       pointVertices = temp;
-      pointVerticesBuffer = PGL.allocateFloatBuffer(pointVertices);
+      if (!bufferStream) pointVerticesBuffer = PGL.allocateFloatBuffer(pointVertices);
     }
 
     void trimPointColors() {
       int[] temp = new int[pointVertexCount];
       PApplet.arrayCopy(pointColors, 0, temp, 0, pointVertexCount);
       pointColors = temp;
-      pointColorsBuffer = PGL.allocateIntBuffer(pointColors);
+      if (!bufferStream) pointColorsBuffer = PGL.allocateIntBuffer(pointColors);
     }
 
     void trimPointOffsets() {
       float[] temp = new float[2 * pointVertexCount];
       PApplet.arrayCopy(pointOffsets, 0, temp, 0, 2 * pointVertexCount);
       pointOffsets = temp;
-      pointOffsetsBuffer = PGL.allocateFloatBuffer(pointOffsets);
+      if (!bufferStream) pointOffsetsBuffer = PGL.allocateFloatBuffer(pointOffsets);
     }
 
     void trimPointIndices() {
