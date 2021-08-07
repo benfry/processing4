@@ -80,7 +80,7 @@ public class DefaultInputHandler extends InputHandler {
 
   /**
    * Adds a key binding to this input handler. The key binding is
-   * a list of white space separated key strokes of the form
+   * a list of white space separated keystrokes of the form
    * <i>[modifiers+]key</i> where modifier is C for Control, A for Alt,
    * or S for Shift, and key is either a character (a-z) or a field
    * name in the KeyEvent class prefixed with VK_ (e.g., BACK_SPACE)
@@ -125,7 +125,7 @@ public class DefaultInputHandler extends InputHandler {
 
   /**
    * Handle a key pressed event. This will look up the binding for
-   * the key stroke and execute it.
+   * the keystroke and execute it.
    */
   public void keyPressed(KeyEvent evt) {
     int keyCode = evt.getKeyCode();
@@ -177,9 +177,8 @@ public class DefaultInputHandler extends InputHandler {
     int modifiers = evt.getModifiers();
     char c = evt.getKeyChar();
 
-    // this is the apple/cmd key on macosx.. so menu commands
-    // were being passed through as legit keys.. added this line
-    // in an attempt to prevent.
+    // This is the cmd key on macOS. Added this because
+    // menu shortcuts were being passed through as legit keys.
     if ((modifiers & InputEvent.META_MASK) != 0) return;
 
     // Prevent CTRL-/ from going through as a typed '/' character
@@ -208,7 +207,7 @@ public class DefaultInputHandler extends InputHandler {
           return;
         }
 
-        executeAction(INSERT_CHAR,evt.getSource(),
+        executeAction(INSERT_CHAR, evt.getSource(),
                       String.valueOf(evt.getKeyChar()));
 
         repeatCount = 0;
@@ -225,7 +224,7 @@ public class DefaultInputHandler extends InputHandler {
    * or M for Meta, and <i>shortcut</i> is either a single character,
    * or a keycode name from the <code>KeyEvent</code> class, without
    * the <code>VK_</code> prefix.
-   * @param keyStroke A string description of the key stroke
+   * @param keyStroke A string description of the keystroke
    */
   static public KeyStroke parseKeyStroke(String keyStroke) {
     if (keyStroke == null) {
@@ -257,7 +256,7 @@ public class DefaultInputHandler extends InputHandler {
       if (modifiers == 0) {
         return KeyStroke.getKeyStroke(ch);
       } else {
-        return KeyStroke.getKeyStroke(ch,modifiers);
+        return KeyStroke.getKeyStroke(ch, modifiers);
       }
 
     } else if (key.length() == 0) {
@@ -265,15 +264,14 @@ public class DefaultInputHandler extends InputHandler {
       return null;
 
     } else {
-      int ch;
-
       try {
-        ch = KeyEvent.class.getField("VK_".concat(key)).getInt(null);
+        int ch = KeyEvent.class.getField("VK_".concat(key)).getInt(null);
+        return KeyStroke.getKeyStroke(ch, modifiers);
+
       } catch (Exception e) {
         System.err.println("Invalid key stroke: " + keyStroke);
         return null;
       }
-      return KeyStroke.getKeyStroke(ch,modifiers);
     }
   }
 

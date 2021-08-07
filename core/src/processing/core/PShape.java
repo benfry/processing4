@@ -623,19 +623,19 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>beginContour()</b> and <b>endContour()</b> methods make it 
-   * possible to define shapes with other shapes cut out of them. For 
-   * example, the inside of a letter 'O'. These two functions are always 
-   * used together, you'll never use one without the other. Between them, 
-   * define the geometry you want to create. As you'll see when you run 
-   * the example above, the second smaller shape is cut out of the first 
+   * The <b>beginContour()</b> and <b>endContour()</b> methods make it
+   * possible to define shapes with other shapes cut out of them. For
+   * example, the inside of a letter 'O'. These two functions are always
+   * used together, you'll never use one without the other. Between them,
+   * define the geometry you want to create. As you'll see when you run
+   * the example above, the second smaller shape is cut out of the first
    * larger shape.<br />
    * <br />
-   * The exterior shape and the interior contour must <em>wind</em> in 
-   * opposite directions. This means that if the points of the geometry 
-   * for the exterior shape are described in a clockwise order, the points 
-   * on the interior shape are defined in a counterclockwise order. 
-   * 
+   * The exterior shape and the interior contour must <em>wind</em> in
+   * opposite directions. This means that if the points of the geometry
+   * for the exterior shape are described in a clockwise order, the points
+   * on the interior shape are defined in a counterclockwise order.
+   *
    * @webref shape:vertex
    * @webBrief Starts a new contour
    * @see PShape#endContour()
@@ -671,18 +671,18 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>beginContour()</b> and <b>endContour()</b> methods make 
-   * it possible to define shapes with other shapes cut out of them. 
-   * For example, the inside of a letter 'O'. These two functions are 
-   * always used together, you'll never use one without the other. 
-   * Between them, define the geometry you want to create. As you'll 
-   * see when you run the example above, the second smaller shape is 
+   * The <b>beginContour()</b> and <b>endContour()</b> methods make
+   * it possible to define shapes with other shapes cut out of them.
+   * For example, the inside of a letter 'O'. These two functions are
+   * always used together, you'll never use one without the other.
+   * Between them, define the geometry you want to create. As you'll
+   * see when you run the example above, the second smaller shape is
    * cut out of the first larger shape.<br />
    * <br />
-   * The exterior shape and the interior contour must <em>wind</em> 
-   * in opposite directions. This means that if the points of the 
-   * geometry for the exterior shape are described in a clockwise order, 
-   * the points on the interior shape are defined in a counterclockwise order. 
+   * The exterior shape and the interior contour must <em>wind</em>
+   * in opposite directions. This means that if the points of the
+   * geometry for the exterior shape are described in a clockwise order,
+   * the points on the interior shape are defined in a counterclockwise order.
    *
    * @webref shape:vertex
    * @webBrief Ends a contour
@@ -756,6 +756,7 @@ public class PShape implements PConstants {
   public void attribPosition(String name, float x, float y, float z) {
   }
 
+
   public void attribNormal(String name, float nx, float ny, float nz) {
   }
 
@@ -777,9 +778,9 @@ public class PShape implements PConstants {
 
 
   /**
-   * This method is used to start a custom shape created with the <b>createShape()</b> 
-   * function. It's always and only used with <b>createShape()</b>. 
-   * 
+   * This method is used to start a custom shape created with the <b>createShape()</b>
+   * function. It's always and only used with <b>createShape()</b>.
+   *
    * @webref pshape:method
    * @webBrief Starts the creation of a new <b>PShape</b>
    * @see PApplet#endShape()
@@ -795,8 +796,8 @@ public class PShape implements PConstants {
   }
 
   /**
-   * This method is used to complete a custom shape created with the <b>createShape()</b> 
-   * function. It's always and only used with <b>createShape()</b>. 
+   * This method is used to complete a custom shape created with the <b>createShape()</b>
+   * function. It's always and only used with <b>createShape()</b>.
    *
    * @webref pshape:method
    * @webBrief Finishes the creation of a new <b>PShape</b>
@@ -2006,7 +2007,7 @@ public class PShape implements PConstants {
 
   /**
    * Returns the number of children within the <b>PShape</b>.
-   * 
+   *
    * @webref
    * @webBrief Returns the number of children
    */
@@ -2081,9 +2082,9 @@ public class PShape implements PConstants {
 
   // can't be just 'add' because that suggests additive geometry
   /**
-   * Adds a child PShape to a parent PShape that is defined as a GROUP. 
-   * In the example, the three shapes <b>path</b>, <b>rectangle</b>, 
-   * and <b>circle</b> are added to a parent PShape variable named 
+   * Adds a child PShape to a parent PShape that is defined as a GROUP.
+   * In the example, the three shapes <b>path</b>, <b>rectangle</b>,
+   * and <b>circle</b> are added to a parent PShape variable named
    * <b>house</b> that is a GROUP.
    * @webref pshape:method
    * @webBrief Adds a new child
@@ -2181,8 +2182,25 @@ public class PShape implements PConstants {
   }
 
 
+  /**
+   * Returns a PShape holding the tessellated geometry of this shape,
+   * composed entirely of triangles.
+   */
   public PShape getTessellation() {
     return null;
+  }
+
+
+  public void beginTessellationUpdate() {
+    beginTessellationUpdate(TRIANGLES);
+  }
+
+
+  public void beginTessellationUpdate(int kind) {
+  }
+
+
+  public void endTessellationUpdate() {
   }
 
 
@@ -2255,11 +2273,11 @@ public class PShape implements PConstants {
   }
 
   /**
-   * The <b>getVertexCount()</b> method returns the number of vertices that 
-   * make up a <b>PShape</b>. In the above example, the value 4 is returned by the 
-   * <b>getVertexCount()</b> method because 4 vertices are defined in 
+   * The <b>getVertexCount()</b> method returns the number of vertices that
+   * make up a <b>PShape</b>. In the above example, the value 4 is returned by the
+   * <b>getVertexCount()</b> method because 4 vertices are defined in
    * <b>setup()</b>.
-   * 
+   *
    * @webref pshape:method
    * @webBrief Returns the total number of vertices as an int
    * @see PShape#getVertex(int)
@@ -2274,12 +2292,12 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>getVertex()</b> method returns a <b>PVector</b> with the coordinates of 
-   * the vertex point located at the position defined by the <b>index</b> 
-   * parameter. This method works when shapes are created as shown in the 
-   * example above, but won't work properly when a shape is defined explicitly 
+   * The <b>getVertex()</b> method returns a <b>PVector</b> with the coordinates of
+   * the vertex point located at the position defined by the <b>index</b>
+   * parameter. This method works when shapes are created as shown in the
+   * example above, but won't work properly when a shape is defined explicitly
    * (e.g. <b>createShape(RECT, 20, 20, 80, 80)</b>.
-   * 
+   *
    * @webref pshape:method
    * @webBrief Returns the vertex at the index position
    * @param index the location of the vertex
@@ -2295,9 +2313,7 @@ public class PShape implements PConstants {
    * @param vec PVector to assign the data to
    */
   public PVector getVertex(int index, PVector vec) {
-    if (vec == null) {
-      vec = new PVector();
-    }
+    if (vec == null) vec = new PVector();
     float[] vert = vertices[index];
     vec.x = vert[X];
     vec.y = vert[Y];
@@ -2326,11 +2342,11 @@ public class PShape implements PConstants {
 
 
   /**
-   * The <b>setVertex()</b> method defines the coordinates of the vertex point 
-   * located at the position defined by the <b>index</b> parameter. This method 
-   * works when shapes are created as shown in the example above, but won't work 
+   * The <b>setVertex()</b> method defines the coordinates of the vertex point
+   * located at the position defined by the <b>index</b> parameter. This method
+   * works when shapes are created as shown in the example above, but won't work
    * properly when a shape is defined explicitly (e.g. <b>createShape(RECT, 20, 20, 80, 80)</b>.
-   * 
+   *
    * @webref pshape:method
    * @webBrief Sets the vertex at the index position
    * @param index the location of the vertex
@@ -2391,9 +2407,7 @@ public class PShape implements PConstants {
 
 
   public PVector getNormal(int index, PVector vec) {
-    if (vec == null) {
-      vec = new PVector();
-    }
+    if (vec == null) vec = new PVector();
     vec.x = vertices[index][PGraphics.NX];
     vec.y = vertices[index][PGraphics.NY];
     vec.z = vertices[index][PGraphics.NZ];
@@ -2427,6 +2441,77 @@ public class PShape implements PConstants {
     vertices[index][PGraphics.NZ] = nz;
   }
 
+
+  public PVector getAttribPosition(String name, int index, PVector vec) {
+    return vec;
+  }
+
+
+  public float getAttribPositionX(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribPositionY(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribPositionZ(String name, int index) {
+    return 0;
+  }
+
+
+  public PVector getAttribNormal(String name, int index, PVector vec) {
+    return vec;
+  }
+
+
+  public float getAttribNormalX(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribNormalY(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribNormalZ(String name, int index) {
+    return 0;
+  }
+
+
+  public int getAttribColor(String name, int index) {
+    return 0;
+  }
+
+
+  public float[] getAttrib(String name, int index, float[] values) {
+    return values;
+  }
+
+
+  public int[] getAttrib(String name, int index, int[] values) {
+    return null;
+  }
+
+
+  public boolean[] getAttrib(String name, int index, boolean[] values) {
+    return null;
+  }
+
+
+  public void setAttribPosition(String name, int index, float x, float y, float z) {
+  }
+
+
+  public void setAttribNormal(String name, int index, float nx, float ny, float nz) {
+  }
+
+
+  public void setAttribColor(String name, int index, int color) {
+  }
 
 
   public void setAttrib(String name, int index, float... values) {

@@ -224,7 +224,17 @@ public class JavaEditor extends Editor {
     //String appTitle = JavaToolbar.getTitle(JavaToolbar.EXPORT, false);
     String appTitle = Language.text("menu.file.export_application");
     JMenuItem exportApplication = Toolkit.newJMenuItemShift(appTitle, 'E');
-    exportApplication.addActionListener(e -> handleExportApplication());
+    exportApplication.addActionListener(e -> {
+      if (sketch.isUntitled() || sketch.isReadOnly()) {
+        // Exporting to application will open the sketch folder, which is
+        // weird for untitled sketches (that live in a temp folder) and
+        // read-only sketches (that live in the examples folder).
+        // TODO Better explanation? And some localization too.
+        Messages.showMessage("Save First", "Please first save the sketch.");
+      } else {
+        handleExportApplication();
+      }
+    });
 
     return buildFileMenu(new JMenuItem[] { exportApplication });
   }

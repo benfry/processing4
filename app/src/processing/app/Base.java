@@ -23,13 +23,13 @@
 
 package processing.app;
 
-import java.awt.EventQueue;
-import java.awt.FileDialog;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.*;
@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import processing.app.contrib.*;
 import processing.app.tools.Tool;
 import processing.app.ui.*;
+import processing.app.ui.Toolkit;
 import processing.core.*;
 import processing.data.StringList;
 
@@ -55,8 +56,8 @@ public class Base {
   /** This might be replaced by main() if there's a lib/version.txt file. */
   static private String VERSION_NAME = "1276"; //$NON-NLS-1$
 
-  static final String SKETCH_BUNDLE_EXT = ".pskz";
-  static final String CONTRIB_BUNDLE_EXT = ".pcbz";
+  static final public String SKETCH_BUNDLE_EXT = ".pdez";
+  static final public String CONTRIB_BUNDLE_EXT = ".pdex";
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true
@@ -231,7 +232,7 @@ public class Base {
         SingleInstance.startServer(base);
 
         handleWelcomeScreen(base);
-        checkDriverBug();
+        //checkDriverBug();  // that was 2017, right?
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
@@ -288,6 +289,7 @@ public class Base {
   }
 
 
+  /*
   // Remove this code in a couple of months [fry 170211]
   // https://github.com/processing/processing/issues/4853
   // Or maybe not, if NVIDIA keeps doing this [fry 170423]
@@ -323,6 +325,7 @@ public class Base {
       }).start();
     }
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -1235,14 +1238,17 @@ public class Base {
    */
   public void handleOpenPrompt() {
     final StringList extensions = new StringList();
+
+    // Add support for pdez files
+    extensions.append(SKETCH_BUNDLE_EXT);
+
+    // Add the extensions for each installed Mode
     for (Mode mode : getModeList()) {
       extensions.append(mode.getDefaultExtension());
     }
 
-
     final String prompt = Language.text("open");
 
-    // don't use native dialogs on Linux (or anyone else w/ override)
     if (Preferences.getBoolean("chooser.files.native")) {  //$NON-NLS-1$
       // use the front-most window frame for placing file dialog
       FileDialog openDialog =
@@ -1271,8 +1277,8 @@ public class Base {
     } else {
       if (openChooser == null) {
         openChooser = new JFileChooser();
+        openChooser.setDialogTitle(prompt);
       }
-      openChooser.setDialogTitle(prompt);
 
       openChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
         public boolean accept(File file) {
@@ -1335,9 +1341,49 @@ public class Base {
       return null;  // no luck
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
-      // TODO Install a contrib here
-      return null;
+      EventQueue.invokeLater(() -> {
+        Editor editor = getActiveEditor();
+        if (editor == null) {
+          // Shouldn't really happen, but if it's still null, it's a no-go
+          Messages.showWarning("Failure is the only option",
+                      "Please open an Editor window before installing an extension.");
+        } else {
+          File contribFile = new File(path);
+          String baseName = contribFile.getName();
+          baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
+          int result =
+            Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
+              "Install " + baseName + "?",
+              "Libraries, Modes, and Tools should<br>" +
+                "only be installed from trusted sources.");
 
+          if (result == JOptionPane.YES_OPTION) {
+            editor.statusNotice("Installing " + baseName + "...");
+            editor.startIndeterminate();
+
+            new Thread(() -> {
+              try {
+                // do the work of the actual install
+                LocalContribution contrib =
+                  AvailableContribution.install(this, new File(path));
+
+                EventQueue.invokeLater(() -> {
+                  editor.stopIndeterminate();
+
+                  if (contrib != null) {
+                    editor.statusEmpty();
+                  } else {
+                    editor.statusError("Could not install " + path);
+                  }
+                });
+              } catch (IOException e) {
+                EventQueue.invokeLater(() -> Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e));
+              }
+            }).start();
+          }
+        }
+      });
+      return null;
     }
 
     return handleOpen(path, false);

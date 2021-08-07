@@ -70,11 +70,8 @@ public abstract class LocalContribution extends Contribution {
       if (name == null) {
         name = folder.getName();
       }
-      // changing to 'authors' in 3.0a11
+      // changed 'authorList' to 'authors' in 3.0a11
       authors = properties.get(AUTHORS_PROPERTY);
-//      if (authors == null) {
-//        authors = properties.get("authorList");
-//      }
       url = properties.get("url");
       sentence = properties.get("sentence");
       paragraph = properties.get("paragraph");
@@ -275,7 +272,7 @@ public abstract class LocalContribution extends Contribution {
             }
              */
           } else {
-            int result = 0;
+            int result;
             boolean doBackup = Preferences.getBoolean("contribution.backup.on_install");
             if (confirmReplace) {
               if (doBackup) {
@@ -373,7 +370,7 @@ public abstract class LocalContribution extends Contribution {
         try {
           Util.copyDir(getFolder(), backupSubFolder);
           success = true;
-        } catch (IOException e) { }
+        } catch (IOException ignored) { }
       }
       if (!success) {
         status.setErrorMessage("Could not move contribution to backup folder.");
@@ -390,14 +387,10 @@ public abstract class LocalContribution extends Contribution {
                           final ContribProgressMonitor pm,
                           final StatusPanel status) {
     // TODO: replace with SwingWorker [jv]
-    new Thread(new Runnable() {
-      public void run() {
-        remove(base,
-               pm,
-               status,
-               ContributionListing.getInstance());
-      }
-    }, "Contribution Uninstaller").start();
+    new Thread(() -> remove(base,
+           pm,
+           status,
+           ContributionListing.getInstance()), "Contribution Uninstaller").start();
   }
 
 
@@ -415,13 +408,11 @@ public abstract class LocalContribution extends Contribution {
 //        }
 //      }
 //    } else {
-    boolean success = false;
+    boolean success;
     if (getType() == ContributionType.MODE) {
       boolean isModeActive = false;
       ModeContribution m = (ModeContribution) this;
-      Iterator<Editor> iter = base.getEditors().iterator();
-      while (iter.hasNext()) {
-        Editor e = iter.next();
+      for (Editor e : base.getEditors()) {
         if (e.getMode().equals(m.getMode())) {
           isModeActive = true;
           break;
@@ -468,20 +459,17 @@ public abstract class LocalContribution extends Contribution {
 
       try {
         // TODO: run this in SwingWorker done() [jv]
-        EventQueue.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            Contribution advertisedVersion =
-                contribListing.getAvailableContribution(LocalContribution.this);
+        EventQueue.invokeAndWait(() -> {
+          Contribution advertisedVersion =
+              contribListing.getAvailableContribution(LocalContribution.this);
 
-            if (advertisedVersion == null) {
-              contribListing.removeContribution(LocalContribution.this);
-            } else {
-              contribListing.replaceContribution(LocalContribution.this, advertisedVersion);
-            }
-            base.refreshContribs(LocalContribution.this.getType());
-            base.setUpdatesAvailable(contribListing.countUpdates(base));
+          if (advertisedVersion == null) {
+            contribListing.removeContribution(LocalContribution.this);
+          } else {
+            contribListing.replaceContribution(LocalContribution.this, advertisedVersion);
           }
+          base.refreshContribs(LocalContribution.this.getType());
+          base.setUpdatesAvailable(contribListing.countUpdates(base));
         });
       } catch (InterruptedException e) {
         e.printStackTrace();
@@ -500,14 +488,11 @@ public abstract class LocalContribution extends Contribution {
         if (setDeletionFlag(true)) {
           try {
             // TODO: run this in SwingWorker done() [jv]
-            EventQueue.invokeAndWait(new Runnable() {
-              @Override
-              public void run() {
-                contribListing.replaceContribution(LocalContribution.this,
-                                                   LocalContribution.this);
-                base.refreshContribs(LocalContribution.this.getType());
-                base.setUpdatesAvailable(contribListing.countUpdates(base));
-              }
+            EventQueue.invokeAndWait(() -> {
+              contribListing.replaceContribution(LocalContribution.this,
+                                                 LocalContribution.this);
+              base.refreshContribs(LocalContribution.this.getType());
+              base.setUpdatesAvailable(contribListing.countUpdates(base));
             });
           } catch (InterruptedException e) {
             e.printStackTrace();
@@ -738,7 +723,6 @@ public abstract class LocalContribution extends Contribution {
   /**
    *
    * @param base name of the class, with or without the package
-   * @param file
    * @return name of class (with full package name) or null if not found
    */
   static protected String findClassInZipFile(String base, File file) {
