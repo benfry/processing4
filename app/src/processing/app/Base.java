@@ -1358,23 +1358,28 @@ public class Base {
                 "only be installed from trusted sources.");
 
           if (result == JOptionPane.YES_OPTION) {
-            try {
-              editor.statusNotice("Installing " + baseName + "...");
-              editor.startIndeterminate();
+            editor.statusNotice("Installing " + baseName + "...");
+            editor.startIndeterminate();
 
-              // do the work of the actual install
-              LocalContribution contrib =
-                AvailableContribution.install(this, new File(path));
+            new Thread(() -> {
+              try {
+                // do the work of the actual install
+                LocalContribution contrib =
+                  AvailableContribution.install(this, new File(path));
 
-              editor.stopIndeterminate();
-              editor.statusEmpty();
+                EventQueue.invokeLater(() -> {
+                  editor.stopIndeterminate();
 
-              if (contrib == null) {
-                Messages.showWarning("Error During Installation", "Could not install contrib from " + path);
+                  if (contrib != null) {
+                    editor.statusEmpty();
+                  } else {
+                    editor.statusError("Could not install " + path);
+                  }
+                });
+              } catch (IOException e) {
+                EventQueue.invokeLater(() -> Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e));
               }
-            } catch (IOException e) {
-              Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e);
-            }
+            }).start();
           }
         }
       });

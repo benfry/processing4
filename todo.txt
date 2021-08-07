@@ -26,7 +26,8 @@ X update to JDK 11.0.12+7
 X rewrite download handler to just use a simple <get>
 _   remove the rest of the jre downloader code
 X initial code to install a contrib from a pdex file
-_   test to make sure it's behaving properly
+X   test to make sure it's behaving properly
+X   finish getting pdex files to install, now with actual feedback
 o handleNew() returns an Editor object
 o   unlikely to break anything, but it is a signature change
 X   nope, nevermind, not gonna do it
