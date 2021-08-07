@@ -145,17 +145,7 @@
   </target>
   -->
 
-  <target name="downloader-setup">
-    <!-- make sure we're built -->
-    <subant buildpath="jre" target="dist-no-test" />
-
-    <!-- define our special JRE downloader task -->
-    <taskdef name="downloader"
-             classname="Downloader"
-             classpath="jre/downloader.jar" />
-  </target>
-
-  <target name="jdk-download" depends="jdk-check, downloader-setup"
+  <target name="jdk-download" depends="jdk-check"
           unless="jdk.tgz.downloaded">
 
     <!-- Windows is the outlier with the .zip extension (the others are .tar.gz) -->
@@ -185,25 +175,6 @@
          ignoreerrors="false"
          usetimestamp="true" />
 
-    <!--
-    <condition property="jdk.downloader"
-               value="${target-platform}-i586.tar.gz">
-      <equals arg1="${jdk.data.model}" arg2="32" />
-    </condition>
-    <condition property="jdk.downloader"
-               value="${target-platform}-x64.tar.gz">
-      <equals arg1="${jdk.data.model}" arg2="64" />
-    </condition>
-
-    <downloader component="jdk"
-                train="${jdk.train}"
-                version="${jdk.version}"
-                platform="${target-platform}${jdk.data.model}"
-                update="${jdk.update}"
-                build="${jdk.build}"
-                flavor="${jdk.downloader}"
-                path="${jdk.tgz.path}" />
-              -->
   </target>
 
   <!-- Set the version of Java that must be present to build. -->
@@ -328,7 +299,6 @@
   <target name="test" depends="build">
     <subant buildpath="../core" target="test"/>
     <subant buildpath="../java" target="test"/>
-    <subant buildpath="jre" target="test" />
   </target>
 
   <target name="subprojects-build">
