@@ -9569,6 +9569,10 @@ public class PGraphicsOpenGL extends PGraphics {
       polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer());
     }
 
+    protected void mapPolyIndicesBuffer() {
+      polyIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.WRITE_ONLY).asShortBuffer();
+    }
+
     protected void mapLineVerticesBuffer() {
       lineVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
     }
@@ -9581,6 +9585,10 @@ public class PGraphicsOpenGL extends PGraphics {
       lineDirectionsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
     }
 
+    protected void mapLineIndicesBuffer() {
+      lineIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.WRITE_ONLY).asShortBuffer();
+    }
+
     protected void mapPointVerticesBuffer() {
       pointVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
     }
@@ -9591,6 +9599,10 @@ public class PGraphicsOpenGL extends PGraphics {
 
     protected void mapPointAttribsBuffer() {
       pointOffsetsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+    }
+
+    protected void mapPointIndicesBuffer() {
+      pointIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.WRITE_ONLY).asShortBuffer();
     }
 
     protected void initPolyVerticesBuffer(int usage, boolean onlymap, boolean unmap) {
@@ -9949,6 +9961,25 @@ public class PGraphicsOpenGL extends PGraphics {
       }
     }
 
+    protected void initPolyIndicesBuffer(int usage, boolean onlymap, boolean unmap) {
+      PGL pgl = pg.pgl;
+      int sizei = polyIndexCount * PGL.SIZEOF_INDEX;
+      if (bufferStream) {
+        if (onlymap) {
+          mapPolyIndicesBuffer();
+        } else {
+          pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER, sizei, null, usage);
+          mapPolyIndicesBuffer();
+          updatePolyIndicesBuffer();
+        }
+        if (unmap) {
+          pgl.unmapBuffer(PGL.ELEMENT_ARRAY_BUFFER);
+        }
+      } else {
+        pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER, sizei, polyIndicesBuffer, usage);
+      }
+    }
+
     protected void initLineVerticesBuffer(int usage, boolean onlymap, boolean unmap) {
       PGL pgl = pg.pgl;
       int sizef = lineVertexCount * PGL.SIZEOF_FLOAT;
@@ -10063,6 +10094,25 @@ public class PGraphicsOpenGL extends PGraphics {
       }
     }
 
+    protected void initLineIndicesBuffer(int usage, boolean onlymap, boolean unmap) {
+      PGL pgl = pg.pgl;
+      int sizei = lineIndexCount * PGL.SIZEOF_INDEX;
+      if (bufferStream) {
+        if (onlymap) {
+          mapLineIndicesBuffer();
+        } else {
+          pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER, sizei, null, usage);
+          mapLineIndicesBuffer();
+          updateLineIndicesBuffer();
+        }
+        if (unmap) {
+          pgl.unmapBuffer(PGL.ELEMENT_ARRAY_BUFFER);
+        }
+      } else {
+        pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER, sizei, lineIndicesBuffer, usage);
+      }
+    }
+
     protected void initPointVerticesBuffer(int usage, boolean onlymap, boolean unmap) {
       PGL pgl = pg.pgl;
       int sizef = pointVertexCount * PGL.SIZEOF_FLOAT;
@@ -10174,6 +10224,25 @@ public class PGraphicsOpenGL extends PGraphics {
         pointOffsetsBuffer.position(2 * offset);
         pgl.bufferSubData(PGL.ARRAY_BUFFER, 2 * offset * PGL.SIZEOF_FLOAT, 2 * size * PGL.SIZEOF_FLOAT, pointOffsetsBuffer);
         pointOffsetsBuffer.rewind();
+      }
+    }
+
+    protected void initPointIndicesBuffer(int usage, boolean onlymap, boolean unmap) {
+      PGL pgl = pg.pgl;
+      int sizei = pointIndexCount * PGL.SIZEOF_INDEX;
+      if (bufferStream) {
+        if (onlymap) {
+          mapPointIndicesBuffer();
+        } else {
+          pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER, sizei, null, usage);
+          mapPointIndicesBuffer();
+          updatePointIndicesBuffer();
+        }
+        if (unmap) {
+          pgl.unmapBuffer(PGL.ELEMENT_ARRAY_BUFFER);
+        }
+      } else {
+        pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER, sizei, pointIndicesBuffer, usage);
       }
     }
 
@@ -10419,7 +10488,7 @@ public class PGraphicsOpenGL extends PGraphics {
       float[] temp = new float[attrib.tessSize * n];
       PApplet.arrayCopy(array, 0, temp, 0, attrib.tessSize * polyVertexCount);
       fpolyAttribs.put(attrib.name, temp);
-      polyAttribBuffers.put(attrib.name, PGL.allocateFloatBuffer(temp));
+      if (!bufferStream) polyAttribBuffers.put(attrib.name, PGL.allocateFloatBuffer(temp));
     }
 
     void expandIntAttribute(VertexAttribute attrib, int n) {
@@ -10427,7 +10496,7 @@ public class PGraphicsOpenGL extends PGraphics {
       int[] temp = new int[attrib.tessSize * n];
       PApplet.arrayCopy(array, 0, temp, 0, attrib.tessSize * polyVertexCount);
       ipolyAttribs.put(attrib.name, temp);
-      polyAttribBuffers.put(attrib.name, PGL.allocateIntBuffer(temp));
+      if (!bufferStream) polyAttribBuffers.put(attrib.name, PGL.allocateIntBuffer(temp));
     }
 
     void expandBoolAttribute(VertexAttribute attrib, int n) {
@@ -10435,14 +10504,14 @@ public class PGraphicsOpenGL extends PGraphics {
       byte[] temp = new byte[attrib.tessSize * n];
       PApplet.arrayCopy(array, 0, temp, 0, attrib.tessSize * polyVertexCount);
       bpolyAttribs.put(attrib.name, temp);
-      polyAttribBuffers.put(attrib.name, PGL.allocateByteBuffer(temp));
+      if (!bufferStream) polyAttribBuffers.put(attrib.name, PGL.allocateByteBuffer(temp));
     }
 
     void expandPolyIndices(int n) {
       short[] temp = new short[n];
       PApplet.arrayCopy(polyIndices, 0, temp, 0, polyIndexCount);
       polyIndices = temp;
-      polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
+      if (!bufferStream) polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
     }
 
     void expandLineVertices(int n) {
@@ -10470,7 +10539,7 @@ public class PGraphicsOpenGL extends PGraphics {
       short[] temp = new short[n];
       PApplet.arrayCopy(lineIndices, 0, temp, 0, lineIndexCount);
       lineIndices = temp;
-      lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
+      if (!bufferStream) lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
     }
 
     void expandPointVertices(int n) {
@@ -10498,7 +10567,7 @@ public class PGraphicsOpenGL extends PGraphics {
       short[] temp = new short[n];
       PApplet.arrayCopy(pointIndices, 0, temp, 0, pointIndexCount);
       pointIndices = temp;
-      pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
+      if (!bufferStream) pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
     }
 
     // -----------------------------------------------------------------
@@ -10617,7 +10686,7 @@ public class PGraphicsOpenGL extends PGraphics {
       float[] temp = new float[attrib.tessSize * polyVertexCount];
       PApplet.arrayCopy(array, 0, temp, 0, attrib.tessSize * polyVertexCount);
       fpolyAttribs.put(attrib.name, temp);
-      polyAttribBuffers.put(attrib.name, PGL.allocateFloatBuffer(temp));
+      if (!bufferStream) polyAttribBuffers.put(attrib.name, PGL.allocateFloatBuffer(temp));
     }
 
     void trimIntAttribute(VertexAttribute attrib) {
@@ -10625,7 +10694,7 @@ public class PGraphicsOpenGL extends PGraphics {
       int[] temp = new int[attrib.tessSize * polyVertexCount];
       PApplet.arrayCopy(array, 0, temp, 0, attrib.tessSize * polyVertexCount);
       ipolyAttribs.put(attrib.name, temp);
-      polyAttribBuffers.put(attrib.name, PGL.allocateIntBuffer(temp));
+      if (!bufferStream) polyAttribBuffers.put(attrib.name, PGL.allocateIntBuffer(temp));
     }
 
     void trimBoolAttribute(VertexAttribute attrib) {
@@ -10633,14 +10702,14 @@ public class PGraphicsOpenGL extends PGraphics {
       byte[] temp = new byte[attrib.tessSize * polyVertexCount];
       PApplet.arrayCopy(array, 0, temp, 0, attrib.tessSize * polyVertexCount);
       bpolyAttribs.put(attrib.name, temp);
-      polyAttribBuffers.put(attrib.name, PGL.allocateByteBuffer(temp));
+      if (!bufferStream) polyAttribBuffers.put(attrib.name, PGL.allocateByteBuffer(temp));
     }
 
     void trimPolyIndices() {
       short[] temp = new short[polyIndexCount];
       PApplet.arrayCopy(polyIndices, 0, temp, 0, polyIndexCount);
       polyIndices = temp;
-      polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
+      if (!bufferStream) polyIndicesBuffer = PGL.allocateShortBuffer(polyIndices);
     }
 
     void trimLineVertices() {
@@ -10668,7 +10737,7 @@ public class PGraphicsOpenGL extends PGraphics {
       short[] temp = new short[lineIndexCount];
       PApplet.arrayCopy(lineIndices, 0, temp, 0, lineIndexCount);
       lineIndices = temp;
-      lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
+      if (!bufferStream) lineIndicesBuffer = PGL.allocateShortBuffer(lineIndices);
     }
 
     void trimPointVertices() {
@@ -10696,7 +10765,7 @@ public class PGraphicsOpenGL extends PGraphics {
       short[] temp = new short[pointIndexCount];
       PApplet.arrayCopy(pointIndices, 0, temp, 0, pointIndexCount);
       pointIndices = temp;
-      pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
+      if (!bufferStream) pointIndicesBuffer = PGL.allocateShortBuffer(pointIndices);
     }
 
     // -----------------------------------------------------------------

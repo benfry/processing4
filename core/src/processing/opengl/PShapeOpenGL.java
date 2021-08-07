@@ -4415,14 +4415,9 @@ public class PShapeOpenGL extends PShape {
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
-    tessGeo.updatePolyIndicesBuffer();
-    if (bufPolyIndex == null)
-      bufPolyIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
+    if (bufPolyIndex == null) bufPolyIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPolyIndex.glId);
-    pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER,
-                   tessGeo.polyIndexCount * PGL.SIZEOF_INDEX,
-                   tessGeo.polyIndicesBuffer, glUsage);
-
+    tessGeo.initPolyIndicesBuffer(glUsage, false, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
   }
 
@@ -4441,14 +4436,9 @@ public class PShapeOpenGL extends PShape {
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
-    tessGeo.updateLineIndicesBuffer();
-    if (bufLineIndex == null)
-      bufLineIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
+    if (bufLineIndex == null) bufLineIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufLineIndex.glId);
-    pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER,
-                   tessGeo.lineIndexCount * PGL.SIZEOF_INDEX,
-                   tessGeo.lineIndicesBuffer, glUsage);
-
+    tessGeo.initLineIndicesBuffer(glUsage, false, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
   }
 
@@ -4468,14 +4458,9 @@ public class PShapeOpenGL extends PShape {
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
-    tessGeo.updatePointIndicesBuffer();
-    if (bufPointIndex == null)
-      bufPointIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
+    if (bufPointIndex == null) bufPointIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPointIndex.glId);
-    pgl.bufferData(PGL.ELEMENT_ARRAY_BUFFER,
-                   tessGeo.pointIndexCount * PGL.SIZEOF_INDEX,
-                   tessGeo.pointIndicesBuffer, glUsage);
-
+    tessGeo.initPointIndicesBuffer(glUsage, false, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
   }
 
