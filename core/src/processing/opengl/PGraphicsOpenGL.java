@@ -575,6 +575,9 @@ public class PGraphicsOpenGL extends PGraphics {
 
     viewport = PGL.allocateIntBuffer(4);
 
+    PGL.glUsageRetained = PGL.DYNAMIC_DRAW;
+    PGL.glUsageImmediate = PGL.STATIC_DRAW;
+
     polyAttribs = newAttributeMap();
     inGeo = newInGeometry(this, polyAttribs, IMMEDIATE);
     tessGeo = newTessGeometry(this, polyAttribs, IMMEDIATE,
@@ -1222,48 +1225,46 @@ public class PGraphicsOpenGL extends PGraphics {
 
   protected void updatePolyBuffers(boolean lit, boolean tex,
                                    boolean needNormals, boolean needTexCoords) {
-    int glBufferUsage = PGL.STATIC_DRAW;
-
-    createPolyBuffers(glBufferUsage);
+    createPolyBuffers(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
-    tessGeo.copyPolyVertices(glBufferUsage);
+    tessGeo.copyPolyVertices(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
-    tessGeo.copyPolyColors(glBufferUsage);
+    tessGeo.copyPolyColors(PGL.glUsageImmediate);
 
     if (lit) {
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyAmbient.glId);
-      tessGeo.copyPolyAmbient(glBufferUsage);
+      tessGeo.copyPolyAmbient(PGL.glUsageImmediate);
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolySpecular.glId);
-      tessGeo.copyPolySpecular(glBufferUsage);
+      tessGeo.copyPolySpecular(PGL.glUsageImmediate);
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyEmissive.glId);
-      tessGeo.copyPolyEmissive(glBufferUsage);
+      tessGeo.copyPolyEmissive(PGL.glUsageImmediate);
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
-      tessGeo.copyPolyShininess(glBufferUsage);
+      tessGeo.copyPolyShininess(PGL.glUsageImmediate);
     }
 
     if (lit || needNormals) {
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyNormal.glId);
-      tessGeo.copyPolyNormals(glBufferUsage);
+      tessGeo.copyPolyNormals(PGL.glUsageImmediate);
     }
 
     if (tex || needTexCoords) {
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexcoord.glId);
-      tessGeo.copyPolyTexCoords(glBufferUsage);
+      tessGeo.copyPolyTexCoords(PGL.glUsageImmediate);
     }
 
     for (String name: polyAttribs.keySet()) {
       VertexAttribute attrib = polyAttribs.get(name);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
-      tessGeo.copyPolyAttribs(attrib, glBufferUsage);
+      tessGeo.copyPolyAttribs(attrib, PGL.glUsageImmediate);
     }
 
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPolyIndex.glId);
-    tessGeo.copyPolyIndices(glBufferUsage);
+    tessGeo.copyPolyIndices(PGL.glUsageImmediate);
   }
 
 
@@ -1295,21 +1296,19 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
   protected void updateLineBuffers() {
-    int glBufferUsage = PGL.STATIC_DRAW;
-
-    createLineBuffers(glBufferUsage);
+    createLineBuffers(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-    tessGeo.copyLineVertices(glBufferUsage);
+    tessGeo.copyLineVertices(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-    tessGeo.copyLineColors(glBufferUsage);
+    tessGeo.copyLineColors(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-    tessGeo.copyLineDirections(glBufferUsage);
+    tessGeo.copyLineDirections(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufLineIndex.glId);
-    tessGeo.copyLineIndices(glBufferUsage);
+    tessGeo.copyLineIndices(PGL.glUsageImmediate);
   }
 
 
@@ -1341,21 +1340,19 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
   protected void updatePointBuffers() {
-    int glBufferUsage = PGL.STATIC_DRAW;
-
-    createPointBuffers(glBufferUsage);
+    createPointBuffers(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-    tessGeo.copyPointVertices(glBufferUsage);
+    tessGeo.copyPointVertices(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-    tessGeo.copyPointColors(glBufferUsage);
+    tessGeo.copyPointColors(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-    tessGeo.copyPointOffsets(glBufferUsage);
+    tessGeo.copyPointOffsets(PGL.glUsageImmediate);
 
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPointIndex.glId);
-    tessGeo.copyPointIndices(glBufferUsage);
+    tessGeo.copyPointIndices(PGL.glUsageImmediate);
   }
 
 
@@ -2063,7 +2060,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null) {
-      attrib = new VertexAttribute(this, name, kind, type, size, PGL.STATIC_DRAW);
+      attrib = new VertexAttribute(this, name, kind, type, size, PGL.glUsageImmediate);
       polyAttribs.put(name, attrib);
       inGeo.initAttrib(attrib);
       tessGeo.initAttrib(attrib);

@@ -139,6 +139,15 @@ public abstract class PGL {
 
   // ........................................................
 
+  // These variables are left public so advanced users can experiment with different
+  // usage modes controlling the buffer data store:
+  // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+
+  static public int glUsageRetained;
+  static public int glUsageImmediate;
+
+  // ........................................................
+
   // Variables to handle single-buffered situations (i.e.: Android)
 
   protected IntBuffer firstFrame;
