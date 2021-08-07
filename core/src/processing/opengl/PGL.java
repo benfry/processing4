@@ -77,6 +77,16 @@ public abstract class PGL {
   protected static boolean USE_DIRECT_BUFFERS = true;
   protected static int MIN_DIRECT_BUFFER_SIZE = 1;
 
+  /** Controls the use of buffer object streaming. In combination with use direct buffers,
+   * the only advantage of enabling it in immediate mode would be to reduce memory footprint
+   * since the direct vertex buffers would not be allocated, simply mapped from the OpenGL
+   * objects and thus only the vertex arrays would be created.
+   * In the case of the retained mode (PShape), memory footprint would be reduced (for the same
+   * reason) but it may enable some speed ups when editing a geometry in within a being/end
+   * tessellation update block. */
+  static public boolean USE_BUFFER_OBJECT_STREAMING_IN_IMMEDIATE_MODE = false;
+  static public boolean USE_BUFFER_OBJECT_STREAMING_IN_RETAINED_MODE = true;
+
   /** Enables/disables mipmap use. */
   protected static boolean MIPMAPS_ENABLED = true;
 
@@ -2355,7 +2365,7 @@ public abstract class PGL {
 
   protected static ByteBuffer updateByteBuffer(ByteBuffer buf, byte[] arr,
                                                boolean wrap) {
-    if (USE_DIRECT_BUFFERS) {
+    if (buf.isDirect()) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectByteBuffer(arr.length);
       }
@@ -2380,7 +2390,7 @@ public abstract class PGL {
 
   protected static void updateByteBuffer(ByteBuffer buf, byte[] arr,
                                          int offset, int size) {
-    if (USE_DIRECT_BUFFERS || (buf.hasArray() && buf.array() != arr)) {
+    if (buf.isDirect() || (buf.hasArray() && buf.array() != arr)) {
       buf.position(offset);
       buf.put(arr, offset, size);
       buf.rewind();
@@ -2447,7 +2457,7 @@ public abstract class PGL {
 
   protected static ShortBuffer updateShortBuffer(ShortBuffer buf, short[] arr,
                                                  boolean wrap) {
-    if (USE_DIRECT_BUFFERS) {
+    if (buf.isDirect()) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectShortBuffer(arr.length);
       }
@@ -2472,7 +2482,7 @@ public abstract class PGL {
 
   protected static void updateShortBuffer(ShortBuffer buf, short[] arr,
                                           int offset, int size) {
-    if (USE_DIRECT_BUFFERS || (buf.hasArray() && buf.array() != arr)) {
+    if (buf.isDirect() || (buf.hasArray() && buf.array() != arr)) {
       buf.position(offset);
       buf.put(arr, offset, size);
       buf.rewind();
@@ -2539,7 +2549,7 @@ public abstract class PGL {
 
   protected static IntBuffer updateIntBuffer(IntBuffer buf, int[] arr,
                                              boolean wrap) {
-    if (USE_DIRECT_BUFFERS) {
+    if (buf.isDirect()) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectIntBuffer(arr.length);
       }
@@ -2564,7 +2574,7 @@ public abstract class PGL {
 
   protected static void updateIntBuffer(IntBuffer buf, int[] arr,
                                         int offset, int size) {
-     if (USE_DIRECT_BUFFERS || (buf.hasArray() && buf.array() != arr)) {
+     if (buf.isDirect() || (buf.hasArray() && buf.array() != arr)) {
        buf.position(offset);
        buf.put(arr, offset, size);
        buf.rewind();
@@ -2630,7 +2640,7 @@ public abstract class PGL {
 
   protected static FloatBuffer updateFloatBuffer(FloatBuffer buf, float[] arr,
                                                  boolean wrap) {
-    if (USE_DIRECT_BUFFERS) {
+    if (buf.isDirect()) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectFloatBuffer(arr.length);
       }
@@ -2655,7 +2665,7 @@ public abstract class PGL {
 
   protected static void updateFloatBuffer(FloatBuffer buf, float[] arr,
                                         int offset, int size) {
-     if (USE_DIRECT_BUFFERS || (buf.hasArray() && buf.array() != arr)) {
+     if (buf.isDirect() || (buf.hasArray() && buf.array() != arr)) {
        buf.position(offset);
        buf.put(arr, offset, size);
        buf.rewind();
