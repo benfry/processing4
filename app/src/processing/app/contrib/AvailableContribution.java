@@ -37,8 +37,8 @@ import processing.data.StringList;
  * A class to hold information about a Contribution that can be downloaded.
  */
 public class AvailableContribution extends Contribution {
-  protected final ContributionType type;   // Library, tool, etc.
-  protected final String link;             // Direct link to download the file
+  protected final ContributionType type;  // Library, tool, etc.
+  protected final String link;  // Direct link to download the file
 
 
   public AvailableContribution(ContributionType type, StringDict params) {
@@ -48,10 +48,8 @@ public class AvailableContribution extends Contribution {
     categories = parseCategories(params);
     imports = parseImports(params);
     name = params.get("name");
+    // formerly authorList (but not a list, just free text)
     authors = params.get("authors");
-//    if (authors == null) {
-//      authors = params.get("authorList");
-//    }
     url = params.get("url");
     sentence = params.get("sentence");
     paragraph = params.get("paragraph");

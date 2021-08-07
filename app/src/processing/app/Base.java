@@ -23,13 +23,13 @@
 
 package processing.app;
 
-import java.awt.EventQueue;
-import java.awt.FileDialog;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 
 import javax.swing.*;
@@ -38,6 +38,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import processing.app.contrib.*;
 import processing.app.tools.Tool;
 import processing.app.ui.*;
+import processing.app.ui.Toolkit;
 import processing.core.*;
 import processing.data.StringList;
 
@@ -55,8 +56,8 @@ public class Base {
   /** This might be replaced by main() if there's a lib/version.txt file. */
   static private String VERSION_NAME = "1276"; //$NON-NLS-1$
 
-  static final public String SKETCH_BUNDLE_EXT = ".pskz";
-  static final public String CONTRIB_BUNDLE_EXT = ".pcbz";
+  static final public String SKETCH_BUNDLE_EXT = ".pdez";
+  static final public String CONTRIB_BUNDLE_EXT = ".pdex";
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true
@@ -1340,16 +1341,48 @@ public class Base {
       return null;  // no luck
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
-      try {
-        // TODO should probably prompt the user first
-        LocalContribution contrib =
-          AvailableContribution.install(this, new File(path));
-        if (contrib == null) {
-          System.err.println("Could not install a contrib from " + path);
+      EventQueue.invokeLater(() -> {
+        Editor editor = getActiveEditor();
+        if (editor == null) {
+          // Shouldn't really happen, but if it's still null, it's a no-go
+          Messages.showWarning("Failure is the only option",
+                      "Please open an Editor window before installing an extension.");
+        } else {
+          File contribFile = new File(path);
+          String baseName = contribFile.getName();
+          baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
+          int result =
+            Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
+              "Install " + baseName + "?",
+              "Libraries, Modes, and Tools should<br>" +
+                "only be installed from trusted sources.");
+
+          if (result == JOptionPane.YES_OPTION) {
+            editor.statusNotice("Installing " + baseName + "...");
+            editor.startIndeterminate();
+
+            new Thread(() -> {
+              try {
+                // do the work of the actual install
+                LocalContribution contrib =
+                  AvailableContribution.install(this, new File(path));
+
+                EventQueue.invokeLater(() -> {
+                  editor.stopIndeterminate();
+
+                  if (contrib != null) {
+                    editor.statusEmpty();
+                  } else {
+                    editor.statusError("Could not install " + path);
+                  }
+                });
+              } catch (IOException e) {
+                EventQueue.invokeLater(() -> Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e));
+              }
+            }).start();
+          }
         }
-      } catch (IOException e) {
-        Messages.err("Error while installing " + path, e);
-      }
+      });
       return null;
     }
 
