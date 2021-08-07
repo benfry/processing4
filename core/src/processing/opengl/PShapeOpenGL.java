@@ -1832,11 +1832,19 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
     if (vec == null) vec = new PVector();
-    vec.x = array[3 * index + 0];
-    vec.y = array[3 * index + 1];
-    vec.z = array[3 * index + 2];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      vec.x = tessAttrib[4 * tessIdx + 0];
+      vec.y = tessAttrib[4 * tessIdx + 1];
+      vec.z = tessAttrib[4 * tessIdx + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      vec.x = array[3 * index + 0];
+      vec.y = array[3 * index + 1];
+      vec.z = array[3 * index + 2];
+    }
 
     return vec;
   }
@@ -1848,8 +1856,13 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
-    return array[3 * index + 0];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[4 * (firstPolyVertex + index) + 0];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 0];
+    }
   }
 
 
@@ -1859,8 +1872,13 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
-    return array[3 * index + 1];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[4 * (firstPolyVertex + index) + 1];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 1];
+    }
   }
 
 
@@ -1870,8 +1888,13 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
-    return array[3 * index + 2];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[4 * (firstPolyVertex + index) + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 2];
+    }
   }
 
 
@@ -1881,11 +1904,19 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
     if (vec == null) vec = new PVector();
-    vec.x = array[3 * index + 0];
-    vec.y = array[3 * index + 1];
-    vec.z = array[3 * index + 2];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      vec.x = tessAttrib[3 * tessIdx + 0];
+      vec.y = tessAttrib[3 * tessIdx + 1];
+      vec.z = tessAttrib[3 * tessIdx + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      vec.x = array[3 * index + 0];
+      vec.y = array[3 * index + 1];
+      vec.z = array[3 * index + 2];
+    }
 
     return vec;
   }
@@ -1897,8 +1928,13 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
-    return array[3 * index + 0];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[3 * (firstPolyVertex + index) + 0];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 0];
+    }
   }
 
 
@@ -1908,8 +1944,13 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
-    return array[3 * index + 1];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[3 * (firstPolyVertex + index) + 1];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 1];
+    }
   }
 
 
@@ -1919,8 +1960,13 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    float[] array = inGeo.fattribs.get(name);
-    return array[3 * index + 2];
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[3 * (firstPolyVertex + index) + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 2];
+    }
   }
 
 
@@ -1930,8 +1976,14 @@ public class PShapeOpenGL extends PShape {
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
 
-    int[] array = inGeo.iattribs.get(name);
-    return PGL.nativeToJavaARGB(array[index]);
+    if (root.tessUpdate) {
+      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
+      int color = tessAttrib[firstPolyVertex + index];
+      return PGL.nativeToJavaARGB(color);
+    } else {
+      int[] array = inGeo.iattribs.get(name);
+      return PGL.nativeToJavaARGB(array[index]);
+    }
   }
 
 
@@ -1940,9 +1992,18 @@ public class PShapeOpenGL extends PShape {
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
-    float[] array = inGeo.fattribs.get(name);
-    if (values == null || values.length < attrib.size) values = new float[attrib.size];
-    PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+
+    if (root.tessUpdate) {
+      if (values == null || values.length < attrib.tessSize) values = new float[attrib.tessSize];
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      PApplet.arrayCopy(tessAttrib, attrib.tessSize * tessIdx, values, 0, attrib.tessSize);
+    } else {
+      if (values == null || values.length < attrib.size) values = new float[attrib.size];
+      float[] array = inGeo.fattribs.get(name);
+      PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+    }
+
     return values;
   }
 
@@ -1952,9 +2013,18 @@ public class PShapeOpenGL extends PShape {
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
-    int[] array = inGeo.iattribs.get(name);
-    if (values == null || values.length < attrib.size) values = new int[attrib.size];
-    PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+
+    if (root.tessUpdate) {
+      if (values == null || values.length < attrib.tessSize) values = new int[attrib.tessSize];
+      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      PApplet.arrayCopy(tessAttrib, attrib.tessSize * tessIdx, values, 0, attrib.tessSize);
+    } else {
+      if (values == null || values.length < attrib.size) values = new int[attrib.size];
+      int[] array = inGeo.iattribs.get(name);
+      PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+    }
+
     return values;
   }
 
@@ -1964,11 +2034,22 @@ public class PShapeOpenGL extends PShape {
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null)
       throw new RuntimeException("Trying to retrieve values of non existing attribute");
-    byte[] array = inGeo.battribs.get(name);
-    if (values == null || values.length < attrib.size) values = new boolean[attrib.size];
-    for (int i = 0; i < values.length; i++) {
-      values[i] = (array[attrib.size * index + i]!=0);
+
+    if (root.tessUpdate) {
+      if (values == null || values.length < attrib.tessSize) values = new boolean[attrib.tessSize];
+      byte[] tessAttrib = tessGeo.bpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      for (int i = 0; i < attrib.tessSize; i++) {
+        values[i] = (tessAttrib[tessIdx + i]!=0);
+      }
+    } else {
+      if (values == null || values.length < attrib.size) values = new boolean[attrib.size];
+      byte[] array = inGeo.battribs.get(name);
+      for (int i = 0; i < attrib.size; i++) {
+        values[i] = (array[attrib.size * index + i]!=0);
+      }
     }
+
     return values;
   }
 
@@ -2068,7 +2149,7 @@ public class PShapeOpenGL extends PShape {
     if (attrib.size != values.length)
       throw new RuntimeException("Length of values array is different from attribute size");
     byte[] array = inGeo.battribs.get(name);
-    for (int i = 0; i < values.length; i++) {
+    for (int i = 0; i < attrib.size; i++) {
       array[attrib.size * index + i] = (byte)(values[i]?1:0);
     }
     markForTessellation();
