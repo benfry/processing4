@@ -887,12 +887,31 @@ public abstract class Editor extends JFrame implements RunnerListener {
     sketchMenu.add(mode.getImportMenu());
 
     item = Toolkit.newJMenuItem(Language.text("menu.sketch.show_sketch_folder"), 'K');
-    item.addActionListener(e -> Platform.openFolder(sketch.getFolder()));
+    item.addActionListener(e -> {
+      if (sketch.isUntitled() || sketch.isReadOnly()) {
+        // Too weird to show the sketch folder when it's buried somewhere in an
+        // OS-specific temp directory. TODO a better, and localized, message.
+        Messages.showMessage("Save First", "Please first save the sketch.");
+
+      } else {
+        Platform.openFolder(sketch.getFolder());
+      }
+    });
     sketchMenu.add(item);
     item.setEnabled(Platform.openFolderAvailable());
 
     item = new JMenuItem(Language.text("menu.sketch.add_file"));
-    item.addActionListener(e -> sketch.handleAddFile());
+    item.addActionListener(e -> {
+      if (sketch.isUntitled() || sketch.isReadOnly()) {
+        // Technically, this sketch either doesn't exist (it's untitled and
+        // lives in a temp folder) or it shouldn't be overwritten/modified
+        // (it's an example). Just ask the user to save. TODO same as above.
+        Messages.showMessage("Save First", "Please first save the sketch.");
+
+      } else {
+        sketch.handleAddFile();
+      }
+    });
     sketchMenu.add(item);
 
     if (runItems != null && runItems.length != 0) {
