@@ -9203,6 +9203,9 @@ public class PGraphicsOpenGL extends PGraphics {
     float[] pointOffsets;
     short[] pointIndices;
 
+    // Temporary array for performance
+    float[] selVertices;
+
     HashMap<String, float[]> fpolyAttribs = new HashMap<>();
     HashMap<String, int[]> ipolyAttribs = new HashMap<>();
     HashMap<String, byte[]> bpolyAttribs = new HashMap<>();

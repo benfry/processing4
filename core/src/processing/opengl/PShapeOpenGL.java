@@ -40,7 +40,6 @@ import processing.opengl.PGraphicsOpenGL.TessGeometry;
 import processing.opengl.PGraphicsOpenGL.Tessellator;
 import processing.opengl.PGraphicsOpenGL.VertexAttribute;
 
-import java.nio.Buffer;
 import java.util.Arrays;
 import java.util.HashSet;
 
@@ -1627,17 +1626,9 @@ public class PShapeOpenGL extends PShape {
     if (vec == null) vec = new PVector();
     if (root.tessUpdate) {
       int tessIdx = firstPolyVertex + index;
-      if (root.tessKind == TRIANGLES) {
-        vec.x = tessGeo.polyVertices[4 * tessIdx + 0];
-        vec.y = tessGeo.polyVertices[4 * tessIdx + 1];
-        vec.z = tessGeo.polyVertices[4 * tessIdx + 2];
-      } else if (root.tessKind == LINES) {
-        vec.x = tessGeo.lineVertices[4 * tessIdx + 0];
-        vec.y = tessGeo.lineVertices[4 * tessIdx + 1];
-      } else if (root.tessKind == POINTS) {
-        vec.x = tessGeo.pointVertices[4 * tessIdx + 0];
-        vec.y = tessGeo.pointVertices[4 * tessIdx + 1];
-      }
+      vec.x = tessGeo.selVertices[4 * tessIdx + 0];
+      vec.y = tessGeo.selVertices[4 * tessIdx + 1];
+      vec.z = tessGeo.selVertices[4 * tessIdx + 2];
     } else {
       vec.x = inGeo.vertices[3 * index + 0];
       vec.y = inGeo.vertices[3 * index + 1];
@@ -1650,54 +1641,30 @@ public class PShapeOpenGL extends PShape {
   @Override
   public float getVertexX(int index) {
     if (root.tessUpdate) {
-      int tessIdx = firstPolyVertex + index;
-      if (root.tessKind == TRIANGLES) {
-        return tessGeo.polyVertices[4 * tessIdx + 0];
-      } else if (root.tessKind == LINES) {
-        return tessGeo.lineVertices[4 * tessIdx + 0];
-      } else if (root.tessKind == POINTS) {
-        return tessGeo.pointVertices[4 * tessIdx + 0];
-      } else {
-        return 0;
-      }
+      return tessGeo.selVertices[4 * (firstPolyVertex + index) + 0];
+    } else {
+      return inGeo.vertices[3 * index + 0];
     }
-    return inGeo.vertices[3 * index + 0];
   }
 
 
   @Override
   public float getVertexY(int index) {
     if (root.tessUpdate) {
-      int tessIdx = firstPolyVertex + index;
-      if (root.tessKind == TRIANGLES) {
-        return tessGeo.polyVertices[4 * tessIdx + 1];
-      } else if (root.tessKind == LINES) {
-        return tessGeo.lineVertices[4 * tessIdx + 1];
-      } else if (root.tessKind == POINTS) {
-        return tessGeo.pointVertices[4 * tessIdx + 1];
-      } else {
-        return 0;
-      }
+      return tessGeo.selVertices[4 * (firstPolyVertex + index) + 1];
+    } else {
+      return inGeo.vertices[3 * index + 1];
     }
-    return inGeo.vertices[3 * index + 1];
   }
 
 
   @Override
   public float getVertexZ(int index) {
     if (root.tessUpdate) {
-      int tessIdx = firstPolyVertex + index;
-      if (root.tessKind == TRIANGLES) {
-        return tessGeo.polyVertices[4 * tessIdx + 2];
-      } else if (root.tessKind == LINES) {
-        return tessGeo.lineVertices[4 * tessIdx + 2];
-      } else if (root.tessKind == POINTS) {
-        return tessGeo.pointVertices[4 * tessIdx + 2];
-      } else {
-        return 0;
-      }
+      return tessGeo.selVertices[4 * (firstPolyVertex + index) + 2];
+    } else {
+      return inGeo.vertices[3 * index + 2];
     }
-    return inGeo.vertices[3 * index + 2];
   }
 
 
@@ -1716,18 +1683,14 @@ public class PShapeOpenGL extends PShape {
 
     if (root.tessUpdate) {
       int tessIdx = firstPolyVertex + index;
+      tessGeo.selVertices[4 * tessIdx + 0] = x;
+      tessGeo.selVertices[4 * tessIdx + 1] = y;
+      tessGeo.selVertices[4 * tessIdx + 2] = z;
       if (root.tessKind == TRIANGLES) {
-        tessGeo.polyVertices[4 * tessIdx + 0] = x;
-        tessGeo.polyVertices[4 * tessIdx + 1] = y;
-        tessGeo.polyVertices[4 * tessIdx + 2] = z;
         root.setModifiedPolyVertices(tessIdx, tessIdx);
-      } else if (root.tessKind == LINES) {
-        tessGeo.lineVertices[4 * tessIdx + 0] = x;
-        tessGeo.lineVertices[4 * tessIdx + 1] = y;
-        root.setModifiedLineVertices(tessIdx, tessIdx);
       } else if (root.tessKind == POINTS) {
-        tessGeo.pointVertices[4 * tessIdx + 0] = x;
-        tessGeo.pointVertices[4 * tessIdx + 1] = y;
+        root.setModifiedLineVertices(tessIdx, tessIdx);
+      } else {
         root.setModifiedPointVertices(tessIdx, tessIdx);
       }
     } else {
@@ -1761,20 +1724,14 @@ public class PShapeOpenGL extends PShape {
 
     if (root.tessUpdate) {
       int tessIdx = firstPolyVertex + index;
+      tessGeo.selVertices[4 * tessIdx + 0] = vec.x;
+      tessGeo.selVertices[4 * tessIdx + 1] = vec.y;
+      tessGeo.selVertices[4 * tessIdx + 2] = vec.z;
       if (root.tessKind == TRIANGLES) {
-        tessGeo.polyVertices[4 * tessIdx + 0] = vec.x;
-        tessGeo.polyVertices[4 * tessIdx + 1] = vec.y;
-        tessGeo.polyVertices[4 * tessIdx + 2] = vec.z;
         root.setModifiedPolyVertices(tessIdx, tessIdx);
-      } else if (root.tessKind == LINES) {
-        tessGeo.lineVertices[4 * tessIdx + 0] = vec.x;
-        tessGeo.lineVertices[4 * tessIdx + 1] = vec.y;
-        tessGeo.lineVertices[4 * tessIdx + 2] = vec.z;
-        root.setModifiedLineVertices(tessIdx, tessIdx);
       } else if (root.tessKind == POINTS) {
-        tessGeo.pointVertices[4 * tessIdx + 0] = vec.x;
-        tessGeo.pointVertices[4 * tessIdx + 1] = vec.y;
-        tessGeo.pointVertices[4 * tessIdx + 2] = vec.z;
+        root.setModifiedLineVertices(tessIdx, tessIdx);
+      } else {
         root.setModifiedPointVertices(tessIdx, tessIdx);
       }
     } else {
@@ -3066,6 +3023,9 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public void beginTessellationUpdate(int kind) {
+    if (kind != TRIANGLES && kind != LINES && kind != POINTS)
+      throw new IllegalArgumentException("The only valid kinds of geometry for tessellation update are TRIANGLES, LINES, or POINTS.");
+
     if (!root.tessUpdate) {
       updateTessellation();
       root.tessUpdate = true;
@@ -3077,6 +3037,7 @@ public class PShapeOpenGL extends PShape {
         if (createBuffer) bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
         tessGeo.initPolyVerticesBuffer(glUsage, !createBuffer, false);
+        tessGeo.selVertices = tessGeo.polyVertices;
 
         createBuffer = bufPolyColor == null;
         if (createBuffer) bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
@@ -3125,6 +3086,7 @@ public class PShapeOpenGL extends PShape {
         if (createBuffer) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
         tessGeo.initLineVerticesBuffer(glUsage, !createBuffer, false);
+        tessGeo.selVertices = tessGeo.lineVertices;
 
         createBuffer = bufLineColor == null;
         if (createBuffer) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
@@ -3140,6 +3102,7 @@ public class PShapeOpenGL extends PShape {
         if (createBuffer) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
         tessGeo.initPointVerticesBuffer(glUsage, !createBuffer, false);
+        tessGeo.selVertices = tessGeo.pointVertices;
 
         createBuffer = bufPointColor == null;
         if (createBuffer) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
@@ -3208,6 +3171,7 @@ public class PShapeOpenGL extends PShape {
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
         tessGeo.finalPointOffsetsBuffer(firstModifiedPointAttribute, lastModifiedPointAttribute);
       }
+      tessGeo.selVertices = null;
       root.tessUpdate = false;
 
       // To avoid triggering a new tessellation in the draw method.
@@ -5210,8 +5174,7 @@ public class PShapeOpenGL extends PShape {
   protected void render(PGraphicsOpenGL g, PImage texture) {
     if (root == null) {
       // Some error. Root should never be null. At least it should be 'this'.
-      throw new RuntimeException("Error rendering PShapeOpenGL, root shape is " +
-                                 "null");
+      throw new RuntimeException("Error rendering PShapeOpenGL, root shape is null");
     }
 
     if (hasPolys) {
