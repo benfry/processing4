@@ -756,6 +756,7 @@ public class PShape implements PConstants {
   public void attribPosition(String name, float x, float y, float z) {
   }
 
+
   public void attribNormal(String name, float nx, float ny, float nz) {
   }
 
@@ -2314,9 +2315,7 @@ public class PShape implements PConstants {
    * @param vec PVector to assign the data to
    */
   public PVector getVertex(int index, PVector vec) {
-    if (vec == null) {
-      vec = new PVector();
-    }
+    if (vec == null) vec = new PVector();
     float[] vert = vertices[index];
     vec.x = vert[X];
     vec.y = vert[Y];
@@ -2410,9 +2409,7 @@ public class PShape implements PConstants {
 
 
   public PVector getNormal(int index, PVector vec) {
-    if (vec == null) {
-      vec = new PVector();
-    }
+    if (vec == null) vec = new PVector();
     vec.x = vertices[index][PGraphics.NX];
     vec.y = vertices[index][PGraphics.NY];
     vec.z = vertices[index][PGraphics.NZ];
@@ -2447,6 +2444,51 @@ public class PShape implements PConstants {
   }
 
 
+  public PVector getAttribPosition(String name, int index, PVector vec) {
+    return vec;
+  }
+
+
+  public float getAttribPositionX(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribPositionY(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribPositionZ(String name, int index) {
+    return 0;
+  }
+
+
+  public PVector getAttribNormal(String name, int index, PVector vec) {
+    return vec;
+  }
+
+
+  public float getAttribNormalX(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribNormalY(String name, int index) {
+    return 0;
+  }
+
+
+  public float getAttribNormalZ(String name, int index) {
+    return 0;
+  }
+
+
+  public int getAttribColor(String name, int index) {
+    return 0;
+  }
+
+
   public float[] getAttrib(String name, int index, float[] values) {
     return values;
   }
@@ -2459,6 +2501,18 @@ public class PShape implements PConstants {
 
   public boolean[] getAttrib(String name, int index, boolean[] values) {
     return null;
+  }
+
+
+  public void setAttribPosition(String name, int index, float x, float y, float z) {
+  }
+
+
+  public void setAttribNormal(String name, int index, float nx, float ny, float nz) {
+  }
+
+
+  public void setAttribColor(String name, int index, int color) {
   }
 
 

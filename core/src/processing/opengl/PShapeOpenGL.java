@@ -1113,16 +1113,14 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public void attribPosition(String name, float x, float y, float z) {
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.POSITION,
-                                        PGL.FLOAT, 3);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.POSITION, PGL.FLOAT, 3);
     if (attrib != null) attrib.set(x, y, z);
   }
 
 
   @Override
   public void attribNormal(String name, float nx, float ny, float nz) {
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.NORMAL,
-                                        PGL.FLOAT, 3);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.NORMAL, PGL.FLOAT, 3);
     if (attrib != null) attrib.set(nx, ny, nz);
   }
 
@@ -1136,24 +1134,21 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public void attrib(String name, float... values) {
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.FLOAT,
-                                        values.length);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.FLOAT, values.length);
     if (attrib != null) attrib.set(values);
   }
 
 
   @Override
   public void attrib(String name, int... values) {
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.INT,
-                                        values.length);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.INT, values.length);
     if (attrib != null) attrib.set(values);
   }
 
 
   @Override
   public void attrib(String name, boolean... values) {
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.BOOL,
-                                        values.length);
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.BOOL, values.length);
     if (attrib != null) attrib.set(values);
   }
 
@@ -1629,9 +1624,7 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public PVector getVertex(int index, PVector vec) {
-    if (vec == null) {
-      vec = new PVector();
-    }
+    if (vec == null) vec = new PVector();
     if (root.tessUpdate) {
       int tessIdx = firstPolyVertex + index;
       if (root.tessKind == TRIANGLES) {
@@ -1693,8 +1686,13 @@ public class PShapeOpenGL extends PShape {
   @Override
   public float getVertexZ(int index) {
     if (root.tessUpdate) {
+      int tessIdx = firstPolyVertex + index;
       if (root.tessKind == TRIANGLES) {
-        return tessGeo.polyVertices[4 * (firstPolyVertex + index) + 2];
+        return tessGeo.polyVertices[4 * tessIdx + 2];
+      } else if (root.tessKind == LINES) {
+        return tessGeo.lineVertices[4 * tessIdx + 2];
+      } else if (root.tessKind == POINTS) {
+        return tessGeo.pointVertices[4 * tessIdx + 2];
       } else {
         return 0;
       }
@@ -1771,10 +1769,12 @@ public class PShapeOpenGL extends PShape {
       } else if (root.tessKind == LINES) {
         tessGeo.lineVertices[4 * tessIdx + 0] = vec.x;
         tessGeo.lineVertices[4 * tessIdx + 1] = vec.y;
+        tessGeo.lineVertices[4 * tessIdx + 2] = vec.z;
         root.setModifiedLineVertices(tessIdx, tessIdx);
       } else if (root.tessKind == POINTS) {
         tessGeo.pointVertices[4 * tessIdx + 0] = vec.x;
         tessGeo.pointVertices[4 * tessIdx + 1] = vec.y;
+        tessGeo.pointVertices[4 * tessIdx + 2] = vec.z;
         root.setModifiedPointVertices(tessIdx, tessIdx);
       }
     } else {
@@ -1801,9 +1801,7 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public PVector getNormal(int index, PVector vec) {
-    if (vec == null) {
-      vec = new PVector();
-    }
+    if (vec == null) vec = new PVector();
     if (root.tessUpdate) {
       int tessIdx = firstPolyVertex + index;
       vec.x = tessGeo.polyNormals[3 * tessIdx + 0];
@@ -1868,6 +1866,115 @@ public class PShapeOpenGL extends PShape {
 
 
   @Override
+  public PVector getAttribPosition(String name, int index, PVector vec) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    if (vec == null) vec = new PVector();
+    vec.x = array[3 * index + 0];
+    vec.y = array[3 * index + 1];
+    vec.z = array[3 * index + 2];
+
+    return vec;
+  }
+
+
+  @Override
+  public float getAttribPositionX(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    return array[3 * index + 0];
+  }
+
+
+  @Override
+  public float getAttribPositionY(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    return array[3 * index + 1];
+  }
+
+
+  @Override
+  public float getAttribPositionZ(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    return array[3 * index + 2];
+  }
+
+
+  @Override
+  public PVector getAttribNormal(String name, int index, PVector vec) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    if (vec == null) vec = new PVector();
+    vec.x = array[3 * index + 0];
+    vec.y = array[3 * index + 1];
+    vec.z = array[3 * index + 2];
+
+    return vec;
+  }
+
+
+  @Override
+  public float getAttribNormalX(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    return array[3 * index + 0];
+  }
+
+
+  @Override
+  public float getAttribNormalY(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    return array[3 * index + 1];
+  }
+
+
+  @Override
+  public float getAttribNormalZ(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    float[] array = inGeo.fattribs.get(name);
+    return array[3 * index + 2];
+  }
+
+
+  @Override
+  public int getAttribColor(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to retrieve values of non existing attribute");
+
+    int[] array = inGeo.iattribs.get(name);
+    return PGL.nativeToJavaARGB(array[index]);
+  }
+
+
+  @Override
   public float[] getAttrib(String name, int index, float[] values) {
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null)
@@ -1902,6 +2009,58 @@ public class PShapeOpenGL extends PShape {
       values[i] = (array[attrib.size * index + i]!=0);
     }
     return values;
+  }
+
+
+  @Override
+  public void setAttribPosition(String name, int index, float x, float y, float z) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribPosition()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.POSITION, PGL.FLOAT, 3);
+    if (attrib != null) {
+      float[] array = inGeo.fattribs.get(name);
+      array[3 * index + 0] = x;
+      array[3 * index + 1] = y;
+      array[3 * index + 2] = z;
+      markForTessellation();
+    }
+  }
+
+
+  @Override
+  public void setAttribNormal(String name, int index, float nx, float ny, float nz) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribNormal()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.NORMAL, PGL.FLOAT, 3);
+    if (attrib != null) {
+      float[] array = inGeo.fattribs.get(name);
+      array[3 * index + 0] = nx;
+      array[3 * index + 1] = ny;
+      array[3 * index + 2] = nz;
+      markForTessellation();
+    }
+  }
+
+
+  @Override
+  public void setAttribColor(String name, int index, int color) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribColor()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.COLOR, PGL.INT, 1);
+    if (attrib != null) {
+      float[] array = inGeo.fattribs.get(name);
+      array[index] = PGL.javaToNativeARGB(color);
+      markForTessellation();
+    }
   }
 
 
