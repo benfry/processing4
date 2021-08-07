@@ -1342,43 +1342,39 @@ public class Base {
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
       EventQueue.invokeLater(() -> {
-        Frame frame = getActiveEditor();
-        if (frame == null) {
-          frame = new Frame(); // just use a dummy
-        }
-        File contribFile = new File(path);
-        String baseName = contribFile.getName();
-        baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
-        int result =
-          Messages.showYesNoQuestion(frame, "How to Handle " + CONTRIB_BUNDLE_EXT,
-            "Install " + baseName + "?",
-            "Libraries, Modes, and Tools should<br>" +
-              "only be installed from trusted sources.");
-        if (result == JOptionPane.YES_OPTION) {
-          try {
-            JOptionPane pane = new JOptionPane();
-            pane.setMessage("Installing " + baseName + "...");
-            JProgressBar progress = new JProgressBar();
-            progress.setIndeterminate(true);
-            pane.add(progress, 1);
-            JDialog dialog = pane.createDialog(frame, "One Moment Please");
-            dialog.setModal(false);
-            dialog.setVisible(true);
+        Editor editor = getActiveEditor();
+        if (editor == null) {
+          // Shouldn't really happen, but if it's still null, it's a no-go
+          Messages.showWarning("Failure is the only option",
+                      "Please open an Editor window before installing an extension.");
+        } else {
+          File contribFile = new File(path);
+          String baseName = contribFile.getName();
+          baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
+          int result =
+            Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
+              "Install " + baseName + "?",
+              "Libraries, Modes, and Tools should<br>" +
+                "only be installed from trusted sources.");
 
-            // do the work of the actual install
-            LocalContribution contrib =
-              AvailableContribution.install(this, new File(path));
+          if (result == JOptionPane.YES_OPTION) {
+            try {
+              editor.statusNotice("Installing " + baseName + "...");
+              editor.startIndeterminate();
 
-              //ProgressMonitor pm = new ProgressMonitor(frame, "Installing " + baseName + "...", null, 0, 100)
-            // close the progress monitor
-            dialog.dispose();
-            //pm.close();
+              // do the work of the actual install
+              LocalContribution contrib =
+                AvailableContribution.install(this, new File(path));
 
-            if (contrib == null) {
-              Messages.showWarning("Error During Installation", "Could not install contrib from " + path);
+              editor.stopIndeterminate();
+              editor.statusEmpty();
+
+              if (contrib == null) {
+                Messages.showWarning("Error During Installation", "Could not install contrib from " + path);
+              }
+            } catch (IOException e) {
+              Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e);
             }
-          } catch (IOException e) {
-            Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e);
           }
         }
       });
