@@ -1231,7 +1231,7 @@ public class PGraphicsOpenGL extends PGraphics {
     int sizei = size * PGL.SIZEOF_INT;
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
-//    tessGeo.copyPolyVertices();
+//    tessGeo.copyPolyVertices(); <--- todo
     tessGeo.updatePolyVerticesBuffer();
     pgl.bufferData(PGL.ARRAY_BUFFER, 4 * sizef,
                    tessGeo.polyVerticesBuffer, PGL.STATIC_DRAW);
@@ -9562,6 +9562,10 @@ public class PGraphicsOpenGL extends PGraphics {
       polyShininessBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
     }
 
+    protected void mapPolyAttribBuffer(VertexAttribute attrib) {
+      polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer());
+    }
+
     protected void mapLineVerticesBuffer() {
       lineVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
     }
@@ -9611,6 +9615,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void copyPolyVertices() {
+      // todo ...
       PGL pgl = pg.pgl;
       if (bufferStream) {
 
@@ -9619,6 +9624,7 @@ public class PGraphicsOpenGL extends PGraphics {
         updatePolyVerticesBuffer();
         pgl.bufferData(PGL.ARRAY_BUFFER, 4 * polyVertexCount * PGL.SIZEOF_FLOAT, polyVerticesBuffer, PGL.STATIC_DRAW);
       }
+      // todo ...
     }
 
     protected void copyPolyVertices(int offset, int size) {
@@ -9898,6 +9904,45 @@ public class PGraphicsOpenGL extends PGraphics {
         polyShininessBuffer.position(offset);
         pgl.bufferSubData(PGL.ARRAY_BUFFER, offset * PGL.SIZEOF_FLOAT, size * PGL.SIZEOF_FLOAT, polyShininessBuffer);
         polyShininessBuffer.rewind();
+      }
+    }
+
+    protected void initPolyAttribsBuffer(VertexAttribute attrib, int usage, boolean onlymap, boolean unmap) {
+      PGL pgl = pg.pgl;
+      int size = attrib.sizeInBytes(polyVertexCount);
+      if (bufferStream) {
+        if (onlymap) {
+          mapPolyAttribBuffer(attrib);
+        } else {
+          pgl.bufferData(PGL.ARRAY_BUFFER, size, null, usage);
+          mapPolyAttribBuffer(attrib);
+          updateAttribBuffer(attrib.name);
+        }
+        if (unmap) {
+          pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+        }
+      } else {
+        pgl.bufferData(PGL.ARRAY_BUFFER, size, polyAttribBuffers.get(attrib.name), usage);
+      }
+    }
+
+    protected void finalPolyAttribsBuffer(VertexAttribute attrib, int first, int last) {
+      if (0 <= first && first <= last) updateAttribBuffer(attrib.name, first, last - first + 1);
+      pg.pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+    }
+
+    protected void copyPolyAttribs(VertexAttribute attrib, int offset, int size) {
+      PGL pgl = pg.pgl;
+      if (bufferStream) {
+        mapPolyAttribBuffer(attrib);
+        updateAttribBuffer(attrib.name, offset, size);
+        pgl.unmapBuffer(PGL.ARRAY_BUFFER);
+      } else {
+        updateAttribBuffer(attrib.name, offset, size);
+        Buffer buf = polyAttribBuffers.get(attrib.name);
+        buf.position(attrib.size * offset);
+        pgl.bufferSubData(PGL.ARRAY_BUFFER, attrib.sizeInBytes(offset), attrib.sizeInBytes(size), buf);
+        buf.rewind();
       }
     }
 

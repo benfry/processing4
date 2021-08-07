@@ -3113,7 +3113,13 @@ public class PShapeOpenGL extends PShape {
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
         tessGeo.initPolyShininessBuffer(glUsage, !createBuffer, false);
 
-        // Add generic attribs
+        for (String name: polyAttribs.keySet()) {
+          VertexAttribute attrib = polyAttribs.get(name);
+          createBuffer = !attrib.bufferCreated();
+          if (createBuffer) attrib.createBuffer(pgl);
+          pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
+          tessGeo.initPolyAttribsBuffer(attrib, glUsage, !createBuffer, false);
+        }
       } else if (kind == LINES) {
         createBuffer = bufLineVertex == null;
         if (createBuffer) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
@@ -3178,7 +3184,11 @@ public class PShapeOpenGL extends PShape {
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
         tessGeo.finalPolyShininessBuffer(firstModifiedPolyShininess, lastModifiedPolyShininess);
 
-        // Add generic attribs
+        for (String name: polyAttribs.keySet()) {
+          VertexAttribute attrib = polyAttribs.get(name);
+          pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
+          tessGeo.finalPolyAttribsBuffer(attrib, attrib.firstModified, attrib.lastModified);
+        }
       } else if (kind == LINES) {
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
         tessGeo.finalLineVerticesBuffer(firstModifiedLineVertex, lastModifiedLineVertex);
@@ -4434,12 +4444,9 @@ public class PShapeOpenGL extends PShape {
 
     for (String name: polyAttribs.keySet()) {
       VertexAttribute attrib = polyAttribs.get(name);
-      tessGeo.updateAttribBuffer(attrib.name);
       if (!attrib.bufferCreated()) attrib.createBuffer(pgl);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
-      pgl.bufferData(PGL.ARRAY_BUFFER,
-                     attrib.sizeInBytes(tessGeo.polyVertexCount),
-                     tessGeo.polyAttribBuffers.get(name), glUsage);
+      tessGeo.initPolyAttribsBuffer(attrib, glUsage, false, true);
     }
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
@@ -4742,13 +4749,8 @@ public class PShapeOpenGL extends PShape {
 
 
   protected void copyPolyAttrib(VertexAttribute attrib, int offset, int size) {
-    tessGeo.updateAttribBuffer(attrib.name, offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
-    Buffer buf = tessGeo.polyAttribBuffers.get(attrib.name);
-    buf.position(attrib.size * offset);
-    pgl.bufferSubData(PGL.ARRAY_BUFFER, attrib.sizeInBytes(offset),
-                      attrib.sizeInBytes(size), buf);
-    buf.rewind();
+    tessGeo.copyPolyAttribs(attrib, offset, size);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
   }
 
