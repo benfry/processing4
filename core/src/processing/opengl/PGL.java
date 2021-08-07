@@ -2365,7 +2365,7 @@ public abstract class PGL {
 
   protected static ByteBuffer updateByteBuffer(ByteBuffer buf, byte[] arr,
                                                boolean wrap) {
-    if (buf.isDirect()) {
+    if (USE_DIRECT_BUFFERS || (buf != null && buf.isDirect())) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectByteBuffer(arr.length);
       }
@@ -2457,7 +2457,7 @@ public abstract class PGL {
 
   protected static ShortBuffer updateShortBuffer(ShortBuffer buf, short[] arr,
                                                  boolean wrap) {
-    if (buf.isDirect()) {
+    if (USE_DIRECT_BUFFERS || (buf != null && buf.isDirect())) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectShortBuffer(arr.length);
       }
@@ -2549,7 +2549,7 @@ public abstract class PGL {
 
   protected static IntBuffer updateIntBuffer(IntBuffer buf, int[] arr,
                                              boolean wrap) {
-    if (buf.isDirect()) {
+    if (USE_DIRECT_BUFFERS || (buf != null && buf.isDirect())) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectIntBuffer(arr.length);
       }
@@ -2640,7 +2640,7 @@ public abstract class PGL {
 
   protected static FloatBuffer updateFloatBuffer(FloatBuffer buf, float[] arr,
                                                  boolean wrap) {
-    if (buf.isDirect()) {
+    if (USE_DIRECT_BUFFERS || (buf != null && buf.isDirect())) {
       if (buf == null || buf.capacity() < arr.length) {
         buf = allocateDirectFloatBuffer(arr.length);
       }

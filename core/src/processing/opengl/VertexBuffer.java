@@ -41,11 +41,11 @@ public class VertexBuffer {
   protected int context;            // The context that created this resource.
   private GLResourceVertexBuffer glres;
 
-  VertexBuffer(PGraphicsOpenGL pg, int target, int ncoords, int esize) {
-    this(pg, target, ncoords, esize, false);
+  VertexBuffer(PGraphicsOpenGL pg, int target, int ncoords, int esize, int usage) {
+    this(pg, target, ncoords, esize, usage, false);
   }
 
-  VertexBuffer(PGraphicsOpenGL pg, int target, int ncoords, int esize, boolean index) {
+  VertexBuffer(PGraphicsOpenGL pg, int target, int ncoords, int esize, int usage, boolean index) {
     pgl = pg.pgl;
     context = pgl.createEmptyContext();
 
@@ -54,7 +54,7 @@ public class VertexBuffer {
     this.elementSize = esize;
     this.index = index;
     create();
-    init();
+    init(usage);
   }
 
   protected void create() {
@@ -62,11 +62,11 @@ public class VertexBuffer {
     glres = new GLResourceVertexBuffer(this);
   }
 
-  protected void init() {
+  protected void init(int usage) {
     int size = index ? ncoords * INIT_INDEX_BUFFER_SIZE * elementSize :
                        ncoords * INIT_VERTEX_BUFFER_SIZE * elementSize;
     pgl.bindBuffer(target, glId);
-    pgl.bufferData(target, size, null, PGL.STATIC_DRAW);
+    pgl.bufferData(target, size, null, usage);
   }
 
   protected void dispose() {

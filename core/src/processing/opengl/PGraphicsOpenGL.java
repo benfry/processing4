@@ -496,11 +496,6 @@ public class PGraphicsOpenGL extends PGraphics {
   static protected IntBuffer intBuffer;
   static protected FloatBuffer floatBuffer;
 
-  /** Specifies the expected usage pattern of the gl buffer data store:
-   * https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-   */
-  static protected int glBufferUsage = PGL.STATIC_DRAW;
-
   // ........................................................
 
   // Error strings:
@@ -1194,20 +1189,20 @@ public class PGraphicsOpenGL extends PGraphics {
   // FRAME RENDERING
 
 
-  protected void createPolyBuffers() {
+  protected void createPolyBuffers(int usage) {
     if (!polyBuffersCreated || polyBuffersContextIsOutdated()) {
       polyBuffersContext = pgl.getCurrentContext();
 
-      bufPolyVertex = new VertexBuffer(this, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
-      bufPolyColor = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
-      bufPolyNormal = new VertexBuffer(this, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT);
-      bufPolyTexcoord = new VertexBuffer(this, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
-      bufPolyAmbient = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
-      bufPolySpecular = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
-      bufPolyEmissive = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
-      bufPolyShininess = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT);
+      bufPolyVertex = new VertexBuffer(this, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, usage);
+      bufPolyColor = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, usage);
+      bufPolyNormal = new VertexBuffer(this, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, usage);
+      bufPolyTexcoord = new VertexBuffer(this, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, usage);
+      bufPolyAmbient = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, usage);
+      bufPolySpecular = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, usage);
+      bufPolyEmissive = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, usage);
+      bufPolyShininess = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT, usage);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-      bufPolyIndex = new VertexBuffer(this, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
+      bufPolyIndex = new VertexBuffer(this, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, usage, true);
       pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
 
       polyBuffersCreated = true;
@@ -1227,7 +1222,9 @@ public class PGraphicsOpenGL extends PGraphics {
 
   protected void updatePolyBuffers(boolean lit, boolean tex,
                                    boolean needNormals, boolean needTexCoords) {
-    createPolyBuffers();
+    int glBufferUsage = PGL.STATIC_DRAW;
+
+    createPolyBuffers(glBufferUsage);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
     tessGeo.copyPolyVertices(glBufferUsage);
@@ -1281,15 +1278,15 @@ public class PGraphicsOpenGL extends PGraphics {
   }
 
 
-  protected void createLineBuffers() {
+  protected void createLineBuffers(int usage) {
     if (!lineBuffersCreated || lineBufferContextIsOutdated()) {
       lineBuffersContext = pgl.getCurrentContext();
 
-      bufLineVertex = new VertexBuffer(this, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT);
-      bufLineColor = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
-      bufLineAttrib = new VertexBuffer(this, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT);
+      bufLineVertex = new VertexBuffer(this, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, usage);
+      bufLineColor = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, usage);
+      bufLineAttrib = new VertexBuffer(this, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, usage);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-      bufLineIndex = new VertexBuffer(this, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
+      bufLineIndex = new VertexBuffer(this, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, usage, true);
       pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
 
       lineBuffersCreated = true;
@@ -1298,7 +1295,9 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
   protected void updateLineBuffers() {
-    createLineBuffers();
+    int glBufferUsage = PGL.STATIC_DRAW;
+
+    createLineBuffers(glBufferUsage);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
     tessGeo.copyLineVertices(glBufferUsage);
@@ -1325,15 +1324,15 @@ public class PGraphicsOpenGL extends PGraphics {
   }
 
 
-  protected void createPointBuffers() {
+  protected void createPointBuffers(int usage) {
     if (!pointBuffersCreated || pointBuffersContextIsOutdated()) {
       pointBuffersContext = pgl.getCurrentContext();
 
-      bufPointVertex = new VertexBuffer(this, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT);
-      bufPointColor = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT);
-      bufPointAttrib = new VertexBuffer(this, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT);
+      bufPointVertex = new VertexBuffer(this, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, usage);
+      bufPointColor = new VertexBuffer(this, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, usage);
+      bufPointAttrib = new VertexBuffer(this, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, usage);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
-      bufPointIndex = new VertexBuffer(this, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, true);
+      bufPointIndex = new VertexBuffer(this, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, usage, true);
       pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
 
       pointBuffersCreated = true;
@@ -1342,7 +1341,9 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
   protected void updatePointBuffers() {
-    createPointBuffers();
+    int glBufferUsage = PGL.STATIC_DRAW;
+
+    createPointBuffers(glBufferUsage);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
     tessGeo.copyPointVertices(glBufferUsage);
@@ -2062,7 +2063,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null) {
-      attrib = new VertexAttribute(this, name, kind, type, size);
+      attrib = new VertexAttribute(this, name, kind, type, size, PGL.STATIC_DRAW);
       polyAttribs.put(name, attrib);
       inGeo.initAttrib(attrib);
       tessGeo.initAttrib(attrib);
@@ -7166,6 +7167,7 @@ public class PGraphicsOpenGL extends PGraphics {
     int elementSize;
     VertexBuffer buf;
     int glLoc;
+    int glUsage;
 
     float[] fvalues;
     int[] ivalues;
@@ -7177,7 +7179,7 @@ public class PGraphicsOpenGL extends PGraphics {
     int lastModified;
     boolean active;
 
-    VertexAttribute(PGraphicsOpenGL pg, String name, int kind, int type, int size) {
+    VertexAttribute(PGraphicsOpenGL pg, String name, int kind, int type, int size, int usage) {
       this.pg = pg;
       this.name = name;
       this.kind = kind;
@@ -7203,6 +7205,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
       buf = null;
       glLoc = -1;
+      glUsage = usage;
 
       modified = false;
       firstModified = PConstants.MAX_INT;
@@ -7253,7 +7256,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     void createBuffer(PGL pgl) {
-      buf = new VertexBuffer(pg, PGL.ARRAY_BUFFER, size, elementSize, false);
+      buf = new VertexBuffer(pg, PGL.ARRAY_BUFFER, size, elementSize, glUsage, false);
     }
 
     void deleteBuffer(PGL pgl) {
