@@ -24,13 +24,17 @@ X implement cmd/ctrl-up and cmd/ctrl-down (shift version was there already, weir
 X   standard key shortcuts on macOS https://support.apple.com/en-us/HT201236
 X update to JDK 11.0.12+7
 X rewrite download handler to just use a simple <get>
-_   remove the rest of the jre downloader code
-X initial code to install a contrib from a pdex file
-X   test to make sure it's behaving properly
-X   finish getting pdex files to install, now with actual feedback
+X   remove the rest of the jre downloader code
 o handleNew() returns an Editor object
 o   unlikely to break anything, but it is a signature change
 X   nope, nevermind, not gonna do it
+
+install from pdex files
+X initial code to install a contrib from a pdex file
+X   test to make sure it's behaving properly
+X finish getting pdex files to install, now with actual feedback
+X prompt before installing extensions to pde?
+X show progress dialog while installing extensions
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
@@ -45,55 +49,77 @@ o   and have a .log extension so it can be browsed properly
 o   need to make sure that it's ok to write to logs dir..
 o     probably being removed from future OS X versions
 
+
 before alpha 7/beta 1
 _ update the README for alpha 6 (and this release too, when ready)
 
-_ prompt before installing extensions to pde?
-_ show progress dialog while installing extensions
-
 _ need icons for .pde, .pdex, .pdez
-
-_ add issue for implementing the Linux file associations in install.sh
 
 _ don't allow "Show Sketch Folder" for untitled sketches
 
 sketch/launching
-_ should it be pskz, pcbz? psk for the sketch file to double-click?
-_   pdez as a sketch bundle?
-_ launch/psk files/import from web editor (more details below)
-_ cleaning up the temp file handling
-_   'show sketch folder' weird when in temp folder
-_     ask to save first (sketch has not been saved yet)
-_     or make the temp folder part of the sketchbook
-_   same with adding files to an unsaved sketch, do we block that?
-_ what to double-click when opening p5 projects
+X should it be pskz, pcbz? psk for the sketch file to double-click?
+X   pdez as a sketch bundle?
+X launch/psk files/import from web editor (more details below)
+X cleaning up the temp file handling
+X   'show sketch folder' weird when in temp folder
+X     ask to save first (sketch has not been saved yet)
+o     or make the temp folder part of the sketchbook
+X   same with adding files to an unsaved sketch, do we block that?
+X some type of sketch archive format for posting examples (.psk?)
+X   would be nice to open a sketch directly from a zip file
+X   https://github.com/processing/processing/issues/73
+o   maybe just open from a zip file, since psk doesn't help anything
+X don't let people into the /tmp folder for sketches
+o   don't use tmp folder for sketches?
+X   restrict more things like "show sketch folder"
+X   don't allow adding files w/o saving
+o   others?
+o also have a means of importing sketches
+o   https://github.com/processing/processing/issues/3987
+o   add means to import .zip files from file/url into sketchbook, library, etc.
+o   super easy given current code implementation, might help usability
+X how are file associations handled in Linux? (for .pde, .psk)
+_   add issue for implementing the Linux file associations in install.sh
+_ what to double-click when opening p5 projects (.pdp?)
 _   lack of a project file makes this a little bit of a headache
 _   dropping a sketch folder onto the PDE should also be implemented
-_ some type of sketch archive format for posting examples (.psk?)
-_   would be nice to open a sketch directly from a zip file
-_   https://github.com/processing/processing/issues/73
-_   maybe just open from a zip file, since psk doesn't help anything
-_   also have a means of importing sketches
-_     https://github.com/processing/processing/issues/3987
-_   also see several notes below re: examples
-_ add means to import .zip files from file/url into sketchbook, library, etc.
-_   super easy given current code implementation, might help usability
-_ put the reference (and examples?) into .zip files
-_   unzipping the app takes forever
-_   see the 'examples' section below
-_ how are file associations handled in Linux? (for .pde, .psk)
-_ when adding a new library, its examples aren't added to the list until restart
 _ refresh option for sketchbook (bottom of window)
 _ import option for sketchbook (button to select files/folders/etc)
 
+examples
+o keep examples.zip in a zip file? (5000 files @ 30 MB instead of 15 MB zip)
+o   mark examples as untitled (rather than read-only)
+o   maybe even pull these directly from the zip file?
+X disallow add file to sketch, export, export application
+X   pretty much anything inside the sketch?
+o   but don't do this with untitled, cuz it kinda stinks
+o   this is too weird--just put examples into individual zip files
+o   mark example files as untitled
+o   though will that require the sketch to be saved before export?
+X   https://github.com/processing/processing/issues/2459
+_ put the reference (and examples?) into .zip files
+_   unzipping the app takes forever
+_   see the 'examples' section below
+_   also see several notes below re: examples
+_ psk files, doing that for examples
+_   250 example (folders), would cut ~8-900 files to just those 250
+_ load examples from zip files
+_   https://github.com/processing/processing/issues/182
+_ don't make examples read-only
+_   just do them from psk filess
+_ examples window sketches should load in proper environment
+_ write build.xml file to automatically update the examples
+_ see how library installation goes, then possibly do same w/ examples
+_ when adding a new library, its examples aren't added to the list until restart
+
 
 _ key shortcuts broken on Katherine's laptop
-
+_   try with a clean user account
+X   double-check on other Big Sur machines (tried on VMware, was fine)
 
 _ dealing with reference.zip and web server
 _   web server confirmed to be working, but should check w/ new docs
-_ psk files, doing that for examples
-_   250 example (folders), would cut ~8-900 files to just those 250
 
 
 _ auto-complete not triggering, workaround as pref?
@@ -308,11 +334,6 @@ _   move away from using a temp dir at all for sketches
 _   -Djava.io.tmpdir=Z:\temp
 _ clean up /tmp folders used during build
 _   https://github.com/processing/processing/issues/1896
-_ don't let people into the /tmp folder for sketches
-o   don't use tmp folder for sketches?
-_   restrict more things like "show sketch folder"
-_   don't allow adding files w/o saving
-_   others?
 _ clean Windows temp folders
 _   https://github.com/processing/processing/issues/1896
 _ could not write to temporary directory (virus checker problems)
@@ -803,28 +824,6 @@ _ show error when no main() is included but class extends PApplet
 _   error can happen or be checked
 _ exporting application copies .java files
 _   .java files are copied to the root folder as well as the source folder
-
-
-PDE / Examples
-
-o keep examples.zip in a zip file? (5000 files @ 30 MB instead of 15 MB zip)
-o   mark examples as untitled (rather than read-only)
-o   maybe even pull these directly from the zip file?
-_ load examples from zip files
-_   https://github.com/processing/processing/issues/182
-_ don't make examples read-only
-_   just do them from psk filess
-_ disallow add file to sketch, export, export application
-_   pretty much anything inside the sketch?
-_   but don't do this with untitled, cuz it kinda stinks
-_   this is too weird--just put examples into individual zip files
-_   mark example files as untitled
-_   though will that require the sketch to be saved before export?
-_   https://github.com/processing/processing/issues/2459
-_ examples window sketches should load in proper environment
-_ write build.xml file to automatically update the examples
-_ see how library installation goes, then possibly do same w/ examples
-
 
 
 PDE / Libraries
