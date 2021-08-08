@@ -3,6 +3,7 @@ package processing.app;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.zip.*;
 
 
@@ -14,86 +15,16 @@ import java.util.zip.*;
  * This is a very simple, multi-threaded HTTP server, originally based on
  * <a href="http://j.mp/6BQwpI">this</a> article on java.sun.com.
  */
-public class WebServer implements HttpConstants {
+public class WebServer {
 
-  /* Where worker threads stand idle */
+  /** where worker threads stand idle */
   static final Vector<WebServerWorker> threads = new Vector<>();
 
-  /* the web server's virtual root */
-  //static File root;
+  /** max # worker threads */
+  static final int WORKERS = 5;
 
-  /* timeout on client connections */
-  static int timeout = 10000;
-
-  /* max # worker threads */
-  static int workers = 5;
-
-//    static PrintStream log = System.out;
-
-
-    /*
-    static void loadProps() throws IOException {
-        File f = new File
-                (System.getProperty("java.home")+File.separator+
-                    "lib"+File.separator+"www-server.properties");
-        if (f.exists()) {
-            InputStream is =new BufferedInputStream(new
-                           FileInputStream(f));
-            props.load(is);
-            is.close();
-            String r = props.getProperty("root");
-            if (r != null) {
-                root = new File(r);
-                if (!root.exists()) {
-                    throw new Error(root + " doesn't exist as server root");
-                }
-            }
-            r = props.getProperty("timeout");
-            if (r != null) {
-                timeout = Integer.parseInt(r);
-            }
-            r = props.getProperty("workers");
-            if (r != null) {
-                workers = Integer.parseInt(r);
-            }
-            r = props.getProperty("log");
-            if (r != null) {
-                p("opening log file: " + r);
-                log = new PrintStream(new BufferedOutputStream(
-                                      new FileOutputStream(r)));
-            }
-        }
-
-        // if no properties were specified, choose defaults
-        if (root == null) {
-            root = new File(System.getProperty("user.dir"));
-        }
-        if (timeout <= 1000) {
-            timeout = 5000;
-        }
-        if (workers < 25) {
-            workers = 5;
-        }
-        if (log == null) {
-            p("logging to stdout");
-            log = System.out;
-        }
-    }
-
-    static void printProps() {
-        p("root="+root);
-        p("timeout="+timeout);
-        p("workers="+workers);
-    }
-    */
-
-
-  /* print to the log file */
-  protected static void log(String s) {
-    if (Base.DEBUG) {
-      System.out.println(s);
-    }
-  }
+  /** port to use, if there are complaints, move to preferences.txt */
+  static final int PORT = 8053;
 
 
   static public int launch(String zipPath) throws IOException {
@@ -106,18 +37,16 @@ public class WebServer implements HttpConstants {
     }
 
     // start worker threads
-    for (int i = 0; i < workers; ++i) {
+    for (int i = 0; i < WORKERS; ++i) {
       WebServerWorker w = new WebServerWorker(zip, entries);
       Thread t = new Thread(w, "Web Server Worker #" + i);
       t.start();
       threads.addElement(w);
     }
 
-    final int port = 8080;
-
-    Runnable r = () -> {
+    new Thread(() -> {
       try {
-        ServerSocket ss = new ServerSocket(port);
+        ServerSocket ss = new ServerSocket(PORT);
         while (true) {
           Socket s = ss.accept();
           synchronized (threads) {
@@ -135,12 +64,12 @@ public class WebServer implements HttpConstants {
       } catch (IOException e) {
         e.printStackTrace();
       }
-    };
-    new Thread(r).start();
-    return port;
+    }).start();
+    return PORT;
   }
 
 
+  // main method for testing
   static public void main(String[] args) {
     try {
       launch(args[0]);
@@ -151,413 +80,253 @@ public class WebServer implements HttpConstants {
 }
 
 
-class WebServerWorker /*extends WebServer*/ implements HttpConstants, Runnable {
-    private final ZipFile zip;
-    private final Map<String, ZipEntry> entries;
+class WebServerWorker implements Runnable {
+  static final int HTTP_OK = 200;
+  static final int HTTP_NOT_FOUND = 404;
+  static final int HTTP_BAD_METHOD = 405;
 
-    final static int BUF_SIZE = 2048;
+  private final ZipFile zip;
+  private final Map<String, ZipEntry> entries;
 
-    static final byte[] EOL = { (byte)'\r', (byte)'\n' };
+  final static int BUF_SIZE = 2048;
 
-    /* buffer to use for requests */
-    byte[] buf;
-    /* Socket to client we're handling */
-    private Socket s;
+  static final byte[] EOL = { (byte)'\r', (byte)'\n' };
 
-    WebServerWorker(ZipFile zip, Map<String, ZipEntry> entries) {
-      this.entries = entries;
-      this.zip = zip;
+  /* buffer to use for requests */
+  byte[] buf;
+  private Socket s;
 
-      buf = new byte[BUF_SIZE];
-      s = null;
+  WebServerWorker(ZipFile zip, Map<String, ZipEntry> entries) {
+    this.entries = entries;
+    this.zip = zip;
+
+    buf = new byte[BUF_SIZE];
+    s = null;
   }
 
-//    Worker() {
-//        buf = new byte[BUF_SIZE];
-//        s = null;
-//    }
-//
-    synchronized void setSocket(Socket s) {
-        this.s = s;
-        notify();
-    }
+  synchronized void setSocket(Socket s) {
+    this.s = s;
+    notify();
+  }
 
-    public synchronized void run() {
-        while(true) {
-            if (s == null) {
-                /* nothing to do */
-                try {
-                    wait();
-                } catch (InterruptedException e) {
-                    /* should not happen */
-                    continue;
-                }
-            }
-            try {
-                handleClient();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            /* go back in wait queue if there's fewer
-             * than numHandler connections.
-             */
-            s = null;
-            synchronized (WebServer.threads) {
-                if (WebServer.threads.size() >= WebServer.workers) {
-                    /* too many threads, exit this one */
-                    return;
-                } else {
-                  WebServer.threads.addElement(this);
-                }
-            }
-        }
-    }
-
-
-    void handleClient() throws IOException {
-        InputStream is = new BufferedInputStream(s.getInputStream());
-        PrintStream ps = new PrintStream(s.getOutputStream());
-        // we will only block in read for this many milliseconds
-        // before we fail with java.io.InterruptedIOException,
-        // at which point we will abandon the connection.
-        s.setSoTimeout(WebServer.timeout);
-        s.setTcpNoDelay(true);
-        // zero out the buffer from last time
-        for (int i = 0; i < BUF_SIZE; i++) {
-            buf[i] = 0;
-        }
+  public synchronized void run() {
+    while (true) {
+      if (s == null) {
         try {
-          // We only support HTTP GET/HEAD, and don't support any fancy HTTP
-          // options, so we're only interested really in the first line.
-            int nread = 0, r;
-
-outerloop:
-            while (nread < BUF_SIZE) {
-                r = is.read(buf, nread, BUF_SIZE - nread);
-                if (r == -1) {
-                    return;  // EOF
-                }
-                int i = nread;
-                nread += r;
-                for (; i < nread; i++) {
-                    if (buf[i] == (byte)'\n' || buf[i] == (byte)'\r') {
-                        break outerloop;  // read one line
-                    }
-                }
-            }
-
-            /* are we doing a GET or just a HEAD */
-            boolean doingGet;
-            /* beginning of file name */
-            int index;
-            if (buf[0] == (byte)'G' &&
-                buf[1] == (byte)'E' &&
-                buf[2] == (byte)'T' &&
-                buf[3] == (byte)' ') {
-                doingGet = true;
-                index = 4;
-            } else if (buf[0] == (byte)'H' &&
-                       buf[1] == (byte)'E' &&
-                       buf[2] == (byte)'A' &&
-                       buf[3] == (byte)'D' &&
-                       buf[4] == (byte)' ') {
-                doingGet = false;
-                index = 5;
-            } else {
-                /* we don't support this method */
-                ps.print("HTTP/1.0 " + HTTP_BAD_METHOD +
-                           " unsupported method type: ");
-                ps.write(buf, 0, 5);
-                ps.write(EOL);
-                ps.flush();
-                s.close();
-                return;
-            }
-
-            int i;
-            /* find the file name, from:
-             * GET /foo/bar.html HTTP/1.0
-             * extract "/foo/bar.html"
-             */
-            for (i = index; i < nread; i++) {
-                if (buf[i] == (byte)' ') {
-                    break;
-                }
-            }
-
-            String fname = new String(buf, index, i-index);
-            // get the zip entry, remove the front slash
-            ZipEntry entry = entries.get(fname.substring(1));
-            //System.out.println(fname + " " + entry);
-            boolean ok = printHeaders(entry, ps);
-            if (entry != null) {
-              InputStream stream = zip.getInputStream(entry);
-              if (doingGet && ok) {
-                sendFile(stream, ps);
-              }
-            } else {
-              send404(ps);
-            }
-            /*
-            String fname =
-              (new String(buf, 0, index, i-index)).replace('/', File.separatorChar);
-            if (fname.startsWith(File.separator)) {
-                fname = fname.substring(1);
-            }
-            File targ = new File(WebServer.root, fname);
-            if (targ.isDirectory()) {
-                File ind = new File(targ, "index.html");
-                if (ind.exists()) {
-                    targ = ind;
-                }
-            }
-            boolean OK = printHeaders(targ, ps);
-            if (doingGet) {
-                if (OK) {
-                    sendFile(targ, ps);
-                } else {
-                    send404(targ, ps);
-                }
-            }
-            */
-        } finally {
-            s.close();
+          wait();
+        } catch (InterruptedException e) {
+          continue;
         }
+      }
+      try {
+        handleClient();
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
+      // go back in wait queue if there's fewer
+      // than numHandler connections.
+      s = null;
+      synchronized (WebServer.threads) {
+        if (WebServer.threads.size() >= WebServer.WORKERS) {
+          // too many threads, exit this one
+          return;
+        } else {
+          WebServer.threads.addElement(this);
+        }
+      }
     }
-
-
-    boolean printHeaders(ZipEntry targ, PrintStream ps) throws IOException {
-      boolean ret;
-      int rCode;
-      if (targ == null) {
-          rCode = HTTP_NOT_FOUND;
-          ps.print("HTTP/1.0 " + HTTP_NOT_FOUND + " Not Found");
-          ps.write(EOL);
-          ret = false;
-      }  else {
-          rCode = HTTP_OK;
-          ps.print("HTTP/1.0 " + HTTP_OK + " OK");
-          ps.write(EOL);
-          ret = true;
-      }
-      if (targ != null) {
-        WebServer.log("From " +s.getInetAddress().getHostAddress()+": GET " + targ.getName()+" --> "+rCode);
-      }
-      ps.print("Server: Processing Documentation Server");
-      ps.write(EOL);
-      ps.print("Date: " + (new Date()));
-      ps.write(EOL);
-      if (ret) {
-          if (!targ.isDirectory()) {
-              ps.print("Content-length: " + targ.getSize());
-              ps.write(EOL);
-              ps.print("Last Modified: " + new Date(targ.getTime()));
-              ps.write(EOL);
-              String name = targ.getName();
-              int ind = name.lastIndexOf('.');
-              String ct = null;
-              if (ind > 0) {
-                  ct = map.get(name.substring(ind));
-              }
-              if (ct == null) {
-                //System.err.println("unknown content type " + name.substring(ind));
-                  ct = "application/x-unknown-content-type";
-              }
-              ps.print("Content-type: " + ct);
-              ps.write(EOL);
-          } else {
-              ps.print("Content-type: text/html");
-              ps.write(EOL);
-          }
-      }
-      ps.write(EOL);  // adding another newline here [fry]
-      return ret;
   }
 
 
-    /*
-    boolean printHeaders(File targ, PrintStream ps) throws IOException {
-        boolean ret;
-        int rCode;
-        if (!targ.exists()) {
-            rCode = HTTP_NOT_FOUND;
-            ps.print("HTTP/1.0 " + HTTP_NOT_FOUND + " Not Found");
-            ps.write(EOL);
-            ret = false;
-        }  else {
-            rCode = HTTP_OK;
-            ps.print("HTTP/1.0 " + HTTP_OK+" OK");
-            ps.write(EOL);
-            ret = true;
-        }
-        WebServer.log("From " +s.getInetAddress().getHostAddress()+": GET " + targ.getAbsolutePath()+"-->"+rCode);
-        ps.print("Server: Simple java");
-        ps.write(EOL);
-        ps.print("Date: " + (new Date()));
-        ps.write(EOL);
-        if (ret) {
-            if (!targ.isDirectory()) {
-                ps.print("Content-length: " + targ.length());
-                ps.write(EOL);
-                ps.print("Last Modified: " + new Date(targ.lastModified()));
-                ps.write(EOL);
-                String name = targ.getName();
-                int ind = name.lastIndexOf('.');
-                String ct = null;
-                if (ind > 0) {
-                    ct = map.get(name.substring(ind));
-                }
-                if (ct == null) {
-                    ct = "unknown/unknown";
-                }
-                ps.print("Content-type: " + ct);
-                ps.write(EOL);
-            } else {
-                ps.print("Content-type: text/html");
-                ps.write(EOL);
-            }
-        }
-        return ret;
+  void handleClient() throws IOException {
+    InputStream is = new BufferedInputStream(s.getInputStream());
+    PrintStream ps = new PrintStream(s.getOutputStream());
+    // we will only block in read for this many milliseconds
+    // before we fail with java.io.InterruptedIOException,
+    // at which point we will abandon the connection.
+    s.setSoTimeout(10000);
+    s.setTcpNoDelay(true);
+    // zero out the buffer from last time
+    for (int i = 0; i < BUF_SIZE; i++) {
+      buf[i] = 0;
     }
-    */
+    try {
+      // We only support HTTP GET/HEAD, and don't support any fancy HTTP
+      // options, so we're only interested really in the first line.
+      int length = 0;
 
-
-    void send404(PrintStream ps) throws IOException {
-        ps.write(EOL);
-        ps.write(EOL);
-        ps.print("<html><body><h1>404 Not Found</h1>"+
-                   "The requested resource was not found.</body></html>");
-        ps.write(EOL);
-        ps.write(EOL);
-    }
-
-
-    /*
-    void sendFile(File targ, PrintStream ps) throws IOException {
-        InputStream is;
-        ps.write(EOL);
-        if (targ.isDirectory()) {
-            listDirectory(targ, ps);
-            return;
-        } else {
-            is = new FileInputStream(targ.getAbsolutePath());
+      outerLoop:
+      while (length < BUF_SIZE) {
+        int r = is.read(buf, length, BUF_SIZE - length);
+        if (r == -1) {
+          return;  // EOF
         }
-        sendFile(is, ps);
-    }
-    */
-
-
-    void sendFile(InputStream is, PrintStream ps) throws IOException {
-      try (is) {
-        int n;
-        while ((n = is.read(buf)) > 0) {
-          ps.write(buf, 0, n);
+        int i = length;
+        length += r;
+        for (; i < length; i++) {
+          if (buf[i] == (byte) '\n' || buf[i] == (byte) '\r') {
+            break outerLoop;  // read one line
+          }
         }
       }
-    }
 
-    /* mapping of file extensions to content-types */
-    static Map<String, String> map = new HashMap<>();
+      // are we doing a GET or just a HEAD
+      boolean doingGet;
+      // beginning of file name
+      int index;
+      if (buf[0] == (byte) 'G' &&
+        buf[1] == (byte) 'E' &&
+        buf[2] == (byte) 'T' &&
+        buf[3] == (byte) ' ') {
+        doingGet = true;
+        index = 4;
+      } else if (buf[0] == (byte) 'H' &&
+        buf[1] == (byte) 'E' &&
+        buf[2] == (byte) 'A' &&
+        buf[3] == (byte) 'D' &&
+        buf[4] == (byte) ' ') {
+        doingGet = false;
+        index = 5;
+      } else {
+        // we don't support this method
+        ps.print("HTTP/1.0 " + HTTP_BAD_METHOD + " unsupported method type: ");
+        ps.write(buf, 0, 5);
+        ps.write(EOL);
+        ps.flush();
+        s.close();
+        return;
+      }
 
-    static {
-        fillMap();
-    }
-    static void setSuffix(String k, String v) {
-        map.put(k, v);
-    }
-
-    static void fillMap() {
-        setSuffix("", "content/unknown");
-
-        setSuffix(".uu", "application/octet-stream");
-        setSuffix(".exe", "application/octet-stream");
-        setSuffix(".ps", "application/postscript");
-        setSuffix(".zip", "application/zip");
-        setSuffix(".sh", "application/x-shar");
-        setSuffix(".tar", "application/x-tar");
-        setSuffix(".snd", "audio/basic");
-        setSuffix(".au", "audio/basic");
-        setSuffix(".wav", "audio/x-wav");
-
-        setSuffix(".gif", "image/gif");
-        setSuffix(".jpg", "image/jpeg");
-        setSuffix(".jpeg", "image/jpeg");
-
-        setSuffix(".htm", "text/html");
-        setSuffix(".html", "text/html");
-        setSuffix(".css", "text/css");
-        setSuffix(".java", "text/javascript");
-
-        setSuffix(".txt", "text/plain");
-        setSuffix(".java", "text/plain");
-
-        setSuffix(".c", "text/plain");
-        setSuffix(".cc", "text/plain");
-        setSuffix(".c++", "text/plain");
-        setSuffix(".h", "text/plain");
-        setSuffix(".pl", "text/plain");
-    }
-
-    /*
-    void listDirectory(File dir, PrintStream ps) {
-        ps.println("<TITLE>Directory listing</TITLE><P>\n");
-        ps.println("<A HREF=\"..\">Parent Directory</A><BR>\n");
-        String[] list = dir.list();
-        for (int i = 0; list != null && i < list.length; i++) {
-            File f = new File(dir, list[i]);
-            if (f.isDirectory()) {
-                ps.println("<A HREF=\""+list[i]+"/\">"+list[i]+"/</A><BR>");
-            } else {
-                ps.println("<A HREF=\""+list[i]+"\">"+list[i]+"</A><BR");
-            }
+      int i;
+      // find the file name, from:
+      // GET /foo/bar.html HTTP/1.0
+      // extract "/foo/bar.html"
+      for (i = index; i < length; i++) {
+        if (buf[i] == (byte) ' ') {
+          break;
         }
-        ps.println("<P><HR><BR><I>" + (new Date()) + "</I>");
+      }
+
+      String filename = new String(buf, index, i - index);
+      // get the zip entry, remove the front slash
+      ZipEntry entry = entries.get(filename.substring(1));
+      boolean ok = printHeaders(entry, ps);
+      if (entry != null) {
+        InputStream stream = zip.getInputStream(entry);
+        if (doingGet && ok) {
+          sendFile(stream, ps);
+        }
+      } else {
+        send404(ps);
+      }
+    } finally {
+      s.close();
     }
-    */
+  }
+
+
+  boolean printHeaders(ZipEntry entry, PrintStream ps) throws IOException {
+    boolean ret;
+    int rCode;
+    if (entry == null) {
+      rCode = HTTP_NOT_FOUND;
+      ps.print("HTTP/1.0 " + HTTP_NOT_FOUND + " Not Found");
+      ps.write(EOL);
+      ret = false;
+    } else {
+      rCode = HTTP_OK;
+      ps.print("HTTP/1.0 " + HTTP_OK + " OK");
+      ps.write(EOL);
+      ret = true;
+    }
+    if (entry != null) {
+      Messages.log("From " + s.getInetAddress().getHostAddress() + ": GET " + entry.getName() + " --> " + rCode);
+    }
+    ps.print("Server: Processing Documentation Server");
+    ps.write(EOL);
+    ps.print("Date: " + new Date());
+    ps.write(EOL);
+    if (ret) {
+      if (!entry.isDirectory()) {
+        ps.print("Content-length: " + entry.getSize());
+        ps.write(EOL);
+        ps.print("Last Modified: " + new Date(entry.getTime()));
+        ps.write(EOL);
+        String name = entry.getName();
+        int ind = name.lastIndexOf('.');
+        String ct = null;
+        if (ind > 0) {
+          ct = map.get(name.substring(ind));
+        }
+        if (ct == null) {
+          //System.err.println("unknown content type " + name.substring(ind));
+          ct = "application/x-unknown-content-type";
+        }
+        ps.print("Content-type: " + ct);
+      } else {
+        ps.print("Content-type: text/html");
+      }
+      ps.write(EOL);
+    }
+    ps.write(EOL);  // adding another newline here [fry]
+    return ret;
+  }
+
+
+  void send404(PrintStream ps) throws IOException {
+    ps.write(EOL);
+    ps.write(EOL);
+    ps.print("<html><body><h1>404 Not Found</h1>" +
+      "The requested resource was not found.</body></html>");
+    ps.write(EOL);
+    ps.write(EOL);
+  }
+
+
+  void sendFile(InputStream is, PrintStream ps) throws IOException {
+    try (is) {
+      int n;
+      while ((n = is.read(buf)) > 0) {
+        ps.write(buf, 0, n);
+      }
+    }
+  }
+
+
+  /** mapping of file extensions to content-types */
+  static Map<String, String> map = new ConcurrentHashMap<>();
+
+  static {
+    map.put("", "content/unknown");
+
+    map.put(".uu", "application/octet-stream");
+    map.put(".exe", "application/octet-stream");
+    map.put(".ps", "application/postscript");
+    map.put(".zip", "application/zip");
+    map.put(".sh", "application/x-shar");
+    map.put(".tar", "application/x-tar");
+    map.put(".snd", "audio/basic");
+    map.put(".au", "audio/basic");
+    map.put(".wav", "audio/x-wav");
+
+    map.put(".gif", "image/gif");
+    map.put(".jpg", "image/jpeg");
+    map.put(".jpeg", "image/jpeg");
+
+    map.put(".htm", "text/html");
+    map.put(".html", "text/html");
+    map.put(".css", "text/css");
+    map.put(".js", "text/javascript");
+
+    map.put(".txt", "text/plain");
+    map.put(".java", "text/plain");
+
+    map.put(".c", "text/plain");
+    map.put(".cc", "text/plain");
+    map.put(".c++", "text/plain");
+    map.put(".h", "text/plain");
+    map.put(".pl", "text/plain");
+  }
 }
 
 
-interface HttpConstants {
-    /* 2XX: generally "OK" */
-    int HTTP_OK = 200;
-//    int HTTP_CREATED = 201;
-//    int HTTP_ACCEPTED = 202;
-//    int HTTP_NOT_AUTHORITATIVE = 203;
-//    int HTTP_NO_CONTENT = 204;
-//    int HTTP_RESET = 205;
-//    int HTTP_PARTIAL = 206;
-
-    /* 3XX: relocation/redirect */
-//    int HTTP_MULT_CHOICE = 300;
-//    int HTTP_MOVED_PERM = 301;
-//    int HTTP_MOVED_TEMP = 302;
-//    int HTTP_SEE_OTHER = 303;
-//    int HTTP_NOT_MODIFIED = 304;
-//    int HTTP_USE_PROXY = 305;
-
-    /* 4XX: client error */
-//    int HTTP_BAD_REQUEST = 400;
-//    int HTTP_UNAUTHORIZED = 401;
-//    int HTTP_PAYMENT_REQUIRED = 402;
-//    int HTTP_FORBIDDEN = 403;
-    int HTTP_NOT_FOUND = 404;
-    int HTTP_BAD_METHOD = 405;
-//    int HTTP_NOT_ACCEPTABLE = 406;
-//    int HTTP_PROXY_AUTH = 407;
-//    int HTTP_CLIENT_TIMEOUT = 408;
-//    int HTTP_CONFLICT = 409;
-//    int HTTP_GONE = 410;
-//    int HTTP_LENGTH_REQUIRED = 411;
-//    int HTTP_PRECON_FAILED = 412;
-//    int HTTP_ENTITY_TOO_LARGE = 413;
-//    int HTTP_REQ_TOO_LONG = 414;
-//    int HTTP_UNSUPPORTED_TYPE = 415;
-
-    /* 5XX: server error */
-//    int HTTP_SERVER_ERROR = 500;
-//    int HTTP_INTERNAL_ERROR = 501;
-//    int HTTP_BAD_GATEWAY = 502;
-//    int HTTP_UNAVAILABLE = 503;
-//    int HTTP_GATEWAY_TIMEOUT = 504;
-//    int HTTP_VERSION = 505;
-}
