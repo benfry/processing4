@@ -575,6 +575,8 @@ _   https://github.com/processing/processing/issues/1596
 
 FX2D / Issues
 
+_ Remove usage of com.sun.* in JavaFX library
+_   https://github.com/processing/processing4/issues/208
 _ many shift- keys not working properly in FX2D (added a test sketch)
 _   https://github.com/processing/processing/issues/5317
 _ Hitting ESC in FX2D app on macOS throws IllegalStateException

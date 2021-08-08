@@ -23,8 +23,10 @@ X   add it to the code called by Editor.updateTheme()
 X implement cmd/ctrl-up and cmd/ctrl-down (shift version was there already, weird)
 X   standard key shortcuts on macOS https://support.apple.com/en-us/HT201236
 X update to JDK 11.0.12+7
-X rewrite download handler to just use a simple <get>
+X remove the JRE Downloader
+X   rewrite download handler to just use a simple <get>
 X   remove the rest of the jre downloader code
+X   https://github.com/processing/processing4/issues/155
 o handleNew() returns an Editor object
 o   unlikely to break anything, but it is a signature change
 X   nope, nevermind, not gonna do it
@@ -35,6 +37,7 @@ X   test to make sure it's behaving properly
 X finish getting pdex files to install, now with actual feedback
 X prompt before installing extensions to pde?
 X show progress dialog while installing extensions
+a zip file with extension `.pdex` can be loaded as a Library/Mode/Tool/Example set, and a zip file with the extension `.pdez` will load a sketch from a single file. (The sketch will be unpacked into a temporary file.)
 
 Sam updates
 X can we get rid of pdexEnabled? does the current code work w/ java tabs?
@@ -49,13 +52,19 @@ o   and have a .log extension so it can be browsed properly
 o   need to make sure that it's ok to write to logs dir..
 o     probably being removed from future OS X versions
 
+fixed in 3.0a1
+X Processing is named processing-app-Base in Gnome 3
+X   https://github.com/processing/processing/issues/2534
 
-before alpha 7/beta 1
-_ update the README for alpha 6 (and this release too, when ready)
+fixed in 4.0a4
+X sketch window resets position after each run (regression from 3.4?)
+X   https://github.com/processing/processing/issues/5781
 
-_ need icons for .pde, .pdex, .pdez
-
-_ don't allow "Show Sketch Folder" for untitled sketches
+may be fixed
+_ Undo feature may have undesired results (4.0a4)
+_   https://github.com/processing/processing/issues/4775
+_ HDPI support GNOME desktop
+_   https://github.com/processing/processing/issues/6059
 
 sketch/launching
 X should it be pskz, pcbz? psk for the sketch file to double-click?
@@ -79,15 +88,12 @@ o also have a means of importing sketches
 o   https://github.com/processing/processing/issues/3987
 o   add means to import .zip files from file/url into sketchbook, library, etc.
 o   super easy given current code implementation, might help usability
+X don't allow "Show Sketch Folder" for untitled sketches
 X how are file associations handled in Linux? (for .pde, .psk)
-_   add issue for implementing the Linux file associations in install.sh
-_ what to double-click when opening p5 projects (.pdp?)
-_   lack of a project file makes this a little bit of a headache
-_   dropping a sketch folder onto the PDE should also be implemented
-_ refresh option for sketchbook (bottom of window)
-_ import option for sketchbook (button to select files/folders/etc)
+X   add issue for implementing the Linux file associations in install.sh
+/   https://github.com/processing/processing4/issues/239
 
-examples
+sketch/examples
 o keep examples.zip in a zip file? (5000 files @ 30 MB instead of 15 MB zip)
 o   mark examples as untitled (rather than read-only)
 o   maybe even pull these directly from the zip file?
@@ -98,19 +104,33 @@ o   this is too weird--just put examples into individual zip files
 o   mark example files as untitled
 o   though will that require the sketch to be saved before export?
 X   https://github.com/processing/processing/issues/2459
-_ put the reference (and examples?) into .zip files
-_   unzipping the app takes forever
-_   see the 'examples' section below
-_   also see several notes below re: examples
-_ psk files, doing that for examples
+o get rid of "read only" status for examples
+o   just do them from psk filess
+X   not worth it, since it'll still be needed for other things
+
+reference.zip and server
+X put the reference into .zip file
+X   unzipping the app takes forever
+X dealing with reference.zip and web server
+X   web server confirmed to be working, but should check w/ new docs
+X local web server to run reference from .zip?
+X   no more gazillion file nastiness
+
+
+before alpha 7/beta 1
+_ update the README for alpha 6 (and this release too, when ready)
+
+_ what to double-click when opening p5 projects (.pdp?)
+_   lack of a project file makes this a little bit of a headache
+_   dropping a sketch folder onto the PDE should also be implemented
+_ refresh option for sketchbook (bottom of window)
+_ import option for sketchbook (button to select files/folders/etc)
+
+_ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
-_ load examples from zip files
 _   https://github.com/processing/processing/issues/182
-_ don't make examples read-only
-_   just do them from psk filess
 _ examples window sketches should load in proper environment
 _ write build.xml file to automatically update the examples
-_ see how library installation goes, then possibly do same w/ examples
 _ when adding a new library, its examples aren't added to the list until restart
 
 
@@ -118,9 +138,11 @@ _ key shortcuts broken on Katherine's laptop
 _   try with a clean user account
 X   double-check on other Big Sur machines (tried on VMware, was fine)
 
-_ dealing with reference.zip and web server
-_   web server confirmed to be working, but should check w/ new docs
-
+o Add ability to move ~/.processing directory
+_   move preferences to ~/.config on Linux
+_   use ~/.config as parent, or $XDG_CONFIG_HOME
+o   https://github.com/processing/processing/issues/6115 (moved)
+_   https://github.com/processing/processing4/issues/203
 
 _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
@@ -150,21 +172,8 @@ _   Space Grotesk and Mono?
 _     https://fonts.google.com/specimen/Space+Mono
 _     https://fonts.google.com/specimen/Space+Grotesk
 
-_ macosx vs macosx64 in JavaFX
-_   the latter is making the export fail because it won't embed a Java VM
-_   may be because it's exporting twice and overwriting? or 64 takes precedence?
-_ what should macos-aarch64 be called?
-
-_ Remove usage of com.sun.* in JavaFX library
-_   https://github.com/processing/processing4/issues/208
 _ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
-
-may be fixed
-_ Undo feature may have undesired results (4.0a4)
-_   https://github.com/processing/processing/issues/4775
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
 
 _ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
@@ -187,8 +196,10 @@ _   was this due to the args change in alpha 5?
 before 4.x final
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
-_ using svg images for res-indep icons/gui
+_ need icons for .pde, .pdex, .pdez
+_ use svg images for res-indep icons/gui?
 _   https://stackoverflow.com/a/2495712
+_   (built and tested a version of this code if we want to use it)
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
@@ -197,6 +208,11 @@ _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _ change help menu links to go to newer FAQ and the rest
 _ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_   macosx vs macosx64 in JavaFX
+_     the latter is making the export fail because it won't embed a Java VM
+_     may be because it's exporting twice and overwriting? or 64 takes precedence?
+_   what should macos-aarch64 be called?
+_   Export Application can use nicer names, the libs thing is trickier
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
@@ -204,15 +220,9 @@ _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
 _ command line complaints
 _   https://github.com/processing/processing/issues/6129
-_ remove the JRE Downloader
-_   https://github.com/processing/processing4/issues/155
 _ editor breakpoints out of the .pde files
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
-_ Add ability to move ~/.processing directory
-_   use ~/.config as parent, or $XDG_CONFIG_HOME
-o   https://github.com/processing/processing/issues/6115 (moved)
-_   https://github.com/processing/processing4/issues/203
 _ remove jai_imageio.jar from MovieMaker
 _   also clean out the other unused class files and src
 
@@ -316,8 +326,6 @@ _   https://github.com/processing/processing/issues/5786
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
 _   https://github.com/processing/processing/pull/5642
-_ sketch window resets position after each run (regression from 3.4?)
-_   https://github.com/processing/processing/issues/5781
 _ errors inside setup() aren't coming through at all?
 _   seen in Eclipse; have to turn on the debugger... same as #4703?
 
@@ -552,8 +560,6 @@ _ find in reference for copy() (on image) tries to open PVector.copy()
 _   might need disambiguation pages?
 _   if a reference page is missing, throws a bunch of exceptions
 _   i.e. PVector.copy() not in the reference
-_ local web server to run reference from .zip?
-_   no more gazillion file nastiness
 _ yahoo search example is out of date (included in the examples? the book?)
 _ stop() to shut down a sketch (but not quit/close window)
 _   actually pause/resume
@@ -1165,10 +1171,8 @@ _   https://github.com/processing/processing/issues/186
 
 DIST / Linux
 
-_ Processing is named processing-app-Base in Gnome 3
-_   https://github.com/processing/processing/issues/2534
-_ not being able to make a link to the processing app
-_   argh.. more path and shell issues..
+_ update install.sh for .pdex and .pdez file associations
+_   https://github.com/processing/processing4/issues/239
 
 
 
