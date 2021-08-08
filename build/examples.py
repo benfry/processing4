@@ -6,8 +6,19 @@ import subprocess
 
 # script to keep the examples in sync [fry 210808]
 
+
 # when changes are found, stop and open a visual diff tool to examine
 DIFF_THE_MODS = False
+
+# contains Basics, Demos, Topics
+EXAMPLES_DIR = os.path.realpath('../../processing-docs/content/examples')
+
+# contains Basic Examples, Topic Examples
+P4_DOCS_REPO = os.path.realpath('../../processing-other/website/content/examples')
+
+
+# . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 
 # location of the Kaleidoscope diff command
 KSDIFF = '/usr/local/bin/ksdiff'
@@ -21,12 +32,6 @@ if os.path.exists(KSDIFF):
     DIFF_TOOL = KSDIFF
 else:
     DIFF_TOOL = FILE_MERGE
-
-# contains Basics, Demos, Topics
-EXAMPLES_DIR = os.path.realpath('../../processing-docs/content/examples')
-
-# contains Basic Examples, Topic Examples
-P4_DOCS_REPO = os.path.realpath('../../processing-other/website/content/examples')
 
 
 def run_command(args):
