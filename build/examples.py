@@ -3,6 +3,7 @@
 import filecmp
 import os
 import subprocess
+import zipfile
 
 # script to keep the examples in sync [fry 210808]
 
@@ -15,6 +16,8 @@ EXAMPLES_DIR = os.path.realpath('../../processing-docs/content/examples')
 
 # contains Basic Examples, Topic Examples
 P4_DOCS_REPO = os.path.realpath('../../processing-other/website/content/examples')
+
+PDEZ_PATH = os.path.realpath('examples-pdez')
 
 
 # . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -69,6 +72,45 @@ def handle(examples_folder, web_folder):
                 print(f'{status} {rel_path}')
 
 
+def write_zip(pdez_path, source_folder):
+    # print(f'Creating {pdez_path}')
+    # print(f'    from {source_folder}')
+    rel_index = source_folder.rindex('/') + 1
+    zf = zipfile.ZipFile(pdez_path, mode='w')
+    try:
+        for root, dirs, files in os.walk(source_folder):
+            for filename in files:
+                path = os.path.join(root, filename)
+                internal_path = path[rel_index:]
+                # print(internal_path)
+                zf.write(path, internal_path, zipfile.ZIP_DEFLATED)
+    finally:
+        zf.close()
+
+
+def examples_to_pdez(source_folder, target_folder):
+    outgoing = set()
+    for root, dirs, files in os.walk(source_folder):
+        for file in files:
+            if file.endswith('.pde'):
+                outgoing.add(root[len(source_folder)+1:])
+
+    for item in outgoing:
+        print(f'Packaging {item}...')
+        # last_slash = item.rfind('/')
+        rel_name, sketch_name = item.rsplit('/', 1)
+        # parent_path = os.path.join(source_folder)
+        category_folder = os.path.join(target_folder, rel_name)
+        # print(category_folder)
+        if not os.path.exists(category_folder):
+            os.makedirs(category_folder)
+
+        pdez_path = os.path.join(category_folder, sketch_name + '.pdez')
+        # write_zip(pdez_path, source_folder + '/' + item)
+        write_zip(pdez_path, source_folder + '/' + item)
+
+
 if __name__ == "__main__":
     handle(f'{EXAMPLES_DIR}/Basics', f'{P4_DOCS_REPO}/Basic Examples')
     handle(f'{EXAMPLES_DIR}/Topics', f'{P4_DOCS_REPO}/Topic Examples')
+    # examples_to_pdez(EXAMPLES_DIR, PDEZ_PATH)
