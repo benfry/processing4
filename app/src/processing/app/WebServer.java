@@ -30,8 +30,8 @@ public class WebServer {
   static final int HTTP_NOT_FOUND = 404;
   static final int HTTP_BAD_METHOD = 405;
 
-  private ZipFile zip;
-  private Map<String, ZipEntry> entries;
+  private final ZipFile zip;
+  private final Map<String, ZipEntry> entries;
 
   static final int BUFFER_SIZE = 8192;
 
@@ -122,7 +122,6 @@ public class WebServer {
       }
     }
 
-
     void handleClient() throws IOException {
       InputStream is = new BufferedInputStream(socket.getInputStream());
       PrintStream ps = new PrintStream(socket.getOutputStream());
@@ -209,7 +208,6 @@ public class WebServer {
       }
     }
 
-
     boolean printHeaders(PrintStream ps, String path, ZipEntry entry) throws IOException {
       int status;
       if (entry == null) {
@@ -251,7 +249,6 @@ public class WebServer {
       return status == HTTP_OK;
     }
 
-
     void send404(PrintStream ps) throws IOException {
       ps.write(EOL);
       ps.write(EOL);
@@ -260,7 +257,6 @@ public class WebServer {
       ps.write(EOL);
       ps.write(EOL);
     }
-
 
     void sendFile(InputStream is, PrintStream ps) throws IOException {
       try (is) {
