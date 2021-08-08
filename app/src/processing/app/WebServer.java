@@ -192,10 +192,10 @@ public class WebServer {
           }
         }
 
-        String filename = new String(buffer, index, i - index);
+        String path = new String(buffer, index, i - index);
         // get the zip entry, remove the front slash
-        ZipEntry entry = entries.get(filename.substring(1));
-        boolean ok = printHeaders(entry, ps);
+        ZipEntry entry = entries.get(path.substring(1));
+        boolean ok = printHeaders(ps, path, entry);
         if (entry != null) {
           InputStream stream = zip.getInputStream(entry);
           if (doingGet && ok) {
@@ -210,28 +210,24 @@ public class WebServer {
     }
 
 
-    boolean printHeaders(ZipEntry entry, PrintStream ps) throws IOException {
-      boolean ret;
-      int rCode;
+    boolean printHeaders(PrintStream ps, String path, ZipEntry entry) throws IOException {
+      int status;
       if (entry == null) {
-        rCode = HTTP_NOT_FOUND;
+        status = HTTP_NOT_FOUND;
         ps.print("HTTP/1.0 " + HTTP_NOT_FOUND + " Not Found");
-        ps.write(EOL);
-        ret = false;
       } else {
-        rCode = HTTP_OK;
+        status = HTTP_OK;
         ps.print("HTTP/1.0 " + HTTP_OK + " OK");
-        ps.write(EOL);
-        ret = true;
       }
-      if (entry != null) {
-        Messages.log("From " + socket.getInetAddress().getHostAddress() + ": GET " + entry.getName() + " --> " + rCode);
-      }
-      ps.print("Server: Processing Documentation Server");
+      ps.write(EOL);
+      Messages.log("From " + socket.getInetAddress().getHostAddress() + ": GET " + path + " --> " + status);
+
+      ps.print("Server: Processing Reference Server");
       ps.write(EOL);
       ps.print("Date: " + new Date());
       ps.write(EOL);
-      if (ret) {
+
+      if (entry != null) {
         if (!entry.isDirectory()) {
           ps.print("Content-length: " + entry.getSize());
           ps.write(EOL);
@@ -239,22 +235,20 @@ public class WebServer {
           ps.write(EOL);
           String name = entry.getName();
           int ind = name.lastIndexOf('.');
-          String ct = null;
+          String contentType = "application/x-unknown-content-type";
           if (ind > 0) {
-            ct = map.get(name.substring(ind));
+            contentType = contentTypes.getOrDefault(name.substring(ind), contentType);
           }
-          if (ct == null) {
-            //System.err.println("unknown content type " + name.substring(ind));
-            ct = "application/x-unknown-content-type";
-          }
-          ps.print("Content-type: " + ct);
+          ps.print("Content-type: " + contentType);
         } else {
           ps.print("Content-type: text/html");
         }
         ps.write(EOL);
       }
       ps.write(EOL);  // adding another newline here [fry]
-      return ret;
+
+      // indicates whether to send a file on return
+      return status == HTTP_OK;
     }
 
 
@@ -280,37 +274,38 @@ public class WebServer {
 
 
   /** mapping of file extensions to content-types */
-  static final Map<String, String> map = new ConcurrentHashMap<>();
+  static final Map<String, String> contentTypes = new ConcurrentHashMap<>();
 
   // get list of extensions to support (https://superuser.com/a/232101)
   // find . -type f | sed -En 's|.*/[^/]+\.([^/.]+)$|\1|p' | sort -u
   // -E is for macOS, use -r on Linux
   static {
-    map.put("", "content/unknown");
+    contentTypes.put("", "content/unknown");
 
-    map.put(".au", "audio/basic");
-    map.put(".c", "text/plain");
-    map.put(".c++", "text/plain");
-    map.put(".cc", "text/plain");
-    map.put(".css", "text/css");
-    map.put(".exe", "application/octet-stream");
-    map.put(".gif", "image/gif");
-    map.put(".h", "text/plain");
-    map.put(".htm", "text/html");
-    map.put(".html", "text/html");
-    map.put(".java", "text/plain");
-    map.put(".jpeg", "image/jpeg");
-    map.put(".jpg", "image/jpeg");
-    map.put(".js", "text/javascript");
-    map.put(".pl", "text/plain");
-    map.put(".ps", "application/postscript");
-    map.put(".sh", "application/x-shar");
-    map.put(".snd", "audio/basic");
-    map.put(".tar", "application/x-tar");
-    map.put(".txt", "text/plain");
-    map.put(".uu", "application/octet-stream");
-    map.put(".wav", "audio/x-wav");
-    map.put(".zip", "application/zip");
+    contentTypes.put(".css", "text/css");
+    contentTypes.put(".csv", "text/csv");
+    contentTypes.put(".gif", "image/gif");
+    contentTypes.put(".jpeg", "image/jpeg");
+    contentTypes.put(".jpg", "image/jpeg");
+    contentTypes.put(".js", "text/javascript");
+    contentTypes.put(".json", "application/json");
+    contentTypes.put(".md", "text/markdown");
+    contentTypes.put(".mdx", "text/mdx");
+    contentTypes.put(".mtl", "text/plain");  // https://stackoverflow.com/a/19304383
+    contentTypes.put(".obj", "text/plain");  // https://stackoverflow.com/a/19304383
+    contentTypes.put(".otf", "font/otf");
+    contentTypes.put(".pde", "text/plain");
+    contentTypes.put(".png", "image/png");
+    contentTypes.put(".svg", "image/svg+xml");
+    contentTypes.put(".tsv", "text/tab-separated-values");
+    contentTypes.put(".ttf", "font/ttf");
+    contentTypes.put(".txt", "text/plain");
+    contentTypes.put(".vlw", "application/octet-stream");  // or maybe font/x-vlw
+    contentTypes.put(".woff", "font/woff");
+    contentTypes.put(".woff2", "font/woff2");
+    contentTypes.put(".xml", "application/xml");  // https://datatracker.ietf.org/doc/html/rfc3023
+    contentTypes.put(".yml", "text/yaml");
+    contentTypes.put(".zip", "application/zip");
   }
 
 
