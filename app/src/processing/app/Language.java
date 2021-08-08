@@ -47,7 +47,9 @@ public class Language {
 
   private LanguageBundle bundle;
 
-
+  /** Bundles for mode contributions */
+  private HashMap<Integer, LanguageBundle> modeBundles;
+  
   private Language() {
     String systemLanguage = Locale.getDefault().getLanguage();
     language = loadLanguage();
@@ -82,6 +84,8 @@ public class Language {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    
+    modeBundles = new HashMap<Integer, LanguageBundle>();
   }
 
 
@@ -170,9 +174,47 @@ public class Language {
   }
 
 
-  static private String get(String key) {
-    LanguageBundle bundle = init().bundle;
+  static public void addModeStrings(Mode mode) {
+    String baseFilename = "languages/mode.properties";
+    String langFilename = "languages/mode_" + instance.language + ".properties";
+    File modeBaseFile = new File(mode.getFolder(), baseFilename);
+    File modeLangFile = new File(mode.getFolder(), langFilename);
+    if (modeBaseFile.exists() && modeLangFile.exists()) {
+      LanguageBundle bundle = null;
+      try {
+        bundle = new LanguageBundle(init().language);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      bundle.read(modeBaseFile);
+      bundle.read(modeLangFile);
+      instance.modeBundles.put(mode.hashCode(), bundle);      
+    }    
+  }
+  
+  
+  static private String get(String key, Mode mode) {
+    LanguageBundle bundle;         
+    String val = null;
+    if (mode == null) {
+      bundle = init().bundle;
+      val = getImpl(bundle, key);
+    } else {
+      bundle = init().modeBundles.get(mode.hashCode());
+      val = null;
+      if (bundle != null) {
+        val = getImpl(bundle, key);
+      }
+      if (val == null) {
+        bundle = init().bundle;
+        val = getImpl(bundle, key);
+      }
+    }
+    return val;
+  }
 
+  
+  static private String getImpl(LanguageBundle bundle, String key) {
     try {
       String value = bundle.getString(key);
       if (value != null) {
@@ -181,12 +223,18 @@ public class Language {
     } catch (MissingResourceException e) { }
 
     return null;
+
   }
-
-
-  /** Get translation from bundles. */
+  
+  
   static public String text(String key) {
-    String value = get(key);
+    return text(key, null);
+  }
+  
+  
+  /** Get translation from bundles. */
+  static public String text(String key, Mode mode) {
+    String value = get(key, mode);
     if (value == null) {
       // MissingResourceException and null values
       return key;
@@ -194,9 +242,12 @@ public class Language {
     return value;
   }
 
-
   static public String interpolate(String key, Object... arguments) {
-    String value = get(key);
+    return interpolate(key, null, arguments);
+  }
+  
+  static public String interpolate(String key, Mode mode, Object... arguments) {
+    String value = get(key, mode);
     if (value == null) {
       return key;
     }
@@ -204,11 +255,16 @@ public class Language {
     return String.format(value, arguments);
   }
 
-
+  
   static public String pluralize(String key, int count) {
+    return pluralize(key, count, null);
+  }
+  
+  
+  static public String pluralize(String key, int count, Mode mode) {
     // First check if the bundle contains an entry for this specific count
     String customKey = key + "." + count;
-    String value = get(customKey);
+    String value = get(customKey, mode);
     if (value != null) {
       return String.format(value, count);
     }
@@ -216,12 +272,17 @@ public class Language {
     return interpolate(key + ".n", count);
   }
 
-
+  
+  static public String getPrompt(String which) {
+    return getPrompt(which, null);
+  }
+  
+  
   /**
    * @param which either yes, no, cancel, ok, or browse
    */
-  static public String getPrompt(String which) {
-    return Language.text("prompt." + which);
+  static public String getPrompt(String which, Mode mode) {
+    return Language.text("prompt." + which, mode);
   }
 
 
