@@ -56,6 +56,9 @@ o put stdout/stderr into ~/Library/Logs
 o   and have a .log extension so it can be browsed properly
 o   need to make sure that it's ok to write to logs dir..
 o     probably being removed from future OS X versions
+o create a processing4-docs repo
+o   check with Casey re: shallow clone or approach
+o show the recommended sw version for users' platform on the download page
 
 fixed in 3.0a1
 X Processing is named processing-app-Base in Gnome 3
@@ -138,6 +141,7 @@ _ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
 _   https://github.com/processing/processing/issues/182
 _ examples window sketches should load in proper environment
+_   if Java Mode is in front, and user double-clicks another Mode's entry, what happens?
 _ write build.xml file to automatically update the examples
 _ when adding a new library, its examples aren't added to the list until restart
 
@@ -175,11 +179,6 @@ _     https://fonts.google.com/specimen/Space+Grotesk
 
 _ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
-
-_ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
-_ when exporting an app, run xattr on it to handle "app is damaged" errors?
-_   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
-_   https://github.com/processing/processing/issues/4214
 
 _ when lib downloads (batik) go dead, fallback to the download.processing.org version
 _   or for now, tell users how to do it manually
@@ -243,6 +242,10 @@ _   then pass through the source to update licenses
 _   add Processing Foundation as 2012-15
 _   update license info to state gplv2 not v3
 _   run through that online license checker
+_ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
+_ when exporting an app, run xattr on it to handle "app is damaged" errors?
+_   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
+_   https://github.com/processing/processing/issues/4214
 
 after initial 4.0 release
 _ startup is so incredibly slow
@@ -262,7 +265,6 @@ _ detach sketch name and folder name (use sketch.properties)
 _   better for git, etc
 _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
-
 
 
 windows
@@ -286,14 +288,6 @@ _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
 
 
-web/docs
-_ create a processing4-docs repo
-_   check with Casey re: shallow clone or approach
-_ show the recommended sw version for users' platform on the download page
-
-
-_ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
-_   https://github.com/processing/processing4/issues/9
 _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 _ update installation guide for Linux
@@ -1137,6 +1131,8 @@ _   don't re-copy JRE into work folder if already exists
 _   implement a splash screen
 
 others
+_ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
+_   https://github.com/processing/processing4/issues/9
 _ disable "notifications" prompt on startup for macOS
 _   https://github.com/processing/processing4/issues/234
 _   we're not posting any, can we suppress the "allow notifications" message?
