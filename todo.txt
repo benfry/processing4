@@ -30,6 +30,11 @@ X   https://github.com/processing/processing4/issues/155
 o handleNew() returns an Editor object
 o   unlikely to break anything, but it is a signature change
 X   nope, nevermind, not gonna do it
+o Add ability to move ~/.processing directory
+X   move preferences to ~/.config on Linux
+X   use ~/.config as parent, or $XDG_CONFIG_HOME
+o   https://github.com/processing/processing/issues/6115 (moved)
+X   https://github.com/processing/processing4/issues/203
 
 install from pdex files
 X initial code to install a contrib from a pdex file
@@ -139,12 +144,6 @@ _ when adding a new library, its examples aren't added to the list until restart
 _ key shortcuts broken on Katherine's laptop
 _   try with a clean user account
 X   double-check on other Big Sur machines (tried on VMware, was fine)
-
-o Add ability to move ~/.processing directory
-_   move preferences to ~/.config on Linux
-_   use ~/.config as parent, or $XDG_CONFIG_HOME
-o   https://github.com/processing/processing/issues/6115 (moved)
-_   https://github.com/processing/processing4/issues/203
 
 _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
