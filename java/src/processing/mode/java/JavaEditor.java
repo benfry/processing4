@@ -74,7 +74,6 @@ public class JavaEditor extends Editor {
 
   JMenu modeMenu;
 //  protected JMenuItem inspectorItem;
-
 //  static final int ERROR_TAB_INDEX = 0;
 
   protected PreprocService preprocService;
@@ -89,6 +88,11 @@ public class JavaEditor extends Editor {
   // set true to show AST debugging window
   static private final boolean SHOW_AST_VIEWER = false;
   private ASTViewer astViewer;
+
+  /** P5 in decimal; if there are complaints, move to preferences.txt */
+  static final int REFERENCE_PORT = 8053;
+  Boolean useReferenceServer;
+  WebServer referenceServer;
 
 
   protected JavaEditor(Base base, String path, EditorState state,
@@ -1195,6 +1199,34 @@ public class JavaEditor extends Editor {
           sketchChanged();
         }
       });
+    }
+  }
+
+
+  public void showReference(String filename) {
+    if (useReferenceServer == null) {
+      File referenceZip = new File(mode.getFolder(), "reference.zip");
+      if (referenceZip.exists()) {
+        try {
+          referenceServer = new WebServer(referenceZip, REFERENCE_PORT);
+          useReferenceServer = true;
+
+        } catch (IOException e) {
+          Messages.showWarning("Reference Server Problem", "Error while starting the documentation server.");
+        }
+
+      } else {
+        useReferenceServer = false;
+      }
+    }
+
+    if (useReferenceServer) {
+      String url = referenceServer.getPrefix() + "reference/" + filename;
+      Platform.openURL(url);
+
+    } else {
+      File file = new File(mode.getReferenceFolder(), filename);
+      showReferenceFile(file);
     }
   }
 
