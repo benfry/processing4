@@ -35,6 +35,9 @@ X   move preferences to ~/.config on Linux
 X   use ~/.config as parent, or $XDG_CONFIG_HOME
 o   https://github.com/processing/processing/issues/6115 (moved)
 X   https://github.com/processing/processing4/issues/203
+X update with a new round of icons
+X   replace sketch.ico and sketch.icns to application (for exported app)
+X   (too confusing b/c .pde is the "sketch", or especially if we go pdp)
 
 install from pdex files
 X initial code to install a contrib from a pdex file
@@ -67,12 +70,6 @@ X   https://github.com/processing/processing/issues/2534
 fixed in 4.0a4
 X sketch window resets position after each run (regression from 3.4?)
 X   https://github.com/processing/processing/issues/5781
-
-may be fixed
-_ Undo feature may have undesired results (4.0a4)
-_   https://github.com/processing/processing/issues/4775
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
 
 sketch/launching
 X should it be pskz, pcbz? psk for the sketch file to double-click?
@@ -124,11 +121,17 @@ X   web server confirmed to be working, but should check w/ new docs
 X local web server to run reference from .zip?
 X   no more gazillion file nastiness
 
+may be fixed
+_ Undo feature may have undesired results (4.0a4)
+_   https://github.com/processing/processing/issues/4775
+_ HDPI support GNOME desktop
+_   https://github.com/processing/processing/issues/6059
+
 
 before alpha 7/beta 1
 _ update the README for alpha 6 (and this release too, when ready)
 _ turn off javafx web if not using
-_ look through dist files, looks like 'bin'and 'src' from Java Mode are included
+_ look through dist files, looks like 'bin' and 'src' from Java Mode are included
 _ can we compress jdk/Contents/Home/legal into a single zip?
 
 _ what to double-click when opening p5 projects (.pdp?)
@@ -193,13 +196,18 @@ _ was looking crunchy on low-dpi screen set to 125%
 _   was this due to the args change in alpha 5?
 
 
-before 4.x final
+design
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
 _ need icons for .pde, .pdex, .pdez
+_ core/src/icon-NN.png should be the exported application icon
+_   currently it's the p5 icon since the export just looks black
 _ use svg images for res-indep icons/gui?
 _   https://stackoverflow.com/a/2495712
 _   (built and tested a version of this code if we want to use it)
+
+
+before 4.x final
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
