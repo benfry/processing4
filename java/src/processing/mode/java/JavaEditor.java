@@ -294,7 +294,7 @@ public class JavaEditor extends Editor {
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.environment"));
-    item.addActionListener(e -> showReference("environment" + File.separator + "index.html"));
+    item.addActionListener(e -> showReference("environment/index.html"));
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.reference"));
