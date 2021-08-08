@@ -284,7 +284,10 @@ public class WebServer {
 
     contentTypes.put(".css", "text/css");
     contentTypes.put(".csv", "text/csv");
+    contentTypes.put(".eot", "application/vnd.ms-fontobject");  // only in 3.x
     contentTypes.put(".gif", "image/gif");
+    contentTypes.put(".html", "text/html");
+    contentTypes.put(".ico", "image/x-icon");  // only in 3.x?
     contentTypes.put(".jpeg", "image/jpeg");
     contentTypes.put(".jpg", "image/jpeg");
     contentTypes.put(".js", "text/javascript");
