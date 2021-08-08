@@ -119,6 +119,9 @@ X   no more gazillion file nastiness
 
 before alpha 7/beta 1
 _ update the README for alpha 6 (and this release too, when ready)
+_ turn off javafx web if not using
+_ look through dist files, looks like 'bin'and 'src' from Java Mode are included
+_ can we compress jdk/Contents/Home/legal into a single zip?
 
 _ what to double-click when opening p5 projects (.pdp?)
 _   lack of a project file makes this a little bit of a headache
@@ -132,7 +135,6 @@ _   https://github.com/processing/processing/issues/182
 _ examples window sketches should load in proper environment
 _ write build.xml file to automatically update the examples
 _ when adding a new library, its examples aren't added to the list until restart
-
 
 _ key shortcuts broken on Katherine's laptop
 _   try with a clean user account

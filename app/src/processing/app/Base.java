@@ -1966,8 +1966,8 @@ public class Base {
         if (!settingsFolder.mkdirs()) {
           Messages.showError("Settings issues",
                              "Processing cannot run because it could not\n" +
-                             "create a folder to store your settings.\n" +
-                             settingsFolder.getAbsolutePath(), null);
+                             "create a folder to store your settings at\n" +
+                             settingsFolder, null);
         }
       }
     } catch (Exception e) {
