@@ -312,7 +312,16 @@ public class WebServer {
   }
 
 
-  // main method for testing
+  /**
+   * A main() method for testing.
+   *
+   * <pre>
+   * cd app
+   * ant
+   * open http://localhost:8053/reference/index.html
+   * java -cp pde.jar processing.app.WebServer ../java/reference.zip
+   * </pre>
+   */
   static public void main(String[] args) {
     try {
       new WebServer(args[0]);
