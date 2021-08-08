@@ -30,10 +30,10 @@ public class WebServer {
   static final int HTTP_NOT_FOUND = 404;
   static final int HTTP_BAD_METHOD = 405;
 
-  ZipFile zip;
-  Map<String, ZipEntry> entries;
+  private ZipFile zip;
+  private Map<String, ZipEntry> entries;
 
-  static final int BUFFER_SIZE = 2048;
+  static final int BUFFER_SIZE = 8192;
 
   static final byte[] EOL = { (byte) '\r', (byte) '\n' };
 
