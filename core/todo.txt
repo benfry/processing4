@@ -14,11 +14,11 @@ X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
 X   https://github.com/processing/processing/issues/5983
 X Cannot run rotateZ() within the PShape class
 X   https://github.com/processing/processing/issues/5770
-_ Profile GL4bc is not available on X11GraphicsDevice
-_   https://github.com/processing/processing/issues/6160
-_   https://github.com/processing/processing/issues/6154
-_ Profile GL3bc is not available on X11GraphicsDevice
-_   https://github.com/processing/processing/issues/5476
+X Profile GL4bc is not available on X11GraphicsDevice
+X   https://github.com/processing/processing/issues/6160
+X   https://github.com/processing/processing/issues/6154
+X Profile GL3bc is not available on X11GraphicsDevice
+X   https://github.com/processing/processing/issues/5476
 
 
 _ put opengl libs for core into platform-specific subfolders?

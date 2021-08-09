@@ -122,18 +122,20 @@ X   web server confirmed to be working, but should check w/ new docs
 X local web server to run reference from .zip?
 X   no more gazillion file nastiness
 
-may be fixed
-_ Undo feature may have undesired results (4.0a4)
-_   https://github.com/processing/processing/issues/4775
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
+should be fixed
+X Undo feature may have undesired results (4.0a4)
+X   https://github.com/processing/processing/issues/4775
+X HDPI support GNOME desktop
+X   https://github.com/processing/processing/issues/6059
 
 
-before alpha 7/beta 1
-_ update the README for alpha 6 (and this release too, when ready)
-_ turn off javafx web if not using
+before beta 1
+X write release notes
+_ fix up the colors
+_ update the README.md in the root for alpha 6 and beta 1
+_ update https://github.com/processing/processing4/wiki/Changes-in-4.0
 _ look through dist files, looks like 'bin' and 'src' from Java Mode are included
-_ can we compress jdk/Contents/Home/legal into a single zip?
+
 
 _ what to double-click when opening p5 projects (.pdp?)
 _   lack of a project file makes this a little bit of a headache
@@ -211,6 +213,7 @@ _   (built and tested a version of this code if we want to use it)
 
 
 before 4.x final
+_ turn off javafx web if not using
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
@@ -238,6 +241,7 @@ _ remove jai_imageio.jar from MovieMaker
 _   also clean out the other unused class files and src
 
 decisions before final 4.0 release
+_ can we compress jdk/Contents/Home/legal into a single zip?
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
 _   now with a release 9 to cover Big Sur
