@@ -199,9 +199,11 @@ _   was this due to the args change in alpha 5?
 design
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
+_ welcome screen is a mess
 _ need icons for .pde, .pdex, .pdez
 _ core/src/icon-NN.png should be the exported application icon
 _   currently it's the p5 icon since the export just looks black
+_ also lib/icons has the pde icon set and the foundation icon (for contribs)
 _ use svg images for res-indep icons/gui?
 _   https://stackoverflow.com/a/2495712
 _   (built and tested a version of this code if we want to use it)
