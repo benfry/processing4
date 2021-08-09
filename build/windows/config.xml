@@ -12,7 +12,7 @@
   <customProcName>false</customProcName>
   <stayAlive>false</stayAlive>
   <manifest></manifest>
-  <icon>application.ico</icon>
+  <icon>processing.ico</icon>
   <classPath>
     <!-- <mainClass>processing.app.Base</mainClass> -->
     <mainClass>processing.app.ui.Splash</mainClass>

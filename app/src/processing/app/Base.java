@@ -254,9 +254,9 @@ public class Base {
 
   static private void handleWelcomeScreen(Base base) {
     boolean sketchbookPrompt = false;
-    if (Preferences.getBoolean("welcome.show")) {
+    if (Preferences.getBoolean("welcome.four.beta.show")) {
       // only ask once about split sketchbooks
-      if (!Preferences.getBoolean("welcome.seen")) {
+      if (!Preferences.getBoolean("welcome.four.beta.seen")) {
         // Check if there's a 2.0 sketchbook present
         String oldPath = Preferences.getOldSketchbookPath();
         if (oldPath != null) {
@@ -277,7 +277,7 @@ public class Base {
 
     // Needs to be shown after the first editor window opens, so that it
     // shows up on top, and doesn't prevent an editor window from opening.
-    if (Preferences.getBoolean("welcome.show")) {
+    if (Preferences.getBoolean("welcome.four.beta.show")) {
       try {
         new Welcome(base, sketchbookPrompt);
       } catch (IOException e) {
@@ -1966,8 +1966,8 @@ public class Base {
         if (!settingsFolder.mkdirs()) {
           Messages.showError("Settings issues",
                              "Processing cannot run because it could not\n" +
-                             "create a folder to store your settings.\n" +
-                             settingsFolder.getAbsolutePath(), null);
+                             "create a folder to store your settings at\n" +
+                             settingsFolder, null);
         }
       }
     } catch (Exception e) {

@@ -30,7 +30,8 @@ table {
 
 p.inset, table.inset {
   padding: 10px;
-  background-color: rgb(224, 253, 251); 
+  /* background-color: rgb(224, 253, 251); */
+  background-color: rgb(240, 240, 240);
 }
 
 a {

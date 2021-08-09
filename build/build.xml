@@ -168,7 +168,7 @@
       https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
     -->
 
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.tar.gz" />
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
          dest="${jdk.tgz.path}"
@@ -353,7 +353,8 @@
         <!-- don't include LWJGL, it's not operational -->
         <exclude name="libraries/lwjgl/**" />
         <exclude name="**/javafx-*sdk*.zip" />
-        <exclude name="reference.zip" />
+        <!-- starting with revision 1276, reference.zip stays intact -->
+        <!-- <exclude name="reference.zip" /> -->
         <exclude name="**/._*" />
       </fileset>
     </copy>
@@ -375,6 +376,8 @@
          ignoreerrors="${reference.ignorable}"
          usetimestamp="true" />
 
+    <!-- starting with revision 1276, reference.zip stays intact -->
+    <!--
     <unzip dest="${target.path}/modes/java"
            src="../java/reference.zip"
            overwrite="false">
@@ -383,6 +386,7 @@
         <exclude name="**/._*" />
       </patternset>
     </unzip>
+    -->
 
     <!-- copy PDE X mode folder-->
     <!--
@@ -390,7 +394,6 @@
       <fileset dir="../pdex/dist" />
     </copy>
     -->
-
   </target>
 
   <target name="version-clear">
