@@ -1,4 +1,4 @@
-1276 (4.0a7)
+1276 (4.0b1)
 X really chatty console messages for people with old settings directories
 X   ignore 'debug' entry in prefs dir if it's a leftover DebugMode directory
 X IDE cursor position on Windows goes weird if display scaling used

@@ -1,23 +1,10 @@
-1276 (4.0a7)
-
+1276 (4.0b1)
+X no other changes to core?
 
 contributions
 X PShape.scale() not working with PShape.resetMatrix() when P2D renderer is used
 X   https://github.com/processing/processing4/issues/217
 X   https://github.com/processing/processing4/pull/225
-
-
-_ put opengl libs for core into platform-specific subfolders?
-_   may also be useful for Windows antivirus slowdowns:
-_   https://github.com/processing/processing/issues/4783#issuecomment-269328168
-
-_ setting surface size needs to happen outside draw()
-_   surface.setSize() sadness etc
-_   https://github.com/processing/processing4/issues/162
-_   https://github.com/processing/processing4/issues/186
-_   https://github.com/processing/processing/issues/4129
-
-
 
 should be fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
 X AppKit errors from P2D/P3D
@@ -33,6 +20,16 @@ _   https://github.com/processing/processing/issues/6154
 _ Profile GL3bc is not available on X11GraphicsDevice
 _   https://github.com/processing/processing/issues/5476
 
+
+_ put opengl libs for core into platform-specific subfolders?
+_   may also be useful for Windows antivirus slowdowns:
+_   https://github.com/processing/processing/issues/4783#issuecomment-269328168
+
+_ setting surface size needs to happen outside draw()
+_   surface.setSize() sadness etc
+_   https://github.com/processing/processing4/issues/162
+_   https://github.com/processing/processing4/issues/186
+_   https://github.com/processing/processing/issues/4129
 
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
