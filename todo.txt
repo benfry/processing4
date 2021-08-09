@@ -38,6 +38,7 @@ X   https://github.com/processing/processing4/issues/203
 X update with a new round of icons
 X   replace sketch.ico and sketch.icns to application (for exported app)
 X   (too confusing b/c .pde is the "sketch", or especially if we go pdp)
+X roll over the welcome screen for 4.0 beta so folks see it
 
 install from pdex files
 X initial code to install a contrib from a pdex file

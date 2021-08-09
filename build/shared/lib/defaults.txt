@@ -50,8 +50,9 @@
 # In 3.0, the location has changed.
 #sketchbook.path.three=
 
-welcome.show = true
-welcome.seen = false
+# Rolling this over for the beta release
+welcome.four.beta.show = true
+welcome.four.beta.seen = false
 
 # By default, no sketches currently open
 last.sketch.count = 0
