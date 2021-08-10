@@ -59,6 +59,9 @@ public class EditorStatus extends BasicSplitPaneDivider {
   Color[] bgColor;
   Image[] bgImage;
 
+  // for beta 1, had to shut off the images because they were out of date
+  static final boolean USE_IMAGES = false;
+
   @SuppressWarnings("hiding")
   static public final int ERROR = 1;
   static public final int CURSOR_LINE_ERROR = 2;
@@ -350,7 +353,12 @@ public class EditorStatus extends BasicSplitPaneDivider {
       ascent = metrics.getAscent();
     }
 
-    g.drawImage(bgImage[mode], 0, 0, sizeW, sizeH, this);
+    if (USE_IMAGES) {
+      g.drawImage(bgImage[mode], 0, 0, sizeW, sizeH, this);
+    } else {
+      g.setColor(bgColor[mode]);
+      g.fillRect(0, 0, sizeW, sizeH);
+    }
 
     rolloverState = ROLLOVER_NONE;
     if (mouseX > sizeW - buttonSize && mouseX < sizeW) {
@@ -414,7 +422,12 @@ public class EditorStatus extends BasicSplitPaneDivider {
   private void drawButton(Graphics g, String symbol, int pos, boolean highlight) {
     int left = sizeW - (pos + 1) * buttonSize;
     // Overlap very long errors
-    g.drawImage(bgImage[mode], left, 0, buttonSize, sizeH, this);
+    if (USE_IMAGES) {
+      g.drawImage(bgImage[mode], left, 0, buttonSize, sizeH, this);
+    } else {
+      g.setColor(bgColor[mode]);
+      g.fillRect(left, 0, buttonSize, sizeH);
+    }
 
     if (highlight) {
       // disabling since this doesn't match any of our other UI

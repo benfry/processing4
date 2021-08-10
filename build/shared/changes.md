@@ -2,7 +2,7 @@
 
 *Revision 1276 – 9 August 2021*
 
-Celebrating the 20th anniversary of the very first Processing release (revision 0001) which was first posted to be shared as part of a workshop in Japan at Musashino Art University (https://dbn.media.mit.edu/workshops/musabi/).
+Celebrating the 20th anniversary of the very first Processing release (revision 0001) which was first posted to be shared as part of a workshop in Japan at Musashino Art University (https://dbn.media.mit.edu/workshops/musabi/). This is the 277th release.
 
 The primary goal for Processing 4 is to keep everyone's code running, even as operating systems, hardware, and hairlines continue to change.
 

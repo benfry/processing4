@@ -128,14 +128,16 @@ X   https://github.com/processing/processing/issues/4775
 X HDPI support GNOME desktop
 X   https://github.com/processing/processing/issues/6059
 
-
 before beta 1
 X write release notes
-_ fix up the colors
+X fix up the colors
+X look through dist files, looks like 'bin' and 'src' from Java Mode are included
+
+
+highest
 _ update the README.md in the root for alpha 6 and beta 1
 _ update https://github.com/processing/processing4/wiki/Changes-in-4.0
-_ look through dist files, looks like 'bin' and 'src' from Java Mode are included
-
+_ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
 
 _ what to double-click when opening p5 projects (.pdp?)
 _   lack of a project file makes this a little bit of a headache
