@@ -2191,16 +2191,16 @@ public class PShape implements PConstants {
   }
 
 
-  public void beginTessellationUpdate() {
-    beginTessellationUpdate(TRIANGLES);
+  public void beginTessellation() {
+    beginTessellation(TRIANGLES);
   }
 
 
-  public void beginTessellationUpdate(int kind) {
+  public void beginTessellation(int kind) {
   }
 
 
-  public void endTessellationUpdate() {
+  public void endTessellation() {
   }
 
 
