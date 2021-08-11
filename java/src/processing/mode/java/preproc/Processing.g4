@@ -5,7 +5,7 @@
  *	- adds support for type converter functions like "int()"
  *	- adds pseudo primitive type "color"
  *	- adds HTML hex notation with hash symbol: #ff5522
- *  - allow color to appear as part of qualified names (like in imports)
+ *      - allow color to appear as part of qualified names (like in imports)
  */
 
 grammar Processing;
