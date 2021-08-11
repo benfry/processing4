@@ -836,8 +836,7 @@ public class XML implements Serializable {
   /**
    * Sets the content of an element as an <b>int</b>
    *
-   * @webref xml:method
-   * @webBrief Sets the content of an element as an <b>int</b>
+   * @nowebref
    */
   public void setLong(String name, long value) {
     setString(name, String.valueOf(value));

@@ -224,6 +224,12 @@ public class IntDict {
   }
 
 
+  /** 
+   * Return the internal array being used to store the keys.
+   * 
+   * @webref intdict:method
+   * @webBrief Return the internal array being used to store the keys
+   */
   public Iterable<String> keys() {
     return new Iterable<String>() {
 

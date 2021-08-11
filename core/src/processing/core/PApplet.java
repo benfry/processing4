@@ -141,34 +141,26 @@ public class PApplet implements PConstants {
   public PGraphics g;
 
   /**
+   * System variable that stores the width of the computer screen. For
+   * example, if the current screen resolution is 1920x1080,
+   * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
-   * System variable which stores the width of the computer screen. For
-   * example, if the current screen resolution is 1024x768,
-   * <b>displayWidth</b> is 1024 and <b>displayHeight</b> is 768. These
-   * dimensions are useful when exporting full-screen applications.
-   * <br /><br />
-   * To ensure that the sketch takes over the entire screen, use "Present"
-   * instead of "Run". Otherwise the window will still have a frame border
-   * around it and not be placed in the upper corner of the screen. On Mac OS
-   * X, the menu bar will remain present unless "Present" mode is used.
-   *
-   *
+   * @webref environment
+   * @webBrief Variable that stores the width of the computer screen
+   * @see PApplet#displayHeight
+   * @see PApplet#size(int, int)
    */
   public int displayWidth;
 
   /**
-   *
    * System variable that stores the height of the computer screen. For
-   * example, if the current screen resolution is 1024x768,
-   * <b>displayWidth</b> is 1024 and <b>displayHeight</b> is 768. These
-   * dimensions are useful when exporting full-screen applications.
-   * <br /><br />
-   * To ensure that the sketch takes over the entire screen, use "Present"
-   * instead of "Run". Otherwise the window will still have a frame border
-   * around it and not be placed in the upper corner of the screen. On Mac OS
-   * X, the menu bar will remain present unless "Present" mode is used.
+   * example, if the current screen resolution is 1920x1080,
+   * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
-   *
+   * @webref environment
+   * @webBrief Variable that stores the height of the computer screen
+   * @see PApplet#displayWidth
+   * @see PApplet#size(int, int)
    */
   public int displayHeight;
 
