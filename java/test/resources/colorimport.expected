@@ -20,6 +20,8 @@ public class colorimport extends PApplet {
 
 
 boolean test = true;
+int c1 = color(255, 255, 255);
+int c2 = test ? 0xFFA011CD : 0xC0C0C0C0;
 
         noLoop();
     }
