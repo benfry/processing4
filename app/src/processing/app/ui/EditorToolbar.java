@@ -323,6 +323,7 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
       // getGraphics() is null and no offscreen yet
       titleWidth = getToolkit().getFontMetrics(titleFont).stringWidth(title);
+      //titleWidth = editor.getGraphics().getFontMetrics(titleFont).stringWidth(title);
 
       backgroundColor = Theme.getColor("mode.background.color");
       outlineColor = Theme.getColor("mode.outline.color");

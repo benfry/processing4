@@ -2,6 +2,8 @@
 X remove translated URLs that are not actually translated
 X   entries in the Help menu were going to ancient links
 X   https://github.com/processing/processing4/issues/250
+X Switch to getModifiersEx() in processing.app
+X   https://github.com/processing/processing4/issues/67
 
 
 highest
