@@ -4,6 +4,10 @@ X   entries in the Help menu were going to ancient links
 X   https://github.com/processing/processing4/issues/250
 X Switch to getModifiersEx() in processing.app
 X   https://github.com/processing/processing4/issues/67
+X deal with getFontMetrics() deprecation warning in EditorToolbar
+
+_ make the call on the launcher setting for Linux
+_   https://github.com/processing/processing4/issues/247
 
 
 highest
