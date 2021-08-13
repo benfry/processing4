@@ -129,7 +129,7 @@ public class DefaultInputHandler extends InputHandler {
    */
   public void keyPressed(KeyEvent evt) {
     int keyCode = evt.getKeyCode();
-    int modifiers = evt.getModifiers();
+    int modifiers = evt.getModifiersEx();
 
     // moved this earlier so it doesn't get random meta clicks
     if (keyCode == KeyEvent.VK_CONTROL ||
@@ -141,14 +141,14 @@ public class DefaultInputHandler extends InputHandler {
 
     // Don't get command-s or other menu key equivalents on macOS
     // unless it's something that's specifically bound (cmd-left or right)
-    if ((modifiers & InputEvent.META_MASK) != 0) {
+    if ((modifiers & InputEvent.META_DOWN_MASK) != 0) {
       KeyStroke keyStroke = KeyStroke.getKeyStroke(keyCode, modifiers);
       if (bindings.get(keyStroke) == null) {
         return;
       }
     }
 
-    if ((modifiers & ~InputEvent.SHIFT_MASK) != 0
+    if ((modifiers & ~InputEvent.SHIFT_DOWN_MASK) != 0
       || evt.isActionKey()
       || keyCode == KeyEvent.VK_BACK_SPACE
       || keyCode == KeyEvent.VK_DELETE
@@ -174,16 +174,16 @@ public class DefaultInputHandler extends InputHandler {
    * Handle a key typed event. This inserts the key into the text area.
    */
   public void keyTyped(KeyEvent evt) {
-    int modifiers = evt.getModifiers();
+    int modifiers = evt.getModifiersEx();
     char c = evt.getKeyChar();
 
     // This is the cmd key on macOS. Added this because
     // menu shortcuts were being passed through as legit keys.
-    if ((modifiers & InputEvent.META_MASK) != 0) return;
+    if ((modifiers & InputEvent.META_DOWN_MASK) != 0) return;
 
     // Prevent CTRL-/ from going through as a typed '/' character
     // http://code.google.com/p/processing/issues/detail?id=596
-    if ((modifiers & InputEvent.CTRL_MASK) != 0 && c == '/') return;
+    if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0 && c == '/') return;
 
     if (c != KeyEvent.CHAR_UNDEFINED) {
       if (c >= 0x20 && c != 0x7f) {
@@ -236,16 +236,16 @@ public class DefaultInputHandler extends InputHandler {
       for (int i = 0; i < index; i++) {
         switch (Character.toUpperCase(keyStroke.charAt(i))) {
         case 'A':
-          modifiers |= InputEvent.ALT_MASK;
+          modifiers |= InputEvent.ALT_DOWN_MASK;
           break;
         case 'C':
-          modifiers |= InputEvent.CTRL_MASK;
+          modifiers |= InputEvent.CTRL_DOWN_MASK;
           break;
         case 'M':
-          modifiers |= InputEvent.META_MASK;
+          modifiers |= InputEvent.META_DOWN_MASK;
           break;
         case 'S':
-          modifiers |= InputEvent.SHIFT_MASK;
+          modifiers |= InputEvent.SHIFT_DOWN_MASK;
           break;
         }
       }

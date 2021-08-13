@@ -43,6 +43,7 @@ import javax.swing.JPopupMenu;
 
 import processing.app.Base;
 import processing.app.Language;
+import processing.app.Messages;
 import processing.app.Mode;
 
 
@@ -321,8 +322,9 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
       titleFont = Theme.getFont("mode.title.font");
       titleColor = Theme.getColor("mode.title.color");
 
-      // getGraphics() is null and no offscreen yet
-      titleWidth = getToolkit().getFontMetrics(titleFont).stringWidth(title);
+      // getGraphics() is null (even for editor) and no offscreen yet
+      //titleWidth = getToolkit().getFontMetrics(titleFont).stringWidth(title);
+      //titleWidth = editor.getGraphics().getFontMetrics(titleFont).stringWidth(title);
 
       backgroundColor = Theme.getColor("mode.background.color");
       outlineColor = Theme.getColor("mode.outline.color");
@@ -372,7 +374,17 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
     @Override
     public Dimension getPreferredSize() {
-      return new Dimension(MODE_GAP_WIDTH + titleWidth +
+      int tempWidth = titleWidth;  // with any luck, this is set
+      if (tempWidth == 0) {
+        Graphics g = getGraphics();
+        // the Graphics object may not be ready yet, being careful
+        if (g != null) {
+          tempWidth = getFontMetrics(titleFont).stringWidth(title);
+        } else {
+          Messages.err("null Graphics in EditorToolbar.getPreferredSize()");
+        }
+      }
+      return new Dimension(MODE_GAP_WIDTH + tempWidth +
                            ARROW_GAP_WIDTH + ARROW_WIDTH + MODE_GAP_WIDTH,
                            EditorButton.DIM);
     }

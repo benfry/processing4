@@ -1,3 +1,26 @@
+1276 (4.0b1)
+X no other changes to core
+
+contributions
+X PShape.scale() not working with PShape.resetMatrix() when P2D renderer is used
+X   https://github.com/processing/processing4/issues/217
+X   https://github.com/processing/processing4/pull/225
+
+should be fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
+X AppKit errors from P2D/P3D
+X   https://github.com/processing/processing/issues/5880
+X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
+X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
+X   https://github.com/processing/processing/issues/5983
+X Cannot run rotateZ() within the PShape class
+X   https://github.com/processing/processing/issues/5770
+X Profile GL4bc is not available on X11GraphicsDevice
+X   https://github.com/processing/processing/issues/6160
+X   https://github.com/processing/processing/issues/6154
+X Profile GL3bc is not available on X11GraphicsDevice
+X   https://github.com/processing/processing/issues/5476
+
+
 1275 (4.0a6)
 X mouseButton not set correctly on mouseReleased() with Java2D
 X   https://github.com/processing/processing4/issues/181
