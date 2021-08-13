@@ -1,6 +1,11 @@
 1277 (4.0b2)
 
 
+contribs
+X Remove two redundant variable assignments in PShader
+X   https://github.com/processing/processing4/pull/172
+
+
 _ put opengl libs for core into platform-specific subfolders?
 _   may also be useful for Windows antivirus slowdowns:
 _   https://github.com/processing/processing/issues/4783#issuecomment-269328168
