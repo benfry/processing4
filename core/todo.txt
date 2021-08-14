@@ -1,4 +1,5 @@
 1277 (4.0b2)
+X fix apparent problem in PShape with QUADRATIC_VERTEX (wrong vertex index)
 
 
 contribs
