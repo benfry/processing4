@@ -145,10 +145,15 @@ implements MouseListener, MouseMotionListener, ActionListener {
     shift = e.isShiftDown();
 
     // It looks like ActionEvent expects old-style modifiers,
-    // so the e.getModifiers() call here may be correct.
-    // TODO Look into how this is getting used in Modes, and either
-    //      update or add ignore to the deprecation [fry 191008]
-    //      https://github.com/processing/processing4/issues/67
+    // so the e.getModifiers() call is actually correct.
+    // There's an open JDK bug for this, but it remains unresolved:
+    // https://bugs.openjdk.java.net/browse/JDK-8186024
+
+    // Mostly this is only used for shift, but some modes also make use of
+    // alt as a way to control debug stepping and whatnot. [fry 210813]
+    // https://github.com/processing/processing4/issues/67
+
+    //noinspection deprecation
     actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED,
                                     null, e.getModifiers()));
   }
