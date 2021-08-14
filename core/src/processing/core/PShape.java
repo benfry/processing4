@@ -1854,13 +1854,13 @@ public class PShape implements PConstants {
             break;
 
           case QUADRATIC_VERTEX:
-            g.quadraticVertex(vertices[index+0][X], vertices[index+0][Y],
+            g.quadraticVertex(vertices[index][X], vertices[index][Y],
                               vertices[index+1][X], vertices[index+1][Y]);
             index += 2;
             break;
 
           case BEZIER_VERTEX:
-            g.bezierVertex(vertices[index+0][X], vertices[index+0][Y],
+            g.bezierVertex(vertices[index][X], vertices[index][Y],
                            vertices[index+1][X], vertices[index+1][Y],
                            vertices[index+2][X], vertices[index+2][Y]);
             index += 3;
@@ -1889,14 +1889,14 @@ public class PShape implements PConstants {
             break;
 
           case QUADRATIC_VERTEX:
-            g.quadraticVertex(vertices[index+0][X], vertices[index+0][Y], vertices[index+0][Z],
-                         vertices[index+1][X], vertices[index+1][Y], vertices[index+0][Z]);
+            g.quadraticVertex(vertices[index][X], vertices[index][Y], vertices[index][Z],
+                              vertices[index+1][X], vertices[index+1][Y], vertices[index+1][Z]);
             index += 2;
             break;
 
 
           case BEZIER_VERTEX:
-            g.bezierVertex(vertices[index+0][X], vertices[index+0][Y], vertices[index+0][Z],
+            g.bezierVertex(vertices[index][X], vertices[index][Y], vertices[index][Z],
                            vertices[index+1][X], vertices[index+1][Y], vertices[index+1][Z],
                            vertices[index+2][X], vertices[index+2][Y], vertices[index+2][Z]);
             index += 3;
@@ -1958,14 +1958,14 @@ public class PShape implements PConstants {
    * @param imagePath The image path containing the base 64 image data.
    * @return Newly loaded PImage.
    */
-  protected static PImage parseBase64Image(String imagePath) {
+  static protected PImage parseBase64Image(String imagePath) {
     String[] parts = imagePath.split(";base64,");
     String extension = parts[0].substring(11);
     String encodedData = parts[1];
 
     byte[] decodedBytes = Base64.getDecoder().decode(encodedData);
 
-    if(decodedBytes == null){
+    if (decodedBytes == null) {
       System.err.println("Decode Error on image: " + imagePath.substring(0, 20));
       return null;
     }
@@ -1977,23 +1977,21 @@ public class PShape implements PConstants {
       int space = buffImage.getColorModel().getColorSpace().getType();
       if (space == ColorSpace.TYPE_CMYK) {
         System.err.println("Could not load CMYK color space on image: " + imagePath.substring(0, 20));
-       return null;
+        return null;
       }
     }
 
-    // if it's a .gif image, test to see if it has transparency
-    boolean requiresCheckAlpha = extension.equals("gif") || extension.equals("png") ||
-        extension.equals("unknown");
-
     PImage loadedImage = new PImageAWT(awtImage);
 
-    if (requiresCheckAlpha) {
-        loadedImage.checkAlpha();
+    // test whether the image has alpha (or we can draw it more quickly in RGB)
+    if (extension.equals("gif") || extension.equals("png") ||
+        extension.equals("unknown")) {
+      loadedImage.checkAlpha();
     }
 
-    if (loadedImage.width == -1) {
-      // error...
-    }
+//    if (loadedImage.width == -1) {
+//      // error...
+//    }
 
     return loadedImage;
   }
@@ -2535,7 +2533,6 @@ public class PShape implements PConstants {
    *
    *
    * @webref
-   * @param fill
    * @webBrief Set the fill value
    */
   public void setFill(int fill) {
@@ -2577,7 +2574,7 @@ public class PShape implements PConstants {
       vertices[index][PGraphics.A] = ((fill >> 24) & 0xFF) / 255.0f;
       vertices[index][PGraphics.R] = ((fill >> 16) & 0xFF) / 255.0f;
       vertices[index][PGraphics.G] = ((fill >>  8) & 0xFF) / 255.0f;
-      vertices[index][PGraphics.B] = ((fill >>  0) & 0xFF) / 255.0f;
+      vertices[index][PGraphics.B] = (fill & 0xFF) / 255.0f;
     }
   }
 
@@ -2644,7 +2641,7 @@ public class PShape implements PConstants {
       vertices[index][PGraphics.A] = ((tint >> 24) & 0xFF) / 255.0f;
       vertices[index][PGraphics.R] = ((tint >> 16) & 0xFF) / 255.0f;
       vertices[index][PGraphics.G] = ((tint >>  8) & 0xFF) / 255.0f;
-      vertices[index][PGraphics.B] = ((tint >>  0) & 0xFF) / 255.0f;
+      vertices[index][PGraphics.B] = (tint & 0xFF) / 255.0f;
     }
   }
 
@@ -2689,7 +2686,6 @@ public class PShape implements PConstants {
    *
    *
    * @webref
-   * @param stroke
    * @webBrief Set the stroke value
    */
   public void setStroke(int stroke) {
@@ -2730,7 +2726,7 @@ public class PShape implements PConstants {
     vertices[index][PGraphics.SA] = ((stroke >> 24) & 0xFF) / 255.0f;
     vertices[index][PGraphics.SR] = ((stroke >> 16) & 0xFF) / 255.0f;
     vertices[index][PGraphics.SG] = ((stroke >>  8) & 0xFF) / 255.0f;
-    vertices[index][PGraphics.SB] = ((stroke >>  0) & 0xFF) / 255.0f;
+    vertices[index][PGraphics.SB] = (stroke & 0xFF) / 255.0f;
   }
 
 
@@ -2846,7 +2842,7 @@ public class PShape implements PConstants {
 
     vertices[index][PGraphics.AR] = ((ambient >> 16) & 0xFF) / 255.0f;
     vertices[index][PGraphics.AG] = ((ambient >>  8) & 0xFF) / 255.0f;
-    vertices[index][PGraphics.AB] = ((ambient >>  0) & 0xFF) / 255.0f;
+    vertices[index][PGraphics.AB] = (ambient & 0xFF) / 255.0f;
   }
 
 
@@ -2894,7 +2890,7 @@ public class PShape implements PConstants {
 
     vertices[index][PGraphics.SPR] = ((specular >> 16) & 0xFF) / 255.0f;
     vertices[index][PGraphics.SPG] = ((specular >>  8) & 0xFF) / 255.0f;
-    vertices[index][PGraphics.SPB] = ((specular >>  0) & 0xFF) / 255.0f;
+    vertices[index][PGraphics.SPB] = (specular & 0xFF) / 255.0f;
   }
 
 
@@ -2943,7 +2939,7 @@ public class PShape implements PConstants {
 
     vertices[index][PGraphics.ER] = ((emissive >> 16) & 0xFF) / 255.0f;
     vertices[index][PGraphics.EG] = ((emissive >>  8) & 0xFF) / 255.0f;
-    vertices[index][PGraphics.EB] = ((emissive >>  0) & 0xFF) / 255.0f;
+    vertices[index][PGraphics.EB] = (emissive & 0xFF) / 255.0f;
   }
 
 
@@ -3278,7 +3274,7 @@ public class PShape implements PConstants {
    * @webref pshape:method
    * @usage web_application
    * @webBrief Increases and decreases the size of a shape
-   * @param s percentate to scale the object
+   * @param s percentage to scale the object
    * @see PShape#rotate(float)
    * @see PShape#translate(float, float)
    * @see PShape#resetMatrix()
@@ -3389,30 +3385,6 @@ public class PShape implements PConstants {
       matrix = new PMatrix3D(matrix);
     }
   }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  /**
-   * Center the shape based on its bounding box. Can't assume
-   * that the bounding box is 0, 0, width, height. Common case will be
-   * opening a letter size document in Illustrator, and drawing something
-   * in the middle, then reading it in as an svg file.
-   * This will also need to flip the y axis (scale(1, -1)) in cases
-   * like Adobe Illustrator where the coordinates start at the bottom.
-   */
-//  public void center() {
-//  }
-
-
-  /**
-   * Set the pivot point for all transformations.
-   */
-//  public void pivot(float x, float y) {
-//    px = x;
-//    py = y;
-//  }
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
