@@ -1839,395 +1839,6 @@ public class PShapeOpenGL extends PShape {
 
 
   @Override
-  public PVector getAttribPosition(String name, int index, PVector vec) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (vec == null) vec = new PVector();
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      vec.x = tessAttrib[4 * tessIdx + 0];
-      vec.y = tessAttrib[4 * tessIdx + 1];
-      vec.z = tessAttrib[4 * tessIdx + 2];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      vec.x = array[3 * index + 0];
-      vec.y = array[3 * index + 1];
-      vec.z = array[3 * index + 2];
-    }
-
-    return vec;
-  }
-
-
-  @Override
-  public float getAttribPositionX(String name, int index) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      return tessAttrib[4 * (firstPolyVertex + index) + 0];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      return array[3 * index + 0];
-    }
-  }
-
-
-  @Override
-  public float getAttribPositionY(String name, int index) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      return tessAttrib[4 * (firstPolyVertex + index) + 1];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      return array[3 * index + 1];
-    }
-  }
-
-
-  @Override
-  public float getAttribPositionZ(String name, int index) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      return tessAttrib[4 * (firstPolyVertex + index) + 2];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      return array[3 * index + 2];
-    }
-  }
-
-
-  @Override
-  public PVector getAttribNormal(String name, int index, PVector vec) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (vec == null) vec = new PVector();
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      vec.x = tessAttrib[3 * tessIdx + 0];
-      vec.y = tessAttrib[3 * tessIdx + 1];
-      vec.z = tessAttrib[3 * tessIdx + 2];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      vec.x = array[3 * index + 0];
-      vec.y = array[3 * index + 1];
-      vec.z = array[3 * index + 2];
-    }
-
-    return vec;
-  }
-
-
-  @Override
-  public float getAttribNormalX(String name, int index) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      return tessAttrib[3 * (firstPolyVertex + index) + 0];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      return array[3 * index + 0];
-    }
-  }
-
-
-  @Override
-  public float getAttribNormalY(String name, int index) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      return tessAttrib[3 * (firstPolyVertex + index) + 1];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      return array[3 * index + 1];
-    }
-  }
-
-
-  @Override
-  public float getAttribNormalZ(String name, int index) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      return tessAttrib[3 * (firstPolyVertex + index) + 2];
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      return array[3 * index + 2];
-    }
-  }
-
-
-  @Override
-  public int getAttribColor(String name, int index) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
-      int color = tessAttrib[firstPolyVertex + index];
-      return PGL.nativeToJavaARGB(color);
-    } else {
-      int[] array = inGeo.iattribs.get(name);
-      return PGL.nativeToJavaARGB(array[index]);
-    }
-  }
-
-
-  @Override
-  public float[] getAttrib(String name, int index, float[] values) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      if (values == null || values.length < attrib.tessSize) values = new float[attrib.tessSize];
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      PApplet.arrayCopy(tessAttrib, attrib.tessSize * tessIdx, values, 0, attrib.tessSize);
-    } else {
-      if (values == null || values.length < attrib.size) values = new float[attrib.size];
-      float[] array = inGeo.fattribs.get(name);
-      PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
-    }
-
-    return values;
-  }
-
-
-  @Override
-  public int[] getAttrib(String name, int index, int[] values) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      if (values == null || values.length < attrib.tessSize) values = new int[attrib.tessSize];
-      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      PApplet.arrayCopy(tessAttrib, attrib.tessSize * tessIdx, values, 0, attrib.tessSize);
-    } else {
-      if (values == null || values.length < attrib.size) values = new int[attrib.size];
-      int[] array = inGeo.iattribs.get(name);
-      PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
-    }
-
-    return values;
-  }
-
-
-  @Override
-  public boolean[] getAttrib(String name, int index, boolean[] values) {
-    VertexAttribute attrib = polyAttribs.get(name);
-    if (attrib == null)
-      throw new RuntimeException("Trying to get values of non existing attribute");
-
-    if (root.tessUpdate) {
-      if (values == null || values.length < attrib.tessSize) values = new boolean[attrib.tessSize];
-      byte[] tessAttrib = tessGeo.bpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      for (int i = 0; i < attrib.tessSize; i++) {
-        values[i] = (tessAttrib[tessIdx + i]!=0);
-      }
-    } else {
-      if (values == null || values.length < attrib.size) values = new boolean[attrib.size];
-      byte[] array = inGeo.battribs.get(name);
-      for (int i = 0; i < attrib.size; i++) {
-        values[i] = (array[attrib.size * index + i]!=0);
-      }
-    }
-
-    return values;
-  }
-
-
-  @Override
-  public void setAttribPosition(String name, int index, float x, float y, float z) {
-    if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribPosition()");
-      return;
-    }
-
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.POSITION, PGL.FLOAT, 3);
-    if (attrib == null)
-      throw new RuntimeException("Trying to set values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      tessAttrib[4 * tessIdx + 0] = x;
-      tessAttrib[4 * tessIdx + 1] = y;
-      tessAttrib[4 * tessIdx + 2] = z;
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      array[3 * index + 0] = x;
-      array[3 * index + 1] = y;
-      array[3 * index + 2] = z;
-      markForTessellation();
-    }
-  }
-
-
-  @Override
-  public void setAttribNormal(String name, int index, float nx, float ny, float nz) {
-    if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribNormal()");
-      return;
-    }
-
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.NORMAL, PGL.FLOAT, 3);
-    if (attrib == null)
-      throw new RuntimeException("Trying to set values of non existing attribute");
-
-    if (root.tessUpdate) {
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      tessAttrib[3 * tessIdx + 0] = nx;
-      tessAttrib[3 * tessIdx + 1] = ny;
-      tessAttrib[3 * tessIdx + 2] = nz;
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      array[3 * index + 0] = nx;
-      array[3 * index + 1] = ny;
-      array[3 * index + 2] = nz;
-      markForTessellation();
-    }
-  }
-
-
-  @Override
-  public void setAttribColor(String name, int index, int color) {
-    if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribColor()");
-      return;
-    }
-
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.COLOR, PGL.INT, 1);
-    if (attrib == null)
-      throw new RuntimeException("Trying to set values of non existing attribute");
-
-    if (root.tessUpdate) {
-      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
-      tessAttrib[firstPolyVertex + index] = PGL.javaToNativeARGB(color);
-    } else {
-      float[] array = inGeo.fattribs.get(name);
-      array[index] = PGL.javaToNativeARGB(color);
-      markForTessellation();
-    }
-  }
-
-
-  @Override
-  public void setAttrib(String name, int index, float... values) {
-    if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
-      return;
-    }
-
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.FLOAT, values.length);
-    if (attrib == null)
-      throw new RuntimeException("Trying to set values of non existing attribute");
-
-    if (root.tessUpdate) {
-      if (attrib.tessSize != values.length)
-        throw new RuntimeException("Length of values array is different from attribute tesselated size");
-      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      PApplet.arrayCopy(values, 0, tessAttrib, attrib.tessSize * tessIdx, attrib.tessSize);
-    } else {
-      if (attrib.size != values.length)
-        throw new RuntimeException("Length of values array is different from attribute size");
-      float[] array = inGeo.fattribs.get(name);
-      PApplet.arrayCopy(values, 0, array, attrib.size * index, attrib.size);
-      markForTessellation();
-    }
-  }
-
-
-  @Override
-  public void setAttrib(String name, int index, int... values) {
-    if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
-      return;
-    }
-
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.INT, values.length);
-    if (attrib == null)
-      throw new RuntimeException("Trying to set values of non existing attribute");
-
-    if (root.tessUpdate) {
-      if (attrib.tessSize != values.length)
-        throw new RuntimeException("Length of values array is different from attribute tesselated size");
-      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      PApplet.arrayCopy(values, 0, tessAttrib, attrib.tessSize * tessIdx, attrib.tessSize);
-    } else {
-      if (attrib.size != values.length)
-        throw new RuntimeException("Length of values array is different from attribute size");
-      int[] array = inGeo.iattribs.get(name);
-      PApplet.arrayCopy(values, 0, array, attrib.size * index, attrib.size);
-      markForTessellation();
-    }
-  }
-
-
-  @Override
-  public void setAttrib(String name, int index, boolean... values) {
-    if (openShape) {
-      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
-      return;
-    }
-
-    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.BOOL, values.length);
-    if (attrib == null)
-      throw new RuntimeException("Trying to set values of non existing attribute");
-
-    if (root.tessUpdate) {
-      if (attrib.tessSize != values.length)
-        throw new RuntimeException("Length of values array is different from attribute tesselated size");
-      byte[] tessAttrib = tessGeo.bpolyAttribs.get(name);
-      int tessIdx = firstPolyVertex + index;
-      for (int i = 0; i < attrib.tessSize; i++) {
-        tessAttrib[attrib.tessSize * tessIdx + i] = (byte)(values[i]?1:0);
-      }
-    } else {
-      if (attrib.size != values.length)
-        throw new RuntimeException("Length of values array is different from attribute size");
-      byte[] array = inGeo.battribs.get(name);
-      for (int i = 0; i < attrib.size; i++) {
-        array[attrib.size * index + i] = (byte)(values[i]?1:0);
-      }
-      markForTessellation();
-    }
-  }
-
-
-  @Override
   public float getTextureU(int index) {
     if (root.tessUpdate) {
       return tessGeo.polyTexCoords[2 * (firstPolyVertex + index) + 0];
@@ -3026,6 +2637,385 @@ public class PShapeOpenGL extends PShape {
       markForTessellation();
     }
   }
+
+
+  ///////////////////////////////////////////////////////////
+
+  //
+
+  // Attribute getters and setters
+
+
+  public PVector getAttribPosition(String name, int index, PVector vec) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (vec == null) vec = new PVector();
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      vec.x = tessAttrib[4 * tessIdx + 0];
+      vec.y = tessAttrib[4 * tessIdx + 1];
+      vec.z = tessAttrib[4 * tessIdx + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      vec.x = array[3 * index + 0];
+      vec.y = array[3 * index + 1];
+      vec.z = array[3 * index + 2];
+    }
+
+    return vec;
+  }
+
+
+  public float getAttribPositionX(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[4 * (firstPolyVertex + index) + 0];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 0];
+    }
+  }
+
+
+  public float getAttribPositionY(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[4 * (firstPolyVertex + index) + 1];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 1];
+    }
+  }
+
+
+  public float getAttribPositionZ(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[4 * (firstPolyVertex + index) + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 2];
+    }
+  }
+
+
+  public PVector getAttribNormal(String name, int index, PVector vec) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (vec == null) vec = new PVector();
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      vec.x = tessAttrib[3 * tessIdx + 0];
+      vec.y = tessAttrib[3 * tessIdx + 1];
+      vec.z = tessAttrib[3 * tessIdx + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      vec.x = array[3 * index + 0];
+      vec.y = array[3 * index + 1];
+      vec.z = array[3 * index + 2];
+    }
+
+    return vec;
+  }
+
+
+  public float getAttribNormalX(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[3 * (firstPolyVertex + index) + 0];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 0];
+    }
+  }
+
+
+  public float getAttribNormalY(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[3 * (firstPolyVertex + index) + 1];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 1];
+    }
+  }
+
+
+  public float getAttribNormalZ(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      return tessAttrib[3 * (firstPolyVertex + index) + 2];
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      return array[3 * index + 2];
+    }
+  }
+
+
+  public int getAttribColor(String name, int index) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
+      int color = tessAttrib[firstPolyVertex + index];
+      return PGL.nativeToJavaARGB(color);
+    } else {
+      int[] array = inGeo.iattribs.get(name);
+      return PGL.nativeToJavaARGB(array[index]);
+    }
+  }
+
+
+  public float[] getAttrib(String name, int index, float[] values) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      if (values == null || values.length < attrib.tessSize) values = new float[attrib.tessSize];
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      PApplet.arrayCopy(tessAttrib, attrib.tessSize * tessIdx, values, 0, attrib.tessSize);
+    } else {
+      if (values == null || values.length < attrib.size) values = new float[attrib.size];
+      float[] array = inGeo.fattribs.get(name);
+      PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+    }
+
+    return values;
+  }
+
+
+  public int[] getAttrib(String name, int index, int[] values) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      if (values == null || values.length < attrib.tessSize) values = new int[attrib.tessSize];
+      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      PApplet.arrayCopy(tessAttrib, attrib.tessSize * tessIdx, values, 0, attrib.tessSize);
+    } else {
+      if (values == null || values.length < attrib.size) values = new int[attrib.size];
+      int[] array = inGeo.iattribs.get(name);
+      PApplet.arrayCopy(array, attrib.size * index, values, 0, attrib.size);
+    }
+
+    return values;
+  }
+
+
+  public boolean[] getAttrib(String name, int index, boolean[] values) {
+    VertexAttribute attrib = polyAttribs.get(name);
+    if (attrib == null)
+      throw new RuntimeException("Trying to get values of non existing attribute");
+
+    if (root.tessUpdate) {
+      if (values == null || values.length < attrib.tessSize) values = new boolean[attrib.tessSize];
+      byte[] tessAttrib = tessGeo.bpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      for (int i = 0; i < attrib.tessSize; i++) {
+        values[i] = (tessAttrib[tessIdx + i]!=0);
+      }
+    } else {
+      if (values == null || values.length < attrib.size) values = new boolean[attrib.size];
+      byte[] array = inGeo.battribs.get(name);
+      for (int i = 0; i < attrib.size; i++) {
+        values[i] = (array[attrib.size * index + i]!=0);
+      }
+    }
+
+    return values;
+  }
+
+
+  public void setAttribPosition(String name, int index, float x, float y, float z) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribPosition()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.POSITION, PGL.FLOAT, 3);
+    if (attrib == null)
+      throw new RuntimeException("Trying to set values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      tessAttrib[4 * tessIdx + 0] = x;
+      tessAttrib[4 * tessIdx + 1] = y;
+      tessAttrib[4 * tessIdx + 2] = z;
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      array[3 * index + 0] = x;
+      array[3 * index + 1] = y;
+      array[3 * index + 2] = z;
+      markForTessellation();
+    }
+  }
+
+
+  public void setAttribNormal(String name, int index, float nx, float ny, float nz) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribNormal()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.NORMAL, PGL.FLOAT, 3);
+    if (attrib == null)
+      throw new RuntimeException("Trying to set values of non existing attribute");
+
+    if (root.tessUpdate) {
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      tessAttrib[3 * tessIdx + 0] = nx;
+      tessAttrib[3 * tessIdx + 1] = ny;
+      tessAttrib[3 * tessIdx + 2] = nz;
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      array[3 * index + 0] = nx;
+      array[3 * index + 1] = ny;
+      array[3 * index + 2] = nz;
+      markForTessellation();
+    }
+  }
+
+
+  public void setAttribColor(String name, int index, int color) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttribColor()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.COLOR, PGL.INT, 1);
+    if (attrib == null)
+      throw new RuntimeException("Trying to set values of non existing attribute");
+
+    if (root.tessUpdate) {
+      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
+      tessAttrib[firstPolyVertex + index] = PGL.javaToNativeARGB(color);
+    } else {
+      float[] array = inGeo.fattribs.get(name);
+      array[index] = PGL.javaToNativeARGB(color);
+      markForTessellation();
+    }
+  }
+
+
+  public void setAttrib(String name, int index, float... values) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.FLOAT, values.length);
+    if (attrib == null)
+      throw new RuntimeException("Trying to set values of non existing attribute");
+
+    if (root.tessUpdate) {
+      if (attrib.tessSize != values.length)
+        throw new RuntimeException("Length of values array is different from attribute tesselated size");
+      float[] tessAttrib = tessGeo.fpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      PApplet.arrayCopy(values, 0, tessAttrib, attrib.tessSize * tessIdx, attrib.tessSize);
+    } else {
+      if (attrib.size != values.length)
+        throw new RuntimeException("Length of values array is different from attribute size");
+      float[] array = inGeo.fattribs.get(name);
+      PApplet.arrayCopy(values, 0, array, attrib.size * index, attrib.size);
+      markForTessellation();
+    }
+  }
+
+
+  public void setAttrib(String name, int index, int... values) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.INT, values.length);
+    if (attrib == null)
+      throw new RuntimeException("Trying to set values of non existing attribute");
+
+    if (root.tessUpdate) {
+      if (attrib.tessSize != values.length)
+        throw new RuntimeException("Length of values array is different from attribute tesselated size");
+      int[] tessAttrib = tessGeo.ipolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      PApplet.arrayCopy(values, 0, tessAttrib, attrib.tessSize * tessIdx, attrib.tessSize);
+    } else {
+      if (attrib.size != values.length)
+        throw new RuntimeException("Length of values array is different from attribute size");
+      int[] array = inGeo.iattribs.get(name);
+      PApplet.arrayCopy(values, 0, array, attrib.size * index, attrib.size);
+      markForTessellation();
+    }
+  }
+
+
+  public void setAttrib(String name, int index, boolean... values) {
+    if (openShape) {
+      PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setAttrib()");
+      return;
+    }
+
+    VertexAttribute attrib = attribImpl(name, VertexAttribute.OTHER, PGL.BOOL, values.length);
+    if (attrib == null)
+      throw new RuntimeException("Trying to set values of non existing attribute");
+
+    if (root.tessUpdate) {
+      if (attrib.tessSize != values.length)
+        throw new RuntimeException("Length of values array is different from attribute tesselated size");
+      byte[] tessAttrib = tessGeo.bpolyAttribs.get(name);
+      int tessIdx = firstPolyVertex + index;
+      for (int i = 0; i < attrib.tessSize; i++) {
+        tessAttrib[attrib.tessSize * tessIdx + i] = (byte)(values[i]?1:0);
+      }
+    } else {
+      if (attrib.size != values.length)
+        throw new RuntimeException("Length of values array is different from attribute size");
+      byte[] array = inGeo.battribs.get(name);
+      for (int i = 0; i < attrib.size; i++) {
+        array[attrib.size * index + i] = (byte)(values[i]?1:0);
+      }
+      markForTessellation();
+    }
+  }
+
 
   ///////////////////////////////////////////////////////////
 
