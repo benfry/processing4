@@ -1049,80 +1049,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
-  /*
-  protected void addToolMenuItem(JMenu menu, String className) {
-    try {
-      Class<?> toolClass = Class.forName(className);
-      final Tool tool = (Tool) toolClass.newInstance();
-
-      JMenuItem item = new JMenuItem(tool.getMenuTitle());
-
-      tool.init(Editor.this);
-
-      item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          EventQueue.invokeLater(tool);
-        }
-      });
-      menu.add(item);
-
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-
-
-  protected JMenu addInternalTools(JMenu menu) {
-    addToolMenuItem(menu, "processing.app.tools.CreateFont");
-    addToolMenuItem(menu, "processing.app.tools.ColorSelector");
-    addToolMenuItem(menu, "processing.app.tools.Archiver");
-
-    if (Platform.isMacOS()) {
-      addToolMenuItem(menu, "processing.app.tools.InstallCommander");
-    }
-
-    return menu;
-  }
-  */
-
-
-  /*
-  // testing internal web server to serve up docs from a zip file
-  item = new JMenuItem("Web Server Test");
-  item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        //WebServer ws = new WebServer();
-        SwingUtilities.invokeLater(new Runnable() {
-          public void run() {
-            try {
-              int port = WebServer.launch("/Users/fry/coconut/processing/build/shared/reference.zip");
-              Base.openURL("http://127.0.0.1:" + port + "/reference/setup_.html");
-
-            } catch (IOException e1) {
-              e1.printStackTrace();
-            }
-          }
-        });
-      }
-    });
-  menu.add(item);
-  */
-
-  /*
-  item = new JMenuItem("Browser Test");
-  item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        //Base.openURL("http://processing.org/learning/gettingstarted/");
-        //JFrame browserFrame = new JFrame("Browser");
-        BrowserStartup bs = new BrowserStartup("jar:file:/Users/fry/coconut/processing/build/shared/reference.zip!/reference/setup_.html");
-        bs.initUI();
-        bs.launch();
-      }
-    });
-  menu.add(item);
-  */
-
-
   abstract public JMenu buildHelpMenu();
 
 
@@ -2200,50 +2126,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
       }
     }
   }
-
-
-  /*
-  protected void handleFindReference() {
-    String text = textarea.getSelectedText().trim();
-
-    if (text.length() == 0) {
-      statusNotice("First select a word to find in the reference.");
-
-    } else {
-      char[] c = textarea.getText().toCharArray();
-      int after = Math.max(textarea.getSelectionStart(), textarea.getSelectionStop());
-      if (checkParen(c, after, c.length)) {
-        text += "_";
-        System.out.println("looking up ref for " + text);
-      }
-      String referenceFile = mode.lookupReference(text);
-      System.out.println("reference file is " + referenceFile);
-      if (referenceFile == null) {
-        statusNotice("No reference available for \"" + text + "\"");
-      } else {
-        showReference(referenceFile + ".html");
-      }
-    }
-  }
-
-
-  protected void handleFindReference() {
-    String text = textarea.getSelectedText().trim();
-
-    if (text.length() == 0) {
-      statusNotice("First select a word to find in the reference.");
-
-    } else {
-      String referenceFile = mode.lookupReference(text);
-      //System.out.println("reference file is " + referenceFile);
-      if (referenceFile == null) {
-        statusNotice("No reference available for \"" + text + "\"");
-      } else {
-        showReference(referenceFile + ".html");
-      }
-    }
-  }
-  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

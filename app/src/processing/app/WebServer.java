@@ -16,20 +16,17 @@ import java.util.zip.*;
  * <a href="http://j.mp/6BQwpI">this</a> article on java.sun.com.
  */
 public class WebServer {
-
-  /** where worker threads stand idle */
-  static final Vector<Worker> threads = new Vector<>();
-
-  /** max # worker threads */
-  static final int WORKERS = 5;
-
-  /** P5 in decimal; if there are complaints, move to preferences.txt */
-  static final int PORT = 8053;
-
   static final int HTTP_OK = 200;
   static final int HTTP_NOT_FOUND = 404;
   static final int HTTP_BAD_METHOD = 405;
 
+  /** where worker threads stand idle */
+  private final Vector<Worker> threads = new Vector<>();
+
+  /** max # worker threads */
+  static final int WORKERS = 5;
+
+  private final int port;
   private final ZipFile zip;
   private final Map<String, ZipEntry> entries;
 
@@ -38,8 +35,10 @@ public class WebServer {
   static final byte[] EOL = { (byte) '\r', (byte) '\n' };
 
 
-  public WebServer(String zipPath) throws IOException {
-    zip = new ZipFile(zipPath);
+  public WebServer(File zipFile, int port) throws IOException {
+    this.zip = new ZipFile(zipFile);
+    this.port = port;
+
     entries = new HashMap<>();
     Enumeration<? extends ZipEntry> en = zip.entries();
     while (en.hasMoreElements()) {
@@ -57,7 +56,7 @@ public class WebServer {
 
     new Thread(() -> {
       try {
-        ServerSocket ss = new ServerSocket(PORT);
+        ServerSocket ss = new ServerSocket(port);
         while (true) {
           Socket s = ss.accept();
           synchronized (threads) {
@@ -76,6 +75,11 @@ public class WebServer {
         e.printStackTrace();
       }
     }).start();
+  }
+
+
+  public String getPrefix() {
+    return "http://localhost:" + port + "/";
   }
 
 
@@ -111,12 +115,12 @@ public class WebServer {
         // go back in wait queue if there's fewer
         // than numHandler connections.
         socket = null;
-        synchronized (WebServer.threads) {
-          if (WebServer.threads.size() >= WebServer.WORKERS) {
+        synchronized (threads) {
+          if (threads.size() >= WebServer.WORKERS) {
             // too many threads, exit this one
             return;
           } else {
-            WebServer.threads.addElement(this);
+            threads.addElement(this);
           }
         }
       }
@@ -320,7 +324,7 @@ public class WebServer {
    */
   static public void main(String[] args) {
     try {
-      new WebServer(args[0]);
+      new WebServer(new File(args[0]), 8053);
     } catch (IOException e) {
       e.printStackTrace();
     }

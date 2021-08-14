@@ -1,126 +1,37 @@
-1276 (4.0a7)
-X really chatty console messages for people with old settings directories
-X   ignore 'debug' entry in prefs dir if it's a leftover DebugMode directory
-X IDE cursor position on Windows goes weird if display scaling used
-X   https://github.com/processing/processing4/issues/226
-X cleaning up suggestions.txt handling and related code
-X report of completions being broken
-o   pdex.completion=true doesn't turn on completion,
-o   but pdex.completion.trigger=true does
-X   https://github.com/processing/processing/issues/5691
-X remove code for pulling fonts from JAVA_HOME/lib/fonts
-X   no longer exists in Java 11
-o exporting on Linux is setting the wrong path? or an extra subfolder is used?
-X   https://github.com/processing/processing/issues/6182
-X   checked, seems to be working
-o fix height of font size dropdown in prefs (why one pixel off?)
-X   file prefs combo box issue
-o   https://github.com/processing/processing4/issues/232
-X change Messages.loge() to Messages.err()
-X only call errorTable.updateTheme() if it's not null
-X update EditorFooter.updateMode() to EditorFooter.updateTheme()
-X   add it to the code called by Editor.updateTheme()
-X implement cmd/ctrl-up and cmd/ctrl-down (shift version was there already, weird)
-X   standard key shortcuts on macOS https://support.apple.com/en-us/HT201236
-X update to JDK 11.0.12+7
-X rewrite download handler to just use a simple <get>
-X   remove the rest of the jre downloader code
-o handleNew() returns an Editor object
-o   unlikely to break anything, but it is a signature change
-X   nope, nevermind, not gonna do it
+1277 (4.0b2)
+X remove translated URLs that are not actually translated
+X   entries in the Help menu were going to ancient links
+X   https://github.com/processing/processing4/issues/250
+X Switch to getModifiersEx() in processing.app
+X   https://github.com/processing/processing4/issues/67
+X deal with getFontMetrics() deprecation warning in EditorToolbar
 
-install from pdex files
-X initial code to install a contrib from a pdex file
-X   test to make sure it's behaving properly
-X finish getting pdex files to install, now with actual feedback
-X prompt before installing extensions to pde?
-X show progress dialog while installing extensions
-
-Sam updates
-X can we get rid of pdexEnabled? does the current code work w/ java tabs?
-X   https://github.com/processing/processing4/issues/157
-X   https://github.com/processing/processing4/pull/230
-
-cleaning
-o look into LCD rendering problems w/ Java (see if Lion still a problem)
-o   fonts were showing up with very different fatness
-o put stdout/stderr into ~/Library/Logs
-o   and have a .log extension so it can be browsed properly
-o   need to make sure that it's ok to write to logs dir..
-o     probably being removed from future OS X versions
+_ make the call on the launcher setting for Linux
+_   https://github.com/processing/processing4/issues/247
 
 
-before alpha 7/beta 1
-_ update the README for alpha 6 (and this release too, when ready)
+highest
+_ update the README.md in the root for alpha 6 and beta 1
+_ update https://github.com/processing/processing4/wiki/Changes-in-4.0
+_ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
 
-_ need icons for .pde, .pdex, .pdez
-
-_ don't allow "Show Sketch Folder" for untitled sketches
-
-sketch/launching
-X should it be pskz, pcbz? psk for the sketch file to double-click?
-X   pdez as a sketch bundle?
-X launch/psk files/import from web editor (more details below)
-X cleaning up the temp file handling
-X   'show sketch folder' weird when in temp folder
-X     ask to save first (sketch has not been saved yet)
-o     or make the temp folder part of the sketchbook
-X   same with adding files to an unsaved sketch, do we block that?
-X some type of sketch archive format for posting examples (.psk?)
-X   would be nice to open a sketch directly from a zip file
-X   https://github.com/processing/processing/issues/73
-o   maybe just open from a zip file, since psk doesn't help anything
-X don't let people into the /tmp folder for sketches
-o   don't use tmp folder for sketches?
-X   restrict more things like "show sketch folder"
-X   don't allow adding files w/o saving
-o   others?
-o also have a means of importing sketches
-o   https://github.com/processing/processing/issues/3987
-o   add means to import .zip files from file/url into sketchbook, library, etc.
-o   super easy given current code implementation, might help usability
-X how are file associations handled in Linux? (for .pde, .psk)
-_   add issue for implementing the Linux file associations in install.sh
 _ what to double-click when opening p5 projects (.pdp?)
 _   lack of a project file makes this a little bit of a headache
 _   dropping a sketch folder onto the PDE should also be implemented
 _ refresh option for sketchbook (bottom of window)
 _ import option for sketchbook (button to select files/folders/etc)
 
-examples
-o keep examples.zip in a zip file? (5000 files @ 30 MB instead of 15 MB zip)
-o   mark examples as untitled (rather than read-only)
-o   maybe even pull these directly from the zip file?
-X disallow add file to sketch, export, export application
-X   pretty much anything inside the sketch?
-o   but don't do this with untitled, cuz it kinda stinks
-o   this is too weird--just put examples into individual zip files
-o   mark example files as untitled
-o   though will that require the sketch to be saved before export?
-X   https://github.com/processing/processing/issues/2459
-_ put the reference (and examples?) into .zip files
-_   unzipping the app takes forever
-_   see the 'examples' section below
-_   also see several notes below re: examples
-_ psk files, doing that for examples
+_ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
-_ load examples from zip files
 _   https://github.com/processing/processing/issues/182
-_ don't make examples read-only
-_   just do them from psk filess
 _ examples window sketches should load in proper environment
+_   if Java Mode is in front, and user double-clicks another Mode's entry, what happens?
 _ write build.xml file to automatically update the examples
-_ see how library installation goes, then possibly do same w/ examples
 _ when adding a new library, its examples aren't added to the list until restart
-
 
 _ key shortcuts broken on Katherine's laptop
 _   try with a clean user account
 X   double-check on other Big Sur machines (tried on VMware, was fine)
-
-_ dealing with reference.zip and web server
-_   web server confirmed to be working, but should check w/ new docs
-
 
 _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
@@ -150,26 +61,8 @@ _   Space Grotesk and Mono?
 _     https://fonts.google.com/specimen/Space+Mono
 _     https://fonts.google.com/specimen/Space+Grotesk
 
-_ macosx vs macosx64 in JavaFX
-_   the latter is making the export fail because it won't embed a Java VM
-_   may be because it's exporting twice and overwriting? or 64 takes precedence?
-_ what should macos-aarch64 be called?
-
-_ Remove usage of com.sun.* in JavaFX library
-_   https://github.com/processing/processing4/issues/208
 _ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
-
-may be fixed
-_ Undo feature may have undesired results (4.0a4)
-_   https://github.com/processing/processing/issues/4775
-_ HDPI support GNOME desktop
-_   https://github.com/processing/processing/issues/6059
-
-_ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
-_ when exporting an app, run xattr on it to handle "app is damaged" errors?
-_   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
-_   https://github.com/processing/processing/issues/4214
 
 _ when lib downloads (batik) go dead, fallback to the download.processing.org version
 _   or for now, tell users how to do it manually
@@ -184,11 +77,21 @@ _ was looking crunchy on low-dpi screen set to 125%
 _   was this due to the args change in alpha 5?
 
 
-before 4.x final
+design
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
-_ using svg images for res-indep icons/gui
+_ welcome screen is a mess
+_ need icons for .pde, .pdex, .pdez
+_ core/src/icon-NN.png should be the exported application icon
+_   currently it's the p5 icon since the export just looks black
+_ also lib/icons has the pde icon set and the foundation icon (for contribs)
+_ use svg images for res-indep icons/gui?
 _   https://stackoverflow.com/a/2495712
+_   (built and tested a version of this code if we want to use it)
+
+
+before 4.x final
+_ turn off javafx web if not using
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
@@ -197,6 +100,11 @@ _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _ change help menu links to go to newer FAQ and the rest
 _ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_   macosx vs macosx64 in JavaFX
+_     the latter is making the export fail because it won't embed a Java VM
+_     may be because it's exporting twice and overwriting? or 64 takes precedence?
+_   what should macos-aarch64 be called?
+_   Export Application can use nicer names, the libs thing is trickier
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
@@ -204,19 +112,14 @@ _ Switch to getModifiersEx() in `processing.app`
 _   https://github.com/processing/processing4/issues/67
 _ command line complaints
 _   https://github.com/processing/processing/issues/6129
-_ remove the JRE Downloader
-_   https://github.com/processing/processing4/issues/155
 _ editor breakpoints out of the .pde files
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
-_ Add ability to move ~/.processing directory
-_   use ~/.config as parent, or $XDG_CONFIG_HOME
-o   https://github.com/processing/processing/issues/6115 (moved)
-_   https://github.com/processing/processing4/issues/203
 _ remove jai_imageio.jar from MovieMaker
 _   also clean out the other unused class files and src
 
 decisions before final 4.0 release
+_ can we compress jdk/Contents/Home/legal into a single zip?
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
 _   now with a release 9 to cover Big Sur
@@ -232,6 +135,10 @@ _   then pass through the source to update licenses
 _   add Processing Foundation as 2012-15
 _   update license info to state gplv2 not v3
 _   run through that online license checker
+_ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
+_ when exporting an app, run xattr on it to handle "app is damaged" errors?
+_   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
+_   https://github.com/processing/processing/issues/4214
 
 after initial 4.0 release
 _ startup is so incredibly slow
@@ -251,7 +158,6 @@ _ detach sketch name and folder name (use sketch.properties)
 _   better for git, etc
 _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
-
 
 
 windows
@@ -275,14 +181,6 @@ _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
 
 
-web/docs
-_ create a processing4-docs repo
-_   check with Casey re: shallow clone or approach
-_ show the recommended sw version for users' platform on the download page
-
-
-_ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
-_   https://github.com/processing/processing4/issues/9
 _ i18n support for Modes
 _   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
 _ update installation guide for Linux
@@ -316,8 +214,6 @@ _   https://github.com/processing/processing/issues/5786
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
 _   https://github.com/processing/processing/pull/5642
-_ sketch window resets position after each run (regression from 3.4?)
-_   https://github.com/processing/processing/issues/5781
 _ errors inside setup() aren't coming through at all?
 _   seen in Eclipse; have to turn on the debugger... same as #4703?
 
@@ -552,8 +448,6 @@ _ find in reference for copy() (on image) tries to open PVector.copy()
 _   might need disambiguation pages?
 _   if a reference page is missing, throws a bunch of exceptions
 _   i.e. PVector.copy() not in the reference
-_ local web server to run reference from .zip?
-_   no more gazillion file nastiness
 _ yahoo search example is out of date (included in the examples? the book?)
 _ stop() to shut down a sketch (but not quit/close window)
 _   actually pause/resume
@@ -1130,6 +1024,8 @@ _   don't re-copy JRE into work folder if already exists
 _   implement a splash screen
 
 others
+_ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
+_   https://github.com/processing/processing4/issues/9
 _ disable "notifications" prompt on startup for macOS
 _   https://github.com/processing/processing4/issues/234
 _   we're not posting any, can we suppress the "allow notifications" message?
@@ -1165,10 +1061,8 @@ _   https://github.com/processing/processing/issues/186
 
 DIST / Linux
 
-_ Processing is named processing-app-Base in Gnome 3
-_   https://github.com/processing/processing/issues/2534
-_ not being able to make a link to the processing app
-_   argh.. more path and shell issues..
+_ update install.sh for .pdex and .pdez file associations
+_   https://github.com/processing/processing4/issues/239
 
 
 

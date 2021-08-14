@@ -246,7 +246,12 @@ public class StringDict {
     }
   }
 
-
+  /** 
+   * Return the internal array being used to store the keys.
+   * 
+   * @webref stringdict:method
+   * @webBrief Return the internal array being used to store the keys
+   */
   public Iterable<String> keys() {
     return new Iterable<String>() {
 

@@ -1,10 +1,10 @@
-1276 (4.0a7)
+1277 (4.0b2)
+X fix apparent problem in PShape with QUADRATIC_VERTEX (wrong vertex index)
 
 
-contributions
-X PShape.scale() not working with PShape.resetMatrix() when P2D renderer is used
-X   https://github.com/processing/processing4/issues/217
-X   https://github.com/processing/processing4/pull/225
+contribs
+X Remove two redundant variable assignments in PShader
+X   https://github.com/processing/processing4/pull/172
 
 
 _ put opengl libs for core into platform-specific subfolders?
@@ -16,23 +16,6 @@ _   surface.setSize() sadness etc
 _   https://github.com/processing/processing4/issues/162
 _   https://github.com/processing/processing4/issues/186
 _   https://github.com/processing/processing/issues/4129
-
-
-
-should be fixed in 4.x (close/lock these 3.x issues with final 4.0 release)
-X AppKit errors from P2D/P3D
-X   https://github.com/processing/processing/issues/5880
-X Export Application broken in Processing 3.5.4 when using P2D or P3D renderers
-X   may be a JOGL bug, fixed by the 2.4 RC (therefore fixed in 4.x already?)
-X   https://github.com/processing/processing/issues/5983
-X Cannot run rotateZ() within the PShape class
-X   https://github.com/processing/processing/issues/5770
-_ Profile GL4bc is not available on X11GraphicsDevice
-_   https://github.com/processing/processing/issues/6160
-_   https://github.com/processing/processing/issues/6154
-_ Profile GL3bc is not available on X11GraphicsDevice
-_   https://github.com/processing/processing/issues/5476
-
 
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
@@ -575,6 +558,8 @@ _   https://github.com/processing/processing/issues/1596
 
 FX2D / Issues
 
+_ Remove usage of com.sun.* in JavaFX library
+_   https://github.com/processing/processing4/issues/208
 _ many shift- keys not working properly in FX2D (added a test sketch)
 _   https://github.com/processing/processing/issues/5317
 _ Hitting ESC in FX2D app on macOS throws IllegalStateException

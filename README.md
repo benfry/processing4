@@ -90,6 +90,12 @@ If you need to go back to Java 8 (i.e. to build Processing 3), you can use:
 
 On Windows and Linux, you can set `JAVA_HOME` to point at the installation the way you would any other environment variable.
 
+On Linux (Ubuntu 20.04 in particular), the headless version of OpenJDK may be installed by default. If so, you may get errors when trying to run tests in core:
+
+    java.lang.UnsatisfiedLinkError: Can't load library: /usr/lib/jvm/java-11-openjdk-amd64/lib/libawt_xawt.so
+
+If so, use `sudo apt install openjdk-11-jdk` to install a full version. (You could also make use of the version downloaded by Processing itself to avoid duplication, but that's a little trickier to get everything bootstrapped and (sym)linked properly.)
+
 And again, we'll have more complete instructions later once the dust settles.
 
 ### Eclipse

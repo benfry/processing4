@@ -1,3 +1,110 @@
+# Processing 4.0 beta 1
+
+*Revision 1276 – 9 August 2021*
+
+Celebrating the 20th anniversary of the very first Processing release (revision 0001) which was first posted to be shared as part of a workshop in Japan at Musashino Art University (https://dbn.media.mit.edu/workshops/musabi/). This is the 277th release.
+
+The primary goal for Processing 4 is to keep everyone's code running, even as operating systems, hardware, and hairlines continue to change.
+
+This beta release will become the default download on the site, which means that it is more stable, usable, and better than the 3.5.4 release from January 2020. It's hard to remember what things were like in January 2020. But if you must use pre-pandemic software, we'll be keeping the release online.
+
+
+## Highlights for Processing 4
+
+Here are some highlights for Processing 4, since this will be the first time a lot of people are taking 4.0 for a spin:
+
+* There's a new Movie Maker that creates MP4s and Animated GIFs!
+
+* You can bundle sketches as double-clickable `.pdez` files and Libraries/Modes/Tools as `.pdex` files for easy sharing and installation.
+
+* We're using Java 11, which should be faster, more up to date, and a lot more compatible with newer machines.
+
+* There have been many updates for the Video and Sound libraries as we chase Apple's ever-changing guidelines for what constitutes “safe” software.
+
+* For users more experienced with Java, you can now use newer language features! Sam Pottinger rewired the preprocessor (and brought us Java 11 support as well).
+
+
+## Changes since alpha 6
+
+A lot has changed! Trying to get everything in under the wire as we work to finalize 4.0.
+
+
+### Features and Updates
+
+* We've started work on refreshing the design. This round has a new set of colors, icons, a splash screen, and more. If you like them, great! If not, please hold your complaints. The internet doesn't need more negativity! We still have a lot of work to do, and we think you'll be happy with the final result.
+
+* It's now possible to bundle sketches into a single file to be loaded inside the PDE. This is done with `.pdez` files, which is a sketch folder saved as a `.zip` but with the extension changed to `.pdez`. This means you can post a sketch on the web as a `.pdez`, and someone with Processing can click the link and have it load directly in the PDE. [#73](https://github.com/processing/processing/issues/73), [#3987](https://github.com/processing/processing/issues/3987)
+
+* Similar to `.pdez` files, you can install Libraries, Modes, Tools, and Example sets (things that would normally be installed with the Contribution Manager) by renaming their `.zip` file to `.pdez`. Double-clicking a `.pdez` file will open it with Processing, and ask the user whether they'd like to install it.
+
+* It's now possible to do code completion and refactoring even when `.java` tabs are included in a sketch. Thanks Sam! [#157](https://github.com/processing/processing4/issues/157), [#230](https://github.com/processing/processing4/pull/230)
+
+* Moved the preferences to `~/.config/processing` on Linux instead of `~/.processing`. This means your settings will be reset, but for most, that will be more of a plus with 4.x. [#203]( https://github.com/processing/processing4/issues/203)
+
+* Initial update of the splash screen and icons. These still need some work: the icons are too muddy at smaller sizes, for instance.
+
+* The Welcome screen has been reset, so folks will see it again. We haven't made a decision on the Welcome screen for the final 4.0, but plan for it to be more useful than what's there now.
+
+* “Show Sketch Folder”, “Add File”, and “Export to Application” now require Untitled or Read-Only sketches to be saved first, which avoids a weird situation where the user is dealing with files in hidden temporary folders. [#2459](https://github.com/processing/processing/issues/2459)
+
+* The reference for Java Mode is now served up from a web server that lives inside the PDE. This means that the download has just a single file for the reference, instead of thousands of tiny `.html` files. Far fewer things to copy makes the installation process much smoother.
+
+
+### Bug Fixes
+
+* Really chatty console messages for longtime users who had older (like 2.x) settings files still on their machine.
+
+* IDE cursor position on Windows was going weird if display scaling used. [#226](https://github.com/processing/processing4/issues/226)
+
+* Only call `errorTable.updateTheme()` if the Mode is using an Error Table (Python was not).
+
+* `PShape.scale()` not working with `PShape.resetMatrix()` when P2D renderer is used. [#217](https://github.com/processing/processing4/issues/217), [#225](https://github.com/processing/processing4/pull/225)
+
+
+### Should Be Fixed
+
+Several things that should no longer be a problem based on updates we've done in 4.x, but not necessarily verified 100%.
+
+* Undo feature may have undesired results (Fixed in 4.0a4) [#4775](https://github.com/processing/processing/issues/4775)
+
+* HiDPI support for GNOME desktop. [#6059](https://github.com/processing/processing/issues/6059)
+
+* AppKit errors from P2D/P3D. [#5880](https://github.com/processing/processing/issues/5880)
+
+* Export Application broken in Processing 3.5.4 when using P2D or P3D renderers. [#5983](https://github.com/processing/processing/issues/5983)
+
+* Cannot run `rotateZ()` within the `PShape` class. [#5770](https://github.com/processing/processing/issues/5770)
+
+* `Profile GL4bc is not available on X11GraphicsDevice` error fixed with new JOGL release. [#6160](https://github.com/processing/processing/issues/6160), [#6154](https://github.com/processing/processing/issues/6154).
+
+* `Profile GL3bc is not available on X11GraphicsDevice` should also be fixed. [#5476](https://github.com/processing/processing/issues/5476)
+
+
+### Internal Changes
+
+Things you're unlikely to notice, but in case something seems off, it's better to make note of them in case you see a related problem pop up.
+
+* Now using JDK 11.0.12+7.
+
+* Cleaning up `suggestions.txt` handling and related code.
+
+* Removed code for pulling fonts from `JAVA_HOME/lib/fonts`, because it no longer exists in Java 11.
+
+* Update `EditorFooter.updateMode()` to `EditorFooter.updateTheme()` and add it to the code called by `Editor.updateTheme()`
+
+* Removed the JRE Downloader, because it's no longer necessary. [#155](https://github.com/processing/processing4/issues/155)
+
+* Changed `Messages.loge()` to `Messages.err()`.
+
+
+### Known Issues
+
+* Support for `.pdez` and `.pdex` is not yet complete on Linux. Please help! [#239](https://github.com/processing/processing4/issues/239)
+
+* Have I mentioned that the design of the icons, theme, layout, etc aren't finished?
+
+
+
 # Processing 4.0 alpha 6
 
 *Revision 1275 – 10 July 2021*

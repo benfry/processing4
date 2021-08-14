@@ -710,8 +710,8 @@ public class JavaBuild {
       File resourcesFolder = new File(contentsFolder, "Resources");
       Util.copyDir(new File(contentsOrig, "Resources/en.lproj"),
                    new File(resourcesFolder, "en.lproj"));
-      Util.copyFile(mode.getContentFile("application/sketch.icns"),
-                    new File(resourcesFolder, "sketch.icns"));
+      Util.copyFile(mode.getContentFile("application/application.icns"),
+                    new File(resourcesFolder, "application.icns"));
 
     } else if (exportPlatform == PConstants.LINUX) {
       if (embedJava) {
@@ -940,7 +940,7 @@ public class JavaBuild {
       File exeFile = new File(destFolder, sketch.getName() + ".exe");
       config.addChild("outfile").setContent(exeFile.getAbsolutePath());
 
-      File iconFile = mode.getContentFile("application/sketch.ico");
+      File iconFile = mode.getContentFile("application/application.ico");
       config.addChild("icon").setContent(iconFile.getAbsolutePath());
 
       XML clazzPath = config.addChild("classPath");

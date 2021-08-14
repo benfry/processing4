@@ -1,7 +1,7 @@
 # STATUS
 # Status messages (1 file added to sketch, errors, etc)
 status.notice.fgcolor = #161e3f
-status.notice.bgcolor = #7987a0
+status.notice.bgcolor = #8497b8
 status.error.fgcolor = #ffffff
 status.error.bgcolor = #e10c2f
 status.warning.bgcolor = #fed456
@@ -18,20 +18,20 @@ header.text.font = processing.sans,bold,14
 header.text.selected.color = #161e3f
 header.text.unselected.color = #adbcd6
 header.tab.arrow.color = #adbcd6
-header.gradient.top = #105ef7
+header.gradient.top = #1f62d3
 header.gradient.bottom = #2b52f6
-header.tab.selected.color = #e6edfe
-header.tab.unselected.color = #00249f
+header.tab.selected.color = #dae8ff
+header.tab.unselected.color = #0e3266
 header.tab.modified.color = #fff87a
 
 # FOOTER TABS
 footer.text.font = processing.sans,bold,12
-footer.text.selected.color = #e6edfe
+footer.text.selected.color = #dae8ff
 footer.text.unselected.color = #4679ff
 footer.tab.arrow.color = #ffffff
-footer.gradient.top = #29357c
-footer.gradient.bottom = #203076
-footer.tab.selected.color = #2b67f6
+footer.gradient.top = #1e4492
+footer.gradient.bottom = #0f408d
+footer.tab.selected.color = #3369db
 footer.tab.unselected.color = #161e3f
 # updates orange #eb7f15
 footer.updates.color = #fed456
@@ -39,7 +39,7 @@ footer.updates.color = #fed456
 # CONSOLE
 # The font is handled by preferences, so its size/etc are modifiable.
 console.color = #000000
-console.output.color = #a6b0cd
+console.output.color = #a3b1cb
 # text color for errors printed in the console
 console.error.color = #f73641
 
@@ -58,15 +58,15 @@ buttons.bgcolor = #000000
 #divider.size.windows = 2
 
 divider.height = 9
-divider.color = #a6b0cd
+divider.color = #a3b1cb
 divider.dot.diameter = 3
 divider.dot.color = #505050
 
 # TOOLBAR BUTTON TEXT
 toolbar.rollover.font = processing.sans,plain,12
 toolbar.rollover.color = #ffffff
-toolbar.gradient.top = #2b67f6
-toolbar.gradient.bottom = #105ef7
+toolbar.gradient.top = #3369db
+toolbar.gradient.bottom = #1f62d3
 
 # MODE SELECTOR
 #mode.title.font = processing.sans,bold,15
@@ -78,8 +78,8 @@ mode.title.color = #ffffff
 #mode.arrow.width
 #mode.background.color = #3D5362
 # stolen from gradient bottom
-mode.background.color = #105ef7
-mode.outline.color = #9aa6c0
+mode.background.color = #1f62d3
+mode.outline.color = #8497b8
 
 
 # EDITOR - DETAILS
@@ -89,16 +89,16 @@ editor.fgcolor = #000000
 editor.bgcolor = #ffffff
 
 editor.gradient.top = #2b52f6
-editor.gradient.bottom = #29357c
+editor.gradient.bottom = #1e4492
 
 # highlight for the current line
 #editor.linehighlight.color=#e2e2e2
-editor.linehighlight.color=#e6edfe
+editor.linehighlight.color=#dae8ff
 # highlight for the current line
 editor.linehighlight=true
 
 editor.caret.color = #333300
-editor.selection.color = #3cd0ff
+editor.selection.color = #5cd8ff
 
 # area that's not in use by the text (replaced with tildes)
 editor.invalid.style = #7e7e7e,bold
@@ -125,7 +125,7 @@ editor.gutter.text.color = #ffffff
 #editor.gutter.currentline.marker.color = #e27500
 
 # bgcolor for the current (highlighted) line
-editor.gutter.linehighlight.color=#9aa6c0
+editor.gutter.linehighlight.color=#8497b8
 
 # left- and right-hand gutter color
 editor.gutter.bgcolor = #2b52f6
@@ -136,7 +136,7 @@ editor.gutter.bgcolor = #2b52f6
 editor.gutter.padding = 3
 
 # squiggly line underneath errors in the editor
-editor.error.underline.color = #f63943
+editor.error.underline.color = #ff6261
 # squiggly line underneath warnings
 editor.warning.underline.color = #fed456
 # lines next to the scrollbar showing where errors are located
@@ -161,7 +161,7 @@ errors.selection.warning.bgcolor = #FDF2E7
 errors.indicator.error.color = #9E0A0A
 errors.indicator.warning.color = #EF8115
 
-manager.tab.selected.color = #e6edfe
+manager.tab.selected.color = #dae8ff
 manager.tab.unselected.color = #2d4251
 manager.tab.text.font = processing.sans,bold,14
 manager.tab.text.selected.color = #000000

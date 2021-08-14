@@ -52,9 +52,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1276;
+  static private final int REVISION = 1277;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1276"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1277"; //$NON-NLS-1$
 
   static final public String SKETCH_BUNDLE_EXT = ".pdez";
   static final public String CONTRIB_BUNDLE_EXT = ".pdex";
@@ -254,9 +254,9 @@ public class Base {
 
   static private void handleWelcomeScreen(Base base) {
     boolean sketchbookPrompt = false;
-    if (Preferences.getBoolean("welcome.show")) {
+    if (Preferences.getBoolean("welcome.four.beta.show")) {
       // only ask once about split sketchbooks
-      if (!Preferences.getBoolean("welcome.seen")) {
+      if (!Preferences.getBoolean("welcome.four.beta.seen")) {
         // Check if there's a 2.0 sketchbook present
         String oldPath = Preferences.getOldSketchbookPath();
         if (oldPath != null) {
@@ -277,7 +277,7 @@ public class Base {
 
     // Needs to be shown after the first editor window opens, so that it
     // shows up on top, and doesn't prevent an editor window from opening.
-    if (Preferences.getBoolean("welcome.show")) {
+    if (Preferences.getBoolean("welcome.four.beta.show")) {
       try {
         new Welcome(base, sketchbookPrompt);
       } catch (IOException e) {
@@ -1966,8 +1966,8 @@ public class Base {
         if (!settingsFolder.mkdirs()) {
           Messages.showError("Settings issues",
                              "Processing cannot run because it could not\n" +
-                             "create a folder to store your settings.\n" +
-                             settingsFolder.getAbsolutePath(), null);
+                             "create a folder to store your settings at\n" +
+                             settingsFolder, null);
         }
       }
     } catch (Exception e) {
