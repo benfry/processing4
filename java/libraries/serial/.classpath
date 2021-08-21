@@ -7,6 +7,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="library/jssc.jar"/>
+	<classpathentry kind="lib" path="library/native-lib-loader-2.3.5.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/processing4-core"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
