@@ -51,7 +51,6 @@ import com.jogamp.nativewindow.ScalableSurface;
 import com.jogamp.nativewindow.util.Dimension;
 import com.jogamp.nativewindow.util.PixelFormat;
 import com.jogamp.nativewindow.util.PixelRectangle;
-import com.jogamp.opengl.GLAnimatorControl;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
@@ -453,45 +452,36 @@ public class PSurfaceJOGL implements PSurface {
 
     animator = new FPSAnimator(window, 60);
     drawException = null;
-    animator.setUncaughtExceptionHandler(new GLAnimatorControl.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(final GLAnimatorControl animator,
-                                    final GLAutoDrawable drawable,
-                                    final Throwable cause) {
-        synchronized (drawExceptionMutex) {
-          drawException = cause;
-          drawExceptionMutex.notify();
-        }
+    animator.setUncaughtExceptionHandler((animator, drawable, cause) -> {
+      synchronized (drawExceptionMutex) {
+        drawException = cause;
+        drawExceptionMutex.notify();
       }
     });
 
-    drawExceptionHandler = new Thread(new Runnable() {
-      public void run() {
-        synchronized (drawExceptionMutex) {
-          try {
-            while (drawException == null) {
-              drawExceptionMutex.wait();
-            }
-            // System.err.println("Caught exception: " + drawException.getMessage());
-            if (drawException != null) {
-              Throwable cause = drawException.getCause();
-              if (cause instanceof ThreadDeath) {
-                // System.out.println("caught ThreadDeath");
-                // throw (ThreadDeath)cause;
-              } else if (cause instanceof RuntimeException) {
-                throw (RuntimeException) cause;
-              } else if (cause instanceof UnsatisfiedLinkError) {
-                throw new UnsatisfiedLinkError(cause.getMessage());
-              } else if (cause == null) {
-                throw new RuntimeException(drawException.getMessage());
-              } else {
-                throw new RuntimeException(cause);
-              }
-            }
-          } catch (InterruptedException e) {
-            return;
+    drawExceptionHandler = new Thread(() -> {
+      synchronized (drawExceptionMutex) {
+        try {
+          while (drawException == null) {
+            drawExceptionMutex.wait();
           }
-        }
+          // System.err.println("Caught exception: " + drawException.getMessage());
+//          if (drawException != null) {
+            Throwable cause = drawException.getCause();
+//            if (cause instanceof ThreadDeath) {
+              // System.out.println("caught ThreadDeath");
+              // throw (ThreadDeath)cause;
+            if (cause instanceof RuntimeException) {
+              throw (RuntimeException) cause;
+            } else if (cause instanceof UnsatisfiedLinkError) {
+              throw new UnsatisfiedLinkError(cause.getMessage());
+            } else if (cause == null) {
+              throw new RuntimeException(drawException.getMessage());
+            } else {
+              throw new RuntimeException(cause);
+            }
+//          }
+        } catch (InterruptedException ignored) { }
       }
     });
     drawExceptionHandler.start();
@@ -500,34 +490,19 @@ public class PSurfaceJOGL implements PSurface {
 
   @Override
   public void setTitle(final String title) {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setTitle(title);
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.setTitle(title));
   }
 
 
   @Override
   public void setVisible(final boolean visible) {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setVisible(visible);
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.setVisible(visible));
   }
 
 
   @Override
   public void setResizable(final boolean resizable) {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setResizable(resizable);
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.setResizable(resizable));
   }
 
 
@@ -539,17 +514,12 @@ public class PSurfaceJOGL implements PSurface {
 
   @Override
   public void setAlwaysOnTop(final boolean always) {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setAlwaysOnTop(always);
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.setAlwaysOnTop(always));
   }
 
 
   protected void initIcons() {
-    IOUtil.ClassResources res = null;
+    IOUtil.ClassResources res;
     if (PJOGL.icons == null || PJOGL.icons.length == 0) {
       // Default Processing icons
       final int[] sizes = { 16, 32, 48, 64, 128, 256, 512 };
@@ -578,7 +548,7 @@ public class PSurfaceJOGL implements PSurface {
   @SuppressWarnings("resource")
   private String resourceFilename(String filename) {
     // The code below comes from PApplet.createInputRaw() with a few adaptations
-    InputStream stream = null;
+    InputStream stream;
     try {
       // First see if it's in a data folder. This may fail by throwing
       // a SecurityException. If so, this whole block will be skipped.
@@ -605,19 +575,16 @@ public class PSurfaceJOGL implements PSurface {
                                        filename + ". Rename the file " +
                                        "or change your code.");
           }
-        } catch (IOException e) { }
+        } catch (IOException ignored) { }
       }
 
       stream = new FileInputStream(file);
-      if (stream != null) {
-        stream.close();
-        return file.getCanonicalPath();
-      }
+      stream.close();
+      return file.getCanonicalPath();
 
       // have to break these out because a general Exception might
       // catch the RuntimeException being thrown above
-    } catch (IOException ioe) {
-    } catch (SecurityException se) { }
+    } catch (IOException | SecurityException ignored) { }
 
     ClassLoader cl = sketch.getClass().getClassLoader();
 
@@ -648,7 +615,7 @@ public class PSurfaceJOGL implements PSurface {
           return filename;
         }
       }
-    } catch (IOException e) { }
+    } catch (IOException ignored) { }
 
     try {
       // attempt to load from a local file, used when running as
@@ -657,30 +624,24 @@ public class PSurfaceJOGL implements PSurface {
         try {
           String path = sketch.dataPath(filename);
           stream = new FileInputStream(path);
-          if (stream != null) {
-            stream.close();
-            return path;
-          }
-        } catch (IOException e2) { }
+          stream.close();
+          return path;
+        } catch (IOException ignored) { }
 
         try {
           String path = sketch.sketchPath(filename);
           stream = new FileInputStream(path);
-          if (stream != null) {
-            stream.close();
-            return path;
-          }
-        } catch (Exception e) { }  // ignored
+          stream.close();
+          return path;
+        } catch (Exception ignored) { }
 
         try {
           stream = new FileInputStream(filename);
-          if (stream != null) {
-            stream.close();
-            return filename;
-          }
-        } catch (IOException e1) { }
+          stream.close();
+          return filename;
+        } catch (IOException ignored) { }
 
-      } catch (SecurityException se) { }  // online, whups
+      } catch (SecurityException ignored) { }  // online, whups
 
     } catch (Exception e) {
       //die(e.getMessage(), e);
@@ -719,7 +680,7 @@ public class PSurfaceJOGL implements PSurface {
       } else {  // doesn't fit
         /*
         // if it fits inside the editor window,
-        // offset slightly from upper lefthand corner
+        // offset slightly from upper left-hand corner
         // so that it's plunked inside the text area
         locationX = editorLocation[0] + 66;
         locationY = editorLocation[1] + 66;
@@ -812,12 +773,7 @@ public class PSurfaceJOGL implements PSurface {
 
 
   public void setLocation(final int x, final int y) {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setTopLevelPosition(x, y);
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.setTopLevelPosition(x, y));
   }
 
 
@@ -912,12 +868,7 @@ public class PSurfaceJOGL implements PSurface {
 
 
   public void requestFocus() {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.requestFocus();
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.requestFocus());
   }
 
 
@@ -971,7 +922,7 @@ public class PSurfaceJOGL implements PSurface {
       int c = graphics.backgroundColor;
       pgl.clearColor(((c >> 16) & 0xff) / 255f,
                      ((c >>  8) & 0xff) / 255f,
-                     ((c >>  0) & 0xff) / 255f,
+                     (c & 0xff) / 255f,
                      ((c >> 24) & 0xff) / 255f);
       pgl.clear(PGL.COLOR_BUFFER_BIT);
     }
@@ -1117,7 +1068,7 @@ public class PSurfaceJOGL implements PSurface {
         break;
     }
 
-    int peCount = 0;
+    int peCount;
     if (peAction == MouseEvent.WHEEL) {
       // Invert wheel rotation count so it matches JAVA2D's
       // https://github.com/processing/processing/issues/3840
@@ -1363,33 +1314,20 @@ public class PSurfaceJOGL implements PSurface {
     final Dimension size = new Dimension(bimg.getWidth(), bimg.getHeight());
     PixelRectangle pixelrect = new PixelRectangle.GenericPixelRect(format, size, 0, false, pixels);
     final PointerIcon pi = disp.createPointerIcon(pixelrect, hotspotX, hotspotY);
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setPointerVisible(true);
-        window.setPointerIcon(pi);
-      }
+    display.getEDTUtil().invoke(false, () -> {
+      window.setPointerVisible(true);
+      window.setPointerIcon(pi);
     });
   }
 
 
   public void showCursor() {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setPointerVisible(true);
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.setPointerVisible(true));
   }
 
 
   public void hideCursor() {
-    display.getEDTUtil().invoke(false, new Runnable() {
-      @Override
-      public void run() {
-        window.setPointerVisible(false);
-      }
-    });
+    display.getEDTUtil().invoke(false, () -> window.setPointerVisible(false));
   }
 
 
