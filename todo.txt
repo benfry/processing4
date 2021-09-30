@@ -6,6 +6,10 @@ X Switch to getModifiersEx() in processing.app
 X   https://github.com/processing/processing4/issues/67
 X deal with getFontMetrics() deprecation warning in EditorToolbar
 
+
+_ add -Dpython.console.encoding=UTF-8 to launcher?
+_   https://github.com/jdf/Processing.py-Bugs/issues/322
+
 _ make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
 
