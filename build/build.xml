@@ -77,8 +77,14 @@
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
+  <!-- moving back to 11.0.11+9 for 4.0 beta 2
+       https://github.com/processing/processing4/issues/249 -->
+  <property name="jdk.update" value="11" />
+  <property name="jdk.build" value="9" />
+  <!--
   <property name="jdk.update" value="12" />
   <property name="jdk.build" value="7" />
+  -->
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
@@ -158,7 +164,16 @@
       <os family="mac" />
     </condition>
 
-    <!-- As of 2021-08-05 things moving from AdoptOpenJDK to Adoptium -->
+    <!-- Java 11.0.11 and earlier is available via AdoptOpenJDK -->
+    <!-- Reverting back to 11.0.11 for beta 2 so that OpenGL will work again -->
+
+    <!--
+      https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jdk_x64_mac_hotspot_11.0.11_9.tar.gz
+    -->
+
+    <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
+
+    <!-- Java 11.0.12 and later are available via Adoptium -->
 
     <!--
       https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.12_7.tar.gz
@@ -168,7 +183,19 @@
       https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
     -->
 
+    <!--
     <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
+    -->
+
+    <!-- Java 17 via Adoptium -->
+
+    <!--
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_mac_hotspot_17_35.pkg
+    -->
+
+    <!--
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
+    -->
 
     <get src="${jdk.download.url}"
          dest="${jdk.tgz.path}"
@@ -177,8 +204,11 @@
 
   </target>
 
-  <!-- Set the version of Java that must be present to build. -->
+  <!-- Set the version of Java 11 that must be present to build. -->
   <property name="jdk.path.macosx" value="macosx/jdk-${jdk.esoteric}+${jdk.build}" />
+
+  <!-- Set the version of Java 17 that must be present to build. -->
+  <!-- <property name="jdk.path.macosx" value="macosx/jdk-${jdk.train}+${jdk.build}" /> -->
 
   <available file="${jdk.path.macosx}" property="macosx_jdk_found" />
 
