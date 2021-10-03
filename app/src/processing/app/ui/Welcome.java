@@ -63,14 +63,14 @@ public class Welcome {
     JCheckBox checkbox = new JCheckBox("Show this message on startup");
     checkbox.setFont(dialogFont);
     // handles the Help menu invocation, and also the pref not existing
-    checkbox.setSelected("true".equals(Preferences.get("welcome.show")));
+    checkbox.setSelected("true".equals(Preferences.get("welcome.four.beta.show")));
     checkbox.addItemListener(new ItemListener() {
       @Override
       public void itemStateChanged(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
-          Preferences.setBoolean("welcome.show", true);
+          Preferences.setBoolean("welcome.four.beta.show", true);
         } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-          Preferences.setBoolean("welcome.show", false);
+          Preferences.setBoolean("welcome.four.beta.show", false);
         }
       }
     });
@@ -122,7 +122,7 @@ public class Welcome {
 
       @Override
       public void handleClose() {
-        Preferences.setBoolean("welcome.seen", true);
+        Preferences.setBoolean("welcome.four.beta.seen", true);
         Preferences.save();
         super.handleClose();
       }
