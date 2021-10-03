@@ -192,7 +192,7 @@ public class PWM {
     }
 
     // set period
-    String fn = fn = String.format("/sys/class/pwm/%s/pwm%d/period", chip, channel);
+    String fn = String.format("/sys/class/pwm/%s/pwm%d/period", chip, channel);
     // convert to nanoseconds
     int ret = NativeInterface.writeFile(fn, String.format("%d", (int)(1000000000 / period)));
     if (ret < 0) {
@@ -200,7 +200,7 @@ public class PWM {
     }
 
     // set duty cycle
-    fn = fn = String.format("/sys/class/pwm/%s/pwm%d/duty_cycle", chip, channel);
+    fn = String.format("/sys/class/pwm/%s/pwm%d/duty_cycle", chip, channel);
     if (duty < 0.0 || 1.0 < duty) {
       System.err.println("Duty cycle must be between 0.0 and 1.0.");
       throw new IllegalArgumentException("Illegal argument");
