@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="/Users/fry/coconut/processing4/java/libraries/svg/library/batik-all-1.14.jar"/>
+	<classpathentry kind="lib" path="library/batik-all-1.14.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/adoptopenjdk-11">
 		<attributes>
 			<attribute name="module" value="true"/>
