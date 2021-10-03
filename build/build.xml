@@ -77,14 +77,22 @@
 
   <property name="jdk.train" value="11" />
   <property name="jdk.version" value="0" />
-  <!-- moving back to 11.0.11+9 for 4.0 beta 2
+
+  <!-- 11.0.10+9 -->
+  <!--
+  <property name="jdk.update" value="10" />
+  <property name="jdk.build" value="9" />
+  -->
+
+  <!-- trying 11.0.11+9 for 4.0 beta 2
        https://github.com/processing/processing4/issues/249 -->
+  <!--
   <property name="jdk.update" value="11" />
   <property name="jdk.build" value="9" />
-  <!--
+  -->
+
   <property name="jdk.update" value="12" />
   <property name="jdk.build" value="7" />
-  -->
 
   <property name="jdk.prefix" value="jdk" />
   <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
