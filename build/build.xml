@@ -803,11 +803,6 @@
     <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
     <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
 
-    <!-- Termporary; these appear to be in error
-         https://github.com/processing/processing4/issues/119 -->
-    <delete file="${unpack.jssc}/natives/windows_64/libjssc.dylib" />
-    <delete file="${unpack.jssc}/natives/windows_32/libjssc.dylib" />
-
     <!-- <unzip src="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
 
     <apply executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
