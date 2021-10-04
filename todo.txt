@@ -18,12 +18,15 @@ X   https://github.com/processing/processing4/pull/258
 X JSSC fix libs and sync with upstream
 X   https://github.com/processing/processing4/issues/119
 X   https://github.com/processing/processing4/pull/229
+_ Workaround for color to appear in fully qualified names
+_   https://github.com/processing/processing4/pull/246
+_   https://github.com/processing/processing4/issues/240
 
 
 beta 2
 
-_ Exported Application broken in 4.0 beta 1 on macOS when using P2D or P3D
-_   https://github.com/processing/processing4/issues/249
+X Exported Application broken in 4.0 beta 1 on macOS when using P2D or P3D
+X   https://github.com/processing/processing4/issues/249
 
 _ mouseButton not reporting correctly in 4.0b1 (Windows and Linux)
 _   https://github.com/processing/processing4/issues/281
@@ -38,10 +41,10 @@ _   https://github.com/jdf/Processing.py-Bugs/issues/322
 _ make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
 
-
 _ "Massachusetts Institue of Technology" typo in loading screen
 _   https://github.com/processing/processing4/issues/254
 _   https://github.com/processing/processing4/issues/254
+
 
 lots of work
 _ Editor cursor position is offset to the right when display scaling >100%
