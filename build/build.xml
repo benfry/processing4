@@ -27,6 +27,9 @@
     </and>
   </condition>
 
+  <property name="examples.dir"
+            location="../../processing-docs/content/examples" />
+
   <target name="ignore-tools">
     <echo message="Ignore the 'Unable to locate tools.jar' message." />
     <echo message="The tools.jar file is not required to build Processing." />
@@ -61,42 +64,43 @@
     <property name="linux.dist" value="linux/processing-${version}-linux-arm64.tgz" />
   </target>
 
-  <!-- Require Java 11 everywhere. -->
-  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java 11 is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v 11`&quot;">
-    <condition>
-      <not>
-        <or>
-          <contains string="${java.version}" substring="11." />
-        </or>
-      </not>
-    </condition>
-  </fail>
-
-  <property name="examples.dir"
-            value="../../processing-docs/content/examples" />
-
   <!-- 11.0.10+9 -->
   <!--
   <property name="jdk.train" value="11" />
-  <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="10" />
+  <property name="jdk.detail" value="${jdk.train}.0.10" />
   <property name="jdk.build" value="9" />
   -->
 
   <!-- 11.0.11+9 -->
   <!--
   <property name="jdk.train" value="11" />
-  <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="11" />
+  <property name="jdk.detail" value="${jdk.train}.0.11" />
   <property name="jdk.build" value="9" />
   -->
 
+  <!-- 11.0.12+7 -->
   <property name="jdk.train" value="11" />
-  <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="12" />
+  <property name="jdk.detail" value="${jdk.train}.0.12" />
   <property name="jdk.build" value="7" />
 
-  <property name="jdk.detail" value="${jdk.train}.${jdk.version}.${jdk.update}" />
+  <!-- 17+35 -->
+  <!--
+  <property name="jdk.train" value="17" />
+  <property name="jdk.detail" value="${jdk.train}" />
+  <property name="jdk.build" value="35" />
+  -->
+
+  <!-- Require Java ${train} everywhere. -->
+  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
+    <condition>
+      <not>
+        <or>
+          <!-- <contains string="${java.version}" substring="${jdk.train}." /> -->
+          <equals arg1="${ant.java.version}" arg2="${jdk.train}" />
+        </or>
+      </not>
+    </condition>
+  </fail>
 
   <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
     <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
@@ -181,7 +185,7 @@
     -->
 
     <!--
-    <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
+    <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
     -->
 
     <!-- Java 11.0.12 and later are available via Adoptium -->
@@ -194,7 +198,7 @@
       https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
     -->
 
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <!-- Java 17 via Adoptium -->
 
