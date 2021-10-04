@@ -179,7 +179,9 @@
       https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jdk_x64_mac_hotspot_11.0.11_9.tar.gz
     -->
 
+    <!--
     <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
+    -->
 
     <!-- Java 11.0.12 and later are available via Adoptium -->
 
@@ -191,9 +193,7 @@
       https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
     -->
 
-    <!--
     <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
-    -->
 
     <!-- Java 17 via Adoptium -->
 
