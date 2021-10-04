@@ -5,6 +5,9 @@ X   https://github.com/processing/processing4/issues/250
 X Switch to getModifiersEx() in processing.app
 X   https://github.com/processing/processing4/issues/67
 X deal with getFontMetrics() deprecation warning in EditorToolbar
+X Exported Application broken in 4.0 beta 1 on macOS when using P2D or P3D
+X   https://github.com/processing/processing4/issues/249
+X   new issue: https://github.com/processing/processing4/issues/284
 
 
 contribs
@@ -24,9 +27,6 @@ _   https://github.com/processing/processing4/issues/240
 
 
 beta 2
-
-X Exported Application broken in 4.0 beta 1 on macOS when using P2D or P3D
-X   https://github.com/processing/processing4/issues/249
 
 _ mouseButton not reporting correctly in 4.0b1 (Windows and Linux)
 _   https://github.com/processing/processing4/issues/281
@@ -64,11 +64,9 @@ features
 _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
-_ add language support to Modes (request from Andres)
+_ add language support to Modes (request and updated PR from Andres)
 _   https://github.com/processing/processing4/issues/236
-o   https://github.com/processing/processing4/pull/14
 _   https://github.com/processing/processing4/pull/237
-_   this was a small change; rebase not really needed since needs rewrite anyway
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
