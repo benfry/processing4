@@ -28,6 +28,9 @@ questions.
 <project name="appbundler" default="package">
     <property environment="env"/>
 
+    <echo message="Note: appbundler should only be built on Mojave or earlier" />
+    <echo message="Please help: https://github.com/processing/processing4/issues/284" />
+
     <!--
     <property file="build.properties"/>
     version=1.0ea
