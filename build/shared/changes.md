@@ -231,7 +231,7 @@ Sneaking a release out the door the morning before our company meeting. Don't te
 
 * Updated JNA from 5.7.0 to 5.8.0.
 
-* Remove the ant binary from the repo, updated the version we're using from 1.8.2 to 1.10.10.
+* Removed the `ant` binary from the repo, and updated the version we're using from 1.8.2 to 1.10.10.
 
 * Rebuilt the `appbundler` tool for macOS to handle some recent changes, and disabled some logging chatter as well.
 
