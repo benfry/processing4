@@ -178,7 +178,6 @@
     </condition>
 
     <!-- Java 11.0.11 and earlier is available via AdoptOpenJDK -->
-    <!-- Reverting back to 11.0.11 for beta 2 so that OpenGL will work again -->
 
     <!--
       https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jdk_x64_mac_hotspot_11.0.11_9.tar.gz
@@ -207,7 +206,7 @@
     -->
 
     <!--
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK17-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
     -->
 
     <get src="${jdk.download.url}"
