@@ -95,10 +95,10 @@
   <property name="jdk.build" value="7" />
 
   <property name="jdk.prefix" value="jdk" />
-  <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
+  <property name="jdk.detail" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
   <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
-    <include name="PlugIns/jdk-${jdk.esoteric}+${jdk.build}/Contents/Home/lib/src.zip" />
+    <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
     <!-- <include name="Java/core/library/libjfxwebkit.dylib" /> -->
   </fileset>
 
@@ -125,7 +125,7 @@
       <property name="target-platform" value="@{platform}" />
       <property name="${target-platform}" value="${target-platform}" />
 
-      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz" />
+      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.tgz" />
 
       <property name="jdk.data.model" value="@{datamodel}" />
 
@@ -135,13 +135,13 @@
       <property name="jfx.path.lib" value="${jfx.path.dist}/lib" />
       -->
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz">
+      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.tgz">
         <not>
           <equals arg1="${target-platform}" arg2="windows" />
         </not>
       </condition>
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.zip">
+      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.zip">
         <equals arg1="${target-platform}" arg2="windows" />
       </condition>
     </sequential>
@@ -213,7 +213,7 @@
   </target>
 
   <!-- Set the version of Java 11 that must be present to build. -->
-  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.esoteric}+${jdk.build}" />
+  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.detail}+${jdk.build}" />
 
   <!-- Set the version of Java 17 that must be present to build. -->
   <!-- <property name="jdk.path.macosx" value="macosx/jdk-${jdk.train}+${jdk.build}" /> -->
@@ -530,7 +530,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk/" />
+    <property name="jdk.dir" value="macosx/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
 
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
@@ -664,22 +664,22 @@
          Unix systems, we need to use <exec executable="cp" ... > instead -->
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/bin"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/jmods"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/conf"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
     </exec>
 
     <property name="contents.dir"
@@ -688,7 +688,7 @@
     <!-- Replace libjli.dylib symlink with actual file.
          Deals with code signing issues on OS X 10.9.5+ -->
     <!--
-    <property name="jli.path" value="${contents.dir}/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/MacOS/libjli.dylib" />
+    <property name="jli.path" value="${contents.dir}/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/MacOS/libjli.dylib" />
     <delete file="${jli.path}" />
     <exec executable="cp">
       <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
@@ -715,9 +715,9 @@
           <fileset dir="${jfx.path.lib}" includes="*.dylib"/>
         </copy>
 
-        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal/openjfx" />
+        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" />
 
-        <copy todir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
+        <copy todir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
           <fileset dir="${jfx.path.dist}/legal" includes="**"/>
         </copy>
 
@@ -825,7 +825,7 @@
       <arg value="--entitlements" />
       <arg value="../ffs.entitlements" />
 
-      <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
+      <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}" />
     </exec>
 
     <!-- codesign can't work inside jars? so instead temporarily unpack the files
@@ -1114,7 +1114,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="jdk-${jdk.esoteric}+${jdk.build}/" />
+    <property name="jdk.dir" value="jdk-${jdk.detail}+${jdk.build}/" />
 
     <exec executable="rsync" dir="linux">
       <arg value="-a" />
@@ -1130,7 +1130,7 @@
 
     <exec executable="rm">
       <arg value="-r"/>
-      <arg line="linux/jdk-${jdk.esoteric}+${jdk.build}"/>
+      <arg line="linux/jdk-${jdk.detail}+${jdk.build}"/>
     </exec>
 
     <!--
@@ -1402,7 +1402,7 @@
            src="${jdk.tgz.path}"
            overwrite="false" />
 
-    <property name="jdk.dir" value="windows/work/jdk-${jdk.esoteric}+${jdk.build}/" />
+    <property name="jdk.dir" value="windows/work/jdk-${jdk.detail}+${jdk.build}/" />
 
     <move file="${jdk.dir}" tofile="windows/work/java" />
 
