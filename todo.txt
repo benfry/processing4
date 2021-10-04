@@ -25,6 +25,10 @@ beta 2
 _ Exported Application broken in 4.0 beta 1 on macOS when using P2D or P3D
 _   https://github.com/processing/processing4/issues/249
 
+_ mouseButton not reporting correctly in 4.0b1 (Windows and Linux)
+_   https://github.com/processing/processing4/issues/281
+_   https://github.com/processing/processing4/issues/283
+
 _ movie maker broken with spaces in path (converted to %20)
 _   https://github.com/processing/processing4/issues/268
 
@@ -49,8 +53,6 @@ _   https://github.com/processing/processing4/issues/194
 investigate
 _ debugger not working
 _   https://github.com/processing/processing4/issues/282
-_ mouseButton not reporting correctly in 4 beta 1
-_   https://github.com/processing/processing4/issues/281
 _ Anti-aliasing/smoothing in createFont when disabled
 _   https://github.com/processing/processing4/issues/278
 X   couldn't reproduce, but probably an issue in there somewhere
