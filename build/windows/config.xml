@@ -74,6 +74,9 @@
     <opt>-Dsun.java2d.ddoffscreen=false</opt>
     <opt>-Dsun.java2d.noddraw=true</opt>
 
+    <!-- https://github.com/jdf/Processing.py-Bugs/issues/322 -->
+    <opt>-Dpython.console.encoding=UTF-8</opt>
+
     <!-- starting in 4.0, require Java 11 -->
     <minVersion>11.0.11</minVersion>
     <!-- increase available memory for PDE X -->

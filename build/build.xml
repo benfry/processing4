@@ -631,6 +631,9 @@
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
 
+      <!-- https://github.com/jdf/Processing.py-Bugs/issues/322 -->
+      <option value="-Dpython.console.encoding=UTF-8" />
+
       <!-- <option value="-agentpath:/Applications/YourKit-Java-Profiler-2021.3.app/Contents/Resources/bin/mac/libyjpagent.dylib=disablestacktelemetry,exceptions=disable" /> -->
 
       <!-- Make it possible to get to JavaFX for Tools, Modes, etc. Not recommended,
