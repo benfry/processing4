@@ -75,26 +75,27 @@
   <property name="examples.dir"
             value="../../processing-docs/content/examples" />
 
-  <property name="jdk.train" value="11" />
-  <property name="jdk.version" value="0" />
-
   <!-- 11.0.10+9 -->
   <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.version" value="0" />
   <property name="jdk.update" value="10" />
   <property name="jdk.build" value="9" />
   -->
 
-  <!-- trying 11.0.11+9 for 4.0 beta 2
-       https://github.com/processing/processing4/issues/249 -->
+  <!-- 11.0.11+9 -->
   <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.version" value="0" />
   <property name="jdk.update" value="11" />
   <property name="jdk.build" value="9" />
   -->
 
+  <property name="jdk.train" value="11" />
+  <property name="jdk.version" value="0" />
   <property name="jdk.update" value="12" />
   <property name="jdk.build" value="7" />
 
-  <property name="jdk.prefix" value="jdk" />
   <property name="jdk.detail" value="${jdk.train}.${jdk.version}.${jdk.update}" />
 
   <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
@@ -667,22 +668,22 @@
          Unix systems, we need to use <exec executable="cp" ... > instead -->
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
     </exec>
 
     <property name="contents.dir"
@@ -691,7 +692,7 @@
     <!-- Replace libjli.dylib symlink with actual file.
          Deals with code signing issues on OS X 10.9.5+ -->
     <!--
-    <property name="jli.path" value="${contents.dir}/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/MacOS/libjli.dylib" />
+    <property name="jli.path" value="${contents.dir}/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/MacOS/libjli.dylib" />
     <delete file="${jli.path}" />
     <exec executable="cp">
       <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
@@ -718,9 +719,9 @@
           <fileset dir="${jfx.path.lib}" includes="*.dylib"/>
         </copy>
 
-        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" />
+        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" />
 
-        <copy todir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
+        <copy todir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
           <fileset dir="${jfx.path.dist}/legal" includes="**"/>
         </copy>
 
