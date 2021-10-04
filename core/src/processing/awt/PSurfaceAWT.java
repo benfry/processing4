@@ -1351,6 +1351,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     if (PApplet.platform == PConstants.MACOS && kind == PConstants.MOVE) {
       kind = PConstants.HAND;
     }
+    //noinspection MagicConstant
     canvas.setCursor(Cursor.getPredefinedCursor(kind));
     cursorVisible = true;
     this.cursorType = kind;
@@ -1385,6 +1386,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     // will be stuck b/c p5 thinks the cursor is set to one particular thing.
     if (!cursorVisible) {
       cursorVisible = true;
+      //noinspection MagicConstant
       canvas.setCursor(Cursor.getPredefinedCursor(cursorType));
     }
   }
