@@ -23,7 +23,7 @@ The full list of changes can be seen in [the release notes for each version](htt
 
 ### Beta 2
 
-* Added a workaround so that `color` could be part of package names.
+* Added a workaround so that `color` can be part of package names, which gets some older code (i.e. toxiclibs) running again.
 
 
 ### Beta 1
