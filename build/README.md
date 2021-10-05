@@ -30,21 +30,6 @@ On Linux (Ubuntu 20.04 in particular), the headless version of OpenJDK may be in
 
 If so, use `sudo apt install openjdk-11-jdk` to install a full version. You could also make use of the JDK that's downloaded by Processing itself to avoid duplication, but that's a little trickier to get everything bootstrapped and (sym)linked properly.
 
-And again, we'll have more complete instructions later once the dust settles.
-
-### Eclipse
-
-If you're using Eclipse, it'll complain about the lack of `jogl-all-src.jar`. Steps to create your own:
-
-    git clone --recurse-submodules git://jogamp.org/srv/scm/jogl.git jogl
-    cd jogl
-    git checkout 0779f229b0e9538c640b18b9a4e095af1f5a35b3
-    zip -r ../jogl-all-src.jar src
-
-Then copy that `jogl-all-src.jar` file to sit next to the `jogl-all.jar` folder inside `/path/to/processing/core/library`.
-
-Using Eclipse isn't supported, and I've switched to IntelliJ. However, IntelliJ is baffling enough that I don't have good instructions yet on how to develop inside there. If you and IntelliJ have a better relationship than I do, [please help!](https://github.com/processing/processing4/issues/275)
-
 
 # The Long Version
 
@@ -204,3 +189,22 @@ Note that one will need to complete the `jdk-...` string to be something like `j
 This is not strictly required especially if you are using your own app build.
 
 Eventually we'll want to sign [Windows releases](https://github.com/processing/processing4/issues/25), and [exported applications](https://github.com/processing/processing4/issues/173). If you have experience with this, please help!
+
+
+## Using an IDE for development (Eclipse or IntelliJ)
+
+### Eclipse
+
+If you're using Eclipse, it'll complain about the lack of `jogl-all-src.jar`. Steps to create your own:
+
+    git clone --recurse-submodules git://jogamp.org/srv/scm/jogl.git jogl
+    cd jogl
+    git checkout 0779f229b0e9538c640b18b9a4e095af1f5a35b3
+    zip -r ../jogl-all-src.jar src
+
+Then copy that `jogl-all-src.jar` file to sit next to the `jogl-all.jar` folder inside `/path/to/processing/core/library`.
+
+
+### IntelliJ
+
+Using Eclipse isn't supported, and I've switched to IntelliJ. However, IntelliJ is baffling enough that I don't have good instructions yet on how to develop inside there. If you and IntelliJ have a better relationship than I do, [please help!](https://github.com/processing/processing4/issues/275)
