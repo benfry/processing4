@@ -13,6 +13,10 @@ X   https://github.com/processing/processing4/issues/281
 X   https://github.com/processing/processing4/issues/283
 X add -Dpython.console.encoding=UTF-8 to launcher
 X   https://github.com/jdf/Processing.py-Bugs/issues/322
+o key shortcuts broken on Katherine's laptop
+o   try with a clean user account
+X   double-check on other Big Sur machines (tried on VMware, was fine)
+X   worked after a reboot?
 
 
 contribs
@@ -41,7 +45,7 @@ _   https://github.com/processing/processing4/issues/247
 
 _ "Massachusetts Institue of Technology" typo in loading screen
 _   https://github.com/processing/processing4/issues/254
-_   https://github.com/processing/processing4/issues/254
+X   https://github.com/processing/processing4/issues/280 (duplicate)
 
 
 lots of work
@@ -87,10 +91,6 @@ _ examples window sketches should load in proper environment
 _   if Java Mode is in front, and user double-clicks another Mode's entry, what happens?
 _ write build.xml file to automatically update the examples
 _ when adding a new library, its examples aren't added to the list until restart
-
-_ key shortcuts broken on Katherine's laptop
-_   try with a clean user account
-X   double-check on other Big Sur machines (tried on VMware, was fine)
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
@@ -142,6 +142,8 @@ _   (built and tested a version of this code if we want to use it)
 
 
 before 4.x final
+_ Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
+_   https://github.com/processing/processing4/issues/285
 _ turn off javafx web if not using
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
