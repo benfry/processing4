@@ -1,6 +1,8 @@
 1277 (4.0b2)
 X fix apparent problem in PShape with QUADRATIC_VERTEX (wrong vertex index)
-
+X mouseButton not reporting correctly in 4.0b1 (Windows and Linux)
+X   https://github.com/processing/processing4/issues/281
+X   https://github.com/processing/processing4/issues/283
 
 contribs
 X Remove two redundant variable assignments in PShader
