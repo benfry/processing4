@@ -17,6 +17,11 @@ o key shortcuts broken on Katherine's laptop
 o   try with a clean user account
 X   double-check on other Big Sur machines (tried on VMware, was fine)
 X   worked after a reboot?
+X "Massachusetts Institue of Technology" typo in loading screen
+X   https://github.com/processing/processing4/issues/254
+X   https://github.com/processing/processing4/issues/280 (duplicate)
+X Movie Maker broken with spaces in path (converted to %20)
+X   https://github.com/processing/processing4/issues/268
 
 
 contribs
@@ -36,17 +41,6 @@ _   https://github.com/processing/processing4/issues/240
 
 
 beta 2
-
-_ movie maker broken with spaces in path (converted to %20)
-_   https://github.com/processing/processing4/issues/268
-
-_ make the call on the launcher setting for Linux
-_   https://github.com/processing/processing4/issues/247
-
-_ "Massachusetts Institue of Technology" typo in loading screen
-_   https://github.com/processing/processing4/issues/254
-X   https://github.com/processing/processing4/issues/280 (duplicate)
-
 
 lots of work
 _ Editor cursor position is offset to the right when display scaling >100%
@@ -170,6 +164,8 @@ _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
 _ remove jai_imageio.jar from MovieMaker
 _   also clean out the other unused class files and src
+_ make the call on the launcher setting for Linux
+_   https://github.com/processing/processing4/issues/247
 
 decisions before final 4.0 release
 _ can we compress jdk/Contents/Home/legal into a single zip?

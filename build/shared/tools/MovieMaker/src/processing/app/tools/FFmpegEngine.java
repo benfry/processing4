@@ -6,6 +6,8 @@ import processing.app.Platform;
 import javax.swing.*;
 import java.awt.Component;
 import java.io.*;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ class FFmpegEngine {
     // Use the location of this jar to find the "tool" folder
     String jarPath =
       getClass().getProtectionDomain().getCodeSource().getLocation().getFile();
+    // https://github.com/processing/processing4/issues/268
+    jarPath = URLDecoder.decode(jarPath, StandardCharsets.UTF_8);
     File toolFolder = new File(jarPath).getParentFile();
     // Use that path to get the full path to our copy of the ffmpeg binary
     String ffmpegName = Platform.isWindows() ? "ffmpeg.exe" : "ffmpeg";
