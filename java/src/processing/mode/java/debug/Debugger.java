@@ -125,7 +125,7 @@ public class Debugger {
     debugItem = Toolkit.newJMenuItem(Language.text("menu.debug.enable"), 'D');
     debugItem.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
-        toggleEnabled();
+        editor.toggleDebug();
       }
     });
     debugMenu.add(debugItem);

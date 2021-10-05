@@ -19,6 +19,9 @@ X   https://github.com/processing/processing4/issues/254
 X   https://github.com/processing/processing4/issues/280 (duplicate)
 X Movie Maker broken with spaces in path (converted to %20)
 X   https://github.com/processing/processing4/issues/268
+X debugger not working
+X   https://github.com/processing/processing4/issues/282
+X   turned out to be a problem when using menu, not button to enable/disable
 
 contribs
 X fix minor typos in the PWM code for the IO library
@@ -46,8 +49,6 @@ _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
 
 investigate
-_ debugger not working
-_   https://github.com/processing/processing4/issues/282
 _ Anti-aliasing/smoothing in createFont when disabled
 _   https://github.com/processing/processing4/issues/278
 X   couldn't reproduce, but probably an issue in there somewhere
