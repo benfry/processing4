@@ -34,12 +34,11 @@ X   https://github.com/processing/processing4/pull/258
 X JSSC fix libs and sync with upstream
 X   https://github.com/processing/processing4/issues/119
 X   https://github.com/processing/processing4/pull/229
-_ Workaround for color to appear in fully qualified names
-_   https://github.com/processing/processing4/pull/246
-_   https://github.com/processing/processing4/issues/240
+X Imports whose name contains "color" cause Syntax error
+X   Workaround for color to appear in fully qualified names
+X   https://github.com/processing/processing4/pull/246
+X   https://github.com/processing/processing4/issues/240
 
-
-beta 2
 
 known issues
 _ Editor cursor position is offset to the right when display scaling >100%
