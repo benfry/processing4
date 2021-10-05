@@ -385,4 +385,9 @@ public class ParserTests {
     expectGood("smoothparamstatic");
   }
 
+  @Test
+  public void testColorInImport() {
+    expectGood("colorimport");
+  }
+
 }
