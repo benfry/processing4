@@ -1,4 +1,7 @@
 1278 (4.0b3)
+X Update appbundler with the latest from upstream
+X Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
+X   https://github.com/processing/processing4/issues/285
 
 
 known issues
@@ -81,8 +84,6 @@ _   (built and tested a version of this code if we want to use it)
 
 before 4.x final
 _ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
-_ Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
-_   https://github.com/processing/processing4/issues/285
 _ turn off javafx web if not using
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?

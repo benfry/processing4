@@ -1,5 +1,5 @@
 # ignore the sdk download files
-javafx-*-sdk-*.zip
+javafx-*.zip
 
 # everything is downloaded from online
 /library
