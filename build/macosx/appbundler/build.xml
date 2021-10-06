@@ -98,7 +98,7 @@ questions.
             <arg value="-mmacosx-version-min=10.7"/>
             <arg value="-fobjc-exceptions"/>
             <arg value="-std=c99"/>
-            <arg value="appbundler/native/main.m"/>
+            <arg value="native/main.m"/>
         </exec>
     </target>
 
