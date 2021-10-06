@@ -28,24 +28,18 @@ questions.
 <project name="appbundler" default="package">
     <property environment="env"/>
 
-    <echo message="Note: appbundler should only be built on Mojave or earlier" />
-    <echo message="Please help: https://github.com/processing/processing4/issues/284" />
-
-    <!--
-    <property file="build.properties"/>
-    version=1.0ea
-    -->
+    <!-- <property file="build.properties"/> -->
     <property name="arch64" value="-arch x86_64" />
-    <!-- <property name="arch32" value="-arch i386" /> -->
-    <!-- <property name="archppc" value="-arch ppc" /> -->
     <property name="cc" value="gcc" />
 
     <property name="folder.src" value="src"/>
     <property name="folder.native" value="native"/>
     <property name="folder.bin" value="bin"/>
-<!--    <property name="folder.classes" value="${folder.bin}/classes"/>-->
-    <property name="folder.classes" value="${folder.bin}"/>
+    <property name="folder.classes" value="${folder.bin}/classes"/>
     <property name="folder.res" value="res"/>
+
+    <!-- <property name="appbundler.jar" value="${folder.bin}/${ant.project.name}-${version}.jar" /> -->
+    <property name="output.jar" location="../appbundler.jar" />
 
     <!-- Compile target -->
     <target name="compile">
@@ -53,6 +47,8 @@ questions.
         <javac destDir="${folder.classes}"
             includejavaruntime="true"
             includeantruntime="true"
+            target="1.8"
+            source="1.8"
             deprecation="true"
             debug="true"
             encoding="UTF-8"
@@ -75,26 +71,34 @@ questions.
             </fileset>
         </copy>
 
-        <exec executable="${cc}">
-            <arg line="${arch64}"/> <!-- ${arch32} not supported -->
+        <exec executable="/usr/libexec/java_home" outputproperty="libexec_javahome" />
+        <condition property="javahome" value="${env.JAVA_HOME}" else="${libexec_javahome}">
+            <isset property="env.JAVA_HOME"/>
+        </condition>
+
+        <exec executable="xcrun" outputproperty="osx.sdk.dir">
+            <arg value="--show-sdk-path" />
+        </exec>
+
+        <exec executable="${cc}" failonerror="true">
+            <arg line="${arch64}"/>
             <arg value="-I"/>
-            <arg value="${env.JAVA_HOME}/include"/>
+            <arg value="${javahome}/include"/>
             <arg value="-I"/>
-            <arg value="${env.JAVA_HOME}/include/darwin"/>
+            <arg value="${javahome}/include/darwin"/>
             <arg value="-o"/>
             <arg value="${folder.classes}/com/oracle/appbundler/JavaAppLauncher"/>
+            <arg value='-DLIBJLI_DYLIB="${javahome}/jre/lib/jli/libjli.dylib"'/>
             <arg value="-framework"/>
             <arg value="Cocoa"/>
             <arg value="-F"/>
-            <arg value="${env.JAVA_HOME}/../.."/>
+            <arg value="${javahome}/../.."/>
             <arg value="-isysroot"/>
-            <!--
-            <arg value="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.8.sdk"/>
+            <arg value="${osx.sdk.dir}"/>
             <arg value="-mmacosx-version-min=10.7"/>
-            -->
-            <arg value="/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk"/>
-            <arg value="-mmacosx-version-min=10.14"/>
-            <arg value="native/main.m"/>
+            <arg value="-fobjc-exceptions"/>
+            <arg value="-std=c99"/>
+            <arg value="appbundler/native/main.m"/>
         </exec>
     </target>
 
@@ -112,7 +116,7 @@ questions.
             <fileset dir="${folder.res}"/>
         </zip>
 
-        <jar destfile="../${ant.project.name}.jar" index="true">
+        <jar destfile="${output.jar}" index="true">
             <manifest>
                 <attribute name="Implementation-Vendor-Id" value="com.oracle"/>
                 <attribute name="Implementation-Vendor" value="Oracle"/>
@@ -130,9 +134,10 @@ questions.
     <!-- Test targets -->
     <target name="test" depends="package">
         <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
-            classpath="${folder.bin}/${ant.project.name}.jar"/>
+            classpath="${output.jar}"/>
 
         <bundleapp outputdirectory="."
+            debug="true"
             name="Test"
             displayname="Test"
             identifier="com.oracle.javafx.swing.Test"
@@ -140,7 +145,25 @@ questions.
             applicationCategory="public.app-category.developer-tools"
             mainclassname="com/javafx/main/Main">
             <runtime dir="${env.JAVA_HOME}"/>
-            <classpath file="${user.home}/bin/javafx-samples-2.2.0/SwingInterop.jar"/>
+            <classpath file="SwingInterop.jar"/>
+            <option value="-Dapple.laf.useScreenMenuBar=true"/>
+            <argument value="foo=bar"/>
+        </bundleapp>
+    </target>
+
+    <target name="test-no-bundled-runtime" depends="package">
+        <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
+            classpath="${output.jar}"/>
+
+        <bundleapp outputdirectory="."
+            debug="true"
+            name="Test"
+            displayname="Test (without a bundled runtime)"
+            identifier="com.oracle.javafx.swing.Test"
+            shortversion="1.0"
+            applicationCategory="public.app-category.developer-tools"
+            mainclassname="com/javafx/main/Main">
+            <classpath file="SwingInterop.jar"/>
             <option value="-Dapple.laf.useScreenMenuBar=true"/>
             <argument value="foo=bar"/>
         </bundleapp>
@@ -148,16 +171,17 @@ questions.
 
     <target name="test-plugin" depends="package">
         <taskdef name="bundleapp" classname="com.oracle.appbundler.AppBundlerTask"
-            classpath="${folder.bin}/${ant.project.name}.jar"/>
+            classpath="${output.jar}"/>
 
         <bundleapp outputdirectory="."
+            debug="true"
             name="TestPlugin"
             displayname="Test (Plugin)"
             identifier="com.oracle.javafx.swing.TestPlugin"
             shortversion="1.0"
             applicationCategory="public.app-category.developer-tools"
             mainclassname="com/javafx/main/Main">
-            <classpath file="${user.home}/bin/javafx-samples-2.2.0/SwingInterop.jar"/>
+            <classpath file="SwingInterop.jar"/>
             <option value="-Dapple.laf.useScreenMenuBar=true"/>
             <argument value="foo=bar"/>
         </bundleapp>

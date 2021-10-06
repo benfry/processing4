@@ -1,0 +1,7 @@
+"JRELoadError" = "Kunne ikke laste inn Java Runtime Environment.";
+"JRExLoadError" = "Kunne ikke laste et Java %d Runtime Environment.";
+"JRExLoadFullError" = "Dette programmet krever at Java %d eller nyere er installert på datamaskinen. Last ned og installer den nyeste versjonen av Java fra www.java.com og prøv på nytt.";
+"JDKxLoadFullError" = "Dette programmet krever at en Java %d JDK eller nyere er installert på datamaskinen. Last ned og installer den nyeste Java JDK fra Oracle.com og prøv på nytt.";
+"MainClassNameRequired" = "Hovednavn for klasse kreves.";
+"JavaDirectoryNotFound" = "Kunne ikke liste opp innholdet i Java-mappen.";
+"BundlePathContainsColon" = "Kan ikke kjøre fra en mappe som har en \"/\" i navnet.";

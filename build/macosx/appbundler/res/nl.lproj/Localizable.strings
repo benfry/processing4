@@ -1,0 +1,7 @@
+"JRELoadError" = "Niet mogelijk Java Runtime Environment te laden.";
+"JRExLoadError" = "Niet mogelijk Java %d Runtime Environment te laden.";
+"JRExLoadFullError" = "Deze toepassing vereist dat Java %d of later moet zijn geïnstalleerd op uw computer. Download en installeer de laatste versie van Java vanaf www.java.com en probeer opnieuw.";
+"JDKxLoadFullError" = "Deze toepassing vereist dat Java %d JDK of later moet zijn geïnstalleerd op uw computer. Download en installeer de laatste Java JDK vanaf Oracle.com en probeer opnieuw.";
+"MainClassNameRequired" = "Naam voor hoofdklasse is vereist.";
+"JavaDirectoryNotFound" = "Niet mogelijk inhoud van map Java te nummeren.";
+"BundlePathContainsColon" = "Kan niet starten vanuit een map die een \"/\" in zijn naam heeft.";
