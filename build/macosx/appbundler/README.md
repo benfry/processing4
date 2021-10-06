@@ -1,3 +1,7 @@
+This is a (minor) fork of <https://github.com/TheInfiniteKind/appbundler>. 
+
+The code should only be built on Mojave or earlier, otherwise exported OpenGL applications will crash. [Please help!](https://github.com/processing/processing4/issues/284)
+
 appbundler
 =============
 
