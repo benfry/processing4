@@ -525,16 +525,14 @@ public class AppBundlerTask extends Task {
         if (classPathRef != null) {
           org.apache.tools.ant.types.Path classpath =
             (org.apache.tools.ant.types.Path) classPathRef.getReferencedObject(getProject());
-          Iterator iter = classpath.iterator();
-          while (iter.hasNext()) {
-            Object resource = iter.next();
-            if (resource instanceof FileResource) {
-              FileResource fileResource = (FileResource) resource;
-              File source = fileResource.getFile();
-              File destination = new File(javaDirectory, source.getName());
-              copy(source, destination);
+            for (Object resource : classpath) {
+                if (resource instanceof FileResource) {
+                    FileResource fileResource = (FileResource) resource;
+                    File source = fileResource.getFile();
+                    File destination = new File(javaDirectory, source.getName());
+                    copy(source, destination);
+                }
             }
-          }
         }
     }
 
@@ -544,8 +542,7 @@ public class AppBundlerTask extends Task {
             DirectoryScanner directoryScanner = fileSet.getDirectoryScanner(getProject());
             String[] includedFiles = directoryScanner.getIncludedFiles();
 
-            for (int i = 0; i < includedFiles.length; i++) {
-                String includedFile = includedFiles[i];
+            for (String includedFile : includedFiles) {
                 File source = new File(classPathDirectory, includedFile);
                 File destination = new File(javaDirectory, new File(includedFile).getName());
                 copy(source, destination);

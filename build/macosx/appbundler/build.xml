@@ -47,8 +47,6 @@ questions.
         <javac destDir="${folder.classes}"
             includejavaruntime="true"
             includeantruntime="true"
-            target="1.8"
-            source="1.8"
             deprecation="true"
             debug="true"
             encoding="UTF-8"
