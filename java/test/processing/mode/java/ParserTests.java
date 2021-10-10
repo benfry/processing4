@@ -390,4 +390,9 @@ public class ParserTests {
     expectGood("colorimport");
   }
 
+  /*@Test
+  public void testPGraphicsStandalone() {
+    expectGood("pgraphics");
+  }*/
+
 }

@@ -325,6 +325,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   public void exitMethodCall(ProcessingParser.MethodCallContext ctx) {
     String methodName = ctx.getChild(0).getText();
 
+    // Check if calling on something other than this.
+    //System.out.println(ctx.getParent());
+
+    // If referring to the applet, check for rewrites.
     if (SIZE_METHOD_NAME.equals(methodName) || FULLSCREEN_METHOD_NAME.equals(methodName)) {
       handleSizeCall(ctx);
     } else if (PIXEL_DENSITY_METHOD_NAME.equals(methodName)) {
