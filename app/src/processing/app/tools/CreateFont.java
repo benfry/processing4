@@ -116,12 +116,7 @@ public class CreateFont extends JFrame implements Tool {
 
     for (Font font : fonts) {
       try {
-        // Skip the synthetic fonts (Dialog, DialogInput, Serif, SansSerif,
-        // and Monospaced). Could also skip those starting . or # but leaving
-        // them in so that folks aren't sad to lose SF or anything else.
-        if (!isLogicalFontFamily(font.getFamily())) {
-//          String psname = font.getPSName();
-//          fontList[index++] = font.getPSName();
+        if (!skipFontFamily(font.getFamily())) {
           // Use the PostScript name since it has a little more consistency
           nameToFont.put(font.getPSName(), font);
         }
@@ -225,8 +220,15 @@ public class CreateFont extends JFrame implements Tool {
   }
 
 
-  static private boolean isLogicalFontFamily(String family) {
-    return (Font.DIALOG.equals(family) || Font.DIALOG_INPUT.equals(family) ||
+  /**
+   * Skip the synthetic fonts (Dialog, DialogInput, Serif, SansSerif,
+   * and Monospaced). Also skipping those starting . or # because they're
+   * not intended for use, and creating files starting with a dot is
+   * likely to confuse (newer) users when they're invisible.
+   */
+  static private boolean skipFontFamily(String family) {
+    return (family.charAt(0) == '.' || family.charAt(0) == '#' ||
+            Font.DIALOG.equals(family) || Font.DIALOG_INPUT.equals(family) ||
             Font.SERIF.equals(family) || Font.SANS_SERIF.equals(family) ||
             Font.MONOSPACED.equals(family));
   }
