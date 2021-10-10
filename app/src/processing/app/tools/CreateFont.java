@@ -62,13 +62,12 @@ public class CreateFont extends JFrame implements Tool {
   JButton okButton;
   JTextField filenameField;
 
-  Map<String,Font> table;
-  boolean smooth = true;
+  String[] fontNames;
+  Map<String, Font> nameToFont;
 
   Font font;
-
-  String[] list;
   int selection = -1;
+  boolean smooth = true;
 
   CharacterSelector charSelector;
 
@@ -105,8 +104,6 @@ public class CreateFont extends JFrame implements Tool {
     textarea.setFont(new Font("Dialog", Font.PLAIN, 12));
     pain.add(textarea);
 
-    // don't care about families starting with . or #
-    // also ignore Dialog, DialogInput, Monospaced, Serif, SansSerif
 
     // getFontList is deprecated in 1.4, so this has to be used
     //long t = System.currentTimeMillis();
@@ -115,25 +112,29 @@ public class CreateFont extends JFrame implements Tool {
     Font[] fonts = ge.getAllFonts();
     //System.out.println("font startup took " + (System.currentTimeMillis() - t) + " ms");
 
-    String[] fontList = new String[fonts.length];
-    table = new HashMap<>();
+    nameToFont = new HashMap<>();
 
-    int index = 0;
-    for (Font value : fonts) {
+    for (Font font : fonts) {
       try {
-        fontList[index++] = value.getPSName();
-        table.put(value.getPSName(), value);
+        // Skip the synthetic fonts (Dialog, DialogInput, Serif, SansSerif,
+        // and Monospaced). Could also skip those starting . or # but leaving
+        // them in so that folks aren't sad to lose SF or anything else.
+        if (!isLogicalFontFamily(font.getFamily())) {
+//          String psname = font.getPSName();
+//          fontList[index++] = font.getPSName();
+          // Use the PostScript name since it has a little more consistency
+          nameToFont.put(font.getPSName(), font);
+        }
       } catch (Exception e) {
-        // Sometimes fonts cause lots of trouble.
-        // http://code.google.com/p/processing/issues/detail?id=442
+        // Fonts can cause all kinds of weird trouble; just ignore and move on.
+        // https://github.com/processing/processing/issues/481
         e.printStackTrace();
       }
     }
 
-    list = new String[index];
-    System.arraycopy(fontList, 0, list, 0, index);
-
-    fontSelector = new JList<>(list);
+    fontNames = nameToFont.keySet().toArray(new String[0]);
+    Arrays.sort(fontNames, String.CASE_INSENSITIVE_ORDER);
+    fontSelector = new JList<>(fontNames);
     fontSelector.addListSelectionListener(e -> {
       if (!e.getValueIsAdjusting()) {
         selection = fontSelector.getSelectedIndex();
@@ -213,7 +214,7 @@ public class CreateFont extends JFrame implements Tool {
     //System.out.println(getPreferredSize());
 
     // do this after pack so it doesn't affect layout
-    sample.setFont(new Font(list[0], Font.PLAIN, 48));
+    sample.setFont(new Font(fontNames[0], Font.PLAIN, 48));
 
     fontSelector.setSelectedIndex(0);
 
@@ -221,6 +222,13 @@ public class CreateFont extends JFrame implements Tool {
 
     // create this behind the scenes
     charSelector = new CharacterSelector();
+  }
+
+
+  static private boolean isLogicalFontFamily(String family) {
+    return (Font.DIALOG.equals(family) || Font.DIALOG_INPUT.equals(family) ||
+            Font.SERIF.equals(family) || Font.SANS_SERIF.equals(family) ||
+            Font.MONOSPACED.equals(family));
   }
 
 
@@ -239,13 +247,13 @@ public class CreateFont extends JFrame implements Tool {
     // if a deselect occurred, selection will be -1
     if ((fontSize > 0) && (fontSize < 256) && (selection != -1)) {
       //font = new Font(list[selection], Font.PLAIN, fontSize);
-      Font instance = table.get(list[selection]);
+      Font instance = nameToFont.get(fontNames[selection]);
 //      font = instance.deriveFont(Font.PLAIN, fontSize);
       font = instance.deriveFont((float) fontSize);
       //System.out.println("setting font to " + font);
       sample.setFont(font);
 
-      String filenameSuggestion = list[selection].replace(' ', '_');
+      String filenameSuggestion = fontNames[selection].replace(' ', '_');
       filenameSuggestion += "-" + fontSize;
       filenameField.setText(filenameSuggestion);
     }
@@ -275,7 +283,7 @@ public class CreateFont extends JFrame implements Tool {
     }
 
     try {
-      Font instance = table.get(list[selection]);
+      Font instance = nameToFont.get(fontNames[selection]);
       font = instance.deriveFont(Font.PLAIN, fontSize);
       PFont f = new PFont(font, smooth, charSelector.getCharacters());
 

@@ -2,6 +2,12 @@
 X Update appbundler with the latest from upstream
 X Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
 X   https://github.com/processing/processing4/issues/285
+X cleaning up the Create Font dialog while tracking down #278
+/   https://github.com/processing/processing4/issues/278
+X   couldn't reproduce, but probably an issue in there somewhere
+X   Remove Serif, SansSerif, Monospaced, Dialog, and DialogInput from Create Font
+X   sort the list of font names
+X   skip fonts starting . and # because they're likely to confuse users
 
 
 known issues
@@ -113,9 +119,6 @@ _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
 _ remove jai_imageio.jar from MovieMaker
 _   also clean out the other unused class files and src
-_ Anti-aliasing/smoothing in createFont when disabled
-_   https://github.com/processing/processing4/issues/278
-X   couldn't reproduce, but probably an issue in there somewhere
 
 
 decisions before final 4.0 release
