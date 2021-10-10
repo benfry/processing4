@@ -9,6 +9,14 @@ X   Remove Serif, SansSerif, Monospaced, Dialog, and DialogInput from Create Fon
 X   sort the list of font names
 X   skip fonts starting . and # because they're likely to confuse users
 
+sam
+X Error when calling smooth() on PGraphics
+X   https://github.com/processing/processing4/issues/272
+X Detect if calling special methods on PApplet or not (and restore unit tests)
+X   https://github.com/processing/processing4/pull/288
+X Move Mockito to a new version
+X   https://github.com/processing/processing4/issues/287
+
 
 known issues
 _ Editor cursor position is offset to the right when display scaling >100%
