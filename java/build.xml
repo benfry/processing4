@@ -75,8 +75,11 @@
   </path>
 
   <path id="classpath.test">
-    <pathelement location="../core/library-test/junit-4.8.1.jar" />
-    <pathelement location="../core/library-test/mockito-all-1.10.19.jar" />
+    <pathelement location="../core/library-test/junit-4.13.2.jar" />
+    <pathelement location="../core/library-test/hamcrest-core-1.3.jar" />
+    <pathelement location="../core/library-test/byte-buddy-1.11.19.jar" />
+    <pathelement location="../core/library-test/objenesis-3.2.jar" />
+    <pathelement location="../core/library-test/mockito-core-4.0.0.jar" />
     <pathelement location = "bin-test" />
     <path refid="classpath.base" />
   </path>
