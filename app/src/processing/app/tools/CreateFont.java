@@ -277,7 +277,6 @@ public class CreateFont extends JFrame implements Tool {
     try {
       Font instance = table.get(list[selection]);
       font = instance.deriveFont(Font.PLAIN, fontSize);
-      //PFont f = new PFont(font, smooth, all ? null : PFont.CHARSET);
       PFont f = new PFont(font, smooth, charSelector.getCharacters());
 
       // the editor may have changed while the window was open
@@ -339,8 +338,8 @@ class SampleComponent extends JComponent {
   }
 
   public void paintComponent(Graphics g) {
-//    System.out.println("smoothing set to " + smooth);
     Graphics2D g2 = (Graphics2D) g;
+
     g2.setColor(Color.WHITE);
     Dimension dim = getSize();
     g2.fillRect(0, 0, dim.width, dim.height);
@@ -355,10 +354,17 @@ class SampleComponent extends JComponent {
                         parent.smooth ?
                         RenderingHints.VALUE_ANTIALIAS_ON :
                         RenderingHints.VALUE_ANTIALIAS_OFF);
+    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                        parent.smooth ?
+                        RenderingHints.VALUE_INTERPOLATION_BICUBIC :
+                        RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
+
+    // don't do this, it will reset the drawing settings
     //super.paintComponent(g2);
+
     Font font = getFont();
     int ascent = g2.getFontMetrics().getAscent();
-//    System.out.println(f.getName());
+
     g2.setFont(font);
     g2.drawString(text, 5, dim.height - (dim.height - ascent) / 2);
   }

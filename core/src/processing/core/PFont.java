@@ -181,6 +181,9 @@ public class PFont implements PConstants {
   protected FontMetrics lazyMetrics;
   protected int[] lazySamples;
 
+  // Debugging for https://github.com/processing/processing4/issues/278
+  private final boolean DEBUG_P4_0278 = false;
+
 
   /**
    * @nowebref
@@ -249,11 +252,19 @@ public class PFont implements PConstants {
                                   smooth ?
                                   RenderingHints.VALUE_ANTIALIAS_ON :
                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+
     // adding this for post-1.0.9
     lazyGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                                   smooth ?
                                   RenderingHints.VALUE_TEXT_ANTIALIAS_ON :
                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+
+    // Trying to track down https://github.com/processing/processing4/issues/278
+    // But at least on macOS, it's still smooth when this is called from Create Font.
+    lazyGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                                  smooth ?
+                                  RenderingHints.VALUE_INTERPOLATION_BICUBIC :
+                                  RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
     lazyGraphics.setFont(font);
     lazyMetrics = lazyGraphics.getFontMetrics();
@@ -320,7 +331,7 @@ public class PFont implements PConstants {
 
 
   /**
-   * Adds an additional parameter that indicates the font came from a file,
+   * Adds a parameter that indicates the font came from a file,
    * not a built-in OS font.
    *
    * @nowebref
@@ -728,7 +739,7 @@ public class PFont implements PConstants {
 
     // six element array received from the Java2D path iterator
     float[] iterPoints = new float[6];
-    // array passed to createGylphVector
+    // array passed to createGlyphVector
     char[] textArray = new char[] { ch };
 
     //Graphics2D graphics = (Graphics2D) this.getGraphics();
@@ -1034,6 +1045,12 @@ public class PFont implements PConstants {
 
 
     protected Glyph(char c) {
+      if (DEBUG_P4_0278 && c == 'd') {
+        System.out.println(lazyGraphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING));
+        System.out.println(lazyGraphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
+        System.out.println(lazyGraphics.getRenderingHint(RenderingHints.KEY_INTERPOLATION));
+      }
+
       int mbox3 = size * 3;
       lazyGraphics.setColor(Color.white);
       lazyGraphics.fillRect(0, 0, mbox3, mbox3);
@@ -1057,6 +1074,16 @@ public class PFont implements PConstants {
             if (y > maxY) maxY = y;
             pixelFound = true;
           }
+        }
+      }
+
+      if (DEBUG_P4_0278 && c == 'd') {
+        for (int y = minY; y <= maxY; y++) {
+          for (int x = minX; x <= maxX; x++) {
+            int sample = lazySamples[y * mbox3 + x] & 0xff;
+            System.out.format("%3d ", sample);
+          }
+          System.out.println();
         }
       }
 
