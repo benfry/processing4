@@ -2,6 +2,7 @@
 X Update appbundler with the latest from upstream
 X Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
 X   https://github.com/processing/processing4/issues/285
+_   update README to note that we're on 17
 X cleaning up the Create Font dialog while tracking down #278
 /   https://github.com/processing/processing4/issues/278
 X   couldn't reproduce, but probably an issue in there somewhere
@@ -17,10 +18,15 @@ X   https://github.com/processing/processing4/pull/288
 X Move Mockito to a new version
 X   https://github.com/processing/processing4/issues/287
 
+cleaning
+o import option for sketchbook (button to select files/folders/etc)
+X   use pdez instead
+
 
 known issues
-_ Editor cursor position is offset to the right when display scaling >100%
+_ Editor cursor position is offset to the right when Windows scaling >100%
 _   https://github.com/processing/processing4/issues/226
+_   ship with a spare .exe for this one?
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
@@ -38,8 +44,8 @@ _ update the README.md in the root for alpha 6 and beta 1
 _ update https://github.com/processing/processing4/wiki/Changes-in-4.0
 
 _ refresh option for sketchbook (bottom of window)
-_ import option for sketchbook (button to select files/folders/etc)
 
+_ document pdez and pdex files so that folks can use them
 _ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
 _   https://github.com/processing/processing/issues/182
@@ -182,6 +188,7 @@ _   lots of EDT thread stuff, particularly with loading contribs
 
 windows
 _ go back to including a .bat file for debug purposes?
+_   would be good to auto-generate this from the config (avoid double updates)
 _   .\java\bin\java.exe -cp lib/pde.jar;core/library/core.jar;lib/jna.jar;lib/jna-platform.jar;lib/antlr-4.7.2-complete.jar;lib/ant.jar;lib/ant-launcher.jar -Djna.nosys=true -Dsun.java2d.uiScale.enabled=false -Djna.boot.library.path=lib -Djna.nounpack=true -Dsun.java2d.d3d=false -Dsun.java2d.ddoffscreen=false -Dsun.java2d.noddraw=true processing.app.Base
 _ launch4j doesn't work from folders with non-native charsets
 _   anything in CP1252 on an English Windows system is fine
@@ -214,7 +221,7 @@ _ run button not deactivating
 _   https://github.com/processing/processing/issues/5786
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
-_   https://github.com/processing/processing/pull/5642
+X   https://github.com/processing/processing/pull/5642 (closed)
 _ errors inside setup() aren't coming through at all?
 _   seen in Eclipse; have to turn on the debugger... same as #4703?
 
