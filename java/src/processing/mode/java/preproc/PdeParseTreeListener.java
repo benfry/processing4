@@ -326,7 +326,22 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     String methodName = ctx.getChild(0).getText();
 
     // Check if calling on something other than this.
-    //System.out.println(ctx.getParent());
+    boolean impliedThis = ctx.getParent().getChildCount() == 1;
+    boolean usesThis;
+    if (impliedThis) {
+      usesThis = true;
+    } else {
+      String statmentTarget = ctx.getParent().getChild(0).getText();
+      boolean explicitThis = statmentTarget.equals("this");
+      boolean explicitSuper = statmentTarget.equals("super");
+      usesThis = explicitThis || explicitSuper;
+    }
+
+    // If not using this or super, no rewrite as the user is calling their own
+    // declaration or instance of PGraphics.
+    if (!usesThis) {
+      return;
+    }
 
     // If referring to the applet, check for rewrites.
     if (SIZE_METHOD_NAME.equals(methodName) || FULLSCREEN_METHOD_NAME.equals(methodName)) {
@@ -663,7 +678,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     }
 
     if (thisRequiresRewrite) {
-      delete(ctx.start, ctx.stop);
+      delete(ctx.getParent().start, ctx.getParent().stop);
       insertAfter(ctx.stop, "/* size commented out by preprocessor */");
       sizeRequiresRewrite = true;
     }
@@ -682,8 +697,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     pixelDensity = argsContext.getChild(0).getText();
 
-    delete(ctx.start, ctx.stop);
-    insertAfter(ctx.stop, "/* pixelDensity commented out by preprocessor */");
+    delete(ctx.getParent().start, ctx.getParent().stop);
+    insertAfter(ctx.getParent().stop, "/* pixelDensity commented out by preprocessor */");
     pixelDensityRequiresRewrite = true;
   }
 
@@ -698,8 +713,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       return; // User override of noSmooth.
     }
 
-    delete(ctx.start, ctx.stop);
-    insertAfter(ctx.stop, "/* noSmooth commented out by preprocessor */");
+    delete(ctx.getParent().start, ctx.getParent().stop);
+    insertAfter(
+      ctx.getParent().stop,
+      "/* noSmooth commented out by preprocessor */"
+    );
     noSmoothRequiresRewrite = true;
   }
 
@@ -720,8 +738,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       smoothParam = "";
     }
 
-    delete(ctx.start, ctx.stop);
-    insertAfter(ctx.stop, "/* smooth commented out by preprocessor */");
+    delete(ctx.getParent().start, ctx.getParent().stop);
+    insertAfter(
+      ctx.getParent().stop,
+      "/* smooth commented out by preprocessor */"
+    );
     smoothRequiresRewrite = true;
   }
 

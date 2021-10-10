@@ -376,6 +376,11 @@ public class ParserTests {
   }
 
   @Test
+  public void testSmoothThis() {
+    expectGood("smoothnoparamthis");
+  }
+
+  @Test
   public void testSmoothWithParam() {
     expectGood("smoothparam");
   }
@@ -390,9 +395,14 @@ public class ParserTests {
     expectGood("colorimport");
   }
 
-  /*@Test
+  @Test
   public void testPGraphicsStandalone() {
     expectGood("pgraphics");
-  }*/
+  }
+
+  @Test
+  public void testSizeThis() {
+    expectGood("sizethis");
+  }
 
 }
