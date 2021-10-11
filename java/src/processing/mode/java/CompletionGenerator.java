@@ -20,7 +20,6 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.mode.java;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -1327,7 +1326,7 @@ public class CompletionGenerator {
   static class ClassMember {
     private Field field;
     private Method method;
-    private Constructor<?> cons;
+//    private Constructor<?> cons;
     private Class<?> thisClass;
     private final String stringVal;
     private String classType;
