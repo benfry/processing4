@@ -6,11 +6,15 @@
     <delete file="library/svg.jar" />
   </target>
 
+  <property name="core.library.jar" location="../../../core/library/core.jar" />
+
   <property name="batik.version" value="1.14" />
   <!-- the .zip file to be downloaded -->
   <property name="batik.zip" value="batik-bin-${batik.version}.zip" />
-  <!-- the .jar file that's the actual dependency -->
-  <property name="batik.jar" value="batik-all-${batik.version}.jar" />
+  <!-- the .jar file that we need from the download -->
+  <property name="batik.extract.jar" value="batik-all-${batik.version}.jar" />
+  <!-- the local name of the file that will be used -->
+  <property name="batik.library.jar" location="library/batik.jar" />
 
   <!-- URL for the version of Batik currently supported by this library. -->
   <property name="batik.url"
@@ -22,7 +26,7 @@
             value="https://download.processing.org/batik/${batik.zip}" />
 
 
-  <available file="library/${batik.jar}" property="batik.present" />
+  <available file="${batik.library.jar}" property="batik.present" />
 
   <!-- ok to ignore failed downloads if we at least have a version that's local -->
   <condition property="batik.ignorable" value="false" else="true">
@@ -34,38 +38,39 @@
          ignoreerrors="${batik.ignorable}"
          usetimestamp="true" />
 
-    <!-- <property name="zip.prefix" value="batik-${batik.version}/lib/${batik.jar}" /> -->
     <property name="zip.prefix" value="batik-${batik.version}/lib" />
 
     <!-- Formerly used batik-awt-util-1.8.jar, batik-dom-1.8.jar, batik-ext-1.8.jar,
          batik-svggen-1.8.jar, batik-util-1.8.jar, batik-xml-1.8.jar but using
          the big feller from now on since file size is less important, and there
          were complaints about some .jar files not being available. -->
-    <unzip src="${batik.zip}" dest="library">
+    <unzip src="${batik.zip}" dest=".">
       <patternset>
         <!-- unzip a single jar from the zip.prefix subdirectory in the .zip -->
-        <include name="${zip.prefix}/${batik.jar}"/>
+        <include name="${zip.prefix}/${batik.extract.jar}"/>
       </patternset>
       <mapper>
         <!-- remove the zip.prefix from the path when saving the .jar -->
         <globmapper from="${zip.prefix}/*" to="*"/>
       </mapper>
     </unzip>
+
+    <rename src="${batik.extract.jar}" dest="${batik.library.jar}" />
     <delete file="${batik.zip}" />
   </target>
 
   <target name="compile" depends="download-batik" description="Compile sources">
     <condition property="core-built">
-      <available file="../../../core/library/core.jar" />
+      <available file="${core.library.jar}" />
     </condition>
-    <fail unless="core-built" message="Please build the core library first and make sure it sits in ../../../core/library/core.jar" />
+    <fail unless="core-built" message="Please build the core library first and make sure it is located at ${core.library.jar}" />
 
     <mkdir dir="bin" />
     <javac source="11" target="11"
 	         srcdir="src" destdir="bin"
 	         encoding="UTF-8"
 	         includeAntRuntime="false"
-	         classpath="../../../core/library/core.jar; library/${batik.jar};"
+	         classpath="${core.library.jar}; ${batik.library.jar}"
 	         nowarn="true" />
   </target>
 
