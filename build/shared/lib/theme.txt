@@ -1,3 +1,6 @@
+# The gradient.xyz lines are used by makeGradient(), so search
+# for makeGradient() calls to see whether they're still in use
+
 # STATUS
 # Status messages (1 file added to sketch, errors, etc)
 status.notice.fgcolor = #161e3f
@@ -21,7 +24,6 @@ header.tab.arrow.color = #adbcd6
 header.tab.selected.color = #dae8ff
 header.tab.unselected.color = #0e3266
 header.tab.modified.color = #fff87a
-# used by makeGradient("header"), so they won't show up in a grep
 header.gradient.top = #1f62d3
 header.gradient.bottom = #2b52f6
 
@@ -29,7 +31,6 @@ header.gradient.bottom = #2b52f6
 footer.text.font = processing.sans,bold,12
 footer.text.selected.color = #dae8ff
 footer.text.unselected.color = #4679ff
-footer.tab.arrow.color = #ffffff
 footer.gradient.top = #1e4492
 footer.gradient.bottom = #0f408d
 footer.tab.selected.color = #3369db
@@ -37,20 +38,11 @@ footer.tab.unselected.color = #161e3f
 footer.updates.color = #fed456
 
 # CONSOLE
-# The font is handled by preferences, so its size/etc are modifiable.
+# The font is handled by preferences.txt, so its size/etc are modifiable.
 console.color = #000000
 console.output.color = #a3b1cb
 # text color for errors printed in the console
 console.error.color = #f73641
-
-# TOOLBAR BUTTONS
-buttons.bgcolor = #000000
-
-## size of divider between editing area and the console
-divider.height = 9
-divider.color = #a3b1cb
-divider.dot.diameter = 3
-divider.dot.color = #505050
 
 # TOOLBAR BUTTON TEXT
 toolbar.rollover.font = processing.sans,plain,12
