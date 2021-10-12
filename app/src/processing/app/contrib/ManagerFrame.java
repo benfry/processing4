@@ -121,9 +121,6 @@ public class ManagerFrame {
 
     frame.setResizable(true);
 
-//    Container c = frame.getContentPane();
-//    c.add(tabs);
-//    c.setBackground(Theme.getColor("manager.tab.background"));
     frame.getContentPane().add(tabs);
     updateTheme();
 
