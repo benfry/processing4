@@ -25,7 +25,6 @@
   <property name="batik.url.backup"
             value="https://download.processing.org/batik/${batik.zip}" />
 
-
   <available file="${batik.library.jar}" property="batik.present" />
 
   <!-- ok to ignore failed downloads if we at least have a version that's local -->
