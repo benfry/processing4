@@ -41,7 +41,7 @@ _ docs are 3.x not 4.x
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-_ update the README.md in the root for alpha 6 and beta 1
+_ update the README.md in the root for alpha 6 and beta 1 and 2
 _ update https://github.com/processing/processing4/wiki/Changes-in-4.0
 
 _ refresh option for sketchbook (bottom of window)
@@ -75,6 +75,11 @@ _     and prevents the theme from updating the font
 _   while that font could exist in theme.txt,
 _     getSansFont() also handles the language fallback version
 _     which perhaps, that pref should come from the translations: i.e. an override setting
+_   decision: set the default sans, bold, and mono font in language file
+_     can be overridden in preferences.txt
+_     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
+_     need a separate identifier for the builtin sans (now called processing.sans)
+_     and when theme wants to ask for a sans font
 _ better default fonts for Swing; argh
 _   file an issue with the images
 _     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
