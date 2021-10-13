@@ -118,17 +118,17 @@ editor.column.warning.color = #fed456
 ## ErrorTable - the list of errors in the second tab found in the console area ##
 
 errors.header.font = processing.sans,plain,12
-errors.header.bgcolor = #EBEBEB
+errors.header.bgcolor = #ebebeb
 errors.header.fgcolor = #484848
 errors.row.font = processing.sans,plain,12
 errors.row.fgcolor = #484848
-errors.row.bgcolor = #FFFFFF
+errors.row.bgcolor = #ffffff
 errors.selection.fgcolor = #242424
-errors.selection.bgcolor = #E5E5E5
-errors.selection.error.bgcolor = #F5E6E6
-errors.selection.warning.bgcolor = #FDF2E7
-errors.indicator.error.color = #9E0A0A
-errors.indicator.warning.color = #EF8115
+errors.selection.bgcolor = #e5e5e5
+errors.selection.error.bgcolor = #f5e6e6
+errors.selection.warning.bgcolor = #fdf2e7
+errors.indicator.error.color = #9e0a0a
+errors.indicator.warning.color = #ef8115
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
