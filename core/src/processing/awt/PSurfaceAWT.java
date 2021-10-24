@@ -47,6 +47,7 @@ import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.*;
 
@@ -240,31 +241,68 @@ public class PSurfaceAWT extends PSurfaceNone {
   }
 
 
-  synchronized protected void render() {
-    if (canvas.isDisplayable() &&
-        graphics.image != null) {
+  static private AtomicBoolean inRender = new AtomicBoolean(false);
+
+  protected void render() {
+
+    // TODO: this is a quick hack to fix deadlock when resizing window.
+    // This method used to be synchronized.  When resizing, there is a race
+    // condition.  Normally, the rendering is done by the animation thread.  During
+    // a resize, the AWT-EventQueue-0 tries to execute a render resulting in a deadlock.
+    // The AWT Event Queue tree takes the AWT Tree Lock and tries to call render.  Meanwhile,
+    // the animation thread has taken the render method synchronization lock and indirectly
+    // tries to take the AWT Tree Lock.
+    // This is issue https://github.com/processing/processing/issues/5579
+    // This fix gets rid of the synchronization lock on the render method and substitutes
+    // an atomic boolean to indicate whether some thread is already executing the render method.
+    // Any second thread that tries to enter is just returned.  This seems to be a reasonable
+    // workaround since the render code is actually executed by at least one thread.
+
+    // Don't get confused here.  compareAndSet returns true if the expected value is
+    // found and the set succeeds.  If it returns false, then it didn't find the
+    // expected value (false).  That means someone is already executing the code.
+    if (!inRender.compareAndSet(false, true)) {
+      return;
+    }
+    // If we made it to here, this thread is the only thread running this code.
+
+    try {
+      if (!canvas.isDisplayable()) {
+        // TODO: should this be some kind of error?
+        // TODO: do we want to start using some kind of internal error execption?
+        return;
+      }
+      if (graphics.image == null) {
+        // TODO: should this be some kind of error?
+        return;
+      }
+
+      // TODO: should this be done earlier, like when we set the canvas?  Why wait until now?
+      // TODO: if createBufferStrategy can fail, better to find out sooner.
       if (canvas.getBufferStrategy() == null) {
         canvas.createBufferStrategy(2);
       }
       BufferStrategy strategy = canvas.getBufferStrategy();
-      if (strategy != null) {
-        // Render single frame
-        do {
-          // The following loop ensures that the contents of the drawing buffer
-          // are consistent in case the underlying surface was recreated
-          do {
-            Graphics2D draw = (Graphics2D) strategy.getDrawGraphics();
-            // draw to width/height, since this may be a 2x image
-            draw.drawImage(graphics.image, 0, 0, sketchWidth, sketchHeight, null);
-            draw.dispose();
-          } while (strategy.contentsRestored());
-
-          // Display the buffer
-          strategy.show();
-
-          // Repeat the rendering if the drawing buffer was lost
-        } while (strategy.contentsLost());
+      if (strategy == null) {
+        // TODO: should this be some kind of error?
+        return;
       }
+
+      // Render single frame
+      do {
+        // The following loop ensures that the contents of the drawing buffer
+        // are consistent in case the underlying surface was recreated
+        do {
+          Graphics2D draw = (Graphics2D) strategy.getDrawGraphics();
+          // draw to width/height, since this may be a 2x image
+          draw.drawImage(graphics.image, 0, 0, sketchWidth, sketchHeight, null);
+          draw.dispose();
+        } while (strategy.contentsRestored());
+        strategy.show();  // Display the buffer
+      } while (strategy.contentsLost());  // Repeat the rendering if the drawing buffer was lost
+    }
+    finally {
+      inRender.set(false);
     }
   }
 
