@@ -6374,6 +6374,16 @@ public class PApplet implements PConstants {
   }
 
 
+  static private boolean listFilesExt(String name, String[] extensions) {
+    for (String ext : extensions) {
+      if (name.toLowerCase().endsWith(ext)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   static void listFilesImpl(File folder, boolean recursive,
                             String[] extensions, boolean hidden,
                             boolean directories, boolean files,
@@ -6390,17 +6400,13 @@ public class PApplet implements PConstants {
             listFilesImpl(item, recursive, extensions, hidden, directories, files, list);
           }
           if (directories) {
-            list.add(item);
+            if (extensions == null || listFilesExt(item.getName(), extensions)) {
+              list.add(item);
+            }
           }
         } else if (files) {
-          if (extensions == null) {
+          if (extensions == null || listFilesExt(item.getName(), extensions)) {
             list.add(item);
-          } else {
-            for (String ext : extensions) {
-              if (item.getName().toLowerCase().endsWith(ext)) {
-                list.add(item);
-              }
-            }
           }
         }
       }
