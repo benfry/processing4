@@ -378,7 +378,7 @@
       <fileset dir="shared/tools">
         <patternset>
           <include name="MovieMaker/tool/**" />
-          <!-- <include name="ThemeEngine/tool/**" /> -->
+          <include name="ThemeEngine/tool/**" />
           <!-- <include name="**/tool/**" /> -->
         </patternset>
       </fileset>
