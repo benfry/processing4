@@ -24,6 +24,10 @@ o import option for sketchbook (button to select files/folders/etc)
 X   use pdez instead
 
 
+before release
+_ disable Theme Engine from Tools (in build.xml)
+
+
 known issues
 _ Editor cursor position is offset to the right when Windows scaling >100%
 _   https://github.com/processing/processing4/issues/226
