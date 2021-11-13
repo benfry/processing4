@@ -207,4 +207,22 @@ Then copy that `jogl-all-src.jar` file to sit next to the `jogl-all.jar` folder 
 
 ### IntelliJ
 
-Using Eclipse isn't supported, and I've switched to IntelliJ. However, IntelliJ is baffling enough that I don't have good instructions yet on how to develop inside there. If you and IntelliJ have a better relationship than I do, [please help!](https://github.com/processing/processing4/issues/275)
+1. Begin by cloning the GitHub repository into whatever directory you will be developing in.
+2. Download [Ant](https://ant.apache.org/bindownload.cgi) and look in the `lib` folder and note that `ant.jar` and `ant-antlr.jar` are in there.
+3. Open IntelliJ and once on the welcome screen hit <kbd>⌘</kbd> + <kbd>shift</kbd> + <kbd>A</kbd> (Command-Shift-A)
+4. This will open the `Actions` search bar. Type "existing source"
+5. Select "Impport Project from Existing Sources"
+6. Select your `processing4` folder and just run through all of the defaults, selecting `yes` when asked to overwrite
+7. Frustratingly, even though IntelliJ is distributed with Ant capabilities, you still have to manually add the jar files to the project:
+8. Use <kbd>⌘</kbd> + <kbd>;</kbd> (Command-;) or go to `File` | `Project Structure` to open the Project Structure window
+9. Go to Libraries
+10. Hit the `+` icon to add a library, and select `Java`
+11. Select the `ant.jar` and `ant-antlr.jar` files you found earlier and add them.
+12. On the next screen, add all modules to add them to all modules. It is not necessary to add them to all modules but I will have to go through and determine which modules need them and which don't
+13. After this, you are ready to go!
+
+Intellij seems to randomly choose which `build.xml` files it sees, so I had to add the main Processing one manually, while IntelliJ recognized one or two others from the different modules. Instructions on how to do this:
+1. Open the `Ant` pane from `View` | `Tool Windows` | `Ant`
+2. Click the `+` icon and open `procssing4/build/build.xml`
+
+Your Ant builds are going to fail because when Ant tries to find a specific file need to build MovieMaker, it cannot find it, and neither can I. I am assuming it is ignored somewhere in `.gitignore`. Unless you are coding with and/or using MovieMaker, it is alright to just remove the buildpath for it. In `build.xml`, it is line 355 and is `<subant buildpath="shared/tools/MovieMaker" target="build"/>`
