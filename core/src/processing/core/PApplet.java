@@ -9131,7 +9131,10 @@ public class PApplet implements PConstants {
 
   /**
    * Parse a String to an int, and provide an alternate value that
-   * should be used when the number is invalid.
+   * should be used when the number is invalid. If there's a decimal place,
+   * it will be truncated, making this more of a toInt() than parseInt()
+   * function. This is because the method is used internally for casting.
+   * Not ideal, but the name was chosen before that clarification was made.
    */
   static final public int parseInt(String what, int otherwise) {
     try {
