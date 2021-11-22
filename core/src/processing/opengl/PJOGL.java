@@ -87,15 +87,6 @@ public class PJOGL extends PGL {
 
   // ........................................................
 
-  // Additional parameters
-
-  /** Time that the Processing's animation thread will wait for JOGL's rendering
-   * thread to be done with a single frame.
-   */
-  protected static int DRAW_TIMEOUT_MILLIS = 500;
-
-  // ........................................................
-
   // Protected JOGL-specific objects needed to access the GL profiles
 
   /** The capabilities of the OpenGL rendering surface */
@@ -110,15 +101,14 @@ public class PJOGL extends PGL {
   /** GL3 interface */
   protected GL2GL3 gl3;
 
-  /** GL2 desktop functionality (blit framebuffer, map buffer range,
-   * multisampled renderbuffers) */
+  /**
+   * GL2 desktop functionality (blit framebuffer, map buffer range,
+   * multi-sampled render buffers)
+   */
   protected GL2 gl2x;
 
   /** GL3ES3 interface */
   protected GL3ES3 gl3es3;
-
-  /** Stores exceptions that ocurred during drawing */
-  protected Exception drawException;
 
   // ........................................................
 
@@ -992,7 +982,6 @@ public class PJOGL extends PGL {
     READ_FRAMEBUFFER   = GL.GL_READ_FRAMEBUFFER;
     DRAW_FRAMEBUFFER   = GL.GL_DRAW_FRAMEBUFFER;
 
-    RGBA8            = GL.GL_RGBA8;
     DEPTH24_STENCIL8 = GL.GL_DEPTH24_STENCIL8;
 
     DEPTH_COMPONENT   = GL2ES2.GL_DEPTH_COMPONENT;
@@ -1529,8 +1518,7 @@ public class PJOGL extends PGL {
     gl2.glGetActiveAttrib(program, index, 1024, tmp, 0, tmp, 1, tmp, 2, namebuf, 0);
     size.put(tmp[1]);
     type.put(tmp[2]);
-    String name = new String(namebuf, 0, tmp[0]);
-    return name;
+    return new String(namebuf, 0, tmp[0]);
   }
 
   @Override
@@ -1550,13 +1538,12 @@ public class PJOGL extends PGL {
 
   @Override
   public String getActiveUniform(int program, int index, IntBuffer size, IntBuffer type) {
-    int[] tmp= {0, 0, 0};
-    byte[] namebuf = new byte[1024];
+    final int[] tmp = { 0, 0, 0 };
+    final byte[] namebuf = new byte[1024];
     gl2.glGetActiveUniform(program, index, 1024, tmp, 0, tmp, 1, tmp, 2, namebuf, 0);
     size.put(tmp[1]);
     type.put(tmp[2]);
-    String name = new String(namebuf, 0, tmp[0]);
-    return name;
+    return new String(namebuf, 0, tmp[0]);
   }
 
   @Override
@@ -1898,8 +1885,8 @@ public class PJOGL extends PGL {
   }
 
   @Override
-  public void framebufferRenderbuffer(int target, int attachment, int rendbuferfTarget, int renderbuffer) {
-    gl.glFramebufferRenderbuffer(target, attachment, rendbuferfTarget, renderbuffer);
+  public void framebufferRenderbuffer(int target, int attachment, int rbt, int renderbuffer) {
+    gl.glFramebufferRenderbuffer(target, attachment, rbt, renderbuffer);
   }
 
   @Override
@@ -1918,8 +1905,8 @@ public class PJOGL extends PGL {
   }
 
   @Override
-  public void getFramebufferAttachmentParameteriv(int target, int attachment, int pname, IntBuffer params) {
-    gl2.glGetFramebufferAttachmentParameteriv(target, attachment, pname, params);
+  public void getFramebufferAttachmentParameteriv(int target, int attachment, int name, IntBuffer params) {
+    gl2.glGetFramebufferAttachmentParameteriv(target, attachment, name, params);
   }
 
   @Override
@@ -1928,8 +1915,8 @@ public class PJOGL extends PGL {
   }
 
   @Override
-  public void getRenderbufferParameteriv(int target, int pname, IntBuffer params) {
-    gl2.glGetRenderbufferParameteriv(target, pname, params);
+  public void getRenderbufferParameteriv(int target, int name, IntBuffer params) {
+    gl2.glGetRenderbufferParameteriv(target, name, params);
   }
 
   @Override
