@@ -2,6 +2,7 @@
 X support extensions for directories with listFiles/listPaths
 X   otherwise asking for .jpg will return root folders (unless 'only files' specified)
 X   but because macOS actually puts extensions on folders (.app, etc), support it
+X fix for disableStyle() with 2D shapes in P3D
 
 
 _ put opengl libs for core into platform-specific subfolders?
