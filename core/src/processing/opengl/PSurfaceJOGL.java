@@ -38,6 +38,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 import java.util.Map;
@@ -875,8 +876,8 @@ public class PSurfaceJOGL implements PSurface {
   class DrawListener implements GLEventListener {
     public void display(GLAutoDrawable drawable) {
       if (display.getEDTUtil().isCurrentThreadEDT()) {
-        // For some reason, the first two frames of the animator are run on the
-        // EDT, skipping rendering Processing's frame in that case.
+        // For an unknown reason, the first two frames of the animator run on
+        // the EDT. For those, we just skip this draw call to avoid badness.
         return;
       }
 
@@ -1092,6 +1093,7 @@ public class PSurfaceJOGL implements PSurface {
     if (pgl.presentMode()) {
       mx -= (int)pgl.presentX;
       my -= (int)pgl.presentY;
+      //noinspection IntegerDivisionInFloatingPointContext
       if (peAction == KeyEvent.RELEASE &&
           pgl.insideStopButton(sx, sy - screenRect.height / windowScaleFactor)) {
         sketch.exit();
@@ -1184,6 +1186,7 @@ public class PSurfaceJOGL implements PSurface {
   // Relevant discussion and links here:
   // http://forum.jogamp.org/Newt-wrong-keycode-for-key-td4033690.html#a4033697
   // (I don't think this is a complete solution).
+  @SuppressWarnings("SuspiciousNameCombination")
   private static int mapToPConst(short code) {
     switch (code) {
       case com.jogamp.newt.event.KeyEvent.VK_UP:
@@ -1277,22 +1280,27 @@ public class PSurfaceJOGL implements PSurface {
     if (cursor == null) {
       String name = cursorNames.get(kind);
       if (name != null) {
-        ImageIcon icon =
-          new ImageIcon(getClass().getResource("cursors/" + name + ".png"));
-        PImage img = new PImageAWT(icon.getImage());
-        // Most cursors just use the center as the hotspot...
-        int x = img.width / 2;
-        int y = img.height / 2;
-        // ...others are more specific
-        if (kind == PConstants.ARROW) {
-          x = 10; y = 7;
-        } else if (kind == PConstants.HAND) {
-          x = 12; y = 8;
-        } else if (kind == PConstants.TEXT) {
-          x = 16; y = 22;
+        URL url = getClass().getResource("cursors/" + name + ".png");
+        if (url != null) {
+          ImageIcon icon = new ImageIcon(url);
+          PImage img = new PImageAWT(icon.getImage());
+          // Most cursors just use the center as the hotspot...
+          int x = img.width / 2;
+          int y = img.height / 2;
+          // ...others are more specific
+          if (kind == PConstants.ARROW) {
+            x = 10;
+            y = 7;
+          } else if (kind == PConstants.HAND) {
+            x = 12;
+            y = 8;
+          } else if (kind == PConstants.TEXT) {
+            x = 16;
+            y = 22;
+          }
+          cursor = new CursorInfo(img, x, y);
+          cursors.put(kind, cursor);
         }
-        cursor = new CursorInfo(img, x, y);
-        cursors.put(kind, cursor);
       }
     }
     if (cursor != null) {
@@ -1304,17 +1312,18 @@ public class PSurfaceJOGL implements PSurface {
 
 
   public void setCursor(PImage image, int hotspotX, int hotspotY) {
-    Display disp = window.getScreen().getDisplay();
-    BufferedImage bimg = (BufferedImage)image.getNative();
-    DataBufferInt dbuf = (DataBufferInt)bimg.getData().getDataBuffer();
-    int[] ipix = dbuf.getData();
-    ByteBuffer pixels = ByteBuffer.allocate(ipix.length * 4);
-    pixels.asIntBuffer().put(ipix);
+    Display display = window.getScreen().getDisplay();
+    BufferedImage img = (BufferedImage) image.getNative();
+    int[] imagePixels =
+      ((DataBufferInt) img.getData().getDataBuffer()).getData();
+    ByteBuffer pixels = ByteBuffer.allocate(imagePixels.length * 4);
+    pixels.asIntBuffer().put(imagePixels);
     PixelFormat format = PixelFormat.ARGB8888;
-    final Dimension size = new Dimension(bimg.getWidth(), bimg.getHeight());
-    PixelRectangle pixelrect = new PixelRectangle.GenericPixelRect(format, size, 0, false, pixels);
-    final PointerIcon pi = disp.createPointerIcon(pixelrect, hotspotX, hotspotY);
-    display.getEDTUtil().invoke(false, () -> {
+    final Dimension size = new Dimension(img.getWidth(), img.getHeight());
+    PixelRectangle rect =
+      new PixelRectangle.GenericPixelRect(format, size, 0, false, pixels);
+    final PointerIcon pi = display.createPointerIcon(rect, hotspotX, hotspotY);
+    this.display.getEDTUtil().invoke(false, () -> {
       window.setPointerVisible(true);
       window.setPointerIcon(pi);
     });
