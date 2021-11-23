@@ -388,15 +388,10 @@ public class PSurfaceJOGL implements PSurface {
 
 
   protected void initListeners() {
-    NEWTMouseListener mouseListener = new NEWTMouseListener();
-    window.addMouseListener(mouseListener);
-    NEWTKeyListener keyListener = new NEWTKeyListener();
-    window.addKeyListener(keyListener);
-    NEWTWindowListener winListener = new NEWTWindowListener();
-    window.addWindowListener(winListener);
-
-    DrawListener drawListener = new DrawListener();
-    window.addGLEventListener(drawListener);
+    window.addMouseListener(new NEWTMouseListener());
+    window.addKeyListener(new NEWTKeyListener());
+    window.addWindowListener(new NEWTWindowListener());
+    window.addGLEventListener(new DrawListener());
   }
 
 
