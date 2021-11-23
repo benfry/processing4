@@ -397,10 +397,10 @@ public class PSurfaceJOGL implements PSurface {
 
   protected void initAnimator() {
     if (PApplet.platform == PConstants.WINDOWS) {
-      // Force Windows to keep timer resolution high by
-      // sleeping for time which is not a multiple of 10 ms.
-      // See section "Clocks and Timers on Windows":
-      //   https://blogs.oracle.com/dholmes/entry/inside_the_hotspot_vm_clocks
+      // Force Windows to keep timer resolution high by creating a dummy
+      // thread that sleeps for a time that is not a multiple of 10 ms.
+      // See section titled "Clocks and Timers on Windows" in this post:
+      // https://web.archive.org/web/20160308031939/https://blogs.oracle.com/dholmes/entry/inside_the_hotspot_vm_clocks
       Thread highResTimerThread = new Thread(() -> {
         try {
           Thread.sleep(Long.MAX_VALUE);
@@ -411,6 +411,7 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     animator = new FPSAnimator(window, 60);
+
     drawException = null;
     animator.setUncaughtExceptionHandler((animator, drawable, cause) -> {
       synchronized (drawExceptionMutex) {
@@ -425,22 +426,16 @@ public class PSurfaceJOGL implements PSurface {
           while (drawException == null) {
             drawExceptionMutex.wait();
           }
-          // System.err.println("Caught exception: " + drawException.getMessage());
-//          if (drawException != null) {
-            Throwable cause = drawException.getCause();
-//            if (cause instanceof ThreadDeath) {
-              // System.out.println("caught ThreadDeath");
-              // throw (ThreadDeath)cause;
-            if (cause instanceof RuntimeException) {
-              throw (RuntimeException) cause;
-            } else if (cause instanceof UnsatisfiedLinkError) {
-              throw new UnsatisfiedLinkError(cause.getMessage());
-            } else if (cause == null) {
-              throw new RuntimeException(drawException.getMessage());
-            } else {
-              throw new RuntimeException(cause);
-            }
-//          }
+          Throwable cause = drawException.getCause();
+          if (cause instanceof RuntimeException) {
+            throw (RuntimeException) cause;
+          } else if (cause instanceof UnsatisfiedLinkError) {
+            throw new UnsatisfiedLinkError(cause.getMessage());
+          } else if (cause == null) {
+            throw new RuntimeException(drawException.getMessage());
+          } else {
+            throw new RuntimeException(cause);
+          }
         } catch (InterruptedException ignored) { }
       }
     });
@@ -814,7 +809,7 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
-  class DrawListener implements GLEventListener {
+  public class DrawListener implements GLEventListener {
     public void display(GLAutoDrawable drawable) {
       if (display.getEDTUtil().isCurrentThreadEDT()) {
         // For an unknown reason, the first two frames of the animator run on
@@ -824,7 +819,8 @@ public class PSurfaceJOGL implements PSurface {
 
       if (sketch.frameCount == 0) {
         if (sketchWidth != sketchWidthRequested || sketchHeight != sketchHeightRequested) {
-          PGraphics.showWarning(String.format("The sketch has been resized from %dx%d to %dx%d by the window manager."),
+          PGraphics.showWarning("The sketch has been resized from " +
+            "%d\u2715%d to %d\u2715%d by the window manager.",
             sketchWidthRequested, sketchHeightRequested, sketchWidth, sketchHeight);
         }
         requestFocus();
