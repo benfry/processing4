@@ -27,7 +27,6 @@ package processing.opengl;
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.FileDialog;
-import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -95,8 +94,8 @@ public class PSurfaceJOGL implements PSurface {
   protected PApplet sketch;
   protected PGraphics graphics;
 
-  protected int sketchWidth0;
-  protected int sketchHeight0;
+  protected int sketchWidthRequested;
+  protected int sketchHeightRequested;
   protected int sketchWidth;
   protected int sketchHeight;
 
@@ -119,20 +118,6 @@ public class PSurfaceJOGL implements PSurface {
     this.graphics = graphics;
     this.pgl = (PJOGL) ((PGraphicsOpenGL)graphics).pgl;
   }
-
-
-  /*
-  @Override
-  public int displayDensity() {
-    return shim.displayDensity();
-  }
-
-
-  @Override
-  public int displayDensity(int display) {
-    return shim.displayDensity(display);
-  }
-  */
 
 
   // TODO rewrite before 4.0 release
@@ -338,6 +323,7 @@ public class PSurfaceJOGL implements PSurface {
     // https://github.com/processing/processing/issues/4690
     window.setDefaultCloseOperation(WindowClosingProtocol.WindowClosingMode.DO_NOTHING_ON_CLOSE);
 
+    // macOS pixel density is handled transparently by the OS
     windowScaleFactor =
       (PApplet.platform == PConstants.MACOS) ? 1 : sketch.pixelDensity;
 
@@ -355,8 +341,10 @@ public class PSurfaceJOGL implements PSurface {
     sketch.displayWidth = screenRect.width;
     sketch.displayHeight = screenRect.height;
 
-    sketchWidth0 = sketch.sketchWidth();
-    sketchHeight0 = sketch.sketchHeight();
+    // Sometimes the window manager or OS will resize the window.
+    // Keep track of the requested width/height to notify the user.
+    sketchWidthRequested = sketch.sketchWidth();
+    sketchHeightRequested = sketch.sketchHeight();
 
     sketchWidth = sketch.sketchWidth();
     sketchHeight = sketch.sketchHeight();
@@ -407,8 +395,8 @@ public class PSurfaceJOGL implements PSurface {
     NEWTWindowListener winListener = new NEWTWindowListener();
     window.addWindowListener(winListener);
 
-    DrawListener drawlistener = new DrawListener();
-    window.addGLEventListener(drawlistener);
+    DrawListener drawListener = new DrawListener();
+    window.addGLEventListener(drawListener);
   }
 
 
@@ -631,7 +619,6 @@ public class PSurfaceJOGL implements PSurface {
 
   @Override
   public void placeWindow(int[] location, int[] editorLocation) {
-
     if (sketch.sketchFullScreen()) {
       return;
     }
@@ -642,11 +629,9 @@ public class PSurfaceJOGL implements PSurface {
     int h = window.getHeight() + window.getInsets().getTotalHeight();
 
     if (location != null) {
-//      System.err.println("place window at " + location[0] + ", " + location[1]);
       window.setTopLevelPosition(location[0], location[1]);
 
     } else if (editorLocation != null) {
-//      System.err.println("place window at editor location " + editorLocation[0] + ", " + editorLocation[1]);
       int locationX = editorLocation[0] - 20;
       int locationY = editorLocation[1];
 
@@ -655,22 +640,8 @@ public class PSurfaceJOGL implements PSurface {
         window.setTopLevelPosition(locationX - w, locationY);
 
       } else {  // doesn't fit
-        /*
-        // if it fits inside the editor window,
-        // offset slightly from upper left-hand corner
-        // so that it's plunked inside the text area
-        locationX = editorLocation[0] + 66;
-        locationY = editorLocation[1] + 66;
-
-        if ((locationX + w > sketch.displayWidth - 33) ||
-            (locationY + h > sketch.displayHeight - 33)) {
-          // otherwise center on screen
-        */
         locationX = (sketch.displayWidth - w) / 2;
         locationY = (sketch.displayHeight - h) / 2;
-        /*
-        }
-        */
         window.setTopLevelPosition(locationX, locationY);
       }
     } else {  // just center on screen
@@ -857,10 +828,10 @@ public class PSurfaceJOGL implements PSurface {
       }
 
       if (sketch.frameCount == 0) {
-        if (sketchWidth < sketchWidth0 || sketchHeight < sketchHeight0) {
-          PGraphics.showWarning("The sketch has been automatically resized to fit the screen resolution");
+        if (sketchWidth != sketchWidthRequested || sketchHeight != sketchHeightRequested) {
+          PGraphics.showWarning(String.format("The sketch has been resized from %dx%d to %dx%d by the window manager."),
+            sketchWidthRequested, sketchHeightRequested, sketchWidth, sketchHeight);
         }
-//        System.out.println("display: " + window.getWidth() + " "+ window.getHeight() + " - " + sketchWidth + " " + sketchHeight);
         requestFocus();
       }
 
@@ -887,7 +858,7 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     public void dispose(GLAutoDrawable drawable) {
-//      sketch.dispose();
+      // do nothing, sketch.dispose() will be called with exitCalled()
     }
 
     public void init(GLAutoDrawable drawable) {
@@ -1218,6 +1189,8 @@ public class PSurfaceJOGL implements PSurface {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+  // CURSORS
+
 
   class CursorInfo {
     PImage image;
@@ -1287,6 +1260,9 @@ public class PSurfaceJOGL implements PSurface {
 
 
   public void setCursor(PImage image, int hotspotX, int hotspotY) {
+    // TODO why is this first getting 'display' from 'window' instead of using
+    //      this.display which is already set? In addition, this.display is
+    //      even used to call getEDTUtil() down below. [fry 211123]
     Display display = window.getScreen().getDisplay();
     BufferedImage img = (BufferedImage) image.getNative();
     int[] imagePixels =
@@ -1315,6 +1291,12 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+  // LINKS
+
+
+  @Override
   public boolean openLink(String url) {
     return ShimAWT.openLink(url);
   }
