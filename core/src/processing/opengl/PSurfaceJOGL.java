@@ -794,11 +794,10 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
-  private float getCurrentPixelScale() {
+  protected float getCurrentPixelScale() {
     // Even if the graphics are retina, the user might have moved the window
     // into a non-retina monitor, so we need to check
-    window.getCurrentSurfaceScale(currentPixelScale);
-    return currentPixelScale[0];
+    return window.getCurrentSurfaceScale(currentPixelScale)[0];
   }
 
 
@@ -867,9 +866,9 @@ public class PSurfaceJOGL implements PSurface {
 
       if (!sketch.finished) {
         pgl.getGL(drawable);
-        int pframeCount = sketch.frameCount;
+        int prevFrameCount = sketch.frameCount;
         sketch.handleDraw();
-        if (pframeCount == sketch.frameCount || sketch.finished) {
+        if (prevFrameCount == sketch.frameCount || sketch.finished) {
           // This hack allows the FBO layer to be swapped normally even if
           // the sketch is no looping or finished because it does not call draw(),
           // otherwise background artifacts may occur (depending on the hardware/drivers).
