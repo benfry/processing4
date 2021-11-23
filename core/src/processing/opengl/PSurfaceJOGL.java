@@ -229,11 +229,19 @@ public class PSurfaceJOGL implements PSurface {
     screen = NewtFactory.createScreen(display, 0);
     screen.addReference();
 
+    int displayNum = sketch.sketchDisplay();
+    displayRect = getDisplayBounds(displayNum);
+  }
+
+
+  // TODO this code is mostly copied from code found in PSurfaceOpenGL,
+  //      they should probably be merged to avoid divergence [fry 211122]
+  static protected Rectangle getDisplayBounds(int displayNum) {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice[] awtDevices = ge.getScreenDevices();
 
     GraphicsDevice awtDisplayDevice = null;
-    int displayNum = sketch.sketchDisplay();
+
     if (displayNum > 0) {  // if -1, use the default device
       if (displayNum <= awtDevices.length) {
         awtDisplayDevice = awtDevices[displayNum-1];
@@ -245,6 +253,9 @@ public class PSurfaceJOGL implements PSurface {
         }
       }
     } else if (0 < awtDevices.length) {
+      // TODO this seems like a bad idea: in lots of situations [0] will *not*
+      //      be the default device. Not sure why this was added instead of
+      //      just using getDefaultScreenDevice() below. [fry 211122]
       awtDisplayDevice = awtDevices[0];
     }
 
@@ -252,8 +263,7 @@ public class PSurfaceJOGL implements PSurface {
       awtDisplayDevice = ge.getDefaultScreenDevice();
     }
 
-    GraphicsConfiguration config = awtDisplayDevice.getDefaultConfiguration();
-    displayRect = config.getBounds();
+    return awtDisplayDevice.getDefaultConfiguration().getBounds();
   }
 
 
