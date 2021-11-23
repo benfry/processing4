@@ -81,7 +81,7 @@ import processing.awt.ShimAWT;
 
 public class PSurfaceJOGL implements PSurface {
   /** Selected GL profile */
-  public static GLProfile profile;
+  static public GLProfile profile;
 
   public PJOGL pgl;
 
@@ -109,14 +109,14 @@ public class PSurfaceJOGL implements PSurface {
 
   protected int windowScaleFactor;
 
-  protected float[] currentPixelScale = {0, 0};
+  protected float[] currentPixelScale = { 0, 0 };
 
   protected boolean external = false;
 
 
   public PSurfaceJOGL(PGraphics graphics) {
     this.graphics = graphics;
-    this.pgl = (PJOGL) ((PGraphicsOpenGL)graphics).pgl;
+    this.pgl = (PJOGL) ((PGraphicsOpenGL) graphics).pgl;
   }
 
 
