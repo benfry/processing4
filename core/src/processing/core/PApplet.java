@@ -10250,7 +10250,7 @@ public class PApplet implements PConstants {
     }
 
     // TODO When disabling AWT for LWJGL or others, we need to figure out
-    // how to make Cmd-Q and the rest of this still work properly.
+    //      how to make Cmd-Q and the rest of this still work properly.
     if (platform == MACOS && !disableAWT) {
       try {
         final String td = "processing.core.ThinkDifferent";
