@@ -328,13 +328,6 @@ public class PSurfaceJOGL implements PSurface {
     // https://github.com/processing/processing/issues/4690
     window.setDefaultCloseOperation(WindowClosingProtocol.WindowClosingMode.DO_NOTHING_ON_CLOSE);
 
-//    if (displayDevice == null) {
-//
-//
-//    } else {
-//      window = GLWindow.create(displayDevice.getScreen(), pgl.getCaps());
-//    }
-
     windowScaleFactor =
       (PApplet.platform == PConstants.MACOS) ? 1 : sketch.pixelDensity;
 
@@ -355,43 +348,16 @@ public class PSurfaceJOGL implements PSurface {
     sketchWidth0 = sketch.sketchWidth();
     sketchHeight0 = sketch.sketchHeight();
 
-    /*
-    // Trying to fix
-    // https://github.com/processing/processing/issues/3401
-    if (sketch.displayWidth < sketch.width ||
-      sketch.displayHeight < sketch.height) {
-      int w = sketch.width;
-      int h = sketch.height;
-      if (sketch.displayWidth < w) {
-        w = sketch.displayWidth;
-      }
-      if (sketch.displayHeight < h) {
-        h = sketch.displayHeight;
-      }
-//      sketch.setSize(w, h - 22 - 22);
-//      graphics.setSize(w, h - 22 - 22);
-      System.err.println("setting width/height to " + w + " "  + h);
-    }
-    */
-
     sketchWidth = sketch.sketchWidth();
     sketchHeight = sketch.sketchHeight();
-//    System.out.println("init: " + sketchWidth + " " + sketchHeight);
 
     boolean fullScreen = sketch.sketchFullScreen();
-    // Removing the section below because sometimes people want to do the
-    // full screen size in a window, and it also breaks insideSettings().
-    // With 3.x, fullScreen() is so easy, that it's just better that way.
+
+    // Before 3.x, we would set the window to full screen when the requested
+    // width/height was the size of the screen. But not everyone *wants* that
+    // to be full screen (they might want to drag the window, or who knows),
+    // so that code was removed because fullScreen() is easy to use instead.
     // https://github.com/processing/processing/issues/3545
-    /*
-    // Sketch has already requested to be the same as the screen's
-    // width and height, so let's roll with full screen mode.
-    if (screenRect.width == sketchWidth &&
-        screenRect.height == sketchHeight) {
-      fullScreen = true;
-      sketch.fullScreen();
-    }
-    */
 
     if (fullScreen || spanDisplays) {
       sketchWidth = screenRect.width / windowScaleFactor;
