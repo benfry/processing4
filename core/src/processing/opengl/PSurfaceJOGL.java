@@ -120,63 +120,6 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
-  // TODO rewrite before 4.0 release
-  public PImage loadImage(String path, Object... args) {
-    return ShimAWT.loadImage(sketch, path, args);
-  }
-
-
-  @Override
-  public void selectInput(String prompt, String callbackMethod,
-                          File file, Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      // https://github.com/processing/processing/issues/3831
-      boolean hide = (sketch != null) &&
-        (PApplet.platform == PConstants.WINDOWS);
-      if (hide) setVisible(false);
-
-      ShimAWT.selectImpl(prompt, callbackMethod, file,
-                         callbackObject, null, FileDialog.LOAD);
-
-      if (hide) setVisible(true);
-    });
-  }
-
-
-  @Override
-  public void selectOutput(String prompt, String callbackMethod,
-                           File file, Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      // https://github.com/processing/processing/issues/3831
-      boolean hide = (sketch != null) &&
-        (PApplet.platform == PConstants.WINDOWS);
-      if (hide) setVisible(false);
-
-      ShimAWT.selectImpl(prompt, callbackMethod, file,
-                         callbackObject, null, FileDialog.SAVE);
-
-      if (hide) setVisible(true);
-    });
-  }
-
-
-  @Override
-  public void selectFolder(String prompt, String callbackMethod,
-                           File file, Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      // https://github.com/processing/processing/issues/3831
-      boolean hide = (sketch != null) &&
-        (PApplet.platform == PConstants.WINDOWS);
-      if (hide) setVisible(false);
-
-      ShimAWT.selectFolderImpl(prompt, callbackMethod, file,
-                               callbackObject, null);
-
-      if (hide) setVisible(true);
-    });
-  }
-
-
   public void initOffscreen(PApplet sketch) {
     this.sketch = sketch;
 
@@ -1282,13 +1225,74 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
+
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  // LINKS
+  // TOOLKIT
+
+
+  @Override
+  public PImage loadImage(String path, Object... args) {
+    // Would like to rewrite this for 4.x, but the strategies for loading
+    // image data with GL seem unnecessarily complex, and not 100% necessary:
+    // we haven't had to remove as much AWT as expected. [fry 211123]
+    return ShimAWT.loadImage(sketch, path, args);
+  }
 
 
   @Override
   public boolean openLink(String url) {
     return ShimAWT.openLink(url);
+  }
+
+
+  @Override
+  public void selectInput(String prompt, String callbackMethod,
+                          File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+              (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectImpl(prompt, callbackMethod, file,
+              callbackObject, null, FileDialog.LOAD);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
+  @Override
+  public void selectOutput(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+              (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectImpl(prompt, callbackMethod, file,
+              callbackObject, null, FileDialog.SAVE);
+
+      if (hide) setVisible(true);
+    });
+  }
+
+
+  @Override
+  public void selectFolder(String prompt, String callbackMethod,
+                           File file, Object callbackObject) {
+    EventQueue.invokeLater(() -> {
+      // https://github.com/processing/processing/issues/3831
+      boolean hide = (sketch != null) &&
+              (PApplet.platform == PConstants.WINDOWS);
+      if (hide) setVisible(false);
+
+      ShimAWT.selectFolderImpl(prompt, callbackMethod, file,
+              callbackObject, null);
+
+      if (hide) setVisible(true);
+    });
   }
 }
