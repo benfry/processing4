@@ -2997,7 +2997,9 @@ public class PShapeOpenGL extends PShape {
             tessellateSphere();
           }
         } else if (family == PATH) {
-          inGeo.clear();
+          // TODO workaround for vertices being wiped out,
+          //      but need to identify the real problem here
+          if (vertices != null) inGeo.clear();
           tessellatePath();
         }
 

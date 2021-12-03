@@ -3,6 +3,11 @@ X support extensions for directories with listFiles/listPaths
 X   otherwise asking for .jpg will return root folders (unless 'only files' specified)
 X   but because macOS actually puts extensions on folders (.app, etc), support it
 X fix for disableStyle() with 2D shapes in P3D
+X added workaround in PShapeOpenGL to get access to vertex data
+_   still need to find the root cause
+_   also need to check for other reports about this
+
+_ made DrawListener public in PSurfaceJOGL (probably change that back)
 
 
 _ put opengl libs for core into platform-specific subfolders?
