@@ -1,3 +1,62 @@
+# Processing 4.0 beta 2
+
+*Revision 1277 – 4 October 2021*
+
+Had to put things down for a while after the big push to get beta 1 out the door. But now we're back with an update mostly focused on fixing a few things that were broken.
+
+
+## Lots of fixes
+
+* Export to Application no longer broken when using P2D or P3D on macOS. (Though if you're a macOS developer, we could [use some help](https://github.com/processing/processing4/issues/284)) [#249](https://github.com/processing/processing4/issues/249)
+
+* Allow imports with `color` in the name. This gets everyone's favorite toxiclibs working again. Got a fix from Sam, fingers crossed that it doesn't introduce new quirks. [#240](https://github.com/processing/processing4/issues/240), [#246](https://github.com/processing/processing4/pull/246)
+
+* Movie Maker no longer broken when there are spaces in the path to Processing. [#268](https://github.com/processing/processing4/issues/268)
+
+* Debugger was not working when selecting Debug from the menu, now fixed. [#282](https://github.com/processing/processing4/issues/282)
+
+* "Massachusetts Institue of Technology" typo in loading screen. Not actually a big fix, but lots of reports about this one. [#254](https://github.com/processing/processing4/issues/254)
+
+
+## …but it's still a beta
+
+Not everything is fixed yet. Here are a few of the more obvious:
+
+* The colors, theme, buttons, interface, icons, etc are not yet complete. We have the necessary help, we just need more time. [#48](https://github.com/processing/processing4/issues/48)
+
+* Windows: Editor cursor position is offset to the right when display scaling >100% [#226](https://github.com/processing/processing4/issues/226)
+
+* macOS: IDE cursor position is wrong if font size is changed in Preferences. This may be specific to multiple displays, when one is retina and the other is not. [#194](https://github.com/processing/processing4/issues/194)
+
+* Export to Application not working with the current video library. The video library isn't handled by me, but we keep hearing about it. Updates will be posted [here](https://github.com/processing/processing-video/issues/188).
+
+
+## Contributed Fixes
+
+I love getting help from the community. Thank you!
+
+* The welcome screen was persistent, even if you told it to go away. Oops. [#48](https://github.com/processing/processing4/issues/48), [#253](https://github.com/processing/processing4/issues/253)
+
+* Fix minor typos in the PWM code for the IO library. [#266](https://github.com/processing/processing4/pull/266)
+
+* French translation: fixed typos and added missing items. [#258](https://github.com/processing/processing4/pull/258)
+
+* Fixed for JSSC library layout and upstream updates. [#119](https://github.com/processing/processing4/issues/119), [#229](https://github.com/processing/processing4/pull/229)
+
+
+## Other Changes
+
+Things you may not actally notice.
+
+* Added `-Dpython.console.encoding=UTF-8` for Python Mode at the [request of jdf](https://github.com/jdf/Processing.py-Bugs/issues/322).
+
+* Removed translated URLs that are not actually translated. Some of the Help menu translations were pointed at ancient links. [#250](https://github.com/processing/processing4/issues/250)
+
+* Switch to getModifiersEx() in `processing.app` code. [#67](https://github.com/processing/processing4/issues/67)
+
+* Deal with getFontMetrics() deprecation warning in EditorToolbar.
+
+
 # Processing 4.0 beta 1
 
 *Revision 1276 – 9 August 2021*
@@ -231,7 +290,7 @@ Sneaking a release out the door the morning before our company meeting. Don't te
 
 * Updated JNA from 5.7.0 to 5.8.0.
 
-* Remove the ant binary from the repo, updated the version we're using from 1.8.2 to 1.10.10.
+* Removed the `ant` binary from the repo, and updated the version we're using from 1.8.2 to 1.10.10.
 
 * Rebuilt the `appbundler` tool for macOS to handle some recent changes, and disabled some logging chatter as well.
 

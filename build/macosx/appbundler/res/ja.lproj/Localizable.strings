@@ -1,0 +1,7 @@
+"JRELoadError" = "Java 実行環境を起動できません。";
+"JRExLoadError" = "Java %d 実行環境を起動できません。";
+"JRExLoadFullError" = "このプログラムを実行するには、Java %d 以降がインストールされている必要があります。www.java.com から最新の Java をダウンロードしてインストールした後に、再度お試しください。";
+"JDKxLoadFullError" = "このプログラムを実行するには、Java %d 以降の JDK がインストールされている必要があります。Oracle.com から最新の Java JDK をダウンロードしてインストールした後に、再度お試しください。";
+"MainClassNameRequired" = "メインクラス名の指定は必須です。";
+"JavaDirectoryNotFound" = "Java ディレクトリのコンテンツを列挙できません。";
+"BundlePathContainsColon" = "名前に \"/\" 記号を含むフォルダーからは起動できません。";

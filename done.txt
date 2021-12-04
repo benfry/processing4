@@ -1,3 +1,45 @@
+1277 (4.0b2)
+X remove translated URLs that are not actually translated
+X   entries in the Help menu were going to ancient links
+X   https://github.com/processing/processing4/issues/250
+X Switch to getModifiersEx() in processing.app
+X   https://github.com/processing/processing4/issues/67
+X deal with getFontMetrics() deprecation warning in EditorToolbar
+X Exported Application broken in 4.0 beta 1 on macOS when using P2D or P3D
+X   https://github.com/processing/processing4/issues/249
+X   new issue: https://github.com/processing/processing4/issues/284
+X add -Dpython.console.encoding=UTF-8 to launcher
+X   https://github.com/jdf/Processing.py-Bugs/issues/322
+o key shortcuts broken on Katherine's laptop
+o   try with a clean user account
+X   double-check on other Big Sur machines (tried on VMware, was fine)
+X   worked after a reboot?
+X "Massachusetts Institue of Technology" typo in loading screen
+X   https://github.com/processing/processing4/issues/254
+X   https://github.com/processing/processing4/issues/280 (duplicate)
+X Movie Maker broken with spaces in path (converted to %20)
+X   https://github.com/processing/processing4/issues/268
+X Debugger not working when selecting Debug from the menu
+X   https://github.com/processing/processing4/issues/282
+X   turned out to be a problem when using menu, not button to enable/disable
+
+contribs
+X fix minor typos in the PWM code for the IO library
+X   https://github.com/processing/processing4/pull/266
+X Fix welcome screen dismissing
+X   https://github.com/processing/processing4/issues/253
+X   https://github.com/processing/processing4/issues/48
+X French translation: fixed typos and added missing items
+X   https://github.com/processing/processing4/pull/258
+X JSSC fix libs and sync with upstream
+X   https://github.com/processing/processing4/issues/119
+X   https://github.com/processing/processing4/pull/229
+X Imports whose name contains "color" cause Syntax error
+X   Workaround for color to appear in fully qualified names
+X   https://github.com/processing/processing4/pull/246
+X   https://github.com/processing/processing4/issues/240
+
+
 1276 (4.0b1)
 X really chatty console messages for people with old settings directories
 X   ignore 'debug' entry in prefs dir if it's a leftover DebugMode directory

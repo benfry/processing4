@@ -48,8 +48,8 @@ public class JavaBuild {
   static public final String PACKAGE_REGEX =
     "(?:^|\\s|;)package\\s+(\\S+)\\;";
 
-  static public final String JAVA_DOWNLOAD_URL = "https://adoptopenjdk.net/";
-  static public final String MIN_JAVA_VERSION = "11.0.11";
+  static public final String JAVA_DOWNLOAD_URL = "https://adoptium.net/";
+  static public final String MIN_JAVA_VERSION = "17";
 
   protected Sketch sketch;
   protected Mode mode;

@@ -25,6 +25,13 @@
     </and>
   </condition>
 
+  <available file="${gluon.base}.zip" property="javafx.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="javafx.ignorable" value="false" else="true">
+    <isset property="javafx.present" />
+  </condition>
+
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!--
@@ -41,7 +48,7 @@
   https://gluonhq.com/download/javafx-16-sdk-linux
   -->
 
-  <!-- JavaFX was removed from the Oracle's JDK for ARM and Java 11.
+  <!-- JavaFX was removed from the Oracle JDK for ARM and Java 11.
        There are arm32 and aarch64 builds for Linux (compatible with the Pi?)
        but they're Early Access releases of JavaFX 17.
        Downloads page is at https://gluonhq.com/products/javafx/
@@ -56,9 +63,14 @@
        versions. Not a good way to mix, unless have unique JARs for each platform,
        which would be ~60 MB extra (for platforms that are < 2% usage). -->
 
+  <!--
+    https://download2.gluonhq.com/openjfx/17.0.0.1/openjfx-17.0.0.1_linux-x64_bin-sdk.zip
+    https://download2.gluonhq.com/openjfx/17.0.0.1/openjfx-17.0.0.1_osx-x64_bin-sdk.zip
+  -->
   <target name="retrieve-gluon">
-    <get src="https://gluonhq.com/download/${gluon.base}"
+    <get src="https://download2.gluonhq.com/openjfx/${gluon.version}/openjfx-${gluon.version}_${platform.name}-x64_bin-sdk.zip"
          dest="${gluon.base}.zip"
+         ignoreerrors="${javafx.ignorable}"
          usetimestamp="true" />
 
     <antcall target="unzip-gluon-jars" />
@@ -111,7 +123,7 @@
   </target>
 
   <target name="download-javafx">
-    <property name="gluon.version" value="16" />
+    <property name="gluon.version" value="17.0.0.1" />
     <!-- current Early Access version, includes support for other architectures -->
     <!-- <property name="gluon.version" value="17-ea" /> -->
 
@@ -120,17 +132,20 @@
 
     <!-- javafx-${gluon.version}-sdk-${gluon.platform} -->
     <antcall target="retrieve-gluon">
-      <param name="gluon.base" value="javafx-${gluon.version}-sdk-mac" />
+      <param name="gluon.base" value="javafx-${gluon.version}-macos" />
+      <param name="platform.name" value="osx" />
       <param name="platform.path" value="${library.path}/macosx" />
     </antcall>
 
     <antcall target="retrieve-gluon">
-      <param name="gluon.base" value="javafx-${gluon.version}-sdk-windows" />
+      <param name="gluon.base" value="javafx-${gluon.version}-windows" />
+      <param name="platform.name" value="windows" />
       <param name="platform.path" value="${library.path}/windows64" />
     </antcall>
 
     <antcall target="retrieve-gluon">
-      <param name="gluon.base" value="javafx-${gluon.version}-sdk-linux" />
+      <param name="gluon.base" value="javafx-${gluon.version}-linux" />
+      <param name="platform.name" value="linux" />
       <param name="platform.path" value="${library.path}/linux64" />
     </antcall>
   </target>

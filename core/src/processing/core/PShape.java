@@ -1757,7 +1757,7 @@ public class PShape implements PConstants {
     } else {
       for (int i = 0; i < vertexCount; i++) {
         float[] vert = vertices[i];
-        if (vert[Z] == 0) {
+        if (vert.length < 3 || vert[Z] == 0) {
           g.vertex(vert[X], vert[Y]);
         } else {
           g.vertex(vert[X], vert[Y], vert[Z]);

@@ -1,26 +1,56 @@
-1277 (4.0b2)
-X remove translated URLs that are not actually translated
-X   entries in the Help menu were going to ancient links
-X   https://github.com/processing/processing4/issues/250
-X Switch to getModifiersEx() in processing.app
-X   https://github.com/processing/processing4/issues/67
-X deal with getFontMetrics() deprecation warning in EditorToolbar
+1278 (4.0b3)
+X Update appbundler with the latest from upstream
+X Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
+X   https://github.com/processing/processing4/issues/285
+_   update README to note that we're on 17
+X cleaning up the Create Font dialog while tracking down #278
+/   https://github.com/processing/processing4/issues/278
+X   couldn't reproduce, but probably an issue in there somewhere
+X   Remove Serif, SansSerif, Monospaced, Dialog, and DialogInput from Create Font
+X   sort the list of font names
+X   skip fonts starting . and # because they're likely to confuse users
+X get rid of version numbers in the name of the batik.jar file
 
-_ make the call on the launcher setting for Linux
-_   https://github.com/processing/processing4/issues/247
+sam
+X Error when calling smooth() on PGraphics
+X   https://github.com/processing/processing4/issues/272
+X Detect if calling special methods on PApplet or not (and restore unit tests)
+X   https://github.com/processing/processing4/pull/288
+X Move Mockito to a new version
+X   https://github.com/processing/processing4/issues/287
+
+cleaning
+o import option for sketchbook (button to select files/folders/etc)
+X   use pdez instead
 
 
-highest
-_ update the README.md in the root for alpha 6 and beta 1
+before release
+_ disable Theme Engine from Tools (in build.xml)
+
+
+known issues
+_ Editor cursor position is offset to the right when Windows scaling >100%
+_   https://github.com/processing/processing4/issues/226
+_   ship with a spare .exe for this one?
+_ IDE cursor position is wrong if font size is changed in preferences on macOS
+_   probably related to second displays, need to hook one up and test
+_   https://github.com/processing/processing4/issues/194
+_ UI scaling issues on Windows still not resolved
+_   https://github.com/processing/processing4/issues/231
+_ Export to Application not working with the current video library
+_   https://github.com/processing/processing-video/issues/188
+_ docs are 3.x not 4.x
+
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+_ update the README.md in the root for alpha 6 and beta 1 and 2
 _ update https://github.com/processing/processing4/wiki/Changes-in-4.0
-_ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
 
-_ what to double-click when opening p5 projects (.pdp?)
-_   lack of a project file makes this a little bit of a headache
-_   dropping a sketch folder onto the PDE should also be implemented
 _ refresh option for sketchbook (bottom of window)
-_ import option for sketchbook (button to select files/folders/etc)
 
+_ document pdez and pdex files so that folks can use them
 _ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
 _   https://github.com/processing/processing/issues/182
@@ -29,22 +59,17 @@ _   if Java Mode is in front, and user double-clicks another Mode's entry, what 
 _ write build.xml file to automatically update the examples
 _ when adding a new library, its examples aren't added to the list until restart
 
-_ key shortcuts broken on Katherine's laptop
-_   try with a clean user account
-X   double-check on other Big Sur machines (tried on VMware, was fine)
-
-_ auto-complete not triggering, workaround as pref?
-_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
-_   https://github.com/processing/processing/issues/5691
-
-_ IDE cursor position is wrong if font size is changed in preferences on macOS
-_   probably related to second displays, need to hook one up and test
-_   https://github.com/processing/processing4/issues/194
-
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
 _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
+
+_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
+_   https://github.com/processing/processing4/issues/212
+
+_ when lib downloads (batik) go dead, fallback to the download.processing.org version
+_   or for now, tell users how to do it manually
+
 
 ui is ugly on macOS
 _ sort out ui.font plus the other fonts inside theme.txt
@@ -54,6 +79,11 @@ _     and prevents the theme from updating the font
 _   while that font could exist in theme.txt,
 _     getSansFont() also handles the language fallback version
 _     which perhaps, that pref should come from the translations: i.e. an override setting
+_   decision: set the default sans, bold, and mono font in language file
+_     can be overridden in preferences.txt
+_     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
+_     need a separate identifier for the builtin sans (now called processing.sans)
+_     and when theme wants to ask for a sans font
 _ better default fonts for Swing; argh
 _   file an issue with the images
 _     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
@@ -61,11 +91,6 @@ _   Space Grotesk and Mono?
 _     https://fonts.google.com/specimen/Space+Mono
 _     https://fonts.google.com/specimen/Space+Grotesk
 
-_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
-_   https://github.com/processing/processing4/issues/212
-
-_ when lib downloads (batik) go dead, fallback to the download.processing.org version
-_   or for now, tell users how to do it manually
 
 windows/scaling
 _ include JNA so that sketches can also scale properly?
@@ -91,6 +116,7 @@ _   (built and tested a version of this code if we want to use it)
 
 
 before 4.x final
+_ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
 _ turn off javafx web if not using
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
@@ -118,7 +144,18 @@ _   or at least avoid the multiple
 _ remove jai_imageio.jar from MovieMaker
 _   also clean out the other unused class files and src
 
+
 decisions before final 4.0 release
+_ auto-complete not triggering, workaround as pref?
+_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
+_   https://github.com/processing/processing/issues/5691
+_ add language support to Modes (request and updated PR from Andres)
+_   https://github.com/processing/processing4/issues/236
+_   https://github.com/processing/processing4/pull/237
+_ Add support for localizing contributions
+_   https://github.com/processing/processing/pull/2833
+_   https://github.com/processing/processing/issues/3154
+_   https://github.com/processing/processing/pull/3337
 _ can we compress jdk/Contents/Home/legal into a single zip?
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
@@ -127,9 +164,6 @@ _     https://violetlib.org/vaqua/downloads.html
 _   make the final call to remove, or put the libs on download.processing.org
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
-_ add language support to Modes (request from Andres)
-_   https://github.com/processing/processing4/pull/14
-_   this was a small change; rebase not really needed since needs rewrite anyway
 _ change the license from GPL
 _   then pass through the source to update licenses
 _   add Processing Foundation as 2012-15
@@ -139,29 +173,32 @@ _ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
 _   https://github.com/processing/processing/issues/4214
+_ make the call on the launcher setting for Linux
+_   https://github.com/processing/processing4/issues/247
 
-after initial 4.0 release
+
+would like to fix (after 4.0 final)
+_ better command line support/basic language server support?
+_   make it easier to use with other editors
+_ language server refactoring
+_   https://github.com/processing/processing4/issues/117
+_   https://theia-ide.org/
+_   https://medium.com/ballerina-techblog/implementing-a-language-server-how-hard-can-it-be-part-2-fa65a741aa23
+_ detach sketch name and folder name (use sketch.properties)
+_   better for git, etc
+_   single file thing is long gone
+_   introduce the idea of 'scraps' (ala gist) that are just single page blobs
+_ what to double-click when opening p5 projects (.pdp?)
+_   lack of a project file makes this a little bit of a headache
+_   dropping a sketch folder onto the PDE should also be implemented
 _ startup is so incredibly slow
 X   the splash screen comes up fairly quickly, so what gives?
 _   lots of EDT thread stuff, particularly with loading contribs
 
 
-discuss with Sam
-_ JSSC binaries for windows_32 and windows_64 appear to be macOS files
-_   https://github.com/processing/processing4/issues/119
-
-
-would like to fix
-_ better command line support/basic language server support?
-_   make it easier to use with other editors
-_ detach sketch name and folder name (use sketch.properties)
-_   better for git, etc
-_   single file thing is long gone
-_   introduce the idea of 'scraps' (ala gist) that are just single page blobs
-
-
 windows
-_ go back to including a .bat file?
+_ go back to including a .bat file for debug purposes?
+_   would be good to auto-generate this from the config (avoid double updates)
 _   .\java\bin\java.exe -cp lib/pde.jar;core/library/core.jar;lib/jna.jar;lib/jna-platform.jar;lib/antlr-4.7.2-complete.jar;lib/ant.jar;lib/ant-launcher.jar -Djna.nosys=true -Dsun.java2d.uiScale.enabled=false -Djna.boot.library.path=lib -Djna.nounpack=true -Dsun.java2d.d3d=false -Dsun.java2d.ddoffscreen=false -Dsun.java2d.noddraw=true processing.app.Base
 _ launch4j doesn't work from folders with non-native charsets
 _   anything in CP1252 on an English Windows system is fine
@@ -181,25 +218,6 @@ _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
 
 
-_ i18n support for Modes
-_   https://github.com/processing/processing/commit/0ed2fc139c3c5dfe0a1702ed8348987b3c6a5c9d
-_ update installation guide for Linux
-_   https://github.com/processing/processing-docs/issues/645
-
-
-probably past 4.x
-_ language server refactoring
-_   https://github.com/processing/processing4/issues/117
-_   https://theia-ide.org/
-_   https://medium.com/ballerina-techblog/implementing-a-language-server-how-hard-can-it-be-part-2-fa65a741aa23
-
-
-_ "Could not get the settings folder" message could be more helpful
-_   https://github.com/processing/processing/issues/5744
-_   need to check the locations it'd be writing to, and see if available
-_   then tell the user which folder to fix
-
-
 contrib
 _ Saving sketch with the same name as a class
 _   https://github.com/processing/processing/pull/4033
@@ -213,7 +231,7 @@ _ run button not deactivating
 _   https://github.com/processing/processing/issues/5786
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
-_   https://github.com/processing/processing/pull/5642
+X   https://github.com/processing/processing/pull/5642 (closed)
 _ errors inside setup() aren't coming through at all?
 _   seen in Eclipse; have to turn on the debugger... same as #4703?
 
@@ -264,22 +282,23 @@ _   docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
 _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 
 
+_ update installation guide for Linux
+_   https://github.com/processing/processing-docs/issues/645
+
+_ "Could not get the settings folder" message could be more helpful
+_   https://github.com/processing/processing/issues/5744
+_   need to check the locations it'd be writing to, and see if available
+_   then tell the user which folder to fix
+
 _ "Required files could not be found" when trying to run from the .zip file
 _   https://github.com/processing/processing/issues/5022
 _   use an installer instead?
-
-_ "error during export" message, but no error message contents come through
-_   e.g. https://github.com/processing/processing/issues/4792
 
 _ library compilations not ordered properly w/ sorting
 _   do we still support library compilations? that was from 2016
 _   https://github.com/processing/processing/issues/4630
 
 
-needs review
-_ createPreprocessor() added to JavaEditor, creating a mess
-_   https://github.com/processing/processing/commit/2ecdc36ac7c680eb36e271d17ad80b657b3ae6a0
-_ patch to core classpath by Manindra?
 
 
 gui
@@ -365,6 +384,9 @@ _ search the source for 'applet' references (i.e. SVG docs)
 _ PreferencesFrame is a misnomer (not a frame itself)
 _   change to PreferencesDialog, and make it a dialog?
 _ move Library to LibraryContribution and into contrib?
+_ createPreprocessor() added to JavaEditor, creating a mess
+_   https://github.com/processing/processing/commit/2ecdc36ac7c680eb36e271d17ad80b657b3ae6a0
+_ patch to core classpath by Manindra?
 
 
 from the todo list
@@ -385,15 +407,6 @@ _ New/Rename/Save As is reloading the whole sketchbook, argh
 _ improve start time by populating sketchbook/libraries on threads
 _   https://github.com/processing/processing/issues/2945
 
-
-help me
-_ Add support for localizing contributions
-_   https://github.com/processing/processing/pull/2833
-_   https://github.com/processing/processing/issues/3154
-_   https://github.com/processing/processing/pull/3337
-_ export application ubuntu -> windows not working (2.2.1)
-_   https://github.com/processing/processing/issues/2698
-_   might be something with libraries (native or otherwise)
 
 
 medium
@@ -703,6 +716,11 @@ _ EditorToolbar has two TODO items for open menu handling
 
 PDE / Export
 
+_ export application ubuntu -> windows not working (2.2.1)
+_   https://github.com/processing/processing/issues/2698
+_   might be something with libraries (native or otherwise)
+_ "error during export" message, but no error message contents come through
+_   e.g. https://github.com/processing/processing/issues/4792
 _ if the lib folder goes missing from export, give an error
 _   also any .jar files that are missing, give an error
 _   showing more debug messages (command line?)

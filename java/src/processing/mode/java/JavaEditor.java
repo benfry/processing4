@@ -2173,19 +2173,20 @@ public class JavaEditor extends Editor {
     frmImportSuggest.setVisible(true);
   }
 
-  /**
-   * Checks if the sketch contains java tabs. If it does, the editor ain't
-   * built for it, yet. Also, user should really start looking at a full IDE
-   * like Eclipse. Disable compilation check and some more features.
-   */
-  private boolean checkForJavaTabs() {
-    for (SketchCode code : getSketch().getCode()) {
-      if (code.getExtension().equals("java")) {
-        return true;
-      }
-    }
-    return false;
-  }
+
+//  /**
+//   * Checks if the sketch contains java tabs. If it does, the editor ain't
+//   * built for it, yet. Also, user should really start looking at a full IDE
+//   * like Eclipse. Disable compilation check and some more features.
+//   */
+//  private boolean checkForJavaTabs() {
+//    for (SketchCode code : getSketch().getCode()) {
+//      if (code.getExtension().equals("java")) {
+//        return true;
+//      }
+//    }
+//    return false;
+//  }
 
 
   @Override

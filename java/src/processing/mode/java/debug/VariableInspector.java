@@ -116,106 +116,13 @@ public class VariableInspector extends JDialog {
       // If it'll fit, place it to the right of the editor window
       setLocation(x, editor.getY() + VERTICAL_OFFSET);
     }
-
-    /*
-    bgColor = mode.getColor("buttons.bgcolor");
-    statusFont = mode.getFont("buttons.status.font");
-    statusColor = mode.getColor("buttons.status.color");
-//    modeTitle = mode.getTitle().toUpperCase();
-    modeTitle = mode.getTitle();
-    modeTextFont = mode.getFont("mode.button.font");
-    modeButtonColor = mode.getColor("mode.button.color");
-    */
   }
-
-
-  /*
-  Container createToolbar() {
-    final Mode mode = editor.getMode();
-    Box box = Box.createHorizontalBox();
-
-    continueButton =
-      new EditorButton(mode, "theme/debug/continue",
-                       Language.text("toolbar.debug.continue")) {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        Logger.getLogger(VariableInspector.class.getName()).log(Level.INFO, "Invoked 'Continue' toolbar button");
-        editor.debugger.continueDebug();
-      }
-    };
-    box.add(continueButton);
-    box.add(Box.createHorizontalStrut(GAP));
-
-    stepButton =
-      new EditorButton(mode, "theme/debug/step",
-                       Language.text("toolbar.debug.step"),
-                       Language.text("toolbar.debug.step_into")) {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        if (isShiftDown()) {
-          Logger.getLogger(VariableInspector.class.getName()).log(Level.INFO, "Invoked 'Step Into' toolbar button");
-          editor.debugger.stepInto();
-        } else {
-          Logger.getLogger(VariableInspector.class.getName()).log(Level.INFO, "Invoked 'Step' toolbar button");
-          editor.debugger.stepOver();
-        }
-      }
-    };
-    box.add(stepButton);
-    box.add(Box.createHorizontalStrut(GAP));
-
-    breakpointButton =
-      new EditorButton(mode, "theme/debug/breakpoint",
-                       Language.text("toolbar.debug.toggle_breakpoints")) {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        Logger.getLogger(VariableInspector.class.getName()).log(Level.INFO, "Invoked 'Toggle Breakpoint' toolbar button");
-        editor.debugger.toggleBreakpoint();
-      }
-    };
-    box.add(breakpointButton);
-    box.add(Box.createHorizontalStrut(GAP));
-
-    JLabel label = new JLabel();
-    box.add(label);
-    continueButton.setRolloverLabel(label);
-    stepButton.setRolloverLabel(label);
-    breakpointButton.setRolloverLabel(label);
-
-    // the rest is all gaps
-    box.add(Box.createHorizontalGlue());
-    box.setBorder(new EmptyBorder(GAP, GAP, GAP, GAP));
-
-    // prevent the toolbar from getting taller than its default
-    box.setMaximumSize(new Dimension(getMaximumSize().width, getPreferredSize().height));
-    return box;
-  }
-  */
 
 
   Container createScrollPane() {
     JScrollPane scrollPane = new JScrollPane();
     tree = new Outline();
     scrollPane.setViewportView(tree);
-
-    /*
-    GroupLayout layout = new GroupLayout(getContentPane());
-    getContentPane().setLayout(layout);
-    layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                              .addGap(0, 400, Short.MAX_VALUE)
-                              .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                        .addComponent(scrollPane,
-                                                      GroupLayout.DEFAULT_SIZE,
-                                                      400, Short.MAX_VALUE)));
-    layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                            .addGap(0, 300, Short.MAX_VALUE)
-                            .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-                                      .addComponent(scrollPane,
-                                                    GroupLayout.Alignment.TRAILING,
-                                                    GroupLayout.DEFAULT_SIZE,
-                                                    300, Short.MAX_VALUE)));
-    pack();
-    */
 
     // setup Outline
     rootNode = new DefaultMutableTreeNode("root");
@@ -254,76 +161,6 @@ public class VariableInspector extends JDialog {
     scrollPane.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
     return scrollPane;
   }
-
-
-  /*
-  protected void activateContinue() {
-  }
-
-
-  protected void deactivateContinue() {
-  }
-
-
-  protected void activateStep() {
-  }
-
-
-  protected void deactivateStep() {
-  }
-  */
-
-
-  /*
-  // Keeps the debug window adjacent the editor at all times.
-  class EditorFollower implements ComponentListener {
-
-    @Override
-    public void componentShown(ComponentEvent e) {
-      if (editor.isDebuggerEnabled()) {
-//        updateBounds();
-        setVisible(true);
-      }
-    }
-
-    @Override
-    public void componentHidden(ComponentEvent e) {
-      if (isVisible()) {
-        setVisible(false);
-      }
-    }
-
-    @Override
-    public void componentResized(ComponentEvent e) {
-      if (isVisible()) {
-        updateBounds();
-      }
-    }
-
-    @Override
-    public void componentMoved(ComponentEvent e) {
-      if (isVisible()) {
-        updateBounds();
-      }
-    }
-  }
-
-
-  private void updateBounds() {
-    setBounds(editor.getX() + editor.getWidth(),
-              editor.getY() + VERTICAL_OFFSET,
-              getPreferredSize().width,
-              editor.getHeight() - VERTICAL_OFFSET*2);
-  }
-
-
-  public void setVisible(boolean visible) {
-    if (visible) {
-      updateBounds();
-    }
-    super.setVisible(visible);
-  }
-  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

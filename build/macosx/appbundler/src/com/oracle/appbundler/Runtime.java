@@ -73,6 +73,7 @@ public class Runtime extends FileSet {
         } else {
             appendIncludes(new String[] {
                     "lib/",
+                    "conf/",
                     "COPYRIGHT",
                     "LICENSE",
                     "README",

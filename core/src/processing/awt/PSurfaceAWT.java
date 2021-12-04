@@ -48,7 +48,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
+import javax.swing.*;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -1193,13 +1193,14 @@ public class PSurfaceAWT extends PSurfaceNone {
     int modifiers = nativeEvent.getModifiersEx();
 
     int peButton = 0;
-    // Technically should be java.awt.event.MouseEvent.BUTTON1 through BUTTON3
-    // but those are equal to 1, 2, and 3, and this is more readable.
-    if (nativeEvent.getButton() == 1) {
+    // Because there isn't a button "press" associated with drag,
+    // pass this over to SwingUtilities to properly decode the button.
+    // https://github.com/processing/processing4/issues/281
+    if (SwingUtilities.isLeftMouseButton(nativeEvent)) {
       peButton = PConstants.LEFT;
-    } else if (nativeEvent.getButton() == 2) {
+    } else if (SwingUtilities.isMiddleMouseButton(nativeEvent)) {
       peButton = PConstants.CENTER;
-    } else if (nativeEvent.getButton() == 3) {
+    } else if (SwingUtilities.isRightMouseButton(nativeEvent)) {
       peButton = PConstants.RIGHT;
     }
 
@@ -1350,6 +1351,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     if (PApplet.platform == PConstants.MACOS && kind == PConstants.MOVE) {
       kind = PConstants.HAND;
     }
+    //noinspection MagicConstant
     canvas.setCursor(Cursor.getPredefinedCursor(kind));
     cursorVisible = true;
     this.cursorType = kind;
@@ -1384,6 +1386,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     // will be stuck b/c p5 thinks the cursor is set to one particular thing.
     if (!cursorVisible) {
       cursorVisible = true;
+      //noinspection MagicConstant
       canvas.setCursor(Cursor.getPredefinedCursor(cursorType));
     }
   }

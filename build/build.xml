@@ -27,6 +27,9 @@
     </and>
   </condition>
 
+  <property name="examples.dir"
+            location="../../processing-docs/content/examples" />
+
   <target name="ignore-tools">
     <echo message="Ignore the 'Unable to locate tools.jar' message." />
     <echo message="The tools.jar file is not required to build Processing." />
@@ -61,30 +64,46 @@
     <property name="linux.dist" value="linux/processing-${version}-linux-arm64.tgz" />
   </target>
 
-  <!-- Require Java 11 everywhere. -->
-  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java 11 is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v 11`&quot;">
+  <!-- 11.0.10+9 -->
+  <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.detail" value="${jdk.train}.0.10" />
+  <property name="jdk.build" value="9" />
+  -->
+
+  <!-- 11.0.11+9 -->
+  <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.detail" value="${jdk.train}.0.11" />
+  <property name="jdk.build" value="9" />
+  -->
+
+  <!-- 11.0.12+7 -->
+  <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.detail" value="${jdk.train}.0.12" />
+  <property name="jdk.build" value="7" />
+  -->
+
+  <!-- 17+35 -->
+  <property name="jdk.train" value="17" />
+  <property name="jdk.detail" value="${jdk.train}" />
+  <property name="jdk.build" value="35" />
+
+  <!-- Require Java ${train} everywhere. -->
+  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
     <condition>
       <not>
         <or>
-          <contains string="${java.version}" substring="11." />
+          <!-- <contains string="${java.version}" substring="${jdk.train}." /> -->
+          <equals arg1="${ant.java.version}" arg2="${jdk.train}" />
         </or>
       </not>
     </condition>
   </fail>
 
-  <property name="examples.dir"
-            value="../../processing-docs/content/examples" />
-
-  <property name="jdk.train" value="11" />
-  <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="12" />
-  <property name="jdk.build" value="7" />
-
-  <property name="jdk.prefix" value="jdk" />
-  <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
-
   <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
-    <include name="PlugIns/jdk-${jdk.esoteric}+${jdk.build}/Contents/Home/lib/src.zip" />
+    <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
     <!-- <include name="Java/core/library/libjfxwebkit.dylib" /> -->
   </fileset>
 
@@ -111,7 +130,7 @@
       <property name="target-platform" value="@{platform}" />
       <property name="${target-platform}" value="${target-platform}" />
 
-      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz" />
+      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.tgz" />
 
       <property name="jdk.data.model" value="@{datamodel}" />
 
@@ -121,13 +140,13 @@
       <property name="jfx.path.lib" value="${jfx.path.dist}/lib" />
       -->
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz">
+      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.tgz">
         <not>
           <equals arg1="${target-platform}" arg2="windows" />
         </not>
       </condition>
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.zip">
+      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.zip">
         <equals arg1="${target-platform}" arg2="windows" />
       </condition>
     </sequential>
@@ -158,7 +177,17 @@
       <os family="mac" />
     </condition>
 
-    <!-- As of 2021-08-05 things moving from AdoptOpenJDK to Adoptium -->
+    <!-- Java 11.0.11 and earlier is available via AdoptOpenJDK -->
+
+    <!--
+      https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jdk_x64_mac_hotspot_11.0.11_9.tar.gz
+    -->
+
+    <!--
+    <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+    -->
+
+    <!-- Java 11.0.12 and later are available via Adoptium -->
 
     <!--
       https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.12_7.tar.gz
@@ -168,7 +197,17 @@
       https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
     -->
 
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.train}.${jdk.version}.${jdk.update}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}.${jdk.version}.${jdk.update}_${jdk.build}.${jdk.download.ext}" />
+    <!--
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+    -->
+
+    <!-- Java 17 via Adoptium -->
+
+    <!--
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_mac_hotspot_17_35.pkg
+    -->
+
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK17-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
          dest="${jdk.tgz.path}"
@@ -177,8 +216,11 @@
 
   </target>
 
-  <!-- Set the version of Java that must be present to build. -->
-  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.esoteric}+${jdk.build}" />
+  <!-- Set the version of Java 11 that must be present to build. -->
+  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.detail}+${jdk.build}" />
+
+  <!-- Set the version of Java 17 that must be present to build. -->
+  <!-- <property name="jdk.path.macosx" value="macosx/jdk-${jdk.train}+${jdk.build}" /> -->
 
   <available file="${jdk.path.macosx}" property="macosx_jdk_found" />
 
@@ -336,7 +378,7 @@
       <fileset dir="shared/tools">
         <patternset>
           <include name="MovieMaker/tool/**" />
-          <!-- <include name="ThemeEngine/tool/**" /> -->
+          <include name="ThemeEngine/tool/**" />
           <!-- <include name="**/tool/**" /> -->
         </patternset>
       </fileset>
@@ -492,7 +534,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk/" />
+    <property name="jdk.dir" value="macosx/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
 
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
@@ -593,6 +635,9 @@
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
 
+      <!-- https://github.com/jdf/Processing.py-Bugs/issues/322 -->
+      <option value="-Dpython.console.encoding=UTF-8" />
+
       <!-- <option value="-agentpath:/Applications/YourKit-Java-Profiler-2021.3.app/Contents/Resources/bin/mac/libyjpagent.dylib=disablestacktelemetry,exceptions=disable" /> -->
 
       <!-- Make it possible to get to JavaFX for Tools, Modes, etc. Not recommended,
@@ -626,22 +671,22 @@
          Unix systems, we need to use <exec executable="cp" ... > instead -->
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/bin"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/jmods"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/conf"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
     </exec>
 
     <property name="contents.dir"
@@ -650,7 +695,7 @@
     <!-- Replace libjli.dylib symlink with actual file.
          Deals with code signing issues on OS X 10.9.5+ -->
     <!--
-    <property name="jli.path" value="${contents.dir}/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/MacOS/libjli.dylib" />
+    <property name="jli.path" value="${contents.dir}/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/MacOS/libjli.dylib" />
     <delete file="${jli.path}" />
     <exec executable="cp">
       <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
@@ -677,9 +722,9 @@
           <fileset dir="${jfx.path.lib}" includes="*.dylib"/>
         </copy>
 
-        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal/openjfx" />
+        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" />
 
-        <copy todir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
+        <copy todir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
           <fileset dir="${jfx.path.dist}/legal" includes="**"/>
         </copy>
 
@@ -787,7 +832,7 @@
       <arg value="--entitlements" />
       <arg value="../ffs.entitlements" />
 
-      <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
+      <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}" />
     </exec>
 
     <!-- codesign can't work inside jars? so instead temporarily unpack the files
@@ -802,11 +847,6 @@
     <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
     <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
     <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
-
-    <!-- Termporary; these appear to be in error
-         https://github.com/processing/processing4/issues/119 -->
-    <delete file="${unpack.jssc}/natives/windows_64/libjssc.dylib" />
-    <delete file="${unpack.jssc}/natives/windows_32/libjssc.dylib" />
 
     <!-- <unzip src="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
 
@@ -1081,7 +1121,7 @@
       <arg value="../${jdk.tgz.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="jdk-${jdk.esoteric}+${jdk.build}/" />
+    <property name="jdk.dir" value="jdk-${jdk.detail}+${jdk.build}/" />
 
     <exec executable="rsync" dir="linux">
       <arg value="-a" />
@@ -1097,7 +1137,7 @@
 
     <exec executable="rm">
       <arg value="-r"/>
-      <arg line="linux/jdk-${jdk.esoteric}+${jdk.build}"/>
+      <arg line="linux/jdk-${jdk.detail}+${jdk.build}"/>
     </exec>
 
     <!--
@@ -1369,7 +1409,7 @@
            src="${jdk.tgz.path}"
            overwrite="false" />
 
-    <property name="jdk.dir" value="windows/work/jdk-${jdk.esoteric}+${jdk.build}/" />
+    <property name="jdk.dir" value="windows/work/jdk-${jdk.detail}+${jdk.build}/" />
 
     <move file="${jdk.dir}" tofile="windows/work/java" />
 

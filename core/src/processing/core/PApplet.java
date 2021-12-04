@@ -2110,24 +2110,8 @@ public class PApplet implements PConstants {
 
 
   public void handleDraw() {
-    //debug("handleDraw() " + g + " " + looping + " " + redraw + " valid:" + this.isValid() + " visible:" + this.isVisible());
-
-    // canDraw = g != null && (looping || redraw);
     if (g == null) return;
     if (!looping && !redraw) return;
-//    System.out.println("looping/redraw = " + looping + " " + redraw);
-
-    // no longer in use by any of our renderers
-//    if (!g.canDraw()) {
-//      debug("g.canDraw() is false");
-//      // Don't draw if the renderer is not yet ready.
-//      // (e.g. OpenGL has to wait for a peer to be on screen)
-//      return;
-//    }
-
-    // Store the quality setting in case it's changed during draw and the
-    // drawing context needs to be re-built before the next frame.
-//    int pquality = g.smooth;
 
     if (insideDraw) {
       System.err.println("handleDraw() called before finishing");
@@ -2143,19 +2127,7 @@ public class PApplet implements PConstants {
     long now = System.nanoTime();
 
     if (frameCount == 0) {
-        // 3.0a5 should be no longer needed; handled by PSurface
-        //surface.checkDisplaySize();
-
-//        try {
-        //println("Calling setup()");
       setup();
-        //println("Done with setup()");
-
-//        } catch (RendererChangeException e) {
-//          // Give up, instead set the new renderer and re-attempt setup()
-//          return;
-//        }
-//      defaultSize = false;
 
     } else {  // frameCount > 0, meaning an actual draw()
       // update the current frameRate
@@ -2188,18 +2160,14 @@ public class PApplet implements PConstants {
         frameRate = (float) (1.0 / avgFrameTimeSecs);
       }
 
-      //if (frameCount != 0) {  // always the case for this block
       handleMethods("pre");
-      //}
 
       // use dmouseX/Y as previous mouse pos, since this is the
       // last position the mouse was in during the previous draw.
       pmouseX = dmouseX;
       pmouseY = dmouseY;
 
-        //println("Calling draw()");
       draw();
-        //println("Done calling draw()");
 
       // dmouseX/Y is updated only once per frame (unlike emouseX/Y)
       dmouseX = mouseX;
@@ -2217,10 +2185,6 @@ public class PApplet implements PConstants {
       // (only do this once draw() has run, not just setup())
     }
     g.endDraw();
-
-//    if (pquality != g.smooth) {
-//      surface.setSmooth(g.smooth);
-//    }
 
     if (recorder != null) {
       recorder.endDraw();
@@ -6374,6 +6338,16 @@ public class PApplet implements PConstants {
   }
 
 
+  static private boolean listFilesExt(String name, String[] extensions) {
+    for (String ext : extensions) {
+      if (name.toLowerCase().endsWith(ext)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   static void listFilesImpl(File folder, boolean recursive,
                             String[] extensions, boolean hidden,
                             boolean directories, boolean files,
@@ -6390,17 +6364,13 @@ public class PApplet implements PConstants {
             listFilesImpl(item, recursive, extensions, hidden, directories, files, list);
           }
           if (directories) {
-            list.add(item);
+            if (extensions == null || listFilesExt(item.getName(), extensions)) {
+              list.add(item);
+            }
           }
         } else if (files) {
-          if (extensions == null) {
+          if (extensions == null || listFilesExt(item.getName(), extensions)) {
             list.add(item);
-          } else {
-            for (String ext : extensions) {
-              if (item.getName().toLowerCase().endsWith(ext)) {
-                list.add(item);
-              }
-            }
           }
         }
       }
@@ -9125,7 +9095,10 @@ public class PApplet implements PConstants {
 
   /**
    * Parse a String to an int, and provide an alternate value that
-   * should be used when the number is invalid.
+   * should be used when the number is invalid. If there's a decimal place,
+   * it will be truncated, making this more of a toInt() than parseInt()
+   * function. This is because the method is used internally for casting.
+   * Not ideal, but the name was chosen before that clarification was made.
    */
   static final public int parseInt(String what, int otherwise) {
     try {
@@ -10277,7 +10250,7 @@ public class PApplet implements PConstants {
     }
 
     // TODO When disabling AWT for LWJGL or others, we need to figure out
-    // how to make Cmd-Q and the rest of this still work properly.
+    //      how to make Cmd-Q and the rest of this still work properly.
     if (platform == MACOS && !disableAWT) {
       try {
         final String td = "processing.core.ThinkDifferent";
