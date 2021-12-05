@@ -51,6 +51,7 @@ import com.jogamp.opengl.GLCapabilitiesImmutable;
 import com.jogamp.opengl.GLContext;
 import com.jogamp.opengl.GLDrawable;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
+import com.jogamp.opengl.GLRendererQuirks;
 import com.jogamp.opengl.glu.GLU;
 import com.jogamp.opengl.glu.GLUtessellator;
 import com.jogamp.opengl.glu.GLUtessellatorCallbackAdapter;
@@ -180,6 +181,11 @@ public class PJOGL extends PGL {
 
   public GLCapabilitiesImmutable getCaps() {
     return capabilities;
+  }
+
+
+  public boolean needSharedObjectSync() {
+    return gl.getContext().hasRendererQuirk(GLRendererQuirks.NeedSharedObjectSync);
   }
 
 
