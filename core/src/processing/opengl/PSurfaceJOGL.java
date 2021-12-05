@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,6 +57,7 @@ import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLException;
 import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.GLDrawableFactory;
 import com.jogamp.nativewindow.MutableGraphicsConfiguration;
 import com.jogamp.nativewindow.WindowClosingProtocol;
 import com.jogamp.newt.Display;
@@ -106,6 +108,11 @@ public class PSurfaceJOGL implements PSurface {
   private final Object drawExceptionMutex = new Object();
 
   protected NewtCanvasAWT canvas;
+
+  protected static GLAutoDrawable sharedDrawable;
+  protected static ArrayList<FPSAnimator> animators = new ArrayList<>();
+  private final static Object sharedSyncMutex = new Object();
+  private Object syncMutex;
 
   protected int windowScaleFactor;
 
@@ -254,6 +261,29 @@ public class PSurfaceJOGL implements PSurface {
     caps.setBackgroundOpaque(true);
     caps.setOnscreen(true);
     pgl.setCaps(caps);
+
+    if (sharedDrawable == null) {
+      // Create a shared drawable to enable context sharing across multiple GL windows
+      // https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/opengl/GLSharedContextSetter.html
+      sharedDrawable = GLDrawableFactory.getFactory(profile).createDummyAutoDrawable(null, true, caps, null);
+      sharedDrawable.display();
+    }
+  }
+
+
+  // To properly deal with synchronization when context sharing across multiple drawables (windows), we need a
+  // synchronization mutex object to ensure that rendering of each frame completes in their respective animator thread:
+  // https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/opengl/GLSharedContextSetter.html#synchronization
+  private Object getSyncMutex(GLAutoDrawable drawable) {
+    pgl.getGL(drawable);
+    if (pgl.needSharedObjectSync()) {
+      syncMutex = sharedSyncMutex;
+    } else {
+      if (syncMutex == null) {
+        syncMutex = new Object();
+      }
+    }
+    return syncMutex;
   }
 
 
@@ -327,6 +357,8 @@ public class PSurfaceJOGL implements PSurface {
         window.setTopLevelSize((int) displayRect.getWidth(), (int) displayRect.getHeight());
       }
     }
+
+    window.setSharedAutoDrawable(sharedDrawable);
   }
 
 
@@ -354,6 +386,7 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     animator = new FPSAnimator(window, 60);
+    animators.add(animator);
 
     drawException = null;
     animator.setUncaughtExceptionHandler((animator, drawable, cause) -> {
@@ -637,6 +670,10 @@ public class PSurfaceJOGL implements PSurface {
       drawExceptionHandler = null;
     }
     if (animator != null) {
+      // Stops all other animators to avoid exceptions when closing a window in a multiple window configuration
+      for (FPSAnimator ani: animators) {
+        if (ani != animator) ani.stop();
+      }
       return animator.stop();
     } else {
       return false;
@@ -753,9 +790,13 @@ public class PSurfaceJOGL implements PSurface {
 
 
   public class DrawListener implements GLEventListener {
+    private boolean isInit = false;
+
     public void display(GLAutoDrawable drawable) {
+      if (!isInit) return;
+
       if (display.getEDTUtil().isCurrentThreadEDT()) {
-        // For an unknown reason, the first two frames of the animator run on
+        // For some unknown reason, a few frames of the animator run on
         // the EDT. For those, we just skip this draw call to avoid badness.
         return;
       }
@@ -770,17 +811,19 @@ public class PSurfaceJOGL implements PSurface {
       }
 
       if (!sketch.finished) {
-        pgl.getGL(drawable);
-        int prevFrameCount = sketch.frameCount;
-        sketch.handleDraw();
-        if (prevFrameCount == sketch.frameCount || sketch.finished) {
-          // This hack allows the FBO layer to be swapped normally even if
-          // the sketch is no looping or finished because it does not call draw(),
-          // otherwise background artifacts may occur (depending on the hardware/drivers).
-          pgl.beginRender();
-          pgl.endRender(sketch.sketchWindowColor());
+        synchronized (getSyncMutex(drawable)) {
+          pgl.getGL(drawable);
+          int prevFrameCount = sketch.frameCount;
+          sketch.handleDraw();
+          if (prevFrameCount == sketch.frameCount || sketch.finished) {
+            // This hack allows the FBO layer to be swapped normally even if
+            // the sketch is no looping or finished because it does not call draw(),
+            // otherwise background artifacts may occur (depending on the hardware/drivers).
+            pgl.beginRender();
+            pgl.endRender(sketch.sketchWindowColor());
+          }
+          PGraphicsOpenGL.completeFinishedPixelTransfers();
         }
-        PGraphicsOpenGL.completeFinishedPixelTransfers();
       }
 
       if (sketch.exitCalled()) {
@@ -796,24 +839,37 @@ public class PSurfaceJOGL implements PSurface {
     }
 
     public void init(GLAutoDrawable drawable) {
-      pgl.getGL(drawable);
-      pgl.init(drawable);
-      sketch.start();
+      if (display.getEDTUtil().isCurrentThreadEDT()) {
+        return;
+      }
 
-      int c = graphics.backgroundColor;
-      pgl.clearColor(((c >> 16) & 0xff) / 255f,
-                     ((c >>  8) & 0xff) / 255f,
-                     (c & 0xff) / 255f,
-                     ((c >> 24) & 0xff) / 255f);
-      pgl.clear(PGL.COLOR_BUFFER_BIT);
+      synchronized (getSyncMutex(drawable)) {
+        pgl.init(drawable);
+        sketch.start();
+
+        int c = graphics.backgroundColor;
+        pgl.clearColor(((c >> 16) & 0xff) / 255f,
+                       ((c >>  8) & 0xff) / 255f,
+                       (c & 0xff) / 255f,
+                       ((c >> 24) & 0xff) / 255f);
+        pgl.clear(PGL.COLOR_BUFFER_BIT);
+        isInit = true;
+      }
     }
 
     public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
-      pgl.resetFBOLayer();
-      pgl.getGL(drawable);
-      float scale = PApplet.platform == PConstants.MACOS ?
-          getCurrentPixelScale() : getPixelScale();
-      setSize((int) (w / scale), (int) (h / scale));
+      if (!isInit) return;
+
+      if (display.getEDTUtil().isCurrentThreadEDT()) {
+        return;
+      }
+
+      synchronized (getSyncMutex(drawable)) {
+        pgl.resetFBOLayer();
+        float scale = PApplet.platform == PConstants.MACOS ?
+            getCurrentPixelScale() : getPixelScale();
+        setSize((int) (w / scale), (int) (h / scale));
+      }
     }
   }
 
