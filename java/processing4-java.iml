@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/mode/antlr-4.7.2-complete.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/classpath-explorer-1.0.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/com.ibm.icu.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/jdtCompilerAdapter.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/jsoup-1.7.1.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.core.contenttype.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.core.jobs.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.core.resources.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.core.runtime.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.equinox.common.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.equinox.preferences.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.jdt.core.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.osgi.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.text.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/org.netbeans.swing.outline.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/test/lib/junit-4.8.1.jar!/" />
+    <src_description expected_position="0">
+      <src_folder value="file://$MODULE_DIR$/generated" expected_position="0" />
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="1" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/generated" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="processing4-app" />
+    <orderEntry type="module" module-name="processing4-core" />
+    <orderEntry type="module-library">
+      <library name="antlr-4.7.2-complete.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/antlr-4.7.2-complete.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="classpath-explorer-1.0.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/classpath-explorer-1.0.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="com.ibm.icu.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/com.ibm.icu.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jdtCompilerAdapter.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/jdtCompilerAdapter.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="jsoup-1.7.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/jsoup-1.7.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.contenttype.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.core.contenttype.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.jobs.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.core.jobs.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.resources.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.core.resources.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.core.runtime.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.core.runtime.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.equinox.common.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.equinox.common.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.equinox.preferences.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.equinox.preferences.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.jdt.core.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.jdt.core.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.osgi.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.osgi.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.text.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.text.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.netbeans.swing.outline.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.netbeans.swing.outline.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="junit-4.8.1.jar">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/test/lib/junit-4.8.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>
