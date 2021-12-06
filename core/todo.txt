@@ -7,6 +7,10 @@ X added workaround in PShapeOpenGL to get access to vertex data
 _   still need to find the root cause
 _   also need to check for other reports about this
 
+X multiple windows with GL
+_   https://github.com/processing/processing4/issues/312
+X   https://github.com/processing/processing4/pull/313
+
 _ made DrawListener public in PSurfaceJOGL (probably change that back)
 
 
