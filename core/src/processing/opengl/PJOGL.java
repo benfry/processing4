@@ -129,6 +129,8 @@ public class PJOGL extends PGL {
   }
 
 
+  private static boolean forceSharedObjectSync = true;
+
   ///////////////////////////////////////////////////////////////
 
   // Initialization, finalization
@@ -185,7 +187,7 @@ public class PJOGL extends PGL {
 
 
   public boolean needSharedObjectSync() {
-    return gl.getContext().hasRendererQuirk(GLRendererQuirks.NeedSharedObjectSync);
+    return forceSharedObjectSync || gl.getContext().hasRendererQuirk(GLRendererQuirks.NeedSharedObjectSync);
   }
 
 
