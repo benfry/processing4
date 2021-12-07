@@ -3073,88 +3073,202 @@ public class PShapeOpenGL extends PShape {
   public PShape getTessellation() {
     updateTessellation();
 
-    float[] vertices = tessGeo.polyVertices;
-    float[] normals = tessGeo.polyNormals;
-    int[] color = tessGeo.polyColors;
-    float[] uv = tessGeo.polyTexCoords;
-    short[] indices = tessGeo.polyIndices;
+    PShape polyTess = null;
+    PShape lineTess = null;
+    PShape pointTess = null;
 
-    PShape tess;
-    tess = pg.createShapeFamily(PShape.GEOMETRY);
-    tess.set3D(is3D);  // if this is a 3D shape, make the new shape 3D as well
-    tess.beginShape(TRIANGLES);
-    tess.noStroke();
+    float[] vertices;
+    float[] attribs;
+    int[] color;
+    float[] uv;
+    short[] indices;
 
-    IndexCache cache = tessGeo.polyIndexCache;
-    for (int n = firstPolyIndexCache; n <= lastPolyIndexCache; n++) {
-      int ioffset = cache.indexOffset[n];
-      int icount = cache.indexCount[n];
-      int voffset = cache.vertexOffset[n];
+    if (0 < tessGeo.polyVertexCount) {
+      polyTess = pg.createShapeFamily(PShape.GEOMETRY);
+      polyTess.set3D(is3D);  // if this is a 3D shape, make the new shape 3D as well
+      polyTess.beginShape(TRIANGLES);
+      polyTess.noStroke();
 
-      for (int tr = ioffset / 3; tr < (ioffset + icount) / 3; tr++) {
-        int i0 = voffset + indices[3 * tr + 0];
-        int i1 = voffset + indices[3 * tr + 1];
-        int i2 = voffset + indices[3 * tr + 2];
+      vertices = tessGeo.polyVertices;
+      attribs = tessGeo.polyNormals;
+      color = tessGeo.polyColors;
+      uv = tessGeo.polyTexCoords;
+      indices = tessGeo.polyIndices;
+      IndexCache cache = tessGeo.polyIndexCache;
+      for (int n = firstPolyIndexCache; n <= lastPolyIndexCache; n++) {
+        int ioffset = cache.indexOffset[n];
+        int icount = cache.indexCount[n];
+        int voffset = cache.vertexOffset[n];
 
-        if (is3D()) {
-          float x0 = vertices[4 * i0 + 0];
-          float y0 = vertices[4 * i0 + 1];
-          float z0 = vertices[4 * i0 + 2];
-          float x1 = vertices[4 * i1 + 0];
-          float y1 = vertices[4 * i1 + 1];
-          float z1 = vertices[4 * i1 + 2];
-          float x2 = vertices[4 * i2 + 0];
-          float y2 = vertices[4 * i2 + 1];
-          float z2 = vertices[4 * i2 + 2];
+        for (int tr = ioffset / 3; tr < (ioffset + icount) / 3; tr++) {
+          int i0 = voffset + indices[3 * tr + 0];
+          int i1 = voffset + indices[3 * tr + 1];
+          int i2 = voffset + indices[3 * tr + 2];
 
-          float nx0 = normals[3 * i0 + 0];
-          float ny0 = normals[3 * i0 + 1];
-          float nz0 = normals[3 * i0 + 2];
-          float nx1 = normals[3 * i1 + 0];
-          float ny1 = normals[3 * i1 + 1];
-          float nz1 = normals[3 * i1 + 2];
-          float nx2 = normals[3 * i2 + 0];
-          float ny2 = normals[3 * i2 + 1];
-          float nz2 = normals[3 * i2 + 2];
+          if (is3D()) {
+            float x0 = vertices[4 * i0 + 0];
+            float y0 = vertices[4 * i0 + 1];
+            float z0 = vertices[4 * i0 + 2];
+            float x1 = vertices[4 * i1 + 0];
+            float y1 = vertices[4 * i1 + 1];
+            float z1 = vertices[4 * i1 + 2];
+            float x2 = vertices[4 * i2 + 0];
+            float y2 = vertices[4 * i2 + 1];
+            float z2 = vertices[4 * i2 + 2];
 
-          int argb0 = PGL.nativeToJavaARGB(color[i0]);
-          int argb1 = PGL.nativeToJavaARGB(color[i1]);
-          int argb2 = PGL.nativeToJavaARGB(color[i2]);
+            float nx0 = attribs[3 * i0 + 0];
+            float ny0 = attribs[3 * i0 + 1];
+            float nz0 = attribs[3 * i0 + 2];
+            float nx1 = attribs[3 * i1 + 0];
+            float ny1 = attribs[3 * i1 + 1];
+            float nz1 = attribs[3 * i1 + 2];
+            float nx2 = attribs[3 * i2 + 0];
+            float ny2 = attribs[3 * i2 + 1];
+            float nz2 = attribs[3 * i2 + 2];
 
-          tess.fill(argb0);
-          tess.normal(nx0, ny0, nz0);
-          tess.vertex(x0, y0, z0, uv[2 * i0 + 0], uv[2 * i0 + 1]);
+            int argb0 = PGL.nativeToJavaARGB(color[i0]);
+            int argb1 = PGL.nativeToJavaARGB(color[i1]);
+            int argb2 = PGL.nativeToJavaARGB(color[i2]);
 
-          tess.fill(argb1);
-          tess.normal(nx1, ny1, nz1);
-          tess.vertex(x1, y1, z1, uv[2 * i1 + 0], uv[2 * i1 + 1]);
+            polyTess.fill(argb0);
+            polyTess.normal(nx0, ny0, nz0);
+            polyTess.vertex(x0, y0, z0, uv[2 * i0 + 0], uv[2 * i0 + 1]);
 
-          tess.fill(argb2);
-          tess.normal(nx2, ny2, nz2);
-          tess.vertex(x2, y2, z2, uv[2 * i2 + 0], uv[2 * i2 + 1]);
-        } else if (is2D()) {
-          float x0 = vertices[4 * i0 + 0], y0 = vertices[4 * i0 + 1];
-          float x1 = vertices[4 * i1 + 0], y1 = vertices[4 * i1 + 1];
-          float x2 = vertices[4 * i2 + 0], y2 = vertices[4 * i2 + 1];
+            polyTess.fill(argb1);
+            polyTess.normal(nx1, ny1, nz1);
+            polyTess.vertex(x1, y1, z1, uv[2 * i1 + 0], uv[2 * i1 + 1]);
 
-          int argb0 = PGL.nativeToJavaARGB(color[i0]);
-          int argb1 = PGL.nativeToJavaARGB(color[i1]);
-          int argb2 = PGL.nativeToJavaARGB(color[i2]);
+            polyTess.fill(argb2);
+            polyTess.normal(nx2, ny2, nz2);
+            polyTess.vertex(x2, y2, z2, uv[2 * i2 + 0], uv[2 * i2 + 1]);
+          } else if (is2D()) {
+            float x0 = vertices[4 * i0 + 0], y0 = vertices[4 * i0 + 1];
+            float x1 = vertices[4 * i1 + 0], y1 = vertices[4 * i1 + 1];
+            float x2 = vertices[4 * i2 + 0], y2 = vertices[4 * i2 + 1];
 
-          tess.fill(argb0);
-          tess.vertex(x0, y0, uv[2 * i0 + 0], uv[2 * i0 + 1]);
+            int argb0 = PGL.nativeToJavaARGB(color[i0]);
+            int argb1 = PGL.nativeToJavaARGB(color[i1]);
+            int argb2 = PGL.nativeToJavaARGB(color[i2]);
 
-          tess.fill(argb1);
-          tess.vertex(x1, y1, uv[2 * i1 + 0], uv[2 * i1 + 1]);
+            polyTess.fill(argb0);
+            polyTess.vertex(x0, y0, uv[2 * i0 + 0], uv[2 * i0 + 1]);
 
-          tess.fill(argb2);
-          tess.vertex(x2, y2, uv[2 * i2 + 0], uv[2 * i2 + 1]);
+            polyTess.fill(argb1);
+            polyTess.vertex(x1, y1, uv[2 * i1 + 0], uv[2 * i1 + 1]);
+
+            polyTess.fill(argb2);
+            polyTess.vertex(x2, y2, uv[2 * i2 + 0], uv[2 * i2 + 1]);
+          }
         }
       }
+      polyTess.endShape();
     }
-    tess.endShape();
+    if (0 < tessGeo.lineVertexCount) {
+      lineTess = pg.createShapeFamily(PShape.GEOMETRY);
+      lineTess.set3D(is3D);  // if this is a 3D shape, make the new shape 3D as well
+      lineTess.beginShape(LINES);
+      lineTess.noFill();
 
-    return tess;
+      vertices = tessGeo.lineVertices;
+      attribs = tessGeo.lineDirections;
+      color = tessGeo.lineColors;
+      indices = tessGeo.lineIndices;
+      IndexCache cache = tessGeo.lineIndexCache;
+      for (int n = firstLineIndexCache; n <= lastLineIndexCache; n++) {
+        int ioffset = cache.indexOffset[n];
+        int icount = cache.indexCount[n];
+        int voffset = cache.vertexOffset[n];
+
+        for (int ln = ioffset / 6; ln < (ioffset + icount) / 6; ln++) {
+          // Same as in rawLines()
+          int i0 = voffset + indices[6 * ln + 0];
+          int i1 = voffset + indices[6 * ln + 5];
+          float sw0 = 2 * attribs[4 * i0 + 3];
+          float sw1 = 2 * attribs[4 * i1 + 3];
+
+          if (PGraphicsOpenGL.zero(sw0)) continue;
+
+          float[] pt0 = {0, 0, 0, 0};
+          float[] pt1 = {0, 0, 0, 0};
+          int argb0 = PGL.nativeToJavaARGB(color[i0]);
+          int argb1 = PGL.nativeToJavaARGB(color[i1]);
+
+          PApplet.arrayCopy(vertices, 4 * i0, pt0, 0, 4);
+          PApplet.arrayCopy(vertices, 4 * i1, pt1, 0, 4);
+
+          lineTess.strokeWeight(sw0);
+          lineTess.stroke(argb0);
+          lineTess.vertex(pt0[X], pt0[Y], pt0[Z]);
+          lineTess.strokeWeight(sw1);
+          lineTess.stroke(argb1);
+          lineTess.vertex(pt1[X], pt1[Y], pt1[Z]);
+        }
+      }
+      lineTess.endShape();
+    }
+    if (0 < tessGeo.pointVertexCount) {
+      pointTess = pg.createShapeFamily(PShape.GEOMETRY);
+      pointTess.set3D(is3D);  // if this is a 3D shape, make the new shape 3D as well
+      pointTess.beginShape(POINTS);
+      pointTess.noFill();
+
+      vertices = tessGeo.pointVertices;
+      attribs = tessGeo.pointOffsets;
+      color = tessGeo.pointColors;
+      indices = tessGeo.pointIndices;
+      IndexCache cache = tessGeo.pointIndexCache;
+      for (int n = 0; n < cache.size; n++) {
+        int ioffset = cache.indexOffset[n];
+        int icount = cache.indexCount[n];
+        int voffset = cache.vertexOffset[n];
+
+        int pt = ioffset;
+        while (pt < (ioffset + icount) / 3) {
+          float size = attribs[2 * pt + 2];
+          float weight;
+          int perim;
+          if (0 < size) { // round point
+            weight = +size / 0.5f;
+            perim = PApplet.min(PGraphicsOpenGL.MAX_POINT_ACCURACY,
+                    PApplet.max(PGraphicsOpenGL.MIN_POINT_ACCURACY,
+                            (int) (TWO_PI * weight /
+                                    PGraphicsOpenGL.POINT_ACCURACY_FACTOR))) + 1;
+          } else {        // Square point
+            weight = -size / 0.5f;
+            perim = 5;
+          }
+
+          int i0 = voffset + indices[3 * pt];
+          int argb0 = PGL.nativeToJavaARGB(color[i0]);
+          float[] pt0 = {0, 0, 0, 0};
+
+          PApplet.arrayCopy(vertices, 4 * i0, pt0, 0, 4);
+
+          pointTess.strokeWeight(weight);
+          pointTess.stroke(argb0);
+          pointTess.vertex(pt0[X], pt0[Y], pt0[Z]);
+
+          pt += perim;
+        }
+      }
+      pointTess.endShape();
+    }
+
+    if (polyTess == null && lineTess == null && pointTess == null) {
+      return pg.createShapeFamily(PShape.GEOMETRY);
+    } else if (polyTess != null && lineTess == null && pointTess == null) {
+      return polyTess;
+    } else if (polyTess == null && lineTess != null && pointTess == null) {
+      return lineTess;
+    } else if (polyTess == null && lineTess == null && pointTess != null) {
+      return pointTess;
+    } else {
+      PShape group = pg.createShape(GROUP);
+      if (polyTess != null) group.addChild(polyTess);
+      if (lineTess != null) group.addChild(lineTess);
+      if (pointTess != null) group.addChild(pointTess);
+      return group;
+    }
   }
 
 
@@ -4343,8 +4457,7 @@ public class PShapeOpenGL extends PShape {
 
 
   protected boolean startStrokedTex(int n) {
-    return image != null && (n == firstLineIndexCache ||
-                               n == firstPointIndexCache);
+    return image != null && (n == firstLineIndexCache || n == firstPointIndexCache);
   }
 
 
@@ -5594,7 +5707,7 @@ public class PShapeOpenGL extends PShape {
       int voffset = cache.vertexOffset[n];
 
       for (int ln = ioffset / 6; ln < (ioffset + icount) / 6; ln++) {
-        // Each line segment is defined by six indices since its
+        // Each line segment is defined by six indices since it's
         // formed by two triangles. We only need the first and last
         // vertices.
         // This bunch of vertices could also be the bevel triangles,
