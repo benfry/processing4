@@ -2730,12 +2730,16 @@ public class PShapeOpenGL extends PShape {
 
   //
 
-  // Geometry utils
-
-  // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+  /**
+   * Return true if this x, y coordinate is part of this shape. Only works
+   * with PATH shapes or GROUP shapes that contain other GROUPs or PATHs.
+   * This method is not imperfect and doesn't account for all cases
+   * (not all complex shapes: concave shapes or holes may have issues).
+   */
   @Override
   public boolean contains(float x, float y) {
-    if (family == PATH) {
+    if (family == PATH || family == GEOMETRY) {
+      // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
       boolean c = false;
       for (int i = 0, j = inGeo.vertexCount-1; i < inGeo.vertexCount; j = i++) {
         if (((inGeo.vertices[3 * i + 1] > y) != (inGeo.vertices[3 * j + 1] > y)) &&
