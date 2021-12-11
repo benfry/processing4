@@ -3,9 +3,15 @@ X support extensions for directories with listFiles/listPaths
 X   otherwise asking for .jpg will return root folders (unless 'only files' specified)
 X   but because macOS actually puts extensions on folders (.app, etc), support it
 X fix for disableStyle() with 2D shapes in P3D
+X allow GEOMETRY (not just PATH) with contains() in PShape
+X   the method is still incomplete, but added a note about that too
 X added workaround in PShapeOpenGL to get access to vertex data
 _   still need to find the root cause
 _   also need to check for other reports about this
+
+X multiple windows with GL
+_   https://github.com/processing/processing4/issues/312
+X   https://github.com/processing/processing4/pull/313
 
 _ made DrawListener public in PSurfaceJOGL (probably change that back)
 

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="JAVA_MODULE" version="4">
+  <component name="EclipseModuleManager">
+    <libelement value="jar://$MODULE_DIR$/library/javafx.base.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/library/javafx.controls.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/library/javafx.fxml.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/library/javafx.graphics.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/library/javafx.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/library/javafx.media.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/library/javafx.swing.jar!/" />
+    <src_description expected_position="1">
+      <src_folder value="file://$MODULE_DIR$/src" expected_position="1" />
+    </src_description>
+  </component>
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/bin" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="processing4-core" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/library/macosx/modules" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/library/macosx/modules" recursive="false" />
+      </library>
+    </orderEntry>
+  </component>
+</module>
