@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -386,7 +386,7 @@ public class PShader implements PConstants {
   }
 
   /**
-   * Sets the uniform variables inside the shader to modify the effect while the 
+   * Sets the uniform variables inside the shader to modify the effect while the
    * program is running.
    *
    * @webref rendering:shaders
@@ -743,7 +743,7 @@ public class PShader implements PConstants {
 
   protected void setUniformImpl(String name, int type, Object value) {
     if (uniformValues == null) {
-      uniformValues = new HashMap<String, UniformValue>();
+      uniformValues = new HashMap<>();
     }
     uniformValues.put(name, new UniformValue(type, value));
   }
@@ -833,10 +833,10 @@ public class PShader implements PConstants {
           PImage img = (PImage)val.value;
           Texture tex = currentPG.getTexture(img);
 
-          if (textures == null) textures = new HashMap<Integer, Texture>();
+          if (textures == null) textures = new HashMap<>();
           textures.put(loc, tex);
 
-          if (texUnits == null) texUnits = new HashMap<Integer, Integer>();
+          if (texUnits == null) texUnits = new HashMap<>();
           if (texUnits.containsKey(loc)) {
             unit = texUnits.get(loc);
             pgl.uniform1i(loc, unit);
