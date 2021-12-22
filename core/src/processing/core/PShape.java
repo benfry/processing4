@@ -1364,15 +1364,37 @@ public class PShape implements PConstants {
   public void curveDetail(int detail) {
   }
 
+
   public void curveTightness(float tightness) {
   }
 
+
   public void curveVertex(float x, float y) {
+    if (vertices == null) {
+      vertices = new float[10][];
+    } else if (vertexCount >= vertices.length) {
+      vertices = (float[][]) PApplet.expand(vertices);
+    }
+    vertices[vertexCount++] = new float[] { x, y };
+
+    if (vertexCodes == null) {
+      vertexCodes = new int[10];
+    } else if (vertexCodes.length == vertexCodeCount) {
+      vertexCodes = PApplet.expand(vertexCodes);
+    }
+    vertexCodes[vertexCodeCount++] = CURVE_VERTEX;
+
+    if (x > width) {
+      width = x;
+    }
+    if (y > height) {
+      height = y;
+    }
   }
+
 
   public void curveVertex(float x, float y, float z) {
   }
-
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

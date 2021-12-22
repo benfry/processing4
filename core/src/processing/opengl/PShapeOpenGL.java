@@ -993,20 +993,32 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   protected void beginContourImpl() {
+    if (family == PShape.PATH) {
+      super.beginContourImpl();
+      return;
+    }
     breakShape = true;
   }
 
 
   @Override
   protected void endContourImpl() {
+    if (family == PShape.PATH) {
+      super.endContourImpl();
+    }
   }
 
 
   @Override
   public void vertex(float x, float y) {
+    if (family == PShape.PATH) {
+      super.vertex(x, y);
+      return;
+    }
     vertexImpl(x, y, 0, 0, 0);
-    if (image != null)
+    if (image != null) {
       PGraphics.showWarning(PGraphicsOpenGL.MISSING_UV_TEXCOORDS_ERROR);
+    }
   }
 
 
@@ -1018,9 +1030,14 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public void vertex(float x, float y, float z) {
+    if (family == PShape.PATH) {
+      super.vertex(x, y);
+      return;
+    }
     vertexImpl(x, y, z, 0, 0);
-    if (image != null)
+    if (image != null) {
       PGraphics.showWarning(PGraphicsOpenGL.MISSING_UV_TEXCOORDS_ERROR);
+    }
   }
 
 
@@ -1493,6 +1510,10 @@ public class PShapeOpenGL extends PShape {
   public void bezierVertex(float x2, float y2,
                            float x3, float y3,
                            float x4, float y4) {
+    if (family == PShape.PATH) {
+      super.bezierVertex(x2, y2, x3, y3, x4, y4);
+      return;
+    }
     bezierVertexImpl(x2, y2, 0,
                      x3, y3, 0,
                      x4, y4, 0);
@@ -1524,6 +1545,10 @@ public class PShapeOpenGL extends PShape {
   @Override
   public void quadraticVertex(float cx, float cy,
                               float x3, float y3) {
+    if (family == PShape.PATH) {
+      super.quadraticVertex(cx, cy, x3, y3);
+      return;
+    }
     quadraticVertexImpl(cx, cy, 0,
                         x3, y3, 0);
   }
@@ -1576,6 +1601,10 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public void curveVertex(float x, float y) {
+    if (family == PShape.PATH) {
+      super.curveVertex(x, y);
+      return;
+    }
     curveVertexImpl(x, y, 0);
   }
 
@@ -3719,9 +3748,7 @@ public class PShapeOpenGL extends PShape {
             tessellateSphere();
           }
         } else if (family == PATH) {
-          // TODO workaround for vertices being wiped out,
-          //      but need to identify the real problem here
-          if (vertices != null) inGeo.clear();
+          inGeo.clear();
           tessellatePath();
         }
 
@@ -4103,11 +4130,6 @@ public class PShapeOpenGL extends PShape {
         for (int i = 0; i < vertexCount; i++) {
           inGeo.addVertex(vertices[i][X], vertices[i][Y], VERTEX, false);
         }
-      } else {  // drawing 3D vertices
-        for (int i = 0; i < vertexCount; i++) {
-          inGeo.addVertex(vertices[i][X], vertices[i][Y], vertices[i][Z],
-                          VERTEX, false);
-        }
       }
     } else {  // coded set of vertices
       int idx = 0;
@@ -4143,57 +4165,6 @@ public class PShapeOpenGL extends PShape {
 
           case CURVE_VERTEX:
             inGeo.addCurveVertex(vertices[idx][X], vertices[idx][Y], 0, brk);
-            brk = false;
-            idx++;
-            break;
-
-          case BREAK:
-            brk = true;
-          }
-        }
-      } else {  // tessellating a 3D path
-        for (int j = 0; j < vertexCodeCount; j++) {
-          switch (vertexCodes[j]) {
-
-          case VERTEX:
-            inGeo.addVertex(vertices[idx][X], vertices[idx][Y],
-                            vertices[idx][Z], brk);
-            brk = false;
-            idx++;
-            break;
-
-          case QUADRATIC_VERTEX:
-            inGeo.addQuadraticVertex(vertices[idx+0][X],
-                                     vertices[idx+0][Y],
-                                     vertices[idx+0][Z],
-                                     vertices[idx+1][X],
-                                     vertices[idx+1][Y],
-                                     vertices[idx+0][Z],
-                                     brk);
-            brk = false;
-            idx += 2;
-            break;
-
-          case BEZIER_VERTEX:
-            inGeo.addBezierVertex(vertices[idx+0][X],
-                                  vertices[idx+0][Y],
-                                  vertices[idx+0][Z],
-                                  vertices[idx+1][X],
-                                  vertices[idx+1][Y],
-                                  vertices[idx+1][Z],
-                                  vertices[idx+2][X],
-                                  vertices[idx+2][Y],
-                                  vertices[idx+2][Z],
-                                  brk);
-            brk = false;
-            idx += 3;
-            break;
-
-          case CURVE_VERTEX:
-            inGeo.addCurveVertex(vertices[idx][X],
-                                 vertices[idx][Y],
-                                 vertices[idx][Z],
-                                 brk);
             brk = false;
             idx++;
             break;
