@@ -28,6 +28,14 @@ before release
 _ disable Theme Engine from Tools (in build.xml)
 
 
+before beta 3
+_ Add support for localizing contributions
+_   https://github.com/processing/processing4/pull/237 (updated by Andres)
+_   https://github.com/processing/processing/pull/2833
+_   https://github.com/processing/processing/issues/3154
+_   https://github.com/processing/processing/pull/3337
+
+
 known issues
 _ Editor cursor position is offset to the right when Windows scaling >100%
 _   https://github.com/processing/processing4/issues/226
@@ -152,10 +160,6 @@ _   https://github.com/processing/processing/issues/5691
 _ add language support to Modes (request and updated PR from Andres)
 _   https://github.com/processing/processing4/issues/236
 _   https://github.com/processing/processing4/pull/237
-_ Add support for localizing contributions
-_   https://github.com/processing/processing/pull/2833
-_   https://github.com/processing/processing/issues/3154
-_   https://github.com/processing/processing/pull/3337
 _ can we compress jdk/Contents/Home/legal into a single zip?
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129

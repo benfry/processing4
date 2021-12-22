@@ -13,6 +13,14 @@ X multiple windows with GL
 _   https://github.com/processing/processing4/issues/312
 X   https://github.com/processing/processing4/pull/313
 
+andres
+X Implement buffer object streaming and finalize attribute API in PShape
+X   https://github.com/processing/processing4/pull/314
+X Adds support to PATH shapes in P2D renderer
+X   https://github.com/processing/processing4/pull/316
+X   https://github.com/processing/processing/issues/6009
+
+
 _ made DrawListener public in PSurfaceJOGL (probably change that back)
 
 
