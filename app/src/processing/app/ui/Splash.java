@@ -24,6 +24,10 @@ public class Splash extends JFrame {
 
 
   private Splash(File imageFile, boolean hidpi) {
+    
+    // change default java window icon to processing icon
+    processing.app.ui.Toolkit.setIcon(this);
+    
     this.image =
       Toolkit.getDefaultToolkit().createImage(imageFile.getAbsolutePath());
 
