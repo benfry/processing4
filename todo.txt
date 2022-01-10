@@ -10,6 +10,8 @@ X   Remove Serif, SansSerif, Monospaced, Dialog, and DialogInput from Create Fon
 X   sort the list of font names
 X   skip fonts starting . and # because they're likely to confuse users
 X get rid of version numbers in the name of the batik.jar file
+X ffmpeg not downloading correctly on M1 machines
+X   https://github.com/processing/processing4/issues/319
 
 sam
 X Error when calling smooth() on PGraphics
@@ -26,6 +28,8 @@ X   use pdez instead
 
 before release
 _ disable Theme Engine from Tools (in build.xml)
+
+
 
 
 before beta 3
@@ -48,6 +52,10 @@ _   https://github.com/processing/processing4/issues/231
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
+
+
+_ possibly move jogl back to a separate library
+_   setting up deps for it with projects that don't use it is a headache
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
