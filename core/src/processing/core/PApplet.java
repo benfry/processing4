@@ -5248,6 +5248,11 @@ public class PApplet implements PConstants {
       g.awaitAsyncSaveCompletion(filename);
     }
 
+    // Hack so that calling loadImage() in settings() will work
+    // https://github.com/processing/processing4/issues/299
+    if (surface == null) {
+      return ShimAWT.loadImage(this, filename, extension);
+    }
     return surface.loadImage(filename, extension);
   }
 
