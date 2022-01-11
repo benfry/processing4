@@ -8,6 +8,9 @@ X   the method is still incomplete, but added a note about that too
 X added workaround in PShapeOpenGL to get access to vertex data
 _   still need to find the root cause
 _   also need to check for other reports about this
+X textSize() losing some symbols
+X   actually a problem that the default font isn't being set
+X   https://github.com/processing/processing4/issues/303
 
 X multiple windows with GL
 _   https://github.com/processing/processing4/issues/312
@@ -22,9 +25,6 @@ X   https://github.com/processing/processing4/pull/316
 X   https://github.com/processing/processing/issues/6009
 
 
-_ textSize() losing some symbols
-_   actually a problem that the default font isn't being set
-_   https://github.com/processing/processing4/issues/303
 
 
 _ possibly move jogl back to a separate library
