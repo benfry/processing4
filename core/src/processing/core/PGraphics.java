@@ -8470,7 +8470,9 @@ public class PGraphics extends PImage implements PConstants {
    */
   protected void defaultFontOrDeath(String method, float size) {
     if (parent != null) {
-      textFont = createDefaultFont(size);
+      // Call textFont() so that subclasses can do necessary setup
+      // https://github.com/processing/processing4/issues/303
+      textFont(createDefaultFont(size));
     } else {
       throw new RuntimeException("Use textFont() before " + method + "()");
     }

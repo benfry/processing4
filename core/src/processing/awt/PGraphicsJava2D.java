@@ -102,8 +102,6 @@ public class PGraphicsJava2D extends PGraphics {
   public boolean strokeGradient;
   public Paint strokeGradientObject;
 
-  Font fontObject;
-
 
 
   //////////////////////////////////////////////////////////////
@@ -353,8 +351,11 @@ public class PGraphicsJava2D extends PGraphics {
       g2.setStroke(strokeObject);
     }
     // https://github.com/processing/processing/issues/2617
-    if (fontObject != null) {
-      g2.setFont(fontObject);
+    if (textFont != null) {
+      Font fontObject = (Font) textFont.getNative();
+      if (fontObject != null) {
+        g2.setFont(fontObject);
+      }
     }
     // https://github.com/processing/processing/issues/4019
     if (blendMode != 0) {
@@ -1901,7 +1902,6 @@ public class PGraphicsJava2D extends PGraphics {
 
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getAscent();
       return g2.getFontMetrics(font).getAscent();
     }
     return super.textAscent();
@@ -1915,7 +1915,6 @@ public class PGraphicsJava2D extends PGraphics {
     }
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getDescent();
       return g2.getFontMetrics(font).getDescent();
     }
     return super.textDescent();
@@ -1953,28 +1952,14 @@ public class PGraphicsJava2D extends PGraphics {
     if (font != null) {
       // don't derive again if the font size has not changed
       if (font.getSize2D() != size) {
-        // Neither of these resolve https://github.com/processing/processing4/issues/303
-        //font = font.deriveFont(Font.PLAIN, size);
-        // or grabbing the attrs first
-        //Map<TextAttribute, Object> map = (Map<TextAttribute, Object>) font.getAttributes();
-
-        // Instead, have to brute force things if the default font
-        if ("Processing Sans Pro".equals(font.getName())) {
-          System.out.println("creating font using alternate method");
-          font = (Font) createDefaultFont(size).getNative();
-
-        } else {
-          System.out.println("regular resize with map");
-          Map<TextAttribute, Object> map = new HashMap<>();
-          map.put(TextAttribute.SIZE, size);
-          map.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
-          // map.put(TextAttribute.TRACKING, TextAttribute.TRACKING_TIGHT);
-          font = font.deriveFont(map);
-        }
+        Map<TextAttribute, Object> map = new HashMap<>();
+        map.put(TextAttribute.SIZE, size);
+        map.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+        // map.put(TextAttribute.TRACKING, TextAttribute.TRACKING_TIGHT);
+        font = font.deriveFont(map);
       }
       g2.setFont(font);
       textFont.setNative(font);
-      fontObject = font;
 
       /*
       Map<TextAttribute, ?> attrs = font.getAttributes();
