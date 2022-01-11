@@ -863,17 +863,25 @@ public class PApplet implements PConstants {
       } catch (InterruptedException ignored) { }
 
       if (resultCode == 1) {
-        System.err.println("Could not check the status of “Displays have separate spaces.”");
-        System.err.format("Received message '%s' and result code %d.%n", trim(stderr.toString()), resultCode);
+        String msg = trim(stderr.toString());
+        // This message is confusing, so don't print if it's something typical
+        if (!(msg.contains("The domain/default pair") && msg.contains("does not exist"))) {
+          System.err.println("Could not check the status of “Displays have separate spaces.”");
+          System.err.println("Result for 'defaults read' was " + resultCode);
+          System.err.println(msg);
+        }
       }
 
       String processOutput = trim(stdout.toString());
-      // It looks like on Catalina, the option may not be set, so resultCode
-      // will be 1 (an error, since the param doesn't exist. But "Displays
-      // have separate spaces" is on by default, so show the message.
+      // On Catalina, the option may not be set, so resultCode
+      // will be 1 (an error, since the param doesn't exist.)
+      // But "Displays have separate spaces" is on by default.
+      // For Monterey, it appears to not be set until the user
+      // has visited the Mission Control preference pane once.
       if (resultCode == 1 || "0".equals(processOutput)) {
-        System.err.println("To use fullScreen(SPAN), first turn off “Displays have separate spaces”");
-        System.err.println("in System Preferences \u2192 Mission Control. Then log out and log back in.");
+        System.err.println("To use fullScreen(SPAN), visit System Preferences \u2192 Mission Control");
+        System.err.println("and make sure that “Displays have separate spaces” is turned off.");
+        System.err.println("Then log out and log back in.");
       }
     }
 
