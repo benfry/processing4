@@ -4579,7 +4579,7 @@ public class PApplet implements PConstants {
    * returned as a <b>float</b> in the range from <b>PI</b> to <b>-PI</b>.
    * The <b>atan2()</b> function is most often used for orienting geometry to
    * the position of the cursor.  Note: The y-coordinate of the point is the
-   * first parameter and the x-coordinate is the second due the the structure
+   * first parameter and the x-coordinate is the second due the structure
    * of calculating the tangent.
    *
    * @webref math:trigonometry
@@ -4749,7 +4749,7 @@ public class PApplet implements PConstants {
    * Normalizes a number from another range into a value between 0 and 1.
    * Identical to <b>map(value, low, high, 0, 1)</b>.<br />
    * <br />
-   * Numbers outside of the range are not clamped to 0 and 1, because
+   * Numbers outside the range are not clamped to 0 and 1, because
    * out-of-range values are often intentional and useful. (See the second
    * example above.)
    *
@@ -4777,9 +4777,9 @@ public class PApplet implements PConstants {
    * range of 0 to 100 into a value that ranges from the left edge of the window
    * (0) to the right edge (width).<br />
    * <br />
-   * As shown in the second example, numbers outside of the range are not
-   * clamped to the minimum and maximum parameters values, because out-of-range
-   * values are often intentional and useful.
+   * As shown in the second example, numbers outside the range are
+   * not clamped to the minimum and maximum parameters values,
+   * because out-of-range values are often intentional and useful.
    *
    * @webref math:calculation
    * @webBrief Re-maps a number from one range to another
