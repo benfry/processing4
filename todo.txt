@@ -17,6 +17,8 @@ X   https://github.com/processing/processing4/issues/319
 X use UTF-8 for readString() and write() in net client
 X   avoids platform-specific behavior; Java 18 also making UTF-8 the default
 X   https://github.com/processing/processing4/issues/336
+X System.out and System.err collision causing deadlock
+X   https://github.com/processing/processing4/issues/338
 
 sam
 X Error when calling smooth() on PGraphics
