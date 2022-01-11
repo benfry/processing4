@@ -10258,10 +10258,6 @@ public class PApplet implements PConstants {
     // For 3.0.1, moved this above handleSettings() so that loadImage() can be
     // used inside settings(). Sets a terrible precedent, but the alternative
     // of not being able to size a sketch to an image is driving people loopy.
-    // A handful of things that need to be set before init/start.
-//    if (folder == null) {
-//      folder = calcSketchPath();
-//    }
     sketch.sketchPath = folder;
 
     // Don't set 'args' to a zero-length array if it should be null [3.0a8]
