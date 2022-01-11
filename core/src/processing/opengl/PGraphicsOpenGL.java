@@ -239,7 +239,7 @@ public class PGraphicsOpenGL extends PGraphics {
   protected AsyncPixelReader asyncPixelReader;
   protected boolean asyncPixelReaderInitialized;
 
-  // Keeps track of ongoing transfers so they can be finished.
+  // Keeps track of ongoing transfers so that they can be finished.
   // Set is copied to the List when we need to iterate it
   // so that readers can remove themselves from the Set during
   // iteration if they don't have any ongoing transfers.
@@ -875,11 +875,10 @@ public class PGraphicsOpenGL extends PGraphics {
     int glName;
 
     private PGL pgl;
-    private int context;
+    private final int context;
 
     public GLResourceTexture(Texture tex) {
       super(tex);
-
 
       pgl = tex.pg.getPrimaryPGL();
       pgl.genTextures(1, intBuffer);
@@ -925,7 +924,7 @@ public class PGraphicsOpenGL extends PGraphics {
     int glId;
 
     private PGL pgl;
-    private int context;
+    final private int context;
 
     public GLResourceVertexBuffer(VertexBuffer vbo) {
       super(vbo);
@@ -976,7 +975,7 @@ public class PGraphicsOpenGL extends PGraphics {
     int glFragment;
 
     private PGL pgl;
-    private int context;
+    final private int context;
 
     public GLResourceShader(PShader sh) {
       super(sh);
@@ -1044,7 +1043,7 @@ public class PGraphicsOpenGL extends PGraphics {
     int glMultisample;
 
     private PGL pgl;
-    private int context;
+    final private int context;
 
     public GLResourceFrameBuffer(FrameBuffer fb) {
       super(fb);
@@ -1518,7 +1517,7 @@ public class PGraphicsOpenGL extends PGraphics {
       // neither GL_MULTISAMPLE nor GL_POLYGON_SMOOTH are part of GLES2 or GLES3
     } else if (smooth < 1) {
       pgl.disable(PGL.MULTISAMPLE);
-    } else if (1 <= smooth) {
+    } else {
       pgl.enable(PGL.MULTISAMPLE);
     }
     if (!pgl.isES()) {
@@ -1539,16 +1538,14 @@ public class PGraphicsOpenGL extends PGraphics {
 
     pgl.activeTexture(PGL.TEXTURE0);
 
-    if (hints[DISABLE_DEPTH_MASK]) {
-      pgl.depthMask(false);
-    } else {
-      pgl.depthMask(true);
-    }
+    pgl.depthMask(!hints[DISABLE_DEPTH_MASK]);
 
     FrameBuffer fb = getCurrentFB();
     if (fb != null) {
       fb.bind();
-      if (drawBufferSupported) pgl.drawBuffer(fb.getDefaultDrawBuffer());
+      if (drawBufferSupported) {
+        pgl.drawBuffer(fb.getDefaultDrawBuffer());
+      }
     }
   }
 
@@ -2288,7 +2285,7 @@ public class PGraphicsOpenGL extends PGraphics {
       }
 
       if (hasPolys && isDepthSortingEnabled) {
-        // We flush after lines so they are visible
+        // Flush after lines so that they are visible
         // under transparent polygons
         flushSortedPolys();
         if (raw != null) {
@@ -2734,12 +2731,11 @@ public class PGraphicsOpenGL extends PGraphics {
       int voffset = cache.vertexOffset[n];
 
       for (int ln = ioffset / 6; ln < (ioffset + icount) / 6; ln++) {
-        // Each line segment is defined by six indices since its
-        // formed by two triangles. We only need the first and last
-        // vertices.
+        // Each line segment is defined by six indices since it is
+        // formed by two triangles. Only need the first and last verts.
         // This bunch of vertices could also be the bevel triangles,
         // with we detect this situation by looking at the line weight.
-        int i0 = voffset + indices[6 * ln + 0];
+        int i0 = voffset + indices[6 * ln];
         int i1 = voffset + indices[6 * ln + 5];
         float sw0 = 2 * attribs[4 * i0 + 3];
         float sw1 = 2 * attribs[4 * i1 + 3];
@@ -2839,7 +2835,7 @@ public class PGraphicsOpenGL extends PGraphics {
         float weight;
         int perim;
         if (0 < size) { // round point
-          weight = +size / 0.5f;
+          weight = size / 0.5f;
           perim = PApplet.min(MAX_POINT_ACCURACY, PApplet.max(MIN_POINT_ACCURACY,
                               (int) (TWO_PI * weight / POINT_ACCURACY_FACTOR))) + 1;
         } else {        // Square point
@@ -4457,8 +4453,8 @@ public class PGraphicsOpenGL extends PGraphics {
     // Flushing geometry with a different perspective configuration.
     flush();
 
-    float x = +2.0f / w;
-    float y = +2.0f / h;
+    float x =  2.0f / w;
+    float y =  2.0f / h;
     float z = -2.0f / d;
 
     float tx = -(right + left) / w;
@@ -4616,8 +4612,7 @@ public class PGraphicsOpenGL extends PGraphics {
     if (nonZero(ow)) {
       ox /= ow;
     }
-    float sx = width * (1 + ox) / 2.0f;
-    return sx;
+    return width * (1 + ox) / 2.0f;
   }
 
 
@@ -4672,8 +4667,7 @@ public class PGraphicsOpenGL extends PGraphics {
     if (nonZero(ow)) {
       oz /= ow;
     }
-    float sz = (oz + 1) / 2.0f;
-    return sz;
+    return (oz + 1) / 2.0f;
   }
 
 
@@ -5394,6 +5388,7 @@ public class PGraphicsOpenGL extends PGraphics {
       PGL.getIntArray(pixelBuffer, pixels);
       PGL.nativeToJavaARGB(pixels, pixelWidth, pixelHeight);
     } catch (ArrayIndexOutOfBoundsException e) {
+      // ignored
     }
   }
 
@@ -5423,6 +5418,7 @@ public class PGraphicsOpenGL extends PGraphics {
       }
       PGL.javaToNativeARGB(nativePixels, w, h);
     } catch (ArrayIndexOutOfBoundsException e) {
+      // ignored
     }
     PGL.putIntArray(nativePixelBuffer, nativePixels);
     // Copying pixel buffer to screen texture...
@@ -5840,6 +5836,7 @@ public class PGraphicsOpenGL extends PGraphics {
           pgl.readPixelsImpl(0, 0, pixelWidth, pixelHeight, PGL.RGBA, PGL.UNSIGNED_BYTE,
                              nativePixelBuffer);
         } catch (IndexOutOfBoundsException e) {
+          // ignored
         }
         endPixelsOp();
 
@@ -6453,20 +6450,12 @@ public class PGraphicsOpenGL extends PGraphics {
     if (!tex.colorBuffer() &&
         (tex.usingMipmaps == hints[DISABLE_TEXTURE_MIPMAPS] ||
          tex.currentSampling() != textureSampling)) {
-      if (hints[DISABLE_TEXTURE_MIPMAPS]) {
-        tex.usingMipmaps(false, textureSampling);
-      } else {
-        tex.usingMipmaps(true, textureSampling);
-      }
+      tex.usingMipmaps(!hints[DISABLE_TEXTURE_MIPMAPS], textureSampling);
     }
 
     if ((tex.usingRepeat && textureWrap == CLAMP) ||
         (!tex.usingRepeat && textureWrap == REPEAT)) {
-      if (textureWrap == CLAMP) {
-        tex.usingRepeat(false);
-      } else {
-        tex.usingRepeat(true);
-      }
+      tex.usingRepeat(textureWrap != CLAMP);
     }
   }
 
@@ -6760,7 +6749,7 @@ public class PGraphicsOpenGL extends PGraphics {
       // neither GL_MULTISAMPLE nor GL_POLYGON_SMOOTH are part of GLES2 or GLES3
     } else if (smooth < 1) {
       pgl.disable(PGL.MULTISAMPLE);
-    } else if (1 <= smooth) {
+    } else {
       pgl.enable(PGL.MULTISAMPLE);
     }
     if (!pgl.isES()) {
@@ -6776,7 +6765,7 @@ public class PGraphicsOpenGL extends PGraphics {
         background(backgroundColor);
       } else {
         // offscreen surfaces are transparent by default.
-        background(0x00 << 24 | (backgroundColor & 0xFFFFFF));
+        background(backgroundColor & 0xFFFFFF);
 
         // Recreate offscreen FBOs
         restartPGL();
@@ -7828,8 +7817,8 @@ public class PGraphicsOpenGL extends PGraphics {
           int col = iarray[aidx];
           vector[vidx++] = (col >> 24) & 0xFF;
           vector[vidx++] = (col >> 16) & 0xFF;
-          vector[vidx++] = (col >>  8) & 0xFF;
-          vector[vidx++] = (col >>  0) & 0xFF;
+          vector[vidx++] = (col >> 8) & 0xFF;
+          vector[vidx++] = col & 0xFF;
         } else {
           if (attrib.isFloat()) {
             float[] farray = fattribs.get(name);
@@ -12517,7 +12506,7 @@ public class PGraphicsOpenGL extends PGraphics {
         path.moveTo(in.vertices[0], in.vertices[1], in.strokeColors[0]);
         for (int ln = 0; ln < lineCount - 1; ln++) {
           int i1 = ln + 1;
-          path.lineTo(in.vertices[3 * i1 + 0], in.vertices[3 * i1 + 1],
+          path.lineTo(in.vertices[3 * i1], in.vertices[3 * i1 + 1],
                       in.strokeColors[i1]);
         }
         path.closePath();
@@ -12635,19 +12624,19 @@ public class PGraphicsOpenGL extends PGraphics {
           int i1 = edge[1];
           switch (edge[2]) {
           case EDGE_MIDDLE:
-            path.lineTo(strokeVertices[3 * i1 + 0], strokeVertices[3 * i1 + 1],
+            path.lineTo(strokeVertices[3 * i1], strokeVertices[3 * i1 + 1],
                         strokeColors[i1]);
             break;
           case EDGE_START:
-            path.moveTo(strokeVertices[3 * i0 + 0], strokeVertices[3 * i0 + 1],
+            path.moveTo(strokeVertices[3 * i0], strokeVertices[3 * i0 + 1],
                         strokeColors[i0]);
-            path.lineTo(strokeVertices[3 * i1 + 0], strokeVertices[3 * i1 + 1],
+            path.lineTo(strokeVertices[3 * i1], strokeVertices[3 * i1 + 1],
                         strokeColors[i1]);
             break;
           case EDGE_STOP:
-            path.lineTo(strokeVertices[3 * i1 + 0], strokeVertices[3 * i1 + 1],
+            path.lineTo(strokeVertices[3 * i1], strokeVertices[3 * i1 + 1],
                         strokeColors[i1]);
-            path.moveTo(strokeVertices[3 * i1 + 0], strokeVertices[3 * i1 + 1],
+            path.moveTo(strokeVertices[3 * i1], strokeVertices[3 * i1 + 1],
                         strokeColors[i1]);
             break;
           case EDGE_SINGLE:
@@ -12705,8 +12694,8 @@ public class PGraphicsOpenGL extends PGraphics {
       weight = constStroke ? strokeWeight : strokeWeights[i0];
       weight *= transformScale();
 
-      tess.setLineVertex(vidx++, strokeVertices, i0, i1, color, +weight/2);
-      tess.lineIndices[iidx++] = (short) (count + 0);
+      tess.setLineVertex(vidx++, strokeVertices, i0, i1, color, weight/2);
+      tess.lineIndices[iidx++] = (short) (count);
 
       tess.setLineVertex(vidx++, strokeVertices, i0, i1, color, -weight/2);
       tess.lineIndices[iidx++] = (short) (count + 1);
@@ -12744,7 +12733,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
               tess.lineIndices[iidx++] = (short) (count + 4);
               tess.lineIndices[iidx++] = (short) (count + 5);
-              tess.lineIndices[iidx++] = (short) (count + 0);
+              tess.lineIndices[iidx++] = (short) (count);
 
               tess.lineIndices[iidx++] = (short) (count + 4);
               tess.lineIndices[iidx++] = (short) (count + 6);
@@ -12757,7 +12746,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
             tess.lineIndices[iidx++] = (short) (count + 4);
             tess.lineIndices[iidx++] = lastInd[0];
-            tess.lineIndices[iidx++] = (short) (count + 0);
+            tess.lineIndices[iidx++] = (short) (count);
 
             tess.lineIndices[iidx++] = (short) (count + 4);
             tess.lineIndices[iidx++] = lastInd[1];
@@ -12954,7 +12943,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     boolean noCapsJoins() {
-      // The stroke weight is scaled so it corresponds to the current
+      // The stroke weight is scaled to correspond to the current
       // "zoom level" being applied on the geometry due to scaling:
       return tess.renderMode == IMMEDIATE &&
              transformScale() * strokeWeight < PGL.MIN_CAPS_JOINS_WEIGHT;
@@ -12966,7 +12955,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     boolean segmentIsAxisAligned(int i0, int i1) {
-      return zero(in.vertices[3 * i0 + 0] - in.vertices[3 * i1 + 0]) ||
+      return zero(in.vertices[3 * i0] - in.vertices[3 * i1]) ||
              zero(in.vertices[3 * i0 + 1] - in.vertices[3 * i1 + 1]);
     }
 
