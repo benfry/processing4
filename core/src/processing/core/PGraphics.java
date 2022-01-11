@@ -460,6 +460,9 @@ public class PGraphics extends PImage implements PConstants {
   /** The current text leading (read-only) */
   public float textLeading;
 
+  /** Used internally to check whether still using the default font */
+  protected String defaultFontName;
+
   static final protected String ERROR_TEXTFONT_NULL_PFONT =
     "A null PFont was passed to textFont()";
 
@@ -4243,6 +4246,7 @@ public class PGraphics extends PImage implements PConstants {
       InputStream input = getClass().getResourceAsStream("/font/ProcessingSansPro-Regular.ttf");
       if (input != null) {
         baseFont = Font.createFont(Font.TRUETYPE_FONT, input);
+        defaultFontName = baseFont.getName();
       }
     } catch (Exception e) {
       e.printStackTrace(); // dammit
