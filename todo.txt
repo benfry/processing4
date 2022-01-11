@@ -28,6 +28,8 @@ contribs
 X Splash screen has default OpenJDK icon
 X   https://github.com/processing/processing4/pull/329
 X   https://github.com/processing/processing4/issues/297
+X Update Ukrainian language strings
+X   https://github.com/processing/processing4/pull/301
 
 cleaning
 o import option for sketchbook (button to select files/folders/etc)
@@ -58,7 +60,14 @@ _   https://github.com/processing/processing4/issues/231
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
+_ Open/Save crashing on Linux
+_   switching to Oracle JDK got it working, need to test with 17
+_   https://github.com/processing/processing4/issues/306
 
+
+_ textSize() losing some symbols
+_   actually a problem that the default font isn't being set
+_   https://github.com/processing/processing4/issues/303
 
 _ possibly move jogl back to a separate library
 _   setting up deps for it with projects that don't use it is a headache
