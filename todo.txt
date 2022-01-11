@@ -4,6 +4,7 @@ X Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
 X   https://github.com/processing/processing4/issues/285
 _   update README to note that we're on 17
 _   also change project notes on the front
+X move up from JavaFX 17.0.0.1 to 17.0.1
 X cleaning up the Create Font dialog while tracking down #278
 /   https://github.com/processing/processing4/issues/278
 X   couldn't reproduce, but probably an issue in there somewhere
