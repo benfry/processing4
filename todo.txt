@@ -64,7 +64,6 @@ _ docs are 3.x not 4.x
 _ Open/Save crashing on Linux
 _   switching to Oracle JDK got it working, need to test with 17
 _   https://github.com/processing/processing4/issues/306
-_ add to macOS notes: "Warning: the fonts "Times" and "Times" are not available for the Java logical font "Serif", which may have unexpected appearance or behavior. Re-enable the "Times" font to remove this warning."
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
