@@ -86,9 +86,17 @@
   -->
 
   <!-- 17+35 -->
+  <!--
   <property name="jdk.train" value="17" />
   <property name="jdk.detail" value="${jdk.train}" />
   <property name="jdk.build" value="35" />
+  -->
+
+  <!-- 17.0.1+12 -->
+  <property name="jdk.train" value="17" />
+  <property name="jdk.detail" value="${jdk.train}.0.1" />
+  <property name="jdk.build" value="12" />
+
 
   <!-- Require Java ${train} everywhere. -->
   <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
@@ -202,12 +210,13 @@
     -->
 
     <!-- Java 17 via Adoptium -->
-
     <!--
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_mac_hotspot_17_35.pkg
+      <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK17-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
     -->
 
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK17-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
+    <!-- Java 17.0.1 via Adoptium -->
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
          dest="${jdk.tgz.path}"

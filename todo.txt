@@ -3,10 +3,11 @@ X Update appbundler with the latest from upstream
 X Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
 X   https://github.com/processing/processing4/issues/285
 _   update README to note that we're on 17
+_   also change project notes on the front
 X cleaning up the Create Font dialog while tracking down #278
 /   https://github.com/processing/processing4/issues/278
 X   couldn't reproduce, but probably an issue in there somewhere
-X   Remove Serif, SansSerif, Monospaced, Dialog, and DialogInput from Create Font
+X   Remove Serif, SansSerif, Monospaced, Dialog, DialogInput from Create Font
 X   sort the list of font names
 X   skip fonts starting . and # because they're likely to confuse users
 X get rid of version numbers in the name of the batik.jar file
@@ -63,6 +64,7 @@ _ docs are 3.x not 4.x
 _ Open/Save crashing on Linux
 _   switching to Oracle JDK got it working, need to test with 17
 _   https://github.com/processing/processing4/issues/306
+_ add to macOS notes: "Warning: the fonts "Times" and "Times" are not available for the Java logical font "Serif", which may have unexpected appearance or behavior. Re-enable the "Times" font to remove this warning."
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
