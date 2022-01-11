@@ -24,9 +24,14 @@ public class Splash extends JFrame {
 
 
   private Splash(File imageFile, boolean hidpi) {
-    
-    // change default java window icon to processing icon
-    processing.app.ui.Toolkit.setIcon(this);
+    // Putting this inside try/catch because it's not essential,
+    // and it's definitely not essential enough to prevent startup.
+    try {
+      // change default java window icon to processing icon
+      processing.app.ui.Toolkit.setIcon(this);
+    } catch (Exception e) {
+      // ignored
+    }
     
     this.image =
       Toolkit.getDefaultToolkit().createImage(imageFile.getAbsolutePath());
@@ -97,7 +102,7 @@ public class Splash extends JFrame {
   static void invokeMain(String className, String[] args) {
     try {
       Class.forName(className)
-        .getMethod("main", new Class[] {String[].class})
+        .getMethod("main", String[].class)
         .invoke(null, new Object[] { args });
 
     } catch (Exception e) {

@@ -24,6 +24,11 @@ X   https://github.com/processing/processing4/pull/288
 X Move Mockito to a new version
 X   https://github.com/processing/processing4/issues/287
 
+contribs
+X Splash screen has default OpenJDK icon
+X   https://github.com/processing/processing4/pull/329
+X   https://github.com/processing/processing4/issues/297
+
 cleaning
 o import option for sketchbook (button to select files/folders/etc)
 X   use pdez instead
