@@ -40,14 +40,18 @@ X   use pdez instead
 
 before release
 _ disable Theme Engine from Tools (in build.xml)
+_ option to disable the Windows startup setting for scaling
+_   need to have a better workaround
 
 
 before beta 3
 _ Add support for localizing contributions
 _   https://github.com/processing/processing4/pull/237 (updated by Andres)
-_   https://github.com/processing/processing/pull/2833
-_   https://github.com/processing/processing/issues/3154
-_   https://github.com/processing/processing/pull/3337
+X   https://github.com/processing/processing/pull/2833
+X   https://github.com/processing/processing/issues/3154
+X   https://github.com/processing/processing/pull/3337
+_ update the README.md in the root for alpha 6 and beta 1 and 2
+_ update https://github.com/processing/processing4/wiki/Changes-in-4.0
 
 
 known issues
@@ -70,8 +74,6 @@ _   https://github.com/processing/processing4/issues/306
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-_ update the README.md in the root for alpha 6 and beta 1 and 2
-_ update https://github.com/processing/processing4/wiki/Changes-in-4.0
 
 _ refresh option for sketchbook (bottom of window)
 
@@ -92,7 +94,7 @@ _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 _ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
 
-_ when lib downloads (batik) go dead, fallback to the download.processing.org version
+_ when lib downloads (batik) go dead, fallback to download.processing.org
 _   or for now, tell users how to do it manually
 
 
