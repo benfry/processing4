@@ -29,6 +29,7 @@ import processing.core.*;
 import java.io.*;
 import java.lang.reflect.*;
 import java.net.*;
+import java.nio.charset.StandardCharsets;
 
 /**
    * 
@@ -596,11 +597,10 @@ public class Client implements Runnable {
 
   /**
    * 
-   * Returns the all the data from the buffer as a <b>String</b>. This method 
-   * assumes the incoming characters are ASCII. If you want to transfer 
-   * Unicode data, first convert the String to a byte stream in the 
-   * representation of your choice (i.e. UTF8 or two-byte Unicode data), and 
-   * send it as a byte array.
+   * Returns the all the data from the buffer as a <b>String</b>.
+   *
+   * In 4.0 beta 3, changed to using UTF-8 as the encoding,
+   * otherwise the behavior is platform-dependent.
    * 
    * @webref client
    * @usage application
@@ -609,7 +609,7 @@ public class Client implements Runnable {
   public String readString() {
     byte b[] = readBytes();
     if (b == null) return null;
-    return new String(b);
+    return new String(b, StandardCharsets.UTF_8);
   }
 
 
@@ -619,10 +619,8 @@ public class Client implements Runnable {
    * <b>null</b> if it doesn't find what you're looking for.
    * 
    * <h3>Advanced</h3>
-   * <p/>
-   * If you want to move Unicode data, you can first convert the
-   * String to a byte stream in the representation of your choice
-   * (i.e. UTF8 or two-byte Unicode data), and send it as a byte array.
+   * In 4.0 beta 3, changed to using UTF-8 as the encoding,
+   * otherwise the behavior is platform-dependent.
    * 
    * @webref client
    * @usage application
@@ -632,7 +630,7 @@ public class Client implements Runnable {
   public String readStringUntil(int interesting) {
     byte b[] = readBytesUntil(interesting);
     if (b == null) return null;
-    return new String(b);
+    return new String(b, StandardCharsets.UTF_8);
   }
 
 
@@ -679,20 +677,11 @@ public class Client implements Runnable {
 
 
   /**
-   * <h3>Advanced</h3>
-   * Write a String to the output. Note that this doesn't account
-   * for Unicode (two bytes per char), nor will it send UTF8
-   * characters.. It assumes that you mean to send a byte buffer
-   * (most often the case for networking and serial i/o) and
-   * will only use the bottom 8 bits of each char in the string.
-   * (Meaning that internally it uses String.getBytes)
-   *
-   * If you want to move Unicode data, you can first convert the
-   * String to a byte stream in the representation of your choice
-   * (i.e. UTF8 or two-byte Unicode data), and send it as a byte array.
+   * In 4.0 beta 3, changed to using UTF-8 as the encoding,
+   * otherwise the behavior is platform-dependent.
    */
   public void write(String data) {
-    write(data.getBytes());
+    write(data.getBytes(StandardCharsets.UTF_8));
   }
 
 
