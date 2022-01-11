@@ -66,11 +66,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   private int lineOffset;
 
-  private ArrayList<ImportStatement> coreImports = new ArrayList<>();
-  private ArrayList<ImportStatement> defaultImports = new ArrayList<>();
-  private ArrayList<ImportStatement> codeFolderImports = new ArrayList<>();
-  private ArrayList<ImportStatement> foundImports = new ArrayList<>();
-  private ArrayList<TextTransform.Edit> edits = new ArrayList<>();
+  private List<ImportStatement> coreImports = new ArrayList<>();
+  private List<ImportStatement> defaultImports = new ArrayList<>();
+  private List<ImportStatement> codeFolderImports = new ArrayList<>();
+  private List<ImportStatement> foundImports = new ArrayList<>();
+  private List<TextTransform.Edit> edits = new ArrayList<>();
 
   private String sketchWidth;
   private String sketchHeight;
