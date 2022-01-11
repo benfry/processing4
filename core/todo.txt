@@ -11,6 +11,7 @@ _   also need to check for other reports about this
 X textSize() losing some symbols
 X   actually a problem that the default font isn't being set
 X   https://github.com/processing/processing4/issues/303
+X add warning when default font set and drawing unavailable characters
 
 X multiple windows with GL
 _   https://github.com/processing/processing4/issues/312
@@ -24,6 +25,11 @@ X Adds support to PATH shapes in P2D renderer
 X   https://github.com/processing/processing4/pull/316
 X   https://github.com/processing/processing/issues/6009
 
+
+_ how to handle fallback fonts
+_   could implement this for the default, but also, SansSerif sucks
+_   https://stackoverflow.com/a/9482676
+_   in addition, it would need to be implemented for textWidth()
 
 
 
