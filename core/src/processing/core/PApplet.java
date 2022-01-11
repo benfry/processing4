@@ -141,8 +141,8 @@ public class PApplet implements PConstants {
   public PGraphics g;
 
   /**
-   * System variable that stores the width of the computer screen. For
-   * example, if the current screen resolution is 1920x1080,
+   * System variable that stores the width of the computer screen.
+   * For example, if the current screen resolution is 1920x1080,
    * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
    * @webref environment
@@ -153,8 +153,8 @@ public class PApplet implements PConstants {
   public int displayWidth;
 
   /**
-   * System variable that stores the height of the computer screen. For
-   * example, if the current screen resolution is 1920x1080,
+   * System variable that stores the height of the computer screen.
+   * For example, if the current screen resolution is 1920x1080,
    * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
    * @webref environment
@@ -175,12 +175,11 @@ public class PApplet implements PConstants {
   public String[] args;
 
   /**
-   * Path to sketch folder. Previously undocumented, made private in 3.0a5
-   * so that people use the sketchPath() method and it's initialized properly.
-   * Call sketchPath() once to set the default.
+   * Path to sketch folder. Previously undocumented, and made private
+   * in 3.0 alpha 5 so that people use the sketchPath() method which
+   * will initialize it properly. Call sketchPath() once to set it.
    */
   private String sketchPath;
-//  public String sketchPath;
 
   static final boolean DEBUG = false;
 //  static final boolean DEBUG = true;
@@ -190,7 +189,6 @@ public class PApplet implements PConstants {
   static public final int DEFAULT_HEIGHT = 100;
 
   /**
-   *
    * The <b>pixels[]</b> array contains the values for all the pixels in the
    * display window. These values are of the color datatype. This array is
    * defined by the size of the display window. For example, if the window is
@@ -275,7 +273,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * When <b>pixelDensity(2)</b> is used to make use of a high resolution
    * display (called a Retina display on OS X or high-dpi on Windows and
    * Linux), the width and height of the sketch do not change, but the
@@ -301,7 +298,6 @@ public class PApplet implements PConstants {
   protected boolean keyRepeatEnabled = false;
 
   /**
-   *
    * The system variable <b>mouseX</b> always contains the current horizontal
    * coordinate of the mouse.
    * <br /><br />
@@ -325,15 +321,12 @@ public class PApplet implements PConstants {
    * @see PApplet#mouseDragged()
    * @see PApplet#mouseButton
    * @see PApplet#mouseWheel(MouseEvent)
-   *
-   *
    */
   public int mouseX;
 
   /**
-   *
-   * The system variable <b>mouseY</b> always contains the current vertical
-   * coordinate of the mouse.
+   * The system variable <b>mouseY</b> always contains the current
+   * vertical coordinate of the mouse.
    * <br /><br />
    * Note that Processing can only track the mouse position when the pointer
    * is over the current window. The default value of <b>mouseY</b> is <b>0</b>,
@@ -360,7 +353,6 @@ public class PApplet implements PConstants {
   public int mouseY;
 
   /**
-   *
    * The system variable <b>pmouseX</b> always contains the horizontal
    * position of the mouse in the frame previous to the current frame.<br />
    * <br />
@@ -398,7 +390,6 @@ public class PApplet implements PConstants {
   public int pmouseX;
 
   /**
-   *
    * The system variable <b>pmouseY</b> always contains the vertical position
    * of the mouse in the frame previous to the current frame. More detailed
    * information about how <b>pmouseY</b> is updated inside of <b>draw()</b>
@@ -452,7 +443,6 @@ public class PApplet implements PConstants {
   public boolean firstMouse = true;
 
   /**
-   *
    * When a mouse button is pressed, the value of the system variable
    * <b>mouseButton</b> is set to either <b>LEFT</b>, <b>RIGHT</b>, or
    * <b>CENTER</b>, depending on which button is pressed. (If no button is
@@ -483,7 +473,6 @@ public class PApplet implements PConstants {
   public int mouseButton;
 
   /**
-   *
    * The <b>mousePressed()</b> function is called once after every time a
    * mouse button is pressed. The <b>mouseButton</b> variable (see the
    * related reference entry) can be used to determine which button has
@@ -509,12 +498,12 @@ public class PApplet implements PConstants {
    */
   public boolean mousePressed;
 
-  // MACOSX: CTRL + Left Mouse is converted to Right Mouse. This boolean keeps
-  // track of whether the conversion happened on PRESS, because we should report
-  // the same button during DRAG and on RELEASE, even though CTRL might have
-  // been released already. Otherwise the events are inconsistent, e.g.
-  // Left Pressed - Left Drag - CTRL Pressed - Right Drag - Right Released.
-  // See: https://github.com/processing/processing/issues/5672
+  // macOS: Ctrl + Left Mouse is converted to Right Mouse.
+  // This boolean tracks whether the conversion happened on PRESS,
+  // to report the same button during DRAG and on RELEASE,
+  // even though CTRL might have been released already.
+  // Otherwise, the events are inconsistent.
+  // https://github.com/processing/processing/issues/5672
   private boolean macosCtrlClick;
 
 
@@ -523,7 +512,6 @@ public class PApplet implements PConstants {
   public MouseEvent mouseEvent;
 
   /**
-   *
    * The system variable <b>key</b> always contains the value of the most
    * recent key on the keyboard that was used (either pressed or released).
    * <br/> <br/>
@@ -558,7 +546,6 @@ public class PApplet implements PConstants {
   public char key;
 
   /**
-   *
    * The variable <b>keyCode</b> is used to detect special keys such as the
    * UP, DOWN, LEFT, RIGHT arrow keys and ALT, CONTROL, SHIFT.
    * <br /><br />
@@ -606,9 +593,8 @@ public class PApplet implements PConstants {
   public int keyCode;
 
   /**
-   *
-   * The boolean system variable <b>keyPressed</b> is <b>true</b> if any key
-   * is pressed and <b>false</b> if no keys are pressed.
+   * The boolean system variable <b>keyPressed</b> is <b>true</b>
+   * if any key is pressed and <b>false</b> if no keys are pressed.
    * <br /><br />
    * Note that there is a similarly named function called <b>keyPressed()</b>.
    * See its reference page for more information.
@@ -642,17 +628,6 @@ public class PApplet implements PConstants {
    */
   public boolean focused = false;
 
-//  /**
-//   * Confirms if a Processing program is running inside a web browser. This
-//   * variable is "true" if the program is online and "false" if not.
-//   */
-//  @Deprecated
-//  public boolean online = false;
-//  // This is deprecated because it's poorly named (and even more poorly
-//  // understood). Further, we'll probably be removing applets soon, in which
-//  // case this won't work at all. If you want this feature, you can check
-//  // whether getAppletContext() returns null.
-
   /**
    * Time in milliseconds when the applet was started.
    * <p>
@@ -681,7 +656,6 @@ public class PApplet implements PConstants {
   protected boolean redraw = true;
 
   /**
-   *
    * The system variable <b>frameCount</b> contains the number of frames
    * displayed since the program started. Inside <b>setup()</b> the value is
    * 0 and and after the first iteration of draw it is 1, etc.
@@ -699,12 +673,6 @@ public class PApplet implements PConstants {
 
   /** used by the UncaughtExceptionHandler, so has to be static */
   static Throwable uncaughtThrowable;
-
-  // public, but undocumented.. removing for 3.0a5
-//  /**
-//   * true if the animation thread is paused.
-//   */
-//  public volatile boolean paused;
 
   /**
    * true if exit() has been called so that things shut down
