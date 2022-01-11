@@ -4244,12 +4244,11 @@ public class PGraphics extends PImage implements PConstants {
       if (input != null) {
         baseFont = Font.createFont(Font.TRUETYPE_FONT, input);
       }
-
     } catch (Exception e) {
-      // Fall back to how this was handled in 3.x, ugly!
       e.printStackTrace(); // dammit
     }
 
+    // Fall back to how this was handled in 3.x, ugly!
     if (baseFont == null) {
       baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
     }
