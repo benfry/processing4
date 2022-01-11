@@ -1030,7 +1030,6 @@ public class PGraphicsJava2D extends PGraphics {
    *
    * @webref Rendering
    * @webBrief Blends the pixels in the display window according to a defined mode
-   * @param mode the blending mode to use
    */
   @Override
   protected void blendModeImpl() {
@@ -1951,17 +1950,27 @@ public class PGraphicsJava2D extends PGraphics {
   protected void handleTextSize(float size) {
     // if a native version available, derive this font
     Font font = (Font) textFont.getNative();
-    // don't derive again if the font size has not changed
     if (font != null) {
+      // don't derive again if the font size has not changed
       if (font.getSize2D() != size) {
-        Map<TextAttribute, Object> map =
-          new HashMap<>();
-        map.put(TextAttribute.SIZE, size);
-        map.put(TextAttribute.KERNING,
-                TextAttribute.KERNING_ON);
-//      map.put(TextAttribute.TRACKING,
-//              TextAttribute.TRACKING_TIGHT);
-        font = font.deriveFont(map);
+        // Neither of these resolve https://github.com/processing/processing4/issues/303
+        //font = font.deriveFont(Font.PLAIN, size);
+        // or grabbing the attrs first
+        //Map<TextAttribute, Object> map = (Map<TextAttribute, Object>) font.getAttributes();
+
+        // Instead, have to brute force things if the default font
+        if ("Processing Sans Pro".equals(font.getName())) {
+          System.out.println("creating font using alternate method");
+          font = (Font) createDefaultFont(size).getNative();
+
+        } else {
+          System.out.println("regular resize with map");
+          Map<TextAttribute, Object> map = new HashMap<>();
+          map.put(TextAttribute.SIZE, size);
+          map.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+          // map.put(TextAttribute.TRACKING, TextAttribute.TRACKING_TIGHT);
+          font = font.deriveFont(map);
+        }
       }
       g2.setFont(font);
       textFont.setNative(font);

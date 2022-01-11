@@ -12,6 +12,7 @@ _   also need to check for other reports about this
 X multiple windows with GL
 _   https://github.com/processing/processing4/issues/312
 X   https://github.com/processing/processing4/pull/313
+_ made DrawListener public in PSurfaceJOGL (probably change that back)
 
 andres
 X Implement buffer object streaming and finalize attribute API in PShape
@@ -21,9 +22,13 @@ X   https://github.com/processing/processing4/pull/316
 X   https://github.com/processing/processing/issues/6009
 
 
-_ made DrawListener public in PSurfaceJOGL (probably change that back)
+_ textSize() losing some symbols
+_   actually a problem that the default font isn't being set
+_   https://github.com/processing/processing4/issues/303
 
 
+_ possibly move jogl back to a separate library
+_   setting up deps for it with projects that don't use it is a headache
 _ put opengl libs for core into platform-specific subfolders?
 _   may also be useful for Windows antivirus slowdowns
 _   https://github.com/processing/processing/issues/4783#issuecomment-269328168

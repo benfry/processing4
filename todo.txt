@@ -65,14 +65,6 @@ _   switching to Oracle JDK got it working, need to test with 17
 _   https://github.com/processing/processing4/issues/306
 
 
-_ textSize() losing some symbols
-_   actually a problem that the default font isn't being set
-_   https://github.com/processing/processing4/issues/303
-
-_ possibly move jogl back to a separate library
-_   setting up deps for it with projects that don't use it is a headache
-
-
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
