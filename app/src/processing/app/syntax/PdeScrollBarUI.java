@@ -37,6 +37,19 @@ import java.awt.*;
 public class PdeScrollBarUI extends BasicScrollBarUI {
   private final Dimension none = new Dimension();
 
+  private Color backgroundColor;
+  private Color pressedColor;
+  private Color rolloverColor;
+  private Color enabledColor;
+
+
+  public void updateTheme() {
+    backgroundColor = Theme.getColor("editor.scrollbar.color");
+    pressedColor = Theme.getColor("editor.scrollbar.thumb.pressed.color");
+    rolloverColor = Theme.getColor("editor.scrollbar.thumb.rollover.color");
+    enabledColor = Theme.getColor("editor.scrollbar.thumb.enabled.color");
+  }
+
 
   @Override
   protected JButton createDecreaseButton(int orientation) {
@@ -62,9 +75,21 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
   }
 
 
+  /*
+  @Override
+  public void paint(Graphics g, JComponent c) {
+    // this takes care of the track as well as the corner notch
+    // where the horizontal and vertical scrollbars meet (edit: nope)
+    g.setColor(Theme.getColor("editor.scrollbar.color"));
+    g.fillRect(0, 0, c.getWidth(), c.getHeight());
+    super.paint(g, c);
+  }
+  */
+
+
   @Override
   protected void paintTrack(Graphics g, JComponent c, Rectangle r) {
-    g.setColor(Theme.getColor("editor.scrollbar.color"));
+    g.setColor(backgroundColor);
     g.fillRect(0, 0, c.getWidth(), c.getHeight());
   }
 
@@ -79,11 +104,11 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
     JScrollBar sb = (JScrollBar) c;
     if (sb.isEnabled()) {
       if (isDragging) {
-        color = Theme.getColor("editor.scrollbar.thumb.pressed.color");
+        color = pressedColor;
       } else if (isThumbRollover()) {
-        color = Theme.getColor("editor.scrollbar.thumb.rollover.color");
+        color = rolloverColor;
       } else {
-        color = Theme.getColor("editor.scrollbar.thumb.enabled.color");
+        color = enabledColor;
       }
       g2.setPaint(color);
       int inset = 3;

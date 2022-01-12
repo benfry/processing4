@@ -128,20 +128,6 @@ public class JEditTextArea extends JComponent
     add(RIGHT, vertical = new JScrollBar(Adjustable.VERTICAL));
     add(BOTTOM, horizontal = new JScrollBar(Adjustable.HORIZONTAL));
 
-    /*
-    vertical.setBackground(Color.YELLOW);
-    horizontal.setBackground(Color.YELLOW);
-
-    System.out.println(vertical.getUI());
-    //vertical.setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
-    vertical.setUI(new com.apple.laf.AquaScrollBarUI() {
-      @Override
-      protected void configureScrollBarColors() {
-        this.thumbColor = Color.GREEN;
-      }
-    });
-    */
-
     // Add some event listeners
     vertical.addAdjustmentListener(new AdjustHandler());
     horizontal.addAdjustmentListener(new AdjustHandler());
