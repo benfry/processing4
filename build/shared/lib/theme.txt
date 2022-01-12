@@ -17,6 +17,38 @@ mode.title.color = #ffffff
 mode.background.color = #1f62d3
 mode.outline.color = #8497b8
 
+toolbar.button.disabled.field = #D8FFB4
+toolbar.button.disabled.glyph = #C1F69F
+toolbar.button.disabled.stroke = none
+toolbar.button.enabled.field = #52A52E
+toolbar.button.enabled.glyph = #BBF09A
+toolbar.button.enabled.stroke = none
+toolbar.button.pressed.field = #B5B5AC
+toolbar.button.pressed.glyph = #4E8036
+toolbar.button.pressed.stroke = #FFFFF2
+toolbar.button.rollover.field = #77C94F
+toolbar.button.rollover.glyph = #FFFFF2
+toolbar.button.rollover.stroke = none
+toolbar.button.selected.field = #FFFFF2
+toolbar.button.selected.glyph = #00E000
+toolbar.button.selected.stroke = none
+
+toolbar.button.debug.disabled.field = #D8FFB4
+toolbar.button.debug.disabled.glyph = #C1F69F
+toolbar.button.debug.disabled.stroke = none
+toolbar.button.debug.enabled.field = #52A52E
+toolbar.button.debug.enabled.glyph = #BBF09A
+toolbar.button.debug.enabled.stroke = none
+toolbar.button.debug.pressed.field = #52A52E
+toolbar.button.debug.pressed.glyph = #FFFFF2
+toolbar.button.debug.pressed.stroke = #B5B5AC
+toolbar.button.debug.rollover.field = #77C94F
+toolbar.button.debug.rollover.glyph = #FFFFF2
+toolbar.button.debug.rollover.stroke = none
+toolbar.button.debug.selected.field = #FFFFF2
+toolbar.button.debug.selected.glyph = #00E000
+toolbar.button.debug.selected.stroke = none
+
 
 ## EditorStatus - status message bar directly below the editor ##
 
@@ -92,6 +124,11 @@ editor.eolmarkers.color = #999999
 # bracket/brace highlighting
 editor.brackethighlight = true
 editor.brackethighlight.color = #006699
+
+# colors for the custom scroll bar
+editor.scrollbar.thumb.color = #cccccc
+editor.scrollbar.thumb.rollover.color = ##cccccc
+editor.scrollbar.color = #eeeeee
 
 
 ## PdeTextAreaPainter - extras added to the editor ##
