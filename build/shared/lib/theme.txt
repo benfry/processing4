@@ -82,11 +82,13 @@ header.gradient.bottom = #2b52f6
 
 footer.text.font = processing.sans,bold,12
 footer.text.selected.color = #dae8ff
-footer.text.unselected.color = #4679ff
+footer.text.enabled.color = #4679ff
+footer.icon.selected.color = #dae8ff
+footer.icon.enabled.color = #4679ff
 footer.gradient.top = #1e4492
 footer.gradient.bottom = #0f408d
 footer.tab.selected.color = #3369db
-footer.tab.unselected.color = #161e3f
+footer.tab.enabled.color = #161e3f
 footer.updates.color = #fed456
 
 
