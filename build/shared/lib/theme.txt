@@ -126,8 +126,9 @@ editor.brackethighlight = true
 editor.brackethighlight.color = #006699
 
 # colors for the custom scroll bar
-editor.scrollbar.thumb.color = #cccccc
-editor.scrollbar.thumb.rollover.color = ##cccccc
+editor.scrollbar.thumb.enabled.color = #cccccc
+editor.scrollbar.thumb.rollover.color = #cccccc
+editor.scrollbar.thumb.pressed.color = #cccccc
 editor.scrollbar.color = #eeeeee
 
 

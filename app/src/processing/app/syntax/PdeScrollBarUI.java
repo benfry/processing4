@@ -23,6 +23,8 @@
 
 package processing.app.syntax;
 
+import processing.app.ui.Theme;
+
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import java.awt.*;
@@ -62,7 +64,7 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
 
   @Override
   protected void paintTrack(Graphics g, JComponent c, Rectangle r) {
-    g.setColor(Color.ORANGE);
+    g.setColor(Theme.getColor("editor.scrollbar.color"));
     g.fillRect(0, 0, c.getWidth(), c.getHeight());
   }
 
@@ -72,24 +74,24 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
     Graphics2D g2 = (Graphics2D) g.create();
     // this can't really be necessary, can it?
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
     Color color;
     JScrollBar sb = (JScrollBar) c;
-    if (!sb.isEnabled()) {
-      return;
-    } else if (isDragging) {
-      color = Color.DARK_GRAY; // change color
-    } else if (isThumbRollover()) {
-      color = Color.LIGHT_GRAY; // change color
-    } else {
-      color = Color.GRAY; // change color
+    if (sb.isEnabled()) {
+      if (isDragging) {
+        color = Theme.getColor("editor.scrollbar.thumb.pressed.color");
+      } else if (isThumbRollover()) {
+        color = Theme.getColor("editor.scrollbar.thumb.rollover.color");
+      } else {
+        color = Theme.getColor("editor.scrollbar.thumb.enabled.color");
+      }
+      g2.setPaint(color);
+      int arc = Math.min(c.getWidth(), c.getHeight());
+      g2.fillRoundRect(r.x, r.y, r.width, r.height, arc, arc);
+      g2.setPaint(Color.WHITE);
+      g2.drawRoundRect(r.x, r.y, r.width, r.height, arc, arc);
+      g2.dispose();
     }
-    g2.setPaint(color);
-    int shorter = Math.min(c.getWidth(), c.getHeight());
-    int arc = shorter;
-    g2.fillRoundRect(r.x, r.y, r.width, r.height, arc, arc);
-    g2.setPaint(Color.WHITE);
-    g2.drawRoundRect(r.x, r.y, r.width, r.height, arc, arc);
-    g2.dispose();
   }
 
 
