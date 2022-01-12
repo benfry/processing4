@@ -66,7 +66,7 @@ public class EditorFooter extends Box {
   static final int ICON_TOP = Toolkit.zoom(7);
   static final int ICON_MARGIN = Toolkit.zoom(7);
 
-  static final int UNSELECTED = 0;
+  static final int ENABLED = 0;
   static final int SELECTED = 1;
 
   Color[] textColor = new Color[2];
@@ -162,11 +162,11 @@ public class EditorFooter extends Box {
 
   public void updateTheme() {
     textColor[SELECTED] = Theme.getColor("footer.text.selected.color");
-    textColor[UNSELECTED] = Theme.getColor("footer.text.unselected.color");
+    textColor[ENABLED] = Theme.getColor("footer.text.enabled.color");
     font = Theme.getFont("footer.text.font");
 
     tabColor[SELECTED] = Theme.getColor("footer.tab.selected.color");
-    tabColor[UNSELECTED] = Theme.getColor("footer.tab.unselected.color");
+    tabColor[ENABLED] = Theme.getColor("footer.tab.enabled.color");
 
     updateColor = Theme.getColor("footer.updates.color");
 
@@ -305,7 +305,7 @@ public class EditorFooter extends Box {
         int baseline = (getHeight() + fontAscent) / 2;
         g2.drawString(updatesStr, (int) (ex + (diameter - countWidth)/2), baseline);
         double updatesWidth = font.getStringBounds(updateLabel, frc).getWidth();
-        g2.setColor(textColor[UNSELECTED]);
+        g2.setColor(textColor[ENABLED]);
         updateLeft = (int) (ex - updatesWidth - GAP);
         g2.drawString(updateLabel, updateLeft, baseline);
       }
@@ -386,7 +386,7 @@ public class EditorFooter extends Box {
     }
 
     void draw(Graphics g) {
-      int state = isCurrent() ? SELECTED : UNSELECTED;
+      int state = isCurrent() ? SELECTED : ENABLED;
       g.setColor(tabColor[state]);
 //      if (notification) {
 //        g.setColor(errorColor);
@@ -403,7 +403,7 @@ public class EditorFooter extends Box {
       }
 
       int textLeft = getTextLeft();
-      if (notification && state == UNSELECTED) {
+      if (notification && state == ENABLED) {
         g.setColor(textColor[SELECTED]);
       } else {
         g.setColor(textColor[state]);
