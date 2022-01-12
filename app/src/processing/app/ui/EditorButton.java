@@ -191,12 +191,16 @@ implements MouseListener, MouseMotionListener, ActionListener {
   @Override
   public void mouseEntered(MouseEvent e) {
     toolbar.setRollover(this, e);
+    rollover = true;
+    repaint();
   }
 
 
   @Override
   public void mouseExited(MouseEvent e) {
     toolbar.setRollover(null, e);
+    rollover = false;
+    repaint();
   }
 
 

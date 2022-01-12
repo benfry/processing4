@@ -234,19 +234,15 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
   void setRollover(EditorButton button, InputEvent e) {
     rolloverButton = button;
-//    if (rolloverButton != null) {
     updateRollover(e);
-//    } else {
-//      rolloverLabel.setText("");
-//    }
   }
 
 
   void updateRollover(InputEvent e) {
-    if (rolloverButton != null) {
-      rolloverLabel.setText(rolloverButton.getRolloverText(e));
-    } else {
+    if (rolloverButton == null) {
       rolloverLabel.setText("");
+    } else {
+      rolloverLabel.setText(rolloverButton.getRolloverText(e));
     }
   }
 
