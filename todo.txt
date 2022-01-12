@@ -19,6 +19,8 @@ X   avoids platform-specific behavior; Java 18 also making UTF-8 the default
 X   https://github.com/processing/processing4/issues/336
 X System.out and System.err collision causing deadlock
 X   https://github.com/processing/processing4/issues/338
+X get rollovers working again for the toolbar buttons
+X   accidentally shut off sometime during the 3.x development process
 
 sam
 X Error when calling smooth() on PGraphics
@@ -39,11 +41,26 @@ cleaning
 o import option for sketchbook (button to select files/folders/etc)
 X   use pdez instead
 
+design/theme
+X need custom scroll bar for theme handling
+X   https://stackoverflow.com/q/16373459
+_   add notes about params to the wiki
+_ auto-generate icons on theme update
+X   generate toolbar icons
+_   generate footer icons
+_   generate manager icons
+_ incorporate icon auto-generate into PDE
+_ white corner on the scroll bar
+_ single black line at top of editor
+
 
 before release
 _ disable Theme Engine from Tools (in build.xml)
 _ option to disable the Windows startup setting for scaling
 _   need to have a better workaround
+_ more reports of code completion not working on macOS
+_   "working in a6 but not b2"
+_   https://github.com/processing/processing4/issues/304
 
 
 before beta 3
