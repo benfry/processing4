@@ -30,12 +30,11 @@ import java.awt.*;
 
 /**
  * Custom scroll bar style for the editor.
- *
  * Originally based on https://stackoverflow.com/a/53662678
  */
 public class PdeScrollBarUI extends BasicScrollBarUI {
+  private final Dimension none = new Dimension();
 
-  private final Dimension d = new Dimension();
 
   @Override
   protected JButton createDecreaseButton(int orientation) {
@@ -43,10 +42,11 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
 
       @Override
       public Dimension getPreferredSize() {
-        return d;
+        return none;
       }
     };
   }
+
 
   @Override
   protected JButton createIncreaseButton(int orientation) {
@@ -54,23 +54,27 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
 
       @Override
       public Dimension getPreferredSize() {
-        return d;
+        return none;
       }
     };
   }
 
+
   @Override
   protected void paintTrack(Graphics g, JComponent c, Rectangle r) {
+    g.setColor(Color.ORANGE);
+    g.fillRect(0, 0, c.getWidth(), c.getHeight());
   }
+
 
   @Override
   protected void paintThumb(Graphics g, JComponent c, Rectangle r) {
     Graphics2D g2 = (Graphics2D) g.create();
+    // this can't really be necessary, can it?
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     Color color;
     JScrollBar sb = (JScrollBar) c;
-    if (!sb.isEnabled() || r.width > r.height) {
-      System.out.println("not enabled " + c);
+    if (!sb.isEnabled()) {
       return;
     } else if (isDragging) {
       color = Color.DARK_GRAY; // change color
@@ -80,11 +84,14 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
       color = Color.GRAY; // change color
     }
     g2.setPaint(color);
-    g2.fillRoundRect(r.x, r.y, r.width, r.height, 10, 10);
+    int shorter = Math.min(c.getWidth(), c.getHeight());
+    int arc = shorter;
+    g2.fillRoundRect(r.x, r.y, r.width, r.height, arc, arc);
     g2.setPaint(Color.WHITE);
-    g2.drawRoundRect(r.x, r.y, r.width, r.height, 10, 10);
+    g2.drawRoundRect(r.x, r.y, r.width, r.height, arc, arc);
     g2.dispose();
   }
+
 
   @Override
   protected void setThumbBounds(int x, int y, int width, int height) {
