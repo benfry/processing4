@@ -33,6 +33,8 @@ abstract public class EditorButton extends JComponent
 implements MouseListener, MouseMotionListener, ActionListener {
   static public final int DIM = Toolkit.zoom(30);
 
+  /** The lowercase short name used to load its SVG/PNG image data. */
+  protected String name;
   /** Button's description. */
   protected String title;
   /** Description of alternate behavior when shift is down. */
@@ -69,18 +71,52 @@ implements MouseListener, MouseMotionListener, ActionListener {
 
   public EditorButton(EditorToolbar parent, String name,
                       String title, String titleShift, String titleAlt) {
+    this.name = name;
     this.toolbar = parent;
     this.title = title;
     this.titleShift = titleShift;
     this.titleAlt = titleAlt;
 
-    Mode mode = toolbar.mode;
+    updateTheme();
 
-    disabledImage = mode.loadImageX(name + "-disabled");
-    enabledImage = mode.loadImageX(name + "-enabled");
-    selectedImage = mode.loadImageX(name + "-selected");
-    pressedImage = mode.loadImageX(name + "-pressed");
-    rolloverImage = mode.loadImageX(name + "-rollover");
+    addMouseListener(this);
+    addMouseMotionListener(this);
+  }
+
+
+  protected Image renderImage(String state) {
+    Mode mode = toolbar.mode;
+    String xmlOrig = mode.loadString(name + ".svg");
+
+    if (xmlOrig == null) {
+      // load image data from PNG files
+      return mode.loadImageX(name + "-" + state);
+    }
+
+    final String FIELD_COLOR = "#fff";
+    final String GLYPH_COLOR = "#ff5757";
+    final String STROKE_COLOR = "silver";
+
+    String field = Theme.get("toolbar.button." + state + ".field");
+    String glyph = Theme.get("toolbar.button." + state + ".glyph");
+    String stroke = Theme.get("toolbar.button." + state + ".stroke");
+
+    String xmlStr = xmlOrig
+      .replace(FIELD_COLOR, field)
+      .replace(GLYPH_COLOR, glyph)
+      .replace(STROKE_COLOR, stroke);
+
+    final int px = DIM * Toolkit.highResMultiplier();
+    return Toolkit.svgToImage(xmlStr, px, px);
+  }
+
+
+  public void updateTheme() {
+    disabledImage = renderImage("disabled");
+    enabledImage = renderImage("enabled");
+    selectedImage = renderImage("selected");
+    pressedImage =  renderImage("pressed");
+    rolloverImage = renderImage("rollover");
 
     if (disabledImage == null) {
       disabledImage = enabledImage;
@@ -94,8 +130,6 @@ implements MouseListener, MouseMotionListener, ActionListener {
     if (rolloverImage == null) {
       rolloverImage = enabledImage;  // could be pressed image
     }
-    addMouseListener(this);
-    addMouseMotionListener(this);
   }
 
 

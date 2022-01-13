@@ -732,8 +732,22 @@ public abstract class Mode {
 
 
   public Image loadImageX(String filename) {
-    final int res = Toolkit.highResImages() ? 2 : 1;
-    return loadImage(filename + "-" + res +  "x.png");
+    return loadImage(filename + "-" + Toolkit.highResMultiplier() +  "x.png");
+  }
+
+
+  public String loadString(String filename) {
+    File file;
+    if (filename.startsWith("/lib/")) {
+      // remove the slash from the front
+      file = Platform.getContentFile(filename.substring(1));
+    } else {
+      file = new File(folder, filename);
+    }
+    if (!file.exists()) {
+      return null;
+    }
+    return PApplet.join(PApplet.loadStrings(file), "\n");
   }
 
 

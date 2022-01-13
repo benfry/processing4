@@ -44,14 +44,27 @@ X   use pdez instead
 design/theme
 X need custom scroll bar for theme handling
 X   https://stackoverflow.com/q/16373459
-_   add notes about params to the wiki
-_ auto-generate icons on theme update
+X auto-generate icons
 X   generate toolbar icons
+X   generate footer icons
+X incorporate icon auto-generate into PDE
+X   autogenerate on theme update
 _   generate footer icons
-_   generate manager icons
-_ incorporate icon auto-generate into PDE
+_ debug theme update
 _ white corner on the scroll bar
-_ single black line at top of editor
+_ single line at top of editor (editor bg color?)
+_ put themes in folders by name
+_ selector for theme that uses tiny images
+_ add notes about params to the wiki
+_   new scrollbars
+
+
+design/next
+_ redesign of the Contribution Manager
+_   identify coloring for icons
+_   how much of theme to inherit
+_   generate manager icons
+_ decision about 'debug' versions of toolbar icons
 
 
 before release
