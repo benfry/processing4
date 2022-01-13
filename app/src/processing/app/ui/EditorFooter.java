@@ -72,11 +72,6 @@ public class EditorFooter extends Box {
   Color[] textColor = new Color[2];
   Color[] tabColor = new Color[2];
 
-  Color updatesTextColor;
-  Color indicatorFieldColor;
-  Color indicatorTextColor;
-  int updateLeft;
-
   Editor editor;
 
   List<Tab> tabs = new ArrayList<>();
@@ -102,14 +97,14 @@ public class EditorFooter extends Box {
     super(BoxLayout.Y_AXIS);
     this.editor = eddie;
 
-    updateTheme();
-
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
     add(cardPanel);
 
     controller = new Controller();
     add(controller);
+
+    updateTheme();
   }
 
 
@@ -170,11 +165,6 @@ public class EditorFooter extends Box {
     tabColor[SELECTED] = Theme.getColor("footer.tab.selected.color");
     tabColor[ENABLED] = Theme.getColor("footer.tab.enabled.color");
 
-    updatesTextColor = Theme.getColor("footer.updates.text.color");
-    indicatorFieldColor = Theme.getColor("footer.updates.indicator.field.color");
-    indicatorTextColor = Theme.getColor("footer.updates.indicator.text.color");
-    controller.repaint();
-
     gradient = Theme.makeGradient("footer", 400, HIGH);
     // Set the default background color in case the window size reported
     // incorrectly by the OS, or we miss an update event of some kind
@@ -185,6 +175,9 @@ public class EditorFooter extends Box {
     for (Tab tab : tabs) {
       tab.updateTheme();
     }
+
+    // replace colors for the "updates" indicator
+    controller.updateTheme();
   }
 
 
@@ -192,6 +185,11 @@ public class EditorFooter extends Box {
 
 
   class Controller extends JComponent {
+    Color updatesTextColor;
+    Color indicatorFieldColor;
+    Color indicatorTextColor;
+    int updateLeft;
+
 
     Controller() {
       addMouseListener(new MouseAdapter() {
@@ -209,6 +207,13 @@ public class EditorFooter extends Box {
           }
         }
       });
+    }
+
+    void updateTheme() {
+      updatesTextColor = Theme.getColor("footer.updates.text.color");
+      indicatorFieldColor = Theme.getColor("footer.updates.indicator.field.color");
+      indicatorTextColor = Theme.getColor("footer.updates.indicator.text.color");
+      repaint();
     }
 
     public void paintComponent(Graphics screen) {
@@ -364,9 +369,6 @@ public class EditorFooter extends Box {
 
     protected void updateTheme() {
       if (icon != null) {
-        //Mode mode = editor.getMode();
-        //enabledIcon = mode.loadImageX(icon + "-enabled");
-        //selectedIcon = mode.loadImageX(icon + "-selected");
         enabledIcon = renderImage("enabled");
         selectedIcon = renderImage("selected");
         if (selectedIcon == null) {
