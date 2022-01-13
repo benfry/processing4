@@ -114,8 +114,6 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
       int inset = 3;
       int arc = Math.min(c.getWidth(), c.getHeight()) - inset*2;
       g2.fillRoundRect(r.x + inset, r.y + inset, r.width - inset*2, r.height - inset*2, arc, arc);
-//      g2.setPaint(Color.WHITE);
-//      g2.drawRoundRect(r.x, r.y, r.width, r.height, arc, arc);
       g2.dispose();
     }
   }
