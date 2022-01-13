@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -32,11 +32,9 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 
 import processing.app.Base;
 import processing.app.Language;
-import processing.app.Messages;
 import processing.app.Mode;
 
 
@@ -49,8 +47,6 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
   static final int HIGH = Toolkit.zoom(53);
   // horizontal gap between buttons
   static final int GAP = Toolkit.zoom(9);
-  // corner radius on the mode selector
-  static final int RADIUS = Toolkit.zoom(3);
 
   protected Editor editor;
   protected Base base;
@@ -106,7 +102,7 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 //    if (items != null) {
 //      box.add(items);
 //    }
-    ModeSelector ms = new ModeSelector();
+    ModeSelector ms = new ModeSelector(editor);
     box.add(ms);
     box.add(Box.createHorizontalStrut(Editor.RIGHT_GUTTER));
 
@@ -274,124 +270,5 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
   public Dimension getMaximumSize() {
     return new Dimension(super.getMaximumSize().width, HIGH);
-  }
-
-
-  class ModeSelector extends JPanel {
-    Image offscreen;
-    int width, height;
-
-    String title;
-    Font titleFont;
-    Color titleColor;
-    int titleAscent;
-    int titleWidth;
-
-    final int MODE_GAP_WIDTH = Toolkit.zoom(13);
-    final int ARROW_GAP_WIDTH = Toolkit.zoom(6);
-    final int ARROW_WIDTH = Toolkit.zoom(6);
-    final int ARROW_TOP = Toolkit.zoom(12);
-    final int ARROW_BOTTOM = Toolkit.zoom(18);
-
-    int[] triangleX = new int[3];
-    int[] triangleY = new int[] { ARROW_TOP, ARROW_TOP, ARROW_BOTTOM };
-
-//    Image background;
-    Color backgroundColor;
-    Color outlineColor;
-
-    public ModeSelector() {
-      title = mode.getTitle(); //.toUpperCase();
-
-      addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent event) {
-        JPopupMenu popup = editor.getModePopup();
-        popup.show(ModeSelector.this, event.getX(), event.getY());
-        }
-      });
-
-      updateTheme();
-    }
-
-    public void updateTheme() {
-      titleFont = Theme.getFont("mode.title.font");
-      titleColor = Theme.getColor("mode.title.color");
-
-      // getGraphics() is null (even for editor) and no offscreen yet
-      //titleWidth = getToolkit().getFontMetrics(titleFont).stringWidth(title);
-      //titleWidth = editor.getGraphics().getFontMetrics(titleFont).stringWidth(title);
-
-      backgroundColor = Theme.getColor("mode.background.color");
-      outlineColor = Theme.getColor("mode.outline.color");
-    }
-
-    @Override
-    public void paintComponent(Graphics screen) {
-      Dimension size = getSize();
-      width = 0;
-      if (width != size.width || height != size.height) {
-        offscreen = Toolkit.offscreenGraphics(this, size.width, size.height);
-        width = size.width;
-        height = size.height;
-      }
-
-      Graphics g = offscreen.getGraphics();
-      Graphics2D g2 = Toolkit.prepareGraphics(g);
-
-      g.setFont(titleFont);
-      if (titleAscent == 0) {
-        titleAscent = (int) Toolkit.getAscent(g); //metrics.getAscent();
-      }
-      FontMetrics metrics = g.getFontMetrics();
-      titleWidth = metrics.stringWidth(title);
-
-      // clear the background
-      g.setColor(backgroundColor);
-      g.fillRect(0, 0, width, height);
-
-      // draw the outline for this feller
-      g.setColor(outlineColor);
-      //Toolkit.dpiStroke(g2);
-      g2.draw(Toolkit.createRoundRect(1, 1, width-1, height-1,
-                                      RADIUS, RADIUS, RADIUS, RADIUS));
-
-      g.setColor(titleColor);
-      g.drawString(title, MODE_GAP_WIDTH, (height + titleAscent) / 2);
-
-      int x = MODE_GAP_WIDTH + titleWidth + ARROW_GAP_WIDTH;
-      triangleX[0] = x;
-      triangleX[1] = x + ARROW_WIDTH;
-      triangleX[2] = x + ARROW_WIDTH/2;
-      g.fillPolygon(triangleX, triangleY, 3);
-
-      screen.drawImage(offscreen, 0, 0, width, height, this);
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-      int tempWidth = titleWidth;  // with any luck, this is set
-      if (tempWidth == 0) {
-        Graphics g = getGraphics();
-        // the Graphics object may not be ready yet, being careful
-        if (g != null) {
-          tempWidth = getFontMetrics(titleFont).stringWidth(title);
-        } else {
-          Messages.err("null Graphics in EditorToolbar.getPreferredSize()");
-        }
-      }
-      return new Dimension(MODE_GAP_WIDTH + tempWidth +
-                           ARROW_GAP_WIDTH + ARROW_WIDTH + MODE_GAP_WIDTH,
-                           EditorButton.DIM);
-    }
-
-    @Override
-    public Dimension getMinimumSize() {
-      return getPreferredSize();
-    }
-
-    @Override
-    public Dimension getMaximumSize() {
-      return getPreferredSize();
-    }
   }
 }
