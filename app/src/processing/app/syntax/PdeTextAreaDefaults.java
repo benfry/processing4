@@ -35,7 +35,7 @@ import processing.app.ui.Theme;
  */
 public class PdeTextAreaDefaults extends TextAreaDefaults {
 
-  public PdeTextAreaDefaults(Mode mode) {
+  public PdeTextAreaDefaults(Mode ignoredMode) {
     document = new SyntaxDocument();
 
     // Set to 0 for revision 0215 because it causes strange jumps

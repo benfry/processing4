@@ -119,22 +119,6 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
   }
 
 
-//  public void registerButton(EditorButton button) {
-    //button.setRolloverLabel(rolloverLabel);
-    //editor.getTextArea().addKeyListener(button);
-//  }
-
-
-//  public void setReverse(EditorButton button) {
-//    button.setGradient(reverseGradient);
-//  }
-
-
-//  public void setText(String text) {
-//    label.setText(text);
-//  }
-
-
   public void paintComponent(Graphics g) {
     Dimension size = getSize();
     g.drawImage(gradient, 0, 0, size.width, size.height, this);
@@ -171,22 +155,6 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
   public void addGap(Box box) {
     box.add(Box.createHorizontalStrut(GAP));
   }
-
-
-//  public Component createModeSelector() {
-//    return new ModeSelector();
-//  }
-
-
-//  protected void swapButton(EditorButton replacement) {
-//    if (currentButton != replacement) {
-//      box.remove(currentButton);
-//      box.add(replacement, 1);  // has to go after the strut
-//      box.revalidate();
-//      box.repaint();  // may be needed
-//      currentButton = replacement;
-//    }
-//  }
 
 
   public void activateRun() {
