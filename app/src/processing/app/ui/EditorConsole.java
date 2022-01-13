@@ -347,7 +347,7 @@ class BufferedStyledDocument extends DefaultStyledDocument {
               str.toCharArray(), 0, str.length()));
           currentLineLength += str.length();
           needLineBreak = false;
-          str = str.substring(str.length()); // eat the string
+          str = "";  // reset the string
         } else {
           elements.add(new ElementSpec(a, ElementSpec.ContentType,
               str.toCharArray(), 0, str.indexOf('\n') + 1));
