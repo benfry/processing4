@@ -63,8 +63,7 @@ public class PdeTextArea extends JEditTextArea {
     // already added by call to super(), removing [fry 220112]
     //add(CENTER, painter);
 
-    // load settings from theme.txt
-    gutterGradient = Theme.makeGradient("editor", Editor.LEFT_GUTTER, 500);
+    updateTheme();
   }
 
 
@@ -82,8 +81,12 @@ public class PdeTextArea extends JEditTextArea {
   @Override
   public void updateTheme() {
     painter.updateTheme();
+
+    gutterGradient = Theme.makeGradient("editor", Editor.LEFT_GUTTER, 500);
+
     ((PdeScrollBarUI) vertical.getUI()).updateTheme();
     ((PdeScrollBarUI) horizontal.getUI()).updateTheme();
+
     repaint();
   }
 
