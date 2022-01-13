@@ -44,10 +44,9 @@ import processing.app.Preferences;
  * Message console that sits below the editing area.
  */
 public class EditorConsole extends JScrollPane {
+  static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+
   Editor editor;
-
-  Timer flushTimer;
-
   JTextPane consoleTextPane;
   BufferedStyledDocument consoleDoc;
 
@@ -61,6 +60,8 @@ public class EditorConsole extends JScrollPane {
   PrintStream sketchErr;
 
   static EditorConsole current;
+
+  Timer flushTimer;
 
 
   public EditorConsole(Editor editor) {
@@ -146,7 +147,10 @@ public class EditorConsole extends JScrollPane {
 
     stdStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(stdStyle, fgColorOut);
-    StyleConstants.setBackground(stdStyle, bgColor);
+    // Changed to TRANSPARENT because it causes trouble when changing
+    // the theme color. But it looks like it's not necessary to set it
+    // anyway, so removing the setBackground() call entirely.
+    //StyleConstants.setBackground(stdStyle, TRANSPARENT);  //bgColor);
     StyleConstants.setFontSize(stdStyle, font.getSize());
     StyleConstants.setFontFamily(stdStyle, font.getFamily());
     StyleConstants.setBold(stdStyle, font.isBold());
@@ -154,7 +158,7 @@ public class EditorConsole extends JScrollPane {
 
     errStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(errStyle, fgColorErr);
-    StyleConstants.setBackground(errStyle, bgColor);
+    //StyleConstants.setBackground(stdStyle, TRANSPARENT);  //bgColor);
     StyleConstants.setFontSize(errStyle, font.getSize());
     StyleConstants.setFontFamily(errStyle, font.getFamily());
     StyleConstants.setBold(errStyle, font.isBold());
@@ -164,7 +168,7 @@ public class EditorConsole extends JScrollPane {
     if (lookAndFeel.equals("Nimbus") || lookAndFeel.equals("VAqua")) {
       getViewport().setBackground(bgColor);
       consoleTextPane.setOpaque(false);
-      consoleTextPane.setBackground(new Color(0, 0, 0, 0));
+      consoleTextPane.setBackground(TRANSPARENT);
     } else {
       consoleTextPane.setBackground(bgColor);
     }

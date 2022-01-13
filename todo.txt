@@ -53,8 +53,8 @@ X   generate footer icons
 _ finish debugging theme update
 X   update gutter colors on theme update
 X   update the mode selector colors
+X   remove background color from console text
 _   make sure repaint is happening
-_ try removing background color from console text
 _ line numbers extending into the horizontal scroll bar
 _ white corner on the scroll bar
 _ single line at top of editor (editor bg color?)
