@@ -20,10 +20,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.app.syntax;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.GeneralPath;
@@ -214,10 +211,10 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       gfx.setColor(gutterLineHighlightColor);
       gfx.fillRect(0, y, Editor.LEFT_GUTTER, fm.getHeight());
     } else {
-      //gfx.setColor(getJavaTextArea().gutterBgColor);
+      Rectangle clip = gfx.getClipBounds();
       gfx.setClip(0, y, Editor.LEFT_GUTTER, fm.getHeight());
       gfx.drawImage(((PdeTextArea) textArea).getGutterGradient(), 0, 0, getWidth(), getHeight(), this);
-      gfx.setClip(null);  // reset
+      gfx.setClip(clip);  // reset
     }
 
     String text = null;
