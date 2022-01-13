@@ -58,6 +58,8 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
   protected EditorButton rolloverButton;
   protected JLabel rolloverLabel;
 
+  protected ModeSelector modeSelector;
+
   protected Box box;
 
   protected Image gradient;
@@ -84,26 +86,14 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
     for (EditorButton button : buttons) {
       box.add(button);
       box.add(Box.createHorizontalStrut(GAP));
-//      registerButton(button);
     }
-//    // remove the last gap
-//    box.remove(box.getComponentCount() - 1);
 
-//    box.add(Box.createHorizontalStrut(LABEL_GAP));
     box.add(rolloverLabel);
-//    currentButton = runButton;
-
-//    runButton.setRolloverLabel(label);
-//    stopButton.setRolloverLabel(label);
 
     box.add(Box.createHorizontalGlue());
     addModeButtons(box, rolloverLabel);
-//    Component items = createModeButtons();
-//    if (items != null) {
-//      box.add(items);
-//    }
-    ModeSelector ms = new ModeSelector(editor);
-    box.add(ms);
+
+    box.add(modeSelector = new ModeSelector(editor));
     box.add(Box.createHorizontalStrut(Editor.RIGHT_GUTTER));
 
     setLayout(new BorderLayout());
@@ -124,6 +114,8 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
         ((EditorButton) c).updateTheme();
       }
     }
+    modeSelector.updateTheme();
+    repaint();
   }
 
 

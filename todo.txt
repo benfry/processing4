@@ -50,7 +50,12 @@ X   generate footer icons
 X incorporate icon auto-generate into PDE
 X   autogenerate on theme update
 X   generate footer icons
-_ debug theme update
+_ finish debugging theme update
+X   update gutter colors on theme update
+X   update the mode selector colors
+_   make sure repaint is happening
+_ try removing background color from console text
+_ line numbers extending into the horizontal scroll bar
 _ white corner on the scroll bar
 _ single line at top of editor (editor bg color?)
 _ put themes in folders by name

@@ -53,7 +53,6 @@ public class ModeSelector extends JPanel {
   int[] triangleX = new int[3];
   int[] triangleY = new int[] { ARROW_TOP, ARROW_TOP, ARROW_BOTTOM };
 
-  //    Image background;
   Color backgroundColor;
   Color outlineColor;
 
