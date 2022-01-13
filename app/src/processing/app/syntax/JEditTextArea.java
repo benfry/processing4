@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.text.*;
 import javax.swing.undo.*;
@@ -134,6 +135,8 @@ public class JEditTextArea extends JComponent
     add(painter, BorderLayout.CENTER);
     add(vertical = new JScrollBar(Adjustable.VERTICAL), BorderLayout.EAST);
     add(horizontal = new JScrollBar(Adjustable.HORIZONTAL), BorderLayout.SOUTH);
+    // what a dreadful hack to get the scrollbar to align
+    horizontal.setBorder(new EmptyBorder(0, 0, 0, vertical.getPreferredSize().width));
 
     /*
     // this fixes the glitch at the lower-right of the scrollbars,
