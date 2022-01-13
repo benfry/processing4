@@ -123,10 +123,29 @@ public class JEditTextArea extends JComponent
     partialPixelWidth = 0;
 
     // Initialize the GUI
+    /*
     setLayout(new ScrollLayout());
     add(CENTER, painter);
     add(RIGHT, vertical = new JScrollBar(Adjustable.VERTICAL));
     add(BOTTOM, horizontal = new JScrollBar(Adjustable.HORIZONTAL));
+    */
+
+    setLayout(new BorderLayout());
+    add(painter, BorderLayout.CENTER);
+    add(vertical = new JScrollBar(Adjustable.VERTICAL), BorderLayout.EAST);
+    add(horizontal = new JScrollBar(Adjustable.HORIZONTAL), BorderLayout.SOUTH);
+
+    /*
+    // this fixes the glitch at the lower-right of the scrollbars,
+    // but results in the scrolling area behaving very oddly,
+    // presumably due to quirks in this very old JEditSyntax code.
+    JScrollPane pane = new JScrollPane(painter);
+    pane.setBorder(BorderFactory.createEmptyBorder());
+    horizontal = pane.getHorizontalScrollBar();
+    vertical = pane.getVerticalScrollBar();
+    setLayout(new BorderLayout());
+    add(pane, BorderLayout.CENTER);
+    */
 
     // Add some event listeners
     vertical.addAdjustmentListener(new AdjustHandler());
@@ -2096,6 +2115,7 @@ public class JEditTextArea extends JComponent
     }
   }
 
+  /*
   class ScrollLayout implements LayoutManager
   {
     //final int LEFT_EXTRA = 5;
@@ -2210,6 +2230,7 @@ public class JEditTextArea extends JComponent
     private Component bottom;
     private final Vector<Component> leftOfScrollBar = new Vector<>();
   }
+  */
 
   class MutableCaretEvent extends CaretEvent
   {
