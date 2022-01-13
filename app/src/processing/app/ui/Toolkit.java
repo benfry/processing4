@@ -648,11 +648,10 @@ public class Toolkit {
 
 
   /**
-   * Deprecated version of the function, but can't get rid of it
+   * Unnecessary version of the function, but can't get rid of it
    * without breaking tools and modes (they'd only require a recompile,
    * but they would no longer be backwards compatible).
    */
-  @Deprecated
   static public void setIcon(Frame frame) {
     setIcon((Window) frame);
   }
