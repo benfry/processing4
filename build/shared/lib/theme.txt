@@ -89,7 +89,9 @@ footer.gradient.top = #1e4492
 footer.gradient.bottom = #0f408d
 footer.tab.selected.color = #3369db
 footer.tab.enabled.color = #161e3f
-footer.updates.color = #fed456
+footer.updates.text.color = #dae8ff
+footer.updates.indicator.field.color = #fed456
+footer.updates.indicator.text.color = #ffffff
 
 
 ## EditorConsole - stack traces of doom and println() ##

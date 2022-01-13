@@ -72,7 +72,9 @@ public class EditorFooter extends Box {
   Color[] textColor = new Color[2];
   Color[] tabColor = new Color[2];
 
-  Color updateColor;
+  Color updatesTextColor;
+  Color indicatorFieldColor;
+  Color indicatorTextColor;
   int updateLeft;
 
   Editor editor;
@@ -168,7 +170,10 @@ public class EditorFooter extends Box {
     tabColor[SELECTED] = Theme.getColor("footer.tab.selected.color");
     tabColor[ENABLED] = Theme.getColor("footer.tab.enabled.color");
 
-    updateColor = Theme.getColor("footer.updates.color");
+    updatesTextColor = Theme.getColor("footer.updates.text.color");
+    indicatorFieldColor = Theme.getColor("footer.updates.indicator.field.color");
+    indicatorTextColor = Theme.getColor("footer.updates.indicator.text.color");
+    controller.repaint();
 
     gradient = Theme.makeGradient("footer", 400, HIGH);
     // Set the default background color in case the window size reported
@@ -303,13 +308,13 @@ public class EditorFooter extends Box {
         float diameter = (float) (2 * (Math.max(countHeight, countWidth)/2 + CIRCULAR_PADDING));
         float ex = getWidth() - Editor.RIGHT_GUTTER - diameter;
         float ey = (getHeight() - diameter) / 2;
-        g2.setColor(updateColor);
+        g2.setColor(indicatorFieldColor);
         g2.fill(new Ellipse2D.Float(ex, ey, diameter, diameter));
-        g2.setColor(textColor[SELECTED]);
+        g2.setColor(indicatorTextColor);
         int baseline = (getHeight() + fontAscent) / 2;
         g2.drawString(updatesStr, (int) (ex + (diameter - countWidth)/2), baseline);
         double updatesWidth = font.getStringBounds(updateLabel, frc).getWidth();
-        g2.setColor(textColor[ENABLED]);
+        g2.setColor(updatesTextColor);
         updateLeft = (int) (ex - updatesWidth - GAP);
         g2.drawString(updateLabel, updateLeft, baseline);
       }
