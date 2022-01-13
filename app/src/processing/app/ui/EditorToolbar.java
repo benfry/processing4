@@ -23,14 +23,7 @@
 
 package processing.app.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -129,6 +122,12 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
     rolloverLabel.setFont(Theme.getFont("toolbar.rollover.font"));
     rolloverLabel.setForeground(Theme.getColor("toolbar.rollover.color"));
+
+    for (Component c : box.getComponents()) {
+      if (c instanceof EditorButton) {
+        ((EditorButton) c).updateTheme();
+      }
+    }
   }
 
 

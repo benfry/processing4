@@ -137,7 +137,7 @@ public class EditorFooter extends Box {
   public void setPanel(Component comp) {
     for (Tab tab : tabs) {
       if (tab.comp == comp) {
-        cardLayout.show(cardPanel, tab.name);
+        cardLayout.show(cardPanel, tab.title);
         repaint();
       }
     }
@@ -176,6 +176,10 @@ public class EditorFooter extends Box {
     // https://github.com/processing/processing/issues/3919
     bgColor = Theme.getColor("footer.gradient.bottom");
     setBackground(bgColor);
+
+    for (Tab tab : tabs) {
+      tab.updateTheme();
+    }
   }
 
 
@@ -191,7 +195,7 @@ public class EditorFooter extends Box {
           for (Tab tab : tabs) {
             if (tab.contains(x)) {
               //editor.setFooterPanel(tab.index);
-              cardLayout.show(cardPanel, tab.name);
+              cardLayout.show(cardPanel, tab.title);
               repaint();
             }
           }
@@ -247,7 +251,7 @@ public class EditorFooter extends Box {
       // reset all tab positions
       for (Tab tab : tabs) {
         tab.textWidth = (int)
-          font.getStringBounds(tab.name, g2.getFontRenderContext()).getWidth();
+          font.getStringBounds(tab.title, g2.getFontRenderContext()).getWidth();
       }
 
       // now actually draw the tabs
@@ -332,7 +336,8 @@ public class EditorFooter extends Box {
 
 
   class Tab {
-    String name;
+    String title;
+    String icon;
     Component comp;
     boolean notification;
 
@@ -343,18 +348,44 @@ public class EditorFooter extends Box {
     int right;
     int textWidth;
 
-    Tab(Component comp, String name, String icon) {
+    Tab(Component comp, String title, String icon) {
       this.comp = comp;
-      this.name = name;
+      this.title = title;
+      this.icon = icon;
 
+      updateTheme();
+    }
+
+
+    protected void updateTheme() {
       if (icon != null) {
-        Mode mode = editor.getMode();
-        enabledIcon = mode.loadImageX(icon + "-enabled");
-        selectedIcon = mode.loadImageX(icon + "-selected");
+        //Mode mode = editor.getMode();
+        //enabledIcon = mode.loadImageX(icon + "-enabled");
+        //selectedIcon = mode.loadImageX(icon + "-selected");
+        enabledIcon = renderImage("enabled");
+        selectedIcon = renderImage("selected");
         if (selectedIcon == null) {
-          selectedIcon = enabledIcon;  // use this as the default
+          selectedIcon = enabledIcon;  // fallback
         }
       }
+    }
+
+    protected Image renderImage(String state) {
+      Mode mode = editor.getMode();
+      String xmlOrig = mode.loadString(icon + ".svg");
+
+      if (xmlOrig == null) {
+        // load image data from PNG files
+        return mode.loadImageX(icon + "-" + state);
+      }
+
+      final String ICON_COLOR = "silver";
+      String iconColor = Theme.get("footer.icon." + state + ".color");
+
+      String xmlStr = xmlOrig.replace(ICON_COLOR, iconColor);
+
+      final int m = Toolkit.highResMultiplier();
+      return Toolkit.svgToImage(xmlStr, ICON_WIDTH * m, ICON_HEIGHT * m);
     }
 
     boolean contains(int x) {
@@ -410,7 +441,7 @@ public class EditorFooter extends Box {
       }
       int tabHeight = TAB_BOTTOM - TAB_TOP;
       int baseline = TAB_TOP + (tabHeight + fontAscent) / 2;
-      g.drawString(name, textLeft, baseline);
+      g.drawString(title, textLeft, baseline);
     }
   }
 }

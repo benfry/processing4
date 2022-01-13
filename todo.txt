@@ -49,7 +49,7 @@ X   generate toolbar icons
 X   generate footer icons
 X incorporate icon auto-generate into PDE
 X   autogenerate on theme update
-_   generate footer icons
+X   generate footer icons
 _ debug theme update
 _ white corner on the scroll bar
 _ single line at top of editor (editor bg color?)
