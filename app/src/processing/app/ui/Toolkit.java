@@ -679,6 +679,10 @@ public class Toolkit {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  /**
+   * Render an SVG, passed in as a String, into an AWT Image at
+   * the specified width and height. Used for interface buttons.
+   */
   static public Image svgToImage(String xmlStr, int wide, int high) {
     PGraphicsJava2D pg = new PGraphicsJava2D();
     pg.setPrimary(false);
