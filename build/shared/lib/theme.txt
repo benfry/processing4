@@ -107,7 +107,7 @@ console.error.color = #32CDFF
 
 # foreground and background colors
 editor.fgcolor = #000000
-editor.bgcolor = #FFFFF2
+editor.bgcolor = #FFFFF8
 
 editor.gradient.top = #CBCECC
 editor.gradient.bottom = #CBCECC
