@@ -596,18 +596,21 @@
       <!--<arch name="i386"/>-->
 
       <bundledocument extensions="pde,pyde"
+                      contentTypes="public.text"
                       icon="macosx/document.icns"
                       name="Processing Source Code"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdez"
+                      contentTypes="public.zip-archive"
                       icon="macosx/document.icns"
                       name="Processing Sketch Bundle"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdex"
+                      contentTypes="public.zip-archive"
                       icon="macosx/document.icns"
                       name="Processing Contribution Bundle"
                       role="Viewer">
