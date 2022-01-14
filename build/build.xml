@@ -138,32 +138,33 @@
       <property name="target-platform" value="@{platform}" />
       <property name="${target-platform}" value="${target-platform}" />
 
-      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.tgz" />
+      <!-- JDK archive saved as .zip on Windows, .tgz on macOS and Linux -->
+      <condition property="jdk.archive.ext" value="zip" else="tgz">
+        <os family="windows" />
+      </condition>
+
+      <property name="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.${jdk.archive.ext}" />
 
       <property name="jdk.data.model" value="@{datamodel}" />
 
       <!--
-      <property name="jfx.path.zip" value="${target-platform}/jfx-${jfx.name}.zip" />
-      <property name="jfx.path.dist" value="${target-platform}/javafx-sdk-${jfx.name}" />
-      <property name="jfx.path.lib" value="${jfx.path.dist}/lib" />
-      -->
-
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.tgz">
+      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.tgz">
         <not>
           <equals arg1="${target-platform}" arg2="windows" />
         </not>
       </condition>
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.detail}.zip">
+      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.zip">
         <equals arg1="${target-platform}" arg2="windows" />
       </condition>
+      -->
     </sequential>
   </macrodef>
 
   <target name="jdk-check">
-    <echo message="Checking for ${jdk.tgz.path}" />
-    <available file="${jdk.tgz.path}" property="jdk.tgz.downloaded" />
-    <echo message="Result: ${jdk.tgz.downloaded}" />
+    <echo message="Checking for ${jdk.archive.path}" />
+    <available file="${jdk.archive.path}" property="jdk.archive.downloaded" />
+    <echo message="Result: ${jdk.archive.downloaded}" />
   </target>
 
   <!--
@@ -173,7 +174,7 @@
   -->
 
   <target name="jdk-download" depends="jdk-check"
-          unless="jdk.tgz.downloaded">
+          unless="jdk.archive.downloaded">
 
     <!-- Windows is the outlier with the .zip extension (the others are .tar.gz) -->
     <condition property="jdk.download.ext" value="zip" else="tar.gz">
@@ -219,7 +220,7 @@
     <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
-         dest="${jdk.tgz.path}"
+         dest="${jdk.archive.path}"
          ignoreerrors="false"
          usetimestamp="true" />
 
@@ -531,7 +532,7 @@
     <mkdir dir="macosx/work" />
 
     <!-- Extract JDK -->
-    <echo message="Target jdk: ${jdk.tgz.path}"/>
+    <echo message="Target jdk: ${jdk.archive.path}"/>
     <exec executable="tar" dir="macosx">
       <!-- Change directory -->
       <!--
@@ -540,7 +541,7 @@
       <arg value="-xzpf" />
       -->
       <arg value="xfz" />
-      <arg value="../${jdk.tgz.path}"/>
+      <arg value="../${jdk.archive.path}"/>
     </exec>
 
     <property name="jdk.dir" value="macosx/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
@@ -1130,7 +1131,7 @@
       <arg value="-xzpf" />
       -->
       <arg value="xfz" />
-      <arg value="../${jdk.tgz.path}"/>
+      <arg value="../${jdk.archive.path}"/>
     </exec>
 
     <property name="jdk.dir" value="jdk-${jdk.detail}+${jdk.build}/" />
@@ -1418,7 +1419,7 @@
     <!-- Hopefully this is OK with the permissions (unlike Linux),
          since those shouldn't matter on Windows. -->
     <unzip dest="windows/work"
-           src="${jdk.tgz.path}"
+           src="${jdk.archive.path}"
            overwrite="false" />
 
     <property name="jdk.dir" value="windows/work/jdk-${jdk.detail}+${jdk.build}/" />
