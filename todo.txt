@@ -62,9 +62,9 @@ X white corner on the scroll bar
 X single line at top of editor (editor bg color?)
 X line numbers extending into the horizontal scroll bar
 X update the opening page to say 2022
-_ replace the ugly icon
-_   https://developer.apple.com/design/resources/#macos-apps
-_   app, document, exported app
+X replace the ugly icon
+X   https://developer.apple.com/design/resources/#macos-apps
+o   app, document, exported app
 
 
 before release
@@ -103,6 +103,8 @@ _   https://github.com/processing/processing4/issues/306
 
 
 design/next
+_ icon for exported app
+_ icon for document
 _ redesign of the Contribution Manager
 _   identify coloring for icons
 _   how much of theme to inherit
