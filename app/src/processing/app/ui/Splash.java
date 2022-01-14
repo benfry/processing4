@@ -1,6 +1,7 @@
 package processing.app.ui;
 
 import processing.app.Platform;
+import processing.app.Settings;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -11,6 +12,8 @@ import java.awt.Toolkit;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.util.Map;
 
 
 /**
@@ -111,7 +114,60 @@ public class Splash extends JFrame {
   }
 
 
+//  /**
+//   * Load the optional properties.txt file from the 'lib' sub-folder
+//   * that can be used to pass entries to System.properties.
+//   */
+//  static private void initProperties() {
+//    try {
+//      File propsFile = Platform.getContentFile("properties.txt");
+//      if (propsFile != null && propsFile.exists()) {
+//        Settings props = new Settings(propsFile);
+//        for (Map.Entry<String, String> entry : props.getMap().entrySet()) {
+//          System.setProperty(entry.getKey(), entry.getValue());
+//        }
+//      }
+//    } catch (Exception e) {
+//      // No crying over spilt milk, but...
+//      e.printStackTrace();
+//    }
+//  }
+
+
+  static public boolean getDisableHiDPI() {
+    File propsFile = Platform.getContentFile("disable_hidpi");
+    if (propsFile != null && propsFile.exists()) {
+      return true;
+    }
+    return false;
+  }
+
+
+  static public void setDisableHiDPI(boolean disabled) {
+    try {
+      File propsFile = Platform.getContentFile("disable_hidpi");
+      if (propsFile != null) {
+        if (disabled) {
+          new FileOutputStream(propsFile).close();
+        } else {
+          boolean success = propsFile.delete();
+          if (!success) {
+            System.err.println("Could not delete disable_hidpi");
+          }
+        }
+      }
+    } catch (Exception e) {
+      // No crying over spilt milk, but...
+      e.printStackTrace();
+    }
+  }
+
+
   static public void main(String[] args) {
+    // Has to be done before AWT is initialized, so the hack lives here
+    if (getDisableHiDPI()) {
+      System.setProperty("sun.java2d.uiScale.enabled", "false");
+    }
     try {
       final boolean hidpi = processing.app.ui.Toolkit.highResImages();
       final String filename = "lib/about-" + (hidpi ? 2 : 1) + "x.png";

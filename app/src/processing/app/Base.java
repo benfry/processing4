@@ -161,6 +161,15 @@ public class Base {
     // call after Platform.init() because we need the settings folder
     Console.startup();
 
+    /*
+    // working on https://github.com/processing/processing4/issues/231
+    // and https://github.com/processing/processing4/issues/226
+    System.out.println("retina is " + Toolkit.isRetina());
+    System.out.println("system zoom " + Platform.getSystemZoom());
+    System.out.println("java2d param is " + System.getProperty("sun.java2d.uiScale.enabled"));
+    System.out.println("toolkit res is " + java.awt.Toolkit.getDefaultToolkit().getScreenResolution());
+    */
+
     // Set the debug flag based on a file being present in the settings folder
     File debugFile = getSettingsFile("debug");
 
