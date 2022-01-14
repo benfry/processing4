@@ -11,6 +11,7 @@ X   also need to check for other reports about this
 X textSize() losing some symbols
 X   actually a problem that the default font isn't being set
 X   https://github.com/processing/processing4/issues/303
+X   https://github.com/processing/processing/issues/4956
 X add warning when default font set and drawing unavailable characters
 
 X multiple windows with GL

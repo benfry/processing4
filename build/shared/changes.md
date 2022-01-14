@@ -1,3 +1,95 @@
+# Processing 4.0 beta 3
+
+* Revision 1278 – 14 January 2022*
+
+We've moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL.
+
+Like the last one, the new color scheme is a placeholder: we've done major work in this release to make it possible to customize the UI in Processing, and we have some exciting updates on that to share in future releases. 
+
+
+## Fixing the bugs that won't fix themselves
+
+* Too much writing to the console (from both System.out and System.err) causing the software to lock up completely. [#338](https://github.com/processing/processing4/issues/338)
+
+* Got rollovers working again for the Toolbar buttons. Somewhat comically, these seem to have broken at some point during the 3.x development process, and nobody noticed.
+
+* `listFiles()` and `listPaths()` with an extension specified were not properly matching directories.
+
+* Fix for `disableStyle()` with 2D shapes in `P3D`.
+
+* Allow `GEOMETRY` (not just `PATH`) with `contains()` in PShape. The `contains()` method is still imperfect, but it's just as bad with polygon shapes as path shapes.
+
+* Fix a problem where the default font would misbehave after `textSize()` was called. Turns out the problem was that the wrong font was being used in the first place. But also added a warning for users when unsupported characters are used with the default font. [#303](https://github.com/processing/processing4/issues/303), [#4956](https://github.com/processing/processing/issues/4956)
+
+
+## Maintaining this 20~~0~~-year-old house
+
+* Use UTF-8 for `readString()` and `write()` in net client. Avoids platform-specific behavior; Java 18 also making UTF-8 the default. [#336](https://github.com/processing/processing4/issues/336)
+
+* Cleaning up the Create Font dialog while tracking down [#278](https://github.com/processing/processing4/issues/278). Removed `Serif`, `SansSerif`, `Monospaced`, `Dialog`, `DialogInput` from Create Font. Also sorting the list of font names, and skipping fonts that start with `.` or `#` because they're supposed to be hidden from users.
+
+
+## Hark, a sound from the West, and it is Sam
+
+* Error when calling `smooth()` on `PGraphics` [#272](https://github.com/processing/processing4/issues/272)
+
+* Detect if calling special methods on `PApplet` or not (and restore unit tests) [#288](https://github.com/processing/processing4/pull/288)
+
+* Move Mockito to a new version. [#287](https://github.com/processing/processing4/issues/287)
+
+
+## Behold, a sound from the East, and it is Andrés
+
+* Finalizing support for multiple windows with OpenGL. [#312](https://github.com/processing/processing4/issues/312), [#313](https://github.com/processing/processing4/pull/313)
+
+* Implement buffer object streaming for `P2D` and `P3D` and finalize attribute API in `PShape`. [#314](https://github.com/processing/processing4/pull/314)
+
+* Add support to `PATH` shapes in `P2D` renderer. [#6009](https://github.com/processing/processing/issues/6009), [#316](https://github.com/processing/processing4/pull/316)
+
+
+## The community continues pitching in
+
+* Update Ukrainian language strings. [#301](https://github.com/processing/processing4/pull/301)
+
+* Splash screen has default OpenJDK icon. [#297](https://github.com/processing/processing4/issues/297), [#329](https://github.com/processing/processing4/pull/329)
+
+
+## Internal build and development changes
+
+* Update [appbundler](https://github.com/TheInfiniteKind/appbundler) with the latest from upstream.
+
+* Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17. [#285](https://github.com/processing/processing4/issues/285)
+
+* Move up from JavaFX 17.0.0.1 to 17.0.1.
+
+* Get rid of version numbers in the name of the `batik.jar` file.
+
+* `ffmpeg` not downloading correctly on M1 machines. [#319](https://github.com/processing/processing4/issues/319), [#5775](https://github.com/processing/processing/issues/5775), [#5714](https://github.com/processing/processing/issues/5714), [#6230](https://github.com/processing/processing/issues/6230)
+
+
+design/theme
+X need custom scroll bar for theme handling
+X   https://stackoverflow.com/q/16373459
+X auto-generate icons
+X   generate toolbar icons
+X   generate footer icons
+X incorporate icon auto-generate into PDE
+X   autogenerate on theme update
+X   generate footer icons
+X finish debugging theme update
+X   update gutter colors on theme update
+X   update the mode selector colors
+X   remove background color from console text
+X   make sure repaint is happening
+X white corner on the scroll bar
+X single line at top of editor (editor bg color?)
+X line numbers extending into the horizontal scroll bar
+X update the opening page to say 2022
+
+
+
+
+
 # Processing 4.0 beta 2
 
 *Revision 1277 – 4 October 2021*

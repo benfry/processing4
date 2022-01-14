@@ -1,15 +1,15 @@
 # Processing 4.0
 
-Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to JDK 11 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this is 4.0.
+Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to Java 17 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this is 4.0.
 
 We've also moved to a new repository for this release so that we could cull a lot of the accumulated mess of the last 20 years, which makes `git clone` (and most other `git` operations) a lot faster.
 
 
 ## Roadmap
 
-This software is currently in beta. We don't have a schedule for the final 4.0 release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2021-12-31&type=c) who continue working on it, unpaid, because they care about it. The beta is the default download on the site because it's more usable than the 3.5.4 release.
+This software is currently in beta. We don't have a schedule for the final 4.0 release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-03-01&type=c) who continue working on it, unpaid, because they care about it. The beta is the default download on the site because it's more usable than the 3.5.4 release.
 
-* We're currently using JDK 11, which is a “Long Term Support” (LTS) release. Java 17 is now available and is the next LTS, and we'll switch to that when we have time. You can track that progress or give us a hand with that [here](https://github.com/processing/processing4/issues/285).
+* We're currently using JDK 17, which is the latest “Long Term Support” (LTS) release. (Before beta 3, we were using JDK 11. In 3.x we were using Java 8.)
 
 * The current release runs well on Apple Silicon using Rosetta. We are currently unable to move to a fully native version for Apple Silicon because of other libraries that we rely upon (JavaFX, JOGL, etc). Once those are ready, we'll need to do additional work to add Apple Silicon as a target (the same way we support both 64-bit and 32-bit, or ARM instead of Intel.) If you'd like to help, or would like to check for updates, you'll find more [here](https://github.com/processing/processing4/issues/128).
 
@@ -19,6 +19,15 @@ This software is currently in beta. We don't have a schedule for the final 4.0 r
 As with all releases, we'll do [everything possible](https://twitter.com/ben_fry/status/1426282574683516928) to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
 
 The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/changes.md), this is only a list of things that may break existing projects (whether sketches, Libraries, Modes, etc.)
+
+
+### Beta 3
+
+* Now using JDK 17.0.1 and JavaFX 17.0.1.
+
+* Major changes to `theme.txt` and theme handling in general. Now rendering toolbar icons from SVG images. More documentation later.
+
+* Made `DrawListener` public in `PSurfaceJOGL`.
 
 
 ### Beta 2
