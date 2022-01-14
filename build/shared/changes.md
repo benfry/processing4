@@ -2,9 +2,11 @@
 
 * Revision 1278 – 14 January 2022*
 
-We've moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL.
+We've moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL. 
 
-Like the last one, the new color scheme is a placeholder: we've done major work in this release to make it possible to customize the UI in Processing, and we have some exciting updates on that to share in future releases. 
+We even updated the loading screen to include 2022.
+
+The new color scheme is a placeholder, just like the last one: we've done major work in this release to make it possible to customize the UI in Processing, and we have some exciting updates on that to share in future releases. For this round, we just wanted some neutral defaults.
 
 
 ## Fixing the bugs that won't fix themselves
@@ -22,11 +24,15 @@ Like the last one, the new color scheme is a placeholder: we've done major work 
 * Fix a problem where the default font would misbehave after `textSize()` was called. Turns out the problem was that the wrong font was being used in the first place. But also added a warning for users when unsupported characters are used with the default font. [#303](https://github.com/processing/processing4/issues/303), [#4956](https://github.com/processing/processing/issues/4956)
 
 
-## Maintaining this 20~~0~~-year-old house
+## Major internal work to support UI themes
 
-* Use UTF-8 for `readString()` and `write()` in net client. Avoids platform-specific behavior; Java 18 also making UTF-8 the default. [#336](https://github.com/processing/processing4/issues/336)
+* Now using custom scrollbar widgets in the Editor so that it can better match the rest of the interface.
 
-* Cleaning up the Create Font dialog while tracking down [#278](https://github.com/processing/processing4/issues/278). Removed `Serif`, `SansSerif`, `Monospaced`, `Dialog`, `DialogInput` from Create Font. Also sorting the list of font names, and skipping fonts that start with `.` or `#` because they're supposed to be hidden from users.
+* Auto-generating toolbar and tab icons from SVG files based on theme colors.
+
+* Implement automatic update for changes to `theme.txt` in the sketchbook.
+
+* More documentation about all of this soon.
 
 
 ## Hark, a sound from the West, and it is Sam
@@ -54,6 +60,13 @@ Like the last one, the new color scheme is a placeholder: we've done major work 
 * Splash screen has default OpenJDK icon. [#297](https://github.com/processing/processing4/issues/297), [#329](https://github.com/processing/processing4/pull/329)
 
 
+## Maintaining this 20~~0~~-year-old house
+
+* Use UTF-8 for `readString()` and `write()` in net client. Avoids platform-specific behavior; Java 18 also making UTF-8 the default. [#336](https://github.com/processing/processing4/issues/336)
+
+* Cleaning up the Create Font dialog while tracking down [#278](https://github.com/processing/processing4/issues/278). Removed `Serif`, `SansSerif`, `Monospaced`, `Dialog`, `DialogInput` from Create Font. Also sorting the list of font names, and skipping fonts that start with `.` or `#` because they're supposed to be hidden from users.
+
+
 ## Internal build and development changes
 
 * Update [appbundler](https://github.com/TheInfiniteKind/appbundler) with the latest from upstream.
@@ -65,29 +78,6 @@ Like the last one, the new color scheme is a placeholder: we've done major work 
 * Get rid of version numbers in the name of the `batik.jar` file.
 
 * `ffmpeg` not downloading correctly on M1 machines. [#319](https://github.com/processing/processing4/issues/319), [#5775](https://github.com/processing/processing/issues/5775), [#5714](https://github.com/processing/processing/issues/5714), [#6230](https://github.com/processing/processing/issues/6230)
-
-
-design/theme
-X need custom scroll bar for theme handling
-X   https://stackoverflow.com/q/16373459
-X auto-generate icons
-X   generate toolbar icons
-X   generate footer icons
-X incorporate icon auto-generate into PDE
-X   autogenerate on theme update
-X   generate footer icons
-X finish debugging theme update
-X   update gutter colors on theme update
-X   update the mode selector colors
-X   remove background color from console text
-X   make sure repaint is happening
-X white corner on the scroll bar
-X single line at top of editor (editor bg color?)
-X line numbers extending into the horizontal scroll bar
-X update the opening page to say 2022
-
-
-
 
 
 # Processing 4.0 beta 2
