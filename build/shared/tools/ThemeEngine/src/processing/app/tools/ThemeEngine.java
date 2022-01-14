@@ -11,8 +11,7 @@ public class ThemeEngine implements Tool {
   Base base;
 
   public String getMenuTitle() {
-    //return Language.text("theme_engine");
-    return "Theme Engine";
+    return "Update Theme";
   }
 
 
@@ -32,6 +31,9 @@ public class ThemeEngine implements Tool {
 
       if (activeEditor != null) {
         activeEditor.statusNotice("Saved theme.txt to " + sketchbookFile);
+        System.out.println("After you make changes to theme.txt, " +
+                           "select \u201C" + getMenuTitle() + "\u201D " +
+                           "again to use the new colors.");
       }
 
     } else {
@@ -41,8 +43,7 @@ public class ThemeEngine implements Tool {
       Theme.load();
 
       for (Editor editor : base.getEditors()) {
-        System.out.println("Updating theme for " + editor.getSketch().getName());
-        //editor.applyPreferences();
+        //System.out.println("Updating theme for " + editor.getSketch().getName());
         editor.updateTheme();
       }
 

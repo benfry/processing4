@@ -2,11 +2,13 @@
 
 * Revision 1278 – 14 January 2022*
 
-We've moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL. 
+We've moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL.
 
 We even updated the loading screen to include 2022.
 
 The new color scheme is a placeholder, just like the last one: we've done major work in this release to make it possible to customize the UI in Processing, and we have some exciting updates on that to share in future releases. For this round, we just wanted some neutral defaults.
+
+You can now customize the color scheme by selecting Tools → Update Theme. This will create a `theme.txt` file in your sketchbook, which you can edit. After you've saved your changes, select “Update Theme” again to see the changes reflected in the interface.
 
 
 ## Fixing the bugs that won't fix themselves
