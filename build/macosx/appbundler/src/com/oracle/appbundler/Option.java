@@ -33,22 +33,22 @@ package com.oracle.appbundler;
  * application.<p>
  * Assuming your {@code CFBundleIdentifier} (settable via {@link AppBundlerTask#setIdentifier(String)})
  * is {@code com.oracle.appbundler}. Then you can override a named option by calling
- * <xmp>
+ * <pre>
  *     import java.util.prefs.Preferences;
  *     [...]
  *     Preferences jvmOptions = Preferences.userRoot().node("/com/oracle/appbundler/JVMOptions");
  *     jvmOptions.put("name", "value");
  *     jvmOptions.flush();
- * </xmp>
+ * </pre>
  * The corresponding entries will be stored in a file called
  * {@code ~/Library/Preferences/com.oracle.appbundler.plist}.
  * To manipulate the file without Java's {@link java.util.prefs.Preferences} from the command line,
  * you should use the tool
  * <a href="https://developer.apple.com/library/mac/documentation/Darwin/Reference/ManPages/man1/defaults.1.html">defaults</a>.
  * For example, to add an entry via the command line, use:
- * <xmp>
+ * <pre>
  *     defaults write com.oracle.appbundler /com/oracle/appbundler/ -dict-add JVMOptions/ '{"name"="value";}'
- * </xmp>
+ * </pre>
  *
  * @author <a href="mailto:hs@tagtraum.com">Hendrik Schreiber</a> (preference related code only)
  */

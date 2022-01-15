@@ -46,29 +46,43 @@ import processing.core.PConstants;
 
 
 /**
- * <p>Generic class for handling tabular data, typically from a CSV, TSV, or
- * other sort of spreadsheet file.</p>
- * <p>CSV files are
- * <a href="http://en.wikipedia.org/wiki/Comma-separated_values">comma separated values</a>,
- * often with the data in quotes. TSV files use tabs as separators, and usually
- * don't bother with the quotes.</p>
- * <p>File names should end with .csv if they're comma separated.</p>
- * <p>A rough "spec" for CSV can be found <a href="http://tools.ietf.org/html/rfc4180">here</a>.</p>
+ * <b>Table</b> objects store data with multiple rows and columns, much like in
+ * a traditional spreadsheet. Tables can be generated from scratch, dynamically,
+ * or using data from an existing file. Tables can also be output and saved to
+ * disk, as in the example above.<br />
+ * <br />
+ * Additional <b>Table</b> methods are documented in the <a href=
+ * "http://processing.github.io/processing-javadocs/core/processing/data/Table.html">Processing
+ * Table Javadoc</a>.
+ *
+ * <h3>Advanced</h3>
+ * <p>
+ * Generic class for handling tabular data, typically from a CSV, TSV, or other
+ * sort of spreadsheet file.
+ * </p>
+ * <p>
+ * CSV files are
+ * <a href="http://en.wikipedia.org/wiki/Comma-separated_values">comma separated
+ * values</a>, often with the data in quotes. TSV files use tabs as separators,
+ * and usually don't bother with the quotes.
+ * </p>
+ * <p>
+ * File names should end with .csv if they're comma separated.
+ * </p>
+ * <p>
+ * A rough "spec" for CSV can be found
+ * <a href="http://tools.ietf.org/html/rfc4180">here</a>.
+ * </p>
  *
  * @webref data:composite
+ * @webBrief Generic class for handling tabular data, typically from a CSV, TSV,
+ *           or other sort of spreadsheet file
  * @see PApplet#loadTable(String)
  * @see PApplet#saveTable(Table, String)
  * @see TableRow
  */
 public class Table {
   protected int rowCount;
-  protected int allocCount;
-
-//  protected boolean skipEmptyRows = true;
-//  protected boolean skipCommentLines = true;
-//  protected String extension = null;
-//  protected boolean commaSeparatedValues = false;
-//  protected boolean awfulCSV = false;
 
   protected String missingString = null;
   protected int missingInt = 0;
@@ -1789,8 +1803,15 @@ public class Table {
 
 
   /**
+   * Use <b>addColumn()</b> to add a new column to a <b>Table</b> object.
+   * Typically, you will want to specify a title, so the column may be easily
+   * referenced later by name. (If no title is specified, the new column's title
+   * will be <b>null</b>.) A column type may also be specified, in which case all values
+   * stored in this column must be of the same type (e.g., <b>Table.INT</b> or
+   * <b>Table.FLOAT</b>). If no type is specified, the default type of <b>STRING</b> is used.
+   *
    * @webref table:method
-   * @brief Adds a new column to a table
+   * @webBrief Adds a new column to a table
    * @see Table#removeColumn(String)
    */
   public void addColumn() {
@@ -1862,9 +1883,15 @@ public class Table {
     }
   }
 
- /**
+  /**
+   * Use <b>removeColumn()</b> to remove an existing column from a <b>Table</b>
+   * object. The column to be removed may be identified by either its title (a
+   * <b>String</b>) or its index value (an <b>int</b>). <b>removeColumn(0)</b> would remove the
+   * first column, <b>removeColumn(1)</b> would remove the second column, and so
+   * on.
+   *
    * @webref table:method
-   * @brief Removes a column from a table
+   * @webBrief Removes a column from a table
    * @param columnName the title of the column to be removed
    * @see Table#addColumn()
    */
@@ -1908,8 +1935,10 @@ public class Table {
 
 
   /**
+   * Returns the total number of columns in a table.
+   *
    * @webref table:method
-   * @brief Gets the number of columns in a table
+   * @webBrief Returns the total number of columns in a table
    * @see Table#getRowCount()
    */
   public int getColumnCount() {
@@ -2256,8 +2285,10 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Returns the total number of rows in a <b>Table</b>.
+   *
    * @webref table:method
-   * @brief Gets the number of rows in a table
+   * @webBrief Returns the total number of rows in a <b>Table</b>
    * @see Table#getColumnCount()
    */
   public int getRowCount() {
@@ -2271,8 +2302,11 @@ public class Table {
 
 
   /**
+   * Removes all rows from a <b>Table</b>.  While all rows are removed, columns
+   * and column titles are maintained.
+   *
    * @webref table:method
-   * @brief Removes all rows from a table
+   * @webBrief Removes all rows from a <b>Table</b>
    * @see Table#addRow()
    * @see Table#removeRow(int)
    */
@@ -2313,9 +2347,16 @@ public class Table {
   }
 
 
- /**
+  /**
+   * Use <b>addRow()</b> to add a new row of data to a <b>Table</b> object. By
+   * default, an empty row is created. Typically, you would store a reference to
+   * the new row in a <b>TableRow</b> object (see <b>newRow</b> in the example
+   * above), and then set individual values using <b>setInt()</b>,
+   * <b>setFloat()</b>, or <b>setString()</b>. If a <b>TableRow</b> object is
+   * included as a parameter, then that row is duplicated and added to the table.
+   *
    * @webref table:method
-   * @brief Adds a row to a table
+   * @webBrief Adds a new row of data to a <b>Table</b> object
    * @see Table#removeRow(int)
    * @see Table#clearRows()
    */
@@ -2438,8 +2479,10 @@ public class Table {
 
 
   /**
+   * Removes a row from a <b>Table</b> object
+   *
    * @webref table:method
-   * @brief Removes a row from a table
+   * @webBrief Removes a row from a <b>Table</b> object
    * @param row ID number of the row to remove
    * @see Table#addRow()
    * @see Table#clearRows()
@@ -2644,8 +2687,11 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Returns a reference to the specified <b>TableRow</b>.  The reference can then
+   * be used to get and set values of the selected row, as illustrated in the example above.
+   *
    * @webref table:method
-   * @brief Gets a row from a table
+   * @webBrief Returns a reference to the specified <b>TableRow</b>
    * @param row ID number of the row to get
    * @see Table#rows()
    * @see Table#findRow(String, int)
@@ -2659,12 +2705,11 @@ public class Table {
 
 
   /**
-   * Note that this one iterator instance is shared by any calls to iterate
-   * the rows of this table. This is very efficient, but not thread-safe.
-   * If you want to iterate in a multi-threaded manner, don't use the iterator.
+   * Gets all rows from the table.  Returns an iterator, so <b>for</b> must be
+   * used to iterate through all the rows, as shown in the example above.
    *
    * @webref table:method
-   * @brief Gets multiple rows from a table
+   * @webBrief Gets all rows from the table
    * @see Table#getRow(int)
    * @see Table#findRow(String, int)
    * @see Table#findRows(String, int)
@@ -2672,7 +2717,7 @@ public class Table {
    * @see Table#matchRows(String, int)
    */
   public Iterable<TableRow> rows() {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         if (rowIterator == null) {
           rowIterator = new RowIterator(Table.this);
@@ -2688,7 +2733,7 @@ public class Table {
    * @nowebref
    */
   public Iterable<TableRow> rows(final int[] indices) {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         return new RowIndexIterator(Table.this, indices);
       }
@@ -3051,8 +3096,12 @@ public class Table {
 
 
   /**
+   * Retrieves an integer value from the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by either
+   * its ID or title.
+   *
    * @webref table:method
-   * @brief Get an integer value from the specified row and column
+   * @webBrief Retrieves an integer value from the <b>Table</b>'s specified row and column
    * @param row ID number of the row to reference
    * @param column ID number of the column to reference
    * @see Table#getFloat(int, int)
@@ -3088,8 +3137,12 @@ public class Table {
 
 
   /**
+   * Stores an integer value in the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by
+   * either its ID or title.
+   *
    * @webref table:method
-   * @brief Store an integer value in the specified row and column
+   * @webBrief Stores an integer value in the <b>Table</b>'s specified row and column
    * @param row ID number of the target row
    * @param column ID number of the target column
    * @param value value to assign
@@ -3227,12 +3280,12 @@ public class Table {
 
 
   /**
-   * Get a float value from the specified row and column. If the value is null
-   * or not parseable as a float, the "missing" value is returned. By default,
-   * this is Float.NaN, but can be controlled with setMissingFloat().
+   * Retrieves a float value from the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by either
+   * its ID or title.
    *
    * @webref table:method
-   * @brief Get a float value from the specified row and column
+   * @webBrief Retrieves a float value from the <b>Table</b>'s specified row and column
    * @param row ID number of the row to reference
    * @param column ID number of the column to reference
    * @see Table#getInt(int, int)
@@ -3269,8 +3322,12 @@ public class Table {
 
 
   /**
+   * Stores a float value in the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by
+   * either its ID or title.
+   *
    * @webref table:method
-   * @brief Store a float value in the specified row and column
+   * @webBrief Stores a float value in the <b>Table</b>'s specified row and column
    * @param row ID number of the target row
    * @param column ID number of the target column
    * @param value value to assign
@@ -3462,10 +3519,12 @@ public class Table {
 
 
   /**
-   * Get a String value from the table. If the row is longer than the table
+   * Retrieves a String value from the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by either
+   * its ID or title.
    *
    * @webref table:method
-   * @brief Get an String value from the specified row and column
+   * @webBrief Retrieves a String value from the <b>Table</b>'s specified row and column
    * @param row ID number of the row to reference
    * @param column ID number of the column to reference
    * @see Table#getInt(int, int)
@@ -3516,8 +3575,12 @@ public class Table {
 
 
   /**
+   * Stores a String value in the <b>Table</b>'s specified row and column.
+   * The row is specified by its ID, while the column may be specified by
+   * either its ID or title.
+   *
    * @webref table:method
-   * @brief Store a String value in the specified row and column
+   * @webBrief Stores a String value in the <b>Table</b>'s specified row and column
    * @param row ID number of the target row
    * @param column ID number of the target column
    * @param value value to assign
@@ -3546,8 +3609,11 @@ public class Table {
   }
 
   /**
+   * Retrieves all values in the specified column, and returns them as a <b>String</b>
+   * array.  The column may be specified by either its ID or title.
+   *
    * @webref table:method
-   * @brief Gets all values in the specified column
+   * @webBrief Retrieves all values in the specified column
    * @param columnName title of the column to search
    * @see Table#getInt(int, int)
    * @see Table#getFloat(int, int)
@@ -3688,8 +3754,13 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Finds the first row in the <b>Table</b> that contains the value provided,
+   * and returns a reference to that row.  Even if multiple rows are possible
+   * matches, only the first matching row is returned. The column to search may
+   * be specified by either its ID or title.
+   *
    * @webref table:method
-   * @brief Finds a row that contains the given value
+   * @webBrief Finds a row that contains the given value
    * @param value the value to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3713,8 +3784,13 @@ public class Table {
 
 
   /**
+   * Finds the rows in the <b>Table</b> that contain the value provided,
+   * and returns references to those rows.  Returns an iterator, so <b>for</b>
+   * must be used to iterate through all the rows, as shown in the example above.
+   * The column to search may be specified by either its ID or title.
+   *
    * @webref table:method
-   * @brief Finds multiple rows that contain the given value
+   * @webBrief Finds multiple rows that contain the given value
    * @param value the value to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3724,7 +3800,7 @@ public class Table {
    * @see Table#matchRows(String, int)
    */
   public Iterable<TableRow> findRows(final String value, final int column) {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         return findRowIterator(value, column);
       }
@@ -3741,7 +3817,7 @@ public class Table {
 
 
   /**
-   * @brief Finds multiple rows that contain the given value
+   * @webBrief Finds multiple rows that contain the given value
    * @param value the value to match
    * @param column ID number of the column to search
    */
@@ -3845,8 +3921,13 @@ public class Table {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
   /**
+   * Finds the first row in the <b>Table</b> that matches the regular expression
+   * provided, and returns a reference to that row.  Even if multiple rows are
+   * possible matches, only the first matching row is returned. The column to
+   * search may be specified by either its ID or title.
+   *
    * @webref table:method
-   * @brief Finds a row that matches the given expression
+   * @webBrief Finds a row that matches the given expression
    * @param regexp the regular expression to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3870,8 +3951,13 @@ public class Table {
 
 
   /**
+   * Finds the rows in the <b>Table</b> that match the regular expression provided,
+   * and returns references to those rows.  Returns an iterator, so <b>for</b>
+   * must be used to iterate through all the rows, as shown in the example above.
+   * The column to search may be specified by either its ID or title.
+   *
    * @webref table:method
-   * @brief Finds multiple rows that match the given expression
+   * @webBrief Finds multiple rows that match the given expression
    * @param regexp the regular expression to match
    * @param column ID number of the column to search
    * @see Table#getRow(int)
@@ -3881,7 +3967,7 @@ public class Table {
    * @see Table#matchRow(String, int)
    */
   public Iterable<TableRow> matchRows(final String regexp, final int column) {
-    return new Iterable<TableRow>() {
+    return new Iterable<>() {
       public Iterator<TableRow> iterator() {
         return matchRowIterator(regexp, column);
       }
@@ -3898,8 +3984,10 @@ public class Table {
 
 
   /**
+   * Finds multiple rows that match the given expression
+   *
    * @webref table:method
-   * @brief Finds multiple rows that match the given expression
+   * @webBrief Finds multiple rows that match the given expression
    * @param value the regular expression to match
    * @param column ID number of the column to search
    */
@@ -3999,10 +4087,14 @@ public class Table {
 
 
   /**
-   * Remove any of the specified characters from the entire table.
+   * Removes any of the specified characters (or "tokens"). The example above
+   * removes all commas, dollar signs, and spaces from the table.<br />
+   * <br />
+   * If no column is specified, then the values in all columns and rows are
+   * processed. A specific column may be referenced by either its ID or title.
    *
    * @webref table:method
-   * @brief Removes characters from the table
+   * @webBrief Removes characters from the table
    * @param tokens a list of individual characters to be removed
    * @see Table#trim()
    */
@@ -4055,8 +4147,13 @@ public class Table {
 
 
   /**
+   * Trims leading and trailing whitespace, such as spaces and tabs, from String
+   * table values.  If no column is specified, then the values in all columns
+   * and rows are trimmed.  A specific column may be referenced by either its ID
+   * or title.
+   *
    * @webref table:method
-   * @brief Trims whitespace from values
+   * @webBrief Trims whitespace from values
    * @see Table#removeTokens(String)
    */
   public void trim() {
@@ -4299,7 +4396,7 @@ public class Table {
    * Sorts (orders) a table based on the values in a column.
    *
    * @webref table:method
-   * @brief Orders a table based on the values in a column
+   * @webBrief Orders a table based on the values in a column
    * @param columnName the name of the column to sort
    * @see Table#trim()
    */

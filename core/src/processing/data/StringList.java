@@ -9,14 +9,15 @@ import java.util.Random;
 import processing.core.PApplet;
 
 /**
- * Helper class for a list of Strings. Lists are designed to have some of the
- * features of ArrayLists, but to maintain the simplicity and efficiency of
+ * Helper class for a list of <b>Strings</b>. Lists are designed to have some of the
+ * features of <b>ArrayLists</b>, but to maintain the simplicity and efficiency of
  * working with arrays.
  *
- * Functions like sort() and shuffle() always act on the list itself. To get
- * a sorted copy, use list.copy().sort().
+ * Functions like <b>sort()</b> and <b>shuffle()</b> always act on the list itself. To get
+ * a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
+ * @webBrief Helper class for a list of Strings
  * @see IntList
  * @see FloatList
  */
@@ -100,7 +101,7 @@ public class StringList implements Iterable<String> {
    * Get the length of the list.
    *
    * @webref stringlist:method
-   * @brief Get the length of the list
+   * @webBrief Get the length of the list
    */
   public int size() {
     return count;
@@ -124,7 +125,7 @@ public class StringList implements Iterable<String> {
    * Remove all entries from the list.
    *
    * @webref stringlist:method
-   * @brief Remove all entries from the list
+   * @webBrief Remove all entries from the list
    */
   public void clear() {
     count = 0;
@@ -135,7 +136,7 @@ public class StringList implements Iterable<String> {
    * Get an entry at a particular index.
    *
    * @webref stringlist:method
-   * @brief Get an entry at a particular index
+   * @webBrief Get an entry at a particular index
    */
   public String get(int index) {
     if (index >= count) {
@@ -148,10 +149,10 @@ public class StringList implements Iterable<String> {
   /**
    * Set the entry at a particular index. If the index is past the length of
    * the list, it'll expand the list to accommodate, and fill the intermediate
-   * entries with 0s.
+   * entries with <b>null</b>.
    *
    * @webref stringlist:method
-   * @brief Set an entry at a particular index
+   * @webBrief Set an entry at a particular index
    */
   public void set(int index, String what) {
     if (index >= count) {
@@ -185,7 +186,7 @@ public class StringList implements Iterable<String> {
    * Remove an element from the specified index.
    *
    * @webref stringlist:method
-   * @brief Remove an element from the specified index
+   * @webBrief Remove an element from the specified index
    */
   public String remove(int index) {
     if (index < 0 || index >= count) {
@@ -294,7 +295,7 @@ public class StringList implements Iterable<String> {
    * Add a new entry to the list.
    *
    * @webref stringlist:method
-   * @brief Add a new entry to the list
+   * @webBrief Add a new entry to the list
    */
   public void append(String value) {
     if (count == data.length) {
@@ -467,8 +468,10 @@ public class StringList implements Iterable<String> {
 //  }
 
   /**
+   * Check if a value is a part of the list
+   *
    * @webref stringlist:method
-   * @brief Check if a value is a part of the list
+   * @webBrief Check if a value is a part of the list
    */
   public boolean hasValue(String value) {
     if (value == null) {
@@ -492,7 +495,7 @@ public class StringList implements Iterable<String> {
    * Sorts the array in place.
    *
    * @webref stringlist:method
-   * @brief Sorts the array in place
+   * @webBrief Sorts the array in place
    */
   public void sort() {
     sortImpl(false);
@@ -500,10 +503,11 @@ public class StringList implements Iterable<String> {
 
 
   /**
-   * Reverse sort, orders values from highest to lowest.
+   * A sort in reverse. It's equivalent to running <b>sort()</b> and then 
+   * <b>reverse()</b>, but is more efficient than running each separately.
    *
    * @webref stringlist:method
-   * @brief Reverse sort, orders values from highest to lowest
+   * @webBrief A sort in reverse
    */
   public void sortReverse() {
     sortImpl(true);
@@ -551,8 +555,10 @@ public class StringList implements Iterable<String> {
 //  }
 
   /**
+   * Reverse the order of the list
+   *
    * @webref stringlist:method
-   * @brief Reverse the order of the list elements
+   * @webBrief Reverse the order of the list
    */
   public void reverse() {
     int ii = count - 1;
@@ -566,11 +572,10 @@ public class StringList implements Iterable<String> {
 
 
   /**
-   * Randomize the order of the list elements. Note that this does not
-   * obey the randomSeed() function in PApplet.
+   * Randomize the order of the list elements. 
    *
    * @webref stringlist:method
-   * @brief Randomize the order of the list elements
+   * @webBrief Randomize the order of the list elements
    */
   public void shuffle() {
     Random r = new Random();
@@ -605,7 +610,7 @@ public class StringList implements Iterable<String> {
    * Make the entire list lower case.
    *
    * @webref stringlist:method
-   * @brief Make the entire list lower case
+   * @webBrief Make the entire list lower case
    */
   public void lower() {
     for (int i = 0; i < count; i++) {
@@ -620,7 +625,7 @@ public class StringList implements Iterable<String> {
    * Make the entire list upper case.
    *
    * @webref stringlist:method
-   * @brief Make the entire list upper case
+   * @webBrief Make the entire list upper case
    */
   public void upper() {
     for (int i = 0; i < count; i++) {
@@ -680,7 +685,7 @@ public class StringList implements Iterable<String> {
    *
    * @return an array sized by the length of the list with each of the values.
    * @webref stringlist:method
-   * @brief Create a new array with a copy of all the values
+   * @webBrief Create a new array with a copy of all the values
    */
   public String[] array() {
     return array(null);

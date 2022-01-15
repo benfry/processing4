@@ -85,16 +85,24 @@ public class Runner implements MessageConsumer {
 
   public Runner(JavaBuild build, RunnerListener listener) throws SketchException {
     this.listener = listener;
-//    this.sketch = sketch;
     this.build = build;
 
     checkLocalHost();
 
-    if (listener instanceof JavaEditor) {
-      this.editor = (JavaEditor) listener;
-      sketchErr = editor.getConsole().getErr();
-      sketchOut = editor.getConsole().getOut();
-    } else {
+    if (listener instanceof RunnerListenerEdtAdapter) {
+      // RunnerListener gets wrapped so that it behaves on the EDT.
+      // Need to extract the wrapped Object and see if it's a Java Editor,
+      // in which case we'll be passing additional parameters to the PApplet.
+      // https://github.com/processing/processing/issues/5843
+      RunnerListener wrapped = ((RunnerListenerEdtAdapter) listener).getWrapped();
+      if (wrapped instanceof JavaEditor) {
+        editor = (JavaEditor) wrapped;
+        sketchErr = editor.getConsole().getErr();
+        sketchOut = editor.getConsole().getOut();
+      }
+    }
+    // If it's not a JavaEditor, then we don't redirect to a console.
+    if (editor == null) {
       sketchErr = System.err;
       sketchOut = System.out;
     }
@@ -108,16 +116,11 @@ public class Runner implements MessageConsumer {
         sketchErr.println(library.getName() + " does not run on this architecture: " + variant);
         int opposite = (bits == 32) ? 64 : 32;
         if (Platform.isMacOS()) {
-          //if (library.supportsArch(PConstants.MACOSX, opposite)) {  // should always be true
           throw new SketchException("To use " + library.getName() + ", " +
                                     "switch to " + opposite + "-bit mode in Preferences.");
-          //}
         } else {
           throw new SketchException(library.getName() + " is only compatible " +
                                     "with the  " + opposite + "-bit download of Processing.");
-          //throw new SketchException(library.getName() + " does not run in " + bits + "-bit mode.");
-          // "To use this library, switch to 32-bit mode in Preferences." (OS X)
-          //  "To use this library, you must use the 32-bit version of Processing."
         }
       }
     }
@@ -197,7 +200,7 @@ public class Runner implements MessageConsumer {
 
   /**
    * Additional access to the virtual machine. TODO: may not be needed
-   * @return debugge VM or null if not running
+   * @return debugger VM or null if not running
    */
   public VirtualMachine vm() {
     return vm;
@@ -285,11 +288,11 @@ public class Runner implements MessageConsumer {
           try {
             Thread.sleep(100);
           } catch (InterruptedException ie) {
-            Messages.loge(getClass().getName() + " interrupted", ie);
+            Messages.err(getClass().getName() + " interrupted", ie);
 //            ie.printStackTrace(sketchErr);
           }
         } catch (IOException e) {
-          Messages.loge(getClass().getName() + " while attaching to VM", e);
+          Messages.err(getClass().getName() + " while attaching to VM", e);
         }
       }
 //    } catch (IOException exc) {
@@ -309,12 +312,12 @@ public class Runner implements MessageConsumer {
     //params.add("-Xrunhprof:cpu=samples");  // old-style profiler
 
     // TODO change this to use run.args = true, run.args.0, run.args.1, etc.
-    // so that spaces can be included in the arg names
+    //      so that spaces can be included in the arg names
     String options = Preferences.get("run.options");
     if (options.length() > 0) {
-      String pieces[] = PApplet.split(options, ' ');
-      for (int i = 0; i < pieces.length; i++) {
-        String p = pieces[i].trim();
+      String[] pieces = PApplet.split(options, ' ');
+      for (String piece : pieces) {
+        String p = piece.trim();
         if (p.length() > 0) {
           params.append(p);
         }
@@ -349,8 +352,9 @@ public class Runner implements MessageConsumer {
       //params.append("-Dcom.apple.mrj.application.apple.menu.about.name=" +
       //              build.getSketchClassName());
     } else if (Platform.isWindows()) {
-      // No scaling of swing (see #5753) on zoomed displays until some issues regarding JEP 263
-      // with rendering artifacts are sorted out.
+      // No scaling of Swing on zoomed displays until some issues
+      // regarding JEP 263 with rendering artifacts are sorted out.
+      // https://github.com/processing/processing/issues/5753
       params.append("-Dsun.java2d.uiScale=1");
     }
 
@@ -358,20 +362,29 @@ public class Runner implements MessageConsumer {
     // librariesClassPath will always have sep char prepended
     String javaLibraryPath = build.getJavaLibraryPath();
 
-    String javaLibraryPathParam = "-Djava.library.path=" +
-                  javaLibraryPath +
-                  File.pathSeparator +
-                  System.getProperty("java.library.path");
+    String javaLibraryPathParam =
+      "-Djava.library.path=" + javaLibraryPath +
+      File.pathSeparator +
+      System.getProperty("java.library.path");
 
     params.append(javaLibraryPathParam);
+
+    Library javafx = build.findJavaFX();
+    if (javafx != null) {
+      // The .jar files are in the same directory as the natives for windows64 et al,
+      // because the .jar files are ever-so-slightly different per-platform.
+      File modulesFolder = new File(javafx.getNativePath(), "modules");
+      for (String arg : JavaBuild.getArgsJavaFX(modulesFolder.getAbsolutePath())) {
+        params.append(arg);
+      }
+    }
 
     params.append("-cp");
     params.append(build.getClassPath());
 
     // enable assertions
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1188
+    // http://processing.org/bugs/bugzilla/1188.html
     params.append("-ea");
-    //PApplet.println(PApplet.split(sketch.classPath, ':'));
 
     return params;
   }
@@ -409,7 +422,7 @@ public class Runner implements MessageConsumer {
         GraphicsDevice[] devices = ge.getScreenDevices();
 
         // Make sure the display set in Preferences actually exists
-        GraphicsDevice runDevice = editorDevice;
+        GraphicsDevice runDevice;
         if (runDisplay > 0 && runDisplay <= devices.length) {
             runDevice = devices[runDisplay-1];
         } else {
@@ -466,9 +479,7 @@ public class Runner implements MessageConsumer {
         }
         params.append(PApplet.ARGS_EXTERNAL);
       }
-
       params.append(PApplet.ARGS_DISPLAY + "=" + runDisplay);
-
 
       if (present) {
         params.append(PApplet.ARGS_PRESENT);
@@ -495,60 +506,59 @@ public class Runner implements MessageConsumer {
     if (args != null) {
       params.append(args);
     }
+
     // Pass back the whole list
     return params;
   }
 
 
   protected void launchJava(final String[] args) {
-    new Thread(new Runnable() {
-      public void run() {
+    new Thread(() -> {
 //        PApplet.println("java starting");
-        vmReturnedError = false;
-        process = PApplet.exec(args);
-        try {
+      vmReturnedError = false;
+      process = PApplet.exec(args);
+      try {
 //          PApplet.println("java waiting");
-          int result = process.waitFor();
+        int result = process.waitFor();
 //          PApplet.println("java done waiting");
-          if (result != 0) {
-            String[] errorStrings = PApplet.loadStrings(process.getErrorStream());
-            String[] inputStrings = PApplet.loadStrings(process.getInputStream());
+        if (result != 0) {
+          String[] errorStrings = PApplet.loadStrings(process.getErrorStream());
+          String[] inputStrings = PApplet.loadStrings(process.getInputStream());
 
 //            PApplet.println("launchJava stderr:");
 //            PApplet.println(errorStrings);
 //            PApplet.println("launchJava stdout:");
-            PApplet.printArray(inputStrings);
+          PApplet.printArray(inputStrings);
 
-            if (errorStrings != null && errorStrings.length > 1) {
-              if (errorStrings[0].indexOf("Invalid maximum heap size") != -1) {
-                Messages.showWarning("Way Too High",
-                                     "Please lower the value for \u201Cmaximum available memory\u201D in the\n" +
-                                     "Preferences window. For more information, read Help \u2192 Troubleshooting.", null);
-              } else {
-                for (String err : errorStrings) {
-                  sketchErr.println(err);
-                }
-                sketchErr.println("Using startup command: " + PApplet.join(args, " "));
-              }
+          if (errorStrings != null && errorStrings.length > 1) {
+            if (errorStrings[0].contains("Invalid maximum heap size")) {
+              Messages.showWarning("Way Too High",
+                                   "Please lower the value for \u201Cmaximum available memory\u201D in the\n" +
+                                   "Preferences window. For more information, read Help \u2192 Troubleshooting.", null);
             } else {
-              //exc.printStackTrace();
-              sketchErr.println("Could not run the sketch (Target VM failed to initialize).");
-              if (Preferences.getBoolean("run.options.memory")) {
-                // Only mention this if they've even altered the memory setup
-                sketchErr.println("Make sure that you haven't set the maximum available memory too high.");
+              for (String err : errorStrings) {
+                sketchErr.println(err);
               }
-              sketchErr.println("For more information, read revisions.txt and Help \u2192 Troubleshooting.");
+              sketchErr.println("Using startup command: " + PApplet.join(args, " "));
             }
-            // changing this to separate editor and listener [091124]
-            //if (editor != null) {
-            listener.statusError("Could not run the sketch.");
-            vmReturnedError = true;
-            //}
-//            return null;
+          } else {
+            //exc.printStackTrace();
+            sketchErr.println("Could not run the sketch (Target VM failed to initialize).");
+            if (Preferences.getBoolean("run.options.memory")) {
+              // Only mention this if they've even altered the memory setup
+              sketchErr.println("Make sure that you haven't set the maximum available memory too high.");
+            }
+            sketchErr.println("For more information, read Help \u2192 Troubleshooting.");
           }
-        } catch (InterruptedException e) {
-          e.printStackTrace();
+          // changing this to separate editor and listener [091124]
+          //if (editor != null) {
+          listener.statusError("Could not run the sketch.");
+          vmReturnedError = true;
+          //}
+//            return null;
         }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
       }
     }).start();
   }
@@ -587,40 +597,38 @@ public class Runner implements MessageConsumer {
       return;
     }
 
-    Thread eventThread = new Thread() {
-      public void run() {
-        try {
-          boolean connected = true;
-          while (connected) {
-            EventQueue eventQueue = vm.eventQueue();
-            // remove() blocks until event(s) available
-            EventSet eventSet = eventQueue.remove();
+    Thread eventThread = new Thread(() -> {
+      try {
+        boolean connected = true;
+        while (connected) {
+          EventQueue eventQueue = vm.eventQueue();
+          // remove() blocks until event(s) available
+          EventSet eventSet = eventQueue.remove();
 //            listener.vmEvent(eventSet);
 
-            for (Event event : eventSet) {
+          for (Event event : eventSet) {
 //              System.out.println("EventThread.handleEvent -> " + event);
-              if (event instanceof VMStartEvent) {
-                vm.resume();
-              } else if (event instanceof ExceptionEvent) {
+            if (event instanceof VMStartEvent) {
+              vm.resume();
+            } else if (event instanceof ExceptionEvent) {
 //                for (ThreadReference thread : vm.allThreads()) {
 //                  System.out.println("thread : " + thread);
 ////                  thread.suspend();
 //                }
-                exceptionEvent((ExceptionEvent) event);
-              } else if (event instanceof VMDisconnectEvent) {
-                connected = false;
-              }
+              exceptionEvent((ExceptionEvent) event);
+            } else if (event instanceof VMDisconnectEvent) {
+              connected = false;
             }
           }
+        }
 //        } catch (VMDisconnectedException e) {
 //          Logger.getLogger(VMEventReader.class.getName()).log(Level.INFO, "VMEventReader quit on VM disconnect");
-        } catch (Exception e) {
-          System.err.println("crashed in event thread due to " + e.getMessage());
+      } catch (Exception e) {
+        System.err.println("crashed in event thread due to " + e.getMessage());
 //          Logger.getLogger(VMEventReader.class.getName()).log(Level.SEVERE, "VMEventReader quit", e);
-          e.printStackTrace();
-        }
+        e.printStackTrace();
       }
-    };
+    });
     eventThread.start();
 
 
@@ -650,9 +658,7 @@ public class Runner implements MessageConsumer {
       // or the user manually closes the sketch window.
       // TODO this should be handled better, should it not?
       if (editor != null) {
-        java.awt.EventQueue.invokeLater(() -> {
-          editor.onRunnerExiting(Runner.this);
-        });
+        java.awt.EventQueue.invokeLater(() -> editor.onRunnerExiting(Runner.this));
       }
     } catch (InterruptedException exc) {
       // we don't interrupt
@@ -672,13 +678,7 @@ public class Runner implements MessageConsumer {
 //      System.out.println("connector name is " + connector.name());
 //    }
 
-    for (Object c : connectors) {
-      Connector connector = (Connector) c;
-//      System.out.println(connector.name());
-//    }
-//    Iterator iter = connectors.iterator();
-//    while (iter.hasNext()) {
-//      Connector connector = (Connector)iter.next();
+    for (Connector connector : connectors) {
       if (connector.name().equals(connectorName)) {
         return connector;
       }
@@ -719,9 +719,7 @@ public class Runner implements MessageConsumer {
     handleCommonErrors(exceptionName, message, listener, sketchErr);
 
     if (editor != null) {
-      java.awt.EventQueue.invokeLater(() -> {
-        editor.onRunnerExiting(Runner.this);
-      });
+      java.awt.EventQueue.invokeLater(() -> editor.onRunnerExiting(Runner.this));
     }
   }
 
@@ -815,8 +813,7 @@ public class Runner implements MessageConsumer {
       for (StackFrame frame : frames) {
         try {
           Location location = frame.location();
-          String filename = null;
-          filename = location.sourceName();
+          String filename = location.sourceName();
           int lineNumber = location.lineNumber() - 1;
           SketchException rex =
             build.placeException(message, filename, lineNumber);
@@ -840,7 +837,7 @@ public class Runner implements MessageConsumer {
     } catch (Exception e) {
       // stack overflows seem to trip in frame.location() above
       // ignore this case so that the actual error gets reported to the user
-      if ("StackOverflowError".equals(message) == false) {
+      if (!"StackOverflowError".equals(message)) {
         e.printStackTrace(sketchErr);
       }
     }
@@ -849,15 +846,15 @@ public class Runner implements MessageConsumer {
     try {
       // assume object reference is Throwable, get stack trace
       Method method = ((ClassType) or.referenceType()).concreteMethodByName("getStackTrace", "()[Ljava/lang/StackTraceElement;");
-      ArrayReference result = (ArrayReference) or.invokeMethod(thread, method, new ArrayList<Value>(), ObjectReference.INVOKE_SINGLE_THREADED);
+      ArrayReference result = (ArrayReference) or.invokeMethod(thread, method, new ArrayList<>(), ObjectReference.INVOKE_SINGLE_THREADED);
       // iterate through stack frames and pull filename and line number for each
       for (Value val: result.getValues()) {
         ObjectReference ref = (ObjectReference)val;
         method = ((ClassType) ref.referenceType()).concreteMethodByName("getFileName", "()Ljava/lang/String;");
-        StringReference strref = (StringReference) ref.invokeMethod(thread, method, new ArrayList<Value>(), ObjectReference.INVOKE_SINGLE_THREADED);
+        StringReference strref = (StringReference) ref.invokeMethod(thread, method, new ArrayList<>(), ObjectReference.INVOKE_SINGLE_THREADED);
         String filename = strref == null ? "Unknown Source" : strref.value();
         method = ((ClassType) ref.referenceType()).concreteMethodByName("getLineNumber", "()I");
-        IntegerValue intval = (IntegerValue) ref.invokeMethod(thread, method, new ArrayList<Value>(), ObjectReference.INVOKE_SINGLE_THREADED);
+        IntegerValue intval = (IntegerValue) ref.invokeMethod(thread, method, new ArrayList<>(), ObjectReference.INVOKE_SINGLE_THREADED);
         int lineNumber = intval.intValue() - 1;
         SketchException rex =
           build.placeException(message, filename, lineNumber);
@@ -871,12 +868,12 @@ public class Runner implements MessageConsumer {
       // Implemented for 2.0b9, writes a stack trace when there's an internal error inside core.
       method = ((ClassType) or.referenceType()).concreteMethodByName("printStackTrace", "()V");
 //      System.err.println("got method " + method);
-      or.invokeMethod(thread, method, new ArrayList<Value>(), ObjectReference.INVOKE_SINGLE_THREADED);
+      or.invokeMethod(thread, method, new ArrayList<>(), ObjectReference.INVOKE_SINGLE_THREADED);
 
     } catch (Exception e) {
       // stack overflows will make the exception handling above trip again
       // ignore this case so that the actual error gets reported to the user
-      if ("StackOverflowError".equals(message) == false) {
+      if (!"StackOverflowError".equals(message)) {
         e.printStackTrace(sketchErr);
       }
     }

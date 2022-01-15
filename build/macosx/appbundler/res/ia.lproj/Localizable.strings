@@ -1,0 +1,7 @@
+"JRELoadError" = "Incapace a cargar Java Runtime Environment.";
+"JRExLoadError" = "Incapace a cargar Java %d Runtime Environment.";
+"JRExLoadFullError" = "Iste application require que Java %d o plus recente sia installate sur tu computator. Per favor discarga e installa le version ultime de Java ex le sito www.java.com e prova de novo.";
+"JDKxLoadFullError" = "Iste application require que un JDK Java %d o plus recente sia installate sur tu computator. Per favor discarga e installa le JDK ultime de Java ex le sito oracle.com e prova de novo.";
+"MainClassNameRequired" = "Le 'Main class name' es requirite.";
+"JavaDirectoryNotFound" = "Incapace a enumerar le contentos del plica de Java.";
+"BundlePathContainsColon" = "Impossibile lancear ex un plica que contine un \"/\" in su nomine.";

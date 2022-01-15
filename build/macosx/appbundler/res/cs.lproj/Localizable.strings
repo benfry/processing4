@@ -1,0 +1,8 @@
+"JRELoadError" = "Není možné nahrát Java Runtime Environment.";
+"JRExLoadError" = "Není možné nahrát Java %d Runtime Environment.";
+"JRExLoadFullError" = "Tato aplikace vyžaduje, aby na Vašem počítači byla instalována Java %d nebo novější.  Prosím stáhněte a instalujte nejnovější verzi Javy z adresy www.java.com a zkuste to znovu.";
+"JDKxLoadFullError" = "Tato aplikace vyžaduje, aby na Vašem počítači byla instalována Java %d JDK nebo novější.  Prosím stáhněte a instalujte nejnovější verzi Javy JDK z adresy Oracle.com a zkuste to znovu.";
+
+"MainClassNameRequired" = "Je požadován název hlavní třídy.";
+"JavaDirectoryNotFound" = "Není možno vyčíst obsah adresáře Java.";
+"BundlePathContainsColon" = "Není možno spustit z adresáře, který má znaky \"/\" ve svém názvu.";

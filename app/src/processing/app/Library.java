@@ -13,7 +13,6 @@ import processing.data.StringList;
 public class Library extends LocalContribution {
   static final String[] platformNames = PConstants.platformNames;
 
-  //protected File folder;          // /path/to/shortname
   protected File libraryFolder;   // shortname/library
   protected File examplesFolder;  // shortname/examples
   protected File referenceFile;   // shortname/reference/index.html
@@ -29,7 +28,7 @@ public class Library extends LocalContribution {
   StringList packageList;
 
   /** Per-platform exports for this library. */
-  HashMap<String, String[]> exportList;
+  Map<String, String[]> exportList;
 
   /** Applet exports (cross-platform by definition). */
   String[] appletExportList;

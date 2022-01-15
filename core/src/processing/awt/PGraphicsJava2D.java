@@ -102,8 +102,6 @@ public class PGraphicsJava2D extends PGraphics {
   public boolean strokeGradient;
   public Paint strokeGradientObject;
 
-  Font fontObject;
-
 
 
   //////////////////////////////////////////////////////////////
@@ -353,8 +351,11 @@ public class PGraphicsJava2D extends PGraphics {
       g2.setStroke(strokeObject);
     }
     // https://github.com/processing/processing/issues/2617
-    if (fontObject != null) {
-      g2.setFont(fontObject);
+    if (textFont != null) {
+      Font fontObject = (Font) textFont.getNative();
+      if (fontObject != null) {
+        g2.setFont(fontObject);
+      }
     }
     // https://github.com/processing/processing/issues/4019
     if (blendMode != 0) {
@@ -993,14 +994,43 @@ public class PGraphicsJava2D extends PGraphics {
   // BLEND
 
   /**
-   * ( begin auto-generated from blendMode.xml )
    *
-   * This is a new reference entry for Processing 2.0. It will be updated shortly.
+   * Blends the pixels in the display window according to a defined mode. 
+   * There is a choice of the following modes to blend the source pixels (A) 
+   * with the ones of pixels already in the display window (B). Each pixel's 
+   * final color is the result of applying one of the blend modes with each 
+   * channel of (A) and (B) independently. The red channel is compared with 
+   * red, green with green, and blue with blue.<br />
+   * <br />
+   * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
+   * <br />
+   * ADD - additive blending with white clip: C = min(A*factor + B, 255)<br />
+   * <br />
+   * SUBTRACT - subtractive blending with black clip: C = max(B - A*factor, 0)<br />
+   * <br />
+   * DARKEST - only the darkest color succeeds: C = min(A*factor, B)<br />
+   * <br />
+   * LIGHTEST - only the lightest color succeeds: C = max(A*factor, B)<br />
+   * <br />
+   * DIFFERENCE - subtract colors from underlying image.<br />
+   * <br />
+   * EXCLUSION - similar to DIFFERENCE, but less extreme.<br />
+   * <br />
+   * MULTIPLY - multiply the colors, result will always be darker.<br />
+   * <br />
+   * SCREEN - opposite multiply, uses inverse values of the colors.<br />
+   * <br />
+   * REPLACE - the pixels entirely replace the others and don't utilize alpha (transparency) values<br />
+   * <br />
+   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b> 
+   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function 
+   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE, 
+   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might 
+   * not be available as well. 
    *
-   * ( end auto-generated )
    *
    * @webref Rendering
-   * @param mode the blending mode to use
+   * @webBrief Blends the pixels in the display window according to a defined mode
    */
   @Override
   protected void blendModeImpl() {
@@ -1872,7 +1902,6 @@ public class PGraphicsJava2D extends PGraphics {
 
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getAscent();
       return g2.getFontMetrics(font).getAscent();
     }
     return super.textAscent();
@@ -1886,7 +1915,6 @@ public class PGraphicsJava2D extends PGraphics {
     }
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getDescent();
       return g2.getFontMetrics(font).getDescent();
     }
     return super.textDescent();
@@ -1921,21 +1949,17 @@ public class PGraphicsJava2D extends PGraphics {
   protected void handleTextSize(float size) {
     // if a native version available, derive this font
     Font font = (Font) textFont.getNative();
-    // don't derive again if the font size has not changed
     if (font != null) {
+      // don't derive again if the font size has not changed
       if (font.getSize2D() != size) {
-        Map<TextAttribute, Object> map =
-          new HashMap<>();
+        Map<TextAttribute, Object> map = new HashMap<>();
         map.put(TextAttribute.SIZE, size);
-        map.put(TextAttribute.KERNING,
-                TextAttribute.KERNING_ON);
-//      map.put(TextAttribute.TRACKING,
-//              TextAttribute.TRACKING_TIGHT);
+        map.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+        // map.put(TextAttribute.TRACKING, TextAttribute.TRACKING_TIGHT);
         font = font.deriveFont(map);
       }
       g2.setFont(font);
       textFont.setNative(font);
-      fontObject = font;
 
       /*
       Map<TextAttribute, ?> attrs = font.getAttributes();
@@ -2031,8 +2055,20 @@ public class PGraphicsJava2D extends PGraphics {
   protected void textLineImpl(char[] buffer, int start, int stop,
                               float x, float y) {
     Font font = (Font) textFont.getNative();
-//    if (font != null && (textFont.isStream() || hints[ENABLE_NATIVE_FONTS])) {
     if (font != null) {
+      // If using the default font, warn the user when their code calls
+      // text() called with unavailable characters. Not done with all
+      // fonts because it would be too slow, but useful/acceptable for
+      // the default case because it will hit beginners/casual use.
+      if (textFont.getName().equals(defaultFontName)) {
+        if (font.canDisplayUpTo(buffer, start, stop) != -1) {
+          final String msg =
+            "Some characters not available in the current font, " +
+            "use createFont() to specify a typeface the includes them.";
+          showWarning(msg);
+        }
+      }
+
       /*
       // save the current setting for text smoothing. note that this is
       // different from the smooth() function, because the font smoothing
@@ -2085,7 +2121,7 @@ public class PGraphicsJava2D extends PGraphics {
       //g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, textAntialias);
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antialias);
 
-    } else {  // otherwise just do the default
+    } else {  // otherwise, just do the default
       super.textLineImpl(buffer, start, stop, x, y);
     }
   }

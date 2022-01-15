@@ -24,7 +24,6 @@ package processing.app.ui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -39,9 +38,7 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 
 import processing.app.Language;
-import processing.app.Mode;
 import processing.app.Problem;
-import processing.app.ui.Editor;
 
 
 public class ErrorTable extends JTable {
@@ -59,14 +56,6 @@ public class ErrorTable extends JTable {
   static final int TAB_COLUMN = 2;
   static final int LINE_COLUMN = 3;
 
-  Font headerFont;
-  Color headerColor;
-  Color headerBgColor;
-
-//  Font rowFont;
-//  Color rowColor;
-//  Color rowBgColor;
-
 
   public ErrorTable(final Editor editor) {
     super(new DefaultTableModel(columnNames, 0));
@@ -74,11 +63,8 @@ public class ErrorTable extends JTable {
     setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     this.editor = editor;
-    JTableHeader header = getTableHeader();
+    updateTheme();
 
-    Mode mode = editor.getMode();
-    header.setDefaultRenderer(new GradyHeaderRenderer(mode));
-    setDefaultRenderer(Object.class, new GradyRowRenderer(mode));
     //setShowGrid(false);
     setIntercellSpacing(new Dimension(0, 0));
 
@@ -90,10 +76,6 @@ public class ErrorTable extends JTable {
     columnModel.getColumn(PROBLEM_COLUMN).setPreferredWidth(400);
     columnModel.getColumn(TAB_COLUMN).setPreferredWidth(100);
     columnModel.getColumn(LINE_COLUMN).setPreferredWidth(50);
-//    // the other columns are just a preference
-//    for (int i = 1; i < columnModel.getColumnCount(); i++) {
-//      columnModel.getColumn(i).setPreferredWidth(columnWidths[i]);
-//    }
 
     addMouseListener(new MouseAdapter() {
       @Override
@@ -117,9 +99,15 @@ public class ErrorTable extends JTable {
       }
     });
 
-    header.setReorderingAllowed(false);
+    getTableHeader().setReorderingAllowed(false);
     setFillsViewportHeight(true);
     ToolTipManager.sharedInstance().registerComponent(this);
+  }
+
+
+  protected void updateTheme() {
+    getTableHeader().setDefaultRenderer(new GradyHeaderRenderer());
+    setDefaultRenderer(Object.class, new GradyRowRenderer());
   }
 
 
@@ -146,12 +134,12 @@ public class ErrorTable extends JTable {
 
   static class GradyHeaderRenderer extends JLabel implements TableCellRenderer {
 
-    public GradyHeaderRenderer(Mode mode) {
-      setFont(mode.getFont("errors.header.font"));
+    public GradyHeaderRenderer() {
+      setFont(Theme.getFont("errors.header.font"));
       setAlignmentX(LEFT_ALIGNMENT);
 
-      setForeground(mode.getColor("errors.header.fgcolor"));
-      setBackground(mode.getColor("errors.header.bgcolor"));
+      setForeground(Theme.getColor("errors.header.fgcolor"));
+      setBackground(Theme.getColor("errors.header.bgcolor"));
       setOpaque(true);
     }
 
@@ -192,19 +180,19 @@ public class ErrorTable extends JTable {
     Color errorIndicatorColor;
     Color warningIndicatorColor;
 
-    public GradyRowRenderer(Mode mode) {
-      setFont(mode.getFont("errors.row.font"));
+    public GradyRowRenderer() {
+      setFont(Theme.getFont("errors.row.font"));
       setAlignmentX(LEFT_ALIGNMENT);
 
-      textColor = mode.getColor("errors.row.fgcolor");
-      bgColor = mode.getColor("errors.row.bgcolor");
-      textColorSelected = mode.getColor("errors.selection.fgcolor");
-      bgColorSelected = mode.getColor("errors.selection.bgcolor");
-      bgColorError = mode.getColor("errors.selection.error.bgcolor");
-      bgColorWarning = mode.getColor("errors.selection.warning.bgcolor");
+      textColor = Theme.getColor("errors.row.fgcolor");
+      bgColor = Theme.getColor("errors.row.bgcolor");
+      textColorSelected = Theme.getColor("errors.selection.fgcolor");
+      bgColorSelected = Theme.getColor("errors.selection.bgcolor");
+      bgColorError = Theme.getColor("errors.selection.error.bgcolor");
+      bgColorWarning = Theme.getColor("errors.selection.warning.bgcolor");
 
-      errorIndicatorColor = mode.getColor("errors.indicator.error.color");
-      warningIndicatorColor = mode.getColor("errors.indicator.warning.color");
+      errorIndicatorColor = Theme.getColor("errors.indicator.error.color");
+      warningIndicatorColor = Theme.getColor("errors.indicator.warning.color");
 
       setOpaque(true);
     }

@@ -17,7 +17,7 @@ public class ProcessingTestUtil {
   static void init() {
     // noop; just causes class to be loaded
   }
-  
+
   private static final String RESOURCES = "test/resources/";
   private static final String RESOURCES_UP_DIR = "../java/test/resources";
   static final UTCompiler COMPILER;
@@ -64,9 +64,10 @@ public class ProcessingTestUtil {
 
     return normalize(out);
   }
-  
+
   static String format(final File resource)
   {
+    Preferences.skipInit();
     return format(read(resource));
   }
 

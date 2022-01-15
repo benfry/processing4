@@ -82,7 +82,7 @@ class ShowUsage {
       JScrollPane sp2 = new JScrollPane();
       tree = new JTree();
       ZoomTreeCellRenderer renderer =
-        new ZoomTreeCellRenderer(editor.getMode());
+        new ZoomTreeCellRenderer();
       tree.setCellRenderer(renderer);
       renderer.setLeafIcon(null);
       renderer.setClosedIcon(null);

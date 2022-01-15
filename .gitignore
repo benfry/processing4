@@ -1,13 +1,13 @@
 .DS_Store
 .AppleDouble
-*.iml
 ._*
 *~
 /build/shared/reference.zip
 
-# temporary, until we complete the move to IntelliJ
-*.iml
-/.idea
+*.x
+
+#*.iml
+#/.idea
 
 # via https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore
 # Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and WebStorm
@@ -85,3 +85,4 @@ bin-test
 
 # dated folders
 /19*
+/20*

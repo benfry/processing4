@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<project name="Theme Engine" default="build">
+
+  <property name="jar.path" location="tool/ThemeEngine.jar" />
+  <property name="app.bin.path" location="../../../../app/bin" />
+  <property name="core.bin.path" location="../../../../core/bin" />
+
+  <property name="javafx.path"
+            location="../../../../java/libraries/javafx/library/macosx" />
+
+  <target name="clean" description="Clean the build directories">
+    <delete dir="bin" />
+    <delete file="${jar.path}" />
+  </target>
+
+  <target name="compile" description="Compile sources">
+    <mkdir dir="bin" />
+    <javac target="11"
+           source="11"
+           srcdir="src"
+           destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           nowarn="true">
+      <classpath>
+        <pathelement location="${app.bin.path}" />
+        <pathelement location="${core.bin.path}" />
+
+        <fileset dir="${javafx.path}/modules">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="build" depends="compile" description="Build Theme Engine Tool">
+    <mkdir dir="tool" />
+    <jar basedir="bin" destfile="${jar.path}" />
+  </target>
+
+  <target name="run" depends="build" description="Run standalone for development">
+    <java classname="processing.app.tools.WebFrame" fork="true">
+    <!-- <java classname="processing.app.tools.SimpleSwingBrowser" fork="true"> -->
+      <sysproperty key="java.library.path" value="${javafx.path}" />
+
+      <classpath>
+        <pathelement location="${jar.path}" />
+        <pathelement location="${app.bin.path}" />
+        <pathelement location="${core.bin.path}" />
+
+        <fileset dir="${javafx.path}/modules">
+          <include name="**/*.jar" />
+        </fileset>
+      </classpath>
+    </java>
+  </target>
+</project>

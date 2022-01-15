@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -28,8 +28,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -39,7 +37,6 @@ import javax.swing.border.MatteBorder;
 import javax.swing.text.*;
 
 import processing.app.Console;
-import processing.app.Mode;
 import processing.app.Preferences;
 
 
@@ -47,10 +44,9 @@ import processing.app.Preferences;
  * Message console that sits below the editing area.
  */
 public class EditorConsole extends JScrollPane {
+  static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+
   Editor editor;
-
-  Timer flushTimer;
-
   JTextPane consoleTextPane;
   BufferedStyledDocument consoleDoc;
 
@@ -65,6 +61,8 @@ public class EditorConsole extends JScrollPane {
 
   static EditorConsole current;
 
+  Timer flushTimer;
+
 
   public EditorConsole(Editor editor) {
     this.editor = editor;
@@ -76,7 +74,7 @@ public class EditorConsole extends JScrollPane {
     consoleTextPane = new JTextPane(consoleDoc);
     consoleTextPane.setEditable(false);
 
-    updateMode();
+    updateTheme();
 
     setViewportView(consoleTextPane);
 
@@ -89,9 +87,7 @@ public class EditorConsole extends JScrollPane {
 
   protected void flush() {
     // only if new text has been added
-    if (consoleDoc.hasAppendage()) {
-      // insert the text that's been added in the meantime
-      consoleDoc.insertAll();
+    if (consoleDoc.insertQueued()) {
       // always move to the end of the text as it's added
       consoleTextPane.setCaretPosition(consoleDoc.getLength());
     }
@@ -107,11 +103,7 @@ public class EditorConsole extends JScrollPane {
     if (flushTimer == null) {
       // periodically post buffered messages to the console
       // should the interval come from the preferences file?
-      flushTimer = new Timer(250, new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          flush();
-        }
-      });
+      flushTimer = new Timer(250, evt -> flush());
       flushTimer.start();
     }
   }
@@ -136,45 +128,29 @@ public class EditorConsole extends JScrollPane {
   }
 
 
-  /**
-   * Update the font family and sizes based on the Preferences window.
-   */
-  protected void updateAppearance() {
-    String fontFamily = Preferences.get("editor.font.family");
-    int fontSize = Toolkit.zoom(Preferences.getInteger("console.font.size"));
-    StyleConstants.setFontFamily(stdStyle, fontFamily);
-    StyleConstants.setFontSize(stdStyle, fontSize);
-    StyleConstants.setFontFamily(errStyle, fontFamily);
-    StyleConstants.setFontSize(errStyle, fontSize);
-    clear();  // otherwise we'll have mixed fonts
-  }
-
-
-  /**
-   * Change coloring, fonts, etc in response to a mode change.
-   */
-  protected void updateMode() {
-    Mode mode = editor.getMode();
-
+  protected void updateTheme() {
     // necessary?
     MutableAttributeSet standard = new SimpleAttributeSet();
     StyleConstants.setAlignment(standard, StyleConstants.ALIGN_LEFT);
     consoleDoc.setParagraphAttributes(0, 0, standard, true);
 
-    Font font = Preferences.getFont("console.font");
-
     // build styles for different types of console output
-    Color bgColor = mode.getColor("console.color");
-    Color fgColorOut = mode.getColor("console.output.color");
-    Color fgColorErr = mode.getColor("console.error.color");
+    Color bgColor = Theme.getColor("console.color");
+    Color fgColorOut = Theme.getColor("console.output.color");
+    Color fgColorErr = Theme.getColor("console.error.color");
 
     // Make things line up with the Editor above. If this is ever removed,
     // setBorder(null) should be called instead. The defaults are nasty.
     setBorder(new MatteBorder(0, Editor.LEFT_GUTTER, 0, 0, bgColor));
 
+    Font font = Preferences.getFont("editor.font.family", "console.font.size", Font.PLAIN);
+
     stdStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(stdStyle, fgColorOut);
-    StyleConstants.setBackground(stdStyle, bgColor);
+    // Changed to TRANSPARENT because it causes trouble when changing
+    // the theme color. But it looks like it's not necessary to set it
+    // anyway, so removing the setBackground() call entirely.
+    //StyleConstants.setBackground(stdStyle, TRANSPARENT);  //bgColor);
     StyleConstants.setFontSize(stdStyle, font.getSize());
     StyleConstants.setFontFamily(stdStyle, font.getFamily());
     StyleConstants.setBold(stdStyle, font.isBold());
@@ -182,16 +158,17 @@ public class EditorConsole extends JScrollPane {
 
     errStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(errStyle, fgColorErr);
-    StyleConstants.setBackground(errStyle, bgColor);
+    //StyleConstants.setBackground(stdStyle, TRANSPARENT);  //bgColor);
     StyleConstants.setFontSize(errStyle, font.getSize());
     StyleConstants.setFontFamily(errStyle, font.getFamily());
     StyleConstants.setBold(errStyle, font.isBold());
     StyleConstants.setItalic(errStyle, font.isItalic());
 
-    if (UIManager.getLookAndFeel().getID().equals("Nimbus")) {
+    String lookAndFeel = UIManager.getLookAndFeel().getID();
+    if (lookAndFeel.equals("Nimbus") || lookAndFeel.equals("VAqua")) {
       getViewport().setBackground(bgColor);
       consoleTextPane.setOpaque(false);
-      consoleTextPane.setBackground(new Color(0, 0, 0, 0));
+      consoleTextPane.setBackground(TRANSPARENT);
     } else {
       consoleTextPane.setBackground(bgColor);
     }
@@ -222,27 +199,55 @@ public class EditorConsole extends JScrollPane {
   }
 
 
+  /**
+   * Check whether this console message should be suppressed, usually
+   * to avoid user confusion with irrelevant debugging messages.
+   * @param what Text of the error message
+   * @param err true if stderr, false if stdout
+   * @return true if the message can be ignored/skipped
+   */
+  @SuppressWarnings("RedundantIfStatement")
+  private boolean suppressMessage(String what, boolean err) {
+    if (err) {
+      if (what.contains("invalid context 0x0") || (what.contains("invalid drawable"))) {
+        // Respectfully declining... This is a quirk of more recent releases of
+        // Java on Mac OS X, but is widely reported as the source of any other
+        // bug or problem that a user runs into. It may well be a Processing
+        // bug, but until we know, we're suppressing the messages.
+        return true;
+
+      } else if (what.contains("is calling TIS/TSM in non-main thread environment")) {
+        // Error message caused by JOGL since macOS 10.13.4, cannot fix at the moment so silencing it:
+        // https://github.com/processing/processing/issues/5462
+        // Some discussion on the Apple's developer forums seems to suggest that is not serious:
+        // https://forums.developer.apple.com/thread/105244
+        return true;
+
+      } else if (what.contains("NSWindow drag regions should only be invalidated on the Main Thread")) {
+        // Keep hiding warnings triggered by JOGL on recent macOS versions (this is from 10.14 onwards I think).
+        return true;
+
+      } else if (what.contains("Make pbuffer:")) {
+        // Remove initialization warning from LWJGL.
+        return true;
+
+      } else if (what.contains("XInitThreads() called for concurrent")) {
+        // "Info: XInitThreads() called for concurrent Thread support" message on Linux
+        return true;
+      }
+    } else {  // !err
+      if (what.contains("Listening for transport dt_socket at address")) {
+        // Message from the JVM about the socket launch for debug
+        // Listening for transport dt_socket at address: 8727
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   public void message(String what, boolean err) {
-    if (err && (what.contains("invalid context 0x0") || (what.contains("invalid drawable")))) {
-      // Respectfully declining... This is a quirk of more recent releases of
-      // Java on Mac OS X, but is widely reported as the source of any other
-      // bug or problem that a user runs into. It may well be a Processing
-      // bug, but until we know, we're suppressing the messages.
-    } else if (err && what.contains("is calling TIS/TSM in non-main thread environment")) {
-      // Error message caused by JOGL since macOS 10.13.4, cannot fix at the moment so silencing it:
-      // https://github.com/processing/processing/issues/5462
-      // Some discussion on the Apple's developer forums seems to suggest that is not serious:
-      // https://forums.developer.apple.com/thread/105244
-    } else if (err && what.contains("NSWindow drag regions should only be invalidated on the Main Thread")) {
-      // Keep hiding warnings triggered by JOGL on recent macOS versions (this is from 10.14 onwards I think).
-    } else if (err && what.contains("Make pbuffer:")) {
-      // Remove initalization warning from LWJGL.
-    } else if (err && what.contains("XInitThreads() called for concurrent")) {
-      // "Info: XInitThreads() called for concurrent Thread support" message on Linux
-    } else if (!err && what.contains("Listening for transport dt_socket at address")) {
-      // Message from the JVM about the socket launch for debug
-      // Listening for transport dt_socket at address: 8727
-    } else {
+    if (!suppressMessage(what, err)) {
       // Append a piece of text to the console. Swing components are NOT
       // thread-safe, and since the MessageSiphon instantiates new threads,
       // and in those callbacks, they often print output to stdout and stderr,
@@ -276,7 +281,7 @@ public class EditorConsole extends JScrollPane {
       this.err = err;
     }
 
-    public void write(byte b[], int offset, int length) {
+    public void write(byte[] b, int offset, int length) {
       message(new String(b, offset, length), err);
     }
 
@@ -299,13 +304,10 @@ public class EditorConsole extends JScrollPane {
  * swing event thread, so they need to be synchronized
  */
 class BufferedStyledDocument extends DefaultStyledDocument {
-  //List<ElementSpec> elements = new ArrayList<>();
   LinkedBlockingQueue<ElementSpec> elements;
-//  AtomicInteger queuedLineCount = new AtomicInteger();
   int maxLineLength, maxLineCount, maxCharCount;
   int currentLineLength = 0;
   boolean needLineBreak = false;
-//  boolean hasAppendage = false;
   final Object insertLock = new Object();
 
   public BufferedStyledDocument(int maxLineLength, int maxLineCount,
@@ -317,47 +319,42 @@ class BufferedStyledDocument extends DefaultStyledDocument {
   }
 
   // monitor this so that it's only updated when needed (otherwise console
-  // updates every 250 ms when an app isn't even running.. see bug 180)
-  public boolean hasAppendage() {
-    return elements.size() > 0;
+  // updates every 250 ms when an app isn't even running... see bug 180)
+  public boolean insertQueued() {
+    // insert the text that's been added in the meantime
+    if (elements.size() > 0) {
+      insertAll();
+      return true;
+    }
+    return false;
   }
 
   /** buffer a string for insertion at the end of the DefaultStyledDocument */
   public void appendString(String str, AttributeSet a) {
-//    hasAppendage = true;
+    synchronized (insertLock) {
+      // process each line of the string
+      while (str.length() > 0) {
+        // newlines within an element have (almost) no effect, so we need to
+        // replace them with proper paragraph breaks (start and end tags)
+        if (needLineBreak || currentLineLength > maxLineLength) {
+          elements.add(new ElementSpec(a, ElementSpec.EndTagType));
+          elements.add(new ElementSpec(a, ElementSpec.StartTagType));
+          currentLineLength = 0;
+        }
 
-    // process each line of the string
-    while (str.length() > 0) {
-      // newlines within an element have (almost) no effect, so we need to
-      // replace them with proper paragraph breaks (start and end tags)
-      if (needLineBreak || currentLineLength > maxLineLength) {
-        elements.add(new ElementSpec(a, ElementSpec.EndTagType));
-        elements.add(new ElementSpec(a, ElementSpec.StartTagType));
-//        queuedLineCount.incrementAndGet();
-        currentLineLength = 0;
-      }
-
-      if (str.indexOf('\n') == -1) {
-        elements.add(new ElementSpec(a, ElementSpec.ContentType,
-          str.toCharArray(), 0, str.length()));
-        currentLineLength += str.length();
-        needLineBreak = false;
-        str = str.substring(str.length()); // eat the string
-      } else {
-        elements.add(new ElementSpec(a, ElementSpec.ContentType,
-          str.toCharArray(), 0, str.indexOf('\n') + 1));
-        needLineBreak = true;
-        str = str.substring(str.indexOf('\n') + 1); // eat the line
-      }
-      /*
-      while (queuedLineCount.get() > maxLineCount) {
-        Console.systemOut("too many: " + queuedLineCount);
-        ElementSpec elem = elements.remove();
-        if (elem.getType() == ElementSpec.EndTagType) {
-          queuedLineCount.decrementAndGet();
+        if (str.indexOf('\n') == -1) {
+          elements.add(new ElementSpec(a, ElementSpec.ContentType,
+              str.toCharArray(), 0, str.length()));
+          currentLineLength += str.length();
+          needLineBreak = false;
+          str = "";  // reset the string
+        } else {
+          elements.add(new ElementSpec(a, ElementSpec.ContentType,
+              str.toCharArray(), 0, str.indexOf('\n') + 1));
+          needLineBreak = true;
+          str = str.substring(str.indexOf('\n') + 1); // eat the line
         }
       }
-      */
     }
     if (elements.size() > 1000) {
       insertAll();
@@ -366,54 +363,20 @@ class BufferedStyledDocument extends DefaultStyledDocument {
 
   /** insert the buffered strings */
   public void insertAll() {
-    /*
-    // each line is ~3 elements
-    int tooMany = elements.size() - maxLineCount*3;
-    if (tooMany > 0) {
+    synchronized (insertLock) {
+      ElementSpec[] elementArray = elements.toArray(new ElementSpec[0]);
+
       try {
-        remove(0, getLength()); // clear the document first
-      } catch (BadLocationException ble) {
-        ble.printStackTrace();
-      }
-      Console.systemOut("skipping " + elements.size());
-      for (int i = 0; i < tooMany; i++) {
-        elements.remove();
-      }
-    }
-    */
-    ElementSpec[] elementArray = elements.toArray(new ElementSpec[0]);
-
-    try {
-      /*
-      // check how many lines have been used so far
-      // if too many, shave off a few lines from the beginning
-      Element element = super.getDefaultRootElement();
-      int lineCount = element.getElementCount();
-      int overage = lineCount - maxLineCount;
-      if (overage > 0) {
-        // if 1200 lines, and 1000 lines is max,
-        // find the position of the end of the 200th line
-        //systemOut.println("overage is " + overage);
-        Element lineElement = element.getElement(overage);
-        if (lineElement == null) return;  // do nuthin
-
-        int endOffset = lineElement.getEndOffset();
-        // remove to the end of the 200th line
-        super.remove(0, endOffset);
-      }
-      */
-      synchronized (insertLock) {
         checkLength();
         insert(getLength(), elementArray);
         checkLength();
-      }
 
-    } catch (BadLocationException e) {
-      // ignore the error otherwise this will cause an infinite loop
-      // maybe not a good idea in the long run?
+      } catch (BadLocationException e) {
+        // ignore the error otherwise this will cause an infinite loop
+        // maybe not a good idea in the long run?
+      }
+      elements.clear();
     }
-    elements.clear();
-//    hasAppendage = false;
   }
 
   private void checkLength() throws BadLocationException {

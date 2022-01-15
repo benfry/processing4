@@ -208,19 +208,10 @@ public class PdePreprocessor {
       ));
       parser.setBuildParseTree(true);
       tree = parser.processingSketch();
-
-      if (preprocessIssues.size() > 0) {
-        return PreprocessorResult.reportPreprocessIssues(preprocessIssues);
-      }
     }
 
     ParseTreeWalker treeWalker = new ParseTreeWalker();
     treeWalker.walk(listener, tree);
-
-    // Check for issues encountered in walk
-    if (treeIssues.size() > 0) {
-      return PreprocessorResult.reportPreprocessIssues(treeIssues);
-    }
 
     // Return resulting program
     String outputProgram = listener.getOutputProgram();
@@ -229,7 +220,13 @@ public class PdePreprocessor {
 
     foundMain = listener.foundMain();
 
-    return listener.getResult();
+    if (preprocessIssues.size() > 0) {
+      return listener.getResult(preprocessIssues);
+    } else if (treeIssues.size() > 0) {
+      return listener.getResult(treeIssues);
+    } else {
+      return listener.getResult();
+    }
   }
 
   /**

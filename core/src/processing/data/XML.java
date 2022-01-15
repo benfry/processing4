@@ -41,10 +41,16 @@ import processing.core.PApplet;
 
 
 /**
- * This is the base class used for the Processing XML library,
- * representing a single node of an XML tree.
+ * <b>XML</b> is a representation of an <b>XML</b> object, able to parse <b>XML</b> code. Use
+ * <b>loadXML()</b> to load external XML files and create <b>XML</b>
+ * objects.<br />
+ * <br />
+ * Only files encoded as UTF-8 (or plain ASCII) are parsed properly; the
+ * encoding parameter inside <b>XML</b> files is ignored.
  *
  * @webref data:composite
+ * @webBrief This is the base class used for the Processing XML library,
+ *           representing a single node of an <b>XML</b> tree
  * @see PApplet#loadXML(String)
  * @see PApplet#parseXML(String)
  * @see PApplet#saveXML(XML, String)
@@ -247,8 +253,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Converts <b>String</b> content to an <b>XML</b> object
+   *
    * @webref xml:method
-   * @brief Converts String content to an XML object
+   * @webBrief Converts <b>String</b> content to an <b>XML</b> object
    * @param data the content to be parsed as XML
    * @return an XML object, or null
    * @throws SAXException
@@ -297,11 +305,10 @@ public class XML implements Serializable {
 
 
   /**
-   * Returns the parent element. This method returns null for the root
-   * element.
+   * Gets a copy of the element's parent.  Returns the parent as another <b>XML</b> object.
    *
    * @webref xml:method
-   * @brief Gets a copy of the element's parent
+   * @webBrief Gets a copy of the element's parent
    */
   public XML getParent() {
     return this.parent;
@@ -316,11 +323,10 @@ public class XML implements Serializable {
 
 
   /**
-   * Returns the full name (i.e. the name including an eventual namespace
-   * prefix) of the element.
+   * Gets the element's full name, which is returned as a <b>String</b>.
    *
    * @webref xml:method
-   * @brief Gets the element's full name
+   * @webBrief Gets the element's full name
    * @return the name, or null if the element only contains #PCDATA.
    */
   public String getName() {
@@ -329,8 +335,10 @@ public class XML implements Serializable {
   }
 
   /**
+   * Sets the element's name, which is specified as a <b>String</b>.
+   *
    * @webref xml:method
-   * @brief Sets the element's name
+   * @webBrief Sets the element's name
    */
   public void setName(String newName) {
     Document document = node.getOwnerDocument();
@@ -370,7 +378,7 @@ public class XML implements Serializable {
    * Returns the number of children.
    *
    * @webref xml:method
-   * @brief Returns the element's number of children
+   * @webBrief Returns the element's number of children
    * @return the count.
    */
   public int getChildCount() {
@@ -380,10 +388,10 @@ public class XML implements Serializable {
 
 
   /**
-   * Returns a boolean of whether or not there are children.
+   * Checks whether or not the element has any children, and returns the result as a <b>boolean</b>.
    *
    * @webref xml:method
-   * @brief Checks whether or not an element has any children
+   * @webBrief Checks whether or not an element has any children
    */
   public boolean hasChildren() {
     checkChildren();
@@ -392,11 +400,12 @@ public class XML implements Serializable {
 
 
   /**
-   * Put the names of all children into an array. Same as looping through
-   * each child and calling getName() on each XMLElement.
+   * Get the names of all of the element's children, and returns the names as an 
+   * array of <b>Strings</b>. This is the same as looping through and calling <b>getName()</b> 
+   * on each child element individually.
    *
    * @webref xml:method
-   * @brief Returns the names of all children as an array
+   * @webBrief Returns the names of all children as an array
    */
   public String[] listChildren() {
 //    NodeList children = node.getChildNodes();
@@ -418,10 +427,13 @@ public class XML implements Serializable {
 
 
   /**
-   * Returns an array containing all the child elements.
+   * Returns all of the element's children as an array of <b>XML</b> objects. When 
+   * the <b>name</b> parameter is specified, then it will return all children 
+   * that match that name or path. The path is a series of elements and 
+   * sub-elements, separated by slashes.
    *
    * @webref xml:method
-   * @brief Returns an array containing all child elements
+   * @webBrief Returns an array containing all child elements
    */
   public XML[] getChildren() {
 //    NodeList children = node.getChildNodes();
@@ -438,10 +450,12 @@ public class XML implements Serializable {
 
 
   /**
-   * Quick accessor for an element at a particular index.
+   * Returns the first of the element's children that matches the <b>name</b> 
+   * parameter.  The name or path is a series of elements and sub-elements, 
+   * separated by slashes.
    *
    * @webref xml:method
-   * @brief Returns the child element with the specified index value or path
+   * @webBrief Returns the child element with the specified index value or path
    */
   public XML getChild(int index) {
     checkChildren();
@@ -557,8 +571,14 @@ public class XML implements Serializable {
 
 
   /**
+   * Appends a new child to the element. The child can be specified with either a
+   * <b>String</b>, which will be used as the new tag's name, or as a reference to an
+   * existing <b>XML</b> object.<br />
+   * <br />
+   * A reference to the newly created child is returned as an <b>XML</b> object.
+   *
    * @webref xml:method
-   * @brief Appends a new child to the element
+   * @webBrief Appends a new child to the element
    */
   public XML addChild(String tag) {
     Document document = node.getOwnerDocument();
@@ -585,10 +605,14 @@ public class XML implements Serializable {
   }
 
 
-  /**
-   * @webref xml:method
-   * @brief Removes the specified child
-   */
+  	/**
+	 * Removes the specified element. First use <b>getChild()</b> to get a reference
+	 * to the desired element. Then pass that reference to <b>removeChild()</b> to
+	 * delete it.
+	 *
+	 * @webref xml:method
+	 * @webBrief Removes the specified child
+	 */
   public void removeChild(XML kid) {
     node.removeChild(kid.node);
     children = null;  // TODO not efficient
@@ -600,7 +624,7 @@ public class XML implements Serializable {
    * If you call this and use saveXML() your original spacing will be gone.
    * 
    * @nowebref
-   * @brief Removes whitespace nodes
+   * @webBrief Removes whitespace nodes
    */
   public void trim() {
     try {
@@ -671,10 +695,10 @@ public class XML implements Serializable {
 
 
   /**
-   * Returns the number of attributes.
+   * Counts the specified element's number of attributes, returned as an <b>int</b>.
    *
    * @webref xml:method
-   * @brief Counts the specified element's number of attributes
+   * @webBrief Counts the specified element's number of attributes
    */
   public int getAttributeCount() {
     return node.getAttributes().getLength();
@@ -682,10 +706,10 @@ public class XML implements Serializable {
 
 
   /**
-   * Get a list of the names for all of the attributes for this node.
+   * Gets all of the specified element's attributes, and returns them as an array of <b>Strings</b>.
    *
    * @webref xml:method
-   * @brief Returns a list of names of all attributes as an array
+   * @webBrief Returns a list of names of all attributes as an array
    */
   public String[] listAttributes() {
     NamedNodeMap nnm = node.getAttributes();
@@ -697,10 +721,11 @@ public class XML implements Serializable {
   }
 
   /**
-   * Returns whether an attribute exists.
+   * Checks whether or not an element has the specified attribute.  The attribute 
+   * must be specified as a <b>String</b>, and a <b>boolean</b> is returned.
    *
    * @webref xml:method
-   * @brief Checks whether or not an element has the specified attribute
+   * @webBrief Checks whether or not an element has the specified attribute
    */
   public boolean hasAttribute(String name) {
     return (node.getAttributes().getNamedItem(name) != null);
@@ -732,8 +757,13 @@ public class XML implements Serializable {
 
 
   /**
+   * Returns an attribute value of the element as a <b>String</b>. If the <b>defaultValue</b> 
+   * parameter is specified and the attribute doesn't exist, then <b>defaultValue</b> 
+   * is returned. If no <b>defaultValue</b> is specified and the attribute doesn't 
+   * exist, <b>null</b> is returned.
+   *
    * @webref xml:method
-   * @brief Gets the content of an attribute as a String
+   * @webBrief Gets the content of an attribute as a <b>String</b>
    */
   public String getString(String name) {
     return getString(name, null);
@@ -753,8 +783,11 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an element's attribute as a <b>String</b>.  The first <b>String</b> 
+   * specifies the attribute name, while the second specifies the new content.
+   *
    * @webref xml:method
-   * @brief Sets the content of an attribute as a String
+   * @webBrief Sets the content of an attribute as a <b>String</b>
    */
   public void setString(String name, String value) {
     ((Element) node).setAttribute(name, value);
@@ -762,8 +795,13 @@ public class XML implements Serializable {
 
 
   /**
+   * Returns an attribute value of the element as an <b>int</b>. If the <b>defaultValue</b> 
+   * parameter is specified and the attribute doesn't exist, then <b>defaultValue</b> 
+   * is returned. If no <b>defaultValue</b> is specified and the attribute doesn't 
+   * exist, the value 0 is returned.
+   *
    * @webref xml:method
-   * @brief Gets the content of an attribute as an int
+   * @webBrief Gets the content of an attribute as an <b>int</b>
    */
   public int getInt(String name) {
     return getInt(name, 0);
@@ -771,8 +809,11 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an element's attribute as an <b>int</b>.  A <b>String</b> specifies 
+   * the attribute name, while the int specifies the new content.
+   *
    * @webref xml:method
-   * @brief Sets the content of an attribute as an int
+   * @webBrief Sets the content of an attribute as an <b>int</b>
    */
   public void setInt(String name, int value) {
     setString(name, String.valueOf(value));
@@ -793,8 +834,9 @@ public class XML implements Serializable {
 
 
   /**
-   * @webref xml:method
-   * @brief Sets the content of an element as an int
+   * Sets the content of an element as an <b>int</b>
+   *
+   * @nowebref
    */
   public void setLong(String name, long value) {
     setString(name, String.valueOf(value));
@@ -815,10 +857,13 @@ public class XML implements Serializable {
 
 
   /**
-   * Returns the value of an attribute, or zero if not present.
+   * Returns an attribute value of the element as a float. If the
+   * <b>defaultValue</b> parameter is specified and the attribute doesn't exist,
+   * then <b>defaultValue</b> is returned. If no <b>defaultValue</b> is specified
+   * and the attribute doesn't exist, the value 0.0 is returned.
    *
    * @webref xml:method
-   * @brief Gets the content of an attribute as a float
+   * @webBrief Gets the content of an attribute as a <b>float</b>
    */
   public float getFloat(String name) {
     return getFloat(name, 0);
@@ -839,8 +884,11 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the content of an element's attribute as a <b>float</b>.  A <b>String</b> specifies 
+   * the attribute name, while the <b>float</b> specifies the new content.
+   *
    * @webref xml:method
-   * @brief Sets the content of an attribute as a float
+   * @webBrief Sets the content of an attribute as a <b>float</b>
    */
   public void setFloat(String name, float value) {
     setString(name, String.valueOf(value));
@@ -871,13 +919,11 @@ public class XML implements Serializable {
 
 
   /**
-   * Return the #PCDATA content of the element. If the element has a
-   * combination of #PCDATA content and child elements, the #PCDATA
-   * sections can be retrieved as unnamed child objects. In this case,
-   * this method returns null.
+   * Returns the content of an element. If there is no such content, 
+   * <b>null</b> is returned.
    *
    * @webref xml:method
-   * @brief Gets the content of an element
+   * @webBrief Gets the content of an element
    * @return the content.
    * @see XML#getIntContent()
    * @see XML#getFloatContent()
@@ -894,8 +940,11 @@ public class XML implements Serializable {
 
 
   /**
+   * Returns the content of an element as an <b>int</b>. If there is no such content, 
+   * either <b>null</b> or the provided default value is returned.
+   *
    * @webref xml:method
-   * @brief Gets the content of an element as an int
+   * @webBrief Gets the content of an element as an <b>int</b>
    * @return the content.
    * @see XML#getContent()
    * @see XML#getFloatContent()
@@ -914,8 +963,11 @@ public class XML implements Serializable {
 
 
   /**
+   * Returns the content of an element as a <b>float</b>. If there is no such content, 
+   * either <b>null</b> or the provided default value is returned.
+   *
    * @webref xml:method
-   * @brief Gets the content of an element as a float
+   * @webBrief Gets the content of an element as a <b>float</b>
    * @return the content.
    * @see XML#getContent()
    * @see XML#getIntContent()
@@ -966,8 +1018,10 @@ public class XML implements Serializable {
 
 
   /**
+   * Sets the element's content, which is specified as a <b>String</b>.
+   *
    * @webref xml:method
-   * @brief Sets the content of an element
+   * @webBrief Sets the content of an element
    */
   public void setContent(String text) {
     node.setTextContent(text);
@@ -995,11 +1049,21 @@ public class XML implements Serializable {
 
 
   /**
-   * Format this XML data as a String.
+   * Takes an <b>XML</b> object and converts it to a <b>String</b>, formatting its content as
+   * specified with the <b>indent</b> parameter.<br />
+   * <br />
+   * If indent is set to -1, then the String is returned with no line breaks, no
+   * indentation, and no <b>XML</b> declaration.<br />
+   * <br />
+   * If indent is set to 0 or greater, then the <b>String</b> is returned with line
+   * breaks, and the specified number of spaces as indent values. Meaning, there
+   * will be no indentation if 0 is specified, or each indent will be replaced
+   * with the corresponding number of spaces: 1, 2, 3, and so on.
    *
    * @webref xml:method
-   * @brief Formats XML data as a String
-   * @param indent -1 for a single line (and no declaration), >= 0 for indents and newlines
+   * @webBrief Formats <b>XML</b> data as a <b>String</b>
+   * @param indent -1 for a single line (and no declaration), >= 0 for indents and
+   *               newlines
    * @return the content
    * @see XML#toString()
    */
@@ -1139,12 +1203,13 @@ public class XML implements Serializable {
 
 
   /**
-   * Return the XML document formatted with two spaces for indents.
-   * Chosen to do this since it's the most common case (e.g. with println()).
-   * Same as format(2). Use the format() function for more options.
+   * Takes an <b>XML</b> object and converts it to a <b>String</b>, using default formatting
+   * rules (includes an XML declaration, line breaks, and two spaces for indents).
+   * These are the same formatting rules used by <b>println()</b> when printing an
+   * <b>XML</b> object. This method produces the same results as using <b>format(2)</b>.
    *
    * @webref xml:method
-   * @brief Gets XML data as a String using default formatting
+   * @webBrief Gets <b>XML</b> data as a <b>String</b> using default formatting
    * @return the content
    * @see XML#format(int)
    */

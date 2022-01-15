@@ -33,7 +33,6 @@ import javax.swing.*;
 
 import processing.app.Language;
 import processing.app.Messages;
-import processing.app.Mode;
 import processing.app.Platform;
 import processing.app.Sketch;
 import processing.app.SketchCode;
@@ -63,8 +62,8 @@ public class EditorHeader extends JComponent {
   // (total tab width will be this plus TEXT_MARGIN*2)
   static final int NO_TEXT_WIDTH = Toolkit.zoom(16);
 
-  Color textColor[] = new Color[2];
-  Color tabColor[] = new Color[2];
+  Color[] textColor = new Color[2];
+  Color[] tabColor = new Color[2];
   Color modifiedColor;
   Color arrowColor;
 
@@ -97,65 +96,63 @@ public class EditorHeader extends JComponent {
   public EditorHeader(Editor eddie) {
     this.editor = eddie;
 
-    updateMode();
+    updateTheme();
 
     addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent e) {
-          int x = e.getX();
-          int y = e.getY();
+      public void mousePressed(MouseEvent e) {
+        int x = e.getX();
+        int y = e.getY();
 
-          if ((x > menuLeft) && (x < menuRight)) {
-            popup.show(EditorHeader.this, x, y);
-          } else {
-            Sketch sketch = editor.getSketch();
-            for (Tab tab : tabs) {
-              if (tab.contains(x)) {
-                sketch.setCurrentCode(tab.index);
-                repaint();
-              }
+        if ((x > menuLeft) && (x < menuRight)) {
+          popup.show(EditorHeader.this, x, y);
+        } else {
+          Sketch sketch = editor.getSketch();
+          for (Tab tab : tabs) {
+            if (tab.contains(x)) {
+              sketch.setCurrentCode(tab.index);
+              repaint();
             }
           }
         }
+      }
 
-        public void mouseExited(MouseEvent e) {
-          // only clear if it's been set
-          if (lastNoticeName != null) {
-            // only clear if it's the same as what we set it to
-            editor.clearNotice(lastNoticeName);
-            lastNoticeName = null;
-          }
+      public void mouseExited(MouseEvent e) {
+        // only clear if it's been set
+        if (lastNoticeName != null) {
+          // only clear if it's the same as what we set it to
+          editor.clearNotice(lastNoticeName);
+          lastNoticeName = null;
         }
+      }
     });
 
     addMouseMotionListener(new MouseMotionAdapter() {
         public void mouseMoved(MouseEvent e) {
-          int x = e.getX();
-          for (Tab tab : tabs) {
-            if (tab.contains(x) && !tab.textVisible) {
-              lastNoticeName = editor.getSketch().getCode(tab.index).getPrettyName();
-              editor.statusNotice(lastNoticeName);
-            }
-          }
+      int x = e.getX();
+      for (Tab tab : tabs) {
+        if (tab.contains(x) && !tab.textVisible) {
+          lastNoticeName = editor.getSketch().getCode(tab.index).getPrettyName();
+          editor.statusNotice(lastNoticeName);
         }
-      });
+      }
+      }
+    });
   }
 
 
-  public void updateMode() {
-    Mode mode = editor.getMode();
+  public void updateTheme() {
+    textColor[SELECTED] = Theme.getColor("header.text.selected.color");
+    textColor[UNSELECTED] = Theme.getColor("header.text.unselected.color");
+    font = Theme.getFont("header.text.font");
 
-    textColor[SELECTED] = mode.getColor("header.text.selected.color");
-    textColor[UNSELECTED] = mode.getColor("header.text.unselected.color");
-    font = mode.getFont("header.text.font");
+    tabColor[SELECTED] = Theme.getColor("header.tab.selected.color");
+    tabColor[UNSELECTED] = Theme.getColor("header.tab.unselected.color");
 
-    tabColor[SELECTED] = mode.getColor("header.tab.selected.color");
-    tabColor[UNSELECTED] = mode.getColor("header.tab.unselected.color");
-
-    arrowColor = mode.getColor("header.tab.arrow.color");
+    arrowColor = Theme.getColor("header.tab.arrow.color");
     //modifiedColor = mode.getColor("editor.selection.color");
-    modifiedColor = mode.getColor("header.tab.modified.color");
+    modifiedColor = Theme.getColor("header.tab.modified.color");
 
-    gradient = mode.makeGradient("header", 400, HIGH);
+    gradient = Theme.makeGradient("header", 400, HIGH);
   }
 
 
@@ -238,8 +235,8 @@ public class EditorHeader extends JComponent {
       Arrays.sort(visitOrder);  // sort on when visited
 
       // Keep shrinking the tabs one-by-one until things fit properly
-      for (int i = 0; i < visitOrder.length; i++) {
-        tabs[visitOrder[i].index].textVisible = false;
+      for (Tab tab : visitOrder) {
+        tabs[tab.index].textVisible = false;
         if (placeTabs(Editor.LEFT_GUTTER, tabMax, null)) {
           break;
         }
@@ -257,16 +254,18 @@ public class EditorHeader extends JComponent {
       menuRight = menuLeft + ARROW_TAB_WIDTH;
     }
 
+    /*
     // draw the two pixel line that extends left/right below the tabs
     g.setColor(tabColor[SELECTED]);
     // can't be done with lines, b/c retina leaves tiny hairlines
     g.fillRect(Editor.LEFT_GUTTER, TAB_BOTTOM,
                editor.getTextArea().getWidth() - Editor.LEFT_GUTTER,
                Toolkit.zoom(2));
+     */
 
     // draw the tab for the menu
     g.setColor(tabColor[UNSELECTED]);
-    drawTab(g, menuLeft, menuRight, false, true);
+    drawTab(g, menuLeft, menuRight, false, true, false);
 
     // draw the arrow on the menu tab
     g.setColor(arrowColor);
@@ -287,116 +286,51 @@ public class EditorHeader extends JComponent {
     Sketch sketch = editor.getSketch();
     int x = left;
 
-//    final int bottom = getHeight(); // - TAB_STRETCH;
-//    final int top = bottom - TAB_HEIGHT;
-//    GeneralPath path = null;
-
     for (int i = 0; i < sketch.getCodeCount(); i++) {
       SketchCode code = sketch.getCode(i);
       Tab tab = tabs[i];
 
-//      int pieceCount = 2 + (tab.textWidth / PIECE_WIDTH);
-//      if (tab.textVisible == false) {
-//        pieceCount = 4;
-//      }
-//      int pieceWidth = pieceCount * PIECE_WIDTH;
-
       int state = (code == sketch.getCurrentCode()) ? SELECTED : UNSELECTED;
-//      if (g != null) {
-//        //g.drawImage(pieces[state][LEFT], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
-//        path = new GeneralPath();
-//        path.moveTo(x, bottom);
-//        path.lineTo(x, top + NOTCH);
-//        path.lineTo(x + NOTCH, top);
-//      }
       tab.left = x;
       x += TEXT_MARGIN;
-//      x += PIECE_WIDTH;
 
-//      int contentLeft = x;
-//      for (int j = 0; j < pieceCount; j++) {
-//        if (g != null) {
-//          g.drawImage(pieces[state][MIDDLE], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
-//        }
-//        x += PIECE_WIDTH;
-//      }
-//      if (g != null) {
       int drawWidth = tab.textVisible ? tab.textWidth : NO_TEXT_WIDTH;
       x += drawWidth + TEXT_MARGIN;
-//        path.moveTo(x, top);
-//      }
       tab.right = x;
 
       if (g != null && tab.right < right) {
         g.setColor(tabColor[state]);
-        drawTab(g, tab.left, tab.right, i == 0, false);
-//        path.lineTo(x - NOTCH, top);
-//        path.lineTo(x, top + NOTCH);
-//        path.lineTo(x, bottom);
-//        path.closePath();
-//        g.setColor(tabColor[state]);
-//        g.fill(path);
-//        // have to draw an extra outline to make things line up on retina
-//        g.draw(path);
-//        //g.drawImage(pieces[state][RIGHT], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
+        drawTab(g, tab.left, tab.right, i == 0, false, state == SELECTED);
 
         if (tab.textVisible) {
           int textLeft = tab.left + ((tab.right - tab.left) - tab.textWidth) / 2;
           g.setColor(textColor[state]);
-//          int baseline = (int) Math.ceil((sizeH + fontAscent) / 2.0);
-          //int baseline = bottom - (TAB_HEIGHT - fontAscent)/2;
           int tabHeight = TAB_BOTTOM - TAB_TOP;
           int baseline = TAB_TOP + (tabHeight + fontAscent) / 2;
-          //g.drawString(sketch.code[i].name, textLeft, baseline);
           g.drawString(tab.text, textLeft, baseline);
-//          g.drawLine(tab.left, baseline-fontAscent, tab.right, baseline-fontAscent);
-//          g.drawLine(tab.left, baseline, tab.right, baseline);
         }
 
         if (code.isModified()) {
           g.setColor(modifiedColor);
-          //g.drawLine(tab.left + NOTCH, top, tab.right - NOTCH, top);
-          //g.drawLine(tab.left + (i == 0 ? CURVE_RADIUS : 0), TAB_TOP, tab.right-1, TAB_TOP);
           g.drawLine(tab.right, TAB_TOP, tab.right, TAB_BOTTOM);
         }
       }
-
-//      if (g != null) {
-//        g.drawImage(pieces[state][RIGHT], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
-//      }
-//      x += PIECE_WIDTH - 1;  // overlap by 1 pixel
       x += TAB_BETWEEN;
     }
-
-    // removed 150130
-//    // Draw this last because of half-pixel overlaps on retina displays
-//    if (g != null) {
-//      g.setColor(tabColor[SELECTED]);
-//      g.fillRect(0, bottom, getWidth(), TAB_STRETCH);
-//    }
-
     return x <= right;
   }
 
 
   private void drawTab(Graphics g, int left, int right,
-                       boolean leftNotch, boolean rightNotch) {
-//    final int bottom = getHeight(); // - TAB_STRETCH;
-//    final int top = bottom - TAB_HEIGHT;
-//    g.fillRect(left, top, right - left, bottom - top);
-
+                       boolean leftNotch, boolean rightNotch,
+                       boolean selected) {
     Graphics2D g2 = (Graphics2D) g;
+    final int bottom = TAB_BOTTOM + (selected ? 2 : 0);
     g2.fill(Toolkit.createRoundRect(left, TAB_TOP,
-                                    right, TAB_BOTTOM,
+                                    right, bottom,
                                     leftNotch ? CURVE_RADIUS : 0,
                                     rightNotch ? CURVE_RADIUS : 0,
                                     0, 0));
-
-//    path.moveTo(left, TAB_BOTTOM);
-//    if (left == MARGIN_WIDTH) {  // first tab on the left
-//      path.lineTo(left, TAB_TOP - CURVE_RADIUS);
-//    }
-
   }
 
 
@@ -526,11 +460,8 @@ public class EditorHeader extends JComponent {
     if (sketch != null) {
       menu.addSeparator();
 
-      ActionListener jumpListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          editor.getSketch().setCurrentCode(e.getActionCommand());
-        }
-      };
+      ActionListener jumpListener =
+        e -> editor.getSketch().setCurrentCode(e.getActionCommand());
       for (SketchCode code : sketch.getCode()) {
         item = new JMenuItem(code.getPrettyName());
         item.addActionListener(jumpListener);
@@ -542,9 +473,11 @@ public class EditorHeader extends JComponent {
   }
 
 
+  /*
   public void deselectMenu() {
     repaint();
   }
+  */
 
 
   public Dimension getPreferredSize() {
@@ -565,7 +498,7 @@ public class EditorHeader extends JComponent {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static class Tab implements Comparable {
+  static class Tab implements Comparable<Tab> {
     int index;
     int left;
     int right;
@@ -583,8 +516,7 @@ public class EditorHeader extends JComponent {
     }
 
     // sort by the last time visited
-    public int compareTo(Object o) {
-      Tab other = (Tab) o;
+    public int compareTo(Tab other) {
       // do this here to deal with situation where both are 0
       if (lastVisited == other.lastVisited) {
         return 0;

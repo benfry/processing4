@@ -74,7 +74,7 @@ public class Util {
    */
   static public StringDict readSettings(File inputFile) {
     if (!inputFile.exists()) {
-      Messages.loge(inputFile + " does not exist inside readSettings()");
+      Messages.err(inputFile + " does not exist inside readSettings()");
       return null;
     }
     String lines[] = PApplet.loadStrings(inputFile);
@@ -103,14 +103,14 @@ public class Util {
       if (commentMarker != -1) {
         line = line.substring(0, commentMarker);
       }
-      // Remove extra whitespace
-      line = line.trim();
+      // Remove extra whitespace (including the x00A0 and xFEFF)
+      line = PApplet.trim(line);
 
       if (line.length() != 0) {
         int equals = line.indexOf('=');
         if (equals == -1) {
           if (filename != null) {
-            System.err.println("Ignoring illegal line in " + filename);
+            System.err.println("Ignoring illegal line in " + filename + ":");
             System.err.println("  " + line);
           }
         } else {

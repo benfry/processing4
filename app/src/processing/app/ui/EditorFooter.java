@@ -66,14 +66,11 @@ public class EditorFooter extends Box {
   static final int ICON_TOP = Toolkit.zoom(7);
   static final int ICON_MARGIN = Toolkit.zoom(7);
 
-  static final int UNSELECTED = 0;
+  static final int ENABLED = 0;
   static final int SELECTED = 1;
 
   Color[] textColor = new Color[2];
   Color[] tabColor = new Color[2];
-
-  Color updateColor;
-  int updateLeft;
 
   Editor editor;
 
@@ -100,14 +97,14 @@ public class EditorFooter extends Box {
     super(BoxLayout.Y_AXIS);
     this.editor = eddie;
 
-    updateMode();
-
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
     add(cardPanel);
 
     controller = new Controller();
     add(controller);
+
+    updateTheme();
   }
 
 
@@ -137,7 +134,7 @@ public class EditorFooter extends Box {
   public void setPanel(Component comp) {
     for (Tab tab : tabs) {
       if (tab.comp == comp) {
-        cardLayout.show(cardPanel, tab.name);
+        cardLayout.show(cardPanel, tab.title);
         repaint();
       }
     }
@@ -160,24 +157,27 @@ public class EditorFooter extends Box {
   }
 
 
-  public void updateMode() {
-    Mode mode = editor.getMode();
+  public void updateTheme() {
+    textColor[SELECTED] = Theme.getColor("footer.text.selected.color");
+    textColor[ENABLED] = Theme.getColor("footer.text.enabled.color");
+    font = Theme.getFont("footer.text.font");
 
-    textColor[SELECTED] = mode.getColor("footer.text.selected.color");
-    textColor[UNSELECTED] = mode.getColor("footer.text.unselected.color");
-    font = mode.getFont("footer.text.font");
+    tabColor[SELECTED] = Theme.getColor("footer.tab.selected.color");
+    tabColor[ENABLED] = Theme.getColor("footer.tab.enabled.color");
 
-    tabColor[SELECTED] = mode.getColor("footer.tab.selected.color");
-    tabColor[UNSELECTED] = mode.getColor("footer.tab.unselected.color");
-
-    updateColor = mode.getColor("footer.updates.color");
-
-    gradient = mode.makeGradient("footer", 400, HIGH);
+    gradient = Theme.makeGradient("footer", 400, HIGH);
     // Set the default background color in case the window size reported
     // incorrectly by the OS, or we miss an update event of some kind
     // https://github.com/processing/processing/issues/3919
-    bgColor = mode.getColor("footer.gradient.bottom");
+    bgColor = Theme.getColor("footer.gradient.bottom");
     setBackground(bgColor);
+
+    for (Tab tab : tabs) {
+      tab.updateTheme();
+    }
+
+    // replace colors for the "updates" indicator
+    controller.updateTheme();
   }
 
 
@@ -185,6 +185,11 @@ public class EditorFooter extends Box {
 
 
   class Controller extends JComponent {
+    Color updatesTextColor;
+    Color indicatorFieldColor;
+    Color indicatorTextColor;
+    int updateLeft;
+
 
     Controller() {
       addMouseListener(new MouseAdapter() {
@@ -193,7 +198,7 @@ public class EditorFooter extends Box {
           for (Tab tab : tabs) {
             if (tab.contains(x)) {
               //editor.setFooterPanel(tab.index);
-              cardLayout.show(cardPanel, tab.name);
+              cardLayout.show(cardPanel, tab.title);
               repaint();
             }
           }
@@ -202,6 +207,13 @@ public class EditorFooter extends Box {
           }
         }
       });
+    }
+
+    void updateTheme() {
+      updatesTextColor = Theme.getColor("footer.updates.text.color");
+      indicatorFieldColor = Theme.getColor("footer.updates.indicator.field.color");
+      indicatorTextColor = Theme.getColor("footer.updates.indicator.text.color");
+      repaint();
     }
 
     public void paintComponent(Graphics screen) {
@@ -249,7 +261,7 @@ public class EditorFooter extends Box {
       // reset all tab positions
       for (Tab tab : tabs) {
         tab.textWidth = (int)
-          font.getStringBounds(tab.name, g2.getFontRenderContext()).getWidth();
+          font.getStringBounds(tab.title, g2.getFontRenderContext()).getWidth();
       }
 
       // now actually draw the tabs
@@ -289,21 +301,25 @@ public class EditorFooter extends Box {
         FontRenderContext frc = g2.getFontRenderContext();
         final int GAP = Toolkit.zoom(5);
         final String updateLabel = "Updates";
-        String updatesStr = "" + updateCount;
+        // String updatesStr = " " + ((int) (Math.random() * 25)) + " ";  // testing
+        String updatesStr = " " + updateCount + " ";
         double countWidth = font.getStringBounds(updatesStr, frc).getWidth();
+        double countHeight = font.getStringBounds(updatesStr, frc).getHeight();
         if (fontAscent > countWidth) {
           countWidth = fontAscent;
         }
-        float diameter = (float) (countWidth * 1.65f);
+        // Using a variant of https://github.com/processing/processing/pull/4097
+        final float CIRCULAR_PADDING = 1.5f;
+        float diameter = (float) (2 * (Math.max(countHeight, countWidth)/2 + CIRCULAR_PADDING));
         float ex = getWidth() - Editor.RIGHT_GUTTER - diameter;
         float ey = (getHeight() - diameter) / 2;
-        g2.setColor(updateColor);
+        g2.setColor(indicatorFieldColor);
         g2.fill(new Ellipse2D.Float(ex, ey, diameter, diameter));
-        g2.setColor(textColor[SELECTED]);
+        g2.setColor(indicatorTextColor);
         int baseline = (getHeight() + fontAscent) / 2;
         g2.drawString(updatesStr, (int) (ex + (diameter - countWidth)/2), baseline);
         double updatesWidth = font.getStringBounds(updateLabel, frc).getWidth();
-        g2.setColor(textColor[UNSELECTED]);
+        g2.setColor(updatesTextColor);
         updateLeft = (int) (ex - updatesWidth - GAP);
         g2.drawString(updateLabel, updateLeft, baseline);
       }
@@ -330,7 +346,8 @@ public class EditorFooter extends Box {
 
 
   class Tab {
-    String name;
+    String title;
+    String icon;
     Component comp;
     boolean notification;
 
@@ -341,18 +358,41 @@ public class EditorFooter extends Box {
     int right;
     int textWidth;
 
-    Tab(Component comp, String name, String icon) {
+    Tab(Component comp, String title, String icon) {
       this.comp = comp;
-      this.name = name;
+      this.title = title;
+      this.icon = icon;
 
+      updateTheme();
+    }
+
+
+    protected void updateTheme() {
       if (icon != null) {
-        Mode mode = editor.getMode();
-        enabledIcon = mode.loadImageX(icon + "-enabled");
-        selectedIcon = mode.loadImageX(icon + "-selected");
+        enabledIcon = renderImage("enabled");
+        selectedIcon = renderImage("selected");
         if (selectedIcon == null) {
-          selectedIcon = enabledIcon;  // use this as the default
+          selectedIcon = enabledIcon;  // fallback
         }
       }
+    }
+
+    protected Image renderImage(String state) {
+      Mode mode = editor.getMode();
+      String xmlOrig = mode.loadString(icon + ".svg");
+
+      if (xmlOrig == null) {
+        // load image data from PNG files
+        return mode.loadImageX(icon + "-" + state);
+      }
+
+      final String ICON_COLOR = "silver";
+      String iconColor = Theme.get("footer.icon." + state + ".color");
+
+      String xmlStr = xmlOrig.replace(ICON_COLOR, iconColor);
+
+      final int m = Toolkit.highResMultiplier();
+      return Toolkit.svgToImage(xmlStr, ICON_WIDTH * m, ICON_HEIGHT * m);
     }
 
     boolean contains(int x) {
@@ -384,7 +424,7 @@ public class EditorFooter extends Box {
     }
 
     void draw(Graphics g) {
-      int state = isCurrent() ? SELECTED : UNSELECTED;
+      int state = isCurrent() ? SELECTED : ENABLED;
       g.setColor(tabColor[state]);
 //      if (notification) {
 //        g.setColor(errorColor);
@@ -401,14 +441,14 @@ public class EditorFooter extends Box {
       }
 
       int textLeft = getTextLeft();
-      if (notification && state == UNSELECTED) {
+      if (notification && state == ENABLED) {
         g.setColor(textColor[SELECTED]);
       } else {
         g.setColor(textColor[state]);
       }
       int tabHeight = TAB_BOTTOM - TAB_TOP;
       int baseline = TAB_TOP + (tabHeight + fontAscent) / 2;
-      g.drawString(name, textLeft, baseline);
+      g.drawString(title, textLeft, baseline);
     }
   }
 }

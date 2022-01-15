@@ -73,12 +73,19 @@ public class ContributionTab extends JPanel {
     this.contribDialog = dialog;
     this.contribType = type;
 
+//    long t1 = System.currentTimeMillis();
     filter = contrib -> contrib.getType() == contribType;
 
+//    long t2 = System.currentTimeMillis();
     contribListing = ContributionListing.getInstance();
+//    long t3 = System.currentTimeMillis();
     statusPanel = new StatusPanel(this, 650);
+//    long t4 = System.currentTimeMillis();
     contributionListPanel = new ListPanel(this, filter, false);
-    contribListing.addListener(contributionListPanel);
+//    long t5 = System.currentTimeMillis();
+    contribListing.addListener(contributionListPanel);  // TODO optimize: this line is taking all of the time
+//    long t6 = System.currentTimeMillis();
+//    System.out.println("ContributionTab.<init> " + (t4-t1) + " " + (t5-t4) + " " + (t6-t5));
   }
 
   public void showFrame(final Editor editor, boolean error, boolean loading) {

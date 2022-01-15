@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -34,11 +34,17 @@ import java.util.HashMap;
 
 /**
  * This class encapsulates a GLSL shader program, including a vertex
- * and a fragment shader. Based on the GLSLShader class from GLGraphics, which
- * in turn was originally based in the code by JohnG:
- * http://processing.org/discourse/beta/num_1159494801.html
+ * and a fragment shader. It is compatible with P2D and P3D, but not
+ * with the default renderer.
+ *
+ * Use the <b>loadShader()</b> function to load your shader code.
+ * Note: It's strongly encouraged to use <b>loadShader()</b> to create
+ * a <b>PShader</b> object, rather than calling the <b>PShader</b>
+ * constructor manually.
  *
  * @webref rendering:shaders
+ * @webBrief This class encapsulates a GLSL shader program,
+ *           including a vertex and a fragment shader
  */
 public class PShader implements PConstants {
   static protected final int POINT    = 0;
@@ -382,8 +388,11 @@ public class PShader implements PConstants {
   }
 
   /**
+   * Sets the uniform variables inside the shader to modify the effect while the
+   * program is running.
+   *
    * @webref rendering:shaders
-   * @brief Sets a variable within the shader
+   * @webBrief Sets a variable within the shader
    * @param name the name of the uniform variable to modify
    * @param x first component of the variable to modify
    */
@@ -736,7 +745,7 @@ public class PShader implements PConstants {
 
   protected void setUniformImpl(String name, int type, Object value) {
     if (uniformValues == null) {
-      uniformValues = new HashMap<String, UniformValue>();
+      uniformValues = new HashMap<>();
     }
     uniformValues.put(name, new UniformValue(type, value));
   }
@@ -826,10 +835,10 @@ public class PShader implements PConstants {
           PImage img = (PImage)val.value;
           Texture tex = currentPG.getTexture(img);
 
-          if (textures == null) textures = new HashMap<Integer, Texture>();
+          if (textures == null) textures = new HashMap<>();
           textures.put(loc, tex);
 
-          if (texUnits == null) texUnits = new HashMap<Integer, Integer>();
+          if (texUnits == null) texUnits = new HashMap<>();
           if (texUnits.containsKey(loc)) {
             unit = texUnits.get(loc);
             pgl.uniform1i(loc, unit);
@@ -932,7 +941,7 @@ public class PShader implements PConstants {
 
   protected void validate() {
     pgl.getProgramiv(glProgram, PGL.LINK_STATUS, intBuffer);
-    boolean linked = intBuffer.get(0) == 0 ? false : true;
+    boolean linked = intBuffer.get(0) != 0;
     if (!linked) {
       PGraphics.showException("Cannot link shader program:\n" +
                               pgl.getProgramInfoLog(glProgram));
@@ -940,7 +949,7 @@ public class PShader implements PConstants {
 
     pgl.validateProgram(glProgram);
     pgl.getProgramiv(glProgram, PGL.VALIDATE_STATUS, intBuffer);
-    boolean validated = intBuffer.get(0) == 0 ? false : true;
+    boolean validated = intBuffer.get(0) != 0;
     if (!validated) {
       PGraphics.showException("Cannot validate shader program:\n" +
                               pgl.getProgramInfoLog(glProgram));
@@ -968,15 +977,12 @@ public class PShader implements PConstants {
   }
 
 
-  /**
-   * @param shaderSource a string containing the shader's code
-   */
   protected boolean compileVertexShader() {
     pgl.shaderSource(glVertex, PApplet.join(vertexShaderSource, "\n"));
     pgl.compileShader(glVertex);
 
     pgl.getShaderiv(glVertex, PGL.COMPILE_STATUS, intBuffer);
-    boolean compiled = intBuffer.get(0) == 0 ? false : true;
+    boolean compiled = intBuffer.get(0) != 0;
     if (!compiled) {
       PGraphics.showException("Cannot compile vertex shader:\n" +
                               pgl.getShaderInfoLog(glVertex));
@@ -987,15 +993,12 @@ public class PShader implements PConstants {
   }
 
 
-  /**
-   * @param shaderSource a string containing the shader's code
-   */
   protected boolean compileFragmentShader() {
     pgl.shaderSource(glFragment, PApplet.join(fragmentShaderSource, "\n"));
     pgl.compileShader(glFragment);
 
     pgl.getShaderiv(glFragment, PGL.COMPILE_STATUS, intBuffer);
-    boolean compiled = intBuffer.get(0) == 0 ? false : true;
+    boolean compiled = intBuffer.get(0) != 0;
     if (!compiled) {
       PGraphics.showException("Cannot compile fragment shader:\n" +
                               pgl.getShaderInfoLog(glFragment));
@@ -1018,8 +1021,8 @@ public class PShader implements PConstants {
 
 
   static protected int getShaderType(String[] source, int defaultType) {
-    for (int i = 0; i < source.length; i++) {
-      String line = source[i].trim();
+    for (String s : source) {
+      String line = s.trim();
 
       if (PApplet.match(line, colorShaderDefRegexp) != null)
         return PShader.COLOR;
@@ -1131,10 +1134,6 @@ public class PShader implements PConstants {
     specularLoc = getAttributeLoc("specular");
     emissiveLoc = getAttributeLoc("emissive");
     shininessLoc = getAttributeLoc("shininess");
-
-    directionLoc = getAttributeLoc("direction");
-
-    offsetLoc = getAttributeLoc("offset");
 
     directionLoc = getAttributeLoc("direction");
     offsetLoc = getAttributeLoc("offset");

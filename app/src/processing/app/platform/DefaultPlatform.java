@@ -24,16 +24,19 @@
 package processing.app.platform;
 
 import java.awt.Desktop;
+import java.awt.Font;
 import java.io.File;
 import java.net.URI;
 
 import javax.swing.UIManager;
+import javax.swing.plaf.FontUIResource;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 import processing.app.Base;
 import processing.app.Preferences;
+import processing.app.ui.Toolkit;
 
 
 /**
@@ -52,9 +55,38 @@ import processing.app.Preferences;
  * know if name is proper Java package syntax.)
  */
 public class DefaultPlatform {
+
+  private final String[] FONT_SCALING_WIDGETS = {
+    "Button",
+    "CheckBox",
+    "CheckBoxMenuItem",
+    "ComboBox",
+    "List",
+    "Menu",
+    "MenuBar",
+    "MenuItem",
+    "OptionPane",
+    "Panel",
+    "PopupMenu",
+    "ProgressBar",
+    "RadioButton",
+    "RadioButtonMenuItem",
+    "ScrollPane",
+    "TabbedPane",
+    "Table",
+    "TableHeader",
+    "TextArea",
+    "TextPane",
+    "TitledBorder",
+    "ToggleButton",
+    "ToolBar",
+    "ToolTip",
+    "Tree",
+    "Viewport"
+  };
+
   Base base;
 
-  private final float ZOOM_DEFAULT_SIZING = 1;
 
   public void initBase(Base base) {
     this.base = base;
@@ -78,6 +110,44 @@ public class DefaultPlatform {
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
     } else {
       UIManager.setLookAndFeel(laf);
+    }
+
+    // If the default has been overridden in the preferences, set the font
+    String fontName = Preferences.get("ui.font.family");
+    int fontSize = Preferences.getInteger("ui.font.size");
+    if (!"Dialog".equals(fontName) || fontSize != 12) {
+      setUIFont(new FontUIResource(fontName, Font.PLAIN, fontSize));
+//      Map<TextAttribute, Object> attributes = new HashMap<>();
+//      attributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+//      Font font = new Font(fontName, Font.PLAIN, fontSize).deriveFont(attributes);
+//      setUIFont(new FontUIResource(font));
+    }
+  }
+
+
+  // Rewritten from https://stackoverflow.com/a/7434935
+  static private void setUIFont(FontUIResource f) {
+    for (Object key : UIManager.getLookAndFeelDefaults().keySet()) {
+      Object value = UIManager.get(key);
+      if (value instanceof FontUIResource) {
+        UIManager.put(key, f);
+      }
+    }
+  }
+
+
+  public void setInterfaceZoom() throws Exception {
+    // Specify font when scaling is active.
+    if (!Preferences.getBoolean("editor.zoom.auto")) {
+      for (String widgetName : FONT_SCALING_WIDGETS) {
+        scaleDefaultFont(widgetName);
+      }
+
+      String fontName = Preferences.get("ui.font.family");
+      int fontSize = Preferences.getInteger("ui.font.size");
+      FontUIResource uiFont = new FontUIResource(fontName, Font.PLAIN, Toolkit.zoom(fontSize));
+      UIManager.put("Label.font", uiFont);
+      UIManager.put("TextField.font", uiFont);
     }
   }
 
@@ -185,7 +255,28 @@ public class DefaultPlatform {
    *    125% (25% additional zoom).
    */
   public float getSystemZoom() {
-    return ZOOM_DEFAULT_SIZING;
+    return 1;
   }
 
+
+
+  /**
+   * Set the default font for the widget by the given name.
+   *
+   * @param name The name of the widget whose font will be set to a scaled version of its current
+   *    default font in the selected look and feel. This must match the system widget name like
+   *    "Button" or "CheckBox"
+   */
+  private void scaleDefaultFont(String name) {
+    String fontPropertyName = name + ".font";
+
+    Font currentFont = (Font) UIManager.get(fontPropertyName);
+//    System.out.println(currentFont);
+    float newSize = Toolkit.zoom(currentFont.getSize());
+//    System.out.println(newSize);
+    Font newFont = currentFont.deriveFont(newSize);
+//    System.out.println(newFont);
+
+    UIManager.put(fontPropertyName, newFont);
+  }
 }

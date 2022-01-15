@@ -76,8 +76,12 @@ import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.Util;
+import processing.awt.PGraphicsJava2D;
+import processing.awt.PShapeJava2D;
 import processing.core.PApplet;
+import processing.core.PShape;
 import processing.data.StringList;
+import processing.data.XML;
 
 
 /**
@@ -155,10 +159,8 @@ public class Toolkit {
 
   /**
    * Create a menu item and set its KeyStroke by name (so it can be stored
-   * in the language settings or the preferences. Syntax is here:
+   * in the language settings or the preferences). Syntax is here:
    * https://docs.oracle.com/javase/8/docs/api/javax/swing/KeyStroke.html#getKeyStroke-java.lang.String-
-   * @param sequence the name, as outlined by the KeyStroke API
-   * @param fallback what to use if getKeyStroke() comes back null
    */
   static public JMenuItem newJMenuItemExt(String base) {
     JMenuItem menuItem = new JMenuItem(Language.text(base));
@@ -256,8 +258,8 @@ public class Toolkit {
    *  'A'. </li>
    * <li> If the first letters are all taken/non-ASCII, then it loops through the
    *  ASCII letters in the item, widest to narrowest, seeing if any of them is not taken.
-   *  To improve readability, it discriminates against decenders (qypgj), imagining they
-   *  have 2/3 their actual width. (MS guidelines: avoid decenders). It also discriminates
+   *  To improve readability, it discriminates against descenders (qypgj), imagining they
+   *  have 2/3 their actual width. (MS guidelines: avoid descenders). It also discriminates
    *  against vowels, imagining they have 2/3 their actual width. (MS and Gnome guidelines:
    *  avoid vowels.) </li>
    * <li>Failing that, it will loop left-to-right for an available digit. This is a last
@@ -283,8 +285,9 @@ public class Toolkit {
 
     // The English is http://techbase.kde.org/Projects/Usability/HIG/Keyboard_Accelerators,
     // made lowercase.
-    // Nothing but [a-z] except for '&' before mnemonics and regexes for changable text.
-    final String[] kdePreDefStrs = { "&file", "&new", "&open", "open&recent",
+    // Nothing but [a-z] except for '&' before mnemonics and regexes for changeable text.
+    final String[] kdePreDefStrs = {
+      "&file", "&new", "&open", "open&recent",
       "&save", "save&as", "saveacop&y", "saveas&template", "savea&ll", "reloa&d",
       "&print", "printpre&view", "&import", "e&xport", "&closefile",
       "clos&eallfiles", "&quit", "&edit", "&undo", "re&do", "cu&t", "&copy",
@@ -300,9 +303,10 @@ public class Toolkit {
       "&newbookmarksfolder", "&tools", "&settings", "&toolbars",
       "configure&shortcuts", "configuretool&bars", "&configure.*", "&help",
       ".+&handbook", "&whatsthis", "report&bug", "&aboutprocessing", "about&kde",
-      "&beenden", "&suchen",   // de
-      "&preferncias", "&sair", // Preferências; pt
-      "&rechercher" };         // fr
+      "&beenden", "&suchen",  // de
+      "&preferncias", "&sair",  // Preferências; pt
+      "&rechercher"  // fr
+    };
     Pattern[] kdePreDefPats = new Pattern[kdePreDefStrs.length];
     for (int i = 0; i < kdePreDefStrs.length; i++) {
       kdePreDefPats[i] = Pattern.compile(kdePreDefStrs[i].replace("&",""));
@@ -320,7 +324,7 @@ public class Toolkit {
     final FontMetrics fm = fmTmp; // Hack for accessing variable in comparator.
 
     final Comparator<Character> charComparator = new Comparator<>() {
-      char[] baddies = "qypgjaeiouQAEIOU".toCharArray();
+      final char[] baddies = "qypgjaeiouQAEIOU".toCharArray();
       public int compare(Character ch1, Character ch2) {
         // Discriminates against descenders for readability, per MS
         // Human Interface Guide, and vowels per MS and Gnome.
@@ -485,7 +489,7 @@ public class Toolkit {
     for (Component c : menu.getComponents()) {
       if (c instanceof JMenuItem) items.add((JMenuItem)c);
     }
-    setMenuMnemonics(items.toArray(new JMenuItem[items.size()]));
+    setMenuMnemonics(items.toArray(new JMenuItem[0]));
   }
 
 
@@ -537,8 +541,8 @@ public class Toolkit {
    */
   static public ImageIcon getLibIcon(String filename) {
     File file = Platform.getContentFile("lib/" + filename);
-    if (!file.exists()) {
-//      System.err.println("does not exist: " + file);
+    if (file == null || !file.exists()) {
+      Messages.err("does not exist: " + file);
       return null;
     }
     return new ImageIcon(file.getAbsolutePath());
@@ -548,6 +552,18 @@ public class Toolkit {
   static public ImageIcon getIconX(File dir, String base) {
     return getIconX(dir, base, 0);
   }
+
+
+  /*
+  static public String getLibString(String filename) {
+    File file = Platform.getContentFile("lib/" + filename);
+    if (file == null || !file.exists()) {
+      Messages.err("does not exist: " + file);
+      return null;
+    }
+    return PApplet.join(PApplet.loadStrings(file), "\n");
+  }
+  */
 
 
   /**
@@ -564,8 +580,7 @@ public class Toolkit {
       return null;
     }
 
-    ImageIcon outgoing = new ImageIcon(file.getAbsolutePath()) {
-
+    return new ImageIcon(file.getAbsolutePath()) {
       @Override
       public int getIconWidth() {
         return Toolkit.zoom(super.getIconWidth()) / scale;
@@ -585,7 +600,6 @@ public class Toolkit {
         g.drawImage(getImage(), x, y, getIconWidth(), getIconHeight(), imageObserver);
       }
     };
-    return outgoing;
   }
 
 
@@ -633,9 +647,11 @@ public class Toolkit {
   static List<Image> iconImages;
 
 
-  // Deprecated version of the function, but can't get rid of it without
-  // breaking tools and modes (they'd only require a recompile, but they would
-  // no longer be backwards compatible.
+  /**
+   * Unnecessary version of the function, but can't get rid of it
+   * without breaking tools and modes (they'd only require a recompile,
+   * but they would no longer be backwards compatible).
+   */
   static public void setIcon(Frame frame) {
     setIcon((Window) frame);
   }
@@ -658,6 +674,38 @@ public class Toolkit {
       window.setIconImages(iconImages);
     }
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  /**
+   * Render an SVG, passed in as a String, into an AWT Image at
+   * the specified width and height. Used for interface buttons.
+   */
+  static public Image svgToImage(String xmlStr, int wide, int high) {
+    PGraphicsJava2D pg = new PGraphicsJava2D();
+    pg.setPrimary(false);
+    pg.setSize(wide, high);
+    pg.smooth();
+
+    pg.beginDraw();
+
+    try {
+      XML xml = XML.parse(xmlStr);
+      PShape shape = new PShapeJava2D(xml);
+      pg.shape(shape, 0, 0, wide, high);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    pg.endDraw();
+    return pg.image;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   static public Shape createRoundRect(float x1, float y1, float x2, float y2,
@@ -829,6 +877,13 @@ public class Toolkit {
     new StringList("100%", "150%", "200%", "300%");
 
 
+  /**
+   * Calculate the desired size in pixels of an element using preferences or
+   * system zoom if preferences set to auto.
+   *
+   * @param pixels The size in pixels to scale.
+   * @return The scaled size.
+   */
   static public int zoom(int pixels) {
     if (zoom == 0) {
       zoom = parseZoom();
@@ -844,8 +899,7 @@ public class Toolkit {
   }
 
 
-  static public final int BORDER =
-    Toolkit.zoom(Platform.isMacOS() ? 20 : 13);
+  static public final int BORDER = Platform.isMacOS() ? 20 : 13;
 
 
   static public void setBorder(JComponent comp) {
@@ -903,7 +957,12 @@ public class Toolkit {
 
 
   static public boolean highResImages() {
-    return isRetina() || (zoom > 1);
+    return isRetina() || (Platform.getSystemZoom() > 1);
+  }
+
+
+  static public int highResMultiplier() {
+    return highResImages() ? 2 : 1;
   }
 
 
@@ -995,6 +1054,7 @@ public class Toolkit {
   static Font sansBoldFont;
 
 
+  /** Get the name of the default (built-in) monospaced font. */
   static public String getMonoFontName() {
     if (monoFont == null) {
       // create a dummy version if the font has never been loaded (rare)
@@ -1004,6 +1064,13 @@ public class Toolkit {
   }
 
 
+  /**
+   * Get the Font object of the default (built-in) monospaced font.
+   * As of 4.x, this is Source Code Pro and ships in lib/fonts because
+   * it looks like JDK 11 no longer has (supports?) a "fonts" subfolder
+   * (or at least, its cross-platform implementation is inconsistent).
+   * https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522
+   */
   static public Font getMonoFont(int size, int style) {
     if (monoFont == null) {
       try {
@@ -1022,7 +1089,7 @@ public class Toolkit {
           sansBoldFont = new Font("Monospaced", Font.BOLD, size);
         }
       } catch (Exception e) {
-        Messages.loge("Could not load mono font", e);
+        Messages.err("Could not load mono font", e);
         monoFont = new Font("Monospaced", Font.PLAIN, size);
         monoBoldFont = new Font("Monospaced", Font.BOLD, size);
       }
@@ -1070,7 +1137,7 @@ public class Toolkit {
           sansBoldFont = new Font("SansSerif", Font.BOLD, size);
         }
       } catch (Exception e) {
-        Messages.loge("Could not load sans font", e);
+        Messages.err("Could not load sans font", e);
         sansFont = new Font("SansSerif", Font.PLAIN, size);
         sansBoldFont = new Font("SansSerif", Font.BOLD, size);
       }
@@ -1098,18 +1165,9 @@ public class Toolkit {
    * the Preferences window, and can be used by HTMLEditorKit for WebFrame).
    */
   static private Font createFont(String filename, int size) throws IOException, FontFormatException {
-    boolean registerFont = false;
+    File fontFile = Platform.getContentFile("lib/fonts/" + filename);
 
-    // try the JRE font directory first
-    File fontFile = new File(System.getProperty("java.home"), "lib/fonts/" + filename);
-
-    // else fall back to our own content dir
-    if (!fontFile.exists()) {
-      fontFile = Platform.getContentFile("lib/fonts/" + filename);
-      registerFont = true;
-    }
-
-    if (!fontFile.exists()) {
+    if (fontFile == null || !fontFile.exists()) {
       String msg = "Could not find required fonts. ";
       // This gets the JAVA_HOME for the *local* copy of the JRE installed with
       // Processing. If it's not using the local JRE, it may be because of this
@@ -1123,15 +1181,12 @@ public class Toolkit {
       Messages.showError("Font Sadness", msg, null);
     }
 
-
     BufferedInputStream input = new BufferedInputStream(new FileInputStream(fontFile));
     Font font = Font.createFont(Font.TRUETYPE_FONT, input);
     input.close();
 
-    if (registerFont) {
-      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-      ge.registerFont(font);
-    }
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    ge.registerFont(font);
 
     return font.deriveFont((float) size);
   }

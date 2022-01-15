@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-20 The Processing Foundation
   Copyright (c) 2008-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -24,7 +24,6 @@
 package processing.app;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -75,7 +74,8 @@ public class Platform {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  static public boolean isInit() {
+
+  static public boolean isAvailable() {
     return inst != null;
   }
 
@@ -109,6 +109,16 @@ public class Platform {
   }
 
 
+  static public void setInterfaceZoom() throws Exception {
+    inst.setInterfaceZoom();
+  }
+
+
+  static public float getSystemZoom() {
+    return inst == null ? 1 : inst.getSystemZoom();
+  }
+
+
   static public File getSettingsFolder() throws Exception {
     return inst.getSettingsFolder();
   }
@@ -122,21 +132,6 @@ public class Platform {
   static public void saveLanguage(String languageCode) {
     inst.saveLanguage(languageCode);
   }
-
-
-//  static public void openURL(String url) throws Exception {
-//    inst.openURL(url);
-//  }
-//
-//
-//  public boolean openFolderAvailable() {
-//    return inst.openFolderAvailable();
-//  }
-//
-//
-//  public void openFolder(File file) throws Exception {
-//    inst.openFolder(file);
-//  }
 
 
   /**
@@ -199,7 +194,10 @@ public class Platform {
    * Return the value of the os.arch property
    */
   static public String getNativeArch() {
-    // This will return "arm" for 32-bit ARM, "aarch64" for 64-bit ARM (both on Linux)
+    // This will return "arm" for 32-bit ARM on Linux,
+    // and "aarch64" for 64-bit ARM on Linux (rpi) and Apple Silicon
+    // (the latter only when using a native 64-bit ARM VM on macOS,
+    // which as of 4.0 alpha 5 is not being used b/c of missing libs).
     return System.getProperty("os.arch");
   }
 
@@ -243,7 +241,7 @@ public class Platform {
 
   static public int getIndex(String what) {
     Integer entry = platformIndices.get(what);
-    return (entry == null) ? -1 : entry.intValue();
+    return (entry == null) ? -1 : entry;
   }
 
 
@@ -256,8 +254,7 @@ public class Platform {
    * returns true if Processing is running on a Mac OS X machine.
    */
   static public boolean isMacOS() {
-    //return PApplet.platform == PConstants.MACOSX;
-    return System.getProperty("os.name").indexOf("Mac") != -1; //$NON-NLS-1$ //$NON-NLS-2$
+    return System.getProperty("os.name").contains("Mac"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 
@@ -265,8 +262,7 @@ public class Platform {
    * returns true if running on windows.
    */
   static public boolean isWindows() {
-    //return PApplet.platform == PConstants.WINDOWS;
-    return System.getProperty("os.name").indexOf("Windows") != -1; //$NON-NLS-1$ //$NON-NLS-2$
+    return System.getProperty("os.name").contains("Windows"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 
@@ -274,8 +270,7 @@ public class Platform {
    * true if running on linux.
    */
   static public boolean isLinux() {
-    //return PApplet.platform == PConstants.LINUX;
-    return System.getProperty("os.name").indexOf("Linux") != -1; //$NON-NLS-1$ //$NON-NLS-2$
+    return System.getProperty("os.name").contains("Linux"); //$NON-NLS-1$ //$NON-NLS-2$
   }
 
 
@@ -299,7 +294,10 @@ public class Platform {
       try {
         decodedPath = pathURL.toURI().getSchemeSpecificPart();
       } catch (URISyntaxException e) {
-        e.printStackTrace();
+        Messages.showError("Missing File",
+          "Could not access a required file:\n" +
+            "<b>" + name + "</b>\n" +
+            "You may need to reinstall Processing.", e);
         return null;
       }
 
@@ -340,12 +338,8 @@ public class Platform {
   static public File getJavaHome() {
     if (Platform.isMacOS()) {
       //return "Contents/PlugIns/jdk1.7.0_40.jdk/Contents/Home/jre/bin/java";
-      File[] plugins = getContentFile("../PlugIns").listFiles(new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-          return dir.isDirectory() &&
-            name.contains("jdk") && !name.startsWith(".");
-        }
-      });
+      File[] plugins = getContentFile("../PlugIns").listFiles((dir, name) -> dir.isDirectory() &&
+        name.contains("jdk") && !name.startsWith("."));
       return new File(plugins[0], "Contents/Home");
     }
     // On all other platforms, it's the 'java' folder adjacent to Processing
@@ -374,15 +368,22 @@ public class Platform {
    * If not possible, just deletes the file or folder instead.
    * @param file the folder or file to be removed/deleted
    * @return true if the folder was successfully removed
-   * @throws IOException
    */
   static public boolean deleteFile(File file) throws IOException {
-    FileUtils fu = FileUtils.getInstance();
-    if (fu.hasTrash()) {
-      fu.moveToTrash(new File[] { file });
-      return true;
+    try {
+      FileUtils fu = FileUtils.getInstance();
+      if (fu.hasTrash()) {
+        fu.moveToTrash(file);
+        return true;
+      }
+    } catch (Throwable t) {
+      // On macOS getting NoClassDefFoundError inside JNA on Big Sur.
+      // (Can't find com.sun.jna.platform.mac.MacFileUtils$FileManager)
+      // Just adding a catch-all here so that it does the fall-through below.
+      System.err.println(t.getMessage());
+    }
 
-    } else if (file.isDirectory()) {
+    if (file.isDirectory()) {
       Util.removeDir(file);
       return true;
 
@@ -408,12 +409,4 @@ public class Platform {
   static public int unsetenv(String variable) {
     return inst.unsetenv(variable);
   }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  static public float getSystemZoom() {
-    return inst.getSystemZoom();
-  }
-
 }

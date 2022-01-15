@@ -55,21 +55,6 @@ public interface PSurface {
 
   //
 
-  public PImage loadImage(String path, Object... args);
-
-  //
-
-  public void selectInput(String prompt, String callback,
-                          File file, Object callbackObject);
-
-  public void selectOutput(String prompt, String callback,
-                           File file, Object callbackObject);
-
-  public void selectFolder(String prompt, String callback,
-                           File file, Object callbackObject);
-
-  //
-
   /**
    * Get the native window object associated with this drawing surface.
    * For Java2D, this will be an AWT Frame object. For OpenGL, the window.
@@ -163,11 +148,22 @@ public interface PSurface {
 
   //
 
+  public PImage loadImage(String path, Object... args);
+
   /**
    * @param url the link to open
    * @return false if unable to find a viable way to open
    */
   public boolean openLink(String url);
+
+  public void selectInput(String prompt, String callback,
+                          File file, Object callbackObject);
+
+  public void selectOutput(String prompt, String callback,
+                           File file, Object callbackObject);
+
+  public void selectFolder(String prompt, String callback,
+                           File file, Object callbackObject);
 
   //
 

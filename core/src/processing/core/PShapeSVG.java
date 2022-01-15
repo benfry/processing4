@@ -121,7 +121,7 @@ public class PShapeSVG extends PShape {
     this(null, svg, true);
 
     if (!svg.getName().equals("svg")) {
-      if (svg.getName().toLowerCase().equals("html")) {
+      if (svg.getName().equalsIgnoreCase("html")) {
         // Common case is that files aren't downloaded properly
         throw new RuntimeException("This appears to be a web page, not an SVG file.");
       } else {

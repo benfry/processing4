@@ -81,7 +81,7 @@ public class PreprocessIssueMessageSimplifier {
     String errStr;
     String retStr;
 
-    if (Platform.isInit()) {
+    if (Platform.isAvailable()) {
       errStr = Language.text("editor.status.error.syntax");
       retStr = Language.text(stringName);
     } else {

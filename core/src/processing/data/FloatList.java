@@ -11,13 +11,14 @@ import processing.core.PApplet;
 
 /**
  * Helper class for a list of floats. Lists are designed to have some of the
- * features of ArrayLists, but to maintain the simplicity and efficiency of
+ * features of <b>ArrayLists</b>, but to maintain the simplicity and efficiency of
  * working with arrays.
  *
- * Functions like sort() and shuffle() always act on the list itself. To get
- * a sorted copy, use list.copy().sort().
+ * Functions like <b>sort()</b> and <b>shuffle()</b> always act on the list itself. To get
+ * a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
+ * @webBrief Helper class for a list of floats
  * @see IntList
  * @see StringList
  */
@@ -112,7 +113,7 @@ public class FloatList implements Iterable<Float> {
    * Get the length of the list.
    *
    * @webref floatlist:method
-   * @brief Get the length of the list
+   * @webBrief Get the length of the list
    */
   public int size() {
     return count;
@@ -136,7 +137,7 @@ public class FloatList implements Iterable<Float> {
    * Remove all entries from the list.
    *
    * @webref floatlist:method
-   * @brief Remove all entries from the list
+   * @webBrief Remove all entries from the list
    */
   public void clear() {
     count = 0;
@@ -147,7 +148,7 @@ public class FloatList implements Iterable<Float> {
    * Get an entry at a particular index.
    *
    * @webref floatlist:method
-   * @brief Get an entry at a particular index
+   * @webBrief Get an entry at a particular index
    */
   public float get(int index) {
     if (index >= count) {
@@ -158,12 +159,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Set the entry at a particular index. If the index is past the length of
-   * the list, it'll expand the list to accommodate, and fill the intermediate
-   * entries with 0s.
+   * Set the entry at a particular index. 
    *
    * @webref floatlist:method
-   * @brief Set the entry at a particular index
+   * @webBrief Set the entry at a particular index
    */
   public void set(int index, float what) {
     if (index >= count) {
@@ -197,7 +196,7 @@ public class FloatList implements Iterable<Float> {
    * Remove an element from the specified index.
    *
    * @webref floatlist:method
-   * @brief Remove an element from the specified index
+   * @webBrief Remove an element from the specified index
    */
   public float remove(int index) {
     if (index < 0 || index >= count) {
@@ -301,7 +300,7 @@ public class FloatList implements Iterable<Float> {
    * Add a new entry to the list.
    *
    * @webref floatlist:method
-   * @brief Add a new entry to the list
+   * @webBrief Add a new entry to the list
    */
   public void append(float value) {
     if (count == data.length) {
@@ -466,8 +465,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Check if a number is a part of the list.
+   *
    * @webref floatlist:method
-   * @brief Check if a number is a part of the list
+   * @webBrief Check if a number is a part of the list
    */
   public boolean hasValue(float value) {
     if (Float.isNaN(value)) {
@@ -495,8 +496,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Add to a value.
+   * 
    * @webref floatlist:method
-   * @brief Add to a value
+   * @webBrief Add to a value
    */
   public void add(int index, float amount) {
     if (index < count) {
@@ -508,8 +511,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Subtract from a value
+   *
    * @webref floatlist:method
-   * @brief Subtract from a value
+   * @webBrief Subtract from a value
    */
   public void sub(int index, float amount) {
     if (index < count) {
@@ -521,8 +526,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Multiply a value
+   * 
    * @webref floatlist:method
-   * @brief Multiply a value
+   * @webBrief Multiply a value
    */
   public void mult(int index, float amount) {
     if (index < count) {
@@ -534,8 +541,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Divide a value
+   *
    * @webref floatlist:method
-   * @brief Divide a value
+   * @webBrief Divide a value
    */
   public void div(int index, float amount) {
     if (index < count) {
@@ -557,8 +566,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Return the smallest value
+   *
    * @webref floatlist:method
-   * @brief Return the smallest value
+   * @webBrief  Return the smallest value
    */
   public float min() {
     checkMinMax("min");
@@ -593,8 +604,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Return the largest value
+   *
    * @webref floatlist:method
-   * @brief Return the largest value
+   * @webBrief Return the largest value
    */
   public float max() {
     checkMinMax("max");
@@ -650,10 +663,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Sorts the array in place.
+   * Sorts an array, lowest to highest
    *
    * @webref floatlist:method
-   * @brief Sorts an array, lowest to highest
+   * @webBrief Sorts an array, lowest to highest
    */
   public void sort() {
     Arrays.sort(data, 0, count);
@@ -661,10 +674,11 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Reverse sort, orders values from highest to lowest
+   * A sort in reverse. It's equivalent to running <b>sort()</b> and then 
+   * <b>reverse()</b>, but is more efficient than running each separately.
    *
    * @webref floatlist:method
-   * @brief Reverse sort, orders values from highest to lowest
+   * @webBrief A sort in reverse
    */
   public void sortReverse() {
     new Sort() {
@@ -728,8 +742,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
+   * Reverse the order of the list
+   * 
    * @webref floatlist:method
-   * @brief Reverse the order of the list elements
+   * @webBrief Reverse the order of the list
    */
   public void reverse() {
     int ii = count - 1;
@@ -743,11 +759,10 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Randomize the order of the list elements. Note that this does not
-   * obey the randomSeed() function in PApplet.
+   * Randomize the order of the list elements.
    *
    * @webref floatlist:method
-   * @brief Randomize the order of the list elements
+   * @webBrief Randomize the order of the list elements
    */
   public void shuffle() {
     Random r = new Random();
@@ -826,7 +841,7 @@ public class FloatList implements Iterable<Float> {
    * Create a new array with a copy of all the values.
    * @return an array sized by the length of the list with each of the values.
    * @webref floatlist:method
-   * @brief Create a new array with a copy of all the values
+   * @webBrief Create a new array with a copy of all the values
    */
   public float[] array() {
     return array(null);

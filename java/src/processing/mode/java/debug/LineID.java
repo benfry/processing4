@@ -37,8 +37,8 @@ import processing.app.Messages;
 /**
  * Describes an ID for a code line. Comprised of a file name and a (0-based)
  * line number. Can track changes to the line number due to text editing by
- * attaching a {@link Document}. Registered {@link LineListener}s are notified
- * of changes to the line number.
+ * attaching a {@link Document}. Registered listeners are notified of changes
+ * to the line number.
  */
 public class LineID implements DocumentListener {
   protected String fileName; // the filename
@@ -151,7 +151,7 @@ public class LineID implements DocumentListener {
       this.doc = doc;
       doc.addDocumentListener(this);
     } catch (BadLocationException ex) {
-      Messages.loge(null, ex);
+      Messages.err(null, ex);
       pos = null;
       this.doc = null;
     }

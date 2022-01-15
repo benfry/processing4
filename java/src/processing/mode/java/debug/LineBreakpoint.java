@@ -34,7 +34,7 @@ import com.sun.jdi.request.BreakpointRequest;
 
 /**
  * Model/Controller of a line breakpoint. Can be set before or while debugging.
- * Adds a highlight using the debuggers view ({@link DebugEditor}).
+ * Adds a highlight using the debuggers view.
  */
 public class LineBreakpoint implements ClassLoadListener {
   protected Debugger dbg; // the debugger
@@ -131,7 +131,7 @@ public class LineBreakpoint implements ClassLoadListener {
       log("attached breakpoint to " + line + " -> " + javaLine);
       return true;
     } catch (AbsentInformationException ex) {
-      Messages.loge(null, ex);
+      Messages.err(null, ex);
     }
     return false;
   }
@@ -158,7 +158,7 @@ public class LineBreakpoint implements ClassLoadListener {
 
   /**
    * Set this breakpoint. Adds the line highlight. If Debugger is paused
-   * also attaches the breakpoint by calling {@link #attach()}.
+   * also attaches the breakpoint by calling {@link #attach}.
    */
   protected void set() {
     dbg.addClassLoadListener(this); // class may not yet be loaded

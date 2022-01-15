@@ -3,10 +3,14 @@ javadoc
 
 macosx/javafx-sdk-*
 macosx/jdk-11.*
+macosx/jdk-17*
 macosx/jfx-11.*
+macosx/jfx-16.*
 windows/javafx-sdk-*
 windows/jdk-11.*
 windows/jfx-11.*
+windows/jfx-16.*
 linux/javafx-sdk-*
 linux/jdk-11.*
 linux/jfx-11.*
+linux/jfx-16.*

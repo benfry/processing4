@@ -35,7 +35,6 @@ import java.text.DateFormat;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.StyleSheet;
@@ -90,16 +89,15 @@ class DetailPanel extends JPanel {
 
   private boolean alreadySelected;
   private boolean enableHyperlinks;
-  //private HyperlinkListener conditionalHyperlinkOpener;
   private JTextPane descriptionPane;
   private JLabel notificationLabel;
   private JButton updateButton;
   JProgressBar installProgressBar;
   private JButton installRemoveButton;
-  private JPopupMenu contextMenu;
-  private JMenuItem openFolder;
+  final private JPopupMenu contextMenu;
+  final private JMenuItem openFolder;
 
-  private JPanel barButtonCardPane;
+  final private JPanel barButtonCardPane;
   private CardLayout barButtonCardLayout;
 
   static private final String installText = Language.text("contrib.install");
@@ -123,12 +121,10 @@ class DetailPanel extends JPanel {
 
     contextMenu = new JPopupMenu();
     openFolder = new JMenuItem("Open Folder");
-    openFolder.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (contrib instanceof LocalContribution) {
-          File folder = ((LocalContribution) contrib).getFolder();
-          Platform.openFolder(folder);
-        }
+    openFolder.addActionListener(e -> {
+      if (contrib instanceof LocalContribution) {
+        File folder = ((LocalContribution) contrib).getFolder();
+        Platform.openFolder(folder);
       }
     });
 
@@ -175,15 +171,13 @@ class DetailPanel extends JPanel {
 
     descriptionPane.setBorder(new EmptyBorder(4, 7, 7, 7));
     descriptionPane.setHighlighter(null);
-    descriptionPane.addHyperlinkListener(new HyperlinkListener() {
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          // for 3.2.3, added the isSelected() prompt here, rather than
-          // adding/removing the listener repeatedly
-          if (isSelected()) {
-            if (enableHyperlinks && e.getURL() != null) {
-              Platform.openURL(e.getURL().toString());
-            }
+    descriptionPane.addHyperlinkListener(e -> {
+      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        // for 3.2.3, added the isSelected() prompt here, rather than
+        // adding/removing the listener repeatedly
+        if (isSelected()) {
+          if (enableHyperlinks && e.getURL() != null) {
+            Platform.openURL(e.getURL().toString());
           }
         }
       }
@@ -210,11 +204,7 @@ class DetailPanel extends JPanel {
       updateButton.setOpaque(false);
       updateButton.setVisible(false);
 
-      updateButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          update();
-        }
-      });
+      updateButton.addActionListener(e -> update());
     }
 
     updateBox.add(updateButton, BorderLayout.EAST);
@@ -253,16 +243,14 @@ class DetailPanel extends JPanel {
 
     installRemoveButton = new JButton(" ");
     installRemoveButton.setInheritsPopupMenu(true);
-    installRemoveButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        String mode = installRemoveButton.getText();
-        if (mode.equals(installText)) {
-          install();
-        } else if (mode.equals(removeText)) {
-          remove();
-        } else if (mode.equals(undoText)) {
-          undo();
-        }
+    installRemoveButton.addActionListener(e -> {
+      String mode = installRemoveButton.getText();
+      if (mode.equals(installText)) {
+        install();
+      } else if (mode.equals(removeText)) {
+        remove();
+      } else if (mode.equals(undoText)) {
+        undo();
       }
     });
 
@@ -410,11 +398,16 @@ class DetailPanel extends JPanel {
     String fontFace = "<font face=\"" + boldFont.getName() + "\">";
 
     StringBuilder desc = new StringBuilder();
-    desc.append("<html><body>" + fontFace);
+    desc.append("<html><body>");
+    desc.append(fontFace);
     if (contrib.getUrl() == null) {
       desc.append(contrib.getName());
     } else {
-      desc.append("<a href=\"" + contrib.getUrl() + "\">" + contrib.getName() + "</a>");
+      desc.append("<a href=\"");
+      desc.append(contrib.getUrl());
+      desc.append("\">");
+      desc.append(contrib.getName());
+      desc.append("</a>");
     }
     desc.append("</font> ");
 
@@ -454,7 +447,8 @@ class DetailPanel extends JPanel {
       if (prettyVersion != null) {
         desc.append(", ");
       }
-      desc.append("Last Updated on " + dateFormatter.format(lastUpdatedDate));
+      desc.append("Last Updated on ");
+      desc.append(dateFormatter.format(lastUpdatedDate));
     }
 
     desc.append("</body></html>");
@@ -464,10 +458,11 @@ class DetailPanel extends JPanel {
     if (contribListing.hasUpdates(contrib) && contrib.isCompatible(Base.getRevision())) {
       StringBuilder versionText = new StringBuilder();
       versionText.append("<html><body><i>");
+      //noinspection StatementWithEmptyBody
       if (contrib.isUpdateFlagged() || contrib.isDeletionFlagged()) {
         // Already marked for deletion, see requiresRestart() notes below.
         // versionText.append("To finish an update, reinstall this contribution after restarting.");
-        ;
+
       } else {
         String latestVersion = contribListing.getLatestPrettyVersion(contrib);
         if (latestVersion != null) {
@@ -485,9 +480,7 @@ class DetailPanel extends JPanel {
     }
 
     updateButton.setEnabled(true);
-    if (contrib != null) {
-      updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
-    }
+    updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
 
     if (contrib.isDeletionFlagged()) {
       installRemoveButton.setText(undoText);
@@ -608,10 +601,10 @@ class DetailPanel extends JPanel {
 
     if (contrib != null) {
       updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
-      updateButton.setEnabled(!contribListing.hasListDownloadFailed());
+      updateButton.setEnabled(contribListing.listDownloadSuccessful());
     }
     installRemoveButton.setVisible(isSelected() || installRemoveButton.getText().equals(Language.text("contrib.remove")) || updateInProgress);
-    installRemoveButton.setEnabled(installRemoveButton.getText().equals(Language.text("contrib.remove")) ||!contribListing.hasListDownloadFailed());
+    installRemoveButton.setEnabled(installRemoveButton.getText().equals(Language.text("contrib.remove")) || contribListing.listDownloadSuccessful());
     reorganizePaneComponents();
 
     /*
@@ -667,14 +660,14 @@ class DetailPanel extends JPanel {
    * href="http://example.org/">it</a>.
    */
   static String toHtmlLinks(String stringIn) {
-    Pattern p = Pattern.compile("\\[(.*?)\\]\\((.*?)\\)");
+    Pattern p = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
     Matcher m = p.matcher(stringIn);
 
     StringBuilder sb = new StringBuilder();
 
     int start = 0;
     while (m.find(start)) {
-      sb.append(stringIn.substring(start, m.start()));
+      sb.append(stringIn, start, m.start());
 
       String text = m.group(1);
       String url = m.group(2);

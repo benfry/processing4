@@ -52,7 +52,7 @@ public class CompileErrorMessageSimplifier {
   private static void prepareConstantsList() {
     constantsMap = new TreeMap<>();
     Class<DefaultProblem> probClass = DefaultProblem.class;
-    Field f[] = probClass.getFields();
+    Field[] f = probClass.getFields();
     for (Field field : f) {
       if (Modifier.isStatic(field.getModifiers()))
         try {
@@ -88,7 +88,7 @@ public class CompileErrorMessageSimplifier {
   public static String getSimplifiedErrorMessage(IProblem iprob, String badCode) {
     if (iprob == null) return null;
 
-    String args[] = iprob.getArguments();
+    String[] args = iprob.getArguments();
 
     if (DEBUG) {
       Messages.log("Simplifying message: " + iprob.getMessage() +
@@ -214,10 +214,6 @@ public class CompileErrorMessageSimplifier {
           } else {
             result = Language.interpolate("editor.status.wrong_param",
                                           args[1], args[1], removePackagePrefixes(args[2]));
-//          String method = q(args[1]);
-//          String methodDef = " \"" + args[1] + "(" + getSimpleName(args[2]) + ")\"";
-//          result = result.replace("method", method);
-//          result += methodDef;
           }
         }
         break;
@@ -256,8 +252,6 @@ public class CompileErrorMessageSimplifier {
       case IProblem.TypeMismatch:
         if (args.length > 1) {
           result = Language.interpolate("editor.status.type_mismatch", args[0], args[1]);
-//        result = result.replace("typeA", q(args[0]));
-//        result = result.replace("typeB", q(args[1]));
         }
         break;
 
@@ -313,17 +307,11 @@ public class CompileErrorMessageSimplifier {
       return input;
     }
     String[] names = PApplet.split(input, ',');
-//    List<String> names = new ArrayList<String>();
-//    if (inp.indexOf(',') >= 0) {
-//      names.addAll(Arrays.asList(inp.split(",")));
-//    } else {
-//      names.add(inp);
-//    }
     StringList result = new StringList();
     for (String name : names) {
       int dot = name.lastIndexOf('.');
       if (dot >= 0) {
-        name = name.substring(dot + 1, name.length());
+        name = name.substring(dot + 1);
       }
       result.append(name);
     }

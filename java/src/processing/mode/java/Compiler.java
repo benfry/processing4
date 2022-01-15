@@ -47,9 +47,6 @@ public class Compiler {
 
   /**
    * Compile with ECJ. See http://j.mp/8paifz for documentation.
-   *
-   * @param sketch Sketch object to be compiled, used for placing exceptions
-   * @param buildPath Where the temporary files live and will be built from.
    * @return true if successful.
    * @throws SketchException Only if there's a problem. Only then.
    */
@@ -57,12 +54,12 @@ public class Compiler {
 
     // This will be filled in if anyone gets angry
     SketchException exception = null;
-    boolean success = false;
+    boolean success;
 
     String classpath = build.getClassPath();
     String classpathEmptyRemoved = classpath.replace("::", ":");
 
-    String baseCommand[] = new String[] {
+    String[] baseCommand = new String[] {
       "-g",
       "-Xemacs",
       //"-noExit",  // not necessary for ecj
@@ -130,7 +127,7 @@ public class Compiler {
         new BufferedReader(new StringReader(errorBuffer.toString()));
       //System.err.println(errorBuffer.toString());
 
-      String line = null;
+      String line;
       while ((line = reader.readLine()) != null) {
         //System.out.println("got line " + line);  // debug
 
@@ -167,8 +164,7 @@ public class Compiler {
           exception = new SketchException(errorMessage);
         }
 
-        String[] parts = null;
-
+        String[] parts;
         if (errorMessage.startsWith("The import ") &&
             errorMessage.endsWith("cannot be resolved")) {
           // The import poo cannot be resolved
@@ -297,12 +293,10 @@ public class Compiler {
             break;
           }
         }
-        if (exception != null) {
-          // The stack trace just shows that this happened inside the compiler,
-          // which is a red herring. Don't ever show it for compiler stuff.
-          exception.hideStackTrace();
-          break;
-        }
+        // The stack trace just shows that this happened inside the compiler,
+        // which is a red herring. Don't ever show it for compiler stuff.
+        exception.hideStackTrace();
+        break;
       }
     } catch (IOException e) {
       String bigSigh = "Error while compiling. (" + e.getMessage() + ")";
@@ -325,7 +319,9 @@ public class Compiler {
   }
 
 
+  /*
   protected int caretColumn(String caretLine) {
     return caretLine.indexOf("^");
   }
+  */
 }

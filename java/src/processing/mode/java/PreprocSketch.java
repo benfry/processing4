@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import processing.app.Problem;
 import processing.app.Sketch;
@@ -44,6 +45,9 @@ public class PreprocSketch {
   public final List<ImportStatement> coreAndDefaultImports;
   public final List<ImportStatement> codeFolderImports;
   public final List<Problem> otherProblems;
+  public final List<IProblem> iproblems;
+
+  public final Map<String, Integer> javaFileMapping;
 
   /// JAVA -> SKETCH -----------------------------------------------------------
 
@@ -69,8 +73,24 @@ public class PreprocSketch {
 
 
   public SketchInterval mapJavaToSketch(IProblem iproblem) {
-    return mapJavaToSketch(iproblem.getSourceStart(),
-                           iproblem.getSourceEnd() + 1); // make it exclusive
+    String originalFile = new String(iproblem.getOriginatingFileName());
+    boolean isJavaTab = javaFileMapping.containsKey(originalFile);
+
+    // If is a ".java" tab, do not need to map into combined sketch source.
+    if (isJavaTab) {
+      return new SketchInterval(
+          javaFileMapping.get(originalFile),
+          iproblem.getSourceStart(),
+          iproblem.getSourceEnd() + 1,
+          iproblem.getSourceStart(), // Is outside main sketch code
+          iproblem.getSourceEnd() + 1  // Is outside main sketch code
+      );
+    } else {
+      return mapJavaToSketch(
+          iproblem.getSourceStart(),
+          iproblem.getSourceEnd() + 1  // make it exclusive
+      );
+    }
   }
 
 
@@ -213,6 +233,9 @@ public class PreprocSketch {
     public final List<ImportStatement> coreAndDefaultImports = new ArrayList<>();
     public final List<ImportStatement> codeFolderImports = new ArrayList<>();
     public final List<Problem> otherProblems = new ArrayList<>();
+    public List<IProblem> iproblems;
+
+    public Map<String, Integer> javaFileMapping;
 
     public PreprocSketch build() {
       return new PreprocSketch(this);
@@ -246,6 +269,9 @@ public class PreprocSketch {
     hasCompilationErrors = b.hasCompilationErrors;
 
     otherProblems = b.otherProblems;
+
+    javaFileMapping = b.javaFileMapping;
+    iproblems = b.iproblems;
 
     programImports = Collections.unmodifiableList(b.programImports);
     coreAndDefaultImports = Collections.unmodifiableList(b.coreAndDefaultImports);

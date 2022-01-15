@@ -360,4 +360,49 @@ public class ParserTests {
     expectGood("pdfwrite");
   }
 
+  @Test
+  public void testColorReturn() {
+    expectGood("colorreturn");
+  }
+
+  @Test
+  public void testNoSmooth() {
+    expectGood("nosmooth");
+  }
+
+  @Test
+  public void testSmooth() {
+    expectGood("smoothnoparam");
+  }
+
+  @Test
+  public void testSmoothThis() {
+    expectGood("smoothnoparamthis");
+  }
+
+  @Test
+  public void testSmoothWithParam() {
+    expectGood("smoothparam");
+  }
+
+  @Test
+  public void testSmoothWithParamStatic() {
+    expectGood("smoothparamstatic");
+  }
+
+  @Test
+  public void testColorInImport() {
+    expectGood("colorimport");
+  }
+
+  @Test
+  public void testPGraphicsStandalone() {
+    expectGood("pgraphics");
+  }
+
+  @Test
+  public void testSizeThis() {
+    expectGood("sizethis");
+  }
+
 }

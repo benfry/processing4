@@ -9,9 +9,12 @@ import processing.core.PApplet;
 
 
 /**
- * A simple table class to use a String as a lookup for an float value.
+ * A simple class to use a <b>String</b> as a lookup for a float value. String "keys"
+ * are associated with floating-point values.
  *
  * @webref data:composite
+ * @webBrief A simple table class to use a <b>String</b> as a lookup for a float
+ *           value
  * @see IntDict
  * @see StringDict
  */
@@ -108,8 +111,10 @@ public class FloatDict {
 
 
   /**
+   * Returns the number of key/value pairs.
+   * 
    * @webref floatdict:method
-   * @brief Returns the number of key/value pairs
+   * @webBrief Returns the number of key/value pairs
    */
   public int size() {
     return count;
@@ -142,10 +147,10 @@ public class FloatDict {
 
 
   /**
-   * Remove all entries.
+   * Remove all entries from the data structure.
    *
    * @webref floatdict:method
-   * @brief Remove all entries
+   * @webBrief Remove all entries
    */
   public void clear() {
     count = 0;
@@ -222,7 +227,12 @@ public class FloatDict {
     }
   }
 
-
+  /** 
+   * Return the internal array being used to store the keys.
+   * 
+   * @webref floatdict:method
+   * @webBrief Return the internal array being used to store the keys
+   */
   public Iterable<String> keys() {
     return new Iterable<String>() {
 
@@ -256,10 +266,11 @@ public class FloatDict {
 
 
   /**
-   * Return a copy of the internal keys array. This array can be modified.
+   * Return a copy of the internal keys array. In contrast to the <b>keys()</b>
+   * method, this array can be modified.
    *
    * @webref floatdict:method
-   * @brief Return a copy of the internal keys array
+   * @webBrief Return a copy of the internal keys array
    */
   public String[] keyArray() {
     crop();
@@ -281,9 +292,11 @@ public class FloatDict {
   }
 
 
-  /**
+  /** 
+   * Return the internal array being used to store the values.
+   * 
    * @webref floatdict:method
-   * @brief Return the internal array being used to store the values
+   * @webBrief Return the internal array being used to store the values
    */
   public Iterable<Float> values() {
     return new Iterable<Float>() {
@@ -317,10 +330,14 @@ public class FloatDict {
 
 
   /**
-   * Create a new array and copy each of the values into it.
+   * The version of this method without a parameter creates a new array and copies
+   * each of the values into it. The version with the <b>float[]</b> parameters
+   * fills an already-allocated array with the values (more efficient than
+   * creating a new array each time). If 'array' is null, or not the same size as
+   * the number of values, a new array will be allocated and returned.
    *
    * @webref floatdict:method
-   * @brief Create a new array and copy each of the values into it
+   * @webBrief Create a new array and copy each of the values into it
    */
   public float[] valueArray() {
     crop();
@@ -346,7 +363,7 @@ public class FloatDict {
    * Return a value for the specified key.
    *
    * @webref floatdict:method
-   * @brief Return a value for the specified key
+   * @webBrief Return a value for the specified key
    */
   public float get(String key) {
     int index = index(key);
@@ -367,8 +384,10 @@ public class FloatDict {
 
 
   /**
+   * Create a new key/value pair or change the value of one.
+   *
    * @webref floatdict:method
-   * @brief Create a new key/value pair or change the value of one
+   * @webBrief Create a new key/value pair or change the value of one
    */
   public void set(String key, float amount) {
     int index = index(key);
@@ -390,8 +409,10 @@ public class FloatDict {
 
 
   /**
+   * Check if a key is a part of the data structure.
+   *
    * @webref floatdict:method
-   * @brief Check if a key is a part of the data structure
+   * @webBrief Check if a key is a part of the data structure
    */
   public boolean hasKey(String key) {
     return index(key) != -1;
@@ -399,8 +420,11 @@ public class FloatDict {
 
 
   /**
+   * Add to a value. If the key does not exist, a new pair is initialized with
+   * the value supplied.
+   * 
    * @webref floatdict:method
-   * @brief Add to a value
+   * @webBrief Add to a value
    */
   public void add(String key, float amount) {
     int index = index(key);
@@ -413,8 +437,10 @@ public class FloatDict {
 
 
   /**
+   * Subtract from a value.
+   *
    * @webref floatdict:method
-   * @brief Subtract from a value
+   * @webBrief Subtract from a value
    */
   public void sub(String key, float amount) {
     add(key, -amount);
@@ -422,8 +448,10 @@ public class FloatDict {
 
 
   /**
+   * Multiply a value.
+   * 
    * @webref floatdict:method
-   * @brief Multiply a value
+   * @webBrief Multiply a value
    */
   public void mult(String key, float amount) {
     int index = index(key);
@@ -434,8 +462,10 @@ public class FloatDict {
 
 
   /**
+   * Divide a value.
+   *
    * @webref floatdict:method
-   * @brief Divide a value
+   * @webBrief Divide a value
    */
   public void div(String key, float amount) {
     int index = index(key);
@@ -456,8 +486,10 @@ public class FloatDict {
 
 
   /**
+   * Return the smallest value
+   *
    * @webref floatlist:method
-   * @brief Return the smallest value
+   * @webBrief Return the smallest value
    */
   public int minIndex() {
     //checkMinMax("minIndex");
@@ -510,8 +542,10 @@ public class FloatDict {
 
 
   /**
+   * Return the largest value
+   *
    * @webref floatlist:method
-   * @brief Return the largest value
+   * @webBrief Return the largest value
    */
   // The index of the entry that has the max value. Reference above is incorrect.
   public int maxIndex() {
@@ -605,8 +639,10 @@ public class FloatDict {
 
 
   /**
+   * Remove a key/value pair.
+   *
    * @webref floatdict:method
-   * @brief Remove a key/value pair
+   * @webBrief Remove a key/value pair
    */
   public float remove(String key) {
     int index = index(key);
@@ -655,7 +691,7 @@ public class FloatDict {
    * tie-breaker (only really possible with a key that has a case change).
    *
    * @webref floatdict:method
-   * @brief Sort the keys alphabetically
+   * @webBrief Sort the keys alphabetically
    */
   public void sortKeys() {
     sortImpl(true, false, true);
@@ -663,8 +699,11 @@ public class FloatDict {
 
 
   /**
+   * Sort the keys alphabetically in reverse (ignoring case). Uses the value as a
+   * tie-breaker (only really possible with a key that has a case change).
+   *
    * @webref floatdict:method
-   * @brief Sort the keys alphabetically in reverse
+   * @webBrief Sort the keys alphabetically in reverse
    */
   public void sortKeysReverse() {
     sortImpl(true, true, true);
@@ -672,10 +711,10 @@ public class FloatDict {
 
 
   /**
-   * Sort by values in descending order (largest value will be at [0]).
+   * Sort by values in ascending order (largest value will be at [0]).
    *
    * @webref floatdict:method
-   * @brief Sort by values in ascending order
+   * @webBrief Sort by values in ascending order
    */
   public void sortValues() {
     sortValues(true);
@@ -693,8 +732,10 @@ public class FloatDict {
 
 
   /**
+   * Sort by values in descending order. The largest value will be at [0].
+   *
    * @webref floatdict:method
-   * @brief Sort by values in descending order
+   * @webBrief Sort by values in descending order
    */
   public void sortValuesReverse() {
     sortValuesReverse(true);

@@ -48,7 +48,7 @@ public class ContributionListing {
   File listingFile;
 
   List<ChangeListener> listeners;
-  List<AvailableContribution> advertisedContributions;
+  final List<AvailableContribution> advertisedContributions;
   Map<String, List<Contribution>> librariesByCategory;
   Map<String, Contribution> librariesByImportHeader;
   // TODO: Every contribution is getting added twice
@@ -69,8 +69,8 @@ public class ContributionListing {
 
     //listingFile = Base.getSettingsFile("contributions.txt");
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
-    listingFile.setWritable(true, false);
-    if (listingFile.exists()) {
+    boolean writable = listingFile.setWritable(true, false);
+    if (writable && listingFile.exists()) {
       setAdvertisedList(listingFile);
     }
   }
@@ -156,7 +156,7 @@ public class ContributionListing {
       if (librariesByCategory.containsKey(category)) {
         List<Contribution> list = librariesByCategory.get(category);
         list.add(contribution);
-        Collections.sort(list, COMPARATOR);
+        list.sort(COMPARATOR);
 
       } else {
         ArrayList<Contribution> list = new ArrayList<>();
@@ -306,25 +306,6 @@ public class ContributionListing {
   }
 
 
-  /*
-  protected List<Contribution> listCompatible(List<Contribution> contribs, boolean filter) {
-    List<Contribution> filteredList =
-      new ArrayList<Contribution>(contribs);
-
-    if (filter) {
-      Iterator<Contribution> it = filteredList.iterator();
-      while (it.hasNext()) {
-        Contribution libInfo = it.next();
-        if (!libInfo.isCompatible(Base.getRevision())) {
-          it.remove();
-        }
-      }
-    }
-    return filteredList;
-  }
-  */
-
-
   private void notifyRemove(Contribution contribution) {
     for (ChangeListener listener : listeners) {
       listener.contributionRemoved(contribution);
@@ -362,65 +343,48 @@ public class ContributionListing {
                                     final ContribProgressMonitor progress) {
 
     // TODO: replace with SwingWorker [jv]
-    new Thread(new Runnable() {
-      public void run() {
-        downloadingListingLock.lock();
+    new Thread(() -> {
+      downloadingListingLock.lock();
 
-        try {
-          URL url = new URL(LISTING_URL);
-          // testing port
-//          url = new URL("http", "download.processing.org", 8989, "/contribs");
-
-//          "http://download.processing.org/contribs";
-//          System.out.println(url);
-//          final String contribInfo =
-//            base.getInstalledContribsInfo();
-//            "?id=" + Preferences.get("update.id") +
-//            "&" + base.getInstalledContribsInfo();
-//          url = new URL(LISTING_URL + "?" + contribInfo);
-//          System.out.println(contribInfo.length() + " " + contribInfo);
-
-          File tempContribFile = Base.getSettingsFile("contribs.tmp");
-          tempContribFile.setWritable(true, false);
-          ContributionManager.download(url, base.getInstalledContribsInfo(),
-                                       tempContribFile, progress);
-          if (!progress.isCanceled() && !progress.isError()) {
-            if (listingFile.exists()) {
-              listingFile.delete();  // may silently fail, but below may still work
-            }
-            if (tempContribFile.renameTo(listingFile)) {
-              listDownloaded = true;
-              listDownloadFailed = false;
-              try {
-                // TODO: run this in SwingWorker done() [jv]
-                EventQueue.invokeAndWait(new Runnable() {
-                  @Override
-                  public void run() {
-                    setAdvertisedList(listingFile);
-                    base.setUpdatesAvailable(countUpdates(base));
-                  }
-                });
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-                if (cause instanceof RuntimeException) {
-                  throw (RuntimeException) cause;
-                } else {
-                  cause.printStackTrace();
-                }
-              }
-            } else {
-              listDownloadFailed = true;
-            }
+      try {
+        URL url = new URL(LISTING_URL);
+        File tempContribFile = Base.getSettingsFile("contribs.tmp");
+        tempContribFile.setWritable(true, false);
+        ContributionManager.download(url, base.getInstalledContribsInfo(),
+                                     tempContribFile, progress);
+        if (!progress.isCanceled() && !progress.isError()) {
+          if (listingFile.exists()) {
+            listingFile.delete();  // may silently fail, but below may still work
           }
-
-        } catch (MalformedURLException e) {
-          progress.error(e);
-          progress.finished();
-        } finally {
-          downloadingListingLock.unlock();
+          if (tempContribFile.renameTo(listingFile)) {
+            listDownloaded = true;
+            listDownloadFailed = false;
+            try {
+              // TODO: run this in SwingWorker done() [jv]
+              EventQueue.invokeAndWait(() -> {
+                setAdvertisedList(listingFile);
+                base.setUpdatesAvailable(countUpdates(base));
+              });
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            } catch (InvocationTargetException e) {
+              Throwable cause = e.getCause();
+              if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+              } else {
+                cause.printStackTrace();
+              }
+            }
+          } else {
+            listDownloadFailed = true;
+          }
         }
+
+      } catch (MalformedURLException e) {
+        progress.error(e);
+        progress.finished();
+      } finally {
+        downloadingListingLock.unlock();
       }
     }, "Contribution List Downloader").start();
   }
@@ -453,42 +417,42 @@ public class ContributionListing {
   }
 
 
-  protected boolean hasListDownloadFailed() {
-    return listDownloadFailed;
+  protected boolean listDownloadSuccessful() {
+    return !listDownloadFailed;
   }
 
 
   private List<AvailableContribution> parseContribList(File file) {
-    List<AvailableContribution> outgoing =
-      new ArrayList<>();
+    List<AvailableContribution> outgoing = new ArrayList<>();
 
     if (file != null && file.exists()) {
       String[] lines = PApplet.loadStrings(file);
+      if (lines != null) {
+        int start = 0;
+        while (start < lines.length) {
+          String type = lines[start];
+          ContributionType contribType = ContributionType.fromName(type);
+          if (contribType == null) {
+            System.err.println("Error in contribution listing file on line " + (start + 1));
+            // Scan forward for the next blank line
+            int end = ++start;
+            while (end < lines.length && !lines[end].trim().isEmpty()) {
+              end++;
+            }
+            start = end + 1;
 
-      int start = 0;
-      while (start < lines.length) {
-        String type = lines[start];
-        ContributionType contribType = ContributionType.fromName(type);
-        if (contribType == null) {
-          System.err.println("Error in contribution listing file on line " + (start+1));
-          // Scan forward for the next blank line
-          int end = ++start;
-          while (end < lines.length && !lines[end].trim().isEmpty()) {
-            end++;
+          } else {
+            // Scan forward for the next blank line
+            int end = ++start;
+            while (end < lines.length && !lines[end].trim().isEmpty()) {
+              end++;
+            }
+
+            String[] contribLines = PApplet.subset(lines, start, end - start);
+            StringDict contribParams = Util.readSettings(file.getName(), contribLines);
+            outgoing.add(new AvailableContribution(contribType, contribParams));
+            start = end + 1;
           }
-          start = end + 1;
-
-        } else {
-          // Scan forward for the next blank line
-          int end = ++start;
-          while (end < lines.length && !lines[end].trim().isEmpty()) {
-            end++;
-          }
-
-          String[] contribLines = PApplet.subset(lines, start, end-start);
-          StringDict contribParams = Util.readSettings(file.getName(), contribLines);
-          outgoing.add(new AvailableContribution(contribType, contribParams));
-          start = end + 1;
         }
       }
     }
@@ -513,14 +477,16 @@ public class ContributionListing {
         count++;
       }
     }
-    for (Library lib : base.getActiveEditor().getMode().contribLibraries) {
-      if (hasUpdates(lib)) {
-        count++;
+    if (base.getActiveEditor() != null) {
+      for (Library lib : base.getActiveEditor().getMode().contribLibraries) {
+        if (hasUpdates(lib)) {
+          count++;
+        }
       }
-    }
-    for (Library lib : base.getActiveEditor().getMode().coreLibraries) {
-      if (hasUpdates(lib)) {
-        count++;
+      for (Library lib : base.getActiveEditor().getMode().coreLibraries) {
+        if (hasUpdates(lib)) {
+          count++;
+        }
       }
     }
     for (ToolContribution tc : base.getToolContribs()) {
@@ -547,8 +513,8 @@ public class ContributionListing {
 
 
   public interface ChangeListener {
-    public void contributionAdded(Contribution Contribution);
-    public void contributionRemoved(Contribution Contribution);
-    public void contributionChanged(Contribution oldLib, Contribution newLib);
+    void contributionAdded(Contribution Contribution);
+    void contributionRemoved(Contribution Contribution);
+    void contributionChanged(Contribution oldLib, Contribution newLib);
   }
 }

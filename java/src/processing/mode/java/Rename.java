@@ -6,8 +6,6 @@ import static processing.mode.java.ASTUtils.resolveBinding;
 
 import java.awt.Dimension;
 import java.awt.EventQueue;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.ArrayList;
@@ -72,12 +70,7 @@ class Rename {
     JRootPane rootPane = window.getRootPane();
     window.setTitle("Rename");
     window.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
-    Toolkit.registerWindowCloseKeys(rootPane, new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        window.setVisible(false);
-      }
-    });
+    Toolkit.registerWindowCloseKeys(rootPane, e -> window.setVisible(false));
     Toolkit.setIcon(window);
 
     window.setModal(true);
@@ -89,8 +82,6 @@ class Rename {
         ps = null;
       }
     });
-    //window.setSize(Toolkit.zoom(250, 130));
-    //window.setLayout(new BoxLayout(window.getContentPane(), BoxLayout.Y_AXIS));
     Box windowBox = Box.createVerticalBox();
     Toolkit.setBorder(windowBox);
     final int GAP = Toolkit.zoom(5);
@@ -126,8 +117,7 @@ class Rename {
       renameButton.addActionListener(e -> {
         final String newName = textField.getText().trim();
         if (!newName.isEmpty()) {
-          if (newName.length() >= 1 &&
-              newName.chars().limit(1).allMatch(Character::isJavaIdentifierStart) &&
+          if (newName.chars().limit(1).allMatch(Character::isJavaIdentifierStart) &&
               newName.chars().skip(1).allMatch(Character::isJavaIdentifierPart)) {
             rename(ps, binding, newName);
             window.setVisible(false);
@@ -140,11 +130,7 @@ class Rename {
       });
       rootPane.setDefaultButton(renameButton);
 
-      //JPanel panelBottom = new JPanel();
-      //panelBottom.setLayout(new BoxLayout(panelBottom, BoxLayout.X_AXIS));
       Box buttonBox = Box.createHorizontalBox();
-      //Toolkit.setBorder(panelBottom, 5, 5, 5, 5);
-
       buttonBox.add(Box.createHorizontalGlue());
       buttonBox.add(showUsageButton);
       if (!Platform.isMacOS()) {
@@ -253,8 +239,8 @@ class Rename {
 
     showUsage.hide();
 
-    List<SimpleName> occurrences = new ArrayList<>();
-    occurrences.addAll(findAllOccurrences(root, binding.getKey()));
+    List<SimpleName> occurrences =
+      new ArrayList<>(findAllOccurrences(root, binding.getKey()));
 
     // Renaming class should rename all constructors
     if (binding.getKind() == IBinding.TYPE) {
@@ -276,29 +262,28 @@ class Rename {
 
     editor.startCompoundEdit();
 
-    mappedNodes.entrySet().forEach(entry -> {
-      int tabIndex = entry.getKey();
+    mappedNodes.forEach((key, nodes) -> {
+      int tabIndex = key;
       SketchCode sketchCode = sketch.getCode(tabIndex);
 
       SyntaxDocument document = (SyntaxDocument) sketchCode.getDocument();
 
-      List<SketchInterval> nodes = entry.getValue();
       nodes.stream()
-          // Replace from the end so all unprocess offsets stay valid
-          .sorted(Comparator.comparing((SketchInterval si) -> si.startTabOffset).reversed())
-          .forEach(si -> {
-            // Make sure offsets are in bounds
-            int documentLength = document.getLength();
-            if (si.startTabOffset >= 0 && si.startTabOffset <= documentLength &&
-                si.stopTabOffset >= 0 && si.stopTabOffset <= documentLength) {
-              // Replace the code
-              int length = si.stopTabOffset - si.startTabOffset;
-              try {
-                document.remove(si.startTabOffset, length);
-                document.insertString(si.startTabOffset, newName, null);
-              } catch (BadLocationException e) { /* Whatever */ }
-            }
-          });
+        // Replace from the end so all unprocessed offsets stay valid
+        .sorted(Comparator.comparing((SketchInterval si) -> si.startTabOffset).reversed())
+        .forEach(si -> {
+          // Make sure offsets are in bounds
+          int documentLength = document.getLength();
+          if (si.startTabOffset >= 0 && si.startTabOffset <= documentLength &&
+            si.stopTabOffset >= 0 && si.stopTabOffset <= documentLength) {
+            // Replace the code
+            int length = si.stopTabOffset - si.startTabOffset;
+            try {
+              document.remove(si.startTabOffset, length);
+              document.insertString(si.startTabOffset, newName, null);
+            } catch (BadLocationException e) { /* Whatever */ }
+          }
+        });
 
       try {
         sketchCode.setProgram(document.getText(0, document.getLength()));

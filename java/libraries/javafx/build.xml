@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<project name="Processing JavaFX renderer" default="build">
+
+  <!-- Using 'location' here to resolve to an absolute path -->
+  <property name="core.path" location="../../../core/library/core.jar" />
+  <property name="library.path" location="./library" />
+
+  <target name="clean" description="Clean the build directories">
+    <delete dir="bin" />
+    <!-- Remove everything, which includes javafx.jar and files extracted from
+         GluonHQ downloads, but those can be reproduced from the downloaded zips. -->
+    <delete dir="${library.path}" />
+  </target>
+
+  <condition property="fx.unavailable" value="true">
+    <or>
+      <equals arg1="${os.arch}" arg2="arm" />
+      <equals arg1="${os.arch}" arg2="aarch64" />
+    </or>
+  </condition>
+
+  <condition property="jfx.available" value="true">
+    <and>
+      <not><equals arg1="${os.arch}" arg2="arm" /></not>
+    </and>
+  </condition>
+
+  <available file="${gluon.base}.zip" property="javafx.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="javafx.ignorable" value="false" else="true">
+    <isset property="javafx.present" />
+  </condition>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!--
+  https://gluonhq.com/products/javafx/
+  # use the download file specified by the server
+  wget -\-content-disposition 'https://gluonhq.com/download/javafx-16-sdk-mac'
+  wget -\-content-disposition 'https://gluonhq.com/download/javafx-16-sdk-windows'
+  wget -\-content-disposition 'https://gluonhq.com/download/javafx-16-sdk-linux'
+
+  src (and therefore .jar files?) appear to be identical except for com.sun.javafx.runtime.VersionInfo which has a BUILD_TIMESTAMP variable
+
+  https://gluonhq.com/download/javafx-16-sdk-mac
+  https://gluonhq.com/download/javafx-16-sdk-windows
+  https://gluonhq.com/download/javafx-16-sdk-linux
+  -->
+
+  <!-- JavaFX was removed from the Oracle JDK for ARM and Java 11.
+       There are arm32 and aarch64 builds for Linux (compatible with the Pi?)
+       but they're Early Access releases of JavaFX 17.
+       Downloads page is at https://gluonhq.com/products/javafx/
+
+       The links for the Apple Silicon and ARM Linux versions:
+       https://gluonhq.com/download/javafx-17-ea-sdk-mac-aarch64
+       https://gluonhq.com/download/javafx-17-ea-sdk-linux-aarch64
+       https://gluonhq.com/download/javafx-17-ea-sdk-linux-arm32
+
+       These could be better than nothing, but it's a different set of .jar files
+       (that would be identical across these three), but different from the main
+       versions. Not a good way to mix, unless have unique JARs for each platform,
+       which would be ~60 MB extra (for platforms that are < 2% usage). -->
+
+  <!--
+    https://download2.gluonhq.com/openjfx/17.0.0.1/openjfx-17.0.0.1_linux-x64_bin-sdk.zip
+    https://download2.gluonhq.com/openjfx/17.0.0.1/openjfx-17.0.0.1_osx-x64_bin-sdk.zip
+  -->
+  <target name="retrieve-gluon">
+    <get src="https://download2.gluonhq.com/openjfx/${gluon.version}/openjfx-${gluon.version}_${platform.name}-x64_bin-sdk.zip"
+         dest="${gluon.base}.zip"
+         ignoreerrors="${javafx.ignorable}"
+         usetimestamp="true" />
+
+    <antcall target="unzip-gluon-jars" />
+    <antcall target="unzip-gluon-natives" />
+  </target>
+
+  <target name="unzip-gluon-jars">
+    <property name="modules.path" value="${platform.path}/modules" />
+    <echo message="Extracting jars from ${gluon.base}.zip to ${modules.path}" />
+    <!-- should javafx.properties be copied? is it used for anything? [fry 210620] -->
+
+    <!-- https://ant.apache.org/manual/Tasks/unzip.html -->
+    <!-- <unzip dest="${library.path}" src="${gluon.base}.zip" overwrite="true"> -->
+    <!-- !#($*#! the builds have *slightly* different classes in each release
+         (WinPlatformFactory not in macOS .jar... FFS it's 1100 bytes of glue code)
+         So the .jar files go into the native subdirectories as well. -->
+    <unzip dest="${modules.path}" src="${gluon.base}.zip" overwrite="true">
+      <patternset>
+        <include name="**/*.jar" />
+        <!-- These two aren't supported/used -->
+        <!-- <exclude name="**/javafx.web.jar" /> -->
+        <exclude name="**/javafx-swt.jar" />
+      </patternset>
+
+      <!-- remove prefixes from folder paths when extracting -->
+      <mapper type="flatten" />
+    </unzip>
+  </target>
+
+  <target name="unzip-gluon-natives">
+    <echo message="Extracting native libs from ${gluon.base}.zip to ${platform.path}" />
+
+    <unzip dest="${platform.path}" src="${gluon.base}.zip" overwrite="true">
+      <patternset>
+        <include name="**/*.dll" />
+        <include name="**/*.dylib" />
+        <include name="**/*.so" />
+        <!-- The webkit library isn't included because this library is massive.
+             Remove libjfxwebkit.dylib, libjfxwebkit.so, jfxwebkit.dll -->
+        <!-- <exclude name="**/*jfxwebkit.*" /> -->
+
+        <!-- Not using this either, but since we're using 'include', no need for it -->
+        <!-- <exclude name="**/src.zip" /> -->
+      </patternset>
+
+      <!-- Ignore folder structure, which also helps because as of 210620,
+           the Windows build has a different folder for the binaries. -->
+      <mapper type="flatten" />
+    </unzip>
+  </target>
+
+  <target name="download-javafx">
+    <property name="gluon.version" value="17.0.1" />
+    <!-- current Early Access version, includes support for other architectures -->
+    <!-- <property name="gluon.version" value="17-ea" /> -->
+
+    <!-- http://ant.apache.org/manual/Tasks/tempfile.html -->
+    <!-- <tempfile property="temp.zip" destDir="${java.io.tmpdir}" suffix=".zip" /> -->
+
+    <!-- javafx-${gluon.version}-sdk-${gluon.platform} -->
+    <antcall target="retrieve-gluon">
+      <param name="gluon.base" value="javafx-${gluon.version}-macos" />
+      <param name="platform.name" value="osx" />
+      <param name="platform.path" value="${library.path}/macosx" />
+    </antcall>
+
+    <antcall target="retrieve-gluon">
+      <param name="gluon.base" value="javafx-${gluon.version}-windows" />
+      <param name="platform.name" value="windows" />
+      <param name="platform.path" value="${library.path}/windows64" />
+    </antcall>
+
+    <antcall target="retrieve-gluon">
+      <param name="gluon.base" value="javafx-${gluon.version}-linux" />
+      <param name="platform.name" value="linux" />
+      <param name="platform.path" value="${library.path}/linux64" />
+    </antcall>
+  </target>
+
+  <target name="compile" depends="download-javafx" description="Compile sources">
+    <condition property="core-built">
+      <available file="${core.path}" />
+    </condition>
+    <fail unless="core-built"
+          message="Please build the core library first: expecting core.jar at ${core.path}" />
+
+    <!-- just pick a platform; any should be sufficient for building -->
+    <property name="javafx.jar.path" value="library/macosx/modules" />
+
+    <mkdir dir="bin" />
+    <javac source="11" target="11"
+           srcdir="src" destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           classpath="${core.path};
+                      ${javafx.jar.path}/javafx.base.jar;
+                      ${javafx.jar.path}/javafx.controls.jar;
+                      ${javafx.jar.path}/javafx.fxml.jar;
+                      ${javafx.jar.path}/javafx.graphics.jar;
+                      ${javafx.jar.path}/javafx.media.jar;
+                      ${javafx.jar.path}/javafx.swing.jar"
+           nowarn="true" />
+  </target>
+
+  <target name="build" depends="compile" description="Build JavaFX renderer">
+    <jar basedir="bin" destfile="library/javafx.jar" />
+  </target>
+</project>

@@ -27,8 +27,8 @@ import java.awt.Desktop;
 import java.awt.Toolkit;
 
 import processing.app.Base;
+import processing.app.Messages;
 import processing.app.Preferences;
-import processing.app.platform.DefaultPlatform;
 import processing.core.PApplet;
 
 
@@ -70,7 +70,7 @@ public class LinuxPlatform extends DefaultPlatform {
       if (sudoUser != null && sudoUser.length() != 0) {
         try {
           homeDir = getHomeDir(sudoUser);
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
       }
     }
     return homeDir;
@@ -85,7 +85,25 @@ public class LinuxPlatform extends DefaultPlatform {
 
   @Override
   public File getSettingsFolder() throws Exception {
-    return new File(getHomeDir(), ".processing");
+    // https://github.com/processing/processing4/issues/203
+    // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
+
+    File configHome = null;
+
+    // Check to see if the user has set a different location for their config
+    String configHomeEnv = getenv("XDG_CONFIG_HOME");
+    if (configHomeEnv != null && !configHomeEnv.isBlank()) {
+      configHome = new File(configHomeEnv);
+      if (!configHome.exists()) {
+        Messages.err("XDG_CONFIG_HOME is set to " + configHomeEnv + " but does not exist.");
+        configHome = null;  // don't use non-existent folder
+      }
+    }
+    // If not set properly, use the default
+    if (configHome == null) {
+      configHome = new File(getHomeDir(), ".config");
+    }
+    return new File(configHome, "processing");
   }
 
 
@@ -122,7 +140,7 @@ public class LinuxPlatform extends DefaultPlatform {
       p.waitFor();
       Preferences.set("launcher", "xdg-open");
       return true;
-    } catch (Exception e) { }
+    } catch (Exception ignored) { }
 
     // Attempt to use gnome-open
     try {
@@ -131,7 +149,7 @@ public class LinuxPlatform extends DefaultPlatform {
       // Not installed will throw an IOException (JDK 1.4.2, Ubuntu 7.04)
       Preferences.set("launcher", "gnome-open");
       return true;
-    } catch (Exception e) { }
+    } catch (Exception ignored) { }
 
     // Attempt with kde-open
     try {
@@ -139,7 +157,7 @@ public class LinuxPlatform extends DefaultPlatform {
       p.waitFor();
       Preferences.set("launcher", "kde-open");
       return true;
-    } catch (Exception e) { }
+    } catch (Exception ignored) { }
 
     return false;
   }

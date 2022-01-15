@@ -50,7 +50,7 @@ class ASTViewer {
         return super.convertValueToText(value, selected, expanded, leaf, row, hasFocus);
       }
     };
-    tree.setCellRenderer(new ZoomTreeCellRenderer(editor.getMode()));
+    tree.setCellRenderer(new ZoomTreeCellRenderer());
     window.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentHidden(ComponentEvent e) {
@@ -69,16 +69,14 @@ class ASTViewer {
 
     tree.addTreeSelectionListener(e -> {
       if (tree.getLastSelectedPathComponent() != null) {
-        DefaultMutableTreeNode tnode =
+        DefaultMutableTreeNode treeNode =
           (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-        if (tnode.getUserObject() instanceof ASTNode) {
-          ASTNode node = (ASTNode) tnode.getUserObject();
+        if (treeNode.getUserObject() instanceof ASTNode) {
+          ASTNode node = (ASTNode) treeNode.getUserObject();
           pps.whenDone(ps -> {
             SketchInterval si = ps.mapJavaToSketch(node);
             if (!ps.inRange(si)) return;
-            EventQueue.invokeLater(() -> {
-              editor.highlight(si.tabIndex, si.startTabOffset, si.stopTabOffset);
-            });
+            EventQueue.invokeLater(() -> editor.highlight(si.tabIndex, si.startTabOffset, si.stopTabOffset));
           });
         }
       }
@@ -97,7 +95,7 @@ class ASTViewer {
   void buildAndUpdateTree(PreprocSketch ps) {
     CompilationUnit cu = ps.compilationUnit;
     if (cu.types().isEmpty()){
-      Messages.loge("No Type found in CU");
+      Messages.err("No Type found in CU");
       return;
     }
 

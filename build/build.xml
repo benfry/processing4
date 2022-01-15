@@ -27,6 +27,9 @@
     </and>
   </condition>
 
+  <property name="examples.dir"
+            location="../../processing-docs/content/examples" />
+
   <target name="ignore-tools">
     <echo message="Ignore the 'Unable to locate tools.jar' message." />
     <echo message="The tools.jar file is not required to build Processing." />
@@ -61,181 +64,66 @@
     <property name="linux.dist" value="linux/processing-${version}-linux-arm64.tgz" />
   </target>
 
-  <!-- Require Java 11 everywhere. -->
-  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java 11 is installed.">
+  <!-- 11.0.10+9 -->
+  <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.detail" value="${jdk.train}.0.10" />
+  <property name="jdk.build" value="9" />
+  -->
+
+  <!-- 11.0.11+9 -->
+  <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.detail" value="${jdk.train}.0.11" />
+  <property name="jdk.build" value="9" />
+  -->
+
+  <!-- 11.0.12+7 -->
+  <!--
+  <property name="jdk.train" value="11" />
+  <property name="jdk.detail" value="${jdk.train}.0.12" />
+  <property name="jdk.build" value="7" />
+  -->
+
+  <!-- 17+35 -->
+  <!--
+  <property name="jdk.train" value="17" />
+  <property name="jdk.detail" value="${jdk.train}" />
+  <property name="jdk.build" value="35" />
+  -->
+
+  <!-- 17.0.1+12 -->
+  <property name="jdk.train" value="17" />
+  <property name="jdk.detail" value="${jdk.train}.0.1" />
+  <property name="jdk.build" value="12" />
+
+
+  <!-- Require Java ${train} everywhere. -->
+  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
     <condition>
       <not>
         <or>
-          <contains string="${java.version}" substring="11." />
+          <!-- <contains string="${java.version}" substring="${jdk.train}." /> -->
+          <equals arg1="${ant.java.version}" arg2="${jdk.train}" />
         </or>
       </not>
     </condition>
   </fail>
 
-  <!-- JavaFX got removed from the Oracle's JDK for arm and Java 11 -->
-  <condition property="jfx.available" value="true">
-    <and>
-      <not><equals arg1="${os.arch}" arg2="arm" /></not>
-    </and>
-  </condition>
-
-  <!-- could prompt here to download the necessary JRE
-       (Windows/Linux) or JDK (on Mac OS X) -->
-
-  <property name="examples.dir"
-            value="../../processing-docs/content/examples" />
-
-  <property name="jdk.train" value="11" />
-  <property name="jdk.version" value="0" />
-  <property name="jdk.update" value="6" />
-  <property name="jdk.build" value="10" />
-
-  <property name="jdk.prefix" value="jdk" />
-  <property name="jdk.esoteric" value="${jdk.train}.${jdk.version}.${jdk.update}" />
-
-  <property name="jfx.train" value="11" />
-  <property name="jfx.version" value="0" />
-  <property name="jfx.update" value="2" />
-  <property name="jfx.build" value="0" />
-
-  <property name="jfx.name" value="${jfx.train}.${jfx.version}.${jfx.update}" />
-
-
-  <!-- Figure out the JRE download location for Linux and Windows. -->
-  <!--
-  <condition property="jdk.file"
-             value="jdk-${jdk.short}-${target-platform}-i586.tar.gz">
-    <equals arg1="${jdk.data.model}" arg2="32" />
-  </condition>
-  <condition property="jdk.file"
-             value="jdk-${jdk.short}-${target-platform}-x64.tar.gz">
-    <equals arg1="${jdk.data.model}" arg2="64" />
-  </condition>
-  -->
-
-  <!-- JDK location for Mac OS X -->
-  <!--
-  <condition property="jdk.file" value="jdk-${jdk.short}-macosx-x64.dmg">
-    <equals arg1="${target-platform}" arg2="macosx" />
-  </condition>
-  -->
-
-  <!-- These lists haven't been updated since Java 6. The new list:
-       http://www.oracle.com/technetwork/java/javase/jdk-8-readme-2095710.html
-       Please help: https://github.com/processing/processing/issues/3288 -->
-
   <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
-    <include name="Java/core/library/libjfxwebkit.dylib" />
+    <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
+    <!-- <include name="Java/core/library/libjfxwebkit.dylib" /> -->
   </fileset>
 
   <fileset dir="windows/work" id="jdk-optional-windows">
-    <include name="java/lib/ext/dnsns.jar" />
-
-    <include name="java/bin/dtplugin" />
-    <include name="java/bin/plugin2" />
-
-    <include name="java/bin/kinit.exe" />
-    <include name="java/bin/klist.exe" />
-    <include name="java/bin/ktab.exe" />
-
-    <include name="java/bin/keytool" /> <!-- needed for Android -->
-    <include name="java/bin/orbd" />
-    <include name="java/bin/policytool" />
-    <include name="java/bin/rmid" />
-    <include name="java/bin/rmiregistry" />
-    <include name="java/bin/servertool" />
-    <include name="java/bin/tnameserv" />
-
-    <include name="java/bin/javaws.exe" />
-    <include name="java/lib/javaws.jar" />
-
-    <include name="java/lib/cmm/PYCC.pf" />
-
     <include name="java/lib/src.zip" />
-
-    <include name="core/library/jfxwebkit.dll" />
+    <!-- <include name="core/library/jfxwebkit.dll" /> -->
   </fileset>
 
   <fileset dir="linux/work" id="jdk-optional-linux">
-    <include name="java/bin/keytool" /> <!-- needed for Android -->
-
-    <include name="java/lib/ext/dnsns.jar" />
-
-    <include name="java/bin/orbd" />
-    <include name="java/bin/policytool" />
-    <include name="java/bin/rmid" />
-    <include name="java/bin/rmiregistry" />
-    <include name="java/bin/servertool" />
-    <include name="java/bin/tnameserv" />
-
-    <include name="java/bin/javaws" />
-    <include name="java/lib/javaws.jar" />
-
     <include name="java/lib/src.zip" />
-
-    <include name="core/library/libjfxwebkit.so" />
-
-    <include name="java/lib/cmm/PYCC.pf" />
+    <!-- <include name="core/library/libjfxwebkit.so" /> -->
   </fileset>
-
-  <!-- Unused JavaFX files that can be removed from the JRE on Windows
-       and Linux. On Mac OS X, this is removed by the appbundler task.
-       www.oracle.com/technetwork/java/javase/jdk-7-readme-429198.html
-       However, we're now looking into using JavaFX as the default 2D
-       renderer for 3.0. So in 3.0a8, we're no longer removing javafx. -->
-
-  <fileset dir="${target-platform}/work/java" id="javafx-basics">
-    <include name="THIRDPARTYLICENSEREADME-JAVAFX.txt" />
-    <include name="lib/javafx.properties" />
-    <include name="lib/jfxrt.jar" />
-    <include name="lib/security/javafx.policy" />
-  </fileset>
-
-  <fileset dir="windows/work/java" id="javafx-windows">
-    <include name="bin/decora-sse.dll" />
-    <include name="bin/fxplugins.dll" />
-    <include name="bin/glass.dll" />
-    <include name="bin/glib-lite.dll" />
-    <include name="bin/gstreamer-lite.dll" />
-    <include name="bin/javafx-font.dll" />
-    <include name="bin/javafx-iio.dll" />
-    <include name="bin/jfxmedia.dll" />
-    <include name="bin/jfxwebkit.dll" />
-    <include name="bin/libxml2.dll" />
-    <include name="bin/libxslt.dll" />
-  </fileset>
-
-  <fileset dir="linux/work/java" id="javafx-linux-32">
-    <include name="lib/i386/fxavcodecplugin-52.so" />
-    <include name="lib/i386/fxavcodecplugin-53.so" />
-    <include name="lib/i386/fxplugins.so" />
-    <include name="lib/i386/libglass.so" />
-    <include name="lib/i386/libgstplugins-lite.so" />
-    <include name="lib/i386/libgstreamer-lite.so" />
-    <include name="lib/i386/libjavafx-font.so" />
-    <include name="lib/i386/libjavafx-iio.so" />
-    <include name="lib/i386/libjfxmedia.so" />
-    <include name="lib/i386/libjfxwebkit.so" />
-    <include name="lib/i386/libprism-es2.so" />
-  </fileset>
-
-  <fileset dir="linux/work/java" id="javafx-linux-64">
-    <include name="lib/amd64/fxavcodecplugin-52.so" />
-    <include name="lib/amd64/fxavcodecplugin-53.so" />
-    <include name="lib/amd64/fxplugins.so" />
-    <include name="lib/amd64/libglass.so" />
-    <include name="lib/amd64/libgstplugins-lite.so" />
-    <include name="lib/amd64/libgstreamer-lite.so" />
-    <include name="lib/amd64/libjavafx-font.so" />
-    <include name="lib/amd64/libjavafx-iio.so" />
-    <include name="lib/amd64/libjfxmedia.so" />
-    <include name="lib/amd64/libjfxwebkit.so" />
-    <include name="lib/amd64/libprism-es2.so" />
-  </fileset>
-
-  <!--
-  <echo message="${java.class.path}" />
-  -->
 
   <!-- Macro to help set the platform ant vars appropriately -->
   <macrodef name="settarget">
@@ -250,149 +138,99 @@
       <property name="target-platform" value="@{platform}" />
       <property name="${target-platform}" value="${target-platform}" />
 
-      <property name="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz" />
+      <!-- JDK archive saved as .zip on Windows, .tgz on macOS and Linux -->
+      <condition property="jdk.archive.ext" value="zip" else="tgz">
+        <os family="windows" />
+      </condition>
+
+      <property name="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.${jdk.archive.ext}" />
 
       <property name="jdk.data.model" value="@{datamodel}" />
 
-      <property name="jfx.path.zip" value="${target-platform}/jfx-${jfx.name}.zip" />
-
-      <property name="jfx.path.dist" value="${target-platform}/javafx-sdk-${jfx.name}" />
-
-      <property name="jfx.path.lib" value="${jfx.path.dist}/lib" />
-
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.tgz">
+      <!--
+      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.tgz">
         <not>
           <equals arg1="${target-platform}" arg2="windows" />
         </not>
       </condition>
 
-      <condition property="jdk.tgz.path" value="${target-platform}/jdk-${jdk.esoteric}.zip">
+      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.zip">
         <equals arg1="${target-platform}" arg2="windows" />
       </condition>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="preparejfx">
-    <sequential>
-      <if>
-        <equals arg1="${jfx.available}" arg2="true" />
-        <then>
-          <!-- Extract JFX -->
-          <echo message="Target jfx: ${jfx.path.zip}"/>
-          <unzip dest="${target-platform}" src="${jfx.path.zip}" overwrite="true"/>
-        </then>
-      </if>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="nativecopy">
-    <attribute name="src"/>
-    <attribute name="dest"/>
-    <sequential>
-
-      <local name="src-abs"/>
-      <local name="dest-abs"/>
-      <local name="src-local"/>
-      <local name="dest-local"/>
-
-      <property name="src-abs" value="${basedir}/@{src}"/>
-      <property name="dest-abs" value="${basedir}/@{dest}"/>
-
-      <if>
-        <equals arg1="${host-platform}" arg2="windows" />
-        <then>
-          <propertyregex property="src-local"
-               input="${src-abs}"
-               regexp="/"
-               replace="\\\\"
-               global="true" />
-          <propertyregex property="dest-local"
-              input="${dest-abs}"
-              regexp="/"
-              replace="\\\\"
-              global="true" />
-
-          <echo message="Native copy of ${src-local} to ${dest-local}" />
-          <exec executable="cmd">
-            <arg line="/C xcopy /s/Y ${src-local} ${dest-local}" />
-          </exec>
-        </then>
-      </if>
-
-      <if>
-        <not><equals arg1="${host-platform}" arg2="windows" /></not>
-        <then>
-          <echo message="Native copy of ${src-abs} to ${dest-abs}" />
-          <exec executable="sh">
-            <arg line="-c 'cp ${src-abs} ${dest-abs}'"/>
-          </exec>
-        </then>
-      </if>
+      -->
     </sequential>
   </macrodef>
 
   <target name="jdk-check">
-    <echo message="Checking for ${jdk.tgz.path}" />
-    <available file="${jdk.tgz.path}" property="jdk.tgz.downloaded" />
-    <echo message="Result: ${jdk.tgz.downloaded}" />
+    <echo message="Checking for ${jdk.archive.path}" />
+    <available file="${jdk.archive.path}" property="jdk.archive.downloaded" />
+    <echo message="Result: ${jdk.archive.downloaded}" />
   </target>
 
+  <!--
   <target name="jfx-check">
     <available file="${jfx.path.zip}" property="jfx.zip.downloaded" />
   </target>
+  -->
 
-  <target name="downloader-setup">
-    <!-- make sure we're built -->
-    <subant buildpath="jre" target="dist-no-test" />
+  <target name="jdk-download" depends="jdk-check"
+          unless="jdk.archive.downloaded">
 
-    <!-- define our special JRE downloader task -->
-    <taskdef name="downloader"
-             classname="Downloader"
-             classpath="jre/downloader.jar" />
-  </target>
-
-  <target name="jdk-download" depends="jdk-check, downloader-setup"
-          unless="jdk.tgz.downloaded">
-
-    <condition property="jdk.downloader"
-               value="${target-platform}-i586.tar.gz">
-        <equals arg1="${jdk.data.model}" arg2="32" />
-    </condition>
-    <condition property="jdk.downloader"
-               value="${target-platform}-x64.tar.gz">
-      <equals arg1="${jdk.data.model}" arg2="64" />
+    <!-- Windows is the outlier with the .zip extension (the others are .tar.gz) -->
+    <condition property="jdk.download.ext" value="zip" else="tar.gz">
+      <os family="windows" />
     </condition>
 
-    <downloader component="jdk"
-                train="${jdk.train}"
-                version="${jdk.version}"
-                platform="${target-platform}${jdk.data.model}"
-                update="${jdk.update}"
-                build="${jdk.build}"
-                flavor="${jdk.downloader}"
-                path="${jdk.tgz.path}" />
+    <!-- platform prop works for Windows and Linux, but 'macosx' needs to be 'mac' -->
+    <condition property="jdk.download.os" value="mac" else="${platform}">
+      <os family="mac" />
+    </condition>
+
+    <!-- Java 11.0.11 and earlier is available via AdoptOpenJDK -->
+
+    <!--
+      https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jdk_x64_mac_hotspot_11.0.11_9.tar.gz
+    -->
+
+    <!--
+    <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+    -->
+
+    <!-- Java 11.0.12 and later are available via Adoptium -->
+
+    <!--
+      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.12_7.tar.gz
+
+      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_windows_hotspot_11.0.12_7.zip
+
+      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
+    -->
+
+    <!--
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+    -->
+
+    <!-- Java 17 via Adoptium -->
+    <!--
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_mac_hotspot_17_35.pkg
+      <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK17-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
+    -->
+
+    <!-- Java 17.0.1 via Adoptium -->
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+
+    <get src="${jdk.download.url}"
+         dest="${jdk.archive.path}"
+         ignoreerrors="false"
+         usetimestamp="true" />
+
   </target>
 
-  <target name="jfx-download" depends="jfx-check, downloader-setup"
-          unless="jfx.zip.downloaded">
+  <!-- Set the version of Java 11 that must be present to build. -->
+  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.detail}+${jdk.build}" />
 
-    <downloader component="jfx"
-                train="${jfx.train}"
-                version="${jfx.version}"
-                platform="${target-platform}${jdk.data.model}"
-                update="${jfx.update}"
-                build="1"
-                flavor="${target-platform}${jdk.data.model}.zip"
-                path="${jfx.path.zip}" />
-  </target>
-
-  <!-- code signing hack, turns on code signing during dist -->
-  <condition property="codesign">
-    <equals arg1="${env.USER}" arg2="fry" />
-  </condition>
-
-  <!-- Set the version of Java that must be present to build. -->
-  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.esoteric}+${jdk.build}" />
+  <!-- Set the version of Java 17 that must be present to build. -->
+  <!-- <property name="jdk.path.macosx" value="macosx/jdk-${jdk.train}+${jdk.build}" /> -->
 
   <available file="${jdk.path.macosx}" property="macosx_jdk_found" />
 
@@ -424,6 +262,7 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
+    <include name="app/lib/VAqua8.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
@@ -495,12 +334,14 @@
     <subant buildpath="../core" target="clean"/>
     <subant buildpath="../app" target="clean"/>
     <subant buildpath="../java/libraries/dxf" target="clean"/>
+    <subant buildpath="../java/libraries/javafx" target="clean"/>
     <subant buildpath="../java/libraries/io" target="clean"/>
     <subant buildpath="../java/libraries/net" target="clean"/>
     <subant buildpath="../java/libraries/pdf" target="clean"/>
     <subant buildpath="../java/libraries/serial" target="clean"/>
     <subant buildpath="../java/libraries/svg" target="clean"/>
     <subant buildpath="shared/tools/MovieMaker" target="clean"/>
+    <subant buildpath="shared/tools/ThemeEngine" target="clean"/>
     <subant buildpath="../java" target="clean"/>
 
     <!-- make sure this isn't around from an old build 140730 -->
@@ -510,18 +351,19 @@
   <target name="test" depends="build">
     <subant buildpath="../core" target="test"/>
     <subant buildpath="../java" target="test"/>
-    <subant buildpath="jre" target="test" />
   </target>
 
   <target name="subprojects-build">
     <subant buildpath="../core" target="build"/>
     <subant buildpath="../app" target="build"/>
     <subant buildpath="../java/libraries/dxf" target="build"/>
+    <subant buildpath="../java/libraries/javafx" target="build"/>
     <subant buildpath="../java/libraries/net" target="build"/>
     <subant buildpath="../java/libraries/pdf" target="build"/>
     <subant buildpath="../java/libraries/serial" target="build"/>
     <subant buildpath="../java/libraries/svg" target="build"/>
     <subant buildpath="shared/tools/MovieMaker" target="build"/>
+    <subant buildpath="shared/tools/ThemeEngine" target="build"/>
     <subant buildpath="../java" target="build"/>
   </target>
 
@@ -543,15 +385,28 @@
 
     <!-- copy shared tools folder -->
     <copy todir="${target.path}/tools" preservelastmodified="true">
-      <fileset dir="shared/tools" />
+      <fileset dir="shared/tools">
+        <patternset>
+          <include name="MovieMaker/tool/**" />
+          <include name="ThemeEngine/tool/**" />
+          <!-- <include name="**/tool/**" /> -->
+        </patternset>
+      </fileset>
     </copy>
+
+    <!-- make sure ffmpeg/ffmpeg.exe have exec permission -->
+    <condition property="ffmpeg.binary" value="ffmpeg.exe" else="ffmpeg">
+      <os family="windows" />
+    </condition>
+    <chmod file="${target.path}/tools/MovieMaker/tool/${ffmpeg.binary}" perm="ugo+x" />
 
     <copy todir="${target.path}/modes/java" preservelastmodified="true">
       <fileset dir="../java">
         <!-- don't include LWJGL, it's not operational -->
         <exclude name="libraries/lwjgl/**" />
-
-        <exclude name="reference.zip" />
+        <exclude name="**/javafx-*sdk*.zip" />
+        <!-- starting with revision 1276, reference.zip stays intact -->
+        <!-- <exclude name="reference.zip" /> -->
         <exclude name="**/._*" />
       </fileset>
     </copy>
@@ -573,6 +428,8 @@
          ignoreerrors="${reference.ignorable}"
          usetimestamp="true" />
 
+    <!-- starting with revision 1276, reference.zip stays intact -->
+    <!--
     <unzip dest="${target.path}/modes/java"
            src="../java/reference.zip"
            overwrite="false">
@@ -581,6 +438,7 @@
         <exclude name="**/._*" />
       </patternset>
     </unzip>
+    -->
 
     <!-- copy PDE X mode folder-->
     <!--
@@ -588,7 +446,6 @@
       <fileset dir="../pdex/dist" />
     </copy>
     -->
-
   </target>
 
   <target name="version-clear">
@@ -671,11 +528,11 @@
     </if>
   </target>
 
-  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download, jfx-download" description="Build Mac OS X version">
+  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download" description="Build Mac OS X version">
     <mkdir dir="macosx/work" />
 
     <!-- Extract JDK -->
-    <echo message="Target jdk: ${jdk.tgz.path}"/>
+    <echo message="Target jdk: ${jdk.archive.path}"/>
     <exec executable="tar" dir="macosx">
       <!-- Change directory -->
       <!--
@@ -684,10 +541,10 @@
       <arg value="-xzpf" />
       -->
       <arg value="xfz" />
-      <arg value="../${jdk.tgz.path}"/>
+      <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="macosx/work/jdk-${jdk.esoteric}+${jdk.build}.jdk/" />
+    <property name="jdk.dir" value="macosx/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
 
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
@@ -698,13 +555,16 @@
                name="Processing"
                displayName="Processing"
                executableName="Processing"
-               identifier="org.processing.app"
-               signature="Pde3"
+               identifier="org.processing.four"
+               signature="Pde4"
                icon="macosx/processing.icns"
                copyright="© The Processing Foundation"
                shortVersion="${version}"
                version="${revision}"
-               mainClassName="processing.app.BaseSplash">
+               mainClassName="processing.app.ui.Splash"
+               minimumSystemVersion="10.14.6">
+
+      <!-- mainClassName="processing.app.BaseSplash" -->
 
       <!-- The appbundler task needs a couple files (the Info.plist and
            anything else outside /jdk) from the full JDK, even though
@@ -721,8 +581,15 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
+      <classpath file="../app/lib/VAqua8.jar" />
 
-      <!-- plus core.jar... note that this is no longer shared -->
+
+      <!-- Creates a copy of core.jar, but that's simplest for now. For 4.0a5
+           development, appbundler was briefly changed to recursively walk the
+           "Java" folder for all .jar files, so entries from "core" got picked
+           up too, including core.jar and the JavaFX jars. But that wasn't the
+           right solution for JavaFX (class path and modules path can't mix),
+           so had to revert and we're back to duplicating core.jar -->
       <classpath file="../core/library/core.jar" />
 
       <arch name="x86_64"/>
@@ -730,9 +597,24 @@
       <!--<arch name="i386"/>-->
 
       <bundledocument extensions="pde,pyde"
+                      contentTypes="public.text"
                       icon="macosx/document.icns"
                       name="Processing Source Code"
                       role="Editor">
+      </bundledocument>
+
+      <bundledocument extensions="pdez"
+                      contentTypes="public.zip-archive"
+                      icon="macosx/document.icns"
+                      name="Processing Sketch Bundle"
+                      role="Editor">
+      </bundledocument>
+
+      <bundledocument extensions="pdex"
+                      contentTypes="public.zip-archive"
+                      icon="macosx/document.icns"
+                      name="Processing Contribution Bundle"
+                      role="Viewer">
       </bundledocument>
 
       <!-- !@#*&$ the @2x splash screen implementation was removed by Oracle -->
@@ -766,28 +648,31 @@
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
 
-<!--
-    the old options; most of these are probably no longer useful
-        <key>apple.laf.useScreenMenuBar</key>
-        <string>true</string>
-        <key>apple.awt.showGrowBox</key>
-        <string>true</string>
-        <key>com.apple.smallTabs</key>
-        <string>true</string>
-        <key>apple.awt.Antialiasing</key>
-        <string>false</string>
-        <key>apple.awt.TextAntialiasing</key>
-        <string>true</string>
-        <key>com.apple.hwaccel</key>
-        <string>true</string>
-        <key>apple.awt.use-file-dialog-packages</key>
-        <string>false</string>
-        <key>apple.awt.graphics.UseQuartz</key>
-        <string>true</string>
--->
+      <!-- https://github.com/jdf/Processing.py-Bugs/issues/322 -->
+      <option value="-Dpython.console.encoding=UTF-8" />
+
+      <!-- <option value="-agentpath:/Applications/YourKit-Java-Profiler-2021.3.app/Contents/Resources/bin/mac/libyjpagent.dylib=disablestacktelemetry,exceptions=disable" /> -->
+
+      <!-- Make it possible to get to JavaFX for Tools, Modes, etc. Not recommended,
+           to use those, but making it possible since some Tools rely on JavaFX. -->
+      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx" />
+
+      <!-- Necessary to avoid complaints because JavaFX wants to be a module. -->
+      <option value="--module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx/modules" />
+
+      <option value="--add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" />
+
+      <!-- Required for video capture and microphone input
+           https://github.com/processing/processing-sound/issues/51
+           https://github.com/processing/processing-video/issues/134 -->
+      <plistentry key="NSCameraUsageDescription" type="string"
+                  value="The sketch you're running needs access to your video camera." />
+      <plistentry key="NSMicrophoneUsageDescription" type="string"
+                  value="The sketch you're running needs access to your microphone." />
     </bundleapp>
 
-    <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" />
+    <!-- Changed the native app to no longer look for this folder. -->
+    <!-- <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" /> -->
 
     <!-- Temporary fix until new appbundler is included again after solving
          https://github.com/processing/processing/issues/3359
@@ -799,22 +684,22 @@
          Unix systems, we need to use <exec executable="cp" ... > instead -->
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/bin"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/jmods"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/conf"/>
+      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
     </exec>
 
     <property name="contents.dir"
@@ -822,11 +707,13 @@
 
     <!-- Replace libjli.dylib symlink with actual file.
          Deals with code signing issues on OS X 10.9.5+ -->
-    <property name="jli.path" value="${contents.dir}/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/MacOS/libjli.dylib" />
+    <!--
+    <property name="jli.path" value="${contents.dir}/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/MacOS/libjli.dylib" />
     <delete file="${jli.path}" />
     <exec executable="cp">
       <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
     </exec>
+    -->
 
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
@@ -835,9 +722,10 @@
       <fileset file="shared/changes.md" />
     </copy>
 
-    <preparejfx />
+    <!-- <preparejfx /> -->
 
     <!-- Pull in OpenJFX (separated from mainline Java in JDK 11). -->
+    <!--
     <if>
       <equals arg1="${jfx.available}" arg2="true" />
       <then>
@@ -847,14 +735,15 @@
           <fileset dir="${jfx.path.lib}" includes="*.dylib"/>
         </copy>
 
-        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal/openjfx" />
+        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" />
 
-        <copy todir="macosx/work/Processing.app/Contents/PlugIns/${jdk.prefix}-${jdk.esoteric}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
+        <copy todir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
           <fileset dir="${jfx.path.dist}/legal" includes="**"/>
         </copy>
 
       </then>
     </if>
+    -->
 
     <!-- Use the Processing executable as the stub for exported apps.
          This works b/c everything app-specific is in Info.plist. -->
@@ -900,18 +789,30 @@
       <arg line="${jdk.path.macosx}"/>
     </exec>
 
+    <!--
     <exec executable="rm">
       <arg value="-r"/>
       <arg line="${jfx.path.dist}"/>
     </exec>
+    -->
 
   </target>
 
   <target name="macosx-run" depends="macosx-build"
           description="Run Mac OS X version">
+
+    <!-- Terminal.app has a new location in Catalina -->
+    <available file="/System/Applications/Utilities/Terminal.app" type="dir"
+               property="terminal.path"
+               value="/System/Applications/Utilities/Terminal.app" />
+
+    <available file="/Applications/Utilities/Terminal.app" type="dir"
+               property="terminal.path"
+               value="/Applications/Utilities/Terminal.app" />
+
     <exec executable="open" dir="macosx/work" spawn="true">
       <arg value="-a" />
-      <arg value="/Applications/Utilities/Terminal.app" />
+      <arg value="${terminal.path}" />
       <arg value="Processing.app/Contents/MacOS/Processing" />
     </exec>
   </target>
@@ -923,7 +824,7 @@
     </exec>
   </target>
 
-  <target name="macosx-dist-sign" if="codesign">
+  <target name="macosx-dist-sign" if="env.PROCESSING_APP_PASSWORD">
     <echo>
       Code signing will only work if you have a $99/yr Apple developer ID.
 
@@ -931,20 +832,98 @@
       export CODESIGN_ALLOCATE="/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate"
     </echo>
 
-    <!-- 3rd party is for the app store, dev id is gatekeeper only -->
+    <!-- Use "3rd Party Mac Developer Application" for the app store,
+         instead of "Developer ID Application" when just doing Gatekeeper. -->
     <!--<arg value="3rd Party Mac Developer Application" />-->
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
+    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--force" />
+
       <arg value="--sign" />
       <arg value="Developer ID Application" />
-      <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.esoteric}+${jdk.build}" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
+
+      <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}" />
     </exec>
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
-      <arg value="--force" />
+    <!-- codesign can't work inside jars? so instead temporarily unpack the files
+         that contain dylib entries, just before doing our big signing event -->
+
+    <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
+
+    <property name="unpack.gluegen" value="macosx/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
+
+    <property name="unpack.jssc" value="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
+
+    <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
+    <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
+    <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
+
+    <!-- <unzip src="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
+
+    <apply executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
+
+      <!-- remove all other signatures -->
+      <arg value="--force" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
+
+      <!-- recursively sign everything -->
+      <arg value="--deep" />
+
+      <!-- enable the "hardened runtime" -->
+      <arg value="--options" />
+      <arg value="runtime" />
+
+      <fileset dir="macosx/work/Processing.app/Contents/Java">
+        <patternset>
+          <include name="**/*.dylib" />
+          <include name="**/*.jnilib" />
+          <!-- <include name="**/*.jar" /> -->
+          <!-- <include name="**/*.app" /> -->
+
+          <include name="modes/java/application/mac-app-stub" />
+          <include name="modes/java/application/template-app/Contents/MacOS/JavaApplicationStub" />
+          <include name="modes/java/application/launch4j/bin/windres" />
+          <include name="modes/java/application/launch4j/bin/ld" />
+          <include name="tools/MovieMaker/tool/ffmpeg" />
+        </patternset>
+      </fileset>
+    </apply>
+
+    <!-- re-package the jar files after signing their macOS contents -->
+    <zip destfile="${unpack.jogl}.jar" basedir="${unpack.jogl}" />
+    <zip destfile="${unpack.gluegen}.jar" basedir="${unpack.gluegen}" />
+    <zip destfile="${unpack.jssc}.jar" basedir="${unpack.jssc}" />
+
+    <!-- delete the temporary directories w/ the jar contents -->
+    <delete dir="${unpack.jogl}" />
+    <delete dir="${unpack.gluegen}" />
+    <delete dir="${unpack.jssc}" />
+
+    <!-- sign the outer application, now that we've finished all the contents -->
+    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+      <arg value="--sign" />
+      <arg value="Developer ID Application" />
+
+      <!-- remove all other signatures -->
+      <arg value="--force" />
+
+      <!-- recursively sign everything -->
+      <arg value="--deep" />
+
+      <arg value="--entitlements" />
+      <arg value="../ffs.entitlements" />
+
+      <!-- enable the "hardened runtime" -->
+      <arg value="--options" />
+      <arg value="runtime" />
+
       <arg value="Processing.app" />
     </exec>
 
@@ -961,6 +940,40 @@
     <!-- Disabling since it's a lot of gunk but not that useful. -->
   </target>
 
+  <target name="macosx-dist-notarize" if="env.PROCESSING_APP_PASSWORD">
+    <!-- xcrun: error: unable to find utility "altool", not a developer tool or in PATH -->
+    <!-- fix with 'sudo xcode-select -r' -->
+
+    <!-- when it's time to sign/update documents or make an app password: -->
+    <!-- https://developer.apple.com/account/ -->
+
+    <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
+      <arg value="altool" />
+      <arg value="--notarize-app" />
+
+      <!-- spew a bunch of useless garbage that has nothing to do with success/failure -->
+      <!-- <arg value="- -verbose" /> -->
+
+      <arg value="--primary-bundle-id" />
+      <arg value="org.processing.app" />
+
+      <arg value="--username" />
+      <arg value="${env.PROCESSING_APPLE_ID}" />
+
+      <arg value="--password" />
+      <arg value="${env.PROCESSING_APP_PASSWORD}" />
+
+      <arg value="--file" />
+      <arg value="processing-${version}-macosx.zip" />
+    </exec>
+
+    <echo>
+      Check on notarization status with:
+
+      xcrun altool -u $PROCESSING_APPLE_ID -p $PROCESSING_APP_PASSWORD --notarization-info [the RequestUUID above]
+    </echo>
+  </target>
+
   <target name="macosx-dist" if="macosx"
           depends="macosx-build"
           description="Create a downloadable .zip for the Mac OS X version">
@@ -970,6 +983,8 @@
     <exec executable="ditto" dir="macosx/work">
       <arg line="-c -k -rsrc . ../processing-${version}-macosx.zip" />
     </exec>
+
+    <antcall target="macosx-dist-notarize" />
 
     <echo>
       =======================================================
@@ -1009,7 +1024,7 @@
     </if>
   </target>
 
-  <target name="linux-build" depends="ignore-tools, check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, jfx-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
+  <target name="linux-build" depends="ignore-tools, check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
     <mkdir dir="linux/work" />
 
     <copy todir="linux/work" preservelastmodified="true">
@@ -1049,9 +1064,10 @@
       <fileset refid="runtime.jars" />
     </copy>
 
-    <preparejfx />
+    <!-- <preparejfx /> -->
 
     <!-- Pull in OpenJFX (separated from mainline Java in JDK 11). -->
+    <!--
     <if>
       <equals arg1="${jfx.available}" arg2="true" />
       <then>
@@ -1067,6 +1083,7 @@
         </copy>
       </then>
     </if>
+    -->
 
     <copy file="linux/processing" todir="linux/work" />
     <chmod perm="ugo+x" file="linux/work/processing" />
@@ -1114,10 +1131,10 @@
       <arg value="-xzpf" />
       -->
       <arg value="xfz" />
-      <arg value="../${jdk.tgz.path}"/>
+      <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="jdk-${jdk.esoteric}+${jdk.build}/" />
+    <property name="jdk.dir" value="jdk-${jdk.detail}+${jdk.build}/" />
 
     <exec executable="rsync" dir="linux">
       <arg value="-a" />
@@ -1128,23 +1145,20 @@
 
     <!-- Remove unused JRE bloat. -->
     <delete failonerror="true">
-      <!--
-      <fileset refid="javafx-basics" />
-      <fileset refid="javafx-linux-${jdk.data.model}" />
-      -->
       <fileset refid="jdk-optional-linux" />
     </delete>
 
     <exec executable="rm">
       <arg value="-r"/>
-      <arg line="linux/jdk-${jdk.esoteric}+${jdk.build}"/>
+      <arg line="linux/jdk-${jdk.detail}+${jdk.build}"/>
     </exec>
 
+    <!--
     <exec executable="rm">
       <arg value="-r"/>
       <arg line="${jfx.path.dist}"/>
     </exec>
-
+    -->
   </target>
 
   <target name="linux-run" depends="linux-build"
@@ -1305,7 +1319,7 @@
     <!-- Left for consistency. Windows can be built on mac, linux, or windows. -->
   </target>
 
-  <target name="windows-build" depends="ignore-tools, revision-check, windows-check-os, jdk-download, jfx-download, subprojects-build" description="Build Windows version">
+  <target name="windows-build" depends="ignore-tools, revision-check, windows-check-os, jdk-download, subprojects-build" description="Build Windows version">
     <mkdir dir="windows/work" />
 
     <!-- assemble the pde -->
@@ -1339,34 +1353,7 @@
       <fileset file="shared/changes.md" />
     </copy>
 
-    <preparejfx />
-
-    <!-- Pull in OpenJFX (separated from mainline Java in JDK 11). -->
-    <if>
-      <equals arg1="${jfx.available}" arg2="true" />
-      <then>
-
-        <!-- Use native copy command due to binary file corruption. See
-          https://ant.apache.org/manual/Tasks/copy.html#encoding. Extraneous
-          files removed later. -->
-
-        <nativecopy
-          src="${jfx.path.lib}/*.jar"
-          dest="windows/work/core/library" />
-
-        <nativecopy
-          src="${jfx.path.dist}/bin/*.dll"
-          dest="windows/work/core/library" />
-
-        <mkdir dir="windows/work/java/legal/openjfx" />
-
-        <copy todir="windows/work/java/legal/openjfx" overwrite="true">
-          <fileset dir="${jfx.path.dist}/legal" includes="**"/>
-        </copy>
-
-        <delete failonerror="false" dir="${jfx.path.dist}" />
-      </then>
-    </if>
+    <!-- <preparejfx /> -->
 
     <fixcrlf file="windows/work/changes.md" eol="crlf" encoding="UTF-8" />
 
@@ -1429,32 +1416,18 @@
       <fileset dir="windows/work" includes="**/*.html, **/*.dll, **/*.exe" />
     </chmod>
 
-    <!-- starting with 2.0a7, require the local JRE + tools.jar -->
-<!--
-    <get src="http://download.processing.org/java/${jdk.file}"
-         dest="windows/jdk.tgz"
-         usetimestamp="true" />
--->
-
-    <!--
-    <unzip dest="windows/work" src="windows/jdk.zip" overwrite="false"/>
-    -->
     <!-- Hopefully this is OK with the permissions (unlike Linux),
          since those shouldn't matter on Windows. -->
     <unzip dest="windows/work"
-           src="${jdk.tgz.path}"
+           src="${jdk.archive.path}"
            overwrite="false" />
 
-    <property name="jdk.dir" value="windows/work/jdk-${jdk.esoteric}+${jdk.build}/" />
+    <property name="jdk.dir" value="windows/work/jdk-${jdk.detail}+${jdk.build}/" />
 
     <move file="${jdk.dir}" tofile="windows/work/java" />
 
     <!-- Remove unused JRE bloat. -->
     <delete failonerror="true">
-      <!--
-      <fileset refid="javafx-basics" />
-      <fileset refid="javafx-windows" />
-      -->
       <fileset refid="jdk-optional-windows" />
     </delete>
   </target>
@@ -1467,15 +1440,6 @@
 
   <target name="windows-dist" depends="windows-build"
           description="Create .zip files of windows version">
-    <!--
-    <zip basedir="windows/work"
-         prefix="processing-${version}"
-         destfile="windows/processing-${version}.zip" />
-    <zip basedir="windows/work"
-         prefix="processing-${version}"
-         destfile="windows/processing-${version}-expert.zip"
-         excludes="java/**" />
-    -->
 
     <property name="windows.dist" value="windows/processing-${version}-windows${jdk.data.model}.zip" />
 
@@ -1483,15 +1447,6 @@
       <zipfileset dir="windows/work"
                   prefix="processing-${version}" />
     </zip>
-
-<!-- Expert is too much of a headache. Just nix it for 2.0. -->
-<!--
-    <zip destfile="windows/processing-${version}-windows-expert.zip">
-      <zipfileset dir="windows/work"
-                  prefix="processing-${version}"
-                  excludes="java/**" />
-    </zip>
--->
 
     <echo>
       =======================================================
@@ -1613,7 +1568,7 @@ remove the spaces for depth since it should be double dash, but screws up commen
 
       <!-- provide links for java.* classes.
            also suppresses the java.lang prefix in the text.  -->
-      <link href="http://docs.oracle.com/javase/7/docs/api/" />
+      <link href="https://docs.oracle.com/en/java/javase/11/docs/api/" />
 
       <!-- prevent files from always appearing to have changed -->
       <arg value="-notimestamp" />
@@ -1648,13 +1603,13 @@ remove the spaces for depth since it should be double dash, but screws up commen
       <arg line="everything -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/javafx:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
       <arg value="-quiet" />
 
-      <link href="http://docs.oracle.com/javase/7/docs/api/" />
+      <link href="https://docs.oracle.com/en/java/javase/11/docs/api/" />
 
       <packageset dir="../app/src">
         <include name="antlr/**" />
@@ -1689,13 +1644,13 @@ remove the spaces for depth since it should be double dash, but screws up commen
       <arg line="libraries -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik-dom-1.8.jar:../java/libraries/svg/library/batik-svggen-1.8.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik-dom-1.8.jar:../java/libraries/svg/library/batik-svggen-1.8.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/javafx:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
       <arg value="-quiet" />
 
-      <link href="http://docs.oracle.com/javase/7/docs/api/" />
+      <link href="https://docs.oracle.com/en/java/javase/11/docs/api/" />
       <link href="../../javadoc/core/" />
 
       <tag name="webref" enabled="false" />
@@ -1710,6 +1665,9 @@ remove the spaces for depth since it should be double dash, but screws up commen
 
       <packageset dir="../java/libraries/dxf/src">
         <include name="antlr/**" />
+        <include name="processing/**" />
+      </packageset>
+      <packageset dir="../java/libraries/javafx/src">
         <include name="processing/**" />
       </packageset>
       <packageset dir="../java/libraries/io/src">

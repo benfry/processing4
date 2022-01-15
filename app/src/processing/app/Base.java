@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-20 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -23,26 +23,22 @@
 
 package processing.app;
 
-import java.awt.EventQueue;
-import java.awt.FileDialog;
-import java.awt.event.ActionEvent;
+import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 import java.util.Map.Entry;
 
-import javax.swing.JFileChooser;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPopupMenu;
+import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import processing.app.contrib.*;
 import processing.app.tools.Tool;
 import processing.app.ui.*;
+import processing.app.ui.Toolkit;
 import processing.core.*;
 import processing.data.StringList;
 
@@ -51,15 +47,17 @@ import processing.data.StringList;
  * The base class for the main processing application.
  * Primary role of this class is for platform identification and
  * general interaction with the system (launching URLs, loading
- * files and images, etc) that comes from that.
+ * files and images, etc.) that comes from that.
  */
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1271;
+  static private final int REVISION = 1278;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1271"; //$NON-NLS-1$
-  /** Set true if this a proper release rather than a numbered revision. */
+  static private String VERSION_NAME = "1278"; //$NON-NLS-1$
+
+  static final public String SKETCH_BUNDLE_EXT = ".pdez";
+  static final public String CONTRIB_BUNDLE_EXT = ".pdex";
 
   /**
    * True if heavy debugging error/log messages are enabled. Set to true
@@ -80,8 +78,8 @@ public class Base {
   static File untitledFolder;
 
   /** List of currently active editors. */
-  protected List<Editor> editors =
-    Collections.synchronizedList(new ArrayList<Editor>());
+  final protected List<Editor> editors =
+    Collections.synchronizedList(new ArrayList<>());
   protected Editor activeEditor;
   /** A lone file menu to be used when all sketch windows are closed. */
   protected JMenu defaultFileMenu;
@@ -98,10 +96,6 @@ public class Base {
   protected List<ModeContribution> modeContribs;
   protected List<ExamplesContribution> exampleContribs;
 
-  private JMenu sketchbookMenu;
-
-//  private Recent recent;
-
   // Used by handleOpen(), this saves the chooser to remember the directory.
   // Doesn't appear to be necessary with the AWT native file dialog.
   // https://github.com/processing/processing/pull/2366
@@ -112,53 +106,55 @@ public class Base {
 
 
   static public void main(final String[] args) {
-    EventQueue.invokeLater(new Runnable() {
-        public void run() {
-          try {
-            createAndShowGUI(args);
+    EventQueue.invokeLater(() -> {
+      try {
+        createAndShowGUI(args);
 
-          } catch (Throwable t) {
-            // Windows Defender has been insisting on destroying each new
-            // release by removing core.jar and other files. Yay!
-            // https://github.com/processing/processing/issues/5537
-            if (Platform.isWindows()) {
-              String mess = t.getMessage();
-              String missing = null;
-              if (mess.contains("Could not initialize class com.sun.jna.Native")) {
-                missing = "jnidispatch.dll";
-              } else if (mess.contains("NoClassDefFoundError: processing/core/PApplet")) {
-                missing = "core.jar";
-              }
-              if (missing != null) {
-                Messages.showError("Necessary files are missing",
-                                   "A file required by Processing (" + missing + ") is missing.\n\n" +
-                                   "Make sure that you're not trying to run Processing from inside\n" +
-                                   "the .zip file you downloaded, and check that Windows Defender\n" +
-                                   "hasn't removed files from the Processing folder.\n\n" +
-                                   "(It sometimes flags parts of Processing as a trojan or virus.\n" +
-                                   "It is neither, but Microsoft has ignored our pleas for help.)", t);
-              }
-            }
-            Messages.showTrace("Unknown Problem",
-                               "A serious error happened during startup. Please report:\n" +
-                               "http://github.com/processing/processing/issues/new", t, true);
+      } catch (Throwable t) {
+        // Windows Defender has been insisting on destroying each new
+        // release by removing core.jar and other files. Yay!
+        // https://github.com/processing/processing/issues/5537
+        if (Platform.isWindows()) {
+          String mess = t.getMessage();
+          String missing = null;
+          if (mess.contains("Could not initialize class com.sun.jna.Native")) {
+            //noinspection SpellCheckingInspection
+            missing = "jnidispatch.dll";
+          } else if (t instanceof NoClassDefFoundError &&
+                     mess.contains("processing/core/PApplet")) {
+            // Had to change how this was called
+            // https://github.com/processing/processing4/issues/154
+            missing = "core.jar";
+          }
+          if (missing != null) {
+            Messages.showError("Necessary files are missing",
+                               "A file required by Processing (" + missing + ") is missing.\n\n" +
+                               "Make sure that you're not trying to run Processing from inside\n" +
+                               "the .zip file you downloaded, and check that Windows Defender\n" +
+                               "has not removed files from the Processing folder.\n\n" +
+                               "(Defender sometimes flags parts of Processing as malware.\n" +
+                               "It is not, but Microsoft has ignored our pleas for help.)", t);
           }
         }
+        Messages.showTrace("Unknown Problem",
+                           "A serious error happened during startup. Please report:\n" +
+                           "http://github.com/processing/processing/issues/new", t, true);
+      }
     });
   }
 
 
   static private void createAndShowGUI(String[] args) {
-    try {
-      File versionFile = Platform.getContentFile("lib/version.txt");
-      if (versionFile.exists()) {
-        String version = PApplet.loadStrings(versionFile)[0];
-        if (!version.equals(VERSION_NAME)) {
-          VERSION_NAME = version;
+//    long t1 = System.currentTimeMillis();
+
+    File versionFile = Platform.getContentFile("lib/version.txt");
+    if (versionFile != null && versionFile.exists()) {
+      String[] lines = PApplet.loadStrings(versionFile);
+      if (lines != null && lines.length > 0) {
+        if (!VERSION_NAME.equals(lines[0])) {
+          VERSION_NAME = lines[0];
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
     }
 
     Platform.init();
@@ -166,17 +162,17 @@ public class Base {
     Console.startup();
 
     // Set the debug flag based on a file being present in the settings folder
-    File debugFile = getSettingsFile("debug.txt");
-    /*
-    if (debugFile.isDirectory()) {
-      // if it's a directory, it's a leftover from older releases, clear it
-      Util.removeDir(debugFile);
-    } else*/
-    if (debugFile.exists()) {
+    File debugFile = getSettingsFile("debug");
+
+    // If it's a directory, it's a leftover from much older releases
+    // (2.x? 3.x?) that wrote DebugMode.log files into this directory.
+    // Could remove the directory, but it's harmless enough that it's
+    // not worth deleting files in case something could go wrong.
+    if (debugFile.exists() && debugFile.isFile()) {
       DEBUG = true;
     }
 
-    // Use native popups so they don't look so crappy on OS X
+    // Use native popups so they don't look crappy on macOS
     JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
     // Don't put anything above this line that might make GUI,
@@ -191,38 +187,27 @@ public class Base {
     // run static initialization that grabs all the prefs
     Preferences.init();
 
+//    long t2 = System.currentTimeMillis();
+
     if (!SingleInstance.alreadyRunning(args)) {
       // Set the look and feel before opening the window
       try {
         Platform.setLookAndFeel();
+        Platform.setInterfaceZoom();
       } catch (Exception e) {
-        Messages.loge("Could not set the Look & Feel", e); //$NON-NLS-1$
+        Messages.err("Error while setting up the interface", e); //$NON-NLS-1$
       }
 
-      boolean sketchbookPrompt = false;
-      if (Preferences.getBoolean("welcome.show")) {
-        // only ask once about split sketchbooks
-        if (!Preferences.getBoolean("welcome.seen")) {
-          // Check if there's a 2.0 sketchbook present
-          String oldPath = Preferences.getOldSketchbookPath();
-          if (oldPath != null) {
-            String newPath = Preferences.getSketchbookPath();
-            // If newPath is null, this is the first run of any 3.x version
-            if (newPath == null) {
-              sketchbookPrompt = true;
-
-            } else if (oldPath.equals(newPath)) {
-              // If both exist and are identical, then the user has used
-              // pre-releases of 3.x and needs to be warned about the
-              // larger changes in this release.
-              sketchbookPrompt = true;
-            }
-          }
-        }
-      }
+//      long t3 = System.currentTimeMillis();
+//      long t4 = System.currentTimeMillis();
 
       // Get the sketchbook path, and make sure it's set properly
       locateSketchbookFolder();
+
+      // Load colors for UI elements. This must happen after Preferences.init()
+      // (so that fonts are set) and locateSketchbookFolder() so that a
+      // theme.txt file in the user's sketchbook folder is picked up.
+      Theme.init();
 
       // Create a location for untitled sketches
       try {
@@ -234,27 +219,20 @@ public class Base {
                            "That's gonna prevent us from continuing.", e);
       }
 
+//      long t5 = System.currentTimeMillis();
+//      long t6 = 0;
+
       Messages.log("About to create Base..."); //$NON-NLS-1$
       try {
         final Base base = new Base(args);
         Messages.log("Base() constructor succeeded");
+//        t6 = System.currentTimeMillis();
 
         // Prevent more than one copy of the PDE from running.
         SingleInstance.startServer(base);
 
-        // Needs to be shown after the first editor window opens, so that it
-        // shows up on top, and doesn't prevent an editor window from opening.
-        if (Preferences.getBoolean("welcome.show")) {
-          try {
-            new Welcome(base, sketchbookPrompt);
-          } catch (IOException e) {
-            Messages.showTrace("Unwelcoming",
-                               "Please report this error to\n" +
-                               "https://github.com/processing/processing/issues", e, false);
-          }
-        }
-
-        checkDriverBug();
+        handleWelcomeScreen(base);
+        handleCrustyDisplay();
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
@@ -267,52 +245,71 @@ public class Base {
                            "An error occurred during startup.", t, true);
       }
       Messages.log("Done creating Base..."); //$NON-NLS-1$
+
+//      long t10 = System.currentTimeMillis();
+//      System.out.println("startup took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) + " " + (t5-t4) + " " + (t6-t5) + " " + (t10-t6) + " ms");
     }
   }
 
 
-  // Remove this code in a couple months [fry 170211]
-  // https://github.com/processing/processing/issues/4853
-  // Or maybe not, if NVIDIA keeps doing this [fry 170423]
-  // https://github.com/processing/processing/issues/4997
-  static private void checkDriverBug() {
-    if (System.getProperty("os.name").contains("Windows 10")) {
-      new Thread(new Runnable() {
-        public void run() {
-          try {
-            Process p = Runtime.getRuntime().exec("powershell Get-WmiObject Win32_PnPSignedDriver| select devicename, driverversion | where {$_.devicename -like \\\"*nvidia*\\\"}");
-            BufferedReader reader = PApplet.createReader(p.getInputStream());
-            String line = null;
-            while ((line = reader.readLine()) != null) {
-              if (line.contains("3.7849")) {
-                EventQueue.invokeLater(new Runnable() {
-                  public void run() {
-                    Messages.showWarning("NVIDIA screwed up",
-                                         "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                         "otherwise you won't be able to run any sketches. Update here:\n" +
-                                         "http://nvidia.custhelp.com/app/answers/detail/a_id/4378\n" +
-                                         "or read background about the issue at this link:\n" +
-                                         "https://github.com/processing/processing/issues/4853");
-                  }
-                });
-              } else if (line.contains("3.8165")) {
-                EventQueue.invokeLater(new Runnable() {
-                  public void run() {
-                    Messages.showWarning("NVIDIA screwed up again",
-                                         "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                         "otherwise you won't be able to run any sketches. Update here:\n" +
-                                         "http://nvidia.custhelp.com/app/answers/detail/a_id/4453/\n" +
-                                         "or read background about the issue at this link:\n" +
-                                         "https://github.com/processing/processing/issues/4997");
-                  }
-                });
-              }
-            }
-          } catch (Exception e) {
-            Messages.loge("Problem checking NVIDIA driver", e);
+  static private void handleWelcomeScreen(Base base) {
+    boolean sketchbookPrompt = false;
+    if (Preferences.getBoolean("welcome.four.beta.show")) {
+      // only ask once about split sketchbooks
+      if (!Preferences.getBoolean("welcome.four.beta.seen")) {
+        // Check if there's a 2.0 sketchbook present
+        String oldPath = Preferences.getOldSketchbookPath();
+        if (oldPath != null) {
+          String newPath = Preferences.getSketchbookPath();
+          // If newPath is null, this is the first run of any 3.x version
+          if (newPath == null) {
+            sketchbookPrompt = true;
+
+          } else if (oldPath.equals(newPath)) {
+            // If both exist and are identical, then the user has used
+            // pre-releases of 3.x and needs to be warned about the
+            // larger changes in this release.
+            sketchbookPrompt = true;
           }
         }
-      }).start();
+      }
+    }
+
+    // Needs to be shown after the first editor window opens, so that it
+    // shows up on top, and doesn't prevent an editor window from opening.
+    if (Preferences.getBoolean("welcome.four.beta.show")) {
+      try {
+        new Welcome(base, sketchbookPrompt);
+      } catch (IOException e) {
+        Messages.showTrace("Unwelcoming",
+          "Please report this error to\n" +
+            "https://github.com/processing/processing/issues", e, false);
+      }
+    }
+  }
+
+
+  /**
+   * Temporary workaround as we try to sort out
+   * https://github.com/processing/processing4/issues/231
+   * and https://github.com/processing/processing4/issues/226
+   */
+  static private void handleCrustyDisplay() {
+    /*
+    System.out.println("retina is " + Toolkit.isRetina());
+    System.out.println("system zoom " + Platform.getSystemZoom());
+    System.out.println("java2d param is " + System.getProperty("sun.java2d.uiScale.enabled"));
+    System.out.println("toolkit res is " + java.awt.Toolkit.getDefaultToolkit().getScreenResolution());
+    */
+    if (Platform.isWindows()) {  // only an issue on Windows
+      if (!Toolkit.isRetina() && !Splash.getDisableHiDPI()) {
+        int res = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+        if (res % 96 != 0) {
+          // fractional dpi scaling on a low-res screen
+          System.out.println("If the editor cursor is in the wrong place or the interface is blocky or fuzzy,");
+          System.out.println("open Preferences and select the “Disable HiDPI Scaling” option to fix it.");
+        }
+      }
     }
   }
 
@@ -351,18 +348,29 @@ public class Base {
 
 
   public Base(String[] args) throws Exception {
+//    long t1 = System.currentTimeMillis();
+    // TODO Taking 3-5 seconds with several things installed, which is unacceptable.
+    //      Will take longer to optimize because most needs to run on the EDT.
     ContributionManager.init(this);
+//      } catch (Exception e) {
+//        Messages.showWarning("Contribution Manager Error",
+//                    "Error while setting up the Contribution Manager. Please report.", e);
+//      }
+//    });
 
+//    long t2 = System.currentTimeMillis();
     buildCoreModes();
     rebuildContribModes();
     rebuildContribExamples();
 
+//    long t3 = System.currentTimeMillis();
     // Needs to happen after the sketchbook folder has been located.
     // Also relies on the modes to be loaded so it knows what can be
     // marked as an example.
 //    recent = new Recent(this);
     Recent.init(this);
 
+//    long t4 = System.currentTimeMillis();
     String lastModeIdentifier = Preferences.get("mode.last"); //$NON-NLS-1$
     if (lastModeIdentifier == null) {
       nextMode = getDefaultMode();
@@ -382,6 +390,8 @@ public class Base {
 
     //contributionManagerFrame = new ContributionManagerDialog();
 
+//    long t5 = System.currentTimeMillis();
+
     // Make sure ThinkDifferent has library examples too
     nextMode.rebuildLibraryList();
 
@@ -389,7 +399,7 @@ public class Base {
     // menu works on Mac OS X (since it needs examplesFolder to be set).
     Platform.initBase(this);
 
-//    toolsFolder = getContentFile("tools");
+//    long t6 = System.currentTimeMillis();
 
 //    // Check if there were previously opened sketches to be restored
 //    boolean opened = restoreSketches();
@@ -418,6 +428,8 @@ public class Base {
       }
     }
 
+//    long t7 = System.currentTimeMillis();
+
     // Create a new empty window (will be replaced with any files to be opened)
     if (!opened) {
       Messages.log("Calling handleNew() to open a new window");
@@ -426,11 +438,16 @@ public class Base {
       Messages.log("No handleNew(), something passed on the command line");
     }
 
+//    long t8 = System.currentTimeMillis();
+
     // check for updates
     new UpdateCheck(this);
 
     ContributionListing cl = ContributionListing.getInstance();
     cl.downloadAvailableList(this, new ContribProgressMonitor() { });
+//    long t9 = System.currentTimeMillis();
+//    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
+//      " " + (t5-t4) + " 6-5=" + (t6-t5) + " " + (t7-t6) + " " + (t8-t7) + " " + (t9-t8) + " ms");
   }
 
 
@@ -444,36 +461,19 @@ public class Base {
     defaultFileMenu = new JMenu(Language.text("menu.file"));
 
     JMenuItem item = Toolkit.newJMenuItem(Language.text("menu.file.new"), 'N');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleNew();
-        }
-      });
+    item.addActionListener(e -> handleNew());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.open"), 'O');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleOpenPrompt();
-        }
-      });
+    item.addActionListener(e -> handleOpenPrompt());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
-    item.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        getNextMode().showSketchbookFrame();
-      }
-    });
+    item.addActionListener(e -> getNextMode().showSketchbookFrame());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        thinkDifferentExamples();
-      }
-    });
+    item.addActionListener(e -> thinkDifferentExamples());
     defaultFileMenu.add(item);
 
     return defaultFileMenu;
@@ -481,22 +481,18 @@ public class Base {
 
 
   void buildCoreModes() {
-    Mode javaMode =
+    ModeContribution javaModeContrib =
       ModeContribution.load(this, Platform.getContentFile("modes/java"),
-                            getDefaultModeIdentifier()).getMode();
+                            getDefaultModeIdentifier());
+    if (javaModeContrib == null) {
+      Messages.showError("Startup Error",
+                "Could not load Java Mode, please reinstall Processing.",
+                         new Exception("ModeContribution.load() was null"));
 
-    // PDE X calls getModeList() while it's loading, so coreModes must be set
-    coreModes = new Mode[] { javaMode };
-
-    /*
-    Mode pdexMode =
-      ModeContribution.load(this, getContentFile("modes/ExperimentalMode"), //$NON-NLS-1$
-                            "processing.mode.experimental.ExperimentalMode").getMode(); //$NON-NLS-1$
-
-    // Safe to remove the old Java mode here?
-    //coreModes = new Mode[] { pdexMode };
-    coreModes = new Mode[] { pdexMode, javaMode };
-    */
+    } else {
+      // PDE X calls getModeList() while it's loading, so coreModes must be set
+      coreModes = new Mode[] { javaModeContrib.getMode() };
+    }
   }
 
 
@@ -524,12 +520,9 @@ public class Base {
         if (!known.containsKey(folder)) {
           try {
             contribModes.add(new ModeContribution(this, folder, null));
-          } catch (NoSuchMethodError nsme) {
+          } catch (NoSuchMethodError | NoClassDefFoundError ne) {
             System.err.println(folder.getName() + " is not compatible with this version of Processing");
-            if (DEBUG) nsme.printStackTrace();
-          } catch (NoClassDefFoundError ncdfe) {
-            System.err.println(folder.getName() + " is not compatible with this version of Processing");
-            if (DEBUG) ncdfe.printStackTrace();
+            if (DEBUG) ne.printStackTrace();
           } catch (InvocationTargetException ite) {
             System.err.println(folder.getName() + " could not be loaded and may not compatible with this version of Processing");
             if (DEBUG) ite.printStackTrace();
@@ -705,9 +698,11 @@ public class Base {
   }
 
 
+  /*
   public void removeToolContrib(ToolContribution tc) {
     contribTools.remove(tc);
   }
+  */
 
 
   public void rebuildToolList() {
@@ -715,13 +710,15 @@ public class Base {
     if (internalTools == null) {
       internalTools = new ArrayList<>();
 
-      initInternalTool("processing.app.tools.CreateFont");
-      initInternalTool("processing.app.tools.ColorSelector");
       initInternalTool("processing.app.tools.Archiver");
+      initInternalTool("processing.app.tools.ColorSelector");
+      initInternalTool("processing.app.tools.CreateFont");
 
       if (Platform.isMacOS()) {
         initInternalTool("processing.app.tools.InstallCommander");
       }
+
+      initInternalTool("processing.app.tools.ThemeSelector");
     }
 
     // No need to reload these either
@@ -742,34 +739,26 @@ public class Base {
         // isn't completely set up yet. Also not gonna pop up a warning because
         // people may still be running different versions of Processing.
 
-      } catch (VerifyError ve) {
+      } catch (VerifyError | AbstractMethodError ve) {
         System.err.println("\"" + tool.getMenuTitle() + "\" is not " +
                            "compatible with this version of Processing");
+        Messages.err("Incompatible Tool found during tool.init()", ve);
 
       } catch (NoSuchMethodError nsme) {
         System.err.println("\"" + tool.getMenuTitle() + "\" is not " +
                            "compatible with this version of Processing");
         System.err.println("The " + nsme.getMessage() + " method no longer exists.");
-        Messages.loge("Incompatible Tool found during tool.init()", nsme);
+        Messages.err("Incompatible Tool found during tool.init()", nsme);
 
       } catch (NoClassDefFoundError ncdfe) {
         System.err.println("\"" + tool.getMenuTitle() + "\" is not " +
                            "compatible with this version of Processing");
         System.err.println("The " + ncdfe.getMessage() + " class is no longer available.");
-        Messages.loge("Incompatible Tool found during tool.init()", ncdfe);
+        Messages.err("Incompatible Tool found during tool.init()", ncdfe);
 
-      } catch (AbstractMethodError ame) {
-        System.err.println("\"" + tool.getMenuTitle() + "\" is not " +
-                           "compatible with this version of Processing");
-//        ame.printStackTrace();
-
-      } catch (Error err) {
+      } catch (Error | Exception e) {
         System.err.println("An error occurred inside \"" + tool.getMenuTitle() + "\"");
-        err.printStackTrace();
-
-      } catch (Exception ex) {
-        System.err.println("An exception occurred inside \"" + tool.getMenuTitle() + "\"");
-        ex.printStackTrace();
+        e.printStackTrace();
       }
     }
   }
@@ -790,25 +779,6 @@ public class Base {
   }
 
 
-  /*
-    Iterator<Editor> editorIter = base.getEditors().iterator();
-    while (editorIter.hasNext()) {
-      Editor editor = editorIter.next();
-      List<ToolContribution> contribTools = editor.getToolContribs();
-      for (ToolContribution toolContrib : contribTools) {
-        if (toolContrib.getName().equals(this.name)) {
-          try {
-            ((URLClassLoader) toolContrib.loader).close();
-            editor.removeToolContrib(toolContrib);
-            break;
-          } catch (IOException e) {
-            e.printStackTrace();
-          }
-        }
-      }
-   */
-
-
   public void clearToolMenus() {
     for (Editor ed : editors) {
       ed.clearToolMenu();
@@ -821,17 +791,7 @@ public class Base {
     if (internalTools == null) {
       rebuildToolList();
     }
-//    coreTools = ToolContribution.loadAll(Base.getToolsFolder());
-//    contribTools = ToolContribution.loadAll(Base.getSketchbookToolsFolder());
 
-//    Collections.sort(coreTools);
-//    Collections.sort(contribTools);
-//    Collections.sort(coreTools, new Comparator<ToolContribution>() {
-//      @Override
-//      public int compare(ToolContribution o1, ToolContribution o2) {
-//        return o1.getMenuTitle().compareTo(o2.getMenuTitle());
-//      }
-//    });
     toolsMenu.removeAll();
     for (Tool tool : internalTools) {
       toolsMenu.add(createToolItem(tool));
@@ -853,11 +813,7 @@ public class Base {
     }
 
     JMenuItem item = new JMenuItem(Language.text("menu.tools.add_tool"));
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openTools();
-      }
-    });
+    item.addActionListener(e -> ContributionManager.openTools());
     toolsMenu.add(item);
   }
 
@@ -888,24 +844,21 @@ public class Base {
   JMenuItem createToolItem(final Tool tool) { //, Map<String, JMenuItem> toolItems) {
     String title = tool.getMenuTitle();
     final JMenuItem item = new JMenuItem(title);
-    item.addActionListener(new ActionListener() {
+    item.addActionListener(e -> {
+      try {
+        tool.run();
 
-      public void actionPerformed(ActionEvent e) {
-        try {
-          tool.run();
+      } catch (NoSuchMethodError | NoClassDefFoundError ne) {
+        Messages.showWarning("Tool out of date",
+                             tool.getMenuTitle() + " is not compatible with this version of Processing.\n" +
+                             "Try updating the Mode or contact its author for a new version.", ne);
+        Messages.err("Incompatible tool found during tool.run()", ne);
+        item.setEnabled(false);
 
-        } catch (NoSuchMethodError nsme) {
-          activeEditor.statusError("\"" + tool.getMenuTitle() + "\" is not" +
-                                   "compatible with this version of Processing");
-          //nsme.printStackTrace();
-          Messages.loge("Incompatible tool found during tool.run()", nsme);
-          item.setEnabled(false);
-
-        } catch (Exception ex) {
-          activeEditor.statusError("An error occurred inside \"" + tool.getMenuTitle() + "\"");
-          ex.printStackTrace();
-          item.setEnabled(false);
-        }
+      } catch (Exception ex) {
+        activeEditor.statusError("An error occurred inside \"" + tool.getMenuTitle() + "\"");
+        ex.printStackTrace();
+        item.setEnabled(false);
       }
     });
     //toolItems.put(title, item);
@@ -922,8 +875,7 @@ public class Base {
 
 
   public List<Mode> getModeList() {
-    List<Mode> allModes = new ArrayList<>();
-    allModes.addAll(Arrays.asList(coreModes));
+    List<Mode> allModes = new ArrayList<>(Arrays.asList(coreModes));
     if (modeContribs != null) {
       for (ModeContribution contrib : modeContribs) {
         allModes.add(contrib.getMode());
@@ -939,10 +891,8 @@ public class Base {
 
 
   private List<Contribution> getInstalledContribs() {
-    List<Contribution> contributions = new ArrayList<>();
-
     List<ModeContribution> modeContribs = getModeContribs();
-    contributions.addAll(modeContribs);
+    List<Contribution> contributions = new ArrayList<>(modeContribs);
 
     for (ModeContribution modeContrib : modeContribs) {
       Mode mode = modeContrib.getMode();
@@ -996,7 +946,7 @@ public class Base {
 
 
   /**
-   * Create or modify a sketch.proprties file to specify the given Mode.
+   * Create or modify a sketch.properties file to specify the given Mode.
    */
   private void saveModeSettings(final File sketchProps, final Mode mode) {
     try {
@@ -1027,9 +977,7 @@ public class Base {
 
 
   /**
-   * The call has already checked to make sure this sketch is not modified,
-   * now change the mode.
-   * @return true if mode is changed.
+   * @return true if mode is changed within this window (false if new window)
    */
   public boolean changeMode(Mode mode) {
     Mode oldMode = activeEditor.getMode();
@@ -1037,25 +985,22 @@ public class Base {
       Sketch sketch = activeEditor.getSketch();
       nextMode = mode;
 
-      if (sketch.isUntitled()) {
+      if (sketch.isModified()) {
+        handleNew();  // don't bother with error messages, just switch
+        return false;
+
+      } else if (sketch.isUntitled()) {
         // The current sketch is empty, just close and start fresh.
         // (Otherwise the editor would lose its 'untitled' status.)
         handleClose(activeEditor, true);
         handleNew();
 
       } else {
-        // If the current editor contains file extensions that the new mode can handle, then
-        // write a sketch.properties file with the new mode specified, and reopen.
-        boolean newModeCanHandleCurrentSource = true;
-        for (final SketchCode code : sketch.getCode()) {
-          if (!mode.validExtension(code.getExtension())) {
-            newModeCanHandleCurrentSource = false;
-            break;
-          }
-        }
-        if (!newModeCanHandleCurrentSource) {
-          return false;
-        } else {
+        // If the current sketch contains file extensions that the new mode
+        // can handle, then write a sketch.properties file with the new mode
+        // specified, and reopen. (Really only useful for Java <-> Android)
+        //if (isCompatible(sketch, mode)) {
+        if (mode.canEdit(sketch)) {
           final File props = new File(sketch.getCodeFolder(), "sketch.properties");
           saveModeSettings(props, nextMode);
           handleClose(activeEditor, true);
@@ -1067,11 +1012,27 @@ public class Base {
             handleOpen(sketch.getMainFilePath());
             return false;
           }
+        } else {
+          handleNew();  // create a new window with the new Mode
+          return false;
         }
+      }
+    }
+    // Against all (or at least most) odds, we were able to reassign the Mode
+    return true;
+  }
+
+
+  /*
+  private boolean isCompatible(Sketch sketch, Mode mode) {
+    for (final SketchCode code : sketch.getCode()) {
+      if (!mode.validExtension(code.getExtension())) {
+        return false;
       }
     }
     return true;
   }
+  */
 
 
   private static class ModeInfo {
@@ -1135,7 +1096,7 @@ public class Base {
       }
       return null;
     }
-    final Mode[] modes = possibleModes.toArray(new Mode[possibleModes.size()]);
+    final Mode[] modes = possibleModes.toArray(new Mode[0]);
     final String message = preferredMode == null ?
       (nextMode.getTitle() + " Mode can't open ." + extension + " files, " +
        "but you have one or more modes\ninstalled that can. " +
@@ -1184,9 +1145,10 @@ public class Base {
    * Create a new untitled document in a new sketch window.
    */
   public void handleNew() {
+//    long t1 = System.currentTimeMillis();
     try {
-      File newbieDir = null;
-      String newbieName = null;
+      File newbieDir;
+      String newbieName;
 
       // In 0126, untitled sketches will begin in the temp folder,
       // and then moved to a new location because Save will default to Save As.
@@ -1198,16 +1160,13 @@ public class Base {
       // Use a generic name like sketch_031008a, the date plus a char
       int index = 0;
       String format = Preferences.get("editor.untitled.suffix");
-      String suffix = null;
+      String suffix;
       if (format == null) {
         Calendar cal = Calendar.getInstance();
         int day = cal.get(Calendar.DAY_OF_MONTH);  // 1..31
         int month = cal.get(Calendar.MONTH);  // 0..11
         suffix = months[month] + PApplet.nf(day, 2);
       } else {
-        //SimpleDateFormat formatter = new SimpleDateFormat("yyMMdd");
-        //SimpleDateFormat formatter = new SimpleDateFormat("MMMdd");
-        //String purty = formatter.format(new Date()).toLowerCase();
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         suffix = formatter.format(new Date());
       }
@@ -1228,7 +1187,7 @@ public class Base {
         newbieName = prefix + suffix + ((char) ('a' + index));
         // Also sanitize the name since it might do strange things on
         // non-English systems that don't use this sort of date format.
-        // http://code.google.com/p/processing/issues/detail?id=283
+        // https://github.com/processing/processing/issues/322
         newbieName = Sketch.sanitizeName(newbieName);
         newbieDir = new File(newbieParentDir, newbieName);
         index++;
@@ -1236,19 +1195,12 @@ public class Base {
       } while (newbieDir.exists() || new File(sketchbookFolder, newbieName).exists());
 
       // Make the directory for the new sketch
-      newbieDir.mkdirs();
+      if (!newbieDir.mkdirs()) {
+        throw new IOException("Could not create directory " + newbieDir);
+      }
 
       // Add any template files from the Mode itself
       File newbieFile = nextMode.addTemplateFiles(newbieDir, newbieName);
-
-      /*
-      // Make an empty pde file
-      File newbieFile =
-        new File(newbieDir, newbieName + "." + nextMode.getDefaultExtension()); //$NON-NLS-1$
-      if (!newbieFile.createNewFile()) {
-        throw new IOException(newbieFile + " already exists.");
-      }
-      */
 
       // Create sketch properties file if it's not the default mode.
       if (!nextMode.equals(getDefaultMode())) {
@@ -1256,7 +1208,10 @@ public class Base {
       }
 
       String path = newbieFile.getAbsolutePath();
+//      long t2 = System.currentTimeMillis();
       /*Editor editor =*/ handleOpen(path, true);
+//      long t3 = System.currentTimeMillis();
+//      System.out.println("handleNew " + (t2-t1) + " " + (t3-t2));
 
     } catch (IOException e) {
       Messages.showWarning("That's new to me",
@@ -1271,30 +1226,31 @@ public class Base {
    */
   public void handleOpenPrompt() {
     final StringList extensions = new StringList();
+
+    // Add support for pdez files
+    extensions.append(SKETCH_BUNDLE_EXT);
+
+    // Add the extensions for each installed Mode
     for (Mode mode : getModeList()) {
       extensions.append(mode.getDefaultExtension());
     }
 
-
     final String prompt = Language.text("open");
 
-    // don't use native dialogs on Linux (or anyone else w/ override)
     if (Preferences.getBoolean("chooser.files.native")) {  //$NON-NLS-1$
       // use the front-most window frame for placing file dialog
       FileDialog openDialog =
         new FileDialog(activeEditor, prompt, FileDialog.LOAD);
 
       // Only show .pde files as eligible bachelors
-      openDialog.setFilenameFilter(new FilenameFilter() {
-        public boolean accept(File dir, String name) {
-          // confirmed to be working properly [fry 110128]
-          for (String ext : extensions) {
-            if (name.toLowerCase().endsWith("." + ext)) { //$NON-NLS-1$
-              return true;
-            }
+      openDialog.setFilenameFilter((dir, name) -> {
+        // confirmed to be working properly [fry 110128]
+        for (String ext : extensions) {
+          if (name.toLowerCase().endsWith("." + ext)) { //$NON-NLS-1$
+            return true;
           }
-          return false;
         }
+        return false;
       });
 
       openDialog.setVisible(true);
@@ -1309,8 +1265,8 @@ public class Base {
     } else {
       if (openChooser == null) {
         openChooser = new JFileChooser();
+        openChooser.setDialogTitle(prompt);
       }
-      openChooser.setDialogTitle(prompt);
 
       openChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
         public boolean accept(File file) {
@@ -1343,6 +1299,81 @@ public class Base {
    * Open a sketch from the path specified. Do not use for untitled sketches.
    */
   public Editor handleOpen(String path) {
+    if (path.endsWith(SKETCH_BUNDLE_EXT)) {
+      File zipFile = new File(path);
+      try {
+        File destFolder = File.createTempFile("zip", "tmp", untitledFolder);
+        if (!destFolder.delete() || !destFolder.mkdirs()) {
+          // Hard to imagine why this would happen, but...
+          System.err.println("Could not create temporary folder " + destFolder);
+          return null;
+        }
+        Util.unzip(zipFile, destFolder);
+        File[] fileList = destFolder.listFiles(File::isDirectory);
+        if (fileList != null) {
+          if (fileList.length == 1) {
+            File sketchFile = checkSketchFolder(fileList[0]);
+            if (sketchFile != null) {
+              return handleOpen(sketchFile.getAbsolutePath(), true);
+            }
+          } else {
+            System.err.println("Expecting one folder inside " +
+              SKETCH_BUNDLE_EXT + " file, found " + fileList.length + ".");
+          }
+        } else {
+          System.err.println("Could not read " + destFolder);
+        }
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      return null;  // no luck
+
+    } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
+      EventQueue.invokeLater(() -> {
+        Editor editor = getActiveEditor();
+        if (editor == null) {
+          // Shouldn't really happen, but if it's still null, it's a no-go
+          Messages.showWarning("Failure is the only option",
+                      "Please open an Editor window before installing an extension.");
+        } else {
+          File contribFile = new File(path);
+          String baseName = contribFile.getName();
+          baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
+          int result =
+            Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
+              "Install " + baseName + "?",
+              "Libraries, Modes, and Tools should<br>" +
+                "only be installed from trusted sources.");
+
+          if (result == JOptionPane.YES_OPTION) {
+            editor.statusNotice("Installing " + baseName + "...");
+            editor.startIndeterminate();
+
+            new Thread(() -> {
+              try {
+                // do the work of the actual install
+                LocalContribution contrib =
+                  AvailableContribution.install(this, new File(path));
+
+                EventQueue.invokeLater(() -> {
+                  editor.stopIndeterminate();
+
+                  if (contrib != null) {
+                    editor.statusEmpty();
+                  } else {
+                    editor.statusError("Could not install " + path);
+                  }
+                });
+              } catch (IOException e) {
+                EventQueue.invokeLater(() -> Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e));
+              }
+            }).start();
+          }
+        }
+      });
+      return null;
+    }
+
     return handleOpen(path, false);
   }
 
@@ -1354,7 +1385,7 @@ public class Base {
    *         can be set by the caller
    */
   public Editor handleOpen(String path, boolean untitled) {
-    return handleOpen(path, untitled, new EditorState(editors));
+    return handleOpen(path, untitled, EditorState.nextEditor(editors));
   }
 
 
@@ -1515,7 +1546,7 @@ public class Base {
 //      if (Preferences.getBoolean("sketchbook.closing_last_window_quits") ||
 //          (editor.untitled && !editor.getSketch().isModified())) {
       if (Platform.isMacOS()) {
-        // If the central menubar isn't supported on this OS X JVM,
+        // If the central menu bar isn't supported on this macOS JVM,
         // we have to do the old behavior. Yuck!
         if (defaultFileMenu == null) {
           Object[] options = { Language.text("prompt.ok"), Language.text("prompt.cancel") };
@@ -1641,17 +1672,13 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /**
-   * Asynchronous version of menu rebuild to be used on save and rename
-   * to prevent the interface from locking up until the menus are done.
-   */
-  protected void rebuildSketchbookMenusAsync() {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        rebuildSketchbookMenus();
-      }
-    });
-  }
+//  /**
+//   * Asynchronous version of menu rebuild to be used on save and rename
+//   * to prevent the interface from locking up until the menus are done.
+//   */
+//  protected void rebuildSketchbookMenusAsync() {
+//    EventQueue.invokeLater(this::rebuildSketchbookMenus);
+//  }
 
 
   public void thinkDifferentExamples() {
@@ -1674,17 +1701,11 @@ public class Base {
   }
 
 
-  protected void rebuildSketchbookMenu() {
-    sketchbookMenu.removeAll();
-    populateSketchbookMenu(sketchbookMenu);
-  }
-
-
   public void populateSketchbookMenu(JMenu menu) {
     boolean found = false;
     try {
-      found = addSketches(menu, sketchbookFolder, false);
-    } catch (IOException e) {
+      found = addSketches(menu, sketchbookFolder);
+    } catch (Exception e) {
       Messages.showWarning("Sketchbook Menu Error",
                            "An error occurred while trying to list the sketchbook.", e);
     }
@@ -1696,43 +1717,13 @@ public class Base {
   }
 
 
-  /*
-  public JMenu getRecentMenu() {
-    return recent.getMenu();
-  }
-
-
-  public JMenu getToolbarRecentMenu() {
-    return recent.getToolbarMenu();
-  }
-
-
-  public void handleRecent(Editor editor) {
-    recent.handle(editor);
-  }
-
-
-  public void handleRecentRename(Editor editor, String oldPath) {
-    recent.handleRename(editor, oldPath);
-  }
-
-
-  // Called before a sketch is renamed so that its old name is
-  // no longer in the menu.
-  public void removeRecent(Editor editor) {
-    recent.remove(editor);
-  }
-  */
-
-
   /**
    * Scan a folder recursively, and add any sketches found to the menu
    * specified. Set the openReplaces parameter to true when opening the sketch
    * should replace the sketch in the current window, or false when the
    * sketch should open in a new window.
    */
-  protected boolean addSketches(JMenu menu, File folder,
-                                final boolean replaceExisting) throws IOException {
+  protected boolean addSketches(JMenu menu, File folder) {
     // skip .DS_Store files, etc (this shouldn't actually be necessary)
     if (!folder.isDirectory()) {
       return false;
@@ -1760,60 +1751,56 @@ public class Base {
     // Alphabetize the list, since it's not always alpha order
     Arrays.sort(list, String.CASE_INSENSITIVE_ORDER);
 
-    ActionListener listener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          String path = e.getActionCommand();
-          if (new File(path).exists()) {
-            boolean replace = replaceExisting;
-            if ((e.getModifiers() & ActionEvent.SHIFT_MASK) != 0) {
-              replace = !replace;
-            }
-//            if (replace) {
-//              handleOpenReplace(path);
-//            } else {
-            handleOpen(path);
-//            }
-          } else {
-            Messages.showWarning("Sketch Disappeared",
-                                 "The selected sketch no longer exists.\n" +
-                                 "You may need to restart Processing to update\n" +
-                                 "the sketchbook menu.", null);
-          }
-        }
-      };
+    ActionListener listener = e -> {
+      String path = e.getActionCommand();
+      if (new File(path).exists()) {
+        handleOpen(path);
+      } else {
+        Messages.showWarning("Sketch Disappeared",
+                             "The selected sketch no longer exists.\n" +
+                             "You may need to restart Processing to update\n" +
+                             "the sketchbook menu.", null);
+      }
+    };
     // offers no speed improvement
     //menu.addActionListener(listener);
 
     boolean found = false;
 
-//    for (int i = 0; i < list.length; i++) {
-//      if ((list[i].charAt(0) == '.') ||
-//          list[i].equals("CVS")) continue;
     for (String name : list) {
       if (name.charAt(0) == '.') {
         continue;
       }
 
-      File subfolder = new File(folder, name);
-      if (subfolder.isDirectory()) {
-        File entry = checkSketchFolder(subfolder, name);
-        if (entry != null) {
+      // TODO Is this necessary any longer? This seems gross [fry 210804]
+      if (name.equals("old")) {  // Don't add old contributions
+        continue;
+      }
 
-          JMenuItem item = new JMenuItem(name);
-          item.addActionListener(listener);
-          item.setActionCommand(entry.getAbsolutePath());
-          menu.add(item);
+      File entry = new File(folder, name);
+      File sketchFile = null;
+      if (entry.isDirectory()) {
+        sketchFile = checkSketchFolder(entry);
+      } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
+        name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
+        sketchFile = entry;
+      }
+
+      if (sketchFile != null) {
+        JMenuItem item = new JMenuItem(name);
+        item.addActionListener(listener);
+        item.setActionCommand(sketchFile.getAbsolutePath());
+        menu.add(item);
+        found = true;
+
+      } else if (entry.isDirectory()) {
+        // not a sketch folder, but may be a subfolder containing sketches
+        JMenu submenu = new JMenu(name);
+        // needs to be separate var otherwise would set found to false
+        boolean anything = addSketches(submenu, entry);
+        if (anything) {
+          menu.add(submenu);
           found = true;
-
-        } else {
-          // not a sketch folder, but maybe a subfolder containing sketches
-          JMenu submenu = new JMenu(name);
-          // needs to be separate var otherwise would set ifound to false
-          boolean anything = addSketches(submenu, subfolder, replaceExisting);
-          if (anything && !name.equals("old")) { //Don't add old contributions
-            menu.add(submenu);
-            found = true;
-          }
         }
       }
     }
@@ -1821,6 +1808,10 @@ public class Base {
   }
 
 
+  /**
+   * Mostly identical to the JMenu version above, however the rules are
+   * slightly different for how examples are handled, etc.
+   */
   public boolean addSketches(DefaultMutableTreeNode node, File folder,
                              boolean examples) throws IOException {
     // skip .DS_Store files, etc (this shouldn't actually be necessary)
@@ -1865,25 +1856,30 @@ public class Base {
         continue;
       }
 
-      File subfolder = new File(folder, name);
-      if (subfolder.isDirectory()) {
-        File entry = checkSketchFolder(subfolder, name);
-        if (entry != null) {
-          DefaultMutableTreeNode item =
-            new DefaultMutableTreeNode(new SketchReference(name, entry));
+      File entry = new File(folder, name);
+      File sketchFile = null;
+      if (entry.isDirectory()) {
+        sketchFile = checkSketchFolder(entry);
+      } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
+        name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
+        sketchFile = entry;
+      }
 
-          node.add(item);
+      if (sketchFile != null) {
+        DefaultMutableTreeNode item =
+          new DefaultMutableTreeNode(new SketchReference(name, sketchFile));
+
+        node.add(item);
+        found = true;
+
+      } else if (entry.isDirectory()) {
+        // not a sketch folder, but maybe a subfolder containing sketches
+        DefaultMutableTreeNode subNode = new DefaultMutableTreeNode(name);
+        // needs to be separate var otherwise would set found to false
+        boolean anything = addSketches(subNode, entry, examples);
+        if (anything) {
+          node.add(subNode);
           found = true;
-
-        } else {
-          // not a sketch folder, but maybe a subfolder containing sketches
-          DefaultMutableTreeNode subnode = new DefaultMutableTreeNode(name);
-          // needs to be separate var otherwise would set ifound to false
-          boolean anything = addSketches(subnode, subfolder, examples);
-          if (anything) {
-            node.add(subnode);
-            found = true;
-          }
         }
       }
     }
@@ -1896,10 +1892,10 @@ public class Base {
    * Because the default mode will be the first in the list, this will always
    * prefer that one over the others.
    */
-  File checkSketchFolder(File subfolder, String item) {
+  private File checkSketchFolder(File folder) {
     for (Mode mode : getModeList()) {
-      File entry = new File(subfolder, item + "." + mode.getDefaultExtension()); //$NON-NLS-1$
-      // if a .pde file of the same prefix as the folder exists..
+      // Test whether a .pde file of the same name as its parent folder exists.
+      File entry = new File(folder, folder.getName() + "." + mode.getDefaultExtension()); //$NON-NLS-1$
       if (entry.exists()) {
         return entry;
       }
@@ -1928,6 +1924,7 @@ public class Base {
   /**
    * Return a File from inside the Processing 'lib' folder.
    */
+  @SuppressWarnings("RedundantThrows")
   static public File getLibFile(String filename) throws IOException {
     return new File(Platform.getContentFile("lib"), filename);
   }
@@ -1957,8 +1954,8 @@ public class Base {
         if (!settingsFolder.mkdirs()) {
           Messages.showError("Settings issues",
                              "Processing cannot run because it could not\n" +
-                             "create a folder to store your settings.\n" +
-                             settingsFolder.getAbsolutePath(), null);
+                             "create a folder to store your settings at\n" +
+                             settingsFolder, null);
         }
       }
     } catch (Exception e) {
@@ -2009,7 +2006,12 @@ public class Base {
       sketchbookFolder = getDefaultSketchbookFolder();
       Preferences.setSketchbookPath(sketchbookFolder.getAbsolutePath());
       if (!sketchbookFolder.exists()) {
-        sketchbookFolder.mkdirs();
+        if (!sketchbookFolder.mkdirs()) {
+          Messages.showError("Could not create sketchbook",
+                             "Unable to create a sketchbook folder at\n" +
+                             sketchbookFolder + "\n" +
+                             "Try creating a folder at that path and restart Processing.", null);
+        }
       }
     }
     makeSketchbookSubfolders();
@@ -2027,12 +2029,21 @@ public class Base {
   /**
    * Create the libraries, modes, tools, examples folders in the sketchbook.
    */
+  @SuppressWarnings("ResultOfMethodCallIgnored")
   static protected void makeSketchbookSubfolders() {
+    // ignore result; mkdirs() will return false if the folder already exists
     getSketchbookLibrariesFolder().mkdirs();
     getSketchbookToolsFolder().mkdirs();
     getSketchbookModesFolder().mkdirs();
     getSketchbookExamplesFolder().mkdirs();
     getSketchbookTemplatesFolder().mkdirs();
+
+    /*
+      Messages.showWarning("Could not create folder",
+                           "Could not create the libraries, tools, modes, examples, and templates\n" +
+                           "folders inside " + sketchbookFolder + "\n" +
+                           "Try creating them manually to determine the problem.", null);
+    */
   }
 
 
@@ -2070,25 +2081,25 @@ public class Base {
     File sketchbookFolder = null;
     try {
       sketchbookFolder = Platform.getDefaultSketchbookFolder();
-    } catch (Exception e) { }
+    } catch (Exception ignored) { }
 
     if (sketchbookFolder == null) {
       Messages.showError("No sketchbook",
                          "Problem while trying to get the sketchbook", null);
-    }
 
-    // create the folder if it doesn't exist already
-    boolean result = true;
-    if (!sketchbookFolder.exists()) {
-      result = sketchbookFolder.mkdirs();
-    }
+    } else {
+      // create the folder if it doesn't exist already
+      boolean result = true;
+      if (!sketchbookFolder.exists()) {
+        result = sketchbookFolder.mkdirs();
+      }
 
-    if (!result) {
-      Messages.showError("You forgot your sketchbook",
-                         "Processing cannot run because it could not\n" +
-                         "create a folder to store your sketchbook.", null);
+      if (!result) {
+        Messages.showError("You forgot your sketchbook",
+                           "Processing cannot run because it could not\n" +
+                           "create a folder to store your sketchbook.", null);
+      }
     }
-
     return sketchbookFolder;
   }
 }

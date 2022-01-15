@@ -20,15 +20,14 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.app.syntax;
 
-import java.awt.Cursor;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.HashMap;
 import java.util.Map;
 
-import processing.app.Mode;
 import processing.app.ui.Editor;
+import processing.app.ui.Theme;
 
 
 /**
@@ -55,14 +54,16 @@ public class PdeTextArea extends JEditTextArea {
     super(defaults, inputHandler);
     this.editor = editor;
 
+    vertical.setUI(new PdeScrollBarUI());
+    horizontal.setUI(new PdeScrollBarUI());
+
     // change cursor to pointer in the gutter area
     painter.addMouseMotionListener(gutterCursorMouseAdapter);
 
-    add(CENTER, painter);
+    // already added by call to super(), removing [fry 220112]
+    //add(CENTER, painter);
 
-    // load settings from theme.txt
-    Mode mode = editor.getMode();
-    gutterGradient = mode.makeGradient("editor", Editor.LEFT_GUTTER, 500);
+    updateTheme();
   }
 
 
@@ -77,8 +78,16 @@ public class PdeTextArea extends JEditTextArea {
   }
 
 
-  public void setMode(Mode mode) {
-    ((PdeTextAreaPainter) painter).setMode(mode);
+  @Override
+  public void updateTheme() {
+    painter.updateTheme();
+
+    gutterGradient = Theme.makeGradient("editor", Editor.LEFT_GUTTER, 500);
+
+    ((PdeScrollBarUI) vertical.getUI()).updateTheme();
+    ((PdeScrollBarUI) horizontal.getUI()).updateTheme();
+
+    repaint();
   }
 
 
@@ -147,7 +156,7 @@ public class PdeTextArea extends JEditTextArea {
    * take gutter width into account.
    * @param line the 0-based line number
    * @param x the horizontal pixel position
-   * @return he character offset (0 is the first character on a line)
+   * @return the character offset (0 is the first character on a line)
    */
   @Override
   public int xToOffset(int line, int x) {

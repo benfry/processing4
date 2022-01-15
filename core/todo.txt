@@ -1,37 +1,78 @@
-1271 (4.0a2)
-X make edits to core so that awt can be flagged off, and lwjgl can run
-X   https://github.com/codeanticode/processing-openjdk/commit/ac9abc18655daaa538ef16945687177334f3596e
-X   add --disable-awt to PApplet.main()
-X fix for precision issues with PDF
-X   https://github.com/processing/processing/issues/5801#issuecomment-466632459
-X implement displayDensity(int), it's been returning the main display's value
-X show 'displays have separate spaces' notice in the console
-X   allows us to get rid of JOptionPane
-X show 'displays have separate spaces' message when the param is unset
-X   Catalina seems to have it un-set, but the default is the same
-X move selectInput/Output/Folder to ShimAWT class
-X remove the java.awt.Frame object from PApplet
-X move loadImage() into ShimAWT
-X desktopFile() and desktopPath() methods are supported, unless we find they're trouble
-X move ShimAWT.loadImage() to the PSurface subclasses
-X move all java.awt and javax.imageio out of PImage
-X make the switch to getModifiersEx() instead of getModifiers()
-X   pass all modifiers to the KeyEvent and MouseEvent constructors
-X   though they aren't even being stored, so what's the point?
-X   https://github.com/processing/processing4/issues/4
-X Remove all usage of AWT from PApplet
-X   https://github.com/processing/processing4/issues/55
+1278 (4.0b3)
+X support extensions for directories with listFiles/listPaths
+X   otherwise asking for .jpg will return root folders (unless 'only files' specified)
+X   but because macOS actually puts extensions on folders (.app, etc), support it
+X fix for disableStyle() with 2D shapes in P3D
+X allow GEOMETRY (not just PATH) with contains() in PShape
+X   the method is still incomplete, but added a note about that too
+X added workaround in PShapeOpenGL to get access to vertex data
+X   still need to find the root cause
+X   also need to check for other reports about this
+X textSize() losing some symbols
+X   actually a problem that the default font isn't being set
+X   https://github.com/processing/processing4/issues/303
+X   https://github.com/processing/processing/issues/4956
+X add warning when default font set and drawing unavailable characters
 
-X PDF broken in getImage()
-_   https://github.com/processing/processing4/issues/62
+X multiple windows with GL
+X   https://github.com/processing/processing4/issues/312
+X   https://github.com/processing/processing4/pull/313
+X   https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/opengl/GLSharedContextSetter.html
+X made DrawListener public in PSurfaceJOGL
+o   probably change that back
+X   nah, useful to have it there
+
+andres
+X Implement buffer object streaming and finalize attribute API in PShape
+X   https://github.com/processing/processing4/pull/314
+X Adds support to PATH shapes in P2D renderer
+X   https://github.com/processing/processing4/pull/316
+X   https://github.com/processing/processing/issues/6009
 
 
-contribs
-X remove redundant boxing and casting
-X   https://github.com/processing/processing4/pull/51
+_ how to handle fallback fonts
+_   could implement this for the default, but also, SansSerif sucks
+_   https://stackoverflow.com/a/9482676
+_   in addition, it would need to be implemented for textWidth()
+
+
+
+_ possibly move jogl back to a separate library
+_   setting up deps for it with projects that don't use it is a headache
+_ put opengl libs for core into platform-specific subfolders?
+_   may also be useful for Windows antivirus slowdowns
+_   https://github.com/processing/processing/issues/4783#issuecomment-269328168
+
+_ setting surface size needs to happen outside draw()
+_   surface.setSize() sadness etc
+_   https://github.com/processing/processing4/issues/162
+_   https://github.com/processing/processing4/issues/186
+_   https://github.com/processing/processing/issues/4129
+
+_ update P2D reference to make clear about drawing order and quality
+_   https://github.com/processing/processing/issues/5880
+
+_ why does GL flash red when resizing?
+
+
+load/save image
+_ https://github.com/processing/processing4/wiki/Exorcising-AWT
+_ moving loadImage() into Surface
+_   https://github.com/processing/processing4/issues/56
+_ other PImage save implementations
+_   https://github.com/processing/processing4/pull/97
+_   https://github.com/processing/processing4/pull/98
+
+
+noted by Casey
+_ Sketches on Windows/Linux don't take UI sizing into account
+_   https://github.com/processing/processing/issues/4894
+_   https://github.com/processing/processing/issues/4895
+_   https://github.com/processing/processing/issues/4897
+
 
 api changes
-_ static versions of selectInput/selectOutput/selectFolder in PApplet have been removed
+_ static versions of selectInput/selectOutput/selectFolder removed from PApplet
 _ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
 X   https://github.com/processing/processing4/issues/54
 _ protected PImage.checkAlpha() now public
@@ -40,6 +81,8 @@ _   this may be a problem for anything that was relying on those internals
 _ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
 _   these had been deprecated, not clear they were used anywhere
 _ add callbacks to requestImage() and others
+_ new FloatList(float...)
+
 
 api todo
 _ Surface not available inside handleSettings()
@@ -54,30 +97,29 @@ _ implement openLink() in PSurfaceJOGL
 
 
 before final release
+_ replace japplemenubar with something that's more likely to work in the future
+_   https://github.com/processing/processing4/issues/221
 _ Warn users or provide auto-fix when `frame` is used in a sketch
 _   https://github.com/processing/processing4/issues/59
 _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
 _   https://github.com/processing/processing4/issues/52
-_ Better resolution for frame/surface methods
+_ Better solution for frame/surface methods
 _   https://github.com/processing/processing4/issues/53
 _ Remove frame from PApplet
 _   https://github.com/processing/processing4/issues/54
 _ Remove all usage of AWT from PApplet
-_   https://github.com/processing/processing4/issues/55
+X   https://github.com/processing/processing4/issues/55
 _   https://github.com/codeanticode/processing-lwjgl/wiki#making-awt-optional-in-papplet
+_   https://github.com/processing/processing4/issues/57
 _ move loadImage() into surface
 _   move AWT code out of PImage, and into its own PImageJava2D class
 _   how to handle with JavaFX?
 _   https://github.com/processing/processing4/issues/56
 
 
-
 high-ish
-_ size() issues on Mojave? (3.4 works, 3.5.3 does not)
-_   https://github.com/processing/processing/issues/5791
-_   closed for now; unable to confirm anything in the thread
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
 _ make setting the window icon automatic, based on files in local dirs
@@ -102,6 +144,8 @@ _   y coords on macOS seem to be one pixel off
 
 
 retina/hi-dpi/sizing
+_ notes from jetbrains
+_   https://intellij-support.jetbrains.com/hc/en-us/articles/360007994999-HiDPI-configuration
 _ implement sketch scaling into PApplet
 _   https://github.com/processing/processing/issues/4897
 _ Sketches on Windows don't take UI sizing into account
@@ -120,13 +164,20 @@ _   https://bugs.openjdk.java.net/browse/JDK-8027391
 _   test with JG's 13" retina laptop
 
 
-from Casey
-_ Math for BLEND incorrect in the reference?
-_   https://github.com/processing/processing-docs/issues/762
-_ .setAngle() for PVector?
-_   https://github.com/processing/processing-docs/issues/744
-_ How much of the attrib*() functions should be documented?
-_   https://github.com/processing/processing-docs/issues/172
+https://bkaradzic.github.io/bgfx/
+https://bkaradzic.github.io/bgfx/examples.html
+
+
+possible additions for 4.x?
+_ Tint on FX2D now works properly, and improved JavaFX/Scenebuilder integration
+_   https://github.com/processing/processing/pull/6051
+_ make offscreen PGraphicsFX2D work
+_   https://github.com/processing/processing/issues/4638
+_   https://github.com/processing/processing/pull/4698
+_ Add support for floating point textures to OpenGL (using a hint?)
+_   https://github.com/processing/processing/issues/3321
+_ Friendly Names for new Sketches (includes UI for switching it back)
+_   https://github.com/processing/processing/pull/6048
 
 
 misc
@@ -539,6 +590,8 @@ _   https://github.com/processing/processing/issues/1596
 
 FX2D / Issues
 
+_ Remove usage of com.sun.* in JavaFX library
+_   https://github.com/processing/processing4/issues/208
 _ many shift- keys not working properly in FX2D (added a test sketch)
 _   https://github.com/processing/processing/issues/5317
 _ Hitting ESC in FX2D app on macOS throws IllegalStateException

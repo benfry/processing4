@@ -41,11 +41,6 @@ import processing.app.ui.Editor;
  */
 public class JavaInputHandler extends PdeInputHandler {
 
-//  /** ctrl-alt on windows and linux, cmd-alt on mac os x */
-//  static final int CTRL_ALT = ActionEvent.ALT_MASK |
-//    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
-
-
   public JavaInputHandler(Editor editor) {
     super(editor);
   }
@@ -80,7 +75,7 @@ public class JavaInputHandler extends PdeInputHandler {
     if ((code == KeyEvent.VK_UP) && event.isControlDown()) {
         //((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
       // back up to the last empty line
-      char contents[] = textarea.getText().toCharArray();
+      char[] contents = textarea.getText().toCharArray();
       //int origIndex = textarea.getCaretPosition() - 1;
       int caretIndex = textarea.getCaretPosition();
 
@@ -117,7 +112,7 @@ public class JavaInputHandler extends PdeInputHandler {
 
     } else if ((code == KeyEvent.VK_DOWN) && event.isControlDown()) {
                //((event.getModifiers() & InputEvent.CTRL_MASK) != 0)) {
-      char contents[] = textarea.getText().toCharArray();
+      char[] contents = textarea.getText().toCharArray();
       int caretIndex = textarea.getCaretPosition();
 
       int index = caretIndex;
@@ -170,7 +165,7 @@ public class JavaInputHandler extends PdeInputHandler {
 
     } else if (code == 10 || code == 13) {  // auto-indent
       if (Preferences.getBoolean("editor.indent")) {
-        char contents[] = textarea.getText().toCharArray();
+        char[] contents = textarea.getText().toCharArray();
         int tabSize = Preferences.getInteger("editor.tabs.size");
 
         // this is the previous character
@@ -252,7 +247,7 @@ public class JavaInputHandler extends PdeInputHandler {
             textarea.select(sel - tabSize, sel);
             String s = spaces(tabSize);
             // if these are spaces that we can delete
-            if (textarea.getSelectedText().equals(s)) {
+            if (s.equals(textarea.getSelectedText())) {
               textarea.setSelectedText("");
             } else {
               textarea.select(sel, sel);
@@ -279,7 +274,7 @@ public class JavaInputHandler extends PdeInputHandler {
         }
 
         // if this brace is the only thing on the line, outdent
-        char contents[] = textarea.getText().toCharArray();
+        char[] contents = textarea.getText().toCharArray();
         // index to the character to the left of the caret
         int prevCharIndex = textarea.getCaretPosition() - 1;
 
@@ -341,7 +336,7 @@ public class JavaInputHandler extends PdeInputHandler {
   /**
    * Return the index for the first character on this line.
    */
-  protected int calcLineStart(int index, char contents[]) {
+  protected int calcLineStart(int index, char[] contents) {
     // backup from the current caret position to the last newline,
     // so that we can figure out how far this line was indented
     /*int spaceCount = 0;*/
@@ -364,7 +359,7 @@ public class JavaInputHandler extends PdeInputHandler {
   /**
    * Calculate the number of spaces on this line.
    */
-  protected int calcSpaceCount(int index, char contents[]) {
+  protected int calcSpaceCount(int index, char[] contents) {
     index = calcLineStart(index, contents);
 
     int spaceCount = 0;

@@ -52,7 +52,7 @@ public class LocalVariableNode extends VariableNode {
     try {
       frame.setValue(var, value);
     } catch (InvalidTypeException | ClassNotLoadedException ex) {
-      Messages.loge(null, ex);
+      Messages.err(null, ex);
     }
     this.value = value;
   }

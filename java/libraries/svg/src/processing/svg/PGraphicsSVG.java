@@ -75,12 +75,6 @@ public class PGraphicsSVG extends PGraphicsJava2D {
   }
 
 
-  protected void defaultSettings() {  // ignore
-    super.defaultSettings();
-    textMode = SHAPE;
-  }
-
-
   public void beginDraw() {
     DOMImplementation domImpl =
       GenericDOMImplementation.getDOMImplementation();

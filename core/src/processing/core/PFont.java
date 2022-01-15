@@ -35,9 +35,24 @@ import java.util.HashMap;
 
 
 /**
- * Grayscale bitmap font class used by Processing.
+ * PFont is the font class for Processing. To create a font to use with
+ * Processing, select "Create Font..." from the Tools menu. This will create a
+ * font in the format Processing requires and also adds it to the current
+ * sketch's data directory. Processing displays fonts using the .vlw font
+ * format, which uses images for each letter, rather than defining them through
+ * vector data. The <b>loadFont()</b> function constructs a new font and
+ * <b>textFont()</b> makes a font active. The <b>list()</b> method creates a
+ * list of the fonts installed on the computer, which is useful information to
+ * use with the <b>createFont()</b> function for dynamically converting fonts
+ * into a format to use with Processing.<br />
+ * <br />
+ * To create a new font dynamically, use the <b>createFont()</b> function. Do
+ * not use the syntax <b>new PFont()</b>.
+ *
+ * <h3>Advanced</h3>
  * <P>
  * Awful (and by that, I mean awesome) ASCII (non-)art for how this works:
+ *
  * <PRE>
  *   |
  *   |                   height is the full used height of the image
@@ -55,7 +70,9 @@ import java.util.HashMap;
  *
  *   ^^^^^^^^^^^^^^ setWidth (width displaced by char)
  * </PRE>
+ *
  * @webref typography
+ * @webBrief Grayscale bitmap font class used by Processing
  * @see PApplet#loadFont(String)
  * @see PApplet#createFont(String, float, boolean, char[])
  * @see PGraphics#textFont(PFont)
@@ -164,6 +181,9 @@ public class PFont implements PConstants {
   protected FontMetrics lazyMetrics;
   protected int[] lazySamples;
 
+  // Debugging for https://github.com/processing/processing4/issues/278
+  private final boolean DEBUG_P4_0278 = false;
+
 
   /**
    * @nowebref
@@ -232,11 +252,19 @@ public class PFont implements PConstants {
                                   smooth ?
                                   RenderingHints.VALUE_ANTIALIAS_ON :
                                   RenderingHints.VALUE_ANTIALIAS_OFF);
+
     // adding this for post-1.0.9
     lazyGraphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                                   smooth ?
                                   RenderingHints.VALUE_TEXT_ANTIALIAS_ON :
                                   RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+
+    // Trying to track down https://github.com/processing/processing4/issues/278
+    // But at least on macOS, it's still smooth when this is called from Create Font.
+    lazyGraphics.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                                  smooth ?
+                                  RenderingHints.VALUE_INTERPOLATION_BICUBIC :
+                                  RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR);
 
     lazyGraphics.setFont(font);
     lazyMetrics = lazyGraphics.getFontMetrics();
@@ -250,17 +278,18 @@ public class PFont implements PConstants {
 
     if (charset == null) {
       lazy = true;
-//      lazyFont = font;
 
     } else {
-      // charset needs to be sorted to make index lookup run more quickly
+      // The charset needs to be sorted to make index lookup run quickly
       // http://dev.processing.org/bugs/show_bug.cgi?id=494
-      Arrays.sort(charset);
+      // First make copy of charset[] so the user's array is not modified
+      // https://github.com/processing/processing4/issues/197
+      char[] sortedCharset = Arrays.copyOf(charset, charset.length);
+      Arrays.sort(sortedCharset);
 
-      glyphs = new Glyph[charset.length];
-
+      glyphs = new Glyph[sortedCharset.length];
       glyphCount = 0;
-      for (char c : charset) {
+      for (char c : sortedCharset) {
         if (font.canDisplay(c)) {
           Glyph glyf = new Glyph(c);
           if (glyf.value < 128) {
@@ -272,31 +301,9 @@ public class PFont implements PConstants {
       }
 
       // shorten the array if necessary
-      if (glyphCount != charset.length) {
+      if (glyphCount != sortedCharset.length) {
         glyphs = (Glyph[]) PApplet.subset(glyphs, 0, glyphCount);
       }
-
-      // foreign font, so just make ascent the max topExtent
-      // for > 1.0.9, not doing this anymore.
-      // instead using getAscent() and getDescent() values for these cases.
-//      if ((ascent == 0) && (descent == 0)) {
-//        //for (int i = 0; i < charCount; i++) {
-//        for (Glyph glyph : glyphs) {
-//          char cc = (char) glyph.value;
-//          //char cc = (char) glyphs[i].value;
-//          if (Character.isWhitespace(cc) ||
-//              (cc == '\u00A0') || (cc == '\u2007') || (cc == '\u202F')) {
-//            continue;
-//          }
-//          if (glyph.topExtent > ascent) {
-//            ascent = glyph.topExtent;
-//          }
-//          int d = -glyph.topExtent + glyph.height;
-//          if (d > descent) {
-//            descent = d;
-//          }
-//        }
-//      }
     }
 
     // If not already created, just create these two characters to calculate
@@ -324,7 +331,7 @@ public class PFont implements PConstants {
 
 
   /**
-   * Adds an additional parameter that indicates the font came from a file,
+   * Adds a parameter that indicates the font came from a file,
    * not a built-in OS font.
    *
    * @nowebref
@@ -732,7 +739,7 @@ public class PFont implements PConstants {
 
     // six element array received from the Java2D path iterator
     float[] iterPoints = new float[6];
-    // array passed to createGylphVector
+    // array passed to createGlyphVector
     char[] textArray = new char[] { ch };
 
     //Graphics2D graphics = (Graphics2D) this.getGraphics();
@@ -748,57 +755,40 @@ public class PFont implements PConstants {
       shp.getPathIterator(null, detail);  // convert to line segments
 
     int contours = 0;
-    //boolean outer = true;
-//    boolean contour = false;
     while (!iter.isDone()) {
       int type = iter.currentSegment(iterPoints);
       switch (type) {
       case PathIterator.SEG_MOVETO:   // 1 point (2 vars) in textPoints
-//        System.out.println("moveto");
-//        if (!contour) {
         if (contours == 0) {
           s.beginShape();
         } else {
           s.beginContour();
-//          contour = true;
         }
         contours++;
         s.vertex(iterPoints[0], iterPoints[1]);
         break;
 
       case PathIterator.SEG_LINETO:   // 1 point
-//        System.out.println("lineto");
-//        PApplet.println(PApplet.subset(iterPoints, 0, 2));
         s.vertex(iterPoints[0], iterPoints[1]);
         break;
 
       case PathIterator.SEG_QUADTO:   // 2 points
-//        System.out.println("quadto");
-//        PApplet.println(PApplet.subset(iterPoints, 0, 4));
         s.quadraticVertex(iterPoints[0], iterPoints[1],
                           iterPoints[2], iterPoints[3]);
         break;
 
       case PathIterator.SEG_CUBICTO:  // 3 points
-//        System.out.println("cubicto");
-//        PApplet.println(iterPoints);
-        s.quadraticVertex(iterPoints[0], iterPoints[1],
-                          iterPoints[2], iterPoints[3],
-                          iterPoints[4], iterPoints[5]);
+        s.bezierVertex(iterPoints[0], iterPoints[1],
+                       iterPoints[2], iterPoints[3],
+                       iterPoints[4], iterPoints[5]);
         break;
 
       case PathIterator.SEG_CLOSE:
-//        System.out.println("close");
         if (contours > 1) {
-//        contours--;
-//        if (contours == 0) {
-////          s.endShape();
-//        } else {
           s.endContour();
         }
         break;
       }
-//      PApplet.println(iterPoints);
       iter.next();
     }
     s.endShape(CLOSE);
@@ -862,26 +852,23 @@ public class PFont implements PConstants {
     for (int i = 33; i <= 126; i++) {
       CHARSET[index++] = (char)i;
     }
-    for (int i = 0; i < EXTRA_CHARS.length; i++) {
-      CHARSET[index++] = EXTRA_CHARS[i];
+    for (char extraChar : EXTRA_CHARS) {
+      CHARSET[index++] = extraChar;
     }
   }
 
 
   /**
-   * ( begin auto-generated from PFont_list.xml )
    *
-   * Gets a list of the fonts installed on the system. The data is returned
-   * as a String array. This list provides the names of each font for input
-   * into <b>createFont()</b>, which allows Processing to dynamically format
-   * fonts. This function is meant as a tool for programming local
-   * applications and is not recommended for use in applets.
+   * Gets a list of the fonts installed on the system. The data is returned as a
+   * String array. This list provides the names of each font for input into
+   * <b>createFont()</b>, which allows Processing to dynamically format fonts.
    *
-   * ( end auto-generated )
    *
    * @webref pfont
+   * @webBrief Gets a list of the fonts installed on the system
    * @usage application
-   * @brief     Gets a list of the fonts installed on the system
+   * @brief Gets a list of the fonts installed on the system
    */
   static public String[] list() {
     loadFonts();
@@ -1058,6 +1045,12 @@ public class PFont implements PConstants {
 
 
     protected Glyph(char c) {
+      if (DEBUG_P4_0278 && c == 'd') {
+        System.out.println(lazyGraphics.getRenderingHint(RenderingHints.KEY_ANTIALIASING));
+        System.out.println(lazyGraphics.getRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING));
+        System.out.println(lazyGraphics.getRenderingHint(RenderingHints.KEY_INTERPOLATION));
+      }
+
       int mbox3 = size * 3;
       lazyGraphics.setColor(Color.white);
       lazyGraphics.fillRect(0, 0, mbox3, mbox3);
@@ -1081,6 +1074,16 @@ public class PFont implements PConstants {
             if (y > maxY) maxY = y;
             pixelFound = true;
           }
+        }
+      }
+
+      if (DEBUG_P4_0278 && c == 'd') {
+        for (int y = minY; y <= maxY; y++) {
+          for (int x = minX; x <= maxX; x++) {
+            int sample = lazySamples[y * mbox3 + x] & 0xff;
+            System.out.format("%3d ", sample);
+          }
+          System.out.println();
         }
       }
 

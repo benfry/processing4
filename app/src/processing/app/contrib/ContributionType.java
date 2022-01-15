@@ -22,7 +22,6 @@
 package processing.app.contrib;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -46,9 +45,10 @@ public enum ContributionType {
       return "tool";
     case EXAMPLES:
       return "examples";
+    default:
+      throw new IllegalArgumentException();
     }
-    return null;  // should be unreachable
-  };
+  }
 
 
   /**
@@ -61,6 +61,7 @@ public enum ContributionType {
   }
 
 
+  /*
   public String getPluralTitle() {
     switch (this) {
     case LIBRARY:
@@ -74,6 +75,7 @@ public enum ContributionType {
     }
     return null;  // should be unreachable
   }
+  */
 
 
 //  public String getFolderName() {
@@ -96,7 +98,7 @@ public enum ContributionType {
 
   /** Get the name of the properties file for this type of contribution. */
   public String getPropertiesName() {
-    return toString() + ".properties";
+    return this + ".properties";
   }
 
 
@@ -105,6 +107,8 @@ public enum ContributionType {
   }
 
 
+  /*
+  // removed for 4.0a6, doesn't appear to be in use
   public File[] listTempFolders() throws IOException {
     File base = getSketchbookFolder();
     return base.listFiles(new FileFilter() {
@@ -116,6 +120,7 @@ public enum ContributionType {
       }
     });
   }
+  */
 
 
   public boolean isTempFolderName(String name) {
@@ -185,11 +190,7 @@ public enum ContributionType {
    * subfolder if this is a ModeContribution.
    */
   public File[] listCandidates(File folder) {
-    return folder.listFiles(new FileFilter() {
-      public boolean accept(File potential) {
-        return isCandidate(potential);
-      }
-    });
+    return folder.listFiles(this::isCandidate);
   }
 
 
@@ -205,7 +206,7 @@ public enum ContributionType {
       return null;
 
     } else if (folders.length > 1) {
-      Messages.log("More than one " + toString() + " found inside " + folder.getAbsolutePath());
+      Messages.log("More than one " + this + " found inside " + folder.getAbsolutePath());
     }
     return folders[0];
   }
@@ -270,7 +271,7 @@ public enum ContributionType {
 //    }
     if (!backupFolder.exists() && !backupFolder.mkdirs()) {
       status.setErrorMessage("Could not create a backup folder in the " +
-      		                   "sketchbook " + toString() + " folder.");
+      		                   "sketchbook " + this + " folder.");
       return null;
     }
     return backupFolder;

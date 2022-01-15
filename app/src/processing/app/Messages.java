@@ -29,8 +29,6 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
-import processing.app.ui.Editor;
-
 public class Messages {
   /**
    * "No cookie for you" type messages. Nothing fatal or all that
@@ -86,8 +84,6 @@ public class Messages {
       System.out.println(title + ": " + message);
 
     } else {
-//      JOptionPane.showMessageDialog(new Frame(), message,
-//                                    title, JOptionPane.WARNING_MESSAGE);
       if (!Platform.isMacOS()) {
         JOptionPane.showMessageDialog(new JFrame(),
                                       "<html><body>" +
@@ -107,25 +103,8 @@ public class Messages {
                           "<p>" + secondary + "</p>",
                           JOptionPane.WARNING_MESSAGE);
 
-//        String[] options = new String[] {
-//            "Yes", "No"
-//        };
-//        pane.setOptions(options);
-
-        // highlight the safest option ala apple hig
-//        pane.setInitialValue(options[0]);
-
         JDialog dialog = pane.createDialog(new JFrame(), null);
         dialog.setVisible(true);
-
-//        Object result = pane.getValue();
-//        if (result == options[0]) {
-//          return JOptionPane.YES_OPTION;
-//        } else if (result == options[1]) {
-//          return JOptionPane.NO_OPTION;
-//        } else {
-//          return JOptionPane.CLOSED_OPTION;
-//        }
       }
     }
     if (e != null) e.printStackTrace();
@@ -181,76 +160,6 @@ public class Messages {
 
       if (fatal) {
         System.exit(1);
-      }
-    }
-  }
-
-
-  // ...................................................................
-
-
-
-  // incomplete
-  static public int showYesNoCancelQuestion(Editor editor, String title,
-                                            String primary, String secondary) {
-    if (!Platform.isMacOS()) {
-      int result =
-        JOptionPane.showConfirmDialog(null, primary + "\n" + secondary, title,
-                                      JOptionPane.YES_NO_CANCEL_OPTION,
-                                      JOptionPane.QUESTION_MESSAGE);
-      return result;
-//    if (result == JOptionPane.YES_OPTION) {
-//
-//    } else if (result == JOptionPane.NO_OPTION) {
-//      return true;  // ok to continue
-//
-//    } else if (result == JOptionPane.CANCEL_OPTION) {
-//      return false;
-//
-//    } else {
-//      throw new IllegalStateException();
-//    }
-
-    } else {
-      // Pane formatting adapted from the Quaqua guide
-      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
-      JOptionPane pane =
-        new JOptionPane("<html> " +
-                        "<head> <style type=\"text/css\">"+
-                        "b { font: 13pt \"Lucida Grande\" }"+
-                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
-                        "</style> </head>" +
-                        "<b>" + Language.text("save.title") + "</b>" +
-                        "<p>" + Language.text("save.hint") + "</p>",
-                        JOptionPane.QUESTION_MESSAGE);
-
-      String[] options = new String[] {
-        Language.text("save.btn.save"),
-        Language.text("prompt.cancel"),
-        Language.text("save.btn.dont_save")
-      };
-      pane.setOptions(options);
-
-      // highlight the safest option ala apple hig
-      pane.setInitialValue(options[0]);
-
-      // on macosx, setting the destructive property places this option
-      // away from the others at the lefthand side
-      pane.putClientProperty("Quaqua.OptionPane.destructiveOption",
-                             Integer.valueOf(2));
-
-      JDialog dialog = pane.createDialog(editor, null);
-      dialog.setVisible(true);
-
-      Object result = pane.getValue();
-      if (result == options[0]) {
-        return JOptionPane.YES_OPTION;
-      } else if (result == options[1]) {
-        return JOptionPane.CANCEL_OPTION;
-      } else if (result == options[2]) {
-        return JOptionPane.NO_OPTION;
-      } else {
-        return JOptionPane.CLOSED_OPTION;
       }
     }
   }
@@ -342,24 +251,24 @@ public class Messages {
 
   static public void logf(String message, Object... args) {
     if (Base.DEBUG) {
-      System.out.println(String.format(message, args));
+      System.out.printf(message, args);
     }
   }
 
 
-  static public void loge(String message, Throwable e) {
+  static public void err(String message) {
+    err(message, null);
+  }
+
+
+  static public void err(String message, Throwable e) {
     if (Base.DEBUG) {
       if (message != null) {
         System.err.println(message);
       }
-      e.printStackTrace();
-    }
-  }
-
-
-  static public void loge(String message) {
-    if (Base.DEBUG) {
-      System.err.println(message);
+      if (e != null) {
+        e.printStackTrace();
+      }
     }
   }
 }

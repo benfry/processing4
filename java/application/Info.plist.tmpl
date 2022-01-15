@@ -7,7 +7,7 @@
     <key>CFBundleExecutable</key>
     <string>@@sketch@@</string>
     <key>CFBundleIconFile</key>
-    <string>sketch.icns</string>
+    <string>application.icns</string>
     <key>CFBundleIdentifier</key>
     <string>@@sketch@@</string>
     <key>CFBundleDisplayName</key>
@@ -38,7 +38,7 @@
     <string>@@sketch@@</string>
 
     <key>LSMinimumSystemVersion</key>
-    <string>10.8.5</string>
+    <string>10.14.6</string>
 
     <key>NSHighResolutionCapable</key>
     <true/>
@@ -60,8 +60,8 @@
     <key>JVMOptions</key>
     <array>
 @@jvm_options_list@@
-      <string>-Xdock:icon=$APP_ROOT/Contents/Resources/sketch.icns</string>
-      <string>-Djava.library.path=$APP_ROOT/Contents/Java</string>   
+      <string>-Xdock:icon=$APP_ROOT/Contents/Resources/application.icns</string>
+      <string>-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/core/library</string>
       <string>-Dapple.laf.useScreenMenuBar=true</string>
       <string>-Dcom.apple.macos.use-file-dialog-packages=true</string>
       <string>-Dcom.apple.macos.useScreenMenuBar=true</string>
@@ -71,5 +71,10 @@
     <key>JVMArguments</key>
     <array>
     </array>
+
+    <key>NSCameraUsageDescription</key>
+    <string>This app uses video camera input.</string>
+    <key>NSMicrophoneUsageDescription</key>
+    <string>This app uses microphone input.</string>
   </dict>
 </plist>
