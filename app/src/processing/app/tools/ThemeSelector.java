@@ -25,29 +25,32 @@ package processing.app.tools;
 
 import processing.app.*;
 import processing.app.ui.Editor;
-import processing.awt.ShimAWT;
+import processing.app.ui.Theme;
+import processing.app.ui.Toolkit;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.*;
-import java.text.*;
-import java.util.*;
-import java.util.zip.*;
 
 
-public class ThemeSelector implements Tool {
-  static final int COUNT = 16;
-  static final int SIZE = 445;
-
+public class ThemeSelector extends JFrame implements Tool {
   static final String[] themeOrder = {
     "kyanite", "calcite", "olivine", "beryl",
     "galena", "jasper", "malachite", "pyrite",
     "gabbro", "fluorite", "orpiment", "feldspar",
     "antimony", "serandite", "bauxite", "garnet"
   };
-
+  static final int COUNT = themeOrder.length;
   String[] themeContents;
 
+  File sketchbookFile;
+  int currentIndex;
+
+  ColorfulPanel selector;
+
   Base base;
-  Editor editor;
 
 
   public String getMenuTitle() {
@@ -62,15 +65,98 @@ public class ThemeSelector implements Tool {
     for (int i = 0; i < COUNT; i++) {
       try {
         File file = Base.getLibFile("themes/" + themeOrder[i] + ".txt");
+        themeContents[i] = Util.loadFile(file);
 
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
+
+    Container pane = getContentPane();
+    pane.setLayout(new BorderLayout());
+    pane.add(selector = new ColorfulPanel(), BorderLayout.CENTER);
+
+    Toolkit.registerWindowCloseKeys(getRootPane(), e -> setVisible(false));
+    setTitle(getMenuTitle());
+    pack();
+    setLocationRelativeTo(null);
   }
 
 
   public void run() {
-    editor = base.getActiveEditor();
+    // location for theme.txt in the sketchbook folder
+    // (doing this in run() in case the sketchbook location has changed)
+    sketchbookFile = new File(Base.getSketchbookFolder(), "theme.txt");
+
+    // figure out if the current theme in sketchbook is a known one
+    checkCurrent();
+
+    setVisible(true);
+  }
+
+
+  void setCurrent(int index) {
+    //System.out.println("index is " + index);
+    currentIndex = index;
+    try {
+      Util.saveFile(themeContents[index], sketchbookFile);
+      Theme.load();
+
+      for (Editor editor : base.getEditors()) {
+        editor.updateTheme();
+        //editor.repaint();
+      }
+
+    } catch (IOException e) {
+      base.getActiveEditor().statusError(e);
+    }
+  }
+
+
+  private void checkCurrent() {
+    //
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  class ColorfulPanel extends JPanel {
+    static final int SCALE = 4;
+    static final int EACH = 320 / SCALE;
+    static final int BETWEEN = 100 / SCALE;
+    static final int SIZE = EACH*4 + BETWEEN*5;
+
+    Image image;
+
+    ColorfulPanel() {
+      image = Toolkit.getLibImage("themes/4x4.png");
+      addMouseListener(new MouseAdapter() {
+        @Override
+        public void mousePressed(MouseEvent e) {
+          //super.mousePressed(e);
+
+          int col = constrain((e.getX() - BETWEEN) / (EACH + BETWEEN));
+          int row = constrain((e.getY() - BETWEEN) / (EACH + BETWEEN));
+          int index = row*4 + col;
+
+          setCurrent(index);
+        }
+      });
+    }
+
+    private int constrain(int value) {
+      return Math.max(0, Math.min(value, 3));
+    }
+
+    @Override
+    public void paintComponent(Graphics g) {
+      g.drawImage(image, 0, 0, SIZE, SIZE,null);
+    }
+
+    @Override
+    public Dimension getPreferredSize() {
+      return new Dimension(SIZE, SIZE);
+    }
   }
 }

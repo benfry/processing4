@@ -611,6 +611,8 @@ public abstract class Editor extends JFrame implements RunnerListener {
     toolTipTextColor = Theme.getColor("errors.selection.fgcolor");
     toolTipWarningColor = Theme.getColor("errors.selection.warning.bgcolor");
     toolTipErrorColor = Theme.getColor("errors.selection.error.bgcolor");
+
+    repaint();  // for good measure
   }
 
 
