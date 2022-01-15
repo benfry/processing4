@@ -11,7 +11,9 @@ We even updated the loading screen to include 2022.
 
 ## Fixing the bugs that won't fix themselves
 
-* Added an option to “Disable HiDPI Scaling” on Windows for users that were having trouble with the editor caret (cursor) showing up in the wrong position, or text in the interface (on the tabs in particular) looking oddly jagged. [#226](https://github.com/processing/processing4/issues/226), [#231](https://github.com/processing/processing4/issues/231) with ongoing development at [#342](https://github.com/processing/processing4/issues/342)
+* Added an option to “Disable HiDPI Scaling” on Windows for users that were having trouble with the editor caret (cursor) showing up in the wrong position, or text in the interface (on the tabs in particular) looking oddly jagged. [#226](https://github.com/processing/processing4/issues/226), [#231](https://github.com/processing/processing4/issues/231)
+
+* The “Disable HiDPI Scaling” option is a temporary workaround, with ongoing development taking place at [#342](https://github.com/processing/processing4/issues/342). There's also a console warning if Processing detects that your display may have issues, however it's nearly impossible to do this with certainty. As a result, we can't enable the option by default, because it would make things worse for users who don't need it. Fixing this issue requires spending a lot of time testing different Windows systems, resolutions, monitor setups, etc.
 
 * Too much writing to the console (from both System.out and System.err) causing the software to lock up completely. [#338](https://github.com/processing/processing4/issues/338)
 
