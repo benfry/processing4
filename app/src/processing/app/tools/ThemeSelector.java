@@ -54,7 +54,7 @@ public class ThemeSelector extends JFrame implements Tool {
 
 
   public String getMenuTitle() {
-    return Language.text("Theme Selector");
+    return Language.text("Theme Selector...");
   }
 
 
@@ -89,16 +89,40 @@ public class ThemeSelector extends JFrame implements Tool {
     sketchbookFile = new File(Base.getSketchbookFolder(), "theme.txt");
 
     // figure out if the current theme in sketchbook is a known one
-    checkCurrent();
+    currentIndex = getCurrentIndex();
 
     setVisible(true);
   }
 
 
-  void setCurrent(int index) {
+  private File nextBackupFile() {
+    int index = 0;
+    File backupFile;
+    do {
+      index++;
+      backupFile = new File(Base.getSketchbookFolder(), String.format("theme.%03d", index));
+    } while (backupFile.exists());
+    return backupFile;
+  }
+
+
+  private void setCurrentIndex(int index) {
     //System.out.println("index is " + index);
     currentIndex = index;
     try {
+      if (sketchbookFile.exists() && getCurrentIndex() == -1) {
+        // If the user has a custom theme they've modified,
+        // rename it to theme.001, theme.002, etc. as a backup
+        // to avoid overwriting anything they've created.
+        File backupFile = nextBackupFile();
+        boolean success = sketchbookFile.renameTo(backupFile);
+        if (!success) {
+          Messages.showWarning("Could not back up theme",
+            "Could not save a backup of theme.txt in your sketchbook folder.\n" +
+            "Rename it manually and try setting the theme again.");
+          return;
+        }
+      }
       Util.saveFile(themeContents[index], sketchbookFile);
       Theme.load();
 
@@ -113,8 +137,23 @@ public class ThemeSelector extends JFrame implements Tool {
   }
 
 
-  private void checkCurrent() {
-    //
+  private int getCurrentIndex() {
+    try {
+      if (sketchbookFile.exists()) {
+        String currentContents = Util.loadFile(sketchbookFile);
+        for (int i = 0; i < COUNT; i++) {
+          if (themeContents[i].equals(currentContents)) {
+            return i;
+          }
+        }
+        return -1;
+      }
+      return 0;  // the default theme is index 0
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return -1;  // could not identify the theme
+    }
   }
 
 
@@ -123,9 +162,13 @@ public class ThemeSelector extends JFrame implements Tool {
 
   class ColorfulPanel extends JPanel {
     static final int SCALE = 4;
-    static final int EACH = 320 / SCALE;
+    static final int DIM = 320 / SCALE;
     static final int BETWEEN = 100 / SCALE;
-    static final int SIZE = EACH*4 + BETWEEN*5;
+    static final int EACH = DIM + BETWEEN;
+    static final int SIZE = DIM*4 + BETWEEN*5;
+
+    static final int OUTSET = 5;
+    static final int OUTLINE = 3;
 
     Image image;
 
@@ -136,11 +179,12 @@ public class ThemeSelector extends JFrame implements Tool {
         public void mousePressed(MouseEvent e) {
           //super.mousePressed(e);
 
-          int col = constrain((e.getX() - BETWEEN) / (EACH + BETWEEN));
-          int row = constrain((e.getY() - BETWEEN) / (EACH + BETWEEN));
+          int col = constrain((e.getX() - BETWEEN) / EACH);
+          int row = constrain((e.getY() - BETWEEN) / EACH);
           int index = row*4 + col;
 
-          setCurrent(index);
+          setCurrentIndex(index);
+          repaint();
         }
       });
     }
@@ -152,6 +196,17 @@ public class ThemeSelector extends JFrame implements Tool {
     @Override
     public void paintComponent(Graphics g) {
       g.drawImage(image, 0, 0, SIZE, SIZE,null);
+
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setStroke(new BasicStroke(OUTLINE));
+      g2.setColor(Color.GRAY);
+
+      int col = currentIndex % 4;
+      int row = currentIndex / 4;
+      g2.drawRect(BETWEEN + EACH*col - OUTSET,
+        BETWEEN + EACH*row - OUTSET,
+        DIM + OUTSET*2,
+        DIM + OUTSET*2);
     }
 
     @Override

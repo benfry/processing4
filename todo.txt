@@ -73,6 +73,8 @@ X update the opening page to say 2022
 X replace the ugly icon
 X   https://developer.apple.com/design/resources/#macos-apps
 o   app, document, exported app
+X indicator to show current theme
+X back up themes that are not standard/have been modified
 
 windows scaling
 / Editor cursor position is offset to the right when Windows scaling >100%
@@ -85,7 +87,7 @@ X option to disable the Windows startup setting for scaling
 X   need to have a better workaround
 o   detect 150% scaling and disable the flag, otherwise set it?
 X   can't be detected reliably
-_ show a warning in the console for screen issues?
+X show a warning in the console for screen issues?
 
 
 before release
