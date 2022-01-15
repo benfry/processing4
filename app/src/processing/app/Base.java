@@ -233,7 +233,6 @@ public class Base {
 
         handleWelcomeScreen(base);
         handleCrustyDisplay();
-        //checkDriverBug();  // that was 2017, right?
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
@@ -288,45 +287,6 @@ public class Base {
       }
     }
   }
-
-
-  /*
-  // Remove this code in a couple of months [fry 170211]
-  // https://github.com/processing/processing/issues/4853
-  // Or maybe not, if NVIDIA keeps doing this [fry 170423]
-  // https://github.com/processing/processing/issues/4997
-  @SuppressWarnings("SpellCheckingInspection")
-  static private void checkDriverBug() {
-    if (System.getProperty("os.name").contains("Windows 10")) {
-      new Thread(() -> {
-        try {
-          Process p = Runtime.getRuntime().exec("powershell Get-WmiObject Win32_PnPSignedDriver| select devicename, driverversion | where {$_.devicename -like \\\"*nvidia*\\\"}");
-          BufferedReader reader = PApplet.createReader(p.getInputStream());
-          String line;
-          while ((line = reader.readLine()) != null) {
-            if (line.contains("3.7849")) {
-              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up",
-                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                   "otherwise you won't be able to run any sketches. Update here:\n" +
-                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4378\n" +
-                                   "or read background about the issue at this link:\n" +
-                                   "https://github.com/processing/processing/issues/4853"));
-            } else if (line.contains("3.8165")) {
-              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up again",
-                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                   "otherwise you won't be able to run any sketches. Update here:\n" +
-                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4453/\n" +
-                                   "or read background about the issue at this link:\n" +
-                                   "https://github.com/processing/processing/issues/4997"));
-            }
-          }
-        } catch (Exception e) {
-          Messages.err("Problem checking NVIDIA driver", e);
-        }
-      }).start();
-    }
-  }
-  */
 
 
   /**
