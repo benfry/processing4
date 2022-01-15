@@ -161,15 +161,6 @@ public class Base {
     // call after Platform.init() because we need the settings folder
     Console.startup();
 
-    /*
-    // working on https://github.com/processing/processing4/issues/231
-    // and https://github.com/processing/processing4/issues/226
-    System.out.println("retina is " + Toolkit.isRetina());
-    System.out.println("system zoom " + Platform.getSystemZoom());
-    System.out.println("java2d param is " + System.getProperty("sun.java2d.uiScale.enabled"));
-    System.out.println("toolkit res is " + java.awt.Toolkit.getDefaultToolkit().getScreenResolution());
-    */
-
     // Set the debug flag based on a file being present in the settings folder
     File debugFile = getSettingsFile("debug");
 
@@ -241,6 +232,7 @@ public class Base {
         SingleInstance.startServer(base);
 
         handleWelcomeScreen(base);
+        handleCrustyDisplay();
         //checkDriverBug();  // that was 2017, right?
 
       } catch (Throwable t) {
@@ -335,6 +327,31 @@ public class Base {
     }
   }
   */
+
+
+  /**
+   * Temporary workaround as we try to sort out
+   * https://github.com/processing/processing4/issues/231
+   * and https://github.com/processing/processing4/issues/226
+   */
+  static private void handleCrustyDisplay() {
+    /*
+    System.out.println("retina is " + Toolkit.isRetina());
+    System.out.println("system zoom " + Platform.getSystemZoom());
+    System.out.println("java2d param is " + System.getProperty("sun.java2d.uiScale.enabled"));
+    System.out.println("toolkit res is " + java.awt.Toolkit.getDefaultToolkit().getScreenResolution());
+    */
+    if (Platform.isWindows()) {  // only an issue on Windows
+      if (!Toolkit.isRetina() && !Splash.getDisableHiDPI()) {
+        int res = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+        if (res % 96 != 0) {
+          // fractional dpi scaling on a low-res screen
+          System.out.println("If the editor cursor is in the wrong place or the interface is blocky or fuzzy,");
+          System.out.println("open Preferences and select the “Disable HiDPI Scaling” option to fix it.");
+        }
+      }
+    }
+  }
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

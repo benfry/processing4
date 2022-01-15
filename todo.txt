@@ -85,6 +85,7 @@ X option to disable the Windows startup setting for scaling
 X   need to have a better workaround
 o   detect 150% scaling and disable the flag, otherwise set it?
 X   can't be detected reliably
+_ show a warning in the console for screen issues?
 
 
 before release
