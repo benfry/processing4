@@ -733,13 +733,15 @@ public class Base {
     if (internalTools == null) {
       internalTools = new ArrayList<>();
 
-      initInternalTool("processing.app.tools.CreateFont");
-      initInternalTool("processing.app.tools.ColorSelector");
       initInternalTool("processing.app.tools.Archiver");
+      initInternalTool("processing.app.tools.ColorSelector");
+      initInternalTool("processing.app.tools.CreateFont");
 
       if (Platform.isMacOS()) {
         initInternalTool("processing.app.tools.InstallCommander");
       }
+
+      initInternalTool("processing.app.tools.ThemeSelector");
     }
 
     // No need to reload these either
