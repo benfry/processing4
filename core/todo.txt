@@ -1,33 +1,4 @@
-1278 (4.0b3)
-X support extensions for directories with listFiles/listPaths
-X   otherwise asking for .jpg will return root folders (unless 'only files' specified)
-X   but because macOS actually puts extensions on folders (.app, etc), support it
-X fix for disableStyle() with 2D shapes in P3D
-X allow GEOMETRY (not just PATH) with contains() in PShape
-X   the method is still incomplete, but added a note about that too
-X added workaround in PShapeOpenGL to get access to vertex data
-X   still need to find the root cause
-X   also need to check for other reports about this
-X textSize() losing some symbols
-X   actually a problem that the default font isn't being set
-X   https://github.com/processing/processing4/issues/303
-X   https://github.com/processing/processing/issues/4956
-X add warning when default font set and drawing unavailable characters
-
-X multiple windows with GL
-X   https://github.com/processing/processing4/issues/312
-X   https://github.com/processing/processing4/pull/313
-X   https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/opengl/GLSharedContextSetter.html
-X made DrawListener public in PSurfaceJOGL
-o   probably change that back
-X   nah, useful to have it there
-
-andres
-X Implement buffer object streaming and finalize attribute API in PShape
-X   https://github.com/processing/processing4/pull/314
-X Adds support to PATH shapes in P2D renderer
-X   https://github.com/processing/processing4/pull/316
-X   https://github.com/processing/processing/issues/6009
+1279 (4.0b4)
 
 
 _ how to handle fallback fonts
