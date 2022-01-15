@@ -1,14 +1,12 @@
 # Processing 4.0 beta 3
 
-* Revision 1278 – 14 January 2022*
+* Revision 1278 – 15 January 2022*
 
-We've moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL.
+New colors in the UI! We're still making changes to the design of the UI, but this release includes a new theme engine that makes it possible to select interface colors from a set of options, as well as more control over choosing your own schemes. Check out Tools → Theme Selector for the magic.
+
+We've also moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL.
 
 We even updated the loading screen to include 2022.
-
-The new color scheme is a placeholder, just like the last one: we've done major work in this release to make it possible to customize the UI in Processing, and we have some exciting updates on that to share in future releases. For this round, we just wanted some neutral defaults.
-
-You can now customize the color scheme by selecting Tools → Update Theme. This will create a `theme.txt` file in your sketchbook, which you can edit. After you've saved your changes, select “Update Theme” again to see the changes reflected in the interface.
 
 
 ## Fixing the bugs that won't fix themselves
@@ -41,13 +39,19 @@ You can now customize the color scheme by selecting Tools → Update Theme. This
 
 ## Major internal work to support UI themes
 
+* As mentioned above, several new themes are available from the “Theme Selector” option in the Tools menu. Selecting a theme will create a `theme.txt` file in your sketchbook that sets the interface colors.
+
+* If you make changes to the `theme.txt` file in your sketchbook, you can select Tools → Update Theme to see those changes reflected in the interface. If there's no `theme.txt` file in your sketchbook, it will create a `theme.txt` file in your sketchbook, which you can edit. After you've saved your changes, select “Update Theme” again to see the updates.
+
+* Selecting a new theme will resave your `theme.txt` file under a new name (`theme.001`, `theme.002`, etc.)
+
 * Now using custom scrollbar widgets in the Editor so that it can better match the rest of the interface.
 
 * Auto-generating toolbar and tab icons from SVG files based on theme colors.
 
 * Implement automatic update for changes to `theme.txt` in the sketchbook.
 
-* More documentation about all of this soon.
+* More documentation about all of this soon, which will live [here](https://github.com/processing/processing4/wiki/Themes).
 
 
 ## Hark, a sound from the West, and it is Sam
