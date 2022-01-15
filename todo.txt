@@ -1,5 +1,9 @@
 1279 (4.0b4)
 
+contribs
+X select entire line when doing Edit > Copy on an empty selection
+X   https://github.com/processing/processing4/pull/100
+
 
 known issues
 _ IDE cursor position is wrong if font size is changed in preferences on macOS

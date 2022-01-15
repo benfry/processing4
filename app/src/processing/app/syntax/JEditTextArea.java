@@ -17,8 +17,6 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
 
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
@@ -1244,8 +1242,7 @@ public class JEditTextArea extends JComponent
    * Selects all text in the given line.
    * @param line The line number to select all text in it.
    */
-  public final void selectLine(final int line)
-  {
+  private void selectLine(final int line) {
     selectLine = true;
     final int lineStart = getLineStartOffset(line);
     final int lineEnd = getLineSelectionStopOffset(line);
@@ -2367,8 +2364,8 @@ public class JEditTextArea extends JComponent
   }
 
 
-  class DragHandler implements MouseMotionListener
-  {
+  class DragHandler implements MouseMotionListener {
+
     public void mouseDragged(MouseEvent evt) {
       if (popup != null && popup.isVisible()) return;
 
