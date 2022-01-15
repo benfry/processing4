@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -506,6 +506,7 @@ public class PreferencesFrame {
 
     if (Platform.isWindows()){
       autoAssociateBox.setVisible(true);
+      hidpiDisableBox.setVisible(true);
     }
     // closing the window is same as hitting cancel button
 
