@@ -27,6 +27,11 @@ X   accidentally shut off sometime during the 3.x development process
 X set document type for file associations so that basic quicklook works
 o disable Theme Engine from Tools (in build.xml)
 X   or rename to Theme Update, and remove the browser bits
+X test whether open/save dialog behaving on Ubuntu
+o   test with previous beta
+X Open/Save crashing on Linux
+X   switching to Oracle JDK got it working, need to test with 17
+X   https://github.com/processing/processing4/issues/306
 
 sam
 X Error when calling smooth() on PGraphics
@@ -69,35 +74,26 @@ X replace the ugly icon
 X   https://developer.apple.com/design/resources/#macos-apps
 o   app, document, exported app
 
+windows scaling
+/ Editor cursor position is offset to the right when Windows scaling >100%
+X   https://github.com/processing/processing4/issues/226
+o   ship with a spare .exe for this one?
+X   partial fix, use the "Disable HiDPI Scaling" option in Preferences
+X UI scaling issues on Windows still not resolved
+X   https://github.com/processing/processing4/issues/231
+X option to disable the Windows startup setting for scaling
+X   need to have a better workaround
+o   detect 150% scaling and disable the flag, otherwise set it?
+X   can't be detected reliably
+
 
 before release
-_ option to disable the Windows startup setting for scaling
-_   need to have a better workaround
-_   detect 150% scaling and disable the flag, otherwise set it?
-_ test whether open/save dialog behaving on Ubuntu
-_   test with previous beta
 _ more reports of code completion not working on macOS
 _   "working in a6 but not b2"
 _   https://github.com/processing/processing4/issues/304
 _ update the README.md in the root for alpha 6 and beta 1, 2, 3
 _ update https://github.com/processing/processing4/wiki/Changes-in-4.0
 _ make notes about known issues in the README
-
-
-windows scaling
-_ Editor cursor position is offset to the right when Windows scaling >100%
-_   https://github.com/processing/processing4/issues/226
-_   ship with a spare .exe for this one?
-_ UI scaling issues on Windows still not resolved
-_   https://github.com/processing/processing4/issues/231
-_ sorting out -Dsun.java2d.uiScale.enabled
-http://openjdk.java.net/jeps/263
-https://youtrack.jetbrains.com/issue/JBR-3757
-https://news.kynosarges.org/2019/03/24/swing-high-dpi-properties/
-https://github.com/JetBrains/intellij-community/blob/master/platform/util/ui/src/com/intellij/ui/scale/ScaleType.java
-https://intellij-support.jetbrains.com/hc/en-us/articles/115001260010-Troubleshooting-IDE-scaling-DPI-issues-on-Windows
-https://youtrack.jetbrains.com/issue/JBR-427
-rollup of all IDEA issues: https://youtrack.jetbrains.com/issue/IDEA-180962
 
 
 known issues
@@ -107,10 +103,16 @@ _   https://github.com/processing/processing4/issues/194
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
-_ Open/Save crashing on Linux
-_   switching to Oracle JDK got it working, need to test with 17
-_   https://github.com/processing/processing4/issues/306
-
+_ Resolve scaling issues with Windows
+_   Editor cursor position is offset to the right when Windows scaling >100%
+_   https://github.com/processing/processing4/issues/342
+http://openjdk.java.net/jeps/263
+https://youtrack.jetbrains.com/issue/JBR-3757
+https://news.kynosarges.org/2019/03/24/swing-high-dpi-properties/
+https://github.com/JetBrains/intellij-community/blob/master/platform/util/ui/src/com/intellij/ui/scale/ScaleType.java
+https://intellij-support.jetbrains.com/hc/en-us/articles/115001260010-Troubleshooting-IDE-scaling-DPI-issues-on-Windows
+https://youtrack.jetbrains.com/issue/JBR-427
+rollup of all IDEA issues: https://youtrack.jetbrains.com/issue/IDEA-180962
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

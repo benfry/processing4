@@ -13,9 +13,13 @@ You can now customize the color scheme by selecting Tools → Update Theme. This
 
 ## Fixing the bugs that won't fix themselves
 
+* Added an option to “Disable HiDPI Scaling” on Windows for users that were having trouble with the editor caret (cursor) showing up in the wrong position, or text in the interface (on the tabs in particular) looking oddly jagged. [#226](https://github.com/processing/processing4/issues/226), [#231](https://github.com/processing/processing4/issues/231) with ongoing development at [#342](https://github.com/processing/processing4/issues/342)
+
 * Too much writing to the console (from both System.out and System.err) causing the software to lock up completely. [#338](https://github.com/processing/processing4/issues/338)
 
 * Got rollovers working again for the Toolbar buttons. Somewhat comically, these seem to have broken at some point during the 3.x development process, and nobody noticed.
+
+* Fix a problem where the default font would misbehave after `textSize()` was called. Turns out the problem was that the wrong font was being used in the first place. But also added a warning for users when unsupported characters are used with the default font. [#303](https://github.com/processing/processing4/issues/303), [#4956](https://github.com/processing/processing/issues/4956)
 
 * `listFiles()` and `listPaths()` with an extension specified were not properly matching directories.
 
@@ -23,7 +27,16 @@ You can now customize the color scheme by selecting Tools → Update Theme. This
 
 * Allow `GEOMETRY` (not just `PATH`) with `contains()` in PShape. The `contains()` method is still imperfect, but it's just as bad with polygon shapes as path shapes.
 
-* Fix a problem where the default font would misbehave after `textSize()` was called. Turns out the problem was that the wrong font was being used in the first place. But also added a warning for users when unsupported characters are used with the default font. [#303](https://github.com/processing/processing4/issues/303), [#4956](https://github.com/processing/processing/issues/4956)
+* The Open/Save dialog box was crashing on Linux. Can't reproduce with this release, which uses Adoptium OpenJDK 17, so fingers crossed that it's resolved. [#306](https://github.com/processing/processing4/issues/306)
+
+
+## Known Issues, the thorns that remain in our side
+
+* The included version of the documentation is for 3.0, not the newer 4.0.
+
+* The display scaling issues on Windows need to be resolved without folks having to use Preferences. [#342](https://github.com/processing/processing4/issues/342)
+
+* …aaaand pretty much anything [here](https://github.com/processing/processing4/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) and [here](https://github.com/processing/processing/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc). Please help!
 
 
 ## Major internal work to support UI themes
