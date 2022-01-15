@@ -1,12 +1,12 @@
 # Processing 4.0 beta 3
 
-* Revision 1278 – 15 January 2022*
+*Revision 1278 – 15 January 2022*
 
 New colors in the UI! We're still making changes to the design of the UI, but this release includes a new theme engine that makes it possible to select interface colors from a set of options, as well as more control over choosing your own schemes. Check out Tools → Theme Selector for the magic.
 
 We've also moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL.
 
-We even updated the loading screen to include 2022.
+We even updated the loading screen to include 2022 in the copyright notice.
 
 
 ## Fixing the bugs that won't fix themselves
