@@ -113,5 +113,5 @@ else
   fi
   cd "$APPDIR"
 
-  java -Djna.nosys=true -Dpython.console.encoding=UTF-8 -Xmx512m processing.app.ui.Splash "$SKETCH" &
+  java -Djna.nosys=true -Dpython.console.encoding=UTF-8 -Xmx512m --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED processing.app.ui.Splash "$SKETCH" &
 fi

@@ -39,9 +39,11 @@ public class LinuxPlatform extends DefaultPlatform {
   public void initBase(Base base) {
     super.initBase(base);
 
-    // Set x11 WM_CLASS property which is used as the application
-    // name by Gnome3 and other window managers.
+    // Set X11 WM_CLASS property which is used as the application
+    // name by Gnome 3 and other window managers.
     // https://github.com/processing/processing/issues/2534
+    // For Java 17, this hack requires an addition to the command line:
+    // --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED
     try {
       Toolkit xToolkit = Toolkit.getDefaultToolkit();
       java.lang.reflect.Field awtAppClassNameField =
