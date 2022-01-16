@@ -11,6 +11,7 @@ X   now with a release 9 to cover Big Sur
 X     https://violetlib.org/vaqua/downloads.html
 X   make the final call to remove, or put the libs on download.processing.org
 X   removing, with the theming integration, gonna head that direction instead
+X bump ant from 1.10.10 to 1.10.12
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection

@@ -4,7 +4,7 @@
   <!-- Current version of Ant that works with Processing -->
   <!-- (Cannot use ant.version as the name of the property
        because that conflicts with the built-in variable) -->
-  <property name="ant.version.num" value="1.10.10" />
+  <property name="ant.version.num" value="1.10.12" />
   <!-- the .zip file to be downloaded -->
   <property name="ant.zip" value="apache-ant-${ant.version.num}-bin.zip" />
 
