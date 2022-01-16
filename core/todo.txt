@@ -6,8 +6,6 @@ _   could implement this for the default, but also, SansSerif sucks
 _   https://stackoverflow.com/a/9482676
 _   in addition, it would need to be implemented for textWidth()
 
-
-
 _ possibly move jogl back to a separate library
 _   setting up deps for it with projects that don't use it is a headache
 _ put opengl libs for core into platform-specific subfolders?
@@ -62,8 +60,6 @@ _   should surface be set on command line?
 _   or can we just require that size() goes first, and inits surface *type* w/o sizes
 _   or even that it inits a surface-specific class for getting that info
 _ implement selectInput/Output/Folder methods in PSurfaceJOGL
-_ implement selectInput/Output/Folder methods in PSurfaceFX
-_ implement openLink() in PSurfaceFX
 _ implement openLink() in PSurfaceJOGL
 
 
@@ -86,7 +82,6 @@ _   https://github.com/codeanticode/processing-lwjgl/wiki#making-awt-optional-in
 _   https://github.com/processing/processing4/issues/57
 _ move loadImage() into surface
 _   move AWT code out of PImage, and into its own PImageJava2D class
-_   how to handle with JavaFX?
 _   https://github.com/processing/processing4/issues/56
 
 
@@ -135,16 +130,7 @@ _   https://bugs.openjdk.java.net/browse/JDK-8027391
 _   test with JG's 13" retina laptop
 
 
-https://bkaradzic.github.io/bgfx/
-https://bkaradzic.github.io/bgfx/examples.html
-
-
 possible additions for 4.x?
-_ Tint on FX2D now works properly, and improved JavaFX/Scenebuilder integration
-_   https://github.com/processing/processing/pull/6051
-_ make offscreen PGraphicsFX2D work
-_   https://github.com/processing/processing/issues/4638
-_   https://github.com/processing/processing/pull/4698
 _ Add support for floating point textures to OpenGL (using a hint?)
 _   https://github.com/processing/processing/issues/3321
 _ Friendly Names for new Sketches (includes UI for switching it back)
@@ -558,51 +544,6 @@ _   http://www.adobe.com/svg/eol.html
 _ PShape getVertex() not implemented properly for SVG files
 _   https://github.com/processing/processing/issues/1596
 
-
-FX2D / Issues
-
-_ Remove usage of com.sun.* in JavaFX library
-_   https://github.com/processing/processing4/issues/208
-_ many shift- keys not working properly in FX2D (added a test sketch)
-_   https://github.com/processing/processing/issues/5317
-_ Hitting ESC in FX2D app on macOS throws IllegalStateException
-_   https://github.com/processing/processing/issues/5249
-_ wrong window size with fullScreen()
-_   https://github.com/processing/processing/issues/4737
-_ menu bar not hiding properly in exported applications with FX2D
-_   https://github.com/processing/processing/issues/4527
-_   hideMenuBar() called from setup() works fine
-_   just call it around setup time?
-_ the --hide-stop option not working (FX only? traces?)
-_ make wiki about quirks
-_   starving the thread makes things really slow down
-_   keyPressed() is always uppercase, keyTyped() will be correct
-_ do we really need setTextFont/Size when we already have Impl?
-_ need keyPressed() to do lower and upper case
-_ static mode sketches (draw once and halt w/o closing window)
-_ fix display handling, line up the device order with AWT
-_   https://docs.oracle.com/javafx/2/api/javafx/stage/Screen.html
-_ noLoop()
-_ present mode not working at all
-_   stage in the center, clear the rest of the screen
-_ createGraphics() should probably create PGraphicsJava2D
-_   or is Canvas specific to the PGraphics, and we get another Context2D?
-_   http://docs.oracle.com/javafx/2/api/javafx/scene/canvas/Canvas.html
-_ loadPixels() (also 2x)
-_ text and fonts?
-_   maybe helpful: https://wiki.openjdk.java.net/display/OpenJFX/Font+Setup
-_ updatePixels()
-_ save() and saveFrame()
-_ get() and set()
-_ clip/noClip
-_   https://github.com/processing/processing/issues/3274
-_ getNative() in PImage problematic because it gives back a BufferedImage
-_   move loadImage() into PGraphics, with AWT version the default
-_   or pass createImage() through to renderer?
-_ implement external messages (moving the window)
-_ implement PSurfaceFX.setIcon()
-_ javafx not supported with ARM (so we're screwed on raspberry pi)
-_   https://www.linkedin.com/pulse/oracle-just-removed-javafx-support-arm-jan-snelders
 
 
 OPENGL / Known Issues

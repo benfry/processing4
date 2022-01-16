@@ -341,7 +341,6 @@
     <subant buildpath="../java/libraries/serial" target="clean"/>
     <subant buildpath="../java/libraries/svg" target="clean"/>
     <subant buildpath="shared/tools/MovieMaker" target="clean"/>
-    <subant buildpath="shared/tools/ThemeEngine" target="clean"/>
     <subant buildpath="../java" target="clean"/>
 
     <!-- make sure this isn't around from an old build 140730 -->
@@ -363,7 +362,6 @@
     <subant buildpath="../java/libraries/serial" target="build"/>
     <subant buildpath="../java/libraries/svg" target="build"/>
     <subant buildpath="shared/tools/MovieMaker" target="build"/>
-    <subant buildpath="shared/tools/ThemeEngine" target="build"/>
     <subant buildpath="../java" target="build"/>
   </target>
 
@@ -388,7 +386,6 @@
       <fileset dir="shared/tools">
         <patternset>
           <include name="MovieMaker/tool/**" />
-          <include name="ThemeEngine/tool/**" />
           <!-- <include name="**/tool/**" /> -->
         </patternset>
       </fileset>
