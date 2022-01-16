@@ -37,7 +37,7 @@ import processing.app.ui.Theme;
 
 /**
  * Adds support to TextAreaPainter for background colors,
- * and the left hand gutter area with background color and text.
+ * and the left-hand gutter area with background color and text.
  */
 public class PdeTextAreaPainter extends TextAreaPainter {
   public Color errorUnderlineColor;
@@ -257,6 +257,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private void drawDiamond(Graphics g,
                                   float x, float y, float w, float h) {
     Graphics2D g2 = (Graphics2D) g;
@@ -270,6 +271,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private void drawRightArrow(Graphics g,
                                      float x, float y, float w, float h) {
     Graphics2D g2 = (Graphics2D) g;
