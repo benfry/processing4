@@ -253,7 +253,6 @@
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
     <include name="app/lib/ant-launcher.jar" />
-    <include name="app/lib/VAqua8.jar" />
   </fileset>
 
   <target name="build" description="Build Processing.">
@@ -566,7 +565,6 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
-      <classpath file="../app/lib/VAqua8.jar" />
 
 
       <!-- Creates a copy of core.jar, but that's simplest for now. For 4.0a5

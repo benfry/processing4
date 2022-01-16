@@ -241,9 +241,6 @@ editor.untitled.suffix=yyMMdd
 # is to do a Synth LAF that gives us something not awful.
 editor.laf.linux = javax.swing.plaf.nimbus.NimbusLookAndFeel
 
-# use this to enable the VAqua Look and Feel (may be removed later)
-#editor.laf.macosx = org.violetlib.aqua.AquaLookAndFeel
-
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

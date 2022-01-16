@@ -165,7 +165,7 @@ public class EditorConsole extends JScrollPane {
     StyleConstants.setItalic(errStyle, font.isItalic());
 
     String lookAndFeel = UIManager.getLookAndFeel().getID();
-    if (lookAndFeel.equals("Nimbus") || lookAndFeel.equals("VAqua")) {
+    if (lookAndFeel.equals("Nimbus")) {
       getViewport().setBackground(bgColor);
       consoleTextPane.setOpaque(false);
       consoleTextPane.setBackground(TRANSPARENT);

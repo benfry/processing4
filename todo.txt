@@ -5,12 +5,12 @@ X Move JavaFX to its own library
 X   https://github.com/processing/processing4/issues/348
 X JavaFX no longer supported for Tools, Modes as a result
 X set minimum Java version for Windows launcher to 17.0.1
-
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
-_   https://github.com/processing/processing4/issues/129
-_   now with a release 9 to cover Big Sur
-_     https://violetlib.org/vaqua/downloads.html
-_   make the final call to remove, or put the libs on download.processing.org
+X   https://github.com/processing/processing4/issues/129
+X   now with a release 9 to cover Big Sur
+X     https://violetlib.org/vaqua/downloads.html
+X   make the final call to remove, or put the libs on download.processing.org
+X   removing, with the theming integration, gonna head that direction instead
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
@@ -24,7 +24,7 @@ _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
 _ Resolve scaling issues with Windows
-_   Editor cursor position is offset to the right when Windows scaling >100%
+_   Editor cursor position offset to the right with fractional Windows scaling
 _   https://github.com/processing/processing4/issues/342
 http://openjdk.java.net/jeps/263
 https://youtrack.jetbrains.com/issue/JBR-3757
