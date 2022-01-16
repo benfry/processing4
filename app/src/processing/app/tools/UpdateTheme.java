@@ -7,7 +7,7 @@ import processing.app.ui.Theme;
 import java.io.File;
 
 
-public class ThemeEngine implements Tool {
+public class UpdateTheme implements Tool {
   Base base;
 
   public String getMenuTitle() {
