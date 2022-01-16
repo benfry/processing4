@@ -51,8 +51,8 @@ public class ContributionManager {
    * @param dest The file on the local system where the file will be written.
    *             This must be a file (not a directory), and must already exist.
    * @param progress null if progress is irrelevant, such as when downloading
-   *                 for an install during startup, when the ProgressMonitor
-   *                 is useless since UI isn't setup yet.
+   *                 files for installation during startup, when the
+   *                 ProgressMonitor is useless because the UI is unavailable.
    *
    * @return true if the file was successfully downloaded, false otherwise.
    */
@@ -573,7 +573,7 @@ public class ContributionManager {
    * auto-update the previous time Processing was started up.
    */
   static private void installPreviouslyFailed(Base base, File root) throws Exception {
-    File[] installList = root.listFiles(folder -> folder.isFile());
+    File[] installList = root.listFiles(File::isFile);
 
     // https://github.com/processing/processing/issues/5823
     if (installList != null) {
@@ -625,7 +625,7 @@ public class ContributionManager {
     if (markedForUpdate != null) {
       for (File folder : markedForUpdate) {
         StringDict props = Util.readSettings(new File(folder, propFileName));
-        String name = props.get("name");
+        String name = props.get("name", null);
         if (name != null) {  // should not happen, but...
           updateContribsNames.add(name);
         }
