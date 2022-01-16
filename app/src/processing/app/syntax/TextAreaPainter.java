@@ -54,6 +54,10 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   Token currentLineTokens;
   Segment currentLine;
 
+  // Debugging mono font handling and fractional screen resolutions
+  // https://github.com/processing/processing4/issues/342
+  private final boolean THROWBACK = false;
+
 
   /**
    * Creates a new repaint manager. This should be not be called directly.
@@ -364,14 +368,16 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
       y += fm.getHeight();
       // doesn't respect fixed width like it should
-//    x = Utilities.drawTabbedText(currentLine, x, y, gfx, this, 0);
-//    int w = fm.charWidth(' ');
-      for (int i = 0; i < currentLine.count; i++) {
-        gfx.drawChars(currentLine.array, currentLine.offset+i, 1, x, y);
-        x = currentLine.array[currentLine.offset + i] == '\t' ?
-          x0 + (int)nextTabStop(x - x0, i) :
-          x + fm.charWidth(currentLine.array[currentLine.offset+i]);
-        //textArea.offsetToX(line, currentLine.offset + i);
+      if (THROWBACK) {
+        x = Utilities.drawTabbedText(currentLine, x, y, gfx, this, 0);
+      } else {
+        for (int i = 0; i < currentLine.count; i++) {
+          gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
+          x = currentLine.array[currentLine.offset + i] == '\t' ?
+            x0 + (int) nextTabStop(x - x0, i) :
+            x + fm.charWidth(currentLine.array[currentLine.offset + i]);
+          //textArea.offsetToX(line, currentLine.offset + i);
+        }
       }
 
       // Draw characters via input method.
@@ -459,19 +465,17 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       }
       line.count = length;  // huh? suspicious
       // doesn't respect mono metrics, insists on spacing w/ fractional or something
-//      x = Utilities.drawTabbedText(line, x, y, gfx, this, 0);
-//      gfx.drawChars(line.array, line.offset, line.count, x, y);
-//      int w = fm.charWidth(' ');
-      for (int i = 0; i < line.count; i++) {
-        gfx.drawChars(line.array, line.offset+i, 1, x, y);
-        x = line.array[line.offset + i] == '\t' ?
-            x0 + (int)nextTabStop(x - x0, i) :
-            x + fm.charWidth(line.array[line.offset+i]);
+      if (THROWBACK) {
+        x = Utilities.drawTabbedText(line, x, y, gfx, this, 0);
+      } else {
+        for (int i = 0; i < line.count; i++) {
+          gfx.drawChars(line.array, line.offset + i, 1, x, y);
+          x = line.array[line.offset + i] == '\t' ?
+            x0 + (int) nextTabStop(x - x0, i) :
+            x + fm.charWidth(line.array[line.offset + i]);
+        }
+        line.offset += length;
       }
-      //x += fm.charsWidth(line.array, line.offset, line.count);
-      //x += fm.charWidth(' ') * line.count;
-      line.offset += length;
-
       tokens = tokens.next;
     }
 
