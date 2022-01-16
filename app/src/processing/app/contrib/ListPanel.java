@@ -174,18 +174,26 @@ implements Scrollable, ContributionListing.ChangeListener {
   }
 
   private static int getContributionStatusRank(Contribution c) {
+    // Uninstalled items are at the bottom of the sort order
     int pos = 4;
+
     if (c.isInstalled()) {
       pos = 1;
       if (ContributionListing.getInstance().hasUpdates(c)) {
         pos = 2;
       }
       if (!c.isCompatible(Base.getRevision())) {
+        // This is weird because it means some grayed-out items will
+        // show up before non-gray items. We probably need another
+        // state icon for 'installed but incompatible' [fry 220116]
         pos = 3;
       }
     }
     return pos;
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   static class ContribHeaderRenderer extends DefaultTableCellRenderer {
@@ -226,18 +234,13 @@ implements Scrollable, ContributionListing.ChangeListener {
       setFont(ManagerFrame.SMALL_PLAIN);
       setIcon(getSortIcon(table, column));
       setBackground(HEADER_BGCOLOR);
-//      if (column % 2 == 0) {
-//        setBackground(new Color(0xdfdfdf));
-//      } else {
-//        setBackground(new Color(0xebebeb));
-//      }
       setBorder(null);
       return this;
     }
 
     /**
-     * Overloaded to return an icon suitable to the primary sorted column, or null if
-     * the column is not the primary sort key.
+     * Overloaded to return an icon suitable to the primary sorted column,
+     * or null if the column is not the primary sort key.
      *
      * @param table the <code>JTable</code>.
      * @param column the column index.
@@ -265,12 +268,14 @@ implements Scrollable, ContributionListing.ChangeListener {
      */
     protected SortKey getSortKey(JTable table, int column) {
       return Optional.ofNullable(table.getRowSorter())
-              .map(RowSorter::getSortKeys)
-              .map(columns -> columns.isEmpty() ? null : columns.get(0))
-              .orElse(null);
-
+        .map(RowSorter::getSortKeys)
+        .map(columns -> columns.isEmpty() ? null : columns.get(0))
+        .orElse(null);
     }
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   private class ContribStatusRenderer extends DefaultTableCellRenderer {
@@ -319,7 +324,7 @@ implements Scrollable, ContributionListing.ChangeListener {
           break;
       }
 
-      if(!contribution.isCompatible(Base.getRevision())){
+      if (!contribution.isCompatible(Base.getRevision())) {
         label.setForeground(Color.LIGHT_GRAY);
       }
       return label;
@@ -330,7 +335,7 @@ implements Scrollable, ContributionListing.ChangeListener {
       label.setFont(ManagerFrame.NORMAL_PLAIN);
       DetailPanel panel = panelByContribution.get(contribution);
       if (panel.updateInProgress || panel.installInProgress) {
-        // Display "Loading icon" if download/install in progress
+        // Display "loading" icon if download/install in progress
         icon = downloadingIcon;
       } else if (contribution.isInstalled()) {
         if (!contribution.isCompatible(Base.getRevision())) {
@@ -343,7 +348,6 @@ implements Scrollable, ContributionListing.ChangeListener {
           icon = upToDateIcon;
         }
       }
-
       label.setIcon(icon);
       label.setHorizontalAlignment(SwingConstants.CENTER);
     }
@@ -351,14 +355,15 @@ implements Scrollable, ContributionListing.ChangeListener {
     private void configureNameColumnLabel(JTable table, JLabel label, Contribution contribution) {
       // Generating ellipses based on fontMetrics
       final Font boldFont = ManagerFrame.NORMAL_BOLD;
-      FontMetrics fontMetrics = table.getFontMetrics(boldFont); //table.getFont());
+      FontMetrics fontMetrics = table.getFontMetrics(boldFont);
       int colSize = table.getColumnModel().getColumn(1).getWidth();
       int currentWidth = fontMetrics.stringWidth(contribution.getName() + " | ...");
       String sentence = contribution.getSentence();
-      StringBuilder text = new StringBuilder("<html><body><font face=\"")
-              .append(boldFont.getName())
-              .append("\">")
-              .append(contribution.getName());
+      StringBuilder text =
+        new StringBuilder("<html><body><font face=\"")
+          .append(boldFont.getName())
+          .append("\">")
+          .append(contribution.getName());
 
       if (sentence == null) {
         text.append("</font>");
@@ -371,7 +376,7 @@ implements Scrollable, ContributionListing.ChangeListener {
           }
         }
         text.append(" | </font>").append(sentence, 0, index);
-        // Adding ellipses only if text doesn't fits into the column
+        // Adding ellipses only if text doesn't fit into the column
         if (index != sentence.length()) {
           text.append("...");
         }
@@ -386,7 +391,7 @@ implements Scrollable, ContributionListing.ChangeListener {
         label.setIcon(foundationIcon);
       }
       String authorList = contribution.getAuthorList();
-      String name = getAuthorNameWithoutMarkup(authorList);
+      String name = removeMarkDownLinks(authorList);
       label.setText(name);
       label.setHorizontalAlignment(SwingConstants.LEFT);
       label.setForeground(Color.BLACK);
@@ -410,23 +415,28 @@ implements Scrollable, ContributionListing.ChangeListener {
 
     Comparator<Contribution> getComparator() {
       Comparator<Contribution> comparator = Comparator.comparing(Contribution::getType)
-              .thenComparingInt(contribution -> contribution instanceof SectionHeaderContribution ? 0 : 1);
-      switch (this) {
-        case STATUS:
-        case STATUS_NO_HEADER:
-          return comparator.thenComparingInt(ListPanel::getContributionStatusRank);
-        case AUTHOR:
-          return comparator.thenComparing(contribution -> getAuthorNameWithoutMarkup(contribution.getAuthorList()));
-        case NAME:
-        default:
-          return comparator.thenComparing(Contribution::getName, String.CASE_INSENSITIVE_ORDER);
+        .thenComparingInt(contribution -> contribution instanceof SectionHeaderContribution ? 0 : 1);
+
+      if (this == STATUS || this == STATUS_NO_HEADER) {
+        return comparator.thenComparingInt(ListPanel::getContributionStatusRank);
+      } else if (this == AUTHOR) {
+        return comparator.thenComparing(contribution -> removeMarkDownLinks(contribution.getAuthorList()));
+      } else {  // default case, or this == NAME
+        return comparator.thenComparing(Contribution::getName, String.CASE_INSENSITIVE_ORDER);
       }
     }
   }
 
-  static class ContributionTableModel extends AbstractTableModel {
 
-    ContributionColumn[] columns = { ContributionColumn.STATUS, ContributionColumn.NAME, ContributionColumn.AUTHOR };
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static class ContributionTableModel extends AbstractTableModel {
+    ContributionColumn[] columns = {
+      ContributionColumn.STATUS,
+      ContributionColumn.NAME,
+      ContributionColumn.AUTHOR
+    };
     boolean sectionsEnabled;
 
     ContributionTableModel(ContributionColumn... columns) {
@@ -450,7 +460,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       if (column < 0 || column > columns.length) {
         return "";
       }
-
       return columns[column].name;
     }
 
@@ -479,7 +488,11 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
   }
 
-  static protected class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
     Contribution.Filter contributionFilter;
     Optional<String> categoryFilter = Optional.empty();
     List<String> stringFilters = Collections.emptyList();
@@ -506,19 +519,23 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
 
     private boolean includeContribution(Contribution contribution) {
-      return contributionFilter.matches(contribution)
-              && categoryFilter.map(contribution::hasCategory).orElse(true)
-              && stringFilters.stream().allMatch(pattern -> ContributionListing.getInstance().matches(contribution, pattern));
+      return contributionFilter.matches(contribution) &&
+        categoryFilter.map(contribution::hasCategory).orElse(true) &&
+        stringFilters.stream().allMatch(pattern -> ContributionListing.getInstance().matches(contribution, pattern));
     }
 
     private boolean includeSection(SectionHeaderContribution section) {
       return ContributionListing.getInstance().allContributions.stream()
-              .filter(contribution -> contribution.getType() == section.getType())
-              .anyMatch(this::includeContribution);
+        .filter(contribution -> contribution.getType() == section.getType())
+        .anyMatch(this::includeContribution);
     }
   }
 
-  protected static class SectionHeaderContribution extends Contribution {
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static class SectionHeaderContribution extends Contribution {
     ContributionType type;
 
     SectionHeaderContribution(ContributionType type) {
@@ -537,26 +554,29 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
   }
 
-  static String getAuthorNameWithoutMarkup(String authorList) {
-    StringBuilder name = new StringBuilder();
-    if (authorList != null) {
-      int parentheses = 0;
-      for (int i = 0; i < authorList.length(); i++) {
 
-        if (authorList.charAt(i) == '[' || authorList.charAt(i) == ']') {
-          continue;
-        }
-        if (authorList.charAt(i) == '(') {
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static String removeMarkDownLinks(String str) {
+    StringBuilder name = new StringBuilder();
+    if (str != null) {
+      int parentheses = 0;
+      for (char c : str.toCharArray()) {
+        if (c == '[' || c == ']') {
+          // pass
+        } else if (c == '(') {
           parentheses++;
-        } else if (authorList.charAt(i) == ')') {
+        } else if (c == ')') {
           parentheses--;
         } else if (parentheses == 0) {
-          name.append(authorList.charAt(i));
+          name.append(c);
         }
       }
     }
     return name.toString();
   }
+
 
   // Thread: EDT
   public void contributionAdded(final Contribution contribution) {
@@ -591,15 +611,15 @@ implements Scrollable, ContributionListing.ChangeListener {
   // Thread: EDT
   public void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
-      DetailPanel panel = panelByContribution.get(oldContrib);
-      if (panel == null) {
-        contributionAdded(newContrib);
-      } else {
-        panelByContribution.remove(oldContrib);
-        panel.setContribution(newContrib);
-        panelByContribution.put(newContrib, panel);
-        model.fireTableDataChanged();
-      }
+    DetailPanel panel = panelByContribution.get(oldContrib);
+    if (panel == null) {
+      contributionAdded(newContrib);
+    } else {
+      panelByContribution.remove(oldContrib);
+      panel.setContribution(newContrib);
+      panelByContribution.put(newContrib, panel);
+      model.fireTableDataChanged();
+    }
   }
 
 
@@ -673,7 +693,6 @@ implements Scrollable, ContributionListing.ChangeListener {
         }
         count++;
       }
-
       panel.setBorder(border);
     }
   }
