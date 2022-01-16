@@ -1,4 +1,6 @@
 1279 (4.0b4)
+X remove contentTypes line because it breaks double-clicking files to open
+X   https://github.com/processing/processing4/issues/347
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
@@ -52,6 +54,11 @@ _   https://github.com/processing/processing4/pull/237
 
 _ refresh option for sketchbook (bottom of window)
 
+_ Move JavaFX to its own library
+_   https://github.com/processing/processing4/issues/348
+_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
+_   https://github.com/processing/processing4/issues/212
+
 _ document pdez and pdex files so that folks can use them
 _ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
@@ -66,9 +73,6 @@ _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
 _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
-
-_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
-_   https://github.com/processing/processing4/issues/212
 
 _ when lib downloads (batik) go dead, fallback to download.processing.org
 _   or for now, tell users how to do it manually
