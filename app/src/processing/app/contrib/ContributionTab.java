@@ -37,7 +37,7 @@ import processing.app.ui.Toolkit;
 
 
 public class ContributionTab extends JPanel {
-  static final String ANY_CATEGORY = Language.text("contrib.all");
+  //static final String ANY_CATEGORY = Language.text("contrib.all");
   static final int FILTER_WIDTH = Toolkit.zoom(180);
 
   ContributionType contribType;
@@ -118,8 +118,6 @@ public class ContributionTab extends JPanel {
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
-//    layout.setAutoCreateContainerGaps(true);
-//    layout.setAutoCreateGaps(true);
     layout.setHorizontalGroup(layout
       .createParallelGroup(GroupLayout.Alignment.CENTER)
       .addGroup(layout
@@ -127,7 +125,6 @@ public class ContributionTab extends JPanel {
                   .addGap(ManagerFrame.STATUS_WIDTH)
                   .addComponent(filterField,
                                 FILTER_WIDTH, FILTER_WIDTH, FILTER_WIDTH)
-//                  .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                        GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                   .addComponent(categoryChooser,
@@ -388,18 +385,13 @@ public class ContributionTab extends JPanel {
       filter = filter.toLowerCase();
 
       // Replace anything but 0-9, a-z, or : with a space
-      filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a^\\x3a]", " ");
+      filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
       filters = Arrays.asList(filter.split(" "));
       filterLibraries(category, filters);
 
       contributionListPanel.updateColors();
     }
   }
-
-
-//  public boolean hasAlreadyBeenOpened() {
-//    return panel != null;
-//  }
 
 
   public void updateStatusPanel(DetailPanel contributionPanel) {
