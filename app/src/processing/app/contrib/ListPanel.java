@@ -71,7 +71,14 @@ implements Scrollable, ContributionListing.ChangeListener {
           new SectionHeaderContribution(ContributionType.EXAMPLES)
   };
 
-  public ListPanel() {
+
+  public ListPanel(final ContributionTab contributionTab,
+                   final Contribution.Filter filter,
+                   final boolean enableSections,
+                   final ContributionColumn... columns) {
+    this.contributionTab = contributionTab;
+    this.filter = new ContributionRowFilter(filter);
+
     if (upToDateIcon == null) {
       upToDateIcon = Toolkit.getLibIconX("manager/up-to-date");
       updateAvailableIcon = Toolkit.getLibIconX("manager/update-available");
@@ -79,16 +86,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       foundationIcon = Toolkit.getLibIconX("icons/foundation", 16);
       downloadingIcon = Toolkit.getLibIconX("manager/downloading");
     }
-  }
-
-
-  public ListPanel(final ContributionTab contributionTab,
-                   final Contribution.Filter filter,
-                   final boolean enableSections,
-                   final ContributionColumn... columns) {
-    this();
-    this.contributionTab = contributionTab;
-    this.filter = new ContributionRowFilter(filter);
 
     setLayout(new GridBagLayout());
     setOpaque(true);
@@ -142,9 +139,10 @@ implements Scrollable, ContributionListing.ChangeListener {
       // TODO this executes 2 times when clicked and 1 time when traversed
       //      using arrow keys. Ideally this should always be true but while
       //      clearing the table something fishy is going on. [Akarshit 150704]
-      if (table.getSelectedRow() != -1) {
-        setSelectedPanel(panelByContribution.get(table.getValueAt(table
-          .getSelectedRow(), 0)));
+      int row = table.getSelectedRow();
+      if (row != -1) {
+        Contribution contrib = (Contribution) table.getValueAt(row, 0);
+        setSelectedPanel(panelByContribution.get(contrib));
         // Preventing the focus to move out of filterField after typing every character
         if (!contributionTab.filterHasFocus()) {
           table.requestFocusInWindow();
@@ -326,8 +324,8 @@ implements Scrollable, ContributionListing.ChangeListener {
     private void configureStatusColumnLabel(JLabel label, Contribution contribution) {
       Icon icon = null;
       label.setFont(ManagerFrame.NORMAL_PLAIN);
-      if ((panelByContribution.get(contribution)).updateInProgress ||
-              (panelByContribution.get(contribution)).installInProgress) {
+      DetailPanel panel = panelByContribution.get(contribution);
+      if (panel.updateInProgress || panel.installInProgress) {
         // Display "Loading icon" if download/install in progress
         icon = downloadingIcon;
       } else if (contribution.isInstalled()) {
@@ -335,8 +333,7 @@ implements Scrollable, ContributionListing.ChangeListener {
           icon = incompatibleIcon;
         } else if (ContributionListing.getInstance().hasUpdates(contribution)) {
           icon = updateAvailableIcon;
-        } else if (panelByContribution.get(contribution).installInProgress
-                || panelByContribution.get(contribution).updateInProgress) {
+        } else if (panel.installInProgress || panel.updateInProgress) {
           icon = downloadingIcon;
         } else {
           icon = upToDateIcon;
@@ -478,7 +475,7 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
   }
 
-  protected class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
+  static protected class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
     Contribution.Filter contributionFilter;
     Optional<String> categoryFilter = Optional.empty();
     List<String> stringFilters = Collections.emptyList();
