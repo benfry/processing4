@@ -51,7 +51,7 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Current version of JNA that works with Processing -->
-  <property name="jna.version" value="5.8.0" />
+  <property name="jna.version" value="5.10.0" />
   <!-- the .zip file to be downloaded -->
   <property name="jna.zip" value="${jna.version}.zip" />
   <!-- the .jar file that's the actual dependency -->
