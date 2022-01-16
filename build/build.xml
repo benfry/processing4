@@ -593,25 +593,25 @@
       <classpath file="../core/library/core.jar" />
 
       <arch name="x86_64"/>
-      <!-- no support for this with Java 7 from Oracle -->
-      <!--<arch name="i386"/>-->
+
+      <!-- Adding contentTypes="public.text" to PDE files and
+           contentTypes="public.zip-archive" to PDEZ and PDEX
+           causes appbundler to remove the extension handling,
+           so double-clicking files no longer works. -->
 
       <bundledocument extensions="pde,pyde"
-                      contentTypes="public.text"
                       icon="macosx/document.icns"
                       name="Processing Source Code"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdez"
-                      contentTypes="public.zip-archive"
                       icon="macosx/document.icns"
                       name="Processing Sketch Bundle"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdex"
-                      contentTypes="public.zip-archive"
                       icon="macosx/document.icns"
                       name="Processing Contribution Bundle"
                       role="Viewer">
