@@ -20,15 +20,15 @@ X   https://github.com/processing/processing4/pull/100
 
 
 known issues
+_ Resolve scaling issues with Windows
+_   Editor cursor position offset to the right with fractional Windows scaling
+_   https://github.com/processing/processing4/issues/342
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
-_ Resolve scaling issues with Windows
-_   Editor cursor position offset to the right with fractional Windows scaling
-_   https://github.com/processing/processing4/issues/342
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

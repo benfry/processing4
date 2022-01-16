@@ -1,5 +1,16 @@
 1279 (4.0b4)
 
+api changes (in previous releases)
+X static versions of selectInput/selectOutput/selectFolder removed from PApplet
+X   noted in the README
+X java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
+X   https://github.com/processing/processing4/issues/54
+X protected PImage.checkAlpha() now public
+X all AWT calls have been moved out of PImage
+X   this may be a problem for anything that was relying on those internals
+X removed MouseEvent.getClickCount() and MouseEvent.getAmount()
+X   these had been deprecated, not clear they were used anywhere
+
 
 _ how to handle fallback fonts
 _   could implement this for the default, but also, SansSerif sucks
@@ -41,14 +52,6 @@ _   https://github.com/processing/processing/issues/4897
 
 
 api changes
-_ static versions of selectInput/selectOutput/selectFolder removed from PApplet
-_ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
-X   https://github.com/processing/processing4/issues/54
-_ protected PImage.checkAlpha() now public
-_ all AWT calls have been moved out of PImage
-_   this may be a problem for anything that was relying on those internals
-_ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
-_   these had been deprecated, not clear they were used anywhere
 _ add callbacks to requestImage() and others
 _ new FloatList(float...)
 
