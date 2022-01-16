@@ -48,8 +48,7 @@ public class ContributionTab extends JPanel {
   ListPanel contributionListPanel;
   StatusPanel statusPanel;
   FilterField filterField;
-  // TODO: remove or initialize restartButton
-  //JButton restartButton;
+
   JLabel categoryLabel;
   JLabel loaderLabel;
 
@@ -166,27 +165,22 @@ public class ContributionTab extends JPanel {
   private void createComponents() {
     categoryLabel = new JLabel(Language.text("contrib.category"));
 
-    categoryChooser = new JComboBox<String>();
+    categoryChooser = new JComboBox<>();
     categoryChooser.setMaximumRowCount(20);
     categoryChooser.setFont(ManagerFrame.NORMAL_PLAIN);
 
     updateCategoryChooser();
 
-    categoryChooser.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
-        category = (String) categoryChooser.getSelectedItem();
-        if (ManagerFrame.ANY_CATEGORY.equals(category)) {
-          category = null;
-        }
-        filterLibraries(category, filterField.filters);
-        contributionListPanel.updateColors();
+    categoryChooser.addItemListener(e -> {
+      category = (String) categoryChooser.getSelectedItem();
+      if (ManagerFrame.ANY_CATEGORY.equals(category)) {
+        category = null;
       }
+      filterLibraries(category, filterField.filters);
+      contributionListPanel.updateColors();
     });
 
     filterField = new FilterField();
-
-    // TODO: initialize restartButton, whatever it is
-    // restartButton = ???
   }
 
 
@@ -217,18 +211,12 @@ public class ContributionTab extends JPanel {
 
     closeButton = Toolkit.createIconButton("manager/close");
     closeButton.setContentAreaFilled(false);
-    closeButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        contribDialog.makeAndShowTab(false, false);
-      }
-    });
+    closeButton.addActionListener(e -> contribDialog.makeAndShowTab(false, false));
     tryAgainButton = new JButton("Try Again");
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
-    tryAgainButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        contribDialog.makeAndShowTab(false, true);
-        contribDialog.downloadAndUpdateContributionListing(editor.getBase());
-      }
+    tryAgainButton.addActionListener(e -> {
+      contribDialog.makeAndShowTab(false, true);
+      contribDialog.downloadAndUpdateContributionListing(editor.getBase());
     });
     layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
@@ -254,12 +242,8 @@ public class ContributionTab extends JPanel {
     if (categoryChooser != null) {
       ArrayList<String> categories;
       categoryChooser.removeAllItems();
-      categories = new ArrayList<String>(contribListing.getCategories(filter));
-//      for (int i = 0; i < categories.size(); i++) {
-//        System.out.println(i + " category: " + categories.get(i));
-//      }
+      categories = new ArrayList<>(contribListing.getCategories(filter));
       Collections.sort(categories);
-//    categories.add(0, ContributionManagerDialog.ANY_CATEGORY);
       boolean categoriesFound = false;
       categoryChooser.addItem(ManagerFrame.ANY_CATEGORY);
       for (String s : categories) {
@@ -280,10 +264,8 @@ public class ContributionTab extends JPanel {
 
   protected void updateContributionListing() {
     if (editor != null) {
-      List<Contribution> contributions = new ArrayList<Contribution>();
-
       List<Library> libraries =
-        new ArrayList<Library>(editor.getMode().contribLibraries);
+        new ArrayList<>(editor.getMode().contribLibraries);
 
       // Only add core libraries that are installed in the sketchbook
       // https://github.com/processing/processing/issues/3688
@@ -296,7 +278,7 @@ public class ContributionTab extends JPanel {
         }
       }
 
-      contributions.addAll(libraries);
+      List<Contribution> contributions = new ArrayList<>(libraries);
 
       Base base = editor.getBase();
 
@@ -309,24 +291,12 @@ public class ContributionTab extends JPanel {
       List<ExamplesContribution> examples = base.getExampleContribs();
       contributions.addAll(examples);
 
-//    ArrayList<LibraryCompilation> compilations = LibraryCompilation.list(libraries);
-//
-//    // Remove libraries from the list that are part of a compilations
-//    for (LibraryCompilation compilation : compilations) {
-//      Iterator<Library> it = libraries.iterator();
-//      while (it.hasNext()) {
-//        Library current = it.next();
-//        if (compilation.getFolder().equals(current.getFolder().getParentFile())) {
-//          it.remove();
-//        }
-//      }
-//    }
-
       contribListing.updateInstalledList(contributions);
     }
   }
 
 
+  /*
   protected void setFilterText(String filter) {
     if (filter == null || filter.isEmpty()) {
       filterField.setText("");
@@ -335,6 +305,7 @@ public class ContributionTab extends JPanel {
     }
     filterField.applyFilter();
   }
+  */
 
 
   class FilterField extends JTextField {
@@ -354,12 +325,9 @@ public class ContributionTab extends JPanel {
       removeFilter.setBorderPainted(false);
       removeFilter.setContentAreaFilled(false);
       removeFilter.setCursor(Cursor.getDefaultCursor());
-      removeFilter.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setText("");
-          filterField.requestFocusInWindow();
-        }
+      removeFilter.addActionListener(e -> {
+        setText("");
+        filterField.requestFocusInWindow();
       });
       //searchIcon = new ImageIcon(java.awt.Toolkit.getDefaultToolkit().getImage("NSImage://NSComputerTemplate"));
       setOpaque(false);
@@ -383,7 +351,7 @@ public class ContributionTab extends JPanel {
                                            GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE));
       removeFilter.setVisible(false);
 
-      filters = new ArrayList<String>();
+      filters = new ArrayList<>();
 
       addFocusListener(new FocusListener() {
         public void focusLost(FocusEvent focusEvent) {
