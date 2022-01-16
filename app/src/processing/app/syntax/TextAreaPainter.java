@@ -370,6 +370,8 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       // doesn't respect fixed width like it should
       if (THROWBACK) {
         x = Utilities.drawTabbedText(currentLine, x, y, gfx, this, 0);
+        // this wants to use floats for x, which requires more changes
+//        x = Utilities.drawTabbedText(currentLine, (float) x, (float) y, (Graphics2D) gfx, this, 0);
       } else {
         for (int i = 0; i < currentLine.count; i++) {
           gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
