@@ -112,17 +112,14 @@
 
   <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
     <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
-    <!-- <include name="Java/core/library/libjfxwebkit.dylib" /> -->
   </fileset>
 
   <fileset dir="windows/work" id="jdk-optional-windows">
     <include name="java/lib/src.zip" />
-    <!-- <include name="core/library/jfxwebkit.dll" /> -->
   </fileset>
 
   <fileset dir="linux/work" id="jdk-optional-linux">
     <include name="java/lib/src.zip" />
-    <!-- <include name="core/library/libjfxwebkit.so" /> -->
   </fileset>
 
   <!-- Macro to help set the platform ant vars appropriately -->
@@ -166,12 +163,6 @@
     <available file="${jdk.archive.path}" property="jdk.archive.downloaded" />
     <echo message="Result: ${jdk.archive.downloaded}" />
   </target>
-
-  <!--
-  <target name="jfx-check">
-    <available file="${jfx.path.zip}" property="jfx.zip.downloaded" />
-  </target>
-  -->
 
   <target name="jdk-download" depends="jdk-check"
           unless="jdk.archive.downloaded">
@@ -334,7 +325,6 @@
     <subant buildpath="../core" target="clean"/>
     <subant buildpath="../app" target="clean"/>
     <subant buildpath="../java/libraries/dxf" target="clean"/>
-    <subant buildpath="../java/libraries/javafx" target="clean"/>
     <subant buildpath="../java/libraries/io" target="clean"/>
     <subant buildpath="../java/libraries/net" target="clean"/>
     <subant buildpath="../java/libraries/pdf" target="clean"/>
@@ -356,7 +346,6 @@
     <subant buildpath="../core" target="build"/>
     <subant buildpath="../app" target="build"/>
     <subant buildpath="../java/libraries/dxf" target="build"/>
-    <subant buildpath="../java/libraries/javafx" target="build"/>
     <subant buildpath="../java/libraries/net" target="build"/>
     <subant buildpath="../java/libraries/pdf" target="build"/>
     <subant buildpath="../java/libraries/serial" target="build"/>
@@ -401,7 +390,6 @@
       <fileset dir="../java">
         <!-- don't include LWJGL, it's not operational -->
         <exclude name="libraries/lwjgl/**" />
-        <exclude name="**/javafx-*sdk*.zip" />
         <!-- starting with revision 1276, reference.zip stays intact -->
         <!-- <exclude name="reference.zip" /> -->
         <exclude name="**/._*" />
@@ -652,12 +640,18 @@
 
       <!-- Make it possible to get to JavaFX for Tools, Modes, etc. Not recommended,
            to use those, but making it possible since some Tools rely on JavaFX. -->
+      <!-- Removing in 4.0 beta 4, for more information:
+           https://github.com/processing/processing4/issues/348
       <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx" />
+      -->
 
       <!-- Necessary to avoid complaints because JavaFX wants to be a module. -->
-      <option value="--module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx/modules" />
+      <!-- Removing in 4.0 beta 4, for more information:
+           https://github.com/processing/processing4/issues/348
+      <option value="- -module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx/modules" />
 
-      <option value="--add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" />
+      <option value="- -add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" />
+      -->
 
       <!-- Required for video capture and microphone input
            https://github.com/processing/processing-sound/issues/51
@@ -719,29 +713,6 @@
       <fileset file="shared/changes.md" />
     </copy>
 
-    <!-- <preparejfx /> -->
-
-    <!-- Pull in OpenJFX (separated from mainline Java in JDK 11). -->
-    <!--
-    <if>
-      <equals arg1="${jfx.available}" arg2="true" />
-      <then>
-
-        <copy todir="macosx/work/Processing.app/Contents/Java/core/library" overwrite="true">
-          <fileset dir="${jfx.path.lib}" includes="*.jar"/>
-          <fileset dir="${jfx.path.lib}" includes="*.dylib"/>
-        </copy>
-
-        <mkdir dir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" />
-
-        <copy todir="macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal/openjfx" overwrite="true">
-          <fileset dir="${jfx.path.dist}/legal" includes="**"/>
-        </copy>
-
-      </then>
-    </if>
-    -->
-
     <!-- Use the Processing executable as the stub for exported apps.
          This works b/c everything app-specific is in Info.plist. -->
     <property name="app.stub" value="${contents.dir}/Java/modes/java/application/mac-app-stub" />
@@ -785,14 +756,6 @@
       <arg value="-r"/>
       <arg line="${jdk.path.macosx}"/>
     </exec>
-
-    <!--
-    <exec executable="rm">
-      <arg value="-r"/>
-      <arg line="${jfx.path.dist}"/>
-    </exec>
-    -->
-
   </target>
 
   <target name="macosx-run" depends="macosx-build"
@@ -1061,27 +1024,6 @@
       <fileset refid="runtime.jars" />
     </copy>
 
-    <!-- <preparejfx /> -->
-
-    <!-- Pull in OpenJFX (separated from mainline Java in JDK 11). -->
-    <!--
-    <if>
-      <equals arg1="${jfx.available}" arg2="true" />
-      <then>
-        <copy todir="linux/work/core/library" overwrite="true">
-          <fileset dir="${jfx.path.lib}" includes="*.jar"/>
-          <fileset dir="${jfx.path.lib}" includes="*.so"/>
-        </copy>
-
-        <mkdir dir="linux/work/core/java/legal/openjfx" />
-
-        <copy todir="linux/work/core/java/legal/openjfx" overwrite="true">
-          <fileset dir="${jfx.path.dist}/legal" includes="**"/>
-        </copy>
-      </then>
-    </if>
-    -->
-
     <copy file="linux/processing" todir="linux/work" />
     <chmod perm="ugo+x" file="linux/work/processing" />
 
@@ -1149,13 +1091,6 @@
       <arg value="-r"/>
       <arg line="linux/jdk-${jdk.detail}+${jdk.build}"/>
     </exec>
-
-    <!--
-    <exec executable="rm">
-      <arg value="-r"/>
-      <arg line="${jfx.path.dist}"/>
-    </exec>
-    -->
   </target>
 
   <target name="linux-run" depends="linux-build"
@@ -1349,8 +1284,6 @@
       <fileset dir="shared" includes="modes/**" />
       <fileset file="shared/changes.md" />
     </copy>
-
-    <!-- <preparejfx /> -->
 
     <fixcrlf file="windows/work/changes.md" eol="crlf" encoding="UTF-8" />
 
@@ -1600,7 +1533,7 @@ remove the spaces for depth since it should be double dash, but screws up commen
       <arg line="everything -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/javafx:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
@@ -1641,7 +1574,7 @@ remove the spaces for depth since it should be double dash, but screws up commen
       <arg line="libraries -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik-dom-1.8.jar:../java/libraries/svg/library/batik-svggen-1.8.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/javafx:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik-dom-1.8.jar:../java/libraries/svg/library/batik-svggen-1.8.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
@@ -1662,9 +1595,6 @@ remove the spaces for depth since it should be double dash, but screws up commen
 
       <packageset dir="../java/libraries/dxf/src">
         <include name="antlr/**" />
-        <include name="processing/**" />
-      </packageset>
-      <packageset dir="../java/libraries/javafx/src">
         <include name="processing/**" />
       </packageset>
       <packageset dir="../java/libraries/io/src">

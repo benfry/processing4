@@ -1,6 +1,15 @@
 1279 (4.0b4)
 X remove contentTypes line because it breaks double-clicking files to open
 X   https://github.com/processing/processing4/issues/347
+X Move JavaFX to its own library
+X   https://github.com/processing/processing4/issues/348
+X JavaFX no longer supported for Tools, Modes as a result
+
+X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
+_   https://github.com/processing/processing4/issues/129
+_   now with a release 9 to cover Big Sur
+_     https://violetlib.org/vaqua/downloads.html
+_   make the final call to remove, or put the libs on download.processing.org
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
@@ -53,8 +62,6 @@ _   https://github.com/processing/processing4/pull/237
 
 _ refresh option for sketchbook (bottom of window)
 
-_ Move JavaFX to its own library
-_   https://github.com/processing/processing4/issues/348
 _ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
 
@@ -164,11 +171,6 @@ _   also clean out the other unused class files and src
 
 decisions before final 4.0 release
 _ can we compress jdk/Contents/Home/legal into a single zip?
-X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
-_   https://github.com/processing/processing4/issues/129
-_   now with a release 9 to cover Big Sur
-_     https://violetlib.org/vaqua/downloads.html
-_   make the final call to remove, or put the libs on download.processing.org
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
 _ change the license from GPL

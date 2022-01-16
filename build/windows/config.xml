@@ -44,9 +44,12 @@
     <!-- <opt>-\-module-path=core/library</opt> -->
     <!-- Make it possible access JavaFX for Tools, Modes, etc. Not recommended,
          but making it possible for 4.x because some Tools rely on JavaFX. -->
+    <!-- Removing in 4.0 beta 4, for more information:
+         https://github.com/processing/processing4/issues/348
     <opt>-Djava.library.path=lib;modes/java/libraries/javafx/library/windows64</opt>
-    <opt>--module-path=modes/java/libraries/javafx/library/windows64/modules</opt>
-    <opt>--add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web</opt>
+    <opt>- -module-path=modes/java/libraries/javafx/library/windows64/modules</opt>
+    <opt>- -add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web</opt>
+    -->
 
     <!-- Java 9+ handles high DPI internally so OS display scaling -->
     <!-- can cause display issues with custom rendering swing elements. -->
