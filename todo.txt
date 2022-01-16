@@ -13,6 +13,8 @@ X   make the final call to remove, or put the libs on download.processing.org
 X   removing, with the theming integration, gonna head that direction instead
 X bump ant from 1.10.10 to 1.10.12
 X bump JNA from 5.8.0 to 5.10.0
+X remove "Illegal reflective access" warning on Linux
+X   https://github.com/processing/processing4/issues/207
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
@@ -1085,6 +1087,8 @@ _   https://github.com/processing/processing/issues/186
 
 DIST / Linux
 
+_ Need better method than reflection for setting application name
+_   https://github.com/processing/processing4/issues/349
 _ update install.sh for .pdex and .pdez file associations
 _   https://github.com/processing/processing4/issues/239
 
