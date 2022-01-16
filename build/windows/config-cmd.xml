@@ -34,8 +34,8 @@
     <!-- Prevent a user-installed JNA from conflicting with our version.
          https://github.com/processing/processing/issues/2239 -->
     <opt>-Djna.nosys=true</opt>
-    <!-- starting in 3.0, require Java 8 -->
-    <minVersion>1.8.0_60</minVersion>
+    <!-- starting in 4.0 beta 3, Java 17 is required -->
+    <minVersion>17.0.1</minVersion>
     <!-- increase available per PDE X request -->
     <maxHeapSize>512</maxHeapSize>
   </jre>
