@@ -41,15 +41,14 @@ _ selector for theme that uses tiny images
 _ add notes about params to the wiki
 _   new scrollbars
 
-_ more reports of code completion not working on macOS
-_   "working in a6 but not b2"
-_   https://github.com/processing/processing4/issues/304
-
 _ Add support for localizing contributions
 _   https://github.com/processing/processing4/pull/237 (updated by Andres)
 X   https://github.com/processing/processing/pull/2833
 X   https://github.com/processing/processing/issues/3154
 X   https://github.com/processing/processing/pull/3337
+_ add language support to Modes (request and updated PR from Andres)
+_   https://github.com/processing/processing4/issues/236
+_   https://github.com/processing/processing4/pull/237
 
 _ refresh option for sketchbook (bottom of window)
 
@@ -119,6 +118,15 @@ _   https://stackoverflow.com/a/2495712
 _   (built and tested a version of this code if we want to use it)
 
 
+code completion
+_ auto-complete not triggering, workaround as pref?
+_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
+_   https://github.com/processing/processing/issues/5691
+_ more reports of code completion not working on macOS
+_   "working in a6 but not b2"
+_   https://github.com/processing/processing4/issues/304
+
+
 before 4.x final
 _ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
 _ turn off javafx web if not using
@@ -130,10 +138,12 @@ _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _ change help menu links to go to newer FAQ and the rest
 _ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_   or macos-intel64, macos-applesi, linux-intel64, ...
+_   what should macos-aarch64 be called?
 _   macosx vs macosx64 in JavaFX
 _     the latter is making the export fail because it won't embed a Java VM
-_     may be because it's exporting twice and overwriting? or 64 takes precedence?
-_   what should macos-aarch64 be called?
+_     may be because it's exporting twice and overwriting?
+_     or 64 takes precedence?
 _   Export Application can use nicer names, the libs thing is trickier
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
@@ -150,12 +160,6 @@ _   also clean out the other unused class files and src
 
 
 decisions before final 4.0 release
-_ auto-complete not triggering, workaround as pref?
-_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
-_   https://github.com/processing/processing/issues/5691
-_ add language support to Modes (request and updated PR from Andres)
-_   https://github.com/processing/processing4/issues/236
-_   https://github.com/processing/processing4/pull/237
 _ can we compress jdk/Contents/Home/legal into a single zip?
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 _   https://github.com/processing/processing4/issues/129
