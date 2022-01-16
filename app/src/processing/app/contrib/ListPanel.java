@@ -136,9 +136,13 @@ implements Scrollable, ContributionListing.ChangeListener {
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     table.getSelectionModel().addListSelectionListener(event -> {
-      // TODO this executes 2 times when clicked and 1 time when traversed
-      //      using arrow keys. Ideally this should always be true but while
-      //      clearing the table something fishy is going on. [Akarshit 150704]
+      // This is called twice for each mouse click, once on mouse press with
+      // event.getValueIsAdjusting()) set true, and again when the mouse is
+      // released where adjusting will be set false. But instead of only
+      // responding to one or the other, need to fire on both so that the
+      // selection updates while the user drags mouse across the list (and
+      // not just when released). Using the arrow keys will only fire once
+      // because adjusting will be false (no ongoing drag with keys).
       int row = table.getSelectedRow();
       if (row != -1) {
         Contribution contrib = (Contribution) table.getValueAt(row, 0);
@@ -153,7 +157,7 @@ implements Scrollable, ContributionListing.ChangeListener {
     sorter = new TableRowSorter<>(model);
     table.setRowSorter(sorter);
     sorter.setRowFilter(this.filter);
-    for (int i=0; i < model.getColumnCount(); i++) {
+    for (int i = 0; i < model.getColumnCount(); i++) {
       if (model.columns[i] == ContributionColumn.NAME) {
         sorter.setSortKeys(Collections.singletonList(new SortKey(i, SortOrder.ASCENDING)));
       }
