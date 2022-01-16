@@ -468,7 +468,9 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       line.count = length;  // huh? suspicious
       // doesn't respect mono metrics, insists on spacing w/ fractional or something
       if (THROWBACK) {
-        x = Utilities.drawTabbedText(line, x, y, gfx, this, 0);
+        // Attempting with non-deprecated version. Rounding x isn't a problem
+        // because it's just the placement of eolmarkers after returning.
+        x = (int) Utilities.drawTabbedText(line, (float) x, (float) y, (Graphics2D) gfx, this, 0);
       } else {
         for (int i = 0; i < line.count; i++) {
           gfx.drawChars(line.array, line.offset + i, 1, x, y);
