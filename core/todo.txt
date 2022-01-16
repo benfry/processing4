@@ -11,6 +11,9 @@ X   this may be a problem for anything that was relying on those internals
 X removed MouseEvent.getClickCount() and MouseEvent.getAmount()
 X   these had been deprecated, not clear they were used anywhere
 
+_ concurrent StringDict et al
+_   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
+_   https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html
 
 _ how to handle fallback fonts
 _   could implement this for the default, but also, SansSerif sucks
