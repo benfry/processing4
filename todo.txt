@@ -18,6 +18,7 @@ contribs
 X select entire line when doing Edit > Copy on an empty selection
 X   https://github.com/processing/processing4/pull/100
 
+
 known issues
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   probably related to second displays, need to hook one up and test
@@ -28,13 +29,6 @@ _ docs are 3.x not 4.x
 _ Resolve scaling issues with Windows
 _   Editor cursor position offset to the right with fractional Windows scaling
 _   https://github.com/processing/processing4/issues/342
-http://openjdk.java.net/jeps/263
-https://youtrack.jetbrains.com/issue/JBR-3757
-https://news.kynosarges.org/2019/03/24/swing-high-dpi-properties/
-https://github.com/JetBrains/intellij-community/blob/master/platform/util/ui/src/com/intellij/ui/scale/ScaleType.java
-https://intellij-support.jetbrains.com/hc/en-us/articles/115001260010-Troubleshooting-IDE-scaling-DPI-issues-on-Windows
-https://youtrack.jetbrains.com/issue/JBR-427
-rollup of all IDEA issues: https://youtrack.jetbrains.com/issue/IDEA-180962
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
