@@ -83,6 +83,7 @@ public class ContributionTab extends JPanel {
     contributionListPanel = new ListPanel(this, filter, false);
 //    long t5 = System.currentTimeMillis();
     // TODO optimize: this line is taking all of the time
+    //      (though not after removing the loop in addListener() in 4.0b4)
     contribListing.addListener(contributionListPanel);
 //    long t6 = System.currentTimeMillis();
 //    System.out.println("ContributionTab.<init> " + (t4-t1) + " " + (t5-t4) + " " + (t6-t5));
