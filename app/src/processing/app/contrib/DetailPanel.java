@@ -64,7 +64,7 @@ class DetailPanel extends JPanel {
 
   private boolean alreadySelected;
   //  private JTextPane descriptionPane;
-  private JLabel notificationLabel;
+//  private JLabel notificationLabel;
 //  private JButton updateButton;
 //  private JButton installRemoveButton;
 
@@ -172,14 +172,14 @@ class DetailPanel extends JPanel {
 //
 //    add(descriptionPane, BorderLayout.CENTER);
 
-    JPanel updateBox = new JPanel();
-    updateBox.setLayout(new BorderLayout());
+//    JPanel updateBox = new JPanel();
+//    updateBox.setLayout(new BorderLayout());
 
-    notificationLabel = new JLabel();
-    notificationLabel.setInheritsPopupMenu(true);
-    notificationLabel.setVisible(false);
-    notificationLabel.setOpaque(false);
-    notificationLabel.setFont(ManagerFrame.SMALL_PLAIN);
+//    notificationLabel = new JLabel();
+//    notificationLabel.setInheritsPopupMenu(true);
+//    notificationLabel.setVisible(false);
+//    notificationLabel.setOpaque(false);
+//    notificationLabel.setFont(ManagerFrame.SMALL_PLAIN);
 
 //    {
 //      updateButton = new JButton("Update");
@@ -195,10 +195,10 @@ class DetailPanel extends JPanel {
 //    }
 
 //    updateBox.add(updateButton, BorderLayout.EAST);
-    updateBox.add(notificationLabel, BorderLayout.WEST);
-    updateBox.setBorder(new EmptyBorder(4, 7, 7, 7));
-    updateBox.setOpaque(false);
-    add(updateBox, BorderLayout.SOUTH);
+//    updateBox.add(notificationLabel, BorderLayout.WEST);
+//    updateBox.setBorder(new EmptyBorder(4, 7, 7, 7));
+//    updateBox.setOpaque(false);
+//    add(updateBox, BorderLayout.SOUTH);
 
     JPanel rightPane = new JPanel();
     rightPane.setInheritsPopupMenu(true);
@@ -297,16 +297,16 @@ class DetailPanel extends JPanel {
 
   private void reorganizePaneComponents() {
     BorderLayout layout = (BorderLayout) this.getLayout();
-    remove(layout.getLayoutComponent(BorderLayout.SOUTH));
+//    remove(layout.getLayoutComponent(BorderLayout.SOUTH));
     remove(layout.getLayoutComponent(BorderLayout.EAST));
 
-    JPanel updateBox = new JPanel();
-    updateBox.setLayout(new BorderLayout());
-    updateBox.setInheritsPopupMenu(true);
-    updateBox.add(notificationLabel, BorderLayout.WEST);
-    updateBox.setBorder(new EmptyBorder(4, 7, 7, 7));
-    updateBox.setOpaque(false);
-    add(updateBox, BorderLayout.SOUTH);
+//    JPanel updateBox = new JPanel();
+//    updateBox.setLayout(new BorderLayout());
+//    updateBox.setInheritsPopupMenu(true);
+//    updateBox.add(notificationLabel, BorderLayout.WEST);
+//    updateBox.setBorder(new EmptyBorder(4, 7, 7, 7));
+//    updateBox.setOpaque(false);
+//    add(updateBox, BorderLayout.SOUTH);
 
     JPanel rightPane = new JPanel();
     rightPane.setInheritsPopupMenu(true);
@@ -317,13 +317,13 @@ class DetailPanel extends JPanel {
 
 //    if (updateButton.isVisible() && !removeInProgress && !contrib.isDeletionFlagged()) {
     if (!removeInProgress && contrib != null && !contrib.isDeletionFlagged()) {
-      JPanel updateRemovePanel = new JPanel();
-      updateRemovePanel.setLayout(new FlowLayout());
-      updateRemovePanel.setOpaque(false);
+//      JPanel updateRemovePanel = new JPanel();
+//      updateRemovePanel.setLayout(new FlowLayout());
+//      updateRemovePanel.setOpaque(false);
 //      updateRemovePanel.add(updateButton);
-      updateRemovePanel.setInheritsPopupMenu(true);
+//      updateRemovePanel.setInheritsPopupMenu(true);
 //      updateRemovePanel.add(installRemoveButton);
-      updateBox.add(updateRemovePanel, BorderLayout.EAST);
+//      updateBox.add(updateRemovePanel, BorderLayout.EAST);
 
       JPanel barPane = new JPanel();
       barPane.setOpaque(false);
@@ -438,11 +438,11 @@ class DetailPanel extends JPanel {
         }
       }
       versionText.append("</i></body></html>");
-      notificationLabel.setText(versionText.toString());
-      notificationLabel.setVisible(true);
-    } else {
-      notificationLabel.setText("");
-      notificationLabel.setVisible(false);
+//      notificationLabel.setText(versionText.toString());
+//      notificationLabel.setVisible(true);
+//    } else {
+//      notificationLabel.setText("");
+//      notificationLabel.setVisible(false);
     }
 
 //    updateButton.setEnabled(true);
