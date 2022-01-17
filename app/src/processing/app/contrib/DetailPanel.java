@@ -298,10 +298,12 @@ class DetailPanel extends JPanel {
       "  margin: 0; " +
       "  padding: 0;" +
       "  font-family: " + Toolkit.getSansFontName() + ", Helvetica, Arial, sans-serif;" +
-      "  font-size: 12px;" +
+      "  font-size: 11px;" +
 //      "  font-size: 100%;" +
 //      "  font-size: 0.95em; " +
-      "}";
+//      "}";
+      "}" +
+      "a { color: #444; text-decoration: none; }";
   }
 
 

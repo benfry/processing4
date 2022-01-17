@@ -83,7 +83,6 @@ class StatusPanel extends JPanel {
     }
 
     setBackground(new Color(0xebebeb));
-    setBackground(Color.GREEN);
 
     iconLabel = new JLabel();
     iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -243,7 +242,9 @@ class StatusPanel extends JPanel {
     iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
     label.setText(panel.description);
     ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(DetailPanel.getBodyStyle());
-    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline; text-decoration-style: dotted; }");
+    //((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline; text-decoration-style: dotted; }");
+    //((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline dotted; }");
+//    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: #666; text-decoration: none; }");
 
 
     updateButton.setEnabled(contributionListing.hasDownloadedLatestList() &&
