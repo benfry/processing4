@@ -28,10 +28,10 @@ import java.net.URL;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.event.HyperlinkEvent;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
-import javax.swing.text.html.StyleSheet;
+//import javax.swing.event.HyperlinkEvent;
+//import javax.swing.text.html.HTMLDocument;
+//import javax.swing.text.html.HTMLEditorKit;
+//import javax.swing.text.html.StyleSheet;
 
 import processing.app.*;
 import processing.app.ui.Toolkit;
@@ -61,8 +61,7 @@ class DetailPanel extends JPanel {
   private Contribution contrib;
 
   private boolean alreadySelected;
-  private boolean enableHyperlinks;
-  private JTextPane descriptionPane;
+  //  private JTextPane descriptionPane;
   private JLabel notificationLabel;
 //  private JButton updateButton;
 //  private JButton installRemoveButton;
@@ -83,7 +82,7 @@ class DetailPanel extends JPanel {
   boolean installInProgress;
   boolean removeInProgress;
 
-  String description;
+//  private String description;
 
 
   DetailPanel(ListPanel contributionListPanel) {
@@ -132,44 +131,44 @@ class DetailPanel extends JPanel {
     System.out.println("DetailPanel.addPaneComponents()");
     setLayout(new BorderLayout());
 
-    descriptionPane = new JTextPane();
-    descriptionPane.setInheritsPopupMenu(true);
-    descriptionPane.setEditable(false);  // why would this ever be true?
-    Insets margin = descriptionPane.getMargin();
-    margin.bottom = 0;
-    descriptionPane.setMargin(margin);
+//    descriptionPane = new JTextPane();
+//    descriptionPane.setInheritsPopupMenu(true);
+//    descriptionPane.setEditable(false);  // why would this ever be true?
+//    Insets margin = descriptionPane.getMargin();
+//    margin.bottom = 0;
+//    descriptionPane.setMargin(margin);
 //    descriptionPane.setContentType("text/html");
 
 //    HTMLEditorKit kit = new HTMLEditorKit();
-    HTMLEditorKit kit = Toolkit.createHtmlEditorKit();
-    StyleSheet stylesheet = new StyleSheet();
-    stylesheet.addRule(StatusPanel.getBodyStyle());
-//    stylesheet.addRule("a { color: #000000; text-decoration:underline; text-decoration-style: dotted; }");
-    kit.setStyleSheet(stylesheet);
-    HTMLDocument hd = (HTMLDocument) kit.createDefaultDocument();
-    descriptionPane.setEditorKit(kit);
-    descriptionPane.setDocument(hd);
+//    HTMLEditorKit kit = Toolkit.createHtmlEditorKit();
+//    StyleSheet stylesheet = new StyleSheet();
+//    stylesheet.addRule(StatusPanel.getBodyStyle());
+////    stylesheet.addRule("a { color: #000000; text-decoration:underline; text-decoration-style: dotted; }");
+//    kit.setStyleSheet(stylesheet);
+//    HTMLDocument hd = (HTMLDocument) kit.createDefaultDocument();
+//    descriptionPane.setEditorKit(kit);
+//    descriptionPane.setDocument(hd);
 
-    descriptionPane.setOpaque(false);
-    if (UIManager.getLookAndFeel().getID().equals("Nimbus")) {
-      descriptionPane.setBackground(new Color(0, 0, 0, 0));
-    }
+//    descriptionPane.setOpaque(false);
+//    if (UIManager.getLookAndFeel().getID().equals("Nimbus")) {
+//      descriptionPane.setBackground(new Color(0, 0, 0, 0));
+//    }
 
-    descriptionPane.setBorder(new EmptyBorder(4, 7, 7, 7));
-    descriptionPane.setHighlighter(null);
-    descriptionPane.addHyperlinkListener(e -> {
-      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-        // for 3.2.3, added the isSelected() prompt here,
-        // rather than adding/removing the listener repeatedly
-        if (isSelected()) {
-          if (enableHyperlinks && e.getURL() != null) {
-            Platform.openURL(e.getURL().toString());
-          }
-        }
-      }
-    });
-
-    add(descriptionPane, BorderLayout.CENTER);
+//    descriptionPane.setBorder(new EmptyBorder(4, 7, 7, 7));
+//    descriptionPane.setHighlighter(null);
+//    descriptionPane.addHyperlinkListener(e -> {
+//      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+//        // for 3.2.3, added the isSelected() prompt here,
+//        // rather than adding/removing the listener repeatedly
+//        if (isSelected()) {
+//          if (enableHyperlinks && e.getURL() != null) {
+//            Platform.openURL(e.getURL().toString());
+//          }
+//        }
+//      }
+//    });
+//
+//    add(descriptionPane, BorderLayout.CENTER);
 
     JPanel updateBox = new JPanel();
     updateBox.setLayout(new BorderLayout());
@@ -415,8 +414,8 @@ class DetailPanel extends JPanel {
       add(iconLabel, BorderLayout.WEST);
     }
 
-    description = StatusPanel.updateDescription(contrib);
-    descriptionPane.setText(description);
+//    description = StatusPanel.updateDescription(contrib);
+//    descriptionPane.setText(description);
 
     if (contribListing.hasUpdates(contrib) && contrib.isCompatible(Base.getRevision())) {
       StringBuilder versionText = new StringBuilder();
@@ -555,7 +554,7 @@ class DetailPanel extends JPanel {
     // Only enable hyperlinks if this component is already selected.
     // Why? Because otherwise if the user happened to click on what is
     // now a hyperlink, it will be opened as the mouse is released.
-    enableHyperlinks = alreadySelected;
+    boolean enableHyperlinks = alreadySelected;
 
 //    if (contrib != null) {
 //      updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);

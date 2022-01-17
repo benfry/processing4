@@ -310,7 +310,8 @@ class StatusPanel extends JPanel {
     progressPanel.removeAll();
 
     iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
-    label.setText(panel.description);
+//    label.setText(panel.description);
+    label.setText(updateDescription(panel.getContrib()));
     ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(getBodyStyle());
 
     updateButton.setEnabled(contributionListing.hasDownloadedLatestList() &&
