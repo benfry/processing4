@@ -54,7 +54,7 @@ class DetailPanel extends JPanel {
   private final ContributionListing contribListing = ContributionListing.getInstance();
 
   static private final int BUTTON_WIDTH = Toolkit.zoom(100);
-  static private Icon foundationIcon;
+//  static private Icon foundationIcon;
 
   /**
    * Should only be set through setContribution(),
@@ -88,9 +88,9 @@ class DetailPanel extends JPanel {
 
 
   DetailPanel(ListPanel contributionListPanel) {
-    if (foundationIcon == null) {
-      foundationIcon = Toolkit.getLibIconX("icons/foundation", 32);
-    }
+//    if (foundationIcon == null) {
+//      foundationIcon = Toolkit.getLibIconX("icons/foundation", 32);
+//    }
 
     listPanel = contributionListPanel;
     barButtonCardPane = new JPanel();
@@ -409,12 +409,12 @@ class DetailPanel extends JPanel {
 //    new Exception("DetailPanel.setContrib " + contrib.name).printStackTrace(System.out);
     this.contrib = contrib;
 
-    if (contrib.isSpecial()) {
-      JLabel iconLabel = new JLabel(foundationIcon);
-      iconLabel.setBorder(new EmptyBorder(4, 7, 7, 7));
-      iconLabel.setVerticalAlignment(SwingConstants.TOP);
-      add(iconLabel, BorderLayout.WEST);
-    }
+//    if (contrib.isSpecial()) {
+//      JLabel iconLabel = new JLabel(foundationIcon);
+//      iconLabel.setBorder(new EmptyBorder(4, 7, 7, 7));
+//      iconLabel.setVerticalAlignment(SwingConstants.TOP);
+//      add(iconLabel, BorderLayout.WEST);
+//    }
 
 //    description = StatusPanel.updateDescription(contrib);
 //    descriptionPane.setText(description);
