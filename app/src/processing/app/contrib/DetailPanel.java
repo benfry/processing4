@@ -41,12 +41,14 @@ import processing.app.ui.Toolkit;
  * Panel that expands and gives a brief overview of a library when clicked.
  */
 class DetailPanel extends JPanel {
-  static private final String PROGRESS_BAR_CONSTRAINT = "Install/Remove Progress Bar Panel";
+  static private final String PROGRESS_BAR_CONSTRAINT =
+    "Install/Remove Progress Bar Panel";
 
-  static private final String BUTTON_CONSTRAINT = "Install/Remove Button Panel";
+  static private final String BUTTON_CONSTRAINT =
+    "Install/Remove Button Panel";
 
-  static private final String INCOMPATIBILITY_BLUR = "This contribution is not compatible with "
-    + "the current revision of Processing";
+  static private final String INCOMPATIBILITY_BLUR =
+    "This contribution is not compatible with the current revision of Processing";
 
   private final ListPanel listPanel;
   private final ContributionListing contribListing = ContributionListing.getInstance();
