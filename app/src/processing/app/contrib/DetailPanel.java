@@ -88,6 +88,7 @@ class DetailPanel extends JPanel {
 
 
   DetailPanel(ListPanel contributionListPanel) {
+    System.out.println("DetailPanel.<init>");
 //    if (foundationIcon == null) {
 //      foundationIcon = Toolkit.getLibIconX("icons/foundation", 32);
 //    }
@@ -106,11 +107,26 @@ class DetailPanel extends JPanel {
 
 //    setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-    addPaneComponents();
+//    addPaneComponents();
+    {
+      installProgressBar = new JProgressBar();
+      installProgressBar.setInheritsPopupMenu(true);
+      installProgressBar.setStringPainted(true);
+      resetInstallProgressBarState();
+      Dimension dim =
+        new Dimension(BUTTON_WIDTH,
+          installProgressBar.getPreferredSize().height);
+      installProgressBar.setPreferredSize(dim);
+      installProgressBar.setMaximumSize(dim);
+      installProgressBar.setMinimumSize(dim);
+      installProgressBar.setOpaque(false);
+      installProgressBar.setAlignmentX(CENTER_ALIGNMENT);
+      installProgressBar.setFont(ManagerFrame.NORMAL_PLAIN);
+    }
 
 //    setBackground(listPanel.getBackground());
 //    setOpaque(true);
-    setSelected(false);
+//    setSelected(false);
 
 //    setExpandListener(this, new MouseAdapter() {
 //      public void mousePressed(MouseEvent e) {
@@ -125,12 +141,12 @@ class DetailPanel extends JPanel {
   }
 
 
-  /**
-   * Create the widgets for the header panel that is visible
-   * when the library panel is not clicked.
-   */
-  private void addPaneComponents() {
-    System.out.println("DetailPanel.addPaneComponents()");
+//  /**
+//   * Create the widgets for the header panel that is visible
+//   * when the library panel is not clicked.
+//   */
+//  private void addPaneComponents() {
+//    System.out.println("DetailPanel.addPaneComponents()");
 //    setLayout(new BorderLayout());
 
 //    descriptionPane = new JTextPane();
@@ -213,21 +229,21 @@ class DetailPanel extends JPanel {
 //    barButtonCardPane.setOpaque(false);
 //    barButtonCardPane.setMinimumSize(new Dimension(BUTTON_WIDTH, 1));
 
-    {
-      installProgressBar = new JProgressBar();
-      installProgressBar.setInheritsPopupMenu(true);
-      installProgressBar.setStringPainted(true);
-      resetInstallProgressBarState();
-      Dimension dim =
-        new Dimension(BUTTON_WIDTH,
-          installProgressBar.getPreferredSize().height);
-      installProgressBar.setPreferredSize(dim);
-      installProgressBar.setMaximumSize(dim);
-      installProgressBar.setMinimumSize(dim);
-      installProgressBar.setOpaque(false);
-      installProgressBar.setAlignmentX(CENTER_ALIGNMENT);
-      installProgressBar.setFont(ManagerFrame.NORMAL_PLAIN);
-    }
+//    {
+//      installProgressBar = new JProgressBar();
+//      installProgressBar.setInheritsPopupMenu(true);
+//      installProgressBar.setStringPainted(true);
+//      resetInstallProgressBarState();
+//      Dimension dim =
+//        new Dimension(BUTTON_WIDTH,
+//          installProgressBar.getPreferredSize().height);
+//      installProgressBar.setPreferredSize(dim);
+//      installProgressBar.setMaximumSize(dim);
+//      installProgressBar.setMinimumSize(dim);
+//      installProgressBar.setOpaque(false);
+//      installProgressBar.setAlignmentX(CENTER_ALIGNMENT);
+//      installProgressBar.setFont(ManagerFrame.NORMAL_PLAIN);
+//    }
 
 //    installRemoveButton = new JButton(" ");
 //    installRemoveButton.setInheritsPopupMenu(true);
@@ -271,7 +287,7 @@ class DetailPanel extends JPanel {
 //                    installRemoveButton.getPreferredSize().height);
 //    rightPane.setMinimumSize(dim);
 //    rightPane.setPreferredSize(dim);
-  }
+//  }
 
 
 //  /**
@@ -496,7 +512,7 @@ class DetailPanel extends JPanel {
       updateInProgress = false;
     }
 //    updateButton.setVisible(contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged());
-    setSelected(true);
+//    setSelected(true);
   }
 
 
@@ -546,11 +562,11 @@ class DetailPanel extends JPanel {
   }
 
 
-  /**
-   * Should be called whenever this component is selected (clicked on)
-   * or unselected, even if it is already selected.
-   */
-  void setSelected(boolean selected) {
+//  /**
+//   * Should be called whenever this component is selected (clicked on)
+//   * or unselected, even if it is already selected.
+//   */
+//  void setSelected(boolean selected) {
 //    new Exception("DetailPanel.setSelected()").printStackTrace(System.out);
 
     // Only enable hyperlinks if this component is already selected.
@@ -570,7 +586,7 @@ class DetailPanel extends JPanel {
     //setSelectionStyle(descriptionPane, selected);
 
 //    alreadySelected = selected;
-  }
+//  }
 
 
   boolean isSelected() {
@@ -672,7 +688,7 @@ class DetailPanel extends JPanel {
       removeInProgress = false;
 //      installRemoveButton.setEnabled(true);
 //      reorganizePaneComponents();
-      setSelected(true); // Needed for smooth working. Dunno why, though...
+//      setSelected(true); // Needed for smooth working. Dunno why, though...
     }
 
     public void finishedAction() {

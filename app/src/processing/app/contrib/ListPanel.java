@@ -617,16 +617,16 @@ implements Scrollable, ContributionListing.ChangeListener {
     contributionTab.updateStatusPanel(contributionPanel);
 
     if (selectedPanel == contributionPanel) {
-      selectedPanel.setSelected(true);
+//      selectedPanel.setSelected(true);
 
     } else {
       DetailPanel lastSelected = selectedPanel;
       selectedPanel = contributionPanel;
 
-      if (lastSelected != null) {
-        lastSelected.setSelected(false);
-      }
-      contributionPanel.setSelected(true);
+//      if (lastSelected != null) {
+//        lastSelected.setSelected(false);
+//      }
+//      contributionPanel.setSelected(true);
 
       updateColors();
       requestFocusInWindow();
