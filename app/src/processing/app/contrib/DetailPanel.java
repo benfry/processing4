@@ -186,6 +186,22 @@ class DetailPanel extends JPanel {
   }
 
 
+  public void remove() {
+    clearStatusMessage();
+    if (contrib.isInstalled() && contrib instanceof LocalContribution) {
+      removeInProgress = true;
+      installProgressBar.setVisible(true);
+      installProgressBar.setIndeterminate(true);
+
+      ContribProgressBar monitor = new RemoveProgressBar(installProgressBar);
+      getLocalContrib().removeContribution(getBase(), monitor, getStatusPanel());
+    }
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
   class UpdateProgressBar extends ContribProgressBar {
     public UpdateProgressBar(JProgressBar progressBar) {
       super(progressBar);
@@ -213,17 +229,7 @@ class DetailPanel extends JPanel {
   }
 
 
-  public void remove() {
-    clearStatusMessage();
-    if (contrib.isInstalled() && contrib instanceof LocalContribution) {
-      removeInProgress = true;
-      installProgressBar.setVisible(true);
-      installProgressBar.setIndeterminate(true);
-
-      ContribProgressBar monitor = new RemoveProgressBar(installProgressBar);
-      getLocalContrib().removeContribution(getBase(), monitor, getStatusPanel());
-    }
-  }
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   class RemoveProgressBar extends ContribProgressBar {

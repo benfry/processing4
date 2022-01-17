@@ -383,8 +383,7 @@ public class ContributionTab extends JPanel {
     }
 
     public void applyFilter() {
-      String filter = getText();
-      filter = filter.toLowerCase();
+      String filter = getText().toLowerCase();
 
       // Replace anything but 0-9, a-z, or : with a space
       filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
