@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-16 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -120,7 +120,7 @@ class DetailPanel extends JPanel {
       installProgressBar.setMaximumSize(dim);
       installProgressBar.setMinimumSize(dim);
       installProgressBar.setOpaque(false);
-      installProgressBar.setAlignmentX(CENTER_ALIGNMENT);
+      installProgressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
       installProgressBar.setFont(ManagerFrame.NORMAL_PLAIN);
     }
 
