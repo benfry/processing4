@@ -116,7 +116,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       }
     };
 
-    // There is a space before Status
     scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -173,6 +172,7 @@ implements Scrollable, ContributionListing.ChangeListener {
     this.setLayout(layout);
     table.setVisible(true);
   }
+
 
   private static int getContributionStatusRank(Contribution c) {
     // Uninstalled items are at the bottom of the sort order
