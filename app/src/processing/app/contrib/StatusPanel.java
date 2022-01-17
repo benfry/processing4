@@ -24,8 +24,6 @@ package processing.app.contrib;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.Icon;
@@ -36,7 +34,6 @@ import javax.swing.JTextPane;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 
 import processing.app.ui.Toolkit;
@@ -95,14 +92,10 @@ class StatusPanel extends JPanel {
 //            "font-size: " + buttonFont.getSize() + "pt; color: black; text-decoration: none;}";
 //    bodyRule = "";
 //    bodyRule = DetailPanel.getBodyStyle();
-    label.addHyperlinkListener(new HyperlinkListener() {
-
-      @Override
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          if (e.getURL() != null) {
-            Platform.openURL(e.getURL().toString());
-          }
+    label.addHyperlinkListener(e -> {
+      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        if (e.getURL() != null) {
+          Platform.openURL(e.getURL().toString());
         }
       }
     });
@@ -110,15 +103,12 @@ class StatusPanel extends JPanel {
     //installButton.setDisabledIcon(installIcon);
     installButton.setFont(buttonFont);
     installButton.setHorizontalAlignment(SwingConstants.LEFT);
-    installButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        installButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.install();
-        StatusPanel.this.update(currentPanel);
-      }
+    installButton.addActionListener(e -> {
+      installButton.setEnabled(false);
+      DetailPanel currentPanel =
+        contributionTab.contributionListPanel.getSelectedPanel();
+      currentPanel.install();
+      StatusPanel.this.update(currentPanel);
     });
     progressPanel = new JPanel();
     progressPanel.setLayout(new BorderLayout());
@@ -131,27 +121,23 @@ class StatusPanel extends JPanel {
     updateButton = Toolkit.createIconButton("Update", updateIcon);
     updateButton.setFont(buttonFont);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
-    updateButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        updateButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.update();
-        StatusPanel.this.update(currentPanel);
-      }
+    updateButton.addActionListener(e -> {
+      updateButton.setEnabled(false);
+      DetailPanel currentPanel =
+        contributionTab.contributionListPanel.getSelectedPanel();
+      currentPanel.update();
+      StatusPanel.this.update(currentPanel);
     });
 
     removeButton = Toolkit.createIconButton("Remove", removeIcon);
     removeButton.setFont(buttonFont);
     removeButton.setHorizontalAlignment(SwingConstants.LEFT);
-    removeButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        removeButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.remove();
-        StatusPanel.this.update(currentPanel);
-      }
+    removeButton.addActionListener(e -> {
+      removeButton.setEnabled(false);
+      DetailPanel currentPanel =
+        contributionTab.contributionListPanel.getSelectedPanel();
+      currentPanel.remove();
+      StatusPanel.this.update(currentPanel);
     });
 
     int labelWidth = (width != 0) ?
@@ -212,12 +198,14 @@ class StatusPanel extends JPanel {
   }
 
 
+  /*
   void setMessage(String message) {
     if (label != null) {
       label.setText(message);
       label.repaint();
     }
   }
+  */
 
 
   void setErrorMessage(String message) {
