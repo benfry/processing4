@@ -193,7 +193,8 @@ public class ContributionTab extends JPanel {
     errorMessage.setText("<html><body><center>Could not connect to the Processing server.<br>"
       + "Contributions cannot be installed or updated without an Internet connection.<br>"
       + "Please verify your network connection again, then try connecting again.</center></body></html>");
-    DetailPanel.setTextStyle(errorMessage, "1em");
+    //DetailPanel.setTextStyle(errorMessage, "1em");
+    //errorMessage.addStyle(DetailPanel.getBodyStyle());
     Dimension dim = new Dimension(550, 60);
     errorMessage.setMaximumSize(dim);
     errorMessage.setMinimumSize(dim);

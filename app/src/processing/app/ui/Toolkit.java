@@ -70,6 +70,8 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 import processing.app.Language;
 import processing.app.Messages;
@@ -1201,5 +1203,30 @@ public class Toolkit {
     FontRenderContext frc = g2.getFontRenderContext();
     //return new TextLayout("H", font, frc).getBounds().getHeight();
     return new TextLayout("H", g.getFont(), frc).getBounds().getHeight();
+  }
+
+
+  static public HTMLEditorKit createHtmlEditorKit() {
+    return new HTMLEditorKit() {
+      private StyleSheet style;
+
+      @Override
+      public StyleSheet getStyleSheet() {
+        return style == null ? super.getStyleSheet() : style;
+      }
+
+      @Override
+      public void setStyleSheet(StyleSheet s) {
+        this.style = s;
+      }
+
+      public StyleSheet getDefaultStyleSheet() {
+        return super.getStyleSheet();
+      }
+
+      public void setDefaultStyleSheet(StyleSheet s) {
+        super.setStyleSheet(s);
+      }
+    };
   }
 }

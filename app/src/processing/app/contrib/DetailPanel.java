@@ -34,6 +34,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
 import processing.app.*;
@@ -45,27 +46,27 @@ import processing.app.ui.Toolkit;
  * Panel that expands and gives a brief overview of a library when clicked.
  */
 class DetailPanel extends JPanel {
-  static public final String REMOVE_RESTART_MESSAGE =
+  static private final String REMOVE_RESTART_MESSAGE =
     String.format("<i>%s</i>", Language.text("contrib.messages.remove_restart"));
 
-  static public final String INSTALL_RESTART_MESSAGE =
+  static private final String INSTALL_RESTART_MESSAGE =
     String.format("<i>%s</i>", Language.text("contrib.messages.install_restart"));
 
-  static public final String UPDATE_RESTART_MESSAGE =
+  static private final String UPDATE_RESTART_MESSAGE =
     String.format("<i>%s</i>", Language.text("contrib.messages.update_restart"));
 
-  static public final String PROGRESS_BAR_CONSTRAINT = "Install/Remove Progress Bar Panel";
+  static private final String PROGRESS_BAR_CONSTRAINT = "Install/Remove Progress Bar Panel";
 
-  static public final String BUTTON_CONSTRAINT = "Install/Remove Button Panel";
+  static private final String BUTTON_CONSTRAINT = "Install/Remove Button Panel";
 
-  static public final String INCOMPATIBILITY_BLUR = "This contribution is not compatible with "
+  static private final String INCOMPATIBILITY_BLUR = "This contribution is not compatible with "
     + "the current revision of Processing";
 
   private final ListPanel listPanel;
   private final ContributionListing contribListing = ContributionListing.getInstance();
 
-  static final int BUTTON_WIDTH = Toolkit.zoom(100);
-  static Icon foundationIcon;
+  static private final int BUTTON_WIDTH = Toolkit.zoom(100);
+  static private Icon foundationIcon;
 
   /**
    * Should only be set through setContribution(),
@@ -86,8 +87,11 @@ class DetailPanel extends JPanel {
   private JTextPane descriptionPane;
   private JLabel notificationLabel;
   private JButton updateButton;
-  JProgressBar installProgressBar;
   private JButton installRemoveButton;
+
+  // TODO why is this being added by StatusPanel? [fry 220116]
+  JProgressBar installProgressBar;
+
   final private JPopupMenu contextMenu;
   final private JMenuItem openFolder;
 
@@ -132,20 +136,20 @@ class DetailPanel extends JPanel {
 
     setExpandListener(this, new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
-        if (contrib.isCompatible(Base.getRevision())) {
-          listPanel.setSelectedPanel(DetailPanel.this);
-        } else {
-          setErrorMessage(contrib.getName() +
-                          " cannot be used with this version of Processing");
-        }
+      if (contrib.isCompatible(Base.getRevision())) {
+        listPanel.setSelectedPanel(DetailPanel.this);
+      } else {
+        setErrorMessage(contrib.getName() +
+                        " cannot be used with this version of Processing");
+      }
       }
     });
   }
 
 
   /**
-   * Create the widgets for the header panel which is visible when the
-   * library panel is not clicked.
+   * Create the widgets for the header panel that is visible
+   * when the library panel is not clicked.
    */
   private void addPaneComponents() {
     setLayout(new BorderLayout());
@@ -156,8 +160,18 @@ class DetailPanel extends JPanel {
     Insets margin = descriptionPane.getMargin();
     margin.bottom = 0;
     descriptionPane.setMargin(margin);
-    descriptionPane.setContentType("text/html");
-    setTextStyle(descriptionPane, "0.95em");
+//    descriptionPane.setContentType("text/html");
+
+//    HTMLEditorKit kit = new HTMLEditorKit();
+    HTMLEditorKit kit = Toolkit.createHtmlEditorKit();
+    StyleSheet stylesheet = new StyleSheet();
+    stylesheet.addRule(getBodyStyle());
+    stylesheet.addRule("a { color: #000000; text-decoration:underline; text-decoration-style: dotted; }");
+    kit.setStyleSheet(stylesheet);
+    HTMLDocument hd = (HTMLDocument) kit.createDefaultDocument();
+    descriptionPane.setEditorKit(kit);
+    descriptionPane.setDocument(hd);
+
     descriptionPane.setOpaque(false);
     if (UIManager.getLookAndFeel().getID().equals("Nimbus")) {
       descriptionPane.setBackground(new Color(0, 0, 0, 0));
@@ -167,8 +181,8 @@ class DetailPanel extends JPanel {
     descriptionPane.setHighlighter(null);
     descriptionPane.addHyperlinkListener(e -> {
       if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-        // for 3.2.3, added the isSelected() prompt here, rather than
-        // adding/removing the listener repeatedly
+        // for 3.2.3, added the isSelected() prompt here,
+        // rather than adding/removing the listener repeatedly
         if (isSelected()) {
           if (enableHyperlinks && e.getURL() != null) {
             Platform.openURL(e.getURL().toString());
@@ -276,6 +290,18 @@ class DetailPanel extends JPanel {
                     installRemoveButton.getPreferredSize().height);
     rightPane.setMinimumSize(dim);
     rightPane.setPreferredSize(dim);
+  }
+
+
+  static String getBodyStyle() {
+    return "body { " +
+      "  margin: 0; " +
+      "  padding: 0;" +
+      "  font-family: " + Toolkit.getSansFontName() + ", Helvetica, Arial, sans-serif;" +
+      "  font-size: 12px;" +
+//      "  font-size: 100%;" +
+//      "  font-size: 0.95em; " +
+      "}";
   }
 
 
@@ -613,6 +639,7 @@ class DetailPanel extends JPanel {
   }
 
 
+  /*
   @Override
   public void setForeground(Color fg) {
     super.setForeground(fg);
@@ -622,15 +649,16 @@ class DetailPanel extends JPanel {
       setForegroundStyle(descriptionPane, installed, isSelected());
     }
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /**
+  /*
    * Sets coloring based on whether installed or not;
    * also makes ugly blue HTML links into the specified color (black).
-   */
+   *
   static void setForegroundStyle(JTextPane textPane,
                                  boolean installed, boolean selected) {
     Document doc = textPane.getDocument();
@@ -658,6 +686,7 @@ class DetailPanel extends JPanel {
                          "}");
     }
   }
+  */
 
 
   /*

@@ -64,7 +64,7 @@ class StatusPanel extends JPanel {
   ContributionListing contributionListing = ContributionListing.getInstance();
   ContributionTab contributionTab;
 
-  private String bodyRule;
+//  private String bodyRule;
 
 
   /** Needed by ContributionListPanel */
@@ -83,6 +83,7 @@ class StatusPanel extends JPanel {
     }
 
     setBackground(new Color(0xebebeb));
+    setBackground(Color.GREEN);
 
     iconLabel = new JLabel();
     iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -91,8 +92,10 @@ class StatusPanel extends JPanel {
     label.setEditable(false);
     label.setOpaque(false);
     label.setContentType("text/html");
-    bodyRule = "a, body { font-family: " + buttonFont.getFamily() + "; " +
-            "font-size: " + buttonFont.getSize() + "pt; color: black; text-decoration: none;}";
+//    bodyRule = "a, body { font-family: " + buttonFont.getFamily() + "; " +
+//            "font-size: " + buttonFont.getSize() + "pt; color: black; text-decoration: none;}";
+//    bodyRule = "";
+//    bodyRule = DetailPanel.getBodyStyle();
     label.addHyperlinkListener(new HyperlinkListener() {
 
       @Override
@@ -239,7 +242,9 @@ class StatusPanel extends JPanel {
 
     iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
     label.setText(panel.description);
-    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(bodyRule);
+    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(DetailPanel.getBodyStyle());
+    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline; text-decoration-style: dotted; }");
+
 
     updateButton.setEnabled(contributionListing.hasDownloadedLatestList() &&
                             (contributionListing.hasUpdates(panel.getContrib()) &&
