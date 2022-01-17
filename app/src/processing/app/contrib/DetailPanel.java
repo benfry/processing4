@@ -26,9 +26,6 @@ import java.awt.event.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.Date;
 import java.text.DateFormat;
 
@@ -39,10 +36,7 @@ import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.StyleSheet;
 
-import processing.app.Base;
-import processing.app.Language;
-import processing.app.Messages;
-import processing.app.Platform;
+import processing.app.*;
 import processing.app.ui.Editor;
 import processing.app.ui.Toolkit;
 
@@ -275,8 +269,8 @@ class DetailPanel extends JPanel {
 
     rightPane.add(barButtonCardPane);
 
-    // Set the minimum size of this pane to be the sum of the height of the
-    // progress bar and install button
+    // Set the minimum size of this pane to be the sum
+    // of the height of the progress bar and install button
     Dimension dim =
       new Dimension(BUTTON_WIDTH,
                     installRemoveButton.getPreferredSize().height);
@@ -419,7 +413,7 @@ class DetailPanel extends JPanel {
 
     String authorList = contrib.getAuthorList();
     if (authorList != null && !authorList.isEmpty()) {
-      desc.append(toHtmlLinks(contrib.getAuthorList()));
+      desc.append(Util.markDownLinksToHtml(contrib.getAuthorList()));
     }
     desc.append("<br/><br/>");
 
@@ -434,8 +428,8 @@ class DetailPanel extends JPanel {
       if (sentence == null || sentence.isEmpty()) {
         sentence = String.format("<i>%s</i>", Language.text("contrib.errors.description_unavailable"));
       } else {
-        sentence = sanitizeHtmlTags(sentence);
-        sentence = toHtmlLinks(sentence);
+        sentence = Util.sanitizeHtmlTags(sentence);
+        sentence = Util.markDownLinksToHtml(sentence);
       }
       desc.append(sentence);
     }
@@ -466,7 +460,9 @@ class DetailPanel extends JPanel {
       } else {
         String latestVersion = contribListing.getLatestPrettyVersion(contrib);
         if (latestVersion != null) {
-          versionText.append("New version (" + latestVersion + ") available.");
+          versionText.append("New version (")
+            .append(latestVersion)
+            .append(") available.");
         } else {
           versionText.append("New version available.");
         }
@@ -542,9 +538,7 @@ class DetailPanel extends JPanel {
       installProgressBar.setVisible(true);
 
       ContribProgressBar downloadProgress = new ContribProgressBar(installProgressBar) {
-        public void finishedAction() {
-          // nothing?
-        }
+        public void finishedAction() { }
 
         public void cancelAction() {
           finishInstall(false);
@@ -593,7 +587,7 @@ class DetailPanel extends JPanel {
    * Should be called whenever this component is selected (clicked on)
    * or unselected, even if it is already selected.
    */
-  public void setSelected(boolean isSelected) {
+  void setSelected(boolean selected) {
     // Only enable hyperlinks if this component is already selected.
     // Why? Because otherwise if the user happened to click on what is
     // now a hyperlink, it will be opened as the mouse is released.
@@ -607,30 +601,19 @@ class DetailPanel extends JPanel {
     installRemoveButton.setEnabled(installRemoveButton.getText().equals(Language.text("contrib.remove")) || contribListing.listDownloadSuccessful());
     reorganizePaneComponents();
 
-    /*
-    descriptionPane.removeHyperlinkListener(NULL_HYPERLINK_LISTENER);
-    descriptionPane.removeHyperlinkListener(conditionalHyperlinkOpener);
-    if (isSelected()) {
-      descriptionPane.addHyperlinkListener(conditionalHyperlinkOpener);
-//      descriptionPane.setEditable(false);
-    } else {
-      descriptionPane.addHyperlinkListener(NULL_HYPERLINK_LISTENER);
-//      descriptionPane.setEditable(true);
-    }
-    */
-
     // Update style of hyperlinks
-    setSelectionStyle(descriptionPane, isSelected());
+    //setSelectionStyle(descriptionPane, selected);
 
-    alreadySelected = isSelected();
+    alreadySelected = selected;
   }
 
 
-  public boolean isSelected() {
+  boolean isSelected() {
     return listPanel.getSelectedPanel() == this;
   }
 
 
+  @Override
   public void setForeground(Color fg) {
     super.setForeground(fg);
 
@@ -638,50 +621,6 @@ class DetailPanel extends JPanel {
       boolean installed = contrib.isInstalled();
       setForegroundStyle(descriptionPane, installed, isSelected());
     }
-  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  static String sanitizeHtmlTags(String stringIn) {
-    stringIn = stringIn.replaceAll("<", "&lt;");
-    stringIn = stringIn.replaceAll(">", "&gt;");
-    return stringIn;
-  }
-
-
-  /**
-   * This has a [link](http://example.com/) in [it](http://example.org/).
-   *
-   * Becomes...
-   *
-   * This has a <a href="http://example.com/">link</a> in <a
-   * href="http://example.org/">it</a>.
-   */
-  static String toHtmlLinks(String stringIn) {
-    Pattern p = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
-    Matcher m = p.matcher(stringIn);
-
-    StringBuilder sb = new StringBuilder();
-
-    int start = 0;
-    while (m.find(start)) {
-      sb.append(stringIn, start, m.start());
-
-      String text = m.group(1);
-      String url = m.group(2);
-
-      sb.append("<a href=\"");
-      sb.append(url);
-      sb.append("\">");
-      sb.append(text);
-      sb.append("</a>");
-
-      start = m.end();
-    }
-    sb.append(stringIn.substring(start));
-    return sb.toString();
   }
 
 
@@ -702,7 +641,7 @@ class DetailPanel extends JPanel {
       // slightly grayed when installed
       String c = (installed && !selected) ? "#555555" : "#000000";
       stylesheet.addRule("body { color:" + c + "; }");
-      stylesheet.addRule("a { color:" + c + "; }");
+      stylesheet.addRule("a { color:" + c + "; text-decoration:underline }");
     }
   }
 
@@ -721,6 +660,7 @@ class DetailPanel extends JPanel {
   }
 
 
+  /*
   static void setSelectionStyle(JTextPane textPane, boolean selected) {
     Document doc = textPane.getDocument();
     if (doc instanceof HTMLDocument) {
@@ -733,6 +673,7 @@ class DetailPanel extends JPanel {
       }
     }
   }
+  */
 
 
   public void install() {
@@ -795,7 +736,7 @@ class DetailPanel extends JPanel {
 
       if (isModeActive(contrib)) {
         updateButton.setEnabled(true);
-      } else {
+      //} else {
         // TODO: remove or uncomment if the button was added
         //listPanel.contributionTab.restartButton.setVisible(true);
       }
@@ -842,7 +783,7 @@ class DetailPanel extends JPanel {
 
       if (isModeActive(contrib)) {
         updateButton.setEnabled(true);
-      } else {
+      //} else {
         // TODO: remove or uncomment if the button was added
         //contributionTab.restartButton.setVisible(true);
       }
@@ -856,14 +797,12 @@ class DetailPanel extends JPanel {
       LocalContribution installed = getLocalContrib();
       installed.setDeletionFlag(false);
       contribListing.replaceContribution(contrib, contrib);  // ??
-      Iterator<Contribution> contribsListIter = contribListing.allContributions.iterator();
-      boolean toBeRestarted = false;
-      while (contribsListIter.hasNext()) {
-        Contribution contribElement = contribsListIter.next();
+      //      boolean toBeRestarted = false;
+      for (Contribution contribElement : contribListing.allContributions) {
         if (contrib.getType().equals(contribElement.getType())) {
           if (contribElement.isDeletionFlagged() ||
             contribElement.isUpdateFlagged()) {
-            toBeRestarted = !toBeRestarted;
+//            toBeRestarted = !toBeRestarted;
             break;
           }
         }

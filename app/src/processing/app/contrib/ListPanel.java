@@ -33,6 +33,7 @@ import javax.swing.table.*;
 
 import processing.app.Base;
 import processing.app.Platform;
+import processing.app.Util;
 import processing.app.ui.Toolkit;
 
 
@@ -358,14 +359,14 @@ implements Scrollable, ContributionListing.ChangeListener {
       FontMetrics fontMetrics = table.getFontMetrics(boldFont);
       int colSize = table.getColumnModel().getColumn(1).getWidth();
       int currentWidth = fontMetrics.stringWidth(contribution.getName() + " | ...");
-      String sentence = contribution.getSentence();
+      String sentence = Util.removeMarkDownLinks(contribution.getSentence());
       StringBuilder text =
         new StringBuilder("<html><body><font face=\"")
           .append(boldFont.getName())
           .append("\">")
           .append(contribution.getName());
 
-      if (sentence == null) {
+      if (sentence.length() == 0) {
         text.append("</font>");
       } else {
         int index;
@@ -391,7 +392,7 @@ implements Scrollable, ContributionListing.ChangeListener {
         label.setIcon(foundationIcon);
       }
       String authorList = contribution.getAuthorList();
-      String name = removeMarkDownLinks(authorList);
+      String name = Util.removeMarkDownLinks(authorList);
       label.setText(name);
       label.setHorizontalAlignment(SwingConstants.LEFT);
       label.setForeground(Color.BLACK);
@@ -420,7 +421,7 @@ implements Scrollable, ContributionListing.ChangeListener {
       if (this == STATUS || this == STATUS_NO_HEADER) {
         return comparator.thenComparingInt(ListPanel::getContributionStatusRank);
       } else if (this == AUTHOR) {
-        return comparator.thenComparing(contribution -> removeMarkDownLinks(contribution.getAuthorList()));
+        return comparator.thenComparing(contribution -> Util.removeMarkDownLinks(contribution.getAuthorList()));
       } else {  // default case, or this == NAME
         return comparator.thenComparing(Contribution::getName, String.CASE_INSENSITIVE_ORDER);
       }
@@ -558,26 +559,6 @@ implements Scrollable, ContributionListing.ChangeListener {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static String removeMarkDownLinks(String str) {
-    StringBuilder name = new StringBuilder();
-    if (str != null) {
-      int parentheses = 0;
-      for (char c : str.toCharArray()) {
-        if (c == '[' || c == ']') {
-          // pass
-        } else if (c == '(') {
-          parentheses++;
-        } else if (c == ')') {
-          parentheses--;
-        } else if (parentheses == 0) {
-          name.append(c);
-        }
-      }
-    }
-    return name.toString();
-  }
-
-
   // Thread: EDT
   public void contributionAdded(final Contribution contribution) {
     if (!panelByContribution.containsKey(contribution)) {
@@ -682,9 +663,9 @@ implements Scrollable, ContributionListing.ChangeListener {
                   ? UIManager.getBorder("List.oddRowBackgroundPainter")
                   : UIManager.getBorder("List.evenRowBackgroundPainter");
         } else {
-          bgColor = oddRow
-                  ? new Color(219, 224, 229)
-                  : new Color(241, 241, 241);
+          bgColor = oddRow ?
+            new Color(219, 224, 229) :
+            new Color(241, 241, 241);
         }
 
         panel.setForeground(fgColor);
