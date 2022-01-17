@@ -28,10 +28,16 @@ X   cursor even changes to link, but the links don't have colors,
 X   and no links open when clicked
 X   now changing color for link and actually opening the links
 X set the font on the contrib install progress bar
+_ after opening Editor window, Processing freezes until contribs are loaded
+_ when opening manager, animation runs briefly then freezes
 _ DetailPanel setContribution() being called 4x for each contrib on startup
+_ during install of contrib, progress is halting during the install
+_   probably too much happening on the EDT that should not be
 _ optimize ContributionTab addListener() call in constructor
 _ DetailPanel seems totally vestigial?
 _ StatusPanel seems to be recreated entirely
+_ StatusPanel being reset twice on each click
+_   is checking for previous, but apparently that's not working
 _ updates count is off... maybe when compatible != available count?
 
 
