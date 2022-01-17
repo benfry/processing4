@@ -45,7 +45,7 @@ class DetailPanel extends JPanel {
 
   private Contribution contrib;
 
-  JProgressBar installProgressBar;
+  private JProgressBar progressBar;
 
   boolean updateInProgress;
   boolean installInProgress;
@@ -54,28 +54,12 @@ class DetailPanel extends JPanel {
 
   DetailPanel(ListPanel contributionListPanel) {
     System.out.println("DetailPanel.<init>");
-
+//    new Exception().printStackTrace(System.out);
     listPanel = contributionListPanel;
-
-    {
-      installProgressBar = new JProgressBar();
-      installProgressBar.setInheritsPopupMenu(true);
-      installProgressBar.setStringPainted(true);
-      resetInstallProgressBarState();
-      Dimension dim =
-        new Dimension(BUTTON_WIDTH,
-          installProgressBar.getPreferredSize().height);
-      installProgressBar.setPreferredSize(dim);
-      installProgressBar.setMaximumSize(dim);
-      installProgressBar.setMinimumSize(dim);
-      installProgressBar.setOpaque(false);
-      installProgressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-      installProgressBar.setFont(ManagerFrame.NORMAL_PLAIN);
-    }
   }
 
 
-  public Contribution getContrib() {
+  protected Contribution getContrib() {
     return contrib;
   }
 
@@ -85,8 +69,30 @@ class DetailPanel extends JPanel {
   }
 
 
-  public void setContrib(Contribution contrib) {
+  protected void setContrib(Contribution contrib) {
     this.contrib = contrib;
+  }
+
+
+  protected JProgressBar getProgressBar() {
+    if (progressBar == null) {
+      progressBar = new JProgressBar();
+      progressBar.setInheritsPopupMenu(true);
+      progressBar.setStringPainted(true);
+      progressBar.setFont(ManagerFrame.NORMAL_PLAIN);
+      progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+      progressBar.setOpaque(false);
+
+      resetProgressBar();
+
+      Dimension dim =
+        new Dimension(BUTTON_WIDTH,
+          progressBar.getPreferredSize().height);
+      progressBar.setPreferredSize(dim);
+      progressBar.setMaximumSize(dim);
+      progressBar.setMinimumSize(dim);
+    }
+    return progressBar;
   }
 
 
@@ -100,7 +106,7 @@ class DetailPanel extends JPanel {
 
 
   private void finishInstall(boolean error) {
-    resetInstallProgressBarState();
+    resetProgressBar();
 
     if (error) {
       setErrorMessage(Language.text("contrib.download_error"));
@@ -115,9 +121,9 @@ class DetailPanel extends JPanel {
   private void installContribution(AvailableContribution ad, String url) {
     try {
       URL downloadUrl = new URL(url);
-      installProgressBar.setVisible(true);
+      progressBar.setVisible(true);
 
-      ContribProgressBar downloadProgress = new ContribProgressBar(installProgressBar) {
+      ContribProgressBar downloadProgress = new ContribProgressBar(progressBar) {
         public void finishedAction() { }
 
         public void cancelAction() {
@@ -125,7 +131,7 @@ class DetailPanel extends JPanel {
         }
       };
 
-      ContribProgressBar installProgress = new ContribProgressBar(installProgressBar) {
+      ContribProgressBar installProgress = new ContribProgressBar(progressBar) {
         public void finishedAction() {
           finishInstall(isError());
         }
@@ -146,11 +152,11 @@ class DetailPanel extends JPanel {
   }
 
 
-  protected void resetInstallProgressBarState() {
-    installProgressBar.setString(Language.text("contrib.progress.starting"));
-    installProgressBar.setIndeterminate(false);
-    installProgressBar.setValue(0);
-    installProgressBar.setVisible(false);
+  private void resetProgressBar() {
+    progressBar.setString(Language.text("contrib.progress.starting"));
+    progressBar.setIndeterminate(false);
+    progressBar.setValue(0);
+    progressBar.setVisible(false);
   }
 
 
@@ -159,7 +165,7 @@ class DetailPanel extends JPanel {
 //  }
 
 
-  public void install() {
+  protected void install() {
     clearStatusMessage();
     installInProgress = true;
     if (contrib instanceof AvailableContribution) {
@@ -173,10 +179,10 @@ class DetailPanel extends JPanel {
     clearStatusMessage();
     updateInProgress = true;
     if (contrib.getType().requiresRestart()) {
-      installProgressBar.setVisible(true);
-      installProgressBar.setIndeterminate(true);
+      progressBar.setVisible(true);
+      progressBar.setIndeterminate(true);
 
-      ContribProgressBar progress = new UpdateProgressBar(installProgressBar);
+      ContribProgressBar progress = new UpdateProgressBar(progressBar);
       getLocalContrib().removeContribution(getBase(), progress, getStatusPanel());
     } else {
       AvailableContribution ad =
@@ -190,10 +196,10 @@ class DetailPanel extends JPanel {
     clearStatusMessage();
     if (contrib.isInstalled() && contrib instanceof LocalContribution) {
       removeInProgress = true;
-      installProgressBar.setVisible(true);
-      installProgressBar.setIndeterminate(true);
+      progressBar.setVisible(true);
+      progressBar.setIndeterminate(true);
 
-      ContribProgressBar monitor = new RemoveProgressBar(installProgressBar);
+      ContribProgressBar monitor = new RemoveProgressBar(progressBar);
       getLocalContrib().removeContribution(getBase(), monitor, getStatusPanel());
     }
   }
@@ -208,7 +214,7 @@ class DetailPanel extends JPanel {
     }
 
     public void finishedAction() {
-      resetInstallProgressBarState();
+      resetProgressBar();
       AvailableContribution ad =
         contribListing.getAvailableContribution(contrib);
       String url = ad.link;
@@ -217,7 +223,7 @@ class DetailPanel extends JPanel {
 
     @Override
     public void cancelAction() {
-      resetInstallProgressBarState();
+      resetProgressBar();
       clearStatusMessage();
       updateInProgress = false;
       if (contrib.isDeletionFlagged()) {
@@ -238,7 +244,7 @@ class DetailPanel extends JPanel {
     }
 
     private void preAction() {
-      resetInstallProgressBarState();
+      resetProgressBar();
       removeInProgress = false;
     }
 

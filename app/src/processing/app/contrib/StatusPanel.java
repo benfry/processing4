@@ -363,7 +363,7 @@ class StatusPanel extends JPanel {
     }
 
     removeButton.setEnabled(panel.getContrib().isInstalled() && !panel.removeInProgress);
-    progressPanel.add(panel.installProgressBar);
+    progressPanel.add(panel.getProgressBar());
     progressPanel.setVisible(false);
     updateLabel.setVisible(true);
     if (panel.updateInProgress || panel.installInProgress || panel.removeInProgress) {
