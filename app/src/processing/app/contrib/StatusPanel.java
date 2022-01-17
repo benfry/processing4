@@ -21,21 +21,16 @@
  */
 package processing.app.contrib;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
+import java.awt.*;
+import java.text.DateFormat;
+import java.util.Date;
 
-import javax.swing.GroupLayout;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.html.HTMLDocument;
 
+import processing.app.Language;
+import processing.app.Util;
 import processing.app.ui.Toolkit;
 import processing.app.Base;
 import processing.app.Platform;
@@ -60,8 +55,6 @@ class StatusPanel extends JPanel {
   JLabel iconLabel;
   ContributionListing contributionListing = ContributionListing.getInstance();
   ContributionTab contributionTab;
-
-//  private String bodyRule;
 
 
   public StatusPanel(final ContributionTab contributionTab) {
@@ -239,6 +232,79 @@ class StatusPanel extends JPanel {
   }
 
 
+  static private final String REMOVE_RESTART_MESSAGE =
+    String.format("<i>%s</i>", Language.text("contrib.messages.remove_restart"));
+
+  static private final String INSTALL_RESTART_MESSAGE =
+    String.format("<i>%s</i>", Language.text("contrib.messages.install_restart"));
+
+  static private final String UPDATE_RESTART_MESSAGE =
+    String.format("<i>%s</i>", Language.text("contrib.messages.update_restart"));
+
+  static String updateDescription(Contribution contrib) {
+    // Avoid ugly synthesized bold
+    Font boldFont = ManagerFrame.SMALL_BOLD;
+    String fontFace = "<font face=\"" + boldFont.getName() + "\">";
+
+    StringBuilder desc = new StringBuilder();
+    desc.append("<html><body>");
+    desc.append(fontFace);
+    if (contrib.getUrl() == null) {
+      desc.append(contrib.getName());
+    } else {
+      desc.append("<a href=\"");
+      desc.append(contrib.getUrl());
+      desc.append("\">");
+      desc.append(contrib.getName());
+      desc.append("</a>");
+    }
+    desc.append("</font> ");
+
+    String prettyVersion = contrib.getPrettyVersion();
+    if (prettyVersion != null) {
+      desc.append(prettyVersion);
+    }
+    desc.append(" <br/>");
+
+    String authorList = contrib.getAuthorList();
+    if (authorList != null && !authorList.isEmpty()) {
+      desc.append(Util.markDownLinksToHtml(contrib.getAuthorList()));
+    }
+    desc.append("<br/><br/>");
+
+    if (contrib.isDeletionFlagged()) {
+      desc.append(REMOVE_RESTART_MESSAGE);
+    } else if (contrib.isRestartFlagged()) {
+      desc.append(INSTALL_RESTART_MESSAGE);
+    } else if (contrib.isUpdateFlagged()) {
+      desc.append(UPDATE_RESTART_MESSAGE);
+    } else {
+      String sentence = contrib.getSentence();
+      if (sentence == null || sentence.isEmpty()) {
+        sentence = String.format("<i>%s</i>", Language.text("contrib.errors.description_unavailable"));
+      } else {
+        sentence = Util.sanitizeHtmlTags(sentence);
+        sentence = Util.markDownLinksToHtml(sentence);
+      }
+      desc.append(sentence);
+    }
+
+    long lastUpdatedUTC = contrib.getLastUpdated();
+    if (lastUpdatedUTC != 0) {
+      DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
+      Date lastUpdatedDate = new Date(lastUpdatedUTC);
+      if (prettyVersion != null) {
+        desc.append(", ");
+      }
+      desc.append("Last Updated on ");
+      desc.append(dateFormatter.format(lastUpdatedDate));
+    }
+
+    desc.append("</body></html>");
+    return desc.toString();
+  }
+
+
   public void update(DetailPanel panel) {
     System.out.println("rebuilding status panel for " + panel.getContrib().name);
     progressPanel.removeAll();
@@ -246,10 +312,6 @@ class StatusPanel extends JPanel {
     iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
     label.setText(panel.description);
     ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(getBodyStyle());
-    //((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline; text-decoration-style: dotted; }");
-    //((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline dotted; }");
-//    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: #666; text-decoration: none; }");
-
 
     updateButton.setEnabled(contributionListing.hasDownloadedLatestList() &&
                             (contributionListing.hasUpdates(panel.getContrib()) &&

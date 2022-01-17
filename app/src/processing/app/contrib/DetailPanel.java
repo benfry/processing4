@@ -45,15 +45,6 @@ import processing.app.ui.Toolkit;
  * Panel that expands and gives a brief overview of a library when clicked.
  */
 class DetailPanel extends JPanel {
-  static private final String REMOVE_RESTART_MESSAGE =
-    String.format("<i>%s</i>", Language.text("contrib.messages.remove_restart"));
-
-  static private final String INSTALL_RESTART_MESSAGE =
-    String.format("<i>%s</i>", Language.text("contrib.messages.install_restart"));
-
-  static private final String UPDATE_RESTART_MESSAGE =
-    String.format("<i>%s</i>", Language.text("contrib.messages.update_restart"));
-
   static private final String PROGRESS_BAR_CONSTRAINT = "Install/Remove Progress Bar Panel";
 
   static private final String BUTTON_CONSTRAINT = "Install/Remove Button Panel";
@@ -88,7 +79,6 @@ class DetailPanel extends JPanel {
   private JButton updateButton;
   private JButton installRemoveButton;
 
-  // TODO why is this being added by StatusPanel? [fry 220116]
   JProgressBar installProgressBar;
 
   final private JPopupMenu contextMenu;
@@ -135,6 +125,7 @@ class DetailPanel extends JPanel {
 
     setExpandListener(this, new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
+//        System.out.println("expand called");
         if (contrib.isCompatible(Base.getRevision())) {
           listPanel.setSelectedPanel(DetailPanel.this);
         } else {
@@ -241,7 +232,7 @@ class DetailPanel extends JPanel {
       resetInstallProgressBarState();
       Dimension dim =
         new Dimension(BUTTON_WIDTH,
-                      installProgressBar.getPreferredSize().height);
+          installProgressBar.getPreferredSize().height);
       installProgressBar.setPreferredSize(dim);
       installProgressBar.setMaximumSize(dim);
       installProgressBar.setMinimumSize(dim);
@@ -354,6 +345,7 @@ class DetailPanel extends JPanel {
     }
 
     Dimension progressDim = installProgressBar.getPreferredSize();
+//    Dimension progressDim = new Dimension();  // TODO temporary, progress bar removed
     Dimension installDim = installRemoveButton.getPreferredSize();
     progressDim.width = BUTTON_WIDTH;
     progressDim.height = Math.max(progressDim.height, installDim.height);
@@ -403,66 +395,7 @@ class DetailPanel extends JPanel {
       add(iconLabel, BorderLayout.WEST);
     }
 
-    // Avoid ugly synthesized bold
-    Font boldFont = ManagerFrame.SMALL_BOLD;
-    String fontFace = "<font face=\"" + boldFont.getName() + "\">";
-
-    StringBuilder desc = new StringBuilder();
-    desc.append("<html><body>");
-    desc.append(fontFace);
-    if (contrib.getUrl() == null) {
-      desc.append(contrib.getName());
-    } else {
-      desc.append("<a href=\"");
-      desc.append(contrib.getUrl());
-      desc.append("\">");
-      desc.append(contrib.getName());
-      desc.append("</a>");
-    }
-    desc.append("</font> ");
-
-    String prettyVersion = contrib.getPrettyVersion();
-    if (prettyVersion != null) {
-      desc.append(prettyVersion);
-    }
-    desc.append(" <br/>");
-
-    String authorList = contrib.getAuthorList();
-    if (authorList != null && !authorList.isEmpty()) {
-      desc.append(Util.markDownLinksToHtml(contrib.getAuthorList()));
-    }
-    desc.append("<br/><br/>");
-
-    if (contrib.isDeletionFlagged()) {
-      desc.append(REMOVE_RESTART_MESSAGE);
-    } else if (contrib.isRestartFlagged()) {
-      desc.append(INSTALL_RESTART_MESSAGE);
-    } else if (contrib.isUpdateFlagged()) {
-      desc.append(UPDATE_RESTART_MESSAGE);
-    } else {
-      String sentence = contrib.getSentence();
-      if (sentence == null || sentence.isEmpty()) {
-        sentence = String.format("<i>%s</i>", Language.text("contrib.errors.description_unavailable"));
-      } else {
-        sentence = Util.sanitizeHtmlTags(sentence);
-        sentence = Util.markDownLinksToHtml(sentence);
-      }
-      desc.append(sentence);
-    }
-
-    long lastUpdatedUTC = contrib.getLastUpdated();
-    if (lastUpdatedUTC != 0) {
-      DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
-      Date lastUpdatedDate = new Date(lastUpdatedUTC);
-      if (prettyVersion != null) {
-        desc.append(", ");
-      }
-      desc.append("Last Updated on ");
-      desc.append(dateFormatter.format(lastUpdatedDate));
-    }
-
-    desc.append("</body></html>");
-    description = desc.toString();
+    description = StatusPanel.updateDescription(contrib);
     descriptionPane.setText(description);
 
     if (contribListing.hasUpdates(contrib) && contrib.isCompatible(Base.getRevision())) {
