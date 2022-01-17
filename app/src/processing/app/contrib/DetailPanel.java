@@ -47,8 +47,8 @@ class DetailPanel extends JPanel {
 //  static private final String BUTTON_CONSTRAINT =
 //    "Install/Remove Button Panel";
 
-  static private final String INCOMPATIBILITY_BLUR =
-    "This contribution is not compatible with the current revision of Processing";
+//  static private final String INCOMPATIBILITY_BLUR =
+//    "This contribution is not compatible with the current revision of Processing";
 
   private final ListPanel listPanel;
   private final ContributionListing contribListing = ContributionListing.getInstance();
@@ -380,18 +380,18 @@ class DetailPanel extends JPanel {
 //  }
 
 
-  private void blurContributionPanel(Component component) {
-    component.setFocusable(false);
-    component.setEnabled(false);
-    if (component instanceof JComponent) {
-      ((JComponent) component).setToolTipText(INCOMPATIBILITY_BLUR);
-    }
-    if (component instanceof Container) {
-      for (Component child : ((Container) component).getComponents()) {
-        blurContributionPanel(child);
-      }
-    }
-  }
+//  private void blurContributionPanel(Component component) {
+//    component.setFocusable(false);
+//    component.setEnabled(false);
+//    if (component instanceof JComponent) {
+//      ((JComponent) component).setToolTipText(INCOMPATIBILITY_BLUR);
+//    }
+//    if (component instanceof Container) {
+//      for (Component child : ((Container) component).getComponents()) {
+//        blurContributionPanel(child);
+//      }
+//    }
+//  }
 
 
   public Contribution getContrib() {
@@ -448,17 +448,17 @@ class DetailPanel extends JPanel {
 //    updateButton.setEnabled(true);
 //    updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
 
-    if (contrib.isDeletionFlagged()) {
+//    if (contrib.isDeletionFlagged()) {
 //      installRemoveButton.setText(undoText);
 
-    } else if (contrib.isInstalled()) {
+//    } else if (contrib.isInstalled()) {
 //      installRemoveButton.setText(removeText);
 //      installRemoveButton.setVisible(true);
 //      installRemoveButton.setEnabled(!contrib.isUpdateFlagged());
 //      reorganizePaneComponents();
-    } else {
+//    } else {
 //      installRemoveButton.setText(installText);
-    }
+//    }
 
 //    contextMenu.removeAll();
 //    if (contrib.isInstalled()) {
@@ -468,9 +468,9 @@ class DetailPanel extends JPanel {
 //      setComponentPopupMenu(null);
 //    }
 
-    if (!contrib.isCompatible(Base.getRevision())) {
-      blurContributionPanel(this);
-    }
+//    if (!contrib.isCompatible(Base.getRevision())) {
+//      blurContributionPanel(this);
+//    }
   }
 
 
