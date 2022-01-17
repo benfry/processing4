@@ -27,7 +27,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.*;
-import javax.swing.border.EmptyBorder;
+//import javax.swing.border.EmptyBorder;
 //import javax.swing.event.HyperlinkEvent;
 //import javax.swing.text.html.HTMLDocument;
 //import javax.swing.text.html.HTMLEditorKit;
@@ -253,11 +253,11 @@ class DetailPanel extends JPanel {
     JPanel barPane = new JPanel();
     barPane.setOpaque(false);
 
-    JPanel buttonPane = new JPanel();
-    buttonPane.setOpaque(false);
+//    JPanel buttonPane = new JPanel();
+//    buttonPane.setOpaque(false);
 //    buttonPane.add(installRemoveButton);
 
-    barButtonCardPane.add(buttonPane, BUTTON_CONSTRAINT);
+//    barButtonCardPane.add(buttonPane, BUTTON_CONSTRAINT);
     barButtonCardPane.add(barPane, PROGRESS_BAR_CONSTRAINT);
     barButtonCardLayout.show(barButtonCardPane, BUTTON_CONSTRAINT);
 
@@ -419,31 +419,31 @@ class DetailPanel extends JPanel {
 //    description = StatusPanel.updateDescription(contrib);
 //    descriptionPane.setText(description);
 
-    if (contribListing.hasUpdates(contrib) && contrib.isCompatible(Base.getRevision())) {
-      StringBuilder versionText = new StringBuilder();
-      versionText.append("<html><body><i>");
-      //noinspection StatementWithEmptyBody
-      if (contrib.isUpdateFlagged() || contrib.isDeletionFlagged()) {
-        // Already marked for deletion, see requiresRestart() notes below.
-        // versionText.append("To finish an update, reinstall this contribution after restarting.");
-
-      } else {
-        String latestVersion = contribListing.getLatestPrettyVersion(contrib);
-        if (latestVersion != null) {
-          versionText.append("New version (")
-            .append(latestVersion)
-            .append(") available.");
-        } else {
-          versionText.append("New version available.");
-        }
-      }
-      versionText.append("</i></body></html>");
+//    if (contribListing.hasUpdates(contrib) && contrib.isCompatible(Base.getRevision())) {
+//      StringBuilder versionText = new StringBuilder();
+//      versionText.append("<html><body><i>");
+//      //noinspection StatementWithEmptyBody
+//      if (contrib.isUpdateFlagged() || contrib.isDeletionFlagged()) {
+//        // Already marked for deletion, see requiresRestart() notes below.
+//        // versionText.append("To finish an update, reinstall this contribution after restarting.");
+//
+//      } else {
+//        String latestVersion = contribListing.getLatestPrettyVersion(contrib);
+//        if (latestVersion != null) {
+//          versionText.append("New version (")
+//            .append(latestVersion)
+//            .append(") available.");
+//        } else {
+//          versionText.append("New version available.");
+//        }
+//      }
+//      versionText.append("</i></body></html>");
 //      notificationLabel.setText(versionText.toString());
 //      notificationLabel.setVisible(true);
 //    } else {
 //      notificationLabel.setText("");
 //      notificationLabel.setVisible(false);
-    }
+//    }
 
 //    updateButton.setEnabled(true);
 //    updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
