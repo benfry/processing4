@@ -22,7 +22,6 @@
 package processing.app.contrib;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -112,16 +111,16 @@ class DetailPanel extends JPanel {
     setOpaque(true);
     setSelected(false);
 
-    setExpandListener(this, new MouseAdapter() {
-      public void mousePressed(MouseEvent e) {
-        if (contrib.isCompatible(Base.getRevision())) {
-          listPanel.setSelectedPanel(DetailPanel.this);
-        } else {
-          setErrorMessage(contrib.getName() +
-                          " cannot be used with this version of Processing");
-        }
-      }
-    });
+//    setExpandListener(this, new MouseAdapter() {
+//      public void mousePressed(MouseEvent e) {
+//        if (contrib.isCompatible(Base.getRevision())) {
+//          listPanel.setSelectedPanel(DetailPanel.this);
+//        } else {
+//          setErrorMessage(contrib.getName() +
+//                          " cannot be used with this version of Processing");
+//        }
+//      }
+//    });
   }
 
 
@@ -226,6 +225,7 @@ class DetailPanel extends JPanel {
       installProgressBar.setMinimumSize(dim);
       installProgressBar.setOpaque(false);
       installProgressBar.setAlignmentX(CENTER_ALIGNMENT);
+      installProgressBar.setFont(ManagerFrame.NORMAL_PLAIN);
     }
 
 //    installRemoveButton = new JButton(" ");
@@ -364,19 +364,19 @@ class DetailPanel extends JPanel {
   }
 
 
-  private void setExpandListener(Component component,
-                                 MouseListener expandListener) {
-    // If it's a JButton, adding the listener will make this stick on OS X
-    // https://github.com/processing/processing/issues/3172
-    if (!(component instanceof JButton)) {
-      component.addMouseListener(expandListener);
-      if (component instanceof Container) {
-        for (Component child : ((Container) component).getComponents()) {
-          setExpandListener(child, expandListener);
-        }
-      }
-    }
-  }
+//  private void setExpandListener(Component component,
+//                                 MouseListener expandListener) {
+//    // If it's a JButton, adding the listener will make this stick on OS X
+//    // https://github.com/processing/processing/issues/3172
+//    if (!(component instanceof JButton)) {
+//      component.addMouseListener(expandListener);
+//      if (component instanceof Container) {
+//        for (Component child : ((Container) component).getComponents()) {
+//          setExpandListener(child, expandListener);
+//        }
+//      }
+//    }
+//  }
 
 
   private void blurContributionPanel(Component component) {

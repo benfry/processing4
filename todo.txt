@@ -16,16 +16,23 @@ X bump JNA from 5.8.0 to 5.10.0
 X remove "Illegal reflective access" warning on Linux
 X   https://github.com/processing/processing4/issues/207
 
-manager
-X contrib list entry in the table sometimes contains markdown
-X   at least hide the syntax parts (and show the text)
-_ description panel in contribs contains markdown
-_   cursor even changes to link, but the links don't have colors,
-_   and no links open when clicked
-
 contribs
 X select entire line when doing Edit > Copy on an empty selection
 X   https://github.com/processing/processing4/pull/100
+
+manager
+X contrib list entry in the table sometimes contains markdown
+X   at least hide the syntax parts (and show the text)
+X description panel in contribs contains markdown
+X   cursor even changes to link, but the links don't have colors,
+X   and no links open when clicked
+X   now changing color for link and actually opening the links
+X set the font on the contrib install progress bar
+_ DetailPanel setContribution() being called 4x for each contrib on startup
+_ optimize ContributionTab addListener() call in constructor
+_ DetailPanel seems totally vestigial?
+_ StatusPanel seems to be recreated entirely
+_ updates count is off... maybe when compatible != available count?
 
 
 known issues
