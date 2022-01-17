@@ -54,12 +54,7 @@ abstract class ContribProgressBar extends ContribProgressMonitor {
   public final void finished() {
     super.finished();
     try {
-      EventQueue.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          finishedAction();
-        }
-      });
+      EventQueue.invokeAndWait(this::finishedAction);
     } catch (InterruptedException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {
@@ -78,12 +73,7 @@ abstract class ContribProgressBar extends ContribProgressMonitor {
   public final void cancel() {
     super.cancel();
     try {
-      EventQueue.invokeAndWait(new Runnable() {
-        @Override
-        public void run() {
-          cancelAction();
-        }
-      });
+      EventQueue.invokeAndWait(this::cancelAction);
     } catch (InterruptedException e) {
       e.printStackTrace();
     } catch (InvocationTargetException e) {

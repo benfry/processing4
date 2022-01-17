@@ -654,7 +654,9 @@ implements Scrollable, ContributionListing.ChangeListener {
         Color bgColor = null;
         Color fgColor = UIManager.getColor("List.foreground");
 
-        if (panel.isSelected()) {
+        //if (panel.isSelected()) {
+        //if (getSelectedPanel() == panel) {
+        if (selectedPanel == panel) {
           bgColor = UIManager.getColor("List.selectionBackground");
           fgColor = UIManager.getColor("List.selectionForeground");
           border = UIManager.getBorder("List.focusCellHighlightBorder");

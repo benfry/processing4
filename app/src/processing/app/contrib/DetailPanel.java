@@ -154,9 +154,9 @@ class DetailPanel extends JPanel {
   }
 
 
-  boolean isSelected() {
-    return listPanel.getSelectedPanel() == this;
-  }
+//  private boolean isSelected() {
+//    return listPanel.getSelectedPanel() == this;
+//  }
 
 
   public void install() {

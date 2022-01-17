@@ -305,7 +305,7 @@ class StatusPanel extends JPanel {
   }
 
 
-  public void update(DetailPanel panel) {
+  void update(DetailPanel panel) {
     System.out.println("rebuilding status panel for " + panel.getContrib().name);
     progressPanel.removeAll();
 
