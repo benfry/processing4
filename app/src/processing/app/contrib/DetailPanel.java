@@ -22,7 +22,7 @@
 package processing.app.contrib;
 
 import java.awt.*;
-import java.io.File;
+//import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -70,8 +70,8 @@ class DetailPanel extends JPanel {
 
   JProgressBar installProgressBar;
 
-  final private JPopupMenu contextMenu;
-  final private JMenuItem openFolder;
+//  final private JPopupMenu contextMenu;
+//  final private JMenuItem openFolder;
 
   final private JPanel barButtonCardPane;
   private CardLayout barButtonCardLayout;
@@ -95,14 +95,14 @@ class DetailPanel extends JPanel {
     listPanel = contributionListPanel;
     barButtonCardPane = new JPanel();
 
-    contextMenu = new JPopupMenu();
-    openFolder = new JMenuItem("Open Folder");
-    openFolder.addActionListener(e -> {
-      if (contrib instanceof LocalContribution) {
-        File folder = ((LocalContribution) contrib).getFolder();
-        Platform.openFolder(folder);
-      }
-    });
+//    contextMenu = new JPopupMenu();
+//    openFolder = new JMenuItem("Open Folder");
+//    openFolder.addActionListener(e -> {
+//      if (contrib instanceof LocalContribution) {
+//        File folder = ((LocalContribution) contrib).getFolder();
+//        Platform.openFolder(folder);
+//      }
+//    });
 
     setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -460,13 +460,13 @@ class DetailPanel extends JPanel {
 //      installRemoveButton.setText(installText);
     }
 
-    contextMenu.removeAll();
-    if (contrib.isInstalled()) {
-      contextMenu.add(openFolder);
-      setComponentPopupMenu(contextMenu);
-    } else {
-      setComponentPopupMenu(null);
-    }
+//    contextMenu.removeAll();
+//    if (contrib.isInstalled()) {
+//      contextMenu.add(openFolder);
+//      setComponentPopupMenu(contextMenu);
+//    } else {
+//      setComponentPopupMenu(null);
+//    }
 
     if (!contrib.isCompatible(Base.getRevision())) {
       blurContributionPanel(this);
