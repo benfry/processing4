@@ -32,7 +32,6 @@ import java.text.DateFormat;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.text.Document;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
@@ -136,12 +135,12 @@ class DetailPanel extends JPanel {
 
     setExpandListener(this, new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
-      if (contrib.isCompatible(Base.getRevision())) {
-        listPanel.setSelectedPanel(DetailPanel.this);
-      } else {
-        setErrorMessage(contrib.getName() +
-                        " cannot be used with this version of Processing");
-      }
+        if (contrib.isCompatible(Base.getRevision())) {
+          listPanel.setSelectedPanel(DetailPanel.this);
+        } else {
+          setErrorMessage(contrib.getName() +
+                          " cannot be used with this version of Processing");
+        }
       }
     });
   }
@@ -152,6 +151,7 @@ class DetailPanel extends JPanel {
    * when the library panel is not clicked.
    */
   private void addPaneComponents() {
+    System.out.println("DetailPanel.addPaneComponents()");
     setLayout(new BorderLayout());
 
     descriptionPane = new JTextPane();
@@ -165,8 +165,8 @@ class DetailPanel extends JPanel {
 //    HTMLEditorKit kit = new HTMLEditorKit();
     HTMLEditorKit kit = Toolkit.createHtmlEditorKit();
     StyleSheet stylesheet = new StyleSheet();
-    stylesheet.addRule(getBodyStyle());
-    stylesheet.addRule("a { color: #000000; text-decoration:underline; text-decoration-style: dotted; }");
+    stylesheet.addRule(StatusPanel.getBodyStyle());
+//    stylesheet.addRule("a { color: #000000; text-decoration:underline; text-decoration-style: dotted; }");
     kit.setStyleSheet(stylesheet);
     HTMLDocument hd = (HTMLDocument) kit.createDefaultDocument();
     descriptionPane.setEditorKit(kit);
@@ -293,20 +293,6 @@ class DetailPanel extends JPanel {
   }
 
 
-  static String getBodyStyle() {
-    return "body { " +
-      "  margin: 0; " +
-      "  padding: 0;" +
-      "  font-family: " + Toolkit.getSansFontName() + ", Helvetica, Arial, sans-serif;" +
-      "  font-size: 11px;" +
-//      "  font-size: 100%;" +
-//      "  font-size: 0.95em; " +
-//      "}";
-      "}" +
-      "a { color: #444; text-decoration: none; }";
-  }
-
-
   private void reorganizePaneComponents() {
     BorderLayout layout = (BorderLayout) this.getLayout();
     remove(layout.getLayoutComponent(BorderLayout.SOUTH));
@@ -406,6 +392,8 @@ class DetailPanel extends JPanel {
 
 
   public void setContribution(Contribution contrib) {
+//    System.out.println("DetailPanel.setContribution " + contrib.name);
+    new Exception("DetailPanel.setContribution " + contrib.name).printStackTrace(System.out);
     this.contrib = contrib;
 
     if (contrib.isSpecial()) {

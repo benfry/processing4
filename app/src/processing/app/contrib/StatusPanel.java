@@ -64,11 +64,7 @@ class StatusPanel extends JPanel {
 //  private String bodyRule;
 
 
-  /** Needed by ContributionListPanel */
-  public StatusPanel() { }
-
-
-  public StatusPanel(final ContributionTab contributionTab, int width) {
+  public StatusPanel(final ContributionTab contributionTab) {
     this.contributionTab = contributionTab;
 
     if (foundationIcon == null) {
@@ -78,6 +74,11 @@ class StatusPanel extends JPanel {
       removeIcon = Toolkit.getLibIconX("manager/remove");
       buttonFont = ManagerFrame.NORMAL_PLAIN;
     }
+  }
+
+
+  public StatusPanel(final ContributionTab contributionTab, int width) {
+    this(contributionTab);
 
     setBackground(new Color(0xebebeb));
 
@@ -224,12 +225,27 @@ class StatusPanel extends JPanel {
   }
 
 
+  static String getBodyStyle() {
+    return "body { " +
+      "  margin: 0; " +
+      "  padding: 0;" +
+      "  font-family: " + Toolkit.getSansFontName() + ", Helvetica, Arial, sans-serif;" +
+      "  font-size: 11px;" +
+//      "  font-size: 100%;" +
+//      "  font-size: 0.95em; " +
+//      "}";
+      "}" +
+      "a { color: #444; text-decoration: none; }";
+  }
+
+
   public void update(DetailPanel panel) {
+    System.out.println("rebuilding status panel for " + panel.getContrib().name);
     progressPanel.removeAll();
 
     iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
     label.setText(panel.description);
-    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(DetailPanel.getBodyStyle());
+    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(getBodyStyle());
     //((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline; text-decoration-style: dotted; }");
     //((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: black; text-decoration:underline dotted; }");
 //    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule("a { color: #666; text-decoration: none; }");

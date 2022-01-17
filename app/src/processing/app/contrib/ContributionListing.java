@@ -52,7 +52,7 @@ public class ContributionListing {
   Map<String, List<Contribution>> librariesByCategory;
   Map<String, Contribution> librariesByImportHeader;
   // TODO: Every contribution is getting added twice
-  // and nothing is replaced ever.
+  //       and nothing is replaced ever.
   Set<Contribution> allContributions;
   boolean listDownloaded;
   boolean listDownloadFailed;
@@ -67,7 +67,6 @@ public class ContributionListing {
     allContributions = new LinkedHashSet<>();
     downloadingListingLock = new ReentrantLock();
 
-    //listingFile = Base.getSettingsFile("contributions.txt");
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
     boolean writable = listingFile.setWritable(true, false);
     if (writable && listingFile.exists()) {
@@ -100,8 +99,8 @@ public class ContributionListing {
 
 
   /**
-   * Adds the installed libraries to the listing of libraries, replacing any
-   * pre-existing libraries by the same name as one in the list.
+   * Adds the installed libraries to the listing of libraries, replacing
+   * any pre-existing libraries by the same name as one in the list.
    */
   protected void updateInstalledList(List<Contribution> installed) {
     for (Contribution contribution : installed) {

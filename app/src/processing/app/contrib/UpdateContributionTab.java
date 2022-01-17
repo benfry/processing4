@@ -27,7 +27,7 @@ public class UpdateContributionTab extends ContributionTab {
     contributionListPanel = new UpdateListPanel(this, filter);
 //    contributionListPanel.setBorder(new EmptyBorder(8, 8, 8, 8));
 
-    statusPanel = new UpdateStatusPanel(this, 650);
+    statusPanel = new UpdateStatusPanel(this);
     contribListing = ContributionListing.getInstance();
     contribListing.addListener(contributionListPanel);
   }

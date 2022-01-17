@@ -39,7 +39,7 @@ import processing.app.ui.Toolkit;
 
 // The "Scrollable" implementation and its methods here take care of preventing
 // the scrolling area from running exceptionally slowly. Not sure why they're
-// necessary in the first place, however; seems like odd behavior.
+// necessary in the first place, however. Is that hiding a bigger problem?
 // It also allows the description text in the panels to wrap properly.
 
 public class ListPanel extends JPanel
@@ -66,10 +66,10 @@ implements Scrollable, ContributionListing.ChangeListener {
   static final Color SELECTION_COLOR = new Color(0xffe0fffd);
 
   static final SectionHeaderContribution[] sections = {
-          new SectionHeaderContribution(ContributionType.LIBRARY),
-          new SectionHeaderContribution(ContributionType.MODE),
-          new SectionHeaderContribution(ContributionType.TOOL),
-          new SectionHeaderContribution(ContributionType.EXAMPLES)
+    new SectionHeaderContribution(ContributionType.LIBRARY),
+    new SectionHeaderContribution(ContributionType.MODE),
+    new SectionHeaderContribution(ContributionType.TOOL),
+    new SectionHeaderContribution(ContributionType.EXAMPLES)
   };
 
 
