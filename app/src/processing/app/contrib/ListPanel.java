@@ -565,7 +565,7 @@ implements Scrollable, ContributionListing.ChangeListener {
 //      long t1 = System.currentTimeMillis();
       DetailPanel newPanel = new DetailPanel(this);
       panelByContribution.put(contribution, newPanel);
-      newPanel.setContribution(contribution);
+      newPanel.setContrib(contribution);
       add(newPanel);
       model.fireTableDataChanged();
 //      long t2 = System.currentTimeMillis();
@@ -597,7 +597,7 @@ implements Scrollable, ContributionListing.ChangeListener {
       contributionAdded(newContrib);
     } else {
       panelByContribution.remove(oldContrib);
-      panel.setContribution(newContrib);
+      panel.setContrib(newContrib);
       panelByContribution.put(newContrib, panel);
       model.fireTableDataChanged();
     }

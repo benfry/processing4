@@ -26,8 +26,6 @@ import java.awt.event.*;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
-import java.text.DateFormat;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -63,14 +61,6 @@ class DetailPanel extends JPanel {
    * otherwise UI components will not be updated.
    */
   private Contribution contrib;
-
-  public Contribution getContrib() {
-    return contrib;
-  }
-
-  private LocalContribution getLocalContrib() {
-    return (LocalContribution) contrib;
-  }
 
   private boolean alreadySelected;
   private boolean enableHyperlinks;
@@ -125,7 +115,6 @@ class DetailPanel extends JPanel {
 
     setExpandListener(this, new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
-//        System.out.println("expand called");
         if (contrib.isCompatible(Base.getRevision())) {
           listPanel.setSelectedPanel(DetailPanel.this);
         } else {
@@ -249,7 +238,7 @@ class DetailPanel extends JPanel {
       } else if (mode.equals(removeText)) {
         remove();
       } else if (mode.equals(undoText)) {
-        undo();
+        unflag();
       }
     });
 
@@ -281,6 +270,27 @@ class DetailPanel extends JPanel {
                     installRemoveButton.getPreferredSize().height);
     rightPane.setMinimumSize(dim);
     rightPane.setPreferredSize(dim);
+  }
+
+
+  /**
+   * Clear the 'marked for deletion' flag. (Formerly 'undo')
+   */
+  private void unflag() {
+    clearStatusMessage();
+    if (contrib instanceof LocalContribution) {
+      LocalContribution installed = getLocalContrib();
+      installed.setDeletionFlag(false);
+      contribListing.replaceContribution(contrib, contrib);
+      for (Contribution contribElement : contribListing.allContributions) {
+        if (contrib.getType().equals(contribElement.getType())) {
+          if (contribElement.isDeletionFlagged() ||
+            contribElement.isUpdateFlagged()) {
+            break;
+          }
+        }
+      }
+    }
   }
 
 
@@ -345,7 +355,6 @@ class DetailPanel extends JPanel {
     }
 
     Dimension progressDim = installProgressBar.getPreferredSize();
-//    Dimension progressDim = new Dimension();  // TODO temporary, progress bar removed
     Dimension installDim = installRemoveButton.getPreferredSize();
     progressDim.width = BUTTON_WIDTH;
     progressDim.height = Math.max(progressDim.height, installDim.height);
@@ -383,7 +392,17 @@ class DetailPanel extends JPanel {
   }
 
 
-  public void setContribution(Contribution contrib) {
+  public Contribution getContrib() {
+    return contrib;
+  }
+
+
+  private LocalContribution getLocalContrib() {
+    return (LocalContribution) contrib;
+  }
+
+
+  public void setContrib(Contribution contrib) {
 //    System.out.println("DetailPanel.setContribution " + contrib.name);
     new Exception("DetailPanel.setContribution " + contrib.name).printStackTrace(System.out);
     this.contrib = contrib;
@@ -525,18 +544,13 @@ class DetailPanel extends JPanel {
   }
 
 
-  /*
-  static final HyperlinkListener NULL_HYPERLINK_LISTENER = new HyperlinkListener() {
-    public void hyperlinkUpdate(HyperlinkEvent e) { }
-  };
-  */
-
-
   /**
    * Should be called whenever this component is selected (clicked on)
    * or unselected, even if it is already selected.
    */
   void setSelected(boolean selected) {
+    new Exception("DetailPanel.setSelected()").printStackTrace(System.out);
+
     // Only enable hyperlinks if this component is already selected.
     // Why? Because otherwise if the user happened to click on what is
     // now a hyperlink, it will be opened as the mouse is released.
@@ -560,72 +574,6 @@ class DetailPanel extends JPanel {
   boolean isSelected() {
     return listPanel.getSelectedPanel() == this;
   }
-
-
-  /*
-  @Override
-  public void setForeground(Color fg) {
-    super.setForeground(fg);
-
-    if (contrib != null) {
-      boolean installed = contrib.isInstalled();
-      setForegroundStyle(descriptionPane, installed, isSelected());
-    }
-  }
-  */
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  /*
-   * Sets coloring based on whether installed or not;
-   * also makes ugly blue HTML links into the specified color (black).
-   *
-  static void setForegroundStyle(JTextPane textPane,
-                                 boolean installed, boolean selected) {
-    Document doc = textPane.getDocument();
-    if (doc instanceof HTMLDocument) {
-      HTMLDocument html = (HTMLDocument) doc;
-      StyleSheet stylesheet = html.getStyleSheet();
-
-      // slightly grayed when installed
-      String c = (installed && !selected) ? "#555555" : "#000000";
-      stylesheet.addRule("body { color:" + c + "; }");
-      stylesheet.addRule("a { color:" + c + "; text-decoration:underline }");
-    }
-  }
-
-
-  static void setTextStyle(JTextPane textPane, String fontSize) {
-    Document doc = textPane.getDocument();
-    if (doc instanceof HTMLDocument) {
-      HTMLDocument html = (HTMLDocument) doc;
-      StyleSheet stylesheet = html.getStyleSheet();
-      stylesheet.addRule("body { " +
-                         "  margin: 0; padding: 0;" +
-                         "  font-family: " + Toolkit.getSansFontName() + ", Arial, Helvetica, sans-serif;" +
-                         "  font-size: 100%;" + "font-size: " + fontSize + "; " +
-                         "}");
-    }
-  }
-  */
-
-
-  /*
-  static void setSelectionStyle(JTextPane textPane, boolean selected) {
-    Document doc = textPane.getDocument();
-    if (doc instanceof HTMLDocument) {
-      HTMLDocument html = (HTMLDocument) doc;
-      StyleSheet styleSheet = html.getStyleSheet();
-      if (selected) {
-        styleSheet.addRule("a { text-decoration:underline } ");
-      } else {
-        styleSheet.addRule("a { text-decoration:none }");
-      }
-    }
-  }
-  */
 
 
   public void install() {
@@ -743,33 +691,11 @@ class DetailPanel extends JPanel {
   }
 
 
-  private void undo() {
-    clearStatusMessage();
-    if (contrib instanceof LocalContribution) {
-      LocalContribution installed = getLocalContrib();
-      installed.setDeletionFlag(false);
-      contribListing.replaceContribution(contrib, contrib);  // ??
-      //      boolean toBeRestarted = false;
-      for (Contribution contribElement : contribListing.allContributions) {
-        if (contrib.getType().equals(contribElement.getType())) {
-          if (contribElement.isDeletionFlagged() ||
-            contribElement.isUpdateFlagged()) {
-//            toBeRestarted = !toBeRestarted;
-            break;
-          }
-        }
-      }
-      // TODO: remove or uncomment if the button was added
-      //listPanel.contributionTab.restartButton.setVisible(toBeRestarted);
-    }
-  }
-
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   // Can't be called from the constructor because the path isn't set all the
-  // way down. However, it's not Base changes over time. More importantly,
+  // way down. However, Base does not change over time. More importantly,
   // though, is that the functions being called in Base are somewhat suspect
   // since they're contribution-related, and should perhaps live closer.
   private Base getBase() {
