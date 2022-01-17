@@ -62,7 +62,7 @@ class DetailPanel extends JPanel {
    */
   private Contribution contrib;
 
-  private boolean alreadySelected;
+//  private boolean alreadySelected;
   //  private JTextPane descriptionPane;
 //  private JLabel notificationLabel;
 //  private JButton updateButton;
@@ -556,7 +556,7 @@ class DetailPanel extends JPanel {
     // Only enable hyperlinks if this component is already selected.
     // Why? Because otherwise if the user happened to click on what is
     // now a hyperlink, it will be opened as the mouse is released.
-    boolean enableHyperlinks = alreadySelected;
+//    boolean enableHyperlinks = alreadySelected;
 
 //    if (contrib != null) {
 //      updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
@@ -569,7 +569,7 @@ class DetailPanel extends JPanel {
     // Update style of hyperlinks
     //setSelectionStyle(descriptionPane, selected);
 
-    alreadySelected = selected;
+//    alreadySelected = selected;
   }
 
 
