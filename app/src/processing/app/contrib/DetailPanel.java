@@ -250,15 +250,15 @@ class DetailPanel extends JPanel {
 //    installRemoveButton.setOpaque(false);
 //    installRemoveButton.setAlignmentX(CENTER_ALIGNMENT);
 
-    JPanel barPane = new JPanel();
-    barPane.setOpaque(false);
+//    JPanel barPane = new JPanel();
+//    barPane.setOpaque(false);
 
 //    JPanel buttonPane = new JPanel();
 //    buttonPane.setOpaque(false);
 //    buttonPane.add(installRemoveButton);
 
 //    barButtonCardPane.add(buttonPane, BUTTON_CONSTRAINT);
-    barButtonCardPane.add(barPane, PROGRESS_BAR_CONSTRAINT);
+//    barButtonCardPane.add(barPane, PROGRESS_BAR_CONSTRAINT);
     barButtonCardLayout.show(barButtonCardPane, BUTTON_CONSTRAINT);
 
     rightPane.add(barButtonCardPane);
@@ -325,10 +325,10 @@ class DetailPanel extends JPanel {
 //      updateRemovePanel.add(installRemoveButton);
 //      updateBox.add(updateRemovePanel, BorderLayout.EAST);
 
-      JPanel barPane = new JPanel();
-      barPane.setOpaque(false);
-      barPane.setInheritsPopupMenu(true);
-      rightPane.add(barPane);
+//      JPanel barPane = new JPanel();
+//      barPane.setOpaque(false);
+//      barPane.setInheritsPopupMenu(true);
+//      rightPane.add(barPane);
 
       if (updateInProgress) {
         barButtonCardLayout.show(barButtonCardPane, PROGRESS_BAR_CONSTRAINT);
@@ -337,17 +337,17 @@ class DetailPanel extends JPanel {
 //      updateBox.add(updateButton, BorderLayout.EAST);
       barButtonCardPane.removeAll();
 
-      JPanel barPane = new JPanel();
-      barPane.setOpaque(false);
-      barPane.setInheritsPopupMenu(true);
+//      JPanel barPane = new JPanel();
+//      barPane.setOpaque(false);
+//      barPane.setInheritsPopupMenu(true);
 
-      JPanel buttonPane = new JPanel();
-      buttonPane.setOpaque(false);
-      buttonPane.setInheritsPopupMenu(true);
+//      JPanel buttonPane = new JPanel();
+//      buttonPane.setOpaque(false);
+//      buttonPane.setInheritsPopupMenu(true);
 //      buttonPane.add(installRemoveButton);
 
-      barButtonCardPane.add(buttonPane, BUTTON_CONSTRAINT);
-      barButtonCardPane.add(barPane, PROGRESS_BAR_CONSTRAINT);
+//      barButtonCardPane.add(buttonPane, BUTTON_CONSTRAINT);
+//      barButtonCardPane.add(barPane, PROGRESS_BAR_CONSTRAINT);
       if (installInProgress || removeInProgress || updateInProgress) {
         barButtonCardLayout.show(barButtonCardPane, PROGRESS_BAR_CONSTRAINT);
       } else {
