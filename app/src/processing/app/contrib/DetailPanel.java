@@ -67,7 +67,7 @@ class DetailPanel extends JPanel {
   private JTextPane descriptionPane;
   private JLabel notificationLabel;
   private JButton updateButton;
-  private JButton installRemoveButton;
+//  private JButton installRemoveButton;
 
   JProgressBar installProgressBar;
 
@@ -77,9 +77,9 @@ class DetailPanel extends JPanel {
   final private JPanel barButtonCardPane;
   private CardLayout barButtonCardLayout;
 
-  static private final String installText = Language.text("contrib.install");
-  static private final String removeText = Language.text("contrib.remove");
-  static private final String undoText = Language.text("contrib.undo");
+//  static private final String installText = Language.text("contrib.install");
+//  static private final String removeText = Language.text("contrib.remove");
+//  static private final String undoText = Language.text("contrib.undo");
 
   boolean updateInProgress;
   boolean installInProgress;
@@ -229,33 +229,33 @@ class DetailPanel extends JPanel {
       installProgressBar.setAlignmentX(CENTER_ALIGNMENT);
     }
 
-    installRemoveButton = new JButton(" ");
-    installRemoveButton.setInheritsPopupMenu(true);
-    installRemoveButton.addActionListener(e -> {
-      String mode = installRemoveButton.getText();
-      if (mode.equals(installText)) {
-        install();
-      } else if (mode.equals(removeText)) {
-        remove();
-      } else if (mode.equals(undoText)) {
-        unflag();
-      }
-    });
+//    installRemoveButton = new JButton(" ");
+//    installRemoveButton.setInheritsPopupMenu(true);
+//    installRemoveButton.addActionListener(e -> {
+//      String mode = installRemoveButton.getText();
+//      if (mode.equals(installText)) {
+//        install();
+//      } else if (mode.equals(removeText)) {
+//        remove();
+//      } else if (mode.equals(undoText)) {
+//        unflag();
+//      }
+//    });
 
-    Dimension installButtonDimensions = installRemoveButton.getPreferredSize();
-    installButtonDimensions.width = BUTTON_WIDTH;
-    installRemoveButton.setPreferredSize(installButtonDimensions);
-    installRemoveButton.setMaximumSize(installButtonDimensions);
-    installRemoveButton.setMinimumSize(installButtonDimensions);
-    installRemoveButton.setOpaque(false);
-    installRemoveButton.setAlignmentX(CENTER_ALIGNMENT);
+//    Dimension installButtonDimensions = installRemoveButton.getPreferredSize();
+//    installButtonDimensions.width = BUTTON_WIDTH;
+//    installRemoveButton.setPreferredSize(installButtonDimensions);
+//    installRemoveButton.setMaximumSize(installButtonDimensions);
+//    installRemoveButton.setMinimumSize(installButtonDimensions);
+//    installRemoveButton.setOpaque(false);
+//    installRemoveButton.setAlignmentX(CENTER_ALIGNMENT);
 
     JPanel barPane = new JPanel();
     barPane.setOpaque(false);
 
     JPanel buttonPane = new JPanel();
     buttonPane.setOpaque(false);
-    buttonPane.add(installRemoveButton);
+//    buttonPane.add(installRemoveButton);
 
     barButtonCardPane.add(buttonPane, BUTTON_CONSTRAINT);
     barButtonCardPane.add(barPane, PROGRESS_BAR_CONSTRAINT);
@@ -267,31 +267,32 @@ class DetailPanel extends JPanel {
     // of the height of the progress bar and install button
     Dimension dim =
       new Dimension(BUTTON_WIDTH,
-                    installRemoveButton.getPreferredSize().height);
+        new JButton().getPreferredSize().height);
+//                    installRemoveButton.getPreferredSize().height);
     rightPane.setMinimumSize(dim);
     rightPane.setPreferredSize(dim);
   }
 
 
-  /**
-   * Clear the 'marked for deletion' flag. (Formerly 'undo')
-   */
-  private void unflag() {
-    clearStatusMessage();
-    if (contrib instanceof LocalContribution) {
-      LocalContribution installed = getLocalContrib();
-      installed.setDeletionFlag(false);
-      contribListing.replaceContribution(contrib, contrib);
-      for (Contribution contribElement : contribListing.allContributions) {
-        if (contrib.getType().equals(contribElement.getType())) {
-          if (contribElement.isDeletionFlagged() ||
-            contribElement.isUpdateFlagged()) {
-            break;
-          }
-        }
-      }
-    }
-  }
+//  /**
+//   * Clear the 'marked for deletion' flag. (Formerly 'undo')
+//   */
+//  private void unflag() {
+//    clearStatusMessage();
+//    if (contrib instanceof LocalContribution) {
+//      LocalContribution installed = getLocalContrib();
+//      installed.setDeletionFlag(false);
+//      contribListing.replaceContribution(contrib, contrib);
+//      for (Contribution contribElement : contribListing.allContributions) {
+//        if (contrib.getType().equals(contribElement.getType())) {
+//          if (contribElement.isDeletionFlagged() ||
+//            contribElement.isUpdateFlagged()) {
+//            break;
+//          }
+//        }
+//      }
+//    }
+//  }
 
 
   private void reorganizePaneComponents() {
@@ -320,7 +321,7 @@ class DetailPanel extends JPanel {
       updateRemovePanel.setOpaque(false);
       updateRemovePanel.add(updateButton);
       updateRemovePanel.setInheritsPopupMenu(true);
-      updateRemovePanel.add(installRemoveButton);
+//      updateRemovePanel.add(installRemoveButton);
       updateBox.add(updateRemovePanel, BorderLayout.EAST);
 
       JPanel barPane = new JPanel();
@@ -342,7 +343,7 @@ class DetailPanel extends JPanel {
       JPanel buttonPane = new JPanel();
       buttonPane.setOpaque(false);
       buttonPane.setInheritsPopupMenu(true);
-      buttonPane.add(installRemoveButton);
+//      buttonPane.add(installRemoveButton);
 
       barButtonCardPane.add(buttonPane, BUTTON_CONSTRAINT);
       barButtonCardPane.add(barPane, PROGRESS_BAR_CONSTRAINT);
@@ -355,9 +356,9 @@ class DetailPanel extends JPanel {
     }
 
     Dimension progressDim = installProgressBar.getPreferredSize();
-    Dimension installDim = installRemoveButton.getPreferredSize();
+//    Dimension installDim = installRemoveButton.getPreferredSize();
     progressDim.width = BUTTON_WIDTH;
-    progressDim.height = Math.max(progressDim.height, installDim.height);
+//    progressDim.height = Math.max(progressDim.height, installDim.height);
     rightPane.setMinimumSize(progressDim);
     rightPane.setPreferredSize(progressDim);
   }
@@ -447,15 +448,15 @@ class DetailPanel extends JPanel {
     updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
 
     if (contrib.isDeletionFlagged()) {
-      installRemoveButton.setText(undoText);
+//      installRemoveButton.setText(undoText);
 
     } else if (contrib.isInstalled()) {
-      installRemoveButton.setText(removeText);
-      installRemoveButton.setVisible(true);
-      installRemoveButton.setEnabled(!contrib.isUpdateFlagged());
+//      installRemoveButton.setText(removeText);
+//      installRemoveButton.setVisible(true);
+//      installRemoveButton.setEnabled(!contrib.isUpdateFlagged());
       reorganizePaneComponents();
     } else {
-      installRemoveButton.setText(installText);
+//      installRemoveButton.setText(installText);
     }
 
     contextMenu.removeAll();
@@ -483,7 +484,7 @@ class DetailPanel extends JPanel {
 
   private void finishInstall(boolean error) {
     resetInstallProgressBarState();
-    installRemoveButton.setEnabled(!contrib.isUpdateFlagged());
+//    installRemoveButton.setEnabled(!contrib.isUpdateFlagged());
 
     if (error) {
       setErrorMessage(Language.text("contrib.download_error"));
@@ -499,7 +500,7 @@ class DetailPanel extends JPanel {
 
 
   private void installContribution(AvailableContribution ad, String url) {
-    installRemoveButton.setEnabled(false);
+//    installRemoveButton.setEnabled(false);
 
     try {
       URL downloadUrl = new URL(url);
@@ -560,8 +561,8 @@ class DetailPanel extends JPanel {
       updateButton.setVisible((contribListing.hasUpdates(contrib) && !contrib.isUpdateFlagged() && !contrib.isDeletionFlagged()) || updateInProgress);
       updateButton.setEnabled(contribListing.listDownloadSuccessful());
     }
-    installRemoveButton.setVisible(isSelected() || installRemoveButton.getText().equals(Language.text("contrib.remove")) || updateInProgress);
-    installRemoveButton.setEnabled(installRemoveButton.getText().equals(Language.text("contrib.remove")) || contribListing.listDownloadSuccessful());
+//    installRemoveButton.setVisible(isSelected() || installRemoveButton.getText().equals(Language.text("contrib.remove")) || updateInProgress);
+//    installRemoveButton.setEnabled(installRemoveButton.getText().equals(Language.text("contrib.remove")) || contribListing.listDownloadSuccessful());
     reorganizePaneComponents();
 
     // Update style of hyperlinks
@@ -591,7 +592,7 @@ class DetailPanel extends JPanel {
     clearStatusMessage();
     updateInProgress = true;
     if (contrib.getType().requiresRestart()) {
-      installRemoveButton.setEnabled(false);
+//      installRemoveButton.setEnabled(false);
       installProgressBar.setVisible(true);
       installProgressBar.setIndeterminate(true);
 
@@ -599,7 +600,7 @@ class DetailPanel extends JPanel {
       getLocalContrib().removeContribution(getBase(), progress, getStatusPanel());
     } else {
       updateButton.setEnabled(false);
-      installRemoveButton.setEnabled(false);
+//      installRemoveButton.setEnabled(false);
       AvailableContribution ad =
         contribListing.getAvailableContribution(contrib);
       installContribution(ad, ad.link);
@@ -627,7 +628,7 @@ class DetailPanel extends JPanel {
       //listPanel.contributionTab.statusPanel.setMessage("");  // same as clear?
       clearStatusMessage();
       updateInProgress = false;
-      installRemoveButton.setEnabled(true);
+//      installRemoveButton.setEnabled(true);
       if (contrib.isDeletionFlagged()) {
         getLocalContrib().setUpdateFlag(true);
         getLocalContrib().setDeletionFlag(false);
@@ -650,7 +651,7 @@ class DetailPanel extends JPanel {
       removeInProgress = true;
       barButtonCardLayout.show(barButtonCardPane, PROGRESS_BAR_CONSTRAINT);
       updateButton.setEnabled(false);
-      installRemoveButton.setEnabled(false);
+//      installRemoveButton.setEnabled(false);
       installProgressBar.setVisible(true);
       installProgressBar.setIndeterminate(true);
 
@@ -668,7 +669,7 @@ class DetailPanel extends JPanel {
     private void preAction() {
       resetInstallProgressBarState();
       removeInProgress = false;
-      installRemoveButton.setEnabled(true);
+//      installRemoveButton.setEnabled(true);
       reorganizePaneComponents();
       setSelected(true); // Needed for smooth working. Dunno why, though...
     }
