@@ -234,9 +234,9 @@ public class ContributionListing {
       String isText = typed.substring(0, colon);
       String property = typed.substring(colon + 1);
 
-      // Chances are the person is still typing the property, so rather than
-      // make the list flash empty (because nothing contains "is:" or "has:",
-      // just return true.
+      // Chances are the person is still typing the property,
+      // so rather than make the list flash empty (because nothing
+      // contains "is:" or "has:"), just return true.
       if (!isProperty(property)) {
         return true;
       }
@@ -327,9 +327,11 @@ public class ContributionListing {
 
 
   protected void addListener(ChangeListener listener) {
+    /*
     for (Contribution contrib : allContributions) {
       listener.contributionAdded(contrib);
     }
+    */
     listeners.add(listener);
   }
 
