@@ -663,7 +663,9 @@ public class PreferencesFrame {
     Preferences.set("editor.zoom",
                     String.valueOf(zoomSelectionBox.getSelectedItem()));
 
-    Splash.setDisableHiDPI(hidpiDisableBox.isSelected());
+    if (Platform.isWindows()) {
+      Splash.setDisableHiDPI(hidpiDisableBox.isSelected());
+    }
 
     Preferences.setColor("run.present.bgcolor", presentColor.getBackground());
 
@@ -726,7 +728,9 @@ public class PreferencesFrame {
     } else {
       zoomSelectionBox.setSelectedIndex(0);
     }
-    hidpiDisableBox.setSelected(Splash.getDisableHiDPI());
+    if (Platform.isWindows()) {
+      hidpiDisableBox.setSelected(Splash.getDisableHiDPI());
+    }
 
     presentColor.setBackground(Preferences.getColor("run.present.bgcolor"));
     presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));

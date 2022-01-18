@@ -143,6 +143,7 @@ public class Splash extends JFrame {
   }
 
 
+  // should only be called from Windows
   static public void setDisableHiDPI(boolean disabled) {
     try {
       File propsFile = Platform.getContentFile("disable_hidpi");
