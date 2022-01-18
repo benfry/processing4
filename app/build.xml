@@ -1,6 +1,36 @@
 <?xml version="1.0"?>
 <project name="Processing PDE" default="build">
 
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- RSYNTAX -->
+
+  <property name="rsyntax.version" value="3.1.6" />
+
+  <!-- Base URL for the current version. This should probably be changed to
+       a location on download.processing.org so that we know it's available forever. -->
+  <property name="rsyntax.url"
+            value="https://repo1.maven.org/maven2/com/fifesoft/rsyntaxtextarea/${rsyntax.version}" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <available file="lib/rsyntaxtextarea.jar" property="rsyntax.present" />
+
+  <target name="download-rsyntax" unless="rsyntax.present">
+    <get src="${rsyntax.url}/rsyntaxtextarea-${rsyntax.version}.jar"
+         dest="lib/rsyntaxtextarea.jar"
+         usetimestamp="true"
+         ignoreerrors="${rsyntax.present}" />
+    <get src="${rsyntax.url}/rsyntaxtextarea-${rsyntax.version}-sources.jar"
+         dest="lib/rsyntaxtextarea-src.jar"
+         usetimestamp="true"
+         ignoreerrors="true" />
+  </target>
+
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- ANT -->
+
   <!-- Current version of Ant that works with Processing -->
   <!-- (Cannot use ant.version as the name of the property
        because that conflicts with the built-in variable) -->
@@ -49,6 +79,8 @@
   </target>
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
+  <!-- JNA -->
 
   <!-- Current version of JNA that works with Processing -->
   <property name="jna.version" value="5.10.0" />
