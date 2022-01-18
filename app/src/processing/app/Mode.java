@@ -138,9 +138,8 @@ public abstract class Mode {
   @SuppressWarnings("SameParameterValue")
   protected void loadKeywords(File keywordFile,
                               String commentPrefix) throws IOException {
-    BufferedReader reader = PApplet.createReader(keywordFile);
-    String line;
-    while ((line = reader.readLine()) != null) {
+    String[] lines = PApplet.loadStrings(keywordFile);
+    for (String line : lines) {
       if (!line.trim().startsWith(commentPrefix)) {
         // Was difficult to make sure that mode authors were properly doing
         // tab-separated values. By definition, there can't be additional
@@ -173,7 +172,6 @@ public abstract class Mode {
         }
       }
     }
-    reader.close();
   }
 
 
