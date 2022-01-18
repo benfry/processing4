@@ -306,7 +306,8 @@ class StatusPanel extends JPanel {
 
 
   void update(DetailPanel panel) {
-    System.out.println("rebuilding status panel for " + panel.getContrib().name);
+//    System.out.println("rebuilding status panel for " + panel.getContrib().name);
+//    new Exception("rebuilding status panel for " + panel.getContrib().name).printStackTrace(System.out);
     progressPanel.removeAll();
 
     iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
