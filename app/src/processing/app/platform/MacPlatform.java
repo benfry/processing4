@@ -124,6 +124,7 @@ public class MacPlatform extends DefaultPlatform {
   //      home directory seems verboten on more recent macOS versions [fry 191008]
   //      However, anecdotally it seems that just using the name works,
   //      and the localization is handled transparently. [fry 220116]
+  //      https://github.com/processing/processing4/issues/9
   protected String getLibraryFolder() throws FileNotFoundException {
     File folder = new File(System.getProperty("user.home"), "Library");
     if (!folder.exists()) {
@@ -133,7 +134,7 @@ public class MacPlatform extends DefaultPlatform {
   }
 
 
-  // TODO see note on getLibraryFolder()
+  // TODO See above, and https://github.com/processing/processing4/issues/9
   protected String getDocumentsFolder() throws FileNotFoundException {
     File folder = new File(System.getProperty("user.home"), "Documents");
     if (!folder.exists()) {
