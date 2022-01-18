@@ -223,6 +223,7 @@ _   dropping a sketch folder onto the PDE should also be implemented
 _ startup is so incredibly slow
 X   the splash screen comes up fairly quickly, so what gives?
 _   lots of EDT thread stuff, particularly with loading contribs
+_   handleNew() taking 2-3s?
 
 
 windows

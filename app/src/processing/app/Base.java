@@ -145,6 +145,7 @@ public class Base {
 
 
   static private void createAndShowGUI(String[] args) {
+    // these times are fairly negligible relative to Base.<init>
 //    long t1 = System.currentTimeMillis();
 
     File versionFile = Platform.getContentFile("lib/version.txt");
@@ -199,10 +200,11 @@ public class Base {
       }
 
 //      long t3 = System.currentTimeMillis();
-//      long t4 = System.currentTimeMillis();
 
       // Get the sketchbook path, and make sure it's set properly
       locateSketchbookFolder();
+
+//      long t4 = System.currentTimeMillis();
 
       // Load colors for UI elements. This must happen after Preferences.init()
       // (so that fonts are set) and locateSketchbookFolder() so that a
@@ -220,7 +222,7 @@ public class Base {
       }
 
 //      long t5 = System.currentTimeMillis();
-//      long t6 = 0;
+//      long t6 = 0;  // replaced below, just needs decl outside try { }
 
       Messages.log("About to create Base..."); //$NON-NLS-1$
       try {
@@ -348,9 +350,11 @@ public class Base {
 
 
   public Base(String[] args) throws Exception {
-//    long t1 = System.currentTimeMillis();
+    long t1 = System.currentTimeMillis();
     // TODO Taking 3-5 seconds with several things installed, which is unacceptable.
     //      Will take longer to optimize because most needs to run on the EDT.
+    //      (Which itself is totally unacceptable: there is no good reason
+    //      that we need to run on the EDT before we open the window.)
     ContributionManager.init(this);
 //      } catch (Exception e) {
 //        Messages.showWarning("Contribution Manager Error",
@@ -358,19 +362,19 @@ public class Base {
 //      }
 //    });
 
-//    long t2 = System.currentTimeMillis();
+    long t2 = System.currentTimeMillis();
     buildCoreModes();
     rebuildContribModes();
     rebuildContribExamples();
 
-//    long t3 = System.currentTimeMillis();
+    long t3 = System.currentTimeMillis();
     // Needs to happen after the sketchbook folder has been located.
     // Also relies on the modes to be loaded so it knows what can be
     // marked as an example.
 //    recent = new Recent(this);
     Recent.init(this);
 
-//    long t4 = System.currentTimeMillis();
+    long t4 = System.currentTimeMillis();
     String lastModeIdentifier = Preferences.get("mode.last"); //$NON-NLS-1$
     if (lastModeIdentifier == null) {
       nextMode = getDefaultMode();
@@ -390,7 +394,7 @@ public class Base {
 
     //contributionManagerFrame = new ContributionManagerDialog();
 
-//    long t5 = System.currentTimeMillis();
+    long t5 = System.currentTimeMillis();
 
     // Make sure ThinkDifferent has library examples too
     nextMode.rebuildLibraryList();
@@ -399,7 +403,7 @@ public class Base {
     // menu works on Mac OS X (since it needs examplesFolder to be set).
     Platform.initBase(this);
 
-//    long t6 = System.currentTimeMillis();
+    long t6 = System.currentTimeMillis();
 
 //    // Check if there were previously opened sketches to be restored
 //    boolean opened = restoreSketches();
@@ -428,7 +432,7 @@ public class Base {
       }
     }
 
-//    long t7 = System.currentTimeMillis();
+    long t7 = System.currentTimeMillis();
 
     // Create a new empty window (will be replaced with any files to be opened)
     if (!opened) {
@@ -438,16 +442,16 @@ public class Base {
       Messages.log("No handleNew(), something passed on the command line");
     }
 
-//    long t8 = System.currentTimeMillis();
+    long t8 = System.currentTimeMillis();
 
     // check for updates
     new UpdateCheck(this);
 
     ContributionListing cl = ContributionListing.getInstance();
     cl.downloadAvailableList(this, new ContribProgressMonitor() { });
-//    long t9 = System.currentTimeMillis();
+    long t9 = System.currentTimeMillis();
 //    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
-//      " " + (t5-t4) + " 6-5=" + (t6-t5) + " " + (t7-t6) + " " + (t8-t7) + " " + (t9-t8) + " ms");
+//      " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) + " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");
   }
 
 
