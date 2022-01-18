@@ -26,7 +26,6 @@ import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import processing.app.*;
@@ -37,7 +36,7 @@ import processing.app.ui.Toolkit;
  * Vestigial class that was formerly a detail panel, but since 3.x
  * has only been used to track install/remove state information.
  */
-class DetailPanel extends JPanel {
+class DetailPanel {
   private final ListPanel listPanel;
   private final ContributionListing contribListing = ContributionListing.getInstance();
 

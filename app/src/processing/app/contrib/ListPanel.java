@@ -24,15 +24,12 @@ package processing.app.contrib;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
-import java.util.Map.Entry;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
-import javax.swing.border.Border;
 import javax.swing.table.*;
 
 import processing.app.Base;
-import processing.app.Platform;
 import processing.app.Util;
 import processing.app.ui.Toolkit;
 
@@ -561,17 +558,17 @@ implements Scrollable, ContributionListing.ChangeListener {
 
   // Thread: EDT
   public void contributionAdded(final Contribution contribution) {
+
     if (!panelByContribution.containsKey(contribution)) {
-//      long t1 = System.currentTimeMillis();
+      new Exception().printStackTrace(System.out);
+      long t1 = System.currentTimeMillis();
       DetailPanel newPanel = new DetailPanel(this);
       panelByContribution.put(contribution, newPanel);
       newPanel.setContrib(contribution);
-      add(newPanel);
+//      add(newPanel);
       model.fireTableDataChanged();
-//      long t2 = System.currentTimeMillis();
-      updateColors();  // XXX this is the place
-//      long t3 = System.currentTimeMillis();
-//      System.out.println("ListPanel.contributionAdded() " + (t2-t1) + " " + (t3-t2) + " " + contribution.getTypeName() + " " + contribution.getName());
+      long t2 = System.currentTimeMillis();
+      System.out.println("ListPanel.contributionAdded() " + (t2-t1) + " " + contribution.getTypeName() + " " + contribution.getName());
     }
   }
 
@@ -580,11 +577,9 @@ implements Scrollable, ContributionListing.ChangeListener {
   public void contributionRemoved(final Contribution contribution) {
     DetailPanel panel = panelByContribution.get(contribution);
     if (panel != null) {
-      remove(panel);
       panelByContribution.remove(contribution);
     }
     model.fireTableDataChanged();
-    updateColors();
     updateUI();
   }
 
@@ -628,7 +623,7 @@ implements Scrollable, ContributionListing.ChangeListener {
 //      }
 //      contributionPanel.setSelected(true);
 
-      updateColors();
+//      updateColors();
       requestFocusInWindow();
     }
   }
@@ -636,48 +631,6 @@ implements Scrollable, ContributionListing.ChangeListener {
 
   protected DetailPanel getSelectedPanel() {
     return selectedPanel;
-  }
-
-
-  // Thread: EDT
-  /**
-   * Updates the colors of all library panels that are visible.
-   */
-  protected void updateColors() {
-    int count = 0;
-    for (Entry<Contribution, DetailPanel> entry : panelByContribution.entrySet()) {
-      DetailPanel panel = entry.getValue();
-      Border border = BorderFactory.createEmptyBorder(1, 1, 1, 1);
-
-      if (panel.isVisible()) {
-        boolean oddRow = count % 2 == 1;
-        Color bgColor = null;
-        Color fgColor = UIManager.getColor("List.foreground");
-
-        //if (panel.isSelected()) {
-        //if (getSelectedPanel() == panel) {
-        if (selectedPanel == panel) {
-          bgColor = UIManager.getColor("List.selectionBackground");
-          fgColor = UIManager.getColor("List.selectionForeground");
-          border = UIManager.getBorder("List.focusCellHighlightBorder");
-        } else if (Platform.isMacOS()) {
-          border = oddRow
-                  ? UIManager.getBorder("List.oddRowBackgroundPainter")
-                  : UIManager.getBorder("List.evenRowBackgroundPainter");
-        } else {
-          bgColor = oddRow ?
-            new Color(219, 224, 229) :
-            new Color(241, 241, 241);
-        }
-
-        panel.setForeground(fgColor);
-        if (bgColor != null) {
-          panel.setBackground(bgColor);
-        }
-        count++;
-      }
-      panel.setBorder(border);
-    }
   }
 
 
@@ -722,9 +675,11 @@ implements Scrollable, ContributionListing.ChangeListener {
     int bottomOfScrollArea = visibleRect.y + visibleRect.height;
 
     for (Component c : getComponents()) {
-      if (!(c.isVisible() && c instanceof DetailPanel)) {
-        continue;
-      }
+      // "if not a visible DetailPanel"
+      // (will never be true, b/c DetailPanel never visible)
+//      if (!(c.isVisible() && c instanceof DetailPanel)) {
+//        continue;
+//      }
       Dimension d = c.getPreferredSize();
 
       int nextHeight = height + d.height;
@@ -745,7 +700,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       lastHeight = height;
       height = nextHeight;
     }
-
     return 0;
   }
 

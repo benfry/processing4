@@ -176,7 +176,6 @@ public class ContributionTab extends JPanel {
         category = null;
       }
       filterLibraries(category, filterField.filters);
-      contributionListPanel.updateColors();
     });
 
     filterField = new FilterField();
@@ -390,8 +389,6 @@ public class ContributionTab extends JPanel {
       filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
       filters = Arrays.asList(filter.split(" "));
       filterLibraries(category, filters);
-
-      contributionListPanel.updateColors();
     }
   }
 

@@ -326,6 +326,9 @@ public class ContributionListing {
   }
 
 
+  /**
+   * Each ContributionTab will add themselves as a ChangeListener
+   */
   protected void addListener(ChangeListener listener) {
     /*
     for (Contribution contrib : allContributions) {

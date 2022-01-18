@@ -241,8 +241,7 @@ abstract public class Contribution {
 
 
   /**
-   * Returns true if the contribution is a starred/recommended contribution,
-   * or is by the Processing Foundation.
+   * Returns true if the contrib is from the Processing Foundation.
    */
   boolean isSpecial() {
     if (authors != null &&
