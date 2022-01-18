@@ -24,6 +24,7 @@ contribs
 X select entire line when doing Edit > Copy on an empty selection
 X   https://github.com/processing/processing4/pull/100
 
+
 manager
 X contrib list entry in the table sometimes contains markdown
 X   at least hide the syntax parts (and show the text)
@@ -47,6 +48,13 @@ _   is checking for previous, but apparently that's not working
 _ updates count is off... maybe when compatible != available count?
 
 
+before beta 4 release
+_ javafx library linked in contribs manager
+_   test to make sure still working
+_   warnings about installation
+_ MovieMaker out as well?
+
+
 known issues
 _ Resolve scaling issues with Windows
 _   Editor cursor position offset to the right with fractional Windows scaling
@@ -63,6 +71,7 @@ _ docs are 3.x not 4.x
 
 
 design/next
+X selector for theme that uses tiny images
 _ update theme
 _ icon for exported app
 _ icon for document
@@ -73,9 +82,18 @@ _   how much of theme to inherit
 _   generate manager icons
 _ decision about 'debug' versions of toolbar icons
 _ put themes in folders by name
-_ selector for theme that uses tiny images
 _ add notes about params to the wiki
 _   new scrollbars
+
+
+movie maker
+_ break this out to its own library
+_   another big leap in file size reduction for the PDE download
+_   but need to figure out a good way to highlight it/encourage installation
+_   ...as well as the other libraries? separate window?
+_ remove jai_imageio.jar from MovieMaker
+_   also clean out the other unused class files and src
+
 
 _ Add support for localizing contributions
 _   https://github.com/processing/processing4/pull/237 (updated by Andres)
@@ -93,6 +111,9 @@ _   https://github.com/processing/processing4/issues/212
 _   modules and classpath ugh https://stackoverflow.com/a/46289257
 
 
+_ pdez links for contribs, not just the .zip
+_   fix the code so that the contribs manager will handle it
+_   though that's bad for earlier contribs, hrm
 _ document pdez and pdex files so that folks can use them
 _ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
@@ -184,8 +205,6 @@ _   https://github.com/processing/processing/issues/6129
 _ editor breakpoints out of the .pde files
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
-_ remove jai_imageio.jar from MovieMaker
-_   also clean out the other unused class files and src
 
 
 platforms

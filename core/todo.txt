@@ -30,6 +30,10 @@ _   though would require just a single PShader class in .opengl package
 _   way too messy, just need to stick with our base platforms
 _   also move the libs to their own folders? (instead of unpacking from jar)
 
+_ Better solution for frame/surface methods
+_   should it be requestSize() because the change is not immediate?
+_   do we need a windowResized() event?
+_   https://github.com/processing/processing4/issues/53
 _ setting surface size needs to happen outside draw()
 _   surface.setSize() sadness etc
 _   https://github.com/processing/processing4/issues/162
@@ -82,8 +86,6 @@ _ Intel HD Graphics 3000 workaround is causing a big fat warning
 _   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
 _   https://github.com/processing/processing4/issues/52
-_ Better solution for frame/surface methods
-_   https://github.com/processing/processing4/issues/53
 _ Remove frame from PApplet
 _   https://github.com/processing/processing4/issues/54
 _ Remove all usage of AWT from PApplet
