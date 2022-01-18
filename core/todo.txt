@@ -25,6 +25,10 @@ _   setting up deps for it with projects that don't use it is a headache
 _ put opengl libs for core into platform-specific subfolders?
 _   may also be useful for Windows antivirus slowdowns
 _   https://github.com/processing/processing/issues/4783#issuecomment-269328168
+_ would really be nice to pull out the OpenGL stuff
+_   though would require just a single PShader class in .opengl package
+_   way too messy, just need to stick with our base platforms
+_   also move the libs to their own folders? (instead of unpacking from jar)
 
 _ setting surface size needs to happen outside draw()
 _   surface.setSize() sadness etc

@@ -17,6 +17,8 @@ X bump ant from 1.10.10 to 1.10.12
 X bump JNA from 5.8.0 to 5.10.0
 X remove "Illegal reflective access" warning on Linux
 X   https://github.com/processing/processing4/issues/207
+X "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
+
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
@@ -88,6 +90,8 @@ _ refresh option for sketchbook (bottom of window)
 
 _ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
+_   modules and classpath ugh https://stackoverflow.com/a/46289257
+
 
 _ document pdez and pdex files so that folks can use them
 _ load examples from pdez files
