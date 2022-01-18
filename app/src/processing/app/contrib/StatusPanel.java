@@ -99,10 +99,10 @@ class StatusPanel extends JPanel {
     installButton.setHorizontalAlignment(SwingConstants.LEFT);
     installButton.addActionListener(e -> {
       installButton.setEnabled(false);
-      DetailPanel currentPanel =
-        contributionTab.contributionListPanel.getSelectedPanel();
-      currentPanel.install();
-      StatusPanel.this.update(currentPanel);
+      StatusPanelDetail currentDetail =
+        contributionTab.contributionListPanel.getSelectedDetail();
+      currentDetail.install();
+      updateDetail(currentDetail);
     });
     progressPanel = new JPanel();
     progressPanel.setLayout(new BorderLayout());
@@ -117,10 +117,10 @@ class StatusPanel extends JPanel {
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.addActionListener(e -> {
       updateButton.setEnabled(false);
-      DetailPanel currentPanel =
-        contributionTab.contributionListPanel.getSelectedPanel();
-      currentPanel.update();
-      StatusPanel.this.update(currentPanel);
+      StatusPanelDetail currentDetail =
+        contributionTab.contributionListPanel.getSelectedDetail();
+      currentDetail.update();
+      updateDetail(currentDetail);
     });
 
     removeButton = Toolkit.createIconButton("Remove", removeIcon);
@@ -128,10 +128,10 @@ class StatusPanel extends JPanel {
     removeButton.setHorizontalAlignment(SwingConstants.LEFT);
     removeButton.addActionListener(e -> {
       removeButton.setEnabled(false);
-      DetailPanel currentPanel =
-        contributionTab.contributionListPanel.getSelectedPanel();
+      StatusPanelDetail currentPanel =
+        contributionTab.contributionListPanel.getSelectedDetail();
       currentPanel.remove();
-      StatusPanel.this.update(currentPanel);
+      updateDetail(currentPanel);
     });
 
     int labelWidth = (width != 0) ?
@@ -305,7 +305,7 @@ class StatusPanel extends JPanel {
   }
 
 
-  void update(DetailPanel panel) {
+  void updateDetail(StatusPanelDetail panel) {
 //    System.out.println("rebuilding status panel for " + panel.getContrib().name);
 //    new Exception("rebuilding status panel for " + panel.getContrib().name).printStackTrace(System.out);
     progressPanel.removeAll();

@@ -393,16 +393,16 @@ public class ContributionTab extends JPanel {
   }
 
 
-  public void updateStatusPanel(DetailPanel contributionPanel) {
-    statusPanel.update(contributionPanel);
+  public void updateStatusDetail(StatusPanelDetail detail) {
+    statusPanel.updateDetail(detail);
   }
 
 
   protected void updateAll() {
-    Collection<DetailPanel> collection =
-      contributionListPanel.panelByContribution.values();
-    for (DetailPanel detailPanel : collection) {
-      detailPanel.update();
+    Collection<StatusPanelDetail> collection =
+      contributionListPanel.detailForContrib.values();
+    for (StatusPanelDetail detail : collection) {
+      detail.update();
     }
     contributionListPanel.model.fireTableDataChanged();
   }

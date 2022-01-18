@@ -36,7 +36,7 @@ import processing.app.ui.Toolkit;
  * Vestigial class that was formerly a detail panel, but since 3.x
  * has only been used to track install/remove state information.
  */
-class DetailPanel {
+class StatusPanelDetail {
   private final ListPanel listPanel;
   private final ContributionListing contribListing = ContributionListing.getInstance();
 
@@ -51,7 +51,7 @@ class DetailPanel {
   boolean removeInProgress;
 
 
-  DetailPanel(ListPanel contributionListPanel) {
+  StatusPanelDetail(ListPanel contributionListPanel) {
 //    System.out.println("DetailPanel.<init>");
 //    new Exception().printStackTrace(System.out);
     listPanel = contributionListPanel;

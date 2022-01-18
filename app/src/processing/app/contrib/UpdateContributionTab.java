@@ -68,8 +68,9 @@ public class UpdateContributionTab extends ContributionTab {
     setBackground(Color.WHITE);
   }
 
+
   @Override
-  public void updateStatusPanel(DetailPanel contributionPanel) {
+  public void updateStatusDetail(StatusPanelDetail detail) {
     // Do nothing
   }
 }

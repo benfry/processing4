@@ -42,11 +42,11 @@ import processing.app.ui.Toolkit;
 public class ListPanel extends JPanel
 implements Scrollable, ContributionListing.ChangeListener {
   ContributionTab contributionTab;
-  TreeMap<Contribution, DetailPanel> panelByContribution = new TreeMap<>(ContributionListing.COMPARATOR);
+  TreeMap<Contribution, StatusPanelDetail> detailForContrib = new TreeMap<>(ContributionListing.COMPARATOR);
 
   Contribution.Filter filter;
 
-  private DetailPanel selectedPanel;
+  private StatusPanelDetail selectedDetail;
   protected ContributionRowFilter rowFilter;
   protected JTable table;
   protected TableRowSorter<ContributionTableModel> sorter;
@@ -147,7 +147,7 @@ implements Scrollable, ContributionListing.ChangeListener {
       int row = table.getSelectedRow();
       if (row != -1) {
         Contribution contrib = (Contribution) table.getValueAt(row, 0);
-        setSelectedPanel(panelByContribution.get(contrib));
+        setSelectedDetail(detailForContrib.get(contrib));
         // Preventing the focus to move out of filterField after typing every character
         if (!contributionTab.filterHasFocus()) {
           table.requestFocusInWindow();
@@ -335,11 +335,11 @@ implements Scrollable, ContributionListing.ChangeListener {
     private void configureStatusColumnLabel(JLabel label, Contribution contribution) {
       Icon icon = null;
       label.setFont(ManagerFrame.NORMAL_PLAIN);
-      DetailPanel panel = panelByContribution.get(contribution);
-      if (panel == null) {
-        System.out.println("no panel for " + contribution.name + " inside " + contributionTab.contribType);
-      }
-      if (panel.updateInProgress || panel.installInProgress) {
+      StatusPanelDetail detail = detailForContrib.get(contribution);
+//      if (detail == null) {
+//        System.out.println("no panel for " + contribution.name + " inside " + contributionTab.contribType);
+//      }
+      if (detail.updateInProgress || detail.installInProgress) {
         // Display "loading" icon if download/install in progress
         icon = downloadingIcon;
       } else if (contribution.isInstalled()) {
@@ -347,7 +347,7 @@ implements Scrollable, ContributionListing.ChangeListener {
           icon = incompatibleIcon;
         } else if (ContributionListing.getInstance().hasUpdates(contribution)) {
           icon = updateAvailableIcon;
-        } else if (panel.installInProgress || panel.updateInProgress) {
+        } else if (detail.installInProgress || detail.updateInProgress) {
           icon = downloadingIcon;
         } else {
           icon = upToDateIcon;
@@ -566,11 +566,11 @@ implements Scrollable, ContributionListing.ChangeListener {
   // Thread: EDT
   public void contributionAdded(final Contribution contribution) {
     if (true || filter.matches(contribution)) {
-      if (!panelByContribution.containsKey(contribution)) {
+      if (!detailForContrib.containsKey(contribution)) {
 //      new Exception().printStackTrace(System.out);
 //        long t1 = System.currentTimeMillis();
-        DetailPanel newPanel = new DetailPanel(this);
-        panelByContribution.put(contribution, newPanel);
+        StatusPanelDetail newPanel = new StatusPanelDetail(this);
+        detailForContrib.put(contribution, newPanel);
         newPanel.setContrib(contribution);
 //      add(newPanel);
         model.fireTableDataChanged();
@@ -586,9 +586,9 @@ implements Scrollable, ContributionListing.ChangeListener {
   // Thread: EDT
   public void contributionRemoved(final Contribution contribution) {
     if (true || filter.matches(contribution)) {
-      DetailPanel panel = panelByContribution.get(contribution);
+      StatusPanelDetail panel = detailForContrib.get(contribution);
       if (panel != null) {
-        panelByContribution.remove(contribution);
+        detailForContrib.remove(contribution);
       }
       model.fireTableDataChanged();
       updateUI();
@@ -600,13 +600,13 @@ implements Scrollable, ContributionListing.ChangeListener {
   public void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
     if (true || filter.matches(oldContrib)) {
-      DetailPanel panel = panelByContribution.get(oldContrib);
+      StatusPanelDetail panel = detailForContrib.get(oldContrib);
       if (panel == null) {
         contributionAdded(newContrib);
       } else {
-        panelByContribution.remove(oldContrib);
+        detailForContrib.remove(oldContrib);
         panel.setContrib(newContrib);
-        panelByContribution.put(newContrib, panel);
+        detailForContrib.put(newContrib, panel);
         model.fireTableDataChanged();
       }
     }
@@ -622,15 +622,15 @@ implements Scrollable, ContributionListing.ChangeListener {
 
 
   // Thread: EDT
-  protected void setSelectedPanel(DetailPanel contributionPanel) {
-    contributionTab.updateStatusPanel(contributionPanel);
+  protected void setSelectedDetail(StatusPanelDetail contribDetail) {
+    contributionTab.updateStatusDetail(contribDetail);
 
-    if (selectedPanel == contributionPanel) {
+    if (selectedDetail == contribDetail) {
 //      selectedPanel.setSelected(true);
 
     } else {
 //      DetailPanel lastSelected = selectedPanel;
-      selectedPanel = contributionPanel;
+      selectedDetail = contribDetail;
 
 //      if (lastSelected != null) {
 //        lastSelected.setSelected(false);
@@ -643,8 +643,8 @@ implements Scrollable, ContributionListing.ChangeListener {
   }
 
 
-  protected DetailPanel getSelectedPanel() {
-    return selectedPanel;
+  protected StatusPanelDetail getSelectedDetail() {
+    return selectedDetail;
   }
 
 
@@ -689,11 +689,6 @@ implements Scrollable, ContributionListing.ChangeListener {
     int bottomOfScrollArea = visibleRect.y + visibleRect.height;
 
     for (Component c : getComponents()) {
-      // "if not a visible DetailPanel"
-      // (will never be true, b/c DetailPanel never visible)
-//      if (!(c.isVisible() && c instanceof DetailPanel)) {
-//        continue;
-//      }
       Dimension d = c.getPreferredSize();
 
       int nextHeight = height + d.height;

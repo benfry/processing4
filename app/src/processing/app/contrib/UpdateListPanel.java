@@ -1,7 +1,6 @@
 package processing.app.contrib;
 
 public class UpdateListPanel extends ListPanel {
-
   Contribution.Filter contribFilter;
 
   public UpdateListPanel(ContributionTab contributionTab,
@@ -17,6 +16,7 @@ public class UpdateListPanel extends ListPanel {
     table.getTableHeader().setEnabled(false);
   }
 
+
   // Thread: EDT
   @Override
   public void contributionAdded(final Contribution contribution) {
@@ -27,6 +27,7 @@ public class UpdateListPanel extends ListPanel {
     }
   }
 
+
   // Thread: EDT
   @Override
   public void contributionRemoved(final Contribution contribution) {
@@ -34,17 +35,17 @@ public class UpdateListPanel extends ListPanel {
     ((UpdateStatusPanel) contributionTab.statusPanel).update(); // Disables update button on last contribution
   }
 
+
   // Thread: EDT
   @Override
   public void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
-    DetailPanel panel = panelByContribution.get(oldContrib);
-    if (panel == null) {
+    StatusPanelDetail detail = detailForContrib.get(oldContrib);
+    if (detail == null) {
       contributionAdded(newContrib);
     } else if (newContrib.isInstalled()) {
-      panelByContribution.remove(oldContrib);
+      detailForContrib.remove(oldContrib);
     }
     model.fireTableDataChanged();
   }
-
 }
