@@ -4,6 +4,8 @@ X   https://github.com/processing/processing4/issues/347
 X Move JavaFX to its own library
 X   https://github.com/processing/processing4/issues/348
 X JavaFX no longer supported for Tools, Modes as a result
+o turn off javafx web if not using
+X   moved out with SVG library
 X set minimum Java version for Windows launcher to 17.0.1
 X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
 X   https://github.com/processing/processing4/issues/129
@@ -28,13 +30,15 @@ X   cursor even changes to link, but the links don't have colors,
 X   and no links open when clicked
 X   now changing color for link and actually opening the links
 X set the font on the contrib install progress bar
+X DetailPanel seems totally vestigial?
 _ after opening Editor window, Processing freezes until contribs are loaded
 _ when opening manager, animation runs briefly then freezes
 _ DetailPanel setContribution() being called 4x for each contrib on startup
 _ during install of contrib, progress is halting during the install
 _   probably too much happening on the EDT that should not be
 _ optimize ContributionTab addListener() call in constructor
-_ DetailPanel seems totally vestigial?
+X   no longer calling addListener() on every single entry, whcih helps
+_   but what else might that change be breaking?
 _ StatusPanel seems to be recreated entirely
 _ StatusPanel being reset twice on each click
 _   is checking for previous, but apparently that's not working
@@ -158,8 +162,7 @@ _   https://github.com/processing/processing4/issues/304
 
 
 before 4.x final
-_ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
-_ turn off javafx web if not using
+_ clean up dist: 'bin' and 'src' from Java Mode are included, iml files, etc
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
@@ -167,14 +170,6 @@ _   just skip the welcome screen on Windows hidpi dipslays?
 _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _ change help menu links to go to newer FAQ and the rest
-_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
-_   or macos-intel64, macos-applesi, linux-intel64, ...
-_   what should macos-aarch64 be called?
-_   macosx vs macosx64 in JavaFX
-_     the latter is making the export fail because it won't embed a Java VM
-_     may be because it's exporting twice and overwriting?
-_     or 64 takes precedence?
-_   Export Application can use nicer names, the libs thing is trickier
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
@@ -189,6 +184,20 @@ _ remove jai_imageio.jar from MovieMaker
 _   also clean out the other unused class files and src
 
 
+platforms
+_ final supported platforms
+_   as far as adoptium is concerned:
+_   macos-x64, macos-aarch64 (m1), windows-x64, linux-x64, linux-arm32 (rpi)
+_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_   or macos-intel64, macos-applesi, linux-intel64, ...
+_   what should macos-aarch64 be called?
+_   macosx vs macosx64 in JavaFX
+_     the latter is making the export fail because it won't embed a Java VM
+_     may be because it's exporting twice and overwriting?
+_     or 64 takes precedence?
+_   Export Application can use nicer names, the libs thing is trickier
+
+
 decisions before final 4.0 release
 _ can we compress jdk/Contents/Home/legal into a single zip?
 _ Friendly Names for new Sketches (includes UI for switching it back)
@@ -200,7 +209,8 @@ _   update license info to state gplv2 not v3
 _   run through that online license checker
 _ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
-_   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
+_   xattr -cr /path/to/application.app
+_   -c removes attributes, -r is recursive
 _   https://github.com/processing/processing/issues/4214
 _ make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
