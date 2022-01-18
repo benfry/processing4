@@ -560,7 +560,7 @@ implements Scrollable, ContributionListing.ChangeListener {
   public void contributionAdded(final Contribution contribution) {
 
     if (!panelByContribution.containsKey(contribution)) {
-      new Exception().printStackTrace(System.out);
+//      new Exception().printStackTrace(System.out);
       long t1 = System.currentTimeMillis();
       DetailPanel newPanel = new DetailPanel(this);
       panelByContribution.put(contribution, newPanel);
@@ -568,7 +568,7 @@ implements Scrollable, ContributionListing.ChangeListener {
 //      add(newPanel);
       model.fireTableDataChanged();
       long t2 = System.currentTimeMillis();
-      System.out.println("ListPanel.contributionAdded() " + (t2-t1) + " " + contribution.getTypeName() + " " + contribution.getName());
+//      System.out.println("ListPanel.contributionAdded() " + (t2-t1) + " " + contribution.getTypeName() + " " + contribution.getName());
     }
   }
 

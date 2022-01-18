@@ -52,7 +52,7 @@ class DetailPanel {
 
 
   DetailPanel(ListPanel contributionListPanel) {
-    System.out.println("DetailPanel.<init>");
+//    System.out.println("DetailPanel.<init>");
 //    new Exception().printStackTrace(System.out);
     listPanel = contributionListPanel;
   }
