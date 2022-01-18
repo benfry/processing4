@@ -44,8 +44,10 @@ implements Scrollable, ContributionListing.ChangeListener {
   ContributionTab contributionTab;
   TreeMap<Contribution, DetailPanel> panelByContribution = new TreeMap<>(ContributionListing.COMPARATOR);
 
+  Contribution.Filter filter;
+
   private DetailPanel selectedPanel;
-  protected ContributionRowFilter filter;
+  protected ContributionRowFilter rowFilter;
   protected JTable table;
   protected TableRowSorter<ContributionTableModel> sorter;
   ContributionTableModel model;
@@ -75,7 +77,9 @@ implements Scrollable, ContributionListing.ChangeListener {
                    final boolean enableSections,
                    final ContributionColumn... columns) {
     this.contributionTab = contributionTab;
-    this.filter = new ContributionRowFilter(filter);
+    this.filter = filter;
+
+    this.rowFilter = new ContributionRowFilter(filter);
 
     if (upToDateIcon == null) {
       upToDateIcon = Toolkit.getLibIconX("manager/up-to-date");
@@ -153,7 +157,7 @@ implements Scrollable, ContributionListing.ChangeListener {
 
     sorter = new TableRowSorter<>(model);
     table.setRowSorter(sorter);
-    sorter.setRowFilter(this.filter);
+    sorter.setRowFilter(this.rowFilter);
     for (int i = 0; i < model.getColumnCount(); i++) {
       if (model.columns[i] == ContributionColumn.NAME) {
         sorter.setSortKeys(Collections.singletonList(new SortKey(i, SortOrder.ASCENDING)));
@@ -332,6 +336,9 @@ implements Scrollable, ContributionListing.ChangeListener {
       Icon icon = null;
       label.setFont(ManagerFrame.NORMAL_PLAIN);
       DetailPanel panel = panelByContribution.get(contribution);
+      if (panel == null) {
+        System.out.println("no panel for " + contribution.name + " inside " + contributionTab.contribType);
+      }
       if (panel.updateInProgress || panel.installInProgress) {
         // Display "loading" icon if download/install in progress
         icon = downloadingIcon;
@@ -558,51 +565,58 @@ implements Scrollable, ContributionListing.ChangeListener {
 
   // Thread: EDT
   public void contributionAdded(final Contribution contribution) {
-
-    if (!panelByContribution.containsKey(contribution)) {
+    if (true || filter.matches(contribution)) {
+      if (!panelByContribution.containsKey(contribution)) {
 //      new Exception().printStackTrace(System.out);
-      long t1 = System.currentTimeMillis();
-      DetailPanel newPanel = new DetailPanel(this);
-      panelByContribution.put(contribution, newPanel);
-      newPanel.setContrib(contribution);
+//        long t1 = System.currentTimeMillis();
+        DetailPanel newPanel = new DetailPanel(this);
+        panelByContribution.put(contribution, newPanel);
+        newPanel.setContrib(contribution);
 //      add(newPanel);
-      model.fireTableDataChanged();
-      long t2 = System.currentTimeMillis();
-//      System.out.println("ListPanel.contributionAdded() " + (t2-t1) + " " + contribution.getTypeName() + " " + contribution.getName());
+        model.fireTableDataChanged();
+//        long t2 = System.currentTimeMillis();
+//        System.out.println("ListPanel.contributionAdded() " + (t2 - t1) + " " + contribution.getTypeName() + " " + contribution.getName());
+      }
+//    } else {
+//      System.out.println("ignoring contrib " + contribution.getName());
     }
   }
 
 
   // Thread: EDT
   public void contributionRemoved(final Contribution contribution) {
-    DetailPanel panel = panelByContribution.get(contribution);
-    if (panel != null) {
-      panelByContribution.remove(contribution);
+    if (true || filter.matches(contribution)) {
+      DetailPanel panel = panelByContribution.get(contribution);
+      if (panel != null) {
+        panelByContribution.remove(contribution);
+      }
+      model.fireTableDataChanged();
+      updateUI();
     }
-    model.fireTableDataChanged();
-    updateUI();
   }
 
 
   // Thread: EDT
   public void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
-    DetailPanel panel = panelByContribution.get(oldContrib);
-    if (panel == null) {
-      contributionAdded(newContrib);
-    } else {
-      panelByContribution.remove(oldContrib);
-      panel.setContrib(newContrib);
-      panelByContribution.put(newContrib, panel);
-      model.fireTableDataChanged();
+    if (true || filter.matches(oldContrib)) {
+      DetailPanel panel = panelByContribution.get(oldContrib);
+      if (panel == null) {
+        contributionAdded(newContrib);
+      } else {
+        panelByContribution.remove(oldContrib);
+        panel.setContrib(newContrib);
+        panelByContribution.put(newContrib, panel);
+        model.fireTableDataChanged();
+      }
     }
   }
 
 
   // Thread: EDT
   public void filterLibraries(String category, List<String> filters) {
-    filter.setCategoryFilter(category);
-    filter.setStringFilters(filters);
+    rowFilter.setCategoryFilter(category);
+    rowFilter.setStringFilters(filters);
     model.fireTableDataChanged();
   }
 
