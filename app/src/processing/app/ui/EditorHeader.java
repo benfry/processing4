@@ -156,11 +156,12 @@ public class EditorHeader extends JComponent {
   }
 
 
-  public void paintComponent(Graphics screen) {
-    if (screen == null) return;
+  public void paintComponent(Graphics g) {
+    if (g == null) return;
     Sketch sketch = editor.getSketch();
     if (sketch == null) return;  // possible?
 
+    /*
     Dimension size = getSize();
     if ((size.width != sizeW) || (size.height != sizeH)) {
       // component has been resized
@@ -185,15 +186,20 @@ public class EditorHeader extends JComponent {
     }
 
     Graphics g = offscreen.getGraphics();
+    */
+    //System.out.println("is double: " + isDoubleBuffered());
+
     g.setFont(font);  // need to set this each time through
     if (fontAscent == 0) {
       fontAscent = (int) Toolkit.getAscent(g);
     }
 
-    Graphics2D g2 = Toolkit.prepareGraphics(g);
-//    Toolkit.dpiStroke(g2);
+    //Graphics2D g2 = Toolkit.prepareGraphics(g);
+    //g.drawImage(gradient, 0, 0, imageW, imageH, this);
 
-    g.drawImage(gradient, 0, 0, imageW, imageH, this);
+    Graphics2D g2 = (Graphics2D) g;
+    Dimension size = getSize();
+    g.drawImage(gradient, 0, 0, size.width, size.height, this);
 
     if (tabs.length != sketch.getCodeCount()) {
       tabs = new Tab[sketch.getCodeCount()];
@@ -278,7 +284,7 @@ public class EditorHeader extends JComponent {
     trianglePath.closePath();
     g2.fill(trianglePath);
 
-    screen.drawImage(offscreen, 0, 0, imageW, imageH, null);
+    //screen.drawImage(offscreen, 0, 0, imageW, imageH, null);
   }
 
 
