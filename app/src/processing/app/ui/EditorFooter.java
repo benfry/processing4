@@ -79,10 +79,6 @@ public class EditorFooter extends Box {
   Font font;
   int fontAscent;
 
-  Image offscreen;
-  int sizeW, sizeH;
-  int imageW, imageH;
-
   Image gradient;
   Color bgColor;
 
@@ -216,35 +212,11 @@ public class EditorFooter extends Box {
       repaint();
     }
 
-    public void paintComponent(Graphics screen) {
-      if (screen == null) return;
+    public void paintComponent(Graphics g) {
+      if (g == null) return;
       Sketch sketch = editor.getSketch();
       if (sketch == null) return;  // possible?
 
-      Dimension size = getSize();
-      if ((size.width != sizeW) || (size.height != sizeH)) {
-        // component has been resized
-
-        if ((size.width > imageW) || (size.height > imageH)) {
-          // nix the image and recreate, it's too small
-          offscreen = null;
-
-        } else {
-          // if the image is larger than necessary, no need to change
-          sizeW = size.width;
-          sizeH = size.height;
-        }
-      }
-
-      if (offscreen == null) {
-        sizeW = size.width;
-        sizeH = size.height;
-        imageW = sizeW;
-        imageH = sizeH;
-        offscreen = Toolkit.offscreenGraphics(this, imageW, imageH);
-      }
-
-      Graphics g = offscreen.getGraphics();
       g.setFont(font);  // need to set this each time through
       if (fontAscent == 0) {
         fontAscent = (int) Toolkit.getAscent(g);
@@ -254,9 +226,9 @@ public class EditorFooter extends Box {
 
       g.setColor(tabColor[SELECTED]);
       // can't be done with lines, b/c retina leaves tiny hairlines
-      g.fillRect(0, 0, imageW, Toolkit.zoom(2));
+      g.fillRect(0, 0, getWidth(), Toolkit.zoom(2));
 
-      g.drawImage(gradient, 0, Toolkit.zoom(2), imageW, imageH, this);
+      g.drawImage(gradient, 0, Toolkit.zoom(2), getWidth(), getHeight(), this);
 
       // reset all tab positions
       for (Tab tab : tabs) {
@@ -269,8 +241,6 @@ public class EditorFooter extends Box {
 
       // the number of updates available in the Manager
       drawUpdates(g2);
-
-      screen.drawImage(offscreen, 0, 0, imageW, imageH, null);
     }
 
 

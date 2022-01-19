@@ -808,9 +808,8 @@ public class Toolkit {
   }
 
 
-  // TODO remove this one?
   static public Graphics2D prepareGraphics(Graphics g) {
-    return prepareGraphics(g, true);
+    return prepareGraphics(g, false);
   }
 
 

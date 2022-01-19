@@ -23,20 +23,22 @@
 
 package processing.app.ui;
 
-import processing.app.Messages;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.*;
+
+import processing.app.Messages;
 
 
 public class ModeSelector extends JPanel {
   // corner radius for the dropdown
   static final int RADIUS = Toolkit.zoom(3);
-
-  Image offscreen;
-  int width, height;
 
   String title;
   Font titleFont;
@@ -44,11 +46,11 @@ public class ModeSelector extends JPanel {
   int titleAscent;
   int titleWidth;
 
-  final int MODE_GAP_WIDTH = processing.app.ui.Toolkit.zoom(13);
-  final int ARROW_GAP_WIDTH = processing.app.ui.Toolkit.zoom(6);
-  final int ARROW_WIDTH = processing.app.ui.Toolkit.zoom(6);
-  final int ARROW_TOP = processing.app.ui.Toolkit.zoom(12);
-  final int ARROW_BOTTOM = processing.app.ui.Toolkit.zoom(18);
+  final int MODE_GAP_WIDTH = Toolkit.zoom(13);
+  final int ARROW_GAP_WIDTH = Toolkit.zoom(6);
+  final int ARROW_WIDTH = Toolkit.zoom(6);
+  final int ARROW_TOP = Toolkit.zoom(12);
+  final int ARROW_BOTTOM = Toolkit.zoom(18);
 
   int[] triangleX = new int[3];
   int[] triangleY = new int[] { ARROW_TOP, ARROW_TOP, ARROW_BOTTOM };
@@ -82,17 +84,8 @@ public class ModeSelector extends JPanel {
   }
 
   @Override
-  public void paintComponent(Graphics screen) {
-    Dimension size = getSize();
-    width = 0;
-    if (width != size.width || height != size.height) {
-      offscreen = processing.app.ui.Toolkit.offscreenGraphics(this, size.width, size.height);
-      width = size.width;
-      height = size.height;
-    }
-
-    Graphics g = offscreen.getGraphics();
-    Graphics2D g2 = processing.app.ui.Toolkit.prepareGraphics(g);
+  public void paintComponent(Graphics g) {
+    Graphics2D g2 = Toolkit.prepareGraphics(g);
 
     g.setFont(titleFont);
     if (titleAscent == 0) {
@@ -100,6 +93,9 @@ public class ModeSelector extends JPanel {
     }
     FontMetrics metrics = g.getFontMetrics();
     titleWidth = metrics.stringWidth(title);
+
+    final int width = getWidth();
+    final int height = getHeight();
 
     // clear the background
     g.setColor(backgroundColor);
@@ -119,8 +115,6 @@ public class ModeSelector extends JPanel {
     triangleX[1] = x + ARROW_WIDTH;
     triangleX[2] = x + ARROW_WIDTH/2;
     g.fillPolygon(triangleX, triangleY, 3);
-
-    screen.drawImage(offscreen, 0, 0, width, height, this);
   }
 
   @Override
