@@ -4,4 +4,5 @@ ant-launcher.jar
 jna.jar
 jna-platform.jar
 
-VAqua*.jar
+rsyntaxtextarea.jar
+rsyntaxtextarea-src.jar

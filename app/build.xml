@@ -12,6 +12,11 @@
   <property name="rsyntax.url"
             value="https://repo1.maven.org/maven2/com/fifesoft/rsyntaxtextarea/${rsyntax.version}" />
 
+  <fileset id="rsyntax.files" dir="lib">
+    <include name="rsyntaxtextarea.jar" />
+    <include name="rsyntaxtextarea-src.jar" />
+  </fileset>
+
   <!-- ok to ignore failed downloads if we at least have a version that's local -->
   <available file="lib/rsyntaxtextarea.jar" property="rsyntax.present" />
 
@@ -133,7 +138,7 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <target name="compile" description="Compile sources"
-          depends="download-ant, download-jna">
+          depends="download-ant, download-jna, download-rsyntax">
     <condition property="core-built">
       <available file="../core/library/core.jar" />
     </condition>
@@ -166,7 +171,8 @@
                       lib/ant.jar;
                       lib/ant-launcher.jar;
                       lib/jna.jar;
-                      lib/jna-platform.jar"
+                      lib/jna-platform.jar;
+                      lib/rsyntaxtextarea.jar"
            debug="on"
            nowarn="true">
       <compilerarg value="-Xlint:deprecation" />
@@ -178,7 +184,7 @@
     <jar basedir="bin" destfile="pde.jar" />
   </target>
 
-<target name="update" description="Update the downloaded libraries">
+  <target name="update" description="Update the downloaded libraries">
     <delete>
       <fileset refid="jna.files" />
       <fileset refid="ant.files" />
@@ -186,6 +192,7 @@
 
     <antcall target="download-ant" />
     <antcall target="download-jna" />
+    <antcall target="download-rsyntax" />
   </target>
 
   <target name="clean" description="Clean the build directories">
