@@ -37,7 +37,6 @@ import javax.swing.JPanel;
 import processing.app.Problem;
 import processing.app.Sketch;
 import processing.app.SketchCode;
-import processing.app.syntax.PdeTextArea;
 import processing.core.PApplet;
 
 
@@ -93,11 +92,13 @@ public class MarkerColumn extends JPanel {
 
   @Override
   public void paintComponent(Graphics g) {
+    /*
     PdeTextArea pta = editor.getPdeTextArea();
     if (pta != null) {
       g.drawImage(pta.getGutterGradient(),
                   0, 0, getWidth(), getHeight(), this);
     }
+    */
 
     int currentTabIndex = editor.getSketch().getCurrentCodeIndex();
 
@@ -156,7 +157,8 @@ public class MarkerColumn extends JPanel {
       SketchCode code = sketch.getCurrentCode();
       int currentTab = sketch.getCurrentCodeIndex();
       int totalLines = PApplet.max(1, code.getLineCount()); // do not divide by zero
-      int visibleLines = editor.getTextArea().getVisibleLines();
+      //int visibleLines = editor.getTextArea().getVisibleLines();
+      int visibleLines = editor.getVisibleLines();
       totalLines = PApplet.max(totalLines, visibleLines);
 
       int topMargin = 20; // top scroll button

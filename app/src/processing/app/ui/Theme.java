@@ -26,7 +26,6 @@ import processing.app.Base;
 import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Settings;
-import processing.app.syntax.SyntaxStyle;
 import processing.core.PApplet;
 import processing.core.PConstants;
 
@@ -123,6 +122,7 @@ public class Theme {
   }
 
 
+  /*
   static public SyntaxStyle getStyle(String attribute) {
     //String str = Preferences.get("editor.token." + attribute + ".style");
     String str = theme.get("editor.token." + attribute + ".style");
@@ -131,6 +131,7 @@ public class Theme {
     }
     return SyntaxStyle.fromString(str);
   }
+  */
 
 
   static public Image makeGradient(String attribute, int wide, int high) {

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-15 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2010-13 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -26,14 +26,17 @@ package processing.app;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
 import javax.swing.tree.*;
 
+import org.fife.ui.rsyntaxtextarea.TokenMaker;
+import org.fife.ui.rsyntaxtextarea.TokenTypes;
+
 import processing.app.contrib.ContributionManager;
-import processing.app.syntax.*;
 import processing.app.ui.Editor;
 import processing.app.ui.EditorException;
 import processing.app.ui.EditorState;
@@ -49,8 +52,8 @@ public abstract class Mode {
 
   protected File folder;
 
-  protected TokenMarker tokenMarker;
   protected Map<String, String> keywordToReference = new HashMap<>();
+  protected Map<String, Integer> keywordToTokenType = new HashMap<>();
 
   protected Settings theme;
 
@@ -72,8 +75,6 @@ public abstract class Mode {
   protected File librariesFolder;
   protected File referenceFolder;
 
-//  protected File examplesContribFolder;
-
   public List<Library> coreLibraries;
   public List<Library> contribLibraries;
 
@@ -90,15 +91,11 @@ public abstract class Mode {
 //  static final int BACKGROUND_HEIGHT = 65;
 //  protected Image backgroundImage;
 
-//  public Mode(Base base, File folder) {
-//    this(base, folder, base.getSketchbookLibrariesFolder());
-//  }
-
 
   public Mode(Base base, File folder) {
     this.base = base;
     this.folder = folder;
-    tokenMarker = createTokenMarker();
+    //tokenMarker = createTokenMarker();
 
     // Get paths for the libraries and examples in the mode folder
     examplesFolder = new File(folder, "examples");
@@ -138,9 +135,20 @@ public abstract class Mode {
   @SuppressWarnings("SameParameterValue")
   protected void loadKeywords(File keywordFile,
                               String commentPrefix) throws IOException {
-    BufferedReader reader = PApplet.createReader(keywordFile);
-    String line;
-    while ((line = reader.readLine()) != null) {
+    Map<String, Integer> tokenTypeLookup = new HashMap<>();
+    Field[] interfaceFields = TokenTypes.class.getFields();
+    for (Field f : interfaceFields) {
+      if (f.getType() == Integer.class) {
+        try {
+          tokenTypeLookup.put(f.getName(), (Integer) f.get(null));
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }
+
+    String[] lines = PApplet.loadStrings(keywordFile);
+    for (String line : lines) {
       if (!line.trim().startsWith(commentPrefix)) {
         // Was difficult to make sure that mode authors were properly doing
         // tab-separated values. By definition, there can't be additional
@@ -148,10 +156,10 @@ public abstract class Mode {
         String[] pieces = PApplet.splitTokens(line);
         if (pieces.length >= 2) {
           String keyword = pieces[0];
-          String coloring = pieces[1];
+          String kind = pieces[1];
 
-          if (coloring.length() > 0) {
-            tokenMarker.addColoring(keyword, coloring);
+          if (kind.length() > 0) {
+            keywordToTokenType.put(keyword, tokenTypeLookup.get(kind));
           }
           if (pieces.length == 3) {
             String htmlFilename = pieces[2];
@@ -173,7 +181,6 @@ public abstract class Mode {
         }
       }
     }
-    reader.close();
   }
 
 
@@ -770,26 +777,21 @@ public abstract class Mode {
   }
 
 
-  /**
-   * Specialized version of getTokenMarker() that can be overridden to
-   * provide different TokenMarker objects for different file types.
-   * @since 3.2
-   * @param code the code for which we need a TokenMarker
-   */
-  @SuppressWarnings("unused")
-  public TokenMarker getTokenMarker(SketchCode code) {
-    return getTokenMarker();
+  public Map<String, Integer> getTokenLookup() {
+    return keywordToTokenType;
   }
 
 
-  public TokenMarker getTokenMarker() {
-    return tokenMarker;
+  public TokenMaker getTokenMaker(SketchCode code) {
+    //return getTokenMaker();  // default to the default
+    System.err.println("Mode.getTokenMaker() not implemented: returning null");
+    return null;
   }
 
 
-  protected TokenMarker createTokenMarker() {
-    return new PdeTokenMarker();
-  }
+//  protected TokenMaker createTokenMaker() {
+//    return new PdeTokenMaker(keywordToTokenType);
+//  }
 
 
 //  abstract public Formatter createFormatter();
@@ -971,12 +973,12 @@ public abstract class Mode {
 
 
   /**
-   * Returns the appropriate file extension to use for auxilliary source files in a sketch.
-   * For example, in a Java-mode sketch, auxilliary files should be name "Foo.java"; in
-   * Python mode, they should be named "foo.py".
+   * Returns the appropriate file extension to use for auxiliary source files
+   * in a sketch. For example, in a Java-mode sketch, auxiliary files should
+   * be named "Foo.java"; in Python mode, they should be named "foo.py".
    *
-   * <p>Modes that do not override this function will get the default behavior of returning the
-   * default extension.
+   * <p>Modes that do not override this function will get the default behavior
+   * of returning the default extension.
    */
   public String getModuleExtension() {
     return getDefaultExtension();

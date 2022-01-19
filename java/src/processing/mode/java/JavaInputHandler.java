@@ -29,9 +29,9 @@ import java.util.Arrays;
 
 import processing.app.Preferences;
 import processing.app.Sketch;
-import processing.app.syntax.JEditTextArea;
-import processing.app.syntax.PdeInputHandler;
 import processing.app.ui.Editor;
+
+import javax.swing.text.BadLocationException;
 
 
 /**

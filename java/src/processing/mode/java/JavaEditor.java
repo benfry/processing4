@@ -154,7 +154,7 @@ public class JavaEditor extends Editor {
 
 //    long t9 = System.currentTimeMillis();
 
-    Toolkit.setMenuMnemonics(textarea.getRightClickPopup());
+    Toolkit.setMenuMnemonics(textArea.getRightClickPopup());
 
     // ensure completion is hidden when editor loses focus
     addWindowFocusListener(new WindowFocusListener() {
@@ -303,7 +303,7 @@ public class JavaEditor extends Editor {
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.help.find_in_reference"), 'F');
     item.addActionListener(e -> {
-      if (textarea.isSelectionActive()) {
+      if (textArea.isSelectionActive()) {
         handleFindReference();
       } else {
         statusNotice(Language.text("editor.status.find_reference.select_word_first"));
@@ -1517,7 +1517,7 @@ public class JavaEditor extends Editor {
    * @return the text area object
    */
   public JavaTextArea getJavaTextArea() {
-    return (JavaTextArea) textarea;
+    return (JavaTextArea) textArea;
   }
 
 
@@ -2264,18 +2264,18 @@ public class JavaEditor extends Editor {
 
         // repaint the editor header (show the modified tabs)
         header.repaint();
-        textarea.invalidate();
+        textArea.invalidate();
 
       } else {  // no or canceled = don't keep changes
         loadSavedCode();
         // update the painter to draw the saved (old) code
-        textarea.invalidate();
+        textArea.invalidate();
       }
     } else {
       // number values were not modified but we need to load the saved code
       // because of some formatting changes
       loadSavedCode();
-      textarea.invalidate();
+      textArea.invalidate();
     }
   }
 

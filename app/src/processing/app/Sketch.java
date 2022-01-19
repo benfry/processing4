@@ -755,6 +755,17 @@ public class Sketch {
   }
 
 
+  /**
+   * Update the 'modified' value for each tab by comparing
+   * the current text with the version that was saved.
+   */
+  public void updateModified() {
+    for (SketchCode sc : code) {
+      sc.updateModified();
+    }
+  }
+
+
   protected void calcModified() {
     modified = false;
     for (int i = 0; i < codeCount; i++) {

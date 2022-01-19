@@ -24,6 +24,8 @@
 
 package processing.app;
 
+import processing.app.ui.PdeTextArea;
+
 import java.io.*;
 import java.util.Stack;
 
@@ -51,8 +53,10 @@ public class SketchCode {
   /** Last version of the program on disk. */
   private String savedProgram;
 
-  /** Document object for this tab. Currently this is a SyntaxDocument. */
-  private Document document;
+//  /** Document object for this tab. Currently this is a SyntaxDocument. */
+//  private Document document;
+
+  private PdeTextArea textArea;
 
   /** Last time this tab was visited */
   long visited;
@@ -60,12 +64,12 @@ public class SketchCode {
   /** The last time this tab was saved to disk */
   private long lastModified;
 
-  /**
-   * Undo Manager for this tab, each tab keeps track of their own
-   * Editor.undo will be set to this object when this code is the tab
-   * that's currently the front.
-   */
-  private final UndoManager undo = new UndoManager();
+//  /**
+//   * Undo Manager for this tab, each tab keeps track of their own
+//   * Editor.undo will be set to this object when this code is the tab
+//   * that's currently the front.
+//   */
+//  private final UndoManager undo = new UndoManager();
 
   /**
    * Caret positions for this tab.
@@ -182,6 +186,15 @@ public class SketchCode {
   }
 
 
+  public void updateProgram() {
+//    if (getDocument() != null) {
+    if (textArea != null) {
+//        setProgram(getDocumentText());
+      setProgram(textArea.getText());
+    }
+  }
+
+
   /** get the last version saved of this tab */
   public String getSavedProgram() {
     return savedProgram;
@@ -190,6 +203,13 @@ public class SketchCode {
 
   public int getLineCount() {
     return Util.countLines(program);
+  }
+
+
+  public void updateModified() {
+    if (textArea != null) {
+      setModified(!textArea.getText().equals(savedProgram));
+    }
   }
 
 
@@ -229,10 +249,12 @@ public class SketchCode {
 
 
   public Document getDocument() {
-    return document;
+    //return document;
+    return textArea.getDocument();
   }
 
 
+  /*
   public String getDocumentText() throws BadLocationException {
     return document.getText(0, document.getLength());
   }
@@ -246,20 +268,24 @@ public class SketchCode {
   public UndoManager getUndo() {
     return undo;
   }
+  */
 
   public Stack<Integer> getCaretRedoStack() {
     return caretRedoStack;
   }
 
+
   public Stack<Integer> getCaretUndoStack() {
     return caretUndoStack;
   }
 
+
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  // TODO these could probably be handled better, since it's a general state
-  // issue that's read/write from only one location in Editor (on tab switch.)
+  // TODO these could probably be handled better, since it is a
+  //      general state issue that is read/write from only one
+  //      location in Editor (on tab switch.)
 
 
   public int getSelectionStart() {
@@ -268,7 +294,8 @@ public class SketchCode {
 
 
   public int getSelectionStop() {
-    return selectionStop;
+    //return selectionStop;
+    return textArea.getSelectionStop();
   }
 
 
