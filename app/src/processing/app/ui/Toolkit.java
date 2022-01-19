@@ -808,16 +808,22 @@ public class Toolkit {
   }
 
 
+  // TODO remove this one?
+  static public Graphics2D prepareGraphics(Graphics g) {
+    return prepareGraphics(g, true);
+  }
+
+
   /**
    * Handles scaling for high-res displays, also sets text anti-aliasing
    * options to be far less ugly than the defaults.
    * Moved to a utility function because it's used in several classes.
    * @return a Graphics2D object, as a bit o sugar
    */
-  static public Graphics2D prepareGraphics(Graphics g) {
+  static public Graphics2D prepareGraphics(Graphics g, boolean scale) {
     Graphics2D g2 = (Graphics2D) g;
 
-    if (Toolkit.isRetina()) {
+    if (scale && Toolkit.isRetina()) {
       // scale everything 2x, will be scaled down when drawn to the screen
       g2.scale(2, 2);
     }
@@ -841,7 +847,9 @@ public class Toolkit {
       g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                           RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     }
-    zoomStroke(g2);
+    if (scale) {
+      zoomStroke(g2);
+    }
     return g2;
   }
 

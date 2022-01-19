@@ -166,7 +166,7 @@ public class EditorHeader extends JComponent {
       fontAscent = (int) Toolkit.getAscent(g);
     }
 
-    Graphics2D g2 = Toolkit.prepareGraphics(g);
+    Graphics2D g2 = Toolkit.prepareGraphics(g, false);
 
     /*
     Graphics2D g2 = (Graphics2D) g;
