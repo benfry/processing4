@@ -1,7 +1,6 @@
 package processing.app.ui;
 
 import processing.app.Platform;
-import processing.app.Settings;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -13,7 +12,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.util.Map;
 
 
 /**
@@ -143,14 +141,16 @@ public class Splash extends JFrame {
   }
 
 
-  // should only be called from Windows
+  // Should only be called from Windows, but not restricted to Windows
+  // so not enforced. Unlikely to work on macOS because it modifies
+  // a file inside the .app, but may be useful on Linux.
   static public void setDisableHiDPI(boolean disabled) {
     try {
       File propsFile = Platform.getContentFile("disable_hidpi");
       if (propsFile != null) {
         if (disabled) {
           new FileOutputStream(propsFile).close();
-        } else {
+        } else if (propsFile.exists()) {
           boolean success = propsFile.delete();
           if (!success) {
             System.err.println("Could not delete disable_hidpi");
