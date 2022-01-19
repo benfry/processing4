@@ -159,43 +159,12 @@ public class EditorHeader extends JComponent {
   public void paintComponent(Graphics g) {
     if (g == null) return;
     Sketch sketch = editor.getSketch();
-    if (sketch == null) return;  // possible?
-
-    /*
-    Dimension size = getSize();
-    if ((size.width != sizeW) || (size.height != sizeH)) {
-      // component has been resized
-
-      if ((size.width > imageW) || (size.height > imageH)) {
-        // nix the image and recreate, it's too small
-        offscreen = null;
-
-      } else {
-        // if the image is larger than necessary, no need to change
-        sizeW = size.width;
-        sizeH = size.height;
-      }
-    }
-
-    if (offscreen == null) {
-      sizeW = size.width;
-      sizeH = size.height;
-      imageW = sizeW;
-      imageH = sizeH;
-      offscreen = Toolkit.offscreenGraphics(this, imageW, imageH);
-    }
-
-    Graphics g = offscreen.getGraphics();
-    */
-    //System.out.println("is double: " + isDoubleBuffered());
+    if (sketch == null) return;  // is this even possible?
 
     g.setFont(font);  // need to set this each time through
     if (fontAscent == 0) {
       fontAscent = (int) Toolkit.getAscent(g);
     }
-
-    //Graphics2D g2 = Toolkit.prepareGraphics(g);
-    //g.drawImage(gradient, 0, 0, imageW, imageH, this);
 
     Graphics2D g2 = (Graphics2D) g;
     Dimension size = getSize();
@@ -283,8 +252,6 @@ public class EditorHeader extends JComponent {
     trianglePath.lineTo((x1 + x2) / 2, ARROW_BOTTOM);
     trianglePath.closePath();
     g2.fill(trianglePath);
-
-    //screen.drawImage(offscreen, 0, 0, imageW, imageH, null);
   }
 
 
