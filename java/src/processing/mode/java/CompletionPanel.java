@@ -42,7 +42,6 @@ import javax.swing.text.BadLocationException;
 import processing.app.Base;
 import processing.app.Messages;
 import processing.app.Mode;
-import processing.app.syntax.JEditTextArea;
 import processing.app.ui.Toolkit;
 
 
@@ -67,7 +66,7 @@ public class CompletionPanel {
    */
   private int insertionPosition;
 
-  private JavaTextArea textarea;
+  private JavaTextArea textArea;
 
   /**
    * Scroll pane in which the completion list is displayed
@@ -97,11 +96,11 @@ public class CompletionPanel {
    * @param items - completion candidates
    * @param location - Point location where popup list is to be displayed
    */
-  public CompletionPanel(final JEditTextArea textarea,
+  public CompletionPanel(final JavaTextArea textarea,
                          int position, String subWord,
                          DefaultListModel<CompletionCandidate> items,
                          final Point location, JavaEditor editor) {
-    this.textarea = (JavaTextArea) textarea;
+    this.textArea = textarea;
     this.editor = editor;
     this.insertionPosition = position;
     if (subWord.indexOf('.') != -1 && subWord.indexOf('.') != subWord.length()-1) {
@@ -238,7 +237,7 @@ public class CompletionPanel {
    */
   private int calcHeight(int itemCount) {
     int maxHeight = 250;
-    FontMetrics fm = textarea.getGraphics().getFontMetrics();
+    FontMetrics fm = textArea.getGraphics().getFontMetrics();
     float itemHeight = Math.max((fm.getHeight() + (fm.getDescent()) * 0.5f),
                                 classIcon.getIconHeight() * 1.2f);
 
@@ -263,7 +262,7 @@ public class CompletionPanel {
   private int calcWidth() {
     int maxWidth = 300;
     float min = 0;
-    FontMetrics fm = textarea.getGraphics().getFontMetrics();
+    FontMetrics fm = textArea.getGraphics().getFontMetrics();
     for (int i = 0; i < completionList.getModel().getSize(); i++) {
       float h = fm.stringWidth(completionList.getModel().getElementAt(i).getLabel());
       min = Math.max(min, h);
@@ -379,20 +378,20 @@ public class CompletionPanel {
         Messages.err(subWord + " <= subword, Inserting suggestion=> " +
           selectedSuggestion + " Current sub: " + currentSubword);
         if (currentSubword.length() > 0) {
-          textarea.getDocument().remove(insertionPosition - currentSubwordLen,
+          textArea.getDocument().remove(insertionPosition - currentSubwordLen,
                                         currentSubwordLen);
         }
 
-        textarea.getDocument().insertString(insertionPosition - currentSubwordLen,
+        textArea.getDocument().insertString(insertionPosition - currentSubwordLen,
                                             completionString, null);
         if (selectedSuggestion.endsWith(")") && !selectedSuggestion.endsWith("()")) {
           // place the caret between '( and first ','
           int x = selectedSuggestion.indexOf(',');
           if (x == -1) {
             // the case of single param methods, containing no ','
-            textarea.setCaretPosition(textarea.getCaretPosition() - 1); // just before ')'
+            textArea.setCaretPosition(textArea.getCaretPosition() - 1); // just before ')'
           } else {
-            textarea.setCaretPosition(insertionPosition + x);
+            textArea.setCaretPosition(insertionPosition + x);
           }
         }
 

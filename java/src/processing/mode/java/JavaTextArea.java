@@ -35,8 +35,7 @@ import javax.swing.DefaultListModel;
 
 import processing.app.Messages;
 import processing.app.Platform;
-import processing.app.syntax.PdeTextArea;
-import processing.app.syntax.TextAreaDefaults;
+import processing.app.ui.PdeTextArea;
 import processing.mode.java.tweak.ColorControlBox;
 import processing.mode.java.tweak.Handle;
 
@@ -49,8 +48,9 @@ public class JavaTextArea extends PdeTextArea {
   private CompletionPanel suggestion;
 
 
-  public JavaTextArea(TextAreaDefaults defaults, JavaEditor editor) {
-    super(defaults, new JavaInputHandler(editor), editor);
+  //public JavaTextArea(TextAreaDefaults defaults, JavaEditor editor) {
+  public JavaTextArea(JavaEditor editor) {
+    //super(defaults, new JavaInputHandler(editor), editor);
 
     suggestionGenerator = new CompletionGenerator((JavaMode) editor.getMode());
     tweakMode = false;
