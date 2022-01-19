@@ -166,6 +166,9 @@ public class EditorHeader extends JComponent {
       fontAscent = (int) Toolkit.getAscent(g);
     }
 
+    Graphics2D g2 = Toolkit.prepareGraphics(g);
+
+    /*
     Graphics2D g2 = (Graphics2D) g;
 
     if (!Toolkit.isRetina()) {
@@ -178,6 +181,7 @@ public class EditorHeader extends JComponent {
 //      g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 //                          RenderingHints.VALUE_FRACTIONALMETRICS_ON);
     }
+    */
 
     g.drawImage(gradient, 0, 0, getWidth(), getHeight(), this);
 
