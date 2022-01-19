@@ -167,8 +167,19 @@ public class EditorHeader extends JComponent {
     }
 
     Graphics2D g2 = (Graphics2D) g;
-    Dimension size = getSize();
-    g.drawImage(gradient, 0, 0, size.width, size.height, this);
+
+    if (!Toolkit.isRetina()) {
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                          RenderingHints.VALUE_ANTIALIAS_ON);
+      g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                          RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//      g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+//                          RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    }
+
+    g.drawImage(gradient, 0, 0, getWidth(), getHeight(), this);
 
     if (tabs.length != sketch.getCodeCount()) {
       tabs = new Tab[sketch.getCodeCount()];
