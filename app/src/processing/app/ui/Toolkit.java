@@ -776,13 +776,34 @@ public class Toolkit {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  static final boolean ISSUE_342 = false;
+
+  //static private float dpiScale(Component comp) {
+  static private float dpiScale() {
+    if (Platform.isWindows()) {
+      return awtToolkit.getScreenResolution() / 96f;
+//      return comp.getToolkit().getScreenResolution() / 96f;
+    }
+    return Toolkit.isRetina() ? 2 : 1;
+  }
+
+
+  static private int dpiScale(int what) {
+    return (int) Math.floor(what * dpiScale());
+  }
+
+
   /**
    * Create an Image to be used as an offscreen drawing context,
    * automatically doubling the size if running on a retina display.
    */
   static public Image offscreenGraphics(Component comp, int width, int height) {
+    if (ISSUE_342) {
+//      float ds = dpiScale(comp);
+//      return comp.createImage((int) Math.floor(ds * width), (int) Math.floor(ds * height));
+      return comp.createImage(dpiScale(width), dpiScale(height));
+    }
     int m = Toolkit.isRetina() ? 2 : 1;
-    //return comp.createImage(m * dpi(width), m * dpi(height));
     return comp.createImage(m * width, m * height);
   }
 
@@ -796,12 +817,20 @@ public class Toolkit {
   static public Graphics2D prepareGraphics(Graphics g) {
     Graphics2D g2 = (Graphics2D) g;
 
-    //float z = zoom * (Toolkit.isRetina() ? 2 : 1);
+    /*
     if (Toolkit.isRetina()) {
       // scale everything 2x, will be scaled down when drawn to the screen
       g2.scale(2, 2);
     }
-    //g2.scale(z, z);
+    */
+    float s = dpiScale();
+    if (s != 1) {
+      if (ISSUE_342) {
+        System.out.println("Toolkit.prepareGraphics() with dpi scale " + s);
+      }
+      g2.scale(s, s);
+    }
+
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
