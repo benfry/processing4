@@ -347,8 +347,8 @@ public class EditorStatus extends BasicSplitPaneDivider {
     }
 
     Graphics g = offscreen.getGraphics();
-    Toolkit.prepareGraphics(g);
     */
+    Toolkit.prepareGraphics(g);
     sizeW = getWidth();
     sizeH = getHeight();
     buttonSize = sizeH;
