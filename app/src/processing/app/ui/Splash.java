@@ -45,8 +45,7 @@ public class Splash extends JFrame {
       tracker.waitForID(0);
     } catch (InterruptedException ignored) { }
 
-    if (tracker.isErrorID(0)) {
-      // Abort on failure
+    if (tracker.isErrorID(0)) {  // abort on failure
       setSize(0,0);
       System.err.println("Warning: SplashWindow couldn't load splash image.");
       synchronized (this) {
@@ -55,10 +54,10 @@ public class Splash extends JFrame {
     } else {
       final int wide = image2x.getWidth(this) / 2;
       final int high = image2x.getHeight(this) / 2;
-//      final int imgScale = hidpi ? 2 : 1;
 
       JComponent comp = new JComponent() {
         public void paintComponent(Graphics g) {
+          processing.app.ui.Toolkit.prepareGraphics(g);
           g.drawImage(image2x, 0, 0, wide, high, this);
         }
 
@@ -89,7 +88,6 @@ public class Splash extends JFrame {
   /** Closes the splash window when finished. */
   static void disposeSplash() {
     if (instance != null) {
-      //instance.getOwner().dispose();
       instance.dispose();
       instance = null;
     }
