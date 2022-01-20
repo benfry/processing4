@@ -186,7 +186,6 @@ public class EditorFooter extends Box {
     Color indicatorTextColor;
     int updateLeft;
 
-
     Controller() {
       addMouseListener(new MouseAdapter() {
         public void mousePressed(MouseEvent e) {
@@ -237,18 +236,17 @@ public class EditorFooter extends Box {
       }
 
       // now actually draw the tabs
-      drawTabs(Editor.LEFT_GUTTER, g2);
+      drawTabs(g2, Editor.LEFT_GUTTER);
 
       // the number of updates available in the Manager
       drawUpdates(g2);
     }
 
-
     /**
      * @param left starting position from the left
      * @param g graphics context, or null if we're not drawing
      */
-    private void drawTabs(int left, Graphics2D g) {
+    private void drawTabs(Graphics2D g, int left) {
       int x = left;
 
       for (Tab tab : tabs) {
@@ -264,7 +262,6 @@ public class EditorFooter extends Box {
         x += TAB_BETWEEN;
       }
     }
-
 
     private void drawUpdates(Graphics2D g2) {
       if (updateCount != 0) {
@@ -295,16 +292,13 @@ public class EditorFooter extends Box {
       }
     }
 
-
     public Dimension getPreferredSize() {
       return new Dimension(Toolkit.zoom(300), HIGH);
     }
 
-
     public Dimension getMinimumSize() {
       return getPreferredSize();
     }
-
 
     public Dimension getMaximumSize() {
       return new Dimension(super.getMaximumSize().width, HIGH);
@@ -335,7 +329,6 @@ public class EditorFooter extends Box {
 
       updateTheme();
     }
-
 
     protected void updateTheme() {
       if (icon != null) {
@@ -393,32 +386,27 @@ public class EditorFooter extends Box {
       return enabledIcon != null;
     }
 
-    void draw(Graphics g) {
+    void draw(Graphics2D g2) {
       int state = isCurrent() ? SELECTED : ENABLED;
-      g.setColor(tabColor[state]);
-//      if (notification) {
-//        g.setColor(errorColor);
-//      }
-
-      Graphics2D g2 = (Graphics2D) g;
+      g2.setColor(tabColor[state]);
       g2.fill(Toolkit.createRoundRect(left, TAB_TOP, right, TAB_BOTTOM, 0, 0,
                                       isLast() ? CURVE_RADIUS : 0,
                                       isFirst() ? CURVE_RADIUS : 0));
 
       if (hasIcon()) {
         Image icon = (isCurrent() || notification) ? selectedIcon : enabledIcon;
-        g.drawImage(icon, left + MARGIN, ICON_TOP, ICON_WIDTH, ICON_HEIGHT, null);
+        g2.drawImage(icon, left + MARGIN, ICON_TOP, ICON_WIDTH, ICON_HEIGHT, null);
       }
 
       int textLeft = getTextLeft();
       if (notification && state == ENABLED) {
-        g.setColor(textColor[SELECTED]);
+        g2.setColor(textColor[SELECTED]);
       } else {
-        g.setColor(textColor[state]);
+        g2.setColor(textColor[state]);
       }
       int tabHeight = TAB_BOTTOM - TAB_TOP;
       int baseline = TAB_TOP + (tabHeight + fontAscent) / 2;
-      g.drawString(title, textLeft, baseline);
+      g2.drawString(title, textLeft, baseline);
     }
   }
 }
