@@ -27,7 +27,10 @@ o   make smaller at 125%
 X   loading the 2x version always, turn on smoothing and draw at 50%
 X is Toolkit.setIcon() in splash slowing down the startup screen?
 X   nope, appears to be class loading out of our control (0.3s vs our code 0.1s)
-_ fix weird character offsets in text area
+X fix weird character offsets in text area
+X Resolve scaling issues with Windows
+X   Editor cursor position offset to the right with fractional Windows scaling
+X   https://github.com/processing/processing4/issues/342
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
@@ -65,9 +68,6 @@ _ MovieMaker out as well?
 
 
 known issues
-_ Resolve scaling issues with Windows
-_   Editor cursor position offset to the right with fractional Windows scaling
-_   https://github.com/processing/processing4/issues/342
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
