@@ -40,6 +40,9 @@ _   https://github.com/processing/processing4/issues/162
 _   https://github.com/processing/processing4/issues/186
 _   https://github.com/processing/processing/issues/4129
 
+_ fullScreen() not working on a second display with P2D or P3D
+_   https://github.com/processing/processing4/issues/352
+
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
 
