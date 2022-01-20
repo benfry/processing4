@@ -30,11 +30,6 @@
   <property name="examples.dir"
             location="../../processing-docs/content/examples" />
 
-  <target name="ignore-tools">
-    <echo message="Ignore the 'Unable to locate tools.jar' message." />
-    <echo message="The tools.jar file is not required to build Processing." />
-  </target>
-
   <!-- detect Raspberry Pi (TODO move this, jdk.data.model is set later) -->
   <condition property="linux-arm32" value="linux-arm32">
     <and>
@@ -917,7 +912,7 @@
     </if>
   </target>
 
-  <target name="linux-build" depends="ignore-tools, check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
+  <target name="linux-build" depends="check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
     <mkdir dir="linux/work" />
 
     <copy todir="linux/work" preservelastmodified="true">
@@ -1184,7 +1179,7 @@
     <!-- Left for consistency. Windows can be built on mac, linux, or windows. -->
   </target>
 
-  <target name="windows-build" depends="ignore-tools, revision-check, windows-check-os, jdk-download, subprojects-build" description="Build Windows version">
+  <target name="windows-build" depends="revision-check, windows-check-os, jdk-download, subprojects-build" description="Build Windows version">
     <mkdir dir="windows/work" />
 
     <!-- assemble the pde -->
