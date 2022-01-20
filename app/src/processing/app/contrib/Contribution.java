@@ -372,7 +372,7 @@ abstract public class Contribution {
 
     if (o instanceof Contribution) {
       Contribution that = (Contribution) o;
-      return name.toLowerCase().equals(that.name.toLowerCase());
+      return name.equalsIgnoreCase(that.name);
     }
     return false;
   }
@@ -381,6 +381,12 @@ abstract public class Contribution {
   @Override
   public int hashCode() {
     return name.toLowerCase().hashCode();
+  }
+
+
+  @Override
+  public String toString() {
+    return getName() + " @" + Integer.toHexString(hashCode());
   }
 
 
