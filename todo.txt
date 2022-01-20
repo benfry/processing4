@@ -17,6 +17,10 @@ X bump ant from 1.10.10 to 1.10.12
 X bump JNA from 5.8.0 to 5.10.0
 X remove "Illegal reflective access" warning on Linux
 X   https://github.com/processing/processing4/issues/207
+X write release notes about not moving to RSyntaxArea
+X   https://github.com/processing/processing4/issues/355
+X   https://github.com/processing/processing/issues/3199
+X   https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md
 
 windows scaling
 X Fix "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
@@ -48,6 +52,9 @@ X   and no links open when clicked
 X   now changing color for link and actually opening the links
 X set the font on the contrib install progress bar
 X DetailPanel seems totally vestigial?
+X updates count is off... maybe when compatible != available count?
+X   nope, just something weird with the qr code library
+X   probably not available anymore, not gonna bother digging further
 _ after opening Editor window, Processing freezes until contribs are loaded
 _ when opening manager, animation runs briefly then freezes
 _ DetailPanel setContribution() being called 4x for each contrib on startup
@@ -59,7 +66,7 @@ _   but what else might that change be breaking?
 _ StatusPanel seems to be recreated entirely
 _ StatusPanel being reset twice on each click
 _   is checking for previous, but apparently that's not working
-_ updates count is off... maybe when compatible != available count?
+_ Base.setUpdatesAvailable() is called from half a dozen places!?
 
 
 before beta 4 release

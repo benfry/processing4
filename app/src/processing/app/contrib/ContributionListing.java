@@ -395,15 +395,15 @@ public class ContributionListing {
 
 
   protected boolean hasUpdates(Contribution contribution) {
-    if (contribution.isInstalled()) {
-      Contribution advertised = getAvailableContribution(contribution);
-      if (advertised == null) {
-        return false;
-      }
-      return advertised.getVersion() > contribution.getVersion()
-        && advertised.isCompatible(Base.getRevision());
+    if (!contribution.isInstalled()) {
+      return false;
     }
-    return false;
+    Contribution advertised = getAvailableContribution(contribution);
+    if (advertised == null) {
+      return false;
+    }
+    return (advertised.getVersion() > contribution.getVersion() &&
+            advertised.isCompatible(Base.getRevision()));
   }
 
 
@@ -468,10 +468,10 @@ public class ContributionListing {
 
 
   /**
-   * TODO This needs to be called when the listing loads, and also whenever
-   * the contribs list has been updated (for whatever reason). In addition,
-   * the caller (presumably Base) should update all Editor windows with the
-   * correct information on the number of items available.
+   * TODO This needs to be called when the listing loads, and also
+   *      the contribs list has been updated (for whatever reason).
+   *      In addition, the caller (presumably Base) should update all
+   *      Editor windows with the correct number of items available.
    * @return The number of contributions that have available updates.
    */
   public int countUpdates(Base base) {
