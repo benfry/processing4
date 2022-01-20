@@ -52,6 +52,7 @@
   </condition>
 
   <!-- there is currently no JRE available for ARM -->
+  <!--
   <target name="check-linux-arm32" if="linux-arm32">
     <property name="jdk.download.jdk" value="true" />
     <property name="jdk.downloader" value="linux-arm32-vfp-hflt.tar.gz" />
@@ -63,33 +64,6 @@
     <property name="jdk.downloader" value="linux-arm64-vfp-hflt.tar.gz" />
     <property name="linux.dist" value="linux/processing-${version}-linux-arm64.tgz" />
   </target>
-
-  <!-- 11.0.10+9 -->
-  <!--
-  <property name="jdk.train" value="11" />
-  <property name="jdk.detail" value="${jdk.train}.0.10" />
-  <property name="jdk.build" value="9" />
-  -->
-
-  <!-- 11.0.11+9 -->
-  <!--
-  <property name="jdk.train" value="11" />
-  <property name="jdk.detail" value="${jdk.train}.0.11" />
-  <property name="jdk.build" value="9" />
-  -->
-
-  <!-- 11.0.12+7 -->
-  <!--
-  <property name="jdk.train" value="11" />
-  <property name="jdk.detail" value="${jdk.train}.0.12" />
-  <property name="jdk.build" value="7" />
-  -->
-
-  <!-- 17+35 -->
-  <!--
-  <property name="jdk.train" value="17" />
-  <property name="jdk.detail" value="${jdk.train}" />
-  <property name="jdk.build" value="35" />
   -->
 
   <!-- 17.0.1+12 -->
