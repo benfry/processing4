@@ -95,7 +95,7 @@
   </fileset>
 
   <!-- Macro to help set the platform ant vars appropriately -->
-  <macrodef name="settarget">
+  <macrodef name="set-target">
     <attribute name="platform"/>
     <attribute name="datamodel"/>
     <sequential>
@@ -206,32 +206,32 @@
   </fileset>
 
   <target name="build" description="Build Processing.">
-    <settarget platform="${platform}" datamodel="${sun.arch.data.model}" />
+    <set-target platform="${platform}" datamodel="${sun.arch.data.model}" />
     <antcall target="${target-platform}-build" />
   </target>
 
   <target name="cross-build-macosx" description="Build Processing.">
-    <settarget platform="macosx" datamodel="64" />
+    <set-target platform="macosx" datamodel="64" />
     <antcall target="macosx-build" />
   </target>
 
   <target name="cross-build-linux-x64" description="Build Processing.">
-    <settarget platform="linux" datamodel="64" />
+    <set-target platform="linux" datamodel="64" />
     <antcall target="linux-build" />
   </target>
 
   <target name="cross-build-linux-aarch64" description="Build Processing.">
-    <settarget platform="linux" datamodel="Arm" />
+    <set-target platform="linux" datamodel="Arm" />
     <antcall target="linux-build" />
   </target>
 
   <target name="cross-build-windows" description="Build Processing.">
-    <settarget platform="windows" datamodel="64" />
+    <set-target platform="windows" datamodel="64" />
     <antcall target="windows-build" />
   </target>
 
   <target name="run" description="Run Processing.">
-    <settarget platform="${platform}" datamodel="${sun.arch.data.model}" />
+    <set-target platform="${platform}" datamodel="${sun.arch.data.model}" />
     <antcall target="${target-platform}-run" />
   </target>
 
@@ -435,10 +435,10 @@
 
 
   <!-- - - - - - - - -->
-  <!-- Mac OS X      -->
+  <!-- macOS         -->
   <!-- - - - - - - - -->
 
-  <target name="macosx-clean" depends="subprojects-clean" description="Clean Mac OS X build">
+  <target name="macosx-clean" depends="subprojects-clean" description="Clean macOS build">
     <delete dir="macosx/work" />
     <delete>
       <fileset dir="macosx" includes="processing-*zip" />
@@ -451,7 +451,7 @@
       <then>
         <echo>
           =======================================================
-          Processing for Mac can only be built on *nix systems.
+          Processing for Mac can only be built on macOS or Linux.
 
           Bye.
           =======================================================
@@ -462,7 +462,7 @@
     </if>
   </target>
 
-  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download" description="Build Mac OS X version">
+  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download" description="Build macOS version">
     <mkdir dir="macosx/work" />
 
     <!-- Extract JDK -->
@@ -707,7 +707,7 @@
   </target>
 
   <target name="macosx-run" depends="macosx-build"
-          description="Run Mac OS X version">
+          description="Run macOS version">
 
     <!-- Terminal.app has a new location in Catalina -->
     <available file="/System/Applications/Utilities/Terminal.app" type="dir"
@@ -726,7 +726,7 @@
   </target>
 
   <target name="macosx-run-app" depends="macosx-build"
-          description="Run Mac OS X version without console">
+          description="Run macOS version without console">
     <exec executable="open" dir="macosx/work" spawn="true">
       <arg value="Processing.app" />
     </exec>
@@ -884,7 +884,7 @@
 
   <target name="macosx-dist" if="macosx"
           depends="macosx-build"
-          description="Create a downloadable .zip for the Mac OS X version">
+          description="Create a downloadable .zip for the macOS version">
 
     <antcall target="macosx-dist-sign" />
 
@@ -896,7 +896,7 @@
 
     <echo>
       =======================================================
-      Processing for Mac OS X was built. Grab it from
+      Processing for macOS was built. Grab it from
 
       macosx/processing-${version}-macosx.zip
       =======================================================
@@ -1381,13 +1381,13 @@
   <target name="icons">
     <property name="icon.set" value="/tmp/pde.iconset" />
 
-    <!-- create iconset for the PDE application for Mac OS X -->
+    <!-- create iconset for the PDE application for macOS -->
     <antcall target="iconset">
       <param name="icon.root" value="shared/lib/icons/pde" />
       <param name="icon.icns" value="macosx/processing.icns" />
     </antcall>
 
-    <!-- create iconset for exported sketch on Mac OS X -->
+    <!-- create iconset for exported sketch on macOS -->
     <antcall target="iconset">
       <param name="icon.root" value="../core/src/icon/icon" />
       <param name="icon.icns" value="../java/application/sketch.icns" />
