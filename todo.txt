@@ -17,8 +17,15 @@ X bump ant from 1.10.10 to 1.10.12
 X bump JNA from 5.8.0 to 5.10.0
 X remove "Illegal reflective access" warning on Linux
 X   https://github.com/processing/processing4/issues/207
-X "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
 
+windows scaling
+X Fix "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
+X remove old-school offscreen buffering from our custom components
+_ fix weird character offsets in text area
+_ scale of opening screen
+X   attempting to use multi-resolution image loading
+_   make smaller at 125%
+_ is Toolkit.setIcon() in splash slowing down the startup screen?
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection

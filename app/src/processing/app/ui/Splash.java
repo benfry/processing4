@@ -1,30 +1,33 @@
 package processing.app.ui;
 
-import processing.app.Platform;
-
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+import java.awt.image.BaseMultiResolutionImage;
+
 import java.io.File;
 import java.io.FileOutputStream;
 
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+
+import processing.app.Platform;
+
 
 /**
- * Show a splash screen window. Loosely based on SplashWindow.java from
- * Werner Randelshofer, but rewritten to use Swing because the java.awt
- * version doesn't render properly on Windows.
+ * Show a splash screen window. Loosely based on SplashWindow.java
+ * from Werner Randelshofer, but rewritten to use Swing because the
+ * java.awt version doesn't render properly on Windows.
  */
 public class Splash extends JFrame {
   static private Splash instance;
-  private final Image image;
 
 
-  private Splash(File imageFile, boolean hidpi) {
+//  private Splash(File imageFile, boolean hidpi) {
+  private Splash(File image1xFile, File image2xFile) {
     // Putting this inside try/catch because it's not essential,
     // and it's definitely not essential enough to prevent startup.
     try {
@@ -34,16 +37,21 @@ public class Splash extends JFrame {
       // ignored
     }
     
-    this.image =
-      Toolkit.getDefaultToolkit().createImage(imageFile.getAbsolutePath());
+    Image image1x =
+      Toolkit.getDefaultToolkit().createImage(image1xFile.getAbsolutePath());
+    Image image2x =
+      Toolkit.getDefaultToolkit().createImage(image2xFile.getAbsolutePath());
 
     MediaTracker tracker = new MediaTracker(this);
-    tracker.addImage(image,0);
+    tracker.addImage(image1x, 0);
+    tracker.addImage(image2x, 1);
     try {
-      tracker.waitForID(0);
+      //tracker.waitForID(0);
+      tracker.waitForAll();
     } catch (InterruptedException ignored) { }
 
-    if (tracker.isErrorID(0)) {
+    //if (tracker.isErrorID(0)) {
+    if (tracker.isErrorAny()) {
       // Abort on failure
       setSize(0,0);
       System.err.println("Warning: SplashWindow couldn't load splash image.");
@@ -51,13 +59,16 @@ public class Splash extends JFrame {
         notifyAll();
       }
     } else {
-      final int imgWidth = image.getWidth(this);
-      final int imgHeight = image.getHeight(this);
-      final int imgScale = hidpi ? 2 : 1;
+      final int wide = image1x.getWidth(this);
+      final int high = image1x.getHeight(this);
+//      final int imgScale = hidpi ? 2 : 1;
+
+      final BaseMultiResolutionImage image =
+        new BaseMultiResolutionImage(image1x, image2x);
 
       JComponent comp = new JComponent() {
-        final int wide = imgWidth / imgScale;
-        final int high = imgHeight / imgScale;
+//        final int wide = imgWidth / imgScale;
+//        final int high = imgHeight / imgScale;
 
         public void paintComponent(Graphics g) {
           g.drawImage(image, 0, 0, wide, high, this);
@@ -67,7 +78,7 @@ public class Splash extends JFrame {
           return new Dimension(wide, high);
         }
       };
-      comp.setSize(imgWidth, imgHeight);
+      comp.setSize(wide, high);
       setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
       getContentPane().add(comp);
       setUndecorated(true);  // before pack()
@@ -78,9 +89,11 @@ public class Splash extends JFrame {
 
 
   /** Open a splash window using the specified image. */
-  static void showSplash(File imageFile, boolean hidpi) {
+//  static void showSplash(File imageFile, boolean hidpi) {
+  static void showSplash(File image1xFile, File image2xFile) {
     if (instance == null) {
-      instance = new Splash(imageFile, hidpi);
+      //instance = new Splash(imageFile, hidpi);
+      instance = new Splash(image1xFile, image2xFile);
       instance.setVisible(true);
     }
   }
@@ -134,10 +147,7 @@ public class Splash extends JFrame {
 
   static public boolean getDisableHiDPI() {
     File propsFile = Platform.getContentFile("disable_hidpi");
-    if (propsFile != null && propsFile.exists()) {
-      return true;
-    }
-    return false;
+    return propsFile != null && propsFile.exists();
   }
 
 
@@ -149,7 +159,9 @@ public class Splash extends JFrame {
       File propsFile = Platform.getContentFile("disable_hidpi");
       if (propsFile != null) {
         if (disabled) {
-          new FileOutputStream(propsFile).close();
+          if (!propsFile.exists()) {  // don't recreate if exists
+            new FileOutputStream(propsFile).close();
+          }
         } else if (propsFile.exists()) {
           boolean success = propsFile.delete();
           if (!success) {
@@ -166,14 +178,19 @@ public class Splash extends JFrame {
 
   static public void main(String[] args) {
     // Has to be done before AWT is initialized, so the hack lives here
+    // instead of Base or anywhere else that might make more sense.
     if (getDisableHiDPI()) {
       System.setProperty("sun.java2d.uiScale.enabled", "false");
     }
     try {
+      /*
       final boolean hidpi = processing.app.ui.Toolkit.highResImages();
       final String filename = "lib/about-" + (hidpi ? 2 : 1) + "x.png";
       File splashFile = Platform.getContentFile(filename);
       showSplash(splashFile, hidpi);
+      */
+      showSplash(Platform.getContentFile("lib/about-1x.png"),
+                 Platform.getContentFile("lib/about-2x.png"));
       invokeMain("processing.app.Base", args);
       disposeSplash();
 
