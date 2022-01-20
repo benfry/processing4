@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.MediaTracker;
 import java.awt.Toolkit;
-import java.awt.image.BaseMultiResolutionImage;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +26,7 @@ public class Splash extends JFrame {
 
 
 //  private Splash(File imageFile, boolean hidpi) {
-  private Splash(File image1xFile, File image2xFile) {
+  private Splash(File image2xFile) {
     // Putting this inside try/catch because it's not essential,
     // and it's definitely not essential enough to prevent startup.
     try {
@@ -37,21 +36,16 @@ public class Splash extends JFrame {
       // ignored
     }
     
-    Image image1x =
-      Toolkit.getDefaultToolkit().createImage(image1xFile.getAbsolutePath());
     Image image2x =
       Toolkit.getDefaultToolkit().createImage(image2xFile.getAbsolutePath());
 
     MediaTracker tracker = new MediaTracker(this);
-    tracker.addImage(image1x, 0);
-    tracker.addImage(image2x, 1);
+    tracker.addImage(image2x, 0);
     try {
-      //tracker.waitForID(0);
-      tracker.waitForAll();
+      tracker.waitForID(0);
     } catch (InterruptedException ignored) { }
 
-    //if (tracker.isErrorID(0)) {
-    if (tracker.isErrorAny()) {
+    if (tracker.isErrorID(0)) {
       // Abort on failure
       setSize(0,0);
       System.err.println("Warning: SplashWindow couldn't load splash image.");
@@ -59,19 +53,13 @@ public class Splash extends JFrame {
         notifyAll();
       }
     } else {
-      final int wide = image1x.getWidth(this);
-      final int high = image1x.getHeight(this);
+      final int wide = image2x.getWidth(this) / 2;
+      final int high = image2x.getHeight(this) / 2;
 //      final int imgScale = hidpi ? 2 : 1;
 
-      final BaseMultiResolutionImage image =
-        new BaseMultiResolutionImage(image1x, image2x);
-
       JComponent comp = new JComponent() {
-//        final int wide = imgWidth / imgScale;
-//        final int high = imgHeight / imgScale;
-
         public void paintComponent(Graphics g) {
-          g.drawImage(image, 0, 0, wide, high, this);
+          g.drawImage(image2x, 0, 0, wide, high, this);
         }
 
         public Dimension getPreferredSize() {
@@ -90,10 +78,9 @@ public class Splash extends JFrame {
 
   /** Open a splash window using the specified image. */
 //  static void showSplash(File imageFile, boolean hidpi) {
-  static void showSplash(File image1xFile, File image2xFile) {
+  static void showSplash(File image2xFile) {
     if (instance == null) {
-      //instance = new Splash(imageFile, hidpi);
-      instance = new Splash(image1xFile, image2xFile);
+      instance = new Splash(image2xFile);
       instance.setVisible(true);
     }
   }
@@ -113,6 +100,7 @@ public class Splash extends JFrame {
    * Invokes the main method of the provided class name.
    * @param args the command line arguments
    */
+  @SuppressWarnings("SameParameterValue")
   static void invokeMain(String className, String[] args) {
     try {
       Class.forName(className)
@@ -183,14 +171,7 @@ public class Splash extends JFrame {
       System.setProperty("sun.java2d.uiScale.enabled", "false");
     }
     try {
-      /*
-      final boolean hidpi = processing.app.ui.Toolkit.highResImages();
-      final String filename = "lib/about-" + (hidpi ? 2 : 1) + "x.png";
-      File splashFile = Platform.getContentFile(filename);
-      showSplash(splashFile, hidpi);
-      */
-      showSplash(Platform.getContentFile("lib/about-1x.png"),
-                 Platform.getContentFile("lib/about-2x.png"));
+      showSplash(Platform.getContentFile("lib/about-2x.png"));
       invokeMain("processing.app.Base", args);
       disposeSplash();
 
