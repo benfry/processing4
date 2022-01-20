@@ -31,6 +31,8 @@ X fix weird character offsets in text area
 X Resolve scaling issues with Windows
 X   Editor cursor position offset to the right with fractional Windows scaling
 X   https://github.com/processing/processing4/issues/342
+X displayDensity() is returning 1 when run from the PDE
+X   https://github.com/processing/processing4/issues/339
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
