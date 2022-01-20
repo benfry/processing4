@@ -1381,7 +1381,7 @@ public class JEditTextArea extends JComponent
       getPartialPixelWidth(metrics, x, expander, startOffset) * s.length();
 
     return Math.round(
-      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) + additionalOffset
+      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) - additionalOffset
     );
   }
 
