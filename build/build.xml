@@ -35,7 +35,7 @@
     <echo message="The tools.jar file is not required to build Processing." />
   </target>
 
-  <!-- detect Raspberry Pi and friends (TODO move this, jdk.data.model set later) -->
+  <!-- detect Raspberry Pi (TODO move this, jdk.data.model is set later) -->
   <condition property="linux-arm32" value="linux-arm32">
     <and>
       <equals arg1="${target-platform}" arg2="linux" />
@@ -167,12 +167,8 @@
 
   </target>
 
-  <!-- Set the version of Java 11 that must be present to build. -->
+  <!-- Set the version of Java that must be present to build. -->
   <property name="jdk.path.macosx" value="macosx/jdk-${jdk.detail}+${jdk.build}" />
-
-  <!-- Set the version of Java 17 that must be present to build. -->
-  <!-- <property name="jdk.path.macosx" value="macosx/jdk-${jdk.train}+${jdk.build}" /> -->
-
   <available file="${jdk.path.macosx}" property="macosx_jdk_found" />
 
   <!--
@@ -644,19 +640,8 @@
     <property name="contents.dir"
               location="macosx/work/Processing.app/Contents" />
 
-    <!-- Replace libjli.dylib symlink with actual file.
-         Deals with code signing issues on OS X 10.9.5+ -->
-    <!--
-    <property name="jli.path" value="${contents.dir}/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/MacOS/libjli.dylib" />
-    <delete file="${jli.path}" />
-    <exec executable="cp">
-      <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
-    </exec>
-    -->
-
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
-      <!--<fileset dir="shared" includes="launch4j/**" />-->
       <fileset dir="shared" includes="lib/**" />
       <fileset file="shared/changes.md" />
     </copy>
@@ -920,11 +905,11 @@
       <equals arg1="${host-platform}" arg2="windows" />
       <then>
         <echo>
-          =======================================================
-          Processing for Linux can only be built on *nix systems.
+          =========================================================
+          Processing for Linux can only be built on Linux or macOS.
 
           Bye.
-          =======================================================
+          =========================================================
         </echo>
 
         <fail message="wrong platform (${os.name})" />
@@ -999,17 +984,17 @@
     <copy file="linux/appdata.xml" todir="linux/work/lib" />
     <copy file="linux/desktop.template" todir="linux/work/lib" />
 
-<!--
+    <!--
     Cannot use ant version of tar because it doesn't preserve properties.
     <untar compression="gzip"
            dest="linux/work"
            src="linux/jdk.tgz"
            overwrite="false"/>
--->
+    -->
 
-<!--
-    http://www.gnu.org/software/tar/manual/html_section/transform.html
--->
+    <!--
+      http://www.gnu.org/software/tar/manual/html_section/transform.html
+    -->
     <exec executable="tar" dir="linux">
       <!-- Change directory -->
       <!--
@@ -1049,11 +1034,11 @@
   <target name="linux-dist" depends="linux-build"
           description="Build .tar.gz of linux version">
 
-<!--
+    <!--
     <tar compression="gzip" destfile="linux/processing-${version}.tgz">
       <tarfileset dir="linux/work" prefix="processing-${version}" />
     </tar>
--->
+    -->
 
    <!-- rename the work folder temporarily -->
    <move file="linux/work" tofile="linux/processing-${version}" />
@@ -1411,21 +1396,6 @@
   </target>
 
 
-  <!-- - - - - - - - - - - - - - - - - - -->
-  <!-- Package source 'n tag the release -->
-  <!-- - - - - - - - - - - - - - - - - - -->
-
-<!--
-not ready to automate this yet, since we often have to reset the tag
-  <target name="dist-src" depends="dist">
-    <exec executable="git">
-remove the spaces for depth since it should be double dash, but screws up comments
-      <arg line="clone - -depth 1 git@github.com:processing/processing.git /tmp/processing-${version}-src" />
-    </exec>
-  </target>
--->
-
-
   <!-- - - - - - - - - -->
   <!-- Developer Docs -->
   <!-- - - - - - - - - -->
@@ -1567,8 +1537,6 @@ remove the spaces for depth since it should be double dash, but screws up commen
       </packageset>
     </javadoc>
 
-
-
 <!--
     <copy file="javadoc/stylesheet.css"
           tofile="javadoc/everything/stylesheet.css" />
@@ -1584,28 +1552,6 @@ remove the spaces for depth since it should be double dash, but screws up commen
 -->
 
   </target>
-
-<!-- no longer necessary because it comes straight from Google Code -->
-<!--
-  <target name="doc-upload">
-    <exec executable="rsync" dir="javadoc" spawn="true">
-      <arg value="-avz" />
-      <arg value="- -delete" />
-      <arg value="core/" />
-      <arg value="fry@processing.org:dev/reference/core/javadoc/" />
-    </exec>
-
-    <exec executable="rsync" dir="javadoc" spawn="true">
-      <arg value="-avz" />
-      <arg value="- -delete" />
-      <arg value="everything/" />
-      <arg value="fry@processing.org:dev/reference/core/everything/" />
-    </exec>
-
-    rsync -avz - -delete core/ fry@processing.org:dev/reference/core/javadoc/
-    rsync -avz - -delete everything/ fry@processing.org:dev/reference/everything/javadoc/
-  </target>
--->
 
 
   <!-- - - - - - - - -->
