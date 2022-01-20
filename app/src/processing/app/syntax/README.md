@@ -1,4 +1,4 @@
-🐉 Fixing this code: here be dragons. 🐉
+## 🐉 Fixing this code: here be dragons. 🐉
 
 Every few years, we've looked at replacing this package with [RSyntaxArea](https://github.com/bobbylight/RSyntaxTextArea), most recently with two attempts during the course of developing [Processing 4](https://github.com/processing/processing4/wiki/Processing-4).
 
@@ -15,12 +15,12 @@ So that I don't repeat this attempt again, some reminders as to why it's not wor
 * The text area needs to be moved into individual tabs. More breaking changes, but necessary to cleanly separate all Undo behavior.
 * So many small quirks, hard-learned lessons from over the years that may no longer be necessary, but the amount of testing necessary is too significant. For instance, inside File → Print, all the Document objects for the tabs are synched up. This might no longer be necessary if we do this properly—it's a gross hack—but we don't have time to find out. There are dozens of situations like this.
 
-I don't enjoy having the code in this state, but it's there and working, and a larger-scale replacement is a better use of time.
+I don't enjoy having the code in this state, but it's there and working, and has allowed a single primary maintainer to support millions of users over more than 20 years. A larger-scale replacement is a better use of time.
 
 — Ben Fry, 20 January 2022
 
 
-The old license for this code follows:
+## License
 
 ```
 OLDSYNTAX PACKAGE README
