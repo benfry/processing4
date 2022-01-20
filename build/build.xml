@@ -35,7 +35,7 @@
     <echo message="The tools.jar file is not required to build Processing." />
   </target>
 
-  <!-- detetect Raspberry Pi and friends -->
+  <!-- detect Raspberry Pi and friends (TODO move this, jdk.data.model set later) -->
   <condition property="linux-arm32" value="linux-arm32">
     <and>
       <equals arg1="${target-platform}" arg2="linux" />
@@ -52,7 +52,6 @@
   </condition>
 
   <!-- there is currently no JRE available for ARM -->
-  <!--
   <target name="check-linux-arm32" if="linux-arm32">
     <property name="jdk.download.jdk" value="true" />
     <property name="jdk.downloader" value="linux-arm32-vfp-hflt.tar.gz" />
@@ -64,7 +63,6 @@
     <property name="jdk.downloader" value="linux-arm64-vfp-hflt.tar.gz" />
     <property name="linux.dist" value="linux/processing-${version}-linux-arm64.tgz" />
   </target>
-  -->
 
   <!-- 17.0.1+12 -->
   <property name="jdk.train" value="17" />
@@ -101,7 +99,6 @@
     <attribute name="platform"/>
     <attribute name="datamodel"/>
     <sequential>
-
       <property name="host-platform" value="${platform}" />
 
       <!-- Set a property named macosx, linux, or windows.
@@ -151,37 +148,16 @@
       <os family="mac" />
     </condition>
 
-    <!-- Java 11.0.11 and earlier is available via AdoptOpenJDK -->
-
-    <!--
-      https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jdk_x64_mac_hotspot_11.0.11_9.tar.gz
-    -->
-
-    <!--
-    <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
-    -->
-
-    <!-- Java 11.0.12 and later are available via Adoptium -->
-
-    <!--
-      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.12_7.tar.gz
-
-      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_windows_hotspot_11.0.12_7.zip
-
-      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
-    -->
-
-    <!--
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
-    -->
-
-    <!-- Java 17 via Adoptium -->
-    <!--
-      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_mac_hotspot_17_35.pkg
-      <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK17-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
-    -->
-
     <!-- Java 17.0.1 via Adoptium -->
+
+    <!--
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x64_mac_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_x64_windows_hotspot_17.0.1_12.zip
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_x64_linux_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_arm_linux_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.1_12.tar.gz
+    -->
     <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
