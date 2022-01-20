@@ -1,10 +1,10 @@
-## 🐉 Fixing this code: here be dragons. 🐉
+# 🐉 Fixing this code: here be dragons. 🐉
 
 Every few years, we've looked at replacing this package with [RSyntaxArea](https://github.com/bobbylight/RSyntaxTextArea), most recently with two attempts during the course of developing [Processing 4](https://github.com/processing/processing4/wiki/Processing-4).
 
 So that I don't repeat this attempt again, some reminders as to why it's not worth the effort. As noted in the link above, the time is better spent with starting from scratch with a different approach—a Language Server implementation and probably a lightweight (HTML/JS) GUI on top of it.
 
-* At a minimum, replacing this text component would break all Modes, because of how they're invoked.
+* At a minimum, replacing this text component would break all Modes, because of how they're invoked. That places significant burden on those authors, so making the switch means there must be major, demonstrable improvements. (The code being “cleaner” or “better” does not qualify, though other improvements might.)
 * The token coloring uses a completely different system, which would also need to be expanded across Modes. 
 * Everything that lives in `PdeTextAreaPainter`,  the error squiggles, popups, etc would need to be rewritten. 
 * Similarly, line numbering is supported by default in `RSyntaxArea` so we'd need to carefully remove all our “left gutter” hacking.
@@ -20,7 +20,7 @@ I don't enjoy having the code in this state, but it's there and working, and has
 — Ben Fry, 20 January 2022
 
 
-## License
+# License
 
 ```
 OLDSYNTAX PACKAGE README
