@@ -42,21 +42,15 @@
 
   <target name="download-jogl" unless="jogl.present">
     <get dest="library" usetimestamp="true" ignoreerrors="${jogl.ignorable}">
-      <url url="${jogl.url}/gluegen-rt-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-linux-amd64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-linux-i586.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-macosx-universal.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-windows-amd64.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-windows-i586.jar" />
       <url url="${jogl.url}/gluegen-rt.jar" />
-      <url url="${jogl.url}/jogl-all-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/jogl-all-natives-linux-amd64.jar" />
       <url url="${jogl.url}/jogl-all-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/jogl-all-natives-linux-i586.jar" />
       <url url="${jogl.url}/jogl-all-natives-macosx-universal.jar" />
       <url url="${jogl.url}/jogl-all-natives-windows-amd64.jar" />
-      <url url="${jogl.url}/jogl-all-natives-windows-i586.jar" />
       <url url="${jogl.url}/jogl-all.jar" />
     </get>
   </target>
