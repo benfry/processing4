@@ -205,6 +205,8 @@ _   https://github.com/processing/processing4/issues/304
 
 
 before 4.x final
+_ Apple Silicon support
+_   https://github.com/processing/processing4/issues/128
 _ clean up dist: 'bin' and 'src' from Java Mode are included, iml files, etc
 _ SVG library, show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
