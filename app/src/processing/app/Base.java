@@ -27,6 +27,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
@@ -1949,10 +1950,36 @@ public class Base {
    * preference for 3.0a3 because we need this to be stable.
    */
   static public File getSettingsFolder() {
+    File settingFolderFile = Platform.getContentFile("settingPath.txt");
     File settingsFolder = null;
 
     try {
-      settingsFolder = Platform.getSettingsFolder();
+      if (settingFolderFile != null) {
+        if (!settingFolderFile.exists() && !settingFolderFile.createNewFile()) {
+          throw new IOException();
+        }
+        String[] folderFileContent = PApplet.loadStrings(settingFolderFile);
+        if (folderFileContent != null && folderFileContent.length > 0) {
+          String path = folderFileContent[0];
+          if (!path.startsWith("/") ||
+              path.startsWith("./") ||
+              path.startsWith("../")) {
+            settingsFolder = Platform.getContentFile(path);
+          } else {
+            settingsFolder = new File(path);
+          }
+        }
+      }
+    } catch (IOException e) {
+      Messages.showTrace("An rare and unknowable thing happened",
+                         "Could not create or read the settings path file.",
+                         e, false);
+    }
+
+    try {
+      if (settingsFolder == null) {
+        settingsFolder = Platform.getSettingsFolder();
+      }
 
       // create the folder if it doesn't exist already
       if (!settingsFolder.exists()) {
