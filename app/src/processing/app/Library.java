@@ -49,30 +49,32 @@ public class Library extends LocalContribution {
 
   /**
    * Filter to pull out just files and none of the platform-specific
-   * directories, and to skip export.txt. As of 2.0a2, other directories are
-   * included, because we need things like the 'plugins' subfolder w/ video.
+   * directories, and to skip export.txt.
+   *
+   * As of 2.0a2, other directories are included, because we need
+   * things like the 'plugins' subfolder w/ video.
+   *
+   * As of 4.0b4, only checking whether macos, windows, linux, or
+   * android are the prefix of the folder name, so that we can avoid
+   * explicitly listing all possible architectures, and so that
+   * macos-blah as well as and macosx will be handled properly.
    */
   static FilenameFilter standardFilter = new FilenameFilter() {
     public boolean accept(File dir, String name) {
       // skip .DS_Store files, .svn folders, etc
       if (name.charAt(0) == '.') return false;
+      // ha, the sftp library still has one [fry 220121]
       if (name.equals("CVS")) return false;
       if (name.equals("export.txt")) return false;
+
       File file = new File(dir, name);
-//      return (!file.isDirectory());
       if (file.isDirectory()) {
-        if (name.equals("macosx")) return false;
-        if (name.equals("macosx32")) return false;
-        if (name.equals("macosx64")) return false;
-        if (name.equals("windows")) return false;
-        if (name.equals("windows32")) return false;
-        if (name.equals("windows64")) return false;
-        if (name.equals("linux")) return false;
-        if (name.equals("linux32")) return false;
-        if (name.equals("linux64")) return false;
-        if (name.equals("linux-armv6hf")) return false;
-        if (name.equals("linux-arm64")) return false;
-        if (name.equals("android")) return false;
+        if (name.startsWith("macos") ||
+            name.startsWith("windows") ||
+            name.startsWith("linux") ||
+            name.startsWith("android")) {
+          return false;
+        }
       }
       return true;
     }
