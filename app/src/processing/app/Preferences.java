@@ -25,6 +25,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.SystemColor;
 import java.io.*;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.util.*;
 
 import processing.app.ui.Toolkit;
@@ -123,9 +125,7 @@ public class Preferences {
     // http://docs.oracle.com/javase/6/docs/technotes/guides/net/proxies.html
     // Less readable version with the Oracle style sheet:
     // http://docs.oracle.com/javase/8/docs/technotes/guides/net/proxies.html
-    handleProxy("http", "http.proxyHost", "http.proxyPort");
-    handleProxy("https", "https.proxyHost", "https.proxyPort");
-    handleProxy("socks", "socksProxyHost", "socksProxyPort");
+    handleProxy();
   }
 
 
@@ -137,15 +137,47 @@ public class Preferences {
   }
 
 
-  static void handleProxy(String protocol, String hostProp, String portProp) {
-    String proxyHost = get("proxy." + protocol + ".host");
-    String proxyPort = get("proxy." + protocol + ".port");
-    if (proxyHost != null && proxyHost.length() != 0 &&
-        proxyPort != null && proxyPort.length() != 0) {
-      System.setProperty(hostProp, proxyHost);
-      System.setProperty(portProp, proxyPort);
+  static void handleProxy() {
+    String proxyType = get("proxy.type");
+    String proxyHost = get("proxy.host");
+    String proxyPort = get("proxy.port");
+    if (proxyType == null || proxyType.length() == 0 ||
+        proxyHost == null || proxyHost.length() == 0 ||
+        proxyPort == null || proxyPort.length() == 0) {
+      return;
     }
 
+    switch (proxyType.toLowerCase()){
+      case "http":
+        System.setProperty("http.proxyHost", proxyHost);
+        System.setProperty("http.proxyPort", proxyPort);
+        break;
+      case "https":
+        System.setProperty("https.proxyHost", proxyHost);
+        System.setProperty("https.proxyPort", proxyPort);
+        break;
+      case "socks":
+        System.setProperty("socksProxyHost", proxyHost);
+        System.setProperty("socksProxyPort", proxyPort);
+        break;
+      default:
+        Messages.showWarning(
+            "Proxy failed to initialize",
+            "Invalid proxy type. Can be either \"http\", \"https\" or \"socks\".");
+    }
+    String proxyUser = get("proxy.user");
+    String proxyPasswd = get("proxy.passwd");
+    if (proxyUser != null && proxyPasswd != null){
+      Authenticator.setDefault(new Authenticator() {
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+          if (getRequestingHost().equalsIgnoreCase(proxyHost)) {
+            return new PasswordAuthentication(proxyUser, proxyPasswd.toCharArray());
+          }
+          return null;
+        }
+      });
+    }
   }
 
 
