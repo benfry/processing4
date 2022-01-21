@@ -30,12 +30,7 @@
   <property name="examples.dir"
             location="../../processing-docs/content/examples" />
 
-  <target name="ignore-tools">
-    <echo message="Ignore the 'Unable to locate tools.jar' message." />
-    <echo message="The tools.jar file is not required to build Processing." />
-  </target>
-
-  <!-- detetect Raspberry Pi and friends -->
+  <!-- detect Raspberry Pi (TODO move this, jdk.data.model is set later) -->
   <condition property="linux-arm32" value="linux-arm32">
     <and>
       <equals arg1="${target-platform}" arg2="linux" />
@@ -63,34 +58,6 @@
     <property name="jdk.downloader" value="linux-arm64-vfp-hflt.tar.gz" />
     <property name="linux.dist" value="linux/processing-${version}-linux-arm64.tgz" />
   </target>
-
-  <!-- 11.0.10+9 -->
-  <!--
-  <property name="jdk.train" value="11" />
-  <property name="jdk.detail" value="${jdk.train}.0.10" />
-  <property name="jdk.build" value="9" />
-  -->
-
-  <!-- 11.0.11+9 -->
-  <!--
-  <property name="jdk.train" value="11" />
-  <property name="jdk.detail" value="${jdk.train}.0.11" />
-  <property name="jdk.build" value="9" />
-  -->
-
-  <!-- 11.0.12+7 -->
-  <!--
-  <property name="jdk.train" value="11" />
-  <property name="jdk.detail" value="${jdk.train}.0.12" />
-  <property name="jdk.build" value="7" />
-  -->
-
-  <!-- 17+35 -->
-  <!--
-  <property name="jdk.train" value="17" />
-  <property name="jdk.detail" value="${jdk.train}" />
-  <property name="jdk.build" value="35" />
-  -->
 
   <!-- 17.0.1+12 -->
   <property name="jdk.train" value="17" />
@@ -123,11 +90,10 @@
   </fileset>
 
   <!-- Macro to help set the platform ant vars appropriately -->
-  <macrodef name="settarget">
+  <macrodef name="set-target">
     <attribute name="platform"/>
     <attribute name="datamodel"/>
     <sequential>
-
       <property name="host-platform" value="${platform}" />
 
       <!-- Set a property named macosx, linux, or windows.
@@ -177,37 +143,16 @@
       <os family="mac" />
     </condition>
 
-    <!-- Java 11.0.11 and earlier is available via AdoptOpenJDK -->
-
-    <!--
-      https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-11.0.11%2B9/OpenJDK11U-jdk_x64_mac_hotspot_11.0.11_9.tar.gz
-    -->
-
-    <!--
-    <property name="jdk.download.url" value="https://github.com/AdoptOpenJDK/openjdk11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
-    -->
-
-    <!-- Java 11.0.12 and later are available via Adoptium -->
-
-    <!--
-      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_linux_hotspot_11.0.12_7.tar.gz
-
-      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_windows_hotspot_11.0.12_7.zip
-
-      https://github.com/adoptium/temurin11-binaries/releases/download/jdk-11.0.12%2B7/OpenJDK11U-jdk_x64_mac_hotspot_11.0.12_7.tar.gz
-    -->
-
-    <!--
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin11-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK11U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
-    -->
-
-    <!-- Java 17 via Adoptium -->
-    <!--
-      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17%2B35/OpenJDK17-jdk_x64_mac_hotspot_17_35.pkg
-      <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.train}%2B${jdk.build}/OpenJDK17-jdk_x64_${jdk.download.os}_hotspot_${jdk.train}_${jdk.build}.${jdk.download.ext}" />
-    -->
-
     <!-- Java 17.0.1 via Adoptium -->
+
+    <!--
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x64_mac_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_x64_windows_hotspot_17.0.1_12.zip
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_x64_linux_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_arm_linux_hotspot_17.0.1_12.tar.gz
+      https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.1_12.tar.gz
+    -->
     <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
@@ -217,12 +162,8 @@
 
   </target>
 
-  <!-- Set the version of Java 11 that must be present to build. -->
+  <!-- Set the version of Java that must be present to build. -->
   <property name="jdk.path.macosx" value="macosx/jdk-${jdk.detail}+${jdk.build}" />
-
-  <!-- Set the version of Java 17 that must be present to build. -->
-  <!-- <property name="jdk.path.macosx" value="macosx/jdk-${jdk.train}+${jdk.build}" /> -->
-
   <available file="${jdk.path.macosx}" property="macosx_jdk_found" />
 
   <!--
@@ -256,32 +197,32 @@
   </fileset>
 
   <target name="build" description="Build Processing.">
-    <settarget platform="${platform}" datamodel="${sun.arch.data.model}" />
+    <set-target platform="${platform}" datamodel="${sun.arch.data.model}" />
     <antcall target="${target-platform}-build" />
   </target>
 
   <target name="cross-build-macosx" description="Build Processing.">
-    <settarget platform="macosx" datamodel="64" />
+    <set-target platform="macosx" datamodel="64" />
     <antcall target="macosx-build" />
   </target>
 
   <target name="cross-build-linux-x64" description="Build Processing.">
-    <settarget platform="linux" datamodel="64" />
+    <set-target platform="linux" datamodel="64" />
     <antcall target="linux-build" />
   </target>
 
   <target name="cross-build-linux-aarch64" description="Build Processing.">
-    <settarget platform="linux" datamodel="Arm" />
+    <set-target platform="linux" datamodel="Arm" />
     <antcall target="linux-build" />
   </target>
 
   <target name="cross-build-windows" description="Build Processing.">
-    <settarget platform="windows" datamodel="64" />
+    <set-target platform="windows" datamodel="64" />
     <antcall target="windows-build" />
   </target>
 
   <target name="run" description="Run Processing.">
-    <settarget platform="${platform}" datamodel="${sun.arch.data.model}" />
+    <set-target platform="${platform}" datamodel="${sun.arch.data.model}" />
     <antcall target="${target-platform}-run" />
   </target>
 
@@ -485,10 +426,10 @@
 
 
   <!-- - - - - - - - -->
-  <!-- Mac OS X      -->
+  <!-- macOS         -->
   <!-- - - - - - - - -->
 
-  <target name="macosx-clean" depends="subprojects-clean" description="Clean Mac OS X build">
+  <target name="macosx-clean" depends="subprojects-clean" description="Clean macOS build">
     <delete dir="macosx/work" />
     <delete>
       <fileset dir="macosx" includes="processing-*zip" />
@@ -501,7 +442,7 @@
       <then>
         <echo>
           =======================================================
-          Processing for Mac can only be built on *nix systems.
+          Processing for Mac can only be built on macOS or Linux.
 
           Bye.
           =======================================================
@@ -512,7 +453,7 @@
     </if>
   </target>
 
-  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download" description="Build Mac OS X version">
+  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download" description="Build macOS version">
     <mkdir dir="macosx/work" />
 
     <!-- Extract JDK -->
@@ -694,19 +635,8 @@
     <property name="contents.dir"
               location="macosx/work/Processing.app/Contents" />
 
-    <!-- Replace libjli.dylib symlink with actual file.
-         Deals with code signing issues on OS X 10.9.5+ -->
-    <!--
-    <property name="jli.path" value="${contents.dir}/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/MacOS/libjli.dylib" />
-    <delete file="${jli.path}" />
-    <exec executable="cp">
-      <arg line="${jdk.path.macosx}/Contents/Home/lib/jli/libjli.dylib ${jli.path}"/>
-    </exec>
-    -->
-
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
-      <!--<fileset dir="shared" includes="launch4j/**" />-->
       <fileset dir="shared" includes="lib/**" />
       <fileset file="shared/changes.md" />
     </copy>
@@ -757,7 +687,7 @@
   </target>
 
   <target name="macosx-run" depends="macosx-build"
-          description="Run Mac OS X version">
+          description="Run macOS version">
 
     <!-- Terminal.app has a new location in Catalina -->
     <available file="/System/Applications/Utilities/Terminal.app" type="dir"
@@ -776,7 +706,7 @@
   </target>
 
   <target name="macosx-run-app" depends="macosx-build"
-          description="Run Mac OS X version without console">
+          description="Run macOS version without console">
     <exec executable="open" dir="macosx/work" spawn="true">
       <arg value="Processing.app" />
     </exec>
@@ -934,7 +864,7 @@
 
   <target name="macosx-dist" if="macosx"
           depends="macosx-build"
-          description="Create a downloadable .zip for the Mac OS X version">
+          description="Create a downloadable .zip for the macOS version">
 
     <antcall target="macosx-dist-sign" />
 
@@ -946,7 +876,7 @@
 
     <echo>
       =======================================================
-      Processing for Mac OS X was built. Grab it from
+      Processing for macOS was built. Grab it from
 
       macosx/processing-${version}-macosx.zip
       =======================================================
@@ -970,11 +900,11 @@
       <equals arg1="${host-platform}" arg2="windows" />
       <then>
         <echo>
-          =======================================================
-          Processing for Linux can only be built on *nix systems.
+          =========================================================
+          Processing for Linux can only be built on Linux or macOS.
 
           Bye.
-          =======================================================
+          =========================================================
         </echo>
 
         <fail message="wrong platform (${os.name})" />
@@ -982,7 +912,7 @@
     </if>
   </target>
 
-  <target name="linux-build" depends="ignore-tools, check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
+  <target name="linux-build" depends="check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
     <mkdir dir="linux/work" />
 
     <copy todir="linux/work" preservelastmodified="true">
@@ -1049,17 +979,17 @@
     <copy file="linux/appdata.xml" todir="linux/work/lib" />
     <copy file="linux/desktop.template" todir="linux/work/lib" />
 
-<!--
+    <!--
     Cannot use ant version of tar because it doesn't preserve properties.
     <untar compression="gzip"
            dest="linux/work"
            src="linux/jdk.tgz"
            overwrite="false"/>
--->
+    -->
 
-<!--
-    http://www.gnu.org/software/tar/manual/html_section/transform.html
--->
+    <!--
+      http://www.gnu.org/software/tar/manual/html_section/transform.html
+    -->
     <exec executable="tar" dir="linux">
       <!-- Change directory -->
       <!--
@@ -1099,11 +1029,11 @@
   <target name="linux-dist" depends="linux-build"
           description="Build .tar.gz of linux version">
 
-<!--
+    <!--
     <tar compression="gzip" destfile="linux/processing-${version}.tgz">
       <tarfileset dir="linux/work" prefix="processing-${version}" />
     </tar>
--->
+    -->
 
    <!-- rename the work folder temporarily -->
    <move file="linux/work" tofile="linux/processing-${version}" />
@@ -1249,7 +1179,7 @@
     <!-- Left for consistency. Windows can be built on mac, linux, or windows. -->
   </target>
 
-  <target name="windows-build" depends="ignore-tools, revision-check, windows-check-os, jdk-download, subprojects-build" description="Build Windows version">
+  <target name="windows-build" depends="revision-check, windows-check-os, jdk-download, subprojects-build" description="Build Windows version">
     <mkdir dir="windows/work" />
 
     <!-- assemble the pde -->
@@ -1431,13 +1361,13 @@
   <target name="icons">
     <property name="icon.set" value="/tmp/pde.iconset" />
 
-    <!-- create iconset for the PDE application for Mac OS X -->
+    <!-- create iconset for the PDE application for macOS -->
     <antcall target="iconset">
       <param name="icon.root" value="shared/lib/icons/pde" />
       <param name="icon.icns" value="macosx/processing.icns" />
     </antcall>
 
-    <!-- create iconset for exported sketch on Mac OS X -->
+    <!-- create iconset for exported sketch on macOS -->
     <antcall target="iconset">
       <param name="icon.root" value="../core/src/icon/icon" />
       <param name="icon.icns" value="../java/application/sketch.icns" />
@@ -1459,21 +1389,6 @@
       <arg line="icon-16.png icon-32.png icon-48.png icon-64.png icon-256.png ../../../java/application/sketch.ico" />
     </exec>
   </target>
-
-
-  <!-- - - - - - - - - - - - - - - - - - -->
-  <!-- Package source 'n tag the release -->
-  <!-- - - - - - - - - - - - - - - - - - -->
-
-<!--
-not ready to automate this yet, since we often have to reset the tag
-  <target name="dist-src" depends="dist">
-    <exec executable="git">
-remove the spaces for depth since it should be double dash, but screws up comments
-      <arg line="clone - -depth 1 git@github.com:processing/processing.git /tmp/processing-${version}-src" />
-    </exec>
-  </target>
--->
 
 
   <!-- - - - - - - - - -->
@@ -1617,8 +1532,6 @@ remove the spaces for depth since it should be double dash, but screws up commen
       </packageset>
     </javadoc>
 
-
-
 <!--
     <copy file="javadoc/stylesheet.css"
           tofile="javadoc/everything/stylesheet.css" />
@@ -1634,28 +1547,6 @@ remove the spaces for depth since it should be double dash, but screws up commen
 -->
 
   </target>
-
-<!-- no longer necessary because it comes straight from Google Code -->
-<!--
-  <target name="doc-upload">
-    <exec executable="rsync" dir="javadoc" spawn="true">
-      <arg value="-avz" />
-      <arg value="- -delete" />
-      <arg value="core/" />
-      <arg value="fry@processing.org:dev/reference/core/javadoc/" />
-    </exec>
-
-    <exec executable="rsync" dir="javadoc" spawn="true">
-      <arg value="-avz" />
-      <arg value="- -delete" />
-      <arg value="everything/" />
-      <arg value="fry@processing.org:dev/reference/core/everything/" />
-    </exec>
-
-    rsync -avz - -delete core/ fry@processing.org:dev/reference/core/javadoc/
-    rsync -avz - -delete everything/ fry@processing.org:dev/reference/everything/javadoc/
-  </target>
--->
 
 
   <!-- - - - - - - - -->

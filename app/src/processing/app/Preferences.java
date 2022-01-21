@@ -147,7 +147,7 @@ public class Preferences {
       return;
     }
 
-    switch (proxyType.toLowerCase()){
+    switch (proxyType.toLowerCase()) {
       case "http":
         System.setProperty("http.proxyHost", proxyHost);
         System.setProperty("http.proxyPort", proxyPort);
@@ -162,12 +162,12 @@ public class Preferences {
         break;
       default:
         Messages.showWarning(
-            "Proxy failed to initialize",
-            "Invalid proxy type. Can be either \"http\", \"https\" or \"socks\".");
+          "Proxy failed to initialize",
+          "Invalid proxy type. Can be either \"http\", \"https\"or \"socks\".");
     }
     String proxyUser = get("proxy.user");
     String proxyPasswd = get("proxy.passwd");
-    if (proxyUser != null && proxyPasswd != null){
+    if (proxyUser != null && proxyPasswd != null) {
       Authenticator.setDefault(new Authenticator() {
         @Override
         protected PasswordAuthentication getPasswordAuthentication() {
