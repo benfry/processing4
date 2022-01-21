@@ -78,13 +78,11 @@ public class Library extends LocalContribution {
     }
   };
 
-  static FilenameFilter jarFilter = new FilenameFilter() {
-    public boolean accept(File dir, String name) {
-      if (name.charAt(0) == '.') return false;  // skip ._blah.jar crap on OS X
-      if (new File(dir, name).isDirectory()) return false;
-      String lc = name.toLowerCase();
-      return lc.endsWith(".jar") || lc.endsWith(".zip");
-    }
+  static FilenameFilter jarFilter = (dir, name) -> {
+    if (name.charAt(0) == '.') return false;  // skip ._blah.jar crap on OS X
+    if (new File(dir, name).isDirectory()) return false;
+    String lc = name.toLowerCase();
+    return lc.endsWith(".jar") || lc.endsWith(".zip");
   };
 
 
@@ -96,8 +94,6 @@ public class Library extends LocalContribution {
     } catch (Error err) {
       // Handles UnsupportedClassVersionError and others
       err.printStackTrace();
-    } catch (Exception ex) {
-      ex.printStackTrace();
     }
     return null;
   }
@@ -282,7 +278,7 @@ public class Library extends LocalContribution {
   }
 
 
-  static protected HashMap<String, Object> packageWarningMap = new HashMap<>();
+  //static protected HashMap<String, Object> packageWarningMap = new HashMap<>();
 
   /**
    * Add the packages provided by this library to the master list that maps
@@ -358,16 +354,20 @@ public class Library extends LocalContribution {
 //    PApplet.println(libraryFolder.getAbsolutePath());
 //    PApplet.println(libraryFolder.list());
     String[] jarHeads = libraryFolder.list(jarFilter);
-    for (String jar : jarHeads) {
-      cp.append(File.pathSeparatorChar);
-      cp.append(new File(libraryFolder, jar).getAbsolutePath());
+    if (jarHeads != null) {
+      for (String jar : jarHeads) {
+        cp.append(File.pathSeparatorChar);
+        cp.append(new File(libraryFolder, jar).getAbsolutePath());
+      }
     }
     File nativeLibraryFolder = new File(nativeLibraryPath);
     if (!libraryFolder.equals(nativeLibraryFolder)) {
       jarHeads = new File(nativeLibraryPath).list(jarFilter);
-      for (String jar : jarHeads) {
-        cp.append(File.pathSeparatorChar);
-        cp.append(new File(nativeLibraryPath, jar).getAbsolutePath());
+      if (jarHeads != null) {
+        for (String jar : jarHeads) {
+          cp.append(File.pathSeparatorChar);
+          cp.append(new File(nativeLibraryPath, jar).getAbsolutePath());
+        }
       }
     }
     //cp.setLength(cp.length() - 1);  // remove the last separator
@@ -376,14 +376,8 @@ public class Library extends LocalContribution {
 
 
   public String getNativePath() {
-//    PApplet.println("native lib folder " + nativeLibraryPath);
     return nativeLibraryPath;
   }
-
-
-//  public String[] getAppletExports() {
-//    return appletExportList;
-//  }
 
 
   protected File[] wrapFiles(String[] list) {
@@ -392,17 +386,6 @@ public class Library extends LocalContribution {
       outgoing[i] = new File(libraryFolder, list[i]);
     }
     return outgoing;
-  }
-
-
-  /**
-   * Applet exports don't go by platform, since by their nature applets are
-   * meant to be cross-platform. Technically, you could have a situation where
-   * you want to export applet code for different platforms, but it's too
-   * obscure a case that we're not interested in supporting it.
-   */
-  public File[] getAppletExports() {
-    return wrapFiles(appletExportList);
   }
 
 
@@ -436,14 +419,10 @@ public class Library extends LocalContribution {
   }
 
 
+  @SuppressWarnings("unused")
   public File[] getAndroidExports() {
     return wrapFiles(androidExportList);
   }
-
-
-//  public boolean hasMultiplePlatforms() {
-//    return false;
-//  }
 
 
   public boolean hasMultipleArch(int platform) {
@@ -468,28 +447,30 @@ public class Library extends LocalContribution {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static protected FilenameFilter junkFolderFilter = new FilenameFilter() {
-    public boolean accept(File dir, String name) {
-      // skip .DS_Store files, .svn and .git folders, etc
-      if (name.charAt(0) == '.') return false;
-      if (name.equals("CVS")) return false;  // old skool
-      return new File(dir, name).isDirectory();
-    }
+  static protected FilenameFilter junkFolderFilter = (dir, name) -> {
+    // skip .DS_Store files, .svn and .git folders, etc
+    if (name.charAt(0) == '.') return false;
+    if (name.equals("CVS")) return false;  // old skool
+    return new File(dir, name).isDirectory();
   };
 
 
   static public String findCollision(File folder) {
     File[] jars = PApplet.listFiles(folder, "recursive", "extension=jar");
-    for (File file : jars) {
-      try {
-        ZipFile zf = new ZipFile(file);
-        if (zf.getEntry("processing/core/PApplet.class") != null) {
-          return "processing.core";
+    if (jars != null) {
+      for (File file : jars) {
+        try {
+          ZipFile zf = new ZipFile(file);
+          if (zf.getEntry("processing/core/PApplet.class") != null) {
+            return "processing.core";
+          }
+          if (zf.getEntry("processing/app/Base.class") != null) {
+            return "processing.app";
+          }
+        } catch (IOException e) {
+          // ignored
         }
-        if (zf.getEntry("processing/app/Base.class") != null) {
-          return "processing.app";
-        }
-      } catch (IOException e) { }
+      }
     }
     return null;
   }
@@ -506,8 +487,8 @@ public class Library extends LocalContribution {
       Arrays.sort(folderNames, String.CASE_INSENSITIVE_ORDER);
 
       // TODO a little odd because ContributionType.LIBRARY.isCandidate()
-      // handles some, but not all, of this; and the rules of selection
-      // should probably be consolidated in a sensible way [fry 200116]
+      //      handles some, but not all, of this; and the rules of selection
+      //      should probably be consolidated in a sensible way [fry 200116]
       for (String potentialName : folderNames) {
         File baseFolder = new File(folder, potentialName);
         File libraryFolder = new File(baseFolder, "library");
@@ -534,13 +515,19 @@ public class Library extends LocalContribution {
 
               // Move the folder out of the way
               File badFolder = new File(baseFolder.getParentFile(), "disabled");
+              boolean success = true;
               if (!badFolder.exists()) {
-                badFolder.mkdirs();
+                success = badFolder.mkdirs();
               }
-              File hideFolder = new File(badFolder, baseFolder.getName());
-              System.out.println("moving " + baseFolder);
-              System.out.println("to " + hideFolder);
-              baseFolder.renameTo(hideFolder);
+              if (success) {
+                File hideFolder = new File(badFolder, baseFolder.getName());
+                success = baseFolder.renameTo(hideFolder);
+                if (success) {
+                  System.out.println("Moved " + baseFolder + " to " + hideFolder);
+                } else {
+                  System.err.println("Could not move " + baseFolder + " to " + hideFolder);
+                }
+              }
 
             } else {
               libraries.add(baseFolder);
@@ -555,31 +542,11 @@ public class Library extends LocalContribution {
 
   static public List<Library> list(File folder) {
     List<Library> libraries = new ArrayList<>();
-    List<File> librariesFolders = new ArrayList<>();
-    librariesFolders.addAll(discover(folder));
+    List<File> librariesFolders = new ArrayList<>(discover(folder));
 
     for (File baseFolder : librariesFolders) {
       libraries.add(new Library(baseFolder));
     }
-
-    /*
-    // Support libraries inside of one level of subfolders? I believe this was
-    // the compromise for supporting library groups, but probably a bad idea
-    // because it's not compatible with the Manager.
-    String[] folderNames = folder.list(junkFolderFilter);
-    if (folderNames != null) {
-      for (String subfolderName : folderNames) {
-        File subfolder = new File(folder, subfolderName);
-
-        if (!librariesFolders.contains(subfolder)) {
-          List<File> discoveredLibFolders = discover(subfolder);
-          for (File discoveredFolder : discoveredLibFolders) {
-            libraries.add(new Library(discoveredFolder, subfolderName));
-          }
-        }
-      }
-    }
-    */
     return libraries;
   }
 
