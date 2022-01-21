@@ -319,6 +319,8 @@ run.present.stop.color = #cccccc
 proxy.type=
 proxy.host=
 proxy.port=
+proxy.user=
+proxy.passwd=
 # Example of usage (replace 'http' with 'https' or 'socks' as needed)
 #proxy.type=http
 #proxy.host=proxy.example.com
