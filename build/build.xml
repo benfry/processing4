@@ -109,18 +109,6 @@
       <property name="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.${jdk.archive.ext}" />
 
       <property name="jdk.data.model" value="@{datamodel}" />
-
-      <!--
-      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.tgz">
-        <not>
-          <equals arg1="${target-platform}" arg2="windows" />
-        </not>
-      </condition>
-
-      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.zip">
-        <equals arg1="${target-platform}" arg2="windows" />
-      </condition>
-      -->
     </sequential>
   </macrodef>
 
@@ -1229,9 +1217,10 @@
 
     <!-- check for cross-build -->
     <if>
-      <not><equals arg1="${host-platform}" arg2="windows" /></not>
+      <not>
+        <equals arg1="${host-platform}" arg2="windows" />
+      </not>
       <then>
-
         <move file="${launch4j.dir}/bin/windres-${host-platform}"
               tofile="${launch4j.dir}/bin/windres" />
 
@@ -1247,7 +1236,6 @@
           <arg value="+x"/>
           <arg line="${launch4j.dir}/bin/ld"/>
         </exec>
-
       </then>
     </if>
 
@@ -1538,14 +1526,6 @@
     <copy file="javadoc/index.html"
           tofile="javadoc/everything/index.html" />
 -->
-
-    <!-- set the MIME type so that Google Code shows the files properly -->
-<!--
-    <exec executable="find" dir=".">
-      <arg line="javadoc -name '*.html' -exec svn propset svn:mime-type text/html {} ';'" />
-    </exec>
--->
-
   </target>
 
 
