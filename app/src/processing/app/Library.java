@@ -38,6 +38,9 @@ public class Library extends LocalContribution {
   /** Per-platform exports for this library. */
   Map<String, String[]> exportList;
 
+  /** List of default exports */
+  String[] baseList;
+
   /** Android exports (single platform for now, may not exist). */
   String[] androidExportList;
 
@@ -184,7 +187,7 @@ public class Library extends LocalContribution {
     exportList = new HashMap<>();
 
     // get the list of files just in the library root
-    String[] baseList = libraryFolder.list(libraryFolderFilter);
+    baseList = libraryFolder.list(libraryFolderFilter);
 
     for (String variant : Platform.getSupportedVariants().keys()) {
       File variantFolder = new File(libraryFolder, variant);
@@ -464,6 +467,9 @@ public class Library extends LocalContribution {
   */
 
   public String[] getApplicationExportList(String variant) {
+    if (exportList.isEmpty()) {
+      return baseList;
+    }
     return exportList.get(variant);
   }
 
@@ -502,6 +508,10 @@ public class Library extends LocalContribution {
 
 
   public boolean isUnsupported(String variant) {
+    if (exportList.isEmpty()) {
+      // if no per-platform exports, then nothing to worry about
+      return false;
+    }
     return getApplicationExportList(variant) == null;
   }
 
