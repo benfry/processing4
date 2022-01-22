@@ -31,6 +31,7 @@ platforms/variants/export
 X replacing macosx with macos in prefs and languages
 X major rewrite of Export to Application for the six supported platforms
 _   now writes folders with different names instead of 'application.'
+X move build/macosx to build/macos and make other necessary changes
 
 windows scaling
 X Fix "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
