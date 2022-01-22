@@ -30,16 +30,16 @@ import processing.app.ui.Theme;
 
 
 /**
- * Defaults that are PDE (but not Mode) specific. PDE specific in this case
- * means that it's using other PDE classes like Preferences.
+ * Defaults that are PDE (but not Mode) specific. PDE specific in this
+ * case means that it's using other PDE classes like Preferences.
  */
 public class PdeTextAreaDefaults extends TextAreaDefaults {
 
-  public PdeTextAreaDefaults(Mode mode) {
+  public PdeTextAreaDefaults(Mode ignoredMode) {
     document = new SyntaxDocument();
 
     // Set to 0 for revision 0215 because it causes strange jumps
-    // http://code.google.com/p/processing/issues/detail?id=1055
+    // https://github.com/processing/processing/issues/1093
     electricScroll = 0;
 
     caretVisible = true;
@@ -47,7 +47,7 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
     blockCaret = Preferences.getBoolean("editor.caret.block");
     cols = 80;
     // Set the number of rows lower to avoid layout badness with large fonts
-    // http://code.google.com/p/processing/issues/detail?id=1275
+    // https://github.com/processing/processing/issues/1313
     rows = 5;
 
     styles = new SyntaxStyle[Token.ID_COUNT];

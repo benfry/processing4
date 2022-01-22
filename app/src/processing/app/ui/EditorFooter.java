@@ -66,14 +66,11 @@ public class EditorFooter extends Box {
   static final int ICON_TOP = Toolkit.zoom(7);
   static final int ICON_MARGIN = Toolkit.zoom(7);
 
-  static final int UNSELECTED = 0;
+  static final int ENABLED = 0;
   static final int SELECTED = 1;
 
   Color[] textColor = new Color[2];
   Color[] tabColor = new Color[2];
-
-  Color updateColor;
-  int updateLeft;
 
   Editor editor;
 
@@ -81,10 +78,6 @@ public class EditorFooter extends Box {
 
   Font font;
   int fontAscent;
-
-  Image offscreen;
-  int sizeW, sizeH;
-  int imageW, imageH;
 
   Image gradient;
   Color bgColor;
@@ -100,14 +93,14 @@ public class EditorFooter extends Box {
     super(BoxLayout.Y_AXIS);
     this.editor = eddie;
 
-    updateTheme();
-
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
     add(cardPanel);
 
     controller = new Controller();
     add(controller);
+
+    updateTheme();
   }
 
 
@@ -137,7 +130,7 @@ public class EditorFooter extends Box {
   public void setPanel(Component comp) {
     for (Tab tab : tabs) {
       if (tab.comp == comp) {
-        cardLayout.show(cardPanel, tab.name);
+        cardLayout.show(cardPanel, tab.title);
         repaint();
       }
     }
@@ -162,13 +155,11 @@ public class EditorFooter extends Box {
 
   public void updateTheme() {
     textColor[SELECTED] = Theme.getColor("footer.text.selected.color");
-    textColor[UNSELECTED] = Theme.getColor("footer.text.unselected.color");
+    textColor[ENABLED] = Theme.getColor("footer.text.enabled.color");
     font = Theme.getFont("footer.text.font");
 
     tabColor[SELECTED] = Theme.getColor("footer.tab.selected.color");
-    tabColor[UNSELECTED] = Theme.getColor("footer.tab.unselected.color");
-
-    updateColor = Theme.getColor("footer.updates.color");
+    tabColor[ENABLED] = Theme.getColor("footer.tab.enabled.color");
 
     gradient = Theme.makeGradient("footer", 400, HIGH);
     // Set the default background color in case the window size reported
@@ -176,6 +167,13 @@ public class EditorFooter extends Box {
     // https://github.com/processing/processing/issues/3919
     bgColor = Theme.getColor("footer.gradient.bottom");
     setBackground(bgColor);
+
+    for (Tab tab : tabs) {
+      tab.updateTheme();
+    }
+
+    // replace colors for the "updates" indicator
+    controller.updateTheme();
   }
 
 
@@ -183,6 +181,10 @@ public class EditorFooter extends Box {
 
 
   class Controller extends JComponent {
+    Color updatesTextColor;
+    Color indicatorFieldColor;
+    Color indicatorTextColor;
+    int updateLeft;
 
     Controller() {
       addMouseListener(new MouseAdapter() {
@@ -191,7 +193,7 @@ public class EditorFooter extends Box {
           for (Tab tab : tabs) {
             if (tab.contains(x)) {
               //editor.setFooterPanel(tab.index);
-              cardLayout.show(cardPanel, tab.name);
+              cardLayout.show(cardPanel, tab.title);
               repaint();
             }
           }
@@ -202,35 +204,18 @@ public class EditorFooter extends Box {
       });
     }
 
-    public void paintComponent(Graphics screen) {
-      if (screen == null) return;
+    void updateTheme() {
+      updatesTextColor = Theme.getColor("footer.updates.text.color");
+      indicatorFieldColor = Theme.getColor("footer.updates.indicator.field.color");
+      indicatorTextColor = Theme.getColor("footer.updates.indicator.text.color");
+      repaint();
+    }
+
+    public void paintComponent(Graphics g) {
+      if (g == null) return;
       Sketch sketch = editor.getSketch();
       if (sketch == null) return;  // possible?
 
-      Dimension size = getSize();
-      if ((size.width != sizeW) || (size.height != sizeH)) {
-        // component has been resized
-
-        if ((size.width > imageW) || (size.height > imageH)) {
-          // nix the image and recreate, it's too small
-          offscreen = null;
-
-        } else {
-          // if the image is larger than necessary, no need to change
-          sizeW = size.width;
-          sizeH = size.height;
-        }
-      }
-
-      if (offscreen == null) {
-        sizeW = size.width;
-        sizeH = size.height;
-        imageW = sizeW;
-        imageH = sizeH;
-        offscreen = Toolkit.offscreenGraphics(this, imageW, imageH);
-      }
-
-      Graphics g = offscreen.getGraphics();
       g.setFont(font);  // need to set this each time through
       if (fontAscent == 0) {
         fontAscent = (int) Toolkit.getAscent(g);
@@ -240,31 +225,28 @@ public class EditorFooter extends Box {
 
       g.setColor(tabColor[SELECTED]);
       // can't be done with lines, b/c retina leaves tiny hairlines
-      g.fillRect(0, 0, imageW, Toolkit.zoom(2));
+      g.fillRect(0, 0, getWidth(), Toolkit.zoom(2));
 
-      g.drawImage(gradient, 0, Toolkit.zoom(2), imageW, imageH, this);
+      g.drawImage(gradient, 0, Toolkit.zoom(2), getWidth(), getHeight(), this);
 
       // reset all tab positions
       for (Tab tab : tabs) {
         tab.textWidth = (int)
-          font.getStringBounds(tab.name, g2.getFontRenderContext()).getWidth();
+          font.getStringBounds(tab.title, g2.getFontRenderContext()).getWidth();
       }
 
       // now actually draw the tabs
-      drawTabs(Editor.LEFT_GUTTER, g2);
+      drawTabs(g2, Editor.LEFT_GUTTER);
 
       // the number of updates available in the Manager
       drawUpdates(g2);
-
-      screen.drawImage(offscreen, 0, 0, imageW, imageH, null);
     }
-
 
     /**
      * @param left starting position from the left
      * @param g graphics context, or null if we're not drawing
      */
-    private void drawTabs(int left, Graphics2D g) {
+    private void drawTabs(Graphics2D g, int left) {
       int x = left;
 
       for (Tab tab : tabs) {
@@ -280,7 +262,6 @@ public class EditorFooter extends Box {
         x += TAB_BETWEEN;
       }
     }
-
 
     private void drawUpdates(Graphics2D g2) {
       if (updateCount != 0) {
@@ -299,28 +280,25 @@ public class EditorFooter extends Box {
         float diameter = (float) (2 * (Math.max(countHeight, countWidth)/2 + CIRCULAR_PADDING));
         float ex = getWidth() - Editor.RIGHT_GUTTER - diameter;
         float ey = (getHeight() - diameter) / 2;
-        g2.setColor(updateColor);
+        g2.setColor(indicatorFieldColor);
         g2.fill(new Ellipse2D.Float(ex, ey, diameter, diameter));
-        g2.setColor(textColor[SELECTED]);
+        g2.setColor(indicatorTextColor);
         int baseline = (getHeight() + fontAscent) / 2;
         g2.drawString(updatesStr, (int) (ex + (diameter - countWidth)/2), baseline);
         double updatesWidth = font.getStringBounds(updateLabel, frc).getWidth();
-        g2.setColor(textColor[UNSELECTED]);
+        g2.setColor(updatesTextColor);
         updateLeft = (int) (ex - updatesWidth - GAP);
         g2.drawString(updateLabel, updateLeft, baseline);
       }
     }
 
-
     public Dimension getPreferredSize() {
       return new Dimension(Toolkit.zoom(300), HIGH);
     }
 
-
     public Dimension getMinimumSize() {
       return getPreferredSize();
     }
-
 
     public Dimension getMaximumSize() {
       return new Dimension(super.getMaximumSize().width, HIGH);
@@ -332,7 +310,8 @@ public class EditorFooter extends Box {
 
 
   class Tab {
-    String name;
+    String title;
+    String icon;
     Component comp;
     boolean notification;
 
@@ -343,18 +322,40 @@ public class EditorFooter extends Box {
     int right;
     int textWidth;
 
-    Tab(Component comp, String name, String icon) {
+    Tab(Component comp, String title, String icon) {
       this.comp = comp;
-      this.name = name;
+      this.title = title;
+      this.icon = icon;
 
+      updateTheme();
+    }
+
+    protected void updateTheme() {
       if (icon != null) {
-        Mode mode = editor.getMode();
-        enabledIcon = mode.loadImageX(icon + "-enabled");
-        selectedIcon = mode.loadImageX(icon + "-selected");
+        enabledIcon = renderImage("enabled");
+        selectedIcon = renderImage("selected");
         if (selectedIcon == null) {
-          selectedIcon = enabledIcon;  // use this as the default
+          selectedIcon = enabledIcon;  // fallback
         }
       }
+    }
+
+    protected Image renderImage(String state) {
+      Mode mode = editor.getMode();
+      String xmlOrig = mode.loadString(icon + ".svg");
+
+      if (xmlOrig == null) {
+        // load image data from PNG files
+        return mode.loadImageX(icon + "-" + state);
+      }
+
+      final String ICON_COLOR = "silver";
+      String iconColor = Theme.get("footer.icon." + state + ".color");
+
+      String xmlStr = xmlOrig.replace(ICON_COLOR, iconColor);
+
+      final int m = Toolkit.highResMultiplier();
+      return Toolkit.svgToImage(xmlStr, ICON_WIDTH * m, ICON_HEIGHT * m);
     }
 
     boolean contains(int x) {
@@ -385,32 +386,27 @@ public class EditorFooter extends Box {
       return enabledIcon != null;
     }
 
-    void draw(Graphics g) {
-      int state = isCurrent() ? SELECTED : UNSELECTED;
-      g.setColor(tabColor[state]);
-//      if (notification) {
-//        g.setColor(errorColor);
-//      }
-
-      Graphics2D g2 = (Graphics2D) g;
+    void draw(Graphics2D g2) {
+      int state = isCurrent() ? SELECTED : ENABLED;
+      g2.setColor(tabColor[state]);
       g2.fill(Toolkit.createRoundRect(left, TAB_TOP, right, TAB_BOTTOM, 0, 0,
                                       isLast() ? CURVE_RADIUS : 0,
                                       isFirst() ? CURVE_RADIUS : 0));
 
       if (hasIcon()) {
         Image icon = (isCurrent() || notification) ? selectedIcon : enabledIcon;
-        g.drawImage(icon, left + MARGIN, ICON_TOP, ICON_WIDTH, ICON_HEIGHT, null);
+        g2.drawImage(icon, left + MARGIN, ICON_TOP, ICON_WIDTH, ICON_HEIGHT, null);
       }
 
       int textLeft = getTextLeft();
-      if (notification && state == UNSELECTED) {
-        g.setColor(textColor[SELECTED]);
+      if (notification && state == ENABLED) {
+        g2.setColor(textColor[SELECTED]);
       } else {
-        g.setColor(textColor[state]);
+        g2.setColor(textColor[state]);
       }
       int tabHeight = TAB_BOTTOM - TAB_TOP;
       int baseline = TAB_TOP + (tabHeight + fontAscent) / 2;
-      g.drawString(name, textLeft, baseline);
+      g2.drawString(title, textLeft, baseline);
     }
   }
 }

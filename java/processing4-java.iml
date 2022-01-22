@@ -168,14 +168,5 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="junit-4.8.1.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/test/lib/junit-4.8.1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>

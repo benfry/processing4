@@ -42,21 +42,15 @@
 
   <target name="download-jogl" unless="jogl.present">
     <get dest="library" usetimestamp="true" ignoreerrors="${jogl.ignorable}">
-      <url url="${jogl.url}/gluegen-rt-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-linux-amd64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-linux-i586.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-macosx-universal.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-windows-amd64.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-windows-i586.jar" />
       <url url="${jogl.url}/gluegen-rt.jar" />
-      <url url="${jogl.url}/jogl-all-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/jogl-all-natives-linux-amd64.jar" />
       <url url="${jogl.url}/jogl-all-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/jogl-all-natives-linux-i586.jar" />
       <url url="${jogl.url}/jogl-all-natives-macosx-universal.jar" />
       <url url="${jogl.url}/jogl-all-natives-windows-amd64.jar" />
-      <url url="${jogl.url}/jogl-all-natives-windows-i586.jar" />
       <url url="${jogl.url}/jogl-all.jar" />
     </get>
   </target>
@@ -64,17 +58,6 @@
   <path id="classpath.base">
     <pathelement location="library/jogl-all.jar" />
     <pathelement location="library/gluegen-rt.jar" />
-
-    <!-- <pathelement location="library/javafx-swt.jar" /> -->
-    <pathelement location="library/javafx.base.jar" />
-    <pathelement location="library/javafx.controls.jar" />
-    <pathelement location="library/javafx.fxml.jar" />
-    <pathelement location="library/javafx.graphics.jar" />
-    <pathelement location="library/javafx.media.jar" />
-    <!-- error? it's not a .jar, but is this how config is handled? [fry 210619] -->
-    <pathelement location="library/javafx.properties" />
-    <pathelement location="library/javafx.swing.jar" />
-    <!-- <pathelement location="library/javafx.web.jar" /> -->
   </path>
 
   <path id="classpath.test">
@@ -97,14 +80,6 @@
       <!-- Where can I expect to find Java Mode JARs? -->
       <property name="java.mode" value="../java/mode/" />
 
-      <!-- JavaFX got removed from the Oracle's JDK for arm and Java 11 -->
-      <condition property="fx.unavailable" value="true">
-        <or>
-          <equals arg1="${os.arch}" arg2="arm" />
-          <equals arg1="${os.arch}" arg2="aarch64" />
-        </or>
-      </condition>
-
       <mkdir dir="@{destdir}" />
       <javac source="11"
   	   target="11"
@@ -116,7 +91,6 @@
         <classpath refid="@{classpath}" />
         <src path="@{srcdir}" />
         <include name="processing/**" />
-        <exclude name="processing/javafx/**" if="fx.unavailable" />
       </javac>
 
       <!-- Copy the jnilib to the bin folder so it's included. -->

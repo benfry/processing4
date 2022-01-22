@@ -56,9 +56,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private static final String PIXEL_DENSITY_METHOD_NAME = "pixelDensity";
   private static final String FULLSCREEN_METHOD_NAME = "fullScreen";
 
-  private String sketchName;
+  final private String sketchName;
   private boolean isTesting;
-  private TokenStreamRewriter rewriter;
+  final private TokenStreamRewriter rewriter;
   private Optional<String> destinationPackageName;
 
   private Mode mode = Mode.JAVA;
@@ -66,11 +66,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   private int lineOffset;
 
-  private ArrayList<ImportStatement> coreImports = new ArrayList<>();
-  private ArrayList<ImportStatement> defaultImports = new ArrayList<>();
-  private ArrayList<ImportStatement> codeFolderImports = new ArrayList<>();
-  private ArrayList<ImportStatement> foundImports = new ArrayList<>();
-  private ArrayList<TextTransform.Edit> edits = new ArrayList<>();
+  private List<ImportStatement> coreImports = new ArrayList<>();
+  private List<ImportStatement> defaultImports = new ArrayList<>();
+  private List<ImportStatement> codeFolderImports = new ArrayList<>();
+  private List<ImportStatement> foundImports = new ArrayList<>();
+  private List<TextTransform.Edit> edits = new ArrayList<>();
 
   private String sketchWidth;
   private String sketchHeight;
@@ -255,7 +255,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   /**
    * Get the result of the last preprocessing.
    *
-   * @param issues The errors (if any) encountered.
    * @return The result of the last preprocessing.
    */
   public PreprocessorResult getResult() {
@@ -667,7 +666,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     if (isFullscreen) {
       sketchWidth = "displayWidth";
-      sketchWidth = "displayHeight";
+      sketchHeight = "displayHeight";
 
       thisRequiresRewrite = true;
       sizeIsFullscreen = true;
@@ -1051,7 +1050,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         RewriteResultBuilder resultBuilder) {
 
     headerWriter.addCodeLine("public class " + sketchName + " extends PApplet {");
-
     headerWriter.addEmptyLine();
   }
 

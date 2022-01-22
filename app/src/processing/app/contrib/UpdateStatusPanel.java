@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-16 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2
@@ -21,8 +21,6 @@
 package processing.app.contrib;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.LayoutStyle;
@@ -33,22 +31,16 @@ import processing.app.ui.Toolkit;
 
 public class UpdateStatusPanel extends StatusPanel {
 
-  public UpdateStatusPanel(UpdateContributionTab tab, int width) {
-    super();
-    this.contributionTab = tab;
+  public UpdateStatusPanel(UpdateContributionTab tab) {
+    super(tab);
 
-    updateButton = Toolkit.createIconButton("Update All", "manager/update");
+    updateButton = Toolkit.createIconButton("Update All", updateIcon);
     updateButton.setFont(ManagerFrame.NORMAL_PLAIN);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.setVisible(true);
     updateButton.setEnabled(false);
 
-    updateButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        contributionTab.updateAll();
-      }
-    });
+    updateButton.addActionListener(e -> contributionTab.updateAll());
     setBackground(new Color(0xebebeb));
     layout = new GroupLayout(this);
     setLayout(layout);

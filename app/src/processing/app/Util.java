@@ -25,6 +25,8 @@ package processing.app;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.*;
 
 import processing.core.PApplet;
@@ -53,7 +55,7 @@ public class Util {
   static public byte[] loadBytesRaw(File file) throws IOException {
     int size = (int) file.length();
     FileInputStream input = new FileInputStream(file);
-    byte buffer[] = new byte[size];
+    byte[] buffer = new byte[size];
     int offset = 0;
     int bytesRead;
     while ((bytesRead = input.read(buffer, offset, size-offset)) != -1) {
@@ -668,10 +670,73 @@ public class Util {
   }
 
 
-  static public final boolean containsNonASCII(String what) {
+  static public boolean containsNonASCII(String what) {
     for (char c : what.toCharArray()) {
       if (c < 32 || c > 127) return true;
     }
     return false;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static public String sanitizeHtmlTags(String str) {
+    return str.replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+
+  /**
+   * This has a [link](http://example.com/) in [it](http://example.org/).
+   *
+   * Becomes...
+   *
+   * This has a <a href="http://example.com/">link</a> in <a
+   * href="http://example.org/">it</a>.
+   */
+  static public String markDownLinksToHtml(String str) {
+    Pattern p = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
+    Matcher m = p.matcher(str);
+
+    StringBuilder sb = new StringBuilder();
+
+    int start = 0;
+    while (m.find(start)) {
+      sb.append(str, start, m.start());
+
+      String text = m.group(1);
+      String url = m.group(2);
+
+      sb.append("<a href=\"");
+      sb.append(url);
+      sb.append("\">");
+      sb.append(text);
+      sb.append("</a>");
+
+      start = m.end();
+    }
+    sb.append(str.substring(start));
+    return sb.toString();
+  }
+
+
+  static public String removeMarkDownLinks(String str) {
+    StringBuilder name = new StringBuilder();
+    if (str != null) {
+      int parentheses = 0;
+      for (char c : str.toCharArray()) {
+        if (c == '[' || c == ']') {
+          // pass
+        } else if (c == '(') {
+          parentheses++;
+        } else if (c == ')') {
+          parentheses--;
+        } else if (parentheses == 0) {
+          name.append(c);
+        }
+      }
+    }
+    return name.toString();
   }
 }

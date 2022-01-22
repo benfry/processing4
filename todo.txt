@@ -1,61 +1,151 @@
-1278 (4.0b3)
-X Update appbundler with the latest from upstream
-X Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17
-X   https://github.com/processing/processing4/issues/285
-_   update README to note that we're on 17
-X cleaning up the Create Font dialog while tracking down #278
-/   https://github.com/processing/processing4/issues/278
-X   couldn't reproduce, but probably an issue in there somewhere
-X   Remove Serif, SansSerif, Monospaced, Dialog, and DialogInput from Create Font
-X   sort the list of font names
-X   skip fonts starting . and # because they're likely to confuse users
-X get rid of version numbers in the name of the batik.jar file
+1279 (4.0b4)
+X remove contentTypes line because it breaks double-clicking files to open
+X   https://github.com/processing/processing4/issues/347
+X Move JavaFX to its own library
+X   https://github.com/processing/processing4/issues/348
+X JavaFX no longer supported for Tools, Modes as a result
+o turn off javafx web if not using
+X   moved out with SVG library
+X set minimum Java version for Windows launcher to 17.0.1
+X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
+X   https://github.com/processing/processing4/issues/129
+X   now with a release 9 to cover Big Sur
+X     https://violetlib.org/vaqua/downloads.html
+X   make the final call to remove, or put the libs on download.processing.org
+X   removing, with the theming integration, gonna head that direction instead
+X bump ant from 1.10.10 to 1.10.12
+X bump JNA from 5.8.0 to 5.10.0
+X remove "Illegal reflective access" warning on Linux
+X   https://github.com/processing/processing4/issues/207
+X write release notes about not moving to RSyntaxArea
+X   https://github.com/processing/processing4/issues/355
+X   https://github.com/processing/processing/issues/3199
+X   https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md
+X re-implement settings.path to support portable versions
+X   https://github.com/processing/processing/issues/3948
+X   moved to https://github.com/processing/processing4/issues/362
+X   https://github.com/processing/processing4/pull/360
+X   fixed with https://github.com/processing/processing4/commit/1a49263a94a2d7af2b4686286406f7896d207cd9
 
-sam
-X Error when calling smooth() on PGraphics
-X   https://github.com/processing/processing4/issues/272
-X Detect if calling special methods on PApplet or not (and restore unit tests)
-X   https://github.com/processing/processing4/pull/288
-X Move Mockito to a new version
-X   https://github.com/processing/processing4/issues/287
+platforms/variants/export
+X replacing macosx with macos in prefs and languages
+X major rewrite of Export to Application for the six supported platforms
+_   now writes folders with different names instead of 'application.'
 
-cleaning
-o import option for sketchbook (button to select files/folders/etc)
-X   use pdez instead
+windows scaling
+X Fix "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
+X remove old-school offscreen buffering from our custom components
+X scale of opening screen
+X   attempting to use multi-resolution image loading
+o   make smaller at 125%
+X   loading the 2x version always, turn on smoothing and draw at 50%
+X is Toolkit.setIcon() in splash slowing down the startup screen?
+X   nope, appears to be class loading out of our control (0.3s vs our code 0.1s)
+X fix weird character offsets in text area
+X Resolve scaling issues with Windows
+X   Editor cursor position offset to the right with fractional Windows scaling
+X   https://github.com/processing/processing4/issues/342
+X displayDensity() is returning 1 when run from the PDE
+X   https://github.com/processing/processing4/issues/339
+
+contribs
+X select entire line when doing Edit > Copy on an empty selection
+X   https://github.com/processing/processing4/pull/100
 
 
-before release
-_ disable Theme Engine from Tools (in build.xml)
+manager
+X contrib list entry in the table sometimes contains markdown
+X   at least hide the syntax parts (and show the text)
+X description panel in contribs contains markdown
+X   cursor even changes to link, but the links don't have colors,
+X   and no links open when clicked
+X   now changing color for link and actually opening the links
+X set the font on the contrib install progress bar
+X DetailPanel seems totally vestigial?
+X updates count is off... maybe when compatible != available count?
+X   nope, just something weird with the qr code library
+X   probably not available anymore, not gonna bother digging further
+_ after opening Editor window, Processing freezes until contribs are loaded
+_ when opening manager, animation runs briefly then freezes
+_ DetailPanel setContribution() being called 4x for each contrib on startup
+_ during install of contrib, progress is halting during the install
+_   probably too much happening on the EDT that should not be
+_ optimize ContributionTab addListener() call in constructor
+X   no longer calling addListener() on every single entry, whcih helps
+_   but what else might that change be breaking?
+_ StatusPanel seems to be recreated entirely
+_ StatusPanel being reset twice on each click
+_   is checking for previous, but apparently that's not working
+_ Base.setUpdatesAvailable() is called from half a dozen places!?
+
+
+before beta 4 release
+_ javafx library linked in contribs manager
+_   test to make sure still working
+_   warnings about installation
+_ MovieMaker out as well?
 
 
 known issues
-_ Editor cursor position is offset to the right when Windows scaling >100%
-_   https://github.com/processing/processing4/issues/226
-_   ship with a spare .exe for this one?
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
-_ UI scaling issues on Windows still not resolved
-_   https://github.com/processing/processing4/issues/231
-_ Export to Application not working with the current video library
-_   https://github.com/processing/processing-video/issues/188
-_ docs are 3.x not 4.x
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-_ update the README.md in the root for alpha 6 and beta 1 and 2
-_ update https://github.com/processing/processing4/wiki/Changes-in-4.0
+design/next
+X selector for theme that uses tiny images
+_ update theme
+_ icon for exported app
+_ icon for document
+_ update the foundation icons
+_ redesign of the Contribution Manager
+_   identify coloring for icons
+_   how much of theme to inherit
+_   generate manager icons
+_ decision about 'debug' versions of toolbar icons
+_ put themes in folders by name
+_ add notes about params to the wiki
+_   new scrollbars
+
+
+movie maker
+_ break this out to its own library
+_   another big leap in file size reduction for the PDE download
+_   but need to figure out a good way to highlight it/encourage installation
+_   ...as well as the other libraries? separate window?
+_ remove jai_imageio.jar from MovieMaker
+_   also clean out the other unused class files and src
+
+
+_ Add support for localizing contributions
+_   https://github.com/processing/processing4/pull/237 (updated by Andres)
+X   https://github.com/processing/processing/pull/2833
+X   https://github.com/processing/processing/issues/3154
+X   https://github.com/processing/processing/pull/3337
+_ add language support to Modes (request and updated PR from Andres)
+_   https://github.com/processing/processing4/issues/236
+_   https://github.com/processing/processing4/pull/237
 
 _ refresh option for sketchbook (bottom of window)
 
+_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
+_   https://github.com/processing/processing4/issues/212
+_   modules and classpath ugh https://stackoverflow.com/a/46289257
+
+
+_ pdez links for contribs, not just the .zip
+_   fix the code so that the contribs manager will handle it
+_   though that's bad for earlier contribs, hrm
 _ document pdez and pdex files so that folks can use them
 _ load examples from pdez files
 _   250 example (folders), would cut ~8-900 files to just those 250
 _   https://github.com/processing/processing/issues/182
 _ examples window sketches should load in proper environment
-_   if Java Mode is in front, and user double-clicks another Mode's entry, what happens?
+_   test for what happens:
+_   if Java Mode is in front, and user double-clicks another Mode's entry
 _ write build.xml file to automatically update the examples
 _ when adding a new library, its examples aren't added to the list until restart
 
@@ -64,10 +154,7 @@ _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
 _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
-_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
-_   https://github.com/processing/processing4/issues/212
-
-_ when lib downloads (batik) go dead, fallback to the download.processing.org version
+_ when lib downloads (batik) go dead, fallback to download.processing.org
 _   or for now, tell users how to do it manually
 
 
@@ -93,9 +180,9 @@ _     https://fonts.google.com/specimen/Space+Grotesk
 
 
 windows/scaling
-_ include JNA so that sketches can also scale properly?
-_   what happens re: getting scaled/high-res graphics?
-_   make that a preference? (and double the size by default?)
+X include JNA so that sketches can also scale properly?
+X   what happens re: getting scaled/high-res graphics?
+X   make that a preference? (and double the size by default?)
 _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 _ was looking crunchy on low-dpi screen set to 125%
@@ -115,22 +202,29 @@ _   https://stackoverflow.com/a/2495712
 _   (built and tested a version of this code if we want to use it)
 
 
+code completion
+_ auto-complete not triggering, workaround as pref?
+_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
+_   https://github.com/processing/processing/issues/5691
+_ more reports of code completion not working on macOS
+_   "working in a6 but not b2"
+_   https://github.com/processing/processing4/issues/304
+
+
 before 4.x final
-_ clean up dist files, 'bin' and 'src' from Java Mode are included, iml files, etc
-_ turn off javafx web if not using
-_ SVG library, show a warning when using style instead of presentation attributes
+_ Export to Application not working with the current video library
+_   https://github.com/processing/processing-video/issues/188
+_ docs are 3.x not 4.x
+_ Apple Silicon support
+_   https://github.com/processing/processing4/issues/128
+_ clean up dist: 'bin' and 'src' from Java Mode are included, iml files, etc
+_ loadShape(), show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
 _   just skip the welcome screen on Windows hidpi dipslays?
 _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _ change help menu links to go to newer FAQ and the rest
-_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
-_   macosx vs macosx64 in JavaFX
-_     the latter is making the export fail because it won't embed a Java VM
-_     may be because it's exporting twice and overwriting? or 64 takes precedence?
-_   what should macos-aarch64 be called?
-_   Export Application can use nicer names, the libs thing is trickier
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
@@ -141,27 +235,25 @@ _   https://github.com/processing/processing/issues/6129
 _ editor breakpoints out of the .pde files
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
-_ remove jai_imageio.jar from MovieMaker
-_   also clean out the other unused class files and src
+
+
+platforms
+_ https://github.com/processing/processing4/wiki/Supported-Platforms
+_ final supported platforms
+_   as far as adoptium is concerned:
+_   macos-x64, macos-aarch64 (m1), windows-x64, linux-x64, linux-arm32 (rpi)
+_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+_   or macos-intel64, macos-applesi, linux-intel64, ...
+_   what should macos-aarch64 be called?
+_   macosx vs macosx64 in JavaFX
+_     the latter is making the export fail because it won't embed a Java VM
+_     may be because it's exporting twice and overwriting?
+_     or 64 takes precedence?
+_   Export Application can use nicer names, the libs thing is trickier
 
 
 decisions before final 4.0 release
-_ auto-complete not triggering, workaround as pref?
-_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
-_   https://github.com/processing/processing/issues/5691
-_ add language support to Modes (request and updated PR from Andres)
-_   https://github.com/processing/processing4/issues/236
-_   https://github.com/processing/processing4/pull/237
-_ Add support for localizing contributions
-_   https://github.com/processing/processing/pull/2833
-_   https://github.com/processing/processing/issues/3154
-_   https://github.com/processing/processing/pull/3337
 _ can we compress jdk/Contents/Home/legal into a single zip?
-X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
-_   https://github.com/processing/processing4/issues/129
-_   now with a release 9 to cover Big Sur
-_     https://violetlib.org/vaqua/downloads.html
-_   make the final call to remove, or put the libs on download.processing.org
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
 _ change the license from GPL
@@ -171,7 +263,8 @@ _   update license info to state gplv2 not v3
 _   run through that online license checker
 _ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
-_   https://osxdaily.com/2019/02/13/fix-app-damaged-cant-be-opened-trash-error-mac/
+_   xattr -cr /path/to/application.app
+_   -c removes attributes, -r is recursive
 _   https://github.com/processing/processing/issues/4214
 _ make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
@@ -194,6 +287,7 @@ _   dropping a sketch folder onto the PDE should also be implemented
 _ startup is so incredibly slow
 X   the splash screen comes up fairly quickly, so what gives?
 _   lots of EDT thread stuff, particularly with loading contribs
+_   handleNew() taking 2-3s?
 
 
 windows
@@ -271,8 +365,6 @@ _   already reported?
 teaching
 _ teacher wants user input on the console
 _   https://github.com/processing/processing/issues/5779
-_ did we lose settings.path because it was too buggy?
-_   https://github.com/processing/processing/issues/3948
 _ proxy trouble with p5? since adding the system proxy?
 _   https://github.com/processing/processing/pull/3251/files
 _   larger problem thread https://github.com/processing/processing/issues/3891
@@ -1079,6 +1171,8 @@ _   https://github.com/processing/processing/issues/186
 
 DIST / Linux
 
+_ Need better method than reflection for setting application name
+_   https://github.com/processing/processing4/issues/349
 _ update install.sh for .pdex and .pdez file associations
 _   https://github.com/processing/processing4/issues/239
 

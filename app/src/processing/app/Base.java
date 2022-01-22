@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -52,9 +52,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1278;
+  static private final int REVISION = 1279;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1278"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1279"; //$NON-NLS-1$
 
   static final public String SKETCH_BUNDLE_EXT = ".pdez";
   static final public String CONTRIB_BUNDLE_EXT = ".pdex";
@@ -67,6 +67,13 @@ public class Base {
   static public boolean DEBUG;
 
   static private boolean commandLine;
+
+  /**
+   * If settings.txt is present inside lib, it will be used to override
+   * the location of the settings folder so that "portable" versions
+   * of the software are possible.
+   */
+  static private File settingsOverride;
 
   // A single instance of the preferences window
   PreferencesFrame preferencesFrame;
@@ -145,6 +152,7 @@ public class Base {
 
 
   static private void createAndShowGUI(String[] args) {
+    // these times are fairly negligible relative to Base.<init>
 //    long t1 = System.currentTimeMillis();
 
     File versionFile = Platform.getContentFile("lib/version.txt");
@@ -156,6 +164,35 @@ public class Base {
         }
       }
     }
+
+    // Detect settings.txt in the lib folder for portable versions
+    File settingsFile = Platform.getContentFile("lib/settings.txt");
+    if (settingsFile != null && settingsFile.exists()) {
+      try {
+        Settings portable = new Settings(settingsFile);
+        String path = portable.get("settings.path");
+        File folder = new File(path);
+        boolean success = true;
+        if (!folder.exists()) {
+          success = folder.mkdirs();
+          if (!success) {
+            Messages.err("Could not create " + folder + " to store settings.");
+          }
+        }
+        if (success) {
+          if (!folder.canRead()) {
+            Messages.err("Cannot read from " + folder);
+          } else if (!folder.canWrite()) {
+            Messages.err("Cannot write to " + folder);
+          } else {
+            settingsOverride = folder.getAbsoluteFile();
+          }
+        }
+      } catch (IOException e) {
+        Messages.err("Error while reading the settings.txt file", e);
+      }
+    }
+
 
     Platform.init();
     // call after Platform.init() because we need the settings folder
@@ -199,10 +236,11 @@ public class Base {
       }
 
 //      long t3 = System.currentTimeMillis();
-//      long t4 = System.currentTimeMillis();
 
       // Get the sketchbook path, and make sure it's set properly
       locateSketchbookFolder();
+
+//      long t4 = System.currentTimeMillis();
 
       // Load colors for UI elements. This must happen after Preferences.init()
       // (so that fonts are set) and locateSketchbookFolder() so that a
@@ -220,7 +258,7 @@ public class Base {
       }
 
 //      long t5 = System.currentTimeMillis();
-//      long t6 = 0;
+//      long t6 = 0;  // replaced below, just needs decl outside try { }
 
       Messages.log("About to create Base..."); //$NON-NLS-1$
       try {
@@ -232,7 +270,7 @@ public class Base {
         SingleInstance.startServer(base);
 
         handleWelcomeScreen(base);
-        //checkDriverBug();  // that was 2017, right?
+        handleCrustyDisplay();
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
@@ -289,43 +327,29 @@ public class Base {
   }
 
 
-  /*
-  // Remove this code in a couple of months [fry 170211]
-  // https://github.com/processing/processing/issues/4853
-  // Or maybe not, if NVIDIA keeps doing this [fry 170423]
-  // https://github.com/processing/processing/issues/4997
-  @SuppressWarnings("SpellCheckingInspection")
-  static private void checkDriverBug() {
-    if (System.getProperty("os.name").contains("Windows 10")) {
-      new Thread(() -> {
-        try {
-          Process p = Runtime.getRuntime().exec("powershell Get-WmiObject Win32_PnPSignedDriver| select devicename, driverversion | where {$_.devicename -like \\\"*nvidia*\\\"}");
-          BufferedReader reader = PApplet.createReader(p.getInputStream());
-          String line;
-          while ((line = reader.readLine()) != null) {
-            if (line.contains("3.7849")) {
-              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up",
-                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                   "otherwise you won't be able to run any sketches. Update here:\n" +
-                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4378\n" +
-                                   "or read background about the issue at this link:\n" +
-                                   "https://github.com/processing/processing/issues/4853"));
-            } else if (line.contains("3.8165")) {
-              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up again",
-                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                   "otherwise you won't be able to run any sketches. Update here:\n" +
-                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4453/\n" +
-                                   "or read background about the issue at this link:\n" +
-                                   "https://github.com/processing/processing/issues/4997"));
-            }
-          }
-        } catch (Exception e) {
-          Messages.err("Problem checking NVIDIA driver", e);
+  /**
+   * Temporary workaround as we try to sort out
+   * https://github.com/processing/processing4/issues/231
+   * and https://github.com/processing/processing4/issues/226
+   */
+  static private void handleCrustyDisplay() {
+    /*
+    System.out.println("retina is " + Toolkit.isRetina());
+    System.out.println("system zoom " + Platform.getSystemZoom());
+    System.out.println("java2d param is " + System.getProperty("sun.java2d.uiScale.enabled"));
+    System.out.println("toolkit res is " + java.awt.Toolkit.getDefaultToolkit().getScreenResolution());
+    */
+    if (Platform.isWindows()) {  // only an issue on Windows
+      if (!Toolkit.isRetina() && !Splash.getDisableHiDPI()) {
+        int res = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+        if (res % 96 != 0) {
+          // fractional dpi scaling on a low-res screen
+          System.out.println("If the editor cursor is in the wrong place or the interface is blocky or fuzzy,");
+          System.out.println("open Preferences and select the “Disable HiDPI Scaling” option to fix it.");
         }
-      }).start();
+      }
     }
   }
-  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -362,9 +386,11 @@ public class Base {
 
 
   public Base(String[] args) throws Exception {
-//    long t1 = System.currentTimeMillis();
+    long t1 = System.currentTimeMillis();
     // TODO Taking 3-5 seconds with several things installed, which is unacceptable.
     //      Will take longer to optimize because most needs to run on the EDT.
+    //      (Which itself is totally unacceptable: there is no good reason
+    //      that we need to run on the EDT before we open the window.)
     ContributionManager.init(this);
 //      } catch (Exception e) {
 //        Messages.showWarning("Contribution Manager Error",
@@ -372,19 +398,19 @@ public class Base {
 //      }
 //    });
 
-//    long t2 = System.currentTimeMillis();
+    long t2 = System.currentTimeMillis();
     buildCoreModes();
     rebuildContribModes();
     rebuildContribExamples();
 
-//    long t3 = System.currentTimeMillis();
+    long t3 = System.currentTimeMillis();
     // Needs to happen after the sketchbook folder has been located.
     // Also relies on the modes to be loaded so it knows what can be
     // marked as an example.
 //    recent = new Recent(this);
     Recent.init(this);
 
-//    long t4 = System.currentTimeMillis();
+    long t4 = System.currentTimeMillis();
     String lastModeIdentifier = Preferences.get("mode.last"); //$NON-NLS-1$
     if (lastModeIdentifier == null) {
       nextMode = getDefaultMode();
@@ -404,7 +430,7 @@ public class Base {
 
     //contributionManagerFrame = new ContributionManagerDialog();
 
-//    long t5 = System.currentTimeMillis();
+    long t5 = System.currentTimeMillis();
 
     // Make sure ThinkDifferent has library examples too
     nextMode.rebuildLibraryList();
@@ -413,7 +439,7 @@ public class Base {
     // menu works on Mac OS X (since it needs examplesFolder to be set).
     Platform.initBase(this);
 
-//    long t6 = System.currentTimeMillis();
+    long t6 = System.currentTimeMillis();
 
 //    // Check if there were previously opened sketches to be restored
 //    boolean opened = restoreSketches();
@@ -442,7 +468,7 @@ public class Base {
       }
     }
 
-//    long t7 = System.currentTimeMillis();
+    long t7 = System.currentTimeMillis();
 
     // Create a new empty window (will be replaced with any files to be opened)
     if (!opened) {
@@ -452,16 +478,16 @@ public class Base {
       Messages.log("No handleNew(), something passed on the command line");
     }
 
-//    long t8 = System.currentTimeMillis();
+    long t8 = System.currentTimeMillis();
 
     // check for updates
     new UpdateCheck(this);
 
     ContributionListing cl = ContributionListing.getInstance();
     cl.downloadAvailableList(this, new ContribProgressMonitor() { });
-//    long t9 = System.currentTimeMillis();
+    long t9 = System.currentTimeMillis();
 //    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
-//      " " + (t5-t4) + " 6-5=" + (t6-t5) + " " + (t7-t6) + " " + (t8-t7) + " " + (t9-t8) + " ms");
+//      " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) + " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");
   }
 
 
@@ -724,13 +750,16 @@ public class Base {
     if (internalTools == null) {
       internalTools = new ArrayList<>();
 
-      initInternalTool("processing.app.tools.CreateFont");
-      initInternalTool("processing.app.tools.ColorSelector");
       initInternalTool("processing.app.tools.Archiver");
+      initInternalTool("processing.app.tools.ColorSelector");
+      initInternalTool("processing.app.tools.CreateFont");
 
       if (Platform.isMacOS()) {
         initInternalTool("processing.app.tools.InstallCommander");
       }
+
+      initInternalTool("processing.app.tools.ThemeSelector");
+      initInternalTool("processing.app.tools.UpdateTheme");
     }
 
     // No need to reload these either
@@ -1953,7 +1982,8 @@ public class Base {
   /**
    * Get the directory that can store settings. (Library on OS X, App Data or
    * something similar on Windows, a dot folder on Linux.) Removed this as a
-   * preference for 3.0a3 because we need this to be stable.
+   * preference for 3.0a3 because we need this to be stable, but adding back
+   * for 4.0 beta 4 so that folks can do 'portable' versions again.
    */
   static public File getSettingsFolder() {
     File settingsFolder = null;
@@ -1977,6 +2007,11 @@ public class Base {
                          e, true);
     }
     return settingsFolder;
+  }
+
+
+  static public File getSettingsOverride() {
+    return settingsOverride;
   }
 
 

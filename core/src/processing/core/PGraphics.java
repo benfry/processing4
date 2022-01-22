@@ -460,6 +460,9 @@ public class PGraphics extends PImage implements PConstants {
   /** The current text leading (read-only) */
   public float textLeading;
 
+  /** Used internally to check whether still using the default font */
+  protected String defaultFontName;
+
   static final protected String ERROR_TEXTFONT_NULL_PFONT =
     "A null PFont was passed to textFont()";
 
@@ -4243,13 +4246,13 @@ public class PGraphics extends PImage implements PConstants {
       InputStream input = getClass().getResourceAsStream("/font/ProcessingSansPro-Regular.ttf");
       if (input != null) {
         baseFont = Font.createFont(Font.TRUETYPE_FONT, input);
+        defaultFontName = baseFont.getName();
       }
-
     } catch (Exception e) {
-      // Fall back to how this was handled in 3.x, ugly!
       e.printStackTrace(); // dammit
     }
 
+    // Fall back to how this was handled in 3.x, ugly!
     if (baseFont == null) {
       baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
     }
@@ -8471,7 +8474,9 @@ public class PGraphics extends PImage implements PConstants {
    */
   protected void defaultFontOrDeath(String method, float size) {
     if (parent != null) {
-      textFont = createDefaultFont(size);
+      // Call textFont() so that subclasses can do necessary setup
+      // https://github.com/processing/processing4/issues/303
+      textFont(createDefaultFont(size));
     } else {
       throw new RuntimeException("Use textFont() before " + method + "()");
     }

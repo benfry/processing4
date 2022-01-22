@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -44,10 +44,9 @@ import processing.app.Preferences;
  * Message console that sits below the editing area.
  */
 public class EditorConsole extends JScrollPane {
+  static final Color TRANSPARENT = new Color(0, 0, 0, 0);
+
   Editor editor;
-
-  Timer flushTimer;
-
   JTextPane consoleTextPane;
   BufferedStyledDocument consoleDoc;
 
@@ -61,6 +60,8 @@ public class EditorConsole extends JScrollPane {
   PrintStream sketchErr;
 
   static EditorConsole current;
+
+  Timer flushTimer;
 
 
   public EditorConsole(Editor editor) {
@@ -86,9 +87,7 @@ public class EditorConsole extends JScrollPane {
 
   protected void flush() {
     // only if new text has been added
-    if (consoleDoc.hasAppendage()) {
-      // insert the text that's been added in the meantime
-      consoleDoc.insertAll();
+    if (consoleDoc.insertQueued()) {
       // always move to the end of the text as it's added
       consoleTextPane.setCaretPosition(consoleDoc.getLength());
     }
@@ -148,7 +147,10 @@ public class EditorConsole extends JScrollPane {
 
     stdStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(stdStyle, fgColorOut);
-    StyleConstants.setBackground(stdStyle, bgColor);
+    // Changed to TRANSPARENT because it causes trouble when changing
+    // the theme color. But it looks like it's not necessary to set it
+    // anyway, so removing the setBackground() call entirely.
+    //StyleConstants.setBackground(stdStyle, TRANSPARENT);  //bgColor);
     StyleConstants.setFontSize(stdStyle, font.getSize());
     StyleConstants.setFontFamily(stdStyle, font.getFamily());
     StyleConstants.setBold(stdStyle, font.isBold());
@@ -156,17 +158,17 @@ public class EditorConsole extends JScrollPane {
 
     errStyle = new SimpleAttributeSet();
     StyleConstants.setForeground(errStyle, fgColorErr);
-    StyleConstants.setBackground(errStyle, bgColor);
+    //StyleConstants.setBackground(stdStyle, TRANSPARENT);  //bgColor);
     StyleConstants.setFontSize(errStyle, font.getSize());
     StyleConstants.setFontFamily(errStyle, font.getFamily());
     StyleConstants.setBold(errStyle, font.isBold());
     StyleConstants.setItalic(errStyle, font.isItalic());
 
     String lookAndFeel = UIManager.getLookAndFeel().getID();
-    if (lookAndFeel.equals("Nimbus") || lookAndFeel.equals("VAqua")) {
+    if (lookAndFeel.equals("Nimbus")) {
       getViewport().setBackground(bgColor);
       consoleTextPane.setOpaque(false);
-      consoleTextPane.setBackground(new Color(0, 0, 0, 0));
+      consoleTextPane.setBackground(TRANSPARENT);
     } else {
       consoleTextPane.setBackground(bgColor);
     }
@@ -302,13 +304,10 @@ public class EditorConsole extends JScrollPane {
  * swing event thread, so they need to be synchronized
  */
 class BufferedStyledDocument extends DefaultStyledDocument {
-  //List<ElementSpec> elements = new ArrayList<>();
   LinkedBlockingQueue<ElementSpec> elements;
-//  AtomicInteger queuedLineCount = new AtomicInteger();
   int maxLineLength, maxLineCount, maxCharCount;
   int currentLineLength = 0;
   boolean needLineBreak = false;
-//  boolean hasAppendage = false;
   final Object insertLock = new Object();
 
   public BufferedStyledDocument(int maxLineLength, int maxLineCount,
@@ -320,37 +319,41 @@ class BufferedStyledDocument extends DefaultStyledDocument {
   }
 
   // monitor this so that it's only updated when needed (otherwise console
-  // updates every 250 ms when an app isn't even running.. see bug 180)
-  public boolean hasAppendage() {
-    return elements.size() > 0;
+  // updates every 250 ms when an app isn't even running... see bug 180)
+  public boolean insertQueued() {
+    // insert the text that's been added in the meantime
+    if (elements.size() > 0) {
+      insertAll();
+      return true;
+    }
+    return false;
   }
 
   /** buffer a string for insertion at the end of the DefaultStyledDocument */
   public void appendString(String str, AttributeSet a) {
-//    hasAppendage = true;
+    synchronized (insertLock) {
+      // process each line of the string
+      while (str.length() > 0) {
+        // newlines within an element have (almost) no effect, so we need to
+        // replace them with proper paragraph breaks (start and end tags)
+        if (needLineBreak || currentLineLength > maxLineLength) {
+          elements.add(new ElementSpec(a, ElementSpec.EndTagType));
+          elements.add(new ElementSpec(a, ElementSpec.StartTagType));
+          currentLineLength = 0;
+        }
 
-    // process each line of the string
-    while (str.length() > 0) {
-      // newlines within an element have (almost) no effect, so we need to
-      // replace them with proper paragraph breaks (start and end tags)
-      if (needLineBreak || currentLineLength > maxLineLength) {
-        elements.add(new ElementSpec(a, ElementSpec.EndTagType));
-        elements.add(new ElementSpec(a, ElementSpec.StartTagType));
-//        queuedLineCount.incrementAndGet();
-        currentLineLength = 0;
-      }
-
-      if (str.indexOf('\n') == -1) {
-        elements.add(new ElementSpec(a, ElementSpec.ContentType,
-          str.toCharArray(), 0, str.length()));
-        currentLineLength += str.length();
-        needLineBreak = false;
-        str = str.substring(str.length()); // eat the string
-      } else {
-        elements.add(new ElementSpec(a, ElementSpec.ContentType,
-          str.toCharArray(), 0, str.indexOf('\n') + 1));
-        needLineBreak = true;
-        str = str.substring(str.indexOf('\n') + 1); // eat the line
+        if (str.indexOf('\n') == -1) {
+          elements.add(new ElementSpec(a, ElementSpec.ContentType,
+              str.toCharArray(), 0, str.length()));
+          currentLineLength += str.length();
+          needLineBreak = false;
+          str = "";  // reset the string
+        } else {
+          elements.add(new ElementSpec(a, ElementSpec.ContentType,
+              str.toCharArray(), 0, str.indexOf('\n') + 1));
+          needLineBreak = true;
+          str = str.substring(str.indexOf('\n') + 1); // eat the line
+        }
       }
     }
     if (elements.size() > 1000) {
@@ -360,21 +363,20 @@ class BufferedStyledDocument extends DefaultStyledDocument {
 
   /** insert the buffered strings */
   public void insertAll() {
-    ElementSpec[] elementArray = elements.toArray(new ElementSpec[0]);
+    synchronized (insertLock) {
+      ElementSpec[] elementArray = elements.toArray(new ElementSpec[0]);
 
-    try {
-      synchronized (insertLock) {
+      try {
         checkLength();
         insert(getLength(), elementArray);
         checkLength();
-      }
 
-    } catch (BadLocationException e) {
-      // ignore the error otherwise this will cause an infinite loop
-      // maybe not a good idea in the long run?
+      } catch (BadLocationException e) {
+        // ignore the error otherwise this will cause an infinite loop
+        // maybe not a good idea in the long run?
+      }
+      elements.clear();
     }
-    elements.clear();
-//    hasAppendage = false;
   }
 
   private void checkLength() throws BadLocationException {

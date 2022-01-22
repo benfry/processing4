@@ -102,8 +102,6 @@ public class PGraphicsJava2D extends PGraphics {
   public boolean strokeGradient;
   public Paint strokeGradientObject;
 
-  Font fontObject;
-
 
 
   //////////////////////////////////////////////////////////////
@@ -353,8 +351,11 @@ public class PGraphicsJava2D extends PGraphics {
       g2.setStroke(strokeObject);
     }
     // https://github.com/processing/processing/issues/2617
-    if (fontObject != null) {
-      g2.setFont(fontObject);
+    if (textFont != null) {
+      Font fontObject = (Font) textFont.getNative();
+      if (fontObject != null) {
+        g2.setFont(fontObject);
+      }
     }
     // https://github.com/processing/processing/issues/4019
     if (blendMode != 0) {
@@ -1030,7 +1031,6 @@ public class PGraphicsJava2D extends PGraphics {
    *
    * @webref Rendering
    * @webBrief Blends the pixels in the display window according to a defined mode
-   * @param mode the blending mode to use
    */
   @Override
   protected void blendModeImpl() {
@@ -1902,7 +1902,6 @@ public class PGraphicsJava2D extends PGraphics {
 
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getAscent();
       return g2.getFontMetrics(font).getAscent();
     }
     return super.textAscent();
@@ -1916,7 +1915,6 @@ public class PGraphicsJava2D extends PGraphics {
     }
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getDescent();
       return g2.getFontMetrics(font).getDescent();
     }
     return super.textDescent();
@@ -1951,21 +1949,17 @@ public class PGraphicsJava2D extends PGraphics {
   protected void handleTextSize(float size) {
     // if a native version available, derive this font
     Font font = (Font) textFont.getNative();
-    // don't derive again if the font size has not changed
     if (font != null) {
+      // don't derive again if the font size has not changed
       if (font.getSize2D() != size) {
-        Map<TextAttribute, Object> map =
-          new HashMap<>();
+        Map<TextAttribute, Object> map = new HashMap<>();
         map.put(TextAttribute.SIZE, size);
-        map.put(TextAttribute.KERNING,
-                TextAttribute.KERNING_ON);
-//      map.put(TextAttribute.TRACKING,
-//              TextAttribute.TRACKING_TIGHT);
+        map.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+        // map.put(TextAttribute.TRACKING, TextAttribute.TRACKING_TIGHT);
         font = font.deriveFont(map);
       }
       g2.setFont(font);
       textFont.setNative(font);
-      fontObject = font;
 
       /*
       Map<TextAttribute, ?> attrs = font.getAttributes();
@@ -2061,8 +2055,20 @@ public class PGraphicsJava2D extends PGraphics {
   protected void textLineImpl(char[] buffer, int start, int stop,
                               float x, float y) {
     Font font = (Font) textFont.getNative();
-//    if (font != null && (textFont.isStream() || hints[ENABLE_NATIVE_FONTS])) {
     if (font != null) {
+      // If using the default font, warn the user when their code calls
+      // text() called with unavailable characters. Not done with all
+      // fonts because it would be too slow, but useful/acceptable for
+      // the default case because it will hit beginners/casual use.
+      if (textFont.getName().equals(defaultFontName)) {
+        if (font.canDisplayUpTo(buffer, start, stop) != -1) {
+          final String msg =
+            "Some characters not available in the current font, " +
+            "use createFont() to specify a typeface the includes them.";
+          showWarning(msg);
+        }
+      }
+
       /*
       // save the current setting for text smoothing. note that this is
       // different from the smooth() function, because the font smoothing
@@ -2115,7 +2121,7 @@ public class PGraphicsJava2D extends PGraphics {
       //g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, textAntialias);
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antialias);
 
-    } else {  // otherwise just do the default
+    } else {  // otherwise, just do the default
       super.textLineImpl(buffer, start, stop, x, y);
     }
   }

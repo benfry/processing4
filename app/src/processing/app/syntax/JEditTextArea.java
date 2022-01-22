@@ -17,9 +17,8 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
 
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.text.*;
 import javax.swing.undo.*;
@@ -123,23 +122,30 @@ public class JEditTextArea extends JComponent
     partialPixelWidth = 0;
 
     // Initialize the GUI
+    /*
     setLayout(new ScrollLayout());
     add(CENTER, painter);
     add(RIGHT, vertical = new JScrollBar(Adjustable.VERTICAL));
     add(BOTTOM, horizontal = new JScrollBar(Adjustable.HORIZONTAL));
+    */
+
+    setLayout(new BorderLayout());
+    add(painter, BorderLayout.CENTER);
+    add(vertical = new JScrollBar(Adjustable.VERTICAL), BorderLayout.EAST);
+    add(horizontal = new JScrollBar(Adjustable.HORIZONTAL), BorderLayout.SOUTH);
+    // what a dreadful hack to get the scrollbar to align
+    horizontal.setBorder(new EmptyBorder(0, 0, 0, vertical.getPreferredSize().width));
 
     /*
-    vertical.setBackground(Color.YELLOW);
-    horizontal.setBackground(Color.YELLOW);
-
-    System.out.println(vertical.getUI());
-    //vertical.setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
-    vertical.setUI(new com.apple.laf.AquaScrollBarUI() {
-      @Override
-      protected void configureScrollBarColors() {
-        this.thumbColor = Color.GREEN;
-      }
-    });
+    // this fixes the glitch at the lower-right of the scrollbars,
+    // but results in the scrolling area behaving very oddly,
+    // presumably due to quirks in this very old JEditSyntax code.
+    JScrollPane pane = new JScrollPane(painter);
+    pane.setBorder(BorderFactory.createEmptyBorder());
+    horizontal = pane.getHorizontalScrollBar();
+    vertical = pane.getVerticalScrollBar();
+    setLayout(new BorderLayout());
+    add(pane, BorderLayout.CENTER);
     */
 
     // Add some event listeners
@@ -1233,6 +1239,19 @@ public class JEditTextArea extends JComponent
   }
 
   /**
+   * Selects all text in the given line.
+   * @param line The line number to select all text in it.
+   */
+  private void selectLine(final int line) {
+    selectLine = true;
+    final int lineStart = getLineStartOffset(line);
+    final int lineEnd = getLineSelectionStopOffset(line);
+    select(lineStart, lineEnd);
+    selectionAncorStart = selectionStart;
+    selectionAncorEnd = selectionEnd;
+  }
+
+  /**
    * Moves the mark to the caret position.
    */
   public final void selectNone()
@@ -1362,7 +1381,7 @@ public class JEditTextArea extends JComponent
       getPartialPixelWidth(metrics, x, expander, startOffset) * s.length();
 
     return Math.round(
-      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) + additionalOffset
+      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) - additionalOffset
     );
   }
 
@@ -1655,6 +1674,7 @@ public class JEditTextArea extends JComponent
   /**
    * Deletes the selected text from the text area and places it
    * into the clipboard.
+   * If no selection is made, the whole line with caret will be selectd.
    */
   public void cut() {
     if (editable) {
@@ -1666,16 +1686,21 @@ public class JEditTextArea extends JComponent
 
   /**
    * Places the selected text into the clipboard.
+   * If no selection is made, the whole line with caret will be selectd.
    */
   public void copy() {
-    if (selectionStart != selectionEnd) {
-      Clipboard clipboard = getToolkit().getSystemClipboard();
-
-      String selection = getSelectedText();
-      if (selection != null) {
-        int repeatCount = inputHandler.getRepeatCount();
-        clipboard.setContents(new StringSelection(selection.repeat(Math.max(0, repeatCount))), null);
+    if (selectionStart == selectionEnd) {
+      selectLine(getCaretLine());
+    }
+    Clipboard clipboard = getToolkit().getSystemClipboard();
+    String selection = getSelectedText();
+    if (selection != null) {
+      int repeatCount = inputHandler.getRepeatCount();
+      StringBuilder sb = new StringBuilder();
+      for(int i = 0; i < repeatCount; i++) {
+        sb.append(selection);
       }
+      clipboard.setContents(new StringSelection(sb.toString()), null);
     }
   }
 
@@ -2110,6 +2135,7 @@ public class JEditTextArea extends JComponent
     }
   }
 
+  /*
   class ScrollLayout implements LayoutManager
   {
     //final int LEFT_EXTRA = 5;
@@ -2224,6 +2250,7 @@ public class JEditTextArea extends JComponent
     private Component bottom;
     private final Vector<Component> leftOfScrollBar = new Vector<>();
   }
+  */
 
   class MutableCaretEvent extends CaretEvent
   {
@@ -2337,8 +2364,8 @@ public class JEditTextArea extends JComponent
   }
 
 
-  class DragHandler implements MouseMotionListener
-  {
+  class DragHandler implements MouseMotionListener {
+
     public void mouseDragged(MouseEvent evt) {
       if (popup != null && popup.isVisible()) return;
 
@@ -2529,10 +2556,7 @@ public class JEditTextArea extends JComponent
 
 
     private void doTripleClick(MouseEvent evt, int line, int offset, int dot) {
-      selectLine = true;
-      select(getLineStartOffset(line),getLineSelectionStopOffset(line));
-      selectionAncorStart = selectionStart;
-      selectionAncorEnd = selectionEnd;
+      selectLine(line);
     }
   }
 

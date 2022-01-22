@@ -35,22 +35,26 @@ import com.sun.jna.platform.FileUtils;
 import processing.app.platform.DefaultPlatform;
 import processing.core.PApplet;
 import processing.core.PConstants;
+import processing.data.StringDict;
 
 
 public class Platform {
   static DefaultPlatform inst;
 
+  /*
   static Map<Integer, String> platformNames = new HashMap<>();
   static {
     platformNames.put(PConstants.WINDOWS, "windows"); //$NON-NLS-1$
-    platformNames.put(PConstants.MACOS, "macosx"); //$NON-NLS-1$
+    platformNames.put(PConstants.MACOS, "macos"); //$NON-NLS-1$
     platformNames.put(PConstants.LINUX, "linux"); //$NON-NLS-1$
   }
+  */
 
+  // TODO only used in one place, probably overkill for this to be a map
   static Map<String, Integer> platformIndices = new HashMap<>();
   static {
     platformIndices.put("windows", PConstants.WINDOWS); //$NON-NLS-1$
-    platformIndices.put("macosx", PConstants.MACOS); //$NON-NLS-1$
+    platformIndices.put("macos", PConstants.MACOS); //$NON-NLS-1$
     platformIndices.put("linux", PConstants.LINUX); //$NON-NLS-1$
   }
 
@@ -181,13 +185,13 @@ public class Platform {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /**
-   * Return whether sketches will run as 32- or 64-bits based
-   * on the JVM that's in use.
-   */
-  static public int getNativeBits() {
-    return nativeBits;
-  }
+//  /**
+//   * Return whether sketches will run as 32- or 64-bits based
+//   * on the JVM that's in use.
+//   */
+//  static public int getNativeBits() {
+//    return nativeBits;
+//  }
 
 
   /**
@@ -202,10 +206,29 @@ public class Platform {
   }
 
 
+  static public String getVariant() {
+    return getName() + "-" + getNativeArch();
+  }
+
+
+  static StringDict supportedVariants = new StringDict(new String[][] {
+    { "macos-x86_64", "macOS (Intel 64-bit)" },
+    { "macos-aarch64", "macOS (Apple Silicon)" },
+    { "windows-amd64", "Windows (Intel 64-bit)" },
+    { "linux-amd64", "Linux (Intel 64-bit)" },
+    { "linux-arm", "Linux (Raspberry Pi 32-bit)" },
+    { "linux-aarch64", "Linux (Raspberry Pi 64-bit)" }
+  });
+
+  static public StringDict getSupportedVariants() {
+    return supportedVariants;
+  }
+
+//  /*
+//   * Return a string that identifies the variant of a platform
+//   * e.g. "32" or "64" on Intel
+//   */
   /*
-   * Return a string that identifies the variant of a platform
-   * e.g. "32" or "64" on Intel
-   */
   static public String getVariant() {
     return getVariant(PApplet.platform, getNativeArch(), getNativeBits());
   }
@@ -222,26 +245,36 @@ public class Platform {
 
     return Integer.toString(bits);  // 32 or 64
   }
+  */
 
 
+  /**
+   * Returns one of macos, windows, linux, or other.
+   * Changed in 4.0b4 to return macos instead of macosx.
+   * Only used inside processing.app.java.
+   */
   static public String getName() {
     return PConstants.platformNames[PApplet.platform];
   }
 
 
-  /**
-   * Map a platform constant to its name.
-   * @param which PConstants.WINDOWS, PConstants.MACOSX, PConstants.LINUX
-   * @return one of "windows", "macosx", or "linux"
-   */
-  static public String getName(int which) {
-    return platformNames.get(which);
-  }
+//  /**
+//   * Map a platform constant to its name.
+//   * @param which PConstants.WINDOWS, PConstants.MACOSX, PConstants.LINUX
+//   * @return one of "windows", "macosx", or "linux"
+//   */
+//  static public String getName(int which) {
+//    return platformNames.get(which);
+//  }
 
 
-  static public int getIndex(String what) {
-    Integer entry = platformIndices.get(what);
-    return (entry == null) ? -1 : entry;
+  static public int getIndex(String platformName) {
+    // if this has os.arch at the end, remove it
+    int index = platformName.indexOf('-');
+    if (index != -1) {
+      platformName = platformName.substring(0, index);
+    }
+    return platformIndices.getOrDefault(platformName, -1);
   }
 
 

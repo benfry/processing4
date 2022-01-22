@@ -27,7 +27,7 @@ public class UpdateContributionTab extends ContributionTab {
     contributionListPanel = new UpdateListPanel(this, filter);
 //    contributionListPanel.setBorder(new EmptyBorder(8, 8, 8, 8));
 
-    statusPanel = new UpdateStatusPanel(this, 650);
+    statusPanel = new UpdateStatusPanel(this);
     contribListing = ContributionListing.getInstance();
     contribListing.addListener(contributionListPanel);
   }
@@ -68,8 +68,9 @@ public class UpdateContributionTab extends ContributionTab {
     setBackground(Color.WHITE);
   }
 
+
   @Override
-  public void updateStatusPanel(DetailPanel contributionPanel) {
+  public void updateStatusDetail(StatusPanelDetail detail) {
     // Do nothing
   }
 }

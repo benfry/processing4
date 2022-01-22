@@ -1,30 +1,65 @@
-1278 (4.0b3)
-X support extensions for directories with listFiles/listPaths
-X   otherwise asking for .jpg will return root folders (unless 'only files' specified)
-X   but because macOS actually puts extensions on folders (.app, etc), support it
-X fix for disableStyle() with 2D shapes in P3D
-X allow GEOMETRY (not just PATH) with contains() in PShape
-X   the method is still incomplete, but added a note about that too
-X added workaround in PShapeOpenGL to get access to vertex data
-_   still need to find the root cause
-_   also need to check for other reports about this
+1279 (4.0b4)
 
-X multiple windows with GL
-_   https://github.com/processing/processing4/issues/312
-X   https://github.com/processing/processing4/pull/313
+api changes (in previous releases)
+X static versions of selectInput/selectOutput/selectFolder removed from PApplet
+X   noted in the README
+X java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
+X   https://github.com/processing/processing4/issues/54
+X protected PImage.checkAlpha() now public
+X all AWT calls have been moved out of PImage
+X   this may be a problem for anything that was relying on those internals
+X removed MouseEvent.getClickCount() and MouseEvent.getAmount()
+X   these had been deprecated, not clear they were used anywhere
 
-_ made DrawListener public in PSurfaceJOGL (probably change that back)
+earlier
+X Intel HD Graphics 3000 workaround is causing a big fat warning
+X   https://github.com/processing/processing4/issues/50
 
+decisions
+o possibly move jogl back to a separate library
+o   setting up deps for it with projects that don't use it is a headache
+X   just not possible
+X     PShader would have to change packages
+X     that much messier to link back with projects that rely on JOGL
+
+
+_ jogl build for m1
+_   https://github.com/processing/processing4/issues/128
+_   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
+_   https://github.com/jzy3d/jogl/blob/feature/macosx-arm64/HOW-TO-ADD-ARM64-TO-2.4.md
+
+_ concurrent StringDict et al
+_   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
+_   https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html
+
+_ how to handle fallback fonts
+_   could implement this for the default, but also, SansSerif sucks
+_   https://stackoverflow.com/a/9482676
+_   in addition, it would need to be implemented for textWidth()
 
 _ put opengl libs for core into platform-specific subfolders?
-_   may also be useful for Windows antivirus slowdowns
+_   should fix Windows antivirus slowdowns
 _   https://github.com/processing/processing/issues/4783#issuecomment-269328168
+_   https://github.com/processing/processing/issues/4239
+_   https://jogamp.org/bugzilla/show_bug.cgi?id=1301
+_   https://stackoverflow.com/a/51100411
+_ would really be nice to pull out the OpenGL stuff
+_   though would require just a single PShader class in .opengl package
+_   way too messy, just need to stick with our base platforms
+_   also move the libs to their own folders? (instead of unpacking from jar)
 
+_ Better solution for frame/surface methods
+_   should it be requestSize() because the change is not immediate?
+_   do we need a windowResized() event?
+_   https://github.com/processing/processing4/issues/53
 _ setting surface size needs to happen outside draw()
 _   surface.setSize() sadness etc
 _   https://github.com/processing/processing4/issues/162
 _   https://github.com/processing/processing4/issues/186
 _   https://github.com/processing/processing/issues/4129
+
+_ fullScreen() not working on a second display with P2D or P3D
+_   https://github.com/processing/processing4/issues/352
 
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
@@ -49,14 +84,6 @@ _   https://github.com/processing/processing/issues/4897
 
 
 api changes
-_ static versions of selectInput/selectOutput/selectFolder removed from PApplet
-_ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
-X   https://github.com/processing/processing4/issues/54
-_ protected PImage.checkAlpha() now public
-_ all AWT calls have been moved out of PImage
-_   this may be a problem for anything that was relying on those internals
-_ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
-_   these had been deprecated, not clear they were used anywhere
 _ add callbacks to requestImage() and others
 _ new FloatList(float...)
 
@@ -68,22 +95,17 @@ _   should surface be set on command line?
 _   or can we just require that size() goes first, and inits surface *type* w/o sizes
 _   or even that it inits a surface-specific class for getting that info
 _ implement selectInput/Output/Folder methods in PSurfaceJOGL
-_ implement selectInput/Output/Folder methods in PSurfaceFX
-_ implement openLink() in PSurfaceFX
 _ implement openLink() in PSurfaceJOGL
 
 
 before final release
 _ replace japplemenubar with something that's more likely to work in the future
 _   https://github.com/processing/processing4/issues/221
+_   seems to be working fine; not sure, but have to roll with it for now
 _ Warn users or provide auto-fix when `frame` is used in a sketch
 _   https://github.com/processing/processing4/issues/59
-_ Intel HD Graphics 3000 workaround is causing a big fat warning
-_   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
 _   https://github.com/processing/processing4/issues/52
-_ Better solution for frame/surface methods
-_   https://github.com/processing/processing4/issues/53
 _ Remove frame from PApplet
 _   https://github.com/processing/processing4/issues/54
 _ Remove all usage of AWT from PApplet
@@ -92,7 +114,6 @@ _   https://github.com/codeanticode/processing-lwjgl/wiki#making-awt-optional-in
 _   https://github.com/processing/processing4/issues/57
 _ move loadImage() into surface
 _   move AWT code out of PImage, and into its own PImageJava2D class
-_   how to handle with JavaFX?
 _   https://github.com/processing/processing4/issues/56
 
 
@@ -141,16 +162,7 @@ _   https://bugs.openjdk.java.net/browse/JDK-8027391
 _   test with JG's 13" retina laptop
 
 
-https://bkaradzic.github.io/bgfx/
-https://bkaradzic.github.io/bgfx/examples.html
-
-
 possible additions for 4.x?
-_ Tint on FX2D now works properly, and improved JavaFX/Scenebuilder integration
-_   https://github.com/processing/processing/pull/6051
-_ make offscreen PGraphicsFX2D work
-_   https://github.com/processing/processing/issues/4638
-_   https://github.com/processing/processing/pull/4698
 _ Add support for floating point textures to OpenGL (using a hint?)
 _   https://github.com/processing/processing/issues/3321
 _ Friendly Names for new Sketches (includes UI for switching it back)
@@ -564,51 +576,6 @@ _   http://www.adobe.com/svg/eol.html
 _ PShape getVertex() not implemented properly for SVG files
 _   https://github.com/processing/processing/issues/1596
 
-
-FX2D / Issues
-
-_ Remove usage of com.sun.* in JavaFX library
-_   https://github.com/processing/processing4/issues/208
-_ many shift- keys not working properly in FX2D (added a test sketch)
-_   https://github.com/processing/processing/issues/5317
-_ Hitting ESC in FX2D app on macOS throws IllegalStateException
-_   https://github.com/processing/processing/issues/5249
-_ wrong window size with fullScreen()
-_   https://github.com/processing/processing/issues/4737
-_ menu bar not hiding properly in exported applications with FX2D
-_   https://github.com/processing/processing/issues/4527
-_   hideMenuBar() called from setup() works fine
-_   just call it around setup time?
-_ the --hide-stop option not working (FX only? traces?)
-_ make wiki about quirks
-_   starving the thread makes things really slow down
-_   keyPressed() is always uppercase, keyTyped() will be correct
-_ do we really need setTextFont/Size when we already have Impl?
-_ need keyPressed() to do lower and upper case
-_ static mode sketches (draw once and halt w/o closing window)
-_ fix display handling, line up the device order with AWT
-_   https://docs.oracle.com/javafx/2/api/javafx/stage/Screen.html
-_ noLoop()
-_ present mode not working at all
-_   stage in the center, clear the rest of the screen
-_ createGraphics() should probably create PGraphicsJava2D
-_   or is Canvas specific to the PGraphics, and we get another Context2D?
-_   http://docs.oracle.com/javafx/2/api/javafx/scene/canvas/Canvas.html
-_ loadPixels() (also 2x)
-_ text and fonts?
-_   maybe helpful: https://wiki.openjdk.java.net/display/OpenJFX/Font+Setup
-_ updatePixels()
-_ save() and saveFrame()
-_ get() and set()
-_ clip/noClip
-_   https://github.com/processing/processing/issues/3274
-_ getNative() in PImage problematic because it gives back a BufferedImage
-_   move loadImage() into PGraphics, with AWT version the default
-_   or pass createImage() through to renderer?
-_ implement external messages (moving the window)
-_ implement PSurfaceFX.setIcon()
-_ javafx not supported with ARM (so we're screwed on raspberry pi)
-_   https://www.linkedin.com/pulse/oracle-just-removed-javafx-support-arm-jan-snelders
 
 
 OPENGL / Known Issues

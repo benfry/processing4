@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-15 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -24,30 +24,30 @@ package processing.app.contrib;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
-import java.util.Map.Entry;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
-import javax.swing.border.Border;
 import javax.swing.table.*;
 
 import processing.app.Base;
-import processing.app.Platform;
+import processing.app.Util;
 import processing.app.ui.Toolkit;
 
 
 // The "Scrollable" implementation and its methods here take care of preventing
 // the scrolling area from running exceptionally slowly. Not sure why they're
-// necessary in the first place, however; seems like odd behavior.
+// necessary in the first place, however. Is that hiding a bigger problem?
 // It also allows the description text in the panels to wrap properly.
 
 public class ListPanel extends JPanel
 implements Scrollable, ContributionListing.ChangeListener {
   ContributionTab contributionTab;
-  TreeMap<Contribution, DetailPanel> panelByContribution = new TreeMap<>(ContributionListing.COMPARATOR);
+  TreeMap<Contribution, StatusPanelDetail> detailForContrib = new TreeMap<>(ContributionListing.COMPARATOR);
 
-  private DetailPanel selectedPanel;
-  protected ContributionRowFilter filter;
+  Contribution.Filter filter;
+
+  private StatusPanelDetail selectedDetail;
+  protected ContributionRowFilter rowFilter;
   protected JTable table;
   protected TableRowSorter<ContributionTableModel> sorter;
   ContributionTableModel model;
@@ -65,13 +65,22 @@ implements Scrollable, ContributionListing.ChangeListener {
   static final Color SELECTION_COLOR = new Color(0xffe0fffd);
 
   static final SectionHeaderContribution[] sections = {
-          new SectionHeaderContribution(ContributionType.LIBRARY),
-          new SectionHeaderContribution(ContributionType.MODE),
-          new SectionHeaderContribution(ContributionType.TOOL),
-          new SectionHeaderContribution(ContributionType.EXAMPLES)
+    new SectionHeaderContribution(ContributionType.LIBRARY),
+    new SectionHeaderContribution(ContributionType.MODE),
+    new SectionHeaderContribution(ContributionType.TOOL),
+    new SectionHeaderContribution(ContributionType.EXAMPLES)
   };
 
-  public ListPanel() {
+
+  public ListPanel(final ContributionTab contributionTab,
+                   final Contribution.Filter filter,
+                   final boolean enableSections,
+                   final ContributionColumn... columns) {
+    this.contributionTab = contributionTab;
+    this.filter = filter;
+
+    this.rowFilter = new ContributionRowFilter(filter);
+
     if (upToDateIcon == null) {
       upToDateIcon = Toolkit.getLibIconX("manager/up-to-date");
       updateAvailableIcon = Toolkit.getLibIconX("manager/update-available");
@@ -79,16 +88,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       foundationIcon = Toolkit.getLibIconX("icons/foundation", 16);
       downloadingIcon = Toolkit.getLibIconX("manager/downloading");
     }
-  }
-
-
-  public ListPanel(final ContributionTab contributionTab,
-                   final Contribution.Filter filter,
-                   final boolean enableSections,
-                   final ContributionColumn... columns) {
-    this();
-    this.contributionTab = contributionTab;
-    this.filter = new ContributionRowFilter(filter);
 
     setLayout(new GridBagLayout());
     setOpaque(true);
@@ -118,7 +117,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       }
     };
 
-    // There is a space before Status
     scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -139,12 +137,17 @@ implements Scrollable, ContributionListing.ChangeListener {
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
     table.getSelectionModel().addListSelectionListener(event -> {
-      // TODO this executes 2 times when clicked and 1 time when traversed
-      //      using arrow keys. Ideally this should always be true but while
-      //      clearing the table something fishy is going on. [Akarshit 150704]
-      if (table.getSelectedRow() != -1) {
-        setSelectedPanel(panelByContribution.get(table.getValueAt(table
-          .getSelectedRow(), 0)));
+      // This is called twice for each mouse click, once on mouse press with
+      // event.getValueIsAdjusting()) set true, and again when the mouse is
+      // released where adjusting will be set false. But instead of only
+      // responding to one or the other, need to fire on both so that the
+      // selection updates while the user drags mouse across the list (and
+      // not just when released). Using the arrow keys will only fire once
+      // because adjusting will be false (no ongoing drag with keys).
+      int row = table.getSelectedRow();
+      if (row != -1) {
+        Contribution contrib = (Contribution) table.getValueAt(row, 0);
+        setSelectedDetail(detailForContrib.get(contrib));
         // Preventing the focus to move out of filterField after typing every character
         if (!contributionTab.filterHasFocus()) {
           table.requestFocusInWindow();
@@ -154,8 +157,8 @@ implements Scrollable, ContributionListing.ChangeListener {
 
     sorter = new TableRowSorter<>(model);
     table.setRowSorter(sorter);
-    sorter.setRowFilter(this.filter);
-    for (int i=0; i < model.getColumnCount(); i++) {
+    sorter.setRowFilter(this.rowFilter);
+    for (int i = 0; i < model.getColumnCount(); i++) {
       if (model.columns[i] == ContributionColumn.NAME) {
         sorter.setSortKeys(Collections.singletonList(new SortKey(i, SortOrder.ASCENDING)));
       }
@@ -171,19 +174,28 @@ implements Scrollable, ContributionListing.ChangeListener {
     table.setVisible(true);
   }
 
+
   private static int getContributionStatusRank(Contribution c) {
+    // Uninstalled items are at the bottom of the sort order
     int pos = 4;
+
     if (c.isInstalled()) {
       pos = 1;
       if (ContributionListing.getInstance().hasUpdates(c)) {
         pos = 2;
       }
       if (!c.isCompatible(Base.getRevision())) {
+        // This is weird because it means some grayed-out items will
+        // show up before non-gray items. We probably need another
+        // state icon for 'installed but incompatible' [fry 220116]
         pos = 3;
       }
     }
     return pos;
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   static class ContribHeaderRenderer extends DefaultTableCellRenderer {
@@ -224,18 +236,13 @@ implements Scrollable, ContributionListing.ChangeListener {
       setFont(ManagerFrame.SMALL_PLAIN);
       setIcon(getSortIcon(table, column));
       setBackground(HEADER_BGCOLOR);
-//      if (column % 2 == 0) {
-//        setBackground(new Color(0xdfdfdf));
-//      } else {
-//        setBackground(new Color(0xebebeb));
-//      }
       setBorder(null);
       return this;
     }
 
     /**
-     * Overloaded to return an icon suitable to the primary sorted column, or null if
-     * the column is not the primary sort key.
+     * Overloaded to return an icon suitable to the primary sorted column,
+     * or null if the column is not the primary sort key.
      *
      * @param table the <code>JTable</code>.
      * @param column the column index.
@@ -263,12 +270,14 @@ implements Scrollable, ContributionListing.ChangeListener {
      */
     protected SortKey getSortKey(JTable table, int column) {
       return Optional.ofNullable(table.getRowSorter())
-              .map(RowSorter::getSortKeys)
-              .map(columns -> columns.isEmpty() ? null : columns.get(0))
-              .orElse(null);
-
+        .map(RowSorter::getSortKeys)
+        .map(columns -> columns.isEmpty() ? null : columns.get(0))
+        .orElse(null);
     }
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   private class ContribStatusRenderer extends DefaultTableCellRenderer {
@@ -317,7 +326,7 @@ implements Scrollable, ContributionListing.ChangeListener {
           break;
       }
 
-      if(!contribution.isCompatible(Base.getRevision())){
+      if (!contribution.isCompatible(Base.getRevision())) {
         label.setForeground(Color.LIGHT_GRAY);
       }
       return label;
@@ -326,23 +335,24 @@ implements Scrollable, ContributionListing.ChangeListener {
     private void configureStatusColumnLabel(JLabel label, Contribution contribution) {
       Icon icon = null;
       label.setFont(ManagerFrame.NORMAL_PLAIN);
-      if ((panelByContribution.get(contribution)).updateInProgress ||
-              (panelByContribution.get(contribution)).installInProgress) {
-        // Display "Loading icon" if download/install in progress
+      StatusPanelDetail detail = detailForContrib.get(contribution);
+//      if (detail == null) {
+//        System.out.println("no panel for " + contribution.name + " inside " + contributionTab.contribType);
+//      }
+      if (detail.updateInProgress || detail.installInProgress) {
+        // Display "loading" icon if download/install in progress
         icon = downloadingIcon;
       } else if (contribution.isInstalled()) {
         if (!contribution.isCompatible(Base.getRevision())) {
           icon = incompatibleIcon;
         } else if (ContributionListing.getInstance().hasUpdates(contribution)) {
           icon = updateAvailableIcon;
-        } else if (panelByContribution.get(contribution).installInProgress
-                || panelByContribution.get(contribution).updateInProgress) {
+        } else if (detail.installInProgress || detail.updateInProgress) {
           icon = downloadingIcon;
         } else {
           icon = upToDateIcon;
         }
       }
-
       label.setIcon(icon);
       label.setHorizontalAlignment(SwingConstants.CENTER);
     }
@@ -350,16 +360,17 @@ implements Scrollable, ContributionListing.ChangeListener {
     private void configureNameColumnLabel(JTable table, JLabel label, Contribution contribution) {
       // Generating ellipses based on fontMetrics
       final Font boldFont = ManagerFrame.NORMAL_BOLD;
-      FontMetrics fontMetrics = table.getFontMetrics(boldFont); //table.getFont());
+      FontMetrics fontMetrics = table.getFontMetrics(boldFont);
       int colSize = table.getColumnModel().getColumn(1).getWidth();
       int currentWidth = fontMetrics.stringWidth(contribution.getName() + " | ...");
-      String sentence = contribution.getSentence();
-      StringBuilder text = new StringBuilder("<html><body><font face=\"")
-              .append(boldFont.getName())
-              .append("\">")
-              .append(contribution.getName());
+      String sentence = Util.removeMarkDownLinks(contribution.getSentence());
+      StringBuilder text =
+        new StringBuilder("<html><body><font face=\"")
+          .append(boldFont.getName())
+          .append("\">")
+          .append(contribution.getName());
 
-      if (sentence == null) {
+      if (sentence.length() == 0) {
         text.append("</font>");
       } else {
         int index;
@@ -370,7 +381,7 @@ implements Scrollable, ContributionListing.ChangeListener {
           }
         }
         text.append(" | </font>").append(sentence, 0, index);
-        // Adding ellipses only if text doesn't fits into the column
+        // Adding ellipses only if text doesn't fit into the column
         if (index != sentence.length()) {
           text.append("...");
         }
@@ -385,7 +396,7 @@ implements Scrollable, ContributionListing.ChangeListener {
         label.setIcon(foundationIcon);
       }
       String authorList = contribution.getAuthorList();
-      String name = getAuthorNameWithoutMarkup(authorList);
+      String name = Util.removeMarkDownLinks(authorList);
       label.setText(name);
       label.setHorizontalAlignment(SwingConstants.LEFT);
       label.setForeground(Color.BLACK);
@@ -409,23 +420,28 @@ implements Scrollable, ContributionListing.ChangeListener {
 
     Comparator<Contribution> getComparator() {
       Comparator<Contribution> comparator = Comparator.comparing(Contribution::getType)
-              .thenComparingInt(contribution -> contribution instanceof SectionHeaderContribution ? 0 : 1);
-      switch (this) {
-        case STATUS:
-        case STATUS_NO_HEADER:
-          return comparator.thenComparingInt(ListPanel::getContributionStatusRank);
-        case AUTHOR:
-          return comparator.thenComparing(contribution -> getAuthorNameWithoutMarkup(contribution.getAuthorList()));
-        case NAME:
-        default:
-          return comparator.thenComparing(Contribution::getName, String.CASE_INSENSITIVE_ORDER);
+        .thenComparingInt(contribution -> contribution instanceof SectionHeaderContribution ? 0 : 1);
+
+      if (this == STATUS || this == STATUS_NO_HEADER) {
+        return comparator.thenComparingInt(ListPanel::getContributionStatusRank);
+      } else if (this == AUTHOR) {
+        return comparator.thenComparing(contribution -> Util.removeMarkDownLinks(contribution.getAuthorList()));
+      } else {  // default case, or this == NAME
+        return comparator.thenComparing(Contribution::getName, String.CASE_INSENSITIVE_ORDER);
       }
     }
   }
 
-  static class ContributionTableModel extends AbstractTableModel {
 
-    ContributionColumn[] columns = { ContributionColumn.STATUS, ContributionColumn.NAME, ContributionColumn.AUTHOR };
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static class ContributionTableModel extends AbstractTableModel {
+    ContributionColumn[] columns = {
+      ContributionColumn.STATUS,
+      ContributionColumn.NAME,
+      ContributionColumn.AUTHOR
+    };
     boolean sectionsEnabled;
 
     ContributionTableModel(ContributionColumn... columns) {
@@ -449,7 +465,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       if (column < 0 || column > columns.length) {
         return "";
       }
-
       return columns[column].name;
     }
 
@@ -478,7 +493,11 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
   }
 
-  protected class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
     Contribution.Filter contributionFilter;
     Optional<String> categoryFilter = Optional.empty();
     List<String> stringFilters = Collections.emptyList();
@@ -505,19 +524,23 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
 
     private boolean includeContribution(Contribution contribution) {
-      return contributionFilter.matches(contribution)
-              && categoryFilter.map(contribution::hasCategory).orElse(true)
-              && stringFilters.stream().allMatch(pattern -> ContributionListing.getInstance().matches(contribution, pattern));
+      return contributionFilter.matches(contribution) &&
+        categoryFilter.map(contribution::hasCategory).orElse(true) &&
+        stringFilters.stream().allMatch(pattern -> ContributionListing.getInstance().matches(contribution, pattern));
     }
 
     private boolean includeSection(SectionHeaderContribution section) {
       return ContributionListing.getInstance().allContributions.stream()
-              .filter(contribution -> contribution.getType() == section.getType())
-              .anyMatch(this::includeContribution);
+        .filter(contribution -> contribution.getType() == section.getType())
+        .anyMatch(this::includeContribution);
     }
   }
 
-  protected static class SectionHeaderContribution extends Contribution {
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static class SectionHeaderContribution extends Contribution {
     ContributionType type;
 
     SectionHeaderContribution(ContributionType type) {
@@ -536,145 +559,92 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
   }
 
-  static String getAuthorNameWithoutMarkup(String authorList) {
-    StringBuilder name = new StringBuilder();
-    if (authorList != null) {
-      int parentheses = 0;
-      for (int i = 0; i < authorList.length(); i++) {
 
-        if (authorList.charAt(i) == '[' || authorList.charAt(i) == ']') {
-          continue;
-        }
-        if (authorList.charAt(i) == '(') {
-          parentheses++;
-        } else if (authorList.charAt(i) == ')') {
-          parentheses--;
-        } else if (parentheses == 0) {
-          name.append(authorList.charAt(i));
-        }
-      }
-    }
-    return name.toString();
-  }
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
 
   // Thread: EDT
   public void contributionAdded(final Contribution contribution) {
-    if (!panelByContribution.containsKey(contribution)) {
-//      long t1 = System.currentTimeMillis();
-      DetailPanel newPanel = new DetailPanel(this);
-      panelByContribution.put(contribution, newPanel);
-      newPanel.setContribution(contribution);
-      add(newPanel);
-      model.fireTableDataChanged();
-//      long t2 = System.currentTimeMillis();
-      updateColors();  // XXX this is the place
-//      long t3 = System.currentTimeMillis();
-//      System.out.println("ListPanel.contributionAdded() " + (t2-t1) + " " + (t3-t2) + " " + contribution.getTypeName() + " " + contribution.getName());
+    if (true || filter.matches(contribution)) {
+      if (!detailForContrib.containsKey(contribution)) {
+//      new Exception().printStackTrace(System.out);
+//        long t1 = System.currentTimeMillis();
+        StatusPanelDetail newPanel = new StatusPanelDetail(this);
+        detailForContrib.put(contribution, newPanel);
+        newPanel.setContrib(contribution);
+//      add(newPanel);
+        model.fireTableDataChanged();
+//        long t2 = System.currentTimeMillis();
+//        System.out.println("ListPanel.contributionAdded() " + (t2 - t1) + " " + contribution.getTypeName() + " " + contribution.getName());
+      }
+//    } else {
+//      System.out.println("ignoring contrib " + contribution.getName());
     }
   }
 
 
   // Thread: EDT
   public void contributionRemoved(final Contribution contribution) {
-      DetailPanel panel = panelByContribution.get(contribution);
+    if (true || filter.matches(contribution)) {
+      StatusPanelDetail panel = detailForContrib.get(contribution);
       if (panel != null) {
-        remove(panel);
-        panelByContribution.remove(contribution);
+        detailForContrib.remove(contribution);
       }
       model.fireTableDataChanged();
-      updateColors();
       updateUI();
+    }
   }
 
 
   // Thread: EDT
   public void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
-      DetailPanel panel = panelByContribution.get(oldContrib);
+    if (true || filter.matches(oldContrib)) {
+      StatusPanelDetail panel = detailForContrib.get(oldContrib);
       if (panel == null) {
         contributionAdded(newContrib);
       } else {
-        panelByContribution.remove(oldContrib);
-        panel.setContribution(newContrib);
-        panelByContribution.put(newContrib, panel);
+        detailForContrib.remove(oldContrib);
+        panel.setContrib(newContrib);
+        detailForContrib.put(newContrib, panel);
         model.fireTableDataChanged();
       }
+    }
   }
 
 
   // Thread: EDT
   public void filterLibraries(String category, List<String> filters) {
-    filter.setCategoryFilter(category);
-    filter.setStringFilters(filters);
+    rowFilter.setCategoryFilter(category);
+    rowFilter.setStringFilters(filters);
     model.fireTableDataChanged();
   }
 
 
   // Thread: EDT
-  protected void setSelectedPanel(DetailPanel contributionPanel) {
-    contributionTab.updateStatusPanel(contributionPanel);
+  protected void setSelectedDetail(StatusPanelDetail contribDetail) {
+    contributionTab.updateStatusDetail(contribDetail);
 
-    if (selectedPanel == contributionPanel) {
-      selectedPanel.setSelected(true);
+    if (selectedDetail == contribDetail) {
+//      selectedPanel.setSelected(true);
 
     } else {
-      DetailPanel lastSelected = selectedPanel;
-      selectedPanel = contributionPanel;
+//      DetailPanel lastSelected = selectedPanel;
+      selectedDetail = contribDetail;
 
-      if (lastSelected != null) {
-        lastSelected.setSelected(false);
-      }
-      contributionPanel.setSelected(true);
+//      if (lastSelected != null) {
+//        lastSelected.setSelected(false);
+//      }
+//      contributionPanel.setSelected(true);
 
-      updateColors();
+//      updateColors();
       requestFocusInWindow();
     }
   }
 
 
-  protected DetailPanel getSelectedPanel() {
-    return selectedPanel;
-  }
-
-
-  // Thread: EDT
-  /**
-   * Updates the colors of all library panels that are visible.
-   */
-  protected void updateColors() {
-    int count = 0;
-    for (Entry<Contribution, DetailPanel> entry : panelByContribution.entrySet()) {
-      DetailPanel panel = entry.getValue();
-      Border border = BorderFactory.createEmptyBorder(1, 1, 1, 1);
-
-      if (panel.isVisible()) {
-        boolean oddRow = count % 2 == 1;
-        Color bgColor = null;
-        Color fgColor = UIManager.getColor("List.foreground");
-
-        if (panel.isSelected()) {
-          bgColor = UIManager.getColor("List.selectionBackground");
-          fgColor = UIManager.getColor("List.selectionForeground");
-          border = UIManager.getBorder("List.focusCellHighlightBorder");
-        } else if (Platform.isMacOS()) {
-          border = oddRow
-                  ? UIManager.getBorder("List.oddRowBackgroundPainter")
-                  : UIManager.getBorder("List.evenRowBackgroundPainter");
-        } else {
-          bgColor = oddRow
-                  ? new Color(219, 224, 229)
-                  : new Color(241, 241, 241);
-        }
-
-        panel.setForeground(fgColor);
-        if (bgColor != null) {
-          panel.setBackground(bgColor);
-        }
-        count++;
-      }
-
-      panel.setBorder(border);
-    }
+  protected StatusPanelDetail getSelectedDetail() {
+    return selectedDetail;
   }
 
 
@@ -719,9 +689,6 @@ implements Scrollable, ContributionListing.ChangeListener {
     int bottomOfScrollArea = visibleRect.y + visibleRect.height;
 
     for (Component c : getComponents()) {
-      if (!(c.isVisible() && c instanceof DetailPanel)) {
-        continue;
-      }
       Dimension d = c.getPreferredSize();
 
       int nextHeight = height + d.height;
@@ -742,7 +709,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       lastHeight = height;
       height = nextHeight;
     }
-
     return 0;
   }
 

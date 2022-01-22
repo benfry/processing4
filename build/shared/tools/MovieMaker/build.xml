@@ -20,6 +20,13 @@
     </and>
   </condition>
 
+  <!-- macOS has a different naming than Windows/Linux.
+       Also, only supporting Intel on macOS at the moment.
+       https://github.com/processing/processing4/issues/319 -->
+  <condition property="os_arch" value="x86_64" else="amd64">
+    <os family="mac" />
+  </condition>
+
   <condition property="ffmpeg.binary" value="tool/ffmpeg.exe" else="tool/ffmpeg">
     <os family="windows" />
   </condition>
@@ -29,7 +36,7 @@
        from several locations, and are all packaged differently.
        This could be automated, but too much effort relative to utility. -->
   <property name="ffmpeg.url"
-            value="https://download.processing.org/ffmpeg/${ffmpeg.version}/ffmpeg-${platform}-${os.arch}.gz" />
+            value="https://download.processing.org/ffmpeg/${ffmpeg.version}/ffmpeg-${platform}-${os_arch}.gz" />
 
   <property name="ffmpeg.gz" value="ffmpeg-${ffmpeg.version}.gz" />
   <available file="${ffmpeg.gz}" property="ffmpeg.present" />

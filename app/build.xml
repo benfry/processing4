@@ -1,30 +1,10 @@
 <?xml version="1.0"?>
 <project name="Processing PDE" default="build">
 
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-  <!-- VAqua library (not sure if we'll be including this in the final 4.0) -->
-  <property name="vaqua.version" value="9" />
-  <property name="vaqua.jar" value="VAqua${vaqua.version}.jar" />
-
-  <available file="lib/${vaqua.jar}" property="vaqua.present"/>
-
-  <property name="vaqua.url"
-            value="https://violetlib.org/release/vaqua/${vaqua.version}" />
-
-  <target name="download-vaqua" unless="vaqua.present">
-    <get dest="lib" usetimestamp="true">
-      <url url="${vaqua.url}/${vaqua.jar}" />
-    </get>
-  </target>
-
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
   <!-- Current version of Ant that works with Processing -->
-  <!-- (Can't use ant.version because that conflicts w/ the built-in variable) -->
-  <!-- <property name="ant.version" value="1.8.2" /> -->
-  <!-- <echoproperties /> -->
-  <property name="ant.version.num" value="1.10.10" />
+  <!-- (Cannot use ant.version as the name of the property
+       because that conflicts with the built-in variable) -->
+  <property name="ant.version.num" value="1.10.12" />
   <!-- the .zip file to be downloaded -->
   <property name="ant.zip" value="apache-ant-${ant.version.num}-bin.zip" />
 
@@ -71,7 +51,7 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Current version of JNA that works with Processing -->
-  <property name="jna.version" value="5.8.0" />
+  <property name="jna.version" value="5.10.0" />
   <!-- the .zip file to be downloaded -->
   <property name="jna.zip" value="${jna.version}.zip" />
   <!-- the .jar file that's the actual dependency -->
@@ -121,7 +101,7 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <target name="compile" description="Compile sources"
-          depends="download-vaqua, download-ant, download-jna">
+          depends="download-ant, download-jna">
     <condition property="core-built">
       <available file="../core/library/core.jar" />
     </condition>
@@ -154,8 +134,7 @@
                       lib/ant.jar;
                       lib/ant-launcher.jar;
                       lib/jna.jar;
-                      lib/jna-platform.jar;
-                      lib/VAqua9.jar"
+                      lib/jna-platform.jar"
            debug="on"
            nowarn="true">
       <compilerarg value="-Xlint:deprecation" />
@@ -171,14 +150,10 @@
     <delete>
       <fileset refid="jna.files" />
       <fileset refid="ant.files" />
-      <fileset dir="lib">
-        <include name="VAqua*.jar" />
-      </fileset>
     </delete>
 
     <antcall target="download-ant" />
     <antcall target="download-jna" />
-    <antcall target="download-vaqua" />
   </target>
 
   <target name="clean" description="Clean the build directories">

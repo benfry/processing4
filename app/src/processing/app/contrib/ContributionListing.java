@@ -52,7 +52,7 @@ public class ContributionListing {
   Map<String, List<Contribution>> librariesByCategory;
   Map<String, Contribution> librariesByImportHeader;
   // TODO: Every contribution is getting added twice
-  // and nothing is replaced ever.
+  //       and nothing is replaced ever.
   Set<Contribution> allContributions;
   boolean listDownloaded;
   boolean listDownloadFailed;
@@ -67,7 +67,6 @@ public class ContributionListing {
     allContributions = new LinkedHashSet<>();
     downloadingListingLock = new ReentrantLock();
 
-    //listingFile = Base.getSettingsFile("contributions.txt");
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
     boolean writable = listingFile.setWritable(true, false);
     if (writable && listingFile.exists()) {
@@ -100,8 +99,8 @@ public class ContributionListing {
 
 
   /**
-   * Adds the installed libraries to the listing of libraries, replacing any
-   * pre-existing libraries by the same name as one in the list.
+   * Adds the installed libraries to the listing of libraries, replacing
+   * any pre-existing libraries by the same name as one in the list.
    */
   protected void updateInstalledList(List<Contribution> installed) {
     for (Contribution contribution : installed) {
@@ -235,9 +234,9 @@ public class ContributionListing {
       String isText = typed.substring(0, colon);
       String property = typed.substring(colon + 1);
 
-      // Chances are the person is still typing the property, so rather than
-      // make the list flash empty (because nothing contains "is:" or "has:",
-      // just return true.
+      // Chances are the person is still typing the property,
+      // so rather than make the list flash empty (because nothing
+      // contains "is:" or "has:"), just return true.
       if (!isProperty(property)) {
         return true;
       }
@@ -327,10 +326,15 @@ public class ContributionListing {
   }
 
 
+  /**
+   * Each ContributionTab will add themselves as a ChangeListener
+   */
   protected void addListener(ChangeListener listener) {
+    /*
     for (Contribution contrib : allContributions) {
       listener.contributionAdded(contrib);
     }
+    */
     listeners.add(listener);
   }
 
@@ -391,15 +395,15 @@ public class ContributionListing {
 
 
   protected boolean hasUpdates(Contribution contribution) {
-    if (contribution.isInstalled()) {
-      Contribution advertised = getAvailableContribution(contribution);
-      if (advertised == null) {
-        return false;
-      }
-      return advertised.getVersion() > contribution.getVersion()
-        && advertised.isCompatible(Base.getRevision());
+    if (!contribution.isInstalled()) {
+      return false;
     }
-    return false;
+    Contribution advertised = getAvailableContribution(contribution);
+    if (advertised == null) {
+      return false;
+    }
+    return (advertised.getVersion() > contribution.getVersion() &&
+            advertised.isCompatible(Base.getRevision()));
   }
 
 
@@ -464,10 +468,10 @@ public class ContributionListing {
 
 
   /**
-   * TODO This needs to be called when the listing loads, and also whenever
-   * the contribs list has been updated (for whatever reason). In addition,
-   * the caller (presumably Base) should update all Editor windows with the
-   * correct information on the number of items available.
+   * TODO This needs to be called when the listing loads, and also
+   *      the contribs list has been updated (for whatever reason).
+   *      In addition, the caller (presumably Base) should update all
+   *      Editor windows with the correct number of items available.
    * @return The number of contributions that have available updates.
    */
   public int countUpdates(Base base) {

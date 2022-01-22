@@ -24,7 +24,7 @@ package processing.app.contrib;
 
 // I suspect this code can mostly be replaced with built-in Swing functions.
 // This code seems like it's adapted from old example code found on the web.
-// https://github.com/processing/processing/issues/3176
+// https://github.com/processing/processing4/issues/351
 
 public abstract class ContribProgressMonitor {
   static final int UNKNOWN = -1;

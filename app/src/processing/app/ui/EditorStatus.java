@@ -112,7 +112,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
   // a font that supports the Unicode glyphs we need
   Font glyphFont;
 
-  Image offscreen;
+//  Image offscreen;
   int sizeW, sizeH;
   // size of the glyph buttons (width and height are identical)
   int buttonSize;
@@ -329,7 +329,9 @@ public class EditorStatus extends BasicSplitPaneDivider {
   }
 
 
-  //public void paintComponent(Graphics screen) {
+  //public void paintComponent(Graphics g) {
+  public void paint(Graphics g) {
+    /*
   public void paint(Graphics screen) {
     Dimension size = getSize();
     if ((size.width != sizeW) || (size.height != sizeH)) {
@@ -345,7 +347,11 @@ public class EditorStatus extends BasicSplitPaneDivider {
     }
 
     Graphics g = offscreen.getGraphics();
-    /*Graphics2D g2 =*/ Toolkit.prepareGraphics(g);
+    */
+    Toolkit.prepareGraphics(g);
+    sizeW = getWidth();
+    sizeH = getHeight();
+    buttonSize = sizeH;
 
     g.setFont(font);
     if (metrics == null) {
@@ -410,7 +416,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
     String collapseGlyph = collapsed ? EXPAND_GLYPH : COLLAPSE_GLYPH;
     drawButton(g, collapseGlyph, 0, rolloverState == ROLLOVER_COLLAPSE);
 
-    screen.drawImage(offscreen, 0, 0, sizeW, sizeH, null);
+    //screen.drawImage(offscreen, 0, 0, sizeW, sizeH, null);
   }
 
 

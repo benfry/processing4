@@ -138,9 +138,8 @@ public abstract class Mode {
   @SuppressWarnings("SameParameterValue")
   protected void loadKeywords(File keywordFile,
                               String commentPrefix) throws IOException {
-    BufferedReader reader = PApplet.createReader(keywordFile);
-    String line;
-    while ((line = reader.readLine()) != null) {
+    String[] lines = PApplet.loadStrings(keywordFile);
+    for (String line : lines) {
       if (!line.trim().startsWith(commentPrefix)) {
         // Was difficult to make sure that mode authors were properly doing
         // tab-separated values. By definition, there can't be additional
@@ -173,7 +172,6 @@ public abstract class Mode {
         }
       }
     }
-    reader.close();
   }
 
 
@@ -732,8 +730,22 @@ public abstract class Mode {
 
 
   public Image loadImageX(String filename) {
-    final int res = Toolkit.highResImages() ? 2 : 1;
-    return loadImage(filename + "-" + res +  "x.png");
+    return loadImage(filename + "-" + Toolkit.highResMultiplier() +  "x.png");
+  }
+
+
+  public String loadString(String filename) {
+    File file;
+    if (filename.startsWith("/lib/")) {
+      // remove the slash from the front
+      file = Platform.getContentFile(filename.substring(1));
+    } else {
+      file = new File(folder, filename);
+    }
+    if (!file.exists()) {
+      return null;
+    }
+    return PApplet.join(PApplet.loadStrings(file), "\n");
   }
 
 

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -72,6 +72,8 @@ public class PreferencesFrame {
 
   JComboBox<String> zoomSelectionBox;
   JCheckBox zoomAutoBox;
+
+  JCheckBox hidpiDisableBox;
 
   JComboBox<String> displaySelectionBox;
   JComboBox<String> languageSelectionBox;
@@ -178,7 +180,14 @@ public class PreferencesFrame {
     zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.array()));
     zoomRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
 
-    //
+
+    // [ ] Disable HiDPI Scaling (requires restart)
+
+    hidpiDisableBox = new JCheckBox("Disable HiDPI Scaling (requires restart)");
+    hidpiDisableBox.setVisible(false);  // only for Windows
+
+
+    // Colors
 
     JLabel backgroundColorLabel = new JLabel(Language.text("preferences.background_color")+": ");
 
@@ -396,6 +405,7 @@ public class PreferencesFrame {
                       .addComponent(zoomAutoBox)
                       .addComponent(zoomSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                       .addComponent(zoomRestartLabel))
+          .addComponent(hidpiDisableBox)
           .addGroup(layout.createSequentialGroup()
                       .addComponent(backgroundColorLabel)
                       .addComponent(hashLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -460,6 +470,7 @@ public class PreferencesFrame {
                   .addComponent(zoomAutoBox)
                   .addComponent(zoomSelectionBox)
                   .addComponent(zoomRestartLabel))
+      .addComponent(hidpiDisableBox)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(backgroundColorLabel)
                   .addComponent(hashLabel)
@@ -495,6 +506,7 @@ public class PreferencesFrame {
 
     if (Platform.isWindows()){
       autoAssociateBox.setVisible(true);
+      hidpiDisableBox.setVisible(true);
     }
     // closing the window is same as hitting cancel button
 
@@ -651,6 +663,10 @@ public class PreferencesFrame {
     Preferences.set("editor.zoom",
                     String.valueOf(zoomSelectionBox.getSelectedItem()));
 
+    if (Platform.isWindows()) {
+      Splash.setDisableHiDPI(hidpiDisableBox.isSelected());
+    }
+
     Preferences.setColor("run.present.bgcolor", presentColor.getBackground());
 
     Preferences.setBoolean("editor.input_method_support", inputMethodBox.isSelected()); //$NON-NLS-1$
@@ -711,6 +727,9 @@ public class PreferencesFrame {
       zoomSelectionBox.setSelectedIndex(zoomIndex);
     } else {
       zoomSelectionBox.setSelectedIndex(0);
+    }
+    if (Platform.isWindows()) {
+      hidpiDisableBox.setSelected(Splash.getDisableHiDPI());
     }
 
     presentColor.setBackground(Preferences.getColor("run.present.bgcolor"));

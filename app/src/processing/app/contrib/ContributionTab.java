@@ -37,7 +37,7 @@ import processing.app.ui.Toolkit;
 
 
 public class ContributionTab extends JPanel {
-  static final String ANY_CATEGORY = Language.text("contrib.all");
+  //static final String ANY_CATEGORY = Language.text("contrib.all");
   static final int FILTER_WIDTH = Toolkit.zoom(180);
 
   ContributionType contribType;
@@ -48,8 +48,7 @@ public class ContributionTab extends JPanel {
   ListPanel contributionListPanel;
   StatusPanel statusPanel;
   FilterField filterField;
-  // TODO: remove or initialize restartButton
-  //JButton restartButton;
+
   JLabel categoryLabel;
   JLabel loaderLabel;
 
@@ -83,7 +82,9 @@ public class ContributionTab extends JPanel {
 //    long t4 = System.currentTimeMillis();
     contributionListPanel = new ListPanel(this, filter, false);
 //    long t5 = System.currentTimeMillis();
-    contribListing.addListener(contributionListPanel);  // TODO optimize: this line is taking all of the time
+    // TODO optimize: this line is taking all of the time
+    //      (though not after removing the loop in addListener() in 4.0b4)
+    contribListing.addListener(contributionListPanel);
 //    long t6 = System.currentTimeMillis();
 //    System.out.println("ContributionTab.<init> " + (t4-t1) + " " + (t5-t4) + " " + (t6-t5));
   }
@@ -119,8 +120,6 @@ public class ContributionTab extends JPanel {
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
-//    layout.setAutoCreateContainerGaps(true);
-//    layout.setAutoCreateGaps(true);
     layout.setHorizontalGroup(layout
       .createParallelGroup(GroupLayout.Alignment.CENTER)
       .addGroup(layout
@@ -128,7 +127,6 @@ public class ContributionTab extends JPanel {
                   .addGap(ManagerFrame.STATUS_WIDTH)
                   .addComponent(filterField,
                                 FILTER_WIDTH, FILTER_WIDTH, FILTER_WIDTH)
-//                  .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                        GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                   .addComponent(categoryChooser,
@@ -166,27 +164,21 @@ public class ContributionTab extends JPanel {
   private void createComponents() {
     categoryLabel = new JLabel(Language.text("contrib.category"));
 
-    categoryChooser = new JComboBox<String>();
+    categoryChooser = new JComboBox<>();
     categoryChooser.setMaximumRowCount(20);
     categoryChooser.setFont(ManagerFrame.NORMAL_PLAIN);
 
     updateCategoryChooser();
 
-    categoryChooser.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
-        category = (String) categoryChooser.getSelectedItem();
-        if (ManagerFrame.ANY_CATEGORY.equals(category)) {
-          category = null;
-        }
-        filterLibraries(category, filterField.filters);
-        contributionListPanel.updateColors();
+    categoryChooser.addItemListener(e -> {
+      category = (String) categoryChooser.getSelectedItem();
+      if (ManagerFrame.ANY_CATEGORY.equals(category)) {
+        category = null;
       }
+      filterLibraries(category, filterField.filters);
     });
 
     filterField = new FilterField();
-
-    // TODO: initialize restartButton, whatever it is
-    // restartButton = ???
   }
 
 
@@ -202,7 +194,8 @@ public class ContributionTab extends JPanel {
     errorMessage.setText("<html><body><center>Could not connect to the Processing server.<br>"
       + "Contributions cannot be installed or updated without an Internet connection.<br>"
       + "Please verify your network connection again, then try connecting again.</center></body></html>");
-    DetailPanel.setTextStyle(errorMessage, "1em");
+    //DetailPanel.setTextStyle(errorMessage, "1em");
+    //errorMessage.addStyle(DetailPanel.getBodyStyle());
     Dimension dim = new Dimension(550, 60);
     errorMessage.setMaximumSize(dim);
     errorMessage.setMinimumSize(dim);
@@ -217,18 +210,12 @@ public class ContributionTab extends JPanel {
 
     closeButton = Toolkit.createIconButton("manager/close");
     closeButton.setContentAreaFilled(false);
-    closeButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        contribDialog.makeAndShowTab(false, false);
-      }
-    });
+    closeButton.addActionListener(e -> contribDialog.makeAndShowTab(false, false));
     tryAgainButton = new JButton("Try Again");
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
-    tryAgainButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        contribDialog.makeAndShowTab(false, true);
-        contribDialog.downloadAndUpdateContributionListing(editor.getBase());
-      }
+    tryAgainButton.addActionListener(e -> {
+      contribDialog.makeAndShowTab(false, true);
+      contribDialog.downloadAndUpdateContributionListing(editor.getBase());
     });
     layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
@@ -254,12 +241,8 @@ public class ContributionTab extends JPanel {
     if (categoryChooser != null) {
       ArrayList<String> categories;
       categoryChooser.removeAllItems();
-      categories = new ArrayList<String>(contribListing.getCategories(filter));
-//      for (int i = 0; i < categories.size(); i++) {
-//        System.out.println(i + " category: " + categories.get(i));
-//      }
+      categories = new ArrayList<>(contribListing.getCategories(filter));
       Collections.sort(categories);
-//    categories.add(0, ContributionManagerDialog.ANY_CATEGORY);
       boolean categoriesFound = false;
       categoryChooser.addItem(ManagerFrame.ANY_CATEGORY);
       for (String s : categories) {
@@ -280,10 +263,8 @@ public class ContributionTab extends JPanel {
 
   protected void updateContributionListing() {
     if (editor != null) {
-      List<Contribution> contributions = new ArrayList<Contribution>();
-
       List<Library> libraries =
-        new ArrayList<Library>(editor.getMode().contribLibraries);
+        new ArrayList<>(editor.getMode().contribLibraries);
 
       // Only add core libraries that are installed in the sketchbook
       // https://github.com/processing/processing/issues/3688
@@ -296,7 +277,7 @@ public class ContributionTab extends JPanel {
         }
       }
 
-      contributions.addAll(libraries);
+      List<Contribution> contributions = new ArrayList<>(libraries);
 
       Base base = editor.getBase();
 
@@ -309,24 +290,12 @@ public class ContributionTab extends JPanel {
       List<ExamplesContribution> examples = base.getExampleContribs();
       contributions.addAll(examples);
 
-//    ArrayList<LibraryCompilation> compilations = LibraryCompilation.list(libraries);
-//
-//    // Remove libraries from the list that are part of a compilations
-//    for (LibraryCompilation compilation : compilations) {
-//      Iterator<Library> it = libraries.iterator();
-//      while (it.hasNext()) {
-//        Library current = it.next();
-//        if (compilation.getFolder().equals(current.getFolder().getParentFile())) {
-//          it.remove();
-//        }
-//      }
-//    }
-
       contribListing.updateInstalledList(contributions);
     }
   }
 
 
+  /*
   protected void setFilterText(String filter) {
     if (filter == null || filter.isEmpty()) {
       filterField.setText("");
@@ -335,6 +304,7 @@ public class ContributionTab extends JPanel {
     }
     filterField.applyFilter();
   }
+  */
 
 
   class FilterField extends JTextField {
@@ -354,12 +324,9 @@ public class ContributionTab extends JPanel {
       removeFilter.setBorderPainted(false);
       removeFilter.setContentAreaFilled(false);
       removeFilter.setCursor(Cursor.getDefaultCursor());
-      removeFilter.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setText("");
-          filterField.requestFocusInWindow();
-        }
+      removeFilter.addActionListener(e -> {
+        setText("");
+        filterField.requestFocusInWindow();
       });
       //searchIcon = new ImageIcon(java.awt.Toolkit.getDefaultToolkit().getImage("NSImage://NSComputerTemplate"));
       setOpaque(false);
@@ -383,7 +350,7 @@ public class ContributionTab extends JPanel {
                                            GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE));
       removeFilter.setVisible(false);
 
-      filters = new ArrayList<String>();
+      filters = new ArrayList<>();
 
       addFocusListener(new FocusListener() {
         public void focusLost(FocusEvent focusEvent) {
@@ -416,34 +383,26 @@ public class ContributionTab extends JPanel {
     }
 
     public void applyFilter() {
-      String filter = getText();
-      filter = filter.toLowerCase();
+      String filter = getText().toLowerCase();
 
       // Replace anything but 0-9, a-z, or : with a space
-      filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a^\\x3a]", " ");
+      filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
       filters = Arrays.asList(filter.split(" "));
       filterLibraries(category, filters);
-
-      contributionListPanel.updateColors();
     }
   }
 
 
-//  public boolean hasAlreadyBeenOpened() {
-//    return panel != null;
-//  }
-
-
-  public void updateStatusPanel(DetailPanel contributionPanel) {
-    statusPanel.update(contributionPanel);
+  public void updateStatusDetail(StatusPanelDetail detail) {
+    statusPanel.updateDetail(detail);
   }
 
 
   protected void updateAll() {
-    Collection<DetailPanel> collection =
-      contributionListPanel.panelByContribution.values();
-    for (DetailPanel detailPanel : collection) {
-      detailPanel.update();
+    Collection<StatusPanelDetail> collection =
+      contributionListPanel.detailForContrib.values();
+    for (StatusPanelDetail detail : collection) {
+      detail.update();
     }
     contributionListPanel.model.fireTableDataChanged();
   }

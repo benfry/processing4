@@ -33,16 +33,18 @@ import java.nio.IntBuffer;
 import java.util.HashMap;
 
 /**
- * This class encapsulates a GLSL shader program, including a vertex and a
- * fragment shader. It's compatible with the P2D and P3D renderers, but not with
- * the default renderer. Use the <b>loadShader()</b> function to load your
- * shader code. [Note: It's strongly encouraged to use <b>loadShader()</b> to
- * create a <b>PShader</b> object, rather than calling the <b>PShader</b> constructor
- * manually.]
+ * This class encapsulates a GLSL shader program, including a vertex
+ * and a fragment shader. It is compatible with P2D and P3D, but not
+ * with the default renderer.
+ *
+ * Use the <b>loadShader()</b> function to load your shader code.
+ * Note: It's strongly encouraged to use <b>loadShader()</b> to create
+ * a <b>PShader</b> object, rather than calling the <b>PShader</b>
+ * constructor manually.
  *
  * @webref rendering:shaders
- * @webBrief This class encapsulates a GLSL shader program, including a vertex
- *           and a fragment shader
+ * @webBrief This class encapsulates a GLSL shader program,
+ *           including a vertex and a fragment shader
  */
 public class PShader implements PConstants {
   static protected final int POINT    = 0;
@@ -939,7 +941,7 @@ public class PShader implements PConstants {
 
   protected void validate() {
     pgl.getProgramiv(glProgram, PGL.LINK_STATUS, intBuffer);
-    boolean linked = intBuffer.get(0) == 0 ? false : true;
+    boolean linked = intBuffer.get(0) != 0;
     if (!linked) {
       PGraphics.showException("Cannot link shader program:\n" +
                               pgl.getProgramInfoLog(glProgram));
@@ -947,7 +949,7 @@ public class PShader implements PConstants {
 
     pgl.validateProgram(glProgram);
     pgl.getProgramiv(glProgram, PGL.VALIDATE_STATUS, intBuffer);
-    boolean validated = intBuffer.get(0) == 0 ? false : true;
+    boolean validated = intBuffer.get(0) != 0;
     if (!validated) {
       PGraphics.showException("Cannot validate shader program:\n" +
                               pgl.getProgramInfoLog(glProgram));
@@ -975,15 +977,12 @@ public class PShader implements PConstants {
   }
 
 
-  /**
-   * @param shaderSource a string containing the shader's code
-   */
   protected boolean compileVertexShader() {
     pgl.shaderSource(glVertex, PApplet.join(vertexShaderSource, "\n"));
     pgl.compileShader(glVertex);
 
     pgl.getShaderiv(glVertex, PGL.COMPILE_STATUS, intBuffer);
-    boolean compiled = intBuffer.get(0) == 0 ? false : true;
+    boolean compiled = intBuffer.get(0) != 0;
     if (!compiled) {
       PGraphics.showException("Cannot compile vertex shader:\n" +
                               pgl.getShaderInfoLog(glVertex));
@@ -994,15 +993,12 @@ public class PShader implements PConstants {
   }
 
 
-  /**
-   * @param shaderSource a string containing the shader's code
-   */
   protected boolean compileFragmentShader() {
     pgl.shaderSource(glFragment, PApplet.join(fragmentShaderSource, "\n"));
     pgl.compileShader(glFragment);
 
     pgl.getShaderiv(glFragment, PGL.COMPILE_STATUS, intBuffer);
-    boolean compiled = intBuffer.get(0) == 0 ? false : true;
+    boolean compiled = intBuffer.get(0) != 0;
     if (!compiled) {
       PGraphics.showException("Cannot compile fragment shader:\n" +
                               pgl.getShaderInfoLog(glFragment));
@@ -1025,8 +1021,8 @@ public class PShader implements PConstants {
 
 
   static protected int getShaderType(String[] source, int defaultType) {
-    for (int i = 0; i < source.length; i++) {
-      String line = source[i].trim();
+    for (String s : source) {
+      String line = s.trim();
 
       if (PApplet.match(line, colorShaderDefRegexp) != null)
         return PShader.COLOR;

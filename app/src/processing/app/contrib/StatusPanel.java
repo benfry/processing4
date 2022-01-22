@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-16 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -21,24 +21,16 @@
  */
 package processing.app.contrib;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.text.DateFormat;
+import java.util.Date;
 
-import javax.swing.GroupLayout;
-import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextPane;
-import javax.swing.LayoutStyle;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import javax.swing.text.html.HTMLDocument;
 
+import processing.app.Language;
+import processing.app.Util;
 import processing.app.ui.Toolkit;
 import processing.app.Base;
 import processing.app.Platform;
@@ -64,14 +56,8 @@ class StatusPanel extends JPanel {
   ContributionListing contributionListing = ContributionListing.getInstance();
   ContributionTab contributionTab;
 
-  private String bodyRule;
 
-
-  /** Needed by ContributionListPanel */
-  public StatusPanel() { }
-
-
-  public StatusPanel(final ContributionTab contributionTab, int width) {
+  public StatusPanel(final ContributionTab contributionTab) {
     this.contributionTab = contributionTab;
 
     if (foundationIcon == null) {
@@ -81,6 +67,11 @@ class StatusPanel extends JPanel {
       removeIcon = Toolkit.getLibIconX("manager/remove");
       buttonFont = ManagerFrame.NORMAL_PLAIN;
     }
+  }
+
+
+  public StatusPanel(final ContributionTab contributionTab, int width) {
+    this(contributionTab);
 
     setBackground(new Color(0xebebeb));
 
@@ -91,16 +82,14 @@ class StatusPanel extends JPanel {
     label.setEditable(false);
     label.setOpaque(false);
     label.setContentType("text/html");
-    bodyRule = "a, body { font-family: " + buttonFont.getFamily() + "; " +
-            "font-size: " + buttonFont.getSize() + "pt; color: black; text-decoration: none;}";
-    label.addHyperlinkListener(new HyperlinkListener() {
-
-      @Override
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          if (e.getURL() != null) {
-            Platform.openURL(e.getURL().toString());
-          }
+//    bodyRule = "a, body { font-family: " + buttonFont.getFamily() + "; " +
+//            "font-size: " + buttonFont.getSize() + "pt; color: black; text-decoration: none;}";
+//    bodyRule = "";
+//    bodyRule = DetailPanel.getBodyStyle();
+    label.addHyperlinkListener(e -> {
+      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        if (e.getURL() != null) {
+          Platform.openURL(e.getURL().toString());
         }
       }
     });
@@ -108,15 +97,12 @@ class StatusPanel extends JPanel {
     //installButton.setDisabledIcon(installIcon);
     installButton.setFont(buttonFont);
     installButton.setHorizontalAlignment(SwingConstants.LEFT);
-    installButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        installButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.install();
-        StatusPanel.this.update(currentPanel);
-      }
+    installButton.addActionListener(e -> {
+      installButton.setEnabled(false);
+      StatusPanelDetail currentDetail =
+        contributionTab.contributionListPanel.getSelectedDetail();
+      currentDetail.install();
+      updateDetail(currentDetail);
     });
     progressPanel = new JPanel();
     progressPanel.setLayout(new BorderLayout());
@@ -129,27 +115,23 @@ class StatusPanel extends JPanel {
     updateButton = Toolkit.createIconButton("Update", updateIcon);
     updateButton.setFont(buttonFont);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
-    updateButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        updateButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.update();
-        StatusPanel.this.update(currentPanel);
-      }
+    updateButton.addActionListener(e -> {
+      updateButton.setEnabled(false);
+      StatusPanelDetail currentDetail =
+        contributionTab.contributionListPanel.getSelectedDetail();
+      currentDetail.update();
+      updateDetail(currentDetail);
     });
 
     removeButton = Toolkit.createIconButton("Remove", removeIcon);
     removeButton.setFont(buttonFont);
     removeButton.setHorizontalAlignment(SwingConstants.LEFT);
-    removeButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        removeButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.remove();
-        StatusPanel.this.update(currentPanel);
-      }
+    removeButton.addActionListener(e -> {
+      removeButton.setEnabled(false);
+      StatusPanelDetail currentPanel =
+        contributionTab.contributionListPanel.getSelectedDetail();
+      currentPanel.remove();
+      updateDetail(currentPanel);
     });
 
     int labelWidth = (width != 0) ?
@@ -210,12 +192,14 @@ class StatusPanel extends JPanel {
   }
 
 
+  /*
   void setMessage(String message) {
     if (label != null) {
       label.setText(message);
       label.repaint();
     }
   }
+  */
 
 
   void setErrorMessage(String message) {
@@ -234,12 +218,102 @@ class StatusPanel extends JPanel {
   }
 
 
-  public void update(DetailPanel panel) {
+  static String getBodyStyle() {
+    return "body { " +
+      "  margin: 0; " +
+      "  padding: 0;" +
+      "  font-family: " + Toolkit.getSansFontName() + ", Helvetica, Arial, sans-serif;" +
+      "  font-size: 11px;" +
+//      "  font-size: 100%;" +
+//      "  font-size: 0.95em; " +
+//      "}";
+      "}" +
+      "a { color: #444; text-decoration: none; }";
+  }
+
+
+  static private final String REMOVE_RESTART_MESSAGE =
+    String.format("<i>%s</i>", Language.text("contrib.messages.remove_restart"));
+
+  static private final String INSTALL_RESTART_MESSAGE =
+    String.format("<i>%s</i>", Language.text("contrib.messages.install_restart"));
+
+  static private final String UPDATE_RESTART_MESSAGE =
+    String.format("<i>%s</i>", Language.text("contrib.messages.update_restart"));
+
+  static String updateDescription(Contribution contrib) {
+    // Avoid ugly synthesized bold
+    Font boldFont = ManagerFrame.SMALL_BOLD;
+    String fontFace = "<font face=\"" + boldFont.getName() + "\">";
+
+    StringBuilder desc = new StringBuilder();
+    desc.append("<html><body>");
+    desc.append(fontFace);
+    if (contrib.getUrl() == null) {
+      desc.append(contrib.getName());
+    } else {
+      desc.append("<a href=\"");
+      desc.append(contrib.getUrl());
+      desc.append("\">");
+      desc.append(contrib.getName());
+      desc.append("</a>");
+    }
+    desc.append("</font> ");
+
+    String prettyVersion = contrib.getPrettyVersion();
+    if (prettyVersion != null) {
+      desc.append(prettyVersion);
+    }
+    desc.append(" <br/>");
+
+    String authorList = contrib.getAuthorList();
+    if (authorList != null && !authorList.isEmpty()) {
+      desc.append(Util.markDownLinksToHtml(contrib.getAuthorList()));
+    }
+    desc.append("<br/><br/>");
+
+    if (contrib.isDeletionFlagged()) {
+      desc.append(REMOVE_RESTART_MESSAGE);
+    } else if (contrib.isRestartFlagged()) {
+      desc.append(INSTALL_RESTART_MESSAGE);
+    } else if (contrib.isUpdateFlagged()) {
+      desc.append(UPDATE_RESTART_MESSAGE);
+    } else {
+      String sentence = contrib.getSentence();
+      if (sentence == null || sentence.isEmpty()) {
+        sentence = String.format("<i>%s</i>", Language.text("contrib.errors.description_unavailable"));
+      } else {
+        sentence = Util.sanitizeHtmlTags(sentence);
+        sentence = Util.markDownLinksToHtml(sentence);
+      }
+      desc.append(sentence);
+    }
+
+    long lastUpdatedUTC = contrib.getLastUpdated();
+    if (lastUpdatedUTC != 0) {
+      DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.MEDIUM);
+      Date lastUpdatedDate = new Date(lastUpdatedUTC);
+      if (prettyVersion != null) {
+        desc.append(", ");
+      }
+      desc.append("Last Updated on ");
+      desc.append(dateFormatter.format(lastUpdatedDate));
+    }
+
+    desc.append("</body></html>");
+    return desc.toString();
+  }
+
+
+  void updateDetail(StatusPanelDetail panel) {
+//    System.out.println("rebuilding status panel for " + panel.getContrib().name);
+//    new Exception("rebuilding status panel for " + panel.getContrib().name).printStackTrace(System.out);
     progressPanel.removeAll();
 
     iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
-    label.setText(panel.description);
-    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(bodyRule);
+//    label.setText(panel.description);
+    label.setText(updateDescription(panel.getContrib()));
+    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(getBodyStyle());
 
     updateButton.setEnabled(contributionListing.hasDownloadedLatestList() &&
                             (contributionListing.hasUpdates(panel.getContrib()) &&
@@ -290,7 +364,7 @@ class StatusPanel extends JPanel {
     }
 
     removeButton.setEnabled(panel.getContrib().isInstalled() && !panel.removeInProgress);
-    progressPanel.add(panel.installProgressBar);
+    progressPanel.add(panel.getProgressBar());
     progressPanel.setVisible(false);
     updateLabel.setVisible(true);
     if (panel.updateInProgress || panel.installInProgress || panel.removeInProgress) {

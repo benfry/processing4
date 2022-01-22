@@ -81,10 +81,6 @@ public class ManagerTabs extends Box {
   Font font;
   int fontAscent;
 
-  Image offscreen;
-  int sizeW, sizeH;
-  int imageW, imageH;
-
   Image gradient;
 
   JPanel cardPanel;
@@ -193,33 +189,10 @@ public class ManagerTabs extends Box {
       });
     }
 
-    public void paintComponent(Graphics screen) {
-      if (screen == null) return;
 
-      Dimension size = getSize();
-      if ((size.width != sizeW) || (size.height != sizeH)) {
-        // component has been resized
+    public void paintComponent(Graphics g) {
+      if (g == null) return;
 
-        if ((size.width > imageW) || (size.height > imageH)) {
-          // nix the image and recreate, it's too small
-          offscreen = null;
-
-        } else {
-          // if the image is larger than necessary, no need to change
-          sizeW = size.width;
-          sizeH = size.height;
-        }
-      }
-
-      if (offscreen == null) {
-        sizeW = size.width;
-        sizeH = size.height;
-        imageW = sizeW;
-        imageH = sizeH;
-        offscreen = Toolkit.offscreenGraphics(this, imageW, imageH);
-      }
-
-      Graphics g = offscreen.getGraphics();
       g.setFont(font);  // need to set this each time through
       if (fontAscent == 0) {
         fontAscent = (int) Toolkit.getAscent(g);
@@ -227,12 +200,12 @@ public class ManagerTabs extends Box {
 
       Graphics2D g2 = Toolkit.prepareGraphics(g);
 
-      g.drawImage(gradient, 0, 0, imageW, imageH, this);
+      g.drawImage(gradient, 0, 0, getWidth(), getHeight(), this);
 
       g.setColor(tabColor[SELECTED]);
       // draw the two pixel line that extends left/right below the tabs
       // can't be done with lines, b/c retina leaves tiny hairlines
-      g.fillRect(0, TAB_BOTTOM, imageW, Toolkit.zoom(2));
+      g.fillRect(0, TAB_BOTTOM, getWidth(), Toolkit.zoom(2));
 
       // reset all tab positions
       for (Tab tab : tabList) {
@@ -243,14 +216,11 @@ public class ManagerTabs extends Box {
       placeTabs(0);
       // now actually draw the tabs
       drawTabs(g2);
-
-      screen.drawImage(offscreen, 0, 0, imageW, imageH, null);
     }
 
 
     /**
      * @param left starting position from the left
-     * @param g graphics context, or null if we're not drawing
      */
     private void placeTabs(int left) {  //, Graphics2D g) {
       int x = left;

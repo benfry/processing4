@@ -98,6 +98,11 @@ public class Theme {
   }
 
 
+  static public String get(String attribute) {
+    return theme.get(attribute);
+  }
+
+
   static public boolean getBoolean(String attribute) {
     return theme.getBoolean(attribute);
   }

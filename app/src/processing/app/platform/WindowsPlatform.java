@@ -292,6 +292,11 @@ public class WindowsPlatform extends DefaultPlatform {
 
   // looking for Documents and Settings/blah/Application Data/Processing
   public File getSettingsFolder() throws Exception {
+    File override = Base.getSettingsOverride();
+    if (override != null) {
+      return override;
+    }
+
     try {
       String appDataRoaming = getAppDataPath();
       if (appDataRoaming != null) {

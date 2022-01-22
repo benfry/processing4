@@ -359,7 +359,7 @@ public abstract class PGL {
   protected static int INDEX_TYPE   = 0x1403; // GL_UNSIGNED_SHORT
 
   /** Machine Epsilon for float precision. */
-  protected static float FLOAT_EPS = Float.MIN_VALUE;
+  protected static float FLOAT_EPS;
   // Calculation of the Machine Epsilon for float precision. From:
   // http://en.wikipedia.org/wiki/Machine_epsilon#Approximation_using_Java
   static {
@@ -545,14 +545,14 @@ public abstract class PGL {
   protected boolean getDepthTest() {
     intBuffer.rewind();
     getBooleanv(DEPTH_TEST, intBuffer);
-    return intBuffer.get(0) == 0 ? false : true;
+    return intBuffer.get(0) != 0;
   }
 
 
   protected boolean getDepthWriteMask() {
     intBuffer.rewind();
     getBooleanv(DEPTH_WRITEMASK, intBuffer);
-    return intBuffer.get(0) == 0 ? false : true;
+    return intBuffer.get(0) != 0;
   }
 
 
@@ -828,14 +828,14 @@ public abstract class PGL {
             // Multiply the texture by the button color
             float ba = ((stopButtonColor >> 24) & 0xFF) / 255f;
             float br = ((stopButtonColor >> 16) & 0xFF) / 255f;
-            float bg = ((stopButtonColor >>  8) & 0xFF) / 255f;
-            float bb = ((stopButtonColor >>  0) & 0xFF) / 255f;
+            float bg = ((stopButtonColor >> 8) & 0xFF) / 255f;
+            float bb = (stopButtonColor & 0xFF) / 255f;
             for (int i = 0; i < color.length; i++) {
               int c = closeButtonPix[i];
               int a = (int)(ba * ((c >> 24) & 0xFF));
               int r = (int)(br * ((c >> 16) & 0xFF));
-              int g = (int)(bg * ((c >>  8) & 0xFF));
-              int b = (int)(bb * ((c >>  0) & 0xFF));
+              int g = (int)(bg * ((c >> 8) & 0xFF));
+              int b = (int)(bb * (c & 0xFF));
               color[i] = javaToNativeARGB((a << 24) | (r << 16) | (g << 8) | b);
             }
             IntBuffer buf = allocateIntBuffer(color);
@@ -1111,8 +1111,8 @@ public abstract class PGL {
           depthComponent = DEPTH_COMPONENT32;
         } else if (depthBits == 24) {
           depthComponent = DEPTH_COMPONENT24;
-        } else if (depthBits == 16) {
-          depthComponent = DEPTH_COMPONENT16;
+        //} else if (depthBits == 16) {
+          //depthComponent = DEPTH_COMPONENT16;
         }
 
         IntBuffer depthBuf = multisample ? glMultiDepth : glDepth;
@@ -1135,8 +1135,8 @@ public abstract class PGL {
           stencilIndex = STENCIL_INDEX8;
         } else if (stencilBits == 4) {
           stencilIndex = STENCIL_INDEX4;
-        } else if (stencilBits == 1) {
-          stencilIndex = STENCIL_INDEX1;
+        //} else if (stencilBits == 1) {
+          //stencilIndex = STENCIL_INDEX1;
         }
 
         IntBuffer stencilBuf = multisample ? glMultiStencil : glStencil;
@@ -1621,7 +1621,9 @@ public abstract class PGL {
   // bit shifting this might be more efficient
   protected static int nextPowerOfTwo(int val) {
     int ret = 1;
-    while (ret < val) ret <<= 1;
+    while (ret < val) {
+      ret <<= 1;
+    }
     return ret;
   }
 
@@ -1873,8 +1875,7 @@ public abstract class PGL {
       return 1;
     } else {
       // Number of samples is always an even number:
-      int n = 2 * (quality / 2);
-      return n;
+      return 2 * (quality / 2);
     }
   }
 
@@ -1987,31 +1988,29 @@ public abstract class PGL {
 
     String[] vertSrc;
 
+    Pattern[] search;
+    String[] replace;
+    int offset = 1;
     if (version < 130) {
-      Pattern[] search = { };
-      String[] replace = { };
-      int offset = 1;
+      search = new Pattern[] { };
+      replace = new String[] { };
 
-      vertSrc = preprocessShaderSource(vertSrc0, search, replace, offset);
-      vertSrc[0] = "#version " + version + versionSuffix;
     } else {
       // We need to replace 'texture' uniform by 'texMap' uniform and
       // 'textureXXX()' functions by 'texture()' functions. Order of these
       // replacements is important to prevent collisions between these two.
-      Pattern[] search = new Pattern[] {
-          Pattern.compile(String.format(GLSL_ID_REGEX, "varying")),
-          Pattern.compile(String.format(GLSL_ID_REGEX, "attribute")),
-          Pattern.compile(String.format(GLSL_ID_REGEX, "texture")),
-          Pattern.compile(String.format(GLSL_FN_REGEX, "texture2DRect|texture2D|texture3D|textureCube"))
+      search = new Pattern[] {
+        Pattern.compile(String.format(GLSL_ID_REGEX, "varying")),
+        Pattern.compile(String.format(GLSL_ID_REGEX, "attribute")),
+        Pattern.compile(String.format(GLSL_ID_REGEX, "texture")),
+        Pattern.compile(String.format(GLSL_FN_REGEX, "texture2DRect|texture2D|texture3D|textureCube"))
       };
-      String[] replace = new String[] {
-          "out", "in", "texMap", "texture",
+      replace = new String[]{
+        "out", "in", "texMap", "texture",
       };
-      int offset = 1;
-
-      vertSrc = preprocessShaderSource(vertSrc0, search, replace, offset);
-      vertSrc[0] = "#version " + version + versionSuffix;
     }
+    vertSrc = preprocessShaderSource(vertSrc0, search, replace, offset);
+    vertSrc[0] = "#version " + version + versionSuffix;
 
     return vertSrc;
   }
@@ -2041,8 +2040,7 @@ public abstract class PGL {
   }
 
   protected static boolean containsVersionDirective(String[] shSrc) {
-    for (int i = 0; i < shSrc.length; i++) {
-      String line = shSrc[i];
+    for (String line : shSrc) {
       int versionIndex = line.indexOf("#version");
       if (versionIndex >= 0) {
         int commentIndex = line.indexOf("//");
@@ -2090,14 +2088,14 @@ public abstract class PGL {
   protected boolean compiled(int shader) {
     intBuffer.rewind();
     getShaderiv(shader, COMPILE_STATUS, intBuffer);
-    return intBuffer.get(0) == 0 ? false : true;
+    return intBuffer.get(0) != 0;
   }
 
 
   protected boolean linked(int program) {
     intBuffer.rewind();
     getProgramiv(program, LINK_STATUS, intBuffer);
-    return intBuffer.get(0) == 0 ? false : true;
+    return intBuffer.get(0) != 0;
   }
 
 
@@ -2106,38 +2104,27 @@ public abstract class PGL {
     if (status == FRAMEBUFFER_COMPLETE) {
       return 0;
     } else if (status == FRAMEBUFFER_UNDEFINED) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "framebuffer undefined"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "framebuffer undefined");
     } else if (status == FRAMEBUFFER_INCOMPLETE_ATTACHMENT) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete attachment"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete attachment");
     } else if (status == FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete missing attachment"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete missing attachment");
     } else if (status == FRAMEBUFFER_INCOMPLETE_DIMENSIONS) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete dimensions"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete dimensions");
     } else if (status == FRAMEBUFFER_INCOMPLETE_FORMATS) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete formats"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete formats");
     } else if (status == FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete draw buffer"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete draw buffer");
     } else if (status == FRAMEBUFFER_INCOMPLETE_READ_BUFFER) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete read buffer"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete read buffer");
     } else if (status == FRAMEBUFFER_UNSUPPORTED) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "framebuffer unsupported"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "framebuffer unsupported");
     } else if (status == FRAMEBUFFER_INCOMPLETE_MULTISAMPLE) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete multisample buffer"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete multisample buffer");
     } else if (status == FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS) {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "incomplete layer targets"));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "incomplete layer targets");
     } else {
-      System.err.println(String.format(FRAMEBUFFER_ERROR,
-                                       "unknown error " + status));
+      System.err.printf((FRAMEBUFFER_ERROR) + "%n", "unknown error " + status);
     }
     return status;
   }
@@ -2157,21 +2144,27 @@ public abstract class PGL {
 
     int[] res = {0, 0, 0};
     String[] parts = version.split(" ");
-    for (int i = 0; i < parts.length; i++) {
-      if (0 < parts[i].indexOf(".")) {
-        String[] nums = parts[i].split("\\.");
+    for (String part : parts) {
+      if (0 < part.indexOf(".")) {
+        String[] nums = part.split("\\.");
         try {
           res[0] = Integer.parseInt(nums[0]);
-        } catch (NumberFormatException e) { }
+        } catch (NumberFormatException e) {
+          // ignored
+        }
         if (1 < nums.length) {
           try {
             res[1] = Integer.parseInt(nums[1]);
-          } catch (NumberFormatException e) { }
+          } catch (NumberFormatException e) {
+            // ignored
+          }
         }
         if (2 < nums.length) {
           try {
             res[2] = Integer.parseInt(nums[2]);
-          } catch (NumberFormatException e) { }
+          } catch (NumberFormatException e) {
+            // ignored
+          }
         }
         break;
       }
@@ -2185,10 +2178,10 @@ public abstract class PGL {
     int major = getGLVersion()[0];
     if (major < 2) {
       String ext = getString(EXTENSIONS);
-      return ext.indexOf("_framebuffer_object") != -1 &&
-             ext.indexOf("_vertex_shader")      != -1 &&
-             ext.indexOf("_shader_objects")     != -1 &&
-             ext.indexOf("_shading_language")   != -1;
+      return (ext.contains("_framebuffer_object") &&
+              ext.contains("_vertex_shader") &&
+              ext.contains("_shader_objects") &&
+              ext.contains("_shading_language"));
     } else {
       return true;
     }
@@ -2202,10 +2195,10 @@ public abstract class PGL {
     int major = getGLVersion()[0];
     if (major < 2) {
       String ext = getString(EXTENSIONS);
-      return ext.indexOf("_fragment_shader")  != -1 &&
-             ext.indexOf("_vertex_shader")    != -1 &&
-             ext.indexOf("_shader_objects")   != -1 &&
-             ext.indexOf("_shading_language") != -1;
+      return (ext.contains("_fragment_shader") &&
+              ext.contains("_vertex_shader") &&
+              ext.contains("_shader_objects") &&
+              ext.contains("_shading_language"));
     } else {
       return true;
     }
@@ -2217,9 +2210,9 @@ public abstract class PGL {
     if (major < 3) {
       String ext = getString(EXTENSIONS);
       if (isES()) {
-        return -1 < ext.indexOf("_texture_npot");
+        return ext.contains("_texture_npot");
       } else {
-        return -1 < ext.indexOf("_texture_non_power_of_two");
+        return ext.contains("_texture_non_power_of_two");
       }
     } else {
       return true;
@@ -2235,7 +2228,7 @@ public abstract class PGL {
       return true;
     } else {
       String ext = getString(EXTENSIONS);
-      return -1 < ext.indexOf("_generate_mipmap");
+      return ext.contains("_generate_mipmap");
     }
   }
 
@@ -2244,7 +2237,7 @@ public abstract class PGL {
     int major = getGLVersion()[0];
     if (major < 3) {
       String ext = getString(EXTENSIONS);
-      return -1 < ext.indexOf("_framebuffer_multisample");
+      return ext.contains("_framebuffer_multisample");
     } else {
       return true;
     }
@@ -2255,7 +2248,7 @@ public abstract class PGL {
     int major = getGLVersion()[0];
     if (major < 3) {
       String ext = getString(EXTENSIONS);
-      return -1 < ext.indexOf("_packed_depth_stencil");
+      return ext.contains("_packed_depth_stencil");
     } else {
       return true;
     }
@@ -2266,7 +2259,7 @@ public abstract class PGL {
     int major = getGLVersion()[0];
     if (isES() || major < 3) {
       String ext = getString(EXTENSIONS);
-      return -1 < ext.indexOf("_texture_filter_anisotropic");
+      return ext.contains("_texture_filter_anisotropic");
     } else {
       return true;
     }
@@ -2621,8 +2614,7 @@ public abstract class PGL {
 
   protected static FloatBuffer allocateDirectFloatBuffer(int size) {
     int bytes = PApplet.max(MIN_DIRECT_BUFFER_SIZE, size) * SIZEOF_FLOAT;
-    return ByteBuffer.allocateDirect(bytes).order(ByteOrder.nativeOrder()).
-           asFloatBuffer();
+    return ByteBuffer.allocateDirect(bytes).order(ByteOrder.nativeOrder()).asFloatBuffer();
   }
 
 
@@ -2735,27 +2727,27 @@ public abstract class PGL {
 
 
   protected interface Tessellator {
-    public void setCallback(int flag);
-    public void setWindingRule(int rule);
-    public void setProperty(int property, int value);
+    void setCallback(int flag);
+    void setWindingRule(int rule);
+    void setProperty(int property, int value);
 
-    public void beginPolygon();
-    public void beginPolygon(Object data);
-    public void endPolygon();
-    public void beginContour();
-    public void endContour();
-    public void addVertex(double[] v);
-    public void addVertex(double[] v, int n, Object data);
+    void beginPolygon();
+    void beginPolygon(Object data);
+    void endPolygon();
+    void beginContour();
+    void endContour();
+    void addVertex(double[] v);
+    void addVertex(double[] v, int n, Object data);
   }
 
 
   protected interface TessellatorCallback  {
-    public void begin(int type);
-    public void end();
-    public void vertex(Object data);
-    public void combine(double[] coords, Object[] data,
-                        float[] weight, Object[] outData);
-    public void error(int errnum);
+    void begin(int type);
+    void end();
+    void vertex(Object data);
+    void combine(double[] coords, Object[] data,
+                 float[] weight, Object[] outData);
+    void error(int errnum);
   }
 
 
@@ -2781,9 +2773,9 @@ public abstract class PGL {
 
 
   protected interface FontOutline {
-    public boolean isDone();
-    public int currentSegment(float coords[]);
-    public void next();
+    boolean isDone();
+    int currentSegment(float[] coords);
+    void next();
   }
 
 

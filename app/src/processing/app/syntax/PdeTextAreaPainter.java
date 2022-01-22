@@ -20,10 +20,7 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.app.syntax;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.GeneralPath;
@@ -40,7 +37,7 @@ import processing.app.ui.Theme;
 
 /**
  * Adds support to TextAreaPainter for background colors,
- * and the left hand gutter area with background color and text.
+ * and the left-hand gutter area with background color and text.
  */
 public class PdeTextAreaPainter extends TextAreaPainter {
   public Color errorUnderlineColor;
@@ -151,7 +148,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       int wiggleStart = Math.max(startOffset, lineOffset);
       int wiggleStop = Math.min(stopOffset, textArea.getLineStopOffset(line));
 
-      int y = textArea.lineToY(line) + fm.getLeading() + fm.getMaxDescent();
+      int y = textArea.lineToY(line) + getLineDisplacement();
 
       try {
         String badCode;
@@ -182,8 +179,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
         int x1 = textArea.offsetToX(line, goodCode.length() + leftTrimLength);
         int x2 = textArea.offsetToX(line, goodCode.length() + rightTrimmedLength);
-        if (x1 == x2) x2 += fm.stringWidth(" ");
-        int y1 = y + fm.getHeight() - 2;
+        if (x1 == x2) x2 += fontMetrics.stringWidth(" ");
+        int y1 = y + fontMetrics.getHeight() - 2;
 
         if (line != problem.getLineNumber()) {
           x1 = Editor.LEFT_GUTTER; // on the following lines, wiggle extends to the left border
@@ -209,15 +206,15 @@ public class PdeTextAreaPainter extends TextAreaPainter {
    * @param x horizontal position
    */
   protected void paintLeftGutter(Graphics gfx, int line, int x) {
-    int y = textArea.lineToY(line) + fm.getLeading() + fm.getMaxDescent();
+    int y = textArea.lineToY(line) + getLineDisplacement();
     if (line == textArea.getSelectionStopLine()) {
       gfx.setColor(gutterLineHighlightColor);
-      gfx.fillRect(0, y, Editor.LEFT_GUTTER, fm.getHeight());
+      gfx.fillRect(0, y, Editor.LEFT_GUTTER, fontMetrics.getHeight());
     } else {
-      //gfx.setColor(getJavaTextArea().gutterBgColor);
-      gfx.setClip(0, y, Editor.LEFT_GUTTER, fm.getHeight());
+      Rectangle clip = gfx.getClipBounds();
+      gfx.setClip(0, y, Editor.LEFT_GUTTER, fontMetrics.getHeight());
       gfx.drawImage(((PdeTextArea) textArea).getGutterGradient(), 0, 0, getWidth(), getHeight(), this);
-      gfx.setClip(null);  // reset
+      gfx.setClip(clip);  // reset
     }
 
     String text = null;
@@ -230,7 +227,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 //      //gfx.setColor(new Color(gutterTextColor.getRGB(), );
 //    }
     int textRight = Editor.LEFT_GUTTER - Editor.GUTTER_MARGIN;
-    int textBaseline = textArea.lineToY(line) + fm.getHeight();
+    int textBaseline = textArea.lineToY(line) + fontMetrics.getHeight();
 
     if (text != null) {
       if (text.equals(PdeTextArea.BREAK_MARKER)) {
@@ -260,6 +257,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private void drawDiamond(Graphics g,
                                   float x, float y, float w, float h) {
     Graphics2D g2 = (Graphics2D) g;
@@ -273,6 +271,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private void drawRightArrow(Graphics g,
                                      float x, float y, float w, float h) {
     Graphics2D g2 = (Graphics2D) g;
@@ -311,7 +310,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
   @Override
   public String getToolTipText(MouseEvent event) {
-    int line = event.getY() / getFontMetrics().getHeight() + textArea.getFirstLine();
+    fontMetrics = getFontMetrics();
+    int line = event.getY() / fontMetrics.getHeight() + textArea.getFirstLine();
     if (line >= 0 || line < textArea.getLineCount()) {
       List<Problem> problems = getEditor().findProblems(line);
       for (Problem problem : problems) {
@@ -343,7 +343,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
   @Override
   public int getScrollWidth() {
-    // TODO https://github.com/processing/processing/issues/3591
+    // https://github.com/processing/processing/issues/3591
     return super.getWidth() - Editor.LEFT_GUTTER;
   }
 

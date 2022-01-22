@@ -6,7 +6,6 @@
     <libelement value="jar://$MODULE_DIR$/lib/ant.jar!/" />
     <libelement value="jar://$MODULE_DIR$/lib/ant-launcher.jar!/" />
     <libelement value="file:///processing4-core/library-test/junit-4.8.1.jar" />
-    <libelement value="jar://$MODULE_DIR$/lib/VAqua7.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/src" expected_position="0" />
     </src_description>

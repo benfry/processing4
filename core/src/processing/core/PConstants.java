@@ -88,7 +88,7 @@ public interface PConstants {
   int MACOSX  = 2;
 
   String[] platformNames = {
-    "other", "windows", "macosx", "linux"
+    "other", "windows", "macos", "linux"
   };
 
 

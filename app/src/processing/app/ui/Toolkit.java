@@ -70,14 +70,20 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.Util;
+import processing.awt.PGraphicsJava2D;
+import processing.awt.PShapeJava2D;
 import processing.core.PApplet;
+import processing.core.PShape;
 import processing.data.StringList;
+import processing.data.XML;
 
 
 /**
@@ -155,7 +161,7 @@ public class Toolkit {
 
   /**
    * Create a menu item and set its KeyStroke by name (so it can be stored
-   * in the language settings or the preferences. Syntax is here:
+   * in the language settings or the preferences). Syntax is here:
    * https://docs.oracle.com/javase/8/docs/api/javax/swing/KeyStroke.html#getKeyStroke-java.lang.String-
    */
   static public JMenuItem newJMenuItemExt(String base) {
@@ -254,8 +260,8 @@ public class Toolkit {
    *  'A'. </li>
    * <li> If the first letters are all taken/non-ASCII, then it loops through the
    *  ASCII letters in the item, widest to narrowest, seeing if any of them is not taken.
-   *  To improve readability, it discriminates against decenders (qypgj), imagining they
-   *  have 2/3 their actual width. (MS guidelines: avoid decenders). It also discriminates
+   *  To improve readability, it discriminates against descenders (qypgj), imagining they
+   *  have 2/3 their actual width. (MS guidelines: avoid descenders). It also discriminates
    *  against vowels, imagining they have 2/3 their actual width. (MS and Gnome guidelines:
    *  avoid vowels.) </li>
    * <li>Failing that, it will loop left-to-right for an available digit. This is a last
@@ -281,8 +287,9 @@ public class Toolkit {
 
     // The English is http://techbase.kde.org/Projects/Usability/HIG/Keyboard_Accelerators,
     // made lowercase.
-    // Nothing but [a-z] except for '&' before mnemonics and regexes for changable text.
-    final String[] kdePreDefStrs = { "&file", "&new", "&open", "open&recent",
+    // Nothing but [a-z] except for '&' before mnemonics and regexes for changeable text.
+    final String[] kdePreDefStrs = {
+      "&file", "&new", "&open", "open&recent",
       "&save", "save&as", "saveacop&y", "saveas&template", "savea&ll", "reloa&d",
       "&print", "printpre&view", "&import", "e&xport", "&closefile",
       "clos&eallfiles", "&quit", "&edit", "&undo", "re&do", "cu&t", "&copy",
@@ -298,9 +305,10 @@ public class Toolkit {
       "&newbookmarksfolder", "&tools", "&settings", "&toolbars",
       "configure&shortcuts", "configuretool&bars", "&configure.*", "&help",
       ".+&handbook", "&whatsthis", "report&bug", "&aboutprocessing", "about&kde",
-      "&beenden", "&suchen",   // de
-      "&preferncias", "&sair", // Preferências; pt
-      "&rechercher" };         // fr
+      "&beenden", "&suchen",  // de
+      "&preferncias", "&sair",  // Preferências; pt
+      "&rechercher"  // fr
+    };
     Pattern[] kdePreDefPats = new Pattern[kdePreDefStrs.length];
     for (int i = 0; i < kdePreDefStrs.length; i++) {
       kdePreDefPats[i] = Pattern.compile(kdePreDefStrs[i].replace("&",""));
@@ -548,6 +556,18 @@ public class Toolkit {
   }
 
 
+  /*
+  static public String getLibString(String filename) {
+    File file = Platform.getContentFile("lib/" + filename);
+    if (file == null || !file.exists()) {
+      Messages.err("does not exist: " + file);
+      return null;
+    }
+    return PApplet.join(PApplet.loadStrings(file), "\n");
+  }
+  */
+
+
   /**
    * Get an icon of the format base-NN.png where NN is the size, but if it's
    * a hidpi display, get the NN*2 version automatically, sized at NN
@@ -629,9 +649,11 @@ public class Toolkit {
   static List<Image> iconImages;
 
 
-  // Deprecated version of the function, but can't get rid of it without
-  // breaking tools and modes (they'd only require a recompile, but they would
-  // no longer be backwards compatible.
+  /**
+   * Unnecessary version of the function, but can't get rid of it
+   * without breaking tools and modes (they'd only require a recompile,
+   * but they would no longer be backwards compatible).
+   */
   static public void setIcon(Frame frame) {
     setIcon((Window) frame);
   }
@@ -654,6 +676,38 @@ public class Toolkit {
       window.setIconImages(iconImages);
     }
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  /**
+   * Render an SVG, passed in as a String, into an AWT Image at
+   * the specified width and height. Used for interface buttons.
+   */
+  static public Image svgToImage(String xmlStr, int wide, int high) {
+    PGraphicsJava2D pg = new PGraphicsJava2D();
+    pg.setPrimary(false);
+    pg.setSize(wide, high);
+    pg.smooth();
+
+    pg.beginDraw();
+
+    try {
+      XML xml = XML.parse(xmlStr);
+      PShape shape = new PShapeJava2D(xml);
+      pg.shape(shape, 0, 0, wide, high);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    pg.endDraw();
+    return pg.image;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   static public Shape createRoundRect(float x1, float y1, float x2, float y2,
@@ -722,14 +776,40 @@ public class Toolkit {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  /*
+  static final boolean ISSUE_342 = false;
+
+  //static private float dpiScale(Component comp) {
+  static private float dpiScale() {
+    if (Platform.isWindows()) {
+      return awtToolkit.getScreenResolution() / 96f;
+//      return comp.getToolkit().getScreenResolution() / 96f;
+    }
+    return Toolkit.isRetina() ? 2 : 1;
+  }
+
+
+  static private int dpiScale(int what) {
+    return (int) Math.floor(what * dpiScale());
+  }
+  */
+
+
   /**
    * Create an Image to be used as an offscreen drawing context,
    * automatically doubling the size if running on a retina display.
    */
   static public Image offscreenGraphics(Component comp, int width, int height) {
+//    if (ISSUE_342) {
+//      return comp.createImage(dpiScale(width), dpiScale(height));
+//    }
     int m = Toolkit.isRetina() ? 2 : 1;
-    //return comp.createImage(m * dpi(width), m * dpi(height));
     return comp.createImage(m * width, m * height);
+  }
+
+
+  static public Graphics2D prepareGraphics(Graphics g) {
+    return prepareGraphics(g, false);
   }
 
 
@@ -739,15 +819,22 @@ public class Toolkit {
    * Moved to a utility function because it's used in several classes.
    * @return a Graphics2D object, as a bit o sugar
    */
-  static public Graphics2D prepareGraphics(Graphics g) {
+  static public Graphics2D prepareGraphics(Graphics g, boolean scale) {
     Graphics2D g2 = (Graphics2D) g;
 
-    //float z = zoom * (Toolkit.isRetina() ? 2 : 1);
-    if (Toolkit.isRetina()) {
+    if (scale && Toolkit.isRetina()) {
       // scale everything 2x, will be scaled down when drawn to the screen
       g2.scale(2, 2);
     }
-    //g2.scale(z, z);
+
+//    float s = dpiScale();
+//    if (s != 1) {
+//      if (ISSUE_342) {
+//        System.out.println("Toolkit.prepareGraphics() with dpi scale " + s);
+//      }
+//      g2.scale(s, s);
+//    }
+
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -759,7 +846,9 @@ public class Toolkit {
       g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                           RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     }
-    zoomStroke(g2);
+    if (scale) {
+      zoomStroke(g2);
+    }
     return g2;
   }
 
@@ -906,6 +995,11 @@ public class Toolkit {
 
   static public boolean highResImages() {
     return isRetina() || (Platform.getSystemZoom() > 1);
+  }
+
+
+  static public int highResMultiplier() {
+    return highResImages() ? 2 : 1;
   }
 
 
@@ -1144,5 +1238,30 @@ public class Toolkit {
     FontRenderContext frc = g2.getFontRenderContext();
     //return new TextLayout("H", font, frc).getBounds().getHeight();
     return new TextLayout("H", g.getFont(), frc).getBounds().getHeight();
+  }
+
+
+  static public HTMLEditorKit createHtmlEditorKit() {
+    return new HTMLEditorKit() {
+      private StyleSheet style;
+
+      @Override
+      public StyleSheet getStyleSheet() {
+        return style == null ? super.getStyleSheet() : style;
+      }
+
+      @Override
+      public void setStyleSheet(StyleSheet s) {
+        this.style = s;
+      }
+
+      public StyleSheet getDefaultStyleSheet() {
+        return super.getStyleSheet();
+      }
+
+      public void setDefaultStyleSheet(StyleSheet s) {
+        super.setStyleSheet(s);
+      }
+    };
   }
 }

@@ -1,3 +1,106 @@
+# Processing 4.0 beta 3
+
+*Revision 1278 – 15 January 2022*
+
+New colors in the UI! We're still making changes to the design of the UI, but this release includes a new theme engine that makes it possible to select interface colors from a set of options, as well as more control over choosing your own schemes. Check out Tools → Theme Selector for the magic.
+
+We've also moved to Java 17, fixed lots of bugs, added a new default color scheme, and implemented better support for multiple windows with OpenGL.
+
+We even updated the loading screen to include 2022 in the copyright notice.
+
+
+## Fixing the bugs that won't fix themselves
+
+* Added an option to “Disable HiDPI Scaling” on Windows for users that were having trouble with the editor caret (cursor) showing up in the wrong position, or text in the interface (on the tabs in particular) looking oddly jagged. [#226](https://github.com/processing/processing4/issues/226), [#231](https://github.com/processing/processing4/issues/231)
+
+* The “Disable HiDPI Scaling” option is a temporary workaround, with ongoing development taking place at [#342](https://github.com/processing/processing4/issues/342). There's also a console warning if Processing detects that your display may have issues, however it's nearly impossible to do this with certainty. As a result, we can't enable the option by default, because it would make things worse for users who don't need it. Fixing this issue requires spending a lot of time testing different Windows systems, resolutions, monitor setups, etc.
+
+* Too much writing to the console (from both System.out and System.err) causing the software to lock up completely. [#338](https://github.com/processing/processing4/issues/338)
+
+* Got rollovers working again for the Toolbar buttons. Somewhat comically, these seem to have broken at some point during the 3.x development process, and nobody noticed.
+
+* Fix a problem where the default font would misbehave after `textSize()` was called. Turns out the problem was that the wrong font was being used in the first place. But also added a warning for users when unsupported characters are used with the default font. [#303](https://github.com/processing/processing4/issues/303), [#4956](https://github.com/processing/processing/issues/4956)
+
+* `listFiles()` and `listPaths()` with an extension specified were not properly matching directories.
+
+* Fix for `disableStyle()` with 2D shapes in `P3D`.
+
+* Allow `GEOMETRY` (not just `PATH`) with `contains()` in PShape. The `contains()` method is still imperfect, but it's just as bad with polygon shapes as path shapes.
+
+* The Open/Save dialog box was crashing on Linux. Can't reproduce with this release, which uses Adoptium OpenJDK 17, so fingers crossed that it's resolved. [#306](https://github.com/processing/processing4/issues/306)
+
+
+## Known Issues, the thorns that remain in our side
+
+* The included version of the documentation is for 3.0, not the newer 4.0.
+
+* The display scaling issues on Windows need to be resolved without folks having to use Preferences. [#342](https://github.com/processing/processing4/issues/342)
+
+* …aaaand pretty much anything [here](https://github.com/processing/processing4/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) and [here](https://github.com/processing/processing/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc). Please help!
+
+
+## Major internal work to support UI themes
+
+* As mentioned above, several new themes are available from the “Theme Selector” option in the Tools menu. Selecting a theme will create a `theme.txt` file in your sketchbook that sets the interface colors.
+
+* If you make changes to the `theme.txt` file in your sketchbook, you can select Tools → Update Theme to see those changes reflected in the interface. If there's no `theme.txt` file in your sketchbook, it will create a `theme.txt` file in your sketchbook, which you can edit. After you've saved your changes, select “Update Theme” again to see the updates.
+
+* Selecting a new theme will resave your `theme.txt` file under a new name (`theme.001`, `theme.002`, etc.)
+
+* Now using custom scrollbar widgets in the Editor so that it can better match the rest of the interface.
+
+* Auto-generating toolbar and tab icons from SVG files based on theme colors.
+
+* Implement automatic update for changes to `theme.txt` in the sketchbook.
+
+* More documentation about all of this soon, which will live [here](https://github.com/processing/processing4/wiki/Themes).
+
+
+## Hark, a sound from the West, and it is Sam
+
+* Error when calling `smooth()` on `PGraphics` [#272](https://github.com/processing/processing4/issues/272)
+
+* Detect if calling special methods on `PApplet` or not (and restore unit tests) [#288](https://github.com/processing/processing4/pull/288)
+
+* Move Mockito to a new version. [#287](https://github.com/processing/processing4/issues/287)
+
+
+## Behold, a sound from the East, and it is Andrés
+
+* Finalizing support for multiple windows with OpenGL. [#312](https://github.com/processing/processing4/issues/312), [#313](https://github.com/processing/processing4/pull/313)
+
+* Implement buffer object streaming for `P2D` and `P3D` and finalize attribute API in `PShape`. [#314](https://github.com/processing/processing4/pull/314)
+
+* Add support to `PATH` shapes in `P2D` renderer. [#6009](https://github.com/processing/processing/issues/6009), [#316](https://github.com/processing/processing4/pull/316)
+
+
+## The community continues pitching in
+
+* Update Ukrainian language strings. [#301](https://github.com/processing/processing4/pull/301)
+
+* Splash screen has default OpenJDK icon. [#297](https://github.com/processing/processing4/issues/297), [#329](https://github.com/processing/processing4/pull/329)
+
+
+## Maintaining this 20~~0~~-year-old house
+
+* Use UTF-8 for `readString()` and `write()` in net client. Avoids platform-specific behavior; Java 18 also making UTF-8 the default. [#336](https://github.com/processing/processing4/issues/336)
+
+* Cleaning up the Create Font dialog while tracking down [#278](https://github.com/processing/processing4/issues/278). Removed `Serif`, `SansSerif`, `Monospaced`, `Dialog`, `DialogInput` from Create Font. Also sorting the list of font names, and skipping fonts that start with `.` or `#` because they're supposed to be hidden from users.
+
+
+## Internal build and development changes
+
+* Update [appbundler](https://github.com/TheInfiniteKind/appbundler) with the latest from upstream.
+
+* Replace JDK 11 and JavaFX 16 with JDK 17 and JavaFX 17. [#285](https://github.com/processing/processing4/issues/285)
+
+* Move up from JavaFX 17.0.0.1 to 17.0.1.
+
+* Get rid of version numbers in the name of the `batik.jar` file.
+
+* `ffmpeg` not downloading correctly on M1 machines. [#319](https://github.com/processing/processing4/issues/319), [#5775](https://github.com/processing/processing/issues/5775), [#5714](https://github.com/processing/processing/issues/5714), [#6230](https://github.com/processing/processing/issues/6230)
+
+
 # Processing 4.0 beta 2
 
 *Revision 1277 – 4 October 2021*

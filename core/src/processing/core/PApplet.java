@@ -81,7 +81,7 @@ import processing.opengl.*;
  * project of our (tiny) size, we should be focusing on the future, rather
  * than working around legacy Java code.
  */
-@SuppressWarnings({"unused", "FinalStaticMethod"})
+@SuppressWarnings({"unused", "FinalStaticMethod", "ManualMinMaxCalculation"})
 public class PApplet implements PConstants {
 //public class PApplet extends PSketch {  // possible in the next alpha
   /** Full name of the Java version (i.e. 1.5.0_11). */
@@ -141,8 +141,8 @@ public class PApplet implements PConstants {
   public PGraphics g;
 
   /**
-   * System variable that stores the width of the computer screen. For
-   * example, if the current screen resolution is 1920x1080,
+   * System variable that stores the width of the computer screen.
+   * For example, if the current screen resolution is 1920x1080,
    * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
    * @webref environment
@@ -153,8 +153,8 @@ public class PApplet implements PConstants {
   public int displayWidth;
 
   /**
-   * System variable that stores the height of the computer screen. For
-   * example, if the current screen resolution is 1920x1080,
+   * System variable that stores the height of the computer screen.
+   * For example, if the current screen resolution is 1920x1080,
    * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
    * @webref environment
@@ -175,12 +175,11 @@ public class PApplet implements PConstants {
   public String[] args;
 
   /**
-   * Path to sketch folder. Previously undocumented, made private in 3.0a5
-   * so that people use the sketchPath() method and it's initialized properly.
-   * Call sketchPath() once to set the default.
+   * Path to sketch folder. Previously undocumented, and made private
+   * in 3.0 alpha 5 so that people use the sketchPath() method which
+   * will initialize it properly. Call sketchPath() once to set it.
    */
   private String sketchPath;
-//  public String sketchPath;
 
   static final boolean DEBUG = false;
 //  static final boolean DEBUG = true;
@@ -190,7 +189,6 @@ public class PApplet implements PConstants {
   static public final int DEFAULT_HEIGHT = 100;
 
   /**
-   *
    * The <b>pixels[]</b> array contains the values for all the pixels in the
    * display window. These values are of the color datatype. This array is
    * defined by the size of the display window. For example, if the window is
@@ -275,7 +273,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * When <b>pixelDensity(2)</b> is used to make use of a high resolution
    * display (called a Retina display on OS X or high-dpi on Windows and
    * Linux), the width and height of the sketch do not change, but the
@@ -301,7 +298,6 @@ public class PApplet implements PConstants {
   protected boolean keyRepeatEnabled = false;
 
   /**
-   *
    * The system variable <b>mouseX</b> always contains the current horizontal
    * coordinate of the mouse.
    * <br /><br />
@@ -325,15 +321,12 @@ public class PApplet implements PConstants {
    * @see PApplet#mouseDragged()
    * @see PApplet#mouseButton
    * @see PApplet#mouseWheel(MouseEvent)
-   *
-   *
    */
   public int mouseX;
 
   /**
-   *
-   * The system variable <b>mouseY</b> always contains the current vertical
-   * coordinate of the mouse.
+   * The system variable <b>mouseY</b> always contains the current
+   * vertical coordinate of the mouse.
    * <br /><br />
    * Note that Processing can only track the mouse position when the pointer
    * is over the current window. The default value of <b>mouseY</b> is <b>0</b>,
@@ -360,7 +353,6 @@ public class PApplet implements PConstants {
   public int mouseY;
 
   /**
-   *
    * The system variable <b>pmouseX</b> always contains the horizontal
    * position of the mouse in the frame previous to the current frame.<br />
    * <br />
@@ -398,7 +390,6 @@ public class PApplet implements PConstants {
   public int pmouseX;
 
   /**
-   *
    * The system variable <b>pmouseY</b> always contains the vertical position
    * of the mouse in the frame previous to the current frame. More detailed
    * information about how <b>pmouseY</b> is updated inside of <b>draw()</b>
@@ -452,7 +443,6 @@ public class PApplet implements PConstants {
   public boolean firstMouse = true;
 
   /**
-   *
    * When a mouse button is pressed, the value of the system variable
    * <b>mouseButton</b> is set to either <b>LEFT</b>, <b>RIGHT</b>, or
    * <b>CENTER</b>, depending on which button is pressed. (If no button is
@@ -464,7 +454,7 @@ public class PApplet implements PConstants {
    *
    * <h3>Advanced:</h3>
    *
-   * If running on Mac OS, a ctrl-click will be interpreted as the right-hand
+   * If running on macOS, a ctrl-click will be interpreted as the right-hand
    * mouse button (unlike Java, which reports it as the left mouse).
    * @webref input:mouse
    * @webBrief Shows which mouse button is pressed
@@ -483,7 +473,6 @@ public class PApplet implements PConstants {
   public int mouseButton;
 
   /**
-   *
    * The <b>mousePressed()</b> function is called once after every time a
    * mouse button is pressed. The <b>mouseButton</b> variable (see the
    * related reference entry) can be used to determine which button has
@@ -509,12 +498,12 @@ public class PApplet implements PConstants {
    */
   public boolean mousePressed;
 
-  // MACOSX: CTRL + Left Mouse is converted to Right Mouse. This boolean keeps
-  // track of whether the conversion happened on PRESS, because we should report
-  // the same button during DRAG and on RELEASE, even though CTRL might have
-  // been released already. Otherwise the events are inconsistent, e.g.
-  // Left Pressed - Left Drag - CTRL Pressed - Right Drag - Right Released.
-  // See: https://github.com/processing/processing/issues/5672
+  // macOS: Ctrl + Left Mouse is converted to Right Mouse.
+  // This boolean tracks whether the conversion happened on PRESS,
+  // to report the same button during DRAG and on RELEASE,
+  // even though CTRL might have been released already.
+  // Otherwise, the events are inconsistent.
+  // https://github.com/processing/processing/issues/5672
   private boolean macosCtrlClick;
 
 
@@ -523,7 +512,6 @@ public class PApplet implements PConstants {
   public MouseEvent mouseEvent;
 
   /**
-   *
    * The system variable <b>key</b> always contains the value of the most
    * recent key on the keyboard that was used (either pressed or released).
    * <br/> <br/>
@@ -558,7 +546,6 @@ public class PApplet implements PConstants {
   public char key;
 
   /**
-   *
    * The variable <b>keyCode</b> is used to detect special keys such as the
    * UP, DOWN, LEFT, RIGHT arrow keys and ALT, CONTROL, SHIFT.
    * <br /><br />
@@ -580,10 +567,10 @@ public class PApplet implements PConstants {
    * <a href="https://docs.oracle.com/javase/8/docs/api/java/awt/event/KeyEvent.html">KeyEvent</a>
    * reference.
    * <br /><br />
-   * There are issues with how <b>keyCode</b> behaves across different renderers
-   * and operating systems. Watch out for unexpected behavior as you switch
-   * renderers and operating systems and you are using keys are aren't mentioned
-   * in this reference entry.
+   * There are issues with how <b>keyCode</b> behaves across different
+   * renderers and operating systems. Watch out for unexpected behavior
+   * as you switch renderers and operating systems, and also whenever
+   * you are using keys not mentioned in this reference entry.
    * <br /><br />
    * If you are using P2D or P3D as your renderer, use the
    * <a href="https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/newt/event/KeyEvent.html">NEWT KeyEvent constants</a>.
@@ -593,7 +580,7 @@ public class PApplet implements PConstants {
    * When "key" is set to CODED, this will contain a Java key code.
    * <p>
    * For the arrow keys, keyCode will be one of UP, DOWN, LEFT and RIGHT.
-   * Also available are ALT, CONTROL and SHIFT. A full set of constants
+   * ALT, CONTROL and SHIFT are also available. A full set of constants
    * can be obtained from java.awt.event.KeyEvent, from the VK_XXXX variables.
    *
    * @webref input:keyboard
@@ -606,9 +593,8 @@ public class PApplet implements PConstants {
   public int keyCode;
 
   /**
-   *
-   * The boolean system variable <b>keyPressed</b> is <b>true</b> if any key
-   * is pressed and <b>false</b> if no keys are pressed.
+   * The boolean system variable <b>keyPressed</b> is <b>true</b>
+   * if any key is pressed and <b>false</b> if no keys are pressed.
    * <br /><br />
    * Note that there is a similarly named function called <b>keyPressed()</b>.
    * See its reference page for more information.
@@ -642,17 +628,6 @@ public class PApplet implements PConstants {
    */
   public boolean focused = false;
 
-//  /**
-//   * Confirms if a Processing program is running inside a web browser. This
-//   * variable is "true" if the program is online and "false" if not.
-//   */
-//  @Deprecated
-//  public boolean online = false;
-//  // This is deprecated because it's poorly named (and even more poorly
-//  // understood). Further, we'll probably be removing applets soon, in which
-//  // case this won't work at all. If you want this feature, you can check
-//  // whether getAppletContext() returns null.
-
   /**
    * Time in milliseconds when the applet was started.
    * <p>
@@ -681,10 +656,9 @@ public class PApplet implements PConstants {
   protected boolean redraw = true;
 
   /**
-   *
-   * The system variable <b>frameCount</b> contains the number of frames
-   * displayed since the program started. Inside <b>setup()</b> the value is
-   * 0 and and after the first iteration of draw it is 1, etc.
+   * The system variable <b>frameCount</b> contains the number o
+   * frames displayed since the program started. Inside <b>setup()</b>
+   * the value is 0 and during the first iteration of draw it is 1, etc.
    *
    * @webref environment
    * @webBrief The system variable that contains the number of frames
@@ -699,12 +673,6 @@ public class PApplet implements PConstants {
 
   /** used by the UncaughtExceptionHandler, so has to be static */
   static Throwable uncaughtThrowable;
-
-  // public, but undocumented.. removing for 3.0a5
-//  /**
-//   * true if the animation thread is paused.
-//   */
-//  public volatile boolean paused;
 
   /**
    * true if exit() has been called so that things shut down
@@ -834,7 +802,7 @@ public class PApplet implements PConstants {
 
   /**
    * @param method "size" or "fullScreen"
-   * @param args parameters passed to the function so we can show the user
+   * @param args parameters passed to the function to show the user
    * @return true if safely inside the settings() method
    */
   boolean insideSettings(String method, Object... args) {
@@ -895,17 +863,25 @@ public class PApplet implements PConstants {
       } catch (InterruptedException ignored) { }
 
       if (resultCode == 1) {
-        System.err.println("Could not check the status of “Displays have separate spaces.”");
-        System.err.format("Received message '%s' and result code %d.%n", trim(stderr.toString()), resultCode);
+        String msg = trim(stderr.toString());
+        // This message is confusing, so don't print if it's something typical
+        if (!(msg.contains("The domain/default pair") && msg.contains("does not exist"))) {
+          System.err.println("Could not check the status of “Displays have separate spaces.”");
+          System.err.println("Result for 'defaults read' was " + resultCode);
+          System.err.println(msg);
+        }
       }
 
       String processOutput = trim(stdout.toString());
-      // It looks like on Catalina, the option may not be set, so resultCode
-      // will be 1 (an error, since the param doesn't exist. But "Displays
-      // have separate spaces" is on by default, so show the message.
+      // On Catalina, the option may not be set, so resultCode
+      // will be 1 (an error, since the param doesn't exist.)
+      // But "Displays have separate spaces" is on by default.
+      // For Monterey, it appears to not be set until the user
+      // has visited the Mission Control preference pane once.
       if (resultCode == 1 || "0".equals(processOutput)) {
-        System.err.println("To use fullScreen(SPAN), first turn off “Displays have separate spaces”");
-        System.err.println("in System Preferences \u2192 Mission Control. Then log out and log back in.");
+        System.err.println("To use fullScreen(SPAN), visit System Preferences \u2192 Mission Control");
+        System.err.println("and make sure that “Displays have separate spaces” is turned off.");
+        System.err.println("Then log out and log back in.");
       }
     }
 
@@ -914,32 +890,31 @@ public class PApplet implements PConstants {
 
 
   /**
-  *
-  * The <b>settings()</b> function is new with Processing 3.0.
-  * It's not needed in most sketches. It's only useful when it's
-  * absolutely necessary to define the parameters to <b>size()</b>
-  * with a variable. Alternately, the <b>settings()</b> function
-  * is necessary when using Processing code outside of the
-  * Processing Development Environment (PDE). For example, when
-  * using the Eclipse code editor, it's necessary to use
-  * <b>settings()</b> to define the <b>size()</b> and
-  * <b>smooth()</b> values for a sketch.</b>.
-  * <br /> <br />
-  * The <b>settings()</b> method runs before the sketch has been
-  * set up, so other Processing functions cannot be used at that
-  * point. For instance, do not use loadImage() inside settings().
-  * The settings() method runs "passively" to set a few variables,
-  * compared to the <b>setup()</b> command that call commands in
-  * the Processing API.
-  *
-  * @webref environment
-  * @webBrief Used when absolutely necessary to define the parameters to <b>size()</b>
-  * with a variable
-  * @see PApplet#fullScreen()
-  * @see PApplet#setup()
-  * @see PApplet#size(int,int)
-  * @see PApplet#smooth()
-  */
+   * The <b>settings()</b> function is new with Processing 3.0.
+   * It's not needed in most sketches. It's only useful when it's
+   * absolutely necessary to define the parameters to <b>size()</b>
+   * with a variable. Alternately, the <b>settings()</b> function
+   * is necessary when using Processing code outside the
+   * Processing Development Environment (PDE). For example, when
+   * using the Eclipse code editor, it's necessary to use
+   * <b>settings()</b> to define the <b>size()</b> and
+   * <b>smooth()</b> values for a sketch.</b>.
+   * <br /> <br />
+   * The <b>settings()</b> method runs before the sketch has been
+   * set up, so other Processing functions cannot be used at that
+   * point. For instance, do not use loadImage() inside settings().
+   * The settings() method runs "passively" to set a few variables,
+   * compared to the <b>setup()</b> command that call commands in
+   * the Processing API.
+   *
+   * @webref environment
+   * @webBrief Used when absolutely necessary to define the parameters to <b>size()</b>
+   * with a variable
+   * @see PApplet#fullScreen()
+   * @see PApplet#setup()
+   * @see PApplet#size(int,int)
+   * @see PApplet#smooth()
+   */
   public void settings() {
     // is this necessary? (doesn't appear to be, so removing)
     //size(DEFAULT_WIDTH, DEFAULT_HEIGHT, JAVA2D);
@@ -1062,21 +1037,20 @@ public class PApplet implements PConstants {
 
 
  /**
-  * This function is new with Processing 3.0. It makes it
-  * possible for Processing to render using all of the
-  * pixels on high resolutions screens like Apple Retina
-  * displays and Windows High-DPI displays. This function
-  * can only be run once within a program and it must be
-  * used right after <b>size()</b> in a program without a <b>setup()</b>
-  * and used within <b>setup()</b> when a program has one. The
+  * This function makes it possible to render using all the pixels
+  * on high resolutions screens like Apple Retina and Windows HiDPI.
+  * This function can only be run once within a program, and must
+  * be called right after <b>size()</b> in a program without a
+  * <b>setup()</b> function, or within <b>setup()</b> if present.
+  *
   * <b>pixelDensity()</b> should only be used with hardcoded
   * numbers (in almost all cases this number will be 2)
   * or in combination with <b>displayDensity()</b> as in the
   * third example above.
   *
-  * When the pixel density is set to more than 1, it
-  * changes all of the pixel operations including the way
-  * <b>get()</b>, <b>set()</b>, <b>blend()</b>, <b>copy()</b>, and <b>updatePixels()</b>
+  * When the pixel density is set to more than 1, it changes  the
+  * pixel operations including the way <b>get()</b>, <b>set()</b>,
+  * <b>blend()</b>, <b>copy()</b>, and <b>updatePixels()</b>
   * all work. See the reference for <b>pixelWidth</b> and
   * pixelHeight for more information.
   *
@@ -1086,7 +1060,7 @@ public class PApplet implements PConstants {
   * about this on the <b>settings()</b> reference page.
   *
   * @webref environment
-  * @webBrief It makes it possible for Processing to render using all of the
+  * @webBrief It makes it possible for Processing to render using all the
   * pixels on high resolutions screens
   * @param density 1 or 2
   * @see PApplet#pixelWidth
@@ -1394,7 +1368,7 @@ public class PApplet implements PConstants {
           } else {
             t = e;
           }
-          // check for RuntimeException, and allow to bubble up
+          // check for RuntimeException, and allow it to bubble up
           if (t instanceof RuntimeException) {
             // re-throw exception
             throw (RuntimeException) t;
@@ -1435,7 +1409,7 @@ public class PApplet implements PConstants {
         entries.remove(object);
         methods.remove(object);
       } else {
-        // Currently iterating the list of methods, remove this afterwards
+        // Iterates the list of methods, remove this afterwards
         removals.add(object);
       }
     }
@@ -4603,7 +4577,7 @@ public class PApplet implements PConstants {
    * returned as a <b>float</b> in the range from <b>PI</b> to <b>-PI</b>.
    * The <b>atan2()</b> function is most often used for orienting geometry to
    * the position of the cursor.  Note: The y-coordinate of the point is the
-   * first parameter and the x-coordinate is the second due the the structure
+   * first parameter and the x-coordinate is the second due the structure
    * of calculating the tangent.
    *
    * @webref math:trigonometry
@@ -4773,7 +4747,7 @@ public class PApplet implements PConstants {
    * Normalizes a number from another range into a value between 0 and 1.
    * Identical to <b>map(value, low, high, 0, 1)</b>.<br />
    * <br />
-   * Numbers outside of the range are not clamped to 0 and 1, because
+   * Numbers outside the range are not clamped to 0 and 1, because
    * out-of-range values are often intentional and useful. (See the second
    * example above.)
    *
@@ -4801,9 +4775,9 @@ public class PApplet implements PConstants {
    * range of 0 to 100 into a value that ranges from the left edge of the window
    * (0) to the right edge (width).<br />
    * <br />
-   * As shown in the second example, numbers outside of the range are not
-   * clamped to the minimum and maximum parameters values, because out-of-range
-   * values are often intentional and useful.
+   * As shown in the second example, numbers outside the range are
+   * not clamped to the minimum and maximum parameters values,
+   * because out-of-range values are often intentional and useful.
    *
    * @webref math:calculation
    * @webBrief Re-maps a number from one range to another
@@ -5272,6 +5246,11 @@ public class PApplet implements PConstants {
       g.awaitAsyncSaveCompletion(filename);
     }
 
+    // Hack so that calling loadImage() in settings() will work
+    // https://github.com/processing/processing4/issues/299
+    if (surface == null) {
+      return ShimAWT.loadImage(this, filename, extension);
+    }
     return surface.loadImage(filename, extension);
   }
 
@@ -10277,10 +10256,6 @@ public class PApplet implements PConstants {
     // For 3.0.1, moved this above handleSettings() so that loadImage() can be
     // used inside settings(). Sets a terrible precedent, but the alternative
     // of not being able to size a sketch to an image is driving people loopy.
-    // A handful of things that need to be set before init/start.
-//    if (folder == null) {
-//      folder = calcSketchPath();
-//    }
     sketch.sketchPath = folder;
 
     // Don't set 'args' to a zero-length array if it should be null [3.0a8]

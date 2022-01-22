@@ -44,7 +44,7 @@ public class Settings {
    * defaults, then replace those with what was in the user's preferences file.
    * Problem is, if something like a font entry in the user's file no longer
    * parses properly, we need to be able to get back to a clean version of that
-   * setting so we can recover.
+   * setting so that we can recover.
    */
   Map<String, String> defaults;
 
@@ -253,5 +253,10 @@ public class Settings {
       Messages.log("Error with font " + get(attr) + " for attribute " + attr);
     }
     return new Font("Dialog", Font.PLAIN, 12);
+  }
+
+
+  public Map<String, String> getMap() {
+    return table;
   }
 }
