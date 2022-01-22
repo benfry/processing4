@@ -29,6 +29,11 @@ X   just not possible
 X     PShader would have to change packages
 X     that much messier to link back with projects that rely on JOGL
 
+regressions
+X PShape doesn't allow attibutes of int type anymore
+X   https://github.com/processing/processing4/issues/344
+X   https://github.com/processing/processing4/pull/363
+
 
 _ jogl build for m1
 _   https://github.com/processing/processing4/issues/128
