@@ -50,6 +50,7 @@ public class Platform {
   }
   */
 
+  // TODO only used in one place, probably overkill for this to be a map
   static Map<String, Integer> platformIndices = new HashMap<>();
   static {
     platformIndices.put("windows", PConstants.WINDOWS); //$NON-NLS-1$
