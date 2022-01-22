@@ -115,7 +115,7 @@
   <target name="jdk-check">
     <echo message="Checking for ${jdk.archive.path}" />
     <available file="${jdk.archive.path}" property="jdk.archive.downloaded" />
-    <echo message="Result: ${jdk.archive.downloaded}" />
+    <!-- <echo message="Result: ${jdk.archive.downloaded}" /> -->
   </target>
 
   <target name="jdk-download" depends="jdk-check"
