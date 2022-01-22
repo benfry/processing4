@@ -23,6 +23,11 @@ X     PShader would have to change packages
 X     that much messier to link back with projects that rely on JOGL
 
 
+_ jogl build for m1
+_   https://github.com/processing/processing4/issues/128
+_   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
+_   https://github.com/jzy3d/jogl/blob/feature/macosx-arm64/HOW-TO-ADD-ARM64-TO-2.4.md
+
 _ concurrent StringDict et al
 _   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
 _   https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html

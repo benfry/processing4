@@ -11,7 +11,15 @@ import processing.data.StringList;
 
 
 public class Library extends LocalContribution {
-  static final String[] platformNames = PConstants.platformNames;
+//  static final String[] platformNames = PConstants.platformNames;
+
+  static StringDict newToOld = new StringDict(new String[][] {
+    { "macos-x86_64", "macosx" },
+    { "windows-amd64", "windows64" },
+    { "linux-amd64", "linux64" },
+    { "linux-arm", "linux-armv6hf" },
+    { "linux-aarch64", "linux-arm64" }
+  });
 
   protected File libraryFolder;   // shortname/library
   protected File examplesFolder;  // shortname/examples
@@ -30,20 +38,21 @@ public class Library extends LocalContribution {
   /** Per-platform exports for this library. */
   Map<String, String[]> exportList;
 
-  /** Applet exports (cross-platform by definition). */
-  String[] appletExportList;
-
   /** Android exports (single platform for now, may not exist). */
   String[] androidExportList;
 
-  /** True if there are separate 32/64 bit for the specified platform index. */
-  boolean[] multipleArch = new boolean[platformNames.length];
+//  /** True if there are separate 32/64 bit for the specified platform index. */
+//  boolean[] multipleArch = new boolean[platformNames.length];
+//  Map<String, Boolean> multipleArch = new HashMap<>();
 
   /**
    * For runtime, the native library path for this platform. e.g. on Windows 64,
    * this might be the windows64 subfolder with the library.
    */
   String nativeLibraryPath;
+
+//  /** True if */
+//  boolean variants;
 
   static public final String propertiesFileName = "library.properties";
 
@@ -59,25 +68,24 @@ public class Library extends LocalContribution {
    * explicitly listing all possible architectures, and so that
    * macos-blah as well as and macosx will be handled properly.
    */
-  static FilenameFilter standardFilter = new FilenameFilter() {
-    public boolean accept(File dir, String name) {
-      // skip .DS_Store files, .svn folders, etc
-      if (name.charAt(0) == '.') return false;
-      // ha, the sftp library still has one [fry 220121]
-      if (name.equals("CVS")) return false;
-      if (name.equals("export.txt")) return false;
+  static FilenameFilter libraryFolderFilter = (dir, name) -> {
+    // skip .DS_Store files, .svn folders, etc
+    if (name.charAt(0) == '.') return false;
+    // ha, the sftp library still has one [fry 220121]
+    if (name.equals("CVS")) return false;
+    if (name.equals("export.txt")) return false;
 
-      File file = new File(dir, name);
-      if (file.isDirectory()) {
-        if (name.startsWith("macos") ||
-            name.startsWith("windows") ||
-            name.startsWith("linux") ||
-            name.startsWith("android")) {
-          return false;
-        }
+    File file = new File(dir, name);
+    if (file.isDirectory()) {
+      //noinspection RedundantIfStatement
+      if (name.startsWith("macos") ||
+          name.startsWith("windows") ||
+          name.startsWith("linux")) {
+          //name.startsWith("android")) {  // no libraries use this
+        return false;
       }
-      return true;
     }
+    return true;
   };
 
   static FilenameFilter jarFilter = (dir, name) -> {
@@ -122,66 +130,94 @@ public class Library extends LocalContribution {
    * Handles all the Java-specific parsing for library handling.
    */
   protected void handle() {
+    handleNative();
+    handleExports();
+  }
+
+
+  /**
+   * Identify nativeLibraryFolder location for the current platform.
+   */
+  private void handleNative() {
+    String variant = Platform.getVariant();
+
+    // use the root of the library folder as the default
+    File nativeLibraryFolder = libraryFolder;
+
+    /*
+    String hostPlatform = Platform.getName();
+    // see if there's a 'windows', 'macosx', or 'linux' folder
+    File hostLibrary = new File(libraryFolder, hostPlatform);
+    if (hostLibrary.exists()) {
+      nativeLibraryFolder = hostLibrary;
+    }
+    */
+
+    // see if there's a {platform}-{arch} folder
+    File hostLibrary = new File(libraryFolder, variant);
+    if (hostLibrary.exists()) {
+      nativeLibraryFolder = hostLibrary;
+
+    } else {
+      // if not found, try the old-style naming
+      String oldName = newToOld.get(variant);
+      if (oldName != null) {
+        hostLibrary = new File(libraryFolder, oldName);
+        if (hostLibrary.exists()) {
+          nativeLibraryFolder = hostLibrary;
+        }
+      }
+    }
+
+    // save that folder for later use
+    nativeLibraryPath = nativeLibraryFolder.getAbsolutePath();
+  }
+
+
+  private void handleExports() {
+    /*
     File exportSettings = new File(libraryFolder, "export.txt");
     StringDict exportTable = exportSettings.exists() ?
       Util.readSettings(exportSettings) : new StringDict();
+    */
 
     exportList = new HashMap<>();
 
     // get the list of files just in the library root
-    String[] baseList = libraryFolder.list(standardFilter);
-//    System.out.println("Loading " + name + "...");
-//    PApplet.println(baseList);
+    String[] baseList = libraryFolder.list(libraryFolderFilter);
 
-    String appletExportStr = exportTable.get("applet");
-    if (appletExportStr != null) {
-      appletExportList = PApplet.splitTokens(appletExportStr, ", ");
-    } else {
-      appletExportList = baseList;
+    for (String variant : Platform.getSupportedVariants().keys()) {
+      File variantFolder = new File(libraryFolder, variant);
+      if (!variantFolder.exists()) {
+        // check to see if old naming is in use
+        String oldName = newToOld.get(variant, null);
+        if (oldName != null) {
+          variantFolder = new File(libraryFolder, variant);
+          if (variantFolder.exists()) {
+            Messages.log("Please update " + getName() + " for Processing 4. " +
+              variantFolder + " is the older naming scheme.");
+          }
+        }
+      }
+      if (variantFolder.exists()) {
+        String[] entries = listPlatformEntries(libraryFolder, variant, baseList);
+        if (entries != null) {
+          exportList.put(variant, entries);
+        }
+      }
     }
 
+    /*
+    // not actually used in any libraries
     String androidExportStr = exportTable.get("android");
     if (androidExportStr != null) {
       androidExportList = PApplet.splitTokens(androidExportStr, ", ");
     } else {
       androidExportList = baseList;
     }
+    */
 
-    // for the host platform, need to figure out what's available
-    File nativeLibraryFolder = libraryFolder;
-    String hostPlatform = Platform.getName();
-//    System.out.println("1 native lib folder now " + nativeLibraryFolder);
-    // see if there's a 'windows', 'macosx', or 'linux' folder
-    File hostLibrary = new File(libraryFolder, hostPlatform);
-    if (hostLibrary.exists()) {
-      nativeLibraryFolder = hostLibrary;
-    }
-//    System.out.println("2 native lib folder now " + nativeLibraryFolder);
-    // check for bit-specific version, e.g. on windows, check if there
-    // is a window32 or windows64 folder (on windows)
-    hostLibrary =
-      new File(libraryFolder, hostPlatform + Platform.getNativeBits());
-    if (hostLibrary.exists()) {
-      nativeLibraryFolder = hostLibrary;
-    }
-//    System.out.println("3 native lib folder now " + nativeLibraryFolder);
-
-    if (hostPlatform.equals("linux") && System.getProperty("os.arch").equals("arm")) {
-      hostLibrary = new File(libraryFolder, "linux-armv6hf");
-      if (hostLibrary.exists()) {
-        nativeLibraryFolder = hostLibrary;
-      }
-    }
-    if (hostPlatform.equals("linux") && System.getProperty("os.arch").equals("aarch64")) {
-      hostLibrary = new File(libraryFolder, "linux-arm64");
-      if (hostLibrary.exists()) {
-        nativeLibraryFolder = hostLibrary;
-      }
-    }
-
-    // save that folder for later use
-    nativeLibraryPath = nativeLibraryFolder.getAbsolutePath();
-
+    /*
     // for each individual platform that this library supports, figure out what's around
     for (int i = 1; i < platformNames.length; i++) {
       String platformName = platformNames[i];
@@ -221,7 +257,8 @@ public class Library extends LocalContribution {
       }
 
       if (platformList32 != null || platformList64 != null || platformListArmv6hf != null || platformListArm64 != null) {
-        multipleArch[i] = true;
+        //multipleArch[i] = true;
+        multipleArch.put(platformName, true);
       }
 
       // if there aren't any relevant imports specified or in their own folders,
@@ -249,6 +286,8 @@ public class Library extends LocalContribution {
         }
       }
     }
+    */
+
 //    for (String p : exportList.keySet()) {
 //      System.out.println(p + " -> ");
 //      PApplet.println(exportList.get(p));
@@ -265,7 +304,7 @@ public class Library extends LocalContribution {
   static String[] listPlatformEntries(File libraryFolder, String folderName, String[] baseList) {
     File folder = new File(libraryFolder, folderName);
     if (folder.exists()) {
-      String[] entries = folder.list(standardFilter);
+      String[] entries = folder.list((dir, name) -> name.charAt(0) != '.');
       if (entries != null) {
         String[] outgoing = new String[entries.length + baseList.length];
         for (int i = 0; i < entries.length; i++) {
@@ -349,12 +388,11 @@ public class Library extends LocalContribution {
   }
 
 
-  // this prepends a colon so that it can be appended to other paths safely
+  // the returned value begins with File.pathSeparatorChar
+  // so that it can be appended to other paths safely
   public String getClassPath() {
     StringBuilder cp = new StringBuilder();
 
-//    PApplet.println(libraryFolder.getAbsolutePath());
-//    PApplet.println(libraryFolder.list());
     String[] jarHeads = libraryFolder.list(jarFilter);
     if (jarHeads != null) {
       for (String jar : jarHeads) {
@@ -372,7 +410,6 @@ public class Library extends LocalContribution {
         }
       }
     }
-    //cp.setLength(cp.length() - 1);  // remove the last separator
     return cp.toString();
   }
 
@@ -391,17 +428,16 @@ public class Library extends LocalContribution {
   }
 
 
+  /*
   public File[] getApplicationExports(int platform, String variant) {
     String[] list = getApplicationExportList(platform, variant);
     return wrapFiles(list);
   }
 
 
-  /**
-   * Returns the necessary exports for the specified platform.
-   * If no 32 or 64-bit version of the exports exists, it returns the version
-   * that doesn't specify bit depth.
-   */
+//   * Returns the necessary exports for the specified platform.
+//   * If no 32 or 64-bit version of the exports exists, it returns the version
+//   * that doesn't specify bit depth.
   public String[] getApplicationExportList(int platform, String variant) {
     String platformName = PConstants.platformNames[platform];
     if (variant.equals("32")) {
@@ -419,6 +455,11 @@ public class Library extends LocalContribution {
     }
     return exportList.get(platformName);
   }
+  */
+
+  public String[] getApplicationExportList(String variant) {
+    return exportList.get(variant);
+  }
 
 
   @SuppressWarnings("unused")
@@ -427,11 +468,15 @@ public class Library extends LocalContribution {
   }
 
 
+  /*
   public boolean hasMultipleArch(int platform) {
-    return multipleArch[platform];
+    //return multipleArch[platform];
+    return multipleArch.getOrDefault(platform, false);
   }
+  */
 
 
+  /*
   public boolean supportsArch(int platform, String variant) {
     // If this is a universal library, or has no natives, then we're good.
     if (multipleArch[platform] == false) {
@@ -440,10 +485,26 @@ public class Library extends LocalContribution {
     return getApplicationExportList(platform, variant) != null;
   }
 
+  public boolean isUnsupported(int platform, String variant) {
+    // If this is a universal library, or has no natives, then we're good.
+    if (!multipleArch.containsKey(platformNames[platform])) {
+      return false;
+    }
+    return getApplicationExportList(platform, variant) == null;
+  }
+  */
 
+
+  public boolean isUnsupported(String variant) {
+    return getApplicationExportList(variant) == null;
+  }
+
+
+  /*
   static public boolean hasMultipleArch(int platform, List<Library> libraries) {
     return libraries.stream().anyMatch(library -> library.hasMultipleArch(platform));
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

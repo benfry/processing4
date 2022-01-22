@@ -574,7 +574,7 @@ public class JavaBuild {
 
     File folder = null;
     for (String platformName : PConstants.platformNames) {
-      int platform = Platform.getIndex(platformName);
+//      int platform = Platform.getIndex(platformName);
 
       // Can only embed Java on the native platform
       boolean embedJava = (platform == PApplet.platform) &&
@@ -633,20 +633,15 @@ public class JavaBuild {
    * Export to application without GUI. Also called by the Commander.
    */
   protected boolean exportApplication(File destFolder,
-                                      int exportPlatform,
                                       String exportVariant,
                                       boolean embedJava) throws IOException, SketchException {
-    // TODO this should probably be a dialog box instead of a warning
-    // on the terminal. And the message should be written better than this.
-    // http://code.google.com/p/processing/issues/detail?id=884
     for (Library library : importedLibraries) {
-      if (!library.supportsArch(exportPlatform, exportVariant)) {
-        String pn = PConstants.platformNames[exportPlatform];
+      if (library.isUnsupported(exportVariant)) {
         Messages.showWarning("Quibbles 'n Bits",
-                             "The application." + pn + exportVariant +
-                             " folder will not be created\n" +
-                             "because no " + exportVariant + " version of " +
-                             library.getName() + " is available for " + pn, null);
+                             "The application will not be exported for\n" +
+                             Platform.getSupportedVariants().get(exportVariant) +
+                             " because " + library.getName() + "\n" +
+                             "does not support " + exportVariant + ".", null);
         return true;  // don't cancel all exports for this, just move along
       }
     }

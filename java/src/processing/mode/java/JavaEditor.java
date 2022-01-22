@@ -707,9 +707,9 @@ public class JavaEditor extends Editor {
     if (Platform.isMacOS()) {
       platformName = "macOS";
     } else if (Platform.isWindows()) {
-      platformName = "Windows (" + Platform.getNativeBits() + "-bit)";
+      platformName = "Windows";
     } else if (Platform.isLinux()) {
-      platformName = "Linux (" + Platform.getNativeBits() + "-bit)";
+      platformName = "Linux";
     }
 
     final boolean embed =

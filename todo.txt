@@ -80,9 +80,6 @@ known issues
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
-_ Export to Application not working with the current video library
-_   https://github.com/processing/processing-video/issues/188
-_ docs are 3.x not 4.x
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -173,9 +170,9 @@ _     https://fonts.google.com/specimen/Space+Grotesk
 
 
 windows/scaling
-_ include JNA so that sketches can also scale properly?
-_   what happens re: getting scaled/high-res graphics?
-_   make that a preference? (and double the size by default?)
+X include JNA so that sketches can also scale properly?
+X   what happens re: getting scaled/high-res graphics?
+X   make that a preference? (and double the size by default?)
 _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
 _ was looking crunchy on low-dpi screen set to 125%
@@ -205,10 +202,13 @@ _   https://github.com/processing/processing4/issues/304
 
 
 before 4.x final
+_ Export to Application not working with the current video library
+_   https://github.com/processing/processing-video/issues/188
+_ docs are 3.x not 4.x
 _ Apple Silicon support
 _   https://github.com/processing/processing4/issues/128
 _ clean up dist: 'bin' and 'src' from Java Mode are included, iml files, etc
-_ SVG library, show a warning when using style instead of presentation attributes
+_ loadShape(), show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
 _   just skip the welcome screen on Windows hidpi dipslays?
@@ -228,6 +228,7 @@ _   or at least avoid the multiple
 
 
 platforms
+_ https://github.com/processing/processing4/wiki/Supported-Platforms
 _ final supported platforms
 _   as far as adoptium is concerned:
 _   macos-x64, macos-aarch64 (m1), windows-x64, linux-x64, linux-arm32 (rpi)
