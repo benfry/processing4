@@ -581,7 +581,7 @@ public class JavaBuild {
     */
 
     final String hostVariant = Platform.getVariant();
-    for (String variant : Preferences.get("export.variants").split(",")) {
+    for (String variant : Preferences.get(ExportPrompt.EXPORT_VARIANTS).split(",")) {
       // Can only embed Java on the native platform
       boolean embedJava = variant.equals(hostVariant) &&
         Preferences.getBoolean("export.application.embed_java");

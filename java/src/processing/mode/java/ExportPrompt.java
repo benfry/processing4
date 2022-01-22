@@ -29,6 +29,8 @@ import processing.app.Preferences;
 import processing.app.SketchException;
 import processing.app.ui.ColorChooser;
 import processing.core.PApplet;
+import processing.data.StringDict;
+import processing.data.StringList;
 
 import javax.swing.*;
 import javax.swing.border.BevelBorder;
@@ -41,21 +43,29 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ExportPrompt {
   // Can't be .windows because that'll be stripped off as a per-platform pref
+  static final String EXPORT_VARIANTS = "export.application.variants";
+  /*
   static final String EXPORT_PREFIX = "export.application.platform_";
   static final String EXPORT_MACOSX = EXPORT_PREFIX + "macosx";
   static final String EXPORT_WINDOWS = EXPORT_PREFIX + "windows";
   static final String EXPORT_LINUX = EXPORT_PREFIX + "linux";
+  */
 
   final JButton exportButton = new JButton(Language.text("prompt.export"));
   final JButton cancelButton = new JButton(Language.text("prompt.cancel"));
 
+  /*
   final JCheckBox windowsButton = new JCheckBox("Windows");
   final JCheckBox macosButton = new JCheckBox("Mac OS X");
   final JCheckBox linuxButton = new JCheckBox("Linux");
+  */
+  List<JCheckBox> variantButtons;
 
   final JavaEditor editor;
 
@@ -64,13 +74,78 @@ public class ExportPrompt {
 
   private ExportPrompt(JavaEditor editor) {
     this.editor = editor;
+
+    String pref = Preferences.get(EXPORT_VARIANTS);
+    if (pref == null) {
+      pref = Platform.getVariant();  // just add myself
+    }
+    StringList selectedVariants = new StringList(pref.split(","));
+
+    variantButtons = new ArrayList<>();
+    for (StringDict.Entry entry : Platform.getSupportedVariants().entries()) {
+      String variant = entry.key;
+      JCheckBox button = new JCheckBox(entry.value);  // variant name
+      if (variant.startsWith("macos") && !Platform.isMacOS()) {
+        button.setEnabled(false);
+      } else {
+        button.setSelected(selectedVariants.hasValue(variant));
+      }
+      button.setActionCommand(variant);
+      button.addActionListener(e -> updateVariants());
+      variantButtons.add(button);
+      /*
+      final String variant = entry.key;
+      button.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+          e.getActionCommand();
+          toggleVariant(variant);
+        }
+      });
+      */
+    }
+  }
+
+
+  protected void updateVariants() {
+    StringList list = new StringList();
+    for (JCheckBox button : variantButtons) {
+      if (button.isSelected()) {
+        list.append(button.getActionCommand());
+      }
+    }
+    Preferences.set(EXPORT_VARIANTS, list.join(","));
+    exportButton.setEnabled(anyExportButton());
+  }
+
+
+  /*
+  protected void toggleVariant(String variant) {
+    String pref = Preferences.get(EXPORT_VARIANTS);
+    StringList list = new StringList(pref.split(","));
+    if (list.hasValue(variant)) {
+      list.removeValue(variant);
+    } else {
+      list.append(variant);
+    }
+    pref = list.join(",");
+    Preferences.set(EXPORT_VARIANTS, pref);
   }
 
 
   protected void updateExportButton() {
-    exportButton.setEnabled(windowsButton.isSelected() ||
-                            macosButton.isSelected() ||
-                            linuxButton.isSelected());
+    exportButton.setEnabled(anyExportButton());
+  }
+  */
+
+
+  protected boolean anyExportButton() {
+    for (JCheckBox button : variantButtons) {
+      if (button.isSelected()) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -107,6 +182,7 @@ public class ExportPrompt {
 //                        label2.getPreferredSize().width);
     panel.add(Box.createVerticalStrut(12));
 
+    /*
     windowsButton.setSelected(Preferences.getBoolean(EXPORT_WINDOWS));
     windowsButton.addItemListener(e -> {
       Preferences.setBoolean(EXPORT_WINDOWS, windowsButton.isSelected());
@@ -143,6 +219,31 @@ public class ExportPrompt {
     platformPanel.add(macosButton);
     platformPanel.add(Box.createHorizontalStrut(6));
     platformPanel.add(linuxButton);
+    */
+
+    JPanel platformPanel = new JPanel();
+//    platformPanel.setLayout(new BoxLayout(platformPanel, BoxLayout.X_AXIS));
+    int half = (variantButtons.size() + 1) / 2;
+
+    Box leftPlatforms = Box.createVerticalBox();
+    for (int i = 0; i < half; i++) {
+//      if (i != 0) {
+//        leftPlatforms.add(Box.createVerticalStrut(6));
+//      }
+      leftPlatforms.add(variantButtons.get(i));
+    }
+
+    Box rightPlatforms = Box.createVerticalBox();
+    for (int i = half; i < variantButtons.size(); i++) {
+//      if (i != half) {
+//        rightPlatforms.add(Box.createVerticalStrut(6));
+//      }
+      rightPlatforms.add(variantButtons.get(i));
+    }
+
+    platformPanel.add(leftPlatforms);
+    platformPanel.add(rightPlatforms);
+
     platformPanel.setBorder(new TitledBorder(Language.text("export.platforms")));
     //Dimension goodIdea = new Dimension(wide, platformPanel.getPreferredSize().height);
     //platformPanel.setMaximumSize(goodIdea);
