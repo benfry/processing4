@@ -9920,7 +9920,13 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyAttribBuffer(VertexAttribute attrib) {
-      polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer());
+      if (attrib.type == PGL.FLOAT) {
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer());
+      } else if (attrib.type == PGL.INT) {
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer());
+      } else if (attrib.type == PGL.BOOL) {
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY));
+      }
     }
 
     protected void initPolyAttribsBuffer(VertexAttribute attrib, boolean onlymap, boolean unmap, int usage) {
