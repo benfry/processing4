@@ -1,4 +1,11 @@
 1279 (4.0b4)
+X put opengl libs for core into platform-specific subfolders
+X   get us ready for other platforms (M1 in particular)
+_   fixes Windows antivirus slowdowns
+_   https://github.com/processing/processing/issues/4783#issuecomment-269328168
+_   https://github.com/processing/processing/issues/4239
+_   https://jogamp.org/bugzilla/show_bug.cgi?id=1301
+_   https://stackoverflow.com/a/51100411
 
 api changes (in previous releases)
 X static versions of selectInput/selectOutput/selectFolder removed from PApplet
@@ -37,16 +44,9 @@ _   could implement this for the default, but also, SansSerif sucks
 _   https://stackoverflow.com/a/9482676
 _   in addition, it would need to be implemented for textWidth()
 
-_ put opengl libs for core into platform-specific subfolders?
-_   should fix Windows antivirus slowdowns
-_   https://github.com/processing/processing/issues/4783#issuecomment-269328168
-_   https://github.com/processing/processing/issues/4239
-_   https://jogamp.org/bugzilla/show_bug.cgi?id=1301
-_   https://stackoverflow.com/a/51100411
 _ would really be nice to pull out the OpenGL stuff
 _   though would require just a single PShader class in .opengl package
 _   way too messy, just need to stick with our base platforms
-_   also move the libs to their own folders? (instead of unpacking from jar)
 
 _ Better solution for frame/surface methods
 _   should it be requestSize() because the change is not immediate?

@@ -1,3 +1,10 @@
 core.jar
+
 jogl-all-src.jar
 
+/macos-aarch64
+/linux-arm
+/linux-aarch64
+/macos-x86_64
+/linux-amd64
+/windows-amd64

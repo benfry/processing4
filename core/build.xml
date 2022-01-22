@@ -25,13 +25,19 @@
   </target>
 
   <!-- Base URL for the current version of JOGL. -->
+  <!--
   <property name="jogl.url"
             value="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20210111/jar" />
+  -->
   <!-- This is for posterity, and is not used at present. When updating
        the release, also make a copy of the files on download.processing.org
        so that they can be retrieved even after the original link goes dead. -->
+  <!--
   <property name="jogl.url.backup"
             value="https://download.processing.org/jogl/v2.4.0-rc-20210111" />
+  -->
+  <property name="jogl.url"
+            value="https://download.processing.org/jogl/v2.4.0-rc-20210111x" />
 
   <available file="library/jogl-all.jar" property="jogl.present" />
 
@@ -42,17 +48,77 @@
 
   <target name="download-jogl" unless="jogl.present">
     <get dest="library" usetimestamp="true" ignoreerrors="${jogl.ignorable}">
+      <!--
+      <url url="${jogl.url}/gluegen-rt-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-linux-amd64.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-macosx-universal.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-linux-arm.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-macos-aarch64.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-macos-x86_64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-windows-amd64.jar" />
+      -->
       <url url="${jogl.url}/gluegen-rt.jar" />
+      <!--
+      <url url="${jogl.url}/jogl-all-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/jogl-all-natives-linux-amd64.jar" />
-      <url url="${jogl.url}/jogl-all-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/jogl-all-natives-macosx-universal.jar" />
+      <url url="${jogl.url}/jogl-all-natives-linux-arm.jar" />
+      <url url="${jogl.url}/jogl-all-natives-macos-aarch64.jar" />
+      <url url="${jogl.url}/jogl-all-natives-macos-x86_64.jar" />
       <url url="${jogl.url}/jogl-all-natives-windows-amd64.jar" />
+      -->
       <url url="${jogl.url}/jogl-all.jar" />
     </get>
+
+    <antcall target="retrieve-variant">
+      <param name="variant" value="linux-aarch64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="linux-arm" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="linux-amd64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="macos-aarch64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="macos-x86_64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="windows-amd64" />
+    </antcall>
+  </target>
+
+  <target name="retrieve-variant">
+    <get src="${jogl.url}/gluegen-rt-natives-${variant}.jar"
+         dest="temp-gluegen.jar"
+         ignoreerrors="${jogl.ignorable}"
+         usetimestamp="true" />
+    <get src="${jogl.url}/jogl-all-natives-${variant}.jar"
+         dest="temp-jogl.jar"
+         ignoreerrors="${jogl.ignorable}"
+         usetimestamp="true" />
+
+    <mkdir dir="library/${variant}" />
+
+    <unzip dest="library/${variant}" src="temp-gluegen.jar" overwrite="true">
+      <patternset>
+        <include name="**/*.dll" />
+        <include name="**/*.dylib" />
+        <include name="**/*.so" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <unzip dest="library/${variant}" src="temp-jogl.jar" overwrite="true">
+      <patternset>
+        <include name="**/*.dll" />
+        <include name="**/*.dylib" />
+        <include name="**/*.so" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+
+    <delete file="temp-gluegen.jar" />
+    <delete file="temp-jogl.jar" />
   </target>
 
   <path id="classpath.base">
