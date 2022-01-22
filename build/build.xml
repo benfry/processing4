@@ -9,8 +9,8 @@
     </classpath>
   </taskdef>
 
-  <!-- Sets properties for macosx/windows/linux depending on current system -->
-  <condition property="platform" value="macosx">
+  <!-- Sets properties for macos/windows/linux depending on current system -->
+  <condition property="platform" value="macos">
     <os family="mac" />
   </condition>
 
@@ -77,7 +77,7 @@
     </condition>
   </fail>
 
-  <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
+  <fileset dir="macos/work/Processing.app/Contents" id="jdk-optional-macos">
     <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
   </fileset>
 
@@ -96,7 +96,7 @@
     <sequential>
       <property name="host-platform" value="${platform}" />
 
-      <!-- Set a property named macosx, linux, or windows.
+      <!-- Set a property named macos, linux, or windows.
            The 'value' chosen is arbitrary. -->
       <property name="target-platform" value="@{platform}" />
       <property name="${target-platform}" value="${target-platform}" />
@@ -126,7 +126,7 @@
       <os family="windows" />
     </condition>
 
-    <!-- platform prop works for Windows and Linux, but 'macosx' needs to be 'mac' -->
+    <!-- platform prop works for Windows and Linux, but 'macos' needs to be 'mac' -->
     <condition property="jdk.download.os" value="mac" else="${platform}">
       <os family="mac" />
     </condition>
@@ -151,8 +151,8 @@
   </target>
 
   <!-- Set the version of Java that must be present to build. -->
-  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.detail}+${jdk.build}" />
-  <available file="${jdk.path.macosx}" property="macosx_jdk_found" />
+  <property name="jdk.path.macos" value="macos/jdk-${jdk.detail}+${jdk.build}" />
+  <available file="${jdk.path.macos}" property="macos_jdk_found" />
 
   <!--
   <fail if="linux" unless="java_tools_found"
@@ -161,7 +161,7 @@
 
   <!-- Figure out the platform-specific output directory for all this work. -->
   <condition property="target.path"
-             value="macosx/work/Processing.app/Contents/Java">
+             value="macos/work/Processing.app/Contents/Java">
     <os family="mac" />
   </condition>
 
@@ -174,7 +174,7 @@
   </condition>
 
   <!-- Libraries required for running processing -->
-  <!-- also need to copy these to the bundleapp task for macosx -->
+  <!-- also need to copy these to the bundleapp task for macos -->
   <fileset dir=".." id="runtime.jars">
     <include name="app/pde.jar" />
     <include name="app/lib/antlr-4.7.2-complete.jar" />
@@ -189,9 +189,9 @@
     <antcall target="${target-platform}-build" />
   </target>
 
-  <target name="cross-build-macosx" description="Build Processing.">
-    <set-target platform="macosx" datamodel="64" />
-    <antcall target="macosx-build" />
+  <target name="cross-build-macos" description="Build Processing.">
+    <set-target platform="macos" datamodel="64" />
+    <antcall target="macos-build" />
   </target>
 
   <target name="cross-build-linux-x64" description="Build Processing.">
@@ -417,14 +417,14 @@
   <!-- macOS         -->
   <!-- - - - - - - - -->
 
-  <target name="macosx-clean" depends="subprojects-clean" description="Clean macOS build">
-    <delete dir="macosx/work" />
+  <target name="macos-clean" depends="subprojects-clean" description="Clean macOS build">
+    <delete dir="macos/work" />
     <delete>
-      <fileset dir="macosx" includes="processing-*zip" />
+      <fileset dir="macos" includes="processing-*zip" />
     </delete>
   </target>
 
-  <target name="macosx-check-os">
+  <target name="macos-check-os">
     <if>
       <equals arg1="${host-platform}" arg2="windows" />
       <then>
@@ -441,12 +441,12 @@
     </if>
   </target>
 
-  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download" description="Build macOS version">
-    <mkdir dir="macosx/work" />
+  <target name="macos-build" depends="revision-check, macos-check-os, subprojects-build, jdk-download" description="Build macOS version">
+    <mkdir dir="macos/work" />
 
     <!-- Extract JDK -->
     <echo message="Target jdk: ${jdk.archive.path}"/>
-    <exec executable="tar" dir="macosx">
+    <exec executable="tar" dir="macos">
       <!-- Change directory -->
       <!--
       <arg value="-C" />
@@ -457,20 +457,20 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="macosx/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
+    <property name="jdk.dir" value="macos/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
 
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
              classname="com.oracle.appbundler.AppBundlerTask"
-             classpath="macosx/appbundler.jar" />
+             classpath="macos/appbundler.jar" />
 
-    <bundleapp outputDirectory="macosx/work"
+    <bundleapp outputDirectory="macos/work"
                name="Processing"
                displayName="Processing"
                executableName="Processing"
                identifier="org.processing.four"
                signature="Pde4"
-               icon="macosx/processing.icns"
+               icon="macos/processing.icns"
                copyright="© The Processing Foundation"
                shortVersion="${version}"
                version="${revision}"
@@ -482,7 +482,7 @@
       <!-- The appbundler task needs a couple files (the Info.plist and
            anything else outside /jdk) from the full JDK, even though
            it's primarily copying over the JRE folder. -->
-      <runtime dir="${jdk.path.macosx}/Contents/Home" />
+      <runtime dir="${jdk.path.macos}/Contents/Home" />
       <!-- Eventually we'll want to load the JRE directly from
            the .tgz on the Oracle site, though it's in a folder called
            jdk1.7.0_40.jdk, so we'll need to strip that out. -->
@@ -512,19 +512,19 @@
            so double-clicking files no longer works. -->
 
       <bundledocument extensions="pde,pyde"
-                      icon="macosx/document.icns"
+                      icon="macos/document.icns"
                       name="Processing Source Code"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdez"
-                      icon="macosx/document.icns"
+                      icon="macos/document.icns"
                       name="Processing Sketch Bundle"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdex"
-                      icon="macosx/document.icns"
+                      icon="macos/document.icns"
                       name="Processing Contribution Bundle"
                       role="Viewer">
       </bundledocument>
@@ -569,13 +569,13 @@
            to use those, but making it possible since some Tools rely on JavaFX. -->
       <!-- Removing in 4.0 beta 4, for more information:
            https://github.com/processing/processing4/issues/348
-      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx" />
+      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macos" />
       -->
 
       <!-- Necessary to avoid complaints because JavaFX wants to be a module. -->
       <!-- Removing in 4.0 beta 4, for more information:
            https://github.com/processing/processing4/issues/348
-      <option value="- -module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx/modules" />
+      <option value="- -module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macos/modules" />
 
       <option value="- -add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" />
       -->
@@ -590,7 +590,7 @@
     </bundleapp>
 
     <!-- Changed the native app to no longer look for this folder. -->
-    <!-- <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" /> -->
+    <!-- <mkdir dir="macos/work/Processing.app/Contents/Java/Classes" /> -->
 
     <!-- Temporary fix until new appbundler is included again after solving
          https://github.com/processing/processing/issues/3359
@@ -602,26 +602,26 @@
          Unix systems, we need to use <exec executable="cp" ... > instead -->
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
+      <arg line="${jdk.path.macos}/Contents/Home/bin macos/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
+      <arg line="${jdk.path.macos}/Contents/Home/jmods macos/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
+      <arg line="${jdk.path.macos}/Contents/Home/legal macos/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
+      <arg line="${jdk.path.macos}/Contents/Home/conf macos/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
     </exec>
 
     <property name="contents.dir"
-              location="macosx/work/Processing.app/Contents" />
+              location="macos/work/Processing.app/Contents" />
 
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
@@ -644,17 +644,17 @@
     </antcall>
 
     <delete failonerror="true">
-      <fileset refid="jdk-optional-macosx" />
+      <fileset refid="jdk-optional-macos" />
     </delete>
 
-    <exec executable="macosx/language_gen.py" />
+    <exec executable="macos/language_gen.py" />
 
     <property name="launch4j.dir" value="${contents.dir}/Java/modes/java/application/launch4j" />
 
     <!-- rename the version we need -->
-    <move file="${launch4j.dir}/bin/windres-macosx"
+    <move file="${launch4j.dir}/bin/windres-macos"
           tofile="${launch4j.dir}/bin/windres" />
-    <move file="${launch4j.dir}/bin/ld-macosx"
+    <move file="${launch4j.dir}/bin/ld-macos"
           tofile="${launch4j.dir}/bin/ld" />
 
     <!-- make executable (ant doesn't preserve) -->
@@ -670,11 +670,11 @@
     <!-- remove temporary files -->
     <exec executable="rm">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}"/>
+      <arg line="${jdk.path.macos}"/>
     </exec>
   </target>
 
-  <target name="macosx-run" depends="macosx-build"
+  <target name="macos-run" depends="macos-build"
           description="Run macOS version">
 
     <!-- Terminal.app has a new location in Catalina -->
@@ -686,21 +686,21 @@
                property="terminal.path"
                value="/Applications/Utilities/Terminal.app" />
 
-    <exec executable="open" dir="macosx/work" spawn="true">
+    <exec executable="open" dir="macos/work" spawn="true">
       <arg value="-a" />
       <arg value="${terminal.path}" />
       <arg value="Processing.app/Contents/MacOS/Processing" />
     </exec>
   </target>
 
-  <target name="macosx-run-app" depends="macosx-build"
+  <target name="macos-run-app" depends="macos-build"
           description="Run macOS version without console">
-    <exec executable="open" dir="macosx/work" spawn="true">
+    <exec executable="open" dir="macos/work" spawn="true">
       <arg value="Processing.app" />
     </exec>
   </target>
 
-  <target name="macosx-dist-sign" if="env.PROCESSING_APP_PASSWORD">
+  <target name="macos-dist-sign" if="env.PROCESSING_APP_PASSWORD">
     <echo>
       Code signing will only work if you have a $99/yr Apple developer ID.
 
@@ -712,7 +712,7 @@
          instead of "Developer ID Application" when just doing Gatekeeper. -->
     <!--<arg value="3rd Party Mac Developer Application" />-->
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+    <exec executable="/usr/bin/codesign" dir="macos/work" failonerror="true">
       <arg value="--force" />
 
       <arg value="--sign" />
@@ -727,19 +727,19 @@
     <!-- codesign can't work inside jars? so instead temporarily unpack the files
          that contain dylib entries, just before doing our big signing event -->
 
-    <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
+    <property name="unpack.jogl" value="macos/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
 
-    <property name="unpack.gluegen" value="macosx/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
+    <property name="unpack.gluegen" value="macos/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
 
-    <property name="unpack.jssc" value="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
+    <property name="unpack.jssc" value="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
 
     <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
     <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
     <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
 
-    <!-- <unzip src="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
+    <!-- <unzip src="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
 
-    <apply executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+    <apply executable="/usr/bin/codesign" dir="macos/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
 
@@ -756,7 +756,7 @@
       <arg value="--options" />
       <arg value="runtime" />
 
-      <fileset dir="macosx/work/Processing.app/Contents/Java">
+      <fileset dir="macos/work/Processing.app/Contents/Java">
         <patternset>
           <include name="**/*.dylib" />
           <include name="**/*.jnilib" />
@@ -783,7 +783,7 @@
     <delete dir="${unpack.jssc}" />
 
     <!-- sign the outer application, now that we've finished all the contents -->
-    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+    <exec executable="/usr/bin/codesign" dir="macos/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
 
@@ -806,7 +806,7 @@
     <!-- Verify that the signature will pass Gatekeeper checks
          https://developer.apple.com/library/mac/technotes/tn2206 -->
     <!--
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
+    <exec executable="/usr/bin/codesign" dir="macos/work">
       <arg value="- -verify" />
       <arg value="- -deep" />
       <arg value="- -verbose=2" />
@@ -816,14 +816,14 @@
     <!-- Disabling since it's a lot of gunk but not that useful. -->
   </target>
 
-  <target name="macosx-dist-notarize" if="env.PROCESSING_APP_PASSWORD">
+  <target name="macos-dist-notarize" if="env.PROCESSING_APP_PASSWORD">
     <!-- xcrun: error: unable to find utility "altool", not a developer tool or in PATH -->
     <!-- fix with 'sudo xcode-select -r' -->
 
     <!-- when it's time to sign/update documents or make an app password: -->
     <!-- https://developer.apple.com/account/ -->
 
-    <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
+    <exec executable="/usr/bin/xcrun" dir="macos" failonerror="true">
       <arg value="altool" />
       <arg value="--notarize-app" />
 
@@ -840,7 +840,7 @@
       <arg value="${env.PROCESSING_APP_PASSWORD}" />
 
       <arg value="--file" />
-      <arg value="processing-${version}-macosx.zip" />
+      <arg value="processing-${version}-macos.zip" />
     </exec>
 
     <echo>
@@ -850,23 +850,23 @@
     </echo>
   </target>
 
-  <target name="macosx-dist" if="macosx"
-          depends="macosx-build"
+  <target name="macos-dist" if="macos"
+          depends="macos-build"
           description="Create a downloadable .zip for the macOS version">
 
-    <antcall target="macosx-dist-sign" />
+    <antcall target="macos-dist-sign" />
 
-    <exec executable="ditto" dir="macosx/work">
-      <arg line="-c -k -rsrc . ../processing-${version}-macosx.zip" />
+    <exec executable="ditto" dir="macos/work">
+      <arg line="-c -k -rsrc . ../processing-${version}-macos.zip" />
     </exec>
 
-    <antcall target="macosx-dist-notarize" />
+    <antcall target="macos-dist-notarize" />
 
     <echo>
       =======================================================
       Processing for macOS was built. Grab it from
 
-      macosx/processing-${version}-macosx.zip
+      macos/processing-${version}-macos.zip
       =======================================================
     </echo>
   </target>
@@ -1352,7 +1352,7 @@
     <!-- create iconset for the PDE application for macOS -->
     <antcall target="iconset">
       <param name="icon.root" value="shared/lib/icons/pde" />
-      <param name="icon.icns" value="macosx/processing.icns" />
+      <param name="icon.icns" value="macos/processing.icns" />
     </antcall>
 
     <!-- create iconset for exported sketch on macOS -->
@@ -1534,7 +1534,7 @@
   <!-- - - - - - - - -->
 
   <target name="clean" description="Perform a spring cleaning"
-          depends="linux-clean, windows-clean, macosx-clean, subprojects-clean">
+          depends="linux-clean, windows-clean, macos-clean, subprojects-clean">
   </target>
 
 </project>
