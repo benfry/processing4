@@ -391,6 +391,7 @@ public class JavaBuild {
    * for libraries that begin with a prefix like javax, since that includes
    * the OpenGL library, even though we're just returning true here, hrm...
    */
+  @SuppressWarnings("RedundantIfStatement")
   protected boolean ignorableImport(String pkg) {
     if (pkg.startsWith("java.")) return true;
     if (pkg.startsWith("javax.")) return true;
@@ -572,58 +573,77 @@ public class JavaBuild {
       return false;
     }
 
-    File folder = null;
-    for (String platformName : PConstants.platformNames) {
-//      int platform = Platform.getIndex(platformName);
+    /*
+    for (StringDict.Entry entry : Platform.getSupportedVariants().entries()) {
+      String variant = entry.key;
+      String name = entry.value;
+    }
+    */
 
+    final String hostVariant = Platform.getVariant();
+    for (String variant : Preferences.get("export.variants").split(",")) {
       // Can only embed Java on the native platform
-      boolean embedJava = (platform == PApplet.platform) &&
+      boolean embedJava = variant.equals(hostVariant) &&
         Preferences.getBoolean("export.application.embed_java");
 
-      if (Preferences.getBoolean(JavaEditor.EXPORT_PREFIX + platformName)) {
-        final int bits = Platform.getNativeBits();
-        final String arch = Platform.getNativeArch();
-
-        if (Library.hasMultipleArch(platform, importedLibraries)) {
-          // removing 32-bit export for 4.0 alpha 3
-          /*
-          // Don't try to export 32-bit on macOS, because it doesn't exist.
-          if (platform != PConstants.MACOS) {
-            // export the 32-bit version
-            folder = new File(sketch.getFolder(), "application." + platformName + "32");
-            if (!exportApplication(folder, platform, "32", embedJava && (bits == 32) && ("x86".equals(arch) || "i386".equals(arch)))) {
-              return false;
-            }
-          }
-          */
-          // export the 64-bit version
-          //folder = new File(sketch.getFolder(), "application." + platformName + "64");
-          // No longer including the 64 suffix in 4.0a3 because it's all 64-bit
-          folder = new File(sketch.getFolder(), "application." + platformName);
-          if (!exportApplication(folder, platform, "64", embedJava && (bits == 64) && "amd64".equals(arch))) {
-            return false;
-          }
-          /*
-          if (platform == PConstants.LINUX) {
-            // export the arm versions as well
-            folder = new File(sketch.getFolder(), "application.linux-armv6hf");
-            if (!exportApplication(folder, platform, "armv6hf", embedJava && (bits == 32) && "arm".equals(arch))) {
-              return false;
-            }
-            folder = new File(sketch.getFolder(), "application.linux-arm64");
-            if (!exportApplication(folder, platform, "arm64", embedJava && (bits == 64) && "aarch64".equals(arch))) {
-              return false;
-            }
-          }
-          */
-        } else { // just make a single one for this platform
-          folder = new File(sketch.getFolder(), "application." + platformName);
-          if (!exportApplication(folder, platform, "", embedJava)) {
-            return false;
-          }
-        }
+      File folder = new File(sketch.getFolder(), variant);
+      if (!exportApplication(folder, variant, embedJava)) {
+        return false;
       }
     }
+
+//    File folder = null;
+//    for (String platformName : PConstants.platformNames) {
+////      int platform = Platform.getIndex(platformName);
+//
+//      // Can only embed Java on the native platform
+//      boolean embedJava = (platform == PApplet.platform) &&
+//        Preferences.getBoolean("export.application.embed_java");
+//
+//      if (Preferences.getBoolean(JavaEditor.EXPORT_PREFIX + platformName)) {
+//        final int bits = Platform.getNativeBits();
+//        final String arch = Platform.getNativeArch();
+//
+//        if (Library.hasMultipleArch(platform, importedLibraries)) {
+//          // removing 32-bit export for 4.0 alpha 3
+//          /*
+//          // Don't try to export 32-bit on macOS, because it doesn't exist.
+//          if (platform != PConstants.MACOS) {
+//            // export the 32-bit version
+//            folder = new File(sketch.getFolder(), "application." + platformName + "32");
+//            if (!exportApplication(folder, platform, "32", embedJava && (bits == 32) && ("x86".equals(arch) || "i386".equals(arch)))) {
+//              return false;
+//            }
+//          }
+//          */
+//          // export the 64-bit version
+//          //folder = new File(sketch.getFolder(), "application." + platformName + "64");
+//          // No longer including the 64 suffix in 4.0a3 because it's all 64-bit
+//          folder = new File(sketch.getFolder(), "application." + platformName);
+//          if (!exportApplication(folder, platform, "64", embedJava && (bits == 64) && "amd64".equals(arch))) {
+//            return false;
+//          }
+//          /*
+//          if (platform == PConstants.LINUX) {
+//            // export the arm versions as well
+//            folder = new File(sketch.getFolder(), "application.linux-armv6hf");
+//            if (!exportApplication(folder, platform, "armv6hf", embedJava && (bits == 32) && "arm".equals(arch))) {
+//              return false;
+//            }
+//            folder = new File(sketch.getFolder(), "application.linux-arm64");
+//            if (!exportApplication(folder, platform, "arm64", embedJava && (bits == 64) && "aarch64".equals(arch))) {
+//              return false;
+//            }
+//          }
+//          */
+//        } else { // just make a single one for this platform
+//          folder = new File(sketch.getFolder(), "application." + platformName);
+//          if (!exportApplication(folder, platform, "", embedJava)) {
+//            return false;
+//          }
+//        }
+//      }
+//    }
 
     return true;  // all good
   }
@@ -646,8 +666,10 @@ public class JavaBuild {
       }
     }
 
-    /// prep the output directory
 
+    /// getting started
+
+    int exportPlatform = Platform.getIndex(exportVariant);
     mode.prepareExportFolder(destFolder);
 
 
@@ -781,7 +803,7 @@ public class JavaBuild {
     /// add contents of 'library' folders to the export
     for (Library library : importedLibraries) {
       // add each item from the library folder / export list to the output
-      for (File exportFile : library.getApplicationExports(exportPlatform, exportVariant)) {
+      for (File exportFile : library.getApplicationExports(exportVariant)) {
         String exportName = exportFile.getName();
         if (!exportFile.exists()) {
           System.err.println(exportFile.getName() +

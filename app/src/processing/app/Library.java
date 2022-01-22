@@ -428,6 +428,12 @@ public class Library extends LocalContribution {
   }
 
 
+  public File[] getApplicationExports(String variant) {
+    String[] list = getApplicationExportList(variant);
+    return wrapFiles(list);
+  }
+
+
   /*
   public File[] getApplicationExports(int platform, String variant) {
     String[] list = getApplicationExportList(platform, variant);

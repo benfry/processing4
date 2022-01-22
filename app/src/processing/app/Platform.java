@@ -41,17 +41,19 @@ import processing.data.StringDict;
 public class Platform {
   static DefaultPlatform inst;
 
+  /*
   static Map<Integer, String> platformNames = new HashMap<>();
   static {
     platformNames.put(PConstants.WINDOWS, "windows"); //$NON-NLS-1$
-    platformNames.put(PConstants.MACOS, "macosx"); //$NON-NLS-1$
+    platformNames.put(PConstants.MACOS, "macos"); //$NON-NLS-1$
     platformNames.put(PConstants.LINUX, "linux"); //$NON-NLS-1$
   }
+  */
 
   static Map<String, Integer> platformIndices = new HashMap<>();
   static {
     platformIndices.put("windows", PConstants.WINDOWS); //$NON-NLS-1$
-    platformIndices.put("macosx", PConstants.MACOS); //$NON-NLS-1$
+    platformIndices.put("macos", PConstants.MACOS); //$NON-NLS-1$
     platformIndices.put("linux", PConstants.LINUX); //$NON-NLS-1$
   }
 
@@ -263,12 +265,16 @@ public class Platform {
 //  static public String getName(int which) {
 //    return platformNames.get(which);
 //  }
-//
-//
-//  static public int getIndex(String what) {
-//    Integer entry = platformIndices.get(what);
-//    return (entry == null) ? -1 : entry;
-//  }
+
+
+  static public int getIndex(String platformName) {
+    // if this has os.arch at the end, remove it
+    int index = platformName.indexOf('-');
+    if (index != -1) {
+      platformName = platformName.substring(0, index);
+    }
+    return platformIndices.getOrDefault(platformName, -1);
+  }
 
 
   // These were changed to no longer rely on PApplet and PConstants because
