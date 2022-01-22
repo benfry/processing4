@@ -166,7 +166,13 @@ public class DefaultPlatform {
    * Do not return null.
    */
   public File getSettingsFolder() throws Exception {
-    // otherwise make a .processing directory int the user's home dir
+    File override = Base.getSettingsOverride();
+    if (override != null) {
+      return override;
+    }
+
+    // If no subclass has a behavior, default to making a
+    // ".processing" directory in the user's home directory.
     File home = new File(System.getProperty("user.home"));
     return new File(home, ".processing");
   }

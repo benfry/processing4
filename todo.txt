@@ -21,6 +21,9 @@ X write release notes about not moving to RSyntaxArea
 X   https://github.com/processing/processing4/issues/355
 X   https://github.com/processing/processing/issues/3199
 X   https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md
+X did we lose settings.path because it was too buggy?
+_   https://github.com/processing/processing/issues/3948
+_   https://github.com/processing/processing4/pull/360
 
 windows scaling
 X Fix "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
@@ -355,8 +358,6 @@ _   already reported?
 teaching
 _ teacher wants user input on the console
 _   https://github.com/processing/processing/issues/5779
-_ did we lose settings.path because it was too buggy?
-_   https://github.com/processing/processing/issues/3948
 _ proxy trouble with p5? since adding the system proxy?
 _   https://github.com/processing/processing/pull/3251/files
 _   larger problem thread https://github.com/processing/processing/issues/3891

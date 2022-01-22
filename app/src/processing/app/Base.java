@@ -68,6 +68,13 @@ public class Base {
 
   static private boolean commandLine;
 
+  /**
+   * If settings.txt is present inside lib, it will be used to override
+   * the location of the settings folder so that "portable" versions
+   * of the software are possible.
+   */
+  static private File settingsOverride;
+
   // A single instance of the preferences window
   PreferencesFrame preferencesFrame;
 
@@ -157,6 +164,35 @@ public class Base {
         }
       }
     }
+
+    // Detect settings.txt in the lib folder for portable versions
+    File settingsFile = Platform.getContentFile("lib/settings.txt");
+    if (settingsFile != null && settingsFile.exists()) {
+      try {
+        Settings portable = new Settings(settingsFile);
+        String path = portable.get("settings.path");
+        File folder = new File(path);
+        boolean success = true;
+        if (!folder.exists()) {
+          success = folder.mkdirs();
+          if (!success) {
+            Messages.err("Could not create " + folder + " to store settings.");
+          }
+        }
+        if (success) {
+          if (!folder.canRead()) {
+            Messages.err("Cannot read from " + folder);
+          } else if (!folder.canWrite()) {
+            Messages.err("Cannot write to " + folder);
+          } else {
+            settingsOverride = folder.getAbsoluteFile();
+          }
+        }
+      } catch (IOException e) {
+        Messages.err("Error while reading the settings.txt file", e);
+      }
+    }
+
 
     Platform.init();
     // call after Platform.init() because we need the settings folder
@@ -1946,7 +1982,8 @@ public class Base {
   /**
    * Get the directory that can store settings. (Library on OS X, App Data or
    * something similar on Windows, a dot folder on Linux.) Removed this as a
-   * preference for 3.0a3 because we need this to be stable.
+   * preference for 3.0a3 because we need this to be stable, but adding back
+   * for 4.0 beta 4 so that folks can do 'portable' versions again.
    */
   static public File getSettingsFolder() {
     File settingsFolder = null;
@@ -1970,6 +2007,11 @@ public class Base {
                          e, true);
     }
     return settingsFolder;
+  }
+
+
+  static public File getSettingsOverride() {
+    return settingsOverride;
   }
 
 
