@@ -21,9 +21,11 @@ X write release notes about not moving to RSyntaxArea
 X   https://github.com/processing/processing4/issues/355
 X   https://github.com/processing/processing/issues/3199
 X   https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md
-X did we lose settings.path because it was too buggy?
-_   https://github.com/processing/processing/issues/3948
-_   https://github.com/processing/processing4/pull/360
+X re-implement settings.path to support portable versions
+X   https://github.com/processing/processing/issues/3948
+X   moved to https://github.com/processing/processing4/issues/362
+X   https://github.com/processing/processing4/pull/360
+X   fixed with https://github.com/processing/processing4/commit/1a49263a94a2d7af2b4686286406f7896d207cd9
 
 platforms/variants/export
 X replacing macosx with macos in prefs and languages
