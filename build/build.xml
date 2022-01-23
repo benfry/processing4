@@ -78,6 +78,7 @@
   </fail>
 
   <fileset dir="macos/work/Processing.app/Contents" id="jdk-optional-macos">
+    <!-- src.zip is 52 MB and we absolutely do not need it -->
     <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
   </fileset>
 
@@ -139,8 +140,11 @@
       </or>
     </condition>
 
-    <!-- Java 17.0.1 via Adoptium -->
+    <property name="jdk.download.dist" value="jdk" />
+    <!-- JRE? https://github.com/processing/processing4/issues/365 -->
+    <!-- <property name="jdk.download.dist" value="jre" /> -->
 
+    <!-- Java 17.0.1 via Adoptium -->
     <!--
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x64_mac_hotspot_17.0.1_12.tar.gz
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.1_12.tar.gz
@@ -149,7 +153,7 @@
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_arm_linux_hotspot_17.0.1_12.tar.gz
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.1_12.tar.gz
     -->
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_${jdk.download.arch}_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-${jdk.download.dist}_${jdk.download.arch}_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
          dest="${jdk.archive.path}"
@@ -465,7 +469,8 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="macos/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
+    <!-- does not appear to be in use -->
+    <!-- <property name="jdk.dir" value="macos/work/jdk-${jdk.detail}+${jdk.build}.jdk/" /> -->
 
     <!-- https://github.com/processing/processing4/issues/284 -->
     <copy file="macos/appbundler-${os.arch}.jar"
@@ -495,9 +500,9 @@
            anything else outside /jdk) from the full JDK, even though
            it's primarily copying over the JRE folder. -->
       <runtime dir="${jdk.path.macos}/Contents/Home" />
-      <!-- Eventually we'll want to load the JRE directly from
-           the .tgz on the Oracle site, though it's in a folder called
-           jdk1.7.0_40.jdk, so we'll need to strip that out. -->
+
+      <!-- use JRE https://github.com/processing/processing4/issues/365 -->
+      <!-- <runtime dir="${jdk.path.macos}-jre/Contents/Home" /> -->
 
       <!-- Same as runtime.jars, seen above; plus core.jar. -->
       <classpath file="../app/pde.jar" />
@@ -740,14 +745,15 @@
     <!-- codesign can't work inside jars? so instead temporarily unpack the files
          that contain dylib entries, just before doing our big signing event -->
 
+    <!--
     <property name="unpack.jogl" value="macos/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
+    <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
 
     <property name="unpack.gluegen" value="macos/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
+    <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
+    -->
 
     <property name="unpack.jssc" value="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
-
-    <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
-    <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
     <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
 
     <!-- <unzip src="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
@@ -786,13 +792,17 @@
     </apply>
 
     <!-- re-package the jar files after signing their macOS contents -->
+    <!--
     <zip destfile="${unpack.jogl}.jar" basedir="${unpack.jogl}" />
     <zip destfile="${unpack.gluegen}.jar" basedir="${unpack.gluegen}" />
+    -->
     <zip destfile="${unpack.jssc}.jar" basedir="${unpack.jssc}" />
 
     <!-- delete the temporary directories w/ the jar contents -->
+    <!--
     <delete dir="${unpack.jogl}" />
     <delete dir="${unpack.gluegen}" />
+    -->
     <delete dir="${unpack.jssc}" />
 
     <!-- sign the outer application, now that we've finished all the contents -->
