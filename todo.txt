@@ -30,8 +30,20 @@ X   fixed with https://github.com/processing/processing4/commit/1a49263a94a2d7af
 platforms/variants/export
 X replacing macosx with macos in prefs and languages
 X major rewrite of Export to Application for the six supported platforms
-_   now writes folders with different names instead of 'application.'
+X   now writes folders with different names instead of 'application.'
 X move build/macosx to build/macos and make other necessary changes
+X final supported platforms
+X   as far as adoptium is concerned:
+X   macos-x64, macos-aarch64 (m1), windows-x64, linux-x64, linux-arm32 (rpi)
+X release files: macosx -> macos, linux64 -> linux, windows64 -> windows
+X   or macos-intel64, macos-applesi, linux-intel64, ...
+X   what should macos-aarch64 be called?
+X   Export Application can use nicer names, the libs thing is trickier
+o macosx vs macosx64 in JavaFX
+o   the latter is making the export fail because it won't embed a Java VM
+o   may be because it's exporting twice and overwriting?
+o   or 64 takes precedence?
+X   doesn't matter with things being redone
 
 windows scaling
 X Fix "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
@@ -253,17 +265,8 @@ _   or at least avoid the multiple
 
 platforms
 _ https://github.com/processing/processing4/wiki/Supported-Platforms
-_ final supported platforms
-_   as far as adoptium is concerned:
-_   macos-x64, macos-aarch64 (m1), windows-x64, linux-x64, linux-arm32 (rpi)
-_ release files: macosx -> macos, linux64 -> linux, windows64 -> windows
-_   or macos-intel64, macos-applesi, linux-intel64, ...
-_   what should macos-aarch64 be called?
-_   macosx vs macosx64 in JavaFX
-_     the latter is making the export fail because it won't embed a Java VM
-_     may be because it's exporting twice and overwriting?
-_     or 64 takes precedence?
-_   Export Application can use nicer names, the libs thing is trickier
+_ update JavaFX to use the supported platforms
+_ update Video library to use the new layout
 
 
 decisions before final 4.0 release
