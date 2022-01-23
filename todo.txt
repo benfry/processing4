@@ -74,6 +74,16 @@ o continue clearing out ProgressFrame
 o   also hook up the statusNotice() when done
 X   also should be long gone
 
+design
+X icon for exported app
+X icon for document
+X update the foundation icons
+
+design (done in beta 3)
+X update theme
+X selector for theme that uses tiny images
+
+
 manager
 X contrib list entry in the table sometimes contains markdown
 X   at least hide the syntax parts (and show the text)
@@ -116,12 +126,9 @@ _   https://github.com/processing/processing4/issues/194
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-design/next
-X selector for theme that uses tiny images
-_ update theme
-_ icon for exported app
-_ icon for document
-_ update the foundation icons
+design
+_ implement document icons on Windows
+_ implement document icons on Linux
 _ redesign of the Contribution Manager
 _   identify coloring for icons
 _   how much of theme to inherit
