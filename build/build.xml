@@ -958,8 +958,16 @@
 
     <property name="launch4j.dir"
               value="linux/work/modes/java/application/launch4j" />
-    <!-- this might be already overwritten by check-linux-arm32 -->
+
+    <!-- for ARM, we need different binaries for ld and windres -->
     <property name="launch4j.variant" value="linux" />
+    <condition property="launch4j.variant"
+               value="linux-armv6hf" else="linux">
+      <or>
+        <equals arg1="${os.arch}" arg2="arm" />
+        <equals arg1="${os.arch}" arg2="aarch64" />
+      </or>
+    </condition>
 
     <!-- rename the version we need -->
     <move file="${launch4j.dir}/bin/windres-${launch4j.variant}"
