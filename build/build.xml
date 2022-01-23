@@ -157,6 +157,10 @@
         message="The JAVA_HOME variable must be set to the location of a full JDK. For instance, on Ubuntu Linux, this might be /usr/lib/jvm/java-6-sun." />
   -->
 
+  <!-- For now, just using the os.arch as the dist suffix; not sure if
+       the alternatives (x64, arm32, arm64) are better/worth the trouble. -->
+  <property name="dist.suffix" value="${os.arch}" />
+
   <!-- Figure out the platform-specific output directory for all this work. -->
   <condition property="target.path"
              value="macos/work/Processing.app/Contents/Java">
@@ -894,7 +898,7 @@
     <antcall target="macos-dist-sign" />
 
     <exec executable="ditto" dir="macos/work">
-      <arg line="-c -k -rsrc . ../processing-${version}-macos.zip" />
+      <arg line="-c -k -rsrc . ../processing-${version}-macos-${dist.suffix}.zip" />
     </exec>
 
     <antcall target="macos-dist-notarize" />
@@ -1061,7 +1065,7 @@
    <!-- rename the work folder temporarily -->
    <move file="linux/work" tofile="linux/processing-${version}" />
 
-   <property name="linux.dist" value="linux/processing-${version}-linux${jdk.data.model}.tgz" />
+   <property name="linux.dist" value="linux/processing-${version}-linux-${dist.suffix}.tgz" />
 
    <exec executable="tar">
      <arg value="--directory=linux" />
@@ -1207,10 +1211,10 @@
          https://github.com/processing/processing/issues/3624 -->
 
     <condition property="jna.subfolder" value="win32-x86">
-      <equals arg1="${jdk.data.model}" arg2="32" />
+      <equals arg1="${sun.arch.data.model}" arg2="32" />
     </condition>
     <condition property="jna.subfolder" value="win32-x86-64">
-      <equals arg1="${jdk.data.model}" arg2="64" />
+      <equals arg1="${sun.arch.data.model}" arg2="64" />
     </condition>
 
     <unzip src="../app/lib/jna.jar" dest="windows/work/lib">
@@ -1313,7 +1317,7 @@
   <target name="windows-dist" depends="windows-build"
           description="Create .zip files of windows version">
 
-    <property name="windows.dist" value="windows/processing-${version}-windows${jdk.data.model}.zip" />
+    <property name="windows.dist" value="windows/processing-${version}-windows-${dist.suffix}.zip" />
 
     <zip destfile="${windows.dist}">
       <zipfileset dir="windows/work"
