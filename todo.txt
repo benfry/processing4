@@ -227,8 +227,9 @@ _ docs are 3.x not 4.x
 _ Apple Silicon support
 _   https://github.com/processing/processing4/issues/128
 _ appbundler broken when built on something later than Mojave
-_   also need separate versions because the Monterey build won't run on x86_64
 _   https://github.com/processing/processing4/issues/284
+_ also need separate versions because the Monterey build won't run on x86_64
+_   https://github.com/processing/processing4/issues/364
 _ clean up dist: 'bin' and 'src' from Java Mode are included, iml files, etc
 _ loadShape(), show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
@@ -236,6 +237,7 @@ _   set a new preference for it, so people see it
 _   just skip the welcome screen on Windows hidpi dipslays?
 _   better to launch a web browser
 _     also use id/ask for login to help understand community?
+_   tell users about JavaFX, Movie Maker install, changing themes
 _ change help menu links to go to newer FAQ and the rest
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
