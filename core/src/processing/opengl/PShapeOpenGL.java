@@ -1268,7 +1268,11 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public void rotate(float angle) {
-    transform(ROTATE, angle);
+    if (is3D) {
+      transform(ROTATE, angle, 0, 0, 1);
+    } else {
+      transform(ROTATE, angle);
+    }
   }
 
 
@@ -1414,7 +1418,6 @@ public class PShapeOpenGL extends PShape {
       } else {
         transform.scale(args[0], args[1]);
         PGraphicsOpenGL.invScale((PMatrix2D)transformInv, args[0], args[1]);
-        tessellated = false; // Quick fix for https://github.com/processing/processing4/issues/217
       }
       break;
     case MATRIX:
@@ -4601,12 +4604,14 @@ public class PShapeOpenGL extends PShape {
       initPolyBuffers();
     }
 
-    if (hasLines && (needBufferInit || outdated)) {
-      initLineBuffers();
-    }
+    if (is3D()) {
+      if (hasLines && (needBufferInit || outdated)) {
+        initLineBuffers();
+      }
 
-    if (hasPoints && (needBufferInit || outdated)) {
-      initPointBuffers();
+      if (hasPoints && (needBufferInit || outdated)) {
+        initPointBuffers();
+      }
     }
 
     needBufferInit = false;
