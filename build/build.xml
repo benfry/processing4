@@ -468,7 +468,11 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="macos/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
+    <!-- src.zip is 52 MB and we absolutely do not need it -->
+    <!-- <delete file="${jdk.path.macos}/Contents/Home/lib/src.zip" /> -->
+
+    <!-- does not appear to be in use -->
+    <!-- <property name="jdk.dir" value="macos/work/jdk-${jdk.detail}+${jdk.build}.jdk/" /> -->
 
     <!-- https://github.com/processing/processing4/issues/284 -->
     <copy file="macos/appbundler-${os.arch}.jar"
@@ -743,14 +747,15 @@
     <!-- codesign can't work inside jars? so instead temporarily unpack the files
          that contain dylib entries, just before doing our big signing event -->
 
+    <!--
     <property name="unpack.jogl" value="macos/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
+    <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
 
     <property name="unpack.gluegen" value="macos/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
+    <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
+    -->
 
     <property name="unpack.jssc" value="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
-
-    <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
-    <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
     <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
 
     <!-- <unzip src="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
@@ -789,13 +794,17 @@
     </apply>
 
     <!-- re-package the jar files after signing their macOS contents -->
+    <!--
     <zip destfile="${unpack.jogl}.jar" basedir="${unpack.jogl}" />
     <zip destfile="${unpack.gluegen}.jar" basedir="${unpack.gluegen}" />
+    -->
     <zip destfile="${unpack.jssc}.jar" basedir="${unpack.jssc}" />
 
     <!-- delete the temporary directories w/ the jar contents -->
+    <!--
     <delete dir="${unpack.jogl}" />
     <delete dir="${unpack.gluegen}" />
+    -->
     <delete dir="${unpack.jssc}" />
 
     <!-- sign the outer application, now that we've finished all the contents -->
