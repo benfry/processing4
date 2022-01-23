@@ -78,6 +78,7 @@
   </fail>
 
   <fileset dir="macos/work/Processing.app/Contents" id="jdk-optional-macos">
+    <!-- src.zip is 52 MB and we absolutely do not need it -->
     <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
   </fileset>
 
@@ -467,9 +468,6 @@
       <arg value="xfz" />
       <arg value="../${jdk.archive.path}"/>
     </exec>
-
-    <!-- src.zip is 52 MB and we absolutely do not need it -->
-    <!-- <delete file="${jdk.path.macos}/Contents/Home/lib/src.zip" /> -->
 
     <!-- does not appear to be in use -->
     <!-- <property name="jdk.dir" value="macos/work/jdk-${jdk.detail}+${jdk.build}.jdk/" /> -->
