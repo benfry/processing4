@@ -131,6 +131,14 @@
       <os family="mac" />
     </condition>
 
+    <!-- amd64 or x86_64 use x64, others use os.arch -->
+    <condition property="jdk.download.arch" value="x64" else="${os.arch}">
+      <or>
+        <equals arg1="${os.arch}" arg2="amd64" />
+        <equals arg1="${os.arch}" arg2="x86_64" />
+      </or>
+    </condition>
+
     <!-- Java 17.0.1 via Adoptium -->
 
     <!--
@@ -141,7 +149,7 @@
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_arm_linux_hotspot_17.0.1_12.tar.gz
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.1_12.tar.gz
     -->
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_${jdk.download.arch}_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
          dest="${jdk.archive.path}"
@@ -504,7 +512,8 @@
            so had to revert and we're back to duplicating core.jar -->
       <classpath file="../core/library/core.jar" />
 
-      <arch name="x86_64"/>
+      <!-- <arch name="x86_64"/> -->
+      <arch name="${os.arch}" />
 
       <!-- Adding contentTypes="public.text" to PDE files and
            contentTypes="public.zip-archive" to PDEZ and PDEX
