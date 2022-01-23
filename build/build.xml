@@ -233,6 +233,10 @@
   </target>
   -->
 
+  <target name="run" description="Run Processing.">
+    <antcall target="${platform}-run" />
+  </target>
+
   <!-- Run the app in a more "native" manner, i.e. no additional
        console for debugging. Ensures that double-clicking shortcuts
        and other desktop integration features work properly. -->
@@ -302,10 +306,17 @@
   </target>
 
   <!-- I/O library is only compiled on supported ARM platforms -->
-  <target name="subprojects-build-linux-arm32" if="linux-arm32">
-    <subant buildpath="../java/libraries/io" target="build"/>
-  </target>
-  <target name="subprojects-build-linux-arm64" if="linux-arm64">
+  <condition property="raspberry.pi" value="true">
+    <and>
+      <equals arg1="${platform}" arg2="${linux}" />
+      <or>
+        <equals arg1="${os.arch}" arg2="arm" />
+        <equals arg1="${os.arch}" arg2="aarch64" />
+      </or>
+    </and>
+  </condition>
+
+  <target name="subprojects-build-rpi" if="raspberry.pi">
     <subant buildpath="../java/libraries/io" target="build"/>
   </target>
 
@@ -926,7 +937,7 @@
     </if>
   </target>
 
-  <target name="linux-build" depends="check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
+  <target name="linux-build" depends="revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-rpi" description="Build Linux version">
     <mkdir dir="linux/work" />
 
     <copy todir="linux/work" preservelastmodified="true">
