@@ -530,19 +530,19 @@
            so double-clicking files no longer works. -->
 
       <bundledocument extensions="pde,pyde"
-                      icon="macos/document.icns"
+                      icon="macos/pde.icns"
                       name="Processing Source Code"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdez"
-                      icon="macos/document.icns"
+                      icon="macos/pdez.icns"
                       name="Processing Sketch Bundle"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdex"
-                      icon="macos/document.icns"
+                      icon="macos/pdex.icns"
                       name="Processing Contribution Bundle"
                       role="Viewer">
       </bundledocument>
