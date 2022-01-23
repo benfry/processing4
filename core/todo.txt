@@ -32,10 +32,17 @@ o would really be nice to pull out the OpenGL stuff
 o   though would require just a single PShader class in .opengl package
 o   way too messy, just need to stick with our base platforms
 
-regressions
+opengl regressions
 X PShape doesn't allow attibutes of int type anymore
 X   https://github.com/processing/processing4/issues/344
 X   https://github.com/processing/processing4/pull/363
+X using P2D with createShape causing GLException
+X   https://github.com/processing/processing4/issues/353
+X   https://github.com/processing/processing4/pull/367
+X Error in internal utility function to invert scaling
+X   https://github.com/processing/processing4/issues/366
+X   https://github.com/processing/processing4/issues/217
+X   https://github.com/processing/processing4/pull/367
 
 
 _ jogl build for m1
