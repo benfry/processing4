@@ -467,6 +467,10 @@
 
     <property name="jdk.dir" value="macos/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
 
+    <!-- https://github.com/processing/processing4/issues/284 -->
+    <copy file="macos/appbundler-${os.arch}.jar"
+          tofile="macos/appbundler.jar" />
+
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
              classname="com.oracle.appbundler.AppBundlerTask"

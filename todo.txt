@@ -53,6 +53,14 @@ contribs
 X select entire line when doing Edit > Copy on an empty selection
 X   https://github.com/processing/processing4/pull/100
 
+cleaning
+o crashed on startup w/ JavaScript mode as default b/c PdeKeyListener not found
+o   because it's in the other ClassLoader, can no longer rely on it
+o remove JavaMode.errorLogsEnabled and JavaEditor.writeErrorsToFile()
+X   should be long since gone
+o continue clearing out ProgressFrame
+o   also hook up the statusNotice() when done
+X   also should be long gone
 
 manager
 X contrib list entry in the table sometimes contains markdown
@@ -218,6 +226,9 @@ _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
 _ Apple Silicon support
 _   https://github.com/processing/processing4/issues/128
+_ appbundler broken when built on something later than Mojave
+_   also need separate versions because the Monterey build won't run on x86_64
+_   https://github.com/processing/processing4/issues/284
 _ clean up dist: 'bin' and 'src' from Java Mode are included, iml files, etc
 _ loadShape(), show a warning when using style instead of presentation attributes
 _ Welcome screen or not?
@@ -447,24 +458,11 @@ _   https://github.com/processing/processing/issues/5023
 
 
 pde/build
-_ fix appbundler problems due to rollback
-_   https://github.com/processing/processing/issues/3790
-_   the rollback re-introduces two bugs (serial export and scrolling)
-_   and any other changes later than 16 November 2014:
-_   https://github.com/processing/processing/commits/master/build/macosx/appbundler.jar
-_   https://github.com/processing/processing/commits/master/build/macosx/appbundler/native/main.m
-_   https://github.com/processing/processing/commit/fa27b983e76fdbc5c4c1451a1f0d854c652b1639
-_   https://bitbucket.org/infinitekind/appbundler
 _ unsupported java version when trying ant run with 7u65
 _   no helpful message about how to automatically download 8u51
 _ ignore-tools in build.xml not being called for some reason
 _ when variables used in size(), getting exceptions instead of any warning
 _   https://github.com/processing/processing/issues/3311
-_ crashed on startup w/ JavaScript mode as default b/c PdeKeyListener not found
-_   because it's in the other ClassLoader, can no longer rely on it
-_ remove JavaMode.errorLogsEnabled and JavaEditor.writeErrorsToFile()
-_ continue clearing out ProgressFrame
-_   also hook up the statusNotice() when done
 _ break out Mode-specific options to their own panels in prefs
 _   Mode should just provide a panel for their prefs
 _ make the build fail if git pull on processing-docs fails
@@ -1123,6 +1121,14 @@ _   this may already work with SingleInstance stuff
 DIST / macOS
 
 appbundler
+_ fix appbundler problems due to rollback
+_   https://github.com/processing/processing/issues/3790
+_   the rollback re-introduces two bugs (serial export and scrolling)
+_   and any other changes later than 16 November 2014:
+_   https://github.com/processing/processing/commits/master/build/macosx/appbundler.jar
+_   https://github.com/processing/processing/commits/master/build/macosx/appbundler/native/main.m
+_   https://github.com/processing/processing/commit/fa27b983e76fdbc5c4c1451a1f0d854c652b1639
+_   https://bitbucket.org/infinitekind/appbundler
 _ update appbundler? https://github.com/TheInfiniteKind/appbundler
 _   might be broken though https://github.com/TheInfiniteKind/appbundler/issues/70
 _   symlink https://github.com/TheInfiniteKind/appbundler/issues/1
@@ -1130,9 +1136,7 @@ _ startup chatter (from appbundler?)
 _   Processing[25059:13082813] int launch(char *, int, char **) Launchpath
 _ Find a long-term solution for OS X bundler to address signing/symlink issues
 _   https://github.com/processing/processing/issues/2967
-_ appbundler improvements
-_   don't re-copy JRE into work folder if already exists
-_   implement a splash screen
+_ don't re-copy JRE into work folder if already exists
 
 others
 _ reliable getLibraryFolder() and getDocumentsFolder() methods in MacPlatform
