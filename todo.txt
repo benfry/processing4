@@ -278,6 +278,13 @@ _ update Video library to use the new layout
 
 decisions before final 4.0 release
 _ can we compress jdk/Contents/Home/legal into a single zip?
+_ should we use Java 11 instead of 17 to be less of an outlier?
+_   default rpi openjdk seems to be 11, we're not using any 17 features
+_   size change is negligible (17 may even be slightly smaller)
+_   or is this just a matter of 17 being new and it'll change quickly?
+_   JavaFX 17 (a good idea) seems to be compatible with Java 11
+_     JavaFX 11 has fewer builds (no ARM, prolly no Apple Silicon)
+_   11 LTS is supported until September 2026, 17 until 2029
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
 _ change the license from GPL
