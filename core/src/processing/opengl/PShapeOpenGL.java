@@ -4605,12 +4605,14 @@ public class PShapeOpenGL extends PShape {
       initPolyBuffers();
     }
 
-    if (hasLines && (needBufferInit || outdated)) {
-      initLineBuffers();
-    }
+    if (is3D()) {
+      if (hasLines && (needBufferInit || outdated)) {
+        initLineBuffers();
+      }
 
-    if (hasPoints && (needBufferInit || outdated)) {
-      initPointBuffers();
+      if (hasPoints && (needBufferInit || outdated)) {
+        initPointBuffers();
+      }
     }
 
     needBufferInit = false;
