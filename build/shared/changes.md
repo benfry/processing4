@@ -1,6 +1,6 @@
 # Processing 4.0 beta 4
 
-*Revision 1279 – 23 January 2022*
+*Revision 1279 – 24 January 2022*
 
 Loooots of changes under the hood to better support more platforms. And by that, we mean Apple Silicon (now in alpha!) and Raspberry Pi devices (once again). And whatever else gets cooked up in the coming years.
 
@@ -49,6 +49,8 @@ We've also moved the FX2D (JavaFX) renderer to its own library, which will be av
 * JavaFX moved to its own library. It no longer works with Tools and Modes as a result, but it was just too hefty relative to its importance. Read about it in [#348](https://github.com/processing/processing4/issues/348)
 
 * A massive amount of work for our supported platforms. Some of the gritty details are [here](https://github.com/processing/processing4/wiki/Supported-Platforms) but we have six of them. Export to Application has been rewritten. It's now possible to build Processing on all six of these platforms.
+
+* Cross-platform support for native libraries has also changed significantly. The `export.txt` file is ignored completely (no libraries required it anyway), and the subfolders names for native libraries have changed. See the layout of `core/library` for an example. Again, this enables all these platforms from Apple Silicon to Raspberry Pi.
 
 
 ## Contributed tidbits
