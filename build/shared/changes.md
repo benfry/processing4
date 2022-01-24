@@ -1,3 +1,111 @@
+# Processing 4.0 beta 4
+
+*Revision 1279 – 23 January 2022*
+
+Loooots of changes under the hood to better support more platforms. And by that, we mean Apple Silicon (now in alpha!) and Raspberry Pi devices (once again). And whatever else gets cooked up in the coming years.
+
+For the Windows users, the scaling issues have finally been sorted out. Use 125% and 250% and whatever weird Windows scaling you want, and it will work. You can safely uncheck the “Disable HiDPI scaling” checkbox in Preferences.
+
+Against my better judgement, I'm posting a release that's native for Apple Silicon. OpenGL is currently broken. Sketches crash immediately. You should only use it if you're a masochist. Or a masochist that likes *extremely fast* but very incomplete software, and won't file bug reports saying "OpenGL is broken". But it's being posted for folks who do not need OpenGL, and want to help.
+
+We've also moved the FX2D (JavaFX) renderer to its own library, which will be available from the Contributions Manager.
+
+
+## New features!
+
+* Re-implement settings.path to support portable versions. [#3948](https://github.com/processing/processing/issues/3948), [362](https://github.com/processing/processing4/issues/362), [#360](https://github.com/processing/processing4/pull/360), fixed with [1a49263a](https://github.com/processing/processing4/commit/1a49263a94a2d7af2b4686286406f7896d207cd9)
+
+* The design is slowly coming together, with new icons for exported applications, document files (`.pde`, `.pdex`, and `.pdez`), plus the Foundation icon used in the Contributions Manager.
+
+
+## We're all regressing, why can't your software?
+
+* Double-clicking .pde files on macOS was broken in beta 3. [#347](https://github.com/processing/processing4/issues/347)
+
+
+## Other fixes…
+
+* Tons of work to get the Windows version of the application to scale properly. Even the opening splash screen is behaving better. [#342](https://github.com/processing/processing4/issues/342)
+
+* `displayDensity()` was returning 1 when run from the PDE on Windows. [#339](https://github.com/processing/processing4/issues/339)
+
+* Fix "Could not delete disable_hidpi" message that was showing up on macOS and Linux after closing the Preferences window.
+
+* Major work inside the Contributions Manager: links to projects, links in description text now working. Some fixes to speed things up. Removing hundreds of lines of vestigial code. Fix the font being used on the progress bar.
+
+* Removed "Illegal reflective access" warning on Linux. [#207](https://github.com/processing/processing4/issues/207)
+
+
+## Changes
+
+* JavaFX moved to its own library. It no longer works with Tools and Modes as a result, but it was just too hefty relative to its importance. Read about it in [#348](https://github.com/processing/processing4/issues/348)
+
+* A massive amount of work for our supported platforms. Some of the gritty details are [here](https://github.com/processing/processing4/wiki/Supported-Platforms) but we have six of them. Export to Application has been rewritten. It's now possible to build Processing on all six of these platforms.
+
+
+## Contributed tidbits
+
+* Select the entire line when doing Edit → Copy on an empty selection. [#100](https://github.com/processing/processing4/pull/100)
+
+
+## You probably won't notice, but it's noted here in case you do
+
+* Set the minimum Java version for Windows launcher to 17.0.1.
+
+* Bumped Ant from 1.10.10 to 1.10.12.
+
+* Upgraded JNA from 5.8.0 to 5.10.0.
+
+* Spent a bunch of time looking into RSyntaxArea. It's not gonna happen. [#355](https://github.com/processing/processing4/issues/355), [#3199](https://github.com/processing/processing/issues/3199), and [the details](https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md).
+
+
+
+X put opengl libs for core into platform-specific subfolders
+X   get us ready for other platforms (M1 in particular)
+X   fixes Windows antivirus slowdowns
+X   https://github.com/processing/processing/issues/4783#issuecomment-269328168
+X   https://github.com/processing/processing/issues/4239
+X   https://jogamp.org/bugzilla/show_bug.cgi?id=1301
+X   https://stackoverflow.com/a/51100411
+
+api changes (in previous releases)
+X static versions of selectInput/selectOutput/selectFolder removed from PApplet
+X   noted in the README
+X java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
+X   https://github.com/processing/processing4/issues/54
+X protected PImage.checkAlpha() now public
+X all AWT calls have been moved out of PImage
+X   this may be a problem for anything that was relying on those internals
+X removed MouseEvent.getClickCount() and MouseEvent.getAmount()
+X   these had been deprecated, not clear they were used anywhere
+
+earlier
+X Intel HD Graphics 3000 workaround is causing a big fat warning
+X   https://github.com/processing/processing4/issues/50
+
+decisions
+o possibly move jogl back to a separate library
+o   setting up deps for it with projects that don't use it is a headache
+X   just not possible
+X     PShader would have to change packages
+X     that much messier to link back with projects that rely on JOGL
+o would really be nice to pull out the OpenGL stuff
+o   though would require just a single PShader class in .opengl package
+o   way too messy, just need to stick with our base platforms
+
+opengl regressions
+X PShape doesn't allow attibutes of int type anymore
+X   https://github.com/processing/processing4/issues/344
+X   https://github.com/processing/processing4/pull/363
+X using P2D with createShape causing GLException
+X   https://github.com/processing/processing4/issues/353
+X   https://github.com/processing/processing4/pull/367
+X Error in internal utility function to invert scaling
+X   https://github.com/processing/processing4/issues/366
+X   https://github.com/processing/processing4/issues/217
+X   https://github.com/processing/processing4/pull/367
+
+
 # Processing 4.0 beta 3
 
 *Revision 1278 – 15 January 2022*
