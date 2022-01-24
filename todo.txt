@@ -251,6 +251,8 @@ _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
 _ Apple Silicon support
 _   https://github.com/processing/processing4/issues/128
+_ JOGL is broken on aarch64
+_   https://github.com/processing/processing4/issues/370
 _ appbundler broken when built on something later than Mojave
 _   https://github.com/processing/processing4/issues/284
 _ also need separate versions because the Monterey build won't run on x86_64

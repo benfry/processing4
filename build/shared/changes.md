@@ -6,7 +6,7 @@ Loooots of changes under the hood to better support more platforms. And by that,
 
 For the Windows users, the scaling issues have finally been sorted out. Use 125% and 250% and whatever weird Windows scaling you want, and it will work. You can safely uncheck the “Disable HiDPI scaling” checkbox in Preferences.
 
-Against my better judgement, I'm posting a release that's native for Apple Silicon. OpenGL is currently broken. Sketches crash immediately. You should only use it if you're a masochist. Or a masochist that likes *extremely fast* but very incomplete software, and won't file bug reports saying “OpenGL is broken.” But it's being posted for folks who do not need OpenGL, and/or want to help debug.
+Against my better judgement, I'm posting a release that's native for Apple Silicon. OpenGL is currently broken. Sketches crash immediately. You should only use it if you're a masochist. Or a masochist that likes *extremely fast* but very incomplete software, and won't file bug reports saying “OpenGL is broken.” But it's being posted for folks who do not need OpenGL, and/or want to help debug. [#370](https://github.com/processing/processing4/issues/370)
 
 We've also moved the FX2D (JavaFX) renderer to its own library, which is available from the Contributions Manager.
 
