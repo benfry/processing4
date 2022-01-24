@@ -45,6 +45,8 @@ o   may be because it's exporting twice and overwriting?
 o   or 64 takes precedence?
 X   doesn't matter with things being redone
 X rewrite build.xml to support the five arch types
+X remove exception cases for arm in the build/export code
+X   hopefully these are caught, but needs more testing
 
 windows scaling
 X Fix "Could not delete disable_hidpi" message
@@ -103,29 +105,11 @@ X DetailPanel seems totally vestigial?
 X updates count is off... maybe when compatible != available count?
 X   nope, just something weird with the qr code library
 X   probably not available anymore, not gonna bother digging further
-_ after opening Editor window, Processing freezes until contribs are loaded
-_ when opening manager, animation runs briefly then freezes
-_ DetailPanel setContribution() being called 4x for each contrib on startup
-_ during install of contrib, progress is halting during the install
-_   probably too much happening on the EDT that should not be
-_ optimize ContributionTab addListener() call in constructor
-X   no longer calling addListener() on every single entry, whcih helps
-_   but what else might that change be breaking?
-_ StatusPanel seems to be recreated entirely
-_ StatusPanel being reset twice on each click
-_   is checking for previous, but apparently that's not working
-_ Base.setUpdatesAvailable() is called from half a dozen places!?
-
-
-_ remove exception cases for arm in the build/export code
-_ Help > Library/Tools refernece links don't work
-
 
 before beta 4 release
-_ javafx library linked in contribs manager
-_   test to make sure still working
-_   warnings about installation
-_ MovieMaker out as well?
+X javafx library linked in contribs manager
+o   test to make sure still working
+o   warnings about installation
 
 
 known issues
@@ -135,28 +119,6 @@ _   https://github.com/processing/processing4/issues/194
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-design
-_ implement document icons on Windows
-_ implement document icons on Linux
-_ redesign of the Contribution Manager
-_   identify coloring for icons
-_   how much of theme to inherit
-_   generate manager icons
-_ decision about 'debug' versions of toolbar icons
-_ put themes in folders by name
-_ add notes about params to the wiki
-_   new scrollbars
-
-
-movie maker
-_ break this out to its own library
-_   another big leap in file size reduction for the PDE download
-_   but need to figure out a good way to highlight it/encourage installation
-_   ...as well as the other libraries? separate window?
-_ remove jai_imageio.jar from MovieMaker
-_   also clean out the other unused class files and src
 
 
 _ Add support for localizing contributions
@@ -173,7 +135,6 @@ _ refresh option for sketchbook (bottom of window)
 _ Implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
 _   modules and classpath ugh https://stackoverflow.com/a/46289257
-
 
 _ pdez links for contribs, not just the .zip
 _   fix the code so that the contribs manager will handle it
@@ -197,6 +158,19 @@ _ when lib downloads (batik) go dead, fallback to download.processing.org
 _   or for now, tell users how to do it manually
 
 
+design
+_ implement document icons on Windows
+_ implement document icons on Linux
+_ redesign of the Contribution Manager
+_   identify coloring for icons
+_   how much of theme to inherit
+_   generate manager icons
+_ decision about 'debug' versions of toolbar icons
+_ put themes in folders by name
+_ add notes about params to the wiki
+_   new scrollbars
+
+
 ui is ugly on macOS
 _ sort out ui.font plus the other fonts inside theme.txt
 _   Toolkit.getSansFont() will use the internal ProcessingSansPro font
@@ -216,6 +190,30 @@ _     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swin
 _   Space Grotesk and Mono?
 _     https://fonts.google.com/specimen/Space+Mono
 _     https://fonts.google.com/specimen/Space+Grotesk
+
+
+movie maker
+_ break this out to its own library?
+_   another big leap in file size reduction for the PDE download
+_   but need to figure out a good way to highlight it/encourage installation
+_   ...as well as the other libraries? separate window?
+_ remove jai_imageio.jar from MovieMaker
+_   also clean out the other unused class files and src
+
+
+manager
+_ after opening Editor window, Processing freezes until contribs are loaded
+_ when opening manager, animation runs briefly then freezes
+_ DetailPanel setContribution() being called 4x for each contrib on startup
+_ during install of contrib, progress is halting during the install
+_   probably too much happening on the EDT that should not be
+_ optimize ContributionTab addListener() call in constructor
+X   no longer calling addListener() on every single entry, whcih helps
+_   but what else might that change be breaking?
+_ StatusPanel seems to be recreated entirely
+_ StatusPanel being reset twice on each click
+_   is checking for previous, but apparently that's not working
+_ Base.setUpdatesAvailable() is called from half a dozen places!?
 
 
 windows/scaling
@@ -247,6 +245,7 @@ _   https://github.com/processing/processing4/issues/304
 
 
 before 4.x final
+_ Help > Library/Tools reference links don't work
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
