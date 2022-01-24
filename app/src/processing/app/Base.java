@@ -52,9 +52,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1279;
+  static private final int REVISION = 1280;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1279"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1280"; //$NON-NLS-1$
 
   static final public String SKETCH_BUNDLE_EXT = ".pdez";
   static final public String CONTRIB_BUNDLE_EXT = ".pdex";

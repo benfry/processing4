@@ -1,48 +1,4 @@
-1279 (4.0b4)
-X put opengl libs for core into platform-specific subfolders
-X   get us ready for other platforms (M1 in particular)
-X   fixes Windows antivirus slowdowns
-X   https://github.com/processing/processing/issues/4783#issuecomment-269328168
-X   https://github.com/processing/processing/issues/4239
-X   https://jogamp.org/bugzilla/show_bug.cgi?id=1301
-X   https://stackoverflow.com/a/51100411
-
-api changes (in previous releases)
-X static versions of selectInput/selectOutput/selectFolder removed from PApplet
-X   noted in the README
-X java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
-X   https://github.com/processing/processing4/issues/54
-X protected PImage.checkAlpha() now public
-X all AWT calls have been moved out of PImage
-X   this may be a problem for anything that was relying on those internals
-X removed MouseEvent.getClickCount() and MouseEvent.getAmount()
-X   these had been deprecated, not clear they were used anywhere
-
-earlier
-X Intel HD Graphics 3000 workaround is causing a big fat warning
-X   https://github.com/processing/processing4/issues/50
-
-decisions
-o possibly move jogl back to a separate library
-o   setting up deps for it with projects that don't use it is a headache
-X   just not possible
-X     PShader would have to change packages
-X     that much messier to link back with projects that rely on JOGL
-o would really be nice to pull out the OpenGL stuff
-o   though would require just a single PShader class in .opengl package
-o   way too messy, just need to stick with our base platforms
-
-opengl regressions
-X PShape doesn't allow attibutes of int type anymore
-X   https://github.com/processing/processing4/issues/344
-X   https://github.com/processing/processing4/pull/363
-X using P2D with createShape causing GLException
-X   https://github.com/processing/processing4/issues/353
-X   https://github.com/processing/processing4/pull/367
-X Error in internal utility function to invert scaling
-X   https://github.com/processing/processing4/issues/366
-X   https://github.com/processing/processing4/issues/217
-X   https://github.com/processing/processing4/pull/367
+1280 (4.0b5)
 
 
 _ jogl build for m1
