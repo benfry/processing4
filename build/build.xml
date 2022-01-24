@@ -910,7 +910,7 @@
       =======================================================
       Processing for macOS was built. Grab it from
 
-      macos/processing-${version}-macos.zip
+      macos/${dist.filename}
       =======================================================
     </echo>
   </target>
