@@ -6,16 +6,18 @@ Loooots of changes under the hood to better support more platforms. And by that,
 
 For the Windows users, the scaling issues have finally been sorted out. Use 125% and 250% and whatever weird Windows scaling you want, and it will work. You can safely uncheck the “Disable HiDPI scaling” checkbox in Preferences.
 
-Against my better judgement, I'm posting a release that's native for Apple Silicon. OpenGL is currently broken. Sketches crash immediately. You should only use it if you're a masochist. Or a masochist that likes *extremely fast* but very incomplete software, and won't file bug reports saying "OpenGL is broken". But it's being posted for folks who do not need OpenGL, and want to help.
+Against my better judgement, I'm posting a release that's native for Apple Silicon. OpenGL is currently broken. Sketches crash immediately. You should only use it if you're a masochist. Or a masochist that likes *extremely fast* but very incomplete software, and won't file bug reports saying "OpenGL is broken". But it's being posted for folks who do not need OpenGL, and/or want to help debug.
 
 We've also moved the FX2D (JavaFX) renderer to its own library, which will be available from the Contributions Manager.
 
 
 ## New features!
 
-* Re-implement settings.path to support portable versions. [#3948](https://github.com/processing/processing/issues/3948), [362](https://github.com/processing/processing4/issues/362), [#360](https://github.com/processing/processing4/pull/360), fixed with [1a49263a](https://github.com/processing/processing4/commit/1a49263a94a2d7af2b4686286406f7896d207cd9)
+* New downloads for Apple Silicon (incomplete! [#128](https://github.com/processing/processing4/issues/128)), and Raspberry Pi (32- and 64-bit). Some things are still broken, so the releases will be on Github but not processing.org/download.
 
-* The design is slowly coming together, with new icons for exported applications, document files (`.pde`, `.pdex`, and `.pdez`), plus the Foundation icon used in the Contributions Manager. This work is still in progress, at least until [#48](https://github.com/processing/processing4/issues/48) is closed.
+* The design continues coming together, with new icons for exported applications, document files (`.pde`, `.pdex`, and `.pdez`), plus the Foundation icon used in the Contributions Manager. This work is still in progress, at least until [#48](https://github.com/processing/processing4/issues/48) is closed.
+
+* Re-implement settings.path to support portable versions. [#3948](https://github.com/processing/processing/issues/3948), [362](https://github.com/processing/processing4/issues/362), [#360](https://github.com/processing/processing4/pull/360), fixed with [1a49263a](https://github.com/processing/processing4/commit/1a49263a94a2d7af2b4686286406f7896d207cd9)
 
 
 ## We're all regressing, why can't your software?
