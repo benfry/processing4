@@ -1,8 +1,8 @@
 # 🐉 Fixing this code: here be dragons. 🐉
 
-Every few years, we've looked at replacing this package with [RSyntaxArea](https://github.com/bobbylight/RSyntaxTextArea), most recently with two attempts during the course of developing [Processing 4](https://github.com/processing/processing4/wiki/Processing-4).
+Every few years, we've looked at replacing this package with [RSyntaxArea](https://github.com/bobbylight/RSyntaxTextArea), most recently with two attempts during the course of developing [Processing 4](https://github.com/processing/processing4/wiki/Processing-4), but probably dating back to the mid-2000s.
 
-So that I don't repeat this attempt again, some reminders as to why it's not worth the effort. As noted in the link above, the time is better spent with starting from scratch with a different approach—a Language Server implementation and probably a lightweight (HTML/JS) GUI on top of it.
+The bottom line is that the time is better spent with starting from scratch with a different approach—a Language Server implementation and probably a lightweight (HTML/JS) GUI on top of it. But so that I don't attempt this again, some reminders as to why it's not worth the effort:
 
 * At a minimum, replacing this text component would break all Modes, because of how they're invoked. That places significant burden on those authors, so making the switch means there must be major, demonstrable improvements. (The code being “cleaner” or “better” does not qualify, though other improvements might.)
 * The token coloring uses a completely different system, which would also need to be expanded across Modes. 
@@ -11,9 +11,9 @@ So that I don't repeat this attempt again, some reminders as to why it's not wor
 * Most methods throw `BadLocationException`, which we'd either need to include, and break more existing code, or hide, and have undefined behavior. Not a good investment.
 * The current `Editor` object evolved from a time when we didn't even support individual tabs. As a result, there's a lot of “current tab” state that still lives inside `Editor`, and other state that lives in `SketchCode`. 
 * Most of those `Editor` methods should instead be talking to `SketchCode` objects, however that kind of change is likely to introduce small regressions with *major* effects. Again, just not worth it.
-* More ways to introduce regressions when fixing: `SketchCode` currently syncs between `program`, `savedProgram`, and `Document` objects. 
-* The text area needs to be moved into individual tabs. More breaking changes, but necessary to cleanly separate all Undo behavior.
-* So many small quirks, hard-learned lessons from over the years that may no longer be necessary, but the amount of testing necessary is too significant. For instance, inside File → Print, all the Document objects for the tabs are synched up. This might no longer be necessary if we do this properly—it's a gross hack—but we don't have time to find out. There are dozens of situations like this.
+* More ways to introduce regressions when fixing: `SketchCode` currently syncs between `program`, `savedProgram`, and `Document` objects. This can obviously be collapsed to just one object (maaaybe two), but this is Regression City. The stuff of nightmares. 
+* The text area object needs to be moved into the individual tabs (and out of `SketchCode`. This would be fantastic for cleaning things up (the Arduino folks moved ahead with this change a while back). But it's another breaking change for Modes, even though it would be necessary to cleanly separate all Undo behavior.
+* So many small quirks, hard-learned lessons from over the years that may no longer be necessary, but the amount of testing necessary is too significant. For instance, inside File → Print, all the Document objects for the tabs are synched up. This might no longer be necessary if we do this properly—it's a gross hack—but we don't have time to find out. There are dozens of situations like this, creating a “refactored but not renewed” sort of situation that would likely take longer than the LS implementation.
 
 I don't enjoy having the code in this state, but it's there and working, and has allowed a single primary maintainer to support millions of users over more than 20 years. A larger-scale replacement is a better use of time.
 
