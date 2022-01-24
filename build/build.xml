@@ -739,9 +739,6 @@
   <target name="macos-dist-sign" if="env.PROCESSING_APP_PASSWORD">
     <echo>
       Code signing will only work if you have a $99/yr Apple developer ID.
-
-      With a proper ID, if code signing fails, you may need to use:
-      export CODESIGN_ALLOCATE="/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate"
     </echo>
 
     <!-- Use "3rd Party Mac Developer Application" for the app store,
@@ -881,7 +878,7 @@
       <arg value="${env.PROCESSING_APP_PASSWORD}" />
 
       <arg value="--file" />
-      <arg value="processing-${version}-macos.zip" />
+      <arg value="${dist.filename}" />
     </exec>
 
     <echo>
@@ -891,8 +888,7 @@
     </echo>
   </target>
 
-  <target name="macos-dist" if="macos"
-          depends="macos-build"
+  <target name="macos-dist" depends="macos-build"
           description="Create a downloadable .zip for the macOS version">
 
     <antcall target="macos-dist-sign" />
@@ -901,8 +897,11 @@
       <equals arg1="${os.arch}" arg2="x86_64" />
     </condition>
 
+    <property name="dist.filename"
+              value="processing-${version}-macos-${dist.suffix}.zip" />
+
     <exec executable="ditto" dir="macos/work">
-      <arg line="-c -k -rsrc . ../processing-${version}-macos-${dist.suffix}.zip" />
+      <arg line="-c -k -rsrc . ../${dist.filename}" />
     </exec>
 
     <antcall target="macos-dist-notarize" />
