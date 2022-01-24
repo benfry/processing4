@@ -121,6 +121,9 @@ _   https://github.com/processing/processing4/issues/194
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+_ change the jdk download to include the arch
+_   when building on macOS, can't share folder b/c jdk zip is wrong arch
+
 _ Add support for localizing contributions
 _   https://github.com/processing/processing4/pull/237 (updated by Andres)
 X   https://github.com/processing/processing/pull/2833
