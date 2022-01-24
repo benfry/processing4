@@ -15,12 +15,18 @@ We've also moved the FX2D (JavaFX) renderer to its own library, which will be av
 
 * Re-implement settings.path to support portable versions. [#3948](https://github.com/processing/processing/issues/3948), [362](https://github.com/processing/processing4/issues/362), [#360](https://github.com/processing/processing4/pull/360), fixed with [1a49263a](https://github.com/processing/processing4/commit/1a49263a94a2d7af2b4686286406f7896d207cd9)
 
-* The design is slowly coming together, with new icons for exported applications, document files (`.pde`, `.pdex`, and `.pdez`), plus the Foundation icon used in the Contributions Manager.
+* The design is slowly coming together, with new icons for exported applications, document files (`.pde`, `.pdex`, and `.pdez`), plus the Foundation icon used in the Contributions Manager. This work is still in progress, at least until [#48](https://github.com/processing/processing4/issues/48) is closed.
 
 
 ## We're all regressing, why can't your software?
 
 * Double-clicking .pde files on macOS was broken in beta 3. [#347](https://github.com/processing/processing4/issues/347)
+
+* PShape not allowing attibutes of type `int`. [#344](https://github.com/processing/processing4/issues/344), [#363](https://github.com/processing/processing4/pull/363)
+
+* Using `P2D` with `createShape()` causing `GLException`. [#353](https://github.com/processing/processing4/issues/353), [#367](https://github.com/processing/processing4/pull/367)
+
+* Fix error in internal utility function to invert scaling. [#366](https://github.com/processing/processing4/issues/366), [#217](https://github.com/processing/processing4/issues/217), [#367](https://github.com/processing/processing4/pull/367)
 
 
 ## Other fixes…
@@ -37,6 +43,8 @@ We've also moved the FX2D (JavaFX) renderer to its own library, which will be av
 
 
 ## Changes
+
+* Native libraries for OpenGL are no longer packed inside `.jar` files. This fixes slowdowns on Windows caused by antivirus software kicking into high gear. It also gives us a path to get OpenGL working on Apple Silicon. Unfortunately, this also means you'll need to set `java.library.path` in an IDE outside the PDE. [#4783](https://github.com/processing/processing/issues/4783#issuecomment-269328168), [#4239](https://github.com/processing/processing/issues/4239), [JOGL](https://jogamp.org/bugzilla/show_bug.cgi?id=1301), [Stack Overflow](https://stackoverflow.com/a/51100411)
 
 * JavaFX moved to its own library. It no longer works with Tools and Modes as a result, but it was just too hefty relative to its importance. Read about it in [#348](https://github.com/processing/processing4/issues/348)
 
@@ -57,53 +65,6 @@ We've also moved the FX2D (JavaFX) renderer to its own library, which will be av
 * Upgraded JNA from 5.8.0 to 5.10.0.
 
 * Spent a bunch of time looking into RSyntaxArea. It's not gonna happen. [#355](https://github.com/processing/processing4/issues/355), [#3199](https://github.com/processing/processing/issues/3199), and [the details](https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md).
-
-
-
-X put opengl libs for core into platform-specific subfolders
-X   get us ready for other platforms (M1 in particular)
-X   fixes Windows antivirus slowdowns
-X   https://github.com/processing/processing/issues/4783#issuecomment-269328168
-X   https://github.com/processing/processing/issues/4239
-X   https://jogamp.org/bugzilla/show_bug.cgi?id=1301
-X   https://stackoverflow.com/a/51100411
-
-api changes (in previous releases)
-X static versions of selectInput/selectOutput/selectFolder removed from PApplet
-X   noted in the README
-X java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
-X   https://github.com/processing/processing4/issues/54
-X protected PImage.checkAlpha() now public
-X all AWT calls have been moved out of PImage
-X   this may be a problem for anything that was relying on those internals
-X removed MouseEvent.getClickCount() and MouseEvent.getAmount()
-X   these had been deprecated, not clear they were used anywhere
-
-earlier
-X Intel HD Graphics 3000 workaround is causing a big fat warning
-X   https://github.com/processing/processing4/issues/50
-
-decisions
-o possibly move jogl back to a separate library
-o   setting up deps for it with projects that don't use it is a headache
-X   just not possible
-X     PShader would have to change packages
-X     that much messier to link back with projects that rely on JOGL
-o would really be nice to pull out the OpenGL stuff
-o   though would require just a single PShader class in .opengl package
-o   way too messy, just need to stick with our base platforms
-
-opengl regressions
-X PShape doesn't allow attibutes of int type anymore
-X   https://github.com/processing/processing4/issues/344
-X   https://github.com/processing/processing4/pull/363
-X using P2D with createShape causing GLException
-X   https://github.com/processing/processing4/issues/353
-X   https://github.com/processing/processing4/pull/367
-X Error in internal utility function to invert scaling
-X   https://github.com/processing/processing4/issues/366
-X   https://github.com/processing/processing4/issues/217
-X   https://github.com/processing/processing4/pull/367
 
 
 # Processing 4.0 beta 3
