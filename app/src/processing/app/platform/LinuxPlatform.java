@@ -87,6 +87,11 @@ public class LinuxPlatform extends DefaultPlatform {
 
   @Override
   public File getSettingsFolder() throws Exception {
+    File override = Base.getSettingsOverride();
+    if (override != null) {
+      return override;
+    }
+
     // https://github.com/processing/processing4/issues/203
     // https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html
 

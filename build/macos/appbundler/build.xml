@@ -28,8 +28,11 @@ questions.
 <project name="appbundler" default="package">
     <property environment="env"/>
 
+    <!-- build.properties is so minimal that it has been merged into here -->
     <!-- <property file="build.properties"/> -->
     <property name="arch64" value="-arch x86_64" />
+    <!-- https://github.com/TheInfiniteKind/appbundler/issues/75 -->
+    <property name="archarm64" value="-arch arm64" />
     <property name="cc" value="gcc" />
 
     <property name="folder.src" value="src"/>
@@ -80,6 +83,7 @@ questions.
 
         <exec executable="${cc}" failonerror="true">
             <arg line="${arch64}"/>
+            <arg line="${archarm64}"/>
             <arg value="-I"/>
             <arg value="${javahome}/include"/>
             <arg value="-I"/>

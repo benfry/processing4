@@ -9,8 +9,8 @@
     </classpath>
   </taskdef>
 
-  <!-- Sets properties for macosx/windows/linux depending on current system -->
-  <condition property="platform" value="macosx">
+  <!-- Sets properties for macos/windows/linux depending on current system -->
+  <condition property="platform" value="macos">
     <os family="mac" />
   </condition>
 
@@ -30,39 +30,11 @@
   <property name="examples.dir"
             location="../../processing-docs/content/examples" />
 
-  <!-- detect Raspberry Pi (TODO move this, jdk.data.model is set later) -->
-  <condition property="linux-arm32" value="linux-arm32">
-    <and>
-      <equals arg1="${target-platform}" arg2="linux" />
-      <equals arg1="${os.arch}" arg2="arm" />
-      <equals arg1="${jdk.data.model}" arg2="32" />
-    </and>
-  </condition>
-  <condition property="linux-arm64" value="linux-arm64">
-    <and>
-      <equals arg1="${target-platform}" arg2="linux" />
-      <equals arg1="${os.arch}" arg2="aarch64" />
-      <equals arg1="${jdk.data.model}" arg2="64" />
-    </and>
-  </condition>
-
-  <!-- there is currently no JRE available for ARM -->
-  <target name="check-linux-arm32" if="linux-arm32">
-    <property name="jdk.download.jdk" value="true" />
-    <property name="jdk.downloader" value="linux-arm32-vfp-hflt.tar.gz" />
-    <property name="linux.dist" value="linux/processing-${version}-linux-armv6hf.tgz" />
-    <property name="launch4j.variant" value="linux-armv6hf" />
-  </target>
-  <target name="check-linux-arm64" if="linux-arm64">
-    <property name="jdk.download.jdk" value="true" />
-    <property name="jdk.downloader" value="linux-arm64-vfp-hflt.tar.gz" />
-    <property name="linux.dist" value="linux/processing-${version}-linux-arm64.tgz" />
-  </target>
-
   <!-- 17.0.1+12 -->
   <property name="jdk.train" value="17" />
   <property name="jdk.detail" value="${jdk.train}.0.1" />
   <property name="jdk.build" value="12" />
+  <property name="jdk.folder" value="jdk-${jdk.detail}+${jdk.build}" />
 
 
   <!-- Require Java ${train} everywhere. -->
@@ -77,8 +49,12 @@
     </condition>
   </fail>
 
-  <fileset dir="macosx/work/Processing.app/Contents" id="jdk-optional-macosx">
-    <include name="PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/lib/src.zip" />
+
+  <!-- Identify optional JDK files that can be removed to save space. -->
+
+  <fileset dir="macos/work/Processing.app/Contents" id="jdk-optional-macos">
+    <!-- src.zip is 52 MB and we absolutely do not need it -->
+    <include name="PlugIns/${jdk.folder}/Contents/Home/lib/src.zip" />
   </fileset>
 
   <fileset dir="windows/work" id="jdk-optional-windows">
@@ -89,62 +65,72 @@
     <include name="java/lib/src.zip" />
   </fileset>
 
+
   <!-- Macro to help set the platform ant vars appropriately -->
+
+  <!--
   <macrodef name="set-target">
-    <attribute name="platform"/>
-    <attribute name="datamodel"/>
+    <attribute name="platform" />
+    <attribute name="arch" />
     <sequential>
       <property name="host-platform" value="${platform}" />
 
-      <!-- Set a property named macosx, linux, or windows.
-           The 'value' chosen is arbitrary. -->
+      <!- - set the target plaform to the platform attribute passed in - ->
       <property name="target-platform" value="@{platform}" />
+
+      <!- - Set a property named macos, linux, or windows.
+           The 'value' chosen is arbitrary. - ->
       <property name="${target-platform}" value="${target-platform}" />
 
-      <!-- JDK archive saved as .zip on Windows, .tgz on macOS and Linux -->
-      <condition property="jdk.archive.ext" value="zip" else="tgz">
-        <os family="windows" />
-      </condition>
-
-      <property name="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.${jdk.archive.ext}" />
-
       <property name="jdk.data.model" value="@{datamodel}" />
-
-      <!--
-      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.tgz">
-        <not>
-          <equals arg1="${target-platform}" arg2="windows" />
-        </not>
-      </condition>
-
-      <condition property="jdk.archive.path" value="${target-platform}/jdk-${jdk.detail}.zip">
-        <equals arg1="${target-platform}" arg2="windows" />
-      </condition>
-      -->
     </sequential>
   </macrodef>
+  -->
+
+
+  <!-- Downloading the JDK -->
 
   <target name="jdk-check">
+    <!-- JDK archive saved as .zip on Windows, .tgz on macOS and Linux -->
+    <condition property="jdk.archive.ext" value="zip" else="tgz">
+      <os family="windows" />
+    </condition>
+
+    <property name="jdk.archive.path"
+              value="${platform}/jdk-${jdk.detail}.${jdk.archive.ext}" />
+
     <echo message="Checking for ${jdk.archive.path}" />
     <available file="${jdk.archive.path}" property="jdk.archive.downloaded" />
-    <echo message="Result: ${jdk.archive.downloaded}" />
+    <!-- <echo message="Result: ${jdk.archive.downloaded}" /> -->
   </target>
 
   <target name="jdk-download" depends="jdk-check"
           unless="jdk.archive.downloaded">
 
-    <!-- Windows is the outlier with the .zip extension (the others are .tar.gz) -->
+    <!-- Windows is the outlier with the .zip extension (the other downloads
+         are .tar.gz). Different from jdk.archive.ext which uses .tgz) -->
     <condition property="jdk.download.ext" value="zip" else="tar.gz">
       <os family="windows" />
     </condition>
 
-    <!-- platform prop works for Windows and Linux, but 'macosx' needs to be 'mac' -->
+    <!-- ${platform} ok for Windows/Linux, but 'macos' needs to be 'mac' -->
     <condition property="jdk.download.os" value="mac" else="${platform}">
       <os family="mac" />
     </condition>
 
-    <!-- Java 17.0.1 via Adoptium -->
+    <!-- amd64 or x86_64 use x64, others use os.arch -->
+    <condition property="jdk.download.arch" value="x64" else="${os.arch}">
+      <or>
+        <equals arg1="${os.arch}" arg2="amd64" />
+        <equals arg1="${os.arch}" arg2="x86_64" />
+      </or>
+    </condition>
 
+    <property name="jdk.download.dist" value="jdk" />
+    <!-- JRE? https://github.com/processing/processing4/issues/365 -->
+    <!-- <property name="jdk.download.dist" value="jre" /> -->
+
+    <!-- Java 17.0.1 via Adoptium -->
     <!--
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_x64_mac_hotspot_17.0.1_12.tar.gz
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jre_aarch64_mac_hotspot_17.0.1_12.tar.gz
@@ -153,7 +139,7 @@
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_arm_linux_hotspot_17.0.1_12.tar.gz
       https://github.com/adoptium/temurin17-binaries/releases/download/jdk-17.0.1%2B12/OpenJDK17U-jdk_aarch64_linux_hotspot_17.0.1_12.tar.gz
     -->
-    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-jdk_x64_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
+    <property name="jdk.download.url" value="https://github.com/adoptium/temurin17-binaries/releases/download/jdk-${jdk.detail}%2B${jdk.build}/OpenJDK17U-${jdk.download.dist}_${jdk.download.arch}_${jdk.download.os}_hotspot_${jdk.detail}_${jdk.build}.${jdk.download.ext}" />
 
     <get src="${jdk.download.url}"
          dest="${jdk.archive.path}"
@@ -163,17 +149,21 @@
   </target>
 
   <!-- Set the version of Java that must be present to build. -->
-  <property name="jdk.path.macosx" value="macosx/jdk-${jdk.detail}+${jdk.build}" />
-  <available file="${jdk.path.macosx}" property="macosx_jdk_found" />
+  <property name="jdk.path.macos" value="macos/${jdk.folder}" />
+  <available file="${jdk.path.macos}" property="macos_jdk_found" />
 
   <!--
   <fail if="linux" unless="java_tools_found"
         message="The JAVA_HOME variable must be set to the location of a full JDK. For instance, on Ubuntu Linux, this might be /usr/lib/jvm/java-6-sun." />
   -->
 
+  <!-- For now, just using the os.arch as the dist suffix; not sure if
+       the alternatives (x64, arm32, arm64) are better/worth the trouble. -->
+  <property name="dist.suffix" value="${os.arch}" />
+
   <!-- Figure out the platform-specific output directory for all this work. -->
   <condition property="target.path"
-             value="macosx/work/Processing.app/Contents/Java">
+             value="macos/work/Processing.app/Contents/Java">
     <os family="mac" />
   </condition>
 
@@ -186,10 +176,9 @@
   </condition>
 
   <!-- Libraries required for running processing -->
-  <!-- also need to copy these to the bundleapp task for macosx -->
+  <!-- also need to copy these to the bundleapp task for macos -->
   <fileset dir=".." id="runtime.jars">
     <include name="app/pde.jar" />
-    <include name="app/lib/antlr-4.7.2-complete.jar" />
     <include name="app/lib/jna.jar" />
     <include name="app/lib/jna-platform.jar" />
     <include name="app/lib/ant.jar" />
@@ -197,40 +186,66 @@
   </fileset>
 
   <target name="build" description="Build Processing.">
-    <set-target platform="${platform}" datamodel="${sun.arch.data.model}" />
+    <antcall target="${platform}-build" />
+  </target>
+
+  <!--
+  <target name="build" description="Build Processing.">
+    <set-target platform="${platform}" arch="${os.arch}" />
     <antcall target="${target-platform}-build" />
   </target>
 
-  <target name="cross-build-macosx" description="Build Processing.">
-    <set-target platform="macosx" datamodel="64" />
-    <antcall target="macosx-build" />
+  <target name="cross-build-macos-aarch64"
+          description="Cross-build Processing for Apple Silicon">
+    <set-target platform="macos" arch="aarch64" />
+    <antcall target="macos-build" />
   </target>
 
-  <target name="cross-build-linux-x64" description="Build Processing.">
-    <set-target platform="linux" datamodel="64" />
+  <target name="cross-build-macos-x86_64"
+          description="Cross-build Processing for macOS (64-bit Intel)">
+    <set-target platform="macos" arch="x86_64" />
+    <antcall target="macos-build" />
+  </target>
+
+  <target name="cross-build-linux-amd64"
+          description="Cross-build Processing for Linux (64-bit Intel)">
+    <set-target platform="linux" arch="amd64" />
     <antcall target="linux-build" />
   </target>
 
-  <target name="cross-build-linux-aarch64" description="Build Processing.">
-    <set-target platform="linux" datamodel="Arm" />
+  <target name="cross-build-linux-aarch64"
+          description="Cross-build Processing for Linux (64-bit ARM)">
+    <set-target platform="linux" arch="aarch64" />
     <antcall target="linux-build" />
   </target>
 
-  <target name="cross-build-windows" description="Build Processing.">
-    <set-target platform="windows" datamodel="64" />
+  <target name="cross-build-linux-arm"
+          description="Cross-build Processing for Linux (32-bit ARM)">
+    <set-target platform="linux" arch="arm" />
+    <antcall target="linux-build" />
+  </target>
+
+  <target name="cross-build-windows"
+          description="Cross-build Processing for Windows (64-bit Intel)">
+    <set-target platform="windows" arch="amd64" />
     <antcall target="windows-build" />
   </target>
 
   <target name="run" description="Run Processing.">
-    <set-target platform="${platform}" datamodel="${sun.arch.data.model}" />
+    <set-target platform="${platform}" arch="${os.arch}" />
     <antcall target="${target-platform}-run" />
+  </target>
+  -->
+
+  <target name="run" description="Run Processing.">
+    <antcall target="${platform}-run" />
   </target>
 
   <!-- Run the app in a more "native" manner, i.e. no additional
        console for debugging. Ensures that double-clicking shortcuts
        and other desktop integration features work properly. -->
   <target name="app" description="Run Processing w/o console.">
-    <antcall target="${target-platform}-run-app" />
+    <antcall target="${platform}-run-app" />
   </target>
 
   <target name="dist" depends="revision-check, test"
@@ -247,7 +262,7 @@
       <arg line="pull" />
     </exec>
 
-    <antcall target="${target-platform}-dist" />
+    <antcall target="${platform}-dist" />
   </target>
 
   <!-- "§$§$&, ant doesn't have a built-in help target :(  -->
@@ -295,10 +310,17 @@
   </target>
 
   <!-- I/O library is only compiled on supported ARM platforms -->
-  <target name="subprojects-build-linux-arm32" if="linux-arm32">
-    <subant buildpath="../java/libraries/io" target="build"/>
-  </target>
-  <target name="subprojects-build-linux-arm64" if="linux-arm64">
+  <condition property="raspberry.pi" value="true">
+    <and>
+      <equals arg1="${platform}" arg2="${linux}" />
+      <or>
+        <equals arg1="${os.arch}" arg2="arm" />
+        <equals arg1="${os.arch}" arg2="aarch64" />
+      </or>
+    </and>
+  </condition>
+
+  <target name="subprojects-build-rpi" if="raspberry.pi">
     <subant buildpath="../java/libraries/io" target="build"/>
   </target>
 
@@ -429,14 +451,14 @@
   <!-- macOS         -->
   <!-- - - - - - - - -->
 
-  <target name="macosx-clean" depends="subprojects-clean" description="Clean macOS build">
-    <delete dir="macosx/work" />
+  <target name="macos-clean" depends="subprojects-clean" description="Clean macOS build">
+    <delete dir="macos/work" />
     <delete>
-      <fileset dir="macosx" includes="processing-*zip" />
+      <fileset dir="macos" includes="processing-*zip" />
     </delete>
   </target>
 
-  <target name="macosx-check-os">
+  <target name="macos-check-os">
     <if>
       <equals arg1="${host-platform}" arg2="windows" />
       <then>
@@ -453,12 +475,12 @@
     </if>
   </target>
 
-  <target name="macosx-build" depends="revision-check, macosx-check-os, subprojects-build, jdk-download" description="Build macOS version">
-    <mkdir dir="macosx/work" />
+  <target name="macos-build" depends="revision-check, macos-check-os, subprojects-build, jdk-download" description="Build macOS version">
+    <mkdir dir="macos/work" />
 
     <!-- Extract JDK -->
-    <echo message="Target jdk: ${jdk.archive.path}"/>
-    <exec executable="tar" dir="macosx">
+    <echo message="Extracting JDK from ${jdk.archive.path}"/>
+    <exec executable="tar" dir="macos">
       <!-- Change directory -->
       <!--
       <arg value="-C" />
@@ -469,20 +491,22 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="macosx/work/jdk-${jdk.detail}+${jdk.build}.jdk/" />
+    <!-- https://github.com/processing/processing4/issues/284 -->
+    <copy file="macos/appbundler-${os.arch}.jar"
+          tofile="macos/appbundler.jar" />
 
     <!-- app bundler for OS X and Java -->
     <taskdef name="bundleapp"
              classname="com.oracle.appbundler.AppBundlerTask"
-             classpath="macosx/appbundler.jar" />
+             classpath="macos/appbundler.jar" />
 
-    <bundleapp outputDirectory="macosx/work"
+    <bundleapp outputDirectory="macos/work"
                name="Processing"
                displayName="Processing"
                executableName="Processing"
                identifier="org.processing.four"
                signature="Pde4"
-               icon="macosx/processing.icns"
+               icon="macos/processing.icns"
                copyright="© The Processing Foundation"
                shortVersion="${version}"
                version="${revision}"
@@ -494,14 +518,13 @@
       <!-- The appbundler task needs a couple files (the Info.plist and
            anything else outside /jdk) from the full JDK, even though
            it's primarily copying over the JRE folder. -->
-      <runtime dir="${jdk.path.macosx}/Contents/Home" />
-      <!-- Eventually we'll want to load the JRE directly from
-           the .tgz on the Oracle site, though it's in a folder called
-           jdk1.7.0_40.jdk, so we'll need to strip that out. -->
+      <runtime dir="${jdk.path.macos}/Contents/Home" />
+
+      <!-- use JRE https://github.com/processing/processing4/issues/365 -->
+      <!-- <runtime dir="${jdk.path.macos}-jre/Contents/Home" /> -->
 
       <!-- Same as runtime.jars, seen above; plus core.jar. -->
       <classpath file="../app/pde.jar" />
-      <classpath file="../app/lib/antlr-4.7.2-complete.jar" />
       <classpath file="../app/lib/jna.jar" />
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
@@ -516,7 +539,8 @@
            so had to revert and we're back to duplicating core.jar -->
       <classpath file="../core/library/core.jar" />
 
-      <arch name="x86_64"/>
+      <!-- <arch name="x86_64"/> -->
+      <arch name="${os.arch}" />
 
       <!-- Adding contentTypes="public.text" to PDE files and
            contentTypes="public.zip-archive" to PDEZ and PDEX
@@ -524,19 +548,19 @@
            so double-clicking files no longer works. -->
 
       <bundledocument extensions="pde,pyde"
-                      icon="macosx/document.icns"
+                      icon="macos/pde.icns"
                       name="Processing Source Code"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdez"
-                      icon="macosx/document.icns"
+                      icon="macos/pdez.icns"
                       name="Processing Sketch Bundle"
                       role="Editor">
       </bundledocument>
 
       <bundledocument extensions="pdex"
-                      icon="macosx/document.icns"
+                      icon="macos/pdex.icns"
                       name="Processing Contribution Bundle"
                       role="Viewer">
       </bundledocument>
@@ -581,13 +605,13 @@
            to use those, but making it possible since some Tools rely on JavaFX. -->
       <!-- Removing in 4.0 beta 4, for more information:
            https://github.com/processing/processing4/issues/348
-      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx" />
+      <option value="-Djava.library.path=$APP_ROOT/Contents/Java:$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macos" />
       -->
 
       <!-- Necessary to avoid complaints because JavaFX wants to be a module. -->
       <!-- Removing in 4.0 beta 4, for more information:
            https://github.com/processing/processing4/issues/348
-      <option value="- -module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macosx/modules" />
+      <option value="- -module-path=$APP_ROOT/Contents/Java/modes/java/libraries/javafx/library/macos/modules" />
 
       <option value="- -add-modules=javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web" />
       -->
@@ -602,7 +626,7 @@
     </bundleapp>
 
     <!-- Changed the native app to no longer look for this folder. -->
-    <!-- <mkdir dir="macosx/work/Processing.app/Contents/Java/Classes" /> -->
+    <!-- <mkdir dir="macos/work/Processing.app/Contents/Java/Classes" /> -->
 
     <!-- Temporary fix until new appbundler is included again after solving
          https://github.com/processing/processing/issues/3359
@@ -614,26 +638,26 @@
          Unix systems, we need to use <exec executable="cp" ... > instead -->
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/bin macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/bin"/>
+      <arg line="${jdk.path.macos}/Contents/Home/bin macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/bin"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/jmods macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/jmods"/>
+      <arg line="${jdk.path.macos}/Contents/Home/jmods macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/jmods"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/legal macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/legal"/>
+      <arg line="${jdk.path.macos}/Contents/Home/legal macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/legal"/>
     </exec>
 
     <exec executable="cp">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}/Contents/Home/conf macosx/work/Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}/Contents/Home/conf"/>
+      <arg line="${jdk.path.macos}/Contents/Home/conf macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/conf"/>
     </exec>
 
     <property name="contents.dir"
-              location="macosx/work/Processing.app/Contents" />
+              location="macos/work/Processing.app/Contents" />
 
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
@@ -656,17 +680,17 @@
     </antcall>
 
     <delete failonerror="true">
-      <fileset refid="jdk-optional-macosx" />
+      <fileset refid="jdk-optional-macos" />
     </delete>
 
-    <exec executable="macosx/language_gen.py" />
+    <exec executable="macos/language_gen.py" />
 
     <property name="launch4j.dir" value="${contents.dir}/Java/modes/java/application/launch4j" />
 
     <!-- rename the version we need -->
-    <move file="${launch4j.dir}/bin/windres-macosx"
+    <move file="${launch4j.dir}/bin/windres-macos"
           tofile="${launch4j.dir}/bin/windres" />
-    <move file="${launch4j.dir}/bin/ld-macosx"
+    <move file="${launch4j.dir}/bin/ld-macos"
           tofile="${launch4j.dir}/bin/ld" />
 
     <!-- make executable (ant doesn't preserve) -->
@@ -682,11 +706,11 @@
     <!-- remove temporary files -->
     <exec executable="rm">
       <arg value="-r"/>
-      <arg line="${jdk.path.macosx}"/>
+      <arg line="${jdk.path.macos}"/>
     </exec>
   </target>
 
-  <target name="macosx-run" depends="macosx-build"
+  <target name="macos-run" depends="macos-build"
           description="Run macOS version">
 
     <!-- Terminal.app has a new location in Catalina -->
@@ -698,21 +722,21 @@
                property="terminal.path"
                value="/Applications/Utilities/Terminal.app" />
 
-    <exec executable="open" dir="macosx/work" spawn="true">
+    <exec executable="open" dir="macos/work" spawn="true">
       <arg value="-a" />
       <arg value="${terminal.path}" />
       <arg value="Processing.app/Contents/MacOS/Processing" />
     </exec>
   </target>
 
-  <target name="macosx-run-app" depends="macosx-build"
+  <target name="macos-run-app" depends="macos-build"
           description="Run macOS version without console">
-    <exec executable="open" dir="macosx/work" spawn="true">
+    <exec executable="open" dir="macos/work" spawn="true">
       <arg value="Processing.app" />
     </exec>
   </target>
 
-  <target name="macosx-dist-sign" if="env.PROCESSING_APP_PASSWORD">
+  <target name="macos-dist-sign" if="env.PROCESSING_APP_PASSWORD">
     <echo>
       Code signing will only work if you have a $99/yr Apple developer ID.
 
@@ -724,7 +748,7 @@
          instead of "Developer ID Application" when just doing Gatekeeper. -->
     <!--<arg value="3rd Party Mac Developer Application" />-->
 
-    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+    <exec executable="/usr/bin/codesign" dir="macos/work" failonerror="true">
       <arg value="--force" />
 
       <arg value="--sign" />
@@ -733,25 +757,26 @@
       <arg value="--entitlements" />
       <arg value="../ffs.entitlements" />
 
-      <arg value="Processing.app/Contents/PlugIns/jdk-${jdk.detail}+${jdk.build}" />
+      <arg value="Processing.app/Contents/PlugIns/${jdk.folder}" />
     </exec>
 
     <!-- codesign can't work inside jars? so instead temporarily unpack the files
          that contain dylib entries, just before doing our big signing event -->
 
-    <property name="unpack.jogl" value="macosx/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
-
-    <property name="unpack.gluegen" value="macosx/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
-
-    <property name="unpack.jssc" value="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
-
+    <!--
+    <property name="unpack.jogl" value="macos/work/Processing.app/Contents/Java/core/library/jogl-all-natives-macosx-universal" />
     <unzip src="${unpack.jogl}.jar" dest="${unpack.jogl}" />
+
+    <property name="unpack.gluegen" value="macos/work/Processing.app/Contents/Java/core/library/gluegen-rt-natives-macosx-universal" />
     <unzip src="${unpack.gluegen}.jar" dest="${unpack.gluegen}" />
+    -->
+
+    <property name="unpack.jssc" value="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" />
     <unzip src="${unpack.jssc}.jar" dest="${unpack.jssc}" />
 
-    <!-- <unzip src="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macosx/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
+    <!-- <unzip src="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc.jar" dest="macos/work/Processing.app/Contents/Java/modes/java/libraries/serial/library/jssc" /> -->
 
-    <apply executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+    <apply executable="/usr/bin/codesign" dir="macos/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
 
@@ -768,7 +793,7 @@
       <arg value="--options" />
       <arg value="runtime" />
 
-      <fileset dir="macosx/work/Processing.app/Contents/Java">
+      <fileset dir="macos/work/Processing.app/Contents/Java">
         <patternset>
           <include name="**/*.dylib" />
           <include name="**/*.jnilib" />
@@ -785,17 +810,21 @@
     </apply>
 
     <!-- re-package the jar files after signing their macOS contents -->
+    <!--
     <zip destfile="${unpack.jogl}.jar" basedir="${unpack.jogl}" />
     <zip destfile="${unpack.gluegen}.jar" basedir="${unpack.gluegen}" />
+    -->
     <zip destfile="${unpack.jssc}.jar" basedir="${unpack.jssc}" />
 
     <!-- delete the temporary directories w/ the jar contents -->
+    <!--
     <delete dir="${unpack.jogl}" />
     <delete dir="${unpack.gluegen}" />
+    -->
     <delete dir="${unpack.jssc}" />
 
     <!-- sign the outer application, now that we've finished all the contents -->
-    <exec executable="/usr/bin/codesign" dir="macosx/work" failonerror="true">
+    <exec executable="/usr/bin/codesign" dir="macos/work" failonerror="true">
       <arg value="--sign" />
       <arg value="Developer ID Application" />
 
@@ -818,7 +847,7 @@
     <!-- Verify that the signature will pass Gatekeeper checks
          https://developer.apple.com/library/mac/technotes/tn2206 -->
     <!--
-    <exec executable="/usr/bin/codesign" dir="macosx/work">
+    <exec executable="/usr/bin/codesign" dir="macos/work">
       <arg value="- -verify" />
       <arg value="- -deep" />
       <arg value="- -verbose=2" />
@@ -828,14 +857,14 @@
     <!-- Disabling since it's a lot of gunk but not that useful. -->
   </target>
 
-  <target name="macosx-dist-notarize" if="env.PROCESSING_APP_PASSWORD">
+  <target name="macos-dist-notarize" if="env.PROCESSING_APP_PASSWORD">
     <!-- xcrun: error: unable to find utility "altool", not a developer tool or in PATH -->
     <!-- fix with 'sudo xcode-select -r' -->
 
     <!-- when it's time to sign/update documents or make an app password: -->
     <!-- https://developer.apple.com/account/ -->
 
-    <exec executable="/usr/bin/xcrun" dir="macosx" failonerror="true">
+    <exec executable="/usr/bin/xcrun" dir="macos" failonerror="true">
       <arg value="altool" />
       <arg value="--notarize-app" />
 
@@ -852,7 +881,7 @@
       <arg value="${env.PROCESSING_APP_PASSWORD}" />
 
       <arg value="--file" />
-      <arg value="processing-${version}-macosx.zip" />
+      <arg value="processing-${version}-macos.zip" />
     </exec>
 
     <echo>
@@ -862,23 +891,23 @@
     </echo>
   </target>
 
-  <target name="macosx-dist" if="macosx"
-          depends="macosx-build"
+  <target name="macos-dist" if="macos"
+          depends="macos-build"
           description="Create a downloadable .zip for the macOS version">
 
-    <antcall target="macosx-dist-sign" />
+    <antcall target="macos-dist-sign" />
 
-    <exec executable="ditto" dir="macosx/work">
-      <arg line="-c -k -rsrc . ../processing-${version}-macosx.zip" />
+    <exec executable="ditto" dir="macos/work">
+      <arg line="-c -k -rsrc . ../processing-${version}-macos-${dist.suffix}.zip" />
     </exec>
 
-    <antcall target="macosx-dist-notarize" />
+    <antcall target="macos-dist-notarize" />
 
     <echo>
       =======================================================
       Processing for macOS was built. Grab it from
 
-      macosx/processing-${version}-macosx.zip
+      macos/processing-${version}-macos.zip
       =======================================================
     </echo>
   </target>
@@ -912,7 +941,7 @@
     </if>
   </target>
 
-  <target name="linux-build" depends="check-linux-arm32, check-linux-arm64, revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-linux-arm32, subprojects-build-linux-arm64" description="Build Linux version">
+  <target name="linux-build" depends="revision-check, linux-check-os, jdk-download, subprojects-build, subprojects-build-rpi" description="Build Linux version">
     <mkdir dir="linux/work" />
 
     <copy todir="linux/work" preservelastmodified="true">
@@ -929,8 +958,16 @@
 
     <property name="launch4j.dir"
               value="linux/work/modes/java/application/launch4j" />
-    <!-- this might be already overwritten by check-linux-arm32 -->
+
+    <!-- for ARM, we need different binaries for ld and windres -->
     <property name="launch4j.variant" value="linux" />
+    <condition property="launch4j.variant"
+               value="linux-armv6hf" else="linux">
+      <or>
+        <equals arg1="${os.arch}" arg2="arm" />
+        <equals arg1="${os.arch}" arg2="aarch64" />
+      </or>
+    </condition>
 
     <!-- rename the version we need -->
     <move file="${launch4j.dir}/bin/windres-${launch4j.variant}"
@@ -1001,12 +1038,10 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <property name="jdk.dir" value="jdk-${jdk.detail}+${jdk.build}/" />
-
     <exec executable="rsync" dir="linux">
       <arg value="-a" />
       <arg value="--delete" />
-      <arg value="${jdk.dir}" />
+      <arg value="${jdk.folder}/" />
       <arg value="work/java/" />
     </exec>
 
@@ -1017,7 +1052,7 @@
 
     <exec executable="rm">
       <arg value="-r"/>
-      <arg line="linux/jdk-${jdk.detail}+${jdk.build}"/>
+      <arg line="linux/${jdk.folder}"/>
     </exec>
   </target>
 
@@ -1038,7 +1073,7 @@
    <!-- rename the work folder temporarily -->
    <move file="linux/work" tofile="linux/processing-${version}" />
 
-   <property name="linux.dist" value="linux/processing-${version}-linux${jdk.data.model}.tgz" />
+   <property name="linux.dist" value="linux/processing-${version}-linux-${dist.suffix}.tgz" />
 
    <exec executable="tar">
      <arg value="--directory=linux" />
@@ -1061,97 +1096,89 @@
   </target>
 
   <target name="deb" depends="dist"
-          description="Build .deb of linux version">
+          description="Build .deb of the Linux version">
 
-   <!-- start with a clean debian folder -->
-   <delete dir="linux/debian" quiet="true" />
+    <!-- start with a clean debian folder -->
+    <delete dir="linux/debian" quiet="true" />
 
-   <!-- setup the file structure -->
-   <mkdir dir="linux/debian/opt" />
-   <mkdir dir="linux/debian/usr/bin" />
-   <mkdir dir="linux/debian/usr/share/applications/" />
-   <mkdir dir="linux/debian/usr/share/mime/packages/" />
-   <!-- rename the work folder temporarily -->
-   <move file="linux/work" tofile="linux/debian/opt/processing" />
-   <symlink link="linux/debian/usr/bin/processing"
-            resource="../../opt/processing/processing" />
-   <symlink link="linux/debian/usr/bin/processing-java"
-            resource="../../opt/processing/processing-java" />
+    <!-- setup the file structure -->
+    <mkdir dir="linux/debian/opt" />
+    <mkdir dir="linux/debian/usr/bin" />
+    <mkdir dir="linux/debian/usr/share/applications/" />
+    <mkdir dir="linux/debian/usr/share/mime/packages/" />
+    <!-- rename the work folder temporarily -->
+    <move file="linux/work" tofile="linux/debian/opt/processing" />
+    <symlink link="linux/debian/usr/bin/processing"
+             resource="../../opt/processing/processing" />
+    <symlink link="linux/debian/usr/bin/processing-java"
+             resource="../../opt/processing/processing-java" />
 
-   <!-- place .desktop and .sharedmimeinfo file -->
-   <copy file="linux/processing.desktop"
-         tofile="linux/debian/usr/share/applications/processing.desktop">
-       <filterchain>
-           <replacetokens>
-               <token key="version" value="${version}" />
-           </replacetokens>
-       </filterchain>
-   </copy>
-   <copy file="linux/processing.sharedmimeinfo"
-         tofile="linux/debian/usr/share/mime/packages/processing.xml" />
+    <!-- place .desktop and .sharedmimeinfo file -->
+    <copy file="linux/processing.desktop"
+          tofile="linux/debian/usr/share/applications/processing.desktop">
+      <filterchain>
+        <replacetokens>
+          <token key="version" value="${version}" />
+        </replacetokens>
+      </filterchain>
+    </copy>
 
-   <!-- Set properties for DEBIAN/control file -->
-   <condition property="linux.deb" value="linux/processing-${version}-linux-armv6hf.deb">
-     <equals arg1="${linux-arm32}" arg2="linux-arm32" />
-   </condition>
-   <condition property="linux.deb" value="linux/processing-${version}-linux-arm64.deb">
-     <equals arg1="${linux-arm64}" arg2="linux-arm64" />
-   </condition>
-   <property name="linux.deb" value="linux/processing-${version}-linux${jdk.data.model}.deb" />
+    <copy file="linux/processing.sharedmimeinfo"
+          tofile="linux/debian/usr/share/mime/packages/processing.xml" />
 
-   <!-- Raspbian seems to borrow armhf for armv6hf, so this works -->
-   <condition property="deb.arch" value="armhf">
-     <equals arg1="${linux-arm32}" arg2="linux-arm32" />
-   </condition>
-   <condition property="deb.arch" value="arm64">
-     <equals arg1="${linux-arm64}" arg2="linux-arm64" />
-   </condition>
-   <condition property="deb.arch" value="i386">
-     <equals arg1="${jdk.data.model}" arg2="32" />
-   </condition>
-   <condition property="deb.arch" value="amd64">
-     <equals arg1="${jdk.data.model}" arg2="64" />
-   </condition>
+    <!-- Set properties for DEBIAN/control file -->
 
-   <length property="deb.bsize" >
-     <fileset dir="linux/debian" />
-   </length>
+    <!-- Testing on a Model 3 (not plus), 4, and 400,
+         uname is armv7l with raspios dated 2021-10-30.
+         For most platforms, use os.arch, but use "armv7l" for
+         32-bit pi because just "arm" is unhelpful/ambiguous. -->
+    <condition property="deb.arch" value="armv7l" else="${os.arch}">
+      <equals arg1="${os.arch}" arg2="arm" />
+    </condition>
 
-   <script language="javascript">
-     <![CDATA[
-        var length_bytes = project.getProperty("deb.bsize");
-        var length_kbytes = Math.ceil(length_bytes / 1024);
-        project.setNewProperty("deb.kbsize", length_kbytes);
-     ]]>
-   </script>
+    <property name="linux.deb"
+              value="linux/processing-${version}-linux-${deb.arch}.deb" />
 
-  <!-- place DEBIAN/control file. -->
-   <mkdir dir="linux/debian/DEBIAN" />
-   <copy file="linux/control" tofile="linux/debian/DEBIAN/control" >
-       <filterchain>
-           <replacetokens >
-               <token key="version" value="${version}" />
-               <token key="size" value="${deb.kbsize}" />
-               <token key="arch" value="${deb.arch}" />
-           </replacetokens>
-       </filterchain >
-   </copy >
-   <copy file="linux/copyright" tofile="linux/debian/DEBIAN/copyright" />
+    <length property="deb.bsize" >
+      <fileset dir="linux/debian" />
+    </length>
 
-   <!-- Create .deb file -->
-   <exec executable="fakeroot" dir="linux" failonerror="true">
-     <arg value="dpkg-deb" />
-     <arg value="--build" />
-     <arg value="debian" />
-     <arg value="../${linux.deb}" />
-   </exec>
+    <!-- guessing that this will not be working with Java 17 w/o JS -->
+    <script language="javascript">
+      <![CDATA[
+         var length_bytes = project.getProperty("deb.bsize");
+         var length_kbytes = Math.ceil(length_bytes / 1024);
+         project.setNewProperty("deb.kbsize", length_kbytes);
+      ]]>
+    </script>
 
-   <!-- put... the candle... back -->
-   <!-- (rename the debian processing version to work) -->
-   <move file="linux/debian/opt/processing" tofile="linux/work" />
+   <!-- place DEBIAN/control file. -->
+    <mkdir dir="linux/debian/DEBIAN" />
+    <copy file="linux/control" tofile="linux/debian/DEBIAN/control" >
+      <filterchain>
+        <replacetokens>
+          <token key="version" value="${version}" />
+          <token key="size" value="${deb.kbsize}" />
+          <token key="arch" value="${deb.arch}" />
+        </replacetokens>
+      </filterchain >
+    </copy >
+    <copy file="linux/copyright" tofile="linux/debian/DEBIAN/copyright" />
 
-   <!-- cleanup -->
-   <delete dir="linux/debian" />
+    <!-- Create .deb file -->
+    <exec executable="fakeroot" dir="linux" failonerror="true">
+      <arg value="dpkg-deb" />
+      <arg value="--build" />
+      <arg value="debian" />
+      <arg value="../${linux.deb}" />
+    </exec>
+
+    <!-- put... the candle... back -->
+    <!-- (rename the debian processing version to work) -->
+    <move file="linux/debian/opt/processing" tofile="linux/work" />
+
+    <!-- cleanup -->
+    <delete dir="linux/debian" />
 
     <echo>
       ========================================================
@@ -1192,10 +1219,10 @@
          https://github.com/processing/processing/issues/3624 -->
 
     <condition property="jna.subfolder" value="win32-x86">
-      <equals arg1="${jdk.data.model}" arg2="32" />
+      <equals arg1="${sun.arch.data.model}" arg2="32" />
     </condition>
     <condition property="jna.subfolder" value="win32-x86-64">
-      <equals arg1="${jdk.data.model}" arg2="64" />
+      <equals arg1="${sun.arch.data.model}" arg2="64" />
     </condition>
 
     <unzip src="../app/lib/jna.jar" dest="windows/work/lib">
@@ -1229,9 +1256,10 @@
 
     <!-- check for cross-build -->
     <if>
-      <not><equals arg1="${host-platform}" arg2="windows" /></not>
+      <not>
+        <equals arg1="${host-platform}" arg2="windows" />
+      </not>
       <then>
-
         <move file="${launch4j.dir}/bin/windres-${host-platform}"
               tofile="${launch4j.dir}/bin/windres" />
 
@@ -1247,7 +1275,6 @@
           <arg value="+x"/>
           <arg line="${launch4j.dir}/bin/ld"/>
         </exec>
-
       </then>
     </if>
 
@@ -1280,11 +1307,10 @@
            src="${jdk.archive.path}"
            overwrite="false" />
 
-    <property name="jdk.dir" value="windows/work/jdk-${jdk.detail}+${jdk.build}/" />
+    <!-- Rename the unpacked JDK to just 'java' and move to dist -->
+    <move file="windows/work/${jdk.folder}" tofile="windows/work/java" />
 
-    <move file="${jdk.dir}" tofile="windows/work/java" />
-
-    <!-- Remove unused JRE bloat. -->
+    <!-- Remove unused Java bloat -->
     <delete failonerror="true">
       <fileset refid="jdk-optional-windows" />
     </delete>
@@ -1299,7 +1325,7 @@
   <target name="windows-dist" depends="windows-build"
           description="Create .zip files of windows version">
 
-    <property name="windows.dist" value="windows/processing-${version}-windows${jdk.data.model}.zip" />
+    <property name="windows.dist" value="windows/processing-${version}-windows-${dist.suffix}.zip" />
 
     <zip destfile="${windows.dist}">
       <zipfileset dir="windows/work"
@@ -1364,7 +1390,7 @@
     <!-- create iconset for the PDE application for macOS -->
     <antcall target="iconset">
       <param name="icon.root" value="shared/lib/icons/pde" />
-      <param name="icon.icns" value="macosx/processing.icns" />
+      <param name="icon.icns" value="macos/processing.icns" />
     </antcall>
 
     <!-- create iconset for exported sketch on macOS -->
@@ -1407,7 +1433,7 @@
       <arg line="core -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../core/library/jogl-all.jar:../core/bin:../core/library/gluegen-rt.jar" destdir="javadoc/core" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false">
+    <javadoc access="public" author="false" classpath="../core/library/jogl-all.jar:../core/bin:../core/library/gluegen-rt.jar" destdir="javadoc/core" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="11" splitindex="false" use="false" version="false">
 
       <!-- provide links for java.* classes.
            also suppresses the java.lang prefix in the text.  -->
@@ -1446,7 +1472,7 @@
       <arg line="everything -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="11" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
@@ -1487,7 +1513,7 @@
       <arg line="libraries -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/antlr-4.7.2-complete.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik-dom-1.8.jar:../java/libraries/svg/library/batik-svggen-1.8.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="1.8" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/apple.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="11" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
@@ -1505,29 +1531,22 @@
       <tag name="usage" />
       <arg value="-Xdoclint:reference,accessibility" />
 
-
       <packageset dir="../java/libraries/dxf/src">
-        <include name="antlr/**" />
         <include name="processing/**" />
       </packageset>
       <packageset dir="../java/libraries/io/src">
-        <include name="antlr/**" />
         <include name="processing/**" />
       </packageset>
       <packageset dir="../java/libraries/net/src">
-        <include name="antlr/**" />
         <include name="processing/**" />
       </packageset>
       <packageset dir="../java/libraries/pdf/src">
-        <include name="antlr/**" />
         <include name="processing/**" />
       </packageset>
       <packageset dir="../java/libraries/serial/src">
-        <include name="antlr/**" />
         <include name="processing/**" />
       </packageset>
       <packageset dir="../java/libraries/svg/src">
-        <include name="antlr/**" />
         <include name="processing/**" />
       </packageset>
     </javadoc>
@@ -1538,14 +1557,6 @@
     <copy file="javadoc/index.html"
           tofile="javadoc/everything/index.html" />
 -->
-
-    <!-- set the MIME type so that Google Code shows the files properly -->
-<!--
-    <exec executable="find" dir=".">
-      <arg line="javadoc -name '*.html' -exec svn propset svn:mime-type text/html {} ';'" />
-    </exec>
--->
-
   </target>
 
 
@@ -1554,7 +1565,7 @@
   <!-- - - - - - - - -->
 
   <target name="clean" description="Perform a spring cleaning"
-          depends="linux-clean, windows-clean, macosx-clean, subprojects-clean">
+          depends="linux-clean, windows-clean, macos-clean, subprojects-clean">
   </target>
 
 </project>

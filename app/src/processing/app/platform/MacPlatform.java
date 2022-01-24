@@ -93,6 +93,10 @@ public class MacPlatform extends DefaultPlatform {
 
 
   public File getSettingsFolder() throws Exception {
+    File override = Base.getSettingsOverride();
+    if (override != null) {
+      return override;
+    }
     return new File(getLibraryFolder(), "Processing");
   }
 

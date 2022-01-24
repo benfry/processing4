@@ -77,10 +77,10 @@ recent.count = 10
 chooser.files.native = true
 # We were shutting this off on macOS because it broke Copy/Paste:
 # https://github.com/processing/processing/issues/1035
+# But removing again for 4.0 alpha 5, because the JFileChooser is awful,
+# and worse on Big Sur, so a bigger problem than the Copy/Paste issue.
 # https://github.com/processing/processing4/issues/77
-# But changing this for 4.0 alpha 5, because the JFileChooser is awful,
-# and even worse on Big Sur, and worse than the Copy/Paste issue.
-#chooser.files.native.macosx = false
+#chooser.files.native.macos = false
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -107,7 +107,7 @@ editor.window.height.default = 600
 editor.window.width.min = 400
 editor.window.height.min = 500
 # tested as approx 440 on OS X
-editor.window.height.min.macosx = 450
+editor.window.height.min.macos = 450
 # tested to be 515 on Windows XP, this leaves some room
 editor.window.height.min.windows = 530
 # tested with Raspberry Pi display
@@ -136,7 +136,7 @@ editor.caret.block = false
 # enable ctrl-ins, shift-ins, shift-delete for cut/copy/paste
 # on windows and linux, but disable on the mac
 editor.keys.alternative_cut_copy_paste = true
-editor.keys.alternative_cut_copy_paste.macosx = false
+editor.keys.alternative_cut_copy_paste.macos = false
 
 # true if shift-backspace sends the delete character,
 # false if shift-backspace just means backspace
@@ -150,7 +150,7 @@ editor.keys.home_and_end_travel_far = false
 editor.keys.home_and_end_travel_smart = true
 # The OS X HI Guidelines say that home/end are relative to the document,
 # but that drives some people nuts. This pref enables/disables it.
-editor.keys.home_and_end_travel_far.macosx = true
+editor.keys.home_and_end_travel_far.macos = true
 
 # Enable/disable support for complex scripts. Used for Japanese and others,
 # but disable when not needed, otherwise basic Western European chars break.
@@ -203,7 +203,7 @@ run.options.memory.maximum = 512
 # By default, Mac OS X 10.6 launches applications in 32-bit mode,
 # which is more compatible with libraries (many have not updated to 64-bit).
 # Changing this doesn't do anything on other platforms.
-run.options.bits.macosx = 32
+run.options.bits.macos = 32
 
 # Index of the display to use for running sketches (starts at 1).
 # Kept this 1-indexed because older vesions of Processing were setting
@@ -219,7 +219,7 @@ run.display = -1
 # default to the relative norm for the different platforms,
 # but the setting can be changed in the prefs dialog anyway
 #sketchbook.closing_last_window_quits = true
-#sketchbook.closing_last_window_quits.macosx = false
+#sketchbook.closing_last_window_quits.macos = false
 
 editor.untitled.prefix=sketch_
 # The old (pre-1.0, back for 2.0) style for default sketch name.
@@ -247,7 +247,7 @@ editor.laf.linux = javax.swing.plaf.nimbus.NimbusLookAndFeel
 
 # which platforms to export by default
 #export.application.platform.windows = true
-#export.application.platform.macosx = true
+#export.application.platform.macos = true
 #export.application.platform.linux = true
 
 # whether or not to export as full screen (present) mode
@@ -306,7 +306,7 @@ run.present.stop.color = #cccccc
 # starting in release 0159, don't use full screen exclusive anymore
 #run.present.exclusive = false
 # use this by default to hide the menu bar and dock on osx
-#run.present.exclusive.macosx = true
+#run.present.exclusive.macos = true
 
 # PROXIES
 # Set a proxy server for folks that require it. This will allow the update
