@@ -44,9 +44,11 @@ o   the latter is making the export fail because it won't embed a Java VM
 o   may be because it's exporting twice and overwriting?
 o   or 64 takes precedence?
 X   doesn't matter with things being redone
+X rewrite build.xml to support the five arch types
 
 windows scaling
-X Fix "Could not delete disable_hidpi" message on macOS/Linux after closing prefs
+X Fix "Could not delete disable_hidpi" message
+X   shows up on macOS/Linux after closing prefs
 X remove old-school offscreen buffering from our custom components
 X scale of opening screen
 X   attempting to use multi-resolution image loading
@@ -60,6 +62,12 @@ X   Editor cursor position offset to the right with fractional Windows scaling
 X   https://github.com/processing/processing4/issues/342
 X displayDensity() is returning 1 when run from the PDE
 X   https://github.com/processing/processing4/issues/339
+o include JNA so that sketches can also scale properly?
+o   what happens re: getting scaled/high-res graphics?
+o   make that a preference? (and double the size by default?)
+X   the Java 9 changes seem to handle this for us
+X was looking crunchy on low-dpi screen set to 125%
+X   was this due to the args change in alpha 5?
 
 contribs
 X select entire line when doing Edit > Copy on an empty selection
@@ -82,7 +90,6 @@ X update the foundation icons
 design (done in beta 3)
 X update theme
 X selector for theme that uses tiny images
-
 
 manager
 X contrib list entry in the table sometimes contains markdown
@@ -108,6 +115,10 @@ _ StatusPanel seems to be recreated entirely
 _ StatusPanel being reset twice on each click
 _   is checking for previous, but apparently that's not working
 _ Base.setUpdatesAvailable() is called from half a dozen places!?
+
+
+_ remove exception cases for arm in the build/export code
+_ Help > Library/Tools refernece links don't work
 
 
 before beta 4 release
@@ -208,13 +219,9 @@ _     https://fonts.google.com/specimen/Space+Grotesk
 
 
 windows/scaling
-X include JNA so that sketches can also scale properly?
-X   what happens re: getting scaled/high-res graphics?
-X   make that a preference? (and double the size by default?)
 _ pixelDensity() not working in exported Windows applications
 _   https://github.com/processing/processing/issues/5414#issuecomment-841088518
-_ was looking crunchy on low-dpi screen set to 125%
-_   was this due to the args change in alpha 5?
+_   should be fixed in 4.0 beta 3, and if not, beta 4
 
 
 design
@@ -299,6 +306,7 @@ _   -c removes attributes, -r is recursive
 _   https://github.com/processing/processing/issues/4214
 _ make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
+_ show warnings about wrong library folder layout?
 
 
 would like to fix (after 4.0 final)

@@ -848,7 +848,7 @@ public class JavaBuild {
     // compared to the machine being used to build/export the sketch
     // https://github.com/processing/processing/pull/4406
     if (Preferences.getBoolean("run.options.memory") &&
-        !exportVariant.equals("armv6hf")) {
+        !exportVariant.equals("arm")) {
       runOptions.append("-Xms" + Preferences.get("run.options.memory.initial") + "m");
       runOptions.append("-Xmx" + Preferences.get("run.options.memory.maximum") + "m");
     }
