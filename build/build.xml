@@ -96,8 +96,7 @@
       <os family="windows" />
     </condition>
 
-    <property name="jdk.archive.path"
-              value="${platform}/jdk-${jdk.detail}.${jdk.archive.ext}" />
+    <property name="jdk.archive.path" value="${platform}/jdk-${jdk.detail}-${os.arch}.${jdk.archive.ext}" />
 
     <echo message="Checking for ${jdk.archive.path}" />
     <available file="${jdk.archive.path}" property="jdk.archive.downloaded" />
