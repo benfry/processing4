@@ -460,7 +460,7 @@
 
   <target name="macos-check-os">
     <if>
-      <equals arg1="${host-platform}" arg2="windows" />
+      <equals arg1="${platform}" arg2="windows" />
       <then>
         <echo>
           =======================================================
@@ -926,7 +926,7 @@
 
   <target name="linux-check-os">
     <if>
-      <equals arg1="${host-platform}" arg2="windows" />
+      <equals arg1="${platform}" arg2="windows" />
       <then>
         <echo>
           =========================================================
@@ -1266,13 +1266,13 @@
     <!-- check for cross-build -->
     <if>
       <not>
-        <equals arg1="${host-platform}" arg2="windows" />
+        <equals arg1="${platform}" arg2="windows" />
       </not>
       <then>
-        <move file="${launch4j.dir}/bin/windres-${host-platform}"
+        <move file="${launch4j.dir}/bin/windres-${platform}"
               tofile="${launch4j.dir}/bin/windres" />
 
-        <move file="${launch4j.dir}/bin/ld-${host-platform}"
+        <move file="${launch4j.dir}/bin/ld-${platform}"
               tofile="${launch4j.dir}/bin/ld" />
 
         <exec executable="chmod">
