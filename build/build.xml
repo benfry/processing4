@@ -491,14 +491,11 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <!-- https://github.com/processing/processing4/issues/284 -->
-    <copy file="macos/appbundler-${os.arch}.jar"
-          tofile="macos/appbundler.jar" />
-
-    <!-- app bundler for OS X and Java -->
+    <!-- Need a working fat binary of appbundler.jar.
+         https://github.com/processing/processing4/issues/284 -->
     <taskdef name="bundleapp"
              classname="com.oracle.appbundler.AppBundlerTask"
-             classpath="macos/appbundler.jar" />
+             classpath="macos/appbundler-${os.arch}.jar" />
 
     <bundleapp outputDirectory="macos/work"
                name="Processing"
