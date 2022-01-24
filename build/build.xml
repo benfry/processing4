@@ -159,7 +159,7 @@
 
   <!-- For now, just using the os.arch as the dist suffix; not sure if
        the alternatives (x64, arm32, arm64) are better/worth the trouble. -->
-  <property name="dist.suffix" value="${os.arch}" />
+  <!-- <property name="dist.suffix" value="${os.arch}" /> -->
 
   <!-- Figure out the platform-specific output directory for all this work. -->
   <condition property="target.path"
@@ -897,6 +897,10 @@
 
     <antcall target="macos-dist-sign" />
 
+    <condition property="dist.suffix" value="x64" else="${os.arch}">
+      <equals arg1="${os.arch}" arg2="x86_64" />
+    </condition>
+
     <exec executable="ditto" dir="macos/work">
       <arg line="-c -k -rsrc . ../processing-${version}-macos-${dist.suffix}.zip" />
     </exec>
@@ -1064,27 +1068,33 @@
   <target name="linux-dist" depends="linux-build"
           description="Build .tar.gz of linux version">
 
-    <!--
-    <tar compression="gzip" destfile="linux/processing-${version}.tgz">
-      <tarfileset dir="linux/work" prefix="processing-${version}" />
-    </tar>
-    -->
+    <!-- rename the work folder temporarily -->
+    <move file="linux/work" tofile="linux/processing-${version}" />
 
-   <!-- rename the work folder temporarily -->
-   <move file="linux/work" tofile="linux/processing-${version}" />
+    <condition property="dist.suffix" value="x64">
+      <equals arg1="${os.arch}" arg2="amd64" />
+    </condition>
 
-   <property name="linux.dist" value="linux/processing-${version}-linux-${dist.suffix}.tgz" />
+    <condition property="dist.suffix" value="arm32">
+      <equals arg1="${os.arch}" arg2="arm" />
+    </condition>
 
-   <exec executable="tar">
-     <arg value="--directory=linux" />
-     <arg value="--file=${linux.dist}" />
-     <arg value="-cpz" />
-     <arg value="processing-${version}" />
-   </exec>
+    <condition property="dist.suffix" value="arm64">
+      <equals arg1="${os.arch}" arg2="aarch64" />
+    </condition>
 
-   <!-- put... the candle... back -->
-   <!-- (rename the work processing-NNNN version to work) -->
-   <move file="linux/processing-${version}" tofile="linux/work" />
+    <property name="linux.dist" value="linux/processing-${version}-linux-${dist.suffix}.tgz" />
+
+    <exec executable="tar">
+      <arg value="--directory=linux" />
+      <arg value="--file=${linux.dist}" />
+      <arg value="-cpz" />
+      <arg value="processing-${version}" />
+    </exec>
+
+    <!-- put... the candle... back -->
+    <!-- (rename the work processing-NNNN version to work) -->
+    <move file="linux/processing-${version}" tofile="linux/work" />
 
     <echo>
       =======================================================
@@ -1095,6 +1105,9 @@
     </echo>
   </target>
 
+  <!-- TODO Hasn't been tested for a bit, so this is probably broken...
+            In particular, the JavaScript stanza is unlikely to work
+            in Java 17, but there may be other issues. [fry 220124] -->
   <target name="deb" depends="dist"
           description="Build .deb of the Linux version">
 
@@ -1324,6 +1337,10 @@
 
   <target name="windows-dist" depends="windows-build"
           description="Create .zip files of windows version">
+
+    <condition property="dist.suffix" value="x64" else="${os.arch}">
+      <equals arg1="${os.arch}" arg2="amd64" />
+    </condition>
 
     <property name="windows.dist" value="windows/processing-${version}-windows-${dist.suffix}.zip" />
 
