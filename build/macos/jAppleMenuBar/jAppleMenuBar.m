@@ -24,6 +24,7 @@
  THE SOFTWARE.
  */
 
+#import <Cocoa/Cocoa.h>
 //#import "jAppleMenuBar.h"
 #import <JavaNativeFoundation/JavaNativeFoundation.h> // helper framework for Cocoa and JNI development
 //#import <Carbon/Carbon.h> // helper framework for Cocoa and JNI development
