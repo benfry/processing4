@@ -4,6 +4,7 @@ X   https://github.com/processing/processing4/issues/221
 o   seems to be working fine; not sure, but have to roll with it for now
 X   breaks on aarch64
 X   https://github.com/processing/processing4/issues/372
+_ rename jAppleMenuBar, make part of build process
 
 
 macos-aarch64
