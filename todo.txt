@@ -17,6 +17,8 @@ _   though at least one report that restarting the PDE doesn't fix the problem
 _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
 _   seems like the Windows workaround may be making this worse?
+_   users confirms the correctly working display swapped between beta 3 and 4
+
 
 _ Add support for localizing contributions
 _   https://github.com/processing/processing4/pull/237 (updated by Andres)

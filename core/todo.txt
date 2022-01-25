@@ -1,10 +1,16 @@
 1280 (4.0b5)
 
 
+macos-aarch64
 _ jogl build for m1
 _   https://github.com/processing/processing4/issues/128
 _   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
 _   https://github.com/jzy3d/jogl/blob/feature/macosx-arm64/HOW-TO-ADD-ARM64-TO-2.4.md
+_ replace japplemenubar with something that's more likely to work in the future
+_   https://github.com/processing/processing4/issues/221
+o   seems to be working fine; not sure, but have to roll with it for now
+_   breaks on aarch64
+_   https://github.com/processing/processing4/issues/372
 
 _ concurrent StringDict et al
 _   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
@@ -73,9 +79,6 @@ _ implement openLink() in PSurfaceJOGL
 
 
 before final release
-_ replace japplemenubar with something that's more likely to work in the future
-_   https://github.com/processing/processing4/issues/221
-_   seems to be working fine; not sure, but have to roll with it for now
 _ Warn users or provide auto-fix when `frame` is used in a sketch
 _   https://github.com/processing/processing4/issues/59
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
