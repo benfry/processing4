@@ -35,9 +35,7 @@ JNIEXPORT void JNICALL Java_japplemenubar_JAppleMenuBar_setVisible
 {
 	if (visible == JNI_TRUE) {
         //SetSystemUIMode(kUIModeNormal, 0);
-        NSApplicationPresentationOptions options =
-  			NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar;
-		[NSApp setPresentationOptions:options];
+		[NSApp setPresentationOptions:0];
 
 	} else {
 		/*
@@ -47,6 +45,8 @@ JNIEXPORT void JNICALL Java_japplemenubar_JAppleMenuBar_setVisible
 						| kUIOptionDisableForceQuit
 						| kUIOptionDisableSessionTerminate) : 0);
 		*/
-		[NSApp setPresentationOptions:0];
+        NSApplicationPresentationOptions options =
+  			NSApplicationPresentationHideDock | NSApplicationPresentationHideMenuBar;
+		[NSApp setPresentationOptions:options];
 	}
 }
