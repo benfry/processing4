@@ -52,13 +52,13 @@ toolbar.button.debug.selected.stroke = none
 
 ## EditorStatus - status message bar directly below the editor ##
 
-status.notice.fgcolor = #D7E7BC
+status.notice.fgcolor = #CFE3B1
 status.notice.bgcolor = #566841
-status.error.fgcolor = #FFFFF2
+status.error.fgcolor = #00E600
 status.error.bgcolor = #000000
 status.warning.bgcolor = #194200
-status.warning.fgcolor = #FFFFF2
-status.url.fgcolor = #cccccc
+status.warning.fgcolor = #98E54B
+status.url.fgcolor = #FFFFF2
 status.font = processing.sans,plain,13
 # For the clipboard icon, needs to be a little larger on macOS
 status.emoji.font = Dialog,plain,22
@@ -100,7 +100,7 @@ footer.updates.indicator.text.color = #000700
 console.color = #31322D
 console.output.color = #8F9087
 # text color for errors printed in the console
-console.error.color = #A8D27A
+console.error.color = #00D800
 
 
 ## PdeTextAreaDefaults - default colors for the editor ##
@@ -127,7 +127,7 @@ editor.eolmarkers.color = #999999
 
 # bracket/brace highlighting
 editor.brackethighlight = true
-editor.brackethighlight.color = #006699
+editor.brackethighlight.color = #006696
 
 # colors for the custom scroll bar
 editor.scrollbar.thumb.enabled.color = #606F4D
@@ -153,8 +153,8 @@ editor.warning.underline.color = #194200
 ## MarkerColumn - shows ticks adjacent the scroll bar ##
 
 # lines next to the scrollbar showing where errors are located
-editor.column.error.color = #ff5355
-editor.column.warning.color = #fed456
+editor.column.error.color = #000000
+editor.column.warning.color = #194200
 
 
 ## ErrorTable - the list of errors in the second tab found in the console area ##
@@ -175,11 +175,11 @@ errors.indicator.warning.color = #ef8115
 
 ## ManagerTabs - tabs in the Contribution Manager ##
 
-manager.tab.selected.color = #DBE6C5
-manager.tab.unselected.color = #B9C4A5
+manager.tab.selected.color = #000000
+manager.tab.unselected.color = #194200
 manager.tab.text.font = processing.sans,bold,14
-manager.tab.text.selected.color = #063700
-manager.tab.text.unselected.color = #5E6551
+manager.tab.text.selected.color = #FFFFF2
+manager.tab.text.unselected.color = #DBE6C5
 manager.tab.gradient.top = #869570
 manager.tab.gradient.bottom = #869570
 
@@ -200,26 +200,26 @@ tree.font = processing.sans,plain,12
 # For an explanation of these tags, see Token.java:
 # processing/app/src/processing/app/syntax/Token.java
 
-editor.token.function1.style = #006699,plain
-editor.token.function2.style = #006699,plain
-editor.token.function3.style = #669900,plain
-editor.token.function4.style = #006699,bold
+editor.token.function1.style = #006696,plain
+editor.token.function2.style = #006696,plain
+editor.token.function3.style = #6D9800,plain
+editor.token.function4.style = #006696,bold
 
-editor.token.keyword1.style = #33997e,plain
-editor.token.keyword2.style = #33997e,plain
-editor.token.keyword3.style = #669900,plain
-editor.token.keyword4.style = #d94a7a,plain
-editor.token.keyword5.style = #e2661a,plain
-editor.token.keyword6.style = #33997e,plain
+editor.token.keyword1.style = #309879,plain
+editor.token.keyword2.style = #309879,plain
+editor.token.keyword3.style = #6D9800,plain
+editor.token.keyword4.style = #DB4D6E,plain
+editor.token.keyword5.style = #E76700,plain
+editor.token.keyword6.style = #309879,plain
 
-editor.token.literal1.style = #7D4793,plain
-editor.token.literal2.style = #718a62,plain
+editor.token.literal1.style = #738A5B,plain
+editor.token.literal2.style = #75488D,plain
 
-editor.token.operator.style = #006699,plain
+editor.token.operator.style = #006696,plain
 
-editor.token.label.style = #666666,bold
+editor.token.label.style = #656560,bold
 
-editor.token.comment1.style = #666666,plain
-editor.token.comment2.style = #666666,plain
+editor.token.comment1.style = #656560,plain
+editor.token.comment2.style = #656560,plain
 
-editor.token.invalid.style = #666666,bold
+editor.token.invalid.style = #656560,bold

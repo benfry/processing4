@@ -21,15 +21,15 @@ toolbar.button.disabled.field = #00072B
 toolbar.button.disabled.glyph = #BAEDFF
 toolbar.button.disabled.stroke = none
 toolbar.button.enabled.field = #FFFFF2
-toolbar.button.enabled.glyph = #009BEE
+toolbar.button.enabled.glyph = #009FFF
 toolbar.button.enabled.stroke = none
-toolbar.button.pressed.field = #009BEE
+toolbar.button.pressed.field = #009FFF
 toolbar.button.pressed.glyph = #FFFFF2
 toolbar.button.pressed.stroke = #FFFFF2
 toolbar.button.rollover.field = #FFFFF2
-toolbar.button.rollover.glyph = #003BB1
+toolbar.button.rollover.glyph = #002551
 toolbar.button.rollover.stroke = none
-toolbar.button.selected.field = #00193D
+toolbar.button.selected.field = #001439
 toolbar.button.selected.glyph = #FFFFF2
 toolbar.button.selected.stroke = none
 
@@ -52,13 +52,13 @@ toolbar.button.debug.selected.stroke = none
 
 ## EditorStatus - status message bar directly below the editor ##
 
-status.notice.fgcolor = #B7EAFF
+status.notice.fgcolor = #9EE3FF
 status.notice.bgcolor = #016E9F
-status.error.fgcolor = #FFFFF2
+status.error.fgcolor = #00DDFF
 status.error.bgcolor = #000000
-status.warning.bgcolor = #004BB5
-status.warning.fgcolor = #FFFFF2
-status.url.fgcolor = #cccccc
+status.warning.bgcolor = #003674
+status.warning.fgcolor = #00DDFF
+status.url.fgcolor = #FFFFF2
 status.font = processing.sans,plain,13
 # For the clipboard icon, needs to be a little larger on macOS
 status.emoji.font = Dialog,plain,22
@@ -68,7 +68,7 @@ status.emoji.font.macosx = Dialog,plain,22
 ## EditorHeader - the tab area above the editor ##
 
 header.text.font = processing.sans,bold,14
-header.text.selected.color = #003D96
+header.text.selected.color = #002C5D
 header.text.unselected.color = #4F6A80
 header.tab.arrow.color = #4F6A80
 header.tab.selected.color = #C4E9FF
@@ -100,7 +100,7 @@ footer.updates.indicator.text.color = #00072B
 console.color = #2F3539
 console.output.color = #8C9495
 # text color for errors printed in the console
-console.error.color = #00D7FF
+console.error.color = #00CFFF
 
 
 ## PdeTextAreaDefaults - default colors for the editor ##
@@ -119,7 +119,7 @@ editor.linehighlight=true
 
 editor.caret.color = #000000
 # also used by EditorHeader
-editor.selection.color = #AAF8FF
+editor.selection.color = #A9F8FF
 
 # little pooties at the end of lines that show where they finish
 editor.eolmarkers = false
@@ -127,7 +127,7 @@ editor.eolmarkers.color = #999999
 
 # bracket/brace highlighting
 editor.brackethighlight = true
-editor.brackethighlight.color = #006699
+editor.brackethighlight.color = #006696
 
 # colors for the custom scroll bar
 editor.scrollbar.thumb.enabled.color = #3E769D
@@ -147,14 +147,14 @@ editor.gutter.linehighlight.color = #3E769D
 # squiggly line underneath errors in the editor
 editor.error.underline.color = #000000
 # squiggly line underneath warnings
-editor.warning.underline.color = #004BB5
+editor.warning.underline.color = #003674
 
 
 ## MarkerColumn - shows ticks adjacent the scroll bar ##
 
 # lines next to the scrollbar showing where errors are located
-editor.column.error.color = #ff5355
-editor.column.warning.color = #fed456
+editor.column.error.color = #000000
+editor.column.warning.color = #003674
 
 
 ## ErrorTable - the list of errors in the second tab found in the console area ##
@@ -175,11 +175,11 @@ errors.indicator.warning.color = #ef8115
 
 ## ManagerTabs - tabs in the Contribution Manager ##
 
-manager.tab.selected.color = #C4E9FF
-manager.tab.unselected.color = #A6CAE5
+manager.tab.selected.color = #000000
+manager.tab.unselected.color = #003674
 manager.tab.text.font = processing.sans,bold,14
-manager.tab.text.selected.color = #003D96
-manager.tab.text.unselected.color = #4F6A80
+manager.tab.text.selected.color = #FFFFF2
+manager.tab.text.unselected.color = #C4E9FF
 manager.tab.gradient.top = #6BA0C7
 manager.tab.gradient.bottom = #6BA0C7
 
@@ -200,26 +200,26 @@ tree.font = processing.sans,plain,12
 # For an explanation of these tags, see Token.java:
 # processing/app/src/processing/app/syntax/Token.java
 
-editor.token.function1.style = #006699,plain
-editor.token.function2.style = #006699,plain
-editor.token.function3.style = #669900,plain
-editor.token.function4.style = #006699,bold
+editor.token.function1.style = #006696,plain
+editor.token.function2.style = #006696,plain
+editor.token.function3.style = #6D9800,plain
+editor.token.function4.style = #006696,bold
 
-editor.token.keyword1.style = #33997e,plain
-editor.token.keyword2.style = #33997e,plain
-editor.token.keyword3.style = #669900,plain
-editor.token.keyword4.style = #d94a7a,plain
-editor.token.keyword5.style = #e2661a,plain
-editor.token.keyword6.style = #33997e,plain
+editor.token.keyword1.style = #309879,plain
+editor.token.keyword2.style = #309879,plain
+editor.token.keyword3.style = #6D9800,plain
+editor.token.keyword4.style = #DB4D6E,plain
+editor.token.keyword5.style = #E76700,plain
+editor.token.keyword6.style = #309879,plain
 
-editor.token.literal1.style = #7D4793,plain
-editor.token.literal2.style = #718a62,plain
+editor.token.literal1.style = #738A5B,plain
+editor.token.literal2.style = #75488D,plain
 
-editor.token.operator.style = #006699,plain
+editor.token.operator.style = #006696,plain
 
-editor.token.label.style = #666666,bold
+editor.token.label.style = #656560,bold
 
-editor.token.comment1.style = #666666,plain
-editor.token.comment2.style = #666666,plain
+editor.token.comment1.style = #656560,plain
+editor.token.comment2.style = #656560,plain
 
-editor.token.invalid.style = #666666,bold
+editor.token.invalid.style = #656560,bold

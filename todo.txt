@@ -6,6 +6,7 @@ X   working again in beta 3
 X change the jdk download to include the arch
 X   when building on macOS, can't share folder b/c jdk zip is wrong arch
 X   but also requires checkout of processing-docs, so an unnecessary headache
+X update themes with new token colors
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -58,16 +59,18 @@ _   or for now, tell users how to do it manually
 
 
 design
-_ implement document icons on Windows
-_ implement document icons on Linux
-_ redesign of the Contribution Manager
+_ console scroll bar colors
+_ errors table theme
+_ contrib manager theme
+_   implement updateTheme()
 _   identify coloring for icons
 _   how much of theme to inherit
 _   generate manager icons
+_ implement document icons on Windows
+_ implement document icons on Linux
 _ decision about 'debug' versions of toolbar icons
 _ put themes in folders by name
 _ add notes about params to the wiki
-_   new scrollbars
 
 
 ui is ugly on macOS
