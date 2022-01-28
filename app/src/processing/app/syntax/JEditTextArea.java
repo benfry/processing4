@@ -1380,8 +1380,22 @@ public class JEditTextArea extends JComponent
     float additionalOffset =
       getPartialPixelWidth(metrics, x, expander, startOffset) * s.length();
 
+    if (Platform.isWindows()) {
+      // When the OS is using 125% or 250% or other fractional scaling,
+      // the layout gets hosed. This is fixed (in 4.0 beta 4) by
+      // subtracting this additionalOffset:
+      // https://github.com/processing/processing4/issues/226
+      // However, on macOS, changing the font size makes this show up
+      // as well, only in the opposite direction:
+      // https://github.com/processing/processing4/issues/194
+      // Bottom line, it's related to fractional metrics,
+      // and is especially bad with Source Code Pro.
+      // https://github.com/sampottinger/processing/issues/103
+      additionalOffset = -additionalOffset;
+    }
+
     return Math.round(
-      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) - additionalOffset
+      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) + additionalOffset
     );
   }
 
