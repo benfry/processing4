@@ -41,15 +41,16 @@ activeProcessingSketch
 	  :	  (importDeclaration | classBodyDeclaration)* EOF
 	  ;
 
-variableDeclaratorId
-    :   warnTypeAsVariableName
-    |   IDENTIFIER ('[' ']')*
-    ;
-
+// User incorrectly mixing modes. Included to allow for kind error message.
 warnMixedModes
     :   (importDeclaration | classBodyDeclaration | blockStatement)* blockStatement classBodyDeclaration (importDeclaration | classBodyDeclaration | blockStatement)*
 		|   (importDeclaration | classBodyDeclaration | blockStatement)* classBodyDeclaration blockStatement (importDeclaration | classBodyDeclaration | blockStatement)*
 		;
+
+variableDeclaratorId
+    :   warnTypeAsVariableName
+    |   IDENTIFIER ('[' ']')*
+    ;
 
 // bug #93
 // https://github.com/processing/processing/issues/93
