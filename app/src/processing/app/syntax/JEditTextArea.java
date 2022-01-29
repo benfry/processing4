@@ -29,6 +29,7 @@ import java.awt.im.InputMethodRequests;
 import processing.app.syntax.im.InputMethodSupport;
 import processing.core.PApplet;
 
+
 /**
  * The text area component from the JEdit Syntax (syntax.jedit.org) project.
  * This is a very early version of what later was completely rewritten and
@@ -653,7 +654,6 @@ public class JEditTextArea extends JComponent
   public int _offsetToX(int line, int offset) {
     TokenMarkerState tokenMarker = getTokenMarker();
 
-    // Use painter's cached info for speed
     FontMetrics fm = painter.getFontMetrics();
 
     getLineText(line, lineSegment);
@@ -1359,80 +1359,105 @@ public class JEditTextArea extends JComponent
       return CharacterKinds.Other;
   }
 
-  /**
-   * Get the width in pixels of a segment of text within the IDE.
-   *
-   * <p>
-   * Fractional-font aware implementation of Utilities.getTabbedTextWidth that determines if there
-   * are fractional character widths present in a font in order to return a more accurate pixel
-   * width for an input segment.
-   * </p>
-   *
-   * @param s The segment of text for which a pixel width should be returned.
-   * @param metrics The metrics for the font in which the given segment will be drawn.
-   * @param x The x origin.
-   * @param expander The strategy for converting tabs into characters.
-   * @param startOffset The offset to apply before the text will be drawn.
-   * @return The width of the input segment in pixels with fractional character widths considered.
-   */
-  private int getTabbedTextWidth(Segment s, FontMetrics metrics, float x,
-                                 TabExpander expander, int startOffset) {
-    float additionalOffset =
-      getPartialPixelWidth(metrics, x, expander, startOffset) * s.length();
 
-    if (Platform.isWindows()) {
-      // When the OS is using 125% or 250% or other fractional scaling,
-      // the layout gets hosed. This is fixed (in 4.0 beta 4) by
-      // subtracting this additionalOffset:
-      // https://github.com/processing/processing4/issues/226
-      // However, on macOS, changing the font size makes this show up
-      // as well, only in the opposite direction:
-      // https://github.com/processing/processing4/issues/194
-      // Bottom line, it's related to fractional metrics,
-      // and is especially bad with Source Code Pro.
-      // https://github.com/sampottinger/processing/issues/103
-      additionalOffset = -additionalOffset;
-    }
-
-    return Math.round(
-      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) + additionalOffset
-    );
+  /*
+  static float getFontCharWidth(char c, FontMetrics fm) {
+    return getFontCharsWidth(new char[] { c }, 0, 1, fm);
   }
 
-  /**
-   * Get any partial widths applied within a font.
-   *
-   * <p>
-   * Get any partial widths applied within a font, caching results for the latest requested font
-   * (as identified via a FontMetrics object). Note that this is calculated for a sample character
-   * and is only valid for extrapolation in a monospaced font (that one might want to use in an
-   * IDE).
-   * </p>
-   *
-   * @param candidateMetrics The FontMetrics for which partial character pixel widths should be
-   *    returned.
-   * @param x The x origin.
-   * @param expander The strategy for converting tabs into characters.
-   * @param startOffset The offset to apply before the text will be drawn.
-   * @return The partial width of a sample character within a font.
-   */
-  private float getPartialPixelWidth(FontMetrics candidateMetrics, float x, TabExpander expander,
-      int startOffset) {
 
-    // See https://github.com/sampottinger/processing/issues/103
-    // Requires reference not object equality check
-    if (candidateMetrics != cachedPartialPixelWidthFont) {
-      float withFractional =
-        Utilities.getTabbedTextWidth(TEST_SEGMENT, candidateMetrics,
-                                     x, expander, startOffset);
-      int withoutFractional = (int) withFractional;
+  static final char[] spaceChar = new char[] { ' ' };
 
-      partialPixelWidth = withFractional - withoutFractional;
-      cachedPartialPixelWidthFont = candidateMetrics;
+  static float getFontCharsWidth(char[] data, int offset, int len,
+                                        FontMetrics fm) {
+    if (len == 0) {
+      return 0;
+    }
+    // doesn't seem to do anything fractional
+    float wi = fm.charsWidth(data, offset, len);
+    if (wi != ((int) wi)) {
+      System.out.println("extra: " + wi);
     }
 
-    return partialPixelWidth;
+    int spaceWidth = fm.charsWidth(spaceChar, 0, 1);
+    //return fm.charsWidth(data, offset, len);
+    return len * spaceWidth;
   }
+  */
+
+
+  /**
+   * Hacked up version of the function with the same name from
+   * javax.swing.text.Utilities.
+   *
+   * In spite of being a fixed width font, Source Code Pro (the default
+   * font starting in Processing 3) returns slightly different widths
+   * depending on the number of characters shown. Using the getBounds()
+   * method on text won't even give us these metrics for individual
+   * characters, which returns a float but never with any fractional.
+   *
+   * This function forces the width of each character to stay the same,
+   * just as we're doing by drawing individual characters in the
+   * TextAreaPainter class.
+   *
+   * <a href="https://github.com/processing/processing4/issues/226">#226</a>,
+   * <a href="https://github.com/processing/processing4/issues/194">#194</a>,
+   * and <a href="https://github.com/sampottinger/processing/issues/103">Sam's 103</a>
+   */
+
+  static int getTabbedTextWidth(Segment s,
+                                FontMetrics metrics, int x,
+                                TabExpander e, int startOffset) {
+    int nextX = x;
+    char[] txt = s.array;
+    int txtOffset = s.offset;
+    int n = s.offset + s.count;
+    int charCount = 0;
+//    int spaceAddon = 0;
+
+    int spaceWidth = metrics.charWidth(' ');
+
+    for (int i = txtOffset; i < n; i++) {
+      if (txt[i] == '\t') {
+        //nextX += metrics.charsWidth(txt, i-charCount, charCount);
+        nextX += charCount * spaceWidth;
+        charCount = 0;
+        if (txt[i] == '\t') {
+          if (e != null) {
+            nextX = (int) e.nextTabStop(nextX, startOffset + i - txtOffset);
+          } else {
+            // if no tab expander, just return the size of a space
+            //nextX += getFontCharWidth(' ', metrics);
+            nextX += spaceWidth;
+          }
+        } else if (txt[i] == ' ') {
+          //float spaceWidth = getFontCharWidth(' ', metrics);
+          //nextX += spaceWidth + spaceAddon;
+          nextX += spaceWidth;
+        }
+      } else if (txt[i] == '\n') {
+        // Ignore newlines, they take up space, and shouldn't be counted.
+        //nextX += getFontCharsWidth(txt, i - charCount, charCount, metrics);
+        nextX += charCount * spaceWidth;
+        // But this doesn't make any sense: why are we adding horizontally,
+        // shouldn't nextX be *reset* here? Guessing that segments never
+        // include a new line, so we never run into this. [fry 220129]
+        charCount = 0;
+      } else {
+        charCount++;
+      }
+    }
+    //nextX += getFontCharsWidth(txt, n - charCount, charCount, metrics);
+    nextX += charCount * spaceWidth;
+
+//    int amt = (int) (nextX - x);
+//    float spc = getFontCharWidth(' ', metrics);
+//    System.out.println(amt + " % " + spc + " = " + (amt % spc));
+
+//    return (int) (nextX - x);  // nextX was a float, this was returning a float [fry 220128]
+    return nextX - x;
+  }
+
 
   protected void setNewSelectionWord( int line, int offset )
   {

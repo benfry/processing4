@@ -35,7 +35,7 @@ import processing.app.ui.Theme;
  */
 public class PdeTextAreaDefaults extends TextAreaDefaults {
 
-  public PdeTextAreaDefaults(Mode ignoredMode) {
+  public PdeTextAreaDefaults() {
     document = new SyntaxDocument();
 
     // Set to 0 for revision 0215 because it causes strange jumps
@@ -52,6 +52,12 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
 
     styles = new SyntaxStyle[Token.ID_COUNT];
     updateTheme();
+  }
+
+
+  @Deprecated
+  public PdeTextAreaDefaults(Mode ignoredMode) {
+    this();
   }
 
 

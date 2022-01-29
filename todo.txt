@@ -9,16 +9,20 @@ X   but also requires checkout of processing-docs, so an unnecessary headache
 X update themes with new token colors
 
 
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-
+scaling, text, again
+_ Editor cursor position is offset to the right when display scaling >100%
+_   https://github.com/processing/processing4/issues/226
+_ Remove the need for “Disable HiDPI Scaling” on Windows
+_   https://github.com/processing/processing4/issues/342
 _ IDE cursor position is wrong if font size is changed in preferences on macOS
 _   though at least one report that restarting the PDE doesn't fix the problem
 _   probably related to second displays, need to hook one up and test
 _   https://github.com/processing/processing4/issues/194
 _   seems like the Windows workaround may be making this worse?
 _   users confirms the correctly working display swapped between beta 3 and 4
+
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
 _ Add support for localizing contributions
@@ -209,6 +213,7 @@ _   just skip the welcome screen on Windows hidpi dipslays?
 _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _   tell users about JavaFX, Movie Maker install, changing themes
+_ Remove “Disable HiDPI Scaling” preference on Windows?
 
 
 would like to fix (after 4.0 final)
