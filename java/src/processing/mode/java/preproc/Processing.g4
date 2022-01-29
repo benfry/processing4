@@ -23,6 +23,7 @@ processingSketch
     :   javaProcessingSketch
     |   staticProcessingSketch
     |   activeProcessingSketch
+		|   warnMixedModes
     ;
 
 // java mode, is a compilation unit
@@ -30,19 +31,25 @@ javaProcessingSketch
     :   packageDeclaration? importDeclaration* typeDeclaration+ EOF
     ;
 
+// No method declarations, just statements
 staticProcessingSketch
     :   (importDeclaration | blockStatement)* EOF
     ;
 
 // active mode, has function definitions
 activeProcessingSketch
-	:	(importDeclaration | classBodyDeclaration)* EOF
-	;
+	  :	  (importDeclaration | classBodyDeclaration)* EOF
+	  ;
 
 variableDeclaratorId
     :   warnTypeAsVariableName
     |   IDENTIFIER ('[' ']')*
     ;
+
+warnMixedModes
+    :   (importDeclaration | classBodyDeclaration | blockStatement)* blockStatement classBodyDeclaration (importDeclaration | classBodyDeclaration | blockStatement)*
+		|   (importDeclaration | classBodyDeclaration | blockStatement)* classBodyDeclaration blockStatement (importDeclaration | classBodyDeclaration | blockStatement)*
+		;
 
 // bug #93
 // https://github.com/processing/processing/issues/93

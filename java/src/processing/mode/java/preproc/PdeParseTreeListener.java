@@ -316,6 +316,23 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     footerResult = prepareFooter(rewriter, length);
   }
 
+  @Override
+  public void enterWarnMixedModes(ProcessingParser.WarnMixedModesContext ctx) {
+    pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
+      Token token = ctx.getStart();
+      int line = token.getLine();
+      int charOffset = token.getCharPositionInLine();
+
+      listener.onError(new PdePreprocessIssue(
+        line,
+        charOffset,
+        PreprocessIssueMessageSimplifier.getLocalStr(
+            "editor.status.bad.mixed_mode"
+        )
+      ));
+    });
+  }
+
   /**
    * Endpoint for ANTLR to call when finished parsing a method invocatino.
    *
@@ -770,7 +787,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @return True if setup and false otherwise.
    */
   protected boolean isMethodSetup(ParserRuleContext declaration) {
-    if (declaration.getChildCount() < 2) {
+    if (declaration == null || declaration.getChildCount() < 2) {
       return false;
     }
     return declaration.getChild(1).getText().equals("setup");
