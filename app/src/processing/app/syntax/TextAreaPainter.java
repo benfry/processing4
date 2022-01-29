@@ -19,6 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 
 import javax.swing.ToolTipManager;
 import javax.swing.text.*;
@@ -589,7 +590,10 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         // the first column. the fix is to use drawLine() in
         // those cases, as a workaround.
         if (caretWidth == 1) {
-          gfx.drawLine(caretX, y, caretX, y + height - 1);
+          // workaround for single pixel dots showing up when caret
+          // is rendered a single pixel too tall [fry 220129]
+          ((Graphics2D) gfx).draw(new Line2D.Float(caretX, y + 0.5f, caretX, y + height - 0.5f));
+          //gfx.drawLine(caretX, y, caretX, y + height - 1);
         } else {
           gfx.drawRect(caretX, y, caretWidth - 1, height - 1);
         }
