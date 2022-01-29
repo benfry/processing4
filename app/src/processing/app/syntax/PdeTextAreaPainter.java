@@ -52,6 +52,10 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   public PdeTextAreaPainter(JEditTextArea textArea, TextAreaDefaults defaults) {
     super(textArea, defaults);
 
+    // Was looking a little flickery on Windows, but not 100% sure
+    // that adding this is actually doing anything. [fry 220129]
+    setDoubleBuffered(true);
+
     // Handle mouse clicks to toggle breakpoints
     addMouseListener(new MouseAdapter() {
       long lastTime;  // OS X seems to be firing multiple mouse events

@@ -96,8 +96,7 @@
       <os family="windows" />
     </condition>
 
-    <property name="jdk.archive.path"
-              value="${platform}/jdk-${jdk.detail}.${jdk.archive.ext}" />
+    <property name="jdk.archive.path" value="${platform}/jdk-${jdk.detail}-${os.arch}.${jdk.archive.ext}" />
 
     <echo message="Checking for ${jdk.archive.path}" />
     <available file="${jdk.archive.path}" property="jdk.archive.downloaded" />
@@ -159,7 +158,7 @@
 
   <!-- For now, just using the os.arch as the dist suffix; not sure if
        the alternatives (x64, arm32, arm64) are better/worth the trouble. -->
-  <property name="dist.suffix" value="${os.arch}" />
+  <!-- <property name="dist.suffix" value="${os.arch}" /> -->
 
   <!-- Figure out the platform-specific output directory for all this work. -->
   <condition property="target.path"
@@ -460,7 +459,7 @@
 
   <target name="macos-check-os">
     <if>
-      <equals arg1="${host-platform}" arg2="windows" />
+      <equals arg1="${platform}" arg2="windows" />
       <then>
         <echo>
           =======================================================
@@ -491,14 +490,11 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
-    <!-- https://github.com/processing/processing4/issues/284 -->
-    <copy file="macos/appbundler-${os.arch}.jar"
-          tofile="macos/appbundler.jar" />
-
-    <!-- app bundler for OS X and Java -->
+    <!-- Need a working fat binary of appbundler.jar.
+         https://github.com/processing/processing4/issues/284 -->
     <taskdef name="bundleapp"
              classname="com.oracle.appbundler.AppBundlerTask"
-             classpath="macos/appbundler.jar" />
+             classpath="macos/appbundler-${os.arch}.jar" />
 
     <bundleapp outputDirectory="macos/work"
                name="Processing"
@@ -739,9 +735,6 @@
   <target name="macos-dist-sign" if="env.PROCESSING_APP_PASSWORD">
     <echo>
       Code signing will only work if you have a $99/yr Apple developer ID.
-
-      With a proper ID, if code signing fails, you may need to use:
-      export CODESIGN_ALLOCATE="/Applications/Xcode.app/Contents/Developer/usr/bin/codesign_allocate"
     </echo>
 
     <!-- Use "3rd Party Mac Developer Application" for the app store,
@@ -881,7 +874,7 @@
       <arg value="${env.PROCESSING_APP_PASSWORD}" />
 
       <arg value="--file" />
-      <arg value="processing-${version}-macos.zip" />
+      <arg value="${dist.filename}" />
     </exec>
 
     <echo>
@@ -891,14 +884,20 @@
     </echo>
   </target>
 
-  <target name="macos-dist" if="macos"
-          depends="macos-build"
+  <target name="macos-dist" depends="macos-build"
           description="Create a downloadable .zip for the macOS version">
 
     <antcall target="macos-dist-sign" />
 
+    <condition property="dist.suffix" value="x64" else="${os.arch}">
+      <equals arg1="${os.arch}" arg2="x86_64" />
+    </condition>
+
+    <property name="dist.filename"
+              value="processing-${version}-macos-${dist.suffix}.zip" />
+
     <exec executable="ditto" dir="macos/work">
-      <arg line="-c -k -rsrc . ../processing-${version}-macos-${dist.suffix}.zip" />
+      <arg line="-c -k -rsrc . ../${dist.filename}" />
     </exec>
 
     <antcall target="macos-dist-notarize" />
@@ -907,7 +906,7 @@
       =======================================================
       Processing for macOS was built. Grab it from
 
-      macos/processing-${version}-macos.zip
+      macos/${dist.filename}
       =======================================================
     </echo>
   </target>
@@ -926,7 +925,7 @@
 
   <target name="linux-check-os">
     <if>
-      <equals arg1="${host-platform}" arg2="windows" />
+      <equals arg1="${platform}" arg2="windows" />
       <then>
         <echo>
           =========================================================
@@ -1064,27 +1063,33 @@
   <target name="linux-dist" depends="linux-build"
           description="Build .tar.gz of linux version">
 
-    <!--
-    <tar compression="gzip" destfile="linux/processing-${version}.tgz">
-      <tarfileset dir="linux/work" prefix="processing-${version}" />
-    </tar>
-    -->
+    <!-- rename the work folder temporarily -->
+    <move file="linux/work" tofile="linux/processing-${version}" />
 
-   <!-- rename the work folder temporarily -->
-   <move file="linux/work" tofile="linux/processing-${version}" />
+    <condition property="dist.suffix" value="x64">
+      <equals arg1="${os.arch}" arg2="amd64" />
+    </condition>
 
-   <property name="linux.dist" value="linux/processing-${version}-linux-${dist.suffix}.tgz" />
+    <condition property="dist.suffix" value="arm32">
+      <equals arg1="${os.arch}" arg2="arm" />
+    </condition>
 
-   <exec executable="tar">
-     <arg value="--directory=linux" />
-     <arg value="--file=${linux.dist}" />
-     <arg value="-cpz" />
-     <arg value="processing-${version}" />
-   </exec>
+    <condition property="dist.suffix" value="arm64">
+      <equals arg1="${os.arch}" arg2="aarch64" />
+    </condition>
 
-   <!-- put... the candle... back -->
-   <!-- (rename the work processing-NNNN version to work) -->
-   <move file="linux/processing-${version}" tofile="linux/work" />
+    <property name="linux.dist" value="linux/processing-${version}-linux-${dist.suffix}.tgz" />
+
+    <exec executable="tar">
+      <arg value="--directory=linux" />
+      <arg value="--file=${linux.dist}" />
+      <arg value="-cpz" />
+      <arg value="processing-${version}" />
+    </exec>
+
+    <!-- put... the candle... back -->
+    <!-- (rename the work processing-NNNN version to work) -->
+    <move file="linux/processing-${version}" tofile="linux/work" />
 
     <echo>
       =======================================================
@@ -1095,6 +1100,9 @@
     </echo>
   </target>
 
+  <!-- TODO Hasn't been tested for a bit, so this is probably broken...
+            In particular, the JavaScript stanza is unlikely to work
+            in Java 17, but there may be other issues. [fry 220124] -->
   <target name="deb" depends="dist"
           description="Build .deb of the Linux version">
 
@@ -1257,13 +1265,13 @@
     <!-- check for cross-build -->
     <if>
       <not>
-        <equals arg1="${host-platform}" arg2="windows" />
+        <equals arg1="${platform}" arg2="windows" />
       </not>
       <then>
-        <move file="${launch4j.dir}/bin/windres-${host-platform}"
+        <move file="${launch4j.dir}/bin/windres-${platform}"
               tofile="${launch4j.dir}/bin/windres" />
 
-        <move file="${launch4j.dir}/bin/ld-${host-platform}"
+        <move file="${launch4j.dir}/bin/ld-${platform}"
               tofile="${launch4j.dir}/bin/ld" />
 
         <exec executable="chmod">
@@ -1324,6 +1332,10 @@
 
   <target name="windows-dist" depends="windows-build"
           description="Create .zip files of windows version">
+
+    <condition property="dist.suffix" value="x64" else="${os.arch}">
+      <equals arg1="${os.arch}" arg2="amd64" />
+    </condition>
 
     <property name="windows.dist" value="windows/processing-${version}-windows-${dist.suffix}.zip" />
 

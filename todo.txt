@@ -1,121 +1,25 @@
-1279 (4.0b4)
-X remove contentTypes line because it breaks double-clicking files to open
-X   https://github.com/processing/processing4/issues/347
-X Move JavaFX to its own library
-X   https://github.com/processing/processing4/issues/348
-X JavaFX no longer supported for Tools, Modes as a result
-o turn off javafx web if not using
-X   moved out with SVG library
-X set minimum Java version for Windows launcher to 17.0.1
-X Shutting off VAqua due to interface ugliness and Contribution Manager freezing
-X   https://github.com/processing/processing4/issues/129
-X   now with a release 9 to cover Big Sur
-X     https://violetlib.org/vaqua/downloads.html
-X   make the final call to remove, or put the libs on download.processing.org
-X   removing, with the theming integration, gonna head that direction instead
-X bump ant from 1.10.10 to 1.10.12
-X bump JNA from 5.8.0 to 5.10.0
-X remove "Illegal reflective access" warning on Linux
-X   https://github.com/processing/processing4/issues/207
-X write release notes about not moving to RSyntaxArea
-X   https://github.com/processing/processing4/issues/355
-X   https://github.com/processing/processing/issues/3199
-X   https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md
-X re-implement settings.path to support portable versions
-X   https://github.com/processing/processing/issues/3948
-X   moved to https://github.com/processing/processing4/issues/362
-X   https://github.com/processing/processing4/pull/360
-X   fixed with https://github.com/processing/processing4/commit/1a49263a94a2d7af2b4686286406f7896d207cd9
+1280 (4.0b5)
+o more reports of code completion not working on macOS
+o   "working in a6 but not b2"
+o   https://github.com/processing/processing4/issues/304
+X   working again in beta 3
+X change the jdk download to include the arch
+X   when building on macOS, can't share folder b/c jdk zip is wrong arch
+X   but also requires checkout of processing-docs, so an unnecessary headache
+X update themes with new token colors
 
-platforms/variants/export
-X replacing macosx with macos in prefs and languages
-X major rewrite of Export to Application for the six supported platforms
-X   now writes folders with different names instead of 'application.'
-X move build/macosx to build/macos and make other necessary changes
-X final supported platforms
-X   as far as adoptium is concerned:
-X   macos-x64, macos-aarch64 (m1), windows-x64, linux-x64, linux-arm32 (rpi)
-X release files: macosx -> macos, linux64 -> linux, windows64 -> windows
-X   or macos-intel64, macos-applesi, linux-intel64, ...
-X   what should macos-aarch64 be called?
-X   Export Application can use nicer names, the libs thing is trickier
-o macosx vs macosx64 in JavaFX
-o   the latter is making the export fail because it won't embed a Java VM
-o   may be because it's exporting twice and overwriting?
-o   or 64 takes precedence?
-X   doesn't matter with things being redone
-X rewrite build.xml to support the five arch types
-X remove exception cases for arm in the build/export code
-X   hopefully these are caught, but needs more testing
-
-windows scaling
-X Fix "Could not delete disable_hidpi" message
-X   shows up on macOS/Linux after closing prefs
-X remove old-school offscreen buffering from our custom components
-X scale of opening screen
-X   attempting to use multi-resolution image loading
-o   make smaller at 125%
-X   loading the 2x version always, turn on smoothing and draw at 50%
-X is Toolkit.setIcon() in splash slowing down the startup screen?
-X   nope, appears to be class loading out of our control (0.3s vs our code 0.1s)
-X fix weird character offsets in text area
-X Resolve scaling issues with Windows
-X   Editor cursor position offset to the right with fractional Windows scaling
+scaling, text, again
+X IDE cursor position is wrong if font size is changed in preferences on macOS
+X   though at least one report that restarting the PDE doesn't fix the problem
+X   probably related to second displays, need to hook one up and test
+X   https://github.com/processing/processing4/issues/194
+X   seems like the Windows workaround may be making this worse?
+X   users confirms the correctly working display swapped between beta 3 and 4
+X also updated the two older bugs
+X   https://github.com/processing/processing4/issues/226
 X   https://github.com/processing/processing4/issues/342
-X displayDensity() is returning 1 when run from the PDE
-X   https://github.com/processing/processing4/issues/339
-o include JNA so that sketches can also scale properly?
-o   what happens re: getting scaled/high-res graphics?
-o   make that a preference? (and double the size by default?)
-X   the Java 9 changes seem to handle this for us
-X was looking crunchy on low-dpi screen set to 125%
-X   was this due to the args change in alpha 5?
-
-contribs
-X select entire line when doing Edit > Copy on an empty selection
-X   https://github.com/processing/processing4/pull/100
-
-cleaning
-o crashed on startup w/ JavaScript mode as default b/c PdeKeyListener not found
-o   because it's in the other ClassLoader, can no longer rely on it
-o remove JavaMode.errorLogsEnabled and JavaEditor.writeErrorsToFile()
-X   should be long since gone
-o continue clearing out ProgressFrame
-o   also hook up the statusNotice() when done
-X   also should be long gone
-
-design
-X icon for exported app
-X icon for document
-X update the foundation icons
-
-design (done in beta 3)
-X update theme
-X selector for theme that uses tiny images
-
-manager
-X contrib list entry in the table sometimes contains markdown
-X   at least hide the syntax parts (and show the text)
-X description panel in contribs contains markdown
-X   cursor even changes to link, but the links don't have colors,
-X   and no links open when clicked
-X   now changing color for link and actually opening the links
-X set the font on the contrib install progress bar
-X DetailPanel seems totally vestigial?
-X updates count is off... maybe when compatible != available count?
-X   nope, just something weird with the qr code library
-X   probably not available anymore, not gonna bother digging further
-
-before beta 4 release
-X javafx library linked in contribs manager
-o   test to make sure still working
-o   warnings about installation
-
-
-known issues
-_ IDE cursor position is wrong if font size is changed in preferences on macOS
-_   probably related to second displays, need to hook one up and test
-_   https://github.com/processing/processing4/issues/194
+X caret is sometimes one pixel too tall
+X cleaning up TextAreaPainter to be less cute; adding more clarifications
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -159,16 +63,18 @@ _   or for now, tell users how to do it manually
 
 
 design
-_ implement document icons on Windows
-_ implement document icons on Linux
-_ redesign of the Contribution Manager
+_ console scroll bar colors
+_ errors table theme
+_ contrib manager theme
+_   implement updateTheme()
 _   identify coloring for icons
 _   how much of theme to inherit
 _   generate manager icons
+_ implement document icons on Windows
+_ implement document icons on Linux
 _ decision about 'debug' versions of toolbar icons
 _ put themes in folders by name
 _ add notes about params to the wiki
-_   new scrollbars
 
 
 ui is ugly on macOS
@@ -239,9 +145,6 @@ code completion
 _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
-_ more reports of code completion not working on macOS
-_   "working in a6 but not b2"
-_   https://github.com/processing/processing4/issues/304
 
 
 before 4.x final
@@ -251,18 +154,15 @@ _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
 _ Apple Silicon support
 _   https://github.com/processing/processing4/issues/128
+_ JOGL is broken on aarch64
+_   https://github.com/processing/processing4/issues/370
 _ appbundler broken when built on something later than Mojave
 _   https://github.com/processing/processing4/issues/284
+_   https://github.com/google/filament/pull/1959/files
 _ also need separate versions because the Monterey build won't run on x86_64
 _   https://github.com/processing/processing4/issues/364
 _ clean up dist: 'bin' and 'src' from Java Mode are included, iml files, etc
 _ loadShape(), show a warning when using style instead of presentation attributes
-_ Welcome screen or not?
-_   set a new preference for it, so people see it
-_   just skip the welcome screen on Windows hidpi dipslays?
-_   better to launch a web browser
-_     also use id/ask for login to help understand community?
-_   tell users about JavaFX, Movie Maker install, changing themes
 _ change help menu links to go to newer FAQ and the rest
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
@@ -291,6 +191,7 @@ _   or is this just a matter of 17 being new and it'll change quickly?
 _   JavaFX 17 (a good idea) seems to be compatible with Java 11
 _     JavaFX 11 has fewer builds (no ARM, prolly no Apple Silicon)
 _   11 LTS is supported until September 2026, 17 until 2029
+_   https://dzone.com/articles/whats-new-between-java-11-and-java-17
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
 _ change the license from GPL
@@ -306,6 +207,13 @@ _   https://github.com/processing/processing/issues/4214
 _ make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
 _ show warnings about wrong library folder layout?
+_ Welcome screen or not?
+_   set a new preference for it, so people see it
+_   just skip the welcome screen on Windows hidpi dipslays?
+_   better to launch a web browser
+_     also use id/ask for login to help understand community?
+_   tell users about JavaFX, Movie Maker install, changing themes
+_ Remove “Disable HiDPI Scaling” preference on Windows?
 
 
 would like to fix (after 4.0 final)

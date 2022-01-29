@@ -19,6 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 
 import javax.swing.ToolTipManager;
 import javax.swing.text.*;
@@ -54,10 +55,6 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   int currentLineIndex;
   Token currentLineTokens;
   Segment currentLine;
-
-  // Debugging mono font handling and fractional screen resolutions
-  // https://github.com/processing/processing4/issues/342
-  private final boolean THROWBACK = false;
 
 
   /**
@@ -377,20 +374,14 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       gfx.setFont(plainFont);
 
       y += fontMetrics.getHeight();
-      // doesn't respect fixed width like it should
-      if (THROWBACK) {
-        // deprecated version
-        //x = Utilities.drawTabbedText(currentLine, x, y, gfx, this, 0);
-        // this wants returns floats for x, which requires more changes
-        x = (int) Utilities.drawTabbedText(currentLine, (float) x, (float) y, (Graphics2D) gfx, this, 0);
-      } else {
-        for (int i = 0; i < currentLine.count; i++) {
-          gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
-          x = currentLine.array[currentLine.offset + i] == '\t' ?
-            x0 + (int) nextTabStop(x - x0, i) :
-            x + fontMetrics.charWidth(currentLine.array[currentLine.offset + i]);  // TODO why this char?
-          //textArea.offsetToX(line, currentLine.offset + i);
+      for (int i = 0; i < currentLine.count; i++) {
+        gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
+        if (currentLine.array[currentLine.offset + i] == '\t') {
+          x = x0 + (int) nextTabStop(x - x0, i);
+        } else {
+          x += fontMetrics.charWidth(currentLine.array[currentLine.offset + i]);  // TODO why this char?
         }
+        //textArea.offsetToX(line, currentLine.offset + i);
       }
 
       // Draw characters via input method.
@@ -477,20 +468,15 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         gfx.setFont(ss.isBold() ? boldFont : plainFont);
       }
       line.count = length;  // huh? suspicious
-      // doesn't respect mono metrics, insists on spacing w/ fractional or something
-      if (THROWBACK) {
-        // Attempting with non-deprecated version. Rounding x isn't a problem
-        // because it's just the placement of eolmarkers after returning.
-        x = (int) Utilities.drawTabbedText(line, (float) x, (float) y, (Graphics2D) gfx, this, 0);
-      } else {
-        for (int i = 0; i < line.count; i++) {
-          gfx.drawChars(line.array, line.offset + i, 1, x, y);
-          x = line.array[line.offset + i] == '\t' ?
-            x0 + (int) nextTabStop(x - x0, i) :
-            x + fontMetrics.charWidth(line.array[line.offset + i]);
+      for (int i = 0; i < line.count; i++) {
+        gfx.drawChars(line.array, line.offset + i, 1, x, y);
+        if (line.array[line.offset + i] == '\t') {
+          x = x0 + (int) nextTabStop(x - x0, i);
+        } else {
+          x += fontMetrics.charWidth(line.array[line.offset + i]);
         }
-        line.offset += length;
       }
+      line.offset += length;
       tokens = tokens.next;
     }
 
@@ -541,10 +527,12 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       if (selectionStartLine == selectionEndLine) {
         x1 = textArea._offsetToX(line, selectionStart - lineStart);
         x2 = textArea._offsetToX(line, selectionEnd - lineStart);
-      } else if(line == selectionStartLine) {
+
+      } else if (line == selectionStartLine) {
         x1 = textArea._offsetToX(line, selectionStart - lineStart);
         x2 = getWidth();
-      } else if(line == selectionEndLine) {
+
+      } else if (line == selectionEndLine) {
         //x1 = 0;
         // hack from Stendahl to avoid doing weird side selection thing
         x1 = textArea._offsetToX(line, 0);
@@ -580,19 +568,16 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
 
   protected void paintCaret(Graphics gfx, int line, int y) {
-    //System.out.println("painting caret " + line + " " + y);
     if (textArea.isCaretVisible()) {
-      //System.out.println("caret is visible");
       int offset =
         textArea.getCaretPosition() - textArea.getLineStartOffset(line);
       int caretX = textArea._offsetToX(line, offset);
-      int caretWidth = ((defaults.blockCaret ||
-                         textArea.isOverwriteEnabled()) ?
-                        fontMetrics.charWidth('w') : 1);
+      int caretWidth = 1;
+      if (defaults.blockCaret || textArea.isOverwriteEnabled()) {
+        caretWidth = fontMetrics.charWidth('w');
+      }
       y += getLineDisplacement();
       int height = fontMetrics.getHeight();
-
-      //System.out.println("caretX, width = " + caretX + " " + caretWidth);
 
       gfx.setColor(defaults.caretColor);
 
@@ -600,13 +585,15 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         gfx.fillRect(caretX, y + height - 1, caretWidth,1);
 
       } else {
-        // some machines don't like the drawRect for the single
-        // pixel caret.. this caused a lot of hell because on that
+        // Some machines don't like the drawRect when the caret is a
+        // single pixel wide. This caused a lot of hell because on that
         // minority of machines, the caret wouldn't show up past
-        // the first column. the fix is to use drawLine() in
-        // those cases, as a workaround.
+        // the first column. The fix is to use drawLine() instead.
         if (caretWidth == 1) {
-          gfx.drawLine(caretX, y, caretX, y + height - 1);
+          //gfx.drawLine(caretX, y, caretX, y + height - 1);
+          // workaround for single pixel dots showing up when caret
+          // is rendered a single pixel too tall [fry 220129]
+          ((Graphics2D) gfx).draw(new Line2D.Float(caretX, y + 0.5f, caretX, y + height - 0.5f));
         } else {
           gfx.drawRect(caretX, y, caretWidth - 1, height - 1);
         }
