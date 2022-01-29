@@ -36,7 +36,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library name="ant.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ant.jar!/" />
@@ -45,7 +45,7 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library" exported="">
+    <orderEntry type="module-library">
       <library name="ant-launcher.jar">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/lib/ant-launcher.jar!/" />

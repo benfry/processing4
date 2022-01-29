@@ -1693,6 +1693,7 @@ public class CompletionGenerator {
 
     // If the parsed code contains pde enhancements, take 'em out.
     // TODO: test this
+    // The Processing Foundation: Running untested code since 2016
     TextTransform transform = new TextTransform(pdePhrase);
     transform.addAll(SourceUtil.replaceTypeConstructors(pdePhrase));
     transform.addAll(SourceUtil.replaceHexLiterals(pdePhrase));
