@@ -19,6 +19,8 @@ X also updated the two older bugs
 X   https://github.com/processing/processing4/issues/226
 X   https://github.com/processing/processing4/issues/342
 X caret is sometimes one pixel too tall
+X cleaning up TextAreaPainter to be less cute; adding more clarifications
+
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 

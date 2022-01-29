@@ -376,9 +376,11 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       y += fontMetrics.getHeight();
       for (int i = 0; i < currentLine.count; i++) {
         gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
-        x = currentLine.array[currentLine.offset + i] == '\t' ?
-          x0 + (int) nextTabStop(x - x0, i) :
-          x + fontMetrics.charWidth(currentLine.array[currentLine.offset + i]);  // TODO why this char?
+        if (currentLine.array[currentLine.offset + i] == '\t') {
+          x = x0 + (int) nextTabStop(x - x0, i);
+        } else {
+          x += fontMetrics.charWidth(currentLine.array[currentLine.offset + i]);  // TODO why this char?
+        }
         //textArea.offsetToX(line, currentLine.offset + i);
       }
 
@@ -468,9 +470,11 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       line.count = length;  // huh? suspicious
       for (int i = 0; i < line.count; i++) {
         gfx.drawChars(line.array, line.offset + i, 1, x, y);
-        x = line.array[line.offset + i] == '\t' ?
-          x0 + (int) nextTabStop(x - x0, i) :
-          x + fontMetrics.charWidth(line.array[line.offset + i]);
+        if (line.array[line.offset + i] == '\t') {
+          x = x0 + (int) nextTabStop(x - x0, i);
+        } else {
+          x += fontMetrics.charWidth(line.array[line.offset + i]);
+        }
       }
       line.offset += length;
       tokens = tokens.next;
@@ -564,19 +568,16 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
 
   protected void paintCaret(Graphics gfx, int line, int y) {
-    //System.out.println("painting caret " + line + " " + y);
     if (textArea.isCaretVisible()) {
-      //System.out.println("caret is visible");
       int offset =
         textArea.getCaretPosition() - textArea.getLineStartOffset(line);
       int caretX = textArea._offsetToX(line, offset);
-      int caretWidth = ((defaults.blockCaret ||
-                         textArea.isOverwriteEnabled()) ?
-                        fontMetrics.charWidth('w') : 1);
+      int caretWidth = 1;
+      if (defaults.blockCaret || textArea.isOverwriteEnabled()) {
+        caretWidth = fontMetrics.charWidth('w');
+      }
       y += getLineDisplacement();
       int height = fontMetrics.getHeight();
-
-      //System.out.println("caretX, width = " + caretX + " " + caretWidth);
 
       gfx.setColor(defaults.caretColor);
 
@@ -584,16 +585,15 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         gfx.fillRect(caretX, y + height - 1, caretWidth,1);
 
       } else {
-        // some machines don't like the drawRect for the single
-        // pixel caret.. this caused a lot of hell because on that
+        // Some machines don't like the drawRect when the caret is a
+        // single pixel wide. This caused a lot of hell because on that
         // minority of machines, the caret wouldn't show up past
-        // the first column. the fix is to use drawLine() in
-        // those cases, as a workaround.
+        // the first column. The fix is to use drawLine() instead.
         if (caretWidth == 1) {
+          //gfx.drawLine(caretX, y, caretX, y + height - 1);
           // workaround for single pixel dots showing up when caret
           // is rendered a single pixel too tall [fry 220129]
           ((Graphics2D) gfx).draw(new Line2D.Float(caretX, y + 0.5f, caretX, y + height - 0.5f));
-          //gfx.drawLine(caretX, y, caretX, y + height - 1);
         } else {
           gfx.drawRect(caretX, y, caretWidth - 1, height - 1);
         }
