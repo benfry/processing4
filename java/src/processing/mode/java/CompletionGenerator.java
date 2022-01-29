@@ -1300,18 +1300,11 @@ public class CompletionGenerator {
 
     if (isImported) return false;
 
-    if (impName.startsWith("processing")) {
-      if (mode.includeSuggestion(impName)) {
-        return false;
-      } else if (mode.excludeSuggestion(impName)) {
-        return true;
-      }
-    } else if (impName.startsWith("java")) {
-      if (mode.includeSuggestion(impName)) {
-        return false;
-      }
+    if (mode.excludeSuggestion(impName)) {
+      return true;
+    } else if (mode.includeSuggestion(impName)) {
+      return false;
     }
-
     return true;
   }
 

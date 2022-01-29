@@ -334,11 +334,11 @@ public class JavaMode extends Mode {
       "processing.opengl.PShader",
       "processing.opengl.PGL",
 
-      "java.util.ArrayList",
-      "java.io.BufferedReader",
-      "java.util.HashMap",
-      "java.io.PrintWriter",
-      "java.lang.String"
+      "classes.java.util.ArrayList",
+      "classes.java.io.BufferedReader",
+      "classes.java.util.HashMap",
+      "classes.java.io.PrintWriter",
+      "classes.java.lang.String"
     };
   }
 
