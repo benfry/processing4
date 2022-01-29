@@ -410,4 +410,9 @@ public class ParserTests {
     expectRunnerException("mixing", 1);
   }
 
+  @Test
+  public void testSizeClass() {
+    expectGood("sizeclass");
+  }
+
 }
