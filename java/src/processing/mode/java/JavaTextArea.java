@@ -27,11 +27,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collections;
 import java.util.List;
 
 import javax.swing.DefaultListModel;
+import javax.swing.text.BadLocationException;
 
 import processing.app.Messages;
 import processing.app.Platform;
@@ -126,6 +128,43 @@ public class JavaTextArea extends PdeTextArea {
         break;
       case KeyEvent.VK_BACK_SPACE:
         Messages.log("BK Key");
+        Messages.log("Line: " + editor.getTextArea().getCaretLine() + " Pos: " + editor.getTextArea().getCaretPosition());
+        if ((Platform.isMacOS() && evt.isMetaDown()) ||
+            (!Platform.isMacOS() && evt.isControlDown())) {
+          int line = editor.getTextArea().getCaretLine();
+          int lineStart = editor.getTextArea().getLineStartOffset(line);
+          int lineLength = editor.getTextArea().getLineLength(line);
+          try {
+            //if line is already empty, delete line break
+            if (lineLength == 0) {
+              editor.getTextArea().getDocument().remove(lineStart-1, 1);
+            } else {
+              editor.getTextArea().getDocument().remove(lineStart, lineLength);
+            }
+          } catch (BadLocationException ignored) { }
+        } else if (evt.isAltDown()) {
+          //if line is already empty, delete line break
+          int pos = editor.getTextArea().getCaretPosition();
+          // Getting all the text could get inefficient whit longer files.
+          int line = editor.getTextArea().getCaretLine();
+          int lineStart = editor.getTextArea().getLineStartOffset(line);
+          //if line is already empty, just delete line break
+          if (editor.getTextArea().getLineLength(line) == 0) {
+            try {
+              editor.getTextArea().getDocument().remove(lineStart-1, 1);
+            } catch (BadLocationException ignored) { }
+          } else {
+            // Regex used for word separating. Will delete everything up to a character in the selection.
+            // Characters without a following character will also be included in a word (f.e. a space at the end of the line)
+            String regex = "[.,({\\[ ](?=[^.,({\\[ ])";
+            String[] wordSplit = editor.getTextArea().getText(lineStart, pos - lineStart).split(regex);
+            int wordLength = wordSplit[wordSplit.length - 1].length();
+            Messages.log(wordLength, Arrays.toString(wordSplit));
+            try {
+              editor.getTextArea().getDocument().remove(pos - wordLength, wordLength);
+            } catch (BadLocationException ignored) { }
+          }
+        }
         break;
       case KeyEvent.VK_SPACE:
         if (suggestion != null) {
