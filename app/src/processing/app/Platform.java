@@ -337,7 +337,7 @@ public class Platform {
       if (decodedPath.contains("/app/bin")) {  // This means we're in Eclipse
         final File build = new File(decodedPath, "../../build").getAbsoluteFile();
         if (Platform.isMacOS()) {
-          processingRoot = new File(build, "macosx/work/Processing.app/Contents/Java");
+          processingRoot = new File(build, "macos/work/Processing.app/Contents/Java");
         } else if (Platform.isWindows()) {
           processingRoot =  new File(build, "windows/work");
         } else if (Platform.isLinux()) {
