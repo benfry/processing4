@@ -55,10 +55,6 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   Token currentLineTokens;
   Segment currentLine;
 
-  // Debugging mono font handling and fractional screen resolutions
-  // https://github.com/processing/processing4/issues/342
-  private final boolean THROWBACK = false;
-
 
   /**
    * Creates a new repaint manager. This should be not be called directly.
@@ -377,20 +373,12 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       gfx.setFont(plainFont);
 
       y += fontMetrics.getHeight();
-      // doesn't respect fixed width like it should
-      if (THROWBACK) {
-        // deprecated version
-        //x = Utilities.drawTabbedText(currentLine, x, y, gfx, this, 0);
-        // this wants returns floats for x, which requires more changes
-        x = (int) Utilities.drawTabbedText(currentLine, (float) x, (float) y, (Graphics2D) gfx, this, 0);
-      } else {
-        for (int i = 0; i < currentLine.count; i++) {
-          gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
-          x = currentLine.array[currentLine.offset + i] == '\t' ?
-            x0 + (int) nextTabStop(x - x0, i) :
-            x + fontMetrics.charWidth(currentLine.array[currentLine.offset + i]);  // TODO why this char?
-          //textArea.offsetToX(line, currentLine.offset + i);
-        }
+      for (int i = 0; i < currentLine.count; i++) {
+        gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
+        x = currentLine.array[currentLine.offset + i] == '\t' ?
+          x0 + (int) nextTabStop(x - x0, i) :
+          x + fontMetrics.charWidth(currentLine.array[currentLine.offset + i]);  // TODO why this char?
+        //textArea.offsetToX(line, currentLine.offset + i);
       }
 
       // Draw characters via input method.
@@ -477,20 +465,13 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         gfx.setFont(ss.isBold() ? boldFont : plainFont);
       }
       line.count = length;  // huh? suspicious
-      // doesn't respect mono metrics, insists on spacing w/ fractional or something
-      if (THROWBACK) {
-        // Attempting with non-deprecated version. Rounding x isn't a problem
-        // because it's just the placement of eolmarkers after returning.
-        x = (int) Utilities.drawTabbedText(line, (float) x, (float) y, (Graphics2D) gfx, this, 0);
-      } else {
-        for (int i = 0; i < line.count; i++) {
-          gfx.drawChars(line.array, line.offset + i, 1, x, y);
-          x = line.array[line.offset + i] == '\t' ?
-            x0 + (int) nextTabStop(x - x0, i) :
-            x + fontMetrics.charWidth(line.array[line.offset + i]);
-        }
-        line.offset += length;
+      for (int i = 0; i < line.count; i++) {
+        gfx.drawChars(line.array, line.offset + i, 1, x, y);
+        x = line.array[line.offset + i] == '\t' ?
+          x0 + (int) nextTabStop(x - x0, i) :
+          x + fontMetrics.charWidth(line.array[line.offset + i]);
       }
+      line.offset += length;
       tokens = tokens.next;
     }
 
@@ -541,10 +522,12 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       if (selectionStartLine == selectionEndLine) {
         x1 = textArea._offsetToX(line, selectionStart - lineStart);
         x2 = textArea._offsetToX(line, selectionEnd - lineStart);
-      } else if(line == selectionStartLine) {
+
+      } else if (line == selectionStartLine) {
         x1 = textArea._offsetToX(line, selectionStart - lineStart);
         x2 = getWidth();
-      } else if(line == selectionEndLine) {
+
+      } else if (line == selectionEndLine) {
         //x1 = 0;
         // hack from Stendahl to avoid doing weird side selection thing
         x1 = textArea._offsetToX(line, 0);
