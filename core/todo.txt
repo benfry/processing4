@@ -13,6 +13,13 @@ X   fixing the surface.setSize() issue may fix it
 X   https://github.com/processing/processing4/issues/386
 X Resizing window outside setup causes NPE when saving surface pixels
 X   https://github.com/processing/processing4/issues/162
+o Window Manager issue when trying to resize window
+X   https://github.com/processing/processing/issues/4129
+X same goes for window resize events: queue them for when it's safe
+o   also probably need to be extending the display with the background color
+o   so that it's not neither stretching the viewport temporarily
+o     or leaving a gap at the edge of the window
+X   this was mostly already in place
 
 X rework saveImpl() for images and how it interacts with the ShimAWT default
 X remove the ancient TIFF saving code
@@ -23,14 +30,9 @@ _   do we need a windowResized() event?
 _   https://github.com/processing/processing4/issues/53
 _   windowTitle(), windowLocation(), windowSize()
 _   windowResizable(), windowRatio()
-_ setting surface size needs to happen outside draw()
-_   surface.setSize() sadness etc
+_ 'ArrayIndexOutOfBoundsException: Coordinate out of bounds!'
+_   when resizing sketch while also saving frame in Java2D (default renderer)
 _   https://github.com/processing/processing4/issues/186
-_   https://github.com/processing/processing/issues/4129
-_ same goes for window resize events: queue them for when it's safe
-_   also probably need to be extending the display with the background color
-_   so that it's not neither stretching the viewport temporarily
-_     or leaving a gap at the edge of the window
 
 
 _ CODED is inconsistent between the default renderer and P2D/P3D
@@ -46,8 +48,6 @@ _   https://github.com/processing/processing4/issues/128
 _   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
 _   https://github.com/jzy3d/jogl/blob/feature/macosx-arm64/HOW-TO-ADD-ARM64-TO-2.4.md
 
-_ Sort out EDT issues inside OpenGL
-_   https://github.com/processing/processing4/issues/385
 
 _ concurrent StringDict et al
 _   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
@@ -89,8 +89,10 @@ _ new FloatList(float...)
 api todo
 _ Surface not available inside handleSettings()
 _   therefore impossible to get displays, displayWidth/Height, and pixelDensity
-_   should surface be set on command line?
-_   or can we just require that size() goes first, and inits surface *type* w/o sizes
+_     (in a non-AWT way on a system that cannot use AWT)
+_   does surface have to be passed on the command line?
+_   can we just require that size() goes first
+_     and have it set surface *type* w/o actually setting up the size info yet
 _   or even that it inits a surface-specific class for getting that info
 _ implement selectInput/Output/Folder methods in PSurfaceJOGL
 _ implement openLink() in PSurfaceJOGL
@@ -113,6 +115,8 @@ _   https://github.com/processing/processing4/issues/56
 
 
 high-ish
+_ Sort out EDT issues inside OpenGL
+_   https://github.com/processing/processing4/issues/385
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
 _ make setting the window icon automatic, based on files in local dirs
@@ -160,8 +164,6 @@ _   test with JG's 13" retina laptop
 possible additions for 4.x?
 _ Add support for floating point textures to OpenGL (using a hint?)
 _   https://github.com/processing/processing/issues/3321
-_ Friendly Names for new Sketches (includes UI for switching it back)
-_   https://github.com/processing/processing/pull/6048
 
 
 misc
