@@ -23,7 +23,7 @@ processingSketch
     :   javaProcessingSketch
     |   staticProcessingSketch
     |   activeProcessingSketch
-		|   warnMixedModes
+    |   warnMixedModes
     ;
 
 // java mode, is a compilation unit
@@ -44,8 +44,8 @@ activeProcessingSketch
 // User incorrectly mixing modes. Included to allow for kind error message.
 warnMixedModes
     :   (importDeclaration | classBodyDeclaration | blockStatement)* blockStatement classBodyDeclaration (importDeclaration | classBodyDeclaration | blockStatement)*
-		|   (importDeclaration | classBodyDeclaration | blockStatement)* classBodyDeclaration blockStatement (importDeclaration | classBodyDeclaration | blockStatement)*
-		;
+    |   (importDeclaration | classBodyDeclaration | blockStatement)* classBodyDeclaration blockStatement (importDeclaration | classBodyDeclaration | blockStatement)*
+    ;
 
 variableDeclaratorId
     :   warnTypeAsVariableName
@@ -73,12 +73,12 @@ methodCall
 // "color" is a special Processing primitive (== int)
 functionWithPrimitiveTypeName
 	:	(	'boolean'
-		|	'byte'
-		|	'char'
-		|	'float'
-		|	'int'
+    |	'byte'
+    |	'char'
+    |	'float'
+    |	'int'
         |   'color'
-		) '(' expressionList? ')'
+    ) '(' expressionList? ')'
 	;
 
 // adding support for "color" primitive

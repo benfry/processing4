@@ -299,8 +299,13 @@ literal
     | NULL_LITERAL
     ;
 
-baseStringLiteral: STRING_LITERAL;
-multilineStringLiteral: MULTI_STRING_LIT;
+baseStringLiteral
+    : STRING_LITERAL
+    ;
+
+multilineStringLiteral
+    : MULTI_STRING_LIT
+    ;
 
 stringLiteral
     : baseStringLiteral
