@@ -538,7 +538,7 @@ public class ShimAWT implements PConstants {
 
       // JPEG and BMP images that have an alpha channel set get pretty unhappy.
       // BMP just doesn't write, and JPEG writes it as a CMYK image.
-      // http://code.google.com/p/processing/issues/detail?id=415
+      // https://github.com/processing/processing/issues/454
       if (extension.equals("bmp") || extension.equals("jpg") || extension.equals("jpeg")) {
         outputFormat = BufferedImage.TYPE_INT_RGB;
       }
