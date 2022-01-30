@@ -55,6 +55,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private static final String NO_SMOOTH_METHOD_NAME = "noSmooth";
   private static final String PIXEL_DENSITY_METHOD_NAME = "pixelDensity";
   private static final String FULLSCREEN_METHOD_NAME = "fullScreen";
+  private static final boolean SIMULATE_MULTILINE_STRINGS = true;
 
   final private String sketchName;
   private boolean isTesting;
@@ -317,6 +318,31 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   }
 
   /**
+   * Detect if the user is programming with "mixed" modes.
+   *
+   * <p>Detect if the user is programming with "mixed" modes where they are
+   * combining active and static mode features. This may be, for example, a
+   * method call followed by method definition.</p>
+   *
+   * @param ctx The context from ANTLR for the mixed modes sketch.
+   */
+  public void enterWarnMixedModes(ProcessingParser.WarnMixedModesContext ctx) {
+    pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
+      Token token = ctx.getStart();
+      int line = token.getLine();
+      int charOffset = token.getCharPositionInLine();
+
+      listener.onError(new PdePreprocessIssue(
+        line,
+        charOffset,
+        PreprocessIssueMessageSimplifier.getLocalStr(
+            "editor.status.bad.mixed_mode"
+        )
+      ));
+    });
+  }
+
+  /**
    * Endpoint for ANTLR to call when finished parsing a method invocatino.
    *
    * @param ctx The ANTLR context for the method call.
@@ -432,6 +458,29 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     String cTxt = ctx.getText().toLowerCase();
     if (!cTxt.endsWith("f") && !cTxt.endsWith("d")) {
       insertAfter(ctx.stop, "f");
+    }
+  }
+
+  /**
+   * Endpoint for ANTLR to call after parsing a String literal.
+   *
+   * <p>
+   *   Endpoint for ANTLR to call when finished parsing a string literal, simulating multiline
+   *   strings if configured to do so.
+   * </p>
+   *
+   * @param ctx ANTLR context for the literal.
+   */
+  public void exitMultilineStringLiteral(ProcessingParser.MultilineStringLiteralContext ctx) {
+    String fullLiteral = ctx.getText();
+    if (SIMULATE_MULTILINE_STRINGS) {
+      delete(ctx.start, ctx.stop);
+      int endIndex = fullLiteral.length() - 3;
+      String literalContents = fullLiteral.substring(3, endIndex);
+      String newLiteralContents = literalContents
+          .replace("\n", "\\n")
+          .replace("\"", "\\\"");
+      insertAfter(ctx.stop, "\"" + newLiteralContents + "\"");
     }
   }
 
@@ -770,7 +819,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @return True if setup and false otherwise.
    */
   protected boolean isMethodSetup(ParserRuleContext declaration) {
-    if (declaration.getChildCount() < 2) {
+    if (declaration == null || declaration.getChildCount() < 2) {
       return false;
     }
     return declaration.getChild(1).getText().equals("setup");

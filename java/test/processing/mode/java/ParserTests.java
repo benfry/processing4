@@ -405,4 +405,19 @@ public class ParserTests {
     expectGood("sizethis");
   }
 
+  @Test
+  public void testMixing() {
+    expectRunnerException("mixing", 1);
+  }
+
+  @Test
+  public void testSizeClass() {
+    expectGood("sizeclass");
+  }
+
+  @Test
+  public void testMultlineString() {
+    expectGood("multilinestr");
+  }
+
 }
