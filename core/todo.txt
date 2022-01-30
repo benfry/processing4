@@ -12,10 +12,13 @@ X   this may be because of gaps between EDT and updates
 X   fixing the surface.setSize() issue may fix it
 X   https://github.com/processing/processing4/issues/386
 
+_ rework saveImpl() for images and how it interacts with the ShimAWT default
+_ remove the ancient TIFF saving code
 
 _ CODED is inconsistent between the default renderer and P2D/P3D
 _   includes recommendations how to fix
 _   https://github.com/processing/processing4/issues/376
+
 
 macos-aarch64
 _ JOGL is broken on aarch64

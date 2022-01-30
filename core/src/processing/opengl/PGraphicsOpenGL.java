@@ -760,16 +760,29 @@ public class PGraphicsOpenGL extends PGraphics {
     // ASYNC save frame using PBOs not yet available on Android
     //return super.save(filename);
 
+    // In 4.0 beta 5, the loadPixels() call is moved into saveImpl(),
+    // otherwise it undermines part of the point to having optimized
+    // image writing methods in subclasses (which presumably might be
+    // able to write directly from frame buffer to file).
+    loadPixels();
+
     if (getHint(DISABLE_ASYNC_SAVEFRAME)) {
-      // Act as an opaque surface for the purposes of saving.
       if (primaryGraphics) {
+        // Act as an opaque surface while saving
         int prevFormat = format;
         format = RGB;
+        if (pixels == null) {
+          // Workaround for an NPE caused by resize events:
+          // https://github.com/processing/processing4/issues/162
+          // But there's a larger problem at play here:
+          // https://github.com/processing/processing4/issues/385
+          System.err.println("Skipping save() because pixels not ready.");
+          return false;
+        }
         boolean result = super.saveImpl(filename);
         format = prevFormat;
         return result;
       }
-
       return super.saveImpl(filename);
     }
 
@@ -798,6 +811,7 @@ public class PGraphicsOpenGL extends PGraphics {
       asyncPixelReader.readAndSaveAsync(parent.sketchFile(filename));
 
       if (needEndDraw) endDraw();
+
     } else {
       // async transfer is not supported or
       // pixels are already in memory, just do async save
@@ -5801,8 +5815,7 @@ public class PGraphicsOpenGL extends PGraphics {
   // LOAD/UPDATE TEXTURE
 
 
-  // Loads the current contents of the renderer's drawing surface into the
-  // its texture.
+  // Load the current contents of the drawing surface into a texture.
   public void loadTexture() {
     boolean needEndDraw = false;
     if (!drawing) {

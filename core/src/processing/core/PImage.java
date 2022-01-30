@@ -3313,58 +3313,27 @@ int testFunction(int dst, int src) {
    * @param filename a sequence of letters and numbers
    */
   public boolean save(String filename) {  // ignore
-    boolean success;
+    String path;
 
     if (parent != null) {
       // use savePath(), so that the intermediate directories are created
-      filename = parent.savePath(filename);
+      path = parent.savePath(filename);
 
     } else {
       File file = new File(filename);
       if (file.isAbsolute()) {
         // make sure that the intermediate folders have been created
         PApplet.createPath(file);
+        path = file.getAbsolutePath();
       } else {
         String msg =
-            "PImage.save() requires an absolute path. " +
-                "Use createImage(), or pass savePath() to save().";
+          "PImage.save() requires an absolute path. " +
+          "Use createImage(), or pass savePath() to save().";
         PGraphics.showException(msg);
+        return false;
       }
     }
-
-    // Make sure the pixel data is ready to go
-    loadPixels();
-
-    try {
-      final String lower = filename.toLowerCase();
-
-      if (saveImpl(filename)) {
-        return true;
-      }
-
-      if (lower.endsWith(".tga")) {
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-        success = saveTGA(os); //, pixels, width, height, format);
-        os.close();
-
-      } else {  // fall-through case is TIFF
-        // add a default extension and save uncompressed
-        // TODO this is the only place in the api that we mess w/ file names,
-        // and while arguably useful, seems like a weird precedent [fry 200816]
-        if (!lower.endsWith(".tif") && !lower.endsWith(".tiff")) {
-          filename += ".tif";
-        }
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-        success = saveTIFF(os); //, pixels, width, height);
-        os.close();
-      }
-
-    } catch (IOException e) {
-      System.err.println("Error while saving image.");
-      e.printStackTrace();
-      success = false;
-    }
-    return success;
+    return saveImpl(path);
   }
 
 
@@ -3376,11 +3345,42 @@ int testFunction(int dst, int src) {
    * @param path must be a full path (not relative or simply a filename)
    */
   protected boolean saveImpl(String path) {
-    // TODO Imperfect/temporary solution for current 4.x releases
-    // https://github.com/processing/processing4/wiki/Exorcising-AWT
-    //if (!PApplet.disableAWT) {  // TODO necessary? will this trigger NEWT?
-    return ShimAWT.saveImage(this, path);
-    //}
-    //return false;
+    // Make sure the pixel data is ready to go
+    loadPixels();
+    boolean success;
+
+    try {
+      final String lower = path.toLowerCase();
+
+      if (lower.endsWith(".tga")) {
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(path), 32768);
+        success = saveTGA(os); //, pixels, width, height, format);
+        os.close();
+
+        /*
+      } else {  // fall-through case is TIFF
+        // Add a default extension and save uncompressed.
+        // This is the only place in the API that we mess
+        // with file names, and while arguably useful,
+        // it seems like a weird outlier. [fry 200816]
+        if (!lower.endsWith(".tif") && !lower.endsWith(".tiff")) {
+          path += ".tif";
+        }
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(path), 32768);
+        success = saveTIFF(os); //, pixels, width, height);
+        os.close();
+        */
+
+      } else {
+        // TODO Imperfect, possibly temporary solution for 4.x releases
+        //      https://github.com/processing/processing4/wiki/Exorcising-AWT
+        success = ShimAWT.saveImage(this, path);
+      }
+    } catch (IOException e) {
+      System.err.println("Error while saving " + path);
+      e.printStackTrace();
+      success = false;
+    }
+    return success;
   }
 }
