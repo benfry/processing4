@@ -25,6 +25,11 @@ X cleaning up TextAreaPainter to be less cute; adding more clarifications
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+_ Windows virus/trojan complaints
+_   https://github.com/processing/processing4/issues/379
+_   https://www.microsoft.com/en-us/wdsi/filesubmission
+_   https://www.microsoft.com/en-us/wdsi/submission/69a47313-6b5a-4c94-9f74-27beffce5460
+
 _ Add support for localizing contributions
 _   https://github.com/processing/processing4/pull/237 (updated by Andres)
 X   https://github.com/processing/processing/pull/2833
@@ -154,8 +159,6 @@ _   https://github.com/processing/processing-video/issues/188
 _ docs are 3.x not 4.x
 _ Apple Silicon support
 _   https://github.com/processing/processing4/issues/128
-_ JOGL is broken on aarch64
-_   https://github.com/processing/processing4/issues/370
 _ appbundler broken when built on something later than Mojave
 _   https://github.com/processing/processing4/issues/284
 _   https://github.com/google/filament/pull/1959/files

@@ -6,8 +6,13 @@ X   breaks on aarch64
 X   https://github.com/processing/processing4/issues/372
 _ rename jAppleMenuBar, make part of build process
 
+_ CODED is inconsistent between the default renderer and P2D/P3D
+_   includes recommendations how to fix
+_   https://github.com/processing/processing4/issues/376
 
 macos-aarch64
+_ JOGL is broken on aarch64
+_   https://github.com/processing/processing4/issues/370
 _ jogl build for m1
 _   https://github.com/processing/processing4/issues/128
 _   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
