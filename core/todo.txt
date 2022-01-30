@@ -4,9 +4,8 @@ X   https://github.com/processing/processing4/issues/221
 o   seems to be working fine; not sure, but have to roll with it for now
 X   breaks on aarch64
 X   https://github.com/processing/processing4/issues/372
-_ rename jAppleMenuBar, make part of build process
 
-OpenGL resize and NPE sadness
+resizing windows and sketches
 X why does GL flash red when resizing?
 X   this may be because of gaps between EDT and updates
 X   fixing the surface.setSize() issue may fix it
@@ -20,20 +19,23 @@ o   also probably need to be extending the display with the background color
 o   so that it's not neither stretching the viewport temporarily
 o     or leaving a gap at the edge of the window
 X   this was mostly already in place
+X 'ArrayIndexOutOfBoundsException: Coordinate out of bounds!'
+X   when resizing sketch while also saving frame in Java2D (default renderer)
+X   https://github.com/processing/processing4/issues/186
 
+with resize changes, more changes to image handling code
 X rework saveImpl() for images and how it interacts with the ShimAWT default
 X remove the ancient TIFF saving code
 
 _ Better solution for frame/surface methods
-_   should it be requestSize() because the change is not immediate?
-_   do we need a windowResized() event?
 _   https://github.com/processing/processing4/issues/53
+o   should it be requestSize() because the change is not immediate?
+X     nope, too confusing for folks anyway
+_   do we need a windowResized() event?
 _   windowTitle(), windowLocation(), windowSize()
 _   windowResizable(), windowRatio()
-_ 'ArrayIndexOutOfBoundsException: Coordinate out of bounds!'
-_   when resizing sketch while also saving frame in Java2D (default renderer)
-_   https://github.com/processing/processing4/issues/186
 
+_ rename jAppleMenuBar, make part of build process
 
 _ CODED is inconsistent between the default renderer and P2D/P3D
 _   includes recommendations how to fix
