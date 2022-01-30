@@ -107,7 +107,7 @@ literal
     : integerLiteral
     | floatLiteral
     | CHAR_LITERAL
-    | STRING_LITERAL
+    | stringLiteral
     | BOOL_LITERAL
     | NULL_LITERAL
     | hexColorLiteral

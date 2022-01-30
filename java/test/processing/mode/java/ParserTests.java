@@ -415,4 +415,9 @@ public class ParserTests {
     expectGood("sizeclass");
   }
 
+  @Test
+  public void testMultlineString() {
+    expectGood("multilinestr");
+  }
+
 }
