@@ -50,18 +50,8 @@ import processing.core.*;
  * Advanced <a href="http://docs.oracle.com/javase/7/docs/webnotes/tsg/TSG-Desktop/html/java2d.html">debugging notes</a> for Java2D.
  */
 public class PGraphicsJava2D extends PGraphics {
-////  BufferStrategy strategy;
-////  BufferedImage bimage;
-////  VolatileImage vimage;
-//  Canvas canvas;
-////  boolean useCanvas = true;
-//  boolean useCanvas = false;
-////  boolean useRetina = true;
-////  boolean useOffscreen = true;  // ~40fps
-//  boolean useOffscreen = false;
-
   public Graphics2D g2;
-//  protected BufferedImage offscreen;
+  private Dimension sizeChange;
 
   Composite defaultComposite;
 
@@ -121,21 +111,13 @@ public class PGraphicsJava2D extends PGraphics {
   //public void setPath(String path)
 
 
-//  /**
-//   * Called in response to a resize event, handles setting the
-//   * new width and height internally, as well as re-allocating
-//   * the pixel buffer for the new size.
-//   *
-//   * Note that this will nuke any cameraMode() settings.
-//   */
-//  @Override
-//  public void setSize(int iwidth, int iheight) {  // ignore
-//    width = iwidth;
-//    height = iheight;
-//
-//    allocate();
-//    reapplySettings();
-//  }
+  /**
+   * Queues a size change, won't happen until beginDraw().
+   */
+  @Override
+  public void setSize(int w, int h) {  // ignore
+    sizeChange = new Dimension(w, h);
+  }
 
 
 //  @Override
@@ -292,47 +274,24 @@ public class PGraphicsJava2D extends PGraphics {
 //  Graphics2D g2old;
 
   public Graphics2D checkImage() {
+    if (sizeChange != null) {
+      // Size changes are queued here where they're safe to run.
+      // https://github.com/processing/processing4/issues/186
+      super.setSize(sizeChange.width, sizeChange.height);
+      sizeChange = null;
+    }
     if (image == null ||
       ((BufferedImage) image).getWidth() != width*pixelDensity ||
       ((BufferedImage) image).getHeight() != height*pixelDensity) {
-//      ((VolatileImage) image).getWidth() != width ||
-//      ((VolatileImage) image).getHeight() != height) {
-//        image = new BufferedImage(width * pixelFactor, height * pixelFactor
-//                                  format == RGB ?  BufferedImage.TYPE_INT_ARGB);
 
-// Commenting this out, because we are not drawing directly to the screen [jv 2018-06-01]
-//
-//      GraphicsConfiguration gc = null;
-//      if (surface != null) {
-//        Component comp = null;  //surface.getComponent();
-//        if (comp == null) {
-////          System.out.println("component null, but parent.frame is " + parent.frame);
-//          comp = parent.frame;
-//        }
-//        if (comp != null) {
-//          gc = comp.getGraphicsConfiguration();
-//        }
-//      }
-//      // If not realized (off-screen, i.e the Color Selector Tool), gc will be null.
-//      if (gc == null) {
-//        //System.err.println("GraphicsConfiguration null in initImage()");
-//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
-//      }
-
-      // Formerly this was broken into separate versions based on offscreen or
-      // not, but we may as well create a compatible image; it won't hurt, right?
-      // P.S.: Three years later, I'm happy to report it did in fact hurt [jv 2018-06-01]
       int wide = width * pixelDensity;
       int high = height * pixelDensity;
-//      System.out.println("re-creating image");
 
-      // For now we expect non-premultiplied INT ARGB and the compatible image
+      // For now, we expect non-pre-multiplied INT ARGB and the compatible image
       // might not be it... create the image directly. It's important that the
       // image has all four bands, otherwise we get garbage alpha during blending
       // (see https://github.com/processing/processing/pull/2645,
       //      https://github.com/processing/processing/pull/3523)
-      //
       // image = gc.createCompatibleImage(wide, high, Transparency.TRANSLUCENT);
       image = new BufferedImage(wide, high, BufferedImage.TYPE_INT_ARGB);
     }
@@ -2802,9 +2761,6 @@ public class PGraphicsJava2D extends PGraphics {
         pixels[i] = 0xff000000 | pixels[i];
       }
     }
-      //((BufferedImage) image).getRGB(0, 0, width, height, pixels, 0, width);
-//    WritableRaster raster = ((BufferedImage) (useOffscreen && primarySurface ? offscreen : image)).getRaster();
-//    WritableRaster raster = image.getRaster();
   }
 
 
