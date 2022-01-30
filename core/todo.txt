@@ -6,6 +6,13 @@ X   breaks on aarch64
 X   https://github.com/processing/processing4/issues/372
 _ rename jAppleMenuBar, make part of build process
 
+OpenGL resize and NPE sadness
+X why does GL flash red when resizing?
+X   this may be because of gaps between EDT and updates
+X   fixing the surface.setSize() issue may fix it
+X   https://github.com/processing/processing4/issues/386
+
+
 _ CODED is inconsistent between the default renderer and P2D/P3D
 _   includes recommendations how to fix
 _   https://github.com/processing/processing4/issues/376
@@ -17,6 +24,9 @@ _ jogl build for m1
 _   https://github.com/processing/processing4/issues/128
 _   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
 _   https://github.com/jzy3d/jogl/blob/feature/macosx-arm64/HOW-TO-ADD-ARM64-TO-2.4.md
+
+_ Sort out EDT issues inside OpenGL
+_   https://github.com/processing/processing4/issues/385
 
 _ concurrent StringDict et al
 _   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
@@ -42,9 +52,6 @@ _ same goes for window resize events: queue them for when it's safe
 _   also probably need to be extending the display with the background color
 _   so that it's not neither stretching the viewport temporarily
 _     or leaving a gap at the edge of the window
-_ why does GL flash red when resizing?
-_   this may be because of gaps between EDT and updates
-_   fixing the surface.setSize() issue may fix it
 
 _ fullScreen() not working on a second display with P2D or P3D
 _   https://github.com/processing/processing4/issues/352

@@ -798,6 +798,9 @@ public class PSurfaceJOGL implements PSurface {
       if (display.getEDTUtil().isCurrentThreadEDT()) {
         // For some unknown reason, a few frames of the animator run on
         // the EDT. For those, we just skip this draw call to avoid badness.
+        // See below for explanation of this two line hack.
+        pgl.beginRender();
+        pgl.endRender(sketch.sketchWindowColor());
         return;
       }
 
