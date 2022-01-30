@@ -403,8 +403,8 @@ public class PreprocService {
     }
 
     // TODO: convert unicode escapes to chars
-
-    SourceUtil.scrubCommentsAndStrings(workBuffer);
+    // TODO: This appears no longer to be needed.
+    // SourceUtil.scrubCommentsAndStrings(workBuffer);
 
     result.scrubbedPdeCode = workBuffer.toString();
 

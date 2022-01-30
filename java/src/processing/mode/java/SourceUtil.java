@@ -17,6 +17,9 @@ import processing.mode.java.TextTransform.Edit;
 
 public class SourceUtil {
 
+  // No longer needed with use of ANTLR in the preprocessor service.
+  private static final boolean PERFORM_SOURCE_UTIL_TRANSFORMS = false;
+
   public static final Pattern IMPORT_REGEX =
       Pattern.compile("(?:^|;)\\s*(import\\s+(?:(static)\\s+)?((?:\\w+\\s*\\.)*)\\s*(\\S+)\\s*;)",
                       Pattern.MULTILINE | Pattern.DOTALL);
@@ -162,6 +165,10 @@ public class SourceUtil {
       Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
 
   public static List<Edit> preprocessAST(CompilationUnit cu) {
+    if (!PERFORM_SOURCE_UTIL_TRANSFORMS) {
+      return new ArrayList<>();
+    }
+
     final List<Edit> edits = new ArrayList<>();
 
     // Walk the tree
@@ -251,6 +258,9 @@ public class SourceUtil {
 
 
   static public void scrubCommentsAndStrings(StringBuilder p) {
+    if (!PERFORM_SOURCE_UTIL_TRANSFORMS) {
+      return;
+    }
 
     final int length = p.length();
 
@@ -320,7 +330,7 @@ public class SourceUtil {
         } else {
           // Exiting block
           int blockEnd = i;
-          if (prevState == IN_BLOCK_COMMENT && i < length) blockEnd--; // preserve star in '*/'
+          if (prevState == IN_BLOCK_COMMENT && i < length) blockEnd--;
           for (int j = blockStart; j < blockEnd; j++) {
             char c = p.charAt(j);
             if (c != '\n' && c != '\r') p.setCharAt(j, ' ');
@@ -330,7 +340,6 @@ public class SourceUtil {
 
       prevState = state;
     }
-
   }
 
 
