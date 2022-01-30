@@ -83,7 +83,7 @@ functionWithPrimitiveTypeName
 
 // adding support for "color" primitive
 primitiveType
-	:   BOOLEAN
+	  :   BOOLEAN
     |   CHAR
     |   BYTE
     |   SHORT
@@ -91,8 +91,8 @@ primitiveType
     |   LONG
     |   FLOAT
     |   DOUBLE
-	|   colorPrimitiveType
-	;
+	  |   colorPrimitiveType
+	  ;
 
 colorPrimitiveType
     :   'color'
@@ -116,14 +116,14 @@ literal
 // As parser rule so this produces a separate listener
 // for us to alter its value.
 hexColorLiteral
-	:	HexColorLiteral
-	;
+	  :	HexColorLiteral
+	  ;
 
 // add color literal notations for
 // #ff5522
 HexColorLiteral
-	:	'#' (HexDigit HexDigit)? HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
-	;
+	  :	'#' (HexDigit HexDigit)? HexDigit HexDigit HexDigit HexDigit HexDigit HexDigit
+	  ;
 
 
 // hide but do not remove whitespace and comments
