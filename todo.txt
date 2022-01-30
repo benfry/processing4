@@ -21,6 +21,15 @@ X   https://github.com/processing/processing4/issues/342
 X caret is sometimes one pixel too tall
 X cleaning up TextAreaPainter to be less cute; adding more clarifications
 
+preproc from Sam
+X Preproc bug fixes and improvements
+X   https://github.com/processing/processing4/pull/384
+X mixing active and static mode throws the "wrong" error
+X   https://github.com/processing/processing4/issues/290
+X Problem with function size(int arg, int arg) in Class
+X   https://github.com/processing/processing4/issues/317
+X Add support for multi-line string text blocks
+X   https://github.com/processing/processing4/issues/371
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
