@@ -8519,7 +8519,7 @@ public class PGraphics extends PImage implements PConstants {
 
 
   /**
-   * Return true if this renderer does rendering through OpenGL. Defaults to false.
+   * Return true if this renderer uses OpenGL. Defaults to false.
    */
   public boolean isGL() {  // ignore
     return false;
@@ -8538,7 +8538,6 @@ public class PGraphics extends PImage implements PConstants {
 
   @Override
   public boolean save(String filename) { // ignore
-
     if (hints[DISABLE_ASYNC_SAVEFRAME]) {
       return super.save(filename);
     }
@@ -8548,14 +8547,16 @@ public class PGraphics extends PImage implements PConstants {
     }
 
     if (!loaded) loadPixels();
-    PImage target = asyncImageSaver.getAvailableTarget(pixelWidth, pixelHeight,
-                                                       format);
-    if (target == null) return false;
-    int count = PApplet.min(pixels.length, target.pixels.length);
-    System.arraycopy(pixels, 0, target.pixels, 0, count);
-    asyncImageSaver.saveTargetAsync(this, target, parent.sketchFile(filename));
 
-    return true;
+    PImage target =
+      asyncImageSaver.getAvailableTarget(pixelWidth, pixelHeight, format);
+    if (target != null) {
+      int count = PApplet.min(pixels.length, target.pixels.length);
+      System.arraycopy(pixels, 0, target.pixels, 0, count);
+      asyncImageSaver.saveTargetAsync(this, target, parent.sketchFile(filename));
+      return true;
+    }
+    return false;
   }
 
   protected void processImageBeforeAsyncSave(PImage image) { }
