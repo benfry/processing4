@@ -330,7 +330,7 @@ public class SourceUtil {
         } else {
           // Exiting block
           int blockEnd = i;
-          if (prevState == IN_BLOCK_COMMENT && i < length) blockEnd--;
+          if (prevState == IN_BLOCK_COMMENT && i < length) blockEnd--;  // preserve star in '*/'
           for (int j = blockStart; j < blockEnd; j++) {
             char c = p.charAt(j);
             if (c != '\n' && c != '\r') p.setCharAt(j, ' ');

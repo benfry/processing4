@@ -317,7 +317,15 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     footerResult = prepareFooter(rewriter, length);
   }
 
-  @Override
+  /**
+   * Detect if the user is programming with "mixed" modes.
+   *
+   * <p>Detect if the user is programming with "mixed" modes where they are
+   * combining active and static mode features. This may be, for example, a
+   * method call followed by method definition.</p>
+   *
+   * @param ctx The context from ANTLR for the mixed modes sketch.
+   */
   public void enterWarnMixedModes(ProcessingParser.WarnMixedModesContext ctx) {
     pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
       Token token = ctx.getStart();

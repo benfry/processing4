@@ -957,7 +957,7 @@ public class PreprocService {
   static {
     Map<String, String> compilerOptions = new HashMap<>();
 
-    // TODO: VERSION_17 if using new language features
+    // TODO: VERSION_17 if using new language features. Requires new JDT.
     compilerOptions.put(JavaCore.COMPILER_COMPLIANCE, JavaCore.VERSION_11);
     compilerOptions.put(JavaCore.COMPILER_SOURCE, JavaCore.VERSION_11);
     compilerOptions.put(JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, JavaCore.VERSION_11);
