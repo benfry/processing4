@@ -3,10 +3,7 @@ package processing.awt;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Iterator;
@@ -322,7 +319,7 @@ public class ShimAWT implements PConstants {
   }
 
 
-  static protected String[] loadImageFormats;  // list of ImageIO formats
+  static protected String[] loadImageExtensions;  // list of ImageIO formats
 
 
   static public PImage loadImage(PApplet sketch, String filename, Object... args) {
@@ -368,11 +365,14 @@ public class ShimAWT implements PConstants {
       }
     }
 
+    // Disabling for 4.0 beta 5, we're now using ImageIO for TIFF
+    /*
     if (extension.equals("tif") || extension.equals("tiff")) {
       InputStream input = sketch.createInput(filename);
       PImage image =  (input == null) ? null : PImage.loadTIFF(input);
       return image;
     }
+    */
 
     // For jpeg, gif, and png, load them using createImage(),
     // because the javax.imageio code was found to be much slower.
@@ -430,19 +430,23 @@ public class ShimAWT implements PConstants {
       e.printStackTrace();
     }
 
-    if (loadImageFormats == null) {
-      loadImageFormats = ImageIO.getReaderFormatNames();
+    if (loadImageExtensions == null) {
+      loadImageExtensions = ImageIO.getReaderFormatNames();
     }
-    if (loadImageFormats != null) {
-      for (int i = 0; i < loadImageFormats.length; i++) {
-        if (extension.equals(loadImageFormats[i])) {
+    if (loadImageExtensions != null) {
+      for (String loadImageExtension : loadImageExtensions) {
+        if (extension.equals(loadImageExtension)) {
           return loadImageIO(sketch, filename);
         }
       }
-    }
 
-    // failed, could not load image after all those attempts
-    System.err.println("Could not find a method to load " + filename);
+      // failed, could not load image after all those attempts
+      System.err.println("Could not load " + filename + ", " +
+        "make sure it ends with a supported extension " +
+        "(" + PApplet.join(loadImageExtensions, ", ") + ")");
+    } else {
+      System.err.println("Could not load " + filename);
+    }
     return null;
   }
 
@@ -490,13 +494,13 @@ public class ShimAWT implements PConstants {
 
 
   static public boolean saveImage(PImage image, String path) {
-    if (saveImageFormats == null) {
-      saveImageFormats = javax.imageio.ImageIO.getWriterFormatNames();
+    if (saveImageExtensions == null) {
+      saveImageExtensions = javax.imageio.ImageIO.getWriterFormatNames();
     }
     try {
-      if (saveImageFormats != null) {
-        for (int i = 0; i < saveImageFormats.length; i++) {
-          if (path.endsWith("." + saveImageFormats[i])) {
+      if (saveImageExtensions != null) {
+        for (String saveImageFormat : saveImageExtensions) {
+          if (path.endsWith("." + saveImageFormat)) {
             if (!saveImageIO(image, path)) {
               System.err.println("Error while saving image.");
               return false;
@@ -504,6 +508,9 @@ public class ShimAWT implements PConstants {
             return true;
           }
         }
+        System.err.println("Could not save " + path + ", " +
+                           "make sure it ends with a supported extension " +
+                           "(" + PApplet.join(saveImageExtensions, ", ") + ")");
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -512,7 +519,7 @@ public class ShimAWT implements PConstants {
   }
 
 
-  static protected String[] saveImageFormats;
+  static protected String[] saveImageExtensions;
 
 
   /**
@@ -567,10 +574,8 @@ public class ShimAWT implements PConstants {
       }
 
       if (writer != null) {
-        BufferedOutputStream output =
-          new BufferedOutputStream(PApplet.createOutput(file));
+        OutputStream output = PApplet.createOutput(file);
         writer.setOutput(ImageIO.createImageOutputStream(output));
-//        writer.write(null, new IIOImage(bimage, null, null), param);
         writer.write(metadata, new IIOImage(bimage, null, metadata), param);
         writer.dispose();
 
