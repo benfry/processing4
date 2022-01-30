@@ -64,17 +64,6 @@ import processing.awt.ShimAWT;
  */
 public class PImage implements PConstants, Cloneable {
 
-  private static final byte[] TIFF_HEADER = {
-    77, 77, 0, 42, 0, 0, 0, 8, 0, 9, 0, -2, 0, 4, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1,
-    0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0, 3, 0, 0, 0, 122, 1, 6, 0, 3, 0,
-    0, 0, 1, 0, 2, 0, 0, 1, 17, 0, 4, 0, 0, 0, 1, 0, 0, 3, 0, 1, 21,
-    0, 3, 0, 0, 0, 1, 0, 3, 0, 0, 1, 22, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0,
-    1, 23, 0, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 8, 0, 8
-  };
-
-  private static final String TIFF_ERROR = "Error: Processing can only read its own TIFF files.";
-
   /**
    * Format for this image, one of RGB, ARGB or ALPHA.
    * note that RGB images still require 0xff in the high byte
@@ -2822,99 +2811,6 @@ int testFunction(int dst, int src) {
   // FILE I/O
 
 
-  static public PImage loadTIFF(InputStream input) {  // ignore
-    byte[] tiff = PApplet.loadBytes(input);
-    if (tiff == null) {
-      return null;
-    }
-
-    if ((tiff[42] != tiff[102]) ||  // width/height in both places
-        (tiff[43] != tiff[103])) {
-      System.err.println(TIFF_ERROR);
-      return null;
-    }
-
-    int width =
-      ((tiff[30] & 0xff) << 8) | (tiff[31] & 0xff);
-    int height =
-      ((tiff[42] & 0xff) << 8) | (tiff[43] & 0xff);
-
-    int count =
-      ((tiff[114] & 0xff) << 24) |
-      ((tiff[115] & 0xff) << 16) |
-      ((tiff[116] & 0xff) << 8) |
-      (tiff[117] & 0xff);
-    if (count != width * height * 3) {
-      System.err.println(TIFF_ERROR + " (" + width + ", " + height +")");
-      return null;
-    }
-
-    // check the rest of the header
-    for (int i = 0; i < TIFF_HEADER.length; i++) {
-      if ((i == 30) || (i == 31) || (i == 42) || (i == 43) ||
-          (i == 102) || (i == 103) ||
-          (i == 114) || (i == 115) || (i == 116) || (i == 117)) continue;
-
-      if (tiff[i] != TIFF_HEADER[i]) {
-        System.err.println(TIFF_ERROR + " (" + i + ")");
-        return null;
-      }
-    }
-
-    PImage outgoing = new PImage(width, height, RGB);
-    int index = 768;
-    count /= 3;
-    for (int i = 0; i < count; i++) {
-      outgoing.pixels[i] =
-        0xFF000000 |
-        (tiff[index++] & 0xff) << 16 |
-        (tiff[index++] & 0xff) << 8 |
-        (tiff[index++] & 0xff);
-    }
-    return outgoing;
-  }
-
-  protected boolean saveTIFF(OutputStream output) {
-    /*
-    // shutting off this warning, people can figure this out themselves
-    if (format != RGB) {
-      System.err.println("Warning: only RGB information is saved with " +
-                         ".tif files. Use .tga or .png for ARGB images and others.");
-    }
-    */
-    try {
-      byte[] tiff = new byte[768];
-      System.arraycopy(TIFF_HEADER, 0, tiff, 0, TIFF_HEADER.length);
-
-      tiff[30] = (byte) ((pixelWidth >> 8) & 0xff);
-      tiff[31] = (byte) ((pixelWidth) & 0xff);
-      tiff[42] = tiff[102] = (byte) ((pixelHeight >> 8) & 0xff);
-      tiff[43] = tiff[103] = (byte) ((pixelHeight) & 0xff);
-
-      int count = pixelWidth*pixelHeight*3;
-      tiff[114] = (byte) ((count >> 24) & 0xff);
-      tiff[115] = (byte) ((count >> 16) & 0xff);
-      tiff[116] = (byte) ((count >> 8) & 0xff);
-      tiff[117] = (byte) ((count) & 0xff);
-
-      // spew the header to the disk
-      output.write(tiff);
-
-      for (int i = 0; i < pixels.length; i++) {
-        output.write((pixels[i] >> 16) & 0xff);
-        output.write((pixels[i] >> 8) & 0xff);
-        output.write(pixels[i] & 0xff);
-      }
-      output.flush();
-      return true;
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return false;
-  }
-
-
   /**
    * Targa image loader for RLE-compressed TGA files.
    * <p>
@@ -3299,13 +3195,12 @@ int testFunction(int dst, int src) {
    * To get a list of the supported formats for writing, use: <BR>
    * <TT>println(javax.imageio.ImageIO.getReaderFormatNames())</TT>
    * <p>
-   * To use the original built-in image writers, use .tga or .tif as the
-   * extension, or don't include an extension. When no extension is used,
-   * the extension .tif will be added to the file name.
+   * In Processing 4.0 beta 5, the old (and sometimes buggy) TIFF
+   * reader/writer was removed, so ImageIO is used for TIFF files.
    * <p>
-   * The ImageIO API claims to support wbmp files, however they probably
-   * require a black and white image. Basic testing produced a zero-length
-   * file with no error.
+   * Also, files must have an extension: we're no longer adding .tif to
+   * files with no extension, because that can lead to confusing results,
+   * and the behavior is inconsistent with the rest of the API.
    *
    * @webref pimage:method
    * @webBrief Saves the image to a TIFF, TARGA, PNG, or JPEG file
@@ -3356,20 +3251,6 @@ int testFunction(int dst, int src) {
         OutputStream os = new BufferedOutputStream(new FileOutputStream(path), 32768);
         success = saveTGA(os); //, pixels, width, height, format);
         os.close();
-
-        /*
-      } else {  // fall-through case is TIFF
-        // Add a default extension and save uncompressed.
-        // This is the only place in the API that we mess
-        // with file names, and while arguably useful,
-        // it seems like a weird outlier. [fry 200816]
-        if (!lower.endsWith(".tif") && !lower.endsWith(".tiff")) {
-          path += ".tif";
-        }
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(path), 32768);
-        success = saveTIFF(os); //, pixels, width, height);
-        os.close();
-        */
 
       } else {
         // TODO Imperfect, possibly temporary solution for 4.x releases

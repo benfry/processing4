@@ -1,3 +1,14 @@
+# Processing 4.0 beta 5
+
+*Revision 1280 – XX January 2022*
+
+## Changes
+
+* The old (and sometimes buggy) TIFF reader/writer was removed, so Java's internal ImageIO is now used for TIFF files. The code is slightly slower, but the saved files are more compatible, and `loadImage("blah.tif")` will also work on more files than in the past.
+
+* Also, image file names passed to `save()` and `saveFrame()` must have an extension. We are no longer adding `.tif` to files with no extension, because that can lead to confusing results, and the behavior is inconsistent with the rest of the API.
+
+
 # Processing 4.0 beta 4
 
 *Revision 1279 – 24 January 2022*

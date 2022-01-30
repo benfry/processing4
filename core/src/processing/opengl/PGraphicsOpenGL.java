@@ -776,7 +776,7 @@ public class PGraphicsOpenGL extends PGraphics {
           // https://github.com/processing/processing4/issues/162
           // But there's a larger problem at play here:
           // https://github.com/processing/processing4/issues/385
-          System.err.println("Skipping save() because pixels not ready.");
+          System.err.println("Not saving image because pixels not ready.");
           return false;
         }
         boolean result = super.saveImpl(filename);

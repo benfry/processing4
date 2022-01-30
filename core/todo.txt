@@ -11,9 +11,27 @@ X why does GL flash red when resizing?
 X   this may be because of gaps between EDT and updates
 X   fixing the surface.setSize() issue may fix it
 X   https://github.com/processing/processing4/issues/386
+X Resizing window outside setup causes NPE when saving surface pixels
+X   https://github.com/processing/processing4/issues/162
 
-_ rework saveImpl() for images and how it interacts with the ShimAWT default
-_ remove the ancient TIFF saving code
+X rework saveImpl() for images and how it interacts with the ShimAWT default
+X remove the ancient TIFF saving code
+
+_ Better solution for frame/surface methods
+_   should it be requestSize() because the change is not immediate?
+_   do we need a windowResized() event?
+_   https://github.com/processing/processing4/issues/53
+_   windowTitle(), windowLocation(), windowSize()
+_   windowResizable(), windowRatio()
+_ setting surface size needs to happen outside draw()
+_   surface.setSize() sadness etc
+_   https://github.com/processing/processing4/issues/186
+_   https://github.com/processing/processing/issues/4129
+_ same goes for window resize events: queue them for when it's safe
+_   also probably need to be extending the display with the background color
+_   so that it's not neither stretching the viewport temporarily
+_     or leaving a gap at the edge of the window
+
 
 _ CODED is inconsistent between the default renderer and P2D/P3D
 _   includes recommendations how to fix
@@ -39,22 +57,6 @@ _ how to handle fallback fonts
 _   could implement this for the default, but also, SansSerif sucks
 _   https://stackoverflow.com/a/9482676
 _   in addition, it would need to be implemented for textWidth()
-
-_ Better solution for frame/surface methods
-_   should it be requestSize() because the change is not immediate?
-_   do we need a windowResized() event?
-_   https://github.com/processing/processing4/issues/53
-_   windowTitle(), windowLocation(), windowSize()
-_   windowResizable(), windowRatio()
-_ setting surface size needs to happen outside draw()
-_   surface.setSize() sadness etc
-_   https://github.com/processing/processing4/issues/162
-_   https://github.com/processing/processing4/issues/186
-_   https://github.com/processing/processing/issues/4129
-_ same goes for window resize events: queue them for when it's safe
-_   also probably need to be extending the display with the background color
-_   so that it's not neither stretching the viewport temporarily
-_     or leaving a gap at the edge of the window
 
 _ fullScreen() not working on a second display with P2D or P3D
 _   https://github.com/processing/processing4/issues/352
