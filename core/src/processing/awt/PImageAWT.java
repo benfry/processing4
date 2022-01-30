@@ -229,8 +229,10 @@ public class PImageAWT extends PImage {
   }
 
 
+  /*
   @Override
   protected boolean saveImpl(String path) {
     return ShimAWT.saveImage(this, path);
   }
+  */
 }
