@@ -7,6 +7,10 @@ X change the jdk download to include the arch
 X   when building on macOS, can't share folder b/c jdk zip is wrong arch
 X   but also requires checkout of processing-docs, so an unnecessary headache
 X update themes with new token colors
+X Windows virus/trojan complaints
+X   https://github.com/processing/processing4/issues/379
+X   https://www.microsoft.com/en-us/wdsi/filesubmission
+X   https://www.microsoft.com/en-us/wdsi/submission/69a47313-6b5a-4c94-9f74-27beffce5460
 
 scaling, text, again
 X IDE cursor position is wrong if font size is changed in preferences on macOS
@@ -31,13 +35,25 @@ X   https://github.com/processing/processing4/issues/317
 X Add support for multi-line string text blocks
 X   https://github.com/processing/processing4/issues/371
 
+previous releases
+X need icons for .pde, .pdex, .pdez
+X use svg images for res-indep icons/gui?
+X   https://stackoverflow.com/a/2495712
+X   (built and tested a version of this code if we want to use it)
+X   working to auto-generate icons, though not doing full res-indep for now
+o put themes in folders by name
+X   not useful, at least not yet
+
+other cleaning
+o unsupported java version when trying ant run with 7u65
+o   no helpful message about how to automatically download 8u51
+o ignore-tools in build.xml not being called for some reason
+o when variables used in size(), getting exceptions instead of any warning
+o   https://github.com/processing/processing/issues/3311
+
+
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-
-_ Windows virus/trojan complaints
-_   https://github.com/processing/processing4/issues/379
-_   https://www.microsoft.com/en-us/wdsi/filesubmission
-_   https://www.microsoft.com/en-us/wdsi/submission/69a47313-6b5a-4c94-9f74-27beffce5460
 
 _ Add support for localizing contributions
 _   https://github.com/processing/processing4/pull/237 (updated by Andres)
@@ -49,10 +65,6 @@ _   https://github.com/processing/processing4/issues/236
 _   https://github.com/processing/processing4/pull/237
 
 _ refresh option for sketchbook (bottom of window)
-
-_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
-_   https://github.com/processing/processing4/issues/212
-_   modules and classpath ugh https://stackoverflow.com/a/46289257
 
 _ pdez links for contribs, not just the .zip
 _   fix the code so that the contribs manager will handle it
@@ -74,42 +86,7 @@ _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
 _ when lib downloads (batik) go dead, fallback to download.processing.org
 _   or for now, tell users how to do it manually
-
-
-design
-_ console scroll bar colors
-_ errors table theme
-_ contrib manager theme
-_   implement updateTheme()
-_   identify coloring for icons
-_   how much of theme to inherit
-_   generate manager icons
-_ implement document icons on Windows
-_ implement document icons on Linux
-_ decision about 'debug' versions of toolbar icons
-_ put themes in folders by name
-_ add notes about params to the wiki
-
-
-ui is ugly on macOS
-_ sort out ui.font plus the other fonts inside theme.txt
-_   Toolkit.getSansFont() will use the internal ProcessingSansPro font
-_     which means it gets used inside ManagerFrame,
-_     and prevents the theme from updating the font
-_   while that font could exist in theme.txt,
-_     getSansFont() also handles the language fallback version
-_     which perhaps, that pref should come from the translations: i.e. an override setting
-_   decision: set the default sans, bold, and mono font in language file
-_     can be overridden in preferences.txt
-_     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
-_     need a separate identifier for the builtin sans (now called processing.sans)
-_     and when theme wants to ask for a sans font
-_ better default fonts for Swing; argh
-_   file an issue with the images
-_     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
-_   Space Grotesk and Mono?
-_     https://fonts.google.com/specimen/Space+Mono
-_     https://fonts.google.com/specimen/Space+Grotesk
+_   batik and ant have both broken the build when old versions were removed
 
 
 movie maker
@@ -143,16 +120,41 @@ _   should be fixed in 4.0 beta 3, and if not, beta 4
 
 
 design
+_ console scroll bar colors
+_ errors table theme
+_ contrib manager theme
+_   implement updateTheme()
+_   identify coloring for icons
+_   how much of theme to inherit
+_   generate manager icons
+_ implement document icons on Windows
+_ implement document icons on Linux
+_ decision about 'debug' versions of toolbar icons
+_ add notes about params to the wiki
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
 _ welcome screen is a mess
-_ need icons for .pde, .pdex, .pdez
 _ core/src/icon-NN.png should be the exported application icon
 _   currently it's the p5 icon since the export just looks black
 _ also lib/icons has the pde icon set and the foundation icon (for contribs)
-_ use svg images for res-indep icons/gui?
-_   https://stackoverflow.com/a/2495712
-_   (built and tested a version of this code if we want to use it)
+_ sort out ui.font plus the other fonts inside theme.txt
+_   Toolkit.getSansFont() will use the internal ProcessingSansPro font
+_     which means it gets used inside ManagerFrame,
+_     and prevents the theme from updating the font
+_   while that font could exist in theme.txt,
+_     getSansFont() also handles the language fallback version
+_     which perhaps, that pref should come from the translations: i.e. an override setting
+_   decision: set the default sans, bold, and mono font in language file
+_     can be overridden in preferences.txt
+_     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
+_     need a separate identifier for the builtin sans (now called processing.sans)
+_     and when theme wants to ask for a sans font
+_ better default fonts for Swing; argh
+_   file an issue with the images
+_     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
+_   Space Grotesk and Mono?
+_     https://fonts.google.com/specimen/Space+Mono
+_     https://fonts.google.com/specimen/Space+Grotesk
 
 
 code completion
@@ -184,6 +186,7 @@ _   https://github.com/processing/processing4/issues/67
 _ command line complaints
 _   https://github.com/processing/processing/issues/6129
 _ editor breakpoints out of the .pde files
+_   really a drag for version control
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
 
@@ -246,6 +249,12 @@ _ startup is so incredibly slow
 X   the splash screen comes up fairly quickly, so what gives?
 _   lots of EDT thread stuff, particularly with loading contribs
 _   handleNew() taking 2-3s?
+
+
+probably after 4.0
+_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
+_   https://github.com/processing/processing4/issues/212
+_   modules and classpath ugh https://stackoverflow.com/a/46289257
 
 
 windows
@@ -349,8 +358,6 @@ _   do we still support library compilations? that was from 2016
 _   https://github.com/processing/processing/issues/4630
 
 
-
-
 gui
 _ mouse events (i.e. toggle breakpoint) seem to be firing twice
 _ spacing of the updates number/circle in the lower right is off
@@ -404,11 +411,6 @@ _   https://github.com/processing/processing/issues/5023
 
 
 pde/build
-_ unsupported java version when trying ant run with 7u65
-_   no helpful message about how to automatically download 8u51
-_ ignore-tools in build.xml not being called for some reason
-_ when variables used in size(), getting exceptions instead of any warning
-_   https://github.com/processing/processing/issues/3311
 _ break out Mode-specific options to their own panels in prefs
 _   Mode should just provide a panel for their prefs
 _ make the build fail if git pull on processing-docs fails
