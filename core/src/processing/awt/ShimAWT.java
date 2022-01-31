@@ -6,8 +6,10 @@ import java.awt.image.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.geom.AffineTransform;
+import java.util.Map;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -495,7 +497,7 @@ public class ShimAWT implements PConstants {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static public boolean saveImage(PImage image, String path) {
+  static public boolean saveImage(PImage image, String path, String... args) {
     if (saveImageExtensions == null) {
       saveImageExtensions = javax.imageio.ImageIO.getWriterFormatNames();
     }
@@ -503,7 +505,7 @@ public class ShimAWT implements PConstants {
       if (saveImageExtensions != null) {
         for (String saveImageFormat : saveImageExtensions) {
           if (path.endsWith("." + saveImageFormat)) {
-            if (!saveImageIO(image, path)) {
+            if (!saveImageIO(image, path, args)) {
               System.err.println("Error while saving image.");
               return false;
             }
@@ -530,11 +532,24 @@ public class ShimAWT implements PConstants {
    * To get a list of the supported formats for writing, use: <BR>
    * <TT>println(javax.imageio.ImageIO.getReaderFormatNames())</TT>
    */
-  static protected boolean saveImageIO(PImage image, String path) throws IOException {
+  static protected boolean saveImageIO(PImage image, String path, String... args) throws IOException {
     try {
       int outputFormat = (image.format == ARGB) ?
         BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
+      Map<String, Number> params = new HashMap<>();
+      params.put("quality", 0.9f);  // default JPEG quality
+      params.put("dpi", 100.0);  // default DPI for PNG
+
+      if (args != null) {
+        for (String arg : args) {
+          if (arg.startsWith("quality=")) {
+            params.put("quality", Float.parseFloat(arg.substring(8)));
+          } else if (arg.startsWith("dpi=")) {
+            params.put("dpi", Double.parseDouble(arg.substring(4)));
+          }
+        }
+      }
 
       String extension =
         path.substring(path.lastIndexOf('.') + 1).toLowerCase();
@@ -563,16 +578,15 @@ public class ShimAWT implements PConstants {
           // it's a completely different algorithm.
           param = writer.getDefaultWriteParam();
           param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-          param.setCompressionQuality(0.9f);
+          //param.setCompressionQuality(0.9f);
+          param.setCompressionQuality((Float) params.get("quality"));
         }
       }
 
       if (extension.equals("png")) {
         if ((writer = imageioWriter("png")) != null) {
           param = writer.getDefaultWriteParam();
-          if (false) {
-            metadata = imageioDPI(writer, param, 100);
-          }
+          metadata = imageioDPI(writer, param, (Double) params.get("dpi"));
         }
       }
 
