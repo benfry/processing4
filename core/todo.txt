@@ -28,6 +28,11 @@ X rework saveImpl() for images and how it interacts with the ShimAWT default
 X remove the ancient TIFF saving code
 X add more plumbing to set the compression level on JPEG and the DPI for PNG
 
+design
+X core/src/icon-NN.png should be the exported application icon
+X   currently it's the p5 icon since the export just looks black
+
+
 _ Better solution for frame/surface methods
 _   https://github.com/processing/processing4/issues/53
 o   should it be requestSize() because the change is not immediate?
@@ -36,7 +41,6 @@ _   windowTitle(), windowSize(), windowResizable()
 _   windowLocation() or maybe windowPosition() and windowPositioned()
 _     or windowMove()?
 _   do we need a windowResized() event?
-
 
 _ windowRatio()
 _   size() function that scales to screen, keeps aspect, re-scales mouse coords
