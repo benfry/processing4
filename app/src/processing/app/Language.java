@@ -28,7 +28,7 @@ import processing.core.PApplet;
 
 
 /**
- * Internationalization (i18n)
+ * Internationalization (I18N) and Localization (L10N)
  */
 public class Language {
   // Store the language information in a file separate from the preferences,
@@ -256,6 +256,22 @@ public class Language {
   }
 
 
+  @SuppressWarnings("unused")
+  static public void addModeStrings(Mode mode) {
+    String baseFilename = "languages/mode.properties";
+    File modeBaseFile = new File(mode.getFolder(), baseFilename);
+    if (modeBaseFile.exists()) {
+      init().bundle.read(modeBaseFile, true);
+    }
+
+    String langFilename = "languages/mode_" + instance.language + ".properties";
+    File modeLangFile = new File(mode.getFolder(), langFilename);
+    if (modeLangFile.exists()) {
+      init().bundle.read(modeLangFile, true);
+    }
+  }
+
+
 //  /** Set new language (called by Preferences) */
 //  static public void setLanguage(String language) {
 //    this.language = language;
@@ -335,26 +351,51 @@ public class Language {
     }
 
     void read(File additions) {
+      read(additions, false);
+    }
+
+    void read(File additions, boolean enforcePrefix) {
+      String prefix = null;
+
       String[] lines = PApplet.loadStrings(additions);
-      if (lines == null) {
-        throw new NullPointerException("File not found:\n" + additions.getAbsolutePath());
-      }
-      for (String line : lines) {
-        if ((line.length() == 0) ||
+      if (lines != null) {
+        for (String line : lines) {
+          if ((line.length() == 0) ||
             (line.charAt(0) == '#')) continue;
 
-        // this won't properly handle = signs inside in the text
-        int equals = line.indexOf('=');
-        if (equals != -1) {
-          String key = line.substring(0, equals).trim();
-          String value = line.substring(equals + 1).trim();
+          // this won't properly handle = signs inside in the text
+          int equals = line.indexOf('=');
+          if (equals != -1) {
+            String key = line.substring(0, equals).trim();
 
-          // fix \n and \'
-          value = value.replaceAll("\\\\n", "\n");
-          value = value.replaceAll("\\\\'", "'");
+            boolean ignore = false;
+            if (enforcePrefix) {
+              if (prefix == null) {
+                prefix = key.substring(0, key.indexOf('.') + 1);
+                if (prefix.length() == 0) {
+                  System.err.println("Language strings in Modes must include a prefix for all entries.");
+                  System.err.println(additions + " will be ignored.");
+                  return;  // exit read()
+                }
+              } else if (!key.startsWith(prefix)) {
+                System.err.println("Ignoring " + key + " because all entries in " + additions + " must begin with " + prefix);
+                ignore = true;
+              }
+            }
 
-          table.put(key, value);
+            if (!ignore) {
+              String value = line.substring(equals + 1).trim();
+
+              // Replace \n and \' with their actual values
+              value = value.replaceAll("\\\\n", "\n");
+              value = value.replaceAll("\\\\'", "'");
+
+              table.put(key, value);
+            }
+          }
         }
+      } else {
+        System.err.println("Unable to read " + additions);
       }
     }
 

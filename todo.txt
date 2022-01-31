@@ -24,6 +24,7 @@ X   https://github.com/processing/processing4/issues/226
 X   https://github.com/processing/processing4/issues/342
 X caret is sometimes one pixel too tall
 X cleaning up TextAreaPainter to be less cute; adding more clarifications
+X SyntaxDebug removed with 1459d8f714e7e3e8816df010224c567ed5e42fa4
 
 preproc from Sam
 X Preproc bug fixes and improvements
@@ -55,14 +56,14 @@ o   https://github.com/processing/processing/issues/3311
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-_ Add support for localizing contributions
-_   https://github.com/processing/processing4/pull/237 (updated by Andres)
+_ add language support to Modes
+_   request and updated PR from Andres)
+_     https://github.com/processing/processing4/issues/236
+_     https://github.com/processing/processing4/pull/237 (updated by Andres)
 X   https://github.com/processing/processing/pull/2833
 X   https://github.com/processing/processing/issues/3154
 X   https://github.com/processing/processing/pull/3337
-_ add language support to Modes (request and updated PR from Andres)
-_   https://github.com/processing/processing4/issues/236
-_   https://github.com/processing/processing4/pull/237
+
 
 _ refresh option for sketchbook (bottom of window)
 
