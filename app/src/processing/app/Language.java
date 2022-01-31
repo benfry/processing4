@@ -43,7 +43,7 @@ public class Language {
   private String language;
 
   /** Available languages */
-  private HashMap<String, String> languages;
+  private final Map<String, String> languages;
 
   private LanguageBundle bundle;
 
@@ -59,7 +59,7 @@ public class Language {
     }
 
     // Set available languages
-    languages = new HashMap<String, String>();
+    languages = new HashMap<>();
     for (String code : listSupported()) {
       Locale locale = Locale.forLanguageTag(code);
       languages.put(code, locale.getDisplayLanguage(locale));
@@ -88,7 +88,7 @@ public class Language {
   static private String[] listSupported() {
     // List of languages in alphabetical order. (Add yours here.)
     // Also remember to add it to build/shared/lib/languages/languages.txt.
-    final String[] SUPPORTED = {
+    return new String[] {
       "ar", // Arabic
       "de", // German, Deutsch
       "en", // English
@@ -105,7 +105,6 @@ public class Language {
       "uk", // Ukrainian
       "zh"  // Chinese
     };
-    return SUPPORTED;
 
     /*
     // come back to this when bundles are placed outside the JAR
@@ -129,11 +128,14 @@ public class Language {
   static private String loadLanguage() {
     try {
       if (prefFile.exists()) {
-        String language = PApplet.loadStrings(prefFile)[0];
-        language = language.trim().toLowerCase();
-        if (language.trim().length() != 0) {
-          return language;
+        String[] lines = PApplet.loadStrings(prefFile);
+        if (lines != null && lines.length > 0) {
+          String language = lines[0].trim().toLowerCase();
+          if (language.length() != 0) {
+            return language;
+          }
         }
+        System.err.println("Using default language because of a problem while reading " + prefFile);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -149,7 +151,10 @@ public class Language {
   static public void saveLanguage(String language) {
     try {
       Util.saveFile(language, prefFile);
-      prefFile.setWritable(true, false);
+      boolean ok = prefFile.setWritable(true, false);
+      if (!ok) {
+        System.err.println("Warning: could not set " + prefFile + " to writable");
+      }
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -178,7 +183,7 @@ public class Language {
       if (value != null) {
         return value;
       }
-    } catch (MissingResourceException e) { }
+    } catch (MissingResourceException ignored) { }
 
     return null;
   }
@@ -200,7 +205,6 @@ public class Language {
     if (value == null) {
       return key;
     }
-//    System.out.println("  interp for " + key + " is " + String.format(value, arguments));
     return String.format(value, arguments);
   }
 
@@ -233,7 +237,7 @@ public class Language {
 
   /**
    * Get the current language.
-   * @return two digit ISO code (lowercase)
+   * @return two-digit ISO code (lowercase)
    */
   static public String getLanguage() {
     return init().language;
@@ -307,7 +311,7 @@ public class Language {
     Map<String, String> table;
 
     LanguageBundle(String language) throws IOException {
-      table = new HashMap<String, String>();
+      table = new HashMap<>();
 
       // Check to see if the user is working on localization,
       // and has their own .properties files in their sketchbook.
@@ -335,9 +339,7 @@ public class Language {
       if (lines == null) {
         throw new NullPointerException("File not found:\n" + additions.getAbsolutePath());
       }
-      //for (String line : lines) {
-      for (int i = 0; i < lines.length; i++) {
-        String line = lines[i];
+      for (String line : lines) {
         if ((line.length() == 0) ||
             (line.charAt(0) == '#')) continue;
 
@@ -346,19 +348,6 @@ public class Language {
         if (equals != -1) {
           String key = line.substring(0, equals).trim();
           String value = line.substring(equals + 1).trim();
-
-          /*
-          // Support for backslashes to continue lines... Nah.
-          while (line.endsWith("\\")) {
-            // remove the backslash from the previous
-            value = value.substring(0, value.length() - 1);
-            // get the next line
-            line = lines[++i].trim();
-            // append the new line to the value (with a space)
-            // This is imperfect since the prev may end <br>
-            value += " " + line;
-          }
-          */
 
           // fix \n and \'
           value = value.replaceAll("\\\\n", "\n");
@@ -373,8 +362,12 @@ public class Language {
       return table.get(key);
     }
 
+
+    /*
+    // removing in 4.0 beta 5; not known to be in use [fry 220130]
     boolean containsKey(String key) {
       return table.containsKey(key);
     }
+    */
   }
 }
