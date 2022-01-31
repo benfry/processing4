@@ -48,10 +48,10 @@ public class ShimAWT implements PConstants {
   */
   static private ShimAWT instance;
 
-  private GraphicsDevice[] displayDevices;
+  final private GraphicsDevice[] displayDevices;
 
-  private int displayWidth;
-  private int displayHeight;
+  final private int displayWidth;
+  final private int displayHeight;
 
 
   /** Only needed for display functions */
@@ -189,7 +189,7 @@ public class ShimAWT implements PConstants {
         new PixelGrabber(img, 0, 0, out.width, out.height, out.pixels, 0, out.width);
       try {
         pg.grabPixels();
-      } catch (InterruptedException e) { }
+      } catch (InterruptedException ignored) { }
     }
     out.pixelDensity = 1;
     out.pixelWidth = out.width;
@@ -276,7 +276,7 @@ public class ShimAWT implements PConstants {
         if (w < targetWidth) {
           w = targetWidth;
         }
-      } else if (targetWidth >= w) {
+      } else {  //if (targetWidth >= w) {
         w = targetWidth;
       }
       if (h > targetHeight) {
@@ -284,7 +284,7 @@ public class ShimAWT implements PConstants {
         if (h < targetHeight) {
           h = targetHeight;
         }
-      } else if (targetHeight >= h) {
+      } else {  //if (targetHeight >= h) {
         h = targetHeight;
       }
       if (scratchImage == null || isTranslucent) {
@@ -301,9 +301,9 @@ public class ShimAWT implements PConstants {
       outgoing = scratchImage;
     } while (w != targetWidth || h != targetHeight);
 
-    if (g2 != null) {
-      g2.dispose();
-    }
+    //if (g2 != null) {
+    g2.dispose();
+    //}
 
     // If we used a scratch buffer that is larger than our target size,
     // create an image of the right size and copy the results into it
@@ -356,7 +356,9 @@ public class ShimAWT implements PConstants {
         if (input == null) return null;
 
         PImage image = PImage.loadTGA(input);
-        image.parent = sketch;
+        if (image != null) {
+          image.parent = sketch;
+        }
         return image;
 
       } catch (IOException e) {
@@ -533,6 +535,7 @@ public class ShimAWT implements PConstants {
       int outputFormat = (image.format == ARGB) ?
         BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
 
+
       String extension =
         path.substring(path.lastIndexOf('.') + 1).toLowerCase();
 
@@ -575,6 +578,9 @@ public class ShimAWT implements PConstants {
 
       if (writer != null) {
         OutputStream output = PApplet.createOutput(file);
+        if (output == null) {
+          return false;
+        }
         writer.setOutput(ImageIO.createImageOutputStream(output));
         writer.write(metadata, new IIOImage(bimage, null, metadata), param);
         writer.dispose();
@@ -602,6 +608,7 @@ public class ShimAWT implements PConstants {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private IIOMetadata imageioDPI(ImageWriter writer, ImageWriteParam param, double dpi) {
     // http://stackoverflow.com/questions/321736/how-to-set-dpi-information-in-an-image
     ImageTypeSpecifier typeSpecifier =
@@ -700,10 +707,8 @@ public class ShimAWT implements PConstants {
 
   static public void selectInput(String prompt, String callbackMethod,
                                  File file, Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      selectImpl(prompt, callbackMethod, file,
-                 callbackObject, null, FileDialog.LOAD);
-    });
+    EventQueue.invokeLater(() -> selectImpl(prompt, callbackMethod, file,
+      callbackObject, null, FileDialog.LOAD));
   }
 
 
@@ -724,10 +729,8 @@ public class ShimAWT implements PConstants {
 
   static public void selectOutput(String prompt, String callbackMethod,
                                   File file, Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      selectImpl(prompt, callbackMethod, file,
-                 callbackObject, null, FileDialog.SAVE);
-    });
+    EventQueue.invokeLater(() -> selectImpl(prompt, callbackMethod, file,
+      callbackObject, null, FileDialog.SAVE));
   }
 
 
@@ -805,10 +808,8 @@ public class ShimAWT implements PConstants {
                                   final String callbackMethod,
                                   final File defaultSelection,
                                   final Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      selectFolderImpl(prompt, callbackMethod, defaultSelection,
-                       callbackObject, null);
-    });
+    EventQueue.invokeLater(() -> selectFolderImpl(prompt, callbackMethod,
+      defaultSelection, callbackObject, null));
   }
 
 
@@ -888,7 +889,7 @@ public class ShimAWT implements PConstants {
         // Which also is not scaled properly with HiDPI interfaces.
         try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
       }
       lookAndFeelCheck = true;
     }
@@ -908,9 +909,7 @@ public class ShimAWT implements PConstants {
         Desktop.getDesktop().browse(new URI(url));
         return true;
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (URISyntaxException e) {
+    } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
     }
     return false;
