@@ -33,6 +33,10 @@ X caret is sometimes one pixel too tall
 X cleaning up TextAreaPainter to be less cute; adding more clarifications
 X SyntaxDebug removed with 1459d8f714e7e3e8816df010224c567ed5e42fa4
 
+design
+X core/src/icon-NN.png should be the exported application icon
+X   currently it's the p5 icon since the export just looks black
+
 preproc from Sam
 X Preproc bug fixes and improvements
 X   https://github.com/processing/processing4/pull/384
@@ -133,8 +137,6 @@ _ add notes about params to the wiki
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
 _ welcome screen is a mess
-_ core/src/icon-NN.png should be the exported application icon
-_   currently it's the p5 icon since the export just looks black
 _ also lib/icons has the pde icon set and the foundation icon (for contribs)
 _ sort out ui.font plus the other fonts inside theme.txt
 _   Toolkit.getSansFont() will use the internal ProcessingSansPro font
