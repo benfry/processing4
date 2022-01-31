@@ -45,6 +45,10 @@ _   do we need a windowResized() event?
 _ windowRatio()
 _   size() function that scales to screen, keeps aspect, re-scales mouse coords
 
+_ pixelDensity() not working in exported Windows applications?
+_   https://github.com/processing/processing/issues/5414#issuecomment-841088518
+_   should be fixed in 4.0 beta 3, and if not, beta 4
+
 _ rename jAppleMenuBar, make part of build process
 
 _ CODED is inconsistent between the default renderer and P2D/P3D

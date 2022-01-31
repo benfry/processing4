@@ -66,8 +66,22 @@ o   https://github.com/processing/processing/issues/3311
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+class
 _ refresh option for sketchbook (bottom of window)
+_ make sure pdex/pdez files working, also on Windows
 
+
+_ replace bug numbers
+_   http://dev.processing.org/bugs/show_bug.cgi?id=1188
+_   with http://processing.org/bugs/bugzilla/1188.html
+_   also code.google.com URLs with Github URLs (numbers are sorta in sync)
+
+_ when lib downloads (batik) go dead, fallback to download.processing.org
+_   or for now, tell users how to do it manually
+_   batik and ant have both broken the build when old versions were removed
+
+
+contribs
 _ pdez links for contribs, not just the .zip
 _   fix the code so that the contribs manager will handle it
 _   though that's bad for earlier contribs, hrm
@@ -80,22 +94,6 @@ _   test for what happens:
 _   if Java Mode is in front, and user double-clicks another Mode's entry
 _ write build.xml file to automatically update the examples
 _ when adding a new library, its examples aren't added to the list until restart
-
-_ replace bug numbers
-_   http://dev.processing.org/bugs/show_bug.cgi?id=1188
-_   with http://processing.org/bugs/bugzilla/1188.html
-_   also code.google.com URLs with Github URLs (numbers are sorta in sync)
-
-_ when lib downloads (batik) go dead, fallback to download.processing.org
-_   or for now, tell users how to do it manually
-_   batik and ant have both broken the build when old versions were removed
-
-
-movie maker
-_ break this out to its own library?
-_   another big leap in file size reduction for the PDE download
-_   but need to figure out a good way to highlight it/encourage installation
-_   ...as well as the other libraries? separate window?
 
 
 manager
@@ -111,12 +109,6 @@ _ StatusPanel seems to be recreated entirely
 _ StatusPanel being reset twice on each click
 _   is checking for previous, but apparently that's not working
 _ Base.setUpdatesAvailable() is called from half a dozen places!?
-
-
-windows/scaling
-_ pixelDensity() not working in exported Windows applications
-_   https://github.com/processing/processing/issues/5414#issuecomment-841088518
-_   should be fixed in 4.0 beta 3, and if not, beta 4
 
 
 design
@@ -155,12 +147,6 @@ _     https://fonts.google.com/specimen/Space+Mono
 _     https://fonts.google.com/specimen/Space+Grotesk
 
 
-code completion
-_ auto-complete not triggering, workaround as pref?
-_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
-_   https://github.com/processing/processing/issues/5691
-
-
 before 4.x final
 _ Help > Library/Tools reference links don't work
 _ Export to Application not working with the current video library
@@ -187,6 +173,8 @@ _ editor breakpoints out of the .pde files
 _   really a drag for version control
 _   https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
+_ ffmpeg binaries for all our platforms
+_   also should probably download these on demand, when not in the PATH
 
 
 platforms
@@ -227,6 +215,13 @@ _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _   tell users about JavaFX, Movie Maker install, changing themes
 _ Remove “Disable HiDPI Scaling” preference on Windows?
+_ break Movie Maker out to its own library?
+_   another big leap in file size reduction for the PDE download
+_   but need to figure out a good way to highlight it/encourage installation
+_   ...as well as the other libraries? separate window?
+_ auto-complete not triggering, workaround as pref?
+_   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
+_   https://github.com/processing/processing/issues/5691
 
 
 would like to fix (after 4.0 final)
