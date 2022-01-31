@@ -118,7 +118,7 @@ public class PSurfaceJOGL implements PSurface {
 
   protected float[] currentPixelScale = { 0, 0 };
 
-  protected boolean external = false;
+//  protected boolean external = false;
 
 
   public PSurfaceJOGL(PGraphics graphics) {
@@ -638,9 +638,11 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
+  /*
   public void setupExternalMessages() {
     external = true;
   }
+  */
 
 
   public void startThread() {
@@ -905,9 +907,12 @@ public class PSurfaceJOGL implements PSurface {
 
     @Override
     public void windowMoved(com.jogamp.newt.event.WindowEvent arg0) {
+      /*
       if (external) {
         sketch.frameMoved(window.getX(), window.getY());
       }
+      */
+      sketch.postWindowPosition(window.getX(), window.getY());
     }
 
     @Override
@@ -916,6 +921,7 @@ public class PSurfaceJOGL implements PSurface {
 
     @Override
     public void windowResized(com.jogamp.newt.event.WindowEvent arg0) {
+      sketch.postWindowResize(window.getWidth(), window.getHeight());
     }
   }
 

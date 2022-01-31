@@ -95,7 +95,7 @@ public interface PSurface {
   public void placePresent(int stopColor);
 
   // Sketch is running from the PDE, set up messaging back to the PDE
-  public void setupExternalMessages();
+  //public void setupExternalMessages();
 
   //
 

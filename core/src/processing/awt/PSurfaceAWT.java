@@ -995,23 +995,24 @@ public class PSurfaceAWT extends PSurfaceNone {
   */
 
 
-  /**
-   * Set this sketch to communicate its state back to the PDE.
-   * <p/>
-   * This uses the stderr stream to write positions of the window
-   * (so that it will be saved by the PDE for the next run) and
-   * notify on quit. See more notes in the Worker class.
-   */
-  @Override
-  public void setupExternalMessages() {
-    frame.addComponentListener(new ComponentAdapter() {
-      @Override
-      public void componentMoved(ComponentEvent e) {
-        Point where = ((Frame) e.getSource()).getLocation();
-        sketch.frameMoved(where.x, where.y);
-      }
-    });
-  }
+//  /**
+//   * Set this sketch to communicate its state back to the PDE.
+//   * <p/>
+//   * This uses the stderr stream to write positions of the window
+//   * (so that it will be saved by the PDE for the next run) and
+//   * notify on quit. See more notes in the Worker class.
+//   */
+//  @Override
+//  public void setupExternalMessages() {
+//    frame.addComponentListener(new ComponentAdapter() {
+//      @Override
+//      public void componentMoved(ComponentEvent e) {
+//        Point where = ((Frame) e.getSource()).getLocation();
+//        //sketch.frameMoved(where.x, where.y);
+//        sketch.queueWindowPosition(where.x, where.y);
+//      }
+//    });
+//  }
 
 
   /**
@@ -1019,9 +1020,8 @@ public class PSurfaceAWT extends PSurfaceNone {
    * in cases where frame.setResizable(true) is called.
    */
   private void setupFrameResizeListener() {
-    // Detecting when the frame is resized in order to handle the frame
-// maximization bug in OSX:
-// http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8036935
+    // Detect when the frame is resized to handle a macOS bug:
+    // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=8036935
     frame.addWindowStateListener(e -> {
       // This seems to be firing when dragging the window on OS X
       // https://github.com/processing/processing/issues/3092
@@ -1068,8 +1068,17 @@ public class PSurfaceAWT extends PSurfaceNone {
 
             // correct the location when inset size changes
             setLocation(x - currentInsets.left, y - currentInsets.top);
+
+            // notify the sketch that the window has been resized
+            sketch.postWindowResize(w / windowScaleFactor, h / windowScaleFactor);
           }
         }
+      }
+
+      @Override
+      public void componentMoved(ComponentEvent e) {
+        Point where = ((Frame) e.getSource()).getLocation();
+        sketch.postWindowPosition(where.x, where.y);
       }
     });
   }

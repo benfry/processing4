@@ -2134,6 +2134,9 @@ public class PApplet implements PConstants {
         frameRate = (float) (1.0 / avgFrameTimeSecs);
       }
 
+      // post move and resize events to the sketch here
+      dequeueWindowEvents();
+
       handleMethods("pre");
 
       // use dmouseX/Y as previous mouse pos, since this is the
@@ -9943,6 +9946,7 @@ public class PApplet implements PConstants {
   //////////////////////////////////////////////////////////////
 
 
+  /*
   public void frameMoved(int x, int y) {
     if (!fullScreen) {
       System.err.println(EXTERNAL_MOVE + " " + x + " " + y);
@@ -9953,6 +9957,91 @@ public class PApplet implements PConstants {
 
   public void frameResized(int w, int h) {
   }
+  */
+
+
+  //////////////////////////////////////////////////////////////
+
+  // WINDOW METHODS
+
+  Map<String, Integer> windowEventQueue = new ConcurrentHashMap<>();
+
+
+  public void windowTitle(String title) {
+    surface.setTitle(title);
+  }
+
+
+  public void windowSize(int newWidth, int newHeight) {
+    surface.setSize(newWidth, newHeight);
+  }
+
+
+  /**
+   * Internal use only: called by Surface objects to queue a resize
+   * event to call windowResized() when it's safe, which is after
+   * the beginDraw() call and before the draw(). Note that this is
+   * only the notification that the resize has happened.
+   */
+  public void postWindowResize(int newWidth, int newHeight) {
+    windowEventQueue.put("w", newWidth);
+    windowEventQueue.put("h", newHeight);
+  }
+
+
+  /** Called when window is resized. */
+  public void windowResized(int newWidth, int newHeight) {  }
+
+
+  public void windowResizable(boolean resizable) {
+    surface.setResizable(resizable);
+  }
+
+
+  public void windowPosition(int x, int y) {
+    surface.setLocation(x, y);
+  }
+
+
+  /**
+   * Internal use only: called by Surface objects to queue a position
+   * event to call windowPositioned() when it's safe, which is after
+   * the beginDraw() call and before the draw(). Note that this is
+   * only the notification that the window is in a new position.
+   */
+  public void postWindowPosition(int newX, int newY) {
+    if (external && !fullScreen) {
+      // When running from the PDE, this saves the window position
+      // for next time the sketch is run.
+      System.err.println(EXTERNAL_MOVE + " " + newX + " " + newY);
+      System.err.flush();  // doesn't seem to help or hurt
+    }
+
+    windowEventQueue.put("x", newX);
+    windowEventQueue.put("y", newY);
+  }
+
+
+  /** Called when the window is moved */
+  public void windowPositioned(int x, int y) {  }
+
+
+  private void dequeueWindowEvents() {
+    if (windowEventQueue.containsKey("x")) {
+      windowPositioned(windowEventQueue.remove("x"),
+                       windowEventQueue.remove("y"));
+    }
+    if (windowEventQueue.containsKey("w")) {
+      windowResized(windowEventQueue.remove("w"),
+                    windowEventQueue.remove("h"));
+    }
+  }
+
+
+  /*
+  public void windowRatio(int wide, int high) {
+  }
+  */
 
 
   //////////////////////////////////////////////////////////////
@@ -10285,11 +10374,13 @@ public class PApplet implements PConstants {
       surface.placeWindow(location, editorLocation);
     }
 
+    /*
     // not always running externally when in present mode
     // moved above setVisible() in 3.0 alpha 11
     if (sketch.external) {
       surface.setupExternalMessages();
     }
+    */
 
     sketch.showSurface();
     sketch.startSurface();
