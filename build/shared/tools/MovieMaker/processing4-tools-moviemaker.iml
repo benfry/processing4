@@ -15,14 +15,5 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="module" module-name="processing4-app" />
-    <orderEntry type="module-library">
-      <library name="jai_imageio.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/tool/jai_imageio.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
   </component>
 </module>

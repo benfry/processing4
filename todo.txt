@@ -18,6 +18,9 @@ X     https://github.com/processing/processing4/pull/237 (updated by Andres)
 X   https://github.com/processing/processing/pull/2833
 X   https://github.com/processing/processing/issues/3154
 X   https://github.com/processing/processing/pull/3337
+X remove the old MovieMaker code
+X   clean out the unused class files and src
+X   also remove jai_imageio.jar
 
 scaling, text, again
 X IDE cursor position is wrong if font size is changed in preferences on macOS
@@ -93,8 +96,6 @@ _ break this out to its own library?
 _   another big leap in file size reduction for the PDE download
 _   but need to figure out a good way to highlight it/encourage installation
 _   ...as well as the other libraries? separate window?
-_ remove jai_imageio.jar from MovieMaker
-_   also clean out the other unused class files and src
 
 
 manager
