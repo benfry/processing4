@@ -1424,6 +1424,12 @@ public class PSurfaceAWT extends PSurfaceNone {
 
 
   @Override
+  public boolean openLink(String url) {
+    return ShimAWT.openLink(url);
+  }
+
+
+  @Override
   public Thread createThread() {
     return new AnimationThread() {
       @Override

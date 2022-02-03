@@ -21,6 +21,7 @@ X   https://github.com/processing/processing/pull/3337
 X remove the old MovieMaker code
 X   clean out the unused class files and src
 X   also remove jai_imageio.jar
+X tweak how URLs are opened for better compatibility
 
 scaling, text, again
 X IDE cursor position is wrong if font size is changed in preferences on macOS
@@ -270,6 +271,7 @@ _ temp folders (particularly on Windows)
 _   a whole section down below about this
 _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
+_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 
 contrib

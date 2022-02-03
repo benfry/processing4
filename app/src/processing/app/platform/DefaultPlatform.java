@@ -37,6 +37,8 @@ import com.sun.jna.Native;
 import processing.app.Base;
 import processing.app.Preferences;
 import processing.app.ui.Toolkit;
+import processing.awt.ShimAWT;
+import processing.core.PApplet;
 
 
 /**
@@ -187,17 +189,24 @@ public class DefaultPlatform {
   }
 
 
+  // TODO this should be openLink(), as in PApplet, but need to look
+  //      into what else it might break by changing it [fry 220202]
   public void openURL(String url) throws Exception {
-    Desktop.getDesktop().browse(new URI(url));
+    if (!ShimAWT.openLink(url)) {
+      PApplet.launch(url);
+    }
   }
 
 
   public boolean openFolderAvailable() {
-    return Desktop.isDesktopSupported();
+    return Desktop.isDesktopSupported() &&
+      Desktop.getDesktop().isSupported(Desktop.Action.OPEN);
   }
 
 
   public void openFolder(File file) throws Exception {
+    // TODO Looks like this should instead be Action.BROWSE_FILE_DIR,
+    //      which was added in Java 9. (Also update available method.)
     Desktop.getDesktop().open(file);
   }
 

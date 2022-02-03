@@ -911,7 +911,7 @@ public class ShimAWT implements PConstants {
 
 
   // TODO maybe call this with reflection from inside PApplet?
-  // longer term, develop a more general method for other platforms
+  //      longer term, develop a more general method for other platforms
   static public File getWindowsDesktop() {
     return FileSystemView.getFileSystemView().getHomeDirectory();
   }
@@ -920,8 +920,11 @@ public class ShimAWT implements PConstants {
   static public boolean openLink(String url) {
     try {
       if (Desktop.isDesktopSupported()) {
-        Desktop.getDesktop().browse(new URI(url));
-        return true;
+        Desktop desktop = Desktop.getDesktop();
+        if (desktop.isSupported(Desktop.Action.BROWSE)) {
+          desktop.browse(new URI(url));
+          return true;
+        }
       }
     } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
