@@ -12,7 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.IOException;
 
-public class fullscreen extends PApplet {
+public class fullscreen_arg extends PApplet {
 
     public void setup() {
 /* size commented out by preprocessor */;
