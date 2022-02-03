@@ -326,6 +326,11 @@ public class ParserTests {
   }
 
   @Test
+  public void fullscreenArg() {
+    expectGood("fullscreen_arg", true);
+  }
+
+  @Test
   public void customMain() {
     expectGood("custommain", true);
   }
