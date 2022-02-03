@@ -78,6 +78,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private String pixelDensity;
   private String smoothParam;
   private String sketchRenderer = null;
+  private String fullscreenArgs = "";
   private String sketchOutputFilename = null;
 
   private boolean sizeRequiresRewrite = false;
@@ -720,9 +721,17 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       thisRequiresRewrite = true;
       sizeIsFullscreen = true;
 
+      StringJoiner fullscreenArgsBuilder = new StringJoiner(", ");
+
       if (argsContext.getChildCount() > 0) {
-        sketchRenderer = argsContext.getChild(0).getText();
+        fullscreenArgsBuilder.add(argsContext.getChild(0).getText());
       }
+
+      if (argsContext.getChildCount() > 2) {
+        fullscreenArgsBuilder.add(argsContext.getChild(2).getText());
+      }
+
+      fullscreenArgs = fullscreenArgsBuilder.toString();
     }
 
     if (thisRequiresRewrite) {
@@ -1153,8 +1162,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     if (sizeRequiresRewrite) {
       if (sizeIsFullscreen) {
-        String fullscreenInner = sketchRenderer == null ? "" : sketchRenderer;
-        settingsInner.add(String.format("fullScreen(%s);", fullscreenInner));
+        settingsInner.add(String.format("fullScreen(%s);", fullscreenArgs));
       } else {
 
         if (sketchWidth.isEmpty() || sketchHeight.isEmpty()) {
