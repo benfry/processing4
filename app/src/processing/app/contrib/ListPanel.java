@@ -352,7 +352,7 @@ implements Scrollable, ContributionListing.ChangeListener {
           icon = incompatibleIcon;
         } else if (ContributionListing.getInstance().hasUpdates(contribution)) {
           icon = updateAvailableIcon;
-        } else if (detail.installInProgress || detail.updateInProgress) {
+        } else if (detail != null && (detail.installInProgress || detail.updateInProgress)) {
           icon = downloadingIcon;
         } else {
           icon = upToDateIcon;
