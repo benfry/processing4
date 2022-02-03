@@ -336,10 +336,15 @@ implements Scrollable, ContributionListing.ChangeListener {
       Icon icon = null;
       label.setFont(ManagerFrame.NORMAL_PLAIN);
       StatusPanelDetail detail = detailForContrib.get(contribution);
-//      if (detail == null) {
-//        System.out.println("no panel for " + contribution.name + " inside " + contributionTab.contribType);
-//      }
-      if (detail.updateInProgress || detail.installInProgress) {
+
+      /*
+      if (detail != null) {
+        System.err.println("ListPanel.configureStatusColumnLabel() no panel for " + contribution);
+        return;
+      }
+      */
+
+      if (detail != null && (detail.updateInProgress || detail.installInProgress)) {
         // Display "loading" icon if download/install in progress
         icon = downloadingIcon;
       } else if (contribution.isInstalled()) {
