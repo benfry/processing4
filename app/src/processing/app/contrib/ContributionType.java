@@ -24,12 +24,14 @@ package processing.app.contrib;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import processing.app.Base;
 import processing.app.Library;
 import processing.app.Messages;
 import processing.app.Util;
 import processing.app.ui.Editor;
+
 
 public enum ContributionType {
   LIBRARY, MODE, TOOL, EXAMPLES;
@@ -237,8 +239,8 @@ public enum ContributionType {
   }
 
 
-  ArrayList<LocalContribution> listContributions(Editor editor) {
-    ArrayList<LocalContribution> contribs = new ArrayList<>();
+  List<LocalContribution> listContributions(Editor editor) {
+    List<LocalContribution> contribs = new ArrayList<>();
     switch (this) {
     case LIBRARY:
       contribs.addAll(editor.getMode().contribLibraries);

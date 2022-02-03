@@ -22,6 +22,7 @@ X remove the old MovieMaker code
 X   clean out the unused class files and src
 X   also remove jai_imageio.jar
 X tweak how URLs are opened for better compatibility
+X debugging failed installation of .pdez files
 
 scaling, text, again
 X IDE cursor position is wrong if font size is changed in preferences on macOS
@@ -118,6 +119,10 @@ _ StatusPanel seems to be recreated entirely
 _ StatusPanel being reset twice on each click
 _   is checking for previous, but apparently that's not working
 _ Base.setUpdatesAvailable() is called from half a dozen places!?
+_ AvailableContribution.install() needs status handler
+_   can either be the StatusPanel *or* EditorStatus *or* console (during startup)
+_   needs to be EditorStatus when double-clicking a .pdex file
+_   this is also why Base.handleOpen() does statusError() calls during pdex load, bleh
 
 
 design

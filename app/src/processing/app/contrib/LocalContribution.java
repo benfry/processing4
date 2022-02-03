@@ -242,11 +242,11 @@ public abstract class LocalContribution extends Contribution {
     File contribTypeFolder = getType().getSketchbookFolder();
     File contribFolder = new File(contribTypeFolder, contribFolderName);
 
-    if (status != null) { // when status != null, install is not occurring on startup
-
+    // when status is null, that means we're starting up the PDE
+    if (status != null) {
       Editor editor = base.getActiveEditor();
 
-      ArrayList<LocalContribution> oldContribs =
+      List<LocalContribution> oldContribs =
         getType().listContributions(editor);
 
       // In case an update marker exists, and the user wants to install, delete the update marker

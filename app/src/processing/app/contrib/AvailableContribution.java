@@ -103,9 +103,27 @@ public class AvailableContribution extends Contribution {
       if (name.endsWith(".properties")) {
         ContributionType type = matchContribType(name);
         if (type != null) {
-          StringDict params = new StringDict(PApplet.createReader(zf.getInputStream(entry)));
-          ac = new AvailableContribution(type, params);
-          break;
+          StringDict params = new StringDict();
+          String[] lines = PApplet.loadStrings(zf.getInputStream(entry));
+          if (lines != null) {
+            for (String line : lines) {
+              if (!line.startsWith("#")) {
+                int equals = line.indexOf('=');
+                if (equals != -1) {
+                  String key = line.substring(0, equals).trim();
+                  String value = line.substring(equals + 1).trim();
+                  params.set(key, value);
+                }
+              }
+            }
+            ac = new AvailableContribution(type, params);
+            break;  // found, let's get outta here
+
+          } else {
+            System.err.println("Could parse properties from " + name);
+          }
+        } else {
+          System.err.println("Could not find a matching .properties file");
         }
       }
     }
@@ -148,8 +166,11 @@ public class AvailableContribution extends Contribution {
     // Find the first legitimate folder in what we just unzipped
     File contribFolder = type.findCandidate(tempFolder);
     if (contribFolder == null) {
+      final String err = Language.interpolate("contrib.errors.no_contribution_found", type);
       if (status != null) {
-        status.setErrorMessage(Language.interpolate("contrib.errors.no_contribution_found", type));
+        status.setErrorMessage(err);
+      } else {
+        System.err.println(err);
       }
     } else {
       File propFile = new File(contribFolder, type + ".properties");
@@ -158,48 +179,50 @@ public class AvailableContribution extends Contribution {
                                propFile.getName() +
                                ", please contact the author for a fix.");
 
-      } else if (rewritePropertiesFile(propFile)) {
-        // contribFolder now has a legit contribution, load it to get info.
-        LocalContribution newContrib = type.load(base, contribFolder);
-
-        // get info we need to delete the newContrib folder later
-        File newContribFolder = newContrib.getFolder();
-
-        // Check to make sure nothing has the same name already,
-        // backup old if needed, then move things into place and reload.
-        installedContrib =
-          newContrib.copyAndLoad(base, confirmReplace, status);
-
-        // Unlock all the jars if it is a mode or tool
-        if (newContrib.getType() == ContributionType.MODE) {
-          ((ModeContribution) newContrib).clearClassLoader(base);
-
-        } else if (newContrib.getType() == ContributionType.TOOL) {
-          ((ToolContribution) newContrib).clearClassLoader();
-        }
-
-        // Delete the newContrib, do a garbage collection, hope and pray
-        // that Java will unlock the temp folder on Windows now
-        //noinspection UnusedAssignment
-        newContrib = null;
-        System.gc();
-
-        if (Platform.isWindows()) {
-          // we'll even give it a second to finish up,
-          // because file ops are just that flaky on Windows.
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
-        }
-
-        // delete the contrib folder inside the libraryXXXXXXtmp folder
-        Util.removeDir(newContribFolder, false);
-
       } else {
-        if (status != null) {
-          status.setErrorMessage(Language.text("contrib.errors.overwriting_properties"));
+        if (rewritePropertiesFile(propFile)) {
+          // contribFolder now has a legit contribution, load it to get info.
+          LocalContribution newContrib = type.load(base, contribFolder);
+
+          // get info we need to delete the newContrib folder later
+          File newContribFolder = newContrib.getFolder();
+
+          // Check to make sure nothing has the same name already,
+          // backup old if needed, then move things into place and reload.
+          installedContrib =
+            newContrib.copyAndLoad(base, confirmReplace, status);
+
+          // Unlock all the jars if it is a mode or tool
+          if (newContrib.getType() == ContributionType.MODE) {
+            ((ModeContribution) newContrib).clearClassLoader(base);
+
+          } else if (newContrib.getType() == ContributionType.TOOL) {
+            ((ToolContribution) newContrib).clearClassLoader();
+          }
+
+          // Delete the newContrib, do a garbage collection, hope and pray
+          // that Java will unlock the temp folder on Windows now
+          //noinspection UnusedAssignment
+          newContrib = null;
+          System.gc();
+
+          if (Platform.isWindows()) {
+            // we'll even give it a second to finish up,
+            // because file ops are just that flaky on Windows.
+            try {
+              Thread.sleep(1000);
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            }
+          }
+
+          // delete the contrib folder inside the libraryXXXXXXtmp folder
+          Util.removeDir(newContribFolder, false);
+
+        } else {
+          if (status != null) {
+            status.setErrorMessage(Language.text("contrib.errors.overwriting_properties"));
+          }
         }
       }
     }
