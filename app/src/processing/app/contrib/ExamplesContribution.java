@@ -36,8 +36,7 @@ public class ExamplesContribution extends LocalContribution {
 
 
   /**
-   * Function to determine whether or not the example present in the
-   * exampleLocation directory is compatible with the current mode.
+   * Determine whether the example is compatible with the current Mode.
    * @return true if compatible with the Mode of the currently active editor
    */
   static public boolean isCompatible(Mode mode, StringDict props) {
@@ -70,7 +69,7 @@ public class ExamplesContribution extends LocalContribution {
     File examplesFolder = Base.getSketchbookExamplesFolder();
     List<ExamplesContribution> contribExamples = base.getExampleContribs();
 
-    Map<File, ExamplesContribution> existing = new HashMap<File, ExamplesContribution>();
+    Map<File, ExamplesContribution> existing = new HashMap<>();
     for (ExamplesContribution contrib : contribExamples) {
       existing.put(contrib.getFolder(), contrib);
     }
