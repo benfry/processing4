@@ -25,7 +25,6 @@ package processing.app.ui;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -59,11 +58,7 @@ public class SketchbookFrame extends JFrame {
     this.base = base;
     this.mode = mode;
 
-    final ActionListener listener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        setVisible(false);
-      }
-    };
+    final ActionListener listener = e -> setVisible(false);
     Toolkit.registerWindowCloseKeys(getRootPane(), listener);
     Toolkit.setIcon(this);
 
@@ -121,7 +116,7 @@ public class SketchbookFrame extends JFrame {
     // Special cell renderer that takes the UI zoom into account
     tree.setCellRenderer(new ZoomTreeCellRenderer());
 
-    // Check whether sketch book is empty or not
+    // Check whether sketchbook is empty or not
     TreeModel treeModel = tree.getModel();
     if (treeModel.getChildCount(treeModel.getRoot()) != 0) {
       JScrollPane treePane = new JScrollPane(tree);
@@ -147,25 +142,21 @@ public class SketchbookFrame extends JFrame {
 
   public void setVisible() {
     // TODO The ExamplesFrame code doesn't do this, is it necessary?
-    // Either one is wrong or we're papering over something [fry 150811]
-    EventQueue.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        // Space for the editor plus a li'l gap
-        int roughWidth = getWidth() + 20;
-        Point p = null;
-        // If no window open, or the editor is at the edge of the screen
-        Editor editor = base.getActiveEditor();
-        if (editor == null ||
-            (p = editor.getLocation()).x < roughWidth) {
-          // Center the window on the screen
-          setLocationRelativeTo(null);
-        } else {
-          // Open the window relative to the editor
-          setLocation(p.x - roughWidth, p.y);
-        }
-        setVisible(true);
+    //      Either one of them is wrong, or this is hiding a bug [fry 150811]
+    EventQueue.invokeLater(() -> {
+      // Space for the editor plus a li'l gap
+      int roughWidth = getWidth() + 20;
+      // If no window open, or the editor is at the edge of the screen
+      Editor editor = base.getActiveEditor();
+      Point p = editor.getLocation();
+      if (editor == null || p.x < roughWidth) {
+        // Center the window on the screen
+        setLocationRelativeTo(null);
+      } else {
+        // Open the window relative to the editor
+        setLocation(p.x - roughWidth, p.y);
       }
+      setVisible(true);
     });
   }
 }
