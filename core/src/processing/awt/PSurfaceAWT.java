@@ -823,6 +823,8 @@ public class PSurfaceAWT extends PSurfaceNone {
         // closed. Awesome. http://dev.processing.org/bugs/show_bug.cgi?id=1508
         frame.setLocation(frameLoc.x, 30);
       }
+      // make sure that windowX and windowY are set on startup
+      sketch.postWindowMoved(frame.getX(), frame.getY());
     }
 
     canvas.setBounds((contentW - sketchWidth)/2,
@@ -1065,12 +1067,13 @@ public class PSurfaceAWT extends PSurfaceNone {
             int w = windowSize.width - currentInsets.left - currentInsets.right;
             int h = windowSize.height - currentInsets.top - currentInsets.bottom;
             setSize(w / windowScaleFactor, h / windowScaleFactor);
+            // notify the sketch that the window has been resized
+            sketch.postWindowResized(w / windowScaleFactor, h / windowScaleFactor);
 
             // correct the location when inset size changes
             setLocation(x - currentInsets.left, y - currentInsets.top);
-
-            // notify the sketch that the window has been resized
-            sketch.postWindowResize(w / windowScaleFactor, h / windowScaleFactor);
+            //sketch.postWindowMoved(x - currentInsets.left, y - currentInsets.top);
+            sketch.postWindowMoved(x, y);  // presumably user wants drawing area
           }
         }
       }
@@ -1078,7 +1081,7 @@ public class PSurfaceAWT extends PSurfaceNone {
       @Override
       public void componentMoved(ComponentEvent e) {
         Point where = ((Frame) e.getSource()).getLocation();
-        sketch.postWindowPosition(where.x, where.y);
+        sketch.postWindowMoved(where.x, where.y);
       }
     });
   }

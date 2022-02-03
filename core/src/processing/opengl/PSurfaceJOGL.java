@@ -912,7 +912,7 @@ public class PSurfaceJOGL implements PSurface {
         sketch.frameMoved(window.getX(), window.getY());
       }
       */
-      sketch.postWindowPosition(window.getX(), window.getY());
+      sketch.postWindowMoved(window.getX(), window.getY());
     }
 
     @Override
@@ -921,7 +921,7 @@ public class PSurfaceJOGL implements PSurface {
 
     @Override
     public void windowResized(com.jogamp.newt.event.WindowEvent arg0) {
-      sketch.postWindowResize(window.getWidth(), window.getHeight());
+      sketch.postWindowResized(window.getWidth(), window.getHeight());
     }
   }
 

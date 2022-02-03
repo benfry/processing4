@@ -164,6 +164,9 @@ public class PApplet implements PConstants {
    */
   public int displayHeight;
 
+  public int windowX;
+  public int windowY;
+
   /** A leech graphics object that is echoing all events. */
   public PGraphics recorder;
 
@@ -9983,14 +9986,14 @@ public class PApplet implements PConstants {
    * the beginDraw() call and before the draw(). Note that this is
    * only the notification that the resize has happened.
    */
-  public void postWindowResize(int newWidth, int newHeight) {
+  public void postWindowResized(int newWidth, int newHeight) {
     windowEventQueue.put("w", newWidth);
     windowEventQueue.put("h", newHeight);
   }
 
 
   /** Called when window is resized. */
-  public void windowResized(int newWidth, int newHeight) {  }
+  public void windowResized() {  }
 
 
   public void windowResizable(boolean resizable) {
@@ -10009,7 +10012,7 @@ public class PApplet implements PConstants {
    * the beginDraw() call and before the draw(). Note that this is
    * only the notification that the window is in a new position.
    */
-  public void postWindowPosition(int newX, int newY) {
+  public void postWindowMoved(int newX, int newY) {
     if (external && !fullScreen) {
       // When running from the PDE, this saves the window position
       // for next time the sketch is run.
@@ -10023,17 +10026,22 @@ public class PApplet implements PConstants {
 
 
   /** Called when the window is moved */
-  public void windowPositioned(int x, int y) {  }
+  public void windowMoved() {  }
 
 
   private void dequeueWindowEvents() {
     if (windowEventQueue.containsKey("x")) {
-      windowPositioned(windowEventQueue.remove("x"),
-                       windowEventQueue.remove("y"));
+      windowX = windowEventQueue.remove("x");
+      windowY = windowEventQueue.remove("y");
+      windowMoved();
     }
     if (windowEventQueue.containsKey("w")) {
-      windowResized(windowEventQueue.remove("w"),
-                    windowEventQueue.remove("h"));
+      // these should already match width/height
+      //windowResized(windowEventQueue.remove("w"),
+      //              windowEventQueue.remove("h"));
+      windowEventQueue.remove("w");
+      windowEventQueue.remove("h");
+      windowResized();
     }
   }
 

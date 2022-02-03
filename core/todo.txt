@@ -22,20 +22,19 @@ X   this was mostly already in place
 X 'ArrayIndexOutOfBoundsException: Coordinate out of bounds!'
 X   when resizing sketch while also saving frame in Java2D (default renderer)
 X   https://github.com/processing/processing4/issues/186
-_ Better solution for frame/surface methods
-_   https://github.com/processing/processing4/issues/53
+X working on better methods for surface.setXxxx() but incomplete
 o   should it be requestSize() because the change is not immediate?
 X     nope, too confusing for folks anyway
 X   windowTitle(), windowSize(), windowResizable()
 X   windowLocation() or maybe windowPosition() and windowPositioned()
 X     or windowMove()?
 X   do we need a windowResized() event?
-_   windowMove(d) would go with windowResize(d)
-_     windowResized and windowPositioned ok but imperfect
-_     but windowSize() is awkward with size()
-_   moveWindow better than windowMove
-_     but breaks alphabetical
-_     and then titleWindow()? ugh
+X   windowMove(d) would go with windowResize(d)
+X     windowResized and windowPositioned ok but imperfect
+X     but windowSize() is awkward with size()
+o   moveWindow better than windowMove
+o     but breaks alphabetical
+o     and then titleWindow()? ugh
 
 images
 X rework saveImpl() for images and how it interacts with the ShimAWT default
@@ -47,6 +46,10 @@ X core/src/icon-NN.png should be the exported application icon
 X   currently it's the p5 icon since the export just looks black
 
 
+_ finish the solution for frame/surface methods
+_   https://github.com/processing/processing4/issues/53
+_   need to update windowX/Y on first open
+_   finalize naming/behavior
 _ windowRatio()
 _   size() function that scales to screen, keeps aspect, re-scales mouse coords
 
