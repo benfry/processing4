@@ -677,7 +677,7 @@ public class Sketch {
         // make a new sketch and rebuild the sketch menu
         //editor.handleNewUnchecked();
         //editor.handleClose2();
-        editor.getBase().rebuildSketchbookMenus();
+        editor.getBase().rebuildSketchbook();
         editor.getBase().handleClose(editor, false);
 
       } else {
@@ -1218,7 +1218,7 @@ public class Sketch {
     calcModified();
 //    System.out.println("modified is now " + modified);
     editor.updateTitle();
-    editor.getBase().rebuildSketchbookMenus();
+    editor.getBase().rebuildSketchbook();
     if (renaming) {
       // only update the Recent menu if it's a rename, not a Save As
       // https://github.com/processing/processing/issues/5902

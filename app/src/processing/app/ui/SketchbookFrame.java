@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-19 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -22,20 +22,10 @@
 
 package processing.app.ui;
 
-import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Point;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
@@ -43,26 +33,56 @@ import javax.swing.tree.TreeSelectionModel;
 
 import processing.app.Base;
 import processing.app.Language;
-import processing.app.Mode;
 import processing.app.Platform;
 import processing.app.SketchReference;
 
 
 public class SketchbookFrame extends JFrame {
   protected Base base;
-  protected Mode mode;
 
 
-  public SketchbookFrame(final Base base, final Mode mode) {
+  public SketchbookFrame(final Base base) {
     super(Language.text("sketchbook"));
     this.base = base;
-    this.mode = mode;
 
     final ActionListener listener = e -> setVisible(false);
     Toolkit.registerWindowCloseKeys(getRootPane(), listener);
     Toolkit.setIcon(this);
 
-    final JTree tree = new JTree(mode.buildSketchbookTree());
+    Container pane = getContentPane();
+    pane.setLayout(new BorderLayout());
+
+    updateCenterPanel();
+
+    Container buttons = Box.createHorizontalBox();
+
+    JButton addButton = new JButton("Show Folder");
+    addButton.addActionListener(e -> Platform.openFolder(Base.getSketchbookFolder()));
+    buttons.add(Box.createHorizontalGlue());
+    buttons.add(addButton, BorderLayout.WEST);
+
+    JButton refreshButton = new JButton("Refresh");
+    refreshButton.addActionListener(e -> base.rebuildSketchbook());
+    buttons.add(refreshButton, BorderLayout.EAST);
+    buttons.add(Box.createHorizontalGlue());
+
+    final int high = addButton.getPreferredSize().height;
+    final int wide = 4 * Toolkit.getButtonWidth() / 3;
+    addButton.setPreferredSize(new Dimension(wide, high));
+    refreshButton.setPreferredSize(new Dimension(wide, high));
+
+    JPanel buttonPanel = new JPanel();  // adds extra border
+    // wasn't necessary to set a border b/c JPanel adds plenty
+    //buttonPanel.setBorder(new EmptyBorder(3, 0, 3, 0));
+    buttonPanel.add(buttons);
+    pane.add(buttonPanel, BorderLayout.SOUTH);
+
+    pack();
+  }
+
+
+  private JTree rebuildTree() {
+    final JTree tree = new JTree(base.buildSketchbookTree());
     tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
     tree.setShowsRootHandles(true);
     tree.expandRow(0);
@@ -116,13 +136,23 @@ public class SketchbookFrame extends JFrame {
     // Special cell renderer that takes the UI zoom into account
     tree.setCellRenderer(new ZoomTreeCellRenderer());
 
+    return tree;
+  }
+
+
+  private void updateCenterPanel() {
+    JTree tree = rebuildTree();
+    Container panel;
+
     // Check whether sketchbook is empty or not
     TreeModel treeModel = tree.getModel();
     if (treeModel.getChildCount(treeModel.getRoot()) != 0) {
       JScrollPane treePane = new JScrollPane(tree);
       treePane.setPreferredSize(Toolkit.zoom(250, 450));
       treePane.setBorder(new EmptyBorder(0, 0, 0, 0));
-      getContentPane().add(treePane);
+
+      //getContentPane().add(treePane);
+      panel = treePane;
 
     } else {
       JPanel emptyPanel = new JPanel();
@@ -133,10 +163,27 @@ public class SketchbookFrame extends JFrame {
       emptyLabel.setForeground(Color.GRAY);
       emptyPanel.add(emptyLabel);
 
-      setContentPane(emptyPanel);
+      //setContentPane(emptyPanel);
+      panel = emptyPanel;
     }
 
-    pack();
+    Container pane = getContentPane();
+    //pane.setLayout(new BorderLayout());
+    BorderLayout layout = (BorderLayout) pane.getLayout();
+    Component comp = layout.getLayoutComponent(BorderLayout.CENTER);
+    if (comp != null) {
+      pane.remove(comp);
+    }
+    pane.add(panel, BorderLayout.CENTER);
+  }
+
+
+  public void rebuild() {
+    updateCenterPanel();
+    // After replacing the tree/panel, this calls the layout manager,
+    // otherwise it'll just leave a frozen-looking component until
+    // the window is closed and re-opened.
+    getContentPane().validate();
   }
 
 

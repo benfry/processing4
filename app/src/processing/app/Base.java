@@ -509,7 +509,7 @@ public class Base {
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
-    item.addActionListener(e -> getNextMode().showSketchbookFrame());
+    item.addActionListener(e -> showSketchbookFrame());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');
@@ -1727,18 +1727,68 @@ public class Base {
   }
 
 
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  protected SketchbookFrame sketchbookFrame;
+
+  public DefaultMutableTreeNode buildSketchbookTree() {
+    DefaultMutableTreeNode sbNode =
+      new DefaultMutableTreeNode(Language.text("sketchbook.tree"));
+    try {
+      addSketches(sbNode, Base.getSketchbookFolder(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return sbNode;
+  }
+
+
+  /** Sketchbook has changed, update it on next viewing. */
+  public void rebuildSketchbookFrame() {
+    if (sketchbookFrame != null) {
+      sketchbookFrame.rebuild();
+      /*
+      boolean visible = sketchbookFrame.isVisible();
+      Rectangle bounds = null;
+      if (visible) {
+        bounds = sketchbookFrame.getBounds();
+        sketchbookFrame.setVisible(false);
+        sketchbookFrame.dispose();
+      }
+      sketchbookFrame = null;
+      if (visible) {
+        showSketchbookFrame();
+        sketchbookFrame.setBounds(bounds);
+      }
+      */
+    }
+  }
+
+
+  public void showSketchbookFrame() {
+    if (sketchbookFrame == null) {
+      sketchbookFrame = new SketchbookFrame(this);
+    }
+    sketchbookFrame.setVisible();
+  }
+
+
   /**
    * Synchronous version of rebuild, used when the sketchbook folder has
    * changed, so that the libraries are properly re-scanned before those menus
    * (and the examples window) are rebuilt.
    */
-  protected void rebuildSketchbookMenus() {
+  public void rebuildSketchbook() {
     for (Mode mode : getModeList()) {
       mode.rebuildImportMenu();  // calls rebuildLibraryList
       mode.rebuildToolbarMenu();
       mode.rebuildExamplesFrame();
-      mode.rebuildSketchbookFrame();
     }
+    // Unlike libraries, examples, etc, the sketchbook is global
+    // (because you need to be able to open sketches from the Mode
+    // that you're not currently using).
+    rebuildSketchbookFrame();
   }
 
 
@@ -2068,7 +2118,7 @@ public class Base {
   public void setSketchbookFolder(File folder) {
     sketchbookFolder = folder;
     Preferences.setSketchbookPath(folder.getAbsolutePath());
-    rebuildSketchbookMenus();
+    rebuildSketchbook();
     makeSketchbookSubfolders();
   }
 

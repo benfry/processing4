@@ -669,7 +669,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 //    fileMenu.add(base.getSketchbookMenu());
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
-    item.addActionListener(e -> mode.showSketchbookFrame());
+    item.addActionListener(e -> base.showSketchbookFrame());
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');

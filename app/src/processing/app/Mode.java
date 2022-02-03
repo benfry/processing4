@@ -39,7 +39,6 @@ import processing.app.ui.EditorException;
 import processing.app.ui.EditorState;
 import processing.app.ui.ExamplesFrame;
 import processing.app.ui.Recent;
-import processing.app.ui.SketchbookFrame;
 import processing.app.ui.Toolkit;
 import processing.core.PApplet;
 
@@ -63,7 +62,6 @@ public abstract class Mode {
   protected JMenu importMenu;
 
   protected ExamplesFrame examplesFrame;
-  protected SketchbookFrame sketchbookFrame;
 
   // popup menu used for the toolbar
   protected JMenu toolbarMenu;
@@ -649,48 +647,6 @@ public abstract class Mode {
       examplesFrame = new ExamplesFrame(base, this);
     }
     examplesFrame.setVisible();
-  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  public DefaultMutableTreeNode buildSketchbookTree() {
-    DefaultMutableTreeNode sbNode =
-      new DefaultMutableTreeNode(Language.text("sketchbook.tree"));
-    try {
-      base.addSketches(sbNode, Base.getSketchbookFolder(), false);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return sbNode;
-  }
-
-
-  /** Sketchbook has changed, update it on next viewing. */
-  public void rebuildSketchbookFrame() {
-    if (sketchbookFrame != null) {
-      boolean visible = sketchbookFrame.isVisible();
-      Rectangle bounds = null;
-      if (visible) {
-        bounds = sketchbookFrame.getBounds();
-        sketchbookFrame.setVisible(false);
-        sketchbookFrame.dispose();
-      }
-      sketchbookFrame = null;
-      if (visible) {
-        showSketchbookFrame();
-        sketchbookFrame.setBounds(bounds);
-      }
-    }
-  }
-
-
-  public void showSketchbookFrame() {
-    if (sketchbookFrame == null) {
-      sketchbookFrame = new SketchbookFrame(base, this);
-    }
-    sketchbookFrame.setVisible();
   }
 
 
