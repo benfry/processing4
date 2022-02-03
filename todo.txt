@@ -92,6 +92,10 @@ _   batik and ant have both broken the build when old versions were removed
 
 
 contribs
+_ several "Could not find a matching .properties file" with clocks pdex
+_ examples window is per-Mode, but that doesn't seem helpful
+_   just like sketchbook, you can open one from the other
+_   or maybe just contribs show everywhere? hrm
 _ pdez links for contribs, not just the .zip
 _   fix the code so that the contribs manager will handle it
 _   though that's bad for earlier contribs, hrm
