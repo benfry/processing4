@@ -7,5 +7,5 @@
 *.pde text
 
 # Files that will always have CRLF line endings on checkout.
-*.bat *.url eol=crlf
-
+*.bat eol=crlf
+*.url eol=crlf
