@@ -46,7 +46,7 @@ X core/src/icon-NN.png should be the exported application icon
 X   currently it's the p5 icon since the export just looks black
 
 
-_ finish the solution for frame/surface methods
+_ finalize the solution for frame/surface methods
 _   https://github.com/processing/processing4/issues/53
 _   need to update windowX/Y on first open
 _   finalize naming/behavior
