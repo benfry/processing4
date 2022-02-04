@@ -668,10 +668,8 @@ public abstract class Mode {
     }
     File file = new File(folder, filename);
     if (!file.exists()) {
-//      EditorConsole.systemErr.println("file does not exist: " + file.getAbsolutePath());
       return null;
     }
-//    EditorConsole.systemErr.println("found: " + file.getAbsolutePath());
     return new ImageIcon(file.getAbsolutePath());
   }
 
@@ -712,16 +710,6 @@ public abstract class Mode {
   }
 
 
-//  public EditorButton loadButton(String name) {
-//    return new EditorButton(this, name);
-//  }
-
-
-  //public Settings getTheme() {
-  //  return theme;
-  //}
-
-
   /**
    * Returns the HTML filename (including path prefix if necessary)
    * for this keyword, or null if it doesn't exist.
@@ -753,111 +741,7 @@ public abstract class Mode {
   }
 
 
-//  abstract public Formatter createFormatter();
-
-
-//  public Formatter getFormatter() {
-//    return formatter;
-//  }
-
-
-//  public Tool getFormatter() {
-//    return formatter;
-//  }
-
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  /*
-  // Get attributes/values from the theme.txt file. To discourage burying this
-  // kind of information in code where it doesn't belong (and is difficult to
-  // track down), these don't have a "default" option as a second parameter.
-
-
-  // removing, this doesn't seem to have been in use
-  /// @since 3.0a6
-  public String getString(String attribute) {
-    return theme.get(attribute);
-  }
-
-
-  public boolean getBoolean(String attribute) {
-    return theme.getBoolean(attribute);
-  }
-
-
-  public int getInteger(String attribute) {
-    return theme.getInteger(attribute);
-  }
-
-
-  public Color getColor(String attribute) {
-    return theme.getColor(attribute);
-  }
-
-
-  public Font getFont(String attribute) {
-    return theme.getFont(attribute);
-  }
-
-
-  public SyntaxStyle getStyle(String attribute) {
-    String str = Preferences.get("editor.token." + attribute + ".style");
-    if (str == null) {
-      throw new IllegalArgumentException("No style found for " + attribute);
-    }
-
-    StringTokenizer st = new StringTokenizer(str, ",");
-
-    String s = st.nextToken();
-    if (s.indexOf("#") == 0) s = s.substring(1);
-    Color color = new Color(Integer.parseInt(s, 16));
-
-    s = st.nextToken();
-    boolean bold = s.contains("bold");
-//    boolean italic = (s.indexOf("italic") != -1);
-
-//    return new SyntaxStyle(color, italic, bold);
-    return new SyntaxStyle(color, bold);
-  }
-
-
-  public Image makeGradient(String attribute, int wide, int high) {
-    int top = getColor(attribute + ".gradient.top").getRGB();
-    int bot = getColor(attribute + ".gradient.bottom").getRGB();
-
-//    float r1 = (top >> 16) & 0xff;
-//    float g1 = (top >> 8) & 0xff;
-//    float b1 = top & 0xff;
-//    float r2 = (bot >> 16) & 0xff;
-//    float g2 = (bot >> 8) & 0xff;
-//    float b2 = bot & 0xff;
-
-    BufferedImage outgoing =
-      new BufferedImage(wide, high, BufferedImage.TYPE_INT_RGB);
-    int[] row = new int[wide];
-    WritableRaster wr = outgoing.getRaster();
-    for (int i = 0; i < high; i++) {
-//      Arrays.fill(row, (255 - (i + GRADIENT_TOP)) << 24);
-//      int r = (int) PApplet.map(i, 0, high-1, r1, r2);
-      int rgb = PApplet.lerpColor(top, bot, i / (float)(high-1), PConstants.RGB);
-      Arrays.fill(row, rgb);
-//      System.out.println(PApplet.hex(row[0]));
-      wr.setDataElements(0, i, wide, 1, row);
-    }
-//    Graphics g = outgoing.getGraphics();
-//    for (int i = 0; i < steps; i++) {
-//      g.setColor(new Color(1, 1, 1, 255 - (i + GRADIENT_TOP)));
-//      //g.fillRect(0, i, EditorButton.DIM, 10);
-//      g.drawLine(0, i, EditorButton.DIM, i);
-//    }
-    return outgoing;
-  }
-   */
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
 
   // Breaking out extension types in order to clean up the code, and make it
   // easier for other environments (like Arduino) to incorporate changes.
@@ -891,7 +775,7 @@ public abstract class Mode {
 
   /**
    * @param f File to be checked against this mode's accepted extensions.
-   * @return Whether or not the given file name features an extension supported by this mode.
+   * @return Whether the given file name features an extension supported by this Mode.
    */
   public boolean canEdit(final File f) {
     final int dot = f.getName().lastIndexOf('.');
@@ -932,12 +816,12 @@ public abstract class Mode {
 
 
   /**
-   * Returns the appropriate file extension to use for auxilliary source files in a sketch.
-   * For example, in a Java-mode sketch, auxilliary files should be name "Foo.java"; in
-   * Python mode, they should be named "foo.py".
+   * Returns the appropriate file extension to use for auxiliary source
+   * files in a sketch. For example, in a Java-mode sketch, auxiliary files
+   * can be named "Foo.java"; in Python mode, they should be named "foo.py".
    *
-   * <p>Modes that do not override this function will get the default behavior of returning the
-   * default extension.
+   * Modes that do not override this function will get the
+   * default behavior of returning the default extension.
    */
   public String getModuleExtension() {
     return getDefaultExtension();
@@ -958,25 +842,24 @@ public abstract class Mode {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+
   /**
    * Checks coreLibraries and contribLibraries for a library with the specified name
    * @param libName the name of the library to find
    * @return the Library or null if not found
    */
   public Library findLibraryByName(String libName) {
-
     for (Library lib : this.coreLibraries) {
       if (libName.equals(lib.getName()))
         return lib;
     }
-
     for (Library lib : this.contribLibraries) {
       if (libName.equals(lib.getName()))
         return lib;
     }
-
     return null;
   }
+
 
   /**
    * Create a fresh applet/application folder if the 'delete target folder'
@@ -1003,21 +886,6 @@ public abstract class Mode {
       }
     }
   }
-
-//  public void handleNew() {
-//    base.handleNew();
-//  }
-//
-//
-//  public void handleNewReplace() {
-//    base.handleNewReplace();
-//  }
-
-
-  // this is Java-specific, so keeping it in JavaMode
-//  public String getSearchPath() {
-//    return null;
-//  }
 
 
   @Override

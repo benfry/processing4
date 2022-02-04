@@ -77,7 +77,7 @@ public class Sketch {
   private int currentIndex;
 
   /**
-   * Number of sketchCode objects (tabs) in the current sketch. Note that this
+   * Number of SketchCode objects (tabs) in the current sketch. Note that this
    * will be the same as code.length, because the getCode() method returns
    * just the code[] array, rather than a copy of it, or an array that's been
    * resized to just the relevant files themselves.
@@ -91,6 +91,7 @@ public class Sketch {
 
   /** true if we've posted a "sketch disappeared" warning */
   private boolean disappearedWarning;
+
 
   /**
    * Used by the command-line version to create a sketch object.
