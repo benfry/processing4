@@ -30,7 +30,6 @@ import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.tree.*;
 
 import processing.app.contrib.ContributionManager;
 import processing.app.syntax.*;
@@ -137,38 +136,42 @@ public abstract class Mode {
   protected void loadKeywords(File keywordFile,
                               String commentPrefix) throws IOException {
     String[] lines = PApplet.loadStrings(keywordFile);
-    for (String line : lines) {
-      if (!line.trim().startsWith(commentPrefix)) {
-        // Was difficult to make sure that mode authors were properly doing
-        // tab-separated values. By definition, there can't be additional
-        // spaces inside a keyword (or filename), so just splitting on tokens.
-        String[] pieces = PApplet.splitTokens(line);
-        if (pieces.length >= 2) {
-          String keyword = pieces[0];
-          String coloring = pieces[1];
+    if (lines != null) {
+      for (String line : lines) {
+        if (!line.trim().startsWith(commentPrefix)) {
+          // Was difficult to make sure that mode authors were properly doing
+          // tab-separated values. By definition, there can't be additional
+          // spaces inside a keyword (or filename), so just splitting on tokens.
+          String[] pieces = PApplet.splitTokens(line);
+          if (pieces.length >= 2) {
+            String keyword = pieces[0];
+            String coloring = pieces[1];
 
-          if (coloring.length() > 0) {
-            tokenMarker.addColoring(keyword, coloring);
-          }
-          if (pieces.length == 3) {
-            String htmlFilename = pieces[2];
-            if (htmlFilename.length() > 0) {
-              // if the file is for the version with parens,
-              // add a paren to the keyword
-              if (htmlFilename.endsWith("_")) {
-                keyword += "_";
-              }
-              // Allow the bare size() command to override the lookup
-              // for StringList.size() and others, but not vice-versa.
-              // https://github.com/processing/processing/issues/4224
-              boolean seen = keywordToReference.containsKey(keyword);
-              if (!seen || keyword.equals(htmlFilename)) {
-                keywordToReference.put(keyword, htmlFilename);
+            if (coloring.length() > 0) {
+              tokenMarker.addColoring(keyword, coloring);
+            }
+            if (pieces.length == 3) {
+              String htmlFilename = pieces[2];
+              if (htmlFilename.length() > 0) {
+                // if the file is for the version with parens,
+                // add a paren to the keyword
+                if (htmlFilename.endsWith("_")) {
+                  keyword += "_";
+                }
+                // Allow the bare size() command to override the lookup
+                // for StringList.size() and others, but not vice-versa.
+                // https://github.com/processing/processing/issues/4224
+                boolean seen = keywordToReference.containsKey(keyword);
+                if (!seen || keyword.equals(htmlFilename)) {
+                  keywordToReference.put(keyword, htmlFilename);
+                }
               }
             }
           }
         }
       }
+    } else {
+      System.err.println("Could not read " + keywordFile);
     }
   }
 
@@ -559,6 +562,7 @@ public abstract class Mode {
       JMenuItem item = new JMenuItem(getTitle() + " " + Language.text("menu.library.no_core_libraries"));
       item.setEnabled(false);
       importMenu.add(item);
+
     } else {
       for (Library library : coreLibraries) {
         JMenuItem item = new JMenuItem(library.getName());
@@ -577,7 +581,7 @@ public abstract class Mode {
       contrib.setEnabled(false);
       importMenu.add(contrib);
 
-      HashMap<String, JMenu> subfolders = new HashMap<>();
+      Map<String, JMenu> subfolders = new HashMap<>();
 
       for (Library library : contribLibraries) {
         JMenuItem item = new JMenuItem(library.getName());
@@ -698,10 +702,13 @@ public abstract class Mode {
     } else {
       file = new File(folder, filename);
     }
-    if (!file.exists()) {
-      return null;
+    if (file != null && file.exists()) {
+      String[] lines = PApplet.loadStrings(file);
+      if (lines != null) {
+        return PApplet.join(lines, "\n");
+      }
     }
-    return PApplet.join(PApplet.loadStrings(file), "\n");
+    return null;
   }
 
 
