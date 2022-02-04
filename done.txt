@@ -1,3 +1,79 @@
+1280 (4.0b5)
+o more reports of code completion not working on macOS
+o   "working in a6 but not b2"
+o   https://github.com/processing/processing4/issues/304
+X   working again in beta 3
+X change the jdk download to include the arch
+X   when building on macOS, can't share folder b/c jdk zip is wrong arch
+X   but also requires checkout of processing-docs, so an unnecessary headache
+X update themes with new token colors
+X Windows virus/trojan complaints
+X   https://github.com/processing/processing4/issues/379
+X   https://www.microsoft.com/en-us/wdsi/filesubmission
+X   https://www.microsoft.com/en-us/wdsi/submission/69a47313-6b5a-4c94-9f74-27beffce5460
+X add language support to Modes
+X   request and updated PR from Andres
+X     https://github.com/processing/processing4/issues/236
+X     https://github.com/processing/processing4/pull/237 (updated by Andres)
+X   https://github.com/processing/processing/pull/2833
+X   https://github.com/processing/processing/issues/3154
+X   https://github.com/processing/processing/pull/3337
+X remove the old MovieMaker code
+X   clean out the unused class files and src
+X   also remove jai_imageio.jar
+X tweak how URLs are opened for better compatibility
+X debugging failed installation of .pdez files
+
+scaling, text, again
+X IDE cursor position is wrong if font size is changed in preferences on macOS
+X   though at least one report that restarting the PDE doesn't fix the problem
+X   probably related to second displays, need to hook one up and test
+X   https://github.com/processing/processing4/issues/194
+X   seems like the Windows workaround may be making this worse?
+X   users confirms the correctly working display swapped between beta 3 and 4
+X also updated the two older bugs
+X   https://github.com/processing/processing4/issues/226
+X   https://github.com/processing/processing4/issues/342
+X caret is sometimes one pixel too tall
+X cleaning up TextAreaPainter to be less cute; adding more clarifications
+X SyntaxDebug removed with 1459d8f714e7e3e8816df010224c567ed5e42fa4
+
+preproc from Sam
+X Preproc bug fixes and improvements
+X   https://github.com/processing/processing4/pull/384
+X mixing active and static mode throws the "wrong" error
+X   https://github.com/processing/processing4/issues/290
+X Problem with function size(int arg, int arg) in Class
+X   https://github.com/processing/processing4/issues/317
+X Add support for multi-line string text blocks
+X   https://github.com/processing/processing4/issues/371
+X fullScreen() when specifying the display number was broken
+X   https://github.com/processing/processing4/pull/392
+X   https://github.com/processing/processing4/issues/352
+
+previous releases
+X need icons for .pde, .pdex, .pdez
+X use svg images for res-indep icons/gui?
+X   https://stackoverflow.com/a/2495712
+X   (built and tested a version of this code if we want to use it)
+X   working to auto-generate icons, though not doing full res-indep for now
+o put themes in folders by name
+X   not useful, at least not yet
+
+other cleaning
+o unsupported java version when trying ant run with 7u65
+o   no helpful message about how to automatically download 8u51
+o ignore-tools in build.xml not being called for some reason
+o when variables used in size(), getting exceptions instead of any warning
+o   https://github.com/processing/processing/issues/3311
+
+sketchbook window
+X refresh option for sketchbook (bottom of window)
+X add "Show Folder" entry to sketchbook window
+X move sketchbook frame code to Base instead of Mode
+X   it was being called once for each Mode, but doesn't vary on per-Mode basis
+
+
 1279 (4.0b4)
 X remove contentTypes line because it breaks double-clicking files to open
 X   https://github.com/processing/processing4/issues/347

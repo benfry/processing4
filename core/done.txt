@@ -1,3 +1,51 @@
+1280 (4.0b5)
+X replace japplemenubar with something that's more likely to work in the future
+X   https://github.com/processing/processing4/issues/221
+o   seems to be working fine; not sure, but have to roll with it for now
+X   breaks on aarch64
+X   https://github.com/processing/processing4/issues/372
+
+resizing windows and sketches
+X why does GL flash red when resizing?
+X   this may be because of gaps between EDT and updates
+X   fixing the surface.setSize() issue may fix it
+X   https://github.com/processing/processing4/issues/386
+X Resizing window outside setup causes NPE when saving surface pixels
+X   https://github.com/processing/processing4/issues/162
+o Window Manager issue when trying to resize window
+X   https://github.com/processing/processing/issues/4129
+X same goes for window resize events: queue them for when it's safe
+o   also probably need to be extending the display with the background color
+o   so that it's not neither stretching the viewport temporarily
+o     or leaving a gap at the edge of the window
+X   this was mostly already in place
+X 'ArrayIndexOutOfBoundsException: Coordinate out of bounds!'
+X   when resizing sketch while also saving frame in Java2D (default renderer)
+X   https://github.com/processing/processing4/issues/186
+X working on better methods for surface.setXxxx() but incomplete
+o   should it be requestSize() because the change is not immediate?
+X     nope, too confusing for folks anyway
+X   windowTitle(), windowSize(), windowResizable()
+X   windowLocation() or maybe windowPosition() and windowPositioned()
+X     or windowMove()?
+X   do we need a windowResized() event?
+X   windowMove(d) would go with windowResize(d)
+X     windowResized and windowPositioned ok but imperfect
+X     but windowSize() is awkward with size()
+o   moveWindow better than windowMove
+o     but breaks alphabetical
+o     and then titleWindow()? ugh
+
+images
+X rework saveImpl() for images and how it interacts with the ShimAWT default
+X remove the ancient TIFF saving code
+X add more plumbing to set the compression level on JPEG and the DPI for PNG
+
+design
+X core/src/icon-NN.png should be the exported application icon
+X   currently it's the p5 icon since the export just looks black
+
+
 1279 (4.0b4)
 X put opengl libs for core into platform-specific subfolders
 X   get us ready for other platforms (M1 in particular)
