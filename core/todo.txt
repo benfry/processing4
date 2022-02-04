@@ -1,4 +1,5 @@
 1281 (4.0b6)
+X better handling of "Display N does not exist, using the default display instead"
 
 
 _ finalize the solution for frame/surface methods

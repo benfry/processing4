@@ -22,22 +22,7 @@
 
 package processing.awt;
 
-import java.awt.Canvas;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.Label;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.*;
@@ -48,7 +33,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import processing.core.PApplet;
 import processing.core.PConstants;
@@ -304,6 +290,8 @@ public class PSurfaceAWT extends PSurfaceNone {
 
     GraphicsEnvironment environment =
       GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice defaultDevice =
+      environment.getDefaultScreenDevice();
 
     int displayNum = sketch.sketchDisplay();
 //    System.out.println("display from sketch is " + displayNum);
@@ -314,13 +302,25 @@ public class PSurfaceAWT extends PSurfaceNone {
       } else {
         System.err.format("Display %d does not exist, " +
           "using the default display instead.%n", displayNum);
-        for (int i = 0; i < devices.length; i++) {
-          System.err.format("Display %d is %s%n", (i+1), devices[i]);
+        if (devices.length > 1) {
+          System.err.println("Available displays:");
+          // The code below is cribbed from the version in PreferencesFrame,
+          // though it uses \u00d7 and removes the space between because
+          // it's printing in a monospace font to the console.
+          for (int i = 0; i < devices.length; i++) {
+            DisplayMode mode = devices[i].getDisplayMode();
+            String title = String.format("%d (%d\u00d7%d)",  // \u00d7 or \u2715
+                i + 1, mode.getWidth(), mode.getHeight());
+            if (devices[i] == defaultDevice) {
+              title += " default";
+            }
+            System.err.println(title);
+          }
         }
       }
     }
     if (displayDevice == null) {
-      displayDevice = environment.getDefaultScreenDevice();
+      displayDevice = defaultDevice;
     }
 
     // Need to save the window bounds at full screen,
