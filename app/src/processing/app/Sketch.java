@@ -364,7 +364,7 @@ public class Sketch {
       // Forget ESC, the JDialog should handle it.
       // Use keyTyped to catch when the feller is actually added to the text
       // field. With keyTyped, as opposed to keyPressed, the keyCode will be
-      // zero, even if it's enter or backspace or whatever, so the keychar
+      // zero, even if it's enter or backspace or whatever, so the key char
       // should be used instead. Grr.
       public void keyTyped(KeyEvent event) {
         //System.out.println("got event " + event);
@@ -451,16 +451,17 @@ public class Sketch {
     // make sure the user didn't hide the sketch folder
     ensureExistence();
 
-    // Add the extension here, this simplifies some of the logic below.
+    // Add the extension here, this simplifies some logic below.
     if (newName.indexOf('.') == -1) {
       newName += "." + (renamingCode ? mode.getDefaultExtension() : mode.getModuleExtension());
     }
 
-    // if renaming to the same thing as before, just ignore.
-    // also ignoring case here, because i don't want to write
-    // a bunch of special stuff for each platform
-    // (osx is case insensitive but preserving, windows insensitive,
-    // *nix is sensitive and preserving.. argh)
+    // If renaming to the same thing as before, just ignore.
+    // Also ignoring case here, because I don't want to write/maintain/debug
+    // a bunch of platform-specific quirks: macOS is case-insensitive but
+    // preserving, Windows is insensitive, *nix is sensitive and preserving,
+    // and someday we're all gonna die, and I'm comfortable with this piece
+    // of code working not being essential to the story of my life on Earth.
     if (renamingCode) {
       if (newName.equalsIgnoreCase(current.getFileName())) {
         // exit quietly for the 'rename' case.
@@ -579,7 +580,7 @@ public class Sketch {
 //
 //        // having saved everything and renamed the folder and the main .pde,
 //        // use the editor to re-open the sketch to re-init state
-//        // (unfortunately this will kill positions for carets etc)
+//        // (unfortunately this will kill positions for carets etc.)
 //        editor.handleOpenUnchecked(newMainFilePath,
 //                                   currentIndex,
 //                                   editor.getSelectionStart(),
@@ -742,7 +743,7 @@ public class Sketch {
 
 
   /**
-   * Sets the modified value for the code in the frontmost tab.
+   * Sets the modified value for the code in the front-most tab.
    */
   public void setModified(boolean state) {
     //System.out.println("setting modified to " + state);
@@ -826,8 +827,8 @@ public class Sketch {
    * <P>
    * This basically just duplicates the current sketch folder to
    * a new location, and then calls 'Save'. (needs to take the current
-   * state of the open files and save them to the new folder..
-   * but not save over the old versions for the old sketch..)
+   * state of the open files and save them to the new folder,
+   * but not save over the old versions for the old sketch...)
    * <P>
    * Also removes the previously-generated .class and .jar files,
    * because they can cause trouble.
@@ -901,7 +902,7 @@ public class Sketch {
 
     // make sure there doesn't exist a tab with that name already
     // but ignore this situation for the first tab, since it's probably being
-    // resaved (with the same name) to another location/folder.
+    // re-saved (with the same name) to another location/folder.
     for (int i = 1; i < codeCount; i++) {
       if (newName.equalsIgnoreCase(code[i].getPrettyName())) {
         Messages.showMessage(Language.text("save_file.messages.tab_exists"),
@@ -968,6 +969,7 @@ public class Sketch {
       }
       // don't do screen captures, since there might be thousands. kind of
       // a hack, but seems harmless. hm, where have i heard that before...
+      //noinspection RedundantIfStatement
       if (name.startsWith("screen-")) {
         return false;
       }
@@ -1252,7 +1254,7 @@ public class Sketch {
     if (filename == null) return;
 
     // copy the file into the folder. if people would rather
-    // it move instead of copy, they can do it by hand
+    // move instead of copy, they can do it by hand
     File sourceFile = new File(directory, filename);
 
     // now do the work of adding the file
@@ -1295,7 +1297,6 @@ public class Sketch {
         filename.toLowerCase().endsWith(".jnilib") ||
         filename.toLowerCase().endsWith(".so")) {
 
-      //if (!codeFolder.exists()) codeFolder.mkdirs();
       prepareCodeFolder();
       destFile = new File(codeFolder, filename);
       isCode = true;
@@ -1352,7 +1353,7 @@ public class Sketch {
       return false;
     }
 
-    // Handles "Add File" when a .pde is used. For beta 1, this no longer runs
+    // Handles "Add File" when a .pde is used. For 3.0b1, this no longer runs
     // on a separate thread because it's totally unnecessary (a .pde file is
     // not going to be so large that it's ever required) and otherwise we have
     // to introduce a threading block here.
@@ -1503,7 +1504,7 @@ public class Sketch {
 
   /**
    * Returns true if this is a read-only sketch. Used for the
-   * examples directory, or when sketches are loaded from read-only
+   * "examples" directory, or when sketches are loaded from read-only
    * volumes or folders without appropriate permissions.
    */
   public boolean isReadOnly() {
@@ -1621,16 +1622,6 @@ public class Sketch {
   }
 
 
-//  public String getClassPath() {
-//    return classPath;
-//  }
-
-
-//  public String getLibraryPath() {
-//    return javaLibraryPath;
-//  }
-
-
   public SketchCode[] getCode() {
     return code;
   }
@@ -1646,6 +1637,7 @@ public class Sketch {
   }
 
 
+  /*
   public int getCodeIndex(SketchCode who) {
     for (int i = 0; i < codeCount; i++) {
       if (who == code[i]) {
@@ -1654,6 +1646,7 @@ public class Sketch {
     }
     return -1;
   }
+  */
 
 
   public SketchCode getCurrentCode() {
@@ -1666,9 +1659,11 @@ public class Sketch {
   }
 
 
+  /*
   public String getMainProgram() {
     return getCode(0).getProgram();
   }
+  */
 
 
   public void setUntitled(boolean untitled) {
@@ -1756,7 +1751,7 @@ public class Sketch {
       } else {
         // Tempting to only add if prev char is not underscore, but that
         // might be more confusing if lots of chars are converted and the
-        // result is a very short string thats nothing like the original.
+        // result is a very short string that's nothing like the original.
         sb.append('_');
       }
     }
