@@ -4,6 +4,8 @@
 
 Tomorrow morning is the first day of using Processing in class, so I thought I'd add some chaos to that by posting a release the night before. Having started the first day of class being locked out of the classroom, I'm just looking for ways to keep the students from getting too comfortable.
 
+**The macOS-aarch64 (Apple Silicon) release is not yet complete. If you want to use P2D and P3D (OpenGL) on macOS, use the Intel (x86_64) build, which is the only one that will be linked from processing.org/download until this situation is resolved.** See [\#370](https://github.com/processing/processing4/issues/370) for status updates.
+
 
 ## Things you might notice in this release
 
