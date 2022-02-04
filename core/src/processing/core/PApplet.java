@@ -9975,7 +9975,7 @@ public class PApplet implements PConstants {
   }
 
 
-  public void windowSize(int newWidth, int newHeight) {
+  public void windowResize(int newWidth, int newHeight) {
     surface.setSize(newWidth, newHeight);
   }
 
@@ -10001,7 +10001,7 @@ public class PApplet implements PConstants {
   }
 
 
-  public void windowPosition(int x, int y) {
+  public void windowMove(int x, int y) {
     surface.setLocation(x, y);
   }
 

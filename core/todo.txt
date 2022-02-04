@@ -1,5 +1,7 @@
 1281 (4.0b6)
-X better handling of "Display N does not exist, using the default display instead"
+X fix up "Display N does not exist, using the default display instead"
+X   if more than one display, shows list of available displays (size and index)
+X properly set names for windowMove() and windowResize()
 
 
 _ finalize the solution for frame/surface methods
