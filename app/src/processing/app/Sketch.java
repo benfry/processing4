@@ -36,8 +36,6 @@ import java.awt.FileDialog;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,8 +49,8 @@ import javax.swing.border.EmptyBorder;
  * Stores information about files in the current sketch.
  */
 public class Sketch {
-  private Editor editor;
-  private Mode mode;
+  private final Editor editor;
+  private final Mode mode;
 
   /** main pde file for this sketch. */
   private File primaryFile;
@@ -187,29 +185,30 @@ public class Sketch {
   public void getSketchCodeFiles(List<String> outFilenames,
                                  List<String> outExtensions) {
     // get list of files in the sketch folder
-    String list[] = folder.list();
+    String[] list = folder.list();
+    if (list != null) {
+      for (String filename : list) {
+        // Ignoring the dot prefix files is especially important to avoid files
+        // with the ._ prefix on Mac OS X. (You'll see this with Mac files on
+        // non-HFS drives, i.e. a thumb drive formatted FAT32.)
+        if (filename.startsWith(".")) continue;
 
-    for (String filename : list) {
-      // Ignoring the dot prefix files is especially important to avoid files
-      // with the ._ prefix on Mac OS X. (You'll see this with Mac files on
-      // non-HFS drives, i.e. a thumb drive formatted FAT32.)
-      if (filename.startsWith(".")) continue;
+        // Don't let some wacko name a directory blah.pde or bling.java.
+        if (new File(folder, filename).isDirectory()) continue;
 
-      // Don't let some wacko name a directory blah.pde or bling.java.
-      if (new File(folder, filename).isDirectory()) continue;
+        // figure out the name without any extension
+        String base = filename;
+        // now strip off the .pde and .java extensions
+        for (String extension : mode.getExtensions()) {
+          if (base.toLowerCase().endsWith("." + extension)) {
+            base = base.substring(0, base.length() - (extension.length() + 1));
 
-      // figure out the name without any extension
-      String base = filename;
-      // now strip off the .pde and .java extensions
-      for (String extension : mode.getExtensions()) {
-        if (base.toLowerCase().endsWith("." + extension)) {
-          base = base.substring(0, base.length() - (extension.length() + 1));
-
-          // Don't allow people to use files with invalid names, since on load,
-          // it would be otherwise possible to sneak in nasty filenames. [0116]
-          if (isSanitaryName(base)) {
-            if (outFilenames != null) outFilenames.add(filename);
-            if (outExtensions != null) outExtensions.add(extension);
+            // Don't allow people to use files with invalid names, since on load,
+            // it would be otherwise possible to sneak in nasty filenames. [0116]
+            if (isSanitaryName(base)) {
+              if (outFilenames != null) outFilenames.add(filename);
+              if (outExtensions != null) outExtensions.add(extension);
+            }
           }
         }
       }
@@ -836,7 +835,7 @@ public class Sketch {
   public boolean saveAs() throws IOException {
     String newParentDir = null;
     String newName = null;
-    String oldName = folder.getName();
+//    String oldName = folder.getName();
 
     // TODO rewrite this to use shared version from PApplet (But because that
     // specifies a callback function, this needs to wait until the refactoring)
@@ -917,7 +916,7 @@ public class Sketch {
       // just use "save" here instead, because the user will have received a
       // message (from the operating system) about "do you want to replace?"
       return save();
-      }
+    }
 
     // check to see if the user is trying to save this sketch inside itself
     try {
@@ -929,7 +928,7 @@ public class Sketch {
                              Language.text("save_file.messages.recursive_save.description"));
         return false;
       }
-    } catch (IOException e) { }
+    } catch (IOException ignored) { }
 
     // if the new folder already exists, then first remove its contents before
     // copying everything over (user will have already been warned).
@@ -946,38 +945,36 @@ public class Sketch {
     // first get the contents of the editor text area
     updateSketchCodes();
 
-    File[] copyItems = folder.listFiles(new FileFilter() {
-      public boolean accept(File file) {
-        String name = file.getName();
-        // just in case the OS likes to return these as if they're legit
-        if (name.equals(".") || name.equals("..")) {
-          return false;
-        }
-        // list of files/folders to be ignored during "save as"
-        String[] ignorable = mode.getIgnorable();
-        if (ignorable != null) {
-          for (String ignore : ignorable) {
-            if (name.equals(ignore)) {
-              return false;
-            }
-          }
-        }
-        // ignore the extensions for code, since that'll be copied below
-        for (String ext : mode.getExtensions()) {
-          if (name.endsWith(ext)) {
+    File[] copyItems = folder.listFiles(file -> {
+      String name = file.getName();
+      // just in case the OS likes to return these as if they're legit
+      if (name.equals(".") || name.equals("..")) {
+        return false;
+      }
+      // list of files/folders to be ignored during "save as"
+      String[] ignorable = mode.getIgnorable();
+      if (ignorable != null) {
+        for (String ignore : ignorable) {
+          if (name.equals(ignore)) {
             return false;
           }
         }
-        // don't do screen captures, since there might be thousands. kind of
-        // a hack, but seems harmless. hm, where have i heard that before...
-        if (name.startsWith("screen-")) {
+      }
+      // ignore the extensions for code, since that'll be copied below
+      for (String ext : mode.getExtensions()) {
+        if (name.endsWith(ext)) {
           return false;
         }
-        return true;
       }
+      // don't do screen captures, since there might be thousands. kind of
+      // a hack, but seems harmless. hm, where have i heard that before...
+      if (name.startsWith("screen-")) {
+        return false;
+      }
+      return true;
     });
 
-    startSaveAsThread(oldName, newName, newFolder, copyItems);
+    startSaveAsThread(newName, newFolder, copyItems);
 
     // save the other tabs to their new location (main tab saved below)
     for (int i = 1; i < codeCount; i++) {
@@ -1034,130 +1031,128 @@ public class Sketch {
    *
    * <a href="https://github.com/processing/processing/issues/3843">3843</a>
    */
-  void startSaveAsThread(final String oldName, final String newName,
+  void startSaveAsThread(final String newName,
                          final File newFolder, final File[] copyItems) {
     saving.set(true);
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        final JFrame frame =
-          new JFrame("Saving \u201C" + newName + "\u201C...");
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+    EventQueue.invokeLater(() -> {
+      final JFrame frame =
+        new JFrame("Saving \u201C" + newName + "\u201C\u2026");
+      frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
-        Box box = Box.createVerticalBox();
-        box.setBorder(new EmptyBorder(16, 16, 16, 16));
+      Box box = Box.createVerticalBox();
+      box.setBorder(new EmptyBorder(16, 16, 16, 16));
 
-        if (Platform.isMacOS()) {
-          frame.setBackground(Color.WHITE);
+      if (Platform.isMacOS()) {
+        frame.setBackground(Color.WHITE);
+      }
+
+      JLabel label =
+        new JLabel("Saving additional files from the sketch folder...");
+      box.add(label);
+      box.add(Box.createVerticalStrut(8));
+
+      final JProgressBar progressBar = new JProgressBar(0, 100);
+      // no luck, stuck with ugly on OS X
+      //progressBar.putClientProperty("JComponent.sizeVariant", "regular");
+      progressBar.setValue(0);
+      progressBar.setStringPainted(true);
+      box.add(progressBar);
+
+      frame.getContentPane().add(box);
+      frame.pack();
+      frame.setLocationRelativeTo(editor);
+      Toolkit.setIcon(frame);
+      frame.setVisible(true);
+
+      new SwingWorker<Void, Void>() {
+
+        @Override
+        protected Void doInBackground() throws Exception {
+          addPropertyChangeListener(evt -> {
+            if ("progress".equals(evt.getPropertyName())) {
+              progressBar.setValue((Integer) evt.getNewValue());
+            }
+          });
+
+          long totalSize = 0;
+          for (File copyable : copyItems) {
+            totalSize += Util.calcSize(copyable);
+          }
+
+          long progress = 0;
+          setProgress(0);
+          for (File copyable : copyItems) {
+            if (copyable.isDirectory()) {
+              copyDir(copyable,
+                      new File(newFolder, copyable.getName()),
+                      progress, totalSize);
+              progress += Util.calcSize(copyable);
+            } else {
+              copyFile(copyable,
+                       new File(newFolder, copyable.getName()),
+                       progress, totalSize);
+              if (Util.calcSize(copyable) < 512 * 1024) {
+                // If the file length > 0.5MB, the copyFile() function has
+                // been redesigned to change progress every 0.5MB so that
+                // the progress bar doesn't stagnate during that time
+                progress += Util.calcSize(copyable);
+                setProgress((int) (progress * 100L / totalSize));
+              }
+            }
+          }
+          saving.set(false);
+          return null;
         }
 
-        JLabel label =
-          new JLabel("Saving additional files from the sketch folder...");
-        box.add(label);
-        box.add(Box.createVerticalStrut(8));
 
-        final JProgressBar progressBar = new JProgressBar(0, 100);
-        // no luck, stuck with ugly on OS X
-        //progressBar.putClientProperty("JComponent.sizeVariant", "regular");
-        progressBar.setValue(0);
-        progressBar.setStringPainted(true);
-        box.add(progressBar);
-
-        frame.getContentPane().add(box);
-        frame.pack();
-        frame.setLocationRelativeTo(editor);
-        Toolkit.setIcon(frame);
-        frame.setVisible(true);
-
-        new SwingWorker<Void, Void>() {
-
-          @Override
-          protected Void doInBackground() throws Exception {
-            addPropertyChangeListener(new PropertyChangeListener() {
-              public void propertyChange(PropertyChangeEvent evt) {
-                if ("progress".equals(evt.getPropertyName())) {
-                  progressBar.setValue((Integer) evt.getNewValue());
-                }
-              }
-            });
-
-            long totalSize = 0;
-            for (File copyable : copyItems) {
-              totalSize += Util.calcSize(copyable);
+        /**
+         * Overloaded copyFile that is called whenever a Save As is being done,
+         * so that the ProgressBar is updated for very large files as well.
+         */
+        void copyFile(File sourceFile, File targetFile,
+                      long progress, long totalSize) throws IOException {
+          BufferedInputStream from =
+            new BufferedInputStream(new FileInputStream(sourceFile));
+          BufferedOutputStream to =
+            new BufferedOutputStream(new FileOutputStream(targetFile));
+          byte[] buffer = new byte[16 * 1024];
+          int bytesRead;
+          int progRead = 0;
+          while ((bytesRead = from.read(buffer)) != -1) {
+            to.write(buffer, 0, bytesRead);
+            progRead += bytesRead;
+            if (progRead >= 512 * 1024) {  // to update progress bar every 0.5MB
+              progress += progRead;
+              //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
+              setProgress((int) (100L * progress / totalSize));
+              progRead = 0;
             }
-
-            long progress = 0;
-            setProgress(0);
-            for (File copyable : copyItems) {
-              if (copyable.isDirectory()) {
-                copyDir(copyable,
-                        new File(newFolder, copyable.getName()),
-                        progress, totalSize);
-                progress += Util.calcSize(copyable);
-              } else {
-                copyFile(copyable,
-                         new File(newFolder, copyable.getName()),
-                         progress, totalSize);
-                if (Util.calcSize(copyable) < 512 * 1024) {
-                  // If the file length > 0.5MB, the copyFile() function has
-                  // been redesigned to change progress every 0.5MB so that
-                  // the progress bar doesn't stagnate during that time
-                  progress += Util.calcSize(copyable);
-                  setProgress((int) (progress * 100L / totalSize));
-                }
-              }
-            }
-            saving.set(false);
-            return null;
           }
+          // Final update to progress bar
+          setProgress((int) (100L * progress / totalSize));
+
+          from.close();
+          from = null;
+          to.flush();
+          to.close();
+          to = null;
+
+          targetFile.setLastModified(sourceFile.lastModified());
+          targetFile.setExecutable(sourceFile.canExecute());
+        }
 
 
-          /**
-           * Overloaded copyFile that is called whenever a Save As is being done,
-           * so that the ProgressBar is updated for very large files as well.
-           */
-          void copyFile(File sourceFile, File targetFile,
-                        long progress, long totalSize) throws IOException {
-            BufferedInputStream from =
-              new BufferedInputStream(new FileInputStream(sourceFile));
-            BufferedOutputStream to =
-              new BufferedOutputStream(new FileOutputStream(targetFile));
-            byte[] buffer = new byte[16 * 1024];
-            int bytesRead;
-            int progRead = 0;
-            while ((bytesRead = from.read(buffer)) != -1) {
-              to.write(buffer, 0, bytesRead);
-              progRead += bytesRead;
-              if (progRead >= 512 * 1024) {  // to update progress bar every 0.5MB
-                progress += progRead;
-                //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
-                setProgress((int) (100L * progress / totalSize));
-                progRead = 0;
-              }
-            }
-            // Final update to progress bar
-            setProgress((int) (100L * progress / totalSize));
-
-            from.close();
-            from = null;
-            to.flush();
-            to.close();
-            to = null;
-
-            targetFile.setLastModified(sourceFile.lastModified());
-            targetFile.setExecutable(sourceFile.canExecute());
+        long copyDir(File sourceDir, File targetDir,
+                     long progress, long totalSize) throws IOException {
+          // Overloaded copyDir so that the Save As progress bar gets updated when the
+          //    files are in folders as well (like in the data folder)
+          if (sourceDir.equals(targetDir)) {
+            final String urDum = "source and target directories are identical";
+            throw new IllegalArgumentException(urDum);
           }
-
-
-          long copyDir(File sourceDir, File targetDir,
-                       long progress, long totalSize) throws IOException {
-            // Overloaded copyDir so that the Save As progress bar gets updated when the
-            //    files are in folders as well (like in the data folder)
-            if (sourceDir.equals(targetDir)) {
-              final String urDum = "source and target directories are identical";
-              throw new IllegalArgumentException(urDum);
-            }
-            targetDir.mkdirs();
-            String files[] = sourceDir.list();
+          targetDir.mkdirs();
+          String[] files = sourceDir.list();
+          if (files != null) {
             for (String filename : files) {
               // Ignore dot files (.DS_Store), dot folders (.svn) while copying
               if (filename.charAt(0) == '.') {
@@ -1178,17 +1173,19 @@ public class Sketch {
                 setProgress((int) (100L * progress / totalSize));
               }
             }
-            return progress;
+          } else {
+            throw new IOException("Could not list files inside " + sourceDir);
           }
+          return progress;
+        }
 
 
-          @Override
-          public void done() {
-            frame.dispose();
-            editor.statusNotice(Language.text("editor.status.saving.done"));
-          }
-        }.execute();
-      }
+        @Override
+        public void done() {
+          frame.dispose();
+          editor.statusNotice(Language.text("editor.status.saving.done"));
+        }
+      }.execute();
     });
   }
 
@@ -1471,47 +1468,6 @@ public class Sketch {
 
 
   /**
-   * When running from the editor, take care of preparations before running
-   * a build or an export. Also erases and/or creates 'targetFolder' if it's
-   * not null, and if preferences say to do so when exporting.
-   * @param targetFolder is something like applet, application, android...
-   */
-  /*
-  public void prepareBuild(File targetFolder) throws SketchException {
-    // make sure the user didn't hide the sketch folder
-    ensureExistence();
-
-    // don't do from the command line
-    if (editor != null) {
-      // make sure any edits have been stored
-      current.setProgram(editor.getText());
-
-      // if an external editor is being used, need to grab the
-      // latest version of the code from the file.
-      if (Preferences.getBoolean("editor.external")) {
-        // set current to null so that the tab gets updated
-        // http://dev.processing.org/bugs/show_bug.cgi?id=515
-        current = null;
-        // nuke previous files and settings
-        load();
-      }
-    }
-
-    if (targetFolder != null) {
-      // Nuke the old applet/application folder because it can cause trouble
-      if (Preferences.getBoolean("export.delete_target_folder")) {
-        System.out.println("temporarily skipping deletion of " + targetFolder);
-//        Base.removeDir(targetFolder);
-//        targetFolder.renameTo(dest);
-      }
-      // Create a fresh output folder (needed before preproc is run next)
-      targetFolder.mkdirs();
-    }
-  }
-  */
-
-
-  /**
    * Make sure the sketch hasn't been moved or deleted by a nefarious user.
    * If they did, try to re-create it and save. Only checks whether the
    * main folder is still around, but not its contents.
@@ -1760,7 +1716,7 @@ public class Sketch {
   }
 
 
-  static final boolean asciiLetter(char c) {
+  static boolean isAsciiLetter(char c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
   }
 
@@ -1783,18 +1739,18 @@ public class Sketch {
    * because these aren't valid class names on Android.
    */
   static public String sanitizeName(String origName) {
-    char orig[] = origName.toCharArray();
+    char[] orig = origName.toCharArray();
     StringBuilder sb = new StringBuilder();
 
     // Can't lead with a digit (or anything besides a letter), so prefix with
     // "sketch_". In 1.x this prefixed with an underscore, but those get shaved
     // off later, since you can't start a sketch name with underscore anymore.
-    if (!asciiLetter(orig[0])) {
+    if (!isAsciiLetter(orig[0])) {
       sb.append("sketch_");
     }
 //    for (int i = 0; i < orig.length; i++) {
     for (char c : orig) {
-      if (asciiLetter(c) || (c >= '0' && c <= '9')) {
+      if (isAsciiLetter(c) || (c >= '0' && c <= '9')) {
         sb.append(c);
 
       } else {
