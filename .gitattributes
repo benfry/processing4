@@ -7,6 +7,5 @@
 *.pde text
 
 # Files that will always have CRLF line endings on checkout.
-*.bat eol=crlf
-build/macosx/jAppleMenuBar.url eol=crlf
+*.bat *.url eol=crlf
 
