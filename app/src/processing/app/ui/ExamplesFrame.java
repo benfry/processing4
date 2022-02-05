@@ -22,12 +22,7 @@
 
 package processing.app.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -36,13 +31,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTree;
-import javax.swing.border.Border;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -89,17 +78,6 @@ public class ExamplesFrame extends JFrame {
     JPanel examplesPanel = new JPanel();
     examplesPanel.setLayout(new BorderLayout());
     examplesPanel.setBackground(Color.WHITE);
-
-    final JPanel openExamplesManagerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JButton addExamplesButton = new JButton(Language.text("examples.add_examples"));
-    openExamplesManagerPanel.add(addExamplesButton);
-    openExamplesManagerPanel.setOpaque(false);
-    Border lineBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY);
-    Border paddingBorder = BorderFactory.createEmptyBorder(3, 5, 1, 4);
-    openExamplesManagerPanel.setBorder(BorderFactory.createCompoundBorder(lineBorder, paddingBorder));
-    openExamplesManagerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    openExamplesManagerPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    addExamplesButton.addActionListener(e -> ContributionManager.openExamples());
 
     final JTree tree = new JTree(buildTree());
 
@@ -178,8 +156,20 @@ public class ExamplesFrame extends JFrame {
     treePane.setBackground(Color.WHITE);
     treePane.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    examplesPanel.add(openExamplesManagerPanel,BorderLayout.PAGE_START);
+    //examplesPanel.add(openExamplesManagerPanel,BorderLayout.PAGE_START);
     examplesPanel.add(treePane, BorderLayout.CENTER);
+
+    Container buttons = Box.createHorizontalBox();
+
+    JButton addButton = new JButton(Language.text("examples.add_examples"));
+    addButton.addActionListener(e -> ContributionManager.openExamples());
+    buttons.add(Box.createHorizontalGlue());
+    buttons.add(addButton);
+    buttons.add(Box.createHorizontalGlue());
+
+    JPanel buttonPanel = new JPanel();  // adds extra border
+    buttonPanel.add(buttons);
+    examplesPanel.add(buttonPanel, BorderLayout.SOUTH);
 
     getContentPane().add(examplesPanel);
     pack();
@@ -190,16 +180,19 @@ public class ExamplesFrame extends JFrame {
   public void setVisible() {
     // Space for the editor plus a li'l gap
     int roughWidth = getWidth() + 20;
-    Point p;
     // If no window open, or the editor is at the edge of the screen
     Editor editor = base.getActiveEditor();
-    if (editor == null ||
-        (p = editor.getLocation()).x < roughWidth) {
-      // Center the window on the screen
+    if (editor == null) {
       setLocationRelativeTo(null);
     } else {
-      // Open the window relative to the editor
-      setLocation(p.x - roughWidth, p.y);
+      Point p = editor.getLocation();
+      if (p.x < roughWidth) {
+        // Center the window on the screen
+        setLocationRelativeTo(null);
+      } else {
+        // Open the window relative to the editor
+        setLocation(p.x - roughWidth, p.y);
+      }
     }
     setVisible(true);
   }

@@ -147,7 +147,9 @@ public class SketchbookFrame extends JFrame {
     // Check whether sketchbook is empty or not
     TreeModel treeModel = tree.getModel();
     if (treeModel.getChildCount(treeModel.getRoot()) != 0) {
-      JScrollPane treePane = new JScrollPane(tree);
+      JScrollPane treePane = new JScrollPane(tree,
+        ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
+        ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
       treePane.setPreferredSize(Toolkit.zoom(250, 450));
       treePane.setBorder(new EmptyBorder(0, 0, 0, 0));
 
@@ -188,20 +190,24 @@ public class SketchbookFrame extends JFrame {
 
 
   public void setVisible() {
-    // TODO The ExamplesFrame code doesn't do this, is it necessary?
+    // TODO The ExamplesFrame code doesn't invokeLater(), is it necessary?
     //      Either one of them is wrong, or this is hiding a bug [fry 150811]
     EventQueue.invokeLater(() -> {
       // Space for the editor plus a li'l gap
       int roughWidth = getWidth() + 20;
       // If no window open, or the editor is at the edge of the screen
       Editor editor = base.getActiveEditor();
-      Point p = editor.getLocation();
-      if (editor == null || p.x < roughWidth) {
-        // Center the window on the screen
+      if (editor == null) {
         setLocationRelativeTo(null);
       } else {
-        // Open the window relative to the editor
-        setLocation(p.x - roughWidth, p.y);
+        Point p = editor.getLocation();
+        if (p.x < roughWidth) {
+          // Center the window on the screen
+          setLocationRelativeTo(null);
+        } else {
+          // Open the window relative to the editor
+          setLocation(p.x - roughWidth, p.y);
+        }
       }
       setVisible(true);
     });
