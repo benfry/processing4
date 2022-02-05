@@ -971,6 +971,7 @@ public class Base {
    */
   private void saveModeSettings(final File sketchProps, final Mode mode) {
     try {
+      // Read the old sketch.properties file if it already exists
       final Settings settings = new Settings(sketchProps);
       settings.set("mode", mode.getTitle());
       settings.set("mode.id", mode.getIdentifier());
@@ -982,6 +983,7 @@ public class Base {
 
 
   String getDefaultModeIdentifier() {
+    // Used to initialize coreModes, so cannot use coreModes[0].getIdentifier()
     return "processing.mode.java.JavaMode";
   }
 
@@ -1001,7 +1003,9 @@ public class Base {
       nextMode = mode;
 
       if (sketch.isModified()) {
-        handleNew();  // don't bother with error messages, just switch
+        // If sketch is modified, simpler to just open a new window.
+        // https://github.com/processing/processing4/issues/189
+        handleNew();
         return false;
 
       } else if (sketch.isUntitled()) {
@@ -1013,10 +1017,9 @@ public class Base {
       } else {
         // If the current sketch contains file extensions that the new mode
         // can handle, then write a sketch.properties file with the new mode
-        // specified, and reopen. (Really only useful for Java <-> Android)
-        //if (isCompatible(sketch, mode)) {
+        // specified, and reopen. Currently, only used for Java <-> Android.
         if (mode.canEdit(sketch)) {
-          final File props = new File(sketch.getCodeFolder(), "sketch.properties");
+          final File props = new File(sketch.getFolder(), "sketch.properties");
           saveModeSettings(props, nextMode);
           handleClose(activeEditor, true);
           Editor editor = handleOpen(sketch.getMainFilePath());

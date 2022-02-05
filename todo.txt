@@ -3,6 +3,10 @@ X update to Java 17.0.2+8
 X move "Add Examples" to bottom of the Examples window
 X remove anachronistic Preferences.save() that happens after opening a sketch
 
+modes and properties
+X fix bug when changing the Mode between Java and Android
+X   appears that it would have been broken for a long time
+
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
