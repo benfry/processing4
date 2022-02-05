@@ -465,20 +465,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     for (final Mode m : base.getModeList()) {
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(m.getTitle());
       item.addActionListener(e -> {
-        /*
-        if (!sketch.isModified()) {
-          if (!base.changeMode(m)) {
-            reselectMode();
-            Messages.showWarning(Language.text("warn.cannot_change_mode.title"),
-                                 Language.interpolate("warn.cannot_change_mode.body", m));
-          }
-        } else {
-          reselectMode();
-          Messages.showWarning("Save",
-                               "Please save the sketch before changing the mode.");
-        }
-        */
-        //if (sketch.isModified() || !base.changeMode(m)) {
         if (!base.changeMode(m)) {
           // Returns false if unable to change the mode in this window
           // (which will open a new window with the new Mode), in which case
@@ -572,27 +558,14 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * with things in the Preferences window.
    */
   public void applyPreferences() {
-    // Even though this is only updating the theme (colors, icons), subclasses
-    // use this to apply other preferences (i.e. error checking changes in Java Mode).
+    // Even though this is only updating the theme (colors, icons),
+    // subclasses use this to apply other preferences.
+    // For instance, Java Mode applies changes to error checking.
     updateTheme();
-
-//    // Update fonts and other items controllable from the prefs
-////    textarea.getPainter().updateAppearance();
-////    textarea.repaint();
-//    textarea.updateTheme();
-//    console.updateTheme();
   }
 
 
   public void updateTheme() {
-    /*
-    PdeTextArea pta = getPdeTextArea();
-    // will be null if a subclass has overridden createTextArea()
-    // to return something besides a PdeTextArea
-    if (pta != null) {
-      pta.updateAppearance();
-    }
-    */
     header.updateTheme();
     toolbar.updateTheme();
     textarea.updateTheme();
@@ -646,15 +619,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   abstract public JMenu buildFileMenu();
 
 
-//  public JMenu buildFileMenu(Editor editor) {
-//    return buildFileMenu(editor, null);
-//  }
-//
-//
-//  // most of these items are per-mode
-//  protected JMenu buildFileMenu(Editor editor, JMenuItem[] exportItems) {
-
-
   protected JMenu buildFileMenu(JMenuItem[] exportItems) {
     JMenuItem item;
     JMenu fileMenu = new JMenu(Language.text("menu.file"));
@@ -666,8 +630,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     item = Toolkit.newJMenuItem(Language.text("menu.file.open"), 'O');
     item.addActionListener(e -> base.handleOpenPrompt());
     fileMenu.add(item);
-
-//    fileMenu.add(base.getSketchbookMenu());
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
     item.addActionListener(e -> base.showSketchbookFrame());
@@ -683,12 +645,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.save"), 'S');
     item.addActionListener(e -> handleSave(false));
-//    saveMenuItem = item;
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.save_as"), 'S');
     item.addActionListener(e -> handleSaveAs());
-//    saveAsMenuItem = item;
     fileMenu.add(item);
 
     if (exportItems != null) {
@@ -725,16 +685,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
-//  public void setSaveItem(JMenuItem item) {
-//    saveMenuItem = item;
-//  }
-
-
-//  public void setSaveAsItem(JMenuItem item) {
-//    saveAsMenuItem = item;
-//  }
-
-
   protected JMenu buildEditMenu() {
     JMenu menu = new JMenu(Language.text("menu.edit"));
     JMenuItem item;
@@ -767,36 +717,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     item = Toolkit.newJMenuItem(Language.text("menu.edit.select_all"), 'A');
     item.addActionListener(e -> textarea.selectAll());
     menu.add(item);
-
-    /*
-    menu.addSeparator();
-
-    item = Toolkit.newJMenuItem("Delete Selected Lines", 'D');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        handleDeleteLines();
-      }
-    });
-    menu.add(item);
-
-    item = new JMenuItem("Move Selected Lines Up");
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.ALT_MASK));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleMoveLines(true);
-        }
-      });
-    menu.add(item);
-
-    item = new JMenuItem("Move Selected Lines Down");
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.ALT_MASK));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleMoveLines(false);
-        }
-      });
-    menu.add(item);
-     */
 
     menu.addSeparator();
 
@@ -917,6 +837,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     });
     sketchMenu.add(item);
 
+    //noinspection ConstantConditions
     if (runItems != null && runItems.length != 0) {
       sketchMenu.addSeparator();
     }
@@ -1006,20 +927,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   public JMenu getToolMenu() {
     return toolsMenu;
   }
-
-
-  /*
-  public JMenu getToolMenu() {
-    if (toolsMenu == null) {
-      rebuildToolMenu();
-    }
-    return toolsMenu;
-  }
-
-  public void removeTool() {
-    rebuildToolMenu();
-  }
-  */
 
 
   /**
