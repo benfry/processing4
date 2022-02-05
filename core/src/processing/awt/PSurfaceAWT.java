@@ -719,6 +719,15 @@ public class PSurfaceAWT extends PSurfaceNone {
   }
 
 
+  private Dimension targetFrameSize() {
+    int windowW = Math.max(sketchWidth, MIN_WINDOW_WIDTH) +
+            currentInsets.left + currentInsets.right;
+    int windowH = Math.max(sketchHeight, MIN_WINDOW_HEIGHT) +
+            currentInsets.top + currentInsets.bottom;
+    return new Dimension(windowW, windowH);
+  }
+
+
   /** Resize frame for these sketch (canvas) dimensions. */
   private Dimension setFrameSize() {  //int sketchWidth, int sketchHeight) {
     // https://github.com/processing/processing/pull/3162
@@ -727,12 +736,9 @@ public class PSurfaceAWT extends PSurfaceNone {
 //    System.out.format("setting frame size %d %d %n", sketchWidth, sketchHeight);
 //    new Exception().printStackTrace(System.out);
     currentInsets = frame.getInsets();
-    int windowW = Math.max(sketchWidth, MIN_WINDOW_WIDTH) +
-      currentInsets.left + currentInsets.right;
-    int windowH = Math.max(sketchHeight, MIN_WINDOW_HEIGHT) +
-      currentInsets.top + currentInsets.bottom;
-    frame.setSize(windowW, windowH);
-    return new Dimension(windowW, windowH);
+    Dimension target = targetFrameSize();
+    frame.setSize(target);
+    return target; // maybe i should copy it?
   }
 
 
@@ -1045,20 +1051,35 @@ public class PSurfaceAWT extends PSurfaceNone {
     frame.addComponentListener(new ComponentAdapter() {
       @Override
       public void componentResized(ComponentEvent e) {
+        Frame farm = (Frame) e.getComponent();
+        Dimension windowSize = farm.getSize();
+        int x = farm.getX() + currentInsets.left;
+        int y = farm.getY() + currentInsets.top;
+
+        // KDE seems to provide invalid insets initially,
+        // then change them to valid ones. This should fix
+        // https://github.com/processing/processing4/issues/393
+        Insets newInsets = farm.getInsets();
+        if (!currentInsets.equals(newInsets) ||
+            !windowSize.equals(targetFrameSize())) {
+          // Sometimes the WM does not want to change the
+          // window size right away. We have to insist
+
+          setFrameSize();
+          setLocation(x - currentInsets.left, y - currentInsets.top);
+
+          // should it count like a window resize or move?
+        }
+
         // Ignore bad resize events fired during setup to fix
         // http://dev.processing.org/bugs/show_bug.cgi?id=341
         // This should also fix the blank screen on Linux bug
         // http://dev.processing.org/bugs/show_bug.cgi?id=282
-        if (frame.isResizable()) {
+        if (farm.isResizable()) {
           // might be multiple resize calls before visible (i.e. first
           // when pack() is called, then when it's resized for use).
           // ignore them because it's not the user resizing things.
-          Frame farm = (Frame) e.getComponent();
           if (farm.isVisible()) {
-            Dimension windowSize = farm.getSize();
-            int x = farm.getX() + currentInsets.left;
-            int y = farm.getY() + currentInsets.top;
-
             // JFrame (unlike java.awt.Frame) doesn't include the left/top
             // insets for placement (though it does seem to need them for
             // overall size of the window. Perhaps JFrame sets its coord
@@ -1071,7 +1092,7 @@ public class PSurfaceAWT extends PSurfaceNone {
             sketch.postWindowResized(w / windowScaleFactor, h / windowScaleFactor);
 
             // correct the location when inset size changes
-            setLocation(x - currentInsets.left, y - currentInsets.top);
+            //setLocation(x - currentInsets.left, y - currentInsets.top);
             //sketch.postWindowMoved(x - currentInsets.left, y - currentInsets.top);
             sketch.postWindowMoved(x, y);  // presumably user wants drawing area
           }
