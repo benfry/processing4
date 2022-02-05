@@ -210,7 +210,7 @@ public class ChangeDetector implements WindowFocusListener {
             scKeep.setLastModified();
             scKeep.setModified(true);
           },
-            sketch::removeCode,
+          sketch::removeCode,
           scResave -> {
             try {
               scResave.save();

@@ -721,7 +721,11 @@ public class Sketch {
         return;
       }
     }
-    System.err.println("removeCode: could not find " + which.getFileName());
+
+    if (Base.DEBUG) {
+      // This can happen with the change detector, but need not be reported.
+      System.err.println("removeCode: could not find " + which.getFileName());
+    }
   }
 
 

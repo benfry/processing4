@@ -3,8 +3,11 @@ X update to Java 17.0.2+8
 X move "Add Examples" to bottom of the Examples window
 X remove anachronistic Preferences.save() that happens after opening a sketch
 X change cmd-click in window title to point to sketch folder
+
+change detector
 X text in second line of custom dialogs was showing too large
 X   i.e. change detector with large text for the "either way" part of the message
+X remove nonsense removeCode() error text
 
 modes and properties
 X fix bug when changing the Mode between Java and Android
