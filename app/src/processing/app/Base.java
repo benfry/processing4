@@ -209,7 +209,7 @@ public class Base {
       DEBUG = true;
     }
 
-    // Use native popups so they don't look crappy on macOS
+    // Use native popups to avoid looking crappy on macOS
     JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
     // Don't put anything above this line that might make GUI,
@@ -274,13 +274,14 @@ public class Base {
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
+        Throwable err = t;
         if (t.getCause() != null) {
           // Usually this is the more important piece of information. We'll
           // show this one so that it's not truncated in the error window.
-          t = t.getCause();
+          err = t.getCause();
         }
         Messages.showTrace("We're off on the wrong foot",
-                           "An error occurred during startup.", t, true);
+                           "An error occurred during startup.", err, true);
       }
       Messages.log("Done creating Base..."); //$NON-NLS-1$
 
@@ -405,7 +406,7 @@ public class Base {
 
     long t3 = System.currentTimeMillis();
     // Needs to happen after the sketchbook folder has been located.
-    // Also relies on the modes to be loaded so it knows what can be
+    // Also relies on the modes to be loaded, so it knows what can be
     // marked as an example.
 //    recent = new Recent(this);
     Recent.init(this);
@@ -579,7 +580,7 @@ public class Base {
       }
     }
 
-    // This allows you to build and test your Mode code from Eclipse.
+    // This allows you to build and test a Mode from Eclipse
     // -Dusemode=com.foo.FrobMode:/path/to/FrobMode
     final String useMode = System.getProperty("usemode");
     if (useMode != null) {
@@ -1485,10 +1486,10 @@ public class Base {
         if (ee.getMessage() != null) {  // null if the user canceled
           Messages.showWarning("Error opening sketch", ee.getMessage(), ee);
         }
-      } catch (NoSuchMethodError nsme) {
+      } catch (NoSuchMethodError me) {
         Messages.showWarning("Mode out of date",
                              nextMode.getTitle() + " is not compatible with this version of Processing.\n" +
-                             "Try updating the Mode or contact its author for a new version.", nsme);
+                             "Try updating the Mode or contact its author for a new version.", me);
       } catch (Throwable t) {
         if (nextMode.equals(getDefaultMode())) {
           Messages.showTrace("Serious Problem",
@@ -1779,7 +1780,7 @@ public class Base {
       mode.rebuildToolbarMenu();
       mode.rebuildExamplesFrame();
     }
-    // Unlike libraries, examples, etc, the sketchbook is global
+    // Unlike libraries, examples, etc. the sketchbook is global
     // (because you need to be able to open sketches from the Mode
     // that you're not currently using).
     rebuildSketchbookFrame();
@@ -1809,7 +1810,7 @@ public class Base {
    * sketch should open in a new window.
    */
   protected boolean addSketches(JMenu menu, File folder) {
-    // skip .DS_Store files, etc (this shouldn't actually be necessary)
+    // skip .DS_Store files, etc. (this shouldn't actually be necessary)
     if (!folder.isDirectory()) {
       return false;
     }
@@ -1819,7 +1820,7 @@ public class Base {
     }
 
     if (folder.getName().equals("sdk")) {
-      // This could be Android's SDK folder. Let's double check:
+      // This could be Android's SDK folder. Let's double-check:
       File suspectSDKPath = new File(folder.getParent(), folder.getName());
       File expectedSDKPath = new File(sketchbookFolder, "android" + File.separator + "sdk");
       if (expectedSDKPath.getAbsolutePath().equals(suspectSDKPath.getAbsolutePath())) {
@@ -1899,7 +1900,7 @@ public class Base {
    */
   public boolean addSketches(DefaultMutableTreeNode node, File folder,
                              boolean examples) throws IOException {
-    // skip .DS_Store files, etc (this shouldn't actually be necessary)
+    // skip .DS_Store files, etc. (this shouldn't actually be necessary)
     if (!folder.isDirectory()) {
       return false;
     }
