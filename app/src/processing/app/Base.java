@@ -1011,12 +1011,6 @@ public class Base {
   }
 
 
-  /** Used by ThinkDifferent so that it can have a Sketchbook menu. */
-  public Mode getNextMode() {
-    return nextMode;
-  }
-
-
   /**
    * @return true if mode is changed within this window (false if new window)
    */
