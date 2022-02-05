@@ -347,7 +347,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   protected JEditTextArea createTextArea() {
-    return new JEditTextArea(new PdeTextAreaDefaults(mode),
+    return new JEditTextArea(new PdeTextAreaDefaults(),
                              new PdeInputHandler(this));
   }
 
@@ -535,6 +535,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   abstract public EditorToolbar createToolbar();
 
 
+  @SuppressWarnings("unused")
   public EditorToolbar getToolbar() {
     return toolbar;
   }
@@ -2168,6 +2169,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * Check if the sketch is modified and ask user to save changes.
    * @return false if canceling the close/quit operation
    */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean checkModified() {
     if (!sketch.isModified()) return true;
 

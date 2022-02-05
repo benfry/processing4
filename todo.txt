@@ -1,14 +1,14 @@
 1281 (4.0b6)
 X update to Java 17.0.2+8
-X move "Add Examples" to bottom of window
+X move "Add Examples" to bottom of the Examples window
+X remove anachronistic Preferences.save() that happens after opening a sketch
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-class
-_ make sure pdex/pdez files working, also on Windows
-
+_ errors when files removed during "git checkout <branch>"
+_   the tab has already disappeared, so complains it can't find the SketchCode
 
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
@@ -27,6 +27,10 @@ _ several "Could not find a matching .properties file" with clocks pdex
 _ examples window is per-Mode, but that doesn't seem helpful
 _   just like sketchbook, you can open one from the other
 _   or maybe just contribs show everywhere? hrm
+_ make sure pdex/pdez files working, also on Windows
+_   contrib examples are just too convoluted to double-click
+_   folders inside folders, bleh
+_   what Mode are they for?
 _ pdez links for contribs, not just the .zip
 _   fix the code so that the contribs manager will handle it
 _   though that's bad for earlier contribs, hrm

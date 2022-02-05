@@ -176,7 +176,7 @@ public class JavaEditor extends Editor {
 
 
   protected JEditTextArea createTextArea() {
-    return new JavaTextArea(new PdeTextAreaDefaults(mode), this);
+    return new JavaTextArea(new PdeTextAreaDefaults(), this);
   }
 
 
