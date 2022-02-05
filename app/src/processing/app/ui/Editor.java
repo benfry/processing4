@@ -1336,6 +1336,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
+  @SuppressWarnings("unused")
   public void insertText(String what) {
     startCompoundEdit();
     int caret = getCaretOffset();
@@ -1350,6 +1351,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
+  @SuppressWarnings("unused")
   public void setSelectedText(String what) {
     textarea.setSelectedText(what);
   }
@@ -1415,6 +1417,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   /**
    * Replace the text on a specified line.
    */
+  @SuppressWarnings("unused")
   public void setLineText(int line, String what) {
     startCompoundEdit();
     textarea.select(getLineStartOffset(line), getLineStopOffset(line));
@@ -2076,7 +2079,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * Check if the sketch is modified and ask user to save changes.
    * @return false if canceling the close/quit operation
    */
-  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+  @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "RedundantIfStatement"})
   public boolean checkModified() {
     if (!sketch.isModified()) return true;
 
@@ -2283,7 +2286,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * <A HREF="http://dev.processing.org/bugs/show_bug.cgi?id=276">Bug 276</A>.
    */
   public boolean handleSave(boolean immediately) {
-//    handleStop();  // 0136
+    // This was a mistake (rectified in 0136) that would cause long-running
+    // sketches to be interrupted, causing much sadness.
+    //handleStop();
 
     if (sketch.isUntitled()) {
       return handleSaveAs();

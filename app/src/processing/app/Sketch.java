@@ -344,7 +344,7 @@ public class Sketch {
     }
 
     // ask for new name of file (internal to window)
-    // TODO maybe just popup a text area?
+    // TODO maybe just pop up a text area?
     renamingCode = true;
     String prompt = (currentIndex == 0) ?
       Language.text("editor.sketch.rename.description") :
@@ -461,8 +461,8 @@ public class Sketch {
     // Also ignoring case here, because I don't want to write/maintain/debug
     // a bunch of platform-specific quirks: macOS is case-insensitive but
     // preserving, Windows is insensitive, *nix is sensitive and preserving,
-    // and someday we're all gonna die, and I'm comfortable with this piece
-    // of code working not being essential to the story of my life on Earth.
+    // and someday we're all gonna die, and I'm comfortable that writing the
+    // necessary code is not essential to the story of my life on Earth.
     if (renamingCode) {
       if (newName.equalsIgnoreCase(current.getFileName())) {
         // exit quietly for the 'rename' case.
@@ -837,10 +837,7 @@ public class Sketch {
   public boolean saveAs() throws IOException {
     String newParentDir = null;
     String newName = null;
-//    String oldName = folder.getName();
 
-    // TODO rewrite this to use shared version from PApplet (But because that
-    // specifies a callback function, this needs to wait until the refactoring)
     final String PROMPT = Language.text("save");
 
     // https://github.com/processing/processing4/issues/77
@@ -985,13 +982,8 @@ public class Sketch {
       code[i].saveAs(newFile);
     }
 
-    // While the old path to the main .pde is still set, remove the entry from
-    // the Recent menu so that it's not sticking around after the rename.
-    // If untitled, it won't be in the menu, so there's no point.
-//    if (!isUntitled()) {
-//      Recent.remove(editor);
-//    }
-    // Folks didn't like this behavior, so shutting it off
+    // We were removing the old folder from the Recent menu, but folks
+    // did not like that behavior, so we shut it off in 3.5.4 and 4.x.
     // https://github.com/processing/processing/issues/5902
 
     // save the main tab with its new name
@@ -1201,8 +1193,6 @@ public class Sketch {
     // reset all the state information for the sketch object
     String oldPath = getMainFilePath();
     primaryFile = code[0].getFile();
-//    String newPath = getMainFilePath();
-//    editor.base.renameRecent(oldPath, newPath);
 
     name = sketchName;
     folder = sketchFolder;
@@ -1210,21 +1200,15 @@ public class Sketch {
     codeFolder = new File(folder, "code");
     dataFolder = new File(folder, "data");
 
-    // set the main file to be the current tab
-    //setCurrentCode(0);
-    // nah, this might just annoy people
-
     // Name changed, rebuild the sketch menus
     calcModified();
-//    System.out.println("modified is now " + modified);
     editor.updateTitle();
     editor.getBase().rebuildSketchbook();
     if (renaming) {
-      // only update the Recent menu if it's a rename, not a Save As
+      // Update the Recent menu if a Rename event (but not Save As)
       // https://github.com/processing/processing/issues/5902
       Recent.rename(editor, oldPath);
     }
-//    editor.header.rebuild();
   }
 
 
@@ -1697,8 +1681,8 @@ public class Sketch {
 
 
   /**
-   * Return true if the name is valid for a Processing sketch. Extensions of the form .foo are
-   * ignored.
+   * Return true if the name is valid for a Processing sketch.
+   * Extensions of the form .foo are ignored.
    */
   public static boolean isSanitaryName(String name) {
     final int dot = name.lastIndexOf('.');
