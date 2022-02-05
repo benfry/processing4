@@ -508,7 +508,7 @@ public class Sketch {
     }
 
     // If changing the extension of a file from .pde to .java, then it's ok.
-    // http://code.google.com/p/processing/issues/detail?id=776
+    // https://github.com/processing/processing/issues/814
     // A regression introduced by Florian's bug report (below) years earlier.
     if (!(renamingCode && sanitaryName.equals(current.getPrettyName()))) {
       // Make sure no .pde *and* no .java files with the same name already exist
@@ -721,7 +721,7 @@ public class Sketch {
         return;
       }
     }
-    System.err.println("removeCode: internal error.. could not find code");
+    System.err.println("removeCode: could not find " + which.getFileName());
   }
 
 
@@ -784,9 +784,7 @@ public class Sketch {
    * Ensure that all SketchCodes are up-to-date, so that sc.save() works.
    */
   public void updateSketchCodes() {
-//    if (current.isModified()) {
     current.setProgram(editor.getText());
-//    }
   }
 
 

@@ -212,7 +212,9 @@ public class Messages {
                         "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
                         "</style> </head>" +
                         "<b>" + primary + "</b>" +
-                        "<p>" + secondary, // + "</p>",
+                        // without changing \n to <br> it will close the
+                        // paragraph, removing styles from the second line
+                        "<p>" + secondary.replaceAll("\n", "<br/>"), // + "</p>",
                         JOptionPane.QUESTION_MESSAGE);
 
       pane.setOptions(options);
