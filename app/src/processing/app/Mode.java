@@ -83,14 +83,6 @@ public abstract class Mode {
    */
   protected ClassLoader classLoader;
 
-//  static final int BACKGROUND_WIDTH = 1025;
-//  static final int BACKGROUND_HEIGHT = 65;
-//  protected Image backgroundImage;
-
-//  public Mode(Base base, File folder) {
-//    this(base, folder, base.getSketchbookLibrariesFolder());
-//  }
-
 
   public Mode(Base base, File folder) {
     this.base = base;
@@ -186,51 +178,12 @@ public abstract class Mode {
   }
 
 
-//  /**
-//   * Setup additional elements that are only required when running with a GUI,
-//   * rather than from the command-line. Note that this will not be called when
-//   * the Mode is used from the command line (because Base will be null).
-//   */
-  /*
-  public void setupGUI() {
-    try {
-      // First load the default theme data for the whole PDE.
-      theme = new Settings(Platform.getContentFile("lib/theme.txt"));
-
-      // The mode-specific theme.txt file should only contain additions,
-      // and in extremely rare cases, it might override entries from the
-      // main theme. Do not override for style changes unless they are
-      // objectively necessary for your Mode.
-      File modeTheme = new File(folder, "theme/theme.txt");
-      if (modeTheme.exists()) {
-        // Override the built-in settings with what the theme provides
-        theme.load(modeTheme);
-      }
-
-      // Against my better judgment, adding the ability to override themes
-      // https://github.com/processing/processing/issues/5445
-      File sketchbookTheme =
-        new File(Base.getSketchbookFolder(), "theme.txt");
-      if (sketchbookTheme.exists()) {
-        theme.load(sketchbookTheme);
-      }
-
-      // other things that have to be set explicitly for the defaults
-      theme.setColor("run.window.bgcolor", SystemColor.control);
-
-    } catch (IOException e) {
-      Messages.showError("Problem loading theme.txt",
-                         "Could not load theme.txt, please re-install Processing", e);
-    }
-  }
-  */
-
-
   public File getContentFile(String path) {
     return new File(folder, path);
   }
 
 
+  @SuppressWarnings("unused")
   public InputStream getContentStream(String path) throws FileNotFoundException {
     return new FileInputStream(getContentFile(path));
   }
@@ -429,6 +382,7 @@ public abstract class Mode {
 //  abstract public EditorToolbar createToolbar(Editor editor);
 
 
+  @SuppressWarnings("unused")
   public JMenu getToolbarMenu() {
     if (toolbarMenu == null) {
       rebuildToolbarMenu();
@@ -752,8 +706,8 @@ public abstract class Mode {
    * For Processing, this is true for .pde files. (Broken out for subclasses.)
    * You can override this in your Mode subclass to handle it differently.
    */
-  public boolean hideExtension(String what) {
-    return what.equals(getDefaultExtension());
+  public boolean hideExtension(String ext) {
+    return ext.equals(getDefaultExtension());
   }
 
 
@@ -768,21 +722,21 @@ public abstract class Mode {
   /**
    * True if the specified extension is the default file extension.
    */
-  public boolean isDefaultExtension(String what) {
-    return what.equals(getDefaultExtension());
+  public boolean isDefaultExtension(String ext) {
+    return ext.equals(getDefaultExtension());
   }
 
 
   /**
-   * @param f File to be checked against this mode's accepted extensions.
-   * @return Whether the given file name features an extension supported by this Mode.
+   * True if this Mode can edit this file (usually meaning that
+   * its extension matches one that is supported by the Mode).
    */
-  public boolean canEdit(final File f) {
-    final int dot = f.getName().lastIndexOf('.');
+  public boolean canEdit(final File file) {
+    final int dot = file.getName().lastIndexOf('.');
     if (dot < 0) {
       return false;
     }
-    return validExtension(f.getName().substring(dot + 1));
+    return validExtension(file.getName().substring(dot + 1));
   }
 
 
