@@ -22,7 +22,11 @@
 
 package processing.app.ui;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Point;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -31,7 +35,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -160,7 +169,6 @@ public class ExamplesFrame extends JFrame {
     examplesPanel.add(treePane, BorderLayout.CENTER);
 
     Container buttons = Box.createHorizontalBox();
-
     JButton addButton = new JButton(Language.text("examples.add_examples"));
     addButton.addActionListener(e -> ContributionManager.openExamples());
     buttons.add(Box.createHorizontalGlue());
