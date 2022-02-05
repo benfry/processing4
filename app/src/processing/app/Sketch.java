@@ -1509,24 +1509,23 @@ public class Sketch {
    * volumes or folders without appropriate permissions.
    */
   public boolean isReadOnly() {
-    String apath = folder.getAbsolutePath();
+    String path = folder.getAbsolutePath();
     List<Mode> modes = editor.getBase().getModeList();
     // Make sure it's not read-only for another Mode besides this one
     // https://github.com/processing/processing/issues/773
     for (Mode mode : modes) {
-      if (apath.startsWith(mode.getExamplesFolder().getAbsolutePath()) ||
-          apath.startsWith(mode.getLibrariesFolder().getAbsolutePath())) {
+      if (path.startsWith(mode.getExamplesFolder().getAbsolutePath()) ||
+          path.startsWith(mode.getLibrariesFolder().getAbsolutePath())) {
         return true;
       }
     }
 
-    // check to see if each modified code file can be written to
-    // canWrite() doesn't work on directories
+    // Check to see if each modified code file can be written.
+    // Note: canWrite() does not work on directories.
     for (int i = 0; i < codeCount; i++) {
       if (code[i].isModified() &&
-        code[i].fileReadOnly() &&
-        code[i].fileExists()) {
-        //System.err.println("found a read-only file " + code[i].file);
+          code[i].fileReadOnly() &&
+          code[i].fileExists()) {
         return true;
       }
     }
@@ -1668,14 +1667,12 @@ public class Sketch {
 
 
   public void setUntitled(boolean untitled) {
-//    editor.untitled = u;
     this.untitled = untitled;
     editor.updateTitle();
   }
 
 
   public boolean isUntitled() {
-//    return editor.untitled;
     return untitled;
   }
 

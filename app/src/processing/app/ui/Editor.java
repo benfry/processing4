@@ -2261,15 +2261,15 @@ public abstract class Editor extends JFrame implements RunnerListener {
     setTitle(sketch.getName() + " | Processing " + Base.getVersionName());
 
     if (!sketch.isUntitled()) {
-      // set current file for OS X so that cmd-click in title bar works
-      File sketchFile = sketch.getMainFile();
-      getRootPane().putClientProperty("Window.documentFile", sketchFile);
+      // Set current file for macOS so that cmd-click in title bar works.
+      // For 4.0 beta 6 changing this to the sketch folder, rather than the
+      // .pde for the main tab. (Otherwise, we should have it update when
+      // the tab changes, which seems like overkill for how this is used.)
+      getRootPane().putClientProperty("Window.documentFile", sketch.getFolder());
     } else {
       // per other applications, don't set this until the file has been saved
       getRootPane().putClientProperty("Window.documentFile", null);
     }
-
-//    toolbar.setText(sketch.getName());
   }
 
 
