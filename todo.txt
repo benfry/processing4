@@ -7,6 +7,12 @@ X remove anachronistic Preferences.save() that happens after opening a sketch
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+_ remove selectMode() code from Base... just too funky
+_   should just go back to the default Mode, or the first that matches
+_   not enough Modes to warrant all the weirdness that could happen
+_   and for Android (the only legit case), local.properties should be set
+_   or we have changeMode() to make it an easy switch
+
 _ errors when files removed during "git checkout <branch>"
 _   the tab has already disappeared, so complains it can't find the SketchCode
 

@@ -1401,7 +1401,9 @@ public class Base {
                   }
                 });
               } catch (IOException e) {
-                EventQueue.invokeLater(() -> Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e));
+                EventQueue.invokeLater(() ->
+                  Messages.showWarning("Exception During Installation",
+                    "Could not install contrib from " + path, e));
               }
             }).start();
           }
@@ -1526,24 +1528,6 @@ public class Base {
           }
         }
       }
-
-      /*
-        if (editors.isEmpty()) {
-          // if the bad mode is the default mode, don't go into an infinite loop
-          // trying to recreate a window with the default mode.
-          Mode defaultMode = getDefaultMode();
-          if (nextMode == defaultMode) {
-            Base.showError("Editor Problems",
-                           "An error occurred while trying to change modes.\n" +
-                           "We'll have to quit for now because it's an\n" +
-                           "unfortunate bit of indigestion with the default Mode.",
-                           null);
-          } else {
-            editor = defaultMode.createEditor(this, path, state);
-          }
-        }
-      */
-
     } catch (Throwable t) {
       Messages.showTrace("Terrible News",
                          "A serious error occurred while " +
@@ -1566,8 +1550,6 @@ public class Base {
    * @return true if succeeded in closing, false if canceled.
    */
   public boolean handleClose(Editor editor, boolean modeSwitch) {
-    // Check if modified
-//    boolean immediate = editors.size() == 1;
     if (!editor.checkModified()) {
       return false;
     }
@@ -1575,12 +1557,7 @@ public class Base {
     // Close the running window, avoid window boogers with multiple sketches
     editor.internalCloseRunner();
 
-//    System.out.println("editors size is " + editors.size());
     if (editors.size() == 1) {
-      // For 0158, when closing the last window /and/ it was already an
-      // untitled sketch, just give up and let the user quit.
-//      if (Preferences.getBoolean("sketchbook.closing_last_window_quits") ||
-//          (editor.untitled && !editor.getSketch().isModified())) {
       if (Platform.isMacOS()) {
         // If the central menu bar isn't supported on this macOS JVM,
         // we have to do the old behavior. Yuck!
@@ -1612,11 +1589,6 @@ public class Base {
 
       Preferences.unset("server.port"); //$NON-NLS-1$
       Preferences.unset("server.key"); //$NON-NLS-1$
-
-//      // This will store the sketch count as zero
-//      editors.remove(editor);
-//      System.out.println("editors size now " + editors.size());
-//      storeSketches();
 
       // Save out the current prefs state
       Preferences.save();
