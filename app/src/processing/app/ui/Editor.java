@@ -2341,13 +2341,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     header.rebuild();
     updateTitle();
-    // Disable untitled setting from previous document, if any
-//    untitled = false;
-
-    // Store information on who's open and running
-    // (in case there's a crash or something that can't be recovered)
-    // TODO this probably need not be here because of the Recent menu, right?
-    Preferences.save();
   }
 
 
