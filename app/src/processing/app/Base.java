@@ -388,16 +388,12 @@ public class Base {
 
   public Base(String[] args) throws Exception {
     long t1 = System.currentTimeMillis();
-    // TODO Taking 3-5 seconds with several things installed, which is unacceptable.
-    //      Will take longer to optimize because most needs to run on the EDT.
-    //      (Which itself is totally unacceptable: there is no good reason
-    //      that we need to run on the EDT before we open the window.)
+    // TODO Taking 3-5 seconds with several things installed, which is
+    //      unacceptable. Will take longer to optimize because most,
+    //      as written, needs to run on the EDT. So we need to carefully
+    //      separate the download/listing/parsing code from how the
+    //      Manager interface is actually built.
     ContributionManager.init(this);
-//      } catch (Exception e) {
-//        Messages.showWarning("Contribution Manager Error",
-//                    "Error while setting up the Contribution Manager. Please report.", e);
-//      }
-//    });
 
     long t2 = System.currentTimeMillis();
     buildCoreModes();
@@ -408,7 +404,6 @@ public class Base {
     // Needs to happen after the sketchbook folder has been located.
     // Also relies on the modes to be loaded, so it knows what can be
     // marked as an example.
-//    recent = new Recent(this);
     Recent.init(this);
 
     long t4 = System.currentTimeMillis();
@@ -964,22 +959,6 @@ public class Base {
     }
     String joined =
       "id=" + UpdateCheck.getUpdateID() + "&" + entries.join("&");
-//    StringBuilder sb = new StringBuilder();
-//    try {
-//      // Truly ridiculous attempt to shove everything into a GET request.
-//      // More likely to be seen as part of a grand plot.
-//      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//      GZIPOutputStream output = new GZIPOutputStream(baos);
-//      PApplet.saveStream(output, new ByteArrayInputStream(joined.getBytes()));
-//      output.close();
-//      byte[] b = baos.toByteArray();
-//      for (int i = 0; i < b.length; i++) {
-//        sb.append(PApplet.hex(b[i], 2));
-//      }
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//    return sb.toString();
     return joined.getBytes();
   }
 
