@@ -7,15 +7,12 @@
 # These are the default preferences. If you want to modify
 # them directly, use the per-user local version of the file:
 
-# Documents and Settings -> [username] -> Application Data ->
-#    Processing -> preferences.txt (on Windows XP)
-
 # Users -> [username] -> AppData -> Roaming ->
-#    Processing -> preferences.txt (on Windows Vista and 7)
+#    Processing -> preferences.txt (on Windows 10)
 
 # ~/Library -> Processing -> preferences.txt (on Mac OS X)
 
-# ~/.processing -> preferences.txt (on Linux)
+# ~/.config/processing -> preferences.txt (on Linux)
 
 # The exact location of your preferences file can be found at
 # the bottom of the Preferences window inside Processing.
