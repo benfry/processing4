@@ -118,12 +118,16 @@ public class Sketch {
 
   protected void load(String path) {
     primaryFile = new File(path);
+    folder = primaryFile.getParentFile();
+    /*
     // get the name of the sketch by chopping .pde or .java
     // off of the main file name
     String mainFilename = primaryFile.getName();
     int suffixLength = mode.getDefaultExtension().length() + 1;
     name = mainFilename.substring(0, mainFilename.length() - suffixLength);
-    folder = new File(new File(path).getParent());
+    */
+    // starting in 4.0 beta 6, use the folder name instead of the main tab
+    name = folder.getName();
     disappearedWarning = false;
     load();
   }
@@ -438,7 +442,6 @@ public class Sketch {
   }
 
 
-
   /**
    * This is called upon return from entering a new file name.
    * (that is, from either newCode or renameCode after the prompt)
@@ -449,7 +452,7 @@ public class Sketch {
       return;
     }
 
-    // make sure the user didn't hide the sketch folder
+    // Make sure the sketch folder is still available and exists.
     ensureExistence();
 
     // Add the extension here, this simplifies some logic below.
@@ -509,7 +512,7 @@ public class Sketch {
 
     // If changing the extension of a file from .pde to .java, then it's ok.
     // https://github.com/processing/processing/issues/814
-    // A regression introduced by Florian's bug report (below) years earlier.
+    // (That regression was introduced years earlier by the bug report below.)
     if (!(renamingCode && sanitaryName.equals(current.getPrettyName()))) {
       // Make sure no .pde *and* no .java files with the same name already exist
       // (other than the one we are currently attempting to rename)
@@ -527,72 +530,11 @@ public class Sketch {
     File newFile = new File(folder, newName);
 
     if (renamingCode) {
-      if (currentIndex == 0) {
-        // get the new folder name/location
-        String folderName = newName.substring(0, newName.indexOf('.'));
-        File newFolder = new File(folder.getParentFile(), folderName);
-        if (newFolder.exists()) {
-          Messages.showWarning(Language.text("name.messages.new_folder_exists"),
-                               Language.interpolate("name.messages.new_folder_exists.description",
-                               newName));
-          return;
-        }
+      if (currentIndex == 0 &&
+          Preferences.getBoolean("sketch.sync_folder_and_filename")) {
+        if (!renameSketch(newName, newExtension)) return;
 
-        // renaming the containing sketch folder
-        boolean success = folder.renameTo(newFolder);
-        if (!success) {
-          Messages.showWarning(Language.text("name.messages.error"),
-                               Language.text("name.messages.no_rename_folder.description"));
-          return;
-        }
-        // let this guy know where he's living (at least for a split second)
-        current.setFolder(newFolder);
-        // folder will be set to newFolder by updateInternal()
-
-        // unfortunately this can't be a "save as" because that
-        // only copies the sketch files and the data folder
-        // however this *will* first save the sketch, then rename
-
-        // moved this further up in the process (before prompting for the name)
-//        if (isModified()) {
-//          Base.showMessage("Save", "Please save the sketch before renaming.");
-//          return;
-//        }
-
-        // This isn't changing folders, just changes the name
-        newFile = new File(newFolder, newName);
-        if (!current.renameTo(newFile, newExtension)) {
-          Messages.showWarning(Language.text("name.messages.error"),
-                               Language.interpolate("name.messages.no_rename_file.description",
-                               current.getFileName(), newFile.getName()));
-          return;
-        }
-
-        // Tell each code file the good news about their new home.
-        // current.renameTo() above already took care of the main tab.
-        for (int i = 1; i < codeCount; i++) {
-          code[i].setFolder(newFolder);
-        }
-       // Update internal state to reflect the new location
-        updateInternal(sanitaryName, newFolder, renamingCode);
-
-//        File newMainFile = new File(newFolder, newName + ".pde");
-//        String newMainFilePath = newMainFile.getAbsolutePath();
-//
-//        // having saved everything and renamed the folder and the main .pde,
-//        // use the editor to re-open the sketch to re-init state
-//        // (unfortunately this will kill positions for carets etc.)
-//        editor.handleOpenUnchecked(newMainFilePath,
-//                                   currentIndex,
-//                                   editor.getSelectionStart(),
-//                                   editor.getSelectionStop(),
-//                                   editor.getScrollPosition());
-//
-//        // get the changes into the sketchbook menu
-//        // (re-enabled in 0115 to fix bug #332)
-//        editor.base.rebuildSketchbookMenusAsync();
-
-      } else {  // else if something besides code[0]
+      } else {  // else if something besides code[0], or ok to decouple name
         if (!current.renameTo(newFile, newExtension)) {
           Messages.showWarning(Language.text("name.messages.error"),
                                Language.interpolate("name.messages.no_rename_file.description",
@@ -614,7 +556,6 @@ public class Sketch {
         return;
       }
       SketchCode newCode = new SketchCode(newFile, newExtension);
-      //System.out.println("new code is named " + newCode.getPrettyName() + " " + newCode.getFile());
       insertCode(newCode);
     }
 
@@ -626,6 +567,56 @@ public class Sketch {
 
     // update the tabs
     editor.rebuildHeader();
+  }
+
+
+  /**
+   * Pre-4.0b6 style rename where the sketch name must be identical
+   * to the name of the first (main) tab with the extension removed.
+   */
+  protected boolean renameSketch(String newName, String newExtension) {
+    // get the new folder name/location
+    String folderName = newName.substring(0, newName.indexOf('.'));
+    File newFolder = new File(folder.getParentFile(), folderName);
+    if (newFolder.exists()) {
+      Messages.showWarning(Language.text("name.messages.new_folder_exists"),
+        Language.interpolate("name.messages.new_folder_exists.description",
+          newName));
+      return false;
+    }
+
+    // renaming the containing sketch folder
+    boolean success = folder.renameTo(newFolder);
+    if (!success) {
+      Messages.showWarning(Language.text("name.messages.error"),
+      Language.text("name.messages.no_rename_folder.description"));
+      return false;
+    }
+    // let this guy know where he's living (at least for a split second)
+    current.setFolder(newFolder);
+    // folder will be set to newFolder by updateInternal()
+
+    // unfortunately this can't be a "save as" because that
+    // only copies the sketch files and the data folder
+    // however this *will* first save the sketch, then rename
+
+    // This isn't changing folders, just changes the name
+    File newFile = new File(newFolder, newName);
+    if (!current.renameTo(newFile, newExtension)) {
+      Messages.showWarning(Language.text("name.messages.error"),
+      Language.interpolate("name.messages.no_rename_file.description",
+      current.getFileName(), newFile.getName()));
+      return false;
+    }
+
+    // Tell each code file the good news about their new home.
+    // current.renameTo() above already took care of the main tab.
+    for (int i = 1; i < codeCount; i++) {
+      code[i].setFolder(newFolder);
+    }
+    // Update internal state to reflect the new location
+    updateInternal(newFolder, renamingCode);
+    return true;
   }
 
 
@@ -751,8 +742,6 @@ public class Sketch {
    * Sets the modified value for the code in the front-most tab.
    */
   public void setModified(boolean state) {
-    //System.out.println("setting modified to " + state);
-    //new Exception().printStackTrace(System.out);
     if (current.isModified() != state) {
       current.setModified(state);
       calcModified();
@@ -836,6 +825,7 @@ public class Sketch {
    * Also removes the previously-generated .class and .jar files,
    * because they can cause trouble.
    */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean saveAs() throws IOException {
     String newParentDir = null;
     String newName = null;
@@ -893,13 +883,6 @@ public class Sketch {
     }
     newName = sanitaryName;
 
-//    String newPath = newFolder.getAbsolutePath();
-//    String oldPath = folder.getAbsolutePath();
-
-//    if (newPath.equals(oldPath)) {
-//      return false;  // Can't save a sketch over itself
-//    }
-
     // make sure there doesn't exist a tab with that name already
     // but ignore this situation for the first tab, since it's probably being
     // re-saved (with the same name) to another location/folder.
@@ -921,6 +904,8 @@ public class Sketch {
 
     // check to see if the user is trying to save this sketch inside itself
     try {
+      // Includes the separator so that a/b/c is different from a/b/c2.
+      // (a/b/c matches a/b/c2, but a/b/c/ does not match a/b/c2/)
       String newPath = newFolder.getCanonicalPath() + File.separator;
       String oldPath = folder.getCanonicalPath() + File.separator;
 
@@ -941,6 +926,8 @@ public class Sketch {
 
     // now make a fresh copy of the folder
     newFolder.mkdirs();
+    // if this fails, then it probably means the removeDir() failed above,
+    // or at least left things behind, which could mean badness later. hm.
 
     // grab the contents of the current tab before saving
     // first get the contents of the editor text area
@@ -992,7 +979,7 @@ public class Sketch {
     File newFile = new File(newFolder, newName + "." + mode.getDefaultExtension());
     code[0].saveAs(newFile);
 
-    updateInternal(newName, newFolder, false);
+    updateInternal(newFolder, false);
 
     // Make sure that it's not an untitled sketch
     setUntitled(false);
@@ -1129,13 +1116,17 @@ public class Sketch {
           setProgress((int) (100L * progress / totalSize));
 
           from.close();
-          from = null;
           to.flush();
           to.close();
-          to = null;
 
-          targetFile.setLastModified(sourceFile.lastModified());
-          targetFile.setExecutable(sourceFile.canExecute());
+          if (!targetFile.setLastModified(sourceFile.lastModified())) {
+            System.err.println("Warning: Could not set modification date/time for " + targetFile);
+          }
+          if (!targetFile.setExecutable(sourceFile.canExecute())) {
+            if (!Platform.isWindows()) {  // more of a UNIX thing
+              System.err.println("Warning: Could not set permissions for " + targetFile);
+            }
+          }
         }
 
 
@@ -1190,13 +1181,12 @@ public class Sketch {
   /**
    * Update internal state for new sketch name or folder location.
    */
-  protected void updateInternal(String sketchName, File sketchFolder,
-                                boolean renaming) {
+  protected void updateInternal(File sketchFolder, boolean renaming) {
     // reset all the state information for the sketch object
     String oldPath = getMainFilePath();
     primaryFile = code[0].getFile();
 
-    name = sketchName;
+    name = sketchFolder.getName();
     folder = sketchFolder;
     disappearedWarning = false;
     codeFolder = new File(folder, "code");
@@ -1284,7 +1274,13 @@ public class Sketch {
         filename.toLowerCase().endsWith(".jnilib") ||
         filename.toLowerCase().endsWith(".so")) {
 
-      prepareCodeFolder();
+      if (!codeFolder.exists()) {
+        boolean success = codeFolder.mkdirs();
+        if (!success) {
+          System.err.println("Could not create " + codeFolder);
+          return false;
+        }
+      }
       destFile = new File(codeFolder, filename);
       isCode = true;
     } else {
@@ -1397,11 +1393,6 @@ public class Sketch {
    * </OL>
    */
   public void setCurrentCode(int which) {
-//    // for the tab sizing
-//    if (current != null) {
-//      current.visited = System.currentTimeMillis();
-//      System.out.println(current.visited);
-//    }
     // if current is null, then this is the first setCurrent(0)
     if (which < 0 || which >= codeCount ||
         ((currentIndex == which) && (current == code[currentIndex]))) {
@@ -1593,18 +1584,6 @@ public class Sketch {
 
   public boolean hasCodeFolder() {
     return (codeFolder != null) && codeFolder.exists();
-  }
-
-
-  /**
-   * Create the code folder if it does not exist already. As a convenience,
-   * it also returns the code folder, since it's likely about to be used.
-   */
-  public File prepareCodeFolder() {
-    if (!codeFolder.exists()) {
-      codeFolder.mkdirs();
-    }
-    return codeFolder;
   }
 
 
