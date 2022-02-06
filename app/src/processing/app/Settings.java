@@ -256,6 +256,22 @@ public class Settings {
   }
 
 
+  public String remove(String key) {
+    return table.remove(key);
+  }
+
+
+  public void deleteIfEmpty() {
+    if (table.isEmpty() && file.exists()) {
+      file.delete();
+    }
+  }
+
+  public boolean isEmpty() {
+    return table.isEmpty();
+  }
+
+
   public Map<String, String> getMap() {
     return table;
   }

@@ -23,23 +23,6 @@
 
 package processing.app.ui;
 
-import processing.app.Base;
-import processing.app.Formatter;
-import processing.app.Language;
-import processing.app.Messages;
-import processing.app.Mode;
-import processing.app.Platform;
-import processing.app.Preferences;
-import processing.app.Problem;
-import processing.app.RunnerListener;
-import processing.app.Sketch;
-import processing.app.SketchCode;
-import processing.app.SketchException;
-import processing.app.Util;
-import processing.app.contrib.ContributionManager;
-import processing.app.syntax.*;
-import processing.core.*;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -70,6 +53,22 @@ import javax.swing.plaf.basic.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 import javax.swing.undo.*;
+
+import processing.app.Base;
+import processing.app.Formatter;
+import processing.app.Language;
+import processing.app.Messages;
+import processing.app.Mode;
+import processing.app.Platform;
+import processing.app.Preferences;
+import processing.app.Problem;
+import processing.app.RunnerListener;
+import processing.app.Sketch;
+import processing.app.SketchCode;
+import processing.app.SketchException;
+import processing.app.contrib.ContributionManager;
+import processing.app.syntax.*;
+import processing.core.*;
 
 
 /**
@@ -2171,6 +2170,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * shouldn't rely on any of its variables being initialized already.
    */
   protected void handleOpenInternal(String path) throws EditorException {
+    // All this logic should be happening back in Base, not here.
+    // Presumably it lived here so that other Modes could override the
+    // behavior, but that changes with 4.0 beta 6. [fry 220206]
+
+    /*
     // check to make sure that this .pde file is
     // in a folder of the same name
     final File file = new File(path);
@@ -2244,6 +2248,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
         throw new EditorException();
       }
     }
+    */
 
     try {
       sketch = new Sketch(path, this);

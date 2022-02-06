@@ -39,6 +39,7 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.*;
@@ -580,8 +581,7 @@ public class Sketch {
     File newFolder = new File(folder.getParentFile(), folderName);
     if (newFolder.exists()) {
       Messages.showWarning(Language.text("name.messages.new_folder_exists"),
-        Language.interpolate("name.messages.new_folder_exists.description",
-          newName));
+      Language.interpolate("name.messages.new_folder_exists.description", newName));
       return false;
     }
 
@@ -614,8 +614,18 @@ public class Sketch {
     for (int i = 1; i < codeCount; i++) {
       code[i].setFolder(newFolder);
     }
+    // Save the path in case we need to remove it from the Recent menu
+    String oldPath = getMainFilePath();
+
     // Update internal state to reflect the new location
-    updateInternal(newFolder, renamingCode);
+    updateInternal(newFolder);
+
+    if (renamingCode) {
+      // Update the Recent menu if a Rename event (but not Save As)
+      // https://github.com/processing/processing/issues/5902
+      Recent.rename(editor, oldPath);
+    }
+
     return true;
   }
 
@@ -828,7 +838,7 @@ public class Sketch {
   @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean saveAs() throws IOException {
     String newParentDir = null;
-    String newName = null;
+    String newSketchName = null;
 
     final String PROMPT = Language.text("save");
 
@@ -848,7 +858,7 @@ public class Sketch {
       fd.setFile(oldFolderName);
       fd.setVisible(true);
       newParentDir = fd.getDirectory();
-      newName = fd.getFile();
+      newSketchName = fd.getFile();
     } else {
       JFileChooser fc = new JFileChooser();
       fc.setDialogTitle(PROMPT);
@@ -865,32 +875,38 @@ public class Sketch {
       if (result == JFileChooser.APPROVE_OPTION) {
         File selection = fc.getSelectedFile();
         newParentDir = selection.getParent();
-        newName = selection.getName();
+        newSketchName = selection.getName();
       }
     }
 
     // user canceled selection
-    if (newName == null) return false;
+    if (newSketchName == null) return false;
 
+    boolean sync = Preferences.getBoolean("sketch.sync_folder_and_filename");
     // check on the sanity of the name
-    String sanitaryName = Sketch.checkName(newName);
-    File newFolder = new File(newParentDir, sanitaryName);
-    if (!sanitaryName.equals(newName) && newFolder.exists()) {
+    //String sanitaryName = Sketch.checkName(newSketchName);
+    String newCodeName = sanitizeName(newSketchName);
+    File newFolder = sync ?
+      new File(newParentDir, newCodeName) :  // before 4.0 beta 6
+      new File(newParentDir, newSketchName);  // sketch folder name can be different
+    if (!newCodeName.equals(newSketchName) && newFolder.exists()) {
       Messages.showMessage(Language.text("save_file.messages.sketch_exists"),
                            Language.interpolate("save_file.messages.sketch_exists.description",
-                           sanitaryName));
+                           newCodeName));
       return false;
     }
-    newName = sanitaryName;
+    if (sync) {
+      newSketchName = newCodeName;
+    }
 
     // make sure there doesn't exist a tab with that name already
     // but ignore this situation for the first tab, since it's probably being
     // re-saved (with the same name) to another location/folder.
     for (int i = 1; i < codeCount; i++) {
-      if (newName.equalsIgnoreCase(code[i].getPrettyName())) {
+      if (newSketchName.equalsIgnoreCase(code[i].getPrettyName())) {
         Messages.showMessage(Language.text("save_file.messages.tab_exists"),
                              Language.interpolate("save_file.messages.tab_exists.description",
-                             newName));
+                             newSketchName));
         return false;
       }
     }
@@ -925,9 +941,13 @@ public class Sketch {
     // will instead put you inside the folder, but it happens on OS X a lot.
 
     // now make a fresh copy of the folder
-    newFolder.mkdirs();
-    // if this fails, then it probably means the removeDir() failed above,
-    // or at least left things behind, which could mean badness later. hm.
+    if (!newFolder.mkdirs()) {
+      // mkdirs() returns true when the folders are created, which should
+      // be the case here because we removed any existing 'newFolder' above.
+      // If this fails, then it probably means the removeDir() failed,
+      // or at least left things behind, which could mean badness later.
+      System.err.println("Error creating path " + newFolder);
+    }
 
     // grab the contents of the current tab before saving
     // first get the contents of the editor text area
@@ -963,7 +983,7 @@ public class Sketch {
       return true;
     });
 
-    startSaveAsThread(newName, newFolder, copyItems);
+    startSaveAsThread(newFolder, copyItems);
 
     // save the other tabs to their new location (main tab saved below)
     for (int i = 1; i < codeCount; i++) {
@@ -972,14 +992,15 @@ public class Sketch {
     }
 
     // We were removing the old folder from the Recent menu, but folks
-    // did not like that behavior, so we shut it off in 3.5.4 and 4.x.
+    // did not like that behavior because they expected to have older
+    // versions readily available, so we shut it off in 3.5.4 and 4.x.
     // https://github.com/processing/processing/issues/5902
 
     // save the main tab with its new name
-    File newFile = new File(newFolder, newName + "." + mode.getDefaultExtension());
+    File newFile = new File(newFolder, newCodeName + "." + mode.getDefaultExtension());
     code[0].saveAs(newFile);
 
-    updateInternal(newFolder, false);
+    updateInternal(newFolder);
 
     // Make sure that it's not an untitled sketch
     setUntitled(false);
@@ -1015,12 +1036,11 @@ public class Sketch {
    *
    * <a href="https://github.com/processing/processing/issues/3843">3843</a>
    */
-  void startSaveAsThread(final String newName,
-                         final File newFolder, final File[] copyItems) {
+  void startSaveAsThread(final File newFolder, final File[] copyItems) {
     saving.set(true);
     EventQueue.invokeLater(() -> {
       final JFrame frame =
-        new JFrame("Saving \u201C" + newName + "\u201C\u2026");
+        new JFrame("Saving \u201C" + newFolder.getName() + "\u201C\u2026");
       frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
       Box box = Box.createVerticalBox();
@@ -1181,9 +1201,8 @@ public class Sketch {
   /**
    * Update internal state for new sketch name or folder location.
    */
-  protected void updateInternal(File sketchFolder, boolean renaming) {
+  protected void updateInternal(File sketchFolder) {
     // reset all the state information for the sketch object
-    String oldPath = getMainFilePath();
     primaryFile = code[0].getFile();
 
     name = sketchFolder.getName();
@@ -1192,14 +1211,131 @@ public class Sketch {
     codeFolder = new File(folder, "code");
     dataFolder = new File(folder, "data");
 
+    updateNameProperties();
+
     // Name changed, rebuild the sketch menus
     calcModified();
     editor.updateTitle();
     editor.getBase().rebuildSketchbook();
-    if (renaming) {
-      // Update the Recent menu if a Rename event (but not Save As)
-      // https://github.com/processing/processing/issues/5902
-      Recent.rename(editor, oldPath);
+  }
+
+
+  protected void updateModeProperties(Mode mode, Mode defaultMode) {
+    updateModeProperties(folder, mode, defaultMode);
+  }
+
+
+  /**
+   * Create or modify a sketch.properties file to specify the given Mode.
+   */
+  static protected void updateModeProperties(File folder, Mode mode, Mode defaultMode) {
+    File propsFile = null;
+    try {
+      // Read the old sketch.properties file if it already exists
+      propsFile = new File(folder, "sketch.properties");
+      Settings settings = new Settings(propsFile);
+
+      // If changing to the default Mode,
+      // remove those entries from sketch.properties
+      if (mode == defaultMode) {
+        Map<String, String> map = settings.getMap();
+        map.remove("mode");
+        map.remove("mode.id");
+        if (map.isEmpty()) {
+          if (propsFile.exists()) {
+            if (!propsFile.delete()) {
+              System.err.println("Could not remove unnecessary " + propsFile);
+            }
+          }
+        } else {
+          // Mode wasn't the only thing set, so write the other params
+          settings.save();
+        }
+      } else {
+        // Setting to something other than the default Mode,
+        // write that and any other params already in the file.
+        settings.set("mode", mode.getTitle());
+        settings.set("mode.id", mode.getIdentifier());
+        settings.save();
+      }
+    } catch (IOException e) {
+      System.err.println("Error while writing " + propsFile);
+      e.printStackTrace();
+    }
+  }
+
+
+  protected Settings loadProperties() throws IOException {
+    return loadProperties(folder);
+  }
+
+
+  static protected Settings loadProperties(File folder) throws IOException {
+    File propsFile = new File(folder, "sketch.properties");
+    if (propsFile.exists()) {
+      return new Settings(propsFile);
+    }
+    return null;
+  }
+
+
+  /**
+   * Check through the various modes and see if this is a legit sketch.
+   * Because the default mode will be the first in the list, this will always
+   * prefer that one over the others.
+   */
+  static protected File findMain(File folder, List<Mode> modeList) {
+    try {
+      Settings props = Sketch.loadProperties(folder);
+      if (props != null) {
+        String main = props.get("main");
+        if (main != null) {
+          File mainFile = new File(folder, main);
+          if (!mainFile.exists()) {
+            System.err.println(main + " does not exist inside " + folder);
+            // fall through to the code below in case we can recover
+            //return null;
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    for (Mode mode : modeList) {
+      // Test whether a .pde file of the same name as its parent folder exists.
+      String defaultName = folder.getName() + "." + mode.getDefaultExtension();
+      File entry = new File(folder, defaultName);
+      if (entry.exists()) {
+        return entry;
+      }
+    }
+    return null;
+  }
+
+
+  private void updateNameProperties() {
+    // If the main file and the sketch name are not identical,
+    // update sketch.properties.
+    String mainName = primaryFile.getName();
+    String defaultName = name + "." + mode.getDefaultExtension();
+
+    File propsFile = null;
+    try {
+      // Read the old sketch.properties file if it already exists
+      propsFile = new File(folder, "sketch.properties");
+      Settings settings = new Settings(propsFile);
+
+      if (mainName.equals(defaultName)) {
+        settings.remove("main");
+        settings.deleteIfEmpty();
+      } else {
+        settings.set("main", mainName);
+        settings.save();
+      }
+
+    } catch (IOException e) {
+      System.err.println("Error while writing " + propsFile);
+      e.printStackTrace();
     }
   }
 
@@ -1645,20 +1781,20 @@ public class Sketch {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /**
-   * Convert to sanitized name and alert the user
-   * if changes were made.
-   */
-  static public String checkName(String origName) {
-    String newName = sanitizeName(origName);
-
-    if (!newName.equals(origName)) {
-      String msg =
-        Language.text("check_name.messages.is_name_modified");
-      System.out.println(msg);
-    }
-    return newName;
-  }
+//  /**
+//   * Convert to sanitized name and alert the user
+//   * if changes were made.
+//   */
+//  static public String checkName(String origName) {
+//    String newName = sanitizeName(origName);
+//
+//    if (!newName.equals(origName)) {
+//      String msg =
+//        Language.text("check_name.messages.is_name_modified");
+//      System.out.println(msg);
+//    }
+//    return newName;
+//  }
 
 
   /**

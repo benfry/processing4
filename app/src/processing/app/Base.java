@@ -1003,14 +1003,14 @@ public class Base {
         if (mode.canEdit(sketch)) {
           //final File props = new File(sketch.getFolder(), "sketch.properties");
           //saveModeSettings(props, nextMode);
-          updateSketchProperties(sketch.getFolder(), nextMode);
+          sketch.updateModeProperties(nextMode, getDefaultMode());
           handleClose(activeEditor, true);
           Editor editor = handleOpen(sketch.getMainFilePath());
           if (editor == null) {
             // the Mode change failed (probably code that's out of date)
             // re-open the sketch using the mode we were in before
             //saveModeSettings(props, oldMode);
-            updateSketchProperties(sketch.getFolder(), oldMode);
+            sketch.updateModeProperties(oldMode, getDefaultMode());
             handleOpen(sketch.getMainFilePath());
             return false;
           }
@@ -1208,7 +1208,7 @@ public class Base {
 
       // Create sketch properties file if it's not the default mode.
       if (!nextMode.equals(getDefaultMode())) {
-        updateSketchProperties(new File(newbieDir, "sketch.properties"), nextMode);
+        Sketch.updateModeProperties(newbieDir, nextMode, getDefaultMode());
       }
 
       String path = newbieFile.getAbsolutePath();
@@ -1310,7 +1310,7 @@ public class Base {
       File[] fileList = destFolder.listFiles(File::isDirectory);
       if (fileList != null) {
         if (fileList.length == 1) {
-          File sketchFile = findSketchMain(fileList[0]);
+          File sketchFile = Sketch.findMain(fileList[0], getModeList());
           if (sketchFile != null) {
             return handleOpen(sketchFile.getAbsolutePath(), true);
           }
@@ -1414,7 +1414,7 @@ public class Base {
 
     try {
       // read the sketch.properties file if it exists
-      Settings props = loadSketchProperties(parentFolder);
+      Settings props = Sketch.loadProperties(parentFolder);
       if (props != null) {
         // First check for the Mode, because it may not even be available
         String modeIdentifier = props.get("mode.id");
@@ -1922,7 +1922,7 @@ public class Base {
       File entry = new File(folder, name);
       File sketchFile = null;
       if (entry.isDirectory()) {
-        sketchFile = findSketchMain(entry);
+        sketchFile = Sketch.findMain(entry, getModeList());
       } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
         name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
         sketchFile = entry;
@@ -2001,7 +2001,7 @@ public class Base {
       File entry = new File(folder, name);
       File sketchFile = null;
       if (entry.isDirectory()) {
-        sketchFile = findSketchMain(entry);
+        sketchFile = Sketch.findMain(entry, getModeList());
       } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
         name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
         sketchFile = entry;
@@ -2029,92 +2029,10 @@ public class Base {
   }
 
 
-  /**
-   * Create or modify a sketch.properties file to specify the given Mode.
-   */
-  protected void updateSketchProperties(File folder, Mode mode) {
-    File propsFile = null;
+  /*
+  static private Mode findSketchMode(File folder, List<Mode> modeList) {
     try {
-      // Read the old sketch.properties file if it already exists
-      propsFile = new File(folder, "sketch.properties");
-      Settings settings = new Settings(propsFile);
-
-      // If changing to the default Mode,
-      // remove those entries from sketch.properties
-      if (mode == getDefaultMode()) {
-        Map<String, String> map = settings.getMap();
-        map.remove("mode");
-        map.remove("mode.id");
-        if (map.isEmpty()) {
-          if (propsFile.exists()) {
-            if (!propsFile.delete()) {
-              System.err.println("Could not remove unnecessary " + propsFile);
-            }
-          }
-        } else {
-          // Mode wasn't the only thing set, so write the other params
-          settings.save();
-        }
-      } else {
-        // Setting to something other than the default Mode,
-        // write that and any other params already in the file.
-        settings.set("mode", mode.getTitle());
-        settings.set("mode.id", mode.getIdentifier());
-        settings.save();
-      }
-    } catch (IOException e) {
-      System.err.println("Error while writing " + propsFile);
-      e.printStackTrace();
-    }
-  }
-
-
-  protected Settings loadSketchProperties(File folder) throws IOException {
-    File propsFile = new File(folder, "sketch.properties");
-    if (propsFile.exists()) {
-      return new Settings(propsFile);
-    }
-    return null;
-  }
-
-
-  /**
-   * Check through the various modes and see if this is a legit sketch.
-   * Because the default mode will be the first in the list, this will always
-   * prefer that one over the others.
-   */
-  private File findSketchMain(File folder) {
-    try {
-      Settings props = loadSketchProperties(folder);
-      if (props != null) {
-        String main = props.get("main");
-        if (main != null) {
-          File mainFile = new File(folder, main);
-          if (!mainFile.exists()) {
-            System.err.println(main + " does not exist inside " + folder);
-            // fall through to the code below in case we can recover
-            //return null;
-          }
-        }
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    for (Mode mode : getModeList()) {
-      // Test whether a .pde file of the same name as its parent folder exists.
-      String defaultName = folder.getName() + "." + mode.getDefaultExtension();
-      File entry = new File(folder, defaultName);
-      if (entry.exists()) {
-        return entry;
-      }
-    }
-    return null;
-  }
-
-
-  private Mode findSketchMode(File folder) {
-    try {
-      Settings props = loadSketchProperties(folder);
+      Settings props = Sketch.loadProperties(folder);
       if (props != null) {
         String id = props.get("mode.id");
         if (id != null) {
@@ -2127,7 +2045,7 @@ public class Base {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    for (Mode mode : getModeList()) {
+    for (Mode mode : modeList) {
       // Test whether a .pde file of the same name as its parent folder exists.
       String defaultName = folder.getName() + "." + mode.getDefaultExtension();
       File entry = new File(folder, defaultName);
@@ -2137,6 +2055,7 @@ public class Base {
     }
     return null;
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
