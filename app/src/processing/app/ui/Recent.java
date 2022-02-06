@@ -240,7 +240,7 @@ public class Recent {
 
 
   synchronized static public void remove(Editor editor) {
-    int index = findRecord(editor.getSketch().getMainFilePath());
+    int index = findRecord(editor.getSketch().getMainPath());
     if (index != -1) {
       records.remove(index);
     }
@@ -371,7 +371,7 @@ public class Recent {
 //    }
 
     Record(Editor editor) {
-      this(editor.getSketch().getMainFilePath());
+      this(editor.getSketch().getMainPath());
     }
 
     String getName() {

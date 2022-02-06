@@ -1005,13 +1005,13 @@ public class Base {
           //saveModeSettings(props, nextMode);
           sketch.updateModeProperties(nextMode, getDefaultMode());
           handleClose(activeEditor, true);
-          Editor editor = handleOpen(sketch.getMainFilePath());
+          Editor editor = handleOpen(sketch.getMainPath());
           if (editor == null) {
             // the Mode change failed (probably code that's out of date)
             // re-open the sketch using the mode we were in before
             //saveModeSettings(props, oldMode);
             sketch.updateModeProperties(oldMode, getDefaultMode());
-            handleOpen(sketch.getMainFilePath());
+            handleOpen(sketch.getMainPath());
             return false;
           }
         } else {

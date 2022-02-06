@@ -39,7 +39,6 @@ import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.swing.*;
@@ -54,7 +53,7 @@ public class Sketch {
   private final Mode mode;
 
   /** main pde file for this sketch. */
-  private File primaryFile;
+  private File mainFile;
 
   /**
    * Name of sketch, which is the name of main file
@@ -118,8 +117,8 @@ public class Sketch {
 
 
   protected void load(String path) {
-    primaryFile = new File(path);
-    folder = primaryFile.getParentFile();
+    mainFile = new File(path);
+    folder = mainFile.getParentFile();
     /*
     // get the name of the sketch by chopping .pde or .java
     // off of the main file name
@@ -170,7 +169,7 @@ public class Sketch {
     // start at 1, if it's at zero, don't bother
     for (int i = 1; i < codeCount; i++) {
       //if (code[i].file.getName().equals(mainFilename)) {
-      if (code[i].getFile().equals(primaryFile)) {
+      if (code[i].getFile().equals(mainFile)) {
         SketchCode temp = code[0];
         code[0] = code[i];
         code[i] = temp;
@@ -615,7 +614,7 @@ public class Sketch {
       code[i].setFolder(newFolder);
     }
     // Save the path in case we need to remove it from the Recent menu
-    String oldPath = getMainFilePath();
+    String oldPath = getMainPath();
 
     // Update internal state to reflect the new location
     updateInternal(newFolder);
@@ -1203,7 +1202,7 @@ public class Sketch {
    */
   protected void updateInternal(File sketchFolder) {
     // reset all the state information for the sketch object
-    primaryFile = code[0].getFile();
+    mainFile = code[0].getFile();
 
     name = sketchFolder.getName();
     folder = sketchFolder;
@@ -1307,7 +1306,7 @@ public class Sketch {
   private void updateNameProperties() {
     // If the main file and the sketch name are not identical,
     // update sketch.properties.
-    String mainName = primaryFile.getName();
+    String mainName = mainFile.getName();
     String defaultName = name + "." + mode.getDefaultExtension();
 
     try {
@@ -1649,19 +1648,19 @@ public class Sketch {
   }
 
 
-  /**
-   * Returns a File object for the main .pde file for this sketch.
-   */
-  public File getMainFile() {
-    return primaryFile;
-  }
+//  /**
+//   * Returns a File object for the main .pde file for this sketch.
+//   */
+//  public File getMainFile() {
+//    return mainFile;
+//  }
 
 
   /**
    * Returns path to the main .pde file for this sketch.
    */
-  public String getMainFilePath() {
-    return primaryFile.getAbsolutePath();
+  public String getMainPath() {
+    return mainFile.getAbsolutePath();
   }
 
 
@@ -1875,7 +1874,7 @@ public class Sketch {
   @Override
   public boolean equals(Object another) {
     if (another instanceof Sketch) {
-      return getMainFilePath().equals(((Sketch) another).getMainFilePath());
+      return getMainPath().equals(((Sketch) another).getMainPath());
     }
     return false;
   }
