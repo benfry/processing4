@@ -321,7 +321,7 @@ public class Sketch {
 
 
   /**
-   * Handler for the Rename Code menu option.
+   * Handler for the "Rename Code" menu option.
    */
   public void handleRenameCode() {
     // make sure the user didn't hide the sketch folder
@@ -374,9 +374,12 @@ public class Sketch {
       public void keyTyped(KeyEvent event) {
         //System.out.println("got event " + event);
         char ch = event.getKeyChar();
+
+        //noinspection StatementWithEmptyBody
         if ((ch == '_') || (ch == '.') || // allow.pde and .java
             (('A' <= ch) && (ch <= 'Z')) || (('a' <= ch) && (ch <= 'z'))) {
           // These events are allowed straight through.
+
         } else if (ch == ' ') {
           String t = field.getText();
           int start = field.getSelectionStart();
@@ -384,6 +387,7 @@ public class Sketch {
           field.setText(t.substring(0, start) + "_" + t.substring(end));
           field.setCaretPosition(start + 1);
           event.consume();
+
         } else if ((ch >= '0') && (ch <= '9')) {
           // getCaretPosition == 0 means that it's the first char
           // and the field is empty.
@@ -501,9 +505,9 @@ public class Sketch {
       }
     }
 
-    // dots are allowed for the .pde and .java, but not in the name
-    // make sure the user didn't name things poo.time.pde
-    // or something like that (nothing against poo time)
+    // Dots are allowed for the .pde and .java, but not in the name.
+    // Make sure the user didn't name the file poo.time.pde or anything
+    // else with a dot inside it (nothing against poo time).
     String shortName = newName.substring(0, dot);
     String sanitaryName = Sketch.sanitizeName(shortName);
     if (!shortName.equals(sanitaryName)) {
@@ -540,6 +544,11 @@ public class Sketch {
                                Language.interpolate("name.messages.no_rename_file.description",
                                current.getFileName(), newFile.getName()));
           return;
+        }
+        if (currentIndex == 0) {
+          // If the main tab was renamed, check sketch.properties
+          mainFile = newFile;  //code[0].getFile();
+          updateNameProperties();
         }
       }
 
@@ -882,20 +891,24 @@ public class Sketch {
     if (newSketchName == null) return false;
 
     boolean sync = Preferences.getBoolean("sketch.sync_folder_and_filename");
-    // check on the sanity of the name
-    //String sanitaryName = Sketch.checkName(newSketchName);
-    String newCodeName = sanitizeName(newSketchName);
-    File newFolder = sync ?
-      new File(newParentDir, newCodeName) :  // before 4.0 beta 6
-      new File(newParentDir, newSketchName);  // sketch folder name can be different
-    if (!newCodeName.equals(newSketchName) && newFolder.exists()) {
-      Messages.showMessage(Language.text("save_file.messages.sketch_exists"),
-                           Language.interpolate("save_file.messages.sketch_exists.description",
-                           newCodeName));
-      return false;
-    }
+    String newMainFileName = null;  // only set with !sync
+    File newFolder;
     if (sync) {
-      newSketchName = newCodeName;
+      // before 4.0 beta 6
+      //String sanitaryName = Sketch.checkName(newSketchName);
+      String newMainName = sanitizeName(newSketchName);
+      newFolder = new File(newParentDir, newMainName);
+      if (!newMainName.equals(newSketchName) && newFolder.exists()) {
+        Messages.showMessage(Language.text("save_file.messages.sketch_exists"),
+          Language.interpolate("save_file.messages.sketch_exists.description",
+          newMainName));
+        return false;
+      }
+      newSketchName = newMainName;
+      newMainFileName = newMainName + "." + mode.getDefaultExtension();
+
+    } else {
+      newFolder = new File(newParentDir, newSketchName);  // sketch folder name can be different
     }
 
     // make sure there doesn't exist a tab with that name already
@@ -984,9 +997,12 @@ public class Sketch {
 
     startSaveAsThread(newFolder, copyItems);
 
-    // save the other tabs to their new location (main tab saved below)
-    for (int i = 1; i < codeCount; i++) {
+    // Save each tab to its new location
+    for (int i = 0; i < codeCount; i++) {
       File newFile = new File(newFolder, code[i].getFileName());
+      if (i == 0 && sync) {
+        newFile = new File(newFolder, newMainFileName);
+      }
       code[i].saveAs(newFile);
     }
 
@@ -995,9 +1011,11 @@ public class Sketch {
     // versions readily available, so we shut it off in 3.5.4 and 4.x.
     // https://github.com/processing/processing/issues/5902
 
-    // save the main tab with its new name
-    File newFile = new File(newFolder, newCodeName + "." + mode.getDefaultExtension());
-    code[0].saveAs(newFile);
+//    if (sync) {
+//      // save the main tab with its new name
+//      File newFile = new File(newFolder, newMainName + "." + mode.getDefaultExtension());
+//      code[0].saveAs(newFile);
+//    }
 
     updateInternal(newFolder);
 
