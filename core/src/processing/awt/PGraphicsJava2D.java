@@ -116,6 +116,12 @@ public class PGraphicsJava2D extends PGraphics {
    */
   @Override
   public void setSize(int w, int h) {  // ignore
+    // If this is the initial setup, need to assign width/height;
+    // especially necessary for renderer subclasses.
+    // https://github.com/processing/processing4/issues/395
+    if (width == 0 || height == 0) {
+      super.setSize(w, h);
+    }
     sizeChange = new Dimension(w, h);
   }
 
