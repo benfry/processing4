@@ -156,7 +156,7 @@ class ErrorChecker {
    * cause issues when reaching javac.
    * </p>
    *
-   * @return True if ignoreable and false otherwise.
+   * @return True if ignorable and false otherwise.
    */
   static private boolean isIgnorableProblem(IProblem iproblem) {
     String message = iproblem.getMessage();
@@ -171,9 +171,7 @@ class ErrorChecker {
     );
 
     // It's ok if the file names do not line up during preprocessing.
-    ignorable = ignorable || message.contains(
-        "must be defined in its own file"
-    );
+    ignorable |= message.contains("must be defined in its own file");
 
     return ignorable;
   }
