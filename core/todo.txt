@@ -2,6 +2,8 @@
 X fix up "Display N does not exist, using the default display instead"
 X   if more than one display, shows list of available displays (size and index)
 X properly set names for windowMove() and windowResize()
+X PDF export not working with Processing 4.0 beta 5
+X   https://github.com/processing/processing4/issues/395
 
 
 _ finalize the solution for frame/surface methods
