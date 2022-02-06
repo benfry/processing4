@@ -937,9 +937,6 @@ public class Base {
     }
 
     // TODO this duplicates code in Editor, but it's not editor-specific
-//    List<ToolContribution> toolContribs =
-//      ToolContribution.loadAll(Base.getSketchbookToolsFolder());
-//    contributions.addAll(toolContribs);
     contributions.addAll(ToolContribution.loadAll(getSketchbookToolsFolder()));
 
     contributions.addAll(getExampleContribs());
@@ -964,22 +961,6 @@ public class Base {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  /**
-   * Create or modify a sketch.properties file to specify the given Mode.
-   */
-  private void saveModeSettings(final File sketchProps, final Mode mode) {
-    try {
-      // Read the old sketch.properties file if it already exists
-      final Settings settings = new Settings(sketchProps);
-      settings.set("mode", mode.getTitle());
-      settings.set("mode.id", mode.getIdentifier());
-      settings.save();
-    } catch (IOException e) {
-      System.err.println("While creating " + sketchProps + ": " + e.getMessage());
-    }
-  }
 
 
   String getDefaultModeIdentifier() {
@@ -1011,22 +992,25 @@ public class Base {
       } else if (sketch.isUntitled()) {
         // The current sketch is empty, just close and start fresh.
         // (Otherwise the editor would lose its 'untitled' status.)
+        // Safe to do here because of the 'modified' check above.
         handleClose(activeEditor, true);
         handleNew();
 
       } else {
-        // If the current sketch contains file extensions that the new mode
-        // can handle, then write a sketch.properties file with the new mode
+        // If the current sketch contains file extensions that the new Mode
+        // can handle, then write a sketch.properties file with that Mode
         // specified, and reopen. Currently, only used for Java <-> Android.
         if (mode.canEdit(sketch)) {
-          final File props = new File(sketch.getFolder(), "sketch.properties");
-          saveModeSettings(props, nextMode);
+          //final File props = new File(sketch.getFolder(), "sketch.properties");
+          //saveModeSettings(props, nextMode);
+          updateSketchProperties(sketch.getFolder(), nextMode);
           handleClose(activeEditor, true);
           Editor editor = handleOpen(sketch.getMainFilePath());
           if (editor == null) {
             // the Mode change failed (probably code that's out of date)
             // re-open the sketch using the mode we were in before
-            saveModeSettings(props, oldMode);
+            //saveModeSettings(props, oldMode);
+            updateSketchProperties(sketch.getFolder(), oldMode);
             handleOpen(sketch.getMainFilePath());
             return false;
           }
@@ -1050,7 +1034,6 @@ public class Base {
     }
     return true;
   }
-  */
 
 
   private static class ModeInfo {
@@ -1084,51 +1067,52 @@ public class Base {
     }
     return null;
   }
+  */
 
 
-  private Mode promptForMode(final File sketch, final ModeInfo preferredMode) {
+  private Mode promptForMode(final File passedFile) {
     final String extension =
-      sketch.getName().substring(sketch.getName().lastIndexOf('.') + 1);
+      passedFile.getName().substring(passedFile.getName().lastIndexOf('.') + 1);
     final List<Mode> possibleModes = new ArrayList<>();
     for (final Mode mode : getModeList()) {
-      if (mode.canEdit(sketch)) {
+      if (mode.canEdit(passedFile)) {
         possibleModes.add(mode);
       }
     }
+    /*
     if (possibleModes.size() == 1 &&
         possibleModes.get(0).getIdentifier().equals(getDefaultModeIdentifier())) {
       // If default mode can open it, then do so without prompting.
       return possibleModes.get(0);
     }
+    */
     if (possibleModes.size() == 0) {
-      if (preferredMode == null) {
-        final String msg =
-          "I don't know how to open a sketch with the \"" + extension + "\"\n" +
-          "file extension. You'll have to install a different\n" +
-          "Mode for that.";
-        Messages.showWarning("Modeless Dialog", msg);
-      } else {
-        Messages.showWarning("Modeless Dialog",
-                             "Install " + preferredMode.title + " Mode " +
-                             "to open this sketch.");
-      }
+      final String msg =
+        "I don't know how to open a sketch with the \"" + extension + "\"\n" +
+        "file extension. You'll have to install a different\n" +
+        "Mode for that.";
+      Messages.showWarning("Modeless Dialog", msg);
       return null;
+
+    } else if (possibleModes.size() == 1) {
+      // If there's one Mode that can open this sketch, just open it
+      return possibleModes.get(0);
+
+    } else {
+      // More than one Mode possible, prompt the user
+      Mode[] modes = possibleModes.toArray(new Mode[0]);
+      return (Mode) JOptionPane.showInputDialog(null,
+        (nextMode.getTitle() + " Mode can't open ." + extension + " files, " +
+          "but you have more than one Mode\ninstalled that can. " +
+          "Select which you would like to use:"),
+        "Choose Wisely",
+        JOptionPane.QUESTION_MESSAGE,
+        null, modes, modes[0]);
     }
-    final Mode[] modes = possibleModes.toArray(new Mode[0]);
-    final String message = preferredMode == null ?
-      (nextMode.getTitle() + " Mode can't open ." + extension + " files, " +
-       "but you have one or more modes\ninstalled that can. " +
-       "Would you like to try one?") :
-      ("That's a " + preferredMode.title + " Mode sketch, " +
-       "but you don't have " + preferredMode.title + " installed.\n" +
-       "Would you like to try a different mode for opening a " +
-       "." + extension + " sketch?");
-    return (Mode) JOptionPane.showInputDialog(null, message, "Choose Wisely",
-                                              JOptionPane.QUESTION_MESSAGE,
-                                              null, modes, modes[0]);
   }
 
 
+  /*
   private Mode selectMode(final File sketch) {
     final ModeInfo modeInfo = modeInfoFor(sketch);
     final Mode specifiedMode = modeInfo == null ? null : findMode(modeInfo.id);
@@ -1137,6 +1121,7 @@ public class Base {
     }
     return promptForMode(sketch, modeInfo);
   }
+  */
 
 
   protected Mode findMode(String id) {
@@ -1222,14 +1207,11 @@ public class Base {
 
       // Create sketch properties file if it's not the default mode.
       if (!nextMode.equals(getDefaultMode())) {
-        saveModeSettings(new File(newbieDir, "sketch.properties"), nextMode);
+        updateSketchProperties(new File(newbieDir, "sketch.properties"), nextMode);
       }
 
       String path = newbieFile.getAbsolutePath();
-//      long t2 = System.currentTimeMillis();
-      /*Editor editor =*/ handleOpen(path, true);
-//      long t3 = System.currentTimeMillis();
-//      System.out.println("handleNew " + (t2-t1) + " " + (t3-t2));
+      handleOpen(path, true);
 
     } catch (IOException e) {
       Messages.showWarning("That's new to me",
@@ -1251,6 +1233,7 @@ public class Base {
     // Add the extensions for each installed Mode
     for (Mode mode : getModeList()) {
       extensions.append(mode.getDefaultExtension());
+      // not adding aux extensions b/c we're looking for the main
     }
 
     final String prompt = Language.text("open");
@@ -1290,7 +1273,7 @@ public class Base {
         public boolean accept(File file) {
           // JFileChooser requires you to explicitly say yes to directories
           // as well (unlike the AWT chooser). Useful, but... different.
-          // http://code.google.com/p/processing/issues/detail?id=1151
+          // https://github.com/processing/processing/issues/1189
           if (file.isDirectory()) {
             return true;
           }
@@ -1313,88 +1296,178 @@ public class Base {
   }
 
 
+  private Editor openSketchBundle(String path) {
+    File zipFile = new File(path);
+    try {
+      File destFolder = File.createTempFile("zip", "tmp", untitledFolder);
+      if (!destFolder.delete() || !destFolder.mkdirs()) {
+        // Hard to imagine why this would happen, but...
+        System.err.println("Could not create temporary folder " + destFolder);
+        return null;
+      }
+      Util.unzip(zipFile, destFolder);
+      File[] fileList = destFolder.listFiles(File::isDirectory);
+      if (fileList != null) {
+        if (fileList.length == 1) {
+          File sketchFile = findSketchMain(fileList[0]);
+          if (sketchFile != null) {
+            return handleOpen(sketchFile.getAbsolutePath(), true);
+          }
+        } else {
+          System.err.println("Expecting one folder inside " +
+            SKETCH_BUNDLE_EXT + " file, found " + fileList.length + ".");
+        }
+      } else {
+        System.err.println("Could not read " + destFolder);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;  // no luck
+  }
+
+
+  private void openContribBundle(String path) {
+    EventQueue.invokeLater(() -> {
+      Editor editor = getActiveEditor();
+      if (editor == null) {
+        // Shouldn't really happen, but if it's still null, it's a no-go
+        Messages.showWarning("Failure is the only option",
+            "Please open an Editor window before installing an extension.");
+      } else {
+        File contribFile = new File(path);
+        String baseName = contribFile.getName();
+        baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
+        int result =
+          Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
+          "Install " + baseName + "?",
+          "Libraries, Modes, and Tools should<br>" +
+          "only be installed from trusted sources.");
+
+        if (result == JOptionPane.YES_OPTION) {
+          editor.statusNotice("Installing " + baseName + "...");
+          editor.startIndeterminate();
+
+          new Thread(() -> {
+            try {
+              // do the work of the actual install
+              LocalContribution contrib =
+                AvailableContribution.install(this, new File(path));
+
+              EventQueue.invokeLater(() -> {
+                editor.stopIndeterminate();
+
+                if (contrib != null) {
+                  editor.statusEmpty();
+                } else {
+                  editor.statusError("Could not install " + path);
+                }
+              });
+            } catch (IOException e) {
+              EventQueue.invokeLater(() ->
+                  Messages.showWarning("Exception During Installation",
+                      "Could not install contrib from " + path, e));
+            }
+          }).start();
+        }
+      }
+    });
+  }
+
+
   /**
    * Open a sketch from the path specified. Do not use for untitled sketches.
+   * Note that the user may have selected/double-clicked any .pde in a sketch.
    */
   public Editor handleOpen(String path) {
     if (path.endsWith(SKETCH_BUNDLE_EXT)) {
-      File zipFile = new File(path);
-      try {
-        File destFolder = File.createTempFile("zip", "tmp", untitledFolder);
-        if (!destFolder.delete() || !destFolder.mkdirs()) {
-          // Hard to imagine why this would happen, but...
-          System.err.println("Could not create temporary folder " + destFolder);
-          return null;
-        }
-        Util.unzip(zipFile, destFolder);
-        File[] fileList = destFolder.listFiles(File::isDirectory);
-        if (fileList != null) {
-          if (fileList.length == 1) {
-            File sketchFile = checkSketchFolder(fileList[0]);
-            if (sketchFile != null) {
-              return handleOpen(sketchFile.getAbsolutePath(), true);
-            }
-          } else {
-            System.err.println("Expecting one folder inside " +
-              SKETCH_BUNDLE_EXT + " file, found " + fileList.length + ".");
-          }
-        } else {
-          System.err.println("Could not read " + destFolder);
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      return null;  // no luck
+      return openSketchBundle(path);
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
-      EventQueue.invokeLater(() -> {
-        Editor editor = getActiveEditor();
-        if (editor == null) {
-          // Shouldn't really happen, but if it's still null, it's a no-go
-          Messages.showWarning("Failure is the only option",
-                      "Please open an Editor window before installing an extension.");
-        } else {
-          File contribFile = new File(path);
-          String baseName = contribFile.getName();
-          baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
-          int result =
-            Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
-              "Install " + baseName + "?",
-              "Libraries, Modes, and Tools should<br>" +
-                "only be installed from trusted sources.");
+      openContribBundle(path);
+      return null;  // never returning an Editor for a contrib
+    }
 
-          if (result == JOptionPane.YES_OPTION) {
-            editor.statusNotice("Installing " + baseName + "...");
-            editor.startIndeterminate();
-
-            new Thread(() -> {
-              try {
-                // do the work of the actual install
-                LocalContribution contrib =
-                  AvailableContribution.install(this, new File(path));
-
-                EventQueue.invokeLater(() -> {
-                  editor.stopIndeterminate();
-
-                  if (contrib != null) {
-                    editor.statusEmpty();
-                  } else {
-                    editor.statusError("Could not install " + path);
-                  }
-                });
-              } catch (IOException e) {
-                EventQueue.invokeLater(() ->
-                  Messages.showWarning("Exception During Installation",
-                    "Could not install contrib from " + path, e));
-              }
-            }).start();
-          }
-        }
-      });
+    File passedFile = new File(path);
+    if (!passedFile.exists()) {
+      System.err.println(path + " does not exist");
       return null;
     }
 
-    return handleOpen(path, false);
+    // Cycle through open windows to make sure that it's not already open.
+    for (Editor editor : editors) {
+      // User may have double-clicked any PDE in the sketch folder,
+      // so we have to check each open tab (not just the main one).
+      // https://github.com/processing/processing/issues/2506
+      for (SketchCode tab : editor.getSketch().getCode()) {
+        if (tab.getFile().equals(passedFile)) {
+          editor.toFront();
+          // move back to the top of the recent list
+          Recent.append(editor);
+          return editor;
+        }
+      }
+    }
+
+    File parentFolder = passedFile.getParentFile();
+
+    try {
+      // read the sketch.properties file if it exists
+      Settings props = loadSketchProperties(parentFolder);
+      if (props != null) {
+        // First check for the Mode, because it may not even be available
+        String modeIdentifier = props.get("mode.id");
+        if (modeIdentifier != null) {
+          Mode mode = findMode(modeIdentifier);
+          if (mode != null) {
+            nextMode = mode;
+          } else {
+            ContributionManager.openModes();
+            Messages.showWarning("Missing Mode",
+              "You must first install " + props.get("mode") + " Mode to use this sketch.");
+            return null;
+          }
+        }
+
+        String main = props.get("main");
+        if (main != null) {
+          // this may be exactly what was passed, but override anyway
+          String mainPath = new File(parentFolder, main).getAbsolutePath();
+          if (!path.equals(mainPath)) {
+            // for now, post a warning if the main was different
+            System.out.println(path + " selected, but main is " + mainPath);
+          }
+          return handleOpen(mainPath, false);
+        }
+      } else {
+        // No properties file, so do some checks to make sure the file can
+        // be opened, and identify the Mode that it's using.
+
+        if (!Sketch.isSanitaryName(passedFile.getName())) {
+          Messages.showWarning("You're tricky, but not tricky enough",
+            passedFile.getName() + " is not a valid name for sketch code.\n" +
+              "Better to stick to ASCII, no spaces, and make sure\n" +
+              "it doesn't start with a number.", null);
+          return null;
+        }
+
+        if (!nextMode.canEdit(passedFile)) {
+          // TODO Get rid of mode selector? Seems a little messy/precious. [fry 220205]
+          final Mode mode = promptForMode(passedFile);
+          if (mode == null) {
+            return null;
+          }
+          nextMode = mode;
+          handleOpen(passedFile.getAbsolutePath(), false);
+        }
+        // try to load without properties file
+        // find the first Mode that will handle this extension, and use it
+      }
+    } catch (IOException e) {
+      Messages.showWarning("sketch.properties",
+        "Error while reading sketch.properties from\n" + parentFolder, e);
+    }
+    return null;
   }
 
 
@@ -1404,16 +1477,20 @@ public class Base {
    * @return the Editor object, so that properties (like 'untitled')
    *         can be set by the caller
    */
-  public Editor handleOpen(String path, boolean untitled) {
+  protected Editor handleOpen(String path, boolean untitled) {
     return handleOpen(path, untitled, EditorState.nextEditor(editors));
   }
 
 
   protected Editor handleOpen(String path, boolean untitled,
                               EditorState state) {
-    try {
-      // System.err.println("entering handleOpen " + path);
+    /*
+    return handleOpen(path, untitled, state, nextMode);
+  }
 
+  protected Editor handleOpen(String path, boolean untitled,
+                              EditorState state, Mode mode) {
+    try {
       final File file = new File(path);
       if (!file.exists()) {
         return null;
@@ -1434,6 +1511,26 @@ public class Base {
         }
       }
 
+      // read the sketch.properties file if it exists
+      File parentFolder = new File(path).getParentFile();
+      Settings props = loadSketchProperties(parentFolder);
+
+      // if the Mode is set in this file, use that to determine next
+      if (props != null) {
+        String modeIdentifier = props.get("mode.id");
+        if (modeIdentifier != null) {
+          Mode mode = findMode(modeIdentifier);
+          if (mode != null) {
+            nextMode = mode;
+          } else {
+            Messages.showWarning("Missing Mode",
+                "You must first install " + props.get("mode") + " Mode to use this sketch.");
+            ContributionManager.openModes();
+            return null;
+          }
+        }
+      }
+
       if (!Sketch.isSanitaryName(file.getName())) {
         Messages.showWarning("You're tricky, but not tricky enough",
                              file.getName() + " is not a valid name for a sketch.\n" +
@@ -1449,13 +1546,14 @@ public class Base {
         }
         nextMode = mode;
       }
+      */
 
+    try {
       try {
         Editor editor = nextMode.createEditor(this, path, state);
 
-        editor.setUpdatesAvailable(updatesAvailable);
-
         // opened successfully, let's go to work
+        editor.setUpdatesAvailable(updatesAvailable);
         editor.getSketch().setUntitled(untitled);
         editors.add(editor);
         Recent.append(editor);
@@ -1820,7 +1918,7 @@ public class Base {
       File entry = new File(folder, name);
       File sketchFile = null;
       if (entry.isDirectory()) {
-        sketchFile = checkSketchFolder(entry);
+        sketchFile = findSketchMain(entry);
       } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
         name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
         sketchFile = entry;
@@ -1899,7 +1997,7 @@ public class Base {
       File entry = new File(folder, name);
       File sketchFile = null;
       if (entry.isDirectory()) {
-        sketchFile = checkSketchFolder(entry);
+        sketchFile = findSketchMain(entry);
       } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
         name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
         sketchFile = entry;
@@ -1928,16 +2026,109 @@ public class Base {
 
 
   /**
+   * Create or modify a sketch.properties file to specify the given Mode.
+   */
+  protected void updateSketchProperties(File folder, Mode mode) {
+    File propsFile = null;
+    try {
+      // Read the old sketch.properties file if it already exists
+      propsFile = new File(folder, "sketch.properties");
+      Settings settings = new Settings(propsFile);
+
+      // If changing to the default Mode,
+      // remove those entries from sketch.properties
+      if (mode == getDefaultMode()) {
+        Map<String, String> map = settings.getMap();
+        map.remove("mode");
+        map.remove("mode.id");
+        if (map.isEmpty()) {
+          if (propsFile.exists()) {
+            if (!propsFile.delete()) {
+              System.err.println("Could not remove unnecessary " + propsFile);
+            }
+          }
+        } else {
+          // Mode wasn't the only thing set, so write the other params
+          settings.save();
+        }
+      } else {
+        // Setting to something other than the default Mode,
+        // write that and any other params already in the file.
+        settings.set("mode", mode.getTitle());
+        settings.set("mode.id", mode.getIdentifier());
+        settings.save();
+      }
+    } catch (IOException e) {
+      System.err.println("Error while writing " + propsFile);
+      e.printStackTrace();
+    }
+  }
+
+
+  protected Settings loadSketchProperties(File folder) throws IOException {
+    File propsFile = new File(folder, "sketch.properties");
+    if (propsFile.exists()) {
+      return new Settings(propsFile);
+    }
+    return null;
+  }
+
+
+  /**
    * Check through the various modes and see if this is a legit sketch.
    * Because the default mode will be the first in the list, this will always
    * prefer that one over the others.
    */
-  private File checkSketchFolder(File folder) {
+  private File findSketchMain(File folder) {
+    try {
+      Settings props = loadSketchProperties(folder);
+      if (props != null) {
+        String main = props.get("main");
+        if (main != null) {
+          File mainFile = new File(folder, main);
+          if (!mainFile.exists()) {
+            System.err.println(main + " does not exist inside " + folder);
+            // fall through to the code below in case we can recover
+            //return null;
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     for (Mode mode : getModeList()) {
       // Test whether a .pde file of the same name as its parent folder exists.
-      File entry = new File(folder, folder.getName() + "." + mode.getDefaultExtension()); //$NON-NLS-1$
+      String defaultName = folder.getName() + "." + mode.getDefaultExtension();
+      File entry = new File(folder, defaultName);
       if (entry.exists()) {
         return entry;
+      }
+    }
+    return null;
+  }
+
+
+  private Mode findSketchMode(File folder) {
+    try {
+      Settings props = loadSketchProperties(folder);
+      if (props != null) {
+        String id = props.get("mode.id");
+        if (id != null) {
+          Mode mode = findMode(id);
+          if (mode != null) {
+            return mode;
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    for (Mode mode : getModeList()) {
+      // Test whether a .pde file of the same name as its parent folder exists.
+      String defaultName = folder.getName() + "." + mode.getDefaultExtension();
+      File entry = new File(folder, defaultName);
+      if (entry.exists()) {
+        return mode;
       }
     }
     return null;
