@@ -1451,8 +1451,8 @@ public class Base {
         if (!Sketch.isSanitaryName(passedFile.getName())) {
           Messages.showWarning("You're tricky, but not tricky enough",
             passedFile.getName() + " is not a valid name for sketch code.\n" +
-              "Better to stick to ASCII, no spaces, and make sure\n" +
-              "it doesn't start with a number.", null);
+            "Better to stick to ASCII, no spaces, and make sure\n" +
+            "it doesn't start with a number.", null);
           return null;
         }
 

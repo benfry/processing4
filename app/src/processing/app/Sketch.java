@@ -1265,17 +1265,22 @@ public class Sketch {
   }
 
 
+  /*
   protected Settings loadProperties() throws IOException {
     return loadProperties(folder);
   }
+  */
 
 
   static protected Settings loadProperties(File folder) throws IOException {
+    /*
     File propsFile = new File(folder, "sketch.properties");
     if (propsFile.exists()) {
       return new Settings(propsFile);
     }
     return null;
+    */
+    return new Settings(new File(folder, "sketch.properties"));
   }
 
 
@@ -1287,15 +1292,13 @@ public class Sketch {
   static protected File findMain(File folder, List<Mode> modeList) {
     try {
       Settings props = Sketch.loadProperties(folder);
-      if (props != null) {
-        String main = props.get("main");
-        if (main != null) {
-          File mainFile = new File(folder, main);
-          if (!mainFile.exists()) {
-            System.err.println(main + " does not exist inside " + folder);
-            // fall through to the code below in case we can recover
-            //return null;
-          }
+      String main = props.get("main");
+      if (main != null) {
+        File mainFile = new File(folder, main);
+        if (!mainFile.exists()) {
+          System.err.println(main + " does not exist inside " + folder);
+          // Fall through to the code below in case we can recover.
+          // Not removing the bad entry since this is a find() method.
         }
       }
     } catch (IOException e) {
@@ -1319,22 +1322,20 @@ public class Sketch {
     String mainName = primaryFile.getName();
     String defaultName = name + "." + mode.getDefaultExtension();
 
-    File propsFile = null;
     try {
       // Read the old sketch.properties file if it already exists
-      propsFile = new File(folder, "sketch.properties");
-      Settings settings = new Settings(propsFile);
+      Settings props = loadProperties(folder);
 
       if (mainName.equals(defaultName)) {
-        settings.remove("main");
-        settings.deleteIfEmpty();
+        props.remove("main");
+        props.deleteIfEmpty();
       } else {
-        settings.set("main", mainName);
-        settings.save();
+        props.set("main", mainName);
+        props.save();
       }
 
     } catch (IOException e) {
-      System.err.println("Error while writing " + propsFile);
+      System.err.println("Error while updating sketch.properties");
       e.printStackTrace();
     }
   }
