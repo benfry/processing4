@@ -1229,37 +1229,25 @@ public class Sketch {
    * Create or modify a sketch.properties file to specify the given Mode.
    */
   static protected void updateModeProperties(File folder, Mode mode, Mode defaultMode) {
-    File propsFile = null;
     try {
       // Read the old sketch.properties file if it already exists
-      propsFile = new File(folder, "sketch.properties");
-      Settings settings = new Settings(propsFile);
+      Settings props = loadProperties(folder);
 
       // If changing to the default Mode,
       // remove those entries from sketch.properties
       if (mode == defaultMode) {
-        Map<String, String> map = settings.getMap();
-        map.remove("mode");
-        map.remove("mode.id");
-        if (map.isEmpty()) {
-          if (propsFile.exists()) {
-            if (!propsFile.delete()) {
-              System.err.println("Could not remove unnecessary " + propsFile);
-            }
-          }
-        } else {
-          // Mode wasn't the only thing set, so write the other params
-          settings.save();
-        }
+        props.remove("mode");
+        props.remove("mode.id");
       } else {
         // Setting to something other than the default Mode,
         // write that and any other params already in the file.
-        settings.set("mode", mode.getTitle());
-        settings.set("mode.id", mode.getIdentifier());
-        settings.save();
+        props.set("mode", mode.getTitle());
+        props.set("mode.id", mode.getIdentifier());
       }
+      props.reckon();
+
     } catch (IOException e) {
-      System.err.println("Error while writing " + propsFile);
+      System.err.println("Error while writing sketch.properties");
       e.printStackTrace();
     }
   }
@@ -1328,11 +1316,10 @@ public class Sketch {
 
       if (mainName.equals(defaultName)) {
         props.remove("main");
-        props.deleteIfEmpty();
       } else {
         props.set("main", mainName);
-        props.save();
       }
+      props.reckon();
 
     } catch (IOException e) {
       System.err.println("Error while updating sketch.properties");

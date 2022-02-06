@@ -261,15 +261,26 @@ public class Settings {
   }
 
 
-  public void deleteIfEmpty() {
-    if (table.isEmpty() && file.exists()) {
-      file.delete();
+  /**
+   * The day of reckoning: save() a file if it has entries, or delete
+   * if the file exists but the table no longer has any entries.
+   */
+  public void reckon() {
+    if (table.isEmpty()) {
+      if (file.exists() && !file.delete()) {
+        System.err.println("Could not remove empty " + file);
+      }
+    } else {
+      save();
     }
   }
 
+
+  /*
   public boolean isEmpty() {
     return table.isEmpty();
   }
+  */
 
 
   public Map<String, String> getMap() {
