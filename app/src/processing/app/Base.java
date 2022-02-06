@@ -1071,8 +1071,9 @@ public class Base {
 
 
   private Mode promptForMode(final File passedFile) {
+    final String filename = passedFile.getName();
     final String extension =
-      passedFile.getName().substring(passedFile.getName().lastIndexOf('.') + 1);
+      filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
     final List<Mode> possibleModes = new ArrayList<>();
     for (final Mode mode : getModeList()) {
       if (mode.canEdit(passedFile)) {
@@ -1438,6 +1439,10 @@ public class Base {
             System.out.println(path + " selected, but main is " + mainPath);
           }
           return handleOpen(mainPath, false);
+
+        } else {
+          // if no main specified, use the passed-in path as the main
+          return handleOpen(path, false);
         }
       } else {
         // No properties file, so do some checks to make sure the file can
@@ -1451,6 +1456,7 @@ public class Base {
           return null;
         }
 
+        // If the current Mode cannot open this file, try to find another.
         if (!nextMode.canEdit(passedFile)) {
           // TODO Get rid of mode selector? Seems a little messy/precious. [fry 220205]
           final Mode mode = promptForMode(passedFile);
@@ -1458,10 +1464,8 @@ public class Base {
             return null;
           }
           nextMode = mode;
-          handleOpen(passedFile.getAbsolutePath(), false);
         }
-        // try to load without properties file
-        // find the first Mode that will handle this extension, and use it
+        handleOpen(passedFile.getAbsolutePath(), false);
       }
     } catch (IOException e) {
       Messages.showWarning("sketch.properties",
