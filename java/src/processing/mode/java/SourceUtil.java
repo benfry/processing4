@@ -103,48 +103,6 @@ public class SourceUtil {
   }
 
 
-  /*
-  public static List<Edit> insertImports(List<ImportStatement> imports) {
-    List<Edit> result = new ArrayList<>();
-    for (ImportStatement imp : imports) {
-      result.add(Edit.insert(0, imp.getFullSourceLine() + "\n"));
-    }
-    return result;
-  }
-
-  public static List<Edit> wrapSketch(PdePreprocessor.Mode mode, String className, int sourceLength) {
-    List<Edit> edits = new ArrayList<>();
-    StringBuilder b = new StringBuilder();
-
-    // Header
-    if (mode != PdePreprocessor.Mode.JAVA) {
-      b.append("\npublic class ").append(className).append(" extends PApplet {\n");
-      if (mode == PdePreprocessor.Mode.STATIC) {
-        b.append("public void setup() {\n");
-      }
-    }
-
-    edits.add(Edit.insert(0, b.toString()));
-
-    // Reset builder
-    b.setLength(0);
-
-    // Footer
-    if (mode != PdePreprocessor.Mode.JAVA) {
-      if (mode == PdePreprocessor.Mode.STATIC) {
-        // no noLoop() here so it does not tell you
-        // "can't invoke noLoop() on obj" when you type "obj."
-        b.append("\n}");
-      }
-      b.append("\n}\n");
-    }
-
-    edits.add(Edit.insert(sourceLength, b.toString()));
-    return edits;
-  }
-  */
-
-
   // Verifies that whole input String is floating point literal. Can't be used for searching.
   // https://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-DecimalFloatingPointLiteral
   public static final Pattern FLOATING_POINT_LITERAL_VERIFIER;
