@@ -143,10 +143,7 @@ public class PdePreprocessor {
    * @return Information about the preprocessing operation.
    */
   public PreprocessorResult write(Writer outWriter, String inProgram,
-                                  Iterable<String> codeFolderPackages)
-                                    throws SketchException {
-
-    // Determine inports
+                                  Iterable<String> codeFolderPackages) throws SketchException {
     ArrayList<String> codeFolderImports = new ArrayList<>();
     if (codeFolderPackages != null) {
       for (String item : codeFolderPackages) {
@@ -275,7 +272,7 @@ public class PdePreprocessor {
    */
   public static class PdePreprocessorBuilder {
 
-    private final String sketchName;
+    private final String mainName;
     private Optional<Integer> tabSize;
     private Optional<Boolean> isTesting;
     private Optional<ParseTreeListenerFactory> parseTreeFactory;
@@ -327,10 +324,10 @@ public class PdePreprocessor {
      * this constructor.
      * </p>
      *
-     * @param newSketchName The name of the sketch.
+     * @param newMainName The name of the sketch.
      */
-    private PdePreprocessorBuilder(String newSketchName) {
-      sketchName = newSketchName;
+    private PdePreprocessorBuilder(String newMainName) {
+      mainName = newMainName;
       tabSize = Optional.empty();
       isTesting = Optional.empty();
       parseTreeFactory = Optional.empty();
@@ -436,7 +433,7 @@ public class PdePreprocessor {
       );
 
       return new PdePreprocessor(
-          sketchName,
+          mainName,
           effectiveTabSize,
           effectiveIsTesting,
           effectiveFactory,

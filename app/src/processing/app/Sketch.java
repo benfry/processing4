@@ -1675,6 +1675,16 @@ public class Sketch {
 
 
   /**
+   * Returns the name (without extension) of the main tab.
+   * Most uses of getName() prior to 4.0 beta 6 were to get the main class,
+   * but this allows the sketch to be decoupled from the main tab name.
+   */
+  public String getMainName() {
+    return code[0].getPrettyName();
+  }
+
+
+  /**
    * Returns path to the main .pde file for this sketch.
    */
   public String getMainPath() {

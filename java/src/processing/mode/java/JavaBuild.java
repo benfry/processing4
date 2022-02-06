@@ -140,7 +140,7 @@ public class JavaBuild {
    * @return null if compilation failed, main class name if not
    */
   public String preprocess(File srcFolder, boolean sizeWarning) throws SketchException {
-    PdePreprocessor preprocessor = PdePreprocessor.builderFor(sketch.getName()).build();
+    PdePreprocessor preprocessor = PdePreprocessor.builderFor(sketch.getMainName()).build();
     return preprocess(srcFolder, null, preprocessor, sizeWarning);
   }
 
@@ -231,7 +231,7 @@ public class JavaBuild {
           srcFolder : new File(srcFolder, packageName.replace('.', '/'));
       outputFolder.mkdirs();
 //      Base.openFolder(outputFolder);
-      final File java = new File(outputFolder, sketch.getName() + ".java");
+      final File java = new File(outputFolder, sketch.getMainName() + ".java");
       try (PrintWriter stream = PApplet.createWriter(java)) {
         result = preprocessor.write(stream, bigCode.toString(), codeFolderPackages);
       }
@@ -517,7 +517,7 @@ public class JavaBuild {
     }
 
     // If not the preprocessed file at this point, then need to get out
-    if (!dotJavaFilename.equals(sketch.getName() + ".java")) {
+    if (!dotJavaFilename.equals(sketch.getMainName() + ".java")) {
       return null;
     }
 
@@ -566,10 +566,10 @@ public class JavaBuild {
 
     // if name != exportSketchName, then that's weirdness
     // BUG unfortunately, that can also be a bug in the preproc :(
-    if (!sketch.getName().equals(foundName)) {
+    if (!sketch.getMainName().equals(foundName)) {
       Messages.showWarning("Error during export",
-                           "Sketch name is " + sketch.getName() + " but the sketch\n" +
-                           "name in the code was " + foundName, null);
+                           "Main tab is named " + sketch.getMainName() + " but the\n" +
+                           "sketch name in the code was " + foundName, null);
       return false;
     }
 
@@ -710,7 +710,7 @@ public class JavaBuild {
       macosFolder.mkdirs();
       // This is an unsigned copy of the app binary (see build/build.xml)
       Util.copyFile(mode.getContentFile("application/mac-app-stub"),
-                    new File(contentsFolder, "MacOS/" + sketch.getName()));
+                    new File(contentsFolder, "MacOS/" + sketch.getMainName()));
 
       File pkgInfo = new File(contentsFolder, "PkgInfo");
       PrintWriter writer = PApplet.createWriter(pkgInfo);
@@ -755,7 +755,7 @@ public class JavaBuild {
     /// create the main .jar file
 
     FileOutputStream zipOutputFile =
-      new FileOutputStream(new File(jarFolder, sketch.getName() + ".jar"));
+      new FileOutputStream(new File(jarFolder, sketch.getMainName() + ".jar"));
     ZipOutputStream zos = new ZipOutputStream(zipOutputFile);
 
     // add the manifest file so that the .jar can be double-clickable
@@ -797,7 +797,7 @@ public class JavaBuild {
     zos.flush();
     zos.close();
 
-    jarList.append(sketch.getName() + ".jar");
+    jarList.append(sketch.getMainName() + ".jar");
 
 
     /// add contents of 'library' folders to the export
@@ -904,7 +904,7 @@ public class JavaBuild {
           }
           while ((index = sb.indexOf("@@sketch@@")) != -1) {
             sb.replace(index, index + "@@sketch@@".length(),
-                       sketch.getName());
+                       sketch.getMainName());
           }
           while ((index = sb.indexOf("@@lsuipresentationmode@@")) != -1) {
             sb.replace(index, index + "@@lsuipresentationmode@@".length(),
@@ -961,7 +961,7 @@ public class JavaBuild {
       config.addChild("icon").setContent(iconFile.getAbsolutePath());
 
       XML clazzPath = config.addChild("classPath");
-      clazzPath.addChild("mainClass").setContent(sketch.getName());
+      clazzPath.addChild("mainClass").setContent(sketch.getMainName());
       for (String jarName : jarList) {
         clazzPath.addChild("cp").setContent("lib/" + jarName);
       }
@@ -1015,7 +1015,7 @@ public class JavaBuild {
                //" -Djava.ext.dirs=\"$APPDIR/java/lib/ext\"" +
                //" -Djna.nosys=true" +
                " -cp \"" + exportClassPath + "\"" +
-               " " + sketch.getName() + " \"$@\"\n");
+               " " + sketch.getMainName() + " \"$@\"\n");
 
       pw.flush();
       pw.close();
@@ -1042,7 +1042,7 @@ public class JavaBuild {
       }
     }
     // move the .java file from the preproc there too
-    String preprocFilename = sketch.getName() + ".java";
+    String preprocFilename = sketch.getMainName() + ".java";
     File preprocFile = new File(srcFolder, preprocFilename);
     if (preprocFile.exists()) {
       Util.copyFile(preprocFile, new File(sourceFolder, preprocFilename));
@@ -1163,7 +1163,7 @@ public class JavaBuild {
     String contents =
       "Manifest-Version: 1.0\n" +
       "Created-By: Processing " + Base.getVersionName() + "\n" +
-      "Main-Class: " + sketch.getName() + "\n";  // TODO not package friendly
+      "Main-Class: " + sketch.getMainName() + "\n";  // TODO not package friendly
     zos.write(contents.getBytes());
     zos.closeEntry();
   }
