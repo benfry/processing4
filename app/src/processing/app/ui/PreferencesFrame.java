@@ -74,6 +74,7 @@ public class PreferencesFrame {
   JCheckBox zoomAutoBox;
 
   JCheckBox hidpiDisableBox;
+  JCheckBox syncSketchNameBox;
 
   JComboBox<String> displaySelectionBox;
   JComboBox<String> languageSelectionBox;
@@ -185,6 +186,10 @@ public class PreferencesFrame {
 
     hidpiDisableBox = new JCheckBox("Disable HiDPI Scaling (requires restart)");
     hidpiDisableBox.setVisible(false);  // only for Windows
+
+
+    // [ ] Keep sketch name and main tab name in sync
+    syncSketchNameBox = new JCheckBox("Keep sketch name and main tab in sync (experimental)");
 
 
     // Colors
@@ -429,6 +434,7 @@ public class PreferencesFrame {
                         .addComponent(mbLabel))
           .addComponent(deletePreviousBox)
           .addComponent(checkUpdatesBox)
+          .addComponent(syncSketchNameBox)
           .addGroup(layout.createSequentialGroup()
                       .addComponent(displayLabel)
                       .addComponent(displaySelectionBox,
@@ -489,6 +495,7 @@ public class PreferencesFrame {
                 .addComponent(mbLabel))
       .addComponent(deletePreviousBox)
       .addComponent(checkUpdatesBox)
+      .addComponent(syncSketchNameBox)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(displayLabel)
                   .addComponent(displaySelectionBox))
@@ -666,6 +673,7 @@ public class PreferencesFrame {
     if (Platform.isWindows()) {
       Splash.setDisableHiDPI(hidpiDisableBox.isSelected());
     }
+    Preferences.setBoolean("editor.sync_folder_and_filename", syncSketchNameBox.isSelected());
 
     Preferences.setColor("run.present.bgcolor", presentColor.getBackground());
 
@@ -731,6 +739,7 @@ public class PreferencesFrame {
     if (Platform.isWindows()) {
       hidpiDisableBox.setSelected(Splash.getDisableHiDPI());
     }
+    syncSketchNameBox.setSelected(Preferences.getBoolean("editor.sync_folder_and_filename"));
 
     presentColor.setBackground(Preferences.getColor("run.present.bgcolor"));
     presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));

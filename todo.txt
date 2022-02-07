@@ -6,18 +6,14 @@ X change cmd-click in window title to point to sketch folder
 
 change detector
 X text in second line of custom dialogs was showing too large
-X   i.e. change detector with large text for the "either way" part of the message
+X   change detector had large text for the "either way" part of the message
 X remove nonsense removeCode() error text
 
 modes and properties
 X major rewrite of handleOpen() et al
 X fix bug when changing the Mode between Java and Android
 X   appears that it would have been broken for a long time
-
-
-_ PDF export not working with Processing 4.0 beta 5
-_   was working with beta 3 and 4
-_   https://github.com/processing/processing4/issues/395
+X add option to disable keeping sketch folder and main tab in sync
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

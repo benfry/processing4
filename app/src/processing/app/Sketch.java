@@ -350,7 +350,7 @@ public class Sketch {
     // ask for new name of file (internal to window)
     // TODO maybe just pop up a text area?
     renamingCode = true;
-    String prompt = (currentIndex == 0 && Preferences.getBoolean("sketch.sync_folder_and_filename")) ?
+    String prompt = (currentIndex == 0 && Preferences.getBoolean("editor.sync_folder_and_filename")) ?
       Language.text("editor.sketch.rename.description") :
       Language.text("editor.tab.rename.description");
     String oldName = (current.isExtension(mode.getDefaultExtension())) ?
@@ -535,7 +535,7 @@ public class Sketch {
 
     if (renamingCode) {
       if (currentIndex == 0 &&
-          Preferences.getBoolean("sketch.sync_folder_and_filename")) {
+          Preferences.getBoolean("editor.sync_folder_and_filename")) {
         if (!renameSketch(newName, newExtension)) return;
 
       } else {  // else if something besides code[0], or ok to decouple name
@@ -890,7 +890,7 @@ public class Sketch {
     // user canceled selection
     if (newSketchName == null) return false;
 
-    boolean sync = Preferences.getBoolean("sketch.sync_folder_and_filename");
+    boolean sync = Preferences.getBoolean("editor.sync_folder_and_filename");
     String newMainFileName = null;  // only set with !sync
     File newFolder;
     if (sync) {

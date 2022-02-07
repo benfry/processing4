@@ -1,4 +1,3 @@
-
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -57,7 +56,7 @@ last.sketch.count = 0
 last.sketch.restore = true
 
 # set 'true' for the default behavior before 4.0b6
-sketch.sync_folder_and_filename = true
+editor.sync_folder_and_filename = true
 
 # by default, contributions are moved to backup folders when
 # they are removed or replaced. The locations of the backup
