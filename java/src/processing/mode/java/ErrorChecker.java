@@ -47,8 +47,9 @@ class ErrorChecker {
   public ErrorChecker(JavaEditor editor, PreprocService pps) {
     this.editor = editor;
     this.pps = pps;
+
     scheduler = Executors.newSingleThreadScheduledExecutor();
-    this.enabled = JavaMode.errorCheckEnabled;
+    enabled = JavaMode.errorCheckEnabled;
     if (enabled) {
       pps.registerListener(errorHandlerListener);
     }
@@ -83,7 +84,7 @@ class ErrorChecker {
 
   private void handleSketchProblems(PreprocSketch ps) {
     Map<String, String[]> suggCache =
-        JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
+      JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
 
     List<IProblem> iproblems;
     if (ps.compilationUnit == null) {
@@ -105,7 +106,8 @@ class ErrorChecker {
     }
 
     if (problems.isEmpty()) {
-      AtomicReference<ClassPath> searchClassPath = new AtomicReference<>(null);
+      AtomicReference<ClassPath> searchClassPath =
+        new AtomicReference<>(null);
 
       List<Problem> cuProblems = iproblems.stream()
         // Filter Warnings if they are not enabled
@@ -134,7 +136,6 @@ class ErrorChecker {
     if (scheduledUiUpdate != null) {
       scheduledUiUpdate.cancel(true);
     }
-    // Update the UI after a delay
     // https://github.com/processing/processing/issues/2677
     long delay = nextUiUpdate - System.currentTimeMillis();
     Runnable uiUpdater = () -> {
@@ -213,6 +214,10 @@ class ErrorChecker {
   static private final Pattern CURLY_QUOTE_REGEX =
     Pattern.compile("([“”‘’])", Pattern.UNICODE_CHARACTER_CLASS);
 
+  /**
+   * Check the scrubbed code for curly quotes.
+   * They are a common copy/paste error, especially on macOS.
+   */
   static private List<JavaProblem> checkForCurlyQuotes(PreprocSketch ps) {
     if (ps.compilationUnit == null) {
       return new ArrayList<>();
@@ -220,7 +225,6 @@ class ErrorChecker {
 
     List<JavaProblem> problems = new ArrayList<>(0);
 
-    // Go through the scrubbed code and look for curly quotes (they should not be any)
     Matcher matcher = CURLY_QUOTE_REGEX.matcher(ps.scrubbedPdeCode);
     while (matcher.find()) {
       int pdeOffset = matcher.start();
@@ -273,9 +277,7 @@ class ErrorChecker {
           }
       }
     }
-
     problems.addAll(problems2);
-
     return problems;
   }
 
@@ -304,7 +306,8 @@ class ErrorChecker {
 
     int problemTabIndex = problems.get(0).getTabIndex();
 
-    IProblem missingBraceProblem = Arrays.stream(ps.compilationUnit.getProblems())
+    IProblem missingBraceProblem =
+      Arrays.stream(ps.compilationUnit.getProblems())
         .filter(ErrorChecker::isMissingBraceProblem)
         // Ignore if it is at the end of file
         .filter(p -> p.getSourceEnd() + 1 < ps.javaCode.length())
@@ -321,7 +324,6 @@ class ErrorChecker {
         problems.add(p);
       }
     }
-
     return problems;
   }
 
