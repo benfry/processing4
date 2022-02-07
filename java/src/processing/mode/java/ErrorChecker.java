@@ -29,7 +29,8 @@ import processing.app.Problem;
 
 
 class ErrorChecker {
-  // Delay delivering error check result after last sketch change #2677
+  // Delay delivering error check result after last sketch change
+  // https://github.com/processing/processing/issues/2677
   private final static long DELAY_BEFORE_UPDATE = 650;
 
   final private ScheduledExecutorService scheduler;
@@ -81,7 +82,6 @@ class ErrorChecker {
 
 
   private void handleSketchProblems(PreprocSketch ps) {
-
     Map<String, String[]> suggCache =
         JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
 
@@ -108,26 +108,25 @@ class ErrorChecker {
       AtomicReference<ClassPath> searchClassPath = new AtomicReference<>(null);
 
       List<Problem> cuProblems = iproblems.stream()
-          // Filter Warnings if they are not enabled
-          .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
-          .filter(iproblem -> !(isIgnorableProblem(iproblem)))
-          // Transform into our Problems
-          .map(iproblem -> {
-            JavaProblem p = convertIProblem(iproblem, ps);
+        // Filter Warnings if they are not enabled
+        .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
+        .filter(iproblem -> !(isIgnorableProblem(iproblem)))
+        // Transform into our Problems
+        .map(iproblem -> {
+          JavaProblem p = convertIProblem(iproblem, ps);
 
-            // Handle import suggestions
-            if (p != null && JavaMode.importSuggestEnabled && isUndefinedTypeProblem(iproblem)) {
-              ClassPath cp = searchClassPath.updateAndGet(prev -> prev != null ?
-                  prev : new ClassPathFactory().createFromPaths(ps.searchClassPathArray));
-              String[] s = suggCache.computeIfAbsent(iproblem.getArguments()[0],
-                                                     name -> getImportSuggestions(cp, name));
-              p.setImportSuggestions(s);
-            }
-
-            return p;
-          })
-          .filter(Objects::nonNull)
-          .collect(Collectors.toList());
+          // Handle import suggestions
+          if (p != null && JavaMode.importSuggestEnabled && isUndefinedTypeProblem(iproblem)) {
+            ClassPath cp = searchClassPath.updateAndGet(prev -> prev != null ?
+                prev : new ClassPathFactory().createFromPaths(ps.searchClassPathArray));
+            String[] s = suggCache.computeIfAbsent(iproblem.getArguments()[0],
+                                                   name -> getImportSuggestions(cp, name));
+            p.setImportSuggestions(s);
+          }
+          return p;
+        })
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
 
       problems.addAll(cuProblems);
     }
@@ -135,7 +134,8 @@ class ErrorChecker {
     if (scheduledUiUpdate != null) {
       scheduledUiUpdate.cancel(true);
     }
-    // Update UI after a delay. See #2677
+    // Update the UI after a delay
+    // https://github.com/processing/processing/issues/2677
     long delay = nextUiUpdate - System.currentTimeMillis();
     Runnable uiUpdater = () -> {
       if (nextUiUpdate > 0 && System.currentTimeMillis() >= nextUiUpdate) {
@@ -166,9 +166,8 @@ class ErrorChecker {
     // also produced and is preferred over this one.
     // (Syntax error, insert ":: IdentifierOrNew" to complete Expression)
     // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=405780
-    boolean ignorable = message.contains(
-        "Syntax error, insert \":: IdentifierOrNew\""
-    );
+    boolean ignorable =
+      message.contains("Syntax error, insert \":: IdentifierOrNew\"");
 
     // It's ok if the file names do not line up during preprocessing.
     ignorable |= message.contains("must be defined in its own file");
@@ -237,7 +236,6 @@ class ErrorChecker {
 
       problems.add(problem);
     }
-
 
     // Go through iproblems and look for problems involving curly quotes
     List<JavaProblem> problems2 = new ArrayList<>(0);
@@ -330,31 +328,31 @@ class ErrorChecker {
 
   static public String[] getImportSuggestions(ClassPath cp, String className) {
     className = className.replace("[", "\\[").replace("]", "\\]");
-    RegExpResourceFilter regf = new RegExpResourceFilter(
+    RegExpResourceFilter filter = new RegExpResourceFilter(
         Pattern.compile(".*"),
         Pattern.compile("(.*\\$)?" + className + "\\.class",
                         Pattern.CASE_INSENSITIVE));
 
-    String[] resources = cp.findResources("", regf);
+    String[] resources = cp.findResources("", filter);
     return Arrays.stream(resources)
-        // remove ".class" suffix
-        .map(res -> res.substring(0, res.length() - 6))
-        // replace path separators with dots
-        .map(res -> res.replace('/', '.'))
-        // replace inner class separators with dots
-        .map(res -> res.replace('$', '.'))
-        // sort, prioritize clases from java. package
-        .map(res -> res.startsWith("classes.") ? res.substring(8) : res)
-        .sorted((o1, o2) -> {
-          // put java.* first, should be prioritized more
-          boolean o1StartsWithJava = o1.startsWith("java");
-          boolean o2StartsWithJava = o2.startsWith("java");
-          if (o1StartsWithJava != o2StartsWithJava) {
-            if (o1StartsWithJava) return -1;
-            return 1;
-          }
-          return o1.compareTo(o2);
-        })
-        .toArray(String[]::new);
+      // remove ".class" suffix
+      .map(res -> res.substring(0, res.length() - 6))
+      // replace path separators with dots
+      .map(res -> res.replace('/', '.'))
+      // replace inner class separators with dots
+      .map(res -> res.replace('$', '.'))
+      // sort, prioritize classes from java. package
+      .map(res -> res.startsWith("classes.") ? res.substring(8) : res)
+      .sorted((o1, o2) -> {
+        // put java.* first, should be prioritized more
+        boolean o1StartsWithJava = o1.startsWith("java");
+        boolean o2StartsWithJava = o2.startsWith("java");
+        if (o1StartsWithJava != o2StartsWithJava) {
+          if (o1StartsWithJava) return -1;
+          return 1;
+        }
+        return o1.compareTo(o2);
+      })
+      .toArray(String[]::new);
   }
 }

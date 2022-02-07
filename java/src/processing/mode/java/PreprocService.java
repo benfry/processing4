@@ -358,11 +358,7 @@ public class PreprocService {
         tabStartsList.append(workBuffer.length());
         tabLineStarts.add(numLines);
 
-        StringBuilder newPiece = new StringBuilder();
-        newPiece.append(getSketchTabContents(sc));
-        newPiece.append('\n');
-
-        String newPieceBuilt = newPiece.toString();
+        String newPieceBuilt = getSketchTabContents(sc) + '\n';
         numLines += SourceUtil.getCount(newPieceBuilt, "\n");
         workBuffer.append(newPieceBuilt);
       } else if (sc.isExtension("java")) {
@@ -657,9 +653,9 @@ public class PreprocService {
 
     // Return
     return new CompileResults(
-        astRequester.getMainCompilationUnit(),
-        astRequester.getProblems(),
-        javaFileMapping
+      astRequester.getMainCompilationUnit(),
+      astRequester.getProblems(),
+      javaFileMapping
     );
   }
 
@@ -758,10 +754,7 @@ public class PreprocService {
       if (source.equals(mainSource)) {
         mainCompilationUnit = ast;
       }
-
-      for (IProblem problem : ast.getProblems()) {
-        problems.add(problem);
-      }
+      Collections.addAll(problems, ast.getProblems());
     }
 
     /**
@@ -787,7 +780,7 @@ public class PreprocService {
   /**
    * Data structure holding the results of compilation.
    */
-  private class CompileResults {
+  static private class CompileResults {
     private final CompilationUnit compilationUnit;
     private final List<IProblem> problems;
     private final Map<String, Integer> javaFileMapping;
@@ -845,9 +838,9 @@ public class PreprocService {
   /**
    * SketchCode (tab of sketch) which is a ".java" tab.
    */
-  private class JavaSketchCode {
-    private SketchCode sketchCode;
-    private int tabIndex;
+  static private class JavaSketchCode {
+    private final SketchCode sketchCode;
+    private final int tabIndex;
 
     /**
      * Create a new record of a ".java" tab inside a sketch.
@@ -877,7 +870,6 @@ public class PreprocService {
     public int getTabIndex() {
       return tabIndex;
     }
-
   }
 
   /// IMPORTS -----------------------------------------------------------------
