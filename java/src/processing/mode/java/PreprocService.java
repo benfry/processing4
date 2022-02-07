@@ -344,7 +344,7 @@ public class PreprocService {
 
     JavaMode javaMode = (JavaMode) editor.getMode();
     Sketch sketch = result.sketch = editor.getSketch();
-    String className = sketch.getName();
+    String className = sketch.getMainName();
 
     StringBuilder workBuffer = new StringBuilder();
 
@@ -385,7 +385,7 @@ public class PreprocService {
 
     // Core and default imports
     PdePreprocessor preProcessor =
-      editor.createPreprocessor(editor.getSketch().getName());
+      editor.createPreprocessor(editor.getSketch().getMainName());
     if (coreAndDefaultImports == null) {
       coreAndDefaultImports = buildCoreAndDefaultImports(preProcessor);
     }

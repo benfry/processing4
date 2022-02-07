@@ -38,7 +38,8 @@ class ErrorChecker {
   private volatile long nextUiUpdate = 0;
   private volatile boolean enabled;
 
-  private final Consumer<PreprocSketch> errorHandlerListener = this::handleSketchProblems;
+  private final Consumer<PreprocSketch> errorHandlerListener =
+    this::handleSketchProblems;
 
   final private JavaEditor editor;
   final private PreprocService pps;
