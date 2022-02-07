@@ -350,7 +350,7 @@ public class Sketch {
     // ask for new name of file (internal to window)
     // TODO maybe just pop up a text area?
     renamingCode = true;
-    String prompt = (currentIndex == 0) ?
+    String prompt = (currentIndex == 0 && Preferences.getBoolean("sketch.sync_folder_and_filename")) ?
       Language.text("editor.sketch.rename.description") :
       Language.text("editor.tab.rename.description");
     String oldName = (current.isExtension(mode.getDefaultExtension())) ?
@@ -1277,6 +1277,10 @@ public class Sketch {
   */
 
 
+  /**
+   * Opens and parses sketch.properties. If it does not exist, returns an
+   * empty Settings object that can be written back to the same location.
+   */
   static protected Settings loadProperties(File folder) throws IOException {
     /*
     File propsFile = new File(folder, "sketch.properties");
@@ -1326,6 +1330,7 @@ public class Sketch {
     // update sketch.properties.
     String mainName = mainFile.getName();
     String defaultName = name + "." + mode.getDefaultExtension();
+    //System.out.println("main name is " + mainName + " and default name is " + defaultName);
 
     try {
       // Read the old sketch.properties file if it already exists
@@ -1336,6 +1341,7 @@ public class Sketch {
       } else {
         props.set("main", mainName);
       }
+      //System.out.println("props size is now " + props.getMap().size());
       props.reckon();
 
     } catch (IOException e) {
