@@ -48,23 +48,24 @@ public class PdePreprocessor {
   /**
    * The mode that the sketch uses to run.
    */
-  public static enum Mode {
+  public enum Mode {
     /**
-     * Sketch without draw, setup, or settings functions where code is run as if the body of a
-     * method without any enclosing types. This code will not define its enclosing class or method.
+     * Sketch without draw, setup, or settings functions where code
+     * is run as if the body of a method without any enclosing types.
+     * This code will not define its enclosing class or method.
      */
     STATIC,
 
     /**
-     * Sketch using draw, setup, and / or settings where the code is run as if defining the body
-     * of a class. This code will not define its enclosing class but it will define its enclosing
-     * method.
+     * Sketch using draw, setup, and / or settings where the code is
+     * run as if defining the body of a class. This code will not define
+     * its enclosing class, but it will define its enclosing method.
      */
     ACTIVE,
 
     /**
-     * Sketch written like typical Java where the code is run such that it defines the enclosing
-     * classes itself.
+     * Sketch written like typical Java where the code is run
+     * such that it defines the enclosing classes itself.
      */
     JAVA
   }
@@ -192,7 +193,7 @@ public class PdePreprocessor {
     listener.setCoreImports(coreImports);
     listener.setDefaultImports(defaultImports);
     listener.setCodeFolderImports(codeFolderImports);
-    listener.setTreeErrorListener((x) -> { treeIssues.add(x); });
+    listener.setTreeErrorListener(treeIssues::add);
 
     final String finalInProgram = inProgram;
     ParseTree tree;
@@ -200,7 +201,7 @@ public class PdePreprocessor {
       ProcessingParser parser = new ProcessingParser(tokens);
       parser.removeErrorListeners();
       parser.addErrorListener(new PdeIssueEmitter(
-          (x) -> { preprocessIssues.add(x); },
+        preprocessIssues::add,
           () -> finalInProgram
       ));
       parser.setBuildParseTree(true);
@@ -362,10 +363,10 @@ public class PdePreprocessor {
     /**
      * Specify how the parse tree listener should be built.
      *
-     * The ANTLR parse tree listener is where the preprocessing edits are generated and some client
-     * code (like modes) may need to override some of the preprocessing edit behavior. Specifying
-     * this factory allows client code to replace the default PdeParseTreeListener that is used
-     * during preprocessing.
+     * The ANTLR parse tree listener is where the preprocessing edits are
+     * generated and some client code (like modes) may need to override some
+     * preprocessing edit behavior. Specifying this factory allows client code
+     * to replace the default PdeParseTreeListener used during preprocessing.
      *
      * @param newFactory The factory to use in building a parse tree listener.
      * @return This builder for method chaining.
@@ -410,51 +411,43 @@ public class PdePreprocessor {
 
     /**
      * Build the preprocessor.
-     *
-     * @return Newly built preproceesor.
      */
     public PdePreprocessor build() {
-      final int effectiveTabSize = tabSize.orElseGet(
-          () -> Preferences.getInteger("editor.tabs.size")
-      );
+      final int effectiveTabSize =
+        tabSize.orElseGet(() -> Preferences.getInteger("editor.tabs.size"));
 
       final boolean effectiveIsTesting = isTesting.orElse(false);
 
-      ParseTreeListenerFactory effectiveFactory = parseTreeFactory.orElse(
-          PdeParseTreeListener::new
-      );
+      ParseTreeListenerFactory effectiveFactory =
+        parseTreeFactory.orElse(PdeParseTreeListener::new);
 
-      List<String> effectiveDefaultImports = defaultImports.orElseGet(
-          () -> Arrays.asList(BASE_DEFAULT_IMPORTS)
-      );
+      List<String> effectiveDefaultImports =
+        defaultImports.orElseGet(() -> Arrays.asList(BASE_DEFAULT_IMPORTS));
 
-      List<String> effectiveCoreImports = coreImports.orElseGet(
-          () -> Arrays.asList(BASE_CORE_IMPORTS)
-      );
+      List<String> effectiveCoreImports =
+        coreImports.orElseGet(() -> Arrays.asList(BASE_CORE_IMPORTS));
 
       return new PdePreprocessor(
-          mainName,
-          effectiveTabSize,
-          effectiveIsTesting,
-          effectiveFactory,
-          effectiveDefaultImports,
-          effectiveCoreImports,
-          destinationPackage
+        mainName,
+        effectiveTabSize,
+        effectiveIsTesting,
+        effectiveFactory,
+        effectiveDefaultImports,
+        effectiveCoreImports,
+        destinationPackage
       );
     }
-
   }
 
   /**
    * Factory which creates parse tree traversal listeners.
    *
-   * The ANTLR parse tree listener is where the preprocessing edits are generated and some client
-   * code (like modes) may need to override some of the preprocessing edit behavior. Specifying
-   * this factory allows client code to replace the default PdeParseTreeListener that is used
-   * during preprocessing.
+   * The ANTLR parse tree listener is where the preprocessing edits are
+   * generated and some client code (like modes) may need to override some
+   * preprocessing edit behavior. Specifying this factory allows client code
+   * to replace the default PdeParseTreeListener used during preprocessing.
    */
-  public static interface ParseTreeListenerFactory {
-
+  public interface ParseTreeListenerFactory {
     /**
      * Create a new processing listener.
      *
@@ -464,9 +457,8 @@ public class PdePreprocessor {
      * @param packageName The optional package name for generated code.
      * @return The newly created listener.
      */
-    PdeParseTreeListener build(CommonTokenStream tokens, String sketchName, int tabSize,
-        Optional<String> packageName);
-
+    PdeParseTreeListener build(CommonTokenStream tokens, String sketchName,
+                               int tabSize, Optional<String> packageName);
   }
 
 
@@ -476,37 +468,36 @@ public class PdePreprocessor {
    */
 
   /**
-   * Utility function to substitute non ascii characters for escaped unicode character sequences.
+   * Utility function to substitute non-ASCII characters for escaped unicode character sequences.
    *
-   * @param program The program source in which to execute the replace.
+   * @param program The program source in which to execute the replacement
    * @return The program source after replacement.
    */
   private static String substituteUnicode(String program) {
     // check for non-ascii chars (these will be/must be in unicode format)
-    char p[] = program.toCharArray();
+    char[] p = program.toCharArray();
     int unicodeCount = 0;
-    for (int i = 0; i < p.length; i++) {
-      if (p[i] > 127)
+    for (char value : p) {
+      if (value > 127)
         unicodeCount++;
     }
     if (unicodeCount == 0)
       return program;
     // if non-ascii chars are in there, convert to unicode escapes
-    // add unicodeCount * 5.. replacing each unicode char
+    // add unicodeCount * 5... replacing each unicode char
     // with six digit uXXXX sequence (xxxx is in hex)
     // (except for nbsp chars which will be a replaced with a space)
     int index = 0;
-    char p2[] = new char[p.length + unicodeCount * 5];
-    for (int i = 0; i < p.length; i++) {
-      if (p[i] < 128) {
-        p2[index++] = p[i];
-      } else if (p[i] == 160) { // unicode for non-breaking space
+    char[] p2 = new char[p.length + unicodeCount * 5];
+    for (char value : p) {
+      if (value < 128) {
+        p2[index++] = value;
+      } else if (value == 160) { // unicode for non-breaking space
         p2[index++] = ' ';
       } else {
-        int c = p[i];
         p2[index++] = '\\';
         p2[index++] = 'u';
-        char str[] = Integer.toHexString(c).toCharArray();
+        char[] str = Integer.toHexString(value).toCharArray();
         // add leading zeros, so that the length is 4
         //for (int i = 0; i < 4 - str.length; i++) p2[index++] = '0';
         for (int m = 0; m < 4 - str.length; m++)
@@ -517,5 +508,4 @@ public class PdePreprocessor {
     }
     return new String(p2, 0, index);
   }
-
 }
