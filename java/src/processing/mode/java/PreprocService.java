@@ -470,13 +470,13 @@ public class PreprocService {
 
     // Create intermediate AST for advanced preprocessing
     // Wait on .java tabs due to speed since they don't go through preproc.
-    CompileResults parseableCompile = compileInMemory(
+    CompileResults parsableCompile = compileInMemory(
         parsableStage,
         className,
         result.classPathArray,
         false
     );
-    CompilationUnit parsableCU = parseableCompile.getCompilationUnit();
+    CompilationUnit parsableCU = parsableCompile.getCompilationUnit();
 
     // Prepare advanced transforms which operate on AST
     TextTransform toCompilable = new TextTransform(parsableStage);
@@ -489,13 +489,13 @@ public class PreprocService {
     OffsetMapper compilableMapper = toCompilable.getMapper();
 
     // Create compilable AST to get syntax problems
-    CompileResults compileableCompile = compileInMemory(
+    CompileResults compilableCompile = compileInMemory(
         compilableStage,
         className,
         result.classPathArray,
         false
     );
-    CompilationUnit compilableCU = compileableCompile.getCompilationUnit();
+    CompilationUnit compilableCU = compilableCompile.getCompilationUnit();
 
     // Get syntax problems from compilable AST
     result.hasSyntaxErrors |=
@@ -517,8 +517,7 @@ public class PreprocService {
           compilableStage,
           className,
           result.classPathArray,
-          javaFiles,
-          true
+          javaFiles
       );
     }
 
@@ -603,20 +602,18 @@ public class PreprocService {
    * @param className The name of the class enclosing the sketch.
    * @param classPathArray List of classpath entries.
    * @param javaFiles Information about the java files.
-   * @param resolveBindings Flag indicating if compilation should happen with
-   *    binding resolution.
    * @return The results of compilation with binding.
    */
   private CompileResults compileFromDisk(String sketchSource,
-      String className, String[] classPathArray,
-      List<JavaSketchCode> javaFiles, boolean resolveBindings) {
+                                         String className, String[] classPathArray,
+                                         List<JavaSketchCode> javaFiles) {
 
     ProcessingASTRequester astRequester;
     List<Path> temporaryFilesList = new ArrayList<>();
     Map<String, Integer> javaFileMapping = new HashMap<>();
 
     // Prepare parser
-    setupParser(resolveBindings, className, classPathArray);
+    setupParser(true, className, classPathArray);
 
     // Write compilable processing file
     Path mainTemporaryFile = createTemporaryFile(sketchSource);
@@ -660,7 +657,7 @@ public class PreprocService {
   }
 
   /**
-   * Setup the parser compiler options and optionally bindings information.
+   * Set up the parser compiler options and optionally bindings information.
    *
    * @param resolveBindings Flag indicating if bindings should be resolved /
    *    checked for things like missing types.
@@ -719,12 +716,12 @@ public class PreprocService {
   }
 
   /**
-   * JDT AST requestor for compileFromDisk.
+   * JDT AST requester for compileFromDisk.
    *
    * <p>
-   * Abstract syntax tree requestor for the JDT useful for compileFromDisk where
+   * Abstract syntax tree requester for the JDT useful for compileFromDisk where
    * there may be ".java" tabs in addition to the single combined ".pde" source.
-   * This requestor will collect problems from all files but hold onto the AST
+   * This requester will collect problems from all files but hold onto the AST
    * for the sketch's combined PDE code (not ".java" tabs).
    * </p>
    */
