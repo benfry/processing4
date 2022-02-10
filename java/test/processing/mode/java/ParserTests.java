@@ -421,8 +421,13 @@ public class ParserTests {
   }
 
   @Test
-  public void testMultlineString() {
+  public void testMultilineString() {
     expectGood("multilinestr");
+  }
+
+  @Test
+  public void testMultiMultilineString() {
+    expectGood("multimultilinestr");
   }
 
 }
