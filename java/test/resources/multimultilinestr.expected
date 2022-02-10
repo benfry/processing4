@@ -16,7 +16,7 @@ public class multimultilinestr extends PApplet {
 
     public void setup() {
 String testMultiline1 = "\nline1 \"\nline 2 \"\"\nline  3\nline   4";
-String testMultiline2 = "\nline5 \"\nline 6 \"\"\nline  7\nline   8";
+final String testMultiline2 = "\nline5 \"\nline 6 \"\"\nline  7\nline   8";
 
 println(testMultiline1);
 println(testMultiline2);

@@ -4,7 +4,7 @@ line 2 ""
 line  3
 line   4""";
 
-String testMultiline2 = """
+final String testMultiline2 = """
 line5 "
 line 6 ""
 line  7
