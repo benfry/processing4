@@ -2572,7 +2572,7 @@ public class PGraphicsJava2D extends PGraphics {
     if ((clearPixels == null) || (clearPixels.length < imageWidth)) {
       clearPixels = new int[imageWidth];
     }
-    Arrays.fill(clearPixels, 0, imageWidth, backgroundColor);
+    Arrays.fill(clearPixels, 0, imageWidth, color);
     for (int i = 0; i < imageHeight; i++) {
       raster.setDataElements(0, i, imageWidth, 1, clearPixels);
     }
