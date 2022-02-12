@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import processing.awt.ShimAWT;
 
@@ -253,6 +254,12 @@ public class PImage implements PConstants, Cloneable {
     pixelHeight = height * pixelDensity;
 
     pixels = new int[pixelWidth * pixelHeight];
+
+    if (format == RGB) {
+      // Initialize the pixels as opaque, because Java2D gets quirky otherwise.
+      // https://github.com/processing/processing4/issues/388
+      Arrays.fill(pixels, 0xFF000000);
+    }
   }
 
 
@@ -654,7 +661,7 @@ public class PImage implements PConstants, Cloneable {
    */
   public PImage get() {
     // Formerly this used clone(), which caused memory problems.
-    // http://code.google.com/p/processing/issues/detail?id=42
+    // https://github.com/processing/processing/issues/81
     return get(0, 0, pixelWidth, pixelHeight);
   }
 
@@ -714,8 +721,22 @@ public class PImage implements PConstants, Cloneable {
    */
   public void set(int x, int y, int c) {
     if ((x < 0) || (y < 0) || (x >= pixelWidth) || (y >= pixelHeight)) return;
-    pixels[y*pixelWidth + x] = c;
-    updatePixels(x, y, 1, 1);  // slow...
+
+    switch (format) {
+      case RGB:
+        pixels[y * pixelWidth + x] = 0xff000000 | c;
+        break;
+
+      case ARGB:
+        pixels[y * pixelWidth + x] = c;
+        break;
+
+      case ALPHA:
+        pixels[y * pixelWidth + x] = ((c & 0xff) << 24) | 0xffffff;
+        break;
+    }
+
+      updatePixels(x, y, 1, 1);  // slow...
   }
 
 

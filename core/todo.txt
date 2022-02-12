@@ -4,6 +4,8 @@ X   if more than one display, shows list of available displays (size and index)
 X properly set names for windowMove() and windowResize()
 X PDF export not working with Processing 4.0 beta 5
 X   https://github.com/processing/processing4/issues/395
+X RGB image created with “createImage()" has alpha channel
+X   https://github.com/processing/processing4/issues/388
 
 contribs
 X CODED is inconsistent between the default renderer and P2D/P3D
@@ -17,8 +19,6 @@ X   https://github.com/processing/processing4/pull/298
 
 _ Windows scaling at 125% is stretching things to look gross
 _   https://github.com/processing/processing4/issues/378
-_ RGB image created with “createImage()" has alpha channel
-_   https://github.com/processing/processing4/issues/388
 
 
 _ finalize the solution for frame/surface methods

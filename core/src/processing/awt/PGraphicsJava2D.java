@@ -1775,7 +1775,10 @@ public class PGraphicsJava2D extends PGraphics {
 //          op.filter(image, image);
         }
       } else {  // !tint
-        if (targetType == RGB && (source.pixels[0] >> 24 == 0)) {
+        // Java2D must always use ARGB, so we need to ensure RGB pixels
+        // have their high bits set to 0xFF, which requires some hackery.
+        // https://github.com/processing/processing4/issues/388
+        if (targetType == RGB && anyAlpha(source.pixels)) {
           // If it's an RGB image and the high bits aren't set, need to set
           // the high bits to opaque because we're drawing ARGB images.
           source.filter(OPAQUE);
@@ -1789,16 +1792,29 @@ public class PGraphicsJava2D extends PGraphics {
       }
       this.tinted = tint;
       this.tintedColor = tintColor;
-
-//      GraphicsConfiguration gc = parent.getGraphicsConfiguration();
-//      compat = gc.createCompatibleImage(image.getWidth(),
-//                                        image.getHeight(),
-//                                        Transparency.TRANSLUCENT);
-//
-//      Graphics2D g = compat.createGraphics();
-//      g.drawImage(image, 0, 0, null);
-//      g.dispose();
     }
+  }
+
+
+  static private boolean anyAlpha(int[] pixels) {
+    // The upper-left corner is a good bet to test first, but not sufficient.
+    if ((pixels[0] & 0xFF000000) != 0xFF000000) {
+      return true;
+    }
+
+    // Otherwise, take a random sample for our best guess. This is much
+    // faster (and hopefully reliable enough) to avoid exhaustively rewriting
+    // all pixel alpha values, which would be dreadful for performance.
+    int count = (int) Math.sqrt(pixels.length);
+    for (int i = 0; i < count; i++) {
+      // select a random pixel
+      int index = (int) (Math.random() * pixels.length);
+      // if it has alpha, return true
+      if ((pixels[index] & 0xFF000000) != 0xFF000000) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
