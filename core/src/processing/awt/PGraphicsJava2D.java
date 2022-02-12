@@ -2566,13 +2566,13 @@ public class PGraphicsJava2D extends PGraphics {
     // (an array for width*height would waste lots of memory if it stayed
     // resident, and would terrify the gc if it were re-created on each trip
     // to background().
-//    WritableRaster raster = ((BufferedImage) image).getRaster();
-//    WritableRaster raster = image.getRaster();
     WritableRaster raster = getRaster();
     if ((clearPixels == null) || (clearPixels.length < imageWidth)) {
       clearPixels = new int[imageWidth];
     }
     Arrays.fill(clearPixels, 0, imageWidth, color);
+
+    // Clear the raster/image for this renderer, one line at a time
     for (int i = 0; i < imageHeight; i++) {
       raster.setDataElements(0, i, imageWidth, 1, clearPixels);
     }
