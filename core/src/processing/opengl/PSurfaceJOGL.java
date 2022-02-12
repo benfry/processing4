@@ -1071,7 +1071,7 @@ public class PSurfaceJOGL implements PSurface {
     short code = nativeEvent.getKeyCode();
     char keyChar;
     int keyCode;
-    if (isPCodedKey(code)) {
+    if (isPCodedKey(code, nativeEvent.isPrintableKey())) {
       keyCode = mapToPConst(code);
       keyChar = PConstants.CODED;
     } else if (isHackyKey(code)) {
@@ -1099,7 +1099,7 @@ public class PSurfaceJOGL implements PSurface {
 
     sketch.postEvent(ke);
 
-    if (!isPCodedKey(code) && !isHackyKey(code)) {
+    if (!isPCodedKey(code, nativeEvent.isPrintableKey()) && !isHackyKey(code)) {
       if (peAction == KeyEvent.PRESS) {
         // Create key typed event
         // TODO: combine dead keys with the following key
@@ -1115,7 +1115,7 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
-  private static boolean isPCodedKey(short code) {
+  private static boolean isPCodedKey(short code, boolean printable) {
     return code == com.jogamp.newt.event.KeyEvent.VK_UP ||
            code == com.jogamp.newt.event.KeyEvent.VK_DOWN ||
            code == com.jogamp.newt.event.KeyEvent.VK_LEFT ||
@@ -1123,7 +1123,8 @@ public class PSurfaceJOGL implements PSurface {
            code == com.jogamp.newt.event.KeyEvent.VK_ALT ||
            code == com.jogamp.newt.event.KeyEvent.VK_CONTROL ||
            code == com.jogamp.newt.event.KeyEvent.VK_SHIFT ||
-           code == com.jogamp.newt.event.KeyEvent.VK_WINDOWS;
+           code == com.jogamp.newt.event.KeyEvent.VK_WINDOWS ||
+           (!printable && !isHackyKey(code));
   }
 
 
