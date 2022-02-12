@@ -7061,8 +7061,8 @@ public class PApplet implements PConstants {
    * running. This is a tradeoff between 1) showing the user that there was a
    * problem but 2) not requiring that all i/o code is contained in try/catch
    * blocks, for the sake of new users (or people who are just trying to get
-   * things done in a "scripting" fashion. If you want to handle exceptions, use
-   * Java methods for I/O.
+   * things done in an informal "scripting" fashion). If you want to handle
+   * exceptions, use Java methods for I/O.
    *
    * @webref input:files
    * @webBrief Reads the contents of a file or url and creates a <b>String</b> array of
