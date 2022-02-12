@@ -189,7 +189,10 @@ public class PreferencesFrame {
 
 
     // [ ] Keep sketch name and main tab name in sync
-    syncSketchNameBox = new JCheckBox("Keep sketch name and main tab in sync (experimental)");
+    syncSketchNameBox =
+      new JCheckBox("<html>Keep sketch name and main tab in sync<br/>" +
+        "(disabling this is experimental: save carefully and report issues)");
+    syncSketchNameBox.setVerticalTextPosition(SwingConstants.TOP);
 
 
     // Colors
