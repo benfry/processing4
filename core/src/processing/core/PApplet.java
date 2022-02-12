@@ -10181,16 +10181,18 @@ public class PApplet implements PConstants {
       uncaughtThrowable = e;
     });
 
+    /*
     if (platform == WINDOWS) {
       // Set DPI scaling to either 1 or 2, but avoid fractional versions like
       // 125% and 250% that make things look gross, or even 300% since that
       // is not even a thing.
-      int dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+      int dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();  // no longer possible to set prop after this line
       System.out.println("dpi came back " + dpi);
       int scaleFactor = constrain(dpi / 96, 1, 2);
       System.out.println("setting scale factor to " + scaleFactor);
       System.setProperty("sun.java2d.uiscale", String.valueOf(scaleFactor));
     }
+    */
 
     // This doesn't work, need to mess with Info.plist instead
     /*
