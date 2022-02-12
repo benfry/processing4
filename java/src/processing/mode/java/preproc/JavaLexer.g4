@@ -116,7 +116,7 @@ BOOL_LITERAL:       'true'
 CHAR_LITERAL:       '\'' (~['\\\r\n] | EscapeSequence) '\'';
 
 STRING_LITERAL:     '"' (~["\\\r\n] | EscapeSequence)* '"';
-MULTI_STRING_LIT:   '"""' (~[\\] | EscapeSequence)* '"""';
+MULTI_STRING_LIT:   '"""' (~[\\] | EscapeSequence)*? '"""';
 
 NULL_LITERAL:       'null';
 // Separators
