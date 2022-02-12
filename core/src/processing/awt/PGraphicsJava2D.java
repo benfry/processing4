@@ -1003,15 +1003,7 @@ public class PGraphicsJava2D extends PGraphics {
       g2.setComposite(defaultComposite);
 
     } else {
-      g2.setComposite(new Composite() {
-
-        @Override
-        public CompositeContext createContext(ColorModel srcColorModel,
-                                              ColorModel dstColorModel,
-                                              RenderingHints hints) {
-          return new BlendingContext(blendMode);
-        }
-      });
+      g2.setComposite((srcColorModel, dstColorModel, hints) -> new BlendingContext(blendMode));
     }
   }
 
@@ -1020,7 +1012,7 @@ public class PGraphicsJava2D extends PGraphics {
   // demo and terrific writeup on blending modes in Java 2D.
   // http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/
   private static final class BlendingContext implements CompositeContext {
-    private int mode;
+    private final int mode;
 
     private BlendingContext(int mode) {
       this.mode = mode;
