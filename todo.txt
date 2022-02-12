@@ -15,6 +15,11 @@ X fix bug when changing the Mode between Java and Android
 X   appears that it would have been broken for a long time
 X add option to disable keeping sketch folder and main tab in sync
 
+fixes
+X multi-line strings not terminating properly
+X   https://github.com/processing/processing4/issues/398
+X   https://github.com/processing/processing4/pull/400
+
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
