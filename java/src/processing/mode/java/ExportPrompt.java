@@ -78,6 +78,7 @@ public class ExportPrompt {
     String pref = Preferences.get(EXPORT_VARIANTS);
     if (pref == null) {
       pref = Platform.getVariant();  // just add myself
+      Preferences.set(EXPORT_VARIANTS, pref);
     }
     StringList selectedVariants = new StringList(pref.split(","));
 

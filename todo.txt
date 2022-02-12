@@ -3,6 +3,8 @@ X update to Java 17.0.2+8
 X move "Add Examples" to bottom of the Examples window
 X remove anachronistic Preferences.save() that happens after opening a sketch
 X change cmd-click in window title to point to sketch folder
+X prevent NullPointerException on first use of Export to Application
+X   only showed up if no checkboxes were clicked
 
 change detector
 X text in second line of custom dialogs was showing too large
@@ -19,6 +21,11 @@ fixes
 X multi-line strings not terminating properly
 X   https://github.com/processing/processing4/issues/398
 X   https://github.com/processing/processing4/pull/400
+
+
+_ interface zoom now conflicting with the Java 9+ defaults
+_   things look terrible (tiny fonts) on Windows, adjusting has weird effects
+_   resolve in DefaultPlatform and Toolkit, disable ui in PreferencesFrame
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
