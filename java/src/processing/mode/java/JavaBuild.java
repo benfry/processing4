@@ -973,13 +973,6 @@ public class JavaBuild {
       for (String opt : runOptions) {
         jre.addChild("opt").setContent(opt);
       }
-      /*
-      if (javafx != null) {
-        for (String opt : getArgsJavaFX("lib")) {
-          jre.addChild("opt").setContent(opt);
-        }
-      }
-      */
 
       config.save(configFile);
       project.save(buildFile);
