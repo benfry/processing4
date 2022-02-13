@@ -220,6 +220,9 @@ public class Platform {
     { "linux-aarch64", "Linux (Raspberry Pi 64-bit)" }
   });
 
+  /**
+   * List of variants that are supported by this release of the PDE.
+   */
   static public StringDict getSupportedVariants() {
     return supportedVariants;
   }

@@ -5,6 +5,7 @@ X remove anachronistic Preferences.save() that happens after opening a sketch
 X change cmd-click in window title to point to sketch folder
 X prevent NullPointerException on first use of Export to Application
 X   only showed up if no checkboxes were clicked
+X when doing Save As, don't included exported applications
 
 change detector
 X text in second line of custom dialogs was showing too large
@@ -27,7 +28,6 @@ X Interface problems when moving to a monitor with Windows scaling to 125%
 X   https://github.com/processing/processing4/issues/296
 
 
-_ when doing Save As, don't included exported applications
 
 _ interface zoom now conflicting with the Java 9+ defaults
 _   things look terrible (tiny fonts) on Windows, adjusting has weird effects
