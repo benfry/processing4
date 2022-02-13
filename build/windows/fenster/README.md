@@ -10,11 +10,9 @@ Generally speaking, this is a nightmare to deal with. The solution, starting in 
 With those values in hand, the sketch sets the `sun.java2d.uiScale` to either 1 or 2. Using fractional values produces [ugly results](https://github.com/processing/processing4/issues/378). Similarly, we do not set uiScale to 3 when scaling is at 300%. If you want larger sketches, use `scale()` in your code.
 
 
-# Approaches
-
 ## Using AWT
 
-The [Toolkit.getScreenResolution()](https://docs.oracle.com/javase/8/docs/api/java/awt/Toolkit.html#getScreenResolution--) method does what we want, but as soon as any AWT calls are made, it's no longer possible to set the property for `sun.java2d.uiScale` once AWT calls have been made.
+The [`Toolkit.getScreenResolution()`](https://docs.oracle.com/javase/8/docs/api/java/awt/Toolkit.html#getScreenResolution--) method does what we want, but it's not possible to set the property for sun.java2d.uiScale once AWT calls have been made.
 
 
 ## Use a helper application
@@ -26,13 +24,15 @@ This was done by first doing the JNI setup with MSYS2, and then adding a line to
 
 ## Use JNI
 
-* A long explanation of a lot of this that might be helpful for someone, though didn't use it
-    * <https://mariusbancila.ro/blog/2021/05/19/how-to-build-high-dpi-aware-native-desktop-applications/>
+This was the intended approach, however the result works 3 times in 5, has an immediate `segmentation fault` another 20% of the time, and the rest of the time just hangs completely until a force quit. If anyone can fix it, [let us know](https://github.com/processing/processing4/issues).
+
+* Used this really helpful tutorial for JNI
+    * <https://www.baeldung.com/jni>
 
 
 ### Building the JNI code
 
-* Install MSYS2 from <https://www.msys2.org/>.
+* Install MSYS2 from <https://www.msys2.org/> via <https://www.mingw-w64.org/downloads/#msys2>
 
 * Within an MSYS shell, run updates and install `gcc`
 
@@ -47,6 +47,16 @@ This was done by first doing the JNI setup with MSYS2, and then adding a line to
     * <https://stackoverflow.com/a/51775636>
     * other approaches for it <https://gist.github.com/ssfang/e52c00cd446081cd72a982a2dd8634d4#file-readme-md> (section under “jni with cygwin gcc”)
 
+* To cross compile on macOS, use:
+
+        brew install mingw-w64
+
+    This installs `g++` as `x86_64-w64-mingw32-g++`. 
+    
+    Did not use this approach because it would require Windows testing anyway, so it has limited utility.
+    
+    A link to the formula: <https://formulae.brew.sh/formula/mingw-w64>
+
 
 ### Windows Reference
 
@@ -58,6 +68,14 @@ Resources for the necessary API calls on Windows
     * <https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/dpi-related-apis-and-registry-settings>
 * Browse code samples for “dpi”
     * <https://docs.microsoft.com/en-us/samples/browse/?redirectedfrom=TechNet-Gallery&terms=dpi>
+
+The code boils down to:
+
+```c
+hdc = GetDC(NULL);
+horizontalDPI = GetDeviceCaps(hdc, LOGPIXELSX);
+verticalDPI = GetDeviceCaps(hdc, LOGPIXELSY);
+```
 
 
 ## Use JNA
@@ -121,3 +139,9 @@ It's also possible that calling `reg query` would kick off User Access Control h
 
 * DPI-related APIs and registry settings
     * <https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/dpi-related-apis-and-registry-settings?view=windows-11>
+
+
+## Other Resources
+
+* A longer explanation of some of the issues in play that might be helpful for someone, though I didn't use it:
+    * <https://mariusbancila.ro/blog/2021/05/19/how-to-build-high-dpi-aware-native-desktop-applications/>
