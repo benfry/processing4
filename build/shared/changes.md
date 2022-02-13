@@ -1,10 +1,75 @@
+# Processign 4.0 beta 6
+
+*Revision 1281 – 13 February 2022*
+
+Continuing the unintentional tradition of Processing releases on [Super Bowl Sundays](https://en.wikipedia.org/wiki/Super_Bowl_Sunday), here's beta 6.
+
+
+## Scaling and stretching on Windows
+
+* Windows scaling at 125% was stretching sketches to make them look crusty. [#378](https://github.com/processing/processing4/issues/378)
+
+* `pixelDensity()` not working in exported Windows applications. [#5414](https://github.com/processing/processing/issues/5414#issuecomment-841088518)
+
+* Implement sketch scaling in `PApplet` so that they take UI sizing into account. [#4897](https://github.com/processing/processing/issues/4897), [#4894](https://github.com/processing/processing/issues/4894)
+
+
+## Hell freezes over
+
+For those of you that use Git (or other version control) this release includes an experimental(!) feature that lets you separate the name of the sketch from the name of the main tab. This means that you can use "Save As…" and it won't rename the file for the main tab. *Or* you can rename a sketch folder and the sketch inside will still work properly.
+
+Uncheck the “Keep sketch name and main tab in sync” option in Preferences, and you're on your way. This is a *major* change to some of the oldest code in the PDE. If it has bugs, it may eat code. **Use with caution and report any issues you see immediately!**
+
+Again, please help test this feature and [file issues](https://github.com/processing/processing4/issues/new) if you run into trouble.
+
+
+## Bug fixes
+
+* Actually set the correct names for the `windowMove()` and `windowResize()` functions that were announced in beta 5. [#53](https://github.com/processing/processing4/issues/53)
+
+* PDF export not working with Processing 4.0 beta 5. [#395](https://github.com/processing/processing4/issues/395)
+
+* Lots of issues discovered when making the sketch naming change. For instance, it looks like it was sometimes necessary to twice select the Mode for Android sketches. Also sorts out issues with when `sketch.properties` was or was not written.
+
+* Fix `NullPointerException` on first use of Export to Application.
+
+* RGB image created with `createImage()` has alpha channel. [#388](https://github.com/processing/processing4/issues/388)
+
+* `CODED` is inconsistent between the default renderer and P2D/P3D. [#376](https://github.com/processing/processing4/issues/376)
+
+* Fix multi-line strings not terminating properly. [#398](https://github.com/processing/processing4/issues/398), [#400](https://github.com/processing/processing4/pull/400)
+
+* Clean up text sizes in the warning dialog box shown when sketch files change outside the Editor.
+
+* Clean up error text in the console that showed up when sketch files removed from a sketch while it was still open (after the user was asked about them).
+
+
+## Minor changes
+
+* Fix up “Display N does not exist, using the default display instead” message. If more than one display, shows list of available displays (size and index).
+
+* Move "Add Examples" to bottom of the Examples window
+
+* Change cmd-click in window title to point to sketch folder, not the main PDE.
+
+
+## Things you're less likely to notice
+
+* Updated to Java 17.0.2+8. We hope this may fix the `java.lang.NoSuchMethodError: accessibilityHitTest` error. [#408](https://github.com/processing/processing4/issues/408)
+
+* Removed anachronistic `Preferences.save()` that happened after opening a sketch.
+
+
+## Until further notice
+
+**The macOS-aarch64 (Apple Silicon) release is not yet complete. If you want to use P2D and P3D (OpenGL) on macOS, use the Intel (x86_64) build, which is the only one that will be linked from processing.org/download until this situation is resolved.** See [\#370](https://github.com/processing/processing4/issues/370) for status updates.
+
+
 # Processing 4.0 beta 5
 
 *Revision 1280 – 3 February 2022*
 
 Tomorrow morning is the first day of using Processing in class, so I thought I'd add some chaos to that by posting a release the night before. Having started the first day of class being locked out of the classroom, I'm just looking for ways to keep the students from getting too comfortable.
-
-**The macOS-aarch64 (Apple Silicon) release is not yet complete. If you want to use P2D and P3D (OpenGL) on macOS, use the Intel (x86_64) build, which is the only one that will be linked from processing.org/download until this situation is resolved.** See [\#370](https://github.com/processing/processing4/issues/370) for status updates.
 
 
 ## Things you might notice in this release
