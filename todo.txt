@@ -11,49 +11,51 @@ change detector
 X text in second line of custom dialogs was showing too large
 X   change detector had large text for the "either way" part of the message
 X remove nonsense removeCode() error text
+X errors when files removed during "git checkout <branch>"
+X   the tab has already disappeared, so complains it can't find the SketchCode
+X   cleaned this up a bit
 
 modes and properties
 X major rewrite of handleOpen() et al
 X fix bug when changing the Mode between Java and Android
 X   appears that it would have been broken for a long time
 X add option to disable keeping sketch folder and main tab in sync
+o sketch.properties not being written if initial mode is p5.js?
+X   lots of fixes for this, should be in better shape
+X when creating a sketch within non-Java mode, should write the settings file
+X   so that it re-loads in the proper environment
+X remove sketch.properties when moving back to the default?
+X   or can we not do this, because it's used to set the 'next' mode
+X   done in this release
 
 fixes
 X multi-line strings not terminating properly
 X   https://github.com/processing/processing4/issues/398
 X   https://github.com/processing/processing4/pull/400
 
-earlier
+cleaning/earlier
 X Interface problems when moving to a monitor with Windows scaling to 125%
 X   https://github.com/processing/processing4/issues/296
-
-
-
-_ interface zoom now conflicting with the Java 9+ defaults
-_   things look terrible (tiny fonts) on Windows, adjusting has weird effects
-_   resolve in DefaultPlatform and Toolkit, disable ui in PreferencesFrame
+X update JavaFX to use the supported platforms
+X run button not deactivating after window closes
+X   https://github.com/processing/processing/issues/5786
+X   confirmed to be working in beta 6
+o teacher wants user input on the console
+o   https://github.com/processing/processing/issues/5779
+X   wrote back to clarify it should be a Mode or Tool
+X clean out the repo
+X   https://github.com/processing/processing/issues/1898
+X   resolved by moving to the new repo
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-_ remove selectMode() code from Base... just too funky
-_   should just go back to the default Mode, or the first that matches
-_   not enough Modes to warrant all the weirdness that could happen
-_   and for Android (the only legit case), local.properties should be set
-_   or we have changeMode() to make it an easy switch
-
-_ errors when files removed during "git checkout <branch>"
-_   the tab has already disappeared, so complains it can't find the SketchCode
-
+housekeeping
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
 _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
-
-_ when lib downloads (batik) go dead, fallback to download.processing.org
-_   or for now, tell users how to do it manually
-_   batik and ant have both broken the build when old versions were removed
 
 
 contribs
@@ -161,16 +163,14 @@ _ command line complaints
 _   https://github.com/processing/processing/issues/6129
 _ editor breakpoints out of the .pde files
 _   really a drag for version control
-_   https://github.com/processing/processing/issues/5848
+_     https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
+_     https://github.com/processing/processing4/issues/330
 _ ffmpeg binaries for all our platforms
 _   also should probably download these on demand, when not in the PATH
-
-
-platforms
-_ https://github.com/processing/processing4/wiki/Supported-Platforms
-_ update JavaFX to use the supported platforms
 _ update Video library to use the new layout
+_ update the platforms page
+_   https://github.com/processing/processing4/wiki/Supported-Platforms
 
 
 decisions before final 4.0 release
@@ -214,17 +214,20 @@ _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
 
 
-would like to fix (after 4.0 final)
+would like to fix (but not necessary for 4.0 final)
+_ detach sketch name and folder name (use sketch.properties)
+_   better for git, etc
+_   single file thing is long gone
+_   introduce the idea of 'scraps' (ala gist) that are just single page blobs
+_ interface zoom now conflicting with the Java 9+ defaults
+_   things look terrible (tiny fonts) on Windows, adjusting has weird effects
+_   resolve in DefaultPlatform and Toolkit, disable ui in PreferencesFrame
 _ better command line support/basic language server support?
 _   make it easier to use with other editors
 _ language server refactoring
 _   https://github.com/processing/processing4/issues/117
 _   https://theia-ide.org/
 _   https://medium.com/ballerina-techblog/implementing-a-language-server-how-hard-can-it-be-part-2-fa65a741aa23
-_ detach sketch name and folder name (use sketch.properties)
-_   better for git, etc
-_   single file thing is long gone
-_   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 _ what to double-click when opening p5 projects (.pdp?)
 _   lack of a project file makes this a little bit of a headache
 _   dropping a sketch folder onto the PDE should also be implemented
@@ -232,10 +235,7 @@ _ startup is so incredibly slow
 X   the splash screen comes up fairly quickly, so what gives?
 _   lots of EDT thread stuff, particularly with loading contribs
 _   handleNew() taking 2-3s?
-
-
-probably after 4.0
-_ Implement support for Java “modules” and clean up JavaFX-specific workarounds
+_ implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
 _   modules and classpath ugh https://stackoverflow.com/a/46289257
 
@@ -272,8 +272,6 @@ _   https://github.com/processing/processing/pull/4040
 
 
 high
-_ run button not deactivating
-_   https://github.com/processing/processing/issues/5786
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
 X   https://github.com/processing/processing/pull/5642 (closed)
@@ -300,11 +298,11 @@ _   https://github.com/processing/processing/issues/4757
 
 
 modes
-_ sketch.properties not being written if initial mode is p5.js?
-_ when creating a sketch within non-Java mode, should write the settings file
-_   so that it re-loads in the proper environment
-_ remove sketch.properties when moving back to the default?
-_   or can we not do this, because it's used to set the 'next' mode
+_ remove selectMode() code from Base... just too funky
+_   should just go back to the default Mode, or the first that matches
+_   not enough Modes to warrant all the weirdness that could happen
+_   and for Android (the only legit case), local.properties should be set
+_   or we have changeMode() to make it an easy switch
 _ allow modes to specify their own base file name
 _   need to move "is this a sketch?" handling into Mode
 _ fix extension check for other modes
@@ -314,8 +312,6 @@ _   already reported?
 
 
 teaching
-_ teacher wants user input on the console
-_   https://github.com/processing/processing/issues/5779
 _ proxy trouble with p5? since adding the system proxy?
 _   https://github.com/processing/processing/pull/3251/files
 _   larger problem thread https://github.com/processing/processing/issues/3891
@@ -344,6 +340,8 @@ _   https://github.com/processing/processing/issues/4630
 
 gui
 _ mouse events (i.e. toggle breakpoint) seem to be firing twice
+_   wonder if this is mousePressed and mouseClicked?
+_   this may also be the cause of the double entries in files
 _ spacing of the updates number/circle in the lower right is off
 _   https://github.com/processing/processing/issues/4094
 _   https://github.com/processing/processing/pull/4097
@@ -395,14 +393,15 @@ _   https://github.com/processing/processing/issues/5023
 
 
 pde/build
+_ when lib downloads (batik) go dead, fallback to download.processing.org
+_   or for now, tell users how to do it manually
+_   batik and ant have both broken the build when old versions were removed
 _ break out Mode-specific options to their own panels in prefs
 _   Mode should just provide a panel for their prefs
 _ make the build fail if git pull on processing-docs fails
 _ remove "save before running" message
 _ save() and saveAs() need to be refactored
 _   https://github.com/processing/processing/issues/3843
-_ clean out the repo
-_   https://github.com/processing/processing/issues/1898
 _ search the source for 'applet' references (i.e. SVG docs)
 _ PreferencesFrame is a misnomer (not a frame itself)
 _   change to PreferencesDialog, and make it a dialog?
@@ -416,7 +415,6 @@ from the todo list
 _ reas: comments go nasty when auto-formatted
 _ reas: code coloring sometimes disappears
 _ me: undo not in the correct location
-_ drop XP support (but improve Windows 8 support? ouch)
 _ improve error message when creating a tab with the same name
 _   right now it's generic, based on "a file exists"
 _ don't allow users to create 'blah.java' when 'blah.pde' already in sketch
