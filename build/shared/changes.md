@@ -13,6 +13,8 @@ Continuing the unintentional tradition of Processing releases on [Super Bowl Sun
 
 * Implement sketch scaling in `PApplet` so that they take UI sizing into account. [#4897](https://github.com/processing/processing/issues/4897), [#4894](https://github.com/processing/processing/issues/4894)
 
+These changes also include some extra native code on Windows, which is described in detail [here](https://github.com/processing/processing4/tree/master/build/windows/fenster).
+
 
 ## Hell freezes over
 
