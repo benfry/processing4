@@ -10307,13 +10307,16 @@ public class PApplet implements PConstants {
       if (uiScale == 0) {
         int dpi = getWindowsDPI();
         if (dpi != 0) {
-          uiScale = constrain(dpi / 96, 1, 2);
+          //uiScale = constrain(dpi / 96, 1, 2);
+          // If larger than 150% set scale to 2. Using scale 1 at 175% feels
+          // reeaally small. 150% is more of a tossup; it could also use 2.
+          uiScale = (dpi > 144) ? 2 : 1;
         }
       }
       if (uiScale != 0) {
         System.setProperty("sun.java2d.uiScale", String.valueOf(uiScale));
-      } else {
-        System.err.println("Could not identify Windows DPI, not setting sun.java2d.uiScale");
+      //} else {
+        //System.err.println("Could not identify Windows DPI, not setting sun.java2d.uiScale");
       }
     }
 
