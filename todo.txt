@@ -22,6 +22,11 @@ X multi-line strings not terminating properly
 X   https://github.com/processing/processing4/issues/398
 X   https://github.com/processing/processing4/pull/400
 
+earlier
+X Interface problems when moving to a monitor with Windows scaling to 125%
+X   https://github.com/processing/processing4/issues/296
+
+
 _ when doing Save As, don't included exported applications
 
 _ interface zoom now conflicting with the Java 9+ defaults
@@ -97,6 +102,7 @@ _   this is also why Base.handleOpen() does statusError() calls during pdex load
 
 design
 _ console scroll bar colors
+_   https://github.com/processing/processing4/issues/265
 _ errors table theme
 _ contrib manager theme
 _   implement updateTheme()

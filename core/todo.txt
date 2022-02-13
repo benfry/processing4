@@ -6,6 +6,24 @@ X PDF export not working with Processing 4.0 beta 5
 X   https://github.com/processing/processing4/issues/395
 X RGB image created with “createImage()" has alpha channel
 X   https://github.com/processing/processing4/issues/388
+X finalize the solution for frame/surface methods
+X   https://github.com/processing/processing4/issues/53
+X   need to update windowX/Y on first open
+X   finalize naming/behavior
+_   make a note that these are actually working now
+
+pixel density, et al
+X Windows scaling at 125% is stretching things to look gross
+X   https://github.com/processing/processing4/issues/378
+X pixelDensity() not working in exported Windows applications?
+X   https://github.com/processing/processing/issues/5414#issuecomment-841088518
+X   should be fixed in 4.0 beta 3, and if not, beta 4
+o notes from jetbrains
+o   https://intellij-support.jetbrains.com/hc/en-us/articles/360007994999-HiDPI-configuration
+X implement sketch scaling into PApplet
+X   https://github.com/processing/processing/issues/4897
+X Sketches on Windows don't take UI sizing into account
+X   https://github.com/processing/processing/issues/4894
 
 contribs
 X CODED is inconsistent between the default renderer and P2D/P3D
@@ -15,26 +33,17 @@ earlier
 X Window freezes on resize in Windows 10 (Default & P2D renderers)
 X   https://github.com/processing/processing/issues/5579
 X   https://github.com/processing/processing4/pull/298
+X fullScreen() not working on a second display with P2D or P3D
+X   https://github.com/processing/processing4/issues/352
 
-
-_ Windows scaling at 125% is stretching things to look gross
-_   https://github.com/processing/processing4/issues/378
 
 _ rename jAppleMenuBar, make part of build process
 _   should just merge into ThinkDifferent
 _   move that to a 'native' or 'platform' package
 
 
-_ finalize the solution for frame/surface methods
-_   https://github.com/processing/processing4/issues/53
-_   need to update windowX/Y on first open
-_   finalize naming/behavior
 _ windowRatio()
 _   size() function that scales to screen, keeps aspect, re-scales mouse coords
-
-_ pixelDensity() not working in exported Windows applications?
-_   https://github.com/processing/processing/issues/5414#issuecomment-841088518
-_   should be fixed in 4.0 beta 3, and if not, beta 4
 
 _ CODED is inconsistent between the default renderer and P2D/P3D
 _   includes recommendations how to fix
@@ -58,9 +67,6 @@ _ how to handle fallback fonts
 _   could implement this for the default, but also, SansSerif sucks
 _   https://stackoverflow.com/a/9482676
 _   in addition, it would need to be implemented for textWidth()
-
-_ fullScreen() not working on a second display with P2D or P3D
-_   https://github.com/processing/processing4/issues/352
 
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
@@ -116,7 +122,7 @@ _   https://github.com/processing/processing4/issues/56
 
 
 high-ish
-_ Sort out EDT issues inside OpenGL
+_ Sort out display() being sometimes called from the EDT inside OpenGL
 _   https://github.com/processing/processing4/issues/385
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
@@ -142,12 +148,6 @@ _   y coords on macOS seem to be one pixel off
 
 
 retina/hi-dpi/sizing
-_ notes from jetbrains
-_   https://intellij-support.jetbrains.com/hc/en-us/articles/360007994999-HiDPI-configuration
-_ implement sketch scaling into PApplet
-_   https://github.com/processing/processing/issues/4897
-_ Sketches on Windows don't take UI sizing into account
-_   https://github.com/processing/processing/issues/4894
 _ Sketches on Linux don't take UI scaling into account
 _   https://github.com/processing/processing/issues/4895
 _   gohai says "xrdb -query" or "xdpyinfo" might work
