@@ -24,7 +24,6 @@ package processing.mode.java.runner;
 
 import processing.app.*;
 import processing.app.exec.StreamRedirectThread;
-import processing.app.ui.Toolkit;
 import processing.core.*;
 import processing.data.StringList;
 import processing.mode.java.JavaBuild;
@@ -33,6 +32,7 @@ import processing.mode.java.JavaEditor;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -490,8 +490,16 @@ public class Runner implements MessageConsumer {
       // removed for 3.0a6 because it would break the args passed to sketches.
       params.append(PApplet.ARGS_SKETCH_FOLDER + "=" + build.getSketchPath());
 
+      /*
       if (Toolkit.zoom(100) >= 200) { // Use 100 to bypass possible rounding in zoom()
         params.append(PApplet.ARGS_DENSITY + "=2");
+      }
+      */
+      if (Platform.isWindows()) {
+        // Pass the DPI setting to the app to avoid using the helper app.
+        int dpi = Toolkit.getDefaultToolkit().getScreenResolution();
+        int uiScale = PApplet.constrain(dpi / 96, 1, 2);
+        params.append(PApplet.ARGS_UI_SCALE + "=" + uiScale);
       }
 
       params.append(build.getSketchClassName());

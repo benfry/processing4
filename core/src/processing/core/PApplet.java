@@ -733,7 +733,7 @@ public class PApplet implements PConstants {
    */
   static public final String ARGS_SKETCH_FOLDER = "--sketch-path";
 
-  static public final String ARGS_DENSITY = "--density";
+  static public final String ARGS_UI_SCALE = "--ui-scale";
 
   /**
    * When run externally to a PdeEditor,
@@ -785,11 +785,9 @@ public class PApplet implements PConstants {
 
   boolean fullScreen;
   int display = -1;  // use default
-//  GraphicsDevice[] displayDevices;
   // Unlike the others above, needs to be public to support
   // the pixelWidth and pixelHeight fields.
   public int pixelDensity = 1;
-  int suggestedDensity = -1;
 
   boolean present;
 
@@ -10181,19 +10179,6 @@ public class PApplet implements PConstants {
       uncaughtThrowable = e;
     });
 
-    /*
-    if (platform == WINDOWS) {
-      // Set DPI scaling to either 1 or 2, but avoid fractional versions like
-      // 125% and 250% that make things look gross, or even 300% since that
-      // is not even a thing.
-      int dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();  // no longer possible to set prop after this line
-      System.out.println("dpi came back " + dpi);
-      int scaleFactor = constrain(dpi / 96, 1, 2);
-      System.out.println("setting scale factor to " + scaleFactor);
-      System.setProperty("sun.java2d.uiscale", String.valueOf(scaleFactor));
-    }
-    */
-
     // This doesn't work, need to mess with Info.plist instead
     /*
     // In an exported application, add the Contents/Java folder to the
@@ -10234,10 +10219,8 @@ public class PApplet implements PConstants {
     boolean hideStop = false;
 
     int displayNum = -1;  // use default
-//    boolean fullScreen = false;
     boolean present = false;
-//    boolean spanDisplays = false;
-    int density = -1;
+    float uiScale = 0;
 
     String param, value;
     String folder = calcSketchPath();
@@ -10286,22 +10269,16 @@ public class PApplet implements PConstants {
         } else if (param.equals(ARGS_LOCATION)) {
           location = parseInt(split(value, ','));
 
-        } else if (param.equals(ARGS_DENSITY)) {
-          density = parseInt(value, -1);
-          if (density == -1) {
-            System.err.println("Could not parse " + value + " for " + ARGS_DENSITY);
-          } else if (density != 1 && density != 2) {
-            density = -1;
-            System.err.println(ARGS_DENSITY + " should be 1 or 2");
+        } else if (param.equals(ARGS_UI_SCALE)) {
+          uiScale = parseFloat(value, 0);
+          if (uiScale == 0) {
+            System.err.println("Could not parse " + value + " for " + ARGS_UI_SCALE);
           }
         }
 
       } else {
         if (args[argIndex].equals(ARGS_PRESENT)) {
           present = true;
-
-//        } else if (args[argIndex].equals(ARGS_SPAN_DISPLAYS)) {
-//          spanDisplays = true;
 
         } else if (args[argIndex].equals(ARGS_HIDE_STOP)) {
           hideStop = true;
@@ -10315,6 +10292,29 @@ public class PApplet implements PConstants {
         }
       }
       argIndex++;
+    }
+
+    if (platform == WINDOWS) {
+      // Set DPI scaling to either 1 or 2, but avoid fractional
+      // settings such as 125% and 250% that make things look gross.
+      // Also applies to 300% since that is not even a thing.
+
+      // no longer possible to set prop after this line initializes AWT
+      //int dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+
+      // Attempt to get the resolution using a helper app. This code is
+      // fairly conservative: if there is trouble, we go with the default.
+      if (uiScale == 0) {
+        int dpi = getWindowsDPI();
+        if (dpi != 0) {
+          uiScale = constrain(dpi / 96, 1, 2);
+        }
+      }
+      if (uiScale != 0) {
+        System.setProperty("sun.java2d.uiScale", String.valueOf(uiScale));
+      } else {
+        System.err.println("Could not identify Windows DPI, not setting sun.java2d.uiScale");
+      }
     }
 
     if (!disableAWT) {
@@ -10356,10 +10356,6 @@ public class PApplet implements PConstants {
     // Set the suggested display that's coming from the command line
     // (and most likely, from the PDE's preference setting).
     sketch.display = displayNum;
-
-    // Set the suggested density that is coming from command line
-    // (most likely set from the PDE based on a system DPI scaling)
-    sketch.suggestedDensity = density;
 
     sketch.present = present;
 
@@ -10523,6 +10519,46 @@ public class PApplet implements PConstants {
       // on Linux and Windows, who are happy to make full screen windows.
       japplemenubar.JAppleMenuBar.hide();
     }
+  }
+
+
+  /**
+   * Find the location of fenster.exe by walking through java.library.path.
+   * (It will be on the path because it's part of core/library/windows-amd64)
+   */
+  static private String findFenster() {
+    String libraryPath = System.getProperty("java.library.path");
+    // Should not be null, but cannot assume
+    if (libraryPath != null) {
+      String[] folders = split(libraryPath, ';');
+      // Usually, the most relevant paths will be at the front of the list,
+      // so hopefully this will not walk several entries.
+      for (String folder : folders) {
+        File file = new File(folder, "fenster.exe");
+        if (file.exists()) {
+          return file.getAbsolutePath();
+        }
+      }
+    }
+    return null;
+  }
+
+
+  /**
+   * Get the display scaling for Windows by calling out to a helper app.
+   * https://github.com/processing/processing4/tree/master/build/windows/fenster
+   */
+  static private int getWindowsDPI() {
+    String fensterPath = findFenster();
+    if (fensterPath != null) {
+      StringList stdout = new StringList();
+      StringList stderr = new StringList();
+      int result = exec(stdout, stderr, fensterPath);
+      if (result == 0) {
+        return parseInt(stdout.join(""), 0);
+      }
+    }
+    return 0;
   }
 
 
