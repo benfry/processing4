@@ -81,15 +81,10 @@ _   https://github.com/processing/processing4/pull/97
 _   https://github.com/processing/processing4/pull/98
 
 
-noted by Casey
-_ Sketches on Windows/Linux don't take UI sizing into account
-_   https://github.com/processing/processing/issues/4894
-_   https://github.com/processing/processing/issues/4895
-_   https://github.com/processing/processing/issues/4897
-
-
 api changes
 _ add callbacks to requestImage() and others
+_   these would be a lot easier with newer Java syntax
+_   (and also familiar to folks who have spent time with JS)
 _ new FloatList(float...)
 
 
@@ -132,9 +127,6 @@ X   https://github.com/processing/processing/pull/5202
 _   need to make this work behind the scenes instead
 _   create icon.png or have an 'icons' folder with multiple sizes
 _   don't override the window icon w/ p5 logo if already set
-_ NullPointerException at java.awt.Window.init(Window.java:497) when using Airplay
-_   https://github.com/processing/processing/issues/5620
-_   try to catch the NPE and warn the user about what's happening
 _ requestSize() and xxxxTitle() (to diminish use of 'surface')
 _   mostly held up by cross-renderer inconsistency with these
 _ textAlign(CENTER) and pixelDensity(2) aligning incorrectly with Java2D
@@ -149,11 +141,18 @@ _   y coords on macOS seem to be one pixel off
 
 retina/hi-dpi/sizing
 _ Sketches on Linux don't take UI scaling into account
-_   https://github.com/processing/processing/issues/4895
-_   gohai says "xrdb -query" or "xdpyinfo" might work
+_   gohai mentioned "xrdb -query" or "xdpyinfo" might work
+_   https://github.com/processing/processing4/issues/407
+_   formerly at
+_     https://github.com/processing/processing/issues/4895
+_   native code for checking the system dpi
+_     https://github.com/processing/processing/issues/5758
 _ should fullScreen() set width and height to displayWidth/Height
 _   or is that being set/unset used for any state info?
 _ present window draws in stages (OS X)
+_ NPE at java.awt.Window.init(Window.java:497) when using Airplay
+_   https://github.com/processing/processing/issues/5620
+_   try to catch the NPE and warn the user about what's happening
 _ crash on startup when "Mirror Displays" selected (cantfix?)
 _   suspect that this is a specific chipset since Oracle didn't reproduce
 _   AMD Radeon HD 6770M was in the Oracle bug report
