@@ -5,7 +5,7 @@ This is code to detect the current settings for Windows scaling (Display Setting
 Generally speaking, this is a nightmare to deal with. The solution, starting in Processing 4.0 beta 6 has two parts:
 
 * When running from the PDE, pass the `--ui-scale` parameter to `PApplet` (see the code for `processing.mode.java.Runner`) based on what comes back from `Toolkit.getScreenResolution()`.
-* When running independently, check for that parameter, and if it's not set, launch a tiny helper app that just returns the DPI value. 
+* When running independently, check for that parameter, and if it's not set, launch a tiny helper app that just returns the DPI value.
 
 With those values in hand, the sketch sets the `sun.java2d.uiScale` to either 1 or 2. Using fractional values produces [ugly results](https://github.com/processing/processing4/issues/378). Similarly, we do not set uiScale to 3 when scaling is at 300%. If you want larger sketches, use `scale()` in your code.
 
@@ -51,10 +51,10 @@ This was the intended approach, however the result works 3 times in 5, has an im
 
         brew install mingw-w64
 
-    This installs `g++` as `x86_64-w64-mingw32-g++`. 
-    
+    This installs `g++` as `x86_64-w64-mingw32-g++`.
+
     Did not use this approach because it would require Windows testing anyway, so it has limited utility.
-    
+
     A link to the formula: <https://formulae.brew.sh/formula/mingw-w64>
 
 
@@ -80,7 +80,7 @@ verticalDPI = GetDeviceCaps(hdc, LOGPIXELSY);
 
 ## Use JNA
 
-This is a fairly clean approach with a couple major downsides. One is adding 3 MB of JARs to each application. That is larger than all of `processing.core`, but you could make an argument that core is already large because of JOGL. 
+This is a fairly clean approach with a couple major downsides. One is adding 3 MB of JARs to each application. That is larger than all of `processing.core`, but you could make an argument that core is already large because of JOGL.
 
 The more serious problems are:
 
@@ -111,15 +111,17 @@ println("scaling: " + x / 96f);
 
 Constants were pulled from <https://github.com/tpn/winsdk-7/blob/master/v7.1A/Include/WinGDI.h>
 
-    #define LOGPIXELSX    88    /* Logical pixels/inch in X                 */
-    #define LOGPIXELSY    90    /* Logical pixels/inch in Y                 */
+```c
+#define LOGPIXELSX    88    /* Logical pixels/inch in X                 */
+#define LOGPIXELSY    90    /* Logical pixels/inch in Y                 */
+```
 
 Based in part on [this gist](https://gist.github.com/tresf/00a8ed7c9860e3bd73cebf764a49789f), but rewritten to use the default device rather than first creating a device.
 
 
 ## Use a Registry Key
 
-This would be a simple method to make a single command line call to `reg query` or similar, but was unable to find a suitable property that was reliable enough. 
+This would be a simple method to make a single command line call to `reg query` or similar, but was unable to find a suitable property that was reliable enough.
 
 It's also possible that calling `reg query` would kick off User Access Control headaches, but that was not confirmed.
 
@@ -139,6 +141,61 @@ It's also possible that calling `reg query` would kick off User Access Control h
 
 * DPI-related APIs and registry settings
     * <https://docs.microsoft.com/en-us/windows-hardware/manufacture/desktop/dpi-related-apis-and-registry-settings?view=windows-11>
+
+* keys from `HKEY_CURRENT_USER\Control Panel\Desktop`
+
+        ActiveWndTrackTimeout    REG_DWORD    0x0
+        BlockSendInputResets    REG_SZ    0
+        CaretTimeout    REG_DWORD    0x1388
+        CaretWidth    REG_DWORD    0x1
+        ClickLockTime    REG_DWORD    0x4b0
+        CoolSwitchColumns    REG_SZ    7
+        CoolSwitchRows    REG_SZ    3
+        CursorBlinkRate    REG_SZ    530
+        DockMoving    REG_SZ    1
+        DragFromMaximize    REG_SZ    1
+        DragFullWindows    REG_SZ    1
+        DragHeight    REG_SZ    4
+        DragWidth    REG_SZ    4
+        FocusBorderHeight    REG_DWORD    0x1
+        FocusBorderWidth    REG_DWORD    0x1
+        FontSmoothing    REG_SZ    2
+        FontSmoothingGamma    REG_DWORD    0x0
+        FontSmoothingOrientation    REG_DWORD    0x1
+        FontSmoothingType    REG_DWORD    0x2
+        ForegroundFlashCount    REG_DWORD    0x7
+        ForegroundLockTimeout    REG_DWORD    0x30d40
+        LeftOverlapChars    REG_SZ    3
+        MenuShowDelay    REG_SZ    400
+        MouseWheelRouting    REG_DWORD    0x2
+        PaintDesktopVersion    REG_DWORD    0x0
+        Pattern    REG_DWORD    0x0
+        RightOverlapChars    REG_SZ    3
+        ScreenSaveActive    REG_SZ    1
+        SnapSizing    REG_SZ    1
+        TileWallpaper    REG_SZ    0
+        WallpaperOriginX    REG_DWORD    0x0
+        WallpaperOriginY    REG_DWORD    0x0
+        WallpaperStyle    REG_SZ    10
+        WheelScrollChars    REG_SZ    3
+        WheelScrollLines    REG_SZ    3
+        WindowArrangementActive    REG_SZ    1
+        WallPaper    REG_SZ
+        Win8DpiScaling    REG_DWORD    0x0
+        DpiScalingVer    REG_DWORD    0x1000
+        UserPreferencesMask    REG_BINARY    9E1E078012000000
+        MaxVirtualDesktopDimension    REG_DWORD    0xa00
+        MaxMonitorDimension    REG_DWORD    0xa00
+        TranscodedImageCount    REG_DWORD    0x1
+        LastUpdated    REG_DWORD    0xffffffff
+        TranscodedImageCache    REG_BINARY    7AC301000A...0000000000 (800 bytes)
+        LogPixels    REG_DWORD    0xc0
+
+        HKEY_CURRENT_USER\Control Panel\Desktop\Colors
+        HKEY_CURRENT_USER\Control Panel\Desktop\LanguageConfiguration
+        HKEY_CURRENT_USER\Control Panel\Desktop\PerMonitorSettings
+        HKEY_CURRENT_USER\Control Panel\Desktop\WindowMetrics
+        HKEY_CURRENT_USER\Control Panel\Desktop\MuiCached
 
 
 ## Other Resources
