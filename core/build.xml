@@ -161,7 +161,11 @@
 
       <!-- Copy the jnilib to the bin folder so it's included. -->
       <copy todir="bin/japplemenubar"
-  	  file="src/japplemenubar/libjAppleMenuBar.jnilib" />
+  	        file="src/japplemenubar/libjAppleMenuBar.jnilib" />
+
+      <!-- Copy the helper code for checking Windows resolution. -->
+      <copy todir="library/windows-amd64"
+            file="../build/windows/fenster/fenster.exe" />
 
       <!-- Copy shaders to bin. (Eclipse does this automatically.) -->
       <copy todir="bin">
@@ -200,7 +204,7 @@
   </target>
 
   <target name="build" depends="download-jogl, methods-build, compile"
-          description="Build core library">
+          description="Build core library jar">
     <jar basedir="bin" destfile="library/core.jar" />
   </target>
 
