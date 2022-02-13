@@ -22,6 +22,7 @@ X multi-line strings not terminating properly
 X   https://github.com/processing/processing4/issues/398
 X   https://github.com/processing/processing4/pull/400
 
+_ when doing Save As, don't included exported applications
 
 _ interface zoom now conflicting with the Java 9+ defaults
 _   things look terrible (tiny fonts) on Windows, adjusting has weird effects
