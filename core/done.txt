@@ -1,3 +1,42 @@
+1281 (4.0b6)
+X fix up "Display N does not exist, using the default display instead"
+X   if more than one display, shows list of available displays (size and index)
+X properly set names for windowMove() and windowResize()
+X PDF export not working with Processing 4.0 beta 5
+X   https://github.com/processing/processing4/issues/395
+X RGB image created with “createImage()" has alpha channel
+X   https://github.com/processing/processing4/issues/388
+X finalize the solution for frame/surface methods
+X   https://github.com/processing/processing4/issues/53
+X   need to update windowX/Y on first open
+X   finalize naming/behavior
+X   make a note that these are actually working now
+
+pixel density, et al
+X Windows scaling at 125% is stretching things to look gross
+X   https://github.com/processing/processing4/issues/378
+X pixelDensity() not working in exported Windows applications?
+X   https://github.com/processing/processing/issues/5414#issuecomment-841088518
+X   should be fixed in 4.0 beta 3, and if not, beta 4
+o notes from jetbrains
+o   https://intellij-support.jetbrains.com/hc/en-us/articles/360007994999-HiDPI-configuration
+X implement sketch scaling into PApplet
+X   https://github.com/processing/processing/issues/4897
+X Sketches on Windows don't take UI sizing into account
+X   https://github.com/processing/processing/issues/4894
+
+contribs
+X CODED is inconsistent between the default renderer and P2D/P3D
+X   https://github.com/processing/processing4/issues/376
+
+earlier
+X Window freezes on resize in Windows 10 (Default & P2D renderers)
+X   https://github.com/processing/processing/issues/5579
+X   https://github.com/processing/processing4/pull/298
+X fullScreen() not working on a second display with P2D or P3D
+X   https://github.com/processing/processing4/issues/352
+
+
 1280 (4.0b5)
 X replace japplemenubar with something that's more likely to work in the future
 X   https://github.com/processing/processing4/issues/221
