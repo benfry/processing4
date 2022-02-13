@@ -10,7 +10,7 @@ X finalize the solution for frame/surface methods
 X   https://github.com/processing/processing4/issues/53
 X   need to update windowX/Y on first open
 X   finalize naming/behavior
-_   make a note that these are actually working now
+X   make a note that these are actually working now
 
 pixel density, et al
 X Windows scaling at 125% is stretching things to look gross
