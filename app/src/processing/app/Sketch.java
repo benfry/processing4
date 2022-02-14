@@ -3,6 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-11 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -1781,11 +1782,14 @@ public class Sketch {
   }
 
 
-  /*
+  /**
+   * Tried to remove in beta 6, but in use by Python Mode.
+   * When it's removed there, let me know and I'll remove it here.
+   */
+  @Deprecated
   public String getMainProgram() {
     return getCode(0).getProgram();
   }
-  */
 
 
   public void setUntitled(boolean untitled) {

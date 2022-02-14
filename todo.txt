@@ -1,4 +1,6 @@
 1282 (4.0b7)
+X Bring back getMainProgram() for Python Mode
+X   https://github.com/processing/processing4/issues/409
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
