@@ -1,6 +1,21 @@
 1282 (4.0b7)
 
 
+cleaning
+o crash on startup when "Mirror Displays" selected (cantfix?)
+o   suspect that this is a specific chipset since Oracle didn't reproduce
+o   AMD Radeon HD 6770M was in the Oracle bug report
+o   https://github.com/processing/processing/issues/2186
+o   https://bugs.openjdk.java.net/browse/JDK-8027391
+o   test with JG's 13" retina laptop
+X   closed back in 2014
+o NPE at java.awt.Window.init(Window.java:497) when using Airplay
+X   https://github.com/processing/processing/issues/5620
+o   try to catch the NPE and warn the user about what's happening
+X   confirmed working on Mojave (fusion), Catalina (hamilton), Monterey (bell)
+X   even with Processing 3.5.4
+
+
 _ rename jAppleMenuBar, make part of build process
 _   should just merge into ThinkDifferent
 _   move that to a 'native' or 'platform' package
@@ -8,10 +23,6 @@ _   move that to a 'native' or 'platform' package
 
 _ windowRatio()
 _   size() function that scales to screen, keeps aspect, re-scales mouse coords
-
-_ CODED is inconsistent between the default renderer and P2D/P3D
-_   includes recommendations how to fix
-_   https://github.com/processing/processing4/issues/376
 
 
 macos-aarch64
@@ -114,15 +125,6 @@ _     https://github.com/processing/processing/issues/5758
 _ should fullScreen() set width and height to displayWidth/Height
 _   or is that being set/unset used for any state info?
 _ present window draws in stages (OS X)
-_ NPE at java.awt.Window.init(Window.java:497) when using Airplay
-_   https://github.com/processing/processing/issues/5620
-_   try to catch the NPE and warn the user about what's happening
-_ crash on startup when "Mirror Displays" selected (cantfix?)
-_   suspect that this is a specific chipset since Oracle didn't reproduce
-_   AMD Radeon HD 6770M was in the Oracle bug report
-_   https://github.com/processing/processing/issues/2186
-_   https://bugs.openjdk.java.net/browse/JDK-8027391
-_   test with JG's 13" retina laptop
 
 
 possible additions for 4.x?
