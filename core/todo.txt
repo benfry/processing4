@@ -4,6 +4,10 @@ X   should just merge into ThinkDifferent
 o   move that to a 'native' or 'platform' package
 X   stripped down to just show/hide methods (although show is never used)
 X   much cleaner setup in general, and all seems to be working
+X windowRatio()
+X   size() function that scales to screen, keeps aspect, re-scales mouse coords
+X   rmouseX, rmouseY, rwidth, rheight
+X   also ratioLeft, ratioTop, ratioScale
 
 
 cleaning
@@ -19,11 +23,6 @@ X   https://github.com/processing/processing/issues/5620
 o   try to catch the NPE and warn the user about what's happening
 X   confirmed working on Mojave (fusion), Catalina (hamilton), Monterey (bell)
 X   even with Processing 3.5.4
-
-
-
-_ windowRatio()
-_   size() function that scales to screen, keeps aspect, re-scales mouse coords
 
 
 macos-aarch64

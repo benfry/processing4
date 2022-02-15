@@ -295,6 +295,32 @@ public class PApplet implements PConstants {
    */
   public int pixelHeight;
 
+  // Making this private until we have a compelling reason to make it public.
+  // Seems problematic/weird for it to be possible to set windowRatio = false
+  // relative to how other API works. And not sure what the use case would be.
+  private boolean windowRatio;
+
+  /**
+   * Version of mouseX/mouseY to use with windowRatio().
+   */
+  public int rmouseX;
+  public int rmouseY;
+
+  /**
+   * Version of width/height to use with windowRatio().
+   */
+  private int rwidth;
+  private int rheight;
+
+  /** Offset from left when windowRatio is in use. */
+  public float ratioLeft;
+
+  /** Offset from the top when windowRatio is in use. */
+  public float ratioTop;
+
+  /** Amount of scaling to be applied for the window ratio. */
+  public float ratioScale;
+
   /**
    * Keeps track of ENABLE_KEY_REPEAT hint
    */
@@ -2099,6 +2125,17 @@ public class PApplet implements PConstants {
       recorder.beginDraw();
     }
 
+    // apply window ratio if set
+    if (windowRatio) {
+      float aspectH = width / (float) rwidth;
+      float aspectV = height / (float) rheight;
+      ratioScale = min(aspectH, aspectV);
+      ratioTop = (height - ratioScale* rheight) / 2;
+      ratioLeft = (width - ratioScale* rwidth) / 2;
+      translate(ratioLeft, ratioTop);
+      scale(ratioScale);
+    }
+
     long now = System.nanoTime();
 
     if (frameCount == 0) {
@@ -2349,6 +2386,10 @@ public class PApplet implements PConstants {
         action == MouseEvent.PRESS) {
       pmouseX = emouseX;
       pmouseY = emouseY;
+      if (windowRatio) {
+        rmouseX = floor((event.getX() - ratioLeft) / ratioScale);
+        rmouseY = floor((event.getY() - ratioTop) / ratioScale);
+      }
       mouseX = event.getX();
       mouseY = event.getY();
     }
@@ -10044,10 +10085,18 @@ public class PApplet implements PConstants {
   }
 
 
-  /*
+  /**
+   * Scale the sketch as if it fits this specific width and height.
+   * This will also scale the mouseX and mouseY variables (as well as
+   * pmouseX and pmouseY). Note that it will not have an effect on
+   * MouseEvent objects (i.e. event.getX() and event.getY()) because
+   * their exact behavior may interact strangely with other libraries.
+   */
   public void windowRatio(int wide, int high) {
+    rwidth = wide;
+    rheight = high;
+    windowRatio = true;
   }
-  */
 
 
   //////////////////////////////////////////////////////////////
