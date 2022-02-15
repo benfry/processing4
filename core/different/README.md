@@ -1,4 +1,6 @@
-Native code to go with the `ThinkDifferent` class which handles macOS-specific API calls.
+# Think Different
+
+Native code to go with the `ThinkDifferent` class that handles macOS-specific API calls.
 
 Currently only handles hiding the menu bar, and the basic structure of the native libraries evolved from the [jAppleMenuBar project](https://github.com/kritzikratzi/jAppleMenuBar) by Hansi Raber and was rewritten for Processing 4 by Ben Fry.
 
