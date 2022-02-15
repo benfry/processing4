@@ -3046,7 +3046,7 @@ public class PShape implements PConstants {
   /**
    * Return true if this x, y coordinate is part of this shape. Only works
    * with PATH shapes or GROUP shapes that contain other GROUPs or PATHs.
-   * This method is not imperfect and doesn't account for all cases
+   * This method is not perfect and doesn't account for all cases
    * (not all complex shapes: concave shapes or holes may have issues).
    */
   public boolean contains(float x, float y) {
@@ -3326,6 +3326,10 @@ public class PShape implements PConstants {
 
 
   //
+  
+  public PMatrix getMatrix() {
+	  return matrix;
+  }
 
 /**
    *
