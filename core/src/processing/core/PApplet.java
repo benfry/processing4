@@ -309,8 +309,8 @@ public class PApplet implements PConstants {
   /**
    * Version of width/height to use with windowRatio().
    */
-  private int rwidth;
-  private int rheight;
+  public int rwidth;
+  public int rheight;
 
   /** Offset from left when windowRatio is in use. */
   public float ratioLeft;
