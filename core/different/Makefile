@@ -14,4 +14,4 @@ arm_lib: different.m
 
 # 'strip' throws errors, but compresses down to 2 Kb, so no big deal
 universal_lib: x64_lib arm_lib
-	lipo -create -output ../../../core/src/processing/core/libDifferent.jnilib libDifferent_x86_64 libDifferent_aarch64
+	lipo -create -output ../src/processing/core/libDifferent.jnilib libDifferent_x86_64 libDifferent_aarch64
