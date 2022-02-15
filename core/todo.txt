@@ -1,4 +1,9 @@
 1282 (4.0b7)
+X rename jAppleMenuBar, make part of build process
+X   should just merge into ThinkDifferent
+o   move that to a 'native' or 'platform' package
+X   stripped down to just show/hide methods (although show is never used)
+X   much cleaner setup in general, and all seems to be working
 
 
 cleaning
@@ -15,10 +20,6 @@ o   try to catch the NPE and warn the user about what's happening
 X   confirmed working on Mojave (fusion), Catalina (hamilton), Monterey (bell)
 X   even with Processing 3.5.4
 
-
-_ rename jAppleMenuBar, make part of build process
-_   should just merge into ThinkDifferent
-_   move that to a 'native' or 'platform' package
 
 
 _ windowRatio()

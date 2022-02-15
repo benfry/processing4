@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-20 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -10517,10 +10517,16 @@ public class PApplet implements PConstants {
 
   /** Convenience method, should only be called by PSurface subclasses. */
   static public void hideMenuBar() {
-    if (PApplet.platform == PConstants.MACOS) {
-      // Call some native code to remove the menu bar on OS X. Not necessary
+    if (platform == MACOS) {
+      // Call some native code to remove the menu bar on macOS. Not necessary
       // on Linux and Windows, who are happy to make full screen windows.
-      japplemenubar.JAppleMenuBar.hide();
+      try {
+        final String td = "processing.core.ThinkDifferent";
+        final Class<?> thinkDifferent = PApplet.class.getClassLoader().loadClass(td);
+        thinkDifferent.getMethod("hideMenuBar").invoke(null);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
   }
 

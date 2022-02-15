@@ -25,6 +25,9 @@ package processing.core;
 import java.awt.Desktop;
 import java.awt.Image;
 import java.awt.Taskbar;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 
 /**
@@ -32,8 +35,8 @@ import java.awt.Taskbar;
  *
  * We have to register a quit handler to safely shut down the sketch,
  * otherwise OS X will just kill the sketch when a user hits Cmd-Q.
- * In addition, we have a method to set the dock icon image so we look more
- * like a native application.
+ * In addition, we have a method to set the dock icon image,
+ * so we look more like a native application.
  *
  * This is a stripped-down version of what's in processing.app.platform to fix
  * <a href="https://github.com/processing/processing/issues/3301">3301</a>.
@@ -111,5 +114,41 @@ public class ThinkDifferent {
       desktop = Desktop.getDesktop();
     }
     return desktop;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static native public void hideMenuBar();
+
+  static native public void showMenuBar();
+
+  static {
+    final String NATIVE_FILENAME = "libDifferent.jnilib";
+    try {
+      File temp = File.createTempFile("processing", "different");
+      if (temp.delete() && temp.mkdirs()) {
+        temp.deleteOnExit();
+
+        File jnilibFile = new File(temp, NATIVE_FILENAME);
+        InputStream input = ThinkDifferent.class.getResourceAsStream(NATIVE_FILENAME);
+        if (input != null) {
+          if (PApplet.saveStream(jnilibFile, input)) {
+            System.load(jnilibFile.getAbsolutePath());
+
+          } else {
+            System.err.println("Full screen disabled: could not save library");
+          }
+        } else {
+          System.err.println("Full screen disabled: could not load " + NATIVE_FILENAME + " from core.jar");
+        }
+      } else {
+        System.err.println("Full screen disabled: could not create temporary folder");
+      }
+    } catch (IOException e) {
+      System.err.println("Full screen disabled");
+      e.printStackTrace();
+    }
   }
 }

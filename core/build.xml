@@ -160,8 +160,8 @@
       </javac>
 
       <!-- Copy the jnilib to the bin folder so it's included. -->
-      <copy todir="bin/japplemenubar"
-  	        file="src/japplemenubar/libjAppleMenuBar.jnilib" />
+      <copy todir="bin/processing/core"
+            file="src/processing/core/libDifferent.jnilib" />
 
       <!-- Copy the helper code for checking Windows resolution. -->
       <copy todir="library/windows-amd64"

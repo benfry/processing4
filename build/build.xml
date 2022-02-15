@@ -1513,9 +1513,6 @@
 
       <packageset dir="../core/src">
         <include name="processing/**" />
-        <!--
-        <include name="japplemenubar/**" />
-        -->
       </packageset>
     </javadoc>
 
