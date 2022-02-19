@@ -290,6 +290,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         allEdits,
         sketchWidth,
         sketchHeight,
+        sketchRenderer,
         issues
     );
   }

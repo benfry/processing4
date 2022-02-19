@@ -42,6 +42,7 @@ public class PreprocessorResult {
   private final List<PdePreprocessIssue> preprocessIssues;
   private final String sketchWidth;
   private final String sketchHeight;
+  private final String sketchRenderer;
 
   /**
    * Create a new PreprocessorResult indicating that there were issues in preprocessing.
@@ -67,10 +68,11 @@ public class PreprocessorResult {
    * @param newEdits The edits made during preprocessing.
    * @param newSketchWidth The width of the sketch in pixels or special value like displayWidth;
    * @param newSketchHeight The height of the sketch in pixels or special value like displayWidth;
+   * @param newSketchRenderer The renderer of the sketch.
    */
   public PreprocessorResult(PdePreprocessor.Mode newProgramType, int newHeaderOffset,
         String newClassName, List<ImportStatement> newImportStatements,
-        List<TextTransform.Edit> newEdits, String newSketchWidth, String newSketchHeight) {
+        List<TextTransform.Edit> newEdits, String newSketchWidth, String newSketchHeight, String newSketchRenderer) {
 
     if (newClassName == null) {
       throw new RuntimeException("Could not find main class");
@@ -85,6 +87,7 @@ public class PreprocessorResult {
 
     sketchWidth = newSketchWidth;
     sketchHeight = newSketchHeight;
+    sketchRenderer = newSketchRenderer;
   }
 
   /**
@@ -98,10 +101,11 @@ public class PreprocessorResult {
    * @param newEdits The edits made during preprocessing.
    * @param newSketchWidth The width of the sketch in pixels or special value like displayWidth;
    * @param newSketchHeight The height of the sketch in pixels or special value like displayWidth;
+   * @param newSketchRenderer The renderer of the sketch.
    */
   public PreprocessorResult(PdePreprocessor.Mode newProgramType, int newHeaderOffset,
         String newClassName, List<ImportStatement> newImportStatements,
-        List<TextTransform.Edit> newEdits, String newSketchWidth, String newSketchHeight,
+        List<TextTransform.Edit> newEdits, String newSketchWidth, String newSketchHeight, String newSketchRenderer, 
         List<PdePreprocessIssue> newPreprocessIssues) {
 
     if (newClassName == null) {
@@ -117,6 +121,7 @@ public class PreprocessorResult {
 
     sketchWidth = newSketchWidth;
     sketchHeight = newSketchHeight;
+    sketchRenderer = newSketchRenderer;
   }
 
   /**
@@ -134,6 +139,7 @@ public class PreprocessorResult {
 
     sketchWidth = null;
     sketchHeight = null;
+    sketchRenderer = null;
   }
 
   /**
@@ -210,4 +216,14 @@ public class PreprocessorResult {
   public String getSketchHeight() {
     return sketchHeight;
   }
+
+  /**
+   * Get the user provided renderer of this sketch.
+   *
+   * @return The renderer of the sketch or null if none
+   *    given.
+   */
+  public String getSketchRenderer() {
+    return sketchRenderer;
+  }  
 }
