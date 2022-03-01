@@ -1,7 +1,7 @@
 package processing.core.nurbs;
 
 class Polynomial {
-    private float[] coefficients;
+    private final float[] coefficients;
 
     /**
      * Creates a new polynomial with terms formed like: coefficients[i] x^i. Removes trailing zeroes from the coefficients array if necessary.
@@ -9,17 +9,19 @@ class Polynomial {
      * @param coefficients The coefficients.
      */
     public Polynomial(float[] coefficients) {
-        this.coefficients = coefficients;
-        for (int i = coefficients.length - 1; i >= 0; i--) {
+        int i = coefficients.length - 1;
+        while (i >= 0) {
             if (coefficients[i] == 0) {
+                i--;
                 continue;
             }
-            if (i == coefficients.length - 1) {
-                break;
-            }
+            break;
+        }
+        if (i < coefficients.length - 1) {
             this.coefficients = new float[i + 1];
             System.arraycopy(coefficients, 0, this.coefficients, 0, this.coefficients.length);
-            break;
+        } else {
+            this.coefficients = coefficients;
         }
     }
 
@@ -86,8 +88,14 @@ class Polynomial {
 
     @Override
     public String toString() {
+        if (coefficients.length == 0) {
+            return "0";
+        }
         StringBuilder result = new StringBuilder();
         for (int i = coefficients.length - 1; i >= 0; i--) {
+            if (coefficients[i] == 0) {
+                continue;
+            }
             if (i < coefficients.length - 1) {
                 result.append(" + ");
             }

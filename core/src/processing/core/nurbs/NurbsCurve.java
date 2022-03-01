@@ -66,12 +66,12 @@ public class NurbsCurve extends Nurbs {
             for (float t = knotVector[k]; t < knotVector[k + 1]; t += stepSize) {
                 float[] basisWeights = new float[points.length];
                 float basisWeightsSum = 0;
-                for (int i = Math.max(k - degree, 0); i <= k; i++) {
-                    basisWeightsSum += basisWeights[i] = basisFunctions[k][i].evaluate(t) * weights[i];
+                for (int i = Math.max(degree - k, 0); i <= degree; i++) {
+                    basisWeightsSum += basisWeights[i] = basisFunctions[k][i].evaluate(t) * weights[i + k - degree];
                 }
                 PVector result = new PVector();
-                for (int i = Math.max(k - degree, 0); i <= k; i++) {
-                    result = PVector.add(result, PVector.mult(points[i], basisWeights[i] / basisWeightsSum));
+                for (int i = Math.max(degree - k, 0); i <= degree; i++) {
+                    result = PVector.add(result, PVector.mult(points[i + k - degree], basisWeights[i] / basisWeightsSum));
                 }
                 g.vertex(result.array());
             }

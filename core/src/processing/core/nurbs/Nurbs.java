@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
 
 public class Nurbs {
     protected static Polynomial[][] calcBasisFunctions(int degree, float[] knotVector) {
-        Polynomial[][][] functions = new Polynomial[degree + 1][knotVector.length - 1][knotVector.length];
+        Polynomial[][][] functions = new Polynomial[degree + 1][knotVector.length - 1][degree + 1];
         Polynomial zero = new Polynomial(new float[0]);
         Polynomial one = new Polynomial(new float[]{1});
 
@@ -18,20 +18,22 @@ public class Nurbs {
                 continue;
             }
             for (int n = 0; n <= degree; n++) {
-                for (int i = 0; i + n < knotVector.length - 1; i++) {
-                    if (k < i || i + n < k) {
-                        functions[n][k][i] = zero;
-                        continue;
-                    }
+                for (int i = Math.max(0, k - n); i + n < knotVector.length - 1 && i <= k; i++) {
+                    System.out.printf("(%s, %s, %s): %s\n", n, k, i, degree - k);
                     if (n == 0) {
-                        functions[n][k][i] = one;
+                        functions[n][k][i - k + degree] = one;
                         continue;
                     }
-                    functions[n][k][i] = getF.apply(n, i)
-                            .mul(functions[n - 1][k][i])
+
+                    Polynomial f1 = (i <= k - n) ? zero : functions[n - 1][k][i - k + degree];
+                    Polynomial f2 = (k < i + 1) ? zero : functions[n - 1][k][i - k + degree + 1];
+
+                    functions[n][k][i - k + degree] = getF.apply(n, i)
+                            .mul(f1)
                             .add(one.sub(getF.apply(n, i + 1))
-                                    .mul(functions[n - 1][k][i + 1])
+                                    .mul(f2)
                             );
+                    System.out.printf("%s\n", functions[n][k][i - k + degree]);
                 }
             }
         }
