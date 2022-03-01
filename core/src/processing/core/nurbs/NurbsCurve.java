@@ -59,24 +59,52 @@ public class NurbsCurve extends Nurbs {
     public void draw(PGraphics g, int steps) {
         g.beginShape();
         float stepSize = (knotVector[knotVector.length - 1] - knotVector[0]) / steps;
-        for (int k = 0; k < points.length; k++) {
-            if (knotVector[k + 1] <= knotVector[k]) {
+        for (int knot = 0; knot < points.length; knot++) {
+            if (knotVector[knot + 1] <= knotVector[knot]) {
                 continue;
             }
-            for (float t = knotVector[k]; t < knotVector[k + 1]; t += stepSize) {
-                float[] basisWeights = new float[points.length];
-                float basisWeightsSum = 0;
-                for (int i = Math.max(degree - k, 0); i <= degree; i++) {
-                    basisWeightsSum += basisWeights[i] = basisFunctions[k][i].evaluate(t) * weights[i + k - degree];
-                }
-                PVector result = new PVector();
-                for (int i = Math.max(degree - k, 0); i <= degree; i++) {
-                    result = PVector.add(result, PVector.mult(points[i + k - degree], basisWeights[i] / basisWeightsSum));
-                }
-                g.vertex(result.array());
+            for (float t = knotVector[knot]; t < knotVector[knot + 1]; t += stepSize) {
+                g.vertex(evaluate(t, knot).array());
             }
         }
+        g.vertex(evaluate(knotVector[points.length], points.length - 1).array());
         g.endShape();
+    }
+
+    public PVector evaluate(float t) {
+        if (t < knotVector[0]) {
+            return points[0];
+        }
+        if (t > knotVector[knotVector.length - 1]) {
+            return points[points.length - 1];
+        }
+
+        for (int knot = 1; knot < knotVector.length; knot++) {
+            if (t <= knotVector[knot]) {
+                return evaluate(t, knot - 1);
+            }
+        }
+        throw new RuntimeException("This code should never execute.");
+    }
+
+    public PVector evaluate(float t, int knot) {
+        if (knot < 0 || knotVector.length <= knot + 1) {
+            throw new IllegalArgumentException("Knot out of bounds.");
+        }
+        if (t < knotVector[knot] || knotVector[knot + 1] < t) {
+            throw new IllegalArgumentException("t should be between the knot and the next knot.");
+        }
+
+        float[] basisWeights = new float[points.length];
+        float basisWeightsSum = 0;
+        for (int i = Math.max(degree - knot, 0); i <= degree; i++) {
+            basisWeightsSum += basisWeights[i] = basisFunctions[knot][i].evaluate(t) * weights[i + knot - degree];
+        }
+        PVector result = new PVector();
+        for (int i = Math.max(degree - knot, 0); i <= degree; i++) {
+            result = PVector.add(result, PVector.mult(points[i + knot - degree], basisWeights[i] / basisWeightsSum));
+        }
+        return result;
     }
 
 }
