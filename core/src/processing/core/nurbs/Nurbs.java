@@ -10,7 +10,7 @@ public class Nurbs {
 
         BiFunction<Integer, Integer, Polynomial> getF = (n, i) -> knotVector[i + n] <= knotVector[i] ? one : new Polynomial(new float[]{
                 -knotVector[i] / (knotVector[i + n] - knotVector[i]),
-                1        / (knotVector[i + n] - knotVector[i])
+                1              / (knotVector[i + n] - knotVector[i])
         });
 
         for (int k = 0; k < knotVector.length - 1; k++) {
@@ -18,22 +18,18 @@ public class Nurbs {
                 continue;
             }
             for (int n = 0; n <= degree; n++) {
-                for (int i = Math.max(0, k - n); i + n < knotVector.length - 1 && i <= k; i++) {
-                    System.out.printf("(%s, %s, %s): %s\n", n, k, i, degree - k);
+                for (int i = Math.max(degree - k, degree - n); i <= degree && i + k + n - degree < knotVector.length - 1; i++) {
                     if (n == 0) {
-                        functions[n][k][i - k + degree] = one;
+                        functions[n][k][i] = one;
                         continue;
                     }
 
-                    Polynomial f1 = (i <= k - n) ? zero : functions[n - 1][k][i - k + degree];
-                    Polynomial f2 = (k < i + 1) ? zero : functions[n - 1][k][i - k + degree + 1];
+                    Polynomial f1 = (i <= degree - n) ? zero : functions[n - 1][k][i];
+                    Polynomial f2 = (degree < i + 1) ? zero : functions[n - 1][k][i + 1];
 
-                    functions[n][k][i - k + degree] = getF.apply(n, i)
-                            .mul(f1)
-                            .add(one.sub(getF.apply(n, i + 1))
-                                    .mul(f2)
-                            );
-                    System.out.printf("%s\n", functions[n][k][i - k + degree]);
+                    functions[n][k][i] = f1.mul(getF.apply(n, i + k - degree)).add(
+                            f2.mul(one.sub(getF.apply(n, i + k - degree + 1)))
+                    );
                 }
             }
         }
