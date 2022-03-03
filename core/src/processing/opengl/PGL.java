@@ -140,11 +140,14 @@ public abstract class PGL {
   // ........................................................
 
   // These variables are left public so advanced users can experiment with different
-  // usage modes controlling the buffer data store:
-  // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+  // usage modes and access policies controlling the buffer data store:
 
+  // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
   static public int glUsageRetained;
   static public int glUsageImmediate;
+
+  // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glMapBuffer.xhtml
+  static public int glBufferAccess;
 
   // ........................................................
 
