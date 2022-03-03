@@ -6,6 +6,8 @@ X   https://github.com/processing/processing4/issues/415
 X Change straight quotes to smart quotes in the PDE.properties file
 X look for other uses of Util.deleteFile() and replace with Platform calls
 _ test with Python Mode before release
+_   opening an example throws an NPE
+_   add changes for the eawt mess?
 
 sketchbook/open/deletions
 X test "obvious" sketch folder (and whether it prompts)
