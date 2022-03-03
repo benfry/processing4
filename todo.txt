@@ -1,8 +1,8 @@
 1282 (4.0b7)
 X Bring back getMainProgram() for Python Mode
 X   https://github.com/processing/processing4/issues/409
-_ You must first install tweak Mode to use this sketch
-_   https://github.com/processing/processing4/issues/415
+X You must first install tweak Mode to use this sketch
+X   https://github.com/processing/processing4/issues/415
 
 _ deleting sketch removed contents of Download folder
 _   https://github.com/processing/processing4/issues/424

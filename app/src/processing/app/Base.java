@@ -1070,6 +1070,7 @@ public class Base {
   */
 
 
+  /*
   private Mode promptForMode(final File passedFile) {
     final String filename = passedFile.getName();
     final String extension =
@@ -1080,13 +1081,6 @@ public class Base {
         possibleModes.add(mode);
       }
     }
-    /*
-    if (possibleModes.size() == 1 &&
-        possibleModes.get(0).getIdentifier().equals(getDefaultModeIdentifier())) {
-      // If default mode can open it, then do so without prompting.
-      return possibleModes.get(0);
-    }
-    */
     if (possibleModes.size() == 0) {
       final String msg =
         "I don't know how to open a sketch with the \"" + extension + "\"\n" +
@@ -1111,6 +1105,7 @@ public class Base {
         null, modes, modes[0]);
     }
   }
+  */
 
 
   /*
@@ -1398,12 +1393,7 @@ public class Base {
 
 
   private File moveLikeSketchFolder(File pdeFile, String baseName) throws IOException {
-//    final String properParent =
-//      file.getName().substring(0, file.getName().lastIndexOf('.'));
-
     Object[] options = {
-      //Language.text("prompt.ok"),
-      //Language.text("prompt.cancel")
       "Keep", "Move", "Cancel"
     };
     String prompt =
@@ -1494,14 +1484,27 @@ public class Base {
         // First check for the Mode, because it may not even be available
         String modeIdentifier = props.get("mode.id");
         if (modeIdentifier != null) {
-          Mode mode = findMode(modeIdentifier);
-          if (mode != null) {
-            nextMode = mode;
+          if (modeIdentifier.equals("galsasson.mode.tweak.TweakMode")) {
+            // Tweak Mode has been built into Processing since 2015,
+            // but there are some old sketch.properties files out there.
+            // https://github.com/processing/processing4/issues/415
+            nextMode = getDefaultMode();
+
+            // Clean up sketch.properties and re-save or remove if necessary
+            props.remove("mode");
+            props.remove("mode.id");
+            props.reckon();
+
           } else {
-            ContributionManager.openModes();
-            Messages.showWarning("Missing Mode",
-              "You must first install " + props.get("mode") + " Mode to use this sketch.");
-            return null;
+            Mode mode = findMode(modeIdentifier);
+            if (mode != null) {
+              nextMode = mode;
+            } else {
+              ContributionManager.openModes();
+              Messages.showWarning("Missing Mode",
+                "You must first install " + props.get("mode") + " Mode to use this sketch.");
+              return null;
+            }
           }
         }
 
