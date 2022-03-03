@@ -577,6 +577,7 @@ public class PGraphicsOpenGL extends PGraphics {
 
     PGL.glUsageRetained = PGL.DYNAMIC_DRAW;
     PGL.glUsageImmediate = PGL.STATIC_DRAW;
+    PGL.glBufferAccess = PGL.READ_WRITE;
 
     polyAttribs = newAttributeMap();
     inGeo = newInGeometry(this, polyAttribs, IMMEDIATE);
@@ -9482,7 +9483,7 @@ public class PGraphicsOpenGL extends PGraphics {
     // Buffer mapping methods
 
     protected void mapPolyVerticesBuffer() {
-      polyVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      polyVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initPolyVerticesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9537,7 +9538,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyColorsBuffer() {
-      polyColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+      polyColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
     }
 
     protected void initPolyColorsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9545,10 +9546,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
           updatePolyColorsBuffer();
         }
         if (unmap) {
@@ -9592,7 +9593,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyNormalsBuffer() {
-      polyNormalsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      polyNormalsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initPolyNormalsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9647,7 +9648,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyTexCoordsBuffer() {
-      polyTexCoordsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      polyTexCoordsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initPolyTexCoordsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9702,7 +9703,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyAmbientBuffer() {
-      polyAmbientBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+      polyAmbientBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
     }
 
     protected void initPolyAmbientBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9710,10 +9711,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
           updatePolyAmbientBuffer();
         }
         if (unmap) {
@@ -9757,7 +9758,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolySpecularBuffer() {
-      polySpecularBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+      polySpecularBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
     }
 
     protected void initPolySpecularBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9765,10 +9766,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
           updatePolySpecularBuffer();
         }
         if (unmap) {
@@ -9812,7 +9813,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyEmissiveBuffer() {
-      polyEmissiveBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+      polyEmissiveBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
     }
 
     protected void initPolyEmissiveBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9820,10 +9821,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
           updatePolyEmissiveBuffer();
         }
         if (unmap) {
@@ -9867,7 +9868,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyShininessBuffer() {
-      polyShininessBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      polyShininessBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initPolyShininessBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9875,10 +9876,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_FLOAT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
           updatePolyShininessBuffer();
         }
         if (unmap) {
@@ -9923,11 +9924,11 @@ public class PGraphicsOpenGL extends PGraphics {
 
     protected void mapPolyAttribBuffer(VertexAttribute attrib) {
       if (attrib.type == PGL.FLOAT) {
-        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer());
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer());
       } else if (attrib.type == PGL.INT) {
-        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer());
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer());
       } else if (attrib.type == PGL.BOOL) {
-        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY));
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess));
       }
     }
 
@@ -9985,7 +9986,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyIndicesBuffer() {
-      polyIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.WRITE_ONLY).asShortBuffer();
+      polyIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.glBufferAccess).asShortBuffer();
     }
 
     protected void initPolyIndicesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10021,7 +10022,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineVerticesBuffer() {
-      lineVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      lineVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initLineVerticesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10076,7 +10077,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineColorsBuffer() {
-      lineColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+      lineColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
     }
 
     protected void initLineColorsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10131,7 +10132,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineDirectionsBuffer() {
-      lineDirectionsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      lineDirectionsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initLineDirectionsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10186,7 +10187,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineIndicesBuffer() {
-      lineIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.WRITE_ONLY).asShortBuffer();
+      lineIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.glBufferAccess).asShortBuffer();
     }
 
     protected void initLineIndicesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10222,7 +10223,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointVerticesBuffer() {
-      pointVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      pointVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initPointVerticesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10277,7 +10278,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointColorsBuffer() {
-      pointColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asIntBuffer();
+      pointColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
     }
 
     protected void initPointColorsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10332,7 +10333,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointOffsetsBuffer() {
-      pointOffsetsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.WRITE_ONLY).asFloatBuffer();
+      pointOffsetsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
     }
 
     protected void initPointOffsetsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10387,7 +10388,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointIndicesBuffer() {
-      pointIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.WRITE_ONLY).asShortBuffer();
+      pointIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.glBufferAccess).asShortBuffer();
     }
 
     protected void initPointIndicesBuffer(boolean onlymap, boolean unmap, int usage) {
