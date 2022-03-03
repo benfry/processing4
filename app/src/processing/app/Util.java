@@ -63,7 +63,6 @@ public class Util {
       if (bytesRead == 0) break;
     }
     input.close();  // weren't properly being closed
-    input = null;
     return buffer;
   }
 
@@ -79,7 +78,7 @@ public class Util {
       Messages.err(inputFile + " does not exist inside readSettings()");
       return null;
     }
-    String lines[] = PApplet.loadStrings(inputFile);
+    String[] lines = PApplet.loadStrings(inputFile);
     if (lines == null) {
       System.err.println("Could not read " + inputFile);
       return null;
@@ -138,11 +137,9 @@ public class Util {
       to.write(buffer, 0, bytesRead);
     }
     from.close();
-    from = null;
 
     to.flush();
     to.close();
-    to = null;
 
     targetFile.setLastModified(sourceFile.lastModified());
     targetFile.setExecutable(sourceFile.canExecute());
@@ -172,9 +169,8 @@ public class Util {
     File temp = File.createTempFile(file.getName(), null, file.getParentFile());
     try {
       // fix from cjwant to prevent symlinks from being destroyed.
-      File canon = file.getCanonicalFile();
-      // assign the var as second step since previous line may throw exception
-      file = canon;
+      file = file.getCanonicalFile();
+
     } catch (IOException e) {
       throw new IOException("Could not resolve canonical representation of " +
                             file.getAbsolutePath());
@@ -242,19 +238,19 @@ public class Util {
       throw new IllegalArgumentException(urDum);
     }
     targetDir.mkdirs();
-    String files[] = sourceDir.list();
-    for (int i = 0; i < files.length; i++) {
+    String[] filenames = sourceDir.list();
+    for (String filename : filenames) {
       // Ignore dot files (.DS_Store), dot folders (.svn) while copying
-      if (files[i].charAt(0) == '.') continue;
-      //if (files[i].equals(".") || files[i].equals("..")) continue;
-      File source = new File(sourceDir, files[i]);
-      File target = new File(targetDir, files[i]);
-      if (source.isDirectory()) {
-        //target.mkdirs();
-        copyDir(source, target);
-        target.setLastModified(source.lastModified());
-      } else {
-        copyFile(source, target);
+      if (filename.charAt(0) != '.') {
+        File source = new File(sourceDir, filename);
+        File target = new File(targetDir, filename);
+        if (source.isDirectory()) {
+          //target.mkdirs();
+          copyDir(source, target);
+          target.setLastModified(source.lastModified());
+        } else {
+          copyFile(source, target);
+        }
       }
     }
   }
@@ -262,7 +258,7 @@ public class Util {
 
   static public void copyDirNative(File sourceDir,
                                    File targetDir) throws IOException {
-    Process process = null;
+    Process process;
     if (Platform.isMacOS() || Platform.isLinux()) {
       process = Runtime.getRuntime().exec(new String[] {
         "cp", "-a", sourceDir.getAbsolutePath(), targetDir.getAbsolutePath()
@@ -363,21 +359,25 @@ public class Util {
    * Note that the function calls itself recursively.
    */
   static public long calcFolderSize(File folder) {
-    int size = 0;
+    long size = 0;
 
-    String files[] = folder.list();
+    String[] filenames = folder.list();
     // null if folder doesn't exist, happens when deleting sketch
-    if (files == null) return -1;
+    if (filenames == null) return -1;
 
-    for (int i = 0; i < files.length; i++) {
-      if (files[i].equals(".") ||
-          files[i].equals("..") ||
-          files[i].equals(".DS_Store")) continue;
-      File fella = new File(folder, files[i]);
-      if (fella.isDirectory()) {
-        size += calcFolderSize(fella);
-      } else {
-        size += (int) fella.length();
+    for (String file : filenames) {
+      if (!file.equals(".") && !file.equals("..") && !file.equals(".DS_Store")) {
+        File fella = new File(folder, file);
+        if (fella.isDirectory()) {
+          long subfolderSize = calcFolderSize(fella);
+          if (subfolderSize == -1) {
+            return -1;
+          } else {
+            size += subfolderSize;
+          }
+        } else {
+          size += fella.length();
+        }
       }
     }
     return size;
@@ -445,13 +445,10 @@ public class Util {
    * @return a list of .jar and .zip files in that folder
    */
   static public File[] listJarFiles(File folder) {
-    return folder.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return (!name.startsWith(".") &&
-                (name.toLowerCase().endsWith(".jar") ||
-                 name.toLowerCase().endsWith(".zip")));
-      }
-    });
+    return folder.listFiles((dir, name) ->
+      (!name.startsWith(".") &&
+       (name.toLowerCase().endsWith(".jar") ||
+        name.toLowerCase().endsWith(".zip"))));
   }
 
 
@@ -485,17 +482,17 @@ public class Util {
         path += File.separator;
       }
 
-      String list[] = folder.list();
-      for (int i = 0; i < list.length; i++) {
+      String[] list = folder.list();
+      for (String item : list) {
         // Skip . and ._ files. Prior to 0125p3, .jar files that had
         // OS X AppleDouble files associated would cause trouble.
-        if (list[i].startsWith(".")) continue;
-
-        if (list[i].toLowerCase().endsWith(".jar") ||
-            list[i].toLowerCase().endsWith(".zip")) {
-          sb.append(sep);
-          sb.append(path);
-          sb.append(list[i]);
+        if (!item.startsWith(".")) {
+          if (item.toLowerCase().endsWith(".jar") ||
+              item.toLowerCase().endsWith(".zip")) {
+            sb.append(sep);
+            sb.append(path);
+            sb.append(item);
+          }
         }
       }
     } catch (IOException e) {
@@ -516,25 +513,25 @@ public class Util {
   static public StringList packageListFromClassPath(String path) {
 //    Map<String, Object> map = new HashMap<String, Object>();
     StringList list = new StringList();
-    String pieces[] =
+    String[] pieces =
       PApplet.split(path, File.pathSeparatorChar);
 
-    for (int i = 0; i < pieces.length; i++) {
+    for (String piece : pieces) {
       //System.out.println("checking piece '" + pieces[i] + "'");
-      if (pieces[i].length() == 0) continue;
+      if (piece.length() != 0) {
+        if (piece.toLowerCase().endsWith(".jar") ||
+          piece.toLowerCase().endsWith(".zip")) {
+          //System.out.println("checking " + pieces[i]);
+          packageListFromZip(piece, list);
 
-      if (pieces[i].toLowerCase().endsWith(".jar") ||
-          pieces[i].toLowerCase().endsWith(".zip")) {
-        //System.out.println("checking " + pieces[i]);
-        packageListFromZip(pieces[i], list);
-
-      } else {  // it's another type of file or directory
-        File dir = new File(pieces[i]);
-        if (dir.exists() && dir.isDirectory()) {
-          packageListFromFolder(dir, null, list);
-          //importCount = magicImportsRecursive(dir, null,
-          //                                  map);
-                                              //imports, importCount);
+        } else {  // it's another type of file or directory
+          File dir = new File(piece);
+          if (dir.exists() && dir.isDirectory()) {
+            packageListFromFolder(dir, null, list);
+            //importCount = magicImportsRecursive(dir, null,
+            //                                  map);
+            //imports, importCount);
+          }
         }
       }
     }
@@ -593,24 +590,18 @@ public class Util {
                                             StringList list) {
 //                                            Map<String, Object> map) {
     boolean foundClass = false;
-    String files[] = dir.list();
+    String[] filenames = dir.list();
 
-    for (int i = 0; i < files.length; i++) {
-      if (files[i].equals(".") || files[i].equals("..")) continue;
+    for (String filename : filenames) {
+      if (filename.equals(".") || filename.equals("..")) continue;
 
-      File sub = new File(dir, files[i]);
+      File sub = new File(dir, filename);
       if (sub.isDirectory()) {
         String nowfar =
-          (sofar == null) ? files[i] : (sofar + "." + files[i]);
+          (sofar == null) ? filename : (sofar + "." + filename);
         packageListFromFolder(sub, nowfar, list);
-        //System.out.println(nowfar);
-        //imports[importCount++] = nowfar;
-        //importCount = magicImportsRecursive(sub, nowfar,
-        //                                  imports, importCount);
       } else if (!foundClass) {  // if no classes found in this folder yet
-        if (files[i].endsWith(".class")) {
-          //System.out.println("unique class: " + files[i] + " for " + sofar);
-//          map.put(sofar, new Object());
+        if (filename.endsWith(".class")) {
           list.appendUnique(sofar);
           foundClass = true;
         }
@@ -628,7 +619,7 @@ public class Util {
       FileInputStream fis = new FileInputStream(zipFile);
       CheckedInputStream checksum = new CheckedInputStream(fis, new Adler32());
       ZipInputStream zis = new ZipInputStream(new BufferedInputStream(checksum));
-      ZipEntry entry = null;
+      ZipEntry entry;
       while ((entry = zis.getNextEntry()) != null) {
         final String name = entry.getName();
         if (!name.startsWith(("__MACOSX"))) {
@@ -655,7 +646,7 @@ public class Util {
   static protected void unzipEntry(ZipInputStream zin, File f) throws IOException {
     FileOutputStream out = new FileOutputStream(f);
     byte[] b = new byte[512];
-    int len = 0;
+    int len;
     while ((len = zin.read(b)) != -1) {
       out.write(b, 0, len);
     }
