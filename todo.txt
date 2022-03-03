@@ -1,20 +1,10 @@
 1282 (4.0b7)
 X Bring back getMainProgram() for Python Mode
 X   https://github.com/processing/processing4/issues/409
-X You must first install tweak Mode to use this sketch
-X   https://github.com/processing/processing4/issues/415
 X Change straight quotes to smart quotes in the PDE.properties file
 X look for other uses of Util.deleteFile() and replace with Platform calls
-X change handleOpen() to take a Mode object
-X   allows Python and Android Mode to open example sketches in that Mode,
-X   without (retroactively) needing sketch.properties files in all folders
 
-python
-X add JavaFX handler
-X opening an example throws an NPE
-_ add changes for the eawt mess?
-
-sketchbook/open/deletions
+sketchbook/open/deletions/modes
 X test "obvious" sketch folder (and whether it prompts)
 X opening Downloads > something.pde made a p5.js sketch with only an index.html
 X   if no sketch.properties, reset nextMode to the default mode
@@ -33,6 +23,29 @@ X have 'delete' function move things to the trash
 o   or remove 'delete' as an option altogether
 X new language string: warn.delete.sketch_folder so we can include folder name
 X   and renamed warn.delete.file to warn.delete.sketch_file
+X remove selectMode() code from Base... just too funky
+X   should just go back to the default Mode, or the first that matches
+X   not enough Modes to warrant all the weirdness that could happen
+o   and for Android (the only legit case), local.properties should be set
+o   or we have changeMode() to make it an easy switch
+X   turns out, it wasn't getting set, but that's now fixed
+o fix extension check for other modes
+X   https://github.com/processing/processing/issues/3980
+X   not relevant b/c of https://github.com/processing/processing4/issues/189
+X You must first install tweak Mode to use this sketch
+X   https://github.com/processing/processing4/issues/415
+X change handleOpen() to take a Mode object
+X   allows Python and Android Mode to open example sketches in that Mode,
+X   without (retroactively) needing sketch.properties files in all folders
+
+
+python
+X add JavaFX handler
+X opening an example throws an NPE
+_ update Export to Application to use the new window
+_ add changes for the eawt mess? (too tricky)
+_   https://github.com/jdf/processing.py/issues/398
+_ submit a PR
 
 
 _ examples handling is less than ideal
@@ -327,16 +340,9 @@ _   https://github.com/processing/processing/issues/4757
 
 
 modes
-_ remove selectMode() code from Base... just too funky
-_   should just go back to the default Mode, or the first that matches
-_   not enough Modes to warrant all the weirdness that could happen
-_   and for Android (the only legit case), local.properties should be set
-_   or we have changeMode() to make it an easy switch
 _ allow modes to specify their own base file name
 _   need to move "is this a sketch?" handling into Mode
-_ fix extension check for other modes
-_   https://github.com/processing/processing/issues/3980
-_ mode list does not update after changing sketchbook folder
+_ mode list does not updated after changing sketchbook folder
 _   already reported?
 
 
@@ -350,10 +356,16 @@ _   docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
 _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 
 
+documentation
+_ thread safety with color() et al
+_   https://github.com/processing/processing4/issues/431#issuecomment-1057979636
+_ thread safety for drawing functions in general
+_ words on how key/mouse events are queued to the end of draw so they're safe
 _ update installation guide for Linux
 _   https://github.com/processing/processing-docs/issues/645
 
-_ "Could not get the settings folder" message could be more helpful
+
+_ how to make "Could not get the settings folder" message more helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
 _   then tell the user which folder to fix

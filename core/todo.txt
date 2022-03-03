@@ -9,6 +9,10 @@ X   size() function that scales to screen, keeps aspect, re-scales mouse coords
 X   rmouseX, rmouseY, rwidth, rheight
 X   also ratioLeft, ratioTop, ratioScale
 
+opengl
+X POINTS PShape performance is drastically worse in 4.0.b3
+X   https://github.com/processing/processing4/issues/345
+X   https://github.com/processing/processing4/pull/432
 
 cleaning
 o crash on startup when "Mirror Displays" selected (cantfix?)
