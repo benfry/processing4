@@ -276,11 +276,9 @@ public class Settings {
   }
 
 
-  /*
   public boolean isEmpty() {
     return table.isEmpty();
   }
-  */
 
 
   public Map<String, String> getMap() {

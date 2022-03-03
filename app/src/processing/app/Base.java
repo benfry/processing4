@@ -1377,6 +1377,81 @@ public class Base {
 
 
   /**
+   * Return true if it's an obvious sketch folder: only .pde files,
+   * and maybe a data folder. Dot files (.DS_Store, ._blah) are ignored.
+   */
+  private boolean smellsLikeSketchFolder(File folder) {
+    File[] files = folder.listFiles();
+    if (files == null) {  // unreadable, assume badness
+      return false;
+    }
+    for (File file : files) {
+      String name = file.getName();
+      if (!(name.startsWith(".") ||
+            name.toLowerCase().endsWith(".pde")) ||
+            (file.isDirectory() && name.equals("data"))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+  private File moveLikeSketchFolder(File pdeFile, String baseName) throws IOException {
+//    final String properParent =
+//      file.getName().substring(0, file.getName().lastIndexOf('.'));
+
+    Object[] options = {
+      //Language.text("prompt.ok"),
+      //Language.text("prompt.cancel")
+      "Keep", "Move", "Cancel"
+    };
+    String prompt =
+      "Would you like to keep “" + pdeFile.getParentFile().getName() + "” as the sketch folder,\n" +
+      "or move “" + pdeFile.getName() + "” to its own folder?\n" +
+      "(Usually, “" + pdeFile.getName() + "” would be stored inside a\n" +
+      "sketch folder named “" + baseName + "”.)";
+
+    int result = JOptionPane.showOptionDialog(null,
+      prompt,
+      "Keep it? Move it?",
+      JOptionPane.YES_NO_CANCEL_OPTION,
+      JOptionPane.QUESTION_MESSAGE,
+      null,
+      options,
+      options[0]);
+
+    if (result == JOptionPane.YES_OPTION) {  // keep
+      return pdeFile;
+
+    } else if (result == JOptionPane.NO_OPTION) {  // move
+      // create properly named folder
+      File properFolder = new File(pdeFile.getParent(), baseName);
+      if (properFolder.exists()) {
+        throw new IOException("A folder named \"" + baseName + "\" " +
+          "already exists. Cannot open sketch.");
+      }
+      if (!properFolder.mkdirs()) {
+        throw new IOException("Could not create the sketch folder.");
+      }
+      // copy the sketch inside
+      File properPdeFile = new File(properFolder, pdeFile.getName());
+      Util.copyFile(pdeFile, properPdeFile);
+
+      // remove the original file, so user doesn't get confused
+      if (!pdeFile.delete()) {
+        Messages.err("Could not delete " + pdeFile);
+      }
+
+      // update with the new path
+      return properPdeFile;
+    }
+
+    // Catch all other cases, including Cancel or ESC
+    return null;
+  }
+
+  /**
    * Open a sketch from the path specified. Do not use for untitled sketches.
    * Note that the user may have selected/double-clicked any .pde in a sketch.
    */
@@ -1389,8 +1464,8 @@ public class Base {
       return null;  // never returning an Editor for a contrib
     }
 
-    File passedFile = new File(path);
-    if (!passedFile.exists()) {
+    File pdeFile = new File(path);
+    if (!pdeFile.exists()) {
       System.err.println(path + " does not exist");
       return null;
     }
@@ -1401,7 +1476,7 @@ public class Base {
       // so we have to check each open tab (not just the main one).
       // https://github.com/processing/processing/issues/2506
       for (SketchCode tab : editor.getSketch().getCode()) {
-        if (tab.getFile().equals(passedFile)) {
+        if (tab.getFile().equals(pdeFile)) {
           editor.toFront();
           // move back to the top of the recent list
           Recent.append(editor);
@@ -1410,12 +1485,12 @@ public class Base {
       }
     }
 
-    File parentFolder = passedFile.getParentFile();
+    File parentFolder = pdeFile.getParentFile();
 
     try {
-      // read the sketch.properties file if it exists
+      // read the sketch.properties file or get an empty Settings object
       Settings props = Sketch.loadProperties(parentFolder);
-      if (props != null) {
+      if (!props.isEmpty()) {
         // First check for the Mode, because it may not even be available
         String modeIdentifier = props.get("mode.id");
         if (modeIdentifier != null) {
@@ -1445,27 +1520,87 @@ public class Base {
           return handleOpen(path, false);
         }
       } else {
-        // No properties file, so do some checks to make sure the file can
-        // be opened, and identify the Mode that it's using.
+        // No properties file, so do some checks to make sure the file
+        // can be opened, and identify the Mode that it's using.
 
-        if (!Sketch.isSanitaryName(passedFile.getName())) {
+        // Switch back to defaultMode, because a sketch.properties
+        // file is required whenever not using the default Mode.
+        nextMode = getDefaultMode();
+
+        if (!Sketch.isSanitaryName(pdeFile.getName())) {
           Messages.showWarning("You're tricky, but not tricky enough",
-            passedFile.getName() + " is not a valid name for sketch code.\n" +
+            pdeFile.getName() + " is not a valid name for sketch code.\n" +
             "Better to stick to ASCII, no spaces, and make sure\n" +
             "it doesn't start with a number.", null);
           return null;
         }
 
+        // Check if the name of the file matches the parent folder name.
+        String baseName = pdeFile.getName();
+        int dot = baseName.lastIndexOf('.');
+        if (dot == -1) {
+          // Shouldn't really be possible, right?
+          System.err.println(pdeFile + " does not have an extension.");
+          return null;
+        }
+        baseName = baseName.substring(0, dot);
+        if (!baseName.equals(parentFolder.getName())) {
+          // Parent folder name does not match,
+          // and no sketch.properties file is present.
+
+          // Check whether another .pde file has a matching name,
+          // and if so, switch to using that instead.
+          File mainFile =
+            new File(parentFolder, parentFolder.getName() + ".pde");
+          if (mainFile.exists()) {
+            // User was opening the wrong file in a legit sketch folder.
+            pdeFile = mainFile;
+
+          } else if (smellsLikeSketchFolder(parentFolder)) {
+            // Looks like a sketch folder, set this as the main.
+            props.set("main", pdeFile.getName());
+            // Save for later use, then fall through.
+            props.save();
+
+          } else {
+            // If it's not an obvious sketch folder (just .pde files,
+            // maybe a data folder) prompt the user whether to
+            // 1) move sketch into its own folder, or
+            // 2) call this the main, and write sketch.properties.
+            File newFile = moveLikeSketchFolder(pdeFile, baseName);
+
+            if (newFile == pdeFile) {
+              // User wanted to keep this sketch folder, so update the
+              // property for the main tab and write sketch.properties.
+              props.set("main", newFile.getName());
+              props.save();
+
+            } else if (newFile == null) {
+              // User canceled, so exit handleOpen()
+              return null;
+
+            } else {
+              // User asked to move the sketch file
+              pdeFile = newFile;
+            }
+          }
+        }
+
+        // TODO Remove this selector? Seems too messy/precious. [fry 220205]
+        //      Opting to remove in beta 7, because sketches that use another
+        //      Mode should have a working sketch.properties. [fry 220302]
+        /*
         // If the current Mode cannot open this file, try to find another.
-        if (!nextMode.canEdit(passedFile)) {
-          // TODO Get rid of mode selector? Seems a little messy/precious. [fry 220205]
-          final Mode mode = promptForMode(passedFile);
+        if (!nextMode.canEdit(pdeFile)) {
+
+          final Mode mode = promptForMode(pdeFile);
           if (mode == null) {
             return null;
           }
           nextMode = mode;
         }
-        handleOpen(passedFile.getAbsolutePath(), false);
+        */
+        handleOpen(pdeFile.getAbsolutePath(), false);
       }
     } catch (IOException e) {
       Messages.showWarning("sketch.properties",

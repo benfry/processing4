@@ -79,8 +79,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
   protected EditorState state;
   protected Mode mode;
 
-  // There may be certain gutter sizes which cause text bounds inside the console to be calculated incorrectly. 45
-  // seems to work but change with caution.
+  // There may be certain gutter sizes that cause text bounds
+  // inside the console to be calculated incorrectly.
+  // 45 seems to work but change with caution. [sampottinger 191107]
   static public final int LEFT_GUTTER = Toolkit.zoom(45);
 
   static public final int RIGHT_GUTTER = Toolkit.zoom(12);
