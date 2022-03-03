@@ -1207,7 +1207,7 @@ public class Base {
       }
 
       String path = newbieFile.getAbsolutePath();
-      handleOpen(path, true);
+      handleOpenUntitled(path);
 
     } catch (IOException e) {
       Messages.showWarning("That's new to me",
@@ -1307,7 +1307,7 @@ public class Base {
         if (fileList.length == 1) {
           File sketchFile = Sketch.findMain(fileList[0], getModeList());
           if (sketchFile != null) {
-            return handleOpen(sketchFile.getAbsolutePath(), true);
+            return handleOpenUntitled(sketchFile.getAbsolutePath());
           }
         } else {
           System.err.println("Expecting one folder inside " +
@@ -1441,6 +1441,7 @@ public class Base {
     return null;
   }
 
+
   /**
    * Open a sketch from the path specified. Do not use for untitled sketches.
    * Note that the user may have selected/double-clicked any .pde in a sketch.
@@ -1516,11 +1517,11 @@ public class Base {
             // for now, post a warning if the main was different
             System.out.println(path + " selected, but main is " + mainPath);
           }
-          return handleOpen(mainPath, false);
+          return handleOpenInternal(mainPath, false);
 
         } else {
           // if no main specified, use the passed-in path as the main
-          return handleOpen(path, false);
+          return handleOpenInternal(path, false);
         }
       } else {
         // No properties file, so do some checks to make sure the file
@@ -1603,7 +1604,7 @@ public class Base {
           nextMode = mode;
         }
         */
-        handleOpen(pdeFile.getAbsolutePath(), false);
+        handleOpenInternal(pdeFile.getAbsolutePath(), false);
       }
     } catch (IOException e) {
       Messages.showWarning("sketch.properties",
@@ -1614,84 +1615,36 @@ public class Base {
 
 
   /**
-   * Open a sketch in a new window.
+   * Open a (vetted) sketch location using a particular Mode. Used by the
+   * Examples window, because Modes like Python and Android do not have
+   * "sketch.properties" files in each example folder.
+   */
+  public Editor handleOpen(String path, Mode mode) {
+    nextMode = mode;
+    return handleOpenInternal(path, false);
+  }
+
+
+  /**
+   * Open the sketch associated with this .pde file in a new window
+   * as an "Untitled" sketch.
    * @param path Path to the pde file for the sketch in question
    * @return the Editor object, so that properties (like 'untitled')
    *         can be set by the caller
    */
-  protected Editor handleOpen(String path, boolean untitled) {
-    return handleOpen(path, untitled, EditorState.nextEditor(editors));
+  protected Editor handleOpenUntitled(String path) {
+    return handleOpenInternal(path, true);
   }
 
 
-  protected Editor handleOpen(String path, boolean untitled,
-                              EditorState state) {
-    /*
-    return handleOpen(path, untitled, state, nextMode);
-  }
-
-  protected Editor handleOpen(String path, boolean untitled,
-                              EditorState state, Mode mode) {
-    try {
-      final File file = new File(path);
-      if (!file.exists()) {
-        return null;
-      }
-
-      // Cycle through open windows to make sure that it's not already open.
-      for (Editor editor : editors) {
-        // User may have double-clicked any PDE in the sketch folder,
-        // so we have to check each open tab (not just the main one).
-        // https://github.com/processing/processing/issues/2506
-        for (SketchCode tab : editor.getSketch().getCode()) {
-          if (tab.getFile().equals(file)) {
-            editor.toFront();
-            // move back to the top of the recent list
-            Recent.append(editor);
-            return editor;
-          }
-        }
-      }
-
-      // read the sketch.properties file if it exists
-      File parentFolder = new File(path).getParentFile();
-      Settings props = loadSketchProperties(parentFolder);
-
-      // if the Mode is set in this file, use that to determine next
-      if (props != null) {
-        String modeIdentifier = props.get("mode.id");
-        if (modeIdentifier != null) {
-          Mode mode = findMode(modeIdentifier);
-          if (mode != null) {
-            nextMode = mode;
-          } else {
-            Messages.showWarning("Missing Mode",
-                "You must first install " + props.get("mode") + " Mode to use this sketch.");
-            ContributionManager.openModes();
-            return null;
-          }
-        }
-      }
-
-      if (!Sketch.isSanitaryName(file.getName())) {
-        Messages.showWarning("You're tricky, but not tricky enough",
-                             file.getName() + " is not a valid name for a sketch.\n" +
-                             "Better to stick to ASCII, no spaces, and make sure\n" +
-                             "it doesn't start with a number.", null);
-        return null;
-      }
-
-      if (!nextMode.canEdit(file)) {
-        final Mode mode = selectMode(file);
-        if (mode == null) {
-          return null;
-        }
-        nextMode = mode;
-      }
-      */
-
+  /**
+   * Internal function to actually open the sketch. At this point, the
+   * sketch file/folder must have been vetted, and nextMode set properly.
+   */
+  protected Editor handleOpenInternal(String path, boolean untitled) {
     try {
       try {
+        EditorState state = EditorState.nextEditor(editors);
         Editor editor = nextMode.createEditor(this, path, state);
 
         // opened successfully, let's go to work
