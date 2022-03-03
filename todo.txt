@@ -1,9 +1,47 @@
 1282 (4.0b7)
 X Bring back getMainProgram() for Python Mode
 X   https://github.com/processing/processing4/issues/409
+_ You must first install tweak Mode to use this sketch
+_   https://github.com/processing/processing4/issues/415
+
+_ deleting sketch removed contents of Download folder
+_   https://github.com/processing/processing4/issues/424
+_   at a minimum, need to have 'delete' function move things to the trash
+_   or remove 'delete' as an option altogether
+_   also very problematic for what happens with Save As
+_   ah, this is because it was just a single .pde file, yikes
+_   sketch.properties should be present, but won't be if the parent is renamed
+_   always write sketch.properties? (would help the later rename case)
+_   when loading, prompt to ask whether the parent folder is the sketch folder?
+_     if it is, write sketch.properties to set the main file
+_     if not, move it to its own folder "move blah.pde to a folder named blah"
+
+_ examples handling is less than ideal
+_   examples not mentioned in warning dialog when installing
+_   doesn't show in examples window for p5jsMode
+_   the extra "Contributed Examples" subfolder is awkward
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+sketchbook
+_ fix up the code for sketchbook building
+_   is it time to make this into a tree object of some sort?
+_   and then build the GUI versions separately (on the EDT)
+_ Base.checkSketchFolder() is used to identify sketches for the sketchbook frame
+_   but it assumes that it's folder name + default extension as the name for it
+_   that should be moved into the Mode class as a "is this folder a sketch" call
+_   (so that Modes can work differently too)
+_ "friendly" naming for sketches
+_   master list of words
+_     https://github.com/glitchdotcom/friendly-words/tree/master/words
+_   exact sources
+_     https://github.com/glitchdotcom/friendly-words/blob/master/words/predicates.txt
+_     https://github.com/glitchdotcom/friendly-words/blob/master/words/objects.txt
+_   how friendly names are used in the p5.js web editor
+_     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/generateRandomName.js
+_     p5.js uses predicate followed by an object
 
 
 housekeeping
@@ -54,7 +92,13 @@ _ Base.setUpdatesAvailable() is called from half a dozen places!?
 _ AvailableContribution.install() needs status handler
 _   can either be the StatusPanel *or* EditorStatus *or* console (during startup)
 _   needs to be EditorStatus when double-clicking a .pdex file
-_   this is also why Base.handleOpen() does statusError() calls during pdex load, bleh
+_   this is also why Base.handleOpen() does statusError() calls during pdex load
+_ add indicator for the stats of libraries
+_   https://download.processing.org/stats
+_   add rank for libraries/modes/tools (use unicode chars?)
+_   probably not sort by default to avoid confusion
+_ orange exclamation looks like an error, not "update available"
+_ add reinstall option?
 
 
 design
@@ -95,6 +139,13 @@ _     https://fonts.google.com/specimen/Space+Grotesk
 
 
 before 4.x final
+_ break Movie Maker out to its own library?
+_   another big leap in file size reduction for the PDE download
+_   nope, spend the time doing auto-download for the binaries
+_     versions for aarch64 as well
+_     https://github.com/eugeneware/ffmpeg-static/releases
+_   but need to figure out a good way to highlight it/encourage installation
+_   ...as well as the other libraries? separate window?
 _ Help > Library/Tools reference links don't work
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
@@ -160,16 +211,15 @@ _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _   tell users about JavaFX, Movie Maker install, changing themes
 _ Remove “Disable HiDPI Scaling” preference on Windows?
-_ break Movie Maker out to its own library?
-_   another big leap in file size reduction for the PDE download
-_   but need to figure out a good way to highlight it/encourage installation
-_   ...as well as the other libraries? separate window?
 _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
+_ automatic import of JavaFX when FX2D is specified
 
 
 would like to fix (but not necessary for 4.0 final)
+_ make possible to embed java for all platforms
+_   straightforward to download from adoptium
 _ detach sketch name and folder name (use sketch.properties)
 _   better for git, etc
 _   single file thing is long gone
@@ -193,6 +243,8 @@ _   handleNew() taking 2-3s?
 _ implement support for Java “modules” and clean up JavaFX-specific workarounds
 _   https://github.com/processing/processing4/issues/212
 _   modules and classpath ugh https://stackoverflow.com/a/46289257
+_ also the Crusty2D renderer for use with macOS hack stuff
+_   actually need separate alpha/1.5/2.x versions of this
 
 
 windows
