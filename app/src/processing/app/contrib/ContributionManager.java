@@ -32,6 +32,7 @@ import javax.swing.SwingWorker;
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Messages;
+import processing.app.Platform;
 import processing.app.Util;
 import processing.app.ui.Editor;
 import processing.core.PApplet;
@@ -546,7 +547,12 @@ public class ContributionManager {
     if (possible != null) {
       for (File f : possible) {
         if (f.getName().matches(pattern)) {
-          Util.removeDir(f);
+          //Util.removeDir(f);
+          try {
+            Platform.deleteFile(f);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
       }
     }
@@ -562,7 +568,12 @@ public class ContributionManager {
     );
     if (markedForDeletion != null) {
       for (File folder : markedForDeletion) {
-        Util.removeDir(folder);
+        //Util.removeDir(folder);
+        try {
+          Platform.deleteFile(folder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
   }
@@ -629,7 +640,12 @@ public class ContributionManager {
         if (name != null) {  // should not happen, but...
           updateContribsNames.add(name);
         }
-        Util.removeDir(folder);
+        //Util.removeDir(folder);
+        try {
+          Platform.deleteFile(folder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
 

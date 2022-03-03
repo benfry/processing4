@@ -3,6 +3,8 @@ X Bring back getMainProgram() for Python Mode
 X   https://github.com/processing/processing4/issues/409
 X You must first install tweak Mode to use this sketch
 X   https://github.com/processing/processing4/issues/415
+X Change straight quotes to smart quotes in the PDE.properties file
+X look for other uses of Util.deleteFile() and replace with Platform calls
 _ test with Python Mode before release
 
 sketchbook/open/deletions

@@ -305,10 +305,13 @@ public class Util {
   /**
    * Remove all files in a directory and the directory itself.
    * Prints error messages with failed filenames. Does not follow symlinks.
+   * Use Platform.deleteFile() instead, which first attempts to use
+   * the Trash or Recycle Bin, out of an abundance of caution.
    */
   static public boolean removeDir(File dir) {
     return removeDir(dir, true);
   }
+
 
   /**
    * Remove all files in a directory and the directory itself.

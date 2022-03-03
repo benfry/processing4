@@ -946,7 +946,12 @@ public class Sketch {
     // if the new folder already exists, then first remove its contents before
     // copying everything over (user will have already been warned).
     if (newFolder.exists()) {
-      Util.removeDir(newFolder);
+      //Util.removeDir(newFolder);
+      try {
+        Platform.deleteFile(newFolder);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     // in fact, you can't do this on Windows because the file dialog
     // will instead put you inside the folder, but it happens on OS X a lot.

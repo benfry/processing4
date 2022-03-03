@@ -217,8 +217,12 @@ public class AvailableContribution extends Contribution {
           }
 
           // delete the contrib folder inside the libraryXXXXXXtmp folder
-          Util.removeDir(newContribFolder, false);
-
+          //Util.removeDir(newContribFolder, false);
+          try {
+            Platform.deleteFile(newContribFolder);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         } else {
           if (status != null) {
             status.setErrorMessage(Language.text("contrib.errors.overwriting_properties"));
@@ -229,7 +233,12 @@ public class AvailableContribution extends Contribution {
 
     // Remove any remaining boogers
     if (tempFolder.exists()) {
-      Util.removeDir(tempFolder, false);
+      //Util.removeDir(tempFolder, false);
+      try {
+        Platform.deleteFile(tempFolder);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
     return installedContrib;
   }

@@ -308,14 +308,24 @@ public abstract class LocalContribution extends Contribution {
 
       // At this point it should be safe to replace this fella
       if (contribFolder.exists()) {
-        Util.removeDir(contribFolder);
+        //Util.removeDir(contribFolder);
+        try {
+          Platform.deleteFile(contribFolder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
 
     } else {
       // This if should ideally never happen, since this function
       // is to be called only when restarting on update
       if (contribFolder.exists() && contribFolder.isDirectory()) {
-        Util.removeDir(contribFolder);
+        //Util.removeDir(contribFolder);
+        try {
+          Platform.deleteFile(contribFolder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
       else if (contribFolder.exists()) {
         contribFolder.delete();
@@ -447,7 +457,12 @@ public abstract class LocalContribution extends Contribution {
     if (doBackup) {
       success = backup(true, status);
     } else {
-      success = Util.removeDir(getFolder(), false);
+      try {
+        success = Platform.deleteFile(getFolder());
+      } catch (IOException e) {
+        e.printStackTrace();
+        success = false;
+      }
     }
 
     if (success) {
