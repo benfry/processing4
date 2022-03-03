@@ -10,8 +10,6 @@ public class NurbsCurve extends Nurbs {
     private final float[] knotVector;
     private final int degree;
 
-    private final Polynomial[][] basisFunctions;
-
     public NurbsCurve(PVector[] points, float[] weights, float[] knotVector) {
         if (points.length != weights.length) {
             throw new IllegalArgumentException("The points and weights vectors must be of equal length");
@@ -24,8 +22,6 @@ public class NurbsCurve extends Nurbs {
         if (degree <= 0) {
             throw new IllegalArgumentException("The degree of the curve must be at least 1.");
         }
-
-        this.basisFunctions = calcBasisFunctions(degree, knotVector);
     }
 
     public void setPoint(int index, PVector point) {
@@ -95,10 +91,12 @@ public class NurbsCurve extends Nurbs {
             throw new IllegalArgumentException("t should be between the knot and the next knot.");
         }
 
+        float[] basisFunctionValues = calcBasisFunctionValues(knot, t, degree, knotVector);
+
         float[] basisWeights = new float[points.length];
         float basisWeightsSum = 0;
         for (int i = Math.max(degree - knot, 0); i <= degree; i++) {
-            basisWeightsSum += basisWeights[i] = basisFunctions[knot][i].evaluate(t) * weights[i + knot - degree];
+            basisWeightsSum += basisWeights[i] = basisFunctionValues[i] * weights[i + knot - degree];
         }
         PVector result = new PVector();
         for (int i = Math.max(degree - knot, 0); i <= degree; i++) {
