@@ -6153,25 +6153,25 @@ public class PGraphicsOpenGL extends PGraphics {
     int scrX0, scrX1;
     int scrY0, scrY1;
     if (invX) {
-      scrX0 = dx + dw;
-      scrX1 = dx;
+      scrX0 = (dx + dw) / pixelDensity;
+      scrX1 = dx / pixelDensity;
     } else {
-      scrX0 = dx;
-      scrX1 = dx + dw;
+      scrX0 = dx / pixelDensity;
+      scrX1 = (dx + dw) / pixelDensity;
     }
 
     int texX0 = sx;
     int texX1 = sx + sw;
     int texY0, texY1;
     if (invY) {
-      scrY0 = height - (dy + dh);
-      scrY1 = height - dy;
+      scrY0 = height - (dy + dh) / pixelDensity;
+      scrY1 = height - dy / pixelDensity;
       texY0 = tex.height - (sy + sh);
       texY1 = tex.height - sy;
     } else {
       // Because drawTexture uses bottom-to-top orientation of Y axis.
-      scrY0 = height - dy;
-      scrY1 = height - (dy + dh);
+      scrY0 = height - dy / pixelDensity;
+      scrY1 = height - (dy + dh) / pixelDensity;
       texY0 = sy;
       texY1 = sy + sh;
     }
