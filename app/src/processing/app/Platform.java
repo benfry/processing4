@@ -399,7 +399,7 @@ public class Platform {
 
 
   /**
-   * Attempts to move to the Trash on OS X, or the Recycle Bin on Windows.
+   * Attempts to move to the Trash on macOS, or the Recycle Bin on Windows.
    * Also tries to find a suitable Trash location on Linux.
    * If not possible, just deletes the file or folder instead.
    * @param file the folder or file to be removed/deleted

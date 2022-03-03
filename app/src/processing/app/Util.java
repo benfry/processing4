@@ -312,7 +312,7 @@ public class Util {
 
   /**
    * Remove all files in a directory and the directory itself.
-   * Optinally prints error messages with failed filenames.
+   * Optionally, prints error messages with failed filenames.
    * Does not follow symlinks.
    */
   static public boolean removeDir(File dir, boolean printErrorMessages) {

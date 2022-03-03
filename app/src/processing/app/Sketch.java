@@ -57,8 +57,8 @@ public class Sketch {
   private File mainFile;
 
   /**
-   * Name of sketch, which is the name of main file
-   * (without .pde or .java extension)
+   * Name of the sketch, which is the name of the folder since 4.0 beta 6.
+   * Prior, it was the "pretty" name of the first tab (they were synonymous).
    */
   private String name;
 
@@ -664,8 +664,8 @@ public class Sketch {
     // confirm deletion with user, yes/no
     Object[] options = { Language.text("prompt.ok"), Language.text("prompt.cancel") };
     String prompt = (currentIndex == 0) ?
-      Language.text("warn.delete.sketch") :
-      Language.interpolate("warn.delete.file", current.getPrettyName());
+      Language.interpolate("warn.delete.sketch_folder", getName()) :
+      Language.interpolate("warn.delete.sketch_file", current.getPrettyName());
     int result = JOptionPane.showOptionDialog(editor,
                                               prompt,
                                               Language.text("warn.delete"),
@@ -675,24 +675,22 @@ public class Sketch {
                                               options,
                                               options[0]);
     if (result == JOptionPane.YES_OPTION) {
-      if (currentIndex == 0) {
+      if (currentIndex == 0) {  // delete the entire sketch
         // need to unset all the modified flags, otherwise tries
         // to do a save on the handleNew()
 
-        // delete the entire sketch
-        Util.removeDir(folder);
-
-        // get the changes into the sketchbook menu
-        //sketchbook.rebuildMenus();
+        // Attempt to move to the trash (falls back to removeDir)
+        try {
+          Platform.deleteFile(folder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
 
         // make a new sketch and rebuild the sketch menu
-        //editor.handleNewUnchecked();
-        //editor.handleClose2();
         editor.getBase().rebuildSketchbook();
         editor.getBase().handleClose(editor, false);
 
-      } else {
-        // delete the file
+      } else {  // delete a single tab
         if (!current.deleteFile()) {
           Messages.showMessage(Language.text("delete.messages.cannot_delete.file"),
                                Language.text("delete.messages.cannot_delete.file.description")+" \"" +

@@ -3,18 +3,28 @@ X Bring back getMainProgram() for Python Mode
 X   https://github.com/processing/processing4/issues/409
 X You must first install tweak Mode to use this sketch
 X   https://github.com/processing/processing4/issues/415
+_ test with Python Mode before release
 
-_ deleting sketch removed contents of Download folder
-_   https://github.com/processing/processing4/issues/424
-_   at a minimum, need to have 'delete' function move things to the trash
-_   or remove 'delete' as an option altogether
-_   also very problematic for what happens with Save As
-_   ah, this is because it was just a single .pde file, yikes
-_   sketch.properties should be present, but won't be if the parent is renamed
-_   always write sketch.properties? (would help the later rename case)
-_   when loading, prompt to ask whether the parent folder is the sketch folder?
-_     if it is, write sketch.properties to set the main file
-_     if not, move it to its own folder "move blah.pde to a folder named blah"
+sketchbook/open/deletions
+X test "obvious" sketch folder (and whether it prompts)
+X opening Downloads > something.pde made a p5.js sketch with only an index.html
+X   if no sketch.properties, reset nextMode to the default mode
+X deleting sketch removed contents of Download folder
+X   https://github.com/processing/processing4/issues/424
+X   also very problematic for what happens with Save As
+X   ah, this is because it was just a single .pde file, yikes
+X   sketch.properties should be present, but won't be if the parent is renamed
+o   always write sketch.properties? (would help the later rename case)
+X   when loading, prompt to ask whether the parent folder is the sketch folder?
+X     if it is, write sketch.properties to set the main file
+X     if not, move it to its own folder "move blah.pde to a folder named blah"
+X are you sure you want to delete the sketch "Downloads"
+X   instead of "are you sure you want to delete this sketch?"
+X have 'delete' function move things to the trash
+o   or remove 'delete' as an option altogether
+X new language string: warn.delete.sketch_folder so we can include folder name
+X   and renamed warn.delete.file to warn.delete.sketch_file
+
 
 _ examples handling is less than ideal
 _   examples not mentioned in warning dialog when installing
