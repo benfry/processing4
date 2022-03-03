@@ -13,7 +13,10 @@ public class Nurbs {
 
         float[][] basisValues = new float[degree + 1][degree + 1];
 
-        BiFunction<Integer, Integer, Float> getF = (n, i) -> knotVector[i + n] <= knotVector[i] ? 1 : (t - knotVector[i]) / (knotVector[i + n] - knotVector[i]);
+        BiFunction<Integer, Integer, Float> getF = (n, i) ->
+                (knotVector[i + n] <= knotVector[i])
+                        ? 1
+                        : (t - knotVector[i]) / (knotVector[i + n] - knotVector[i]);
 
         for (int n = 0; n <= degree; n++) {
             for (int i = Math.max(degree - k, degree - n); i <= degree && i + k + n - degree < knotVector.length - 1; i++) {
