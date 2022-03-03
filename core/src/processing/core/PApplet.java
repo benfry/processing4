@@ -10046,6 +10046,17 @@ public class PApplet implements PConstants {
 
 
   /**
+   * When running from the PDE, this saves the window position for
+   * next time the sketch is run. Needs to remain a separate method
+   * so that it can be overridden by Python Mode.
+   */
+  public void frameMoved(int newX, int newY) {
+    System.err.println(EXTERNAL_MOVE + " " + newX + " " + newY);
+    System.err.flush();  // doesn't seem to help or hurt
+  }
+
+
+  /**
    * Internal use only: called by Surface objects to queue a position
    * event to call windowPositioned() when it's safe, which is after
    * the beginDraw() call and before the draw(). Note that this is
@@ -10053,10 +10064,7 @@ public class PApplet implements PConstants {
    */
   public void postWindowMoved(int newX, int newY) {
     if (external && !fullScreen) {
-      // When running from the PDE, this saves the window position
-      // for next time the sketch is run.
-      System.err.println(EXTERNAL_MOVE + " " + newX + " " + newY);
-      System.err.flush();  // doesn't seem to help or hurt
+      frameMoved(newX, newY);
     }
 
     windowEventQueue.put("x", newX);
