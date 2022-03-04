@@ -575,14 +575,14 @@ public class PGraphicsOpenGL extends PGraphics {
 
     viewport = PGL.allocateIntBuffer(4);
 
-    PGL.glUsageRetained = PGL.DYNAMIC_DRAW;
-    PGL.glUsageImmediate = PGL.STATIC_DRAW;
-    PGL.glBufferAccess = PGL.READ_WRITE;
+    PGL.bufferUsageRetained = PGL.DYNAMIC_DRAW;
+    PGL.bufferUsageImmediate = PGL.STATIC_DRAW;
+    PGL.bufferMapAccess = PGL.READ_WRITE;
 
     polyAttribs = newAttributeMap();
     inGeo = newInGeometry(this, polyAttribs, IMMEDIATE);
     tessGeo = newTessGeometry(this, polyAttribs, IMMEDIATE,
-                              PGL.USE_BUFFER_OBJECT_STREAMING_IN_IMMEDIATE_MODE);
+                              PGL.bufferStreamingImmediate);
     texCache = newTexCache(this);
 
     projection = new PMatrix3D();
@@ -1239,46 +1239,46 @@ public class PGraphicsOpenGL extends PGraphics {
 
   protected void updatePolyBuffers(boolean lit, boolean tex,
                                    boolean needNormals, boolean needTexCoords) {
-    createPolyBuffers(PGL.glUsageImmediate);
+    createPolyBuffers(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
-    tessGeo.copyPolyVertices(PGL.glUsageImmediate);
+    tessGeo.copyPolyVertices(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
-    tessGeo.copyPolyColors(PGL.glUsageImmediate);
+    tessGeo.copyPolyColors(PGL.bufferUsageImmediate);
 
     if (lit) {
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyAmbient.glId);
-      tessGeo.copyPolyAmbient(PGL.glUsageImmediate);
+      tessGeo.copyPolyAmbient(PGL.bufferUsageImmediate);
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolySpecular.glId);
-      tessGeo.copyPolySpecular(PGL.glUsageImmediate);
+      tessGeo.copyPolySpecular(PGL.bufferUsageImmediate);
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyEmissive.glId);
-      tessGeo.copyPolyEmissive(PGL.glUsageImmediate);
+      tessGeo.copyPolyEmissive(PGL.bufferUsageImmediate);
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
-      tessGeo.copyPolyShininess(PGL.glUsageImmediate);
+      tessGeo.copyPolyShininess(PGL.bufferUsageImmediate);
     }
 
     if (lit || needNormals) {
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyNormal.glId);
-      tessGeo.copyPolyNormals(PGL.glUsageImmediate);
+      tessGeo.copyPolyNormals(PGL.bufferUsageImmediate);
     }
 
     if (tex || needTexCoords) {
       pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexcoord.glId);
-      tessGeo.copyPolyTexCoords(PGL.glUsageImmediate);
+      tessGeo.copyPolyTexCoords(PGL.bufferUsageImmediate);
     }
 
     for (String name: polyAttribs.keySet()) {
       VertexAttribute attrib = polyAttribs.get(name);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
-      tessGeo.copyPolyAttribs(attrib, PGL.glUsageImmediate);
+      tessGeo.copyPolyAttribs(attrib, PGL.bufferUsageImmediate);
     }
 
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPolyIndex.glId);
-    tessGeo.copyPolyIndices(PGL.glUsageImmediate);
+    tessGeo.copyPolyIndices(PGL.bufferUsageImmediate);
   }
 
 
@@ -1310,19 +1310,19 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
   protected void updateLineBuffers() {
-    createLineBuffers(PGL.glUsageImmediate);
+    createLineBuffers(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-    tessGeo.copyLineVertices(PGL.glUsageImmediate);
+    tessGeo.copyLineVertices(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-    tessGeo.copyLineColors(PGL.glUsageImmediate);
+    tessGeo.copyLineColors(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-    tessGeo.copyLineDirections(PGL.glUsageImmediate);
+    tessGeo.copyLineDirections(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufLineIndex.glId);
-    tessGeo.copyLineIndices(PGL.glUsageImmediate);
+    tessGeo.copyLineIndices(PGL.bufferUsageImmediate);
   }
 
 
@@ -1354,19 +1354,19 @@ public class PGraphicsOpenGL extends PGraphics {
 
 
   protected void updatePointBuffers() {
-    createPointBuffers(PGL.glUsageImmediate);
+    createPointBuffers(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-    tessGeo.copyPointVertices(PGL.glUsageImmediate);
+    tessGeo.copyPointVertices(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-    tessGeo.copyPointColors(PGL.glUsageImmediate);
+    tessGeo.copyPointColors(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-    tessGeo.copyPointOffsets(PGL.glUsageImmediate);
+    tessGeo.copyPointOffsets(PGL.bufferUsageImmediate);
 
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPointIndex.glId);
-    tessGeo.copyPointIndices(PGL.glUsageImmediate);
+    tessGeo.copyPointIndices(PGL.bufferUsageImmediate);
   }
 
 
@@ -2072,7 +2072,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null) {
-      attrib = new VertexAttribute(this, name, kind, type, size, PGL.glUsageImmediate);
+      attrib = new VertexAttribute(this, name, kind, type, size, PGL.bufferUsageImmediate);
       polyAttribs.put(name, attrib);
       inGeo.initAttrib(attrib);
       tessGeo.initAttrib(attrib);
@@ -9483,7 +9483,7 @@ public class PGraphicsOpenGL extends PGraphics {
     // Buffer mapping methods
 
     protected void mapPolyVerticesBuffer() {
-      polyVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      polyVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initPolyVerticesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9538,7 +9538,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyColorsBuffer() {
-      polyColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+      polyColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
     }
 
     protected void initPolyColorsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9546,10 +9546,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polyColorsBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
           updatePolyColorsBuffer();
         }
         if (unmap) {
@@ -9593,7 +9593,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyNormalsBuffer() {
-      polyNormalsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      polyNormalsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initPolyNormalsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9648,7 +9648,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyTexCoordsBuffer() {
-      polyTexCoordsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      polyTexCoordsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initPolyTexCoordsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9703,7 +9703,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyAmbientBuffer() {
-      polyAmbientBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+      polyAmbientBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
     }
 
     protected void initPolyAmbientBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9711,10 +9711,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polyAmbientBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
           updatePolyAmbientBuffer();
         }
         if (unmap) {
@@ -9758,7 +9758,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolySpecularBuffer() {
-      polySpecularBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+      polySpecularBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
     }
 
     protected void initPolySpecularBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9766,10 +9766,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polySpecularBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
           updatePolySpecularBuffer();
         }
         if (unmap) {
@@ -9813,7 +9813,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyEmissiveBuffer() {
-      polyEmissiveBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+      polyEmissiveBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
     }
 
     protected void initPolyEmissiveBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9821,10 +9821,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_INT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+          polyEmissiveBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
           updatePolyEmissiveBuffer();
         }
         if (unmap) {
@@ -9868,7 +9868,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyShininessBuffer() {
-      polyShininessBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      polyShininessBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initPolyShininessBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -9876,10 +9876,10 @@ public class PGraphicsOpenGL extends PGraphics {
       int sizei = polyVertexCount * PGL.SIZEOF_FLOAT;
       if (bufObjStreaming) {
         if (onlymap) {
-          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
         } else {
           pgl.bufferData(PGL.ARRAY_BUFFER, sizei, null, usage);
-          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+          polyShininessBuffer = pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
           updatePolyShininessBuffer();
         }
         if (unmap) {
@@ -9924,11 +9924,11 @@ public class PGraphicsOpenGL extends PGraphics {
 
     protected void mapPolyAttribBuffer(VertexAttribute attrib) {
       if (attrib.type == PGL.FLOAT) {
-        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer());
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer());
       } else if (attrib.type == PGL.INT) {
-        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer());
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer());
       } else if (attrib.type == PGL.BOOL) {
-        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess));
+        polyAttribBuffers.put(attrib.name, pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess));
       }
     }
 
@@ -9986,7 +9986,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPolyIndicesBuffer() {
-      polyIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.glBufferAccess).asShortBuffer();
+      polyIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.bufferMapAccess).asShortBuffer();
     }
 
     protected void initPolyIndicesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10022,7 +10022,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineVerticesBuffer() {
-      lineVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      lineVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initLineVerticesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10077,7 +10077,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineColorsBuffer() {
-      lineColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+      lineColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
     }
 
     protected void initLineColorsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10132,7 +10132,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineDirectionsBuffer() {
-      lineDirectionsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      lineDirectionsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initLineDirectionsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10187,7 +10187,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapLineIndicesBuffer() {
-      lineIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.glBufferAccess).asShortBuffer();
+      lineIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.bufferMapAccess).asShortBuffer();
     }
 
     protected void initLineIndicesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10223,7 +10223,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointVerticesBuffer() {
-      pointVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      pointVerticesBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initPointVerticesBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10278,7 +10278,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointColorsBuffer() {
-      pointColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asIntBuffer();
+      pointColorsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asIntBuffer();
     }
 
     protected void initPointColorsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10333,7 +10333,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointOffsetsBuffer() {
-      pointOffsetsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.glBufferAccess).asFloatBuffer();
+      pointOffsetsBuffer = pg.pgl.mapBuffer(PGL.ARRAY_BUFFER, PGL.bufferMapAccess).asFloatBuffer();
     }
 
     protected void initPointOffsetsBuffer(boolean onlymap, boolean unmap, int usage) {
@@ -10388,7 +10388,7 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     protected void mapPointIndicesBuffer() {
-      pointIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.glBufferAccess).asShortBuffer();
+      pointIndicesBuffer = pg.pgl.mapBuffer(PGL.ELEMENT_ARRAY_BUFFER, PGL.bufferMapAccess).asShortBuffer();
     }
 
     protected void initPointIndicesBuffer(boolean onlymap, boolean unmap, int usage) {

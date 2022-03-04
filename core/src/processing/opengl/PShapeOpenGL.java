@@ -1182,7 +1182,7 @@ public class PShapeOpenGL extends PShape {
     }
     VertexAttribute attrib = polyAttribs.get(name);
     if (attrib == null) {
-      attrib = new VertexAttribute(pg, name, kind, type, size, PGL.glUsageRetained);
+      attrib = new VertexAttribute(pg, name, kind, type, size, PGL.bufferUsageRetained);
       polyAttribs.put(name, attrib);
       inGeo.initAttrib(attrib);
     }
@@ -3329,85 +3329,85 @@ public class PShapeOpenGL extends PShape {
       boolean createBuffer;
       if (root.tessKind == TRIANGLES && hasPolys) {
         createBuffer = bufPolyVertex == null;
-        if (createBuffer) bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
-        tessGeo.initPolyVerticesBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolyVerticesBuffer(!createBuffer, false, PGL.bufferUsageRetained);
         root.selVertices = tessGeo.polyVertices;
 
         createBuffer = bufPolyColor == null;
-        if (createBuffer) bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+        if (createBuffer) bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
-        tessGeo.initPolyColorsBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolyColorsBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufPolyNormal == null;
-        if (createBuffer) bufPolyNormal = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufPolyNormal = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyNormal.glId);
-        tessGeo.initPolyNormalsBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolyNormalsBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufPolyTexCoord == null;
-        if (createBuffer) bufPolyTexCoord = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufPolyTexCoord = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexCoord.glId);
-        tessGeo.initPolyTexCoordsBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolyTexCoordsBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufPolyAmbient == null;
-        if (createBuffer) bufPolyAmbient = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+        if (createBuffer) bufPolyAmbient = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyAmbient.glId);
-        tessGeo.initPolyAmbientBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolyAmbientBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufPolySpecular == null;
-        if (createBuffer) bufPolySpecular = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+        if (createBuffer) bufPolySpecular = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolySpecular.glId);
-        tessGeo.initPolySpecularBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolySpecularBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufPolyEmissive == null;
-        if (createBuffer) bufPolyEmissive = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+        if (createBuffer) bufPolyEmissive = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyEmissive.glId);
-        tessGeo.initPolyEmissiveBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolyEmissiveBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufPolyShininess == null;
-        if (createBuffer) bufPolyShininess = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufPolyShininess = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
-        tessGeo.initPolyShininessBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPolyShininessBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         for (String name: polyAttribs.keySet()) {
           VertexAttribute attrib = polyAttribs.get(name);
           createBuffer = !attrib.bufferCreated();
           if (createBuffer) attrib.createBuffer(pgl);
           pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
-          tessGeo.initPolyAttribsBuffer(attrib, !createBuffer, false, PGL.glUsageRetained);
+          tessGeo.initPolyAttribsBuffer(attrib, !createBuffer, false, PGL.bufferUsageRetained);
         }
       } else if (root.tessKind == LINES && hasLines) {
         createBuffer = bufLineVertex == null;
-        if (createBuffer) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-        tessGeo.initLineVerticesBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initLineVerticesBuffer(!createBuffer, false, PGL.bufferUsageRetained);
         root.selVertices = tessGeo.lineVertices;
 
         createBuffer = bufLineColor == null;
-        if (createBuffer) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+        if (createBuffer) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-        tessGeo.initLineColorsBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initLineColorsBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufLineAttrib == null;
-        if (createBuffer) bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-        tessGeo.initLineDirectionsBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initLineDirectionsBuffer(!createBuffer, false, PGL.bufferUsageRetained);
       } else if (root.tessKind == POINTS && hasPoints) {
         createBuffer = bufPointVertex == null;
-        if (createBuffer) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-        tessGeo.initPointVerticesBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPointVerticesBuffer(!createBuffer, false, PGL.bufferUsageRetained);
         root.selVertices = tessGeo.pointVertices;
 
         createBuffer = bufPointColor == null;
-        if (createBuffer) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+        if (createBuffer) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-        tessGeo.initPointColorsBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPointColorsBuffer(!createBuffer, false, PGL.bufferUsageRetained);
 
         createBuffer = bufPointAttrib == null;
-        if (createBuffer) bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+        if (createBuffer) bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
         pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-        tessGeo.initPointOffsetsBuffer(!createBuffer, false, PGL.glUsageRetained);
+        tessGeo.initPointOffsetsBuffer(!createBuffer, false, PGL.bufferUsageRetained);
       }
 
       pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
@@ -3593,7 +3593,7 @@ public class PShapeOpenGL extends PShape {
 
       if (tessGeo == null) {
         tessGeo = PGraphicsOpenGL.newTessGeometry(pg, polyAttribs, PGraphicsOpenGL.RETAINED,
-                                                  PGL.USE_BUFFER_OBJECT_STREAMING_IN_RETAINED_MODE);
+                                                  PGL.bufferStreamingRetained);
       }
       tessGeo.clear();
 
@@ -4620,110 +4620,110 @@ public class PShapeOpenGL extends PShape {
 
   protected void initPolyBuffers() {
     boolean createBuffer = bufPolyVertex == null;
-    if (createBuffer) bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufPolyVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyVertex.glId);
-    tessGeo.initPolyVerticesBuffer(false, true, PGL.glUsageRetained);
+    tessGeo.initPolyVerticesBuffer(false, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPolyColor == null;
-    if (createBuffer) bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+    if (createBuffer) bufPolyColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyColor.glId);
-    tessGeo.initPolyColorsBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolyColorsBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPolyNormal == null;
-    if (createBuffer) bufPolyNormal = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufPolyNormal = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 3, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyNormal.glId);
-    tessGeo.initPolyNormalsBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolyNormalsBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPolyTexCoord == null;
-    if (createBuffer) bufPolyTexCoord = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufPolyTexCoord = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyTexCoord.glId);
-    tessGeo.initPolyTexCoordsBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolyTexCoordsBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPolyAmbient == null;
-    if (createBuffer) bufPolyAmbient = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+    if (createBuffer) bufPolyAmbient = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyAmbient.glId);
-    tessGeo.initPolyAmbientBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolyAmbientBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPolySpecular == null;
-    if (createBuffer) bufPolySpecular = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+    if (createBuffer) bufPolySpecular = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolySpecular.glId);
-    tessGeo.initPolySpecularBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolySpecularBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPolyEmissive == null;
-    if (createBuffer) bufPolyEmissive = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+    if (createBuffer) bufPolyEmissive = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyEmissive.glId);
-    tessGeo.initPolyEmissiveBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolyEmissiveBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPolyShininess == null;
-    if (createBuffer) bufPolyShininess = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufPolyShininess = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPolyShininess.glId);
-    tessGeo.initPolyShininessBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolyShininessBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     for (String name: polyAttribs.keySet()) {
       VertexAttribute attrib = polyAttribs.get(name);
       createBuffer = !attrib.bufferCreated();
       if (createBuffer) attrib.createBuffer(pgl);
       pgl.bindBuffer(PGL.ARRAY_BUFFER, attrib.buf.glId);
-      tessGeo.initPolyAttribsBuffer(attrib, !createBuffer, true, PGL.glUsageRetained);
+      tessGeo.initPolyAttribsBuffer(attrib, !createBuffer, true, PGL.bufferUsageRetained);
     }
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
     createBuffer = bufPolyIndex == null;
-    if (createBuffer) bufPolyIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, PGL.glUsageRetained, true);
+    if (createBuffer) bufPolyIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, PGL.bufferUsageRetained, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPolyIndex.glId);
-    tessGeo.initPolyIndicesBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPolyIndicesBuffer(!createBuffer, true, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
   }
 
   protected void initLineBuffers() {
     boolean createBuffer = bufLineVertex == null;
-    if (createBuffer) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufLineVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineVertex.glId);
-    tessGeo.initLineVerticesBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initLineVerticesBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufLineColor == null;
-    if (createBuffer) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+    if (createBuffer) bufLineColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineColor.glId);
-    tessGeo.initLineColorsBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initLineColorsBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufLineAttrib == null;
-    if (createBuffer) bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufLineAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufLineAttrib.glId);
-    tessGeo.initLineDirectionsBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initLineDirectionsBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
     createBuffer = bufLineIndex == null;
-    if (createBuffer) bufLineIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, PGL.glUsageRetained, true);
+    if (createBuffer) bufLineIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, PGL.bufferUsageRetained, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufLineIndex.glId);
-    tessGeo.initLineIndicesBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initLineIndicesBuffer(!createBuffer, true, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
   }
 
 
   protected void initPointBuffers() {
     boolean createBuffer = bufPointVertex == null;
-    if (createBuffer) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufPointVertex = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 4, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointVertex.glId);
-    tessGeo.initPointVerticesBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPointVerticesBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPointColor == null;
-    if (createBuffer) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.glUsageRetained);
+    if (createBuffer) bufPointColor = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 1, PGL.SIZEOF_INT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointColor.glId);
-    tessGeo.initPointColorsBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPointColorsBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     createBuffer = bufPointAttrib == null;
-    if (createBuffer) bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, PGL.glUsageRetained);
+    if (createBuffer) bufPointAttrib = new VertexBuffer(pg, PGL.ARRAY_BUFFER, 2, PGL.SIZEOF_FLOAT, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ARRAY_BUFFER, bufPointAttrib.glId);
-    tessGeo.initPointOffsetsBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPointOffsetsBuffer(!createBuffer, true, PGL.bufferUsageRetained);
 
     pgl.bindBuffer(PGL.ARRAY_BUFFER, 0);
 
     createBuffer = bufPointIndex == null;
-    if (createBuffer) bufPointIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, PGL.glUsageRetained, true);
+    if (createBuffer) bufPointIndex = new VertexBuffer(pg, PGL.ELEMENT_ARRAY_BUFFER, 1, PGL.SIZEOF_INDEX, PGL.bufferUsageRetained, true);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, bufPointIndex.glId);
-    tessGeo.initPointIndicesBuffer(!createBuffer, true, PGL.glUsageRetained);
+    tessGeo.initPointIndicesBuffer(!createBuffer, true, PGL.bufferUsageRetained);
     pgl.bindBuffer(PGL.ELEMENT_ARRAY_BUFFER, 0);
   }
 
