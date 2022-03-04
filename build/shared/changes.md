@@ -55,7 +55,7 @@ If your window is taller (or wider) than the specified ratio, your sketch will b
 
 The exact amount of space that's extra can be found in the `ratioLeft` and `ratioTop` variables. And the current `scale()` being used for the ratio can be found in `ratioScale`.
 
-Mind you, it might be tempting to use windowRatio(16, 9), but keep in mind that means your horizontal coordinates will be numbers between 0 and (almost) 16, and vertical will be between 0 and 9. Not a great way to work! (And at some point, likely to introduce quirks as you learn about the inaccuracies of floating point number accuracy.)
+Mind you, it might be tempting to use windowRatio(16, 9), but keep in mind that means your horizontal coordinates will be numbers between 0 and (almost) 16, and vertical will be between 0 and 9. Not a great way to work! (And at some point, likely to introduce quirks as you learn about the shortcomings of floating point number accuracy.)
 
 
 ## Minor Mites

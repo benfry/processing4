@@ -1,3 +1,44 @@
+1282 (4.0b7)
+X Bring back getMainProgram() for Python Mode
+X   https://github.com/processing/processing4/issues/409
+X Change straight quotes to smart quotes in the PDE.properties file
+X look for other uses of Util.deleteFile() and replace with Platform calls
+
+sketchbook/open/deletions/modes
+X test "obvious" sketch folder (and whether it prompts)
+X opening Downloads > something.pde made a p5.js sketch with only an index.html
+X   if no sketch.properties, reset nextMode to the default mode
+X deleting sketch removed contents of Download folder
+X   https://github.com/processing/processing4/issues/424
+X   also very problematic for what happens with Save As
+X   ah, this is because it was just a single .pde file, yikes
+X   sketch.properties should be present, but won't be if the parent is renamed
+o   always write sketch.properties? (would help the later rename case)
+X   when loading, prompt to ask whether the parent folder is the sketch folder?
+X     if it is, write sketch.properties to set the main file
+X     if not, move it to its own folder "move blah.pde to a folder named blah"
+X are you sure you want to delete the sketch "Downloads"
+X   instead of "are you sure you want to delete this sketch?"
+X have 'delete' function move things to the trash
+o   or remove 'delete' as an option altogether
+X new language string: warn.delete.sketch_folder so we can include folder name
+X   and renamed warn.delete.file to warn.delete.sketch_file
+X remove selectMode() code from Base... just too funky
+X   should just go back to the default Mode, or the first that matches
+X   not enough Modes to warrant all the weirdness that could happen
+o   and for Android (the only legit case), local.properties should be set
+o   or we have changeMode() to make it an easy switch
+X   turns out, it wasn't getting set, but that's now fixed
+o fix extension check for other modes
+X   https://github.com/processing/processing/issues/3980
+X   not relevant b/c of https://github.com/processing/processing4/issues/189
+X You must first install tweak Mode to use this sketch
+X   https://github.com/processing/processing4/issues/415
+X change handleOpen() to take a Mode object
+X   allows Python and Android Mode to open example sketches in that Mode,
+X   without (retroactively) needing sketch.properties files in all folders
+
+
 1281 (4.0b6)
 X update to Java 17.0.2+8
 X move "Add Examples" to bottom of the Examples window
