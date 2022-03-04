@@ -1,3 +1,74 @@
+# Processing 4.0 beta 7
+
+*Revision 1282 – 3 March 2022*
+
+The main thing for this release is to prevent an issue where code might be deleted (!) due to the change in beta 6, and also to undo a regression that broke Python Mode. Sorry, snake people!
+
+Also: a new feature! A very cool new feature! See below.
+
+
+## Regression Repair
+
+* Bring back `getMainProgram()` for Python Mode. [#409](https://github.com/processing/processing4/issues/409)
+
+* Fix an issue where opening a single .pde file in an unrelated folder (i.e. Downloads) would delete the entire folder when deleting the "sketch" without being 100% obvious what it was doing. [#424](https://github.com/processing/processing4/issues/424)
+
+* Andrés tracked down the problem with `POINTS` and `PShape` that was introduced in 4.0 beta 3. [#345](https://github.com/processing/processing4/issues/345), [#432](https://github.com/processing/processing4/pull/432)
+
+
+## I'm just here for the ratio
+
+Added a new `windowRatio(width, height)` function that remaps screen and mouse coordinates to the specified aspect ratio. 
+
+The general idea is that you set a ratio, and whether you're using `fullScreen()` or `setResizable(true)`, the sketch will scale its coordinates (and the coordinates of the mouse to fit that same ratio. 
+  
+For instance, use `windowRatio(1280, 720)` in your code, and then all your coordinates will be re-mapped to that range—but always keeping the aspect ratio. Probably easiest to see by running this sketch:
+
+```processing
+void setup() {
+  windowResizable(true);
+  windowRatio(1280, 720);
+  
+  cursor(CROSS);
+  strokeWeight(10);
+}
+
+void draw() {
+  background(240);
+  fill(255);
+  rect(0, 0, rwidth, rheight);
+  
+  fill(0);
+  textAlign(CENTER, CENTER);
+  textSize(200);
+  text(rmouseX + ", " + rmouseY, rwidth/2, rheight/2);
+}
+```
+
+When using `windowRatio()`, the new `rwidth` and `rheight` variables contain the width and height that were passed to `windowRatio()` and can be used in place of `width` and `height` elsewhere in your code. 
+
+Similarly, `rmouseX` and `rmouseY` contain the mouse position, scaled by the current ratio.
+
+If your window is taller (or wider) than the specified ratio, your sketch will be moved (using `translate()` to fit the space, and `rmouseX` and `rmouseY` might even have negative values if they're outside the box. (Again, try running the code above.) 
+
+The exact amount of space that's extra can be found in the `ratioLeft` and `ratioTop` variables. And the current `scale()` being used for the ratio can be found in `ratioScale`. 
+
+Mind you, it might be tempting to use windowRatio(16, 9), but keep in mind that means your horizontal coordinates will be numbers between 0 and (almost) 16, and vertical will be between 0 and 9. Not a great way to work! (And at some point, likely to introduce quirks as you learn about the inaccuracies of floating point number accuracy.)
+
+
+## Minor Mites
+
+* Half a dozen other fixes/changes for opening sketches and how it identifies the Mode and the rest. If you notice anything weird, let us know asap.
+
+* Rewrote our native code for going full screen on macOS, retiring jAppleMenuBar after a decade of service. Also gets things working on Apple Silicon.
+
+* Prevent “You must first install tweak Mode to use this sketch” when using sketches that date back to 2.0. [#415](https://github.com/processing/processing4/issues/415)
+
+* Swap more uses of `Util.deleteFile()` and move files to the Trash (or Recycle Bin) instead. This can make more mess, but it reduces the chances of something bad happening when Processing deletes a file.
+
+* Change straight quotes to smart quotes in the `PDE.properties` file. This just means that more UI and error messages will have nicer quotes.
+
+
 # Processign 4.0 beta 6
 
 *Revision 1281 – 13 February 2022*
