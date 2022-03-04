@@ -2,7 +2,7 @@
 
 *Revision 1282 – 3 March 2022*
 
-The main thing for this release is to prevent an issue where code might be deleted (!) due to the change in beta 6.
+The main thing for this release is to prevent an issue where files might be deleted (!) due to the change in beta 6.
 
 …it also rolls back a change that broke Python Mode. Sorry, snake people!
 
@@ -20,17 +20,17 @@ The main thing for this release is to prevent an issue where code might be delet
 
 ## I'm just here for the ratio
 
-Added a new `windowRatio(width, height)` function that remaps screen and mouse coordinates to the specified aspect ratio. 
+Added a new `windowRatio(width, height)` function that remaps screen and mouse coordinates to the specified aspect ratio.
 
-The general idea is that you set a ratio, and whether you're using `fullScreen()` or `setResizable(true)`, the sketch will scale its coordinates (and the coordinates of the mouse to fit that same ratio. 
-  
+The general idea is that you set a ratio, and whether you're using `fullScreen()` or `setResizable(true)`, the sketch will scale its coordinates (and the coordinates of the mouse to fit that same ratio.
+
 For instance, use `windowRatio(1280, 720)` in your code, and then all your coordinates will be re-mapped to that range—but always keeping the aspect ratio. Probably easiest to see by running this sketch:
 
 ```processing
 void setup() {
   windowResizable(true);
   windowRatio(1280, 720);
-  
+
   cursor(CROSS);
   strokeWeight(10);
 }
@@ -39,7 +39,7 @@ void draw() {
   background(240);
   fill(255);
   rect(0, 0, rwidth, rheight);
-  
+
   fill(0);
   textAlign(CENTER, CENTER);
   textSize(200);
@@ -47,13 +47,13 @@ void draw() {
 }
 ```
 
-When using `windowRatio()`, the new `rwidth` and `rheight` variables contain the width and height that were passed to `windowRatio()` and can be used in place of `width` and `height` elsewhere in your code. 
+When using `windowRatio()`, the new `rwidth` and `rheight` variables contain the width and height that were passed to `windowRatio()` and can be used in place of `width` and `height` elsewhere in your code.
 
 Similarly, `rmouseX` and `rmouseY` contain the mouse position, scaled by the current ratio.
 
-If your window is taller (or wider) than the specified ratio, your sketch will be moved (using `translate()` to fit the space, and `rmouseX` and `rmouseY` might even have negative values if they're outside the box. (Again, try running the code above.) 
+If your window is taller (or wider) than the specified ratio, your sketch will be moved (using `translate()` to fit the space, and `rmouseX` and `rmouseY` might even have negative values if they're outside the box. (Again, try running the code above.)
 
-The exact amount of space that's extra can be found in the `ratioLeft` and `ratioTop` variables. And the current `scale()` being used for the ratio can be found in `ratioScale`. 
+The exact amount of space that's extra can be found in the `ratioLeft` and `ratioTop` variables. And the current `scale()` being used for the ratio can be found in `ratioScale`.
 
 Mind you, it might be tempting to use windowRatio(16, 9), but keep in mind that means your horizontal coordinates will be numbers between 0 and (almost) 16, and vertical will be between 0 and 9. Not a great way to work! (And at some point, likely to introduce quirks as you learn about the inaccuracies of floating point number accuracy.)
 
