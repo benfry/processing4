@@ -2,9 +2,11 @@
 
 *Revision 1282 – 3 March 2022*
 
-The main thing for this release is to prevent an issue where code might be deleted (!) due to the change in beta 6, and also to undo a regression that broke Python Mode. Sorry, snake people!
+The main thing for this release is to prevent an issue where code might be deleted (!) due to the change in beta 6.
 
-Also: a new feature! A very cool new feature! See below.
+…it also rolls back a change that broke Python Mode. Sorry, snake people!
+
+…but also: a new feature! A very cool new feature! See below.
 
 
 ## Regression Repair
