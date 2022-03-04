@@ -55,12 +55,15 @@ public class NurbsCurve extends Nurbs {
     public void draw(PGraphics g, int steps) {
         g.beginShape();
         float stepSize = (knotVector[knotVector.length - 1] - knotVector[0]) / steps;
-        for (int knot = 0; knot < points.length; knot++) {
-            for (float t = knotVector[knot]; t < knotVector[knot + 1] || (knot == points.length - 1 && t <= knotVector[knot + 1]); t = Math.min(t + stepSize, knotVector[points.length])) {
-                g.vertex(evaluate(t, knot).array());
-                if (t == knotVector[points.length]) {
-                    break;
-                }
+        int knot = 0;
+        for (float t = knotVector[knot]; t <= knotVector[knotVector.length - 1]; t = Math.min(t + stepSize, knotVector[knotVector.length - 1])) {
+            while (knotVector[knot + 1] <= t && t < knotVector[knotVector.length - 1]) {
+                knot++;
+            }
+
+            g.vertex(evaluate(t, knot).array());
+            if (t == knotVector[points.length]) {
+                break;
             }
         }
         g.endShape();
