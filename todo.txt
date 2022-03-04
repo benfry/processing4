@@ -280,6 +280,7 @@ _   https://github.com/processing/processing4/issues/212
 _   modules and classpath ugh https://stackoverflow.com/a/46289257
 _ also the Crusty2D renderer for use with macOS hack stuff
 _   actually need separate alpha/1.5/2.x versions of this
+_ apt package for easier rpi install (especially)
 
 
 windows
