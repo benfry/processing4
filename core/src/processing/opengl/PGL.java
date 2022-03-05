@@ -77,16 +77,6 @@ public abstract class PGL {
   protected static boolean USE_DIRECT_BUFFERS = true;
   protected static int MIN_DIRECT_BUFFER_SIZE = 1;
 
-  /** Controls the use of buffer object streaming. In combination with use direct buffers,
-   * the only advantage of enabling it in immediate mode would be to reduce memory footprint
-   * since the direct vertex buffers would not be allocated, simply mapped from the OpenGL
-   * objects and thus only the vertex arrays would be created.
-   * In the case of the retained mode (PShape), memory footprint would be reduced (for the same
-   * reason) but it may enable some speed ups when editing a geometry in within a being/end
-   * tessellation update block. */
-  static public boolean USE_BUFFER_OBJECT_STREAMING_IN_IMMEDIATE_MODE = false;
-  static public boolean USE_BUFFER_OBJECT_STREAMING_IN_RETAINED_MODE = true;
-
   /** Enables/disables mipmap use. */
   protected static boolean MIPMAPS_ENABLED = true;
 
@@ -139,15 +129,33 @@ public abstract class PGL {
 
   // ........................................................
 
-  // These variables are left public so advanced users can experiment with different
-  // usage modes and access policies controlling the buffer data store:
+  // These parameters are left public so advanced users can experiment with different
+  // configurations of buffer object streaming, buffer usage modes and access policies.
 
-  // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-  static public int glUsageRetained;
-  static public int glUsageImmediate;
+  /** Controls the use of buffer object streaming:
+   * https://www.khronos.org/opengl/wiki/Buffer_Object_Streaming
+   * In combination with use direct buffers,
+   * the only advantage of enabling it in immediate mode would be to reduce memory footprint
+   * since the direct vertex buffers would not be allocated, simply mapped from the OpenGL
+   * objects and thus only the vertex arrays would be created.
+   * In the case of the retained mode (PShape), memory footprint would be reduced (for the same
+   * reason) but it may enable some speed-ups when editing a geometry in within a being/end
+   * tessellation update block. */
+  static public boolean bufferStreamingImmediate = false;
+  static public boolean bufferStreamingRetained = true;
 
-  // https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glMapBuffer.xhtml
-  static public int glBufferAccess;
+  /** Controls the usage of the buffer data store:
+   * https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+   * Supported options include STATIC_DRAW, DYNAMIC_DRAW, STREAM_DRAW, and STREAM_READ.
+   */
+  static public int bufferUsageRetained;
+  static public int bufferUsageImmediate;
+
+  /** Controls the access to the mapped buffer object's data store (when using buffer streaming).
+   * https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glMapBuffer.xhtml
+   * Supported options are READ_ONLY, WRITE_ONLY, and READ_WRITE.
+   */
+  static public int bufferMapAccess;
 
   // ........................................................
 
