@@ -1518,94 +1518,97 @@ public class Base {
             System.out.println(path + " selected, but main is " + mainPath);
           }
           return handleOpenInternal(mainPath, false);
-
-        } else {
-          // if no main specified, use the passed-in path as the main
-          return handleOpenInternal(path, false);
         }
       } else {
-        // No properties file, so do some checks to make sure the file
-        // can be opened, and identify the Mode that it's using.
-
         // Switch back to defaultMode, because a sketch.properties
         // file is required whenever not using the default Mode.
+        // (Unless being called from, say, the Examples frame,
+        // which uses the version that passes a Mode object.)
         nextMode = getDefaultMode();
+      }
 
-        if (!Sketch.isSanitaryName(pdeFile.getName())) {
-          Messages.showWarning("You're tricky, but not tricky enough",
-            pdeFile.getName() + " is not a valid name for sketch code.\n" +
-            "Better to stick to ASCII, no spaces, and make sure\n" +
-            "it doesn't start with a number.", null);
-          return null;
-        }
+      // Do some checks to make sure the file can be opened, and identify the
+      // Mode that it's using. (In 4.0b8, this became the fall-through case.)
 
-        // Check if the name of the file matches the parent folder name.
-        String baseName = pdeFile.getName();
-        int dot = baseName.lastIndexOf('.');
-        if (dot == -1) {
-          // Shouldn't really be possible, right?
-          System.err.println(pdeFile + " does not have an extension.");
-          return null;
-        }
-        baseName = baseName.substring(0, dot);
-        if (!baseName.equals(parentFolder.getName())) {
-          // Parent folder name does not match,
-          // and no sketch.properties file is present.
+      if (!Sketch.isSanitaryName(pdeFile.getName())) {
+        Messages.showWarning("You're tricky, but not tricky enough",
+          pdeFile.getName() + " is not a valid name for sketch code.\n" +
+          "Better to stick to ASCII, no spaces, and make sure\n" +
+          "it doesn't start with a number.", null);
+        return null;
+      }
 
-          // Check whether another .pde file has a matching name,
-          // and if so, switch to using that instead.
-          File mainFile =
-            new File(parentFolder, parentFolder.getName() + ".pde");
-          if (mainFile.exists()) {
-            // User was opening the wrong file in a legit sketch folder.
-            pdeFile = mainFile;
+      // Check if the name of the file matches the parent folder name.
+      String baseName = pdeFile.getName();
+      int dot = baseName.lastIndexOf('.');
+      if (dot == -1) {
+        // Shouldn't really be possible, right?
+        System.err.println(pdeFile + " does not have an extension.");
+        return null;
+      }
+      baseName = baseName.substring(0, dot);
+      if (!baseName.equals(parentFolder.getName())) {
+        // Parent folder name does not match, and because sketch.properties
+        // did not exist or did not specify it above, need to determine main.
 
-          } else if (smellsLikeSketchFolder(parentFolder)) {
-            // Looks like a sketch folder, set this as the main.
-            props.set("main", pdeFile.getName());
-            // Save for later use, then fall through.
+        // Check whether another .pde file has a matching name, and if so,
+        // switch to using that instead. Handles when a user selects a .pde
+        // file in the open dialog box that isn't the main tab.
+        // (Also important to use nextMode here, because the Mode
+        // may be set by sketch.properties when it's loaded above.)
+        String filename =
+          parentFolder.getName() + "." + nextMode.getDefaultExtension();
+        File mainFile = new File(parentFolder, filename);
+        if (mainFile.exists()) {
+          // User was opening the wrong file in a legit sketch folder.
+          pdeFile = mainFile;
+
+        } else if (smellsLikeSketchFolder(parentFolder)) {
+          // Looks like a sketch folder, set this as the main.
+          props.set("main", pdeFile.getName());
+          // Save for later use, then fall through.
+          props.save();
+
+        } else {
+          // If it's not an obvious sketch folder (just .pde files,
+          // maybe a data folder) prompt the user whether to
+          // 1) move sketch into its own folder, or
+          // 2) call this the main, and write sketch.properties.
+          File newFile = moveLikeSketchFolder(pdeFile, baseName);
+
+          if (newFile == pdeFile) {
+            // User wanted to keep this sketch folder, so update the
+            // property for the main tab and write sketch.properties.
+            props.set("main", newFile.getName());
             props.save();
 
-          } else {
-            // If it's not an obvious sketch folder (just .pde files,
-            // maybe a data folder) prompt the user whether to
-            // 1) move sketch into its own folder, or
-            // 2) call this the main, and write sketch.properties.
-            File newFile = moveLikeSketchFolder(pdeFile, baseName);
-
-            if (newFile == pdeFile) {
-              // User wanted to keep this sketch folder, so update the
-              // property for the main tab and write sketch.properties.
-              props.set("main", newFile.getName());
-              props.save();
-
-            } else if (newFile == null) {
-              // User canceled, so exit handleOpen()
-              return null;
-
-            } else {
-              // User asked to move the sketch file
-              pdeFile = newFile;
-            }
-          }
-        }
-
-        // TODO Remove this selector? Seems too messy/precious. [fry 220205]
-        //      Opting to remove in beta 7, because sketches that use another
-        //      Mode should have a working sketch.properties. [fry 220302]
-        /*
-        // If the current Mode cannot open this file, try to find another.
-        if (!nextMode.canEdit(pdeFile)) {
-
-          final Mode mode = promptForMode(pdeFile);
-          if (mode == null) {
+          } else if (newFile == null) {
+            // User canceled, so exit handleOpen()
             return null;
+
+          } else {
+            // User asked to move the sketch file
+            pdeFile = newFile;
           }
-          nextMode = mode;
         }
-        */
-        handleOpenInternal(pdeFile.getAbsolutePath(), false);
       }
+
+      // TODO Remove this selector? Seems too messy/precious. [fry 220205]
+      //      Opting to remove in beta 7, because sketches that use another
+      //      Mode should have a working sketch.properties. [fry 220302]
+      /*
+      // If the current Mode cannot open this file, try to find another.
+      if (!nextMode.canEdit(pdeFile)) {
+
+        final Mode mode = promptForMode(pdeFile);
+        if (mode == null) {
+          return null;
+        }
+        nextMode = mode;
+      }
+      */
+      handleOpenInternal(pdeFile.getAbsolutePath(), false);
+
     } catch (IOException e) {
       Messages.showWarning("sketch.properties",
         "Error while reading sketch.properties from\n" + parentFolder, e);

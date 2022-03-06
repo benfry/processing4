@@ -1,5 +1,12 @@
 1283 (4.0b8)
 
+X fix logic for opening the correct 'main' tab in handleOpen()
+X   opening AspectHelper.js makes it the main tab
+X   through sketch.properties is not rewritten
+
+
+_ on release: submit to Microsoft
+_   https://www.microsoft.com/en-us/wdsi/filesubmission
 
 python
 X add JavaFX handler
@@ -9,6 +16,8 @@ _ add changes for the eawt mess? (too tricky)
 _   https://github.com/jdf/processing.py/issues/398
 _ submit a PR
 
+
+_ dropping folder into sketch window throws weird exception
 
 _ examples handling is less than ideal
 _   examples not mentioned in warning dialog when installing
