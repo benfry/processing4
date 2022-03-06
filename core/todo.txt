@@ -1,6 +1,14 @@
 1283 (4.0b8)
 
 
+andres
+X Renamed parameters controlling GL buffer settings
+X   https://github.com/processing/processing4/pull/435
+X PShape performance could be improved using buffer object streaming
+X   https://github.com/processing/processing4/issues/196
+X   done earlier, but finalized in beta 7
+
+
 macos-aarch64
 _ JOGL is broken on aarch64
 _   https://github.com/processing/processing4/issues/370
