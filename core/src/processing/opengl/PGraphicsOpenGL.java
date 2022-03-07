@@ -6154,25 +6154,25 @@ public class PGraphicsOpenGL extends PGraphics {
     int scrX0, scrX1;
     int scrY0, scrY1;
     if (invX) {
-      scrX0 = dx + dw;
-      scrX1 = dx;
+      scrX0 = (dx + dw) / src.pixelDensity;
+      scrX1 = dx / src.pixelDensity;
     } else {
-      scrX0 = dx;
-      scrX1 = dx + dw;
+      scrX0 = dx / src.pixelDensity;
+      scrX1 = (dx + dw) / src.pixelDensity;
     }
 
     int texX0 = sx;
     int texX1 = sx + sw;
     int texY0, texY1;
     if (invY) {
-      scrY0 = height - (dy + dh);
-      scrY1 = height - dy;
+      scrY0 = height - (dy + dh) / src.pixelDensity;
+      scrY1 = height - dy / src.pixelDensity;
       texY0 = tex.height - (sy + sh);
       texY1 = tex.height - sy;
     } else {
       // Because drawTexture uses bottom-to-top orientation of Y axis.
-      scrY0 = height - dy;
-      scrY1 = height - (dy + dh);
+      scrY0 = height - dy / src.pixelDensity;
+      scrY1 = height - (dy + dh) / src.pixelDensity;
       texY0 = sy;
       texY1 = sy + sh;
     }
@@ -6181,7 +6181,6 @@ public class PGraphicsOpenGL extends PGraphics {
                     0, 0, width, height,
                     texX0, texY0, texX1, texY1,
                     scrX0, scrY0, scrX1, scrY1);
-
 
     if (needEndDraw) {
       endDraw();
