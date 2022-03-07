@@ -16,8 +16,12 @@ Great! The number of contributors on this project is *tiny*, especially relative
 
 How to start:
 
-* Issues marked [help wanted](https://github.com/processing/processing4/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) are a good place to start, because they are usually isolated enough that someone can jump into it without significant reworking of other code.
+* Most [issues marked help wanted](https://github.com/processing/processing4/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22) are a good place to start, because they are usually isolated enough that someone can jump into it without significant reworking of other code. 
+* There are several [active issues](https://github.com/processing/processing4-javafx/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) for the JavaFX renderer as well.
+* There are also many “help wanted” [issues in the 3.x repository](https://github.com/processing/processing4/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Some of these are very old, so it may be a good idea to check in about the priority before putting in too much work!
 * Keep the [style guidelines](https://github.com/processing/processing/wiki/Style-Guidelines) in mind when submitting pull requests. If you don't, someone else will have to reformat your code so that it fits everything else (or we'll have to reject it if it'll take us too long to clean it up).
+
+If you're looking for a larger project, check out the [Project List](https://github.com/processing/processing/wiki/Project-List#processing) for other ideas.
 
 ### Other Details
 
