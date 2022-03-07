@@ -1,5 +1,4 @@
 1283 (4.0b8)
-
 X fix logic for opening the correct 'main' tab in handleOpen()
 X   opening AspectHelper.js makes it the main tab
 X   through sketch.properties is not rewritten

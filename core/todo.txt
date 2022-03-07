@@ -2,6 +2,9 @@
 
 
 andres
+X filter() calls with high pixel density in OpenGL make a tiny texture
+X   https://github.com/processing/processing4/issues/429
+X   https://github.com/processing/processing4/pull/433
 X Renamed parameters controlling GL buffer settings
 X   https://github.com/processing/processing4/pull/435
 X PShape performance could be improved using buffer object streaming
