@@ -55,6 +55,10 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
   }
 
 
+  /**
+   * Deprecated since 4.0 beta 5, because the Mode is no longer used;
+   * simply use the default constructor instead.
+   */
   @Deprecated
   public PdeTextAreaDefaults(Mode ignoredMode) {
     this();
