@@ -4,6 +4,18 @@ X   opening AspectHelper.js makes it the main tab
 X   through sketch.properties is not rewritten
 
 
+_ dropping folder into sketch window throws weird exception
+_   https://github.com/processing/processing4/issues/441
+
+_ clicking "Update All" on the Updates tab throws NPE
+_   https://github.com/processing/processing4/issues/440
+Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
+    at processing.app.contrib.StatusPanelDetail.installContribution(StatusPanelDetail.java:123)
+    at processing.app.contrib.StatusPanelDetail.update(StatusPanelDetail.java:189)
+    at processing.app.contrib.ContributionTab.updateAll(ContributionTab.java:405)
+    at processing.app.contrib.UpdateStatusPanel.lambda$new$0(UpdateStatusPanel.java:43)
+    at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+
 _ on release: submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 
@@ -15,8 +27,6 @@ _ add changes for the eawt mess? (too tricky)
 _   https://github.com/jdf/processing.py/issues/398
 _ submit a PR
 
-
-_ dropping folder into sketch window throws weird exception
 
 _ examples handling is less than ideal
 _   examples not mentioned in warning dialog when installing
