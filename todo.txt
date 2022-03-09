@@ -2,10 +2,8 @@
 X fix logic for opening the correct 'main' tab in handleOpen()
 X   opening AspectHelper.js makes it the main tab
 X   through sketch.properties is not rewritten
-
-
-_ dropping folder into sketch window throws weird exception
-_   https://github.com/processing/processing4/issues/441
+X dropping folder into sketch window throws weird exception
+X   https://github.com/processing/processing4/issues/441
 
 _ clicking "Update All" on the Updates tab throws NPE
 _   https://github.com/processing/processing4/issues/440

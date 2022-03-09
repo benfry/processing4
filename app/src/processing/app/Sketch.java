@@ -1409,6 +1409,11 @@ public class Sketch {
    * @return true if successful.
    */
   public boolean addFile(File sourceFile) {
+    if (sourceFile.isDirectory()) {
+      System.err.println("Skipping folder " + sourceFile);
+      System.err.println("Dragging and dropping a folder is not supported.");
+      return false;
+    }
     String filename = sourceFile.getName();
     File destFile = null;
     String codeExtension = null;
