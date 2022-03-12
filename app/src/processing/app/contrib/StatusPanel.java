@@ -21,11 +21,20 @@
  */
 package processing.app.contrib;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.text.DateFormat;
 import java.util.Date;
 
-import javax.swing.*;
+import javax.swing.GroupLayout;
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextPane;
+import javax.swing.LayoutStyle;
+import javax.swing.SwingConstants;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.text.html.HTMLDocument;
 
@@ -54,7 +63,6 @@ class StatusPanel extends JPanel {
   JButton removeButton;
   GroupLayout layout;
   JLabel iconLabel;
-  ContributionListing contributionListing = ContributionListing.getInstance();
   ContributionTab contributionTab;
 
 
@@ -168,7 +176,6 @@ class StatusPanel extends JPanel {
                     installButton, progressPanel, updateButton, removeButton);
 
     progressPanel.setVisible(false);
-    updateLabel.setVisible(false);
 
     installButton.setEnabled(false);
     updateButton.setEnabled(false);
@@ -204,9 +211,6 @@ class StatusPanel extends JPanel {
       "  padding: 0;" +
       "  font-family: " + Toolkit.getSansFontName() + ", Helvetica, Arial, sans-serif;" +
       "  font-size: 11px;" +
-//      "  font-size: 100%;" +
-//      "  font-size: 0.95em; " +
-//      "}";
       "}" +
       "a { color: #444; text-decoration: none; }";
   }
@@ -285,31 +289,33 @@ class StatusPanel extends JPanel {
   }
 
 
-  void updateDetail(StatusPanelDetail panel) {
-//    System.out.println("rebuilding status panel for " + panel.getContrib().name);
-//    new Exception("rebuilding status panel for " + panel.getContrib().name).printStackTrace(System.out);
+  void updateDetail(StatusPanelDetail detail) {
+//    System.out.println("rebuilding status detail for " + detail.getContrib().name);
+//    new Exception("rebuilding status detail for " + detail.getContrib().name).printStackTrace(System.out);
     progressPanel.removeAll();
 
-    iconLabel.setIcon(panel.getContrib().isSpecial() ? foundationIcon : null);
-//    label.setText(panel.description);
-    label.setText(updateDescription(panel.getContrib()));
+    iconLabel.setIcon(detail.getContrib().isSpecial() ? foundationIcon : null);
+//    label.setText(detail.description);
+    label.setText(updateDescription(detail.getContrib()));
     ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(getBodyStyle());
 
-    updateButton.setEnabled(contributionListing.hasDownloadedLatestList() &&
-                            (contributionListing.hasUpdates(panel.getContrib()) &&
-                             !panel.getContrib().isUpdateFlagged()) &&
-                            !panel.updateInProgress);
+    ContributionListing listing = ContributionListing.getInstance();
+
+    updateButton.setEnabled(listing.hasDownloadedLatestList() &&
+                            (listing.hasUpdates(detail.getContrib()) &&
+                             !detail.getContrib().isUpdateFlagged()) &&
+                            !detail.updateInProgress);
 
     String latestVersion =
-      contributionListing.getLatestPrettyVersion(panel.getContrib());
-    String currentVersion = panel.getContrib().getPrettyVersion();
+      listing.getLatestPrettyVersion(detail.getContrib());
+    String currentVersion = detail.getContrib().getPrettyVersion();
 
-    installButton.setEnabled(!panel.getContrib().isInstalled() &&
-                             contributionListing.hasDownloadedLatestList() &&
-                             panel.getContrib().isCompatible(Base.getRevision()) &&
-                             !panel.installInProgress);
+    installButton.setEnabled(!detail.getContrib().isInstalled() &&
+                             listing.hasDownloadedLatestList() &&
+                             detail.getContrib().isCompatible(Base.getRevision()) &&
+                             !detail.installInProgress);
 
-    if (panel.getContrib().isCompatible(Base.getRevision())) {
+    if (detail.getContrib().isCompatible(Base.getRevision())) {
       if (installButton.isEnabled()) {
         if (latestVersion != null) {
           updateLabel.setText(latestVersion + " available");
@@ -343,14 +349,16 @@ class StatusPanel extends JPanel {
       updateButton.setText("Update");
     }
 
-    removeButton.setEnabled(panel.getContrib().isInstalled() && !panel.removeInProgress);
-    progressPanel.add(panel.getProgressBar());
-    progressPanel.setVisible(false);
-    updateLabel.setVisible(true);
-    if (panel.updateInProgress || panel.installInProgress || panel.removeInProgress) {
+    removeButton.setEnabled(detail.getContrib().isInstalled() && !detail.removeInProgress);
+    progressPanel.add(detail.getProgressBar());
+
+    if (detail.updateInProgress || detail.installInProgress || detail.removeInProgress) {
       progressPanel.setVisible(true);
       updateLabel.setVisible(false);
-      progressPanel.repaint();
+    } else {
+      progressPanel.setVisible(false);
+      updateLabel.setVisible(true);
     }
+    progressPanel.repaint();
   }
 }
