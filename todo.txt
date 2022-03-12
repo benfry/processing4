@@ -12,6 +12,8 @@ X   https://github.com/processing/processing4/issues/445
 X Manager fails to complete install of PythonMode when no windows open
 X   https://github.com/processing/processing/issues/5309
 X   https://github.com/processing/processing4/issues/446
+X removed weird double call of installPreviouslyFailed()
+X remove unused icon code from ManagerTabs
 _ allow update of the current Mode
 
 _ an incompatible Mode prevents the PDE from quitting after last window is closed

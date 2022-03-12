@@ -63,11 +63,6 @@ public class ManagerTabs extends Box {
   // amount of margin on the left/right for the text on the tab
   static final int MARGIN = Toolkit.zoom(14);
 
-  static final int ICON_WIDTH = Toolkit.zoom(16);
-  static final int ICON_HEIGHT = Toolkit.zoom(16);
-  static final int ICON_TOP = Toolkit.zoom(7);
-  static final int ICON_MARGIN = Toolkit.zoom(7);
-
   static final int UNSELECTED = 0;
   static final int SELECTED = 1;
 
@@ -80,8 +75,6 @@ public class ManagerTabs extends Box {
 
   Font font;
   int fontAscent;
-
-  Image gradient;
 
   JPanel cardPanel;
   CardLayout cardLayout;
@@ -117,30 +110,18 @@ public class ManagerTabs extends Box {
   }
 
 
-  /** Add a panel with no icon. */
-  public void addPanel(Component comp, String name) {
-    addPanel(comp, name, null);
-  }
-
-
   /**
-   * Add a panel with a name and icon.
+   * Add a panel with a name.
    * @param comp Component that will be shown when this tab is selected
    * @param name Title to appear on the tab itself
-   * @param icon Prefix of the file name for the icon
    */
-  public void addPanel(Component comp, String name, String icon) {
+  public void addPanel(Component comp, String name) {
     if (tabList.isEmpty()) {
       currentPanel = comp;
     }
-    tabList.add(new Tab(comp, name, icon));
+    tabList.add(new Tab(comp, name));
     cardPanel.add(name, comp);
   }
-
-
-//  public void setPanel(int index) {
-//    cardLayout.show(cardPanel, tabs.get(index).name);
-//  }
 
 
   public void setPanel(Component comp) {
@@ -156,16 +137,6 @@ public class ManagerTabs extends Box {
 
   public Component getPanel() {
     return currentPanel;
-  }
-
-
-  public void setNotification(Component comp, boolean note) {
-    for (Tab tab : tabList) {
-      if (tab.comp == comp) {
-        tab.notification = note;
-        repaint();
-      }
-    }
   }
 
 
@@ -212,32 +183,19 @@ public class ManagerTabs extends Box {
         tab.textWidth = (int)
           font.getStringBounds(tab.name, g2.getFontRenderContext()).getWidth();
       }
-
-      placeTabs(0);
+      placeTabs();
       // now actually draw the tabs
       drawTabs(g2);
     }
 
 
-    /**
-     * @param left starting position from the left
-     */
-    private void placeTabs(int left) {  //, Graphics2D g) {
-      int x = left;
-
+    private void placeTabs() {
+      int x = 0;
       for (Tab tab : tabList) {
         tab.left = x;
         x += MARGIN;
-        if (tab.hasIcon()) {
-          x += ICON_WIDTH + MARGIN;
-        }
         x += tab.textWidth + MARGIN;
         tab.right = x;
-
-//        // if drawing and not just placing
-//        if (g != null) {
-//          tab.draw(g);
-//        }
         x += TAB_BETWEEN;
       }
       // Align the final tab (the "updates") to the right-hand side
@@ -279,24 +237,13 @@ public class ManagerTabs extends Box {
     Component comp;
     boolean notification;
 
-    Image enabledIcon;
-    Image selectedIcon;
-
     int left;
     int right;
     int textWidth;
 
-    Tab(Component comp, String name, String icon) {
+    Tab(Component comp, String name) {
       this.comp = comp;
       this.name = name;
-
-      if (icon != null) {
-        enabledIcon = mode.loadImageX(icon + "-enabled");
-        selectedIcon = mode.loadImageX(icon + "-selected");
-        if (selectedIcon == null) {
-          selectedIcon = enabledIcon;  // use this as the default
-        }
-      }
     }
 
     boolean contains(int x) {
@@ -319,15 +266,7 @@ public class ManagerTabs extends Box {
     }
 
     int getTextLeft() {
-      int links = left;
-      if (enabledIcon != null) {
-        links += ICON_WIDTH + ICON_MARGIN;
-      }
-      return links + ((right - links) - textWidth) / 2;
-    }
-
-    boolean hasIcon() {
-      return enabledIcon != null;
+      return left + ((right - left) - textWidth) / 2;
     }
 
     void draw(Graphics g) {
@@ -335,19 +274,11 @@ public class ManagerTabs extends Box {
       g.setColor(tabColor[state]);
 
       Graphics2D g2 = (Graphics2D) g;
-//      g2.fill(Toolkit.createRoundRect(left, TAB_TOP, right, TAB_BOTTOM, 0, 0,
-//                                      isLast() ? CURVE_RADIUS : 0,
-//                                      hastLeftCurve() ? CURVE_RADIUS : 0));
       g2.fill(Toolkit.createRoundRect(left, TAB_TOP,
                                       right, TAB_BOTTOM,
                                       hasLeftNotch() ? CURVE_RADIUS : 0,
                                       hasRightNotch() ? CURVE_RADIUS : 0,
                                       0, 0));
-
-      if (hasIcon()) {
-        Image icon = (isCurrent() || notification) ? selectedIcon : enabledIcon;
-        g.drawImage(icon, left + MARGIN, ICON_TOP, ICON_WIDTH, ICON_HEIGHT, null);
-      }
 
       int textLeft = getTextLeft();
       if (notification && state == UNSELECTED) {
