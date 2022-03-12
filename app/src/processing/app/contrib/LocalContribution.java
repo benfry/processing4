@@ -40,8 +40,8 @@ import processing.data.StringList;
 
 
 /**
- * A contribution that has been downloaded to the disk, and may or may not
- * be installed.
+ * A contribution that has been downloaded to the disk,
+ * and may or may not be installed.
  */
 public abstract class LocalContribution extends Contribution {
   static public final String DELETION_FLAG = "marked_for_deletion";
@@ -89,10 +89,6 @@ public abstract class LocalContribution extends Contribution {
         lastUpdated = Long.parseLong(properties.get("lastUpdated"));
       } catch (NumberFormatException e) {
         lastUpdated = 0;
-
-      // Better comment these out till all contribs have a lastUpdated
-//        System.err.println("The last updated timestamp for the “" + name + "” library is not set properly.");
-//        System.err.println("Please contact the library author to fix it according to the guidelines.");
       }
 
       String minRev = properties.get("minRevision");
@@ -175,62 +171,6 @@ public abstract class LocalContribution extends Contribution {
   }
 
 
-  /*
-  // doesn't work with URLClassLoader, but works with the system CL
-  static void listClasses(ClassLoader loader) {
-//    loader = Thread.currentThread().getContextClassLoader();
-    try {
-      Field f = ClassLoader.class.getDeclaredField("classes");
-      f.setAccessible(true);
-      Vector<Class> classes =  (Vector<Class>) f.get(loader);
-      for (Class c : classes) {
-        System.out.println(c.getName());
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
-  */
-
-
-//  static protected boolean isCandidate(File potential, final ContributionType type) {
-//    return (potential.isDirectory() &&
-//      new File(potential, type.getFolderName()).exists());
-//  }
-//
-//
-//  /**
-//   * Return a list of directories that have the necessary subfolder for this
-//   * contribution type. For instance, a list of folders that have a 'mode'
-//   * subfolder if this is a ModeContribution.
-//   */
-//  static protected File[] listCandidates(File folder, final ContributionType type) {
-//    return folder.listFiles(new FileFilter() {
-//      public boolean accept(File potential) {
-//        return isCandidate(potential, type);
-//      }
-//    });
-//  }
-//
-//
-//  /**
-//   * Return the first directory that has the necessary subfolder for this
-//   * contribution type. For instance, the first folder that has a 'mode'
-//   * subfolder if this is a ModeContribution.
-//   */
-//  static protected File findCandidate(File folder, final ContributionType type) {
-//    File[] folders = listCandidates(folder, type);
-//
-//    if (folders.length == 0) {
-//      return null;
-//
-//    } else if (folders.length > 1) {
-//      Base.log("More than one " + type.toString() + " found inside " + folder.getAbsolutePath());
-//    }
-//    return folders[0];
-//  }
-
-
   LocalContribution copyAndLoad(Base base,
                                 boolean confirmReplace,
                                 StatusPanel status) {
@@ -263,14 +203,6 @@ public abstract class LocalContribution extends Contribution {
             if (!oldContrib.backup(false, status)) {
               return null;
             }
-            /*
-            try {
-              Platform.deleteFile(oldContrib.getFolder());
-            } catch (IOException e) {
-              status.setErrorMessage(e.getMessage());
-              return null;
-            }
-             */
           } else {
             int result;
             boolean doBackup = Preferences.getBoolean("contribution.backup.on_install");
@@ -509,72 +441,9 @@ public abstract class LocalContribution extends Contribution {
   }
 
 
-//  public String getCategory() {
-//    return category;
-//  }
-//
-//
-//  public String getName() {
-//    return name;
-//  }
-
-
   public String getId() {
     return id;
   }
-
-
-//  public String getAuthorList() {
-//    return authorList;
-//  }
-//
-//
-//  public String getUrl() {
-//    return url;
-//  }
-//
-//
-//  public String getSentence() {
-//    return sentence;
-//  }
-//
-//
-//  public String getParagraph() {
-//    return paragraph;
-//  }
-//
-//
-//  public int getVersion() {
-//    return version;
-//  }
-
-
-  public int getLatestVersion() {
-    return latestVersion;
-  }
-
-
-//  public String getPrettyVersion() {
-//    return prettyVersion;
-//  }
-//
-//
-//  public String getTypeName() {
-//    return getType().toString();
-//  }
-
-
-  /*
-  static protected String findClassInZipFileList(String base, File[] fileList) {
-    for (File file : fileList) {
-      String found = findClassInZipFile(base, file);
-      if (found != null) {
-        return found;
-      }
-    }
-    return null;
-  }
-  */
 
 
   /**
@@ -587,32 +456,6 @@ public abstract class LocalContribution extends Contribution {
     //return imports != null ? imports.toArray(new String[0]) : null;
     return imports;
   }
-
-
-  // this duplicates code found in Contribution (though that version doesn't check for .* at the end)
-//  /**
-//   * @return the list of Java imports to be added to the sketch when the library is imported
-//   * or null if none are specified
-//   */
-//  static StringList parseImports(String importsStr) {
-//    StringList outgoing = new StringList();
-//
-//    if (importsStr != null) {
-//      String[] listing = PApplet.trim(PApplet.split(importsStr, ','));
-//      for (String imp : listing) {
-//
-//        // In case the wildcard is specified, strip it, as it gets added later)
-//        if (imp.endsWith(".*")) {
-//
-//          imp = imp.substring(0, imp.length() - 2);
-//        }
-//
-//        outgoing.add(imp);
-//      }
-//    }
-////    return (outgoing.size() > 0) ? outgoing : null;
-//    return outgoing;
-//  }
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

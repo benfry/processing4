@@ -96,9 +96,9 @@ public class AvailableContribution extends Contribution {
     AvailableContribution ac = null;
 
     ZipFile zf = new ZipFile(contribArchive);
-    Enumeration entries = zf.entries();
+    Enumeration<? extends ZipEntry> entries = zf.entries();
     while (entries.hasMoreElements()) {
-      ZipEntry entry = (ZipEntry) entries.nextElement();
+      ZipEntry entry = entries.nextElement();
       String name = entry.getName();
       if (name.endsWith(".properties")) {
         ContributionType type = matchContribType(name);
