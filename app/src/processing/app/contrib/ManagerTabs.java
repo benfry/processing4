@@ -57,8 +57,6 @@ public class ManagerTabs extends Box {
 
   static final int CURVE_RADIUS = Toolkit.zoom(6);
 
-  static final int TAB_TOP = Toolkit.zoom(0);
-  static final int TAB_BOTTOM = HIGH - Toolkit.zoom(2);
   // amount of extra space between individual tabs
   static final int TAB_BETWEEN = Toolkit.zoom(2);
   // amount of margin on the left/right for the text on the tab
@@ -177,11 +175,6 @@ public class ManagerTabs extends Box {
 
       g.drawImage(gradient, 0, 0, getWidth(), getHeight(), this);
 
-      g.setColor(tabColor[SELECTED]);
-      // draw the two pixel line that extends left/right below the tabs
-      // can't be done with lines, b/c retina leaves tiny hairlines
-      g.fillRect(0, TAB_BOTTOM, getWidth(), Toolkit.zoom(2));
-
       // reset all tab positions
       for (Tab tab : tabList) {
         tab.textWidth = (int)
@@ -278,8 +271,8 @@ public class ManagerTabs extends Box {
       g.setColor(tabColor[state]);
 
       Graphics2D g2 = (Graphics2D) g;
-      g2.fill(Toolkit.createRoundRect(left, TAB_TOP,
-                                      right, TAB_BOTTOM,
+      g2.fill(Toolkit.createRoundRect(left, 0,
+                                      right, HIGH,
                                       hasLeftNotch() ? CURVE_RADIUS : 0,
                                       hasRightNotch() ? CURVE_RADIUS : 0,
                                       0, 0));
@@ -290,8 +283,7 @@ public class ManagerTabs extends Box {
       } else {
         g.setColor(textColor[state]);
       }
-      int tabHeight = TAB_BOTTOM - TAB_TOP;
-      int baseline = TAB_TOP + (tabHeight + fontAscent) / 2;
+      int baseline = (HIGH + fontAscent) / 2;
       g.drawString(name, textLeft, baseline);
     }
   }

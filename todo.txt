@@ -15,7 +15,7 @@ X   https://github.com/processing/processing4/issues/446
 X removed weird double call of installPreviouslyFailed()
 X remove unused icon code from ManagerTabs
 X implement updateTheme()
-_ remove the extra 2-pixel line at the top
+X remove the extra 2-pixel line at the top
 _ currently uses prepareGraphics(), do we need to remove that?
 _ allow update of the current Mode
 
