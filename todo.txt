@@ -42,6 +42,8 @@ X remove insane overbuilt search in contribs
 X   sure, we have over a hundred libraries, but we don't have millions
 X   search by contrib type (is:) wasn't even working properly
 X   removing accents was trashing some input too
+X redo category tallying for contribs (Libraries only anyway?)
+X   gets rid of maze of code that's storing libraries by their category
 
 
 _ allow update of the current Mode

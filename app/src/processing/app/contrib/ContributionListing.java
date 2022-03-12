@@ -50,7 +50,7 @@ public class ContributionListing {
 
   List<ChangeListener> listeners;
   final List<AvailableContribution> advertisedContributions;
-  Map<String, List<Contribution>> librariesByCategory;
+  private Map<String, List<Contribution>> librariesByCategory;
   Map<String, Contribution> librariesByImportHeader;
   // TODO: Every contribution is getting added twice
   //       and nothing is replaced ever. [akarshit 151031]
@@ -207,29 +207,6 @@ public class ContributionListing {
       }
     }
     return null;
-  }
-
-
-  /**
-   * @param filter Filter for either the contrib type or whether it's an update.
-   */
-  protected Set<String> getCategories(Contribution.Filter filter) {
-    Set<String> outgoing = new HashSet<>();
-
-    Set<String> categorySet = librariesByCategory.keySet();
-    for (String categoryName : categorySet) {
-      for (Contribution contrib : librariesByCategory.get(categoryName)) {
-        if (filter.matches(contrib)) {
-          // TODO still not sure why category would be coming back null [fry]
-          // http://code.google.com/p/processing/issues/detail?id=1387
-          if (categoryName != null && !categoryName.trim().isEmpty()) {
-            outgoing.add(categoryName);
-          }
-          break;
-        }
-      }
-    }
-    return outgoing;
   }
 
 

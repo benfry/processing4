@@ -230,20 +230,40 @@ public class ContributionTab extends JPanel {
   }
 
 
+  private Set<String> listCategories() {
+    Set<String> categories = new HashSet<>();
+
+    for (Contribution c : contribListing.allContributions) {
+      if (filter.matches(c)) {
+        for (String category : c.getCategories()) {
+          categories.add(category);
+        }
+      }
+    }
+    return categories;
+  }
+
+
   protected void updateCategoryChooser() {
     if (categoryChooser != null) {
       categoryChooser.removeAllItems();
-      List<String> categories = new ArrayList<>(contribListing.getCategories(filter));
-      Collections.sort(categories);
-      boolean categoriesFound = false;
-      categoryChooser.addItem(ManagerFrame.ANY_CATEGORY);
-      for (String s : categories) {
-        categoryChooser.addItem(s);
-        if (!s.equals(Contribution.UNKNOWN_CATEGORY)) {
-          categoriesFound = true;
+
+      Set<String> categories = listCategories();
+      if (categories.size() == 1 &&
+          categories.contains(Contribution.UNKNOWN_CATEGORY)) {
+        // no unique categories
+        categoryChooser.setVisible(false);
+
+      } else {
+        categoryChooser.addItem(ManagerFrame.ANY_CATEGORY);
+
+        String[] list = categories.toArray(String[]::new);
+        Arrays.sort(list);
+        for (String category : list) {
+          categoryChooser.addItem(category);
         }
+        categoryChooser.setVisible(true);
       }
-      categoryChooser.setVisible(categoriesFound);
     }
   }
 
