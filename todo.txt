@@ -146,6 +146,8 @@ _ contrib manager theme
 _   identify coloring for icons
 _   how much of theme to inherit
 _   generate manager icons
+_   slightly taller tabs, though maybe they're better than the Editor?
+_     editor tabs are different height, as are the footer tabs
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ decision about 'debug' versions of toolbar icons
