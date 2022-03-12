@@ -232,9 +232,8 @@ public class ContributionTab extends JPanel {
 
   protected void updateCategoryChooser() {
     if (categoryChooser != null) {
-      ArrayList<String> categories;
       categoryChooser.removeAllItems();
-      categories = new ArrayList<>(contribListing.getCategories(filter));
+      List<String> categories = new ArrayList<>(contribListing.getCategories(filter));
       Collections.sort(categories);
       boolean categoriesFound = false;
       categoryChooser.addItem(ManagerFrame.ANY_CATEGORY);

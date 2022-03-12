@@ -25,10 +25,8 @@ import java.awt.EventQueue;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.*;
-import java.text.Normalizer;
 import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Pattern;
 
 import processing.app.Base;
 import processing.app.Library;
@@ -55,7 +53,7 @@ public class ContributionListing {
   Map<String, List<Contribution>> librariesByCategory;
   Map<String, Contribution> librariesByImportHeader;
   // TODO: Every contribution is getting added twice
-  //       and nothing is replaced ever.
+  //       and nothing is replaced ever. [akarshit 151031]
   Set<Contribution> allContributions;
   boolean listDownloaded;
   boolean listDownloadFailed;
@@ -71,9 +69,10 @@ public class ContributionListing {
     downloadingListingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
-    boolean writable = listingFile.setWritable(true, false);
-    if (writable && listingFile.exists()) {
-      setAdvertisedList(listingFile);
+    if (listingFile.exists()) {
+      // On the EDT already, but do this later on the EDT so that the
+      // constructor can finish more efficiently for getInstance().
+      EventQueue.invokeLater(() -> setAdvertisedList(listingFile));
     }
   }
 
@@ -211,6 +210,9 @@ public class ContributionListing {
   }
 
 
+  /**
+   * @param filter Filter for either the contrib type or whether it's an update.
+   */
   protected Set<String> getCategories(Contribution.Filter filter) {
     Set<String> outgoing = new HashSet<>();
 
@@ -232,79 +234,17 @@ public class ContributionListing {
 
 
   public boolean matches(Contribution contrib, String typed) {
-    int colon = typed.indexOf(":");
-    if (colon != -1) {
-      String isText = typed.substring(0, colon);
-      String property = typed.substring(colon + 1);
+    String search = ".*" + typed.toLowerCase() + ".*";
 
-      // Chances are the person is still typing the property,
-      // so rather than make the list flash empty (because nothing
-      // contains "is:" or "has:"), just return true.
-      if (!isProperty(property)) {
-        return true;
-      }
-
-      if ("is".equals(isText) || "has".equals(isText)) {
-        return hasProperty(contrib, typed.substring(colon + 1));
-      } else if ("not".equals(isText)) {
-        return !hasProperty(contrib, typed.substring(colon + 1));
-      }
-    }
-
-    typed = ".*" + typed.toLowerCase() + ".*";
-
-    return (matchField(contrib.getName(), typed) ||
-            matchField(contrib.getAuthorList(), typed) ||
-            matchField(contrib.getSentence(), typed) ||
-            matchField(contrib.getParagraph(), typed) ||
-            contrib.hasCategory(typed));
+    return (matchField(contrib.getName(), search) ||
+            matchField(contrib.getSentence(), search) ||
+            matchField(contrib.getAuthorList(), search) ||
+            matchField(contrib.getParagraph(), search));
   }
 
 
   static private boolean matchField(String field, String typed) {
-    return (field != null) &&
-      removeAccents(field.toLowerCase()).matches(typed);
-  }
-
-
-  // TODO is this removing characters with accents, not ascii normalizing them? [fry]
-  static private String removeAccents(String str) {
-    String nfdNormalizedString = Normalizer.normalize(str, Normalizer.Form.NFD);
-    Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
-    return pattern.matcher(nfdNormalizedString).replaceAll("");
-  }
-
-
-  static private boolean isProperty(String property) {
-    return property.startsWith("updat") || property.startsWith("upgrad")
-        || property.startsWith("instal") && !property.startsWith("installabl")
-        || property.equals("tool") || property.startsWith("lib")
-        || property.equals("mode") || property.equals("compilation");
-  }
-
-
-  /**
-   * Returns true if the contribution fits the given property, false otherwise.
-   * If the property is invalid, returns false.
-   */
-  private boolean hasProperty(Contribution contrib, String property) {
-    // update, updates, updatable, upgrade
-    if (property.startsWith("updat") || property.startsWith("upgrad")) {
-      return hasUpdates(contrib);
-    }
-    if (property.startsWith("instal") && !property.startsWith("installabl")) {
-      return contrib.isInstalled();
-    }
-    if (property.equals("tool")) {
-      return contrib.getType() == ContributionType.TOOL;
-    }
-    if (property.startsWith("lib")) {
-      return contrib.getType() == ContributionType.LIBRARY;
-    }
-    if (property.equals("mode")) {
-      return contrib.getType() == ContributionType.MODE;
-    }
-    return false;
+    return (field != null) && field.toLowerCase().matches(typed);
   }
 
 
