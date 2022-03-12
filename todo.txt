@@ -4,6 +4,11 @@ X   opening AspectHelper.js makes it the main tab
 X   through sketch.properties is not rewritten
 X dropping folder into sketch window throws weird exception
 X   https://github.com/processing/processing4/issues/441
+X "  does not exist" message on Linux startup
+X   no longer pass a blank sketch file name from startup script
+X   also remove unused readlink
+X   support multiple files passed on command line
+X only show setWritable() failure in recent.txt when it is a problem
 
 manager
 X "Error during download and install of Python Mode for Processing"
