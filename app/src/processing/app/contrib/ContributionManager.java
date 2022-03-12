@@ -488,8 +488,10 @@ public class ContributionManager {
     updateFlagged(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
+    /*
     clearRestartFlags(Base.getSketchbookModesFolder());
     clearRestartFlags(Base.getSketchbookToolsFolder());
+    */
   }
 
 
@@ -582,26 +584,28 @@ public class ContributionManager {
     //      Not sure the function here so I'm not fixing it at the moment,
     //      but this whole function could use some cleaning. [fry 180105]
 
-    String type = root.getName().substring(root.getName().lastIndexOf('/') + 1);
+    // TODO getName() will (should?) never have a slash, wtf [fry 220312]
+    String contribType = root.getName().substring(root.getName().lastIndexOf('/') + 1);
     String propFileName = null;
 
-    if (type.equalsIgnoreCase("tools"))
+    if (contribType.equalsIgnoreCase("tools"))
       propFileName = "tool.properties";
-    else if (type.equalsIgnoreCase("modes"))
+    else if (contribType.equalsIgnoreCase("modes"))
       propFileName = "mode.properties";
 
     if (markedForUpdate != null) {
       for (File folder : markedForUpdate) {
         StringDict props = Util.readSettings(new File(folder, propFileName));
-        String name = props.get("name", null);
-        if (name != null) {  // should not happen, but...
-          updateContribsNames.add(name);
-        }
-        //Util.removeDir(folder);
-        try {
-          Platform.deleteFile(folder);
-        } catch (IOException e) {
-          e.printStackTrace();
+        if (props != null) {
+          String name = props.get("name", null);
+          if (name != null) {  // should not happen, but...
+            updateContribsNames.add(name);
+          }
+          try {
+            Platform.deleteFile(folder);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
       }
     }
@@ -636,14 +640,16 @@ public class ContributionManager {
   }
 
 
+  /*
   static private void clearRestartFlags(File root) {
     File[] folderList = root.listFiles(File::isDirectory);
     if (folderList != null) {
       for (File folder : folderList) {
-        LocalContribution.clearRestartFlags(folder);
+        LocalContribution.clearRestartFlag(folder);
       }
     }
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

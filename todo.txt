@@ -47,7 +47,8 @@ X   gets rid of maze of code that's storing libraries by their category
 X remove unnecessary code that tracks contribs by category
 X   this was hiding the issue that was causing contribs to be added several times,
 X   because the add() was inside the category loop of that code
-
+X remove unused 'restart' flagging code, setRestartFlag() never used
+X   all that was left was maintenance of when that's been set, so...
 
 _ allow update of the current Mode
 _   if doing an update (not just delete), close sketches and re-open

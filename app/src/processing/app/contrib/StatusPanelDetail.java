@@ -207,7 +207,7 @@ class StatusPanelDetail {
           clearStatusMessage();
           updateInProgress = false;
           if (contrib.isDeletionFlagged()) {
-            getLocalContrib().setUpdateFlag(true);
+            getLocalContrib().setUpdateFlag();
             getLocalContrib().setDeletionFlag(false);
             contribListing.replaceContribution(contrib, contrib);
           }

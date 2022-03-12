@@ -46,7 +46,7 @@ import processing.data.StringList;
 public abstract class LocalContribution extends Contribution {
   static public final String DELETION_FLAG = "marked_for_deletion";
   static public final String UPDATE_FLAGGED = "marked_for_update";
-  static public final String RESTART_FLAG = "requires_restart";
+//  static public final String RESTART_FLAG = "requires_restart";
 
   protected String id;  // 1 (unique id for this library)
   protected File folder;
@@ -462,8 +462,8 @@ public abstract class LocalContribution extends Contribution {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  boolean setUpdateFlag(boolean flag) {
-    return setFlag(UPDATE_FLAGGED, flag);
+  boolean setUpdateFlag() {
+    return setFlag(UPDATE_FLAGGED, true);
   }
 
 
@@ -480,6 +480,7 @@ public abstract class LocalContribution extends Contribution {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  /*
   boolean setRestartFlag() {
     //System.out.println("setting restart flag for " + folder);
     return setFlag(RESTART_FLAG, true);
@@ -493,12 +494,13 @@ public abstract class LocalContribution extends Contribution {
   }
 
 
-  static void clearRestartFlags(File folder) {
+  static void clearRestartFlag(File folder) {
     File restartFlag = new File(folder, RESTART_FLAG);
     if (restartFlag.exists()) {
       restartFlag.delete();
     }
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
