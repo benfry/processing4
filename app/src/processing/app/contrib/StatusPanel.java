@@ -261,7 +261,7 @@ class StatusPanel extends JPanel {
     } else {
       String sentence = contrib.getSentence();
       if (sentence == null || sentence.isEmpty()) {
-        sentence = String.format("<i>%s</i>", Language.text("contrib.errors.description_unavailable"));
+        sentence = "<i>" + Language.text("contrib.errors.description_unavailable") + "</i>";
       } else {
         sentence = Util.sanitizeHtmlTags(sentence);
         sentence = Util.markDownLinksToHtml(sentence);
