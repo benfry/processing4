@@ -12,8 +12,7 @@ import processing.app.ui.Toolkit;
 public class UpdateContributionTab extends ContributionTab {
 
   public UpdateContributionTab(ManagerFrame dialog) {
-    super();
-    this.contribDialog = dialog;
+    super(dialog);
 
     filter = contrib -> {
       if (contrib instanceof ListPanel.SectionHeaderContribution) {
@@ -25,7 +24,6 @@ public class UpdateContributionTab extends ContributionTab {
       return false;
     };
     contributionListPanel = new UpdateListPanel(this, filter);
-//    contributionListPanel.setBorder(new EmptyBorder(8, 8, 8, 8));
 
     statusPanel = new UpdateStatusPanel(this);
     contribListing = ContributionListing.getInstance();
@@ -43,7 +41,6 @@ public class UpdateContributionTab extends ContributionTab {
 
       loaderLabel = new JLabel(Toolkit.getLibIcon("manager/loader.gif"));
       loaderLabel.setOpaque(false);
-//      loaderLabel.setBackground(Color.WHITE);
     }
 
     GroupLayout layout = new GroupLayout(this);

@@ -22,16 +22,13 @@ X remove extra ContribProgressMonitor class
 X removing the current Mode (with no windows open) will cause an exception
 X   when next opening a sketch, nextMode is set to the old guy
 _ allow update of the current Mode
+_ lots of rewriting to use SwingWorker
+_   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
+
+unzip -d ~/coconut/sketchbook4/modes/ ~/Desktop/p5jsMode.zip
 
 _ an incompatible Mode prevents the PDE from quitting after last window is closed
 _   https://github.com/processing/processing/issues/5112
-
-
-_ remove checkbox for detaching sketch name
-_   just do this manually, and Save As will reset the name
-
-_ update wiki with recent changes (i.e. separating sketch folder)
-_   https://github.com/processing/processing4/wiki/Processing-4
 
 _ clicking "Update All" on the Updates tab throws NPE
 _   https://github.com/processing/processing4/issues/440
@@ -44,6 +41,12 @@ Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot in
 
 _ on release: submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
+
+_ remove checkbox for detaching sketch name
+_   just do this manually, and Save As will reset the name
+
+_ update wiki with recent changes (i.e. separating sketch folder)
+_   https://github.com/processing/processing4/wiki/Processing-4
 
 python
 X add JavaFX handler

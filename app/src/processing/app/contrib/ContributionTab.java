@@ -37,12 +37,11 @@ import processing.app.ui.Toolkit;
 
 
 public class ContributionTab extends JPanel {
-  //static final String ANY_CATEGORY = Language.text("contrib.all");
   static final int FILTER_WIDTH = Toolkit.zoom(180);
 
   Base base;
   ContributionType contribType;
-  ManagerFrame contribDialog;
+  ManagerFrame managerFrame;
 
   Contribution.Filter filter;
   JComboBox<String> categoryChooser;
@@ -64,12 +63,14 @@ public class ContributionTab extends JPanel {
   JProgressBar progressBar;
 
 
-  public ContributionTab() { }
+  public ContributionTab(ManagerFrame dialog) {
+    this.managerFrame = dialog;
+    this.base = dialog.base;
+  }
 
 
   public ContributionTab(ManagerFrame dialog, ContributionType type) {
-    this.base = dialog.base;
-    this.contribDialog = dialog;
+    this(dialog);
     this.contribType = type;
 
 //    long t1 = System.currentTimeMillis();
@@ -88,6 +89,7 @@ public class ContributionTab extends JPanel {
 //    long t6 = System.currentTimeMillis();
 //    System.out.println("ContributionTab.<init> " + (t4-t1) + " " + (t5-t4) + " " + (t6-t5));
   }
+
 
   public void showFrame(boolean error, boolean loading) {
     setLayout(error, loading);
@@ -189,31 +191,24 @@ public class ContributionTab extends JPanel {
     errorMessage = new JTextPane();
     errorMessage.setEditable(false);
     errorMessage.setContentType("text/html");
-    errorMessage.setText("<html><body><center>Could not connect to the Processing server.<br>"
-      + "Contributions cannot be installed or updated without an Internet connection.<br>"
-      + "Please verify your network connection again, then try connecting again.</center></body></html>");
-    //DetailPanel.setTextStyle(errorMessage, "1em");
-    //errorMessage.addStyle(DetailPanel.getBodyStyle());
+    errorMessage.setText("<html><body><center>" +
+      "Could not connect to the Processing server.<br>" +
+      "Contributions cannot be installed or updated without an Internet connection.<br>" +
+      "Please verify your network connection again, then try connecting again." +
+      "</center></body></html>");
     Dimension dim = new Dimension(550, 60);
     errorMessage.setMaximumSize(dim);
     errorMessage.setMinimumSize(dim);
     errorMessage.setOpaque(false);
 
-    /*
-    StyledDocument doc = errorMessage.getStyledDocument();
-    SimpleAttributeSet center = new SimpleAttributeSet();
-    StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
-    doc.setParagraphAttributes(0, doc.getLength(), center, false);
-    */
-
     closeButton = Toolkit.createIconButton("manager/close");
     closeButton.setContentAreaFilled(false);
-    closeButton.addActionListener(e -> contribDialog.makeAndShowTab(false, false));
+    closeButton.addActionListener(e -> managerFrame.makeAndShowTab(false, false));
     tryAgainButton = new JButton("Try Again");
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
     tryAgainButton.addActionListener(e -> {
-      contribDialog.makeAndShowTab(false, true);
-      contribDialog.downloadAndUpdateContributionListing(base);
+      managerFrame.makeAndShowTab(false, true);
+      managerFrame.downloadAndUpdateContributionListing(base);
     });
     layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,

@@ -421,9 +421,11 @@ public class ContributionListing {
   }
 
 
+  /*
   protected boolean listDownloadSuccessful() {
     return !listDownloadFailed;
   }
+  */
 
 
   private List<AvailableContribution> parseContribList(File file) {
