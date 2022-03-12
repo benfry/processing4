@@ -384,7 +384,7 @@ public abstract class LocalContribution extends Contribution {
    * Non-blocking call to remove a contribution in a new thread.
    */
   void removeContribution(final Base base,
-                          final ContribProgressMonitor pm,
+                          final ContribProgressBar pm,
                           final StatusPanel status) {
     // TODO: replace with SwingWorker [jv]
     new Thread(() -> remove(base, pm, status, ContributionListing.getInstance()), "Contribution Uninstaller").start();
@@ -392,10 +392,10 @@ public abstract class LocalContribution extends Contribution {
 
 
   void remove(final Base base,
-              final ContribProgressMonitor pm,
+              final ContribProgressBar pm,
               final StatusPanel status,
               final ContributionListing contribListing) {
-    pm.startTask("Removing", ContribProgressMonitor.UNKNOWN);
+    pm.startTask("Removing");
 
     boolean doBackup = Preferences.getBoolean("contribution.backup.on_remove");
     if (getType() == ContributionType.MODE) {

@@ -18,6 +18,8 @@ X implement updateTheme()
 X remove the extra 2-pixel line at the top
 o currently uses prepareGraphics(), do we need to remove that?
 X   looks like nope, that was sorted out separately
+X remove extra ContribProgressMonitor class
+_ removing the current Mode will cause an exception when opening a sketch
 _ allow update of the current Mode
 
 _ an incompatible Mode prevents the PDE from quitting after last window is closed

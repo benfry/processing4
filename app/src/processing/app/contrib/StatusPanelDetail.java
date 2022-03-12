@@ -159,11 +159,6 @@ class StatusPanelDetail {
   }
 
 
-//  private boolean isSelected() {
-//    return listPanel.getSelectedPanel() == this;
-//  }
-
-
   protected void install() {
     clearStatusMessage();
     installInProgress = true;
@@ -198,8 +193,8 @@ class StatusPanelDetail {
       progressBar.setVisible(true);
       progressBar.setIndeterminate(true);
 
-      ContribProgressBar monitor = new RemoveProgressBar(progressBar);
-      getLocalContrib().removeContribution(getBase(), monitor, getStatusPanel());
+      ContribProgressBar progress = new RemoveProgressBar(progressBar);
+      getLocalContrib().removeContribution(getBase(), progress, getStatusPanel());
     }
   }
 
@@ -216,8 +211,7 @@ class StatusPanelDetail {
       resetProgressBar();
       AvailableContribution ad =
         contribListing.getAvailableContribution(contrib);
-      String url = ad.link;
-      installContribution(ad, url);
+      installContribution(ad, ad.link);
     }
 
     @Override

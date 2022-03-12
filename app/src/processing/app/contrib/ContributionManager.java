@@ -56,7 +56,7 @@ public class ContributionManager {
    * @return true if the file was successfully downloaded, false otherwise.
    */
   static boolean download(URL source, byte[] post,
-                          File dest, ContribProgressMonitor progress) {
+                          File dest, ContribProgressBar progress) {
     boolean success = false;
     try {
       HttpURLConnection conn = (HttpURLConnection) source.openConnection();
@@ -154,7 +154,7 @@ public class ContributionManager {
           download(url, null, contribZip, downloadProgress);
 
           if (!downloadProgress.isCanceled() && !downloadProgress.isError()) {
-            installProgress.startTask(Language.text("contrib.progress.installing"), ContribProgressMonitor.UNKNOWN);
+            installProgress.startTask(Language.text("contrib.progress.installing"));
             final LocalContribution contribution =
               ad.install(base, contribZip, false, status);
 

@@ -344,7 +344,7 @@ public class ContributionListing {
    * Only one instance will run at a time.
    */
   public void downloadAvailableList(final Base base,
-                                    final ContribProgressMonitor progress) {
+                                    final ContribProgressBar progress) {
 
     // TODO: replace with SwingWorker [jv]
     new Thread(() -> {
