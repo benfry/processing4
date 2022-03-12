@@ -1130,6 +1130,16 @@ public class Base {
   }
 
 
+  /**
+   * Called when a Mode is uninstalled, in case it's the current Mode.
+   */
+  public void modeRemoved(Mode mode) {
+    if (nextMode == mode) {
+      nextMode = getDefaultMode();
+    }
+  }
+
+
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 

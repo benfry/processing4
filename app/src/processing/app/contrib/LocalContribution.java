@@ -416,6 +416,8 @@ public abstract class LocalContribution extends Contribution {
                              "windows that have " + name + " as the active Mode.");
         return;
       }
+      // Notify the Base in case this is the current Mode
+      base.modeRemoved(m.getMode());
     }
 
     if (getType() == ContributionType.TOOL) {
@@ -464,7 +466,7 @@ public abstract class LocalContribution extends Contribution {
 
     } else {
       // There was a failure backing up the folder
-      if (!doBackup || (doBackup && backup(false, status))) {
+      if (!doBackup || backup(false, status)) {
         if (setDeletionFlag(true)) {
           try {
             // TODO: run this in SwingWorker done() [jv]
