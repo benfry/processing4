@@ -4,7 +4,7 @@ X   opening AspectHelper.js makes it the main tab
 X   through sketch.properties is not rewritten
 X dropping folder into sketch window throws weird exception
 X   https://github.com/processing/processing4/issues/441
-X "  does not exist" message on Linux startup
+X fix "  does not exist" message on Linux startup
 X   no longer pass a blank sketch file name from startup script
 X   also remove unused readlink
 X   support multiple files passed on command line
@@ -28,15 +28,18 @@ X removing the current Mode (with no windows open) will cause an exception
 X   when next opening a sketch, nextMode is set to the old guy
 X clicking "Update All" on the Updates tab throws NPE
 X   https://github.com/processing/processing4/issues/440
+X an incompatible Mode prevents the PDE from quitting after last window is closed
+X   https://github.com/processing/processing/issues/5112
+X   https://github.com/processing/processing4/issues/448
+X   could not reproduce on Linux, possible that Windows has a cp issue
+X   but hopefully more likely that it's been resolved with all the Mode cleanup
+
 
 _ allow update of the current Mode
 _   if doing an update (not just delete), close sketches and re-open
 _   if doing a delete, require sketches to be closed
 _ lots of rewriting to use SwingWorker
 _   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
-
-_ an incompatible Mode prevents the PDE from quitting after last window is closed
-_   https://github.com/processing/processing/issues/5112
 
 
 _ on release: submit to Microsoft
