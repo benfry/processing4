@@ -24,6 +24,7 @@
 package processing.app.tools;
 
 import processing.app.*;
+import processing.app.contrib.ContributionManager;
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
@@ -126,6 +127,7 @@ public class ThemeSelector extends JFrame implements Tool {
       Util.saveFile(themeContents[index], sketchbookFile);
       Theme.load();
 
+      ContributionManager.updateTheme();
       for (Editor editor : base.getEditors()) {
         editor.updateTheme();
         //editor.repaint();

@@ -110,7 +110,7 @@ public class ManagerFrame {
   private void makeFrame() {
     frame = new JFrame(title);
     frame.setMinimumSize(Toolkit.zoom(750, 500));
-    tabs = new ManagerTabs(base);
+    tabs = new ManagerTabs();
 
     makeAndShowTab(false, true);
 
@@ -137,7 +137,10 @@ public class ManagerFrame {
 
 
   protected void updateTheme() {
-    frame.getContentPane().setBackground(Theme.getColor("manager.tab.background"));
+    Color bgColor = Theme.getColor("manager.tab.background");
+    frame.getContentPane().setBackground(bgColor);
+
+    tabs.updateTheme();
   }
 
 

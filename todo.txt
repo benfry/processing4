@@ -14,6 +14,9 @@ X   https://github.com/processing/processing/issues/5309
 X   https://github.com/processing/processing4/issues/446
 X removed weird double call of installPreviouslyFailed()
 X remove unused icon code from ManagerTabs
+X implement updateTheme()
+_ remove the extra 2-pixel line at the top
+_ currently uses prepareGraphics(), do we need to remove that?
 _ allow update of the current Mode
 
 _ an incompatible Mode prevents the PDE from quitting after last window is closed
@@ -140,7 +143,6 @@ _ console scroll bar colors
 _   https://github.com/processing/processing4/issues/265
 _ errors table theme
 _ contrib manager theme
-_   implement updateTheme()
 _   identify coloring for icons
 _   how much of theme to inherit
 _   generate manager icons

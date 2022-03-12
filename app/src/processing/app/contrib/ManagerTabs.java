@@ -35,11 +35,12 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.*;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import processing.app.Base;
-import processing.app.Mode;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
@@ -71,10 +72,10 @@ public class ManagerTabs extends Box {
 
   List<Tab> tabList = new ArrayList<>();
 
-  Mode mode;
-
   Font font;
   int fontAscent;
+
+  Image gradient;
 
   JPanel cardPanel;
   CardLayout cardLayout;
@@ -83,21 +84,10 @@ public class ManagerTabs extends Box {
   Component currentPanel;
 
 
-  public ManagerTabs(Base base) {
+  public ManagerTabs() {
     super(BoxLayout.Y_AXIS);
 
-    // A mode shouldn't actually override these, they're coming from theme.txt.
-    // But use the default (Java) mode settings just in case.
-    mode = base.getDefaultMode();
-
-    textColor[SELECTED] = Theme.getColor("manager.tab.text.selected.color");
-    textColor[UNSELECTED] = Theme.getColor("manager.tab.text.unselected.color");
-    font = Theme.getFont("manager.tab.text.font");
-
-    tabColor[SELECTED] = Theme.getColor("manager.tab.selected.color");
-    tabColor[UNSELECTED] = Theme.getColor("manager.tab.unselected.color");
-
-    gradient = Theme.makeGradient("manager.tab", Toolkit.zoom(400), HIGH);
+    updateTheme();
 
     setBorder(new EmptyBorder(BORDER, BORDER, BORDER, BORDER));
 
@@ -107,6 +97,20 @@ public class ManagerTabs extends Box {
     cardLayout = new CardLayout();
     cardPanel = new JPanel(cardLayout);
     add(cardPanel);
+  }
+
+
+  protected void updateTheme() {
+    textColor[SELECTED] = Theme.getColor("manager.tab.text.selected.color");
+    textColor[UNSELECTED] = Theme.getColor("manager.tab.text.unselected.color");
+    font = Theme.getFont("manager.tab.text.font");
+
+    tabColor[SELECTED] = Theme.getColor("manager.tab.selected.color");
+    tabColor[UNSELECTED] = Theme.getColor("manager.tab.unselected.color");
+
+    gradient = Theme.makeGradient("manager.tab", Toolkit.zoom(400), HIGH);
+
+    repaint();
   }
 
 

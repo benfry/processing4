@@ -27,8 +27,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 import java.util.*;
 
-import javax.swing.SwingWorker;
-
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Messages;
@@ -676,14 +674,14 @@ public class ContributionManager {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static ManagerFrame managerDialog;
+  static ManagerFrame managerFrame;
 
 
   static public void init(Base base) throws Exception {
 //    long t1 = System.currentTimeMillis();
     listing = ContributionListing.getInstance(); // Moved here to make sure it runs on EDT [jv 170121]
 //    long t2 = System.currentTimeMillis();
-    managerDialog = new ManagerFrame(base);
+    managerFrame = new ManagerFrame(base);
 //    long t3 = System.currentTimeMillis();
     cleanup(base);
 //    long t4 = System.currentTimeMillis();
@@ -691,11 +689,18 @@ public class ContributionManager {
   }
 
 
+  static public void updateTheme() {
+    if (managerFrame != null) {
+      managerFrame.updateTheme();
+    }
+  }
+
+
   /**
    * Show the Library installer window.
    */
   static public void openLibraries() {
-    managerDialog.showFrame(ContributionType.LIBRARY);
+    managerFrame.showFrame(ContributionType.LIBRARY);
   }
 
 
@@ -703,7 +708,7 @@ public class ContributionManager {
    * Show the Mode installer window.
    */
   static public void openModes() {
-    managerDialog.showFrame(ContributionType.MODE);
+    managerFrame.showFrame(ContributionType.MODE);
   }
 
 
@@ -711,7 +716,7 @@ public class ContributionManager {
    * Show the Tool installer window.
    */
   static public void openTools() {
-    managerDialog.showFrame(ContributionType.TOOL);
+    managerFrame.showFrame(ContributionType.TOOL);
   }
 
 
@@ -719,7 +724,7 @@ public class ContributionManager {
    * Show the Examples installer window.
    */
   static public void openExamples() {
-    managerDialog.showFrame(ContributionType.EXAMPLES);
+    managerFrame.showFrame(ContributionType.EXAMPLES);
   }
 
 
@@ -727,28 +732,6 @@ public class ContributionManager {
    * Open the updates panel.
    */
   static public void openUpdates() {
-    managerDialog.showFrame(null);
+    managerFrame.showFrame(null);
   }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  /*
-  static int getTypeIndex(ContributionType contributionType) {
-    int index;
-    if (contributionType == ContributionType.LIBRARY) {
-      index = 0;
-    } else if (contributionType == ContributionType.MODE) {
-      index = 1;
-    } else if (contributionType == ContributionType.TOOL) {
-      index = 2;
-    } else if (contributionType == ContributionType.EXAMPLES) {
-      index = 3;
-    } else {
-      index = 4;
-    }
-    return index;
-  }
-  */
 }
