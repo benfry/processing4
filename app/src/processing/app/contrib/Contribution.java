@@ -23,7 +23,8 @@ package processing.app.contrib;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import processing.core.PApplet;
 import processing.data.StringDict;
@@ -39,10 +40,12 @@ abstract public class Contribution {
   static final String AUTHORS_PROPERTY = "authors";
 
   static final String UNKNOWN_CATEGORY = "Unknown";
-  static final List<String> validCategories =
-    Arrays.asList("3D", "Animation", "Data", "Geometry", "GUI", "Hardware",
-                  "I/O", "Math", "Renderer", "Simulation", "Sound",
-                  "Typography", "Utilities", "Video & Vision", "Other");
+  static final Set<String> validCategories =
+    new HashSet<>(Arrays.asList(
+      "3D", "Animation", "Data", "Geometry", "GUI", "Hardware",
+      "I/O", "Math", "Renderer", "Simulation", "Sound",
+      "Typography", "Utilities", "Video & Vision", "Other"
+    ));
 
   static final String FOUNDATION_AUTHOR = "The Processing Foundation";
 
@@ -95,6 +98,7 @@ abstract public class Contribution {
   }
 
 
+  /*
   protected boolean hasImport(String importName) {
     if (imports != null && importName != null) {
       for (String c : imports) {
@@ -105,6 +109,7 @@ abstract public class Contribution {
     }
     return false;
   }
+  */
 
 
   // "pdf" or "PDF Export"
@@ -249,13 +254,6 @@ abstract public class Contribution {
     return null;
   }
 
-  /**
-   * @return a single element list with "Unknown" as the category.
-   */
-  static StringList unknownCategoryList() {
-    return new StringList(UNKNOWN_CATEGORY);
-  }
-
 
   /**
    * @return the list of categories that this contribution is part of
@@ -265,9 +263,6 @@ abstract public class Contribution {
     StringList outgoing = new StringList();
 
     String categoryStr = properties.get(CATEGORIES_PROPERTY);
-    if (categoryStr == null) {
-      categoryStr = properties.get("category");  // try the old way
-    }
     if (categoryStr != null) {
       // Can't use splitTokens() because the names sometimes have spaces
       String[] listing = PApplet.trim(PApplet.split(categoryStr, ','));
@@ -279,7 +274,7 @@ abstract public class Contribution {
       }
     }
     if (outgoing.size() == 0) {
-      return unknownCategoryList();
+      outgoing.append(UNKNOWN_CATEGORY);
     }
     return outgoing;
   }

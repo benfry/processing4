@@ -48,8 +48,7 @@ public abstract class LocalContribution extends Contribution {
   static public final String UPDATE_FLAGGED = "marked_for_update";
   static public final String RESTART_FLAG = "requires_restart";
 
-  protected String id;          // 1 (unique id for this library)
-  protected int latestVersion;  // 103
+  protected String id;  // 1 (unique id for this library)
   protected File folder;
   protected StringDict properties;
   protected ClassLoader loader;
@@ -105,7 +104,7 @@ public abstract class LocalContribution extends Contribution {
       Messages.log("No properties file at " + propertiesFile.getAbsolutePath());
       // We'll need this to be set at a minimum.
       name = folder.getName();
-      categories = unknownCategoryList();
+      categories = new StringList(UNKNOWN_CATEGORY);
     }
   }
 
