@@ -54,7 +54,10 @@ _   if doing an update (not just delete), close sketches and re-open
 _   if doing a delete, require sketches to be closed
 _ lots of rewriting to use SwingWorker
 _   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
-
+_ when starting in p5jsMode, going to the contrib manager shows no green checks for libs
+_   tricky because those aren't gonna show up in 'Add Library'
+_   which is another case for a separate 'contrib manager' thing
+_     maybe that's the update button? when no updates, it's still a button?
 
 _ CJKV fonts are hosed b/c they're not actually monospace
 _   https://github.com/processing/processing4/issues/447
