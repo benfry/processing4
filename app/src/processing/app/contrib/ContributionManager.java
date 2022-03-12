@@ -227,7 +227,6 @@ public class ContributionManager {
   }
 
 
-
   /**
    * Non-blocking call to download and install a contribution in a new thread.
    * Used when information about the progress of the download and install
@@ -245,13 +244,10 @@ public class ContributionManager {
       filename = filename.substring(filename.lastIndexOf('/') + 1);
       try {
         File contribZip = File.createTempFile("download", filename);
-        contribZip.setWritable(true); // necessary?
-
         try {
           download(url, null, contribZip, null);
-
-          final LocalContribution contribution = ad.install(base, contribZip,
-                                                      false, null);
+          final LocalContribution contribution =
+            ad.install(base, contribZip, false, null);
 
           if (contribution != null) {
             try {
@@ -272,8 +268,9 @@ public class ContributionManager {
               }
             }
           }
-
-          contribZip.delete();
+          if (contribZip.exists() && !contribZip.delete()) {
+            System.err.println("Could not delete " + contribZip);
+          }
           handleUpdateFailedMarkers(ad);
 
         } catch (Exception e) {
