@@ -82,10 +82,6 @@ class StatusPanel extends JPanel {
     label.setEditable(false);
     label.setOpaque(false);
     label.setContentType("text/html");
-//    bodyRule = "a, body { font-family: " + buttonFont.getFamily() + "; " +
-//            "font-size: " + buttonFont.getSize() + "pt; color: black; text-decoration: none;}";
-//    bodyRule = "";
-//    bodyRule = DetailPanel.getBodyStyle();
     label.addHyperlinkListener(e -> {
       if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
         if (e.getURL() != null) {

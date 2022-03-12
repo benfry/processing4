@@ -334,7 +334,6 @@ public abstract class LocalContribution extends Contribution {
     }
 
     File oldFolder = getFolder();
-
     try {
       Util.copyDir(oldFolder, contribFolder);
     } catch (IOException e) {
@@ -343,15 +342,6 @@ public abstract class LocalContribution extends Contribution {
       e.printStackTrace();
       return null;
     }
-
-
-    /*
-    if (!getFolder().renameTo(contribFolder)) {
-      status.setErrorMessage("Could not move " + getTypeName() +
-                                " \"" + getName() + "\" to the sketchbook.");
-      return null;
-    }
-    */
 
     return getType().load(base, contribFolder);
   }
@@ -397,10 +387,7 @@ public abstract class LocalContribution extends Contribution {
                           final ContribProgressMonitor pm,
                           final StatusPanel status) {
     // TODO: replace with SwingWorker [jv]
-    new Thread(() -> remove(base,
-           pm,
-           status,
-           ContributionListing.getInstance()), "Contribution Uninstaller").start();
+    new Thread(() -> remove(base, pm, status, ContributionListing.getInstance()), "Contribution Uninstaller").start();
   }
 
 
@@ -411,14 +398,6 @@ public abstract class LocalContribution extends Contribution {
     pm.startTask("Removing", ContribProgressMonitor.UNKNOWN);
 
     boolean doBackup = Preferences.getBoolean("contribution.backup.on_remove");
-//    if (getType().requiresRestart()) {
-//      if (!doBackup || (doBackup && backup(editor, false, status))) {
-//        if (setDeletionFlag(true)) {
-//          contribListing.replaceContribution(this, this);
-//        }
-//      }
-//    } else {
-    boolean success;
     if (getType() == ContributionType.MODE) {
       boolean isModeActive = false;
       ModeContribution m = (ModeContribution) this;
@@ -440,20 +419,12 @@ public abstract class LocalContribution extends Contribution {
     }
 
     if (getType() == ContributionType.TOOL) {
-      /*
-      ToolContribution t = (ToolContribution) this;
-      Iterator<Editor> iter = editor.getBase().getEditors().iterator();
-      while (iter.hasNext()) {
-        Editor ed = iter.next();
-        ed.clearToolMenu();
-      }
-      t.clearClassLoader(editor.getBase());
-      */
       // menu will be rebuilt below with the refreshContribs() call
       base.clearToolMenus();
       ((ToolContribution) this).clearClassLoader();
     }
 
+    boolean success;
     if (doBackup) {
       success = backup(true, status);
     } else {
@@ -466,17 +437,11 @@ public abstract class LocalContribution extends Contribution {
     }
 
     if (success) {
-      // this was just rebuilding the tool menu in one editor, which happens
-      // yet again down below with the call to refreshInstalled() [fry 150828]
-//      if (getType() == ContributionType.TOOL) {
-//        editor.removeTool();
-//      }
-
       try {
         // TODO: run this in SwingWorker done() [jv]
         EventQueue.invokeAndWait(() -> {
           Contribution advertisedVersion =
-              contribListing.getAvailableContribution(LocalContribution.this);
+            contribListing.getAvailableContribution(LocalContribution.this);
 
           if (advertisedVersion == null) {
             contribListing.removeContribution(LocalContribution.this);

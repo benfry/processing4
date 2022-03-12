@@ -16,7 +16,8 @@ X removed weird double call of installPreviouslyFailed()
 X remove unused icon code from ManagerTabs
 X implement updateTheme()
 X remove the extra 2-pixel line at the top
-_ currently uses prepareGraphics(), do we need to remove that?
+o currently uses prepareGraphics(), do we need to remove that?
+X   looks like nope, that was sorted out separately
 _ allow update of the current Mode
 
 _ an incompatible Mode prevents the PDE from quitting after last window is closed
