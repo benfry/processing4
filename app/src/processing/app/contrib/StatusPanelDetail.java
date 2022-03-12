@@ -152,6 +152,8 @@ class StatusPanelDetail {
 
 
   private void resetProgressBar() {
+    // TODO is this overkill for a reset? is this really only being used
+    //      when we mean to call setVisible(false)? [fry 220311]
     progressBar.setString(Language.text("contrib.progress.starting"));
     progressBar.setIndeterminate(false);
     progressBar.setValue(0);
@@ -169,6 +171,9 @@ class StatusPanelDetail {
   }
 
 
+  // TODO Update works by first calling a remove, and then ContribProgress,
+  //      of all things, calls install() in its finishedAction() method.
+  //      FFS this is gross. [fry 220311]
   public void update() {
     clearStatusMessage();
     updateInProgress = true;
@@ -215,11 +220,13 @@ class StatusPanelDetail {
       progressBar.setIndeterminate(true);
 
       ContribProgress progress = new ContribProgress(progressBar) {
+        @Override
         public void finishedAction() {
           resetProgressBar();
           removeInProgress = false;
         }
 
+        @Override
         public void cancelAction() {
           resetProgressBar();
           removeInProgress = false;
@@ -238,12 +245,12 @@ class StatusPanelDetail {
   // though, is that the functions being called in Base are somewhat suspect
   // since they're contribution-related, and should perhaps live closer.
   private Base getBase() {
-    return listPanel.contributionTab.editor.getBase();
+    return listPanel.contributionTab.base;  // TODO this is gross [fry]
   }
 
 
   private StatusPanel getStatusPanel() {
-    return listPanel.contributionTab.statusPanel;  // TODO this is gross [fry]
+    return listPanel.contributionTab.statusPanel;  // TODO this is also gross
   }
 
 

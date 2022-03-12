@@ -220,11 +220,11 @@ public class ManagerFrame {
 
   void makeAndShowTab(boolean error, boolean loading) {
     Editor editor = base.getActiveEditor();
-    librariesTab.showFrame(editor, error, loading);
-    modesTab.showFrame(editor, error, loading);
-    toolsTab.showFrame(editor, error, loading);
-    examplesTab.showFrame(editor, error, loading);
-    updatesTab.showFrame(editor, error, loading);
+    librariesTab.showFrame(error, loading);
+    modesTab.showFrame(error, loading);
+    toolsTab.showFrame(error, loading);
+    examplesTab.showFrame(error, loading);
+    updatesTab.showFrame(error, loading);
   }
 
 

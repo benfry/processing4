@@ -40,6 +40,7 @@ public class ContributionTab extends JPanel {
   //static final String ANY_CATEGORY = Language.text("contrib.all");
   static final int FILTER_WIDTH = Toolkit.zoom(180);
 
+  Base base;
   ContributionType contribType;
   ManagerFrame contribDialog;
 
@@ -57,8 +58,6 @@ public class ContributionTab extends JPanel {
   JButton tryAgainButton;
   JButton closeButton;
 
-  // the calling editor, so updates can be applied
-  Editor editor;
   String category;
   ContributionListing contribListing;
 
@@ -69,6 +68,7 @@ public class ContributionTab extends JPanel {
 
 
   public ContributionTab(ManagerFrame dialog, ContributionType type) {
+    this.base = dialog.base;
     this.contribDialog = dialog;
     this.contribType = type;
 
@@ -89,9 +89,7 @@ public class ContributionTab extends JPanel {
 //    System.out.println("ContributionTab.<init> " + (t4-t1) + " " + (t5-t4) + " " + (t6-t5));
   }
 
-  public void showFrame(final Editor editor, boolean error, boolean loading) {
-    this.editor = editor;
-
+  public void showFrame(boolean error, boolean loading) {
     setLayout(error, loading);
     contributionListPanel.setVisible(!loading);
     loaderLabel.setVisible(loading);
@@ -215,7 +213,7 @@ public class ContributionTab extends JPanel {
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
     tryAgainButton.addActionListener(e -> {
       contribDialog.makeAndShowTab(false, true);
-      contribDialog.downloadAndUpdateContributionListing(editor.getBase());
+      contribDialog.downloadAndUpdateContributionListing(base);
     });
     layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
@@ -261,7 +259,13 @@ public class ContributionTab extends JPanel {
   }
 
 
+  // TODO Why is this entire set of code only running when Editor
+  //      is not null... And what's it doing anyway? Shouldn't it run
+  //      on all editors? (The change to getActiveEditor() was made
+  //      for 4.0b8 because the Editor may have been closed after the
+  //      Contrib Manager was opened.) [fry 220311]
   protected void updateContributionListing() {
+    Editor editor = base.getActiveEditor();
     if (editor != null) {
       List<Library> libraries =
         new ArrayList<>(editor.getMode().contribLibraries);
@@ -278,8 +282,6 @@ public class ContributionTab extends JPanel {
       }
 
       List<Contribution> contributions = new ArrayList<>(libraries);
-
-      Base base = editor.getBase();
 
       List<ToolContribution> tools = base.getToolContribs();
       contributions.addAll(tools);
