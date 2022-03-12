@@ -37,6 +37,7 @@ import processing.app.Platform;
 
 
 class StatusPanel extends JPanel {
+  static final int LABEL_WIDTH = Toolkit.zoom(480);
   static final int BUTTON_WIDTH = Toolkit.zoom(150);
 
   static Icon foundationIcon;
@@ -67,11 +68,6 @@ class StatusPanel extends JPanel {
       removeIcon = Toolkit.getLibIconX("manager/remove");
       buttonFont = ManagerFrame.NORMAL_PLAIN;
     }
-  }
-
-
-  public StatusPanel(final ContributionTab contributionTab, int width) {
-    this(contributionTab);
 
     setBackground(new Color(0xebebeb));
 
@@ -130,8 +126,6 @@ class StatusPanel extends JPanel {
       updateDetail(currentPanel);
     });
 
-    int labelWidth = (width != 0) ?
-      (3 * width / 4) : GroupLayout.PREFERRED_SIZE;
     layout = new GroupLayout(this);
     this.setLayout(layout);
 
@@ -146,7 +140,7 @@ class StatusPanel extends JPanel {
                     ManagerFrame.STATUS_WIDTH,
                     ManagerFrame.STATUS_WIDTH)
       .addGap(0)
-      .addComponent(label, labelWidth, labelWidth, labelWidth)
+      .addComponent(label, LABEL_WIDTH, LABEL_WIDTH, LABEL_WIDTH)
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                        GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
@@ -186,16 +180,6 @@ class StatusPanel extends JPanel {
 
     validate();
   }
-
-
-  /*
-  void setMessage(String message) {
-    if (label != null) {
-      label.setText(message);
-      label.repaint();
-    }
-  }
-  */
 
 
   void setErrorMessage(String message) {

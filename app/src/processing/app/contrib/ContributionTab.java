@@ -78,7 +78,7 @@ public class ContributionTab extends JPanel {
 //    long t2 = System.currentTimeMillis();
     contribListing = ContributionListing.getInstance();
 //    long t3 = System.currentTimeMillis();
-    statusPanel = new StatusPanel(this, 650);
+    statusPanel = new StatusPanel(this);
 //    long t4 = System.currentTimeMillis();
     contributionListPanel = new ListPanel(this, filter, false);
 //    long t5 = System.currentTimeMillis();
