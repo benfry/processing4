@@ -98,8 +98,12 @@ public class Recent {
 
 
   static protected void save() {
-    if (!file.setWritable(true, false)) {
-      System.err.println("Warning: could not set " + file + " to writable");
+    // Need to check whether file exists and may already be writable.
+    // Otherwise, setWritable() will actually return false.
+    if (file.exists() && !file.canWrite()) {
+      if (!file.setWritable(true, false)) {
+        System.err.println("Warning: could not set " + file + " to writable");
+      }
     }
     PrintWriter writer = PApplet.createWriter(file);
     writer.println(VERSION);
