@@ -1,9 +1,9 @@
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Part of the Processing project - http://processing.org
+  Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-20 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -162,14 +162,6 @@ public class ContributionManager {
                 // TODO: run this in SwingWorker done() [jv]
                 EventQueue.invokeAndWait(() -> {
                   listing.replaceContribution(ad, contribution);
-                  /*
-                  if (contribution.getType() == ContributionType.MODE) {
-                    List<ModeContribution> contribModes = editor.getBase().getModeContribs();
-                    if (!contribModes.contains(contribution)) {
-                      contribModes.add((ModeContribution) contribution);
-                    }
-                  }
-                  */
                   base.refreshContribs(contribution.getType());
                   base.setUpdatesAvailable(listing.countUpdates(base));
                 });
@@ -187,7 +179,7 @@ public class ContributionManager {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.contrib_download.timeout",
                              ad.getName()));
-            } else {
+            } else if (exception != null) {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.download_and_install",
                              ad.getName()));
@@ -204,14 +196,13 @@ public class ContributionManager {
                 cause instanceof NoSuchMethodError) {
               msg = "This item is not compatible with this version of Processing";
             } else if (cause instanceof UnsupportedClassVersionError) {
-              msg = "This item needs to be recompiled for Java " +
-                PApplet.javaPlatform;
+              msg = "This needs to be recompiled for Java " + PApplet.javaPlatform;
             }
           }
 
           if (msg == null) {
             msg = Language.interpolate("contrib.errors.download_and_install", ad.getName());
-            // Something unexpected, so print the trace
+            // Something unexpected, so print the trace for bug tracking
             e.printStackTrace();
           }
           status.setErrorMessage(msg);
@@ -331,17 +322,16 @@ public class ContributionManager {
    */
   static public void downloadAndInstallOnImport(final Base base,
                                                 final List<AvailableContribution> list) {
-    // To avoid the user from modifying stuff, since this function is only
-    // called during pre-processing
+    // Disable the Editor to avoid the user from modifying anything,
+    // because this function is only called during pre-processing.
     Editor editor = base.getActiveEditor();
     editor.getTextArea().setEditable(false);
-//    base.getActiveEditor().getConsole().clear();
 
     List<String> installedLibList = new ArrayList<>();
 
     // boolean variable to check if previous lib was installed successfully,
     // to give the user an idea about progress being made.
-    boolean isPrevDone = false;
+    boolean prevDone = false;
 
     for (final AvailableContribution contrib : list) {
       if (contrib.getType() != ContributionType.LIBRARY) {
@@ -362,7 +352,7 @@ public class ContributionManager {
             // one install is completed and the next download has begun without
             // interfering with other status messages that may arise in the meanwhile
             String statusMsg = editor.getStatusMessage();
-            if (isPrevDone) {
+            if (prevDone) {
               String status = statusMsg + " "
                 + Language.interpolate("contrib.import.progress.download", contrib.name);
               editor.statusNotice(status);
@@ -372,7 +362,7 @@ public class ContributionManager {
               editor.statusNotice(status);
             }
 
-            isPrevDone = false;
+            prevDone = false;
 
             download(url, null, contribZip, null);
 
@@ -403,7 +393,7 @@ public class ContributionManager {
             contribZip.delete();
 
             installedLibList.add(contrib.name);
-            isPrevDone = true;
+            prevDone = true;
 
             arg = "contrib.import.progress.done";
             editor.statusNotice(Language.interpolate(arg,contrib.name));
@@ -428,18 +418,6 @@ public class ContributionManager {
       System.out.println("  * " + l);
     }
   }
-
-
-  /*
-  static void refreshInstalled(Editor e) {
-    for (Editor ed : e.getBase().getEditors()) {
-      ed.getMode().rebuildImportMenu();
-      ed.getMode().rebuildExamplesFrame();
-      ed.rebuildToolMenu();
-      ed.rebuildModeMenu();
-    }
-  }
-  */
 
 
   /**

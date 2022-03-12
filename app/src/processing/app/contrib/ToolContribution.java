@@ -1,9 +1,9 @@
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Part of the Processing project - http://processing.org
+  Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-15 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -19,7 +19,6 @@
   with this program; if not, write to the Free Software Foundation, Inc.
   59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 */
-
 package processing.app.contrib;
 
 import java.io.*;
@@ -33,8 +32,8 @@ import processing.app.tools.Tool;
 
 public class ToolContribution extends LocalContribution implements Tool, Comparable<ToolContribution> {
   private Tool tool;
+  final private File referenceFile; // shortname/reference/index.html
 
-  private File referenceFile; // shortname/reference/index.html
 
   static public ToolContribution load(File folder) {
     try {
@@ -83,16 +82,6 @@ public class ToolContribution extends LocalContribution implements Tool, Compara
   }
 
 
-//  static protected List<File> discover(File folder) {
-//    File[] folders = listCandidates(folder, "tool");
-//    if (folders == null) {
-//      return new ArrayList<File>();
-//    } else {
-//      return Arrays.asList(folders);
-//    }
-//  }
-
-
   static public List<ToolContribution> loadAll(File toolsFolder) {
     File[] list = ContributionType.TOOL.listCandidates(toolsFolder);
     ArrayList<ToolContribution> outgoing = new ArrayList<>();
@@ -137,9 +126,7 @@ public class ToolContribution extends LocalContribution implements Tool, Compara
 
   /**
    * Returns the object stored in the referenceFile field, which contains an
-   * instance of the file object representing the index file of the reference
-   *
-   * @return referenceFile
+   * instance of the file object representing the index file of the reference.
    */
   public File getReferenceIndexFile() {
     return referenceFile;
@@ -148,9 +135,7 @@ public class ToolContribution extends LocalContribution implements Tool, Compara
 
   /**
    * Tests whether the reference's index file indicated by referenceFile exists.
-   *
-   * @return true if and only if the file denoted by referenceFile exists; false
-   *         otherwise.
+   * @return true if the referenceFile exists; false otherwise.
    */
   public boolean hasReference() {
     return referenceFile.exists();

@@ -1,7 +1,7 @@
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Part of the Processing project - http://processing.org
+  Part of the Processing project - https://processing.org
 
   Copyright (c) 2013-22 The Processing Foundation
 
