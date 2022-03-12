@@ -56,6 +56,9 @@ _ lots of rewriting to use SwingWorker
 _   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
 
 
+_ CJKV fonts are hosed b/c they're not actually monospace
+_   https://github.com/processing/processing4/issues/447
+
 _ on release: submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 
