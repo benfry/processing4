@@ -37,6 +37,7 @@ X categories
 X   remove "Starred" as a category (it was unused)
 X   use isFoundation() instead of isSpecial() for tagging list entries
 X   add "Renderer" as a category
+X use https to get the contribs listing
 
 _ allow update of the current Mode
 _   if doing an update (not just delete), close sketches and re-open

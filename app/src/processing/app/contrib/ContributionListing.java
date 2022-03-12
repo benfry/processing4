@@ -40,8 +40,11 @@ import processing.data.StringDict;
 public class ContributionListing {
   static volatile ContributionListing singleInstance;
 
-  /** Stable URL that will redirect to wherever the file is hosted */
-  static final String LISTING_URL = "http://download.processing.org/contribs";
+  /**
+   * Stable URL that will redirect to wherever the file is hosted.
+   * Changed to use https in 4.0 beta 8 (returns same data).
+   */
+  static final String LISTING_URL = "https://download.processing.org/contribs";
   static final String LOCAL_FILENAME = "contribs.txt";
 
   /** Location of the listing file on disk, will be read and written. */
