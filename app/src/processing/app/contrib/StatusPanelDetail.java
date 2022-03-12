@@ -75,23 +75,38 @@ class StatusPanelDetail {
 
   protected JProgressBar getProgressBar() {
     if (progressBar == null) {
-      progressBar = new JProgressBar();
-      progressBar.setInheritsPopupMenu(true);
-      progressBar.setStringPainted(true);
-      progressBar.setFont(ManagerFrame.NORMAL_PLAIN);
-      progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-      progressBar.setOpaque(false);
-
-      resetProgressBar();
-
-      Dimension dim =
-        new Dimension(BUTTON_WIDTH,
-          progressBar.getPreferredSize().height);
-      progressBar.setPreferredSize(dim);
-      progressBar.setMaximumSize(dim);
-      progressBar.setMinimumSize(dim);
+      initProgressBar();
     }
     return progressBar;
+  }
+
+
+  protected void initProgressBar() {
+    progressBar = new JProgressBar();
+
+    progressBar.setInheritsPopupMenu(true);
+    progressBar.setStringPainted(true);
+    progressBar.setFont(ManagerFrame.NORMAL_PLAIN);
+    progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+    progressBar.setOpaque(false);
+
+    resetProgressBar();
+
+    final int high = progressBar.getPreferredSize().height;
+    Dimension dim = new Dimension(BUTTON_WIDTH, high);
+    progressBar.setPreferredSize(dim);
+    progressBar.setMaximumSize(dim);
+    progressBar.setMinimumSize(dim);
+  }
+
+
+  private void resetProgressBar() {
+    // TODO is this overkill for a reset? is this really only being used
+    //      when we mean to call setVisible(false)? [fry 220311]
+    progressBar.setString(Language.text("contrib.progress.starting"));
+    progressBar.setIndeterminate(false);
+    progressBar.setValue(0);
+    progressBar.setVisible(false);
   }
 
 
@@ -151,16 +166,6 @@ class StatusPanelDetail {
   }
 
 
-  private void resetProgressBar() {
-    // TODO is this overkill for a reset? is this really only being used
-    //      when we mean to call setVisible(false)? [fry 220311]
-    progressBar.setString(Language.text("contrib.progress.starting"));
-    progressBar.setIndeterminate(false);
-    progressBar.setValue(0);
-    progressBar.setVisible(false);
-  }
-
-
   protected void install() {
     clearStatusMessage();
     installInProgress = true;
@@ -178,6 +183,12 @@ class StatusPanelDetail {
     clearStatusMessage();
     updateInProgress = true;
     if (contrib.getType().requiresRestart()) {
+      // For the special "Updates" tab in the manager, there are no progress
+      // bars, so if that's what we're doing, this will create a dummy bar.
+      // TODO Not a good workaround [fry 220312]
+      if (progressBar == null) {
+        initProgressBar();
+      }
       progressBar.setVisible(true);
       progressBar.setIndeterminate(true);
 

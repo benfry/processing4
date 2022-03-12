@@ -21,23 +21,18 @@ X   looks like nope, that was sorted out separately
 X remove extra ContribProgressMonitor class
 X removing the current Mode (with no windows open) will cause an exception
 X   when next opening a sketch, nextMode is set to the old guy
+X clicking "Update All" on the Updates tab throws NPE
+X   https://github.com/processing/processing4/issues/440
+
 _ allow update of the current Mode
+_   if doing an update (not just delete), close sketches and re-open
+_   if doing a delete, require sketches to be closed
 _ lots of rewriting to use SwingWorker
 _   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
-
-unzip -d ~/coconut/sketchbook4/modes/ ~/Desktop/p5jsMode.zip
 
 _ an incompatible Mode prevents the PDE from quitting after last window is closed
 _   https://github.com/processing/processing/issues/5112
 
-_ clicking "Update All" on the Updates tab throws NPE
-_   https://github.com/processing/processing4/issues/440
-Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
-    at processing.app.contrib.StatusPanelDetail.installContribution(StatusPanelDetail.java:123)
-    at processing.app.contrib.StatusPanelDetail.update(StatusPanelDetail.java:189)
-    at processing.app.contrib.ContributionTab.updateAll(ContributionTab.java:405)
-    at processing.app.contrib.UpdateStatusPanel.lambda$new$0(UpdateStatusPanel.java:43)
-    at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
 
 _ on release: submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
