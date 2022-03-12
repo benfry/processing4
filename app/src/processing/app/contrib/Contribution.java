@@ -38,11 +38,10 @@ abstract public class Contribution {
   static final String MODES_PROPERTY = "modes";
   static final String AUTHORS_PROPERTY = "authors";
 
-  static final String SPECIAL_CATEGORY = "Starred";
   static final String UNKNOWN_CATEGORY = "Unknown";
   static final List<String> validCategories =
     Arrays.asList("3D", "Animation", "Data", "Geometry", "GUI", "Hardware",
-                  "I/O", "Math", "Simulation", "Sound", SPECIAL_CATEGORY,
+                  "I/O", "Math", "Renderer", "Simulation", "Sound",
                   "Typography", "Utilities", "Video & Vision", "Other");
 
   static final String FOUNDATION_AUTHOR = "The Processing Foundation";
@@ -50,7 +49,7 @@ abstract public class Contribution {
   protected StringList categories;  // "Sound", "Typography"
   protected String name;            // "pdf" or "PDF Export"
   protected String authors;         // [Ben Fry](http://benfry.com)
-  protected String url;             // http://processing.org
+  protected String url;             // https://processing.org
   protected String sentence;        // Write graphics to PDF files.
   protected String paragraph;       // <paragraph length description for site>
   protected int version;            // 102
@@ -229,21 +228,6 @@ abstract public class Contribution {
   /**
    * Returns true if the contrib is from the Processing Foundation.
    */
-  boolean isSpecial() {
-    if (authors != null &&
-        authors.contains(FOUNDATION_AUTHOR)) {
-      return true;
-    }
-
-    if (categories != null &&
-        categories.hasValue(SPECIAL_CATEGORY)) {
-      return true;
-    }
-
-    return false;
-  }
-
-
   public boolean isFoundation() {
     return FOUNDATION_AUTHOR.equals(authors);
   }

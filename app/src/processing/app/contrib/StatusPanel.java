@@ -294,7 +294,7 @@ class StatusPanel extends JPanel {
 //    new Exception("rebuilding status detail for " + detail.getContrib().name).printStackTrace(System.out);
     progressPanel.removeAll();
 
-    iconLabel.setIcon(detail.getContrib().isSpecial() ? foundationIcon : null);
+    iconLabel.setIcon(detail.getContrib().isFoundation() ? foundationIcon : null);
 //    label.setText(detail.description);
     label.setText(updateDescription(detail.getContrib()));
     ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(getBodyStyle());

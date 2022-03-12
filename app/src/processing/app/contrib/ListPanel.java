@@ -397,7 +397,7 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
 
     private void configureAuthorsColumnLabel(JLabel label, Contribution contribution) {
-      if (contribution.isSpecial()) {
+      if (contribution.isFoundation()) {
         label.setIcon(foundationIcon);
       }
       String authorList = contribution.getAuthorList();

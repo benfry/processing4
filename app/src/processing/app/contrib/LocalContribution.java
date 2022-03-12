@@ -107,22 +107,6 @@ public abstract class LocalContribution extends Contribution {
       name = folder.getName();
       categories = unknownCategoryList();
     }
-
-    if (categories.hasValue(SPECIAL_CATEGORY)) {
-      validateSpecial();
-    }
-  }
-
-
-  private void validateSpecial() {
-    for (AvailableContribution available : ContributionListing.getInstance().advertisedContributions) {
-      if (available.getName().equals(name)) {
-        if (!available.isSpecial()) {
-          categories.removeValue(SPECIAL_CATEGORY);
-        }
-      }
-      break;
-    }
   }
 
 
