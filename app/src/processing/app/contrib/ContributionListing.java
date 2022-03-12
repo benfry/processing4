@@ -353,7 +353,11 @@ public class ContributionListing {
       try {
         URL url = new URL(LISTING_URL);
         File tempContribFile = Base.getSettingsFile("contribs.tmp");
-        tempContribFile.setWritable(true, false);
+        if (tempContribFile.exists() && !tempContribFile.canWrite()) {
+          if (!tempContribFile.setWritable(true, false)) {
+            System.err.println("Could not set " + tempContribFile + " writable");
+          }
+        }
         ContributionManager.download(url, base.getInstalledContribsInfo(),
                                      tempContribFile, progress);
         if (!progress.isCanceled() && !progress.isError()) {
@@ -419,13 +423,6 @@ public class ContributionListing {
   protected boolean hasDownloadedLatestList() {
     return listDownloaded;
   }
-
-
-  /*
-  protected boolean listDownloadSuccessful() {
-    return !listDownloadFailed;
-  }
-  */
 
 
   private List<AvailableContribution> parseContribList(File file) {
@@ -515,7 +512,8 @@ public class ContributionListing {
   }
 
 
-  static public Comparator<Contribution> COMPARATOR = Comparator.comparing(o -> o.getName().toLowerCase());
+  static public Comparator<Contribution> COMPARATOR =
+    Comparator.comparing(o -> o.getName().toLowerCase());
 
 
   public interface ChangeListener {

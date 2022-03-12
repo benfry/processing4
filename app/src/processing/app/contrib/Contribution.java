@@ -40,7 +40,7 @@ abstract public class Contribution {
 
   static final String SPECIAL_CATEGORY = "Starred";
   static final String UNKNOWN_CATEGORY = "Unknown";
-  static final List validCategories =
+  static final List<String> validCategories =
     Arrays.asList("3D", "Animation", "Data", "Geometry", "GUI", "Hardware",
                   "I/O", "Math", "Simulation", "Sound", SPECIAL_CATEGORY,
                   "Typography", "Utilities", "Video & Vision", "Other");
@@ -95,20 +95,6 @@ abstract public class Contribution {
     return imports;
   }
 
-/*
-  protected String getImportStr() {
-    if (imports == null || imports.isEmpty()) {
-      return "";
-    }
-    StringBuilder sb = new StringBuilder();
-    for (String importName : imports) {
-      sb.append(importName);
-      sb.append(',');
-    }
-    sb.deleteCharAt(sb.length() - 1); // delete last comma
-    return sb.toString();
-  }
-*/
 
   protected boolean hasImport(String importName) {
     if (imports != null && importName != null) {
@@ -263,9 +249,11 @@ abstract public class Contribution {
   }
 
 
+  /*
   public StringDict loadProperties(File contribFolder) {
     return loadProperties(contribFolder, getType());
   }
+  */
 
 
   static public StringDict loadProperties(File contribFolder,
