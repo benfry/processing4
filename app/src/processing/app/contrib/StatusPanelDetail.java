@@ -147,7 +147,7 @@ class StatusPanelDetail {
 
       ContribProgress installProgress = new ContribProgress(progressBar) {
         public void finishedAction() {
-          finishInstall(isError());
+          finishInstall(isException());
         }
 
         public void cancelAction() {

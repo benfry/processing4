@@ -84,7 +84,6 @@ public class ContributionManager {
       if (progress != null) {
         // TODO this is often -1, may need to set progress to indeterminate
         int fileSize = conn.getContentLength();
-        progress.max = fileSize;
 //      System.out.println("file size is " + fileSize);
         progress.startTask(Language.text("contrib.progress.downloading"), fileSize);
       }
@@ -122,7 +121,7 @@ public class ContributionManager {
       }
     } catch (IOException ioe) {
       if (progress != null) {
-        progress.error(ioe);
+        progress.setException(ioe);
         progress.cancel();
       }
     }
@@ -153,7 +152,7 @@ public class ContributionManager {
         try {
           download(url, null, contribZip, downloadProgress);
 
-          if (!downloadProgress.isCanceled() && !downloadProgress.isError()) {
+          if (!downloadProgress.isCanceled() && !downloadProgress.isException()) {
             installProgress.startTask(Language.text("contrib.progress.installing"));
             final LocalContribution contribution =
               ad.install(base, contribZip, false, status);
@@ -183,7 +182,8 @@ public class ContributionManager {
             installProgress.finished();
 
           } else {
-            if (downloadProgress.exception instanceof SocketTimeoutException) {
+            Exception exception = downloadProgress.getException();
+            if (exception instanceof SocketTimeoutException) {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.contrib_download.timeout",
                              ad.getName()));
@@ -191,7 +191,7 @@ public class ContributionManager {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.download_and_install",
                              ad.getName()));
-              downloadProgress.exception.printStackTrace();
+              exception.printStackTrace();
             }
           }
           contribZip.delete();

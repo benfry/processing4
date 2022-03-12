@@ -34,15 +34,10 @@ import javax.swing.JProgressBar;
 public class ContribProgress {
   static private final int UNKNOWN = -1;
 
-  JProgressBar progressBar;
+  final private JProgressBar progressBar;
 
-  int progress = 0;
-  int max;
-
-  boolean finished = false;
-  boolean canceled = false;
-  boolean error = false;
-  Exception exception;
+  private boolean canceled = false;
+  private Exception exception;
 
 
   public ContribProgress(JProgressBar progressBar) {
@@ -56,8 +51,6 @@ public class ContribProgress {
 
 
   public void startTask(String name, int maxValue) {
-    finished = false;
-
     if (progressBar != null) {
       progressBar.setString(name);
       progressBar.setIndeterminate(maxValue == UNKNOWN);
@@ -67,7 +60,6 @@ public class ContribProgress {
 
 
   public void setProgress(int value) {
-    progress = value;
     if (progressBar != null) {
       progressBar.setValue(value);
     }
@@ -75,7 +67,6 @@ public class ContribProgress {
 
 
   public final void finished() {
-    finished = true;
     try {
       EventQueue.invokeAndWait(this::finishedAction);
     } catch (InterruptedException e) {
@@ -92,11 +83,6 @@ public class ContribProgress {
 
 
   public void finishedAction() { }
-
-
-  public boolean isCanceled() {
-    return canceled;
-  }
 
 
   public final void cancel() {
@@ -119,13 +105,22 @@ public class ContribProgress {
   public void cancelAction() { }
 
 
-  public boolean isError() {
-    return error;
+  public boolean isCanceled() {
+    return canceled;
   }
 
 
-  public void error(Exception e) {
-    error = true;
+  public void setException(Exception e) {
     exception = e;
+  }
+
+
+  public Exception getException() {
+    return exception;
+  }
+
+
+  public boolean isException() {
+    return exception != null;
   }
 }

@@ -360,7 +360,7 @@ public class ContributionListing {
         }
         ContributionManager.download(url, base.getInstalledContribsInfo(),
                                      tempContribFile, progress);
-        if (!progress.isCanceled() && !progress.isError()) {
+        if (!progress.isCanceled() && !progress.isException()) {
           if (listingFile.exists()) {
             listingFile.delete();  // may silently fail, but below may still work
           }
@@ -389,7 +389,7 @@ public class ContributionListing {
         }
 
       } catch (MalformedURLException e) {
-        progress.error(e);
+        progress.setException(e);
         progress.finished();
       } finally {
         downloadingListingLock.unlock();

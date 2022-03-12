@@ -183,30 +183,30 @@ public class ManagerFrame {
     //as there is only one instance of contribListing and it should be present in this class
     final ContributionTab activeTab = getActiveTab();
 
-    ContribProgress progress =
-      new ContribProgress(activeTab.progressBar) {
-
+    final JProgressBar bar = activeTab.progressBar;
+    ContribProgress progress = new ContribProgress(bar) {
       @Override
       public void startTask(String name, int maxValue) {
         super.startTask(name, maxValue);
-        progressBar.setVisible(true);
-        progressBar.setString(null);
+        bar.setVisible(true);
+        bar.setString(null);
       }
 
       @Override
       public void setProgress(int value) {
         super.setProgress(value);
 //        int percent = 100 * value / this.max;
-        progressBar.setValue(value);
+        bar.setValue(value);
       }
 
       @Override
       public void finishedAction() {
-        progressBar.setVisible(false);
+        bar.setVisible(false);
         activeTab.updateContributionListing();
         activeTab.updateCategoryChooser();
 
-        if (error) {
+        Exception exception = getException();
+        if (exception != null) {
           exception.printStackTrace();
           makeAndShowTab(true, false);
         } else {
