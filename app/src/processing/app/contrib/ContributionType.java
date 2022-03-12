@@ -63,41 +63,6 @@ public enum ContributionType {
   }
 
 
-  /*
-  public String getPluralTitle() {
-    switch (this) {
-    case LIBRARY:
-      return "Libraries";
-    case MODE:
-      return "Modes";
-    case TOOL:
-      return "Tools";
-    case EXAMPLES:
-      return "Examples";
-    }
-    return null;  // should be unreachable
-  }
-  */
-
-
-//  public String getFolderName() {
-//    return toString();
-//    /*
-//    switch (this) {
-//    case LIBRARY:
-//      return "libraries";
-//    case TOOL:
-//      return "tools";
-//    case MODE:
-//      return "modes";
-//    case EXAMPLES:
-//      return "examples";
-//    }
-//    return null;  // should be unreachable
-//    */
-//  }
-
-
   /** Get the name of the properties file for this type of contribution. */
   public String getPropertiesName() {
     return this + ".properties";
@@ -109,40 +74,9 @@ public enum ContributionType {
   }
 
 
-  /*
-  // removed for 4.0a6, doesn't appear to be in use
-  public File[] listTempFolders() throws IOException {
-    File base = getSketchbookFolder();
-    return base.listFiles(new FileFilter() {
-      @Override
-      public boolean accept(File file) {
-        String name = file.getName();
-        return (file.isDirectory() &&
-                name.startsWith(toString()) && name.endsWith("tmp"));
-      }
-    });
-  }
-  */
-
-
   public boolean isTempFolderName(String name) {
     return name.startsWith(toString()) && name.endsWith("tmp");
   }
-
-
-//  public String getTempPrefix() {
-//    return toString();
-//  }
-//
-//
-//  public String getTempSuffix() {
-//    return "tmp";
-//  }
-
-
-//    public String getPropertiesName() {
-//      return toString() + ".properties";
-//    }
 
 
   static public ContributionType fromName(String s) {
@@ -239,20 +173,22 @@ public enum ContributionType {
   }
 
 
-  List<LocalContribution> listContributions(Editor editor) {
+  List<LocalContribution> listContributions(Base base, Editor editor) {
     List<LocalContribution> contribs = new ArrayList<>();
     switch (this) {
     case LIBRARY:
-      contribs.addAll(editor.getMode().contribLibraries);
+      if (editor != null) {
+        contribs.addAll(editor.getMode().contribLibraries);
+      }
       break;
     case TOOL:
-      contribs.addAll(editor.getBase().getToolContribs());
+      contribs.addAll(base.getToolContribs());
       break;
     case MODE:
-      contribs.addAll(editor.getBase().getModeContribs());
+      contribs.addAll(base.getModeContribs());
       break;
     case EXAMPLES:
-      contribs.addAll(editor.getBase().getExampleContribs());
+      contribs.addAll(base.getExampleContribs());
       break;
     }
     return contribs;
@@ -266,11 +202,6 @@ public enum ContributionType {
 
   File createBackupFolder(StatusPanel status) {
     File backupFolder = getBackupFolder();
-//    if (backupFolder.isDirectory()) {
-//      status.setErrorMessage("First remove the folder named \"old\" from the " +
-//                             getFolderName() + " folder in the sketchbook.");
-//      return null;
-//    }
     if (!backupFolder.exists() && !backupFolder.mkdirs()) {
       status.setErrorMessage("Could not create a backup folder in the " +
       		                   "sketchbook " + this + " folder.");
@@ -278,29 +209,4 @@ public enum ContributionType {
     }
     return backupFolder;
   }
-
-
-//  /**
-//   * Create a filter for a specific contribution type.
-//   * @param type The type, or null for a generic update checker.
-//   */
-//  Contribution.Filter createFilter2() {
-//    return new Contribution.Filter() {
-//      public boolean matches(Contribution contrib) {
-//        return contrib.getType() == ContributionType.this;
-//      }
-//    };
-//  }
-
-
-//  static Contribution.Filter createUpdateFilter() {
-//    return new Contribution.Filter() {
-//      public boolean matches(Contribution contrib) {
-//        if (contrib instanceof LocalContribution) {
-//          return ContributionListing.getInstance().hasUpdates(contrib);
-//        }
-//        return false;
-//      }
-//    };
-//  }
 }

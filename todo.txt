@@ -5,6 +5,25 @@ X   through sketch.properties is not rewritten
 X dropping folder into sketch window throws weird exception
 X   https://github.com/processing/processing4/issues/441
 
+manager
+X "Error during download and install of Python Mode for Processing"
+X   https://github.com/processing/processing/issues/5918
+X   https://github.com/processing/processing4/issues/445
+X Manager fails to complete install of PythonMode when no windows open
+X   https://github.com/processing/processing/issues/5309
+X   https://github.com/processing/processing4/issues/446
+_ allow update of the current Mode
+
+_ an incompatible Mode prevents the PDE from quitting after last window is closed
+_   https://github.com/processing/processing/issues/5112
+
+
+_ remove checkbox for detaching sketch name
+_   just do this manually, and Save As will reset the name
+
+_ update wiki with recent changes (i.e. separating sketch folder)
+_   https://github.com/processing/processing4/wiki/Processing-4
+
 _ clicking "Update All" on the Updates tab throws NPE
 _   https://github.com/processing/processing4/issues/440
 Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
@@ -813,12 +832,6 @@ _   e.g. ocd is broken in 0125 because of method signature changes
 
 PDE / Manager
 
-_ Manager fails to complete install of PythonMode when no windows open
-_   https://github.com/processing/processing/issues/5309
-_ Python Mode not downloading?
-_   https://github.com/processing/processing/issues/5918
-_ an incompatible Mode prevents the PDE from quitting after last window is closed
-_   https://github.com/processing/processing/issues/5112
 _ “could not move the contribution to the backup folder” message while updating
 _   problem is that any sketch that uses a library, the lib is stuck as "in use"
 _   https://github.com/processing/processing/issues/4973

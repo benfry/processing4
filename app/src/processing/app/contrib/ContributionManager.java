@@ -193,6 +193,7 @@ public class ContributionManager {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.download_and_install",
                              ad.getName()));
+              downloadProgress.exception.printStackTrace();
             }
           }
           contribZip.delete();

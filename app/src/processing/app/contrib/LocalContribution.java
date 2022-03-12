@@ -247,7 +247,7 @@ public abstract class LocalContribution extends Contribution {
       Editor editor = base.getActiveEditor();
 
       List<LocalContribution> oldContribs =
-        getType().listContributions(editor);
+        getType().listContributions(base, editor);
 
       // In case an update marker exists, and the user wants to install, delete the update marker
       if (contribFolder.exists() && !contribFolder.isDirectory()) {
