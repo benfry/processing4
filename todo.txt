@@ -44,6 +44,9 @@ X   search by contrib type (is:) wasn't even working properly
 X   removing accents was trashing some input too
 X redo category tallying for contribs (Libraries only anyway?)
 X   gets rid of maze of code that's storing libraries by their category
+X remove unnecessary code that tracks contribs by category
+X   this was hiding the issue that was causing contribs to be added several times,
+X   because the add() was inside the category loop of that code
 
 
 _ allow update of the current Mode

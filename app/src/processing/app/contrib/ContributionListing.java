@@ -50,10 +50,7 @@ public class ContributionListing {
 
   List<ChangeListener> listeners;
   final List<AvailableContribution> advertisedContributions;
-  private Map<String, List<Contribution>> librariesByCategory;
   Map<String, Contribution> librariesByImportHeader;
-  // TODO: Every contribution is getting added twice
-  //       and nothing is replaced ever. [akarshit 151031]
   Set<Contribution> allContributions;
   boolean listDownloaded;
   boolean listDownloadFailed;
@@ -63,7 +60,6 @@ public class ContributionListing {
   private ContributionListing() {
     listeners = new ArrayList<>();
     advertisedContributions = new ArrayList<>();
-    librariesByCategory = new HashMap<>();
     librariesByImportHeader = new HashMap<>();
     allContributions = new LinkedHashSet<>();
     downloadingListingLock = new ReentrantLock();
@@ -119,18 +115,6 @@ public class ContributionListing {
 
   protected void replaceContribution(Contribution oldLib, Contribution newLib) {
     if (oldLib != null && newLib != null) {
-      for (String category : oldLib.getCategories()) {
-        if (librariesByCategory.containsKey(category)) {
-          List<Contribution> list = librariesByCategory.get(category);
-
-          for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) == oldLib) {
-              list.set(i, newLib);
-            }
-          }
-        }
-      }
-
       if (oldLib.getImports() != null) {
         for (String importName : oldLib.getImports()) {
           if (getLibrariesByImportHeader().containsKey(importName)) {
@@ -138,10 +122,8 @@ public class ContributionListing {
           }
         }
       }
-
       allContributions.remove(oldLib);
       allContributions.add(newLib);
-
       notifyChange(oldLib, newLib);
     }
   }
@@ -153,29 +135,12 @@ public class ContributionListing {
         getLibrariesByImportHeader().put(importName, contribution);
       }
     }
-    for (String category : contribution.getCategories()) {
-      if (librariesByCategory.containsKey(category)) {
-        List<Contribution> list = librariesByCategory.get(category);
-        list.add(contribution);
-        list.sort(COMPARATOR);
-
-      } else {
-        ArrayList<Contribution> list = new ArrayList<>();
-        list.add(contribution);
-        librariesByCategory.put(category, list);
-      }
-      allContributions.add(contribution);
-      notifyAdd(contribution);
-    }
+    allContributions.add(contribution);
+    notifyAdd(contribution);
   }
 
 
   protected void removeContribution(Contribution contribution) {
-    for (String category : contribution.getCategories()) {
-      if (librariesByCategory.containsKey(category)) {
-        librariesByCategory.get(category).remove(contribution);
-      }
-    }
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
         getLibrariesByImportHeader().remove(importName);
@@ -220,8 +185,8 @@ public class ContributionListing {
   }
 
 
-  static private boolean matchField(String field, String typed) {
-    return (field != null) && field.toLowerCase().matches(typed);
+  static private boolean matchField(String field, String regex) {
+    return (field != null) && field.toLowerCase().matches(regex);
   }
 
 
