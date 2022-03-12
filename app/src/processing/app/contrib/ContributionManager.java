@@ -56,7 +56,7 @@ public class ContributionManager {
    * @return true if the file was successfully downloaded, false otherwise.
    */
   static boolean download(URL source, byte[] post,
-                          File dest, ContribProgressBar progress) {
+                          File dest, ContribProgress progress) {
     boolean success = false;
     try {
       HttpURLConnection conn = (HttpURLConnection) source.openConnection();
@@ -139,8 +139,8 @@ public class ContributionManager {
   static void downloadAndInstall(final Base base,
                                  final URL url,
                                  final AvailableContribution ad,
-                                 final ContribProgressBar downloadProgress,
-                                 final ContribProgressBar installProgress,
+                                 final ContribProgress downloadProgress,
+                                 final ContribProgress installProgress,
                                  final StatusPanel status) {
     // TODO: replace with SwingWorker [jv]
     new Thread(() -> {

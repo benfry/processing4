@@ -480,7 +480,7 @@ public class Base {
     new UpdateCheck(this);
 
     ContributionListing cl = ContributionListing.getInstance();
-    cl.downloadAvailableList(this, new ContribProgressBar(null));
+    cl.downloadAvailableList(this, new ContribProgress(null));
     long t9 = System.currentTimeMillis();
 //    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
 //      " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) + " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");

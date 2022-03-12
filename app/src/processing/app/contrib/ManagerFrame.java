@@ -183,8 +183,8 @@ public class ManagerFrame {
     //as there is only one instance of contribListing and it should be present in this class
     final ContributionTab activeTab = getActiveTab();
 
-    ContribProgressBar progress =
-      new ContribProgressBar(activeTab.progressBar) {
+    ContribProgress progress =
+      new ContribProgress(activeTab.progressBar) {
 
       @Override
       public void startTask(String name, int maxValue) {

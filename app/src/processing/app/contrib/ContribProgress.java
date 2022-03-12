@@ -31,7 +31,7 @@ import javax.swing.JProgressBar;
 // This code seems like it's adapted from old example code found on the web.
 // https://github.com/processing/processing4/issues/351
 
-public class ContribProgressBar {
+public class ContribProgress {
   static private final int UNKNOWN = -1;
 
   JProgressBar progressBar;
@@ -45,7 +45,7 @@ public class ContribProgressBar {
   Exception exception;
 
 
-  public ContribProgressBar(JProgressBar progressBar) {
+  public ContribProgress(JProgressBar progressBar) {
     this.progressBar = progressBar;
   }
 

@@ -122,7 +122,7 @@ class StatusPanelDetail {
       URL downloadUrl = new URL(url);
       progressBar.setVisible(true);
 
-      ContribProgressBar downloadProgress = new ContribProgressBar(progressBar) {
+      ContribProgress downloadProgress = new ContribProgress(progressBar) {
         public void finishedAction() { }
 
         public void cancelAction() {
@@ -130,7 +130,7 @@ class StatusPanelDetail {
         }
       };
 
-      ContribProgressBar installProgress = new ContribProgressBar(progressBar) {
+      ContribProgress installProgress = new ContribProgress(progressBar) {
         public void finishedAction() {
           finishInstall(isError());
         }
@@ -176,8 +176,29 @@ class StatusPanelDetail {
       progressBar.setVisible(true);
       progressBar.setIndeterminate(true);
 
-      ContribProgressBar progress = new UpdateProgressBar(progressBar);
+      ContribProgress progress = new ContribProgress(progressBar) {
+        @Override
+        public void finishedAction() {
+          resetProgressBar();
+          AvailableContribution ad =
+            contribListing.getAvailableContribution(contrib);
+          installContribution(ad, ad.link);
+        }
+
+        @Override
+        public void cancelAction() {
+          resetProgressBar();
+          clearStatusMessage();
+          updateInProgress = false;
+          if (contrib.isDeletionFlagged()) {
+            getLocalContrib().setUpdateFlag(true);
+            getLocalContrib().setDeletionFlag(false);
+            contribListing.replaceContribution(contrib, contrib);
+          }
+        }
+      };
       getLocalContrib().removeContribution(getBase(), progress, getStatusPanel());
+
     } else {
       AvailableContribution ad =
         contribListing.getAvailableContribution(contrib);
@@ -193,60 +214,18 @@ class StatusPanelDetail {
       progressBar.setVisible(true);
       progressBar.setIndeterminate(true);
 
-      ContribProgressBar progress = new RemoveProgressBar(progressBar);
+      ContribProgress progress = new ContribProgress(progressBar) {
+        public void finishedAction() {
+          resetProgressBar();
+          removeInProgress = false;
+        }
+
+        public void cancelAction() {
+          resetProgressBar();
+          removeInProgress = false;
+        }
+      };
       getLocalContrib().removeContribution(getBase(), progress, getStatusPanel());
-    }
-  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  class UpdateProgressBar extends ContribProgressBar {
-    public UpdateProgressBar(JProgressBar progressBar) {
-      super(progressBar);
-    }
-
-    public void finishedAction() {
-      resetProgressBar();
-      AvailableContribution ad =
-        contribListing.getAvailableContribution(contrib);
-      installContribution(ad, ad.link);
-    }
-
-    @Override
-    public void cancelAction() {
-      resetProgressBar();
-      clearStatusMessage();
-      updateInProgress = false;
-      if (contrib.isDeletionFlagged()) {
-        getLocalContrib().setUpdateFlag(true);
-        getLocalContrib().setDeletionFlag(false);
-        contribListing.replaceContribution(contrib, contrib);
-      }
-    }
-  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  class RemoveProgressBar extends ContribProgressBar {
-    public RemoveProgressBar(JProgressBar progressBar) {
-      super(progressBar);
-    }
-
-    private void preAction() {
-      resetProgressBar();
-      removeInProgress = false;
-    }
-
-    public void finishedAction() {
-      preAction();
-    }
-
-    public void cancelAction() {
-      preAction();
     }
   }
 
