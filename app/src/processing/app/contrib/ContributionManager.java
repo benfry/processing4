@@ -515,23 +515,6 @@ public class ContributionManager {
     updateFlagged(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
-    SwingWorker<Void, Void> s = new SwingWorker<>() {
-
-      @Override
-      protected Void doInBackground() throws Exception {
-        try {
-          // TODO: pls explain the sleep and why this runs on a worker thread,
-          //   but a couple of lines above on EDT [jv]
-          Thread.sleep(1000);
-          installPreviouslyFailed(base, Base.getSketchbookToolsFolder());
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        return null;
-      }
-    };
-    s.execute();
-
     clearRestartFlags(Base.getSketchbookModesFolder());
     clearRestartFlags(Base.getSketchbookToolsFolder());
   }
