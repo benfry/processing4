@@ -298,41 +298,70 @@ public abstract class LocalContribution extends Contribution {
   /**
    * Non-blocking call to remove a contribution in a new thread.
    */
-  void removeContribution(final Base base,
-                          final ContribProgress pm,
-                          final StatusPanel status) {
+  protected void removeContribution(Base base,
+                                    ContribProgress pm,
+                                    StatusPanel status,
+                                    boolean updating) {
     // TODO: replace with SwingWorker [jv]
-    new Thread(() -> remove(base, pm, status, ContributionListing.getInstance()), "Contribution Uninstaller").start();
+    new Thread(() -> remove(base, pm, status, updating), "Contribution Uninstaller").start();
   }
 
 
-  void remove(final Base base,
-              final ContribProgress pm,
-              final StatusPanel status,
-              final ContributionListing contribListing) {
+  private void remove(Base base, ContribProgress pm, StatusPanel status, boolean updating) {
     pm.startTask("Removing");
 
     boolean doBackup = Preferences.getBoolean("contribution.backup.on_remove");
     if (getType() == ContributionType.MODE) {
-      boolean isModeActive = false;
+      //Set<Sketch> sketches = new HashSet<>();
+      List<Editor> editors = new ArrayList<>();  // might be nice to be in order
       ModeContribution m = (ModeContribution) this;
-      for (Editor e : base.getEditors()) {
-        if (e.getMode().equals(m.getMode())) {
-          isModeActive = true;
-          break;
+      for (Editor editor : base.getEditors()) {
+        if (editor.getMode().equals(m.getMode())) {
+          Sketch sketch = editor.getSketch();
+          if (sketch.isModified()) {
+            pm.cancel();
+            editor.toFront();
+            Messages.showMessage("Save Sketch",
+                                 "Please first save “" + sketch.getName() + "”.");
+            return;
+          } else {
+            // Keep track of open Editor windows using this Mode
+            //sketchMainList.add(sketch.getMainPath());
+            //sketches.add(sketch);
+            editors.add(editor);
+          }
         }
       }
-      if (!isModeActive) {
-        m.clearClassLoader(base);
-      } else {
+      // Close any open Editor windows that were using this Mode,
+      // and if updating, build up a list of paths for the sketches
+      // so that we can dispose of the Editor objects.
+      //StringList sketchPathList = new StringList();
+      for (Editor editor : editors) {
+        //sketchPathList.append(editor.getSketch().getMainPath());
+        StatusPanelDetail.storeSketchPath(editor.getSketch().getMainPath());
+        base.handleClose(editor, true);
+      }
+      editors.clear();
+      m.clearClassLoader(base);
+      //StatusPanelDetail.storeSketches(sketchPathList);
+
+      /*
         pm.cancel();
         Messages.showMessage("Mode Manager",
                              "Please save your Sketch and change the Mode of all Editor\n" +
                              "windows that have " + name + " as the active Mode.");
         return;
+      */
+
+      if (!updating) {
+        // Notify the Base in case this is the current Mode
+        base.modeRemoved(m.getMode());
+        // If that was the last Editor window, and we deleted its Mode,
+        // open a fresh window using the default Mode.
+        if (base.getEditors().size() == 0) {
+          base.handleNew();
+        }
       }
-      // Notify the Base in case this is the current Mode
-      base.modeRemoved(m.getMode());
     }
 
     if (getType() == ContributionType.TOOL) {
@@ -357,16 +386,18 @@ public abstract class LocalContribution extends Contribution {
       try {
         // TODO: run this in SwingWorker done() [jv]
         EventQueue.invokeAndWait(() -> {
+          ContributionListing cl = ContributionListing.getInstance();
+
           Contribution advertisedVersion =
-            contribListing.getAvailableContribution(LocalContribution.this);
+            cl.getAvailableContribution(LocalContribution.this);
 
           if (advertisedVersion == null) {
-            contribListing.removeContribution(LocalContribution.this);
+            cl.removeContribution(LocalContribution.this);
           } else {
-            contribListing.replaceContribution(LocalContribution.this, advertisedVersion);
+            cl.replaceContribution(LocalContribution.this, advertisedVersion);
           }
           base.refreshContribs(LocalContribution.this.getType());
-          base.setUpdatesAvailable(contribListing.countUpdates(base));
+          base.setUpdatesAvailable(cl.countUpdates(base));
         });
       } catch (InterruptedException e) {
         e.printStackTrace();
@@ -386,10 +417,11 @@ public abstract class LocalContribution extends Contribution {
           try {
             // TODO: run this in SwingWorker done() [jv]
             EventQueue.invokeAndWait(() -> {
-              contribListing.replaceContribution(LocalContribution.this,
+              ContributionListing cl = ContributionListing.getInstance();
+              cl.replaceContribution(LocalContribution.this,
                                                  LocalContribution.this);
               base.refreshContribs(LocalContribution.this.getType());
-              base.setUpdatesAvailable(contribListing.countUpdates(base));
+              base.setUpdatesAvailable(cl.countUpdates(base));
             });
           } catch (InterruptedException e) {
             e.printStackTrace();
@@ -436,7 +468,6 @@ public abstract class LocalContribution extends Contribution {
    * @return String[] packageNames (without wildcards) or null if none are specified
    */
   public StringList getImports() {
-    //return imports != null ? imports.toArray(new String[0]) : null;
     return imports;
   }
 

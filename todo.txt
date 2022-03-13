@@ -49,16 +49,22 @@ X   this was hiding the issue that was causing contribs to be added several time
 X   because the add() was inside the category loop of that code
 X remove unused 'restart' flagging code, setRestartFlag() never used
 X   all that was left was maintenance of when that's been set, so...
+X allow update of the current Mode
+X   if doing an update (not just delete), close sketches and re-open
+X   if doing a delete, require sketches to be closed
 
-_ allow update of the current Mode
-_   if doing an update (not just delete), close sketches and re-open
-_   if doing a delete, require sketches to be closed
+
+_ after failed update of Mode, the button is no longer available
+_   have to click something else, then click back on the Mode line again
+
 _ lots of rewriting to use SwingWorker
 _   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
 _ when starting in p5jsMode, going to the contrib manager shows no green checks for libs
 _   tricky because those aren't gonna show up in 'Add Library'
 _   which is another case for a separate 'contrib manager' thing
 _     maybe that's the update button? when no updates, it's still a button?
+
+_ remove updateInProgress from StatusPanelDetail
 
 _ CJKV fonts are hosed b/c they're not actually monospace
 _   https://github.com/processing/processing4/issues/447

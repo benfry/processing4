@@ -1733,11 +1733,12 @@ public class Base {
   /**
    * Close a sketch as specified by its editor window.
    * @param editor Editor object of the sketch to be closed.
-   * @param modeSwitch Whether this close is being done in the context of a
-   *      mode switch.
+   * @param preventQuit For platforms that must have a window open,
+   *                    prevent a quit because a new window will be opened
+   *                    (i.e. when upgrading or changing the Mode)
    * @return true if succeeded in closing, false if canceled.
    */
-  public boolean handleClose(Editor editor, boolean modeSwitch) {
+  public boolean handleClose(Editor editor, boolean preventQuit) {
     if (!editor.checkModified()) {
       return false;
     }
@@ -1775,14 +1776,20 @@ public class Base {
         }
       }
 
+      /*
+      // wow, this is wrong (should only be called after the last window)
+      // but also outdated, because it's instance_server.* not server.*
+      // and Preferences.save() is also about restoring sketches.
+
       Preferences.unset("server.port"); //$NON-NLS-1$
       Preferences.unset("server.key"); //$NON-NLS-1$
 
       // Save out the current prefs state
       Preferences.save();
+       */
 
       if (defaultFileMenu == null) {
-        if (modeSwitch) {
+        if (preventQuit) {
           // need to close this editor, ever so temporarily
           editor.setVisible(false);
           editor.dispose();

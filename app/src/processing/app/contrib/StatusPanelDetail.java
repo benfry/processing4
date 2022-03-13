@@ -25,6 +25,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.AbstractQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JProgressBar;
 
@@ -38,7 +40,6 @@ import processing.app.ui.Toolkit;
  */
 class StatusPanelDetail {
   private final ListPanel listPanel;
-  private final ContributionListing contribListing = ContributionListing.getInstance();
 
   static private final int BUTTON_WIDTH = Toolkit.zoom(100);
 
@@ -148,6 +149,9 @@ class StatusPanelDetail {
       ContribProgress installProgress = new ContribProgress(progressBar) {
         public void finishedAction() {
           finishInstall(isException());
+
+          // if it was a Mode, restore any sketches
+          restoreSketches();
         }
 
         public void cancelAction() {
@@ -171,7 +175,7 @@ class StatusPanelDetail {
     installInProgress = true;
     if (contrib instanceof AvailableContribution) {
       installContribution((AvailableContribution) contrib);
-      contribListing.replaceContribution(contrib, contrib);
+      ContributionListing.getInstance().replaceContribution(contrib, contrib);
     }
   }
 
@@ -182,6 +186,10 @@ class StatusPanelDetail {
   public void update() {
     clearStatusMessage();
     updateInProgress = true;
+
+    ContributionListing contribListing = ContributionListing.getInstance();
+
+    // TODO not really a 'restart' anymore, just requires care [fry 220312]
     if (contrib.getType().requiresRestart()) {
       // For the special "Updates" tab in the manager, there are no progress
       // bars, so if that's what we're doing, this will create a dummy bar.
@@ -198,7 +206,12 @@ class StatusPanelDetail {
           resetProgressBar();
           AvailableContribution ad =
             contribListing.getAvailableContribution(contrib);
+          // install the new version of the Mode (or Tool)
           installContribution(ad, ad.link);
+          // if it was a Mode, restore any sketches
+          //if (contrib.getType() == ContributionType.MODE) {
+          //restoreSketches();
+          //}
         }
 
         @Override
@@ -213,7 +226,7 @@ class StatusPanelDetail {
           }
         }
       };
-      getLocalContrib().removeContribution(getBase(), progress, getStatusPanel());
+      getLocalContrib().removeContribution(getBase(), progress, getStatusPanel(), true);
 
     } else {
       AvailableContribution ad =
@@ -243,9 +256,56 @@ class StatusPanelDetail {
           removeInProgress = false;
         }
       };
-      getLocalContrib().removeContribution(getBase(), progress, getStatusPanel());
+      getLocalContrib().removeContribution(getBase(), progress, getStatusPanel(), false);
     }
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static AbstractQueue<String> restoreQueue = new ConcurrentLinkedQueue<>();
+
+
+  static protected void storeSketchPath(String path) {
+    restoreQueue.add(path);
+  }
+
+
+  protected void restoreSketches() {
+    while (!restoreQueue.isEmpty()) {
+      String path = restoreQueue.remove();
+      getBase().handleOpen(path);
+    }
+  }
+
+
+  /*
+  static final String SAVED_COUNT = "mode.update.sketch.count";
+
+
+  static protected void storeSketches(StringList sketchPathList) {
+    Preferences.setInteger(SAVED_COUNT, sketchPathList.size());
+    int index = 0;
+    for (String path : sketchPathList) {
+      Preferences.set("mode.update.sketch." + index, path);
+      index++;
+    }
+  }
+
+
+  protected void restoreSketches() {
+    if (Preferences.get(SAVED_COUNT) != null) {
+      int count = Preferences.getInteger(SAVED_COUNT);
+      for (int i = 0; i < count; i++) {
+        String key =  "mode.update.sketch." + i;
+        String path = Preferences.get(key);
+        getBase().handleOpen(path);  // re-open this sketch
+        Preferences.unset(key);
+      }
+    }
+  }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
