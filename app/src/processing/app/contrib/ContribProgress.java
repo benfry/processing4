@@ -29,7 +29,11 @@ import javax.swing.JProgressBar;
 
 // I suspect this code can mostly be replaced with built-in Swing functions.
 // This code seems like it's adapted from old example code found on the web.
-// https://github.com/processing/processing4/issues/351
+// (As of 220311 it's also been merged together from two classes (one called
+// ProgressMonitor, the other ProgressBar, which wrapped the JProgressBar),
+// so it looks less like that now. But the point is still relevant: most of
+// what's here should be done with Swing housekeeping classes. [fry 220312]
+// TODO https://github.com/processing/processing4/issues/351
 
 public class ContribProgress {
   static private final int UNKNOWN = -1;

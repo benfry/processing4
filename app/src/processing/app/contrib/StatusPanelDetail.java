@@ -39,13 +39,12 @@ import processing.app.ui.Toolkit;
  * has only been used to track install/remove state information.
  */
 class StatusPanelDetail {
+  static private final int BUTTON_WIDTH = Toolkit.zoom(100);
+
   private final Base base;
   private final StatusPanel statusPanel;
 
-  static private final int BUTTON_WIDTH = Toolkit.zoom(100);
-
   private Contribution contrib;
-
   private JProgressBar progressBar;
 
   boolean updateInProgress;
