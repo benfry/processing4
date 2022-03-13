@@ -39,9 +39,8 @@ import processing.app.ui.Toolkit;
  * has only been used to track install/remove state information.
  */
 class StatusPanelDetail {
-  //private final ListPanel listPanel;
-  Base base;
-  StatusPanel statusPanel;
+  private final Base base;
+  private final StatusPanel statusPanel;
 
   static private final int BUTTON_WIDTH = Toolkit.zoom(100);
 
@@ -54,12 +53,7 @@ class StatusPanelDetail {
   boolean removeInProgress;
 
 
-  //StatusPanelDetail(ContributionTab contributionTab) {
   StatusPanelDetail(Base base, StatusPanel statusPanel) {
-//    System.out.println("DetailPanel.<init>");
-//    new Exception().printStackTrace(System.out);
-
-//    listPanel = contributionListPanel;
     this.base = base;
     this.statusPanel = statusPanel;
   }
@@ -119,7 +113,7 @@ class StatusPanelDetail {
 
   private void installContribution(AvailableContribution info) {
     if (info.link == null) {
-      setErrorMessage(Language.interpolate("contrib.unsupported_operating_system", info.getType()));
+      statusPanel.setErrorMessage(Language.interpolate("contrib.unsupported_operating_system", info.getType()));
     } else {
       installContribution(info, info.link);
     }
@@ -130,7 +124,7 @@ class StatusPanelDetail {
     resetProgressBar();
 
     if (error) {
-      setErrorMessage(Language.text("contrib.download_error"));
+      statusPanel.setErrorMessage(Language.text("contrib.download_error"));
     }
     installInProgress = false;
     if (updateInProgress) {
@@ -157,6 +151,7 @@ class StatusPanelDetail {
           finishInstall(isException());
 
           // if it was a Mode, restore any sketches
+          //if (contrib.getType() == ContributionType.MODE) {  // no need
           restoreSketches();
         }
 
@@ -165,9 +160,9 @@ class StatusPanelDetail {
         }
       };
 
-      ContributionManager.downloadAndInstall(getBase(), downloadUrl, ad,
+      ContributionManager.downloadAndInstall(base, downloadUrl, ad,
                                              downloadProgress, installProgress,
-                                             getStatusPanel());
+                                             statusPanel);
 
     } catch (MalformedURLException e) {
       Messages.showWarning(Language.text("contrib.errors.install_failed"),
@@ -177,7 +172,8 @@ class StatusPanelDetail {
 
 
   protected void install() {
-    clearStatusMessage();
+    //clearStatusMessage();
+    statusPanel.clearMessage();
     installInProgress = true;
     if (contrib instanceof AvailableContribution) {
       installContribution((AvailableContribution) contrib);
@@ -189,8 +185,9 @@ class StatusPanelDetail {
   // TODO Update works by first calling a remove, and then ContribProgress,
   //      of all things, calls install() in its finishedAction() method.
   //      FFS this is gross. [fry 220311]
-  public void update() {
-    clearStatusMessage();
+  protected void update() {
+    //clearStatusMessage();
+    statusPanel.clearMessage();
     updateInProgress = true;
 
     ContributionListing contribListing = ContributionListing.getInstance();
@@ -214,16 +211,13 @@ class StatusPanelDetail {
             contribListing.getAvailableContribution(contrib);
           // install the new version of the Mode (or Tool)
           installContribution(ad, ad.link);
-          // if it was a Mode, restore any sketches
-          //if (contrib.getType() == ContributionType.MODE) {
-          //restoreSketches();
-          //}
         }
 
         @Override
         public void cancelAction() {
           resetProgressBar();
-          clearStatusMessage();
+          //clearStatusMessage();
+          statusPanel.clearMessage();
           updateInProgress = false;
           if (contrib.isDeletionFlagged()) {
             getLocalContrib().setUpdateFlag();
@@ -232,7 +226,7 @@ class StatusPanelDetail {
           }
         }
       };
-      getLocalContrib().removeContribution(getBase(), progress, getStatusPanel(), true);
+      getLocalContrib().removeContribution(base, progress, statusPanel, true);
 
     } else {
       AvailableContribution ad =
@@ -242,8 +236,9 @@ class StatusPanelDetail {
   }
 
 
-  public void remove() {
-    clearStatusMessage();
+  protected void remove() {
+    //clearStatusMessage();
+    statusPanel.clearMessage();
     if (contrib.isInstalled() && contrib instanceof LocalContribution) {
       removeInProgress = true;
       progressBar.setVisible(true);
@@ -262,7 +257,7 @@ class StatusPanelDetail {
           removeInProgress = false;
         }
       };
-      getLocalContrib().removeContribution(getBase(), progress, getStatusPanel(), false);
+      getLocalContrib().removeContribution(base, progress, statusPanel, false);
     }
   }
 
@@ -281,64 +276,7 @@ class StatusPanelDetail {
   protected void restoreSketches() {
     while (!restoreQueue.isEmpty()) {
       String path = restoreQueue.remove();
-      getBase().handleOpen(path);
+      base.handleOpen(path);
     }
-  }
-
-
-  /*
-  static final String SAVED_COUNT = "mode.update.sketch.count";
-
-
-  static protected void storeSketches(StringList sketchPathList) {
-    Preferences.setInteger(SAVED_COUNT, sketchPathList.size());
-    int index = 0;
-    for (String path : sketchPathList) {
-      Preferences.set("mode.update.sketch." + index, path);
-      index++;
-    }
-  }
-
-
-  protected void restoreSketches() {
-    if (Preferences.get(SAVED_COUNT) != null) {
-      int count = Preferences.getInteger(SAVED_COUNT);
-      for (int i = 0; i < count; i++) {
-        String key =  "mode.update.sketch." + i;
-        String path = Preferences.get(key);
-        getBase().handleOpen(path);  // re-open this sketch
-        Preferences.unset(key);
-      }
-    }
-  }
-  */
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  // Can't be called from the constructor because the path isn't set all the
-  // way down. However, Base does not change over time. More importantly,
-  // though, is that the functions being called in Base are somewhat suspect
-  // since they're contribution-related, and should perhaps live closer.
-  private Base getBase() {
-    //return listPanel.contributionTab.base;  // TODO this is gross [fry]
-    return base;
-  }
-
-
-  private StatusPanel getStatusPanel() {
-    //return listPanel.contributionTab.statusPanel;  // TODO this is also gross
-    return statusPanel;
-  }
-
-
-  private void clearStatusMessage() {
-    getStatusPanel().clearMessage();
-  }
-
-
-  private void setErrorMessage(String message) {
-    getStatusPanel().setErrorMessage(message);
   }
 }
