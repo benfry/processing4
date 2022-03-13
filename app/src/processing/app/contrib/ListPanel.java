@@ -42,16 +42,16 @@ import processing.app.ui.Toolkit;
 public class ListPanel extends JPanel
 implements Scrollable, ContributionListing.ChangeListener {
   ContributionTab contributionTab;
-  TreeMap<Contribution, StatusPanelDetail> detailForContrib = new TreeMap<>(ContributionListing.COMPARATOR);
+  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
+    new TreeMap<>(ContributionListing.COMPARATOR);
 
-  Contribution.Filter filter;
+  private final Contribution.Filter filter;
 
   private StatusPanelDetail selectedDetail;
   protected ContributionRowFilter rowFilter;
   protected JTable table;
   protected TableRowSorter<ContributionTableModel> sorter;
-  ContributionTableModel model;
-  JScrollPane scrollPane;
+  protected ContributionTableModel model;
 
   static Icon upToDateIcon;
   static Icon updateAvailableIcon;
@@ -117,7 +117,7 @@ implements Scrollable, ContributionListing.ChangeListener {
       }
     };
 
-    scrollPane = new JScrollPane(table);
+    JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     table.setFillsViewportHeight(true);
@@ -165,13 +165,18 @@ implements Scrollable, ContributionListing.ChangeListener {
       sorter.setComparator(i, model.columns[i].getComparator());
     }
     table.getTableHeader().setDefaultRenderer(new ContribHeaderRenderer());
-
-    GroupLayout layout = new GroupLayout(this);
-    layout.setHorizontalGroup(layout.createParallelGroup().addComponent(scrollPane));
-    layout.setVerticalGroup(layout.createSequentialGroup().addComponent(scrollPane));
-
-    this.setLayout(layout);
     table.setVisible(true);
+
+    setLayout(new BorderLayout());
+    add(scrollPane, BorderLayout.CENTER);
+  }
+
+
+  // TODO remove this, yuck [fry 220313]
+  protected int getScrollBarWidth() {
+    //return scrollWidth;
+    JScrollPane scrollPane = (JScrollPane) getComponent(0);
+    return scrollPane.getVerticalScrollBar().getPreferredSize().width;
   }
 
 
@@ -337,13 +342,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       label.setFont(ManagerFrame.NORMAL_PLAIN);
       StatusPanelDetail detail = detailForContrib.get(contribution);
 
-      /*
-      if (detail != null) {
-        System.err.println("ListPanel.configureStatusColumnLabel() no panel for " + contribution);
-        return;
-      }
-      */
-
       if (detail != null && (detail.updateInProgress || detail.installInProgress)) {
         // Display "loading" icon if download/install in progress
         icon = downloadingIcon;
@@ -487,12 +485,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       return ContributionListing.getInstance().allContributions.stream().skip(rowIndex).findFirst().orElse(null);
     }
 
-    /*
-    public void setColumns(ContributionColumn[] columns) {
-      this.columns = columns;
-    }
-    */
-
     public void enableSections(boolean enable) {
       this.sectionsEnabled = enable;
     }
@@ -632,19 +624,8 @@ implements Scrollable, ContributionListing.ChangeListener {
   protected void setSelectedDetail(StatusPanelDetail contribDetail) {
     contributionTab.updateStatusDetail(contribDetail);
 
-    if (selectedDetail == contribDetail) {
-//      selectedPanel.setSelected(true);
-
-    } else {
-//      DetailPanel lastSelected = selectedPanel;
+    if (selectedDetail != contribDetail) {
       selectedDetail = contribDetail;
-
-//      if (lastSelected != null) {
-//        lastSelected.setSelected(false);
-//      }
-//      contributionPanel.setSelected(true);
-
-//      updateColors();
       requestFocusInWindow();
     }
   }

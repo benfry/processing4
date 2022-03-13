@@ -116,7 +116,7 @@ public class ContributionTab extends JPanel {
       loaderLabel.setBackground(Color.WHITE);
     }
 
-    int scrollBarWidth = contributionListPanel.scrollPane.getVerticalScrollBar().getPreferredSize().width;
+    int scrollBarWidth = contributionListPanel.getScrollBarWidth();
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
