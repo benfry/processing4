@@ -205,7 +205,7 @@ class StatusPanel extends JPanel {
   }
 
 
-  static String getBodyStyle() {
+  static private String getBodyStyle() {
     return "body { " +
       "  margin: 0; " +
       "  padding: 0;" +
@@ -292,44 +292,42 @@ class StatusPanel extends JPanel {
   void updateDetail(StatusPanelDetail detail) {
 //    System.out.println("rebuilding status detail for " + detail.getContrib().name);
 //    new Exception("rebuilding status detail for " + detail.getContrib().name).printStackTrace(System.out);
-    progressPanel.removeAll();
+    Contribution contrib = detail.getContrib();
 
-    iconLabel.setIcon(detail.getContrib().isFoundation() ? foundationIcon : null);
-//    label.setText(detail.description);
-    label.setText(updateDescription(detail.getContrib()));
-    ((HTMLDocument)label.getDocument()).getStyleSheet().addRule(getBodyStyle());
+    iconLabel.setIcon(contrib.isFoundation() ? foundationIcon : null);
+    label.setText(updateDescription(contrib));
+    ((HTMLDocument) label.getDocument()).getStyleSheet().addRule(getBodyStyle());
 
     ContributionListing listing = ContributionListing.getInstance();
 
     updateButton.setEnabled(listing.hasDownloadedLatestList() &&
-                            (listing.hasUpdates(detail.getContrib()) &&
-                             !detail.getContrib().isUpdateFlagged()) &&
+                            (listing.hasUpdates(contrib) &&
+                             !contrib.isUpdateFlagged()) &&
                             !detail.updateInProgress);
 
-    String latestVersion =
-      listing.getLatestPrettyVersion(detail.getContrib());
-    String currentVersion = detail.getContrib().getPrettyVersion();
+    String latestVersion = listing.getLatestPrettyVersion(contrib);
+    String currentVersion = contrib.getPrettyVersion();
 
-    installButton.setEnabled(!detail.getContrib().isInstalled() &&
+    installButton.setEnabled(!contrib.isInstalled() &&
                              listing.hasDownloadedLatestList() &&
-                             detail.getContrib().isCompatible(Base.getRevision()) &&
+                             contrib.isCompatible(Base.getRevision()) &&
                              !detail.installInProgress);
 
-    if (detail.getContrib().isCompatible(Base.getRevision())) {
+    if (contrib.isCompatible(Base.getRevision())) {
       if (installButton.isEnabled()) {
         if (latestVersion != null) {
           updateLabel.setText(latestVersion + " available");
         } else {
           updateLabel.setText("Available");
         }
-      } else {
+      } else {  // install disabled
         if (currentVersion != null) {
           updateLabel.setText(currentVersion + " installed");
         } else {
           updateLabel.setText("Installed");
         }
       }
-    } else {
+    } else {  // contrib not compatible
       if (currentVersion != null) {
         updateLabel.setText(currentVersion + " not compatible");
       } else {
@@ -337,19 +335,15 @@ class StatusPanel extends JPanel {
       }
     }
 
-    if (latestVersion != null) {
-      latestVersion = "Update to " + latestVersion;
-    } else {
-      latestVersion = "Update";
-    }
-
-    if (updateButton.isEnabled()) {
-      updateButton.setText(latestVersion);
+    if (updateButton.isEnabled() && latestVersion != null) {
+      updateButton.setText("Update to " + latestVersion);
     } else {
       updateButton.setText("Update");
     }
 
-    removeButton.setEnabled(detail.getContrib().isInstalled() && !detail.removeInProgress);
+    removeButton.setEnabled(contrib.isInstalled() && !detail.removeInProgress);
+
+    progressPanel.removeAll();
     progressPanel.add(detail.getProgressBar());
 
     if (detail.updateInProgress || detail.installInProgress || detail.removeInProgress) {
