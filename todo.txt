@@ -52,6 +52,7 @@ X   all that was left was maintenance of when that's been set, so...
 X allow update of the current Mode
 X   if doing an update (not just delete), close sketches and re-open
 X   if doing a delete, require sketches to be closed
+X change up StatusPanelDetail constructor to clean up accessors
 
 
 _ after failed update of Mode, the button is no longer available

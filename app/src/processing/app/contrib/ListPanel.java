@@ -574,7 +574,9 @@ implements Scrollable, ContributionListing.ChangeListener {
       if (!detailForContrib.containsKey(contribution)) {
 //      new Exception().printStackTrace(System.out);
 //        long t1 = System.currentTimeMillis();
-        StatusPanelDetail newPanel = new StatusPanelDetail(this);
+        //StatusPanelDetail newPanel = new StatusPanelDetail(this);
+        StatusPanelDetail newPanel =
+          new StatusPanelDetail(contributionTab.base, contributionTab.statusPanel);
         detailForContrib.put(contribution, newPanel);
         newPanel.setContrib(contribution);
 //      add(newPanel);

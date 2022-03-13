@@ -39,7 +39,9 @@ import processing.app.ui.Toolkit;
  * has only been used to track install/remove state information.
  */
 class StatusPanelDetail {
-  private final ListPanel listPanel;
+  //private final ListPanel listPanel;
+  Base base;
+  StatusPanel statusPanel;
 
   static private final int BUTTON_WIDTH = Toolkit.zoom(100);
 
@@ -52,10 +54,14 @@ class StatusPanelDetail {
   boolean removeInProgress;
 
 
-  StatusPanelDetail(ListPanel contributionListPanel) {
+  //StatusPanelDetail(ContributionTab contributionTab) {
+  StatusPanelDetail(Base base, StatusPanel statusPanel) {
 //    System.out.println("DetailPanel.<init>");
 //    new Exception().printStackTrace(System.out);
-    listPanel = contributionListPanel;
+
+//    listPanel = contributionListPanel;
+    this.base = base;
+    this.statusPanel = statusPanel;
   }
 
 
@@ -316,12 +322,14 @@ class StatusPanelDetail {
   // though, is that the functions being called in Base are somewhat suspect
   // since they're contribution-related, and should perhaps live closer.
   private Base getBase() {
-    return listPanel.contributionTab.base;  // TODO this is gross [fry]
+    //return listPanel.contributionTab.base;  // TODO this is gross [fry]
+    return base;
   }
 
 
   private StatusPanel getStatusPanel() {
-    return listPanel.contributionTab.statusPanel;  // TODO this is also gross
+    //return listPanel.contributionTab.statusPanel;  // TODO this is also gross
+    return statusPanel;
   }
 
 
