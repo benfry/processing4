@@ -114,7 +114,7 @@ public class ManagerFrame {
     frame.setMinimumSize(Toolkit.zoom(750, 500));
     tabs = new ManagerTabs();
 
-    makeAndShowTab(false, true);
+    rebuildTabLayouts(false, true);
 
     tabs.addPanel(librariesTab, "Libraries");
     tabs.addPanel(modesTab, "Modes");
@@ -216,7 +216,7 @@ public class ManagerFrame {
           makeAndShowTab(true, false);
         } else {
      */
-          makeAndShowTab(false, false);
+          rebuildTabLayouts(false, false);
     /*
         }
       }
@@ -226,12 +226,12 @@ public class ManagerFrame {
   }
 
 
-  void makeAndShowTab(boolean error, boolean loading) {
-    librariesTab.showFrame(error, loading);
-    modesTab.showFrame(error, loading);
-    toolsTab.showFrame(error, loading);
-    examplesTab.showFrame(error, loading);
-    updatesTab.showFrame(error, loading);
+  protected void rebuildTabLayouts(boolean error, boolean loading) {
+    librariesTab.rebuildLayout(error, loading);
+    modesTab.rebuildLayout(error, loading);
+    toolsTab.rebuildLayout(error, loading);
+    examplesTab.rebuildLayout(error, loading);
+    updatesTab.rebuildLayout(error, loading);
   }
 
 

@@ -85,7 +85,7 @@ public class ContributionTab extends JPanel {
   }
 
 
-  public void showFrame(boolean error, boolean loading) {
+  public void rebuildLayout(boolean error, boolean loading) {
     setLayout();
 
     listPanel.setVisible(!loading);
@@ -199,11 +199,11 @@ public class ContributionTab extends JPanel {
 
     closeButton = Toolkit.createIconButton("manager/close");
     closeButton.setContentAreaFilled(false);
-    closeButton.addActionListener(e -> managerFrame.makeAndShowTabs(false, false));
+    closeButton.addActionListener(e -> managerFrame.rebuildTabLayouts(false, false));
     tryAgainButton = new JButton("Try Again");
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
     tryAgainButton.addActionListener(e -> {
-      managerFrame.makeAndShowTabs(false, true);
+      managerFrame.rebuildTabLayouts(false, true);
       managerFrame.downloadAndUpdateContributionListing();
       //managerFrame.downloadAndUpdateContributionListing(base);
     });
@@ -248,10 +248,11 @@ public class ContributionTab extends JPanel {
       Set<String> categories = listCategories();
       if (categories.size() == 1 &&
           categories.contains(Contribution.UNKNOWN_CATEGORY)) {
-        // no unique categories
+        // If no unique categories, hide the category chooser
         categoryChooser.setVisible(false);
 
       } else {
+        // Build the category chooser dropdown from the list
         categoryChooser.addItem(ManagerFrame.ANY_CATEGORY);
 
         String[] list = categories.toArray(String[]::new);
