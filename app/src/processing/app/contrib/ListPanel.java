@@ -24,6 +24,7 @@ package processing.app.contrib;
 import java.awt.*;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
@@ -45,10 +46,10 @@ public class ListPanel extends JPanel implements Scrollable {
 //    Comparator.comparing(o -> o.getName().toLowerCase());
 //  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
 //    new TreeMap<>(ContributionListing.COMPARATOR);
-  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
-    new TreeMap<>(Comparator.comparing(o -> o.getName().toLowerCase()));
-//  Map<Contribution, StatusPanelDetail> detailForContrib =
-//    new ConcurrentHashMap<>();
+//  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
+//    new TreeMap<>(Comparator.comparing(o -> o.getName().toLowerCase()));
+  Map<Contribution, StatusPanelDetail> detailForContrib =
+    new ConcurrentHashMap<>();
 
   private final Contribution.Filter filter;
 
