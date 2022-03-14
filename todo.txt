@@ -53,7 +53,25 @@ X allow update of the current Mode
 X   if doing an update (not just delete), close sketches and re-open
 X   if doing a delete, require sketches to be closed
 X change up StatusPanelDetail constructor to clean up accessors
+X disable hashCode() implementation in Contribution
+X   was getting in the way of comparisons
+_   but need to compare the entries differently so there aren't dupes
+_   i.e. it was doing a name comparison, so need to swap by name
 
+
+_ ManagerFrame.downloadAndUpdateContributionListing()
+_   should not even be run, because the contribs load on startup
+_ ManagerFrame.makeAndShowTab()
+_   this one looks like it's gonna get called multiple times
+_ ContributionTab.updateContributionListing()
+_   this one shouldn't be in a single tab
+_   and it should include all contribs (method from Base to get in one swoop?)
+_   this is also likely the cause of per-Mode weirdness
+_ holy s*t ContributionTableModel is using all of the contribs
+
+_ get rid of IgnorableException
+
+_ contrib/mode/lib/example List objects in Base: which should be Set objects
 
 _ after failed update of Mode, the button is no longer available
 _   have to click something else, then click back on the Mode line again

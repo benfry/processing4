@@ -188,7 +188,7 @@ public enum ContributionType {
       contribs.addAll(base.getModeContribs());
       break;
     case EXAMPLES:
-      contribs.addAll(base.getExampleContribs());
+      contribs.addAll(base.getContribExamples());
       break;
     }
     return contribs;

@@ -45,7 +45,7 @@ public class ContributionTab extends JPanel {
 
   Contribution.Filter filter;
   JComboBox<String> categoryChooser;
-  ListPanel contributionListPanel;
+  ListPanel listPanel;
   StatusPanel statusPanel;
   FilterField filterField;
 
@@ -69,8 +69,8 @@ public class ContributionTab extends JPanel {
   }
 
 
-  public ContributionTab(ManagerFrame dialog, ContributionType type) {
-    this(dialog);
+  public ContributionTab(ManagerFrame frame, ContributionType type) {
+    this(frame);
     this.contribType = type;
 
 //    long t1 = System.currentTimeMillis();
@@ -81,29 +81,32 @@ public class ContributionTab extends JPanel {
 //    long t3 = System.currentTimeMillis();
     statusPanel = new StatusPanel(this);
 //    long t4 = System.currentTimeMillis();
-    contributionListPanel = new ListPanel(this, filter, false);
+    listPanel = new ListPanel(this, filter, false);
 //    long t5 = System.currentTimeMillis();
     // TODO optimize: this line is taking all of the time
     //      (though not after removing the loop in addListener() in 4.0b4)
-    contribListing.addListener(contributionListPanel);
+    //contribListing.addListener(contributionListPanel);
+    contribListing.addListPanel(listPanel);
 //    long t6 = System.currentTimeMillis();
 //    System.out.println("ContributionTab.<init> " + (t4-t1) + " " + (t5-t4) + " " + (t6-t5));
   }
 
 
   public void showFrame(boolean error, boolean loading) {
-    setLayout(error, loading);
-    contributionListPanel.setVisible(!loading);
+    setLayout();
+
+    listPanel.setVisible(!loading);
     loaderLabel.setVisible(loading);
     errorPanel.setVisible(error);
+
+    listPanel.fireChange();
 
     validate();
     repaint();
   }
 
 
-  protected void setLayout(boolean activateErrorPanel,
-                           boolean isLoading) {
+  protected void setLayout() {
     if (progressBar == null) {
       progressBar = new JProgressBar();
       progressBar.setVisible(false);
@@ -116,7 +119,7 @@ public class ContributionTab extends JPanel {
       loaderLabel.setBackground(Color.WHITE);
     }
 
-    int scrollBarWidth = contributionListPanel.getScrollBarWidth();
+    int scrollBarWidth = listPanel.getScrollBarWidth();
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
@@ -134,7 +137,7 @@ public class ContributionTab extends JPanel {
                                 ManagerFrame.AUTHOR_WIDTH,
                                 ManagerFrame.AUTHOR_WIDTH)
                   .addGap(scrollBarWidth)).addComponent(loaderLabel)
-      .addComponent(contributionListPanel).addComponent(errorPanel)
+      .addComponent(listPanel).addComponent(errorPanel)
       .addComponent(statusPanel));
 
     layout.setVerticalGroup(layout
@@ -146,14 +149,14 @@ public class ContributionTab extends JPanel {
       .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(loaderLabel)
-                  .addComponent(contributionListPanel))
+                  .addComponent(listPanel))
       .addComponent(errorPanel)
       .addComponent(statusPanel, GroupLayout.PREFERRED_SIZE,
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE));
     layout.linkSize(SwingConstants.VERTICAL, categoryChooser, filterField);
 
     // these will occupy space even if not visible
-    layout.setHonorsVisibility(contributionListPanel, false);
+    layout.setHonorsVisibility(listPanel, false);
     layout.setHonorsVisibility(categoryChooser, false);
 
     setBackground(Color.WHITE);
@@ -208,7 +211,8 @@ public class ContributionTab extends JPanel {
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
     tryAgainButton.addActionListener(e -> {
       managerFrame.makeAndShowTab(false, true);
-      managerFrame.downloadAndUpdateContributionListing(base);
+      managerFrame.downloadAndUpdateContributionListing();
+      //managerFrame.downloadAndUpdateContributionListing(base);
     });
     layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
@@ -269,7 +273,7 @@ public class ContributionTab extends JPanel {
 
 
   protected void filterLibraries(String category, List<String> filters) {
-    contributionListPanel.filterLibraries(category, filters);
+    listPanel.filterLibraries(category, filters);
   }
 
 
@@ -284,9 +288,8 @@ public class ContributionTab extends JPanel {
       List<Library> libraries =
         new ArrayList<>(editor.getMode().contribLibraries);
 
-      // Only add core libraries that are installed in the sketchbook
+      // Only add Foundation libraries that are installed in the sketchbook
       // https://github.com/processing/processing/issues/3688
-      //libraries.addAll(editor.getMode().coreLibraries);
       final String sketchbookPath =
         Base.getSketchbookLibrariesFolder().getAbsolutePath();
       for (Library lib : editor.getMode().coreLibraries) {
@@ -297,16 +300,22 @@ public class ContributionTab extends JPanel {
 
       List<Contribution> contributions = new ArrayList<>(libraries);
 
-      List<ToolContribution> tools = base.getToolContribs();
-      contributions.addAll(tools);
+//      List<ToolContribution> tools = base.getToolContribs();
+//      contributions.addAll(tools);
+      contributions.addAll(base.getToolContribs());
 
-      List<ModeContribution> modes = base.getModeContribs();
-      contributions.addAll(modes);
+//      List<ModeContribution> modes = base.getModeContribs();
+//      contributions.addAll(modes);
+      contributions.addAll(base.getModeContribs());
 
-      List<ExamplesContribution> examples = base.getExampleContribs();
-      contributions.addAll(examples);
+//      List<ExamplesContribution> examples = base.getExampleContribs();
+//      contributions.addAll(examples);
+      contributions.addAll(base.getContribExamples());
 
       contribListing.updateInstalledList(contributions);
+
+      //listPanel.filterLibraries(category, new ArrayList<>());
+      //listPanel.filterDummy(category);
     }
   }
 
@@ -402,7 +411,8 @@ public class ContributionTab extends JPanel {
       String filter = getText().toLowerCase();
 
       // Replace anything but 0-9, a-z, or : with a space
-      filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
+      //filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
+
       filters = Arrays.asList(filter.split(" "));
       filterLibraries(category, filters);
     }
@@ -416,17 +426,18 @@ public class ContributionTab extends JPanel {
 
   protected void updateAll() {
     Collection<StatusPanelDetail> collection =
-      contributionListPanel.detailForContrib.values();
+      listPanel.detailForContrib.values();
     for (StatusPanelDetail detail : collection) {
       detail.update();
     }
-    contributionListPanel.model.fireTableDataChanged();
+    listPanel.model.fireTableDataChanged();
   }
 
 
   protected boolean hasUpdates() {
-    return contributionListPanel.getRowCount() > 0;
+    return listPanel.getRowCount() > 0;
   }
+
 
   public boolean filterHasFocus() {
       return filterField != null && filterField.hasFocus();

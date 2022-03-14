@@ -100,7 +100,7 @@ class StatusPanel extends JPanel {
     installButton.addActionListener(e -> {
       installButton.setEnabled(false);
       StatusPanelDetail currentDetail =
-        contributionTab.contributionListPanel.getSelectedDetail();
+        contributionTab.listPanel.getSelectedDetail();
       currentDetail.install();
       updateDetail(currentDetail);
     });
@@ -118,7 +118,7 @@ class StatusPanel extends JPanel {
     updateButton.addActionListener(e -> {
       updateButton.setEnabled(false);
       StatusPanelDetail currentDetail =
-        contributionTab.contributionListPanel.getSelectedDetail();
+        contributionTab.listPanel.getSelectedDetail();
       currentDetail.update();
       updateDetail(currentDetail);
     });
@@ -129,7 +129,7 @@ class StatusPanel extends JPanel {
     removeButton.addActionListener(e -> {
       removeButton.setEnabled(false);
       StatusPanelDetail currentPanel =
-        contributionTab.contributionListPanel.getSelectedDetail();
+        contributionTab.listPanel.getSelectedDetail();
       currentPanel.remove();
       updateDetail(currentPanel);
     });

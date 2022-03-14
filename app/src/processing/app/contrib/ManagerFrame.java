@@ -26,8 +26,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import processing.app.*;
-import processing.app.ui.Editor;
+import processing.app.Base;
+import processing.app.Language;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
@@ -54,6 +54,7 @@ public class ManagerFrame {
   ContributionTab examplesTab;
   UpdateContributionTab updatesTab;
 
+  // TODO move to updateTheme() handler
   static Font SMALL_PLAIN;
   static Font SMALL_BOLD;
   static Font NORMAL_PLAIN;
@@ -97,7 +98,8 @@ public class ManagerFrame {
       // done before as downloadAndUpdateContributionListing()
       // requires the current selected tab
       tabs.setPanel(showTab);
-      downloadAndUpdateContributionListing(base);
+      //downloadAndUpdateContributionListing(base);
+      downloadAndUpdateContributionListing();
     } else {
       tabs.setPanel(showTab);
     }
@@ -178,11 +180,13 @@ public class ManagerFrame {
 
 
   // TODO move this to ContributionTab (this is handled weirdly, period) [fry]
-  void downloadAndUpdateContributionListing(Base base) {
+  //void downloadAndUpdateContributionListing(Base base) {
+  void downloadAndUpdateContributionListing() {
     //activeTab is required now but should be removed
-    //as there is only one instance of contribListing and it should be present in this class
+    //as there is only one instance of contribListing, and it should be present in this class
     final ContributionTab activeTab = getActiveTab();
 
+    /*
     final JProgressBar bar = activeTab.progressBar;
     ContribProgress progress = new ContribProgress(bar) {
       @Override
@@ -195,31 +199,34 @@ public class ManagerFrame {
       @Override
       public void setProgress(int value) {
         super.setProgress(value);
-//        int percent = 100 * value / this.max;
         bar.setValue(value);
       }
 
       @Override
       public void finishedAction() {
         bar.setVisible(false);
+    */
         activeTab.updateContributionListing();
         activeTab.updateCategoryChooser();
 
+    /*
         Exception exception = getException();
         if (exception != null) {
           exception.printStackTrace();
           makeAndShowTab(true, false);
         } else {
+     */
           makeAndShowTab(false, false);
+    /*
         }
       }
     };
-    activeTab.contribListing.downloadAvailableList(base, progress);
+    ContributionListing.getInstance().downloadAvailableList(base, progress);
+    */
   }
 
 
   void makeAndShowTab(boolean error, boolean loading) {
-    Editor editor = base.getActiveEditor();
     librariesTab.showFrame(error, loading);
     modesTab.showFrame(error, loading);
     toolsTab.showFrame(error, loading);

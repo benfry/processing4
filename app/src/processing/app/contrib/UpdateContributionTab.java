@@ -43,16 +43,17 @@ public class UpdateContributionTab extends ContributionTab {
       }
       return false;
     };
-    contributionListPanel = new UpdateListPanel(this, filter);
+    listPanel = new UpdateListPanel(this, filter);
 
     statusPanel = new UpdateStatusPanel(this);
     contribListing = ContributionListing.getInstance();
-    contribListing.addListener(contributionListPanel);
+    //contribListing.addListener(contributionListPanel);
+    contribListing.addListPanel(listPanel);
   }
 
 
   @Override
-  protected void setLayout(boolean error, boolean loading) {
+  protected void setLayout() {
     if (progressBar == null) {
       progressBar = new JProgressBar();
       progressBar.setVisible(false);
@@ -68,7 +69,7 @@ public class UpdateContributionTab extends ContributionTab {
     layout.setHorizontalGroup(layout
       .createParallelGroup(GroupLayout.Alignment.CENTER)
       .addComponent(loaderLabel)
-      .addComponent(contributionListPanel)
+      .addComponent(listPanel)
       .addComponent(errorPanel)
       .addComponent(statusPanel));
 
@@ -76,11 +77,11 @@ public class UpdateContributionTab extends ContributionTab {
       .createSequentialGroup()
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(loaderLabel)
-                  .addComponent(contributionListPanel))
+                  .addComponent(listPanel))
       .addComponent(errorPanel)
       .addComponent(statusPanel, GroupLayout.PREFERRED_SIZE,
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE));
-    layout.setHonorsVisibility(contributionListPanel, false);
+    layout.setHonorsVisibility(listPanel, false);
 
     setBackground(Color.WHITE);
   }

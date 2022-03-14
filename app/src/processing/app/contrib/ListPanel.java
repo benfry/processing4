@@ -39,11 +39,16 @@ import processing.app.ui.Toolkit;
 // necessary in the first place, however. Is that hiding a bigger problem?
 // It also allows the description text in the panels to wrap properly.
 
-public class ListPanel extends JPanel
-implements Scrollable, ContributionListing.ChangeListener {
+public class ListPanel extends JPanel implements Scrollable {
   ContributionTab contributionTab;
+//  static public Comparator<Contribution> COMPARATOR =
+//    Comparator.comparing(o -> o.getName().toLowerCase());
+//  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
+//    new TreeMap<>(ContributionListing.COMPARATOR);
   TreeMap<Contribution, StatusPanelDetail> detailForContrib =
-    new TreeMap<>(ContributionListing.COMPARATOR);
+    new TreeMap<>(Comparator.comparing(o -> o.getName().toLowerCase()));
+//  Map<Contribution, StatusPanelDetail> detailForContrib =
+//    new ConcurrentHashMap<>();
 
   private final Contribution.Filter filter;
 
@@ -89,7 +94,7 @@ implements Scrollable, ContributionListing.ChangeListener {
       downloadingIcon = Toolkit.getLibIconX("manager/downloading");
     }
 
-    setLayout(new GridBagLayout());
+    //setLayout(new GridBagLayout());
     setOpaque(true);
     setBackground(Color.WHITE);
     model = new ContributionTableModel(columns);
@@ -174,7 +179,6 @@ implements Scrollable, ContributionListing.ChangeListener {
 
   // TODO remove this, yuck [fry 220313]
   protected int getScrollBarWidth() {
-    //return scrollWidth;
     JScrollPane scrollPane = (JScrollPane) getComponent(0);
     return scrollPane.getVerticalScrollBar().getPreferredSize().width;
   }
@@ -246,15 +250,15 @@ implements Scrollable, ContributionListing.ChangeListener {
     }
 
     /**
-     * Overloaded to return an icon suitable to the primary sorted column,
+     * Return an icon suitable to the primary sorted column,
      * or null if the column is not the primary sort key.
      *
      * @param table the <code>JTable</code>.
      * @param column the column index.
      * @return the sort icon, or null if the column is unsorted.
      */
-    protected Icon getSortIcon(JTable table, int column) {
-      SortKey sortKey = getSortKey(table, column);
+    private Icon getSortIcon(JTable table, int column) {
+      SortKey sortKey = getSortKey(table);
       if (sortKey != null && table.convertColumnIndexToView(sortKey.getColumn()) == column) {
         switch (sortKey.getSortOrder()) {
           case ASCENDING:
@@ -270,10 +274,9 @@ implements Scrollable, ContributionListing.ChangeListener {
      * Returns the current sort key, or null if the column is unsorted.
      *
      * @param table the table
-     * @param column the column index
      * @return the SortKey, or null if the column is unsorted
      */
-    protected SortKey getSortKey(JTable table, int column) {
+    protected SortKey getSortKey(JTable table) {
       return Optional.ofNullable(table.getRowSorter())
         .map(RowSorter::getSortKeys)
         .map(columns -> columns.isEmpty() ? null : columns.get(0))
@@ -481,7 +484,6 @@ implements Scrollable, ContributionListing.ChangeListener {
       if (rowIndex >= ContributionListing.getInstance().allContributions.size()) {
         return sections[rowIndex - ContributionListing.getInstance().allContributions.size()];
       }
-
       return ContributionListing.getInstance().allContributions.stream().skip(rowIndex).findFirst().orElse(null);
     }
 
@@ -492,6 +494,21 @@ implements Scrollable, ContributionListing.ChangeListener {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static protected boolean matches(Contribution contrib, String typed) {
+    String search = ".*" + typed.toLowerCase() + ".*";
+
+    return (matchField(contrib.getName(), search) ||
+      matchField(contrib.getSentence(), search) ||
+      matchField(contrib.getAuthorList(), search) ||
+      matchField(contrib.getParagraph(), search));
+  }
+
+
+  static private boolean matchField(String field, String regex) {
+    return (field != null) && field.toLowerCase().matches(regex);
+  }
 
 
   static class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
@@ -523,7 +540,8 @@ implements Scrollable, ContributionListing.ChangeListener {
     private boolean includeContribution(Contribution contribution) {
       return contributionFilter.matches(contribution) &&
         categoryFilter.map(contribution::hasCategory).orElse(true) &&
-        stringFilters.stream().allMatch(pattern -> ContributionListing.getInstance().matches(contribution, pattern));
+        //stringFilters.stream().allMatch(pattern -> ContributionListing.getInstance().matches(contribution, pattern));
+        stringFilters.stream().allMatch(pattern -> matches(contribution, pattern));
     }
 
     private boolean includeSection(SectionHeaderContribution section) {
@@ -537,6 +555,9 @@ implements Scrollable, ContributionListing.ChangeListener {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  /**
+   * Fake contribution that's just a section header for the updates panel.
+   */
   static class SectionHeaderContribution extends Contribution {
     ContributionType type;
 
@@ -561,9 +582,16 @@ implements Scrollable, ContributionListing.ChangeListener {
 
 
   // Thread: EDT
-  public void contributionAdded(final Contribution contribution) {
-    if (true || filter.matches(contribution)) {
+  protected void contributionAdded(final Contribution contribution) {
+//    if (true || filter.matches(contribution)) {
+    if (filter.matches(contribution)) {
+//      System.out.println(contributionTab.contribType + " tab: " +
+//        "added " + contribution.name);
+      //new Exception().printStackTrace(System.out);
+
       if (!detailForContrib.containsKey(contribution)) {
+//        System.out.println(contributionTab.contribType + " tab: " +
+//          "actually adding " + contribution.name);
 //      new Exception().printStackTrace(System.out);
 //        long t1 = System.currentTimeMillis();
         //StatusPanelDetail newPanel = new StatusPanelDetail(this);
@@ -583,8 +611,11 @@ implements Scrollable, ContributionListing.ChangeListener {
 
 
   // Thread: EDT
-  public void contributionRemoved(final Contribution contribution) {
-    if (true || filter.matches(contribution)) {
+  protected void contributionRemoved(final Contribution contribution) {
+    if (filter.matches(contribution)) {
+//      System.out.println(contributionTab.contribType + " tab: " +
+//        "removed " + contribution.name);
+//    if (true || filter.matches(contribution)) {
       StatusPanelDetail panel = detailForContrib.get(contribution);
       if (panel != null) {
         detailForContrib.remove(contribution);
@@ -596,32 +627,48 @@ implements Scrollable, ContributionListing.ChangeListener {
 
 
   // Thread: EDT
-  public void contributionChanged(final Contribution oldContrib,
+  protected void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
-    if (true || filter.matches(oldContrib)) {
+    if (filter.matches(oldContrib)) {
+//    if (true || filter.matches(oldContrib)) {
+//      System.out.println(contributionTab.contribType + " tab: " +
+//        "changed " + oldContrib + " -> " + newContrib);
+//      new Exception().printStackTrace(System.out);
       StatusPanelDetail panel = detailForContrib.get(oldContrib);
-      if (panel == null) {
-        contributionAdded(newContrib);
-      } else {
+//      if (panel == null) {
+////        System.out.println("panel null for " + newContrib);
+//        contributionAdded(newContrib);
+//      } else {
         detailForContrib.remove(oldContrib);
         panel.setContrib(newContrib);
         detailForContrib.put(newContrib, panel);
         model.fireTableDataChanged();
-      }
+//      }
     }
   }
 
 
   // Thread: EDT
-  public void filterLibraries(String category, List<String> filters) {
+  protected void filterLibraries(String category, List<String> filters) {
     rowFilter.setCategoryFilter(category);
     rowFilter.setStringFilters(filters);
     model.fireTableDataChanged();
   }
 
 
+  protected void fireChange() {
+    model.fireTableDataChanged();
+  }
+//  protected void filterDummy(String category) {
+//    System.out.println("LAST CHANCE DUMMY");
+////    rowFilter.setCategoryFilter(category);
+////    rowFilter.setStringFilters(new ArrayList<>());
+//    model.fireTableDataChanged();
+//  }
+
+
   // Thread: EDT
-  protected void setSelectedDetail(StatusPanelDetail contribDetail) {
+  private void setSelectedDetail(StatusPanelDetail contribDetail) {
     contributionTab.updateStatusDetail(contribDetail);
 
     if (selectedDetail != contribDetail) {

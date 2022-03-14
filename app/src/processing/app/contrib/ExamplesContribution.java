@@ -67,7 +67,7 @@ public class ExamplesContribution extends LocalContribution {
 
   static public void loadMissing(Base base) {
     File examplesFolder = Base.getSketchbookExamplesFolder();
-    List<ExamplesContribution> contribExamples = base.getExampleContribs();
+    List<ExamplesContribution> contribExamples = base.getContribExamples();
 
     Map<File, ExamplesContribution> existing = new HashMap<>();
     for (ExamplesContribution contrib : contribExamples) {

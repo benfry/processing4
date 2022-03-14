@@ -66,6 +66,7 @@ public class Base {
    */
   static public boolean DEBUG;
 
+  /** True if running via Commander. */
   static private boolean commandLine;
 
   /**
@@ -78,9 +79,6 @@ public class Base {
   // A single instance of the preferences window
   PreferencesFrame preferencesFrame;
 
-  // A single instance of the library manager window
-//  ContributionManagerDialog contributionManagerFrame;
-
   // Location for untitled items
   static File untitledFolder;
 
@@ -88,20 +86,30 @@ public class Base {
   final protected List<Editor> editors =
     Collections.synchronizedList(new ArrayList<>());
   protected Editor activeEditor;
+
   /** A lone file menu to be used when all sketch windows are closed. */
   protected JMenu defaultFileMenu;
 
   /**
-   * Starts with the last mode used with the environment,
-   * or the default mode if not used.
+   * The next Mode to be used with handleNew() or handleOpen()
+   * (unless it's overridden by something else). Starts with the last
+   * Mode used with the environment, or the default mode if not used.
    */
   private Mode nextMode;
 
-  /** The built-in modes. coreModes[0] will be considered the 'default'. */
-  private Mode[] coreModes;
+  /** Only one built-in Mode these days, removing the extra fluff. */
+  private Mode coreMode;
 
-  protected List<ModeContribution> modeContribs;
-  protected List<ExamplesContribution> exampleContribs;
+  // TODO can these be Set objects, or are they expected to be in order?
+  protected List<ModeContribution> contribModes;
+  protected List<ExamplesContribution> contribExamples;
+
+  /** These aren't even dynamically loaded, they're hard-wired here. */
+  private List<Tool> internalTools;
+
+  // TODO can these be Set objects, or are they expected to be in order?
+  private List<ToolContribution> coreTools;
+  private List<ToolContribution> contribTools;
 
   // Used by handleOpen(), this saves the chooser to remember the directory.
   // Doesn't appear to be necessary with the AWT native file dialog.
@@ -109,7 +117,6 @@ public class Base {
   private JFileChooser openChooser;
 
   static protected File sketchbookFolder;
-//  protected File toolsFolder;
 
 
   static public void main(final String[] args) {
@@ -527,19 +534,20 @@ public class Base {
 
     } else {
       // PDE X calls getModeList() while it's loading, so coreModes must be set
-      coreModes = new Mode[] { javaModeContrib.getMode() };
+      //coreModes = new Mode[] { javaModeContrib.getMode() };
+      coreMode = javaModeContrib.getMode();
     }
   }
 
 
   /**
    * Instantiates and adds new contributed modes to the contribModes list.
-   * Checks for duplicates so the same mode isn't instantiates twice. Does not
+   * Checks for duplicates so the same mode isn't instantiated twice. Does not
    * remove modes because modes can't be removed once they are instantiated.
    */
   void rebuildContribModes() {
-    if (modeContribs == null) {
-      modeContribs = new ArrayList<>();
+    if (contribModes == null) {
+      contribModes = new ArrayList<>();
     }
     File modesFolder = getSketchbookModesFolder();
     List<ModeContribution> contribModes = getModeContribs();
@@ -615,8 +623,8 @@ public class Base {
    * remove modes because modes can't be removed once they are instantiated.
    */
   void rebuildContribExamples() {
-    if (exampleContribs == null) {
-      exampleContribs = new ArrayList<>();
+    if (contribExamples == null) {
+      contribExamples = new ArrayList<>();
     }
     ExamplesContribution.loadMissing(this);
   }
@@ -717,11 +725,6 @@ public class Base {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  List<Tool> internalTools;
-  List<ToolContribution> coreTools;
-  List<ToolContribution> contribTools;
 
 
   public List<ToolContribution> getCoreTools() {
@@ -907,45 +910,48 @@ public class Base {
 
 
   public List<ModeContribution> getModeContribs() {
-    return modeContribs;
+    return contribModes;
   }
 
 
   public List<Mode> getModeList() {
-    List<Mode> allModes = new ArrayList<>(Arrays.asList(coreModes));
-    if (modeContribs != null) {
-      for (ModeContribution contrib : modeContribs) {
-        allModes.add(contrib.getMode());
+    //List<Mode> outgoing = new ArrayList<>(Arrays.asList(coreModes));
+    List<Mode> outgoing = new ArrayList<>();
+    outgoing.add(coreMode);
+    if (contribModes != null) {
+      for (ModeContribution contrib : contribModes) {
+        outgoing.add(contrib.getMode());
       }
     }
-    return allModes;
+    return outgoing;
   }
 
 
-  public List<ExamplesContribution> getExampleContribs() {
-    return exampleContribs;
+  public List<ExamplesContribution> getContribExamples() {
+    return contribExamples;
   }
 
 
-  private List<Contribution> getInstalledContribs() {
+  private Set<Contribution> getInstalledContribs() {
     List<ModeContribution> modeContribs = getModeContribs();
-    List<Contribution> contributions = new ArrayList<>(modeContribs);
+    Set<Contribution> contributions = new HashSet<>(modeContribs);
 
     for (ModeContribution modeContrib : modeContribs) {
       Mode mode = modeContrib.getMode();
       contributions.addAll(new ArrayList<>(mode.contribLibraries));
     }
 
+    // how is this different from getToolContribs()?
     // TODO this duplicates code in Editor, but it's not editor-specific
     contributions.addAll(ToolContribution.loadAll(getSketchbookToolsFolder()));
 
-    contributions.addAll(getExampleContribs());
+    contributions.addAll(getContribExamples());
     return contributions;
   }
 
 
   public byte[] getInstalledContribsInfo() {
-    List<Contribution> contribs = getInstalledContribs();
+    Set<Contribution> contribs = getInstalledContribs();
     StringList entries = new StringList();
     for (Contribution c : contribs) {
       String entry = c.getTypeName() + "=" +
@@ -970,7 +976,8 @@ public class Base {
 
 
   public Mode getDefaultMode() {
-    return coreModes[0];
+    //return coreModes[0];
+    return coreMode;
   }
 
 

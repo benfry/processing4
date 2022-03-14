@@ -48,7 +48,8 @@ public class ContributionListing {
   /** Location of the listing file on disk, will be read and written. */
   File listingFile;
 
-  List<ChangeListener> listeners;
+  //List<ChangeListener> listeners;
+  Set<ListPanel> listPanels;
   final List<AvailableContribution> advertisedContributions;
   Map<String, Contribution> librariesByImportHeader;
   Set<Contribution> allContributions;
@@ -58,10 +59,12 @@ public class ContributionListing {
 
 
   private ContributionListing() {
-    listeners = new ArrayList<>();
+    //listeners = new ArrayList<>();
+    listPanels = new HashSet<>();
     advertisedContributions = new ArrayList<>();
     librariesByImportHeader = new HashMap<>();
     allContributions = new LinkedHashSet<>();
+//    allContributions = new ArrayList<>();
     downloadingListingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
@@ -104,8 +107,10 @@ public class ContributionListing {
     for (Contribution contribution : installed) {
       Contribution existingContribution = getContribution(contribution);
       if (existingContribution != null) {
-        replaceContribution(existingContribution, contribution);
-      //} else if (contribution != null) {  // 130925 why would this be necessary?
+        if (existingContribution != contribution) {
+          // don't replace contrib with itself
+          replaceContribution(existingContribution, contribution);
+        }
       } else {
         addContribution(contribution);
       }
@@ -124,7 +129,12 @@ public class ContributionListing {
       }
       allContributions.remove(oldLib);
       allContributions.add(newLib);
-      notifyChange(oldLib, newLib);
+
+      //notifyChange(oldLib, newLib);
+      //for (ChangeListener listener : listeners) {
+      for (ListPanel listener : listPanels) {
+        listener.contributionChanged(oldLib, newLib);
+      }
     }
   }
 
@@ -136,7 +146,12 @@ public class ContributionListing {
       }
     }
     allContributions.add(contribution);
-    notifyAdd(contribution);
+
+    //notifyAdd(contribution);
+    //for (ChangeListener listener : listeners) {
+    for (ListPanel listener : listPanels) {
+      listener.contributionAdded(contribution);
+    }
   }
 
 
@@ -147,7 +162,12 @@ public class ContributionListing {
       }
     }
     allContributions.remove(contribution);
-    notifyRemove(contribution);
+
+    //notifyRemove(contribution);
+    //for (ChangeListener listener : listeners) {
+    for (ListPanel listener : listPanels) {
+      listener.contributionRemoved(contribution);
+    }
   }
 
 
@@ -175,21 +195,7 @@ public class ContributionListing {
   }
 
 
-  public boolean matches(Contribution contrib, String typed) {
-    String search = ".*" + typed.toLowerCase() + ".*";
-
-    return (matchField(contrib.getName(), search) ||
-            matchField(contrib.getSentence(), search) ||
-            matchField(contrib.getAuthorList(), search) ||
-            matchField(contrib.getParagraph(), search));
-  }
-
-
-  static private boolean matchField(String field, String regex) {
-    return (field != null) && field.toLowerCase().matches(regex);
-  }
-
-
+  /*
   private void notifyRemove(Contribution contribution) {
     for (ChangeListener listener : listeners) {
       listener.contributionRemoved(contribution);
@@ -209,18 +215,24 @@ public class ContributionListing {
       listener.contributionChanged(oldLib, newLib);
     }
   }
+  */
 
 
-  /**
-   * Each ContributionTab will add themselves as a ChangeListener
-   */
-  protected void addListener(ChangeListener listener) {
-    /*
-    for (Contribution contrib : allContributions) {
-      listener.contributionAdded(contrib);
-    }
-    */
-    listeners.add(listener);
+//  /**
+//   * Each ContributionTab will add themselves as a ChangeListener
+//   */
+//  protected void addListener(ChangeListener listener) {
+//    /*
+//    for (Contribution contrib : allContributions) {
+//      listener.contributionAdded(contrib);
+//    }
+//    */
+//    //new Exception(listener.toString()).printStackTrace(System.out);
+//    listeners.add(listener);
+//  }
+
+  protected void addListPanel(ListPanel listener) {
+    listPanels.add(listener);
   }
 
 
@@ -382,7 +394,7 @@ public class ContributionListing {
         count++;
       }
     }
-    for (ExamplesContribution ec : base.getExampleContribs()) {
+    for (ExamplesContribution ec : base.getContribExamples()) {
       if (hasUpdates(ec)) {
         count++;
       }
@@ -397,13 +409,15 @@ public class ContributionListing {
   }
 
 
-  static public Comparator<Contribution> COMPARATOR =
-    Comparator.comparing(o -> o.getName().toLowerCase());
+//  static public Comparator<Contribution> COMPARATOR =
+//    Comparator.comparing(o -> o.getName().toLowerCase());
 
 
+  /*
   public interface ChangeListener {
     void contributionAdded(Contribution Contribution);
     void contributionRemoved(Contribution Contribution);
     void contributionChanged(Contribution oldLib, Contribution newLib);
   }
+  */
 }

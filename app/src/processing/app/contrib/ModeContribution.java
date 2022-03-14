@@ -97,11 +97,8 @@ public class ModeContribution extends LocalContribution {
    */
   public void clearClassLoader(Base base) {
     List<ModeContribution> contribModes = base.getModeContribs();
-    int botherToRemove = contribModes.indexOf(this);
-    // The poor thing isn't even loaded, and we're trying to remove it...
-    if (botherToRemove != -1) {
-      contribModes.remove(botherToRemove);
-
+    if (contribModes.contains(this)) {
+      contribModes.remove(this);
       try {
         // This cast should be safe, since the only case when loader is not a
         // URLClassLoader is when no archives were found in the first place.

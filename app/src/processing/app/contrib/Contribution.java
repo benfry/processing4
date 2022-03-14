@@ -345,6 +345,7 @@ abstract public class Contribution {
   }
 
 
+  // TODO remove this because it hides actual differences in objects
   @Override
   public int hashCode() {
     return name.toLowerCase().hashCode();
@@ -353,7 +354,7 @@ abstract public class Contribution {
 
   @Override
   public String toString() {
-    return getName() + " @" + Integer.toHexString(hashCode());
+    return getName() + " @" + Integer.toHexString(super.hashCode());
   }
 
 
