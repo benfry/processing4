@@ -62,7 +62,6 @@ public class ContributionTab extends JPanel {
   JButton closeButton;
 
   String category;
-  ContributionListing contribListing;
 
   JProgressBar progressBar;
 
@@ -77,22 +76,12 @@ public class ContributionTab extends JPanel {
     this(frame);
     this.contribType = type;
 
-//    long t1 = System.currentTimeMillis();
     filter = contrib -> contrib.getType() == contribType;
 
-//    long t2 = System.currentTimeMillis();
-    contribListing = ContributionListing.getInstance();
-//    long t3 = System.currentTimeMillis();
     statusPanel = new StatusPanel(this);
-//    long t4 = System.currentTimeMillis();
     listPanel = new ListPanel(this, filter, false);
-//    long t5 = System.currentTimeMillis();
-    // TODO optimize: this line is taking all of the time
-    //      (though not after removing the loop in addListener() in 4.0b4)
-    //contribListing.addListener(contributionListPanel);
-    contribListing.addListPanel(listPanel);
-//    long t6 = System.currentTimeMillis();
-//    System.out.println("ContributionTab.<init> " + (t4-t1) + " " + (t5-t4) + " " + (t6-t5));
+
+    ContributionListing.getInstance().addListPanel(listPanel);
   }
 
 
@@ -210,11 +199,11 @@ public class ContributionTab extends JPanel {
 
     closeButton = Toolkit.createIconButton("manager/close");
     closeButton.setContentAreaFilled(false);
-    closeButton.addActionListener(e -> managerFrame.makeAndShowTab(false, false));
+    closeButton.addActionListener(e -> managerFrame.makeAndShowTabs(false, false));
     tryAgainButton = new JButton("Try Again");
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
     tryAgainButton.addActionListener(e -> {
-      managerFrame.makeAndShowTab(false, true);
+      managerFrame.makeAndShowTabs(false, true);
       managerFrame.downloadAndUpdateContributionListing();
       //managerFrame.downloadAndUpdateContributionListing(base);
     });
@@ -241,7 +230,7 @@ public class ContributionTab extends JPanel {
   private Set<String> listCategories() {
     Set<String> categories = new HashSet<>();
 
-    for (Contribution c : contribListing.allContributions) {
+    for (Contribution c : ContributionListing.getInstance().allContributions) {
       if (filter.matches(c)) {
         for (String category : c.getCategories()) {
           categories.add(category);
@@ -316,7 +305,7 @@ public class ContributionTab extends JPanel {
 //      contributions.addAll(examples);
       contributions.addAll(base.getContribExamples());
 
-      contribListing.updateInstalledList(contributions);
+      ContributionListing.getInstance().updateInstalledList(contributions);
 
       //listPanel.filterLibraries(category, new ArrayList<>());
       //listPanel.filterDummy(category);
