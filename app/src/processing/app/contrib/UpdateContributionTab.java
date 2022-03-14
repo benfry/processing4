@@ -46,9 +46,7 @@ public class UpdateContributionTab extends ContributionTab {
     listPanel = new UpdateListPanel(this, filter);
 
     statusPanel = new UpdateStatusPanel(this);
-    contribListing = ContributionListing.getInstance();
-    //contribListing.addListener(contributionListPanel);
-    contribListing.addListPanel(listPanel);
+    ContributionListing.getInstance().addListPanel(listPanel);
   }
 
 
