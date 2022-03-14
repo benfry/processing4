@@ -53,7 +53,7 @@ public class ContributionListing {
   Map<String, Contribution> librariesByImportHeader;
   Set<Contribution> allContributions;
   boolean listDownloaded;
-  boolean listDownloadFailed;
+//  boolean listDownloadFailed;
   ReentrantLock downloadingListingLock;
 
 
@@ -219,7 +219,7 @@ public class ContributionListing {
           }
           if (tempContribFile.renameTo(listingFile)) {
             listDownloaded = true;
-            listDownloadFailed = false;
+//            listDownloadFailed = false;
             try {
               // TODO: run this in SwingWorker done() [jv]
               EventQueue.invokeAndWait(() -> {
@@ -236,8 +236,8 @@ public class ContributionListing {
                 cause.printStackTrace();
               }
             }
-          } else {
-            listDownloadFailed = true;
+//          } else {
+//            listDownloadFailed = true;
           }
         }
 
@@ -273,7 +273,7 @@ public class ContributionListing {
   }
 
 
-  protected boolean hasDownloadedLatestList() {
+  protected boolean isDownloaded() {
     return listDownloaded;
   }
 

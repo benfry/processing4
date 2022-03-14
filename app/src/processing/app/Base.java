@@ -395,16 +395,13 @@ public class Base {
 
   public Base(String[] args) throws Exception {
     long t1 = System.currentTimeMillis();
-    // TODO Taking 3-5 seconds with several things installed, which is
-    //      unacceptable. Will take longer to optimize because most,
-    //      as written, needs to run on the EDT. So we need to carefully
-    //      separate the download/listing/parsing code from how the
-    //      Manager interface is actually built.
     ContributionManager.init(this);
 
     long t2 = System.currentTimeMillis();
     buildCoreModes();
+    long t2b = System.currentTimeMillis();
     rebuildContribModes();
+    long t2c = System.currentTimeMillis();
     rebuildContribExamples();
 
     long t3 = System.currentTimeMillis();
@@ -489,6 +486,8 @@ public class Base {
     ContributionListing cl = ContributionListing.getInstance();
     cl.downloadAvailableList(this, new ContribProgress(null));
     long t9 = System.currentTimeMillis();
+
+//    System.out.println("core modes: " + (t2b-t2) + ", contrib modes: " + (t2c-t2b) + ", contrib ex: " + (t2c-t2b));
 //    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
 //      " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) + " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");
   }

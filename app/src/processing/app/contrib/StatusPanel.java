@@ -300,7 +300,7 @@ class StatusPanel extends JPanel {
 
     ContributionListing listing = ContributionListing.getInstance();
 
-    updateButton.setEnabled(listing.hasDownloadedLatestList() &&
+    updateButton.setEnabled(listing.isDownloaded() &&
                             (listing.hasUpdates(contrib) &&
                              !contrib.isUpdateFlagged()) &&
                             !detail.updateInProgress);
@@ -309,7 +309,7 @@ class StatusPanel extends JPanel {
     String currentVersion = contrib.getPrettyVersion();
 
     installButton.setEnabled(!contrib.isInstalled() &&
-                             listing.hasDownloadedLatestList() &&
+                             listing.isDownloaded() &&
                              contrib.isCompatible(Base.getRevision()) &&
                              !detail.installInProgress);
 

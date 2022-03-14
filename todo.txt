@@ -61,6 +61,7 @@ _   i.e. it was doing a name comparison, so need to swap by name
 
 _ ManagerFrame.downloadAndUpdateContributionListing()
 _   should not even be run, because the contribs load on startup
+_   but ContributionTab.tryAgainButton needs to be able to request re-download
 _ ManagerFrame.makeAndShowTab()
 _   this one looks like it's gonna get called multiple times
 _ ContributionTab.updateContributionListing()

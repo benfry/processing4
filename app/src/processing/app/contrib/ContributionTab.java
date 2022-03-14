@@ -205,7 +205,6 @@ public class ContributionTab extends JPanel {
     tryAgainButton.addActionListener(e -> {
       managerFrame.rebuildTabLayouts(false, true);
       managerFrame.downloadAndUpdateContributionListing();
-      //managerFrame.downloadAndUpdateContributionListing(base);
     });
     layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
