@@ -48,7 +48,6 @@ public class ContributionListing {
   /** Location of the listing file on disk, will be read and written. */
   File listingFile;
 
-  //List<ChangeListener> listeners;
   Set<ListPanel> listPanels;
   final List<AvailableContribution> advertisedContributions;
   Map<String, Contribution> librariesByImportHeader;
@@ -59,12 +58,10 @@ public class ContributionListing {
 
 
   private ContributionListing() {
-    //listeners = new ArrayList<>();
     listPanels = new HashSet<>();
     advertisedContributions = new ArrayList<>();
     librariesByImportHeader = new HashMap<>();
     allContributions = new LinkedHashSet<>();
-//    allContributions = new ArrayList<>();
     downloadingListingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
@@ -130,8 +127,6 @@ public class ContributionListing {
       allContributions.remove(oldLib);
       allContributions.add(newLib);
 
-      //notifyChange(oldLib, newLib);
-      //for (ChangeListener listener : listeners) {
       for (ListPanel listener : listPanels) {
         listener.contributionChanged(oldLib, newLib);
       }
@@ -147,8 +142,6 @@ public class ContributionListing {
     }
     allContributions.add(contribution);
 
-    //notifyAdd(contribution);
-    //for (ChangeListener listener : listeners) {
     for (ListPanel listener : listPanels) {
       listener.contributionAdded(contribution);
     }
@@ -163,8 +156,6 @@ public class ContributionListing {
     }
     allContributions.remove(contribution);
 
-    //notifyRemove(contribution);
-    //for (ChangeListener listener : listeners) {
     for (ListPanel listener : listPanels) {
       listener.contributionRemoved(contribution);
     }
@@ -195,42 +186,7 @@ public class ContributionListing {
   }
 
 
-  /*
-  private void notifyRemove(Contribution contribution) {
-    for (ChangeListener listener : listeners) {
-      listener.contributionRemoved(contribution);
-    }
-  }
-
-
-  private void notifyAdd(Contribution contribution) {
-    for (ChangeListener listener : listeners) {
-      listener.contributionAdded(contribution);
-    }
-  }
-
-
-  private void notifyChange(Contribution oldLib, Contribution newLib) {
-    for (ChangeListener listener : listeners) {
-      listener.contributionChanged(oldLib, newLib);
-    }
-  }
-  */
-
-
-//  /**
-//   * Each ContributionTab will add themselves as a ChangeListener
-//   */
-//  protected void addListener(ChangeListener listener) {
-//    /*
-//    for (Contribution contrib : allContributions) {
-//      listener.contributionAdded(contrib);
-//    }
-//    */
-//    //new Exception(listener.toString()).printStackTrace(System.out);
-//    listeners.add(listener);
-//  }
-
+  // formerly addListener(), but the ListPanel was the only Listener
   protected void addListPanel(ListPanel listener) {
     listPanels.add(listener);
   }
@@ -295,21 +251,21 @@ public class ContributionListing {
   }
 
 
-  protected boolean hasUpdates(Contribution contribution) {
-    if (!contribution.isInstalled()) {
+  protected boolean hasUpdates(Contribution contrib) {
+    if (!contrib.isInstalled()) {
       return false;
     }
-    Contribution advertised = getAvailableContribution(contribution);
+    Contribution advertised = getAvailableContribution(contrib);
     if (advertised == null) {
       return false;
     }
-    return (advertised.getVersion() > contribution.getVersion() &&
+    return (advertised.getVersion() > contrib.getVersion() &&
             advertised.isCompatible(Base.getRevision()));
   }
 
 
-  protected String getLatestPrettyVersion(Contribution contribution) {
-    Contribution newestContrib = getAvailableContribution(contribution);
+  protected String getLatestPrettyVersion(Contribution contrib) {
+    Contribution newestContrib = getAvailableContribution(contrib);
     if (newestContrib == null) {
       return null;
     }
@@ -322,7 +278,7 @@ public class ContributionListing {
   }
 
 
-  private List<AvailableContribution> parseContribList(File file) {
+  static private List<AvailableContribution> parseContribList(File file) {
     List<AvailableContribution> outgoing = new ArrayList<>();
 
     if (file != null && file.exists()) {
@@ -407,17 +363,4 @@ public class ContributionListing {
   public Map<String, Contribution> getLibrariesByImportHeader() {
     return librariesByImportHeader;
   }
-
-
-//  static public Comparator<Contribution> COMPARATOR =
-//    Comparator.comparing(o -> o.getName().toLowerCase());
-
-
-  /*
-  public interface ChangeListener {
-    void contributionAdded(Contribution Contribution);
-    void contributionRemoved(Contribution Contribution);
-    void contributionChanged(Contribution oldLib, Contribution newLib);
-  }
-  */
 }
