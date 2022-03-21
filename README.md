@@ -1,4 +1,4 @@
-Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to Java 17 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this is 4.0. We've also moved to a new repository for this release so that we could cull a lot of the accumulated mess of the last 20 years, which makes git clone (and most other git operations) a lot faster.
+Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to Java 17 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this is 4.0. We've also moved to a new repository for this release so that we could cull a lot of the accumulated mess of the last 20 years, which makes git clone (and most other git operations) a lot faster. Check the [changelog](https://github.com/arnoudvanderleer/processing4/blob/master/CHANGELOG.md) for more.
 <a name="Q4kup"></a>
 # [Processing4.0](https://processing.org/)
 
