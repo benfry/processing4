@@ -1,5 +1,8 @@
-<!--- ** For coding questions, please use https://forum.processing.org ** -->
-<!--- ** This form is only for bugs in the software & feature requests ** -->
+<!--- ** For coding questions, ask the forum: https://discourse.processing.org ** -->
+<!--- ** This page is only for bugs in the software & feature requests ** -->
+
+<!--- ** If your code won't start, that's a better question for the forum. ** -->
+<!--- ** If Processing won't start, post on the forum where you can get help. ** -->
 
 <!--- ** Also be sure to read the troubleshooting page first: ** -->
 <!--- ** https://github.com/processing/processing/wiki/Troubleshooting ** -->
@@ -26,11 +29,11 @@
 
 ## Your Environment
 <!--- Include details about your environment. -->
-<!--- Thousands of people use Processing every day and may not have --> 
-<!--- this issue, this might give us clues about why you’re seeing it. -->
+<!--- Thousands of people use Processing every day and may not have this issue, --> 
+<!--- so this gives us clues about why you’re running into a problem. -->
 * Processing version:
 * Operating System and OS version:
 * Other information:
 
 ## Possible Causes / Solutions
-<!--- Optionally, ideas on how to implement the change. -->
+<!--- Optionally, if you have a diagnosis or fix in mind, please share. -->
