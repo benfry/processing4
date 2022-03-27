@@ -1,22 +1,22 @@
-How to Build Processing
-=======================
+# How to Build Processing
 
 The short version:
 
-1. Download and install JDK 11 from <https://adoptium.net/>
+1. Download and install JDK 17 from <https://adoptium.net/>
 2. Make sure `ant` is [installed](https://ant.apache.org/) for your platform.
 3. Open a Terminal window/Command Prompt/whatever and type:
 
         cd /path/to/processing4/build
         ant run
 
+
 ### Java version complaints
 
-You might have multiple versions of Java installed. Type `java -version` and if it says something other than 11, you'll need to set the `JAVA_HOME` environment variable.
+You might have multiple versions of Java installed. Type `java -version` and if it says something other than 17, you'll need to set the `JAVA_HOME` environment variable.
 
 On macOS, you can use:
 
-    export JAVA_HOME="`/usr/libexec/java_home -v 11`"
+    export JAVA_HOME="`/usr/libexec/java_home -v 17`"
 
 If you need to go back to Java 8 (i.e. to build Processing 3), you can use:
 
@@ -26,9 +26,9 @@ On Windows and Linux, you can set `JAVA_HOME` to point at the installation the w
 
 On Linux (Ubuntu 20.04 in particular), the headless version of OpenJDK may be installed by default. If so, you may get errors when trying to run tests in core:
 
-    java.lang.UnsatisfiedLinkError: Can't load library: /usr/lib/jvm/java-11-openjdk-amd64/lib/libawt_xawt.so
+    java.lang.UnsatisfiedLinkError: Can't load library: /usr/lib/jvm/java-17-openjdk-amd64/lib/libawt_xawt.so
 
-If so, use `sudo apt install openjdk-11-jdk` to install a full version. You could also make use of the JDK that's downloaded by Processing itself to avoid duplication, but that's a little trickier to get everything bootstrapped and (sym)linked properly.
+If so, use `sudo apt install openjdk-17-jdk` to install a full version. You could also make use of the JDK that's downloaded by Processing itself to avoid duplication, but that's a little trickier to get everything bootstrapped and (sym)linked properly.
 
 
 # The Long Version
@@ -41,12 +41,12 @@ A more detailed explanation of how to build and release Processing across Window
 Processing's ant-based build chain can create executables natively runnable for Linux, Mac, and Windows.
 
 ### Pre-Requisites
-Although Processing will download and use its own copy of OpenJDK and OpenJFX, the build chain itself requires Java 11+ and Ant in addition to getting a copy of the Processing source code.
+Although Processing will download and use its own copy of OpenJDK and OpenJFX, the build chain itself requires Java 17 and Ant in addition to getting a copy of the Processing source code.
 
 ### Getting Java and Ant
 You can choose to install these yourself or use the following guides below:
 
-* [Instructions for installing Java](https://adoptopenjdk.net/installation.html?variant=openjdk11&jvmVariant=hotspot#x64_mac-jdk)
+* [Instructions for installing Java](https://adoptopenjdk.net/installation.html?variant=openjdk17&jvmVariant=hotspot#x64_mac-jdk)
 * [Instructions for installing Ant](http://ant.apache.org/manual/install.html)
 * Instructions for modifying your environment variables on [Windows](https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/), [macOS](https://medium.com/@himanshuagarwal1395/setting-up-environment-variables-in-macos-sierra-f5978369b255) and [Linux](https://www.cyberciti.biz/faq/set-environment-variable-linux/).
 
@@ -184,7 +184,7 @@ Mac builds require code signing, due to [Apple requirements](https://support.app
 /usr/bin/codesign --force --sign "Developer ID Application: Certificate Common Name" Processing.app
 ```
 
-Note that one will need to complete the `jdk-...` string to be something like `jdk-11.0.1+13` depending on the build. Anyway, this will require an [Apple Developer ID](https://developer.apple.com/developer-id/).
+Note that one will need to complete the `jdk-...` string to be something like `jdk-17.0.2+8` depending on the build. Anyway, this will require an [Apple Developer ID](https://developer.apple.com/developer-id/).
 
 This is not strictly required especially if you are using your own app build.
 
