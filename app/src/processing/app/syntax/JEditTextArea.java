@@ -1400,11 +1400,30 @@ public class JEditTextArea extends JComponent
    * just as we're doing by drawing individual characters in the
    * TextAreaPainter class.
    *
+   * <a href="https://github.com/processing/processing4/issues/447">#447</a>,
    * <a href="https://github.com/processing/processing4/issues/226">#226</a>,
    * <a href="https://github.com/processing/processing4/issues/194">#194</a>,
    * and <a href="https://github.com/sampottinger/processing/issues/103">Sam's 103</a>
    */
 
+  static int getTabbedTextWidth(Segment s,
+                                FontMetrics metrics, int x,
+                                TabExpander e, int startOffset) {
+    int nextX = x;
+    char[] txt = s.array;
+    int txtOffset = s.offset;
+    int n = s.offset + s.count;
+
+    for (int i = txtOffset; i < n; i++) {
+      if (txt[i] == '\t' && e != null) {
+        nextX = (int) e.nextTabStop(nextX, startOffset + i - txtOffset);
+        continue;
+      }
+      nextX += metrics.charWidth(txt[i]);
+    }
+    return nextX - x;
+  }
+/*
   static int getTabbedTextWidth(Segment s,
                                 FontMetrics metrics, int x,
                                 TabExpander e, int startOffset) {
@@ -1457,6 +1476,7 @@ public class JEditTextArea extends JComponent
 //    return (int) (nextX - x);  // nextX was a float, this was returning a float [fry 220128]
     return nextX - x;
   }
+*/
 
 
   protected void setNewSelectionWord( int line, int offset )
