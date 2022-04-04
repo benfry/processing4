@@ -5,7 +5,7 @@ This package contains the implementation of graphics and shape using java2D, and
 
 ## [core](./core)
 This package contains definitions for Font, images in different formats, 2D, 3D matrix transformation, surface, vector, etc. 
-And the most important hotspot component PApplet is in the package, which handles all the interaction between sketch and other functions in core packages.
+And the most important hotspot component PApplet(./core/PApplet.java) is in the package, which handles all the interaction between sketch and other functions in core packages.
 
 ## [data](./data)
 storing data object, and lookup tables for different types of data, as well as some supported functions.
