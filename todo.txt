@@ -58,7 +58,9 @@ X   was getting in the way of comparisons
 _   but need to compare the entries differently so there aren't dupes
 _   i.e. it was doing a name comparison, so need to swap by name
 
-
+_ currently no indication that contrib download failed
+_   so the 'try again' won't show up; everything looks fine
+_   (was this for the contrib listing? or an actual contrib?)
 _ ManagerFrame.downloadAndUpdateContributionListing()
 _   should not even be run, because the contribs load on startup
 _   but ContributionTab.tryAgainButton needs to be able to request re-download
@@ -91,6 +93,8 @@ _   https://github.com/processing/processing4/issues/447
 
 _ on release: submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
+_   https://aka.ms/wdsi
+_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 _ remove checkbox for detaching sketch name
 _   just do this manually, and Save As will reset the name
