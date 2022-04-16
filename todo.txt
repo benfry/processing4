@@ -72,6 +72,11 @@ _   and it should include all contribs (method from Base to get in one swoop?)
 _   this is also likely the cause of per-Mode weirdness
 _ holy s*t ContributionTableModel is using all of the contribs
 
+
+_ if a sketch is in the docs folder, try triggering macos access dialog
+_   do it once for the root, then see if it allows the folders inside as well
+_   (opening p5jsMode sketch on Desktop causes a zillion dialog boxes)
+
 _ get rid of IgnorableException
 
 _ contrib/mode/lib/example List objects in Base: which should be Set objects
