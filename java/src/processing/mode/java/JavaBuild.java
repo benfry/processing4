@@ -107,7 +107,8 @@ public class JavaBuild {
     this.binFolder = binFolder;
 
     // run the preprocessor
-    String classNameFound = preprocess(srcFolder, sizeWarning);
+    PreprocessorResult result = preprocess(srcFolder, sizeWarning);
+    String classNameFound = result.getClassName();
 
     // compile the program. errors will happen as a RunnerException
     // that will bubble up to whomever called build().
@@ -139,7 +140,7 @@ public class JavaBuild {
    * @param srcFolder Location to copy all the .java files
    * @return null if compilation failed, main class name if not
    */
-  public String preprocess(File srcFolder, boolean sizeWarning) throws SketchException {
+  public PreprocessorResult preprocess(File srcFolder, boolean sizeWarning) throws SketchException {
     PdePreprocessor preprocessor = PdePreprocessor.builderFor(sketch.getMainName()).build();
     return preprocess(srcFolder, null, preprocessor, sizeWarning);
   }
@@ -149,13 +150,13 @@ public class JavaBuild {
    * @param srcFolder location where the .java source files will be placed
    * @param packageName null, or the package name that should be used as default
    * @param preprocessor the preprocessor object ready to do the work
-   * @return main PApplet class name found during preprocess, or null if error
+   * @return PreprocessorResult object containing the preprocessing results
    * @throws SketchException details of where the preprocessing failed
    */
-  public String preprocess(File srcFolder,
-                           String packageName,
-                           PdePreprocessor preprocessor,
-                           boolean sizeWarning) throws SketchException {
+  public PreprocessorResult preprocess(File srcFolder,
+                                       String packageName,
+                                       PdePreprocessor preprocessor,
+                                       boolean sizeWarning) throws SketchException {
     // make sure the user isn't playing "hide the sketch folder"
     sketch.ensureExistence();
 
@@ -379,7 +380,7 @@ public class JavaBuild {
       }
     }
     foundMain = preprocessor.hasMain();
-    return result.getClassName();
+    return result;
   }
 
 
