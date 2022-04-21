@@ -58,6 +58,22 @@ X   was getting in the way of comparisons
 _   but need to compare the entries differently so there aren't dupes
 _   i.e. it was doing a name comparison, so need to swap by name
 
+preproc
+X correctly handling sketch renderer with fullScreen()
+X   https://github.com/processing/processing4/pull/474
+X return PreprocessorResult for Android Mode
+X   https://github.com/processing/processing4/pull/470
+X   https://github.com/processing/processing4/issues/469
+
+contrib
+X Text caret position shifts when typing Japanese
+X   https://github.com/processing/processing4/issues/447
+X   https://github.com/processing/processing4/pull/462
+X Some keys can't be entered on the On-Screen Keyboard
+X   https://github.com/processing/processing4/issues/403
+X   https://github.com/processing/processing4/pull/461
+
+
 _ currently no indication that contrib download failed
 _   so the 'try again' won't show up; everything looks fine
 _   (was this for the contrib listing? or an actual contrib?)
@@ -72,6 +88,10 @@ _   and it should include all contribs (method from Base to get in one swoop?)
 _   this is also likely the cause of per-Mode weirdness
 _ holy s*t ContributionTableModel is using all of the contribs
 
+_ change to "Modes..." or "Manage Modes..." and same for Libraries, etc
+
+_ open dialog extensions only work for the current Mode
+_   i.e. in Java Mode, won't list .js files as candidates
 
 _ if a sketch is in the docs folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well
@@ -205,6 +225,9 @@ _ add reinstall option?
 
 
 design
+_ make new gradients when selecting Theme Engine
+_ icons for the console items
+_ https://github.com/fathominfo/processing4-theme
 _ console scroll bar colors
 _   https://github.com/processing/processing4/issues/265
 _ errors table theme
@@ -281,6 +304,11 @@ _   also should probably download these on demand, when not in the PATH
 _ update Video library to use the new layout
 _ update the platforms page
 _   https://github.com/processing/processing4/wiki/Supported-Platforms
+_ if error in the code during export, it's just saying "error during export"
+_   is this still the case?
+_ chars[] array is never used in ascii video example
+_ ui scaling in the PDE is important for classes/seeing at a distance
+_ Export to Application was broken with OpenGL (Casey)
 
 
 decisions before final 4.0 release
@@ -319,6 +347,10 @@ _ auto-complete not triggering, workaround as pref?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
 _ automatic import of JavaFX when FX2D is specified
+_ preferences in web frame?
+_ intro page using webkit (launching into examples)
+_   and maybe the reference too?
+_ how to send messages from webkit server to p5 (i.e. for colors)
 
 
 would like to fix (but not necessary for 4.0 final)
@@ -353,9 +385,13 @@ _ apt package for easier rpi install (especially)
 
 
 windows
-_ go back to including a .bat file for debug purposes?
+_ windows batch file would be a good idea (debugging is hard)
+_   how to leave the window open when running a script
+_   if files removed by Defender, the launcher may not know
 _   would be good to auto-generate this from the config (avoid double updates)
 _   .\java\bin\java.exe -cp lib/pde.jar;core/library/core.jar;lib/jna.jar;lib/jna-platform.jar;lib/antlr-4.7.2-complete.jar;lib/ant.jar;lib/ant-launcher.jar -Djna.nosys=true -Dsun.java2d.uiScale.enabled=false -Djna.boot.library.path=lib -Djna.nounpack=true -Dsun.java2d.d3d=false -Dsun.java2d.ddoffscreen=false -Dsun.java2d.noddraw=true processing.app.Base
+_ extra warning for Eclipse Adoptium "certain features turned off"
+_   need a better way to handle this/warn users/avoid it altogether
 _ launch4j doesn't work from folders with non-native charsets
 _   anything in CP1252 on an English Windows system is fine
 _   but anything else reports "font sadness" b/c it's using the system JRE
@@ -407,6 +443,8 @@ _ clean Windows temp folders
 _   https://github.com/processing/processing/issues/1896
 _ could not write to temporary directory (virus checker problems)
 _   https://github.com/processing/processing/issues/4757
+_ change up how temp directories are handled
+_   it's sometimes copying the files to a different drive on windows
 
 
 modes
@@ -979,6 +1017,8 @@ _   move styling to separate constants that are more accessible
 
 PDE / Preferences
 
+_ need to do the Mode prefs separately
+_   since we can't have per-Mode constants (the pref names) in PreferencesFrame
 _ Editor.applyFrame() may not have a valid 'editor' object to work with
 _   if windows closed, and prefs altered, NPE thrown
 _   make sure editor isn't trying to apply prefs when no editor is open
