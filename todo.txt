@@ -72,6 +72,9 @@ X   https://github.com/processing/processing4/pull/462
 X Some keys can't be entered on the On-Screen Keyboard
 X   https://github.com/processing/processing4/issues/403
 X   https://github.com/processing/processing4/pull/461
+X Error with tweak mode when using underscores in numbers
+X   https://github.com/processing/processing4/issues/442
+X   https://github.com/processing/processing4/pull/459
 
 
 _ currently no indication that contrib download failed
