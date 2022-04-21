@@ -724,10 +724,20 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
       StringJoiner fullscreenArgsBuilder = new StringJoiner(", ");
 
+      // First arg can be either screen or renderer
       if (argsContext.getChildCount() > 0) {
-        fullscreenArgsBuilder.add(argsContext.getChild(0).getText());
+        String firstArg = argsContext.getChild(0).getText();
+        boolean isNumeric = firstArg.matches("\\d+");
+        boolean isSpan = firstArg.equals("SPAN");
+        boolean isRenderer = !isNumeric && !isSpan;
+
+        fullscreenArgsBuilder.add(firstArg);
+        if (isRenderer) {
+          sketchRenderer = firstArg;
+        }
       }
 
+      // Second arg can only be screen
       if (argsContext.getChildCount() > 2) {
         fullscreenArgsBuilder.add(argsContext.getChild(2).getText());
       }
