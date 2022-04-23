@@ -139,10 +139,14 @@ public class ManagerFrame {
 
 
   protected void updateTheme() {
-    Color bgColor = Theme.getColor("manager.tab.background");
-    frame.getContentPane().setBackground(bgColor);
+    // don't update if the Frame doesn't actually exist yet
+    // https://github.com/processing/processing4/issues/476
+    if (frame != null) {
+      Color bgColor = Theme.getColor("manager.tab.background");
+      frame.getContentPane().setBackground(bgColor);
 
-    tabs.updateTheme();
+      tabs.updateTheme();
+    }
   }
 
 

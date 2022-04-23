@@ -9,6 +9,8 @@ X   no longer pass a blank sketch file name from startup script
 X   also remove unused readlink
 X   support multiple files passed on command line
 X only show setWritable() failure in recent.txt when it is a problem
+X NullPointerException when changing the theme
+X   https://github.com/processing/processing4/issues/476
 
 design
 X set minimum size for scroll bar thumb
