@@ -37,7 +37,7 @@
             value="https://download.processing.org/jogl/v2.4.0-rc-20210111" />
   -->
   <property name="jogl.url"
-            value="https://download.processing.org/jogl/v2.4.0-rc-20210111x" />
+            value="https://download.processing.org/jogl/v2.4.0-rc-20210111y" />
 
   <available file="library/jogl-all.jar" property="jogl.present" />
 

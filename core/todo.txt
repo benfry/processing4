@@ -1,5 +1,17 @@
 1283 (4.0b8)
+X lots of OpenGL updates
 
+macos-aarch64
+X JOGL is broken on aarch64
+X   https://github.com/processing/processing4/issues/370
+X jogl build for m1
+X   https://github.com/processing/processing4/issues/128
+X   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
+X   https://github.com/jzy3d/jogl/blob/feature/macosx-arm64/HOW-TO-ADD-ARM64-TO-2.4.md
+X   direct link to our reference https://github.com/jzy3d/jogl/blob/c43709921f9a616880782646ca7681a9eadee091/HOW-TO-ADD-ARM64-TO-2.4.md
+X incorporated patches to make it work
+X   https://github.com/jzy3d/jogl/pull/17/files
+X   https://github.com/jzy3d/jogl/pull/16/files
 
 andres
 X filter() calls with high pixel density in OpenGL make a tiny texture
@@ -11,19 +23,6 @@ X PShape performance could be improved using buffer object streaming
 X   https://github.com/processing/processing4/issues/196
 X   done earlier, but finalized in beta 7
 
-
-macos-aarch64
-_ JOGL is broken on aarch64
-_   https://github.com/processing/processing4/issues/370
-_ jogl build for m1
-_   https://github.com/processing/processing4/issues/128
-_   https://forum.jogamp.org/JOGL-for-Mac-ARM-Silicon-td4040887.html
-_   https://github.com/jzy3d/jogl/blob/feature/macosx-arm64/HOW-TO-ADD-ARM64-TO-2.4.md
-_   direct link to our reference https://github.com/jzy3d/jogl/blob/c43709921f9a616880782646ca7681a9eadee091/HOW-TO-ADD-ARM64-TO-2.4.md
-
-X incorporated patches
-X   https://github.com/jzy3d/jogl/pull/17/files
-X   https://github.com/jzy3d/jogl/pull/16/files
 
 _ concurrent StringDict et al
 _   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
