@@ -1,6 +1,6 @@
 ## Welcome to Processing!
 
-### Bug Report?
+## Bug Report?
 
 We have a page on [troubleshooting](https://github.com/processing/processing/wiki/Troubleshooting) common problems. Check there first!
 
@@ -11,7 +11,7 @@ If you don't find an answer, please let us know by [filing an issue](https://git
 Also, please keep the tone polite. This project is volunteer work done in our free time. We give it away at no cost. We do this because we think it’s important for the community, and enjoy working on it. Complaints that things *suck*, or are *annoying*, or lectures about things that *must* be fixed are… weird to hear from total strangers (at best), and demotivating (at worst).
 
 
-### Want to Help?
+## Want to Help?
 
 Great! The number of contributors on this project is *tiny*, especially relative to the number of users. There are [only one or two people](https://github.com/processing/processing4/graphs/contributors) who actively work on this repository, for instance. We need help!
 
@@ -33,7 +33,7 @@ How to start:
 **Larger Projects** – If you're looking for a larger project, check out the [Project List](https://github.com/processing/processing/wiki/Project-List#processing) for other ideas.
 
 
-### New Features
+## New Features
 
 Nearly all new features are first introduced as a Library or a Mode, or even as an example. The current [OpenGL renderer](http://glgraphics.sourceforge.net/) and Video library began as separate projects by Andrés Colubri, who needed a more performant, more sophisticated version of what we had in Processing for work that he was creating. The original `loadShape()` implementation came from the “Candy” library by Michael Chang (“mflux“).
 
@@ -51,13 +51,13 @@ A major consideration for any new feature is the level of maintenance that it mi
 Processing is a massive project that has existed for more than 20 years. Part of its longevity comes from the effort that's gone into keeping things as simple as we can, and making a lot of decisions about *what to leave out*. Adding a new feature always has to be weighed against the potential confusion of one more thing—whether it's a menu item, a dialog box, a function that needs to be added to the reference, etc. Adding a new graphics function means making it work across all the renderers that we ship (Java2D, OpenGL, JavaFX, PDF, etc) and across platforms (macOS, Windows, Linux).
 
 
-### Refactoring
+## Refactoring
 
 Refactoring is fun! There's always more cleaning to do. It's also often not very helpful.
 
 Broadly speaking, the code is built the way it is for a reason. There are so many things that can be improved, but those improvements need to come from an understanding of what's been built so far. Changes that include refactoring are typically only accepted from contributors who have an established record of working on the code. With a better understanding of the software, the refactoring decisions come from a better, more useful place.
 
 
-### Other Details
+## Other Details
 
 This document was hastily thrown together in an attempt to improve the bug reporting and development/contribution process. It doesn't yet include detail about our intent with the project, the community behind it, our values, and an explanation of how the code itself is designed.
