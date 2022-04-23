@@ -1,4 +1,11 @@
-# Processing 4.0
+# Processing
+
+This repository contains the source code for the <a href="https://processing.org/">Processing</a> project for people who want to help improve the code or find bugs.
+
+If you're interested in using Processing, get started at the <a href="https://processing.org/download">download</a> page, or read more about the project at the <a href="https://processing.org/">home</a> page. There are also several <a href="https://processing.org/tutorials">tutorials</a> to complement the hundreds of examples that are included with the software itself.
+
+
+## Processing 4.0 
 
 Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to Java 17 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this is 4.0.
 
