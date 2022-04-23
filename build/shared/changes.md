@@ -1,3 +1,83 @@
+# Processing 4.0 beta 8
+
+*Revision 1283 – 23 April 2022*
+
+Lots of fixes! OpenGL on M1! Exclamation points!
+
+
+## the big ones
+
+* OpenGL now working on Apple Silicon! Many thanks to user @jaegonlee who provided the last [few](https://github.com/jzy3d/jogl/pull/17/files) [tweaks](https://github.com/jzy3d/jogl/pull/16/files) to get a build working. [#370](https://github.com/processing/processing4/issues/370).
+
+* Lots of work on how Modes are handled in the Contributions Manager to make it less… quirky. This will be a huge upgrade if you're a user of Python Mode, p5jsMode, Android Mode, and others.
+
+
+## a whole mess of useful fixes contributed by @TN8001
+
+* Fix text caret position shifts when typing Japanese. [#447](https://github.com/processing/processing4/issues/447), [#462](https://github.com/processing/processing4/pull/462)
+
+* Some keys couldn't be entered on the On-Screen Keyboard. [#403](https://github.com/processing/processing4/issues/403), [#461](https://github.com/processing/processing4/pull/461)
+
+* Fix error in Tweak Mode when using underscores in numbers. [#442](https://github.com/processing/processing4/issues/442), [#459](https://github.com/processing/processing4/pull/459)
+
+* Fix IDE auto-formatting confused by method references. [#279](https://github.com/processing/processing4/issues/279), [#436](https://github.com/processing/processing4/pull/436)
+
+
+## semi-noticeable fixes and changes
+
+* Set minimum size for the scroll bar thumb. [#473](https://github.com/processing/processing4/issues/473)
+
+* Change to "Modes..." or "Manage Modes..." and same for Libraries, etc
+
+* A few fixes for `fullScreen()`. [#474](https://github.com/processing/processing4/pull/474), [#471](https://github.com/processing/processing4/issues/471)
+
+
+## minor bug fixes and changes
+
+* Fix logic for opening the correct “main” tab in `handleOpen()`.
+
+* Dropping folder into sketch window throws weird exception. [#441](https://github.com/processing/processing4/issues/441)
+
+* Fix `  does not exist` message on Linux startup. (The startup script was passing a blank sketch file name to the software.)
+
+* Support multiple files being opened from the command line on Linux.
+
+* Only show `setWritable()` failure in recent.txt when it is a problem
+
+* Fix `NullPointerException` when changing the theme. [#476](https://github.com/processing/processing4/issues/476)
+
+* Suppress `java.lang.NoSuchMethodError: accessibilityHitTest` error in the console. [#368](https://github.com/processing/processing4/issues/368)
+
+* Internal change for preprocessor to support Android Mode. [#470](https://github.com/processing/processing4/pull/470), [#469](https://github.com/processing/processing4/issues/469)
+
+* `filter()` calls with high pixel density in OpenGL were making a tiny texture. [#429](https://github.com/processing/processing4/issues/429), [#433](https://github.com/processing/processing4/pull/433)
+
+* Renamed parameters controlling GL buffer settings. [#435](https://github.com/processing/processing4/pull/435)
+
+* Finalizing buffer object streaming changes to `PShape` when used with OpenGL. [#196](https://github.com/processing/processing4/issues/196)
+
+
+## lots of work on the contributions manager
+
+* Fix frequent “Error during download and install of Python Mode for Processing” message. [#5918](https://github.com/processing/processing/issues/5918), [#445](https://github.com/processing/processing4/issues/445)
+
+* Manager fails to complete install of PythonMode when no windows open. [#5309](https://github.com/processing/processing/issues/5309), [#446](https://github.com/processing/processing4/issues/446)
+
+* Allow update of the current Mode. This was causing confusion because you'd otherwise have to arbitrarily switch to another Mode to run an update, even if you never otherwise used it.
+
+* Laying the basic groundwork for theme updates.
+
+* Removing the current Mode (with no windows open) was causing an exception.
+
+* Fix `NullPointerException` when clicking Update All on the Updates tab. [#440](https://github.com/processing/processing4/issues/440)
+
+* Switch to using https to get retrieve the contributions listing.
+
+* Remove overbuilt, undocumented search features in Contributions Manager. No more regex, but accents and others work properly now.
+
+* Lots of cleaning out old code in the contrib manager guts. Rewrote category tallying for contribs. This was also hiding an issue that caused contribs to be re-added several times. Removed the “restart” flag because it was never used. Cleaned up accessors and other internal muck for how `processing.app.contrib` classes interact with one another.
+
+
 # Processing 4.0 beta 7
 
 *Revision 1282 – 3 March 2022*
