@@ -24,6 +24,7 @@
 package processing.app.platform;
 
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.net.URI;
@@ -124,6 +125,11 @@ public class DefaultPlatform {
 //      Font font = new Font(fontName, Font.PLAIN, fontSize).deriveFont(attributes);
 //      setUIFont(new FontUIResource(font));
     }
+
+    // Default was 8x8, but that's not enough with the insets and rounded rect
+    // https://github.com/processing/processing4/issues/473
+    //System.out.println(UIManager.get("ScrollBar.minimumThumbSize"));
+    UIManager.put("ScrollBar.minimumThumbSize", new Dimension(8, 24));
   }
 
 

@@ -10,6 +10,10 @@ X   also remove unused readlink
 X   support multiple files passed on command line
 X only show setWritable() failure in recent.txt when it is a problem
 
+design
+X set minimum size for scroll bar thumb
+X   https://github.com/processing/processing4/issues/473
+
 manager
 X "Error during download and install of Python Mode for Processing"
 X   https://github.com/processing/processing/issues/5918
@@ -115,9 +119,6 @@ _   which is another case for a separate 'contrib manager' thing
 _     maybe that's the update button? when no updates, it's still a button?
 
 _ remove updateInProgress from StatusPanelDetail
-
-_ CJKV fonts are hosed b/c they're not actually monospace
-_   https://github.com/processing/processing4/issues/447
 
 _ on release: submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
