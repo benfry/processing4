@@ -5,7 +5,7 @@ This repository contains the source code for the <a href="https://processing.org
 If you're interested in using Processing, get started at the <a href="https://processing.org/download">download</a> page, or read more about the project at the <a href="https://processing.org/">home</a> page. There are also several <a href="https://processing.org/tutorials">tutorials</a> to complement the hundreds of examples that are included with the software itself.
 
 
-## Processing 4.0 
+## Processing 4.0
 
 Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to Java 17 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this is 4.0.
 
@@ -25,7 +25,22 @@ This software is currently in beta. We don't have a schedule for the final 4.0 r
 
 As with all releases, we'll do [everything possible](https://twitter.com/ben_fry/status/1426282574683516928) to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
 
-The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/changes.md), this is only a list of things that may break existing projects (whether sketches, Libraries, Modes, etc.)
+The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/changes.md). The list below only covers internal changes that may have an impact on Libraries, Modes, or Tools.
+
+
+### Beta 8
+
+* Renamed the Add Mode, Add Library, and Add Tool menu items to Manage Mmodes, Manage Libraries, and Manage Tools. This will require translation updates for the new text:
+    * `toolbar.add_mode = Add Mode... ` → `toolbar.manage_modes = Manage Modes…`
+    * `menu.library.add_library = Add Library...` → `menu.library.manage_libraries = Manage Libraries…`
+    * `menu.tools.add_tool = Add Tool...` → `menu.tools.manage_tools = Manage Tools…`
+
+
+### Beta 6
+
+* Major rewrite of `handleOpen()`, now possible to use something besides the folder name for the main sketch file (see `changes.md` for details).
+
+* Now using Java 17.0.2+8 from [Adoptium](https://adoptium.net/).
 
 
 ### Beta 3

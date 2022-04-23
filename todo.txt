@@ -13,6 +13,22 @@ X NullPointerException when changing the theme
 X   https://github.com/processing/processing4/issues/476
 X suppress java.lang.NoSuchMethodError: accessibilityHitTest error
 X   https://github.com/processing/processing4/issues/368
+X change to "Modes..." or "Manage Modes..." and same for Libraries, etc
+X   toolbar.add_mode = Add Mode... ->
+X     toolbar.manage_modes = Manage Modes…
+X   menu.library.add_library = Add Library... ->
+X     menu.library.manage_libraries = Manage Libraries…
+X   menu.tools.add_tool = Add Tool... ->
+X     menu.tools.manage_tools = Manage Tools…
+
+
+_ open dialog extensions only work for the current Mode
+_   i.e. in Java Mode, won't list .js files as candidates
+
+_ on release: submit to Microsoft
+_   https://www.microsoft.com/en-us/wdsi/filesubmission
+_   https://aka.ms/wdsi
+_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 design
 X set minimum size for scroll bar thumb
@@ -53,7 +69,7 @@ X   removing accents was trashing some input too
 X redo category tallying for contribs (Libraries only anyway?)
 X   gets rid of maze of code that's storing libraries by their category
 X remove unnecessary code that tracks contribs by category
-X   this was hiding the issue that was causing contribs to be added several times,
+X   this was hiding the issue that was causing contribs to add several times
 X   because the add() was inside the category loop of that code
 X remove unused 'restart' flagging code, setRestartFlag() never used
 X   all that was left was maintenance of when that's been set, so...
@@ -61,10 +77,6 @@ X allow update of the current Mode
 X   if doing an update (not just delete), close sketches and re-open
 X   if doing a delete, require sketches to be closed
 X change up StatusPanelDetail constructor to clean up accessors
-X disable hashCode() implementation in Contribution
-X   was getting in the way of comparisons
-_   but need to compare the entries differently so there aren't dupes
-_   i.e. it was doing a name comparison, so need to swap by name
 
 preproc
 X correctly handling sketch renderer with fullScreen()
@@ -88,6 +100,11 @@ X   https://github.com/processing/processing4/issues/279
 X   https://github.com/processing/processing4/pull/436
 
 
+manager
+X disable hashCode() implementation in Contribution
+X   was getting in the way of comparisons
+_   but need to compare the entries differently so there aren't dupes
+_   i.e. it was doing a name comparison, so need to swap by name
 _ currently no indication that contrib download failed
 _   so the 'try again' won't show up; everything looks fine
 _   (was this for the contrib listing? or an actual contrib?)
@@ -101,11 +118,14 @@ _   this one shouldn't be in a single tab
 _   and it should include all contribs (method from Base to get in one swoop?)
 _   this is also likely the cause of per-Mode weirdness
 _ holy s*t ContributionTableModel is using all of the contribs
+_ after failed update of Mode, the button is no longer available
+_   have to click something else, then click back on the Mode line again
+_ remove updateInProgress from StatusPanelDetail
+_ when starting in p5jsMode, contrib manager shows no green checks for libs
+_   tricky because those aren't gonna show up in 'Add Library'
+_   which is another case for a separate 'contrib manager' thing
+_     maybe that's the update button? when no updates, it's still a button?
 
-_ change to "Modes..." or "Manage Modes..." and same for Libraries, etc
-
-_ open dialog extensions only work for the current Mode
-_   i.e. in Java Mode, won't list .js files as candidates
 
 _ if a sketch is in the docs folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well
@@ -115,22 +135,8 @@ _ get rid of IgnorableException
 
 _ contrib/mode/lib/example List objects in Base: which should be Set objects
 
-_ after failed update of Mode, the button is no longer available
-_   have to click something else, then click back on the Mode line again
-
 _ lots of rewriting to use SwingWorker
 _   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
-_ when starting in p5jsMode, going to the contrib manager shows no green checks for libs
-_   tricky because those aren't gonna show up in 'Add Library'
-_   which is another case for a separate 'contrib manager' thing
-_     maybe that's the update button? when no updates, it's still a button?
-
-_ remove updateInProgress from StatusPanelDetail
-
-_ on release: submit to Microsoft
-_   https://www.microsoft.com/en-us/wdsi/filesubmission
-_   https://aka.ms/wdsi
-_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 _ remove checkbox for detaching sketch name
 _   just do this manually, and Save As will reset the name
@@ -161,7 +167,7 @@ _     otherwise impossible to know how to populate the Examples window
 
 sketchbook
 _ fix up the code for sketchbook building
-_   is it time to make this into a tree object of some sort?
+_   is it time to make the internal representation into a tree object
 _   and then build the GUI versions separately (on the EDT)
 _ Base.checkSketchFolder() is used to identify sketches for the sketchbook frame
 _   but it assumes that it's folder name + default extension as the name for it

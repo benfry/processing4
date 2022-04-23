@@ -851,9 +851,10 @@ public class Base {
       toolsMenu.addSeparator();
     }
 
-    JMenuItem item = new JMenuItem(Language.text("menu.tools.add_tool"));
-    item.addActionListener(e -> ContributionManager.openTools());
-    toolsMenu.add(item);
+    JMenuItem manageTools =
+      new JMenuItem(Language.text("menu.tools.manage_tools"));
+    manageTools.addActionListener(e -> ContributionManager.openTools());
+    toolsMenu.add(manageTools);
   }
 
 

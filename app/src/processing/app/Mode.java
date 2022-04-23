@@ -497,9 +497,9 @@ public abstract class Mode {
       importMenu.removeAll();
     }
 
-    JMenuItem addLib = new JMenuItem(Language.text("menu.library.add_library"));
-    addLib.addActionListener(e -> ContributionManager.openLibraries());
-    importMenu.add(addLib);
+    JMenuItem manageLibs = new JMenuItem(Language.text("menu.library.manage_libraries"));
+    manageLibs.addActionListener(e -> ContributionManager.openLibraries());
+    importMenu.add(manageLibs);
     importMenu.addSeparator();
 
     rebuildLibraryList();
