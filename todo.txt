@@ -83,6 +83,9 @@ X   https://github.com/processing/processing4/pull/461
 X Error with tweak mode when using underscores in numbers
 X   https://github.com/processing/processing4/issues/442
 X   https://github.com/processing/processing4/pull/459
+X Fix IDE auto-formatting confused by method references
+X   https://github.com/processing/processing4/issues/279
+X   https://github.com/processing/processing4/pull/436
 
 
 _ currently no indication that contrib download failed
