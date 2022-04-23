@@ -234,6 +234,11 @@ public class EditorConsole extends JScrollPane {
       } else if (what.contains("XInitThreads() called for concurrent")) {
         // "Info: XInitThreads() called for concurrent Thread support" message on Linux
         return true;
+
+      } else if (what.contains("accessibilityHitTest")) {
+        // "java.lang.NoSuchMethodError: accessibilityHitTest"
+        // https://github.com/processing/processing4/issues/368
+        return true;
       }
     } else {  // !err
       if (what.contains("Listening for transport dt_socket at address")) {

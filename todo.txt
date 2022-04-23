@@ -11,6 +11,8 @@ X   support multiple files passed on command line
 X only show setWritable() failure in recent.txt when it is a problem
 X NullPointerException when changing the theme
 X   https://github.com/processing/processing4/issues/476
+X suppress java.lang.NoSuchMethodError: accessibilityHitTest error
+X   https://github.com/processing/processing4/issues/368
 
 design
 X set minimum size for scroll bar thumb
