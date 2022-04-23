@@ -28,6 +28,7 @@ import java.util.Map;
 
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
+import processing.app.ui.ThemeScrollBarUI;
 
 
 /**
@@ -64,6 +65,16 @@ public class PdeTextArea extends JEditTextArea {
     //add(CENTER, painter);
 
     updateTheme();
+  }
+
+
+  static class PdeScrollBarUI extends ThemeScrollBarUI {
+    PdeScrollBarUI() {
+      super("editor.scrollbar.color",
+            "editor.scrollbar.thumb.pressed.color",
+            "editor.scrollbar.thumb.rollover.color",
+            "editor.scrollbar.thumb.enabled.color");
+    }
   }
 
 

@@ -21,7 +21,7 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.app.syntax;
+package processing.app.ui;
 
 import processing.app.ui.Theme;
 
@@ -34,13 +34,27 @@ import java.awt.*;
  * Custom scroll bar style for the editor.
  * Originally based on https://stackoverflow.com/a/53662678
  */
-public class PdeScrollBarUI extends BasicScrollBarUI {
+public class ThemeScrollBarUI extends BasicScrollBarUI {
   private final Dimension none = new Dimension();
+
+  private String backgroundAttr;
+  private String pressedAttr;
+  private String rolloverAttr;
+  private String enabledAttr;
 
   private Color backgroundColor;
   private Color pressedColor;
   private Color rolloverColor;
   private Color enabledColor;
+
+
+  public ThemeScrollBarUI(String backgroundAttr, String pressedAttr,
+                          String rolloverAttr, String enabledAttr) {
+    this.backgroundAttr = backgroundAttr;
+    this.pressedAttr = pressedAttr;
+    this.rolloverAttr = rolloverAttr;
+    this.enabledAttr = enabledAttr;
+  }
 
 
   public void updateTheme() {
