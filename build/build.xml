@@ -874,6 +874,9 @@
       <arg value="--password" />
       <arg value="${env.PROCESSING_APP_PASSWORD}" />
 
+      <arg value="--team-id" />
+      <arg value="${env.PROCESSING_TEAM_ID}" />
+
       <arg value="--file" />
       <arg value="${dist.filename}" />
     </exec>
