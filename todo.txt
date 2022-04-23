@@ -20,15 +20,12 @@ X   menu.library.add_library = Add Library... ->
 X     menu.library.manage_libraries = Manage Libraries…
 X   menu.tools.add_tool = Add Tool... ->
 X     menu.tools.manage_tools = Manage Tools…
-
+X update download.processing.org/reference.zip to be a static file
+X switch language_gen.py to python3, other versions removed from macOS
 
 _ open dialog extensions only work for the current Mode
 _   i.e. in Java Mode, won't list .js files as candidates
-
-_ on release: submit to Microsoft
-_   https://www.microsoft.com/en-us/wdsi/filesubmission
-_   https://aka.ms/wdsi
-_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
+_ on build of dist, immediately submit to Microsoft: https://aka.ms/wdsi
 
 design
 X set minimum size for scroll bar thumb
@@ -128,6 +125,11 @@ _   tricky because those aren't gonna show up in 'Add Library'
 _   which is another case for a separate 'contrib manager' thing
 _     maybe that's the update button? when no updates, it's still a button?
 
+
+_ on release: submit to Microsoft
+_   https://www.microsoft.com/en-us/wdsi/filesubmission
+_   https://aka.ms/wdsi
+_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 _ if a sketch is in the docs folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well

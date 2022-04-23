@@ -369,7 +369,7 @@
     </condition>
 
     <!--<echo message="ref ignoreable? ${reference.ignorable}" />-->
-    <get src="http://download.processing.org/reference.zip"
+    <get src="https://download.processing.org/reference.zip"
          dest="../java/reference.zip"
          ignoreerrors="${reference.ignorable}"
          usetimestamp="true" />
@@ -679,7 +679,8 @@
       <fileset refid="jdk-optional-macos" />
     </delete>
 
-    <exec executable="macos/language_gen.py" />
+    <!-- Python 3 required, now that Python 2 has been removed from macOS -->
+    <exec executable="macos/language_gen.py" failonerror="true" />
 
     <property name="launch4j.dir" value="${contents.dir}/Java/modes/java/application/launch4j" />
 
