@@ -22,9 +22,9 @@ X   menu.tools.add_tool = Add Tool... ->
 X     menu.tools.manage_tools = Manage Tools…
 X update download.processing.org/reference.zip to be a static file
 X switch language_gen.py to python3, other versions removed from macOS
-
-_ open dialog extensions only work for the current Mode
-_   i.e. in Java Mode, won't list .js files as candidates
+o open dialog extensions only work for the current Mode
+o   i.e. in Java Mode, won't list .js files as candidates
+X   false alarm: the Mode wasn't installed properly
 _ on build of dist, immediately submit to Microsoft: https://aka.ms/wdsi
 
 design
