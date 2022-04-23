@@ -808,9 +808,12 @@ public class PSurfaceJOGL implements PSurface {
 
       if (sketch.frameCount == 0) {
         if (sketchWidth != sketchWidthRequested || sketchHeight != sketchHeightRequested) {
-          PGraphics.showWarning("The sketch has been resized from " +
-            "%d\u2715%d to %d\u2715%d by the window manager.",
-            sketchWidthRequested, sketchHeightRequested, sketchWidth, sketchHeight);
+          if (!sketch.sketchFullScreen()) {
+            // don't show the message when using fullScreen()
+            PGraphics.showWarning("The sketch has been resized from " +
+                "%d\u2715%d to %d\u2715%d by the window manager.",
+              sketchWidthRequested, sketchHeightRequested, sketchWidth, sketchHeight);
+          }
         }
         requestFocus();
       }

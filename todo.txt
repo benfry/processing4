@@ -80,7 +80,9 @@ X change up StatusPanelDetail constructor to clean up accessors
 
 preproc
 X correctly handling sketch renderer with fullScreen()
+X   also when using other display numbers
 X   https://github.com/processing/processing4/pull/474
+X   https://github.com/processing/processing4/issues/471
 X return PreprocessorResult for Android Mode
 X   https://github.com/processing/processing4/pull/470
 X   https://github.com/processing/processing4/issues/469
