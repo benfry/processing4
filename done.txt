@@ -1,3 +1,103 @@
+1283 (4.0b8)
+X fix logic for opening the correct 'main' tab in handleOpen()
+X   opening AspectHelper.js makes it the main tab
+X   through sketch.properties is not rewritten
+X dropping folder into sketch window throws weird exception
+X   https://github.com/processing/processing4/issues/441
+X fix "  does not exist" message on Linux startup
+X   no longer pass a blank sketch file name from startup script
+X   also remove unused readlink
+X   support multiple files passed on command line
+X only show setWritable() failure in recent.txt when it is a problem
+X NullPointerException when changing the theme
+X   https://github.com/processing/processing4/issues/476
+X suppress java.lang.NoSuchMethodError: accessibilityHitTest error
+X   https://github.com/processing/processing4/issues/368
+X change to "Modes..." or "Manage Modes..." and same for Libraries, etc
+X   toolbar.add_mode = Add Mode... ->
+X     toolbar.manage_modes = Manage Modes…
+X   menu.library.add_library = Add Library... ->
+X     menu.library.manage_libraries = Manage Libraries…
+X   menu.tools.add_tool = Add Tool... ->
+X     menu.tools.manage_tools = Manage Tools…
+X update download.processing.org/reference.zip to be a static file
+X switch language_gen.py to python3, other versions removed from macOS
+o open dialog extensions only work for the current Mode
+o   i.e. in Java Mode, won't list .js files as candidates
+X   false alarm: the Mode wasn't installed properly
+X set minimum size for scroll bar thumb
+X   https://github.com/processing/processing4/issues/473
+X on build of dist, immediately submit to Microsoft: https://aka.ms/wdsi
+X   https://www.microsoft.com/en-us/wdsi/submission/1f8f4dc4-73e7-484b-8d1c-d6e6d7551157
+
+manager
+X "Error during download and install of Python Mode for Processing"
+X   https://github.com/processing/processing/issues/5918
+X   https://github.com/processing/processing4/issues/445
+X Manager fails to complete install of PythonMode when no windows open
+X   https://github.com/processing/processing/issues/5309
+X   https://github.com/processing/processing4/issues/446
+X removed weird double call of installPreviouslyFailed()
+X remove unused icon code from ManagerTabs
+X implement updateTheme()
+X remove the extra 2-pixel line at the top
+o currently uses prepareGraphics(), do we need to remove that?
+X   looks like nope, that was sorted out separately
+X remove extra ContribProgressMonitor class
+X removing the current Mode (with no windows open) will cause an exception
+X   when next opening a sketch, nextMode is set to the old guy
+X clicking "Update All" on the Updates tab throws NPE
+X   https://github.com/processing/processing4/issues/440
+X an incompatible Mode prevents the PDE from quitting after last window is closed
+X   https://github.com/processing/processing/issues/5112
+X   https://github.com/processing/processing4/issues/448
+X   could not reproduce on Linux, possible that Windows has a cp issue
+X   but hopefully more likely that it's been resolved with all the Mode cleanup
+X categories
+X   remove "Starred" as a category (it was unused)
+X   use isFoundation() instead of isSpecial() for tagging list entries
+X   add "Renderer" as a category
+X use https to get the contribs listing
+X remove insane overbuilt search in contribs
+X   sure, we have over a hundred libraries, but we don't have millions
+X   search by contrib type (is:) wasn't even working properly
+X   removing accents was trashing some input too
+X redo category tallying for contribs (Libraries only anyway?)
+X   gets rid of maze of code that's storing libraries by their category
+X remove unnecessary code that tracks contribs by category
+X   this was hiding the issue that was causing contribs to add several times
+X   because the add() was inside the category loop of that code
+X remove unused 'restart' flagging code, setRestartFlag() never used
+X   all that was left was maintenance of when that's been set, so...
+X allow update of the current Mode
+X   if doing an update (not just delete), close sketches and re-open
+X   if doing a delete, require sketches to be closed
+X change up StatusPanelDetail constructor to clean up accessors
+
+preproc
+X correctly handling sketch renderer with fullScreen()
+X   also when using other display numbers
+X   https://github.com/processing/processing4/pull/474
+X   https://github.com/processing/processing4/issues/471
+X return PreprocessorResult for Android Mode
+X   https://github.com/processing/processing4/pull/470
+X   https://github.com/processing/processing4/issues/469
+
+contrib
+X Text caret position shifts when typing Japanese
+X   https://github.com/processing/processing4/issues/447
+X   https://github.com/processing/processing4/pull/462
+X Some keys can't be entered on the On-Screen Keyboard
+X   https://github.com/processing/processing4/issues/403
+X   https://github.com/processing/processing4/pull/461
+X Error with tweak mode when using underscores in numbers
+X   https://github.com/processing/processing4/issues/442
+X   https://github.com/processing/processing4/pull/459
+X Fix IDE auto-formatting confused by method references
+X   https://github.com/processing/processing4/issues/279
+X   https://github.com/processing/processing4/pull/436
+
+
 1282 (4.0b7)
 X Bring back getMainProgram() for Python Mode
 X   https://github.com/processing/processing4/issues/409
