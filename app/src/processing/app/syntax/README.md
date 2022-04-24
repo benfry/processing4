@@ -2,7 +2,7 @@
 
 Every few years, we've looked at replacing this package with [RSyntaxArea](https://github.com/bobbylight/RSyntaxTextArea), most recently with two attempts during the course of developing [Processing 4](https://github.com/processing/processing4/wiki/Processing-4), but probably dating back to the mid-2000s.
 
-The bottom line is that the time is better spent with starting from scratch with a different approach—a Language Server implementation and probably a lightweight (HTML/JS) GUI on top of it. But so that I don't attempt this again, some reminders as to why it's not worth the effort:
+The bottom line is that the time is better spent [pursuing a different approach](https://github.com/processing/processing4/blob/master/CONTRIBUTING.md#editor)—a Language Server implementation and probably a lightweight (HTML/JS) GUI on top of it. But so that I don't attempt this again, some reminders as to why it's not worth the effort:
 
 * At a minimum, replacing this text component would break all Modes, because of how they're invoked. That places significant burden on those authors, so making the switch means there must be major, demonstrable improvements. (The code being “cleaner” or “better” does not qualify, though other improvements might.)
 * The token coloring uses a completely different system, which would also need to be expanded across Modes. 
@@ -15,7 +15,7 @@ The bottom line is that the time is better spent with starting from scratch with
 * The text area object needs to be moved into the individual tabs (and out of `SketchCode`. This would be fantastic for cleaning things up (the Arduino folks moved ahead with this change a while back). But it's another breaking change for Modes, even though it would be necessary to cleanly separate all Undo behavior.
 * So many small quirks, hard-learned lessons from over the years that may no longer be necessary, but the amount of testing necessary is too significant. For instance, inside File → Print, all the Document objects for the tabs are synched up. This might no longer be necessary if we do this properly—it's a gross hack—but we don't have time to find out. There are dozens of situations like this, creating a “refactored but not renewed” sort of situation that would likely take longer than the LS implementation.
 
-I don't enjoy having the code in this state, but it's there and working, and has allowed a single primary maintainer to support millions of users over more than 20 years. A larger-scale replacement is a better use of time.
+I don't enjoy having the code in this state, but it's there and working, and has allowed a single primary maintainer to support millions of users over more than 20 years. A [larger-scale replacement](https://github.com/processing/processing4/blob/master/CONTRIBUTING.md#editor) is a better use of time.
 
 — Ben Fry, 20 January 2022
 
