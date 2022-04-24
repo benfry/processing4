@@ -1514,6 +1514,7 @@ public class Base {
             props.reckon();
 
           } else {
+            // sketch.properties specifies a Mode, see if it's available
             Mode mode = findMode(modeIdentifier);
             if (mode != null) {
               nextMode = mode;
@@ -1539,8 +1540,8 @@ public class Base {
       } else {
         // Switch back to defaultMode, because a sketch.properties
         // file is required whenever not using the default Mode.
-        // (Unless being called from, say, the Examples frame,
-        // which uses the version that passes a Mode object.)
+        // (Unless being called from, say, the Examples frame, which
+        // uses a version of this function that takes a Mode object.)
         nextMode = getDefaultMode();
       }
 
