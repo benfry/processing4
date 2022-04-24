@@ -51,6 +51,17 @@ A major consideration for any new feature is the level of maintenance that it mi
 Processing is a massive project that has existed for more than 20 years. Part of its longevity comes from the effort that's gone into keeping things as simple as we can, and making a lot of decisions about *what to leave out*. Adding a new feature always has to be weighed against the potential confusion of one more thing—whether it's a menu item, a dialog box, a function that needs to be added to the reference, etc. Adding a new graphics function means making it work across all the renderers that we ship (Java2D, OpenGL, JavaFX, PDF, etc) and across platforms (macOS, Windows, Linux).
 
 
+## Editor
+
+The current Editor, based on the ancient [JEditSyntax](http://syntax.jedit.org/) package has held up long past its expiration date. [Exhaustive work](https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md) has been done to look at replacing the component with something more modern, like `RSyntaxArea`, but it's simply not feasible without breaking a massive amount of code, and likely introducing a lot of regressions in the process. All for… code folding? An incrementally better experience? But with potential for major setbacks in low-level code? It's simply not a path that makes sense.
+
+With that in mind, any work on updating the editor and adding new features should be focused on first [adapting the preprocessor and compiler](https://github.com/processing/processing4/issues/117) to be wrapped using the [Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol), so that we can link to other existing editors (Visual Studio Code and many others). It should be possible to create a Java-only, headless implementation that wraps the current source in this repository and can communicate via LSP.
+
+Once that initial work is done, more people can use popular tools like VS Code and others, and we can start building a new PDE that's as simple to use as the current application, based on something like [Theia](https://theia-ide.org/), a new editor platform that uses LSP as its basis.
+
+With that in mind, nearly all editor enhancement requests will be redirected to this aim. The current editor does what we want it to, for the intended audience, and improving it requires a better foundation as a starting point.
+
+
 ## Refactoring
 
 Refactoring is fun! There's always more cleaning to do. It's also often not very helpful.
