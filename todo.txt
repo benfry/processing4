@@ -1,4 +1,5 @@
 1284 (4.0b9)
+X color updates based on changes from Paul (220426)
 
 
 manager

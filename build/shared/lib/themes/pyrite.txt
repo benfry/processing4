@@ -12,22 +12,22 @@ toolbar.gradient.bottom = #00474E
 
 # MODE SELECTOR (EditorToolbar)
 mode.title.font = processing.sans,plain,12
-mode.title.color = #75B5B8
+mode.title.color = #77B7BA
 # stolen from gradient bottom
 mode.background.color = #00474E
-mode.outline.color = #58979B
+mode.outline.color = #5A9A9D
 
-toolbar.button.disabled.field = #C9FFFF
-toolbar.button.disabled.glyph = #B2F3F3
+toolbar.button.disabled.field = #125A60
+toolbar.button.disabled.glyph = #00474E
 toolbar.button.disabled.stroke = none
 toolbar.button.enabled.field = #99915B
-toolbar.button.enabled.glyph = #004353
+toolbar.button.enabled.glyph = #004453
 toolbar.button.enabled.stroke = none
-toolbar.button.pressed.field = #002838
-toolbar.button.pressed.glyph = #D1C86F
-toolbar.button.pressed.stroke = #D1C86F
-toolbar.button.rollover.field = #D1C86F
-toolbar.button.rollover.glyph = #004353
+toolbar.button.pressed.field = #002938
+toolbar.button.pressed.glyph = #D3C76F
+toolbar.button.pressed.stroke = #D3C76F
+toolbar.button.rollover.field = #D3C76F
+toolbar.button.rollover.glyph = #004453
 toolbar.button.rollover.stroke = none
 toolbar.button.selected.field = #FFFFF2
 toolbar.button.selected.glyph = #4C4800
@@ -52,12 +52,12 @@ toolbar.button.debug.selected.stroke = none
 
 ## EditorStatus - status message bar directly below the editor ##
 
-status.notice.fgcolor = #97EDF1
-status.notice.bgcolor = #187D85
+status.notice.fgcolor = #9BEFF2
+status.notice.bgcolor = #217F87
 status.error.fgcolor = #3A3400
 status.error.bgcolor = #FFFFF2
 status.warning.bgcolor = #99915B
-status.warning.fgcolor = #292100
+status.warning.fgcolor = #2A2000
 status.url.fgcolor = #000000
 status.font = processing.sans,plain,13
 # For the clipboard icon, needs to be a little larger on macOS
@@ -68,11 +68,11 @@ status.emoji.font.macosx = Dialog,plain,22
 ## EditorHeader - the tab area above the editor ##
 
 header.text.font = processing.sans,bold,14
-header.text.selected.color = #AFA663
-header.text.unselected.color = #547778
-header.tab.arrow.color = #547778
-header.tab.selected.color = #00171C
-header.tab.unselected.color = #00292E
+header.text.selected.color = #B0A663
+header.text.unselected.color = #57797A
+header.tab.arrow.color = #57797A
+header.tab.selected.color = #00181C
+header.tab.unselected.color = #002A2F
 header.tab.modified.color = #FFFFF2
 header.gradient.top = #00474E
 header.gradient.bottom = #00474E
@@ -82,12 +82,12 @@ header.gradient.bottom = #00474E
 
 footer.text.font = processing.sans,bold,12
 footer.text.selected.color = #FFFFF2
-footer.text.enabled.color = #75B5B8
+footer.text.enabled.color = #77B7BA
 footer.icon.selected.color = #FFFFF2
-footer.icon.enabled.color = #75B5B8
+footer.icon.enabled.color = #77B7BA
 footer.gradient.top = #00474E
 footer.gradient.bottom = #00474E
-footer.tab.selected.color = #327378
+footer.tab.selected.color = #327479
 footer.tab.enabled.color = #00474E
 footer.updates.text.color = #FFFFF2
 footer.updates.indicator.field.color = #000E16
@@ -97,8 +97,8 @@ footer.updates.indicator.text.color = #C9FFFF
 ## EditorConsole - stack traces of doom and println() ##
 
 # The font is handled by preferences.txt, so its size/etc are modifiable.
-console.color = #131A1A
-console.output.color = #79827D
+console.color = #151B1A
+console.output.color = #7C847F
 # text color for errors printed in the console
 console.error.color = #C3BE00
 
@@ -130,10 +130,10 @@ editor.brackethighlight = true
 editor.brackethighlight.color = #99A6EA
 
 # colors for the custom scroll bar
-editor.scrollbar.thumb.enabled.color = #327378
-editor.scrollbar.thumb.rollover.color = #23676C
-editor.scrollbar.thumb.pressed.color = #23676C
-editor.scrollbar.color = #045359
+editor.scrollbar.thumb.enabled.color = #327479
+editor.scrollbar.thumb.rollover.color = #25686E
+editor.scrollbar.thumb.pressed.color = #25686E
+editor.scrollbar.color = #06545A
 
 
 ## PdeTextAreaPainter - extras added to the editor ##
@@ -142,7 +142,7 @@ editor.gutter.text.font = processing.mono,plain,11
 editor.gutter.text.color = #C9FFFF
 
 # bgcolor for the current (highlighted) line
-editor.gutter.linehighlight.color = #327378
+editor.gutter.linehighlight.color = #327479
 
 # squiggly line underneath errors in the editor
 editor.error.underline.color = #FFFFF2
@@ -179,7 +179,7 @@ manager.tab.selected.color = #FFFFF2
 manager.tab.unselected.color = #99915B
 manager.tab.text.font = processing.sans,bold,14
 manager.tab.text.selected.color = #000000
-manager.tab.text.unselected.color = #00171C
+manager.tab.text.unselected.color = #00181C
 manager.tab.gradient.top = #00474E
 manager.tab.gradient.bottom = #00474E
 
@@ -205,12 +205,12 @@ editor.token.function2.style = #99A6EA,plain
 editor.token.function3.style = #F133F3,plain
 editor.token.function4.style = #99A6EA,bold
 
-editor.token.keyword1.style = #664FE8,plain
-editor.token.keyword2.style = #664FE8,plain
+editor.token.keyword1.style = #654FEA,plain
+editor.token.keyword2.style = #654FEA,plain
 editor.token.keyword3.style = #F133F3,plain
-editor.token.keyword4.style = #DA3644,plain
+editor.token.keyword4.style = #DA3744,plain
 editor.token.keyword5.style = #FF7500,plain
-editor.token.keyword6.style = #664FE8,plain
+editor.token.keyword6.style = #654FEA,plain
 
 editor.token.literal1.style = #008B7E,plain
 editor.token.literal2.style = #0071B9,plain
