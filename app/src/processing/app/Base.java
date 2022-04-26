@@ -1625,7 +1625,7 @@ public class Base {
         nextMode = mode;
       }
       */
-      handleOpenInternal(pdeFile.getAbsolutePath(), false);
+      return handleOpenInternal(pdeFile.getAbsolutePath(), false);
 
     } catch (IOException e) {
       Messages.showWarning("sketch.properties",
