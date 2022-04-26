@@ -1630,8 +1630,8 @@ public class Base {
     } catch (IOException e) {
       Messages.showWarning("sketch.properties",
         "Error while reading sketch.properties from\n" + parentFolder, e);
+      return null;
     }
-    return null;
   }
 
 
