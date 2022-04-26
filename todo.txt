@@ -149,8 +149,13 @@ _ add reinstall option?
 
 
 design
+o icons for the console items
+X   console.svg and error.svg already done
+_ add updateTheme() to contrib.ListPanel
+_   right now pulling Theme.getColor() directly
+_   but need to make sure repaint() is called anyway
+_ remove the 2 pixel line from the tab bar in the footer
 _ make new gradients when selecting Theme Engine
-_ icons for the console items
 _ https://github.com/fathominfo/processing4-theme
 _ console scroll bar colors
 _   https://github.com/processing/processing4/issues/265

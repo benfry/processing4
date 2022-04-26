@@ -32,6 +32,7 @@ import javax.swing.table.*;
 
 import processing.app.Base;
 import processing.app.Util;
+import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
 
@@ -65,10 +66,10 @@ public class ListPanel extends JPanel implements Scrollable {
   static Icon foundationIcon;
   static Icon downloadingIcon;
 
-  // Should this be in theme.txt? Of course! Is it? No.
-  static final Color HEADER_BGCOLOR = new Color(0xffEBEBEB);
-  static final Color SECTION_COLOR = new Color(0xFFf8f8f8);
-  static final Color SELECTION_COLOR = new Color(0xffe0fffd);
+//  Color headerColor;
+//  Color sectionColor;
+//  Color selectionColor;
+
 
   static final SectionHeaderContribution[] sections = {
     new SectionHeaderContribution(ContributionType.LIBRARY),
@@ -106,9 +107,9 @@ public class ListPanel extends JPanel implements Scrollable {
         Component c = super.prepareRenderer(renderer, row, column);
         Object rowValue = getValueAt(row, column);
         if (rowValue instanceof SectionHeaderContribution) {
-          c.setBackground(SECTION_COLOR);
+          c.setBackground(Theme.getColor("manager.list.section.color"));
         } else if (isRowSelected(row)) {
-          c.setBackground(SELECTION_COLOR);
+          c.setBackground(Theme.getColor("manager.list.selection.color"));
         } else {
           c.setBackground(Color.white);
         }
@@ -245,10 +246,11 @@ public class ListPanel extends JPanel implements Scrollable {
       }
       setFont(ManagerFrame.SMALL_PLAIN);
       setIcon(getSortIcon(table, column));
-      setBackground(HEADER_BGCOLOR);
+      setBackground(Theme.getColor("manager.list.header.color"));
       setBorder(null);
       return this;
     }
+
 
     /**
      * Return an icon suitable to the primary sorted column,
