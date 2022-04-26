@@ -190,6 +190,13 @@ manager.tab.gradient.bottom = #CBCECC
 manager.tab.background = #CBCECC
 
 
+## ListPanel – the listing inside a Contribution Manager tab ##
+
+manager.list.header.color = #EBEBEB
+manager.list.section.color = #f8f8f8
+manager.list.selection.color = #e0fffd
+
+
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
 
 tree.font = processing.sans,plain,12
