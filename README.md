@@ -1,8 +1,6 @@
-# Processing
+This repository contains the source code for the [Processing](https://processing.org/) project for people who want to help improve the code or find bugs.
 
-This repository contains the source code for the <a href="https://processing.org/">Processing</a> project for people who want to help improve the code or find bugs.
-
-If you're interested in using Processing, get started at the <a href="https://processing.org/download">download</a> page, or read more about the project at the <a href="https://processing.org/">home</a> page. There are also several <a href="https://processing.org/tutorials">tutorials</a> to complement the hundreds of examples that are included with the software itself.
+If you're interested in *using* Processing, get started at the [download](https://processing.org/download) page, or read more about the project at the [home page](https://processing.org/). There are also several [tutorials](https://processing.org/tutorials) that provide a helpful introduction. They are complemented by hundreds of examples that are included with the software itself.
 
 
 ## Processing 4.0
@@ -14,11 +12,11 @@ We've also moved to a new repository for this release so that we could cull a lo
 
 ## Roadmap
 
-This software is currently in beta. We don't have a schedule for the final 4.0 release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-03-01&type=c) who continue working on it, unpaid, because they care about it. The beta is the default download on the site because it's more usable than the 3.5.4 release.
+This software is currently in beta. We don't have a schedule for the final 4.0 release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-06-01&type=c) who continue working on it, unpaid, because they care about it. The beta is the default download on the site because it's more usable than the 3.5.4 release.
 
 * We're currently using JDK 17, which is the latest “Long Term Support” (LTS) release. (Before beta 3, we were using JDK 11. In 3.x we were using Java 8.)
 
-* The current release runs well on Apple Silicon using Rosetta. We are currently unable to move to a fully native version for Apple Silicon because of other libraries that we rely upon (JavaFX, JOGL, etc). Once those are ready, we'll need to do additional work to add Apple Silicon as a target (the same way we support both 64-bit and 32-bit, or ARM instead of Intel.) If you'd like to help, or would like to check for updates, you'll find more [here](https://github.com/processing/processing4/issues/128).
+* ~~The current release runs well on Apple Silicon using Rosetta. We are currently unable to move to a fully native version for Apple Silicon because of other libraries that we rely upon (JavaFX, JOGL, etc). Once those are ready, we'll need to do additional work to add Apple Silicon as a target (the same way we support both 64-bit and 32-bit, or ARM instead of Intel.)~~ With beta 8, we have OpenGL working on Apple Silicon, so we're down to the last few things. Please help us get this over the finish line! You'll find more [here](https://github.com/processing/processing4/issues/128).
 
 
 ## API and Internal Changes
