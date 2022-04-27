@@ -1,6 +1,11 @@
 1284 (4.0b9)
 X color updates based on changes from Paul (220426)
 
+contrib
+X Double-clicking a .pde file also opens an untitled/empty sketch
+X   https://github.com/processing/processing4/issues/477
+X   https://github.com/processing/processing4/pull/479
+
 
 manager
 X disable hashCode() implementation in Contribution
