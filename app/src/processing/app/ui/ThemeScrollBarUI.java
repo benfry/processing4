@@ -48,6 +48,15 @@ public class ThemeScrollBarUI extends BasicScrollBarUI {
   private Color enabledColor;
 
 
+  public ThemeScrollBarUI(String prefix) {
+    this(prefix + ".scrollbar.color",
+            prefix + ".scrollbar.thumb.pressed.color",
+            prefix + ".scrollbar.thumb.rollover.color",
+            prefix + ".scrollbar.thumb.enabled.color");
+
+  }
+
+
   public ThemeScrollBarUI(String backgroundAttr, String pressedAttr,
                           String rolloverAttr, String enabledAttr) {
     this.backgroundAttr = backgroundAttr;
@@ -58,10 +67,10 @@ public class ThemeScrollBarUI extends BasicScrollBarUI {
 
 
   public void updateTheme() {
-    backgroundColor = Theme.getColor("editor.scrollbar.color");
-    pressedColor = Theme.getColor("editor.scrollbar.thumb.pressed.color");
-    rolloverColor = Theme.getColor("editor.scrollbar.thumb.rollover.color");
-    enabledColor = Theme.getColor("editor.scrollbar.thumb.enabled.color");
+    backgroundColor = Theme.getColor(backgroundAttr);
+    pressedColor = Theme.getColor(pressedAttr);
+    rolloverColor = Theme.getColor(rolloverAttr);
+    enabledColor = Theme.getColor(enabledAttr);
   }
 
 

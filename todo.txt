@@ -1,5 +1,16 @@
 1284 (4.0b9)
+
+design
 X color updates based on changes from Paul (220426)
+o icons for the console items
+X   console.svg and error.svg already done
+X if no matching theme selected, was highlighting column -1
+X console scroll bar colors
+X   https://github.com/processing/processing4/issues/265
+
+design/waiting
+_ gradients
+_ console scroll bar colors
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
@@ -154,16 +165,12 @@ _ add reinstall option?
 
 
 design
-o icons for the console items
-X   console.svg and error.svg already done
 _ add updateTheme() to contrib.ListPanel
 _   right now pulling Theme.getColor() directly
 _   but need to make sure repaint() is called anyway
 _ remove the 2 pixel line from the tab bar in the footer
-_ make new gradients when selecting Theme Engine
 _ https://github.com/fathominfo/processing4-theme
-_ console scroll bar colors
-_   https://github.com/processing/processing4/issues/265
+_ make new gradients when selecting Theme Engine
 _ errors table theme
 _ contrib manager theme
 _   identify coloring for icons

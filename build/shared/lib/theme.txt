@@ -102,6 +102,11 @@ console.output.color = #8C9495
 # text color for errors printed in the console
 console.error.color = #00D7FF
 
+console.scrollbar.thumb.enabled.color = #3E769D
+console.scrollbar.thumb.rollover.color = #2F6A90
+console.scrollbar.thumb.pressed.color = #2F6A90
+console.scrollbar.color = #5D93BA
+
 
 ## PdeTextAreaDefaults - default colors for the editor ##
 
@@ -157,7 +162,7 @@ editor.column.error.color = #ff5355
 editor.column.warning.color = #fed456
 
 
-## ErrorTable - the list of errors in the second tab found in the console area ##
+## ErrorTable - second tab below the console area, lists errors and warnings ##
 
 errors.header.font = processing.sans,plain,12
 errors.header.bgcolor = #ebebeb

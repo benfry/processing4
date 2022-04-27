@@ -55,8 +55,8 @@ public class PdeTextArea extends JEditTextArea {
     super(defaults, inputHandler);
     this.editor = editor;
 
-    vertical.setUI(new PdeScrollBarUI());
-    horizontal.setUI(new PdeScrollBarUI());
+    vertical.setUI(new ThemeScrollBarUI("editor"));
+    horizontal.setUI(new ThemeScrollBarUI("editor"));
 
     // change cursor to pointer in the gutter area
     painter.addMouseMotionListener(gutterCursorMouseAdapter);
@@ -65,16 +65,6 @@ public class PdeTextArea extends JEditTextArea {
     //add(CENTER, painter);
 
     updateTheme();
-  }
-
-
-  static class PdeScrollBarUI extends ThemeScrollBarUI {
-    PdeScrollBarUI() {
-      super("editor.scrollbar.color",
-            "editor.scrollbar.thumb.pressed.color",
-            "editor.scrollbar.thumb.rollover.color",
-            "editor.scrollbar.thumb.enabled.color");
-    }
   }
 
 
@@ -95,8 +85,8 @@ public class PdeTextArea extends JEditTextArea {
 
     gutterGradient = Theme.makeGradient("editor", Editor.LEFT_GUTTER, 500);
 
-    ((PdeScrollBarUI) vertical.getUI()).updateTheme();
-    ((PdeScrollBarUI) horizontal.getUI()).updateTheme();
+    ((ThemeScrollBarUI) vertical.getUI()).updateTheme();
+    ((ThemeScrollBarUI) horizontal.getUI()).updateTheme();
 
     repaint();
   }
