@@ -13,6 +13,7 @@ X   because the deselected tab no longer has an outline
 X add updateTheme() to contrib.ListPanel
 X   right now pulling Theme.getColor() directly
 X   but need to make sure repaint() is called anyway
+X use errors.row.bgcolor as bgcolor for the error list
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
