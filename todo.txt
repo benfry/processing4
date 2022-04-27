@@ -47,12 +47,15 @@ _   which is another case for a separate 'contrib manager' thing
 _     maybe that's the update button? when no updates, it's still a button?
 
 
+_ using other JavaFX classes now that they're modules
+_   https://github.com/processing/processing4-javafx/issues/15
+
 _ on release: submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
-_ if a sketch is in the docs folder, try triggering macos access dialog
+_ if a sketch is in the Desktop folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well
 _   (opening p5jsMode sketch on Desktop causes a zillion dialog boxes)
 
