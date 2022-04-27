@@ -31,7 +31,7 @@ The full list of changes can be seen in [the release notes for each version](htt
 ### Beta 8
 
 * [Renamed](https://github.com/processing/processing4/commit/409163986ff2ff4d2dbf69c79c7eced45950d1d0) the Add Mode, Add Library, and Add Tool menu items to Manage Modes, Manage Libraries, and Manage Tools. This will require translation updates for the new text:
-    * `toolbar.add_mode = Add Mode... ` has been replaced with `toolbar.manage_modes = Manage Modes…`
+    * `toolbar.add_mode = Add Mode...` has been replaced with `toolbar.manage_modes = Manage Modes…`
     * `menu.library.add_library = Add Library...` → `menu.library.manage_libraries = Manage Libraries…`
     * `menu.tools.add_tool = Add Tool...` → `menu.tools.manage_tools = Manage Tools…`
 
