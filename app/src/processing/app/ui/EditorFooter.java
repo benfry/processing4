@@ -54,8 +54,8 @@ public class EditorFooter extends Box {
 
   static final int CURVE_RADIUS = Toolkit.zoom(6);
 
-  static final int TAB_TOP = Toolkit.zoom(2);
-  static final int TAB_BOTTOM = Toolkit.zoom(29);
+  static final int TAB_TOP = Toolkit.zoom(0);
+  static final int TAB_BOTTOM = Toolkit.zoom(27);
   // amount of extra space between individual tabs
   static final int TAB_BETWEEN = Toolkit.zoom(2);
   // amount of margin on the left/right for the text on the tab
@@ -63,8 +63,8 @@ public class EditorFooter extends Box {
 
   static final int ICON_WIDTH = Toolkit.zoom(16);
   static final int ICON_HEIGHT = Toolkit.zoom(16);
-  static final int ICON_TOP = Toolkit.zoom(7);
-  static final int ICON_MARGIN = Toolkit.zoom(7);
+  static final int ICON_TOP = Toolkit.zoom(5);
+  static final int ICON_SIDE = Toolkit.zoom(7);
 
   static final int ENABLED = 0;
   static final int SELECTED = 1;
@@ -225,9 +225,9 @@ public class EditorFooter extends Box {
 
       g.setColor(tabColor[SELECTED]);
       // can't be done with lines, b/c retina leaves tiny hairlines
-      g.fillRect(0, 0, getWidth(), Toolkit.zoom(2));
+      //g.fillRect(0, 0, getWidth(), Toolkit.zoom(2));
 
-      g.drawImage(gradient, 0, Toolkit.zoom(2), getWidth(), getHeight(), this);
+      g.drawImage(gradient, 0, 0, getWidth(), getHeight(), this);
 
       // reset all tab positions
       for (Tab tab : tabs) {
@@ -366,6 +366,7 @@ public class EditorFooter extends Box {
       return comp.isVisible();
     }
 
+    /*
     boolean isFirst() {
       return tabs.get(0) == this;
     }
@@ -373,11 +374,12 @@ public class EditorFooter extends Box {
     boolean isLast() {
       return tabs.get(tabs.size() - 1) == this;
     }
+    */
 
     int getTextLeft() {
       int links = left;
       if (enabledIcon != null) {
-        links += ICON_WIDTH + ICON_MARGIN;
+        links += ICON_WIDTH + ICON_SIDE;
       }
       return links + ((right - links) - textWidth) / 2;
     }
@@ -390,8 +392,9 @@ public class EditorFooter extends Box {
       int state = isCurrent() ? SELECTED : ENABLED;
       g2.setColor(tabColor[state]);
       g2.fill(Toolkit.createRoundRect(left, TAB_TOP, right, TAB_BOTTOM, 0, 0,
-                                      isLast() ? CURVE_RADIUS : 0,
-                                      isFirst() ? CURVE_RADIUS : 0));
+                                      CURVE_RADIUS, CURVE_RADIUS));
+//                                      isLast() ? CURVE_RADIUS : 0,
+//                                      isFirst() ? CURVE_RADIUS : 0));
 
       if (hasIcon()) {
         Image icon = (isCurrent() || notification) ? selectedIcon : enabledIcon;

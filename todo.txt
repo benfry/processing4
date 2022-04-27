@@ -7,10 +7,9 @@ X   console.svg and error.svg already done
 X if no matching theme selected, was highlighting column -1
 X console scroll bar colors
 X   https://github.com/processing/processing4/issues/265
-
-design/waiting
-_ gradients
-_ console scroll bar colors
+X remove the 2 pixel line from the tab bar in the footer
+X also round both edges of the editor footer tabs
+X   because the deselected tab no longer has an outline
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
@@ -164,13 +163,17 @@ _ orange exclamation looks like an error, not "update available"
 _ add reinstall option?
 
 
+design/waiting
+_ gradients
+_ console scroll bar colors
+_ https://github.com/fathominfo/processing4-theme
+
 design
 _ add updateTheme() to contrib.ListPanel
 _   right now pulling Theme.getColor() directly
 _   but need to make sure repaint() is called anyway
-_ remove the 2 pixel line from the tab bar in the footer
-_ https://github.com/fathominfo/processing4-theme
-_ make new gradients when selecting Theme Engine
+_ menu background colors
+_   important for prefs window background color too
 _ errors table theme
 _ contrib manager theme
 _   identify coloring for icons
