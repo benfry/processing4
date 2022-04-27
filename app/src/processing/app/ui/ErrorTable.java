@@ -106,7 +106,7 @@ public class ErrorTable extends JTable {
 
 
   protected void updateTheme() {
-    setBackground(Theme.getColor("errors.row.bgcolor"));
+    setBackground(Theme.getColor("errors.list.bgcolor"));
     getTableHeader().setDefaultRenderer(new GradyHeaderRenderer());
     setDefaultRenderer(Object.class, new GradyRowRenderer());
   }
@@ -182,11 +182,11 @@ public class ErrorTable extends JTable {
     Color warningIndicatorColor;
 
     public GradyRowRenderer() {
-      setFont(Theme.getFont("errors.row.font"));
+      setFont(Theme.getFont("errors.list.font"));
       setAlignmentX(LEFT_ALIGNMENT);
 
-      textColor = Theme.getColor("errors.row.fgcolor");
-      bgColor = Theme.getColor("errors.row.bgcolor");
+      textColor = Theme.getColor("errors.list.fgcolor");
+      bgColor = Theme.getColor("errors.list.bgcolor");
       textColorSelected = Theme.getColor("errors.selection.fgcolor");
       bgColorSelected = Theme.getColor("errors.selection.bgcolor");
       bgColorError = Theme.getColor("errors.selection.error.bgcolor");

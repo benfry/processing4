@@ -14,6 +14,7 @@ X add updateTheme() to contrib.ListPanel
 X   right now pulling Theme.getColor() directly
 X   but need to make sure repaint() is called anyway
 X use errors.row.bgcolor as bgcolor for the error list
+X change errors.row to errors.list in theme.txt
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
