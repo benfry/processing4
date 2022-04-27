@@ -54,6 +54,8 @@ public class ManagerFrame {
   ContributionTab examplesTab;
   UpdateContributionTab updatesTab;
 
+  ContributionTab[] tabList;
+
   // TODO move to updateTheme() handler
   static Font SMALL_PLAIN;
   static Font SMALL_BOLD;
@@ -86,6 +88,10 @@ public class ManagerFrame {
 //    long t5 = System.currentTimeMillis();
     updatesTab = new UpdateContributionTab(this);
 //    long t6 = System.currentTimeMillis();
+
+    tabList = new ContributionTab[] {
+      librariesTab, modesTab, toolsTab, examplesTab, updatesTab
+    };
 
 //    System.out.println("ManagerFrame.<init> " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) + " " + (t5-t4) + " " + (t6-t5));
   }
@@ -146,6 +152,10 @@ public class ManagerFrame {
       frame.getContentPane().setBackground(bgColor);
 
       tabs.updateTheme();
+
+      for (ContributionTab tab : tabList) {
+        tab.updateTheme();
+      }
     }
   }
 
@@ -231,11 +241,9 @@ public class ManagerFrame {
 
 
   protected void rebuildTabLayouts(boolean error, boolean loading) {
-    librariesTab.rebuildLayout(error, loading);
-    modesTab.rebuildLayout(error, loading);
-    toolsTab.rebuildLayout(error, loading);
-    examplesTab.rebuildLayout(error, loading);
-    updatesTab.rebuildLayout(error, loading);
+    for (ContributionTab tab : tabList) {
+      tab.rebuildLayout(error, loading);
+    }
   }
 
 

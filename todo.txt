@@ -10,6 +10,9 @@ X   https://github.com/processing/processing4/issues/265
 X remove the 2 pixel line from the tab bar in the footer
 X also round both edges of the editor footer tabs
 X   because the deselected tab no longer has an outline
+X add updateTheme() to contrib.ListPanel
+X   right now pulling Theme.getColor() directly
+X   but need to make sure repaint() is called anyway
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
@@ -166,14 +169,6 @@ _ add reinstall option?
 design/waiting
 _ gradients
 _ console scroll bar colors
-_ https://github.com/fathominfo/processing4-theme
-
-design
-_ add updateTheme() to contrib.ListPanel
-_   right now pulling Theme.getColor() directly
-_   but need to make sure repaint() is called anyway
-_ menu background colors
-_   important for prefs window background color too
 _ errors table theme
 _ contrib manager theme
 _   identify coloring for icons
@@ -181,6 +176,10 @@ _   how much of theme to inherit
 _   generate manager icons
 _   slightly taller tabs, though maybe they're better than the Editor?
 _     editor tabs are different height, as are the footer tabs
+
+design
+_ menu background colors
+_   important for prefs window background color too
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ decision about 'debug' versions of toolbar icons

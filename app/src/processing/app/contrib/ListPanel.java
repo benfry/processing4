@@ -66,9 +66,10 @@ public class ListPanel extends JPanel implements Scrollable {
   static Icon foundationIcon;
   static Icon downloadingIcon;
 
-//  Color headerColor;
-//  Color sectionColor;
-//  Color selectionColor;
+  Color headerColor;
+  Color sectionColor;
+  Color selectionColor;
+  Color rowColor;
 
 
   static final SectionHeaderContribution[] sections = {
@@ -98,7 +99,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     //setLayout(new GridBagLayout());
     setOpaque(true);
-    setBackground(Color.WHITE);
+    //setBackground(rowColor);
     model = new ContributionTableModel(columns);
     model.enableSections(enableSections);
     table = new JTable(model) {
@@ -107,11 +108,11 @@ public class ListPanel extends JPanel implements Scrollable {
         Component c = super.prepareRenderer(renderer, row, column);
         Object rowValue = getValueAt(row, column);
         if (rowValue instanceof SectionHeaderContribution) {
-          c.setBackground(Theme.getColor("manager.list.section.color"));
+          c.setBackground(sectionColor);
         } else if (isRowSelected(row)) {
-          c.setBackground(Theme.getColor("manager.list.selection.color"));
+          c.setBackground(selectionColor);
         } else {
-          c.setBackground(Color.white);
+          c.setBackground(rowColor);
         }
         return c;
       }
@@ -179,6 +180,16 @@ public class ListPanel extends JPanel implements Scrollable {
   }
 
 
+  protected void updateTheme() {
+    headerColor = Theme.getColor("manager.list.header.color");
+    sectionColor = Theme.getColor("manager.list.section.color");
+    selectionColor = Theme.getColor("manager.list.selection.color");
+
+    rowColor = Theme.getColor("manager.list.row.color");
+    setBackground(rowColor);
+  }
+
+
   // TODO remove this, yuck [fry 220313]
   protected int getScrollBarWidth() {
     JScrollPane scrollPane = (JScrollPane) getComponent(0);
@@ -209,7 +220,7 @@ public class ListPanel extends JPanel implements Scrollable {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static class ContribHeaderRenderer extends DefaultTableCellRenderer {
+  class ContribHeaderRenderer extends DefaultTableCellRenderer {
 
     public ContribHeaderRenderer() {
       setHorizontalTextPosition(LEFT);
@@ -246,7 +257,7 @@ public class ListPanel extends JPanel implements Scrollable {
       }
       setFont(ManagerFrame.SMALL_PLAIN);
       setIcon(getSortIcon(table, column));
-      setBackground(Theme.getColor("manager.list.header.color"));
+      setBackground(headerColor);
       setBorder(null);
       return this;
     }

@@ -85,6 +85,12 @@ public class ContributionTab extends JPanel {
   }
 
 
+  protected void updateTheme() {
+    //statusPanel.updateTheme();  // nothing yet
+    listPanel.updateTheme();
+  }
+
+
   public void rebuildLayout(boolean error, boolean loading) {
     setLayout();
 

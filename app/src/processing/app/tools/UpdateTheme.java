@@ -42,10 +42,13 @@ public class UpdateTheme implements Tool {
       //Preferences.init();
       Theme.load();
 
+      /*
       for (Editor editor : base.getEditors()) {
         //System.out.println("Updating theme for " + editor.getSketch().getName());
         editor.updateTheme();
       }
+      */
+      base.updateTheme();
 
       if (activeEditor != null) {
         activeEditor.statusNotice("Finished updating theme.");

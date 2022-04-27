@@ -127,11 +127,14 @@ public class ThemeSelector extends JFrame implements Tool {
       Util.saveFile(themeContents[index], sketchbookFile);
       Theme.load();
 
+      /*
       ContributionManager.updateTheme();
       for (Editor editor : base.getEditors()) {
         editor.updateTheme();
         //editor.repaint();
       }
+      */
+      base.updateTheme();
 
     } catch (IOException e) {
       base.getActiveEditor().statusError(e);

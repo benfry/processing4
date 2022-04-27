@@ -298,6 +298,15 @@ public class Base {
   }
 
 
+  public void updateTheme() {
+    ContributionManager.updateTheme();
+    for (Editor editor : getEditors()) {
+      editor.updateTheme();
+      //editor.repaint();
+    }
+  }
+
+
   static private void handleWelcomeScreen(Base base) {
     boolean sketchbookPrompt = false;
     if (Preferences.getBoolean("welcome.four.beta.show")) {
