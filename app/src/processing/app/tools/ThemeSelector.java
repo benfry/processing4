@@ -203,12 +203,14 @@ public class ThemeSelector extends JFrame implements Tool {
       g2.setStroke(new BasicStroke(OUTLINE));
       g2.setColor(Color.GRAY);
 
-      int col = currentIndex % 4;
-      int row = currentIndex / 4;
-      g2.drawRect(BETWEEN + EACH*col - OUTSET,
-        BETWEEN + EACH*row - OUTSET,
-        DIM + OUTSET*2,
-        DIM + OUTSET*2);
+      if (currentIndex != -1) {
+        int col = currentIndex % 4;
+        int row = currentIndex / 4;
+        g2.drawRect(BETWEEN + EACH * col - OUTSET,
+          BETWEEN + EACH * row - OUTSET,
+          DIM + OUTSET * 2,
+          DIM + OUTSET * 2);
+      }
     }
 
     @Override
