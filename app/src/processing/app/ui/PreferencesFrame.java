@@ -31,6 +31,7 @@ import java.util.*;
 import javax.swing.*;
 import javax.swing.border.*;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Messages;
@@ -112,6 +113,10 @@ public class PreferencesFrame {
     sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location")+":");
 
     sketchbookLocationField = new JTextField(30);
+    sketchbookLocationField.putClientProperty(
+      FlatClientProperties.TEXT_FIELD_TRAILING_ICON,
+      UIManager.getIcon("Tree.closedIcon")
+    );
 
     browseButton = new JButton(Language.getPrompt("browse"));
     browseButton.addActionListener(e -> {
@@ -400,111 +405,50 @@ public class PreferencesFrame {
 //    axis.setAlignmentX(Component.LEFT_ALIGNMENT);
 
     addRow(axis, sketchbookLocationLabel);
-//    sketchbookLocationLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-//    axis.add(sketchbookLocationLabel);
+    addRow(axis, sketchbookLocationField, browseButton);
+    addRow(axis, languageLabel, languageSelectionBox, languageRestartLabel);
 
-//    Box row = Box.createHorizontalBox();
-    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-//    row.setBackground(Color.GREEN);
-    row.add(sketchbookLocationField);
-    row.add(browseButton);
-//    System.out.println(row.getPreferredSize());
-//    row.setMaximumSize(row.getPreferredSize());
-//    row.setBorder(new EmptyBorder(0, 0, 0, 0));
-    axis.add(row);
-//    System.out.println(row);
-//    System.out.println(row.getBorder());
-//    JPanel wtf = row;
-//
-    /*
-    row = Box.createHorizontalBox();
-    row.add(languageLabel);
-    row.add(languageSelectionBox);  // needs to be limited to preferred size
-    row.add(languageRestartLabel);
-    row.add(Box.createHorizontalGlue());
-    axis.add(row);
-    */
+    addRow(axis, fontLabel, fontSelectionBox);
 
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(languageLabel);
-    row.add(languageSelectionBox);  // needs to be limited to preferred size
-    row.add(languageRestartLabel);
-//    panel.add(Box.createHorizontalGlue());
-    axis.add(row);
+    addRow(axis, fontSizeLabel, fontSizeField,
+                 consoleFontSizeLabel, consoleFontSizeField);
 
-    //row = Box.createHorizontalBox();
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(fontLabel);
-    row.add(fontSelectionBox);  // needs to be limited to preferred size
-    axis.add(row);
+    addRow(axis, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
 
-    //row = Box.createHorizontalBox();
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(fontSizeLabel);
-    row.add(fontSizeField);  // needs to be limited to preferred size
-    row.add(consoleFontSizeLabel);
-    row.add(consoleFontSizeField);  // needs to be limited to preferred size
-    axis.add(row);
+    addRow(axis, hidpiDisableBox);
 
-    //row = Box.createHorizontalBox();
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(zoomLabel);
-    row.add(zoomAutoBox);
-    row.add(zoomSelectionBox);  // preferred
-    row.add(zoomRestartLabel);
-    axis.add(row);
+    addRow(axis, backgroundColorLabel, presentColor);
 
-    axis.add(hidpiDisableBox);
+    addRow(axis, inputMethodBox);
 
-    //row = Box.createHorizontalBox();
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(backgroundColorLabel);  // preferred
-    row.add(presentColor);  // preferred
-    axis.add(row);
+    addRow(axis, errorCheckerBox, warningsCheckerBox);
 
-    axis.add(inputMethodBox);
+    addRow(axis, codeCompletionBox);
+    addRow(axis, importSuggestionsBox);
 
-    //row = Box.createHorizontalBox();
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(errorCheckerBox);
-    row.add(warningsCheckerBox);
-    axis.add(row);
+    addRow(axis, memoryOverrideBox, memoryField, mbLabel);
 
-    axis.add(codeCompletionBox);
-    axis.add(importSuggestionsBox);
+    addRow(axis, deletePreviousBox);
+    addRow(axis, checkUpdatesBox);
+    addRow(axis, syncSketchNameBox);
 
-    //row = Box.createHorizontalBox();
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(memoryOverrideBox);
-    row.add(memoryField);
-    row.add(mbLabel);
-    axis.add(row);
+    addRow(axis, displayLabel, displaySelectionBox);
 
-    axis.add(deletePreviousBox);
-    axis.add(checkUpdatesBox);
-    axis.add(syncSketchNameBox);
+    addRow(axis, autoAssociateBox);
 
-    //row = Box.createHorizontalBox();
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    row.add(displayLabel);
-    row.add(displaySelectionBox);  // preferred
-    axis.add(row);
+//    axis.add(morePreferenceLabel);
+//    axis.add(preferencePathLabel);
+//    axis.add(preferenceHintLabel);
+    addRow(axis, morePreferenceLabel);
+    addRow(axis, preferencePathLabel);
+    addRow(axis, preferenceHintLabel);
 
-    axis.add(autoAssociateBox);
-
-    axis.add(morePreferenceLabel);
-    axis.add(preferencePathLabel);
-    axis.add(preferenceHintLabel);
-
-    //row = Box.createHorizontalBox();
-    //row = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
-    row = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
-//    row.add(Box.createHorizontalGlue());
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     row.add(okButton);  // buttonWidth
     row.add(cancelButton);  // buttonWidth
     axis.add(row);
 
-    axis.setBorder(new EmptyBorder(Toolkit.BORDER, Toolkit.BORDER, Toolkit.BORDER, Toolkit.BORDER));
+    axis.setBorder(new EmptyBorder(13, 13, 13, 13));
     pain.add(axis);
 
     /*
@@ -670,7 +614,7 @@ public class PreferencesFrame {
 
 
   private void addRow(Container axis, Component... components) {
-    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 3));
     for (Component comp : components) {
       row.add(comp);
     }
