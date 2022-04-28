@@ -185,8 +185,8 @@ public class ListPanel extends JPanel implements Scrollable {
     sectionColor = Theme.getColor("manager.list.section.color");
     selectionColor = Theme.getColor("manager.list.selection.color");
 
-    rowColor = Theme.getColor("manager.list.row.color");
-    setBackground(rowColor);
+    rowColor = Theme.getColor("manager.list.background.color");
+    table.setBackground(rowColor);
   }
 
 
