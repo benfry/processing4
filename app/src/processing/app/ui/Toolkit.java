@@ -1147,12 +1147,19 @@ public class Toolkit {
   }
 
 
+  /*
   static public String getSansFontName() {
     if (sansFont == null) {
       // create a dummy version if the font has never been loaded (rare)
       getSansFont(12, Font.PLAIN);
     }
     return sansFont.getName();
+  }
+  */
+
+
+  static public Font getSansFont() {
+    return getSansFont(0, Font.PLAIN);
   }
 
 
@@ -1180,13 +1187,13 @@ public class Toolkit {
       }
     }
     if (style == Font.BOLD) {
-      if (size == sansBoldFont.getSize()) {
+      if (size == sansBoldFont.getSize() || size == 0) {
         return sansBoldFont;
       } else {
         return sansBoldFont.deriveFont((float) size);
       }
     } else {
-      if (size == sansFont.getSize()) {
+      if (size == sansFont.getSize() || size == 0) {
         return sansFont;
       } else {
         return sansFont.deriveFont((float) size);

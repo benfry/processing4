@@ -55,5 +55,14 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="processing4-core" />
+    <orderEntry type="module-library">
+      <library name="flatlaf">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/flatlaf.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

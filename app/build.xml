@@ -100,8 +100,34 @@
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+  <property name="flatlaf.version" value="2.2" />
+
+  <fileset id="flatlaf.files" dir="lib">
+    <include name="flatlaf.jar" />
+  </fileset>
+
+  <!-- TODO implement a fallback URL that points to a location
+       on download.processing.org so it's available forever. -->
+  <property name="flatlaf.url"
+            value="https://repo1.maven.org/maven2/com/formdev/flatlaf/${flatlaf.version}/flatlaf-${flatlaf.version}.jar" />
+
+  <available file="lib/flatlaf.jar" property="flatlaf.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="flatlaf.ignorable" value="false" else="true">
+    <isset property="flatlaf.present" />
+  </condition>
+
+  <target name="download-flatlaf" unless="flatlaf.present">
+    <get src="${flatlaf.url}" dest="lib/flatlaf.jar"
+         ignoreerrors="${flatlaf.ignorable}"
+         usetimestamp="true" />
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
   <target name="compile" description="Compile sources"
-          depends="download-ant, download-jna">
+          depends="download-ant, download-jna, download-flatlaf">
     <condition property="core-built">
       <available file="../core/library/core.jar" />
     </condition>
@@ -133,6 +159,7 @@
                       ../core/apple.jar;
                       lib/ant.jar;
                       lib/ant-launcher.jar;
+                      lib/flatlaf.jar;
                       lib/jna.jar;
                       lib/jna-platform.jar"
            debug="on"
@@ -146,13 +173,15 @@
     <jar basedir="bin" destfile="pde.jar" />
   </target>
 
-<target name="update" description="Update the downloaded libraries">
+  <target name="update" description="Update the downloaded libraries">
     <delete>
-      <fileset refid="jna.files" />
       <fileset refid="ant.files" />
+      <fileset refid="flatlaf.files" />
+      <fileset refid="jna.files" />
     </delete>
 
     <antcall target="download-ant" />
+    <antcall target="download-flatlaf" />
     <antcall target="download-jna" />
   </target>
 

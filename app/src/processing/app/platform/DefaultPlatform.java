@@ -27,10 +27,10 @@ import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
-import java.net.URI;
 
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
+import javax.swing.text.StyleContext;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -110,16 +110,34 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
+      // dummy font call so that it's registered for the LaF
+      Toolkit.getSansFont(12, Font.PLAIN);
+
+      com.formdev.flatlaf.FlatLaf.registerCustomDefaultsSource("processing.app.ui");
+      UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
+
     } else {
       UIManager.setLookAndFeel(laf);
     }
 
+    /*
+    UIDefaults defaults = UIManager.getDefaults();
+    for (Map.Entry<Object, Object> entry : defaults.entrySet()) {
+      System.out.println(entry.getKey() + " = " + entry.getValue());
+    }
+    */
+
     // If the default has been overridden in the preferences, set the font
     String fontName = Preferences.get("ui.font.family");
     int fontSize = Preferences.getInteger("ui.font.size");
+//    fontName = "Processing Sans Pro";
     if (!"Dialog".equals(fontName) || fontSize != 12) {
       setUIFont(new FontUIResource(fontName, Font.PLAIN, fontSize));
+//      setUIFont(new FontUIResource(createFallingFont(fontName, Font.PLAIN, fontSize)));
+//      setUIFont((FontUIResource) StyleContext.getDefaultStyleContext().getFont(fontName, Font.PLAIN, fontSize));
+
 //      Map<TextAttribute, Object> attributes = new HashMap<>();
 //      attributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
 //      Font font = new Font(fontName, Font.PLAIN, fontSize).deriveFont(attributes);
@@ -129,9 +147,19 @@ public class DefaultPlatform {
     // Default was 8x8, but that's not enough with the insets and rounded rect
     // https://github.com/processing/processing4/issues/473
     //System.out.println(UIManager.get("ScrollBar.minimumThumbSize"));
-    UIManager.put("ScrollBar.minimumThumbSize", new Dimension(8, 24));
+    UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
   }
 
+//  // Adapted from https://stackoverflow.com/a/64667581/18247494
+//  static Font createFallingFont(final String family, final int style, final int size) {
+//    return new NonUIResourceFont(StyleContext.getDefaultStyleContext().getFont(family, style, size));
+//  }
+//
+//  static class NonUIResourceFont extends Font {
+//    public NonUIResourceFont(final Font font) {
+//      super(font);
+//    }
+//  }
 
   // Rewritten from https://stackoverflow.com/a/7434935
   static private void setUIFont(FontUIResource f) {

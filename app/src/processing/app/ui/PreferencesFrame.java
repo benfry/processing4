@@ -134,12 +134,13 @@ public class PreferencesFrame {
     languageSelection[0] = languages.get(Language.getLanguage());
     int i = 1;
     for (Map.Entry<String, String> lang : languages.entrySet()) {
-      if(!lang.getKey().equals(Language.getLanguage())){
+      if (!lang.getKey().equals(Language.getLanguage())){
         languageSelection[i++] = lang.getValue();
       }
     }
     languageSelectionBox.setModel(new DefaultComboBoxModel<>(languageSelection));
     languageRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
+    languageSelectionBox.setRenderer(new LanguageRenderer());
 
 
     // Editor and console font [ Source Code Pro ]
@@ -545,6 +546,27 @@ public class PreferencesFrame {
         }
       }
     });
+  }
+
+
+  class LanguageRenderer extends JLabel implements ListCellRenderer<String> {
+    final int fontSize = languageSelectionBox.getFont().getSize();
+    final Font sansFont = Toolkit.getSansFont(fontSize, Font.PLAIN);
+    final Font fallbackFont = new Font("Dialog", Font.PLAIN,fontSize);
+
+    @Override
+    public Component getListCellRendererComponent(JList<? extends String> list, String text, int index,
+                                                  boolean isSelected, boolean cellHasFocus) {
+      if (sansFont.canDisplayUpTo(text) == -1) {
+        // if the sans font can display the chars, use it
+        setFont(sansFont);
+      } else {
+        // otherwise, use the fallback font (Dialog)
+        setFont(fallbackFont);
+      }
+      setText(text);
+      return this;
+    }
   }
 
 

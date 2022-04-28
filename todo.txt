@@ -14,7 +14,12 @@ X add updateTheme() to contrib.ListPanel
 X   right now pulling Theme.getColor() directly
 X   but need to make sure repaint() is called anyway
 X use errors.row.bgcolor as bgcolor for the error list
-X change errors.row to errors.list in theme.txt
+o change errors.row to errors.list in theme.txt
+X   add errors.bgcolor instead
+X look and feel plus fonts
+X   trying out https://www.formdev.com/flatlaf/ to clean things up
+X   using Source Sans Pro as interface font
+X   rewrite language selector to use fallback fonts
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
