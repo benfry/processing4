@@ -112,7 +112,7 @@ public class PreferencesFrame {
 
     sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location")+":");
 
-    sketchbookLocationField = new JTextField(40);
+    sketchbookLocationField = new JTextField(30);
 
     browseButton = new JButton(Language.getPrompt("browse"));
     browseButton.addActionListener(e -> {

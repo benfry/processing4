@@ -20,11 +20,17 @@ X look and feel plus fonts
 X   trying out https://www.formdev.com/flatlaf/ to clean things up
 X   using Source Sans Pro as interface font
 X   rewrite language selector to use fallback fonts
+
+preferences
 X get rid of text box for 'background color when presenting'
 X   redundant (can type numbers in the dialog) and fussy
-_ remove 'smooth text' (too rare: it can be manually edited)
-_ show 'requires restart' only after making a change?
+X change "sketchbook location" to "sketchbook folder"
+X   (this is how it's referenced everywhere else in the interface)
+X shorten sketchbook location text field
+o sketchbook location to single line (drop "location"? say folder?)
 _ why is sketchbook location text selected when opening window?
+_ remove 'smooth text' (too rare: manual editing should suffice)
+_ show 'requires restart' only after making a change?
 _ move to separate panel
 _   background when presenting
 _   continuously check
@@ -35,7 +41,6 @@ _   delete previous
 _ move 'enable complex text' up near language?
 _   better yet, move langauge down below font and interface scale
 _   turn it on when selecting CJKV as a language
-_ sketchbook location to single line (drop "location"? say folder?)
 _ Color Selector buttons misaligned
 
 contrib
