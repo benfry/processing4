@@ -30,7 +30,7 @@ X shorten sketchbook location text field
 o sketchbook location to single line (drop "location"? say folder?)
 X why is sketchbook location text selected when opening window?
 X   had focus by default, which apparently selects the text
-_ remove 'smooth text' (too rare: manual editing should suffice)
+X remove 'smooth text' (too rare: manual editing should suffice)
 _ show 'requires restart' only after making a change?
 _ move to separate panel
 _   background when presenting

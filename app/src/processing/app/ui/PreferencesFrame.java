@@ -51,7 +51,7 @@ public class PreferencesFrame {
 
   JTextField sketchbookLocationField;
   JTextField presentColor;
-  JCheckBox editorAntialiasBox;
+  //JCheckBox editorAntialiasBox;
   JCheckBox deletePreviousBox;
   JCheckBox memoryOverrideBox;
   JTextField memoryField;
@@ -275,7 +275,7 @@ public class PreferencesFrame {
 
     // [ ] Use smooth text in editor window
 
-    editorAntialiasBox = new JCheckBox(Language.text("preferences.use_smooth_text"));
+    //editorAntialiasBox = new JCheckBox(Language.text("preferences.use_smooth_text"));
 
 
     // [ ] Enable complex text input (for Japanese et al, requires restart)
@@ -419,7 +419,7 @@ public class PreferencesFrame {
                       .addGap(0)
                       //.addComponent(presentColorHex, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                       .addComponent(presentColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-          .addComponent(editorAntialiasBox)
+          //.addComponent(editorAntialiasBox)
           .addComponent(inputMethodBox)
           .addGroup(layout.createSequentialGroup()
                       .addComponent(errorCheckerBox)
@@ -484,7 +484,7 @@ public class PreferencesFrame {
                   //.addComponent(hashLabel)
                   //.addComponent(presentColorHex)
                   .addComponent(presentColor))
-      .addComponent(editorAntialiasBox)
+      //.addComponent(editorAntialiasBox)
       .addComponent(inputMethodBox)
       .addGroup(layout.createParallelGroup()
                   .addComponent(errorCheckerBox)
@@ -587,8 +587,8 @@ public class PreferencesFrame {
    * then send a message to the editor saying that it's time to do the same.
    */
   protected void applyFrame() {
-    Preferences.setBoolean("editor.smooth", //$NON-NLS-1$
-                           editorAntialiasBox.isSelected());
+//    Preferences.setBoolean("editor.smooth", //$NON-NLS-1$
+//                           editorAntialiasBox.isSelected());
 
     Preferences.setBoolean("export.delete_target_folder", //$NON-NLS-1$
                            deletePreviousBox.isSelected());
@@ -719,7 +719,7 @@ public class PreferencesFrame {
 
 
   public void showFrame() {
-    editorAntialiasBox.setSelected(Preferences.getBoolean("editor.smooth")); //$NON-NLS-1$
+    //editorAntialiasBox.setSelected(Preferences.getBoolean("editor.smooth")); //$NON-NLS-1$
     inputMethodBox.setSelected(Preferences.getBoolean("editor.input_method_support")); //$NON-NLS-1$
     errorCheckerBox.setSelected(Preferences.getBoolean("pdex.errorCheckEnabled"));
     warningsCheckerBox.setSelected(Preferences.getBoolean("pdex.warningsEnabled"));
