@@ -842,7 +842,8 @@ public class PreferencesFrame {
     String[] items = new String[displayCount];
     for (int i = 0; i < displayCount; i++) {
       DisplayMode mode = devices[i].getDisplayMode();
-      String title = String.format("%d (%d \u2715 %d)",  // or \u00d7?
+      //String title = String.format("%d (%d \u2715 %d)",  // or \u00d7?
+      String title = String.format("%d (%d \u00d7 %d)",  // or \u2715?
                                    i + 1, mode.getWidth(), mode.getHeight());
       if (devices[i] == defaultDevice) {
         title += " default";
