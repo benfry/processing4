@@ -89,7 +89,9 @@ public class ContributionTab extends JPanel {
   protected void updateTheme() {
     setBackground(Theme.getColor("manager.list.background.color"));
 
-    filterField.updateTheme();
+    if (filterField != null) {
+      filterField.updateTheme();
+    }
 
     listPanel.updateTheme();
 
