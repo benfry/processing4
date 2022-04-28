@@ -54,10 +54,10 @@ toolbar.button.debug.selected.stroke = none
 
 status.notice.fgcolor = #A1E6FF
 status.notice.bgcolor = #0870A1
-status.error.fgcolor = #00DCFF
-status.error.bgcolor = #FF8128
-status.warning.bgcolor = #003774
-status.warning.fgcolor = #00DFFF
+status.error.fgcolor = #FFFFF2
+status.error.bgcolor = #B40000
+status.warning.bgcolor = #FF8F38
+status.warning.fgcolor = #810000
 status.url.fgcolor = #FFFFF2
 status.font = processing.sans,plain,13
 # For the clipboard icon, needs to be a little larger on macOS
@@ -97,10 +97,15 @@ footer.updates.indicator.text.color = #00072B
 ## EditorConsole - stack traces of doom and println() ##
 
 # The font is handled by preferences.txt, so its size/etc are modifiable.
-console.color = #303639
-console.output.color = #8E9494
+console.color = #171F25
+console.output.color = #949DA0
 # text color for errors printed in the console
 console.error.color = #00CFFF
+
+console.scrollbar.thumb.enabled.color = #475055
+console.scrollbar.thumb.rollover.color = #2F6A90
+console.scrollbar.thumb.pressed.color = #2F6A90
+console.scrollbar.color = #121A21
 
 
 ## PdeTextAreaDefaults - default colors for the editor ##
@@ -145,32 +150,33 @@ editor.gutter.text.color = #00072B
 editor.gutter.linehighlight.color = #3E769D
 
 # squiggly line underneath errors in the editor
-editor.error.underline.color = #000000
+editor.error.underline.color = #FF0000
 # squiggly line underneath warnings
-editor.warning.underline.color = #003774
+editor.warning.underline.color = #FF8128
 
 
 ## MarkerColumn - shows ticks adjacent the scroll bar ##
 
 # lines next to the scrollbar showing where errors are located
-editor.column.error.color = #000000
-editor.column.warning.color = #003774
+editor.column.error.color = #BE0000
+editor.column.warning.color = #FFD57E
 
 
-## ErrorTable - the list of errors in the second tab found in the console area ##
+## ErrorTable - second tab below the console area, lists errors and warnings ##
 
 errors.header.font = processing.sans,plain,12
-errors.header.bgcolor = #ebebeb
-errors.header.fgcolor = #484848
+errors.header.bgcolor = #00243D
+errors.header.fgcolor = #8F9FA9
+errors.bgcolor = #005074
 errors.row.font = processing.sans,plain,12
-errors.row.fgcolor = #484848
-errors.row.bgcolor = #ffffff
+errors.row.fgcolor = #000000
+errors.row.bgcolor = #00B7FF
 errors.selection.fgcolor = #242424
 errors.selection.bgcolor = #e5e5e5
 errors.selection.error.bgcolor = #f5e6e6
 errors.selection.warning.bgcolor = #fdf2e7
-errors.indicator.error.color = #9e0a0a
-errors.indicator.warning.color = #ef8115
+errors.indicator.error.color = #000000
+errors.indicator.warning.color = #0081F3
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
@@ -194,6 +200,7 @@ manager.tab.background = #6BA0C7
 
 manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
+manager.list.row.color = #FFFFFF
 manager.list.selection.color = #e0fffd
 
 

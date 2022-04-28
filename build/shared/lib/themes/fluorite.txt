@@ -54,7 +54,7 @@ toolbar.button.debug.selected.stroke = none
 
 status.notice.fgcolor = #F7C9FF
 status.notice.bgcolor = #734D9D
-status.error.fgcolor = #2B00CF
+status.error.fgcolor = #3F00A4
 status.error.bgcolor = #FFFFF2
 status.warning.bgcolor = #A49EA1
 status.warning.fgcolor = #2F0E53
@@ -97,10 +97,15 @@ footer.updates.indicator.text.color = #FFEFFF
 ## EditorConsole - stack traces of doom and println() ##
 
 # The font is handled by preferences.txt, so its size/etc are modifiable.
-console.color = #140F17
-console.output.color = #807B7F
+console.color = #17101A
+console.output.color = #9B949B
 # text color for errors printed in the console
 console.error.color = #F071FF
+
+console.scrollbar.thumb.enabled.color = #49434B
+console.scrollbar.thumb.rollover.color = #2F6A90
+console.scrollbar.thumb.pressed.color = #2F6A90
+console.scrollbar.color = #140D18
 
 
 ## PdeTextAreaDefaults - default colors for the editor ##
@@ -157,20 +162,21 @@ editor.column.error.color = #FFFFF2
 editor.column.warning.color = #A49EA1
 
 
-## ErrorTable - the list of errors in the second tab found in the console area ##
+## ErrorTable - second tab below the console area, lists errors and warnings ##
 
 errors.header.font = processing.sans,plain,12
-errors.header.bgcolor = #ebebeb
-errors.header.fgcolor = #484848
+errors.header.bgcolor = #17002B
+errors.header.fgcolor = #9C8EA2
+errors.bgcolor = #1E0740
 errors.row.font = processing.sans,plain,12
-errors.row.fgcolor = #484848
-errors.row.bgcolor = #ffffff
+errors.row.fgcolor = #FFFFF2
+errors.row.bgcolor = #5200B3
 errors.selection.fgcolor = #242424
 errors.selection.bgcolor = #e5e5e5
 errors.selection.error.bgcolor = #f5e6e6
 errors.selection.warning.bgcolor = #fdf2e7
-errors.indicator.error.color = #9e0a0a
-errors.indicator.warning.color = #ef8115
+errors.indicator.error.color = #FFFFF2
+errors.indicator.warning.color = #963EF2
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
@@ -194,6 +200,7 @@ manager.tab.background = #301751
 
 manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
+manager.list.row.color = #FFFFFF
 manager.list.selection.color = #e0fffd
 
 
