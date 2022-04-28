@@ -135,10 +135,12 @@
 
     <mkdir dir="bin" />
 
-    <!-- copy languages files -->
     <copy todir="bin">
       <fileset dir="src">
+        <!-- copy languages files -->
         <include name="processing/app/languages/*.properties" />
+        <!-- FlatLaf.properties and any others -->
+        <include name="processing/app/ui/*.properties" />
       </fileset>
     </copy>
 
