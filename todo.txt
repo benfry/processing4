@@ -20,6 +20,21 @@ X look and feel plus fonts
 X   trying out https://www.formdev.com/flatlaf/ to clean things up
 X   using Source Sans Pro as interface font
 X   rewrite language selector to use fallback fonts
+_ get rid of textbox for 'background color when presenting'
+_ remove 'smooth text' (too rare: it can be manually edited)
+_ show 'requires restart' only after making a change?
+_ why is sketchbook location text selected when opening window?
+_ move to separate panel
+_   background when presenting
+_   continuously check
+_   code completion
+_   suggest imports
+_   increase memory
+_   delete previous
+_ move 'enable complex text' up near language?
+_   better yet, move langauge down below font and interface scale
+_   turn it on when selecting CJKV as a language
+_ sketchbook location to single line (drop "location"? say folder?)
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
