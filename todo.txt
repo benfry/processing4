@@ -20,6 +20,7 @@ X look and feel plus fonts
 X   trying out https://www.formdev.com/flatlaf/ to clean things up
 X   using Source Sans Pro as interface font
 X   rewrite language selector to use fallback fonts
+_ Color Selector buttons misaligned
 
 preferences
 X get rid of text box for 'background color when presenting'
@@ -31,7 +32,12 @@ o sketchbook location to single line (drop "location"? say folder?)
 X why is sketchbook location text selected when opening window?
 X   had focus by default, which apparently selects the text
 X remove 'smooth text' (too rare: manual editing should suffice)
+_ switch to BoxLayout before making more layout changes?
 _ show 'requires restart' only after making a change?
+X   fixed for interface zoom
+_   hidpiDisableBox
+_   inputMethodBox
+_   languageSelectionBox and languageRestartLabel
 _ move to separate panel
 _   background when presenting
 _   continuously check
@@ -42,7 +48,6 @@ _   delete previous
 _ move 'enable complex text' up near language?
 _   better yet, move langauge down below font and interface scale
 _   turn it on when selecting CJKV as a language
-_ Color Selector buttons misaligned
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch

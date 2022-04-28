@@ -70,6 +70,7 @@ public class PreferencesFrame {
 
   JComboBox<String> zoomSelectionBox;
   JCheckBox zoomAutoBox;
+  JLabel zoomRestartLabel;
 
   JCheckBox hidpiDisableBox;
   JCheckBox syncSketchNameBox;
@@ -102,7 +103,6 @@ public class PreferencesFrame {
 
     JLabel sketchbookLocationLabel;
     JLabel languageRestartLabel;
-    JLabel zoomRestartLabel;
     JButton browseButton; //, button2;
 
 
@@ -171,14 +171,19 @@ public class PreferencesFrame {
 
     // Interface scale: [ 100% ] (requires restart of Processing)
 
+    zoomRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
+
     JLabel zoomLabel = new JLabel(Language.text("preferences.zoom") + ": ");
 
     zoomAutoBox = new JCheckBox(Language.text("preferences.zoom.auto"));
-    zoomAutoBox.addChangeListener(e -> zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected()));
+    zoomAutoBox.addChangeListener(e -> {
+      zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected());
+      updateZoomRestartRequired();
+    });
 
     zoomSelectionBox = new JComboBox<>();
     zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.array()));
-    zoomRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
+    zoomSelectionBox.addActionListener(e -> updateZoomRestartRequired());
 
 
     // [ ] Disable HiDPI Scaling (requires restart)
@@ -511,14 +516,14 @@ public class PreferencesFrame {
                   .addComponent(okButton)
                   .addComponent(cancelButton))
       .addGap(Toolkit.BORDER)
-      );
+    );
 
-    if (Platform.isWindows()){
+    if (Platform.isWindows()) {
       autoAssociateBox.setVisible(true);
       hidpiDisableBox.setVisible(true);
     }
-    // closing the window is same as hitting cancel button
 
+    // closing the window is same as hitting cancel button
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         disposeFrame();
@@ -526,9 +531,9 @@ public class PreferencesFrame {
     });
 
     ActionListener disposer = actionEvent -> disposeFrame();
-    // finish up
-
     Toolkit.registerWindowCloseKeys(frame.getRootPane(), disposer);
+
+    // finishing up
     Toolkit.setIcon(frame);
     frame.setResizable(false);
     frame.pack();
@@ -544,6 +549,14 @@ public class PreferencesFrame {
         }
       }
     });
+  }
+
+
+  private void updateZoomRestartRequired() {
+    zoomRestartLabel.setVisible(
+      zoomAutoBox.isSelected() != Preferences.getBoolean("editor.zoom.auto") ||
+      !Preferences.get("editor.zoom").equals(String.valueOf(zoomSelectionBox.getSelectedItem()))
+    );
   }
 
 
