@@ -110,21 +110,30 @@ public class PreferencesFrame {
     // Sketchbook folder:
     // [...............................]  [ Browse ]
 
-    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location")+":");
+    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location")+": ");
 
-    sketchbookLocationField = new JTextField(30);
+    sketchbookLocationField = new JTextField(25);
+    /*
     sketchbookLocationField.putClientProperty(
       FlatClientProperties.TEXT_FIELD_TRAILING_ICON,
       UIManager.getIcon("Tree.closedIcon")
     );
+    sketchbookLocationField.setEditable(false);
+    */
 
-    browseButton = new JButton(Language.getPrompt("browse"));
+    //browseButton = new JButton(Language.getPrompt("browse"));
+    browseButton = new JButton(UIManager.getIcon("Tree.closedIcon"));
     browseButton.addActionListener(e -> {
       File defaultLocation = new File(sketchbookLocationField.getText());
       ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
                            "sketchbookCallback", defaultLocation,
                            PreferencesFrame.this);
     });
+
+    sketchbookLocationField.putClientProperty(
+      FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT,
+      browseButton
+    );
 
 
     // Language: [ English ] (requires restart of Processing)
@@ -404,8 +413,9 @@ public class PreferencesFrame {
     Box axis = Box.createVerticalBox();
 //    axis.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    addRow(axis, sketchbookLocationLabel);
-    addRow(axis, sketchbookLocationField, browseButton);
+//    addRow(axis, sketchbookLocationLabel);
+//    addRow(axis, sketchbookLocationField, browseButton);
+    addRow(axis, sketchbookLocationLabel, sketchbookLocationField);
     addRow(axis, languageLabel, languageSelectionBox, languageRestartLabel);
 
     addRow(axis, fontLabel, fontSelectionBox);
