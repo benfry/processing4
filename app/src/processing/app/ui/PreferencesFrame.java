@@ -45,7 +45,7 @@ import processing.core.*;
  */
 public class PreferencesFrame {
   JFrame frame;
-  GroupLayout layout;
+  //GroupLayout layout;
 
   static final Integer[] FONT_SIZES = { 10, 12, 14, 18, 24, 36, 48 };
 
@@ -95,11 +95,11 @@ public class PreferencesFrame {
 
     frame = new JFrame(Language.text("preferences"));
     Container pain = frame.getContentPane();
-    layout = new GroupLayout(pain);
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
 
-    pain.setLayout(layout);
+    //layout = new GroupLayout(pain);
+    //layout.setAutoCreateGaps(true);
+    //layout.setAutoCreateContainerGaps(true);
+    //pain.setLayout(layout);
 
     JLabel sketchbookLocationLabel;
     JLabel languageRestartLabel;
@@ -289,6 +289,7 @@ public class PreferencesFrame {
       new JCheckBox(Language.text("preferences.enable_complex_text_input")+
                     " ("+Language.text("preferences.enable_complex_text_input_example")+
                     ", "+Language.text("preferences.requires_restart")+")");
+    //inputMethodBox.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 
     // [ ] Continuously check for errors - PDE X
@@ -392,6 +393,121 @@ public class PreferencesFrame {
     cancelButton.addActionListener(e -> disposeFrame());
 
     final int buttonWidth = Toolkit.getButtonWidth();
+
+//    JPanel axis = new JPanel();
+//    axis.setLayout(new GridLayout(0, 1, 0, 0));
+    Box axis = Box.createVerticalBox();
+//    axis.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+    addRow(axis, sketchbookLocationLabel);
+//    sketchbookLocationLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+//    axis.add(sketchbookLocationLabel);
+
+//    Box row = Box.createHorizontalBox();
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+//    row.setBackground(Color.GREEN);
+    row.add(sketchbookLocationField);
+    row.add(browseButton);
+//    System.out.println(row.getPreferredSize());
+//    row.setMaximumSize(row.getPreferredSize());
+//    row.setBorder(new EmptyBorder(0, 0, 0, 0));
+    axis.add(row);
+//    System.out.println(row);
+//    System.out.println(row.getBorder());
+//    JPanel wtf = row;
+//
+    /*
+    row = Box.createHorizontalBox();
+    row.add(languageLabel);
+    row.add(languageSelectionBox);  // needs to be limited to preferred size
+    row.add(languageRestartLabel);
+    row.add(Box.createHorizontalGlue());
+    axis.add(row);
+    */
+
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(languageLabel);
+    row.add(languageSelectionBox);  // needs to be limited to preferred size
+    row.add(languageRestartLabel);
+//    panel.add(Box.createHorizontalGlue());
+    axis.add(row);
+
+    //row = Box.createHorizontalBox();
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(fontLabel);
+    row.add(fontSelectionBox);  // needs to be limited to preferred size
+    axis.add(row);
+
+    //row = Box.createHorizontalBox();
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(fontSizeLabel);
+    row.add(fontSizeField);  // needs to be limited to preferred size
+    row.add(consoleFontSizeLabel);
+    row.add(consoleFontSizeField);  // needs to be limited to preferred size
+    axis.add(row);
+
+    //row = Box.createHorizontalBox();
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(zoomLabel);
+    row.add(zoomAutoBox);
+    row.add(zoomSelectionBox);  // preferred
+    row.add(zoomRestartLabel);
+    axis.add(row);
+
+    axis.add(hidpiDisableBox);
+
+    //row = Box.createHorizontalBox();
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(backgroundColorLabel);  // preferred
+    row.add(presentColor);  // preferred
+    axis.add(row);
+
+    axis.add(inputMethodBox);
+
+    //row = Box.createHorizontalBox();
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(errorCheckerBox);
+    row.add(warningsCheckerBox);
+    axis.add(row);
+
+    axis.add(codeCompletionBox);
+    axis.add(importSuggestionsBox);
+
+    //row = Box.createHorizontalBox();
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(memoryOverrideBox);
+    row.add(memoryField);
+    row.add(mbLabel);
+    axis.add(row);
+
+    axis.add(deletePreviousBox);
+    axis.add(checkUpdatesBox);
+    axis.add(syncSketchNameBox);
+
+    //row = Box.createHorizontalBox();
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT));
+    row.add(displayLabel);
+    row.add(displaySelectionBox);  // preferred
+    axis.add(row);
+
+    axis.add(autoAssociateBox);
+
+    axis.add(morePreferenceLabel);
+    axis.add(preferencePathLabel);
+    axis.add(preferenceHintLabel);
+
+    //row = Box.createHorizontalBox();
+    //row = new JPanel(new FlowLayout(FlowLayout.RIGHT, 2, 2));
+    row = new JPanel(new FlowLayout(FlowLayout.LEFT, 2, 2));
+//    row.add(Box.createHorizontalGlue());
+    row.add(okButton);  // buttonWidth
+    row.add(cancelButton);  // buttonWidth
+    axis.add(row);
+
+    axis.setBorder(new EmptyBorder(Toolkit.BORDER, Toolkit.BORDER, Toolkit.BORDER, Toolkit.BORDER));
+    pain.add(axis);
+
+    /*
     layout.setHorizontalGroup(layout.createSequentialGroup() // sequential group for border + mainContent + border
       .addGap(Toolkit.BORDER)
       .addGroup(layout.createParallelGroup() // parallel group for rest of the components
@@ -517,6 +633,7 @@ public class PreferencesFrame {
                   .addComponent(cancelButton))
       .addGap(Toolkit.BORDER)
     );
+    */
 
     if (Platform.isWindows()) {
       autoAssociateBox.setVisible(true);
@@ -549,6 +666,15 @@ public class PreferencesFrame {
         }
       }
     });
+  }
+
+
+  private void addRow(Container axis, Component... components) {
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    for (Component comp : components) {
+      row.add(comp);
+    }
+    axis.add(row);
   }
 
 
