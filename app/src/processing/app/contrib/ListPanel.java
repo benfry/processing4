@@ -71,6 +71,8 @@ public class ListPanel extends JPanel implements Scrollable {
   Color selectionColor;
   Color rowColor;
 
+  Color textColor;
+  Color incompatibleColor;
 
   static final SectionHeaderContribution[] sections = {
     new SectionHeaderContribution(ContributionType.LIBRARY),
@@ -184,6 +186,9 @@ public class ListPanel extends JPanel implements Scrollable {
     headerColor = Theme.getColor("manager.list.header.color");
     sectionColor = Theme.getColor("manager.list.section.color");
     selectionColor = Theme.getColor("manager.list.selection.color");
+
+    textColor = Theme.getColor("manager.list.text.color");
+    incompatibleColor = Theme.getColor("manager.list.incompatible.color");
 
     rowColor = Theme.getColor("manager.list.background.color");
     table.setBackground(rowColor);
@@ -348,8 +353,10 @@ public class ListPanel extends JPanel implements Scrollable {
           break;
       }
 
-      if (!contribution.isCompatible(Base.getRevision())) {
-        label.setForeground(Color.LIGHT_GRAY);
+      if (contribution.isCompatible(Base.getRevision())) {
+        label.setForeground(textColor);
+      } else {
+        label.setForeground(incompatibleColor);
       }
       return label;
     }

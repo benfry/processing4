@@ -37,6 +37,7 @@ import processing.app.Base;
 import processing.app.Language;
 import processing.app.Library;
 import processing.app.ui.Editor;
+import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
 
@@ -86,8 +87,13 @@ public class ContributionTab extends JPanel {
 
 
   protected void updateTheme() {
-    //statusPanel.updateTheme();  // nothing yet
+    setBackground(Theme.getColor("manager.list.background.color"));
+
+    filterField.updateTheme();
+
     listPanel.updateTheme();
+
+    //statusPanel.updateTheme();  // nothing yet
   }
 
 
@@ -158,7 +164,6 @@ public class ContributionTab extends JPanel {
     layout.setHonorsVisibility(listPanel, false);
     layout.setHonorsVisibility(categoryChooser, false);
 
-    setBackground(Color.WHITE);
     setBorder(null);
   }
 
@@ -334,6 +339,10 @@ public class ContributionTab extends JPanel {
   class FilterField extends JTextField {
     List<String> filters;
 
+    Color textColor;
+    Color placeholderColor;
+    Color backgroundColor;
+
     public FilterField () {
       super("");
 
@@ -404,6 +413,8 @@ public class ContributionTab extends JPanel {
           applyFilter();
         }
       });
+
+      updateTheme();
     }
 
     public void applyFilter() {
@@ -414,6 +425,14 @@ public class ContributionTab extends JPanel {
 
       filters = Arrays.asList(filter.split(" "));
       filterLibraries(category, filters);
+    }
+
+    protected void updateTheme() {
+      textColor = Theme.getColor("manager.list.search.text.color");
+      placeholderColor = Theme.getColor("manager.list.search.placeholder.color");
+      backgroundColor = Theme.getColor("manager.list.search.background.color");
+
+      setBackground(backgroundColor);
     }
   }
 
