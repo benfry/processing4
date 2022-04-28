@@ -52,7 +52,6 @@ public class PreferencesFrame {
 
   JTextField sketchbookLocationField;
   JTextField presentColor;
-  JTextField presentColorHex;
   JCheckBox editorAntialiasBox;
   JCheckBox deletePreviousBox;
   JCheckBox memoryOverrideBox;
@@ -212,6 +211,7 @@ public class PreferencesFrame {
     presentColor.setBorder(cb);
     presentColor.setBackground(Preferences.getColor("run.present.bgcolor"));
 
+    /*
     presentColorHex = new JTextField(6);
     presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));
     presentColorHex.getDocument().addDocumentListener(new DocumentListener() {
@@ -244,13 +244,12 @@ public class PreferencesFrame {
 
       @Override public void changedUpdate(DocumentEvent e) {}
     });
+    */
 
     selector = new ColorChooser(frame, false,
                                 Preferences.getColor("run.present.bgcolor"),
                                 Language.text("prompt.ok"), e -> {
-      String colorValue = selector.getHexColor();
-      colorValue = colorValue.substring(1);  // remove the #
-      presentColorHex.setText(colorValue);
+      String colorValue = selector.getHexColor().substring(1);
       presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
       selector.hide();
     });
@@ -272,7 +271,7 @@ public class PreferencesFrame {
       }
     });
 
-    JLabel hashLabel = new JLabel("#");
+    //JLabel hashLabel = new JLabel("#");
 
 
     // [ ] Use smooth text in editor window
@@ -417,9 +416,9 @@ public class PreferencesFrame {
           .addComponent(hidpiDisableBox)
           .addGroup(layout.createSequentialGroup()
                       .addComponent(backgroundColorLabel)
-                      .addComponent(hashLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                      //.addComponent(hashLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                       .addGap(0)
-                      .addComponent(presentColorHex, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                      //.addComponent(presentColorHex, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
                       .addComponent(presentColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
           .addComponent(editorAntialiasBox)
           .addComponent(inputMethodBox)
@@ -483,8 +482,8 @@ public class PreferencesFrame {
       .addComponent(hidpiDisableBox)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(backgroundColorLabel)
-                  .addComponent(hashLabel)
-                  .addComponent(presentColorHex)
+                  //.addComponent(hashLabel)
+                  //.addComponent(presentColorHex)
                   .addComponent(presentColor))
       .addComponent(editorAntialiasBox)
       .addComponent(inputMethodBox)
@@ -767,7 +766,7 @@ public class PreferencesFrame {
     syncSketchNameBox.setSelected(Preferences.getBoolean("editor.sync_folder_and_filename"));
 
     presentColor.setBackground(Preferences.getColor("run.present.bgcolor"));
-    presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));
+    //presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));
 
     memoryOverrideBox.
       setSelected(Preferences.getBoolean("run.options.memory")); //$NON-NLS-1$
