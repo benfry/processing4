@@ -30,7 +30,6 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
 
 import processing.app.Base;
 import processing.app.Language;
@@ -107,7 +106,7 @@ public class PreferencesFrame {
     JButton browseButton; //, button2;
 
 
-    // Sketchbook location:
+    // Sketchbook folder:
     // [...............................]  [ Browse ]
 
     sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location")+":");
@@ -781,9 +780,14 @@ public class PreferencesFrame {
     // PrefWindow is to be displayed
     frame.getRootPane().setDefaultButton(okButton);
 
+    // Prevent the location field from being highlighted by default
+    sketchbookLocationField.select(0, 0);
+    // Could make the Cancel button the default, but seems odd
+    okButton.requestFocusInWindow();
+
     // The pack is called again here second time to fix layout bugs
-    // the bugs are not due to groupLayout but due to HTML rendering of components
-    // more info can be found here -> https://netbeans.org/bugzilla/show_bug.cgi?id=79967
+    // due to HTML rendering of components. [akarshit 150430]
+    // https://netbeans.org/bugzilla/show_bug.cgi?id=79967
     frame.pack();
 
     frame.setVisible(true);
