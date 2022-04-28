@@ -55,6 +55,7 @@ X   https://github.com/processing/processing4/issues/477
 X   https://github.com/processing/processing4/pull/479
 X Update PDE_es.properties
 X   https://github.com/processing/processing4/pull/480
+X   https://github.com/processing/processing4/pull/481
 
 
 manager
