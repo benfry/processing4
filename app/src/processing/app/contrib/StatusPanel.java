@@ -22,7 +22,6 @@
 package processing.app.contrib;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 import java.text.DateFormat;
 import java.util.Date;
@@ -56,6 +55,8 @@ class StatusPanel extends JPanel {
   static Icon removeIcon;
   static Font buttonFont;
 
+  String detailStyle;
+
   JTextPane label;
   JButton installButton;
   JPanel progressPanel;
@@ -63,7 +64,7 @@ class StatusPanel extends JPanel {
   JButton updateButton;
   JButton removeButton;
   GroupLayout layout;
-  JLabel iconLabel;
+  JLabel iconLabel;  // Foundation Icon to the left of the detail
   ContributionTab contributionTab;
 
 
@@ -192,6 +193,28 @@ class StatusPanel extends JPanel {
 
   protected void updateTheme() {
     setBackground(Theme.getColor("manager.panel.background.color"));
+
+    Font detailFont = Theme.getFont("manager.panel.font");
+    detailStyle =
+      "body { " +
+      "  margin: 0; " +
+      "  padding: 0;" +
+      "  font-family: " + detailFont.getName() + ", sans-serif;" +
+      "  font-size: " + detailFont.getSize() + "px;" +
+      "  color: " + Theme.get("manager.panel.text.color") + ";" +
+      "}" +
+      "a { " +
+      "  color: " + Theme.get("manager.panel.link.color") + ";" +
+      "  text-decoration: none;" +
+      "}";
+
+    updateLabel.setForeground(Theme.getColor("manager.panel.text.color"));
+
+    // I'm not circuitous, *you're* circuitous.
+    StatusPanelDetail detail = contributionTab.listPanel.getSelectedDetail();
+    if (detail != null) {
+      updateDetail(detail);
+    }
   }
 
 
@@ -208,18 +231,6 @@ class StatusPanel extends JPanel {
       label.setText(null);
       label.repaint();
     }
-  }
-
-
-  static private String getBodyStyle() {
-    return "body { " +
-      "  margin: 0; " +
-      "  padding: 0;" +
-      "  font-family: " + Toolkit.getSansFont().getName() + ", Helvetica, Arial, sans-serif;" +
-      "  font-size: 11px;" +
-      "  color: " + Theme.get("manager.panel.text.color") + ";" +
-      "}" +
-      "a { color: " + Theme.get("manager.panel.link.color") + "; text-decoration: none; }";
   }
 
 
@@ -303,7 +314,7 @@ class StatusPanel extends JPanel {
 
     iconLabel.setIcon(contrib.isFoundation() ? foundationIcon : null);
     label.setText(updateDescription(contrib));
-    ((HTMLDocument) label.getDocument()).getStyleSheet().addRule(getBodyStyle());
+    ((HTMLDocument) label.getDocument()).getStyleSheet().addRule(detailStyle);
 
     ContributionListing listing = ContributionListing.getInstance();
 

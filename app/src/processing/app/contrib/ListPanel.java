@@ -76,6 +76,8 @@ public class ListPanel extends JPanel implements Scrollable {
   Color textColorIncompatible;
   Color selectionColorIncompatible;
 
+  JScrollPane scrollPane;
+
   static final SectionHeaderContribution[] sections = {
     new SectionHeaderContribution(ContributionType.LIBRARY),
     new SectionHeaderContribution(ContributionType.MODE),
@@ -133,7 +135,7 @@ public class ListPanel extends JPanel implements Scrollable {
       }
     };
 
-    JScrollPane scrollPane = new JScrollPane(table);
+    scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
     scrollPane.getVerticalScrollBar().setUI(new ThemeScrollBarUI("manager"));
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
@@ -201,12 +203,13 @@ public class ListPanel extends JPanel implements Scrollable {
 
     rowColor = Theme.getColor("manager.list.background.color");
     table.setBackground(rowColor);
+
+    ((ThemeScrollBarUI) scrollPane.getVerticalScrollBar().getUI()).updateTheme();
   }
 
 
   // TODO remove this, yuck [fry 220313]
   protected int getScrollBarWidth() {
-    JScrollPane scrollPane = (JScrollPane) getComponent(0);
     return scrollPane.getVerticalScrollBar().getPreferredSize().width;
   }
 
