@@ -21,15 +21,17 @@ X   trying out https://www.formdev.com/flatlaf/ to clean things up
 X   using Source Sans Pro as interface font
 X   rewrite language selector to use fallback fonts
 X add manager.panel constants for colors
-_ Color Selector buttons misaligned
-_ status panel not updating in updateTheme()
-_ StatusPanel.getBodyStyle() has hard-coded fonts/sizes
+X status panel not updating in updateTheme()
+X StatusPanel.getBodyStyle() has hard-coded fonts/sizes
 _ accent color and light/dark mode into the theme, and use with flatlaf
 _ monochrome icon for foundation
+_ icons for contrib manager list entries (green/orange PNGs won't do)
 _ remove ability to rearrange columns in contrib manager
 _ update lib/theme.txt to clean up current Frankenstein status
 
 _ how to override flatlaf for components (search, buttons, dropdown menu) in manager
+
+_ Color Selector buttons misaligned
 
 preferences
 X get rid of text box for 'background color when presenting'
