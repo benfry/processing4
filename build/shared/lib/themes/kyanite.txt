@@ -21,15 +21,15 @@ toolbar.button.disabled.field = #558BB2
 toolbar.button.disabled.glyph = #3E769D
 toolbar.button.disabled.stroke = none
 toolbar.button.enabled.field = #FFFFF2
-toolbar.button.enabled.glyph = #009FFF
+toolbar.button.enabled.glyph = #0088F4
 toolbar.button.enabled.stroke = none
-toolbar.button.pressed.field = #009FFF
+toolbar.button.pressed.field = #0068CF
 toolbar.button.pressed.glyph = #FFFFF2
 toolbar.button.pressed.stroke = #FFFFF2
 toolbar.button.rollover.field = #FFFFF2
-toolbar.button.rollover.glyph = #002652
+toolbar.button.rollover.glyph = #002E7A
 toolbar.button.rollover.stroke = none
-toolbar.button.selected.field = #00163A
+toolbar.button.selected.field = #002E7A
 toolbar.button.selected.glyph = #FFFFF2
 toolbar.button.selected.stroke = none
 
@@ -55,9 +55,9 @@ toolbar.button.debug.selected.stroke = none
 status.notice.fgcolor = #A1E6FF
 status.notice.bgcolor = #0870A1
 status.error.fgcolor = #FFFFF2
-status.error.bgcolor = #B40000
-status.warning.bgcolor = #FF8F38
-status.warning.fgcolor = #810000
+status.error.bgcolor = #BF0000
+status.warning.bgcolor = #003774
+status.warning.fgcolor = #00DFFF
 status.url.fgcolor = #FFFFF2
 status.font = processing.sans,plain,13
 # For the clipboard icon, needs to be a little larger on macOS
@@ -118,13 +118,13 @@ editor.gradient.top = #6BA0C7
 editor.gradient.bottom = #6BA0C7
 
 # highlight for the current line
-editor.linehighlight.color = #DAFBFF
+editor.linehighlight.color = #DEF3FF
 # highlight for the current line
 editor.linehighlight=true
 
 editor.caret.color = #000000
 # also used by EditorHeader
-editor.selection.color = #AAF8FF
+editor.selection.color = #BFD7E6
 
 # little pooties at the end of lines that show where they finish
 editor.eolmarkers = false
@@ -152,14 +152,14 @@ editor.gutter.linehighlight.color = #3E769D
 # squiggly line underneath errors in the editor
 editor.error.underline.color = #FF0000
 # squiggly line underneath warnings
-editor.warning.underline.color = #FF8128
+editor.warning.underline.color = #003774
 
 
 ## MarkerColumn - shows ticks adjacent the scroll bar ##
 
 # lines next to the scrollbar showing where errors are located
-editor.column.error.color = #BE0000
-editor.column.warning.color = #FFD57E
+editor.column.error.color = #AD0000
+editor.column.warning.color = #D1FFFF
 
 
 ## ErrorTable - second tab below the console area, lists errors and warnings ##
@@ -171,21 +171,21 @@ errors.bgcolor = #005074
 errors.row.font = processing.sans,plain,12
 errors.row.fgcolor = #000000
 errors.row.bgcolor = #00B7FF
-errors.selection.fgcolor = #242424
-errors.selection.bgcolor = #e5e5e5
-errors.selection.error.bgcolor = #f5e6e6
-errors.selection.warning.bgcolor = #fdf2e7
+errors.selection.fgcolor = #FFFFF2
+errors.selection.bgcolor = #003774
+errors.selection.error.bgcolor = #FFFFF2
+errors.selection.warning.bgcolor = #009CFD
 errors.indicator.error.color = #000000
 errors.indicator.warning.color = #0081F3
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
 
-manager.tab.selected.color = #000000
-manager.tab.unselected.color = #003774
+manager.tab.selected.color = #C4E9FF
+manager.tab.unselected.color = #90B7D5
 manager.tab.text.font = processing.sans,bold,14
-manager.tab.text.selected.color = #FFFFF2
-manager.tab.text.unselected.color = #C4E9FF
+manager.tab.text.selected.color = #000000
+manager.tab.text.unselected.color = #2F5976
 manager.tab.gradient.top = #6BA0C7
 manager.tab.gradient.bottom = #6BA0C7
 
@@ -196,12 +196,21 @@ manager.tab.gradient.bottom = #6BA0C7
 manager.tab.background = #6BA0C7
 
 
+## ContributionTab
+
+manager.list.search.text.color = #000000
+manager.list.search.placeholder.color = #cccccc
+manager.list.search.background.color = #ffffff
+
+
 ## ListPanel – the listing inside a Contribution Manager tab ##
 
+manager.list.background.color = #C4E9FF
 manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
-manager.list.row.color = #FFFFFF
-manager.list.selection.color = #e0fffd
+manager.list.selection.color = #4A6F8A
+manager.list.text.color = #000000
+manager.list.incompatible.color = #CCCCCC
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##

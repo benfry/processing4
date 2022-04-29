@@ -21,15 +21,15 @@ toolbar.button.disabled.field = #B5B8B7
 toolbar.button.disabled.glyph = #9FA3A2
 toolbar.button.disabled.stroke = none
 toolbar.button.enabled.field = #FFFFF2
-toolbar.button.enabled.glyph = #0096F4
+toolbar.button.enabled.glyph = #0FA7FF
 toolbar.button.enabled.stroke = none
-toolbar.button.pressed.field = #0096F4
+toolbar.button.pressed.field = #007CD7
 toolbar.button.pressed.glyph = #FFFFF2
 toolbar.button.pressed.stroke = #FFFFF2
 toolbar.button.rollover.field = #FFFFF2
-toolbar.button.rollover.glyph = #062945
+toolbar.button.rollover.glyph = #005084
 toolbar.button.rollover.stroke = none
-toolbar.button.selected.field = #00163E
+toolbar.button.selected.field = #005084
 toolbar.button.selected.glyph = #FFFFF2
 toolbar.button.selected.stroke = none
 
@@ -54,8 +54,8 @@ toolbar.button.debug.selected.stroke = none
 
 status.notice.fgcolor = #1A1F23
 status.notice.bgcolor = #878B8D
-status.error.fgcolor = #00CEFF
-status.error.bgcolor = #000000
+status.error.fgcolor = #FFFFF2
+status.error.bgcolor = #C40000
 status.warning.bgcolor = #033D64
 status.warning.fgcolor = #80D9FF
 status.url.fgcolor = #FFFFF2
@@ -118,13 +118,13 @@ editor.gradient.top = #CBCECC
 editor.gradient.bottom = #CBCECC
 
 # highlight for the current line
-editor.linehighlight.color = #E3F9FF
+editor.linehighlight.color = #E3F1FE
 # highlight for the current line
 editor.linehighlight=true
 
 editor.caret.color = #000000
 # also used by EditorHeader
-editor.selection.color = #C0F4FF
+editor.selection.color = #C5D5E6
 
 # little pooties at the end of lines that show where they finish
 editor.eolmarkers = false
@@ -150,7 +150,7 @@ editor.gutter.text.color = #000009
 editor.gutter.linehighlight.color = #929696
 
 # squiggly line underneath errors in the editor
-editor.error.underline.color = #000000
+editor.error.underline.color = #FF0000
 # squiggly line underneath warnings
 editor.warning.underline.color = #033D64
 
@@ -158,8 +158,8 @@ editor.warning.underline.color = #033D64
 ## MarkerColumn - shows ticks adjacent the scroll bar ##
 
 # lines next to the scrollbar showing where errors are located
-editor.column.error.color = #000000
-editor.column.warning.color = #033D64
+editor.column.error.color = #BE0000
+editor.column.warning.color = #FBFFFA
 
 
 ## ErrorTable - second tab below the console area, lists errors and warnings ##
@@ -171,21 +171,21 @@ errors.bgcolor = #5E6263
 errors.row.font = processing.sans,plain,12
 errors.row.fgcolor = #000000
 errors.row.bgcolor = #00DCFF
-errors.selection.fgcolor = #242424
-errors.selection.bgcolor = #e5e5e5
-errors.selection.error.bgcolor = #f5e6e6
-errors.selection.warning.bgcolor = #fdf2e7
+errors.selection.fgcolor = #FFFFF2
+errors.selection.bgcolor = #033D64
+errors.selection.error.bgcolor = #FFFFF2
+errors.selection.warning.bgcolor = #009DFF
 errors.indicator.error.color = #000000
 errors.indicator.warning.color = #0098FF
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
 
-manager.tab.selected.color = #000000
-manager.tab.unselected.color = #033D64
+manager.tab.selected.color = #EFF2ED
+manager.tab.unselected.color = #D7DAD6
 manager.tab.text.font = processing.sans,bold,14
-manager.tab.text.selected.color = #FFFFF2
-manager.tab.text.unselected.color = #EFF2ED
+manager.tab.text.selected.color = #000000
+manager.tab.text.unselected.color = #646767
 manager.tab.gradient.top = #CBCECC
 manager.tab.gradient.bottom = #CBCECC
 
@@ -196,12 +196,21 @@ manager.tab.gradient.bottom = #CBCECC
 manager.tab.background = #CBCECC
 
 
+## ContributionTab
+
+manager.list.search.text.color = #000000
+manager.list.search.placeholder.color = #cccccc
+manager.list.search.background.color = #ffffff
+
+
 ## ListPanel – the listing inside a Contribution Manager tab ##
 
+manager.list.background.color = #EFF2ED
 manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
-manager.list.row.color = #FFFFFF
-manager.list.selection.color = #e0fffd
+manager.list.selection.color = #6F7171
+manager.list.text.color = #000000
+manager.list.incompatible.color = #CCCCCC
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##

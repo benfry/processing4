@@ -118,13 +118,13 @@ editor.gradient.top = #88272C
 editor.gradient.bottom = #88272C
 
 # highlight for the current line
-editor.linehighlight.color = #290200
+editor.linehighlight.color = #490B10
 # highlight for the current line
 editor.linehighlight=true
 
 editor.caret.color = #FFFFF2
 # also used by EditorHeader
-editor.selection.color = #470000
+editor.selection.color = #6C1A1F
 
 # little pooties at the end of lines that show where they finish
 editor.eolmarkers = false
@@ -159,7 +159,7 @@ editor.warning.underline.color = #FF9490
 
 # lines next to the scrollbar showing where errors are located
 editor.column.error.color = #FFFFF2
-editor.column.warning.color = #FF9490
+editor.column.warning.color = #D16865
 
 
 ## ErrorTable - second tab below the console area, lists errors and warnings ##
@@ -171,21 +171,21 @@ errors.bgcolor = #5B000A
 errors.row.font = processing.sans,plain,12
 errors.row.fgcolor = #FFFFF2
 errors.row.bgcolor = #CB0022
-errors.selection.fgcolor = #242424
-errors.selection.bgcolor = #e5e5e5
-errors.selection.error.bgcolor = #f5e6e6
-errors.selection.warning.bgcolor = #fdf2e7
+errors.selection.fgcolor = #000000
+errors.selection.bgcolor = #FF9490
+errors.selection.error.bgcolor = #000000
+errors.selection.warning.bgcolor = #BA0D2C
 errors.indicator.error.color = #FFFFF2
 errors.indicator.warning.color = #FF384D
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
 
-manager.tab.selected.color = #FFFFF2
-manager.tab.unselected.color = #FF9490
+manager.tab.selected.color = #380000
+manager.tab.unselected.color = #681E21
 manager.tab.text.font = processing.sans,bold,14
-manager.tab.text.selected.color = #000000
-manager.tab.text.unselected.color = #380000
+manager.tab.text.selected.color = #FFFFF2
+manager.tab.text.unselected.color = #D37D77
 manager.tab.gradient.top = #88272C
 manager.tab.gradient.bottom = #88272C
 
@@ -196,12 +196,21 @@ manager.tab.gradient.bottom = #88272C
 manager.tab.background = #88272C
 
 
+## ContributionTab
+
+manager.list.search.text.color = #000000
+manager.list.search.placeholder.color = #cccccc
+manager.list.search.background.color = #ffffff
+
+
 ## ListPanel – the listing inside a Contribution Manager tab ##
 
+manager.list.background.color = #380000
 manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
-manager.list.row.color = #FFFFFF
-manager.list.selection.color = #e0fffd
+manager.list.selection.color = #B66963
+manager.list.text.color = #000000
+manager.list.incompatible.color = #CCCCCC
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##

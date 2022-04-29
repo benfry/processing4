@@ -21,15 +21,15 @@ toolbar.button.disabled.field = #72805D
 toolbar.button.disabled.glyph = #5E6C4B
 toolbar.button.disabled.stroke = none
 toolbar.button.enabled.field = #FFFFF2
-toolbar.button.enabled.glyph = #4BA400
+toolbar.button.enabled.glyph = #238400
 toolbar.button.enabled.stroke = none
-toolbar.button.pressed.field = #4BA400
+toolbar.button.pressed.field = #006500
 toolbar.button.pressed.glyph = #FFFFF2
 toolbar.button.pressed.stroke = #FFFFF2
 toolbar.button.rollover.field = #FFFFF2
-toolbar.button.rollover.glyph = #132D00
+toolbar.button.rollover.glyph = #002400
 toolbar.button.rollover.stroke = none
-toolbar.button.selected.field = #001C00
+toolbar.button.selected.field = #002400
 toolbar.button.selected.glyph = #FFFFF2
 toolbar.button.selected.stroke = none
 
@@ -118,13 +118,13 @@ editor.gradient.top = #869570
 editor.gradient.bottom = #869570
 
 # highlight for the current line
-editor.linehighlight.color = #E7FFC4
+editor.linehighlight.color = #E6F5CB
 # highlight for the current line
 editor.linehighlight=true
 
 editor.caret.color = #000000
 # also used by EditorHeader
-editor.selection.color = #CDFF95
+editor.selection.color = #C8D9AD
 
 # little pooties at the end of lines that show where they finish
 editor.eolmarkers = false
@@ -159,7 +159,7 @@ editor.warning.underline.color = #194200
 
 # lines next to the scrollbar showing where errors are located
 editor.column.error.color = #000000
-editor.column.warning.color = #194200
+editor.column.warning.color = #F4FFD7
 
 
 ## ErrorTable - second tab below the console area, lists errors and warnings ##
@@ -171,21 +171,21 @@ errors.bgcolor = #3D4A2C
 errors.row.font = processing.sans,plain,12
 errors.row.fgcolor = #000000
 errors.row.bgcolor = #38B500
-errors.selection.fgcolor = #242424
-errors.selection.bgcolor = #e5e5e5
-errors.selection.error.bgcolor = #f5e6e6
-errors.selection.warning.bgcolor = #fdf2e7
+errors.selection.fgcolor = #FFFFF2
+errors.selection.bgcolor = #194200
+errors.selection.error.bgcolor = #FFFFF2
+errors.selection.warning.bgcolor = #4DAA00
 errors.indicator.error.color = #000000
 errors.indicator.warning.color = #008000
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
 
-manager.tab.selected.color = #000000
-manager.tab.unselected.color = #194200
+manager.tab.selected.color = #DAE6C3
+manager.tab.unselected.color = #A2AF8E
 manager.tab.text.font = processing.sans,bold,14
-manager.tab.text.selected.color = #FFFFF2
-manager.tab.text.unselected.color = #DAE6C3
+manager.tab.text.selected.color = #000000
+manager.tab.text.unselected.color = #4A553C
 manager.tab.gradient.top = #869570
 manager.tab.gradient.bottom = #869570
 
@@ -196,12 +196,21 @@ manager.tab.gradient.bottom = #869570
 manager.tab.background = #869570
 
 
+## ContributionTab
+
+manager.list.search.text.color = #000000
+manager.list.search.placeholder.color = #cccccc
+manager.list.search.background.color = #ffffff
+
+
 ## ListPanel – the listing inside a Contribution Manager tab ##
 
+manager.list.background.color = #DAE6C3
 manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
-manager.list.row.color = #FFFFFF
-manager.list.selection.color = #e0fffd
+manager.list.selection.color = #636D53
+manager.list.text.color = #000000
+manager.list.incompatible.color = #CCCCCC
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
