@@ -32,11 +32,15 @@ import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.text.StyleContext;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 import processing.app.Base;
 import processing.app.Preferences;
+import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 import processing.awt.ShimAWT;
 import processing.core.PApplet;
@@ -111,13 +115,20 @@ public class DefaultPlatform {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
       //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      // Default was 8x8, but that's not enough with the insets and rounded rect
+      // https://github.com/processing/processing4/issues/473
+      //System.out.println(UIManager.get("ScrollBar.minimumThumbSize"));
+      //UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
 
       // dummy font call so that it's registered for the LaF
       Toolkit.getSansFont(12, Font.PLAIN);
 
-      com.formdev.flatlaf.FlatLaf.registerCustomDefaultsSource("processing.app.ui");
-      UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
-
+      FlatLaf.registerCustomDefaultsSource("processing.app.ui");
+      //if ("dark".equals(Theme.get("laf.mode"))) {
+        //UIManager.setLookAndFeel(new FlatDarkLaf());
+      //} else {
+      UIManager.setLookAndFeel(new FlatLightLaf());
+      //}
       UIManager.put("ScrollBar.width", 16);
 
     } else {
@@ -145,11 +156,6 @@ public class DefaultPlatform {
 //      Font font = new Font(fontName, Font.PLAIN, fontSize).deriveFont(attributes);
 //      setUIFont(new FontUIResource(font));
     }
-
-    // Default was 8x8, but that's not enough with the insets and rounded rect
-    // https://github.com/processing/processing4/issues/473
-    //System.out.println(UIManager.get("ScrollBar.minimumThumbSize"));
-    UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
   }
 
 //  // Adapted from https://stackoverflow.com/a/64667581/18247494

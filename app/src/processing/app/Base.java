@@ -35,6 +35,9 @@ import java.util.Map.Entry;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import processing.app.contrib.*;
 import processing.app.tools.Tool;
 import processing.app.ui.*;
@@ -270,6 +273,7 @@ public class Base {
       Messages.log("About to create Base..."); //$NON-NLS-1$
       try {
         final Base base = new Base(args);
+        base.updateTheme();
         Messages.log("Base() constructor succeeded");
 //        t6 = System.currentTimeMillis();
 
@@ -299,6 +303,18 @@ public class Base {
 
 
   public void updateTheme() {
+    try {
+      FlatLaf laf = "dark".equals(Theme.get("laf.mode")) ?
+        new FlatDarkLaf() : new FlatLightLaf();
+      laf.setExtraDefaults(Collections.singletonMap("@accentColor",
+        Theme.get("laf.accent.color")));
+      //UIManager.setLookAndFeel(laf);
+      FlatLaf.setup(laf);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
     ContributionManager.updateTheme();
     for (Editor editor : getEditors()) {
       editor.updateTheme();
