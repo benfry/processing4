@@ -2,6 +2,12 @@
 # so search for makeGradient() calls to see whether they're still in use.
 
 
+## Look-and-Feel Entries ##
+
+laf.mode = light
+laf.accent.color = #003775
+
+
 ## EditorToolbar ##
 
 # TOOLBAR BUTTON TEXT
@@ -198,14 +204,14 @@ manager.tab.background = #477FA9
 
 ## ContributionTab
 
-manager.scrollbar.thumb.enabled.color = #3E769D
-manager.scrollbar.thumb.rollover.color = #2F6A90
-manager.scrollbar.thumb.pressed.color = #2F6A90
-manager.scrollbar.color = #5D93BA
+manager.scrollbar.thumb.enabled.color = #83A7C8
+manager.scrollbar.thumb.rollover.color = #7195B6
+manager.scrollbar.thumb.pressed.color = #7195B6
+manager.scrollbar.color = #A3C7EA
 
 manager.list.search.text.color = #000000
-manager.list.search.placeholder.color = #527796
-manager.list.search.background.color = #FFFFFE
+manager.list.search.placeholder.color = #cccccc
+manager.list.search.background.color = #ffffff
 
 
 ## ListPanel – the listing inside a Contribution Manager tab ##
@@ -213,17 +219,18 @@ manager.list.search.background.color = #FFFFFE
 manager.list.background.color = #C4E9FF
 manager.list.header.color = #B6DBFE
 manager.list.section.color = #C4E9FF
-manager.list.selection.color = #39B7FF
+manager.list.selection.color = #689FCD
 manager.list.text.color = #000000
-manager.list.incompatible.selection.color = #A8CDEF
-manager.list.incompatible.text.color = #527796
+manager.list.incompatible.selection.color = #ABCFF2
+manager.list.incompatible.text.color = #547897
 
 
 ## StatusPanel - the bottom panel with detail about a contribution
 
-manager.panel.background.color = #9BBFE1
-manager.panel.text.color = #000000
-manager.panel.link.color = #0048BF
+manager.panel.font = processing.sans,plain,11
+manager.panel.background.color = #105A83
+manager.panel.text.color = #FFFFFE
+manager.panel.link.color = #4EE5FF
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
