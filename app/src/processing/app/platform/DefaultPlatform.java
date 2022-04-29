@@ -118,6 +118,8 @@ public class DefaultPlatform {
       com.formdev.flatlaf.FlatLaf.registerCustomDefaultsSource("processing.app.ui");
       UIManager.setLookAndFeel(new com.formdev.flatlaf.FlatLightLaf());
 
+      UIManager.put("ScrollBar.width", 16);
+
     } else {
       UIManager.setLookAndFeel(laf);
     }
