@@ -221,6 +221,7 @@ manager.list.incompatible.text.color = #CCCCCC
 
 ## StatusPanel - the bottom panel with detail about a contribution
 
+manager.panel.font = processing.sans,plain,11
 manager.panel.background.color = #ebebeb
 manager.panel.text.color = #000000
 manager.panel.link.color = #444444
