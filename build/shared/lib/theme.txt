@@ -198,6 +198,11 @@ manager.tab.background = #6BA0C7
 
 ## ContributionTab
 
+manager.scrollbar.thumb.enabled.color = #3E769D
+manager.scrollbar.thumb.rollover.color = #2F6A90
+manager.scrollbar.thumb.pressed.color = #2F6A90
+manager.scrollbar.color = #5D93BA
+
 manager.list.search.text.color = #000000
 manager.list.search.placeholder.color = #cccccc
 manager.list.search.background.color = #ffffff
@@ -210,7 +215,8 @@ manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
 manager.list.selection.color = #e0fffd
 manager.list.text.color = #000000
-manager.list.incompatible.color = #CCCCCC
+manager.list.incompatible.selection.color = #CCCCCC
+manager.list.incompatible.text.color = #CCCCCC
 
 
 ## StatusPanel - the bottom panel with detail about a contribution

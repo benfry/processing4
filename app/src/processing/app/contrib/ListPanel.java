@@ -33,6 +33,7 @@ import javax.swing.table.*;
 import processing.app.Base;
 import processing.app.Util;
 import processing.app.ui.Theme;
+import processing.app.ui.ThemeScrollBarUI;
 import processing.app.ui.Toolkit;
 
 
@@ -68,11 +69,12 @@ public class ListPanel extends JPanel implements Scrollable {
 
   Color headerColor;
   Color sectionColor;
-  Color selectionColor;
   Color rowColor;
 
   Color textColor;
-  Color incompatibleColor;
+  Color selectionColor;
+  Color textColorIncompatible;
+  Color selectionColorIncompatible;
 
   static final SectionHeaderContribution[] sections = {
     new SectionHeaderContribution(ContributionType.LIBRARY),
@@ -112,7 +114,11 @@ public class ListPanel extends JPanel implements Scrollable {
         if (rowValue instanceof SectionHeaderContribution) {
           c.setBackground(sectionColor);
         } else if (isRowSelected(row)) {
-          c.setBackground(selectionColor);
+          if (((Contribution) rowValue).isCompatible(Base.getRevision())) {
+            c.setBackground(selectionColor);
+          } else {
+            c.setBackground(selectionColorIncompatible);
+          }
         } else {
           c.setBackground(rowColor);
         }
@@ -129,6 +135,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     JScrollPane scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+    scrollPane.getVerticalScrollBar().setUI(new ThemeScrollBarUI("manager"));
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     table.setFillsViewportHeight(true);
     table.setDefaultRenderer(Contribution.class, new ContribStatusRenderer());
@@ -185,10 +192,12 @@ public class ListPanel extends JPanel implements Scrollable {
   protected void updateTheme() {
     headerColor = Theme.getColor("manager.list.header.color");
     sectionColor = Theme.getColor("manager.list.section.color");
-    selectionColor = Theme.getColor("manager.list.selection.color");
 
     textColor = Theme.getColor("manager.list.text.color");
-    incompatibleColor = Theme.getColor("manager.list.incompatible.color");
+    selectionColor = Theme.getColor("manager.list.selection.color");
+
+    textColorIncompatible = Theme.getColor("manager.list.incompatible.text.color");
+    selectionColorIncompatible = Theme.getColor("manager.list.incompatible.selection.color");
 
     rowColor = Theme.getColor("manager.list.background.color");
     table.setBackground(rowColor);
@@ -356,7 +365,7 @@ public class ListPanel extends JPanel implements Scrollable {
       if (contribution.isCompatible(Base.getRevision())) {
         label.setForeground(textColor);
       } else {
-        label.setForeground(incompatibleColor);
+        label.setForeground(textColorIncompatible);
       }
       return label;
     }
