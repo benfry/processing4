@@ -40,6 +40,7 @@ import javax.swing.text.html.HTMLDocument;
 
 import processing.app.Language;
 import processing.app.Util;
+import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 import processing.app.Base;
 import processing.app.Platform;
@@ -77,7 +78,7 @@ class StatusPanel extends JPanel {
       buttonFont = ManagerFrame.NORMAL_PLAIN;
     }
 
-    setBackground(new Color(0xebebeb));
+    //setBackground(new Color(0xebebeb));
 
     iconLabel = new JLabel();
     iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -189,6 +190,11 @@ class StatusPanel extends JPanel {
   }
 
 
+  protected void updateTheme() {
+    setBackground(Theme.getColor("manager.panel.background.color"));
+  }
+
+
   void setErrorMessage(String message) {
     if (label != null) {
       label.setText(message);
@@ -211,8 +217,9 @@ class StatusPanel extends JPanel {
       "  padding: 0;" +
       "  font-family: " + Toolkit.getSansFont().getName() + ", Helvetica, Arial, sans-serif;" +
       "  font-size: 11px;" +
+      "  color: " + Theme.get("manager.panel.text.color") + ";" +
       "}" +
-      "a { color: #444; text-decoration: none; }";
+      "a { color: " + Theme.get("manager.panel.link.color") + "; text-decoration: none; }";
   }
 
 

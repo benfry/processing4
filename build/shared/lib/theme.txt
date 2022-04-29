@@ -213,6 +213,13 @@ manager.list.text.color = #000000
 manager.list.incompatible.color = #CCCCCC
 
 
+## StatusPanel - the bottom panel with detail about a contribution
+
+manager.panel.background.color = #ebebeb
+manager.panel.text.color = #000000
+manager.panel.link.color = #444444
+
+
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
 
 tree.font = processing.sans,plain,12

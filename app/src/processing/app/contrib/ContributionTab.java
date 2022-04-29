@@ -94,8 +94,7 @@ public class ContributionTab extends JPanel {
     }
 
     listPanel.updateTheme();
-
-    //statusPanel.updateTheme();  // nothing yet
+    statusPanel.updateTheme();
   }
 
 

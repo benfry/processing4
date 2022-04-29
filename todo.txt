@@ -20,7 +20,10 @@ X look and feel plus fonts
 X   trying out https://www.formdev.com/flatlaf/ to clean things up
 X   using Source Sans Pro as interface font
 X   rewrite language selector to use fallback fonts
+X add manager.panel constants for colors
 _ Color Selector buttons misaligned
+_ StatusPanel.getBodyStyle() has hard-coded fonts/sizes
+_ remove ability to rearrange columns in contrib manager
 
 preferences
 X get rid of text box for 'background color when presenting'
