@@ -34,7 +34,7 @@ import java.awt.*;
  * Custom scroll bar style for the editor.
  * Originally based on https://stackoverflow.com/a/53662678
  */
-public class ThemeScrollBarUI extends BasicScrollBarUI {
+public class PdeScrollBarUI extends BasicScrollBarUI {
   private final Dimension none = new Dimension();
 
   private String backgroundAttr;
@@ -48,7 +48,7 @@ public class ThemeScrollBarUI extends BasicScrollBarUI {
   private Color enabledColor;
 
 
-  public ThemeScrollBarUI(String prefix) {
+  public PdeScrollBarUI(String prefix) {
     this(prefix + ".scrollbar.color",
             prefix + ".scrollbar.thumb.pressed.color",
             prefix + ".scrollbar.thumb.rollover.color",
@@ -57,8 +57,8 @@ public class ThemeScrollBarUI extends BasicScrollBarUI {
   }
 
 
-  public ThemeScrollBarUI(String backgroundAttr, String pressedAttr,
-                          String rolloverAttr, String enabledAttr) {
+  public PdeScrollBarUI(String backgroundAttr, String pressedAttr,
+                        String rolloverAttr, String enabledAttr) {
     this.backgroundAttr = backgroundAttr;
     this.pressedAttr = pressedAttr;
     this.rolloverAttr = rolloverAttr;

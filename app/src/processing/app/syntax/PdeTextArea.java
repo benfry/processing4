@@ -28,7 +28,7 @@ import java.util.Map;
 
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
-import processing.app.laf.ThemeScrollBarUI;
+import processing.app.laf.PdeScrollBarUI;
 
 
 /**
@@ -85,14 +85,14 @@ public class PdeTextArea extends JEditTextArea {
 
     gutterGradient = Theme.makeGradient("editor", Editor.LEFT_GUTTER, 500);
 
-    if (vertical.getUI() instanceof ThemeScrollBarUI) {
+    if (vertical.getUI() instanceof PdeScrollBarUI) {
 //      System.out.println("PdeTextArea.updateTheme() just updating");
-      ((ThemeScrollBarUI) vertical.getUI()).updateTheme();
-      ((ThemeScrollBarUI) horizontal.getUI()).updateTheme();
+      ((PdeScrollBarUI) vertical.getUI()).updateTheme();
+      ((PdeScrollBarUI) horizontal.getUI()).updateTheme();
     } else {
 //      System.out.println("PdeTextArea.updateTheme() setting ui");
-      vertical.setUI(new ThemeScrollBarUI("editor"));
-      horizontal.setUI(new ThemeScrollBarUI("editor"));
+      vertical.setUI(new PdeScrollBarUI("editor"));
+      horizontal.setUI(new PdeScrollBarUI("editor"));
     }
 
     repaint();

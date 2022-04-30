@@ -33,7 +33,7 @@ import javax.swing.table.*;
 import processing.app.Base;
 import processing.app.Util;
 import processing.app.ui.Theme;
-import processing.app.laf.ThemeScrollBarUI;
+import processing.app.laf.PdeScrollBarUI;
 import processing.app.ui.Toolkit;
 
 
@@ -137,7 +137,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-    scrollPane.getVerticalScrollBar().setUI(new ThemeScrollBarUI("manager"));
+    scrollPane.getVerticalScrollBar().setUI(new PdeScrollBarUI("manager"));
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     table.setFillsViewportHeight(true);
     table.setDefaultRenderer(Contribution.class, new ContribStatusRenderer());
@@ -204,7 +204,7 @@ public class ListPanel extends JPanel implements Scrollable {
     rowColor = Theme.getColor("manager.list.background.color");
     table.setBackground(rowColor);
 
-    ((ThemeScrollBarUI) scrollPane.getVerticalScrollBar().getUI()).updateTheme();
+    ((PdeScrollBarUI) scrollPane.getVerticalScrollBar().getUI()).updateTheme();
   }
 
 

@@ -38,7 +38,7 @@ import javax.swing.text.*;
 
 import processing.app.Console;
 import processing.app.Preferences;
-import processing.app.laf.ThemeScrollBarUI;
+import processing.app.laf.PdeScrollBarUI;
 
 
 /**
@@ -131,17 +131,17 @@ public class EditorConsole extends JScrollPane {
 
   protected void updateTheme() {
     JScrollBar vertical = getVerticalScrollBar();
-    if (vertical.getUI() instanceof ThemeScrollBarUI) {
-      ((ThemeScrollBarUI) vertical.getUI()).updateTheme();
+    if (vertical.getUI() instanceof PdeScrollBarUI) {
+      ((PdeScrollBarUI) vertical.getUI()).updateTheme();
     } else {
-      vertical.setUI(new ThemeScrollBarUI("console"));
+      vertical.setUI(new PdeScrollBarUI("console"));
     }
 
     JScrollBar horizontal = getHorizontalScrollBar();
-    if (horizontal.getUI() instanceof ThemeScrollBarUI) {
-      ((ThemeScrollBarUI) horizontal.getUI()).updateTheme();
+    if (horizontal.getUI() instanceof PdeScrollBarUI) {
+      ((PdeScrollBarUI) horizontal.getUI()).updateTheme();
     } else {
-      horizontal.setUI(new ThemeScrollBarUI("console"));
+      horizontal.setUI(new PdeScrollBarUI("console"));
     }
 
     // necessary?
