@@ -118,9 +118,9 @@ public class PdeTextFieldUI extends BasicTextFieldUI {
 
 
   public void updateTheme() {
-    System.out.println("updating theme inside PdeTextFieldUI");
+    //System.out.println("updating theme inside PdeTextFieldUI");
     if (jtc != null) {
-      System.out.println("reinstalling ui");
+      //System.out.println("reinstalling ui");
       installUI(jtc);
     }
   }
