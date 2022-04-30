@@ -887,6 +887,13 @@ public class PreferencesFrame {
   }
 
 
+  public void updateTheme() {
+    // Required to update changes to accent color or light/dark mode.
+    // (No custom components, so safe to call on this Window object.)
+    SwingUtilities.updateComponentTreeUI(frame);
+  }
+
+
 //  /**
 //   * I have some ideas on how we could make Swing even more obtuse for the
 //   * most basic usage scenarios. Is there someone on the team I can contact?

@@ -304,22 +304,44 @@ public class Base {
 
   public void updateTheme() {
     try {
+      //System.out.println("updating theme");
       FlatLaf laf = "dark".equals(Theme.get("laf.mode")) ?
         new FlatDarkLaf() : new FlatLightLaf();
       laf.setExtraDefaults(Collections.singletonMap("@accentColor",
         Theme.get("laf.accent.color")));
+      //System.out.println(laf.getExtraDefaults());
       //UIManager.setLookAndFeel(laf);
       FlatLaf.setup(laf);
+      // updateUI() will wipe out our custom components
+      // even if we do a setUI() call and invalidate/revalidate/repaint
+//      FlatLaf.updateUI();
+//      System.out.println("FlatLaf.updateUI() should be done");
+//      FlatLaf.updateUILater();
 
     } catch (Exception e) {
       e.printStackTrace();
     }
 
+    if (preferencesFrame != null) {
+      preferencesFrame.updateTheme();
+    }
+
     ContributionManager.updateTheme();
     for (Editor editor : getEditors()) {
       editor.updateTheme();
-      //editor.repaint();
+
+//      Component sb = editor.getPdeTextArea();
+//      sb.invalidate();
+//      sb.revalidate();
+//      sb.repaint();
     }
+
+    /*
+    Window[] windows = Window.getWindows();
+    for (Window w : windows) {
+      SwingUtilities.updateComponentTreeUI(w);
+    }
+    */
   }
 
 

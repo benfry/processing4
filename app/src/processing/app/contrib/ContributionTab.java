@@ -429,11 +429,14 @@ public class ContributionTab extends JPanel {
     }
 
     protected void updateTheme() {
+      SwingUtilities.updateComponentTreeUI(this);
+      /*
       textColor = Theme.getColor("manager.list.search.text.color");
       placeholderColor = Theme.getColor("manager.list.search.placeholder.color");
       backgroundColor = Theme.getColor("manager.list.search.background.color");
 
       setBackground(backgroundColor);
+      */
     }
   }
 

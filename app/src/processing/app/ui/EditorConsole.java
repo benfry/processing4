@@ -74,9 +74,6 @@ public class EditorConsole extends JScrollPane {
     consoleTextPane = new JTextPane(consoleDoc);
     consoleTextPane.setEditable(false);
 
-    getVerticalScrollBar().setUI(new ThemeScrollBarUI("console"));
-    getHorizontalScrollBar().setUI(new ThemeScrollBarUI("console"));
-
     updateTheme();
 
     setViewportView(consoleTextPane);
@@ -132,8 +129,19 @@ public class EditorConsole extends JScrollPane {
 
 
   protected void updateTheme() {
-    ((ThemeScrollBarUI) getVerticalScrollBar().getUI()).updateTheme();
-    ((ThemeScrollBarUI) getHorizontalScrollBar().getUI()).updateTheme();
+    JScrollBar vertical = getVerticalScrollBar();
+    if (vertical.getUI() instanceof ThemeScrollBarUI) {
+      ((ThemeScrollBarUI) vertical.getUI()).updateTheme();
+    } else {
+      vertical.setUI(new ThemeScrollBarUI("console"));
+    }
+
+    JScrollBar horizontal = getHorizontalScrollBar();
+    if (horizontal.getUI() instanceof ThemeScrollBarUI) {
+      ((ThemeScrollBarUI) horizontal.getUI()).updateTheme();
+    } else {
+      horizontal.setUI(new ThemeScrollBarUI("console"));
+    }
 
     // necessary?
     MutableAttributeSet standard = new SimpleAttributeSet();

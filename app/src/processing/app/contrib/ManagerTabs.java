@@ -45,7 +45,8 @@ import processing.app.ui.Toolkit;
 
 
 /**
- * Console/error/whatever tabs at the bottom of the editor window.
+ * Tab button bar for Libraries, Modes, Tools, and Updates, across the
+ * top of the Contribution Manager. Tab content is in ContributionTab.
  */
 public class ManagerTabs extends Box {
   // height of this tab bar

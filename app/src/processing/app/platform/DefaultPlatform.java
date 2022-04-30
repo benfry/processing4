@@ -24,15 +24,12 @@
 package processing.app.platform;
 
 import java.awt.Desktop;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
-import javax.swing.text.StyleContext;
 
-import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jna.Library;
@@ -40,7 +37,6 @@ import com.sun.jna.Native;
 
 import processing.app.Base;
 import processing.app.Preferences;
-import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 import processing.awt.ShimAWT;
 import processing.core.PApplet;
@@ -114,11 +110,15 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      //UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+      //UIManager.setLookAndFeel(new PdeLookAndFeel());
+
+      /*
+      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       // Default was 8x8, but that's not enough with the insets and rounded rect
       // https://github.com/processing/processing4/issues/473
       //System.out.println(UIManager.get("ScrollBar.minimumThumbSize"));
-      //UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
+      UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
+      */
 
       // dummy font call so that it's registered for the LaF
       Toolkit.getSansFont(12, Font.PLAIN);
@@ -146,6 +146,7 @@ public class DefaultPlatform {
     String fontName = Preferences.get("ui.font.family");
     int fontSize = Preferences.getInteger("ui.font.size");
 //    fontName = "Processing Sans Pro";
+//    fontSize = 13;
     if (!"Dialog".equals(fontName) || fontSize != 12) {
       setUIFont(new FontUIResource(fontName, Font.PLAIN, fontSize));
 //      setUIFont(new FontUIResource(createFallingFont(fontName, Font.PLAIN, fontSize)));
