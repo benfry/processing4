@@ -110,8 +110,6 @@ public class DefaultPlatform {
   public void setLookAndFeel() throws Exception {
     String laf = Preferences.get("editor.laf");
     if (laf == null || laf.length() == 0) {  // normal situation
-      //UIManager.setLookAndFeel(new PdeLookAndFeel());
-
       /*
       UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
       // Default was 8x8, but that's not enough with the insets and rounded rect
@@ -120,21 +118,22 @@ public class DefaultPlatform {
       UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
       */
 
+      //UIManager.setLookAndFeel(new processing.app.laf.PdeLookAndFeel());
+
       // dummy font call so that it's registered for FlatLaf
       Toolkit.getSansFont(12, Font.PLAIN);
-
-      //
+      // pull in FlatLaf.properties from the processing.app.laf folder
       FlatLaf.registerCustomDefaultsSource("processing.app.laf");
+      // start with Light, but updateTheme() will be called soon
       UIManager.setLookAndFeel(new FlatLightLaf());
-      //UIManager.put("ScrollBar.width", 16);  // moved to properties
 
     } else {
       UIManager.setLookAndFeel(laf);
     }
 
     /*
-    UIDefaults defaults = UIManager.getDefaults();
-    for (Map.Entry<Object, Object> entry : defaults.entrySet()) {
+    javax.swing.UIDefaults defaults = UIManager.getDefaults();
+    for (java.util.Map.Entry<Object, Object> entry : defaults.entrySet()) {
       System.out.println(entry.getKey() + " = " + entry.getValue());
     }
     */
