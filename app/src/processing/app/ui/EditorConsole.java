@@ -38,6 +38,7 @@ import javax.swing.text.*;
 
 import processing.app.Console;
 import processing.app.Preferences;
+import processing.app.laf.ThemeScrollBarUI;
 
 
 /**

@@ -21,7 +21,9 @@
   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 */
 
-package processing.app.ui;
+package processing.app.laf;
+
+import processing.app.ui.Theme;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicScrollBarUI;

@@ -33,7 +33,7 @@ import javax.swing.table.*;
 import processing.app.Base;
 import processing.app.Util;
 import processing.app.ui.Theme;
-import processing.app.ui.ThemeScrollBarUI;
+import processing.app.laf.ThemeScrollBarUI;
 import processing.app.ui.Toolkit;
 
 

@@ -28,7 +28,7 @@ import java.util.Map;
 
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
-import processing.app.ui.ThemeScrollBarUI;
+import processing.app.laf.ThemeScrollBarUI;
 
 
 /**
