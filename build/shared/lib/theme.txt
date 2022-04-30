@@ -209,9 +209,12 @@ manager.scrollbar.thumb.rollover.color = #2F6A90
 manager.scrollbar.thumb.pressed.color = #2F6A90
 manager.scrollbar.color = #5D93BA
 
-manager.list.search.text.color = #000000
-manager.list.search.placeholder.color = #cccccc
-manager.list.search.background.color = #ffffff
+manager.search.text.color = #ff0000
+manager.search.background.color = #0000ff
+manager.search.caret.color = #ff8000
+manager.search.placeholder.color = #00ff00
+manager.search.selection.text.color = #ffff00
+manager.search.selection.background.color = #00ffff
 
 
 ## ListPanel – the listing inside a Contribution Manager tab ##

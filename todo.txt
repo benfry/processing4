@@ -24,6 +24,7 @@ X add manager.panel constants for colors
 X status panel not updating in updateTheme()
 X StatusPanel.getBodyStyle() has hard-coded fonts/sizes
 X accent color and light/dark mode into the theme, and use with flatlaf
+_ changed manager.list.search to manager.search
 _ rearrange item order in PreferencesFrame
 _ remove extra space between prefs lines
 _ monochrome icon for foundation

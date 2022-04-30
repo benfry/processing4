@@ -36,6 +36,7 @@ import javax.swing.event.DocumentListener;
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Library;
+import processing.app.laf.PdeTextFieldUI;
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
@@ -340,18 +341,22 @@ public class ContributionTab extends JPanel {
   class FilterField extends JTextField {
     List<String> filters;
 
-    Color textColor;
-    Color placeholderColor;
-    Color backgroundColor;
+    JLabel filterLabel;
+
+//    Color textColor;
+//    Color placeholderColor;
+//    Color backgroundColor;
 
     public FilterField () {
       super("");
 
-      JLabel filterLabel = new JLabel("Filter");
-      filterLabel.setFont(ManagerFrame.NORMAL_PLAIN);
+      // a label that appears above the component when empty and not focused
+      filterLabel = new JLabel("Filter");
+//      filterLabel.setFont(ManagerFrame.NORMAL_PLAIN);
       filterLabel.setOpaque(false);
+//      filterLabel.setOpaque(true);
 
-      setFont(ManagerFrame.NORMAL_PLAIN);
+//      setFont(ManagerFrame.NORMAL_PLAIN);
       filterLabel.setIcon(Toolkit.getLibIconX("manager/search"));
       JButton removeFilter = Toolkit.createIconButton("manager/remove");
       removeFilter.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 2));
@@ -362,8 +367,8 @@ public class ContributionTab extends JPanel {
         setText("");
         filterField.requestFocusInWindow();
       });
-      //searchIcon = new ImageIcon(java.awt.Toolkit.getDefaultToolkit().getImage("NSImage://NSComputerTemplate"));
-      setOpaque(false);
+      //setOpaque(false);
+      setOpaque(true);
 
       GroupLayout fl = new GroupLayout(this);
       setLayout(fl);
@@ -429,7 +434,18 @@ public class ContributionTab extends JPanel {
     }
 
     protected void updateTheme() {
-      SwingUtilities.updateComponentTreeUI(this);
+      if (filterField != null) {
+        filterLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
+
+        if (filterField.getUI() instanceof PdeTextFieldUI) {
+          ((PdeTextFieldUI) filterField.getUI()).updateTheme();
+        } else {
+          filterField.setUI(new PdeTextFieldUI("manager.search"));
+        }
+      }
+
+      //SwingUtilities.updateComponentTreeUI(this);
+
       /*
       textColor = Theme.getColor("manager.list.search.text.color");
       placeholderColor = Theme.getColor("manager.list.search.placeholder.color");
