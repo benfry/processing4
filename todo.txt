@@ -24,12 +24,15 @@ X add manager.panel constants for colors
 X status panel not updating in updateTheme()
 X StatusPanel.getBodyStyle() has hard-coded fonts/sizes
 X accent color and light/dark mode into the theme, and use with flatlaf
+_ rearrange item order in PreferencesFrame
+_ remove extra space between prefs lines
 _ monochrome icon for foundation
 _ icons for contrib manager list entries (green/orange PNGs won't do)
 _ remove ability to rearrange columns in contrib manager
 _ update lib/theme.txt to clean up current Frankenstein status
+_
 
-_ how to override flatlaf for components (search, buttons, dropdown menu) in manager
+_ override flatlaf for components (search, buttons, dropdown menu) in manager
 
 _ Color Selector buttons misaligned
 
