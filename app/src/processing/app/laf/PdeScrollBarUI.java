@@ -37,10 +37,10 @@ import java.awt.*;
 public class PdeScrollBarUI extends BasicScrollBarUI {
   private final Dimension none = new Dimension();
 
-  private String backgroundAttr;
-  private String pressedAttr;
-  private String rolloverAttr;
-  private String enabledAttr;
+  final private String backgroundAttr;
+  final private String pressedAttr;
+  final private String rolloverAttr;
+  final private String enabledAttr;
 
   private Color backgroundColor;
   private Color pressedColor;
