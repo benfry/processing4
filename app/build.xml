@@ -140,7 +140,7 @@
         <!-- copy languages files -->
         <include name="processing/app/languages/*.properties" />
         <!-- FlatLaf.properties and any others -->
-        <include name="processing/app/ui/*.properties" />
+        <include name="processing/app/laf/*.properties" />
       </fileset>
     </copy>
 

@@ -120,16 +120,13 @@ public class DefaultPlatform {
       UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
       */
 
-      // dummy font call so that it's registered for the LaF
+      // dummy font call so that it's registered for FlatLaf
       Toolkit.getSansFont(12, Font.PLAIN);
 
-      FlatLaf.registerCustomDefaultsSource("processing.app.ui");
-      //if ("dark".equals(Theme.get("laf.mode"))) {
-        //UIManager.setLookAndFeel(new FlatDarkLaf());
-      //} else {
+      //
+      FlatLaf.registerCustomDefaultsSource("processing.app.laf");
       UIManager.setLookAndFeel(new FlatLightLaf());
-      //}
-      UIManager.put("ScrollBar.width", 16);
+      //UIManager.put("ScrollBar.width", 16);  // moved to properties
 
     } else {
       UIManager.setLookAndFeel(laf);
