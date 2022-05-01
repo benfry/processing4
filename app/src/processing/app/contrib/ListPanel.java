@@ -98,13 +98,13 @@ public class ListPanel extends JPanel implements Scrollable {
 
     this.rowFilter = new ContributionRowFilter(filter);
 
-    if (upToDateIcon == null) {
-      upToDateIcon = Toolkit.getLibIconX("manager/up-to-date");
-      updateAvailableIcon = Toolkit.getLibIconX("manager/update-available");
-      incompatibleIcon = Toolkit.getLibIconX("manager/incompatible");
+//    if (upToDateIcon == null) {
+//      upToDateIcon = Toolkit.getLibIconX("manager/up-to-date");
+//      updateAvailableIcon = Toolkit.getLibIconX("manager/update-available");
+//      incompatibleIcon = Toolkit.getLibIconX("manager/incompatible");
 //      foundationIcon = Toolkit.getLibIconX("icons/foundation", 16);
-      downloadingIcon = Toolkit.getLibIconX("manager/downloading");
-    }
+//      downloadingIcon = Toolkit.getLibIconX("manager/downloading");
+//    }
 
     //setLayout(new GridBagLayout());
     setOpaque(true);

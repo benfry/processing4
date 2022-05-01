@@ -74,15 +74,13 @@ class StatusPanel extends JPanel {
   public StatusPanel(final ContributionTab contributionTab) {
     this.contributionTab = contributionTab;
 
-    /*
-    if (foundationIcon == null) {
-      foundationIcon = Toolkit.getLibIconX("icons/foundation", 32);
-      installIcon = Toolkit.getLibIconX("manager/install");
-      updateIcon = Toolkit.getLibIconX("manager/update");
-      removeIcon = Toolkit.getLibIconX("manager/remove");
+//    if (foundationIcon == null) {
+//      foundationIcon = Toolkit.getLibIconX("icons/foundation", 32);
+//      installIcon = Toolkit.getLibIconX("manager/install");
+//      updateIcon = Toolkit.getLibIconX("manager/update");
+//      removeIcon = Toolkit.getLibIconX("manager/remove");
 //      buttonFont = ManagerFrame.NORMAL_PLAIN;
-    }
-    */
+//    }
 
     //setBackground(new Color(0xebebeb));
 
