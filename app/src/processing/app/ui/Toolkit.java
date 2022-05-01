@@ -582,6 +582,9 @@ public class Toolkit {
       return null;
     }
 
+    // Not broken into separate class because it requires (and is
+    // optimized for) an image file, and the SVG version does not.
+    // Also moving away from images from files anyway. [fry 220501]
     return new ImageIcon(file.getAbsolutePath()) {
       @Override
       public int getIconWidth() {
@@ -679,6 +682,52 @@ public class Toolkit {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static public ImageIcon renderIconX(String name, String color, int size) {
+    Image image = renderMonoImage(name, color, size);
+    if (image == null) {
+      return null;
+    }
+    final int scale = Toolkit.highResImages() ? 2 : 1;
+
+    return new ImageIcon(image) {
+      @Override
+      public int getIconWidth() {
+        return Toolkit.zoom(super.getIconWidth()) / scale;
+      }
+
+      @Override
+      public int getIconHeight() {
+        return Toolkit.zoom(super.getIconHeight()) / scale;
+      }
+
+      @Override
+      public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
+        ImageObserver imageObserver = getImageObserver();
+        if (imageObserver == null) {
+          imageObserver = c;
+        }
+        g.drawImage(getImage(), x, y, getIconWidth(), getIconHeight(), imageObserver);
+      }
+    };
+  }
+
+
+  static protected Image renderMonoImage(String name, String color, int size) {
+    File file = Platform.getContentFile("lib/" + name + ".svg");
+    String xmlOrig = Util.loadFile(file);
+
+    if (xmlOrig != null) {
+      final String REPLACE_COLOR = "#9B9B9B";
+      String xmlStr = xmlOrig.replace(REPLACE_COLOR, color);
+
+      final int px = size * Toolkit.highResMultiplier();
+      return Toolkit.svgToImage(xmlStr, px, px);
+    }
+    return null;
+  }
+
 
 
   /**

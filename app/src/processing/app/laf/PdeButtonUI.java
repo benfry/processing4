@@ -127,11 +127,11 @@ public class PdeButtonUI extends BasicButtonUI {
 
 
   public void updateTheme() {
-    enabledFgColor = Theme.getColor(prefix + ".enabled.fgcolor");
-    enabledBgColor = Theme.getColor(prefix + ".enabled.bgcolor");
-    pressedFgColor = Theme.getColor(prefix + ".pressed.fgcolor");
-    pressedBgColor = Theme.getColor(prefix + ".pressed.bgcolor");
-    disabledFgColor = Theme.getColor(prefix + ".disabled.fgcolor");
-    disabledBgColor = Theme.getColor(prefix + ".disabled.bgcolor");
+    enabledFgColor = Theme.getColor(prefix + ".enabled.text.color");
+    enabledBgColor = Theme.getColor(prefix + ".enabled.background.color");
+    pressedFgColor = Theme.getColor(prefix + ".pressed.text.color");
+    pressedBgColor = Theme.getColor(prefix + ".pressed.background.color");
+    disabledFgColor = Theme.getColor(prefix + ".disabled.text.color");
+    disabledBgColor = Theme.getColor(prefix + ".disabled.background.color");
   }
 }

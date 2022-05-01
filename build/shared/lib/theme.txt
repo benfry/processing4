@@ -236,12 +236,15 @@ manager.panel.background.color = #ebebeb
 manager.panel.text.color = #000000
 manager.panel.link.color = #444444
 
-manager.button.enabled.bgcolor = #FF8000
-manager.button.enabled.fgcolor = #0000FF
-manager.button.pressed.bgcolor = #804000
-manager.button.pressed.fgcolor = #000080
-manager.button.disabled.bgcolor = #444444
-manager.button.disabled.fgcolor = #666666
+manager.button.enabled.background.color = #FF8000
+manager.button.enabled.text.color = #0000FF
+manager.button.enabled.icon.color = #FF0000
+manager.button.pressed.background.color = #804000
+manager.button.pressed.text.color = #000080
+manager.button.pressed.icon.color = #0000FF
+manager.button.disabled.background.color = #444444
+manager.button.disabled.text.color = #666666
+manager.button.disabled.icon.color = #00FF00
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##

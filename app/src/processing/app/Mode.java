@@ -654,13 +654,7 @@ public abstract class Mode {
     } else {
       file = new File(folder, filename);
     }
-    if (file != null && file.exists()) {
-      String[] lines = PApplet.loadStrings(file);
-      if (lines != null) {
-        return PApplet.join(lines, "\n");
-      }
-    }
-    return null;
+    return Util.loadFile(file);
   }
 
 

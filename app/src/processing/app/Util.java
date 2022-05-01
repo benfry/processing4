@@ -150,10 +150,14 @@ public class Util {
    * Grab the contents of a file as a string. Connects lines with \n,
    * even if the input file used \r\n.
    */
-  static public String loadFile(File file) throws IOException {
-    String[] contents = PApplet.loadStrings(file);
-    if (contents == null) return null;
-    return PApplet.join(contents, "\n");
+  static public String loadFile(File file) {
+    if (file != null && file.exists()) {
+      String[] contents = PApplet.loadStrings(file);
+      if (contents != null) {
+        return PApplet.join(contents, "\n");
+      }
+    }
+    return null;
   }
 
 

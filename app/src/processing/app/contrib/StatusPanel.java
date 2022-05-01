@@ -54,7 +54,7 @@ class StatusPanel extends JPanel {
   static Icon installIcon;
   static Icon updateIcon;
   static Icon removeIcon;
-  static Font buttonFont;
+//  static Font buttonFont;
 
   String detailStyle;
 
@@ -77,7 +77,7 @@ class StatusPanel extends JPanel {
       installIcon = Toolkit.getLibIconX("manager/install");
       updateIcon = Toolkit.getLibIconX("manager/update");
       removeIcon = Toolkit.getLibIconX("manager/remove");
-      buttonFont = ManagerFrame.NORMAL_PLAIN;
+//      buttonFont = ManagerFrame.NORMAL_PLAIN;
     }
 
     //setBackground(new Color(0xebebeb));
@@ -96,9 +96,10 @@ class StatusPanel extends JPanel {
         }
       }
     });
-    installButton = Toolkit.createIconButton("Install", installIcon);
+    //installButton = Toolkit.createIconButton("Install", installIcon);
+    installButton = new JButton("Install");
     //installButton.setDisabledIcon(installIcon);
-    installButton.setFont(buttonFont);
+//    installButton.setFont(buttonFont);
     installButton.setHorizontalAlignment(SwingConstants.LEFT);
     installButton.addActionListener(e -> {
       installButton.setEnabled(false);
@@ -112,11 +113,12 @@ class StatusPanel extends JPanel {
     progressPanel.setOpaque(false);
 
     updateLabel = new JLabel(" ");
-    updateLabel.setFont(buttonFont);
+//    updateLabel.setFont(buttonFont);
     updateLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-    updateButton = Toolkit.createIconButton("Update", updateIcon);
-    updateButton.setFont(buttonFont);
+    //updateButton = Toolkit.createIconButton("Update", updateIcon);
+    updateButton = new JButton("Update");
+//    updateButton.setFont(buttonFont);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.addActionListener(e -> {
       updateButton.setEnabled(false);
@@ -126,8 +128,9 @@ class StatusPanel extends JPanel {
       updateDetail(currentDetail);
     });
 
-    removeButton = Toolkit.createIconButton("Remove", removeIcon);
-    removeButton.setFont(buttonFont);
+    //removeButton = Toolkit.createIconButton("Remove", removeIcon);
+    removeButton = new JButton("Remove");
+//    removeButton.setFont(buttonFont);
     removeButton.setHorizontalAlignment(SwingConstants.LEFT);
     removeButton.addActionListener(e -> {
       removeButton.setEnabled(false);
@@ -217,9 +220,9 @@ class StatusPanel extends JPanel {
       updateDetail(detail);
     }
 
-    updateButtonTheme(installButton);
-    updateButtonTheme(updateButton);
-    updateButtonTheme(removeButton);
+    updateButtonTheme(installButton, "install");
+    updateButtonTheme(updateButton, "update");
+    updateButtonTheme(removeButton, "remove");
 
     /*
     if (installButton.getUI() instanceof PdeButtonUI) {
@@ -250,13 +253,18 @@ class StatusPanel extends JPanel {
   }
 
 
-  static private void updateButtonTheme(JButton button) {
+  static private void updateButtonTheme(JButton button, String name) {
     if (button.getUI() instanceof PdeButtonUI) {
       ((PdeButtonUI) button.getUI()).updateTheme();
     } else {
       button.setUI(new PdeButtonUI("manager.button"));
     }
+
+    button.setIcon(Toolkit.renderIconX("manager/" + name, Theme.get("manager.button.enabled.icon.color"), 16));
+    button.setPressedIcon(Toolkit.renderIconX("manager/" + name, Theme.get("manager.button.pressed.icon.color"), 16));
+    button.setDisabledIcon(Toolkit.renderIconX("manager/" + name, Theme.get("manager.button.disabled.icon.color"), 16));
   }
+
 
   void setErrorMessage(String message) {
     if (label != null) {
