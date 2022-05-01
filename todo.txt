@@ -25,13 +25,15 @@ X status panel not updating in updateTheme()
 X StatusPanel.getBodyStyle() has hard-coded fonts/sizes
 X accent color and light/dark mode into the theme, and use with flatlaf
 X changed manager.list.search to manager.search
+X implement foundation icon using svg
+
 _ rearrange item order in PreferencesFrame
 _ remove extra space between prefs lines
 _ monochrome icon for foundation
 _ icons for contrib manager list entries (green/orange PNGs won't do)
 _ remove ability to rearrange columns in contrib manager
 _ update lib/theme.txt to clean up current Frankenstein status
-_
+_   just replace with the blue default once that's updated
 
 _ override flatlaf for components (search, buttons, dropdown menu) in manager
 

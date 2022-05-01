@@ -64,7 +64,7 @@ public class ListPanel extends JPanel implements Scrollable {
   static Icon upToDateIcon;
   static Icon updateAvailableIcon;
   static Icon incompatibleIcon;
-  static Icon foundationIcon;
+  Icon foundationIcon;
   static Icon downloadingIcon;
 
   Color headerColor;
@@ -99,7 +99,7 @@ public class ListPanel extends JPanel implements Scrollable {
       upToDateIcon = Toolkit.getLibIconX("manager/up-to-date");
       updateAvailableIcon = Toolkit.getLibIconX("manager/update-available");
       incompatibleIcon = Toolkit.getLibIconX("manager/incompatible");
-      foundationIcon = Toolkit.getLibIconX("icons/foundation", 16);
+//      foundationIcon = Toolkit.getLibIconX("icons/foundation", 16);
       downloadingIcon = Toolkit.getLibIconX("manager/downloading");
     }
 
@@ -203,6 +203,8 @@ public class ListPanel extends JPanel implements Scrollable {
 
     rowColor = Theme.getColor("manager.list.background.color");
     table.setBackground(rowColor);
+
+    foundationIcon = Toolkit.renderIconX("manager/foundation", Theme.get("manager.list.foundation.color"), 16);
 
     ((PdeScrollBarUI) scrollPane.getVerticalScrollBar().getUI()).updateTheme();
   }

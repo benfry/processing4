@@ -23,10 +23,9 @@ package processing.app.contrib;
 import java.awt.Color;
 
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
-
-import processing.app.ui.Toolkit;
 
 
 public class UpdateStatusPanel extends StatusPanel {
@@ -34,7 +33,8 @@ public class UpdateStatusPanel extends StatusPanel {
   public UpdateStatusPanel(UpdateContributionTab tab) {
     super(tab);
 
-    updateButton = Toolkit.createIconButton("Update All", updateIcon);
+    //updateButton = Toolkit.createIconButton("Update All", updateIcon);
+    updateButton = new JButton("Update All");
     updateButton.setFont(ManagerFrame.NORMAL_PLAIN);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.setVisible(true);

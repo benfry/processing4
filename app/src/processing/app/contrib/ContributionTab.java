@@ -342,6 +342,7 @@ public class ContributionTab extends JPanel {
     List<String> filterWords = new ArrayList<>();
 
     JLabel placeholderLabel;
+    JButton resetButton;
 
 //    Color textColor;
 //    Color placeholderColor;
@@ -356,14 +357,15 @@ public class ContributionTab extends JPanel {
       placeholderLabel.setOpaque(false);
 //      filterLabel.setOpaque(true);
 //      setFont(ManagerFrame.NORMAL_PLAIN);
-      placeholderLabel.setIcon(Toolkit.getLibIconX("manager/search"));
+//      placeholderLabel.setIcon(Toolkit.getLibIconX("manager/search"));
 
-      JButton removeFilter = Toolkit.createIconButton("manager/remove");
-      removeFilter.setBorder(new EmptyBorder(0, 0, 0, 2));
-      removeFilter.setBorderPainted(false);
-      removeFilter.setContentAreaFilled(false);
-      removeFilter.setCursor(Cursor.getDefaultCursor());
-      removeFilter.addActionListener(e -> {
+//      JButton removeFilter = Toolkit.createIconButton("manager/remove");
+      resetButton = new JButton();
+      resetButton.setBorder(new EmptyBorder(0, 0, 0, 2));
+      resetButton.setBorderPainted(false);
+      resetButton.setContentAreaFilled(false);
+      resetButton.setCursor(Cursor.getDefaultCursor());
+      resetButton.addActionListener(e -> {
         setText("");
         filterField.requestFocusInWindow();
       });
@@ -379,17 +381,17 @@ public class ContributionTab extends JPanel {
         .addComponent(placeholderLabel)
         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                          GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
-        .addComponent(removeFilter));
+        .addComponent(resetButton));
 
       fl.setVerticalGroup(fl.createSequentialGroup()
                           .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                                            GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                           .addGroup(fl.createParallelGroup()
                           .addComponent(placeholderLabel)
-                          .addComponent(removeFilter))
+                          .addComponent(resetButton))
                           .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                                            GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE));
-      removeFilter.setVisible(false);
+      resetButton.setVisible(false);
 
       addFocusListener(new FocusListener() {
         public void focusLost(FocusEvent focusEvent) {
@@ -405,17 +407,17 @@ public class ContributionTab extends JPanel {
 
       getDocument().addDocumentListener(new DocumentListener() {
         public void removeUpdate(DocumentEvent e) {
-          removeFilter.setVisible(!getText().isEmpty());
+          resetButton.setVisible(!getText().isEmpty());
           applyFilter();
         }
 
         public void insertUpdate(DocumentEvent e) {
-          removeFilter.setVisible(!getText().isEmpty());
+          resetButton.setVisible(!getText().isEmpty());
           applyFilter();
         }
 
         public void changedUpdate(DocumentEvent e) {
-          removeFilter.setVisible(!getText().isEmpty());
+          resetButton.setVisible(!getText().isEmpty());
           applyFilter();
         }
       });
@@ -436,6 +438,8 @@ public class ContributionTab extends JPanel {
     protected void updateTheme() {
       if (filterField != null) {
         placeholderLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
+        placeholderLabel.setIcon(Toolkit.renderIconX("manager/search", Theme.get("manager.search.icon.color"), 16));
+        resetButton.setIcon(Toolkit.renderIconX("manager/remove", Theme.get("manager.search.icon.color"), 16));
 
         /*
         if (filterField.getUI() instanceof PdeTextFieldUI) {

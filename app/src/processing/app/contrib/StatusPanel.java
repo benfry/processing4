@@ -50,11 +50,13 @@ class StatusPanel extends JPanel {
   static final int LABEL_WIDTH = Toolkit.zoom(480);
   static final int BUTTON_WIDTH = Toolkit.zoom(150);
 
+  Icon foundationIcon;
+  /*
   static Icon foundationIcon;
   static Icon installIcon;
   static Icon updateIcon;
   static Icon removeIcon;
-//  static Font buttonFont;
+  */
 
   String detailStyle;
 
@@ -72,6 +74,7 @@ class StatusPanel extends JPanel {
   public StatusPanel(final ContributionTab contributionTab) {
     this.contributionTab = contributionTab;
 
+    /*
     if (foundationIcon == null) {
       foundationIcon = Toolkit.getLibIconX("icons/foundation", 32);
       installIcon = Toolkit.getLibIconX("manager/install");
@@ -79,6 +82,7 @@ class StatusPanel extends JPanel {
       removeIcon = Toolkit.getLibIconX("manager/remove");
 //      buttonFont = ManagerFrame.NORMAL_PLAIN;
     }
+    */
 
     //setBackground(new Color(0xebebeb));
 
@@ -219,6 +223,8 @@ class StatusPanel extends JPanel {
     if (detail != null) {
       updateDetail(detail);
     }
+
+    foundationIcon = Toolkit.renderIconX("manager/foundation", Theme.get("manager.panel.foundation.color"), 32);
 
     updateButtonTheme(installButton, "install");
     updateButtonTheme(updateButton, "update");
