@@ -27,10 +27,13 @@ X accent color and light/dark mode into the theme, and use with flatlaf
 X changed manager.list.search to manager.search
 X implement foundation icon using svg
 X icons for contrib manager list entries (green/orange PNGs won't do)
+X remove ability to rearrange columns in contrib manager
+X   why tf this is the default is beyond me
 
 _ rearrange item order in PreferencesFrame
 _   remove extra space between prefs lines
-_ remove ability to rearrange columns in contrib manager
+_ set color of the sort order icon in the ListPanel table header
+_   also the color of the text?
 _ override flatlaf for components (search, buttons, dropdown menu) in manager
 _ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
 _   should be a better way to implement this

@@ -187,6 +187,7 @@ public class ListPanel extends JPanel implements Scrollable {
       sorter.setComparator(i, model.columns[i].getComparator());
     }
     table.getTableHeader().setDefaultRenderer(new ContribHeaderRenderer());
+    table.getTableHeader().setReorderingAllowed(false);
     table.setVisible(true);
 
     setLayout(new BorderLayout());
