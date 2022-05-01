@@ -96,6 +96,8 @@ public class ContributionTab extends JPanel {
 
     listPanel.updateTheme();
     statusPanel.updateTheme();
+
+    closeButton.setIcon(Toolkit.renderIcon("manager/close", Theme.get("manager.error.close.icon.color"), 16));
   }
 
 
@@ -210,7 +212,8 @@ public class ContributionTab extends JPanel {
     errorMessage.setMinimumSize(dim);
     errorMessage.setOpaque(false);
 
-    closeButton = Toolkit.createIconButton("manager/close");
+//    closeButton = Toolkit.createIconButton("manager/close");
+    closeButton = new JButton();
     closeButton.setContentAreaFilled(false);
     closeButton.addActionListener(e -> managerFrame.rebuildTabLayouts(false, false));
     tryAgainButton = new JButton("Try Again");

@@ -205,6 +205,9 @@ manager.tab.background = #6BA0C7
 
 ## ContributionTab
 
+# error window (X) close button
+manager.error.close.icon.color = #000000
+
 manager.scrollbar.thumb.enabled.color = #3E769D
 manager.scrollbar.thumb.rollover.color = #2F6A90
 manager.scrollbar.thumb.pressed.color = #2F6A90
