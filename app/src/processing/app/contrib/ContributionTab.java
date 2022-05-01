@@ -367,7 +367,7 @@ public class ContributionTab extends JPanel {
       resetButton.setCursor(Cursor.getDefaultCursor());
       resetButton.addActionListener(e -> {
         setText("");
-        filterField.requestFocusInWindow();
+        FilterField.this.requestFocusInWindow();
       });
 
       //setOpaque(false);
@@ -439,7 +439,7 @@ public class ContributionTab extends JPanel {
       if (filterField != null) {
         placeholderLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
         placeholderLabel.setIcon(Toolkit.renderIcon("manager/search", Theme.get("manager.search.icon.color"), 16));
-        resetButton.setIcon(Toolkit.renderIcon("manager/remove", Theme.get("manager.search.icon.color"), 16));
+        resetButton.setIcon(Toolkit.renderIcon("manager/search-reset", Theme.get("manager.search.icon.color"), 16));
 
         /*
         if (filterField.getUI() instanceof PdeTextFieldUI) {
