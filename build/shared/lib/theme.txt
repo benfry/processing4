@@ -235,6 +235,9 @@ manager.panel.background.color = #ebebeb
 manager.panel.text.color = #000000
 manager.panel.link.color = #444444
 
+manager.button.background.color = #FF8000
+manager.button.text.color = #0000FF
+
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
 

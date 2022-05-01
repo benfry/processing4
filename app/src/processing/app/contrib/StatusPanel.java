@@ -39,6 +39,7 @@ import javax.swing.text.html.HTMLDocument;
 
 import processing.app.Language;
 import processing.app.Util;
+import processing.app.laf.PdeButtonUI;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 import processing.app.Base;
@@ -215,8 +216,47 @@ class StatusPanel extends JPanel {
     if (detail != null) {
       updateDetail(detail);
     }
+
+    updateButtonTheme(installButton);
+    updateButtonTheme(updateButton);
+    updateButtonTheme(removeButton);
+
+    /*
+    if (installButton.getUI() instanceof PdeButtonUI) {
+      ((PdeButtonUI) installButton.getUI()).updateTheme();
+    } else {
+      installButton.setUI(new PdeButtonUI("manager.button"));
+    }
+    */
+
+    /*
+    installButton.setForeground(Theme.getColor("manager.button.text.color"));
+    installButton.setBackground(Theme.getColor("manager.button.background.color"));
+    //installButton.setBorder(new EmptyBorder(2, 14, 2, 14));
+    //installButton.setBorder(new LineBorder(Color.ORANGE, 1, true));
+
+    // draws correctly, but specifying rounded doesn't help
+    // still doesn't work for disabled state, so what's the point
+    installButton.setBorder(new CompoundBorder(
+      new LineBorder(Color.ORANGE, 1), //, true),
+      new EmptyBorder(2, 14, 2, 14)
+    ));
+    */
+
+//    installButton.setBorder(new EmptyBorder(0, 0, 0, 0));
+//    installButton.setMargin(new Insets(2, 14, 2, 14));
+//    installButton.putClientProperty(FlatClientProperties.OUTLINE, Color.GREEN);
+//    installButton.putClientProperty("Component.borderWidth", "10");  // does not work
   }
 
+
+  static private void updateButtonTheme(JButton button) {
+    if (button.getUI() instanceof PdeButtonUI) {
+      ((PdeButtonUI) button.getUI()).updateTheme();
+    } else {
+      button.setUI(new PdeButtonUI("manager.button"));
+    }
+  }
 
   void setErrorMessage(String message) {
     if (label != null) {

@@ -30,13 +30,13 @@ import java.awt.event.FocusListener;
 import java.util.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Library;
-import processing.app.laf.PdeTextFieldUI;
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
@@ -359,7 +359,7 @@ public class ContributionTab extends JPanel {
 //      setFont(ManagerFrame.NORMAL_PLAIN);
       filterLabel.setIcon(Toolkit.getLibIconX("manager/search"));
       JButton removeFilter = Toolkit.createIconButton("manager/remove");
-      removeFilter.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 2));
+      removeFilter.setBorder(new EmptyBorder(0, 0, 0, 2));
       removeFilter.setBorderPainted(false);
       removeFilter.setContentAreaFilled(false);
       removeFilter.setCursor(Cursor.getDefaultCursor());
@@ -437,11 +437,29 @@ public class ContributionTab extends JPanel {
       if (filterField != null) {
         filterLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
 
+        /*
         if (filterField.getUI() instanceof PdeTextFieldUI) {
           ((PdeTextFieldUI) filterField.getUI()).updateTheme();
         } else {
           filterField.setUI(new PdeTextFieldUI("manager.search"));
         }
+        */
+
+//        System.out.println(filterField.getBorder().getBorderInsets(filterField));
+        //filterField.setBorder(new EmptyBorder(0, 5, 0, 5));
+        //filterField.setBorder(null);
+        filterField.setBorder(new EmptyBorder(3, 7, 3, 7));
+
+        filterField.setBackground(Theme.getColor("manager.search.background.color"));
+        filterField.setForeground(Theme.getColor("manager.search.text.color"));
+
+        // not yet in use, so leaving out for now
+        //filterField.setDisabledTextColor(Theme.getColor("manager.search.disabled.text.color"));
+
+        filterField.setSelectionColor(Theme.getColor("manager.search.selection.background.color"));
+        filterField.setSelectedTextColor(Theme.getColor("manager.search.selection.text.color"));
+
+        filterField.setCaretColor(Theme.getColor("manager.search.caret.color"));
       }
 
       //SwingUtilities.updateComponentTreeUI(this);
