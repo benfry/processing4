@@ -26,16 +26,20 @@ X StatusPanel.getBodyStyle() has hard-coded fonts/sizes
 X accent color and light/dark mode into the theme, and use with flatlaf
 X changed manager.list.search to manager.search
 X implement foundation icon using svg
+X icons for contrib manager list entries (green/orange PNGs won't do)
 
 _ rearrange item order in PreferencesFrame
-_ remove extra space between prefs lines
-_ monochrome icon for foundation
-_ icons for contrib manager list entries (green/orange PNGs won't do)
+_   remove extra space between prefs lines
 _ remove ability to rearrange columns in contrib manager
+_ override flatlaf for components (search, buttons, dropdown menu) in manager
+_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
+_   should be a better way to implement this
+
+waiting
+_ need monochrome icon for foundation
+_ do we need other states for list item icons
 _ update lib/theme.txt to clean up current Frankenstein status
 _   just replace with the blue default once that's updated
-
-_ override flatlaf for components (search, buttons, dropdown menu) in manager
 
 _ Color Selector buttons misaligned
 
