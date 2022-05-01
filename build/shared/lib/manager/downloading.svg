@@ -1,79 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 25.3.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 32 32" style="enable-background:new 0 0 32 32;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-miterlimit:10;}
-	.st1{fill:none;stroke:#FFFFFF;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-	.st2{fill:none;stroke:#FFFFFF;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:10;}
-	.st3{fill:none;stroke:#FFFFFF;stroke-width:3;stroke-miterlimit:10;}
-	.st4{display:none;}
-	.st5{display:inline;fill:#FFFFFF;}
-	.st6{display:inline;}
-	.st7{clip-path:url(#SVGID_2_);fill:#142A3D;}
-	.st8{clip-path:url(#SVGID_4_);fill:#142A3D;}
-	.st9{clip-path:url(#SVGID_6_);fill:#142A3D;}
-	.st10{clip-path:url(#SVGID_8_);fill:#142A3D;}
-	.st11{clip-path:url(#SVGID_10_);fill:#142A3D;}
-	.st12{clip-path:url(#SVGID_12_);fill:#142A3D;}
-	.st13{clip-path:url(#SVGID_14_);fill:#142A3D;}
-	.st14{clip-path:url(#SVGID_16_);fill:#142A3D;}
-	.st15{clip-path:url(#SVGID_18_);fill:#142A3D;}
-	.st16{clip-path:url(#SVGID_20_);fill:#142A3D;}
-	.st17{clip-path:url(#SVGID_22_);fill:#009900;}
-	.st18{fill:#999999;}
-	.st19{clip-path:url(#SVGID_24_);fill:#142A3D;}
-	.st20{clip-path:url(#SVGID_26_);fill:#142A3D;}
-	.st21{clip-path:url(#SVGID_28_);fill:#990000;}
-	.st22{clip-path:url(#SVGID_30_);fill:#142A3D;}
-	.st23{clip-path:url(#SVGID_32_);fill:#142A3D;}
-	.st24{clip-path:url(#SVGID_34_);fill:#142A3D;}
-	.st25{clip-path:url(#SVGID_36_);fill:#142A3D;}
-	.st26{clip-path:url(#SVGID_38_);fill:#990000;}
-	.st27{clip-path:url(#SVGID_40_);fill:#142A3D;}
-	.st28{clip-path:url(#SVGID_42_);fill:#009900;}
-	.st29{clip-path:url(#SVGID_44_);fill:#142A3D;}
-	.st30{clip-path:url(#SVGID_46_);fill:#142A3D;}
-	.st31{clip-path:url(#SVGID_48_);fill:#990000;}
-	.st32{clip-path:url(#SVGID_50_);fill:#142A3D;}
-	.st33{fill:url(#SVGID_51_);}
-	.st34{fill:url(#SVGID_52_);}
-	.st35{fill:url(#SVGID_53_);}
-	.st36{fill:#FFFFFF;}
-	.st37{fill:#96ADB0;}
-	.st38{fill:#E0FFFD;}
-	.st39{fill:#ED7E16;}
-	.st40{fill:#A01917;}
-	.st41{opacity:0.9;}
-	.st42{opacity:0.8;}
-	.st43{opacity:0.7;}
-	.st44{opacity:0.6;}
-	.st45{opacity:0.5;}
-	.st46{opacity:0.4;}
-	.st47{opacity:0.3;}
-	.st48{opacity:0.2;}
-	.st49{opacity:0.15;}
-	.st50{opacity:0.1;}
-	.st51{opacity:0.05;}
-	.st52{fill:#9B9B9B;}
-	.st53{fill:#51B84F;}
-</style>
+<!-- Generator: Adobe Illustrator 26.2.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.0" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
 <g id="bugs">
 </g>
 <g id="reference">
 	<g id="manager_1_">
 	</g>
 </g>
-<g id="_x28_mask_x29_" class="st4">
-	<rect class="st5" width="32" height="32"/>
+<g id="_x28_mask_x29_" display="none">
+	<rect display="inline" fill="#FFFFFF" width="32" height="32"/>
 </g>
-<g id="toolbar-disabled" class="st4">
+<g id="toolbar-disabled" display="none">
 </g>
-<g id="toolbar-enabled" class="st4">
+<g id="toolbar-enabled" display="none">
 </g>
-<g id="toolbar-pressed" class="st4">
+<g id="toolbar-pressed" display="none">
 </g>
-<g id="toolbar-rollover" class="st4">
+<g id="toolbar-rollover" display="none">
 </g>
 <g id="toolbar-selected">
 </g>
@@ -91,18 +35,26 @@
 </g>
 <g id="manager">
 	<g>
-		<rect x="15" y="2" width="2" height="8"/>
-		<rect x="10" y="3.34" transform="matrix(0.866 -0.5 0.5 0.866 -2.1961 6.4833)" class="st41" width="2" height="8"/>
-		<rect x="6.34" y="7" transform="matrix(0.5 -0.866 0.866 0.5 -5.8565 11.8563)" class="st42" width="2" height="8"/>
-		<rect x="2" y="15" class="st43" width="8" height="2"/>
-		<rect x="3.34" y="20" transform="matrix(0.8661 -0.4999 0.4999 0.8661 -9.5153 6.4817)" class="st44" width="8" height="2"/>
-		<rect x="7" y="23.66" transform="matrix(0.4999 -0.8661 0.8661 0.4999 -15.8568 21.859)" class="st45" width="8" height="2"/>
-		<rect x="15" y="22" class="st46" width="2" height="8"/>
-		<rect x="20" y="20.66" transform="matrix(0.866 -0.5 0.5 0.866 -9.5167 13.8038)" class="st47" width="2" height="8"/>
-		<rect x="23.66" y="17" transform="matrix(0.5 -0.866 0.866 0.5 -5.8563 31.8566)" class="st48" width="2" height="8"/>
-		<rect x="22" y="15" class="st49" width="8" height="2"/>
-		<rect x="20.66" y="10" transform="matrix(0.8661 -0.4999 0.4999 0.8661 -2.1964 13.8014)" class="st50" width="8" height="2"/>
-		<rect x="17" y="6.34" transform="matrix(0.4999 -0.8661 0.8661 0.4999 4.1451 21.8579)" class="st51" width="8" height="2"/>
+		<rect x="15" y="2" fill="#9B9B9B" width="2" height="8"/>
+		
+			<rect x="9.9996" y="3.3399" transform="matrix(0.866 -0.5 0.5 0.866 -2.1962 6.4833)" opacity="0.9" fill="#9B9B9B" enable-background="new    " width="2" height="7.9996"/>
+		
+			<rect x="6.3392" y="7.0001" transform="matrix(0.5 -0.866 0.866 0.5 -5.8566 11.8557)" opacity="0.8" fill="#9B9B9B" enable-background="new    " width="2" height="7.9996"/>
+		<rect x="2" y="15" opacity="0.7" fill="#9B9B9B" enable-background="new    " width="8" height="2"/>
+		
+			<rect x="3.3399" y="20.0007" transform="matrix(0.8661 -0.4999 0.4999 0.8661 -9.5152 6.4815)" opacity="0.6" fill="#9B9B9B" enable-background="new    " width="8.0002" height="2"/>
+		
+			<rect x="7.0004" y="23.6594" transform="matrix(0.4999 -0.8661 0.8661 0.4999 -15.8558 21.8597)" opacity="0.5" fill="#9B9B9B" enable-background="new    " width="8.0002" height="2"/>
+		<rect x="15" y="22" opacity="0.4" fill="#9B9B9B" enable-background="new    " width="2" height="8"/>
+		
+			<rect x="19.9987" y="20.6593" transform="matrix(0.866 -0.5 0.5 0.866 -9.5164 13.8034)" opacity="0.3" fill="#9B9B9B" enable-background="new    " width="2" height="7.9996"/>
+		
+			<rect x="23.659" y="17.0015" transform="matrix(0.5 -0.866 0.866 0.5 -5.8583 31.8556)" opacity="0.2" fill="#9B9B9B" enable-background="new    " width="2" height="7.9996"/>
+		<rect x="22" y="15" opacity="0.15" fill="#9B9B9B" enable-background="new    " width="8" height="2"/>
+		
+			<rect x="20.6609" y="10.0009" transform="matrix(0.8661 -0.4999 0.4999 0.8661 -2.1969 13.801)" opacity="0.1" fill="#9B9B9B" enable-background="new    " width="8.0002" height="2"/>
+		
+			<rect x="17.0004" y="6.3389" transform="matrix(0.4999 -0.8661 0.8661 0.4999 4.1464 21.8585)" opacity="0.05" fill="#9B9B9B" enable-background="new    " width="8.0002" height="2"/>
 	</g>
 </g>
 </svg>
