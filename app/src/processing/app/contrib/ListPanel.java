@@ -209,10 +209,10 @@ public class ListPanel extends JPanel implements Scrollable {
 
     foundationIcon = Toolkit.renderIcon("manager/foundation", Theme.get("manager.list.foundation.color"), 16);
 
-    upToDateIcon = Toolkit.renderIcon("manager/up-to-date", Theme.get("manager.list.icon.color"), 16);
-    updateAvailableIcon = Toolkit.renderIcon("manager/update", Theme.get("manager.list.icon.color"), 16);
-    incompatibleIcon = Toolkit.renderIcon("manager/incompatible", Theme.get("manager.list.icon.color"), 16);
-    downloadingIcon = Toolkit.renderIcon("manager/downloading", Theme.get("manager.list.icon.color"), 16);
+    upToDateIcon = Toolkit.renderIcon("manager/list-up-to-date", Theme.get("manager.list.icon.color"), 16);
+    updateAvailableIcon = Toolkit.renderIcon("manager/list-update-available", Theme.get("manager.list.icon.color"), 16);
+    incompatibleIcon = Toolkit.renderIcon("manager/list-incompatible", Theme.get("manager.list.icon.color"), 16);
+    downloadingIcon = Toolkit.renderIcon("manager/list-downloading", Theme.get("manager.list.icon.color"), 16);
 
     ((PdeScrollBarUI) scrollPane.getVerticalScrollBar().getUI()).updateTheme();
   }
