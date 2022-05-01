@@ -266,9 +266,9 @@ class StatusPanel extends JPanel {
       button.setUI(new PdeButtonUI("manager.button"));
     }
 
-    button.setIcon(Toolkit.renderIcon("manager/" + name, Theme.get("manager.button.enabled.icon.color"), 16));
-    button.setPressedIcon(Toolkit.renderIcon("manager/" + name, Theme.get("manager.button.pressed.icon.color"), 16));
-    button.setDisabledIcon(Toolkit.renderIcon("manager/" + name, Theme.get("manager.button.disabled.icon.color"), 16));
+    button.setIcon(Toolkit.renderIcon("manager/panel-" + name, Theme.get("manager.button.enabled.icon.color"), 16));
+    button.setPressedIcon(Toolkit.renderIcon("manager/panel-" + name, Theme.get("manager.button.pressed.icon.color"), 16));
+    button.setDisabledIcon(Toolkit.renderIcon("manager/panel-" + name, Theme.get("manager.button.disabled.icon.color"), 16));
   }
 
 
