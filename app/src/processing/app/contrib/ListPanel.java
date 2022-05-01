@@ -61,11 +61,14 @@ public class ListPanel extends JPanel implements Scrollable {
   protected TableRowSorter<ContributionTableModel> sorter;
   protected ContributionTableModel model;
 
-  static Icon upToDateIcon;
-  static Icon updateAvailableIcon;
-  static Icon incompatibleIcon;
+  // state icons appearing to the left side of the list
+  Icon upToDateIcon;
+  Icon updateAvailableIcon;
+  Icon incompatibleIcon;
+  Icon downloadingIcon;
+
+  // used in the list next to the creator name
   Icon foundationIcon;
-  static Icon downloadingIcon;
 
   Color headerColor;
   Color sectionColor;
@@ -204,7 +207,12 @@ public class ListPanel extends JPanel implements Scrollable {
     rowColor = Theme.getColor("manager.list.background.color");
     table.setBackground(rowColor);
 
-    foundationIcon = Toolkit.renderIconX("manager/foundation", Theme.get("manager.list.foundation.color"), 16);
+    foundationIcon = Toolkit.renderIcon("manager/foundation", Theme.get("manager.list.foundation.color"), 16);
+
+    upToDateIcon = Toolkit.renderIcon("manager/up-to-date", Theme.get("manager.list.icon.color"), 16);
+    updateAvailableIcon = Toolkit.renderIcon("manager/update", Theme.get("manager.list.icon.color"), 16);
+    incompatibleIcon = Toolkit.renderIcon("manager/incompatible", Theme.get("manager.list.icon.color"), 16);
+    downloadingIcon = Toolkit.renderIcon("manager/downloading", Theme.get("manager.list.icon.color"), 16);
 
     ((PdeScrollBarUI) scrollPane.getVerticalScrollBar().getUI()).updateTheme();
   }

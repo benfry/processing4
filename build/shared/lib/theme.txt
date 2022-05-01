@@ -225,6 +225,7 @@ manager.list.background.color = #FFFFFF
 manager.list.header.color = #EBEBEB
 manager.list.section.color = #f8f8f8
 manager.list.selection.color = #e0fffd
+manager.list.icon.color = #0000ff
 manager.list.text.color = #000000
 manager.list.foundation.color = #FFCC00
 manager.list.incompatible.selection.color = #CCCCCC

@@ -224,7 +224,7 @@ class StatusPanel extends JPanel {
       updateDetail(detail);
     }
 
-    foundationIcon = Toolkit.renderIconX("manager/foundation", Theme.get("manager.panel.foundation.color"), 32);
+    foundationIcon = Toolkit.renderIcon("manager/foundation", Theme.get("manager.panel.foundation.color"), 32);
 
     updateButtonTheme(installButton, "install");
     updateButtonTheme(updateButton, "update");
@@ -266,9 +266,9 @@ class StatusPanel extends JPanel {
       button.setUI(new PdeButtonUI("manager.button"));
     }
 
-    button.setIcon(Toolkit.renderIconX("manager/" + name, Theme.get("manager.button.enabled.icon.color"), 16));
-    button.setPressedIcon(Toolkit.renderIconX("manager/" + name, Theme.get("manager.button.pressed.icon.color"), 16));
-    button.setDisabledIcon(Toolkit.renderIconX("manager/" + name, Theme.get("manager.button.disabled.icon.color"), 16));
+    button.setIcon(Toolkit.renderIcon("manager/" + name, Theme.get("manager.button.enabled.icon.color"), 16));
+    button.setPressedIcon(Toolkit.renderIcon("manager/" + name, Theme.get("manager.button.pressed.icon.color"), 16));
+    button.setDisabledIcon(Toolkit.renderIcon("manager/" + name, Theme.get("manager.button.disabled.icon.color"), 16));
   }
 
 

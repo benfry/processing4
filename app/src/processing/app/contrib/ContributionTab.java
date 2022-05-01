@@ -438,8 +438,8 @@ public class ContributionTab extends JPanel {
     protected void updateTheme() {
       if (filterField != null) {
         placeholderLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
-        placeholderLabel.setIcon(Toolkit.renderIconX("manager/search", Theme.get("manager.search.icon.color"), 16));
-        resetButton.setIcon(Toolkit.renderIconX("manager/remove", Theme.get("manager.search.icon.color"), 16));
+        placeholderLabel.setIcon(Toolkit.renderIcon("manager/search", Theme.get("manager.search.icon.color"), 16));
+        resetButton.setIcon(Toolkit.renderIcon("manager/remove", Theme.get("manager.search.icon.color"), 16));
 
         /*
         if (filterField.getUI() instanceof PdeTextFieldUI) {

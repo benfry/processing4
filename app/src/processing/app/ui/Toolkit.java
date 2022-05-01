@@ -684,7 +684,13 @@ public class Toolkit {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static public ImageIcon renderIconX(String name, String color, int size) {
+  /**
+   * Create an Icon object from an SVG path name.
+   * @param name subpath relative to lib/
+   * @param color color to apply to the monochrome icon
+   * @param size size in pixels (handling for 2x done automatically)
+   */
+  static public ImageIcon renderIcon(String name, String color, int size) {
     Image image = renderMonoImage(name, color, size);
     if (image == null) {
       return null;
