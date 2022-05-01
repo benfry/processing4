@@ -184,7 +184,7 @@ public class ContributionTab extends JPanel {
       if (ManagerFrame.ANY_CATEGORY.equals(category)) {
         category = null;
       }
-      filterLibraries(category, filterField.filters);
+      filterLibraries(category, filterField.filterWords);
     });
 
     filterField = new FilterField();
@@ -339,25 +339,25 @@ public class ContributionTab extends JPanel {
 
 
   class FilterField extends JTextField {
-    List<String> filters;
+    List<String> filterWords = new ArrayList<>();
 
-    JLabel filterLabel;
+    JLabel placeholderLabel;
 
 //    Color textColor;
 //    Color placeholderColor;
 //    Color backgroundColor;
 
     public FilterField () {
-      super("");
+//      super("");  // necessary?
 
       // a label that appears above the component when empty and not focused
-      filterLabel = new JLabel("Filter");
+      placeholderLabel = new JLabel("Filter");
 //      filterLabel.setFont(ManagerFrame.NORMAL_PLAIN);
-      filterLabel.setOpaque(false);
+      placeholderLabel.setOpaque(false);
 //      filterLabel.setOpaque(true);
-
 //      setFont(ManagerFrame.NORMAL_PLAIN);
-      filterLabel.setIcon(Toolkit.getLibIconX("manager/search"));
+      placeholderLabel.setIcon(Toolkit.getLibIconX("manager/search"));
+
       JButton removeFilter = Toolkit.createIconButton("manager/remove");
       removeFilter.setBorder(new EmptyBorder(0, 0, 0, 2));
       removeFilter.setBorderPainted(false);
@@ -367,14 +367,16 @@ public class ContributionTab extends JPanel {
         setText("");
         filterField.requestFocusInWindow();
       });
+
       //setOpaque(false);
       setOpaque(true);
+      setBorder(new EmptyBorder(3, 7, 3, 7));
 
       GroupLayout fl = new GroupLayout(this);
       setLayout(fl);
       fl.setHorizontalGroup(fl
         .createSequentialGroup()
-        .addComponent(filterLabel)
+        .addComponent(placeholderLabel)
         .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                          GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
         .addComponent(removeFilter));
@@ -383,23 +385,21 @@ public class ContributionTab extends JPanel {
                           .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                                            GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                           .addGroup(fl.createParallelGroup()
-                          .addComponent(filterLabel)
+                          .addComponent(placeholderLabel)
                           .addComponent(removeFilter))
                           .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                                            GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE));
       removeFilter.setVisible(false);
 
-      filters = new ArrayList<>();
-
       addFocusListener(new FocusListener() {
         public void focusLost(FocusEvent focusEvent) {
           if (getText().isEmpty()) {
-            filterLabel.setVisible(true);
+            placeholderLabel.setVisible(true);
           }
         }
 
         public void focusGained(FocusEvent focusEvent) {
-          filterLabel.setVisible(false);
+          placeholderLabel.setVisible(false);
         }
       });
 
@@ -429,13 +429,13 @@ public class ContributionTab extends JPanel {
       // Replace anything but 0-9, a-z, or : with a space
       //filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
 
-      filters = Arrays.asList(filter.split(" "));
-      filterLibraries(category, filters);
+      filterWords = Arrays.asList(filter.split(" "));
+      filterLibraries(category, filterWords);
     }
 
     protected void updateTheme() {
       if (filterField != null) {
-        filterLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
+        placeholderLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
 
         /*
         if (filterField.getUI() instanceof PdeTextFieldUI) {
@@ -448,7 +448,7 @@ public class ContributionTab extends JPanel {
 //        System.out.println(filterField.getBorder().getBorderInsets(filterField));
         //filterField.setBorder(new EmptyBorder(0, 5, 0, 5));
         //filterField.setBorder(null);
-        filterField.setBorder(new EmptyBorder(3, 7, 3, 7));
+//        filterField.setBorder(new EmptyBorder(3, 7, 3, 7));
 
         filterField.setBackground(Theme.getColor("manager.search.background.color"));
         filterField.setForeground(Theme.getColor("manager.search.text.color"));
