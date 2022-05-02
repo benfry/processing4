@@ -79,6 +79,7 @@ public class PreferencesFrame {
 
   JComboBox<String> displaySelectionBox;
   JComboBox<String> languageSelectionBox;
+  Map<String, String> languageToCode = new HashMap<>();
 
   int displayCount;
   int defaultDisplayNum;
@@ -147,12 +148,20 @@ public class PreferencesFrame {
     languageSelection[0] = languages.get(Language.getLanguage());
     int i = 1;
     for (Map.Entry<String, String> lang : languages.entrySet()) {
-      if (!lang.getKey().equals(Language.getLanguage())){
+      languageToCode.put(lang.getValue(), lang.getKey());
+      if (!lang.getKey().equals(Language.getLanguage())) {
         languageSelection[i++] = lang.getValue();
       }
     }
     languageSelectionBox.setModel(new DefaultComboBoxModel<>(languageSelection));
-    languageRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
+    languageRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+    languageRestartLabel.setVisible(false);
+//    languageSelectionBox.addItemListener(e -> languageRestartLabel.setVisible(!Language.getLanguage().equals(e.getItem())));
+//    languageSelectionBox.addItemListener(e -> System.out.println(Language.getLanguage() + " and item is " + e.getItem().getClass()));
+//    String languageCode =
+//      Language.nameToCode(String.valueOf(languageSelectionBox.getSelectedItem()));
+//    if (!Language.getLanguage().equals(languageCode)) {
+    languageSelectionBox.addItemListener(e -> languageRestartLabel.setVisible(languageSelectionBox.getSelectedIndex() != 0));
     languageSelectionBox.setRenderer(new LanguageRenderer());
 
 
@@ -722,16 +731,26 @@ public class PreferencesFrame {
     Preferences.setBoolean("update.check", checkUpdatesBox.isSelected()); //$NON-NLS-1$
 
     // Save Language
+    /*
     Map<String, String> languages = Language.getLanguages();
-    String language = "";
+    String language = null;
     for (Map.Entry<String, String> lang : languages.entrySet()) {
       if (lang.getValue().equals(String.valueOf(languageSelectionBox.getSelectedItem()))) {
         language = lang.getKey().trim().toLowerCase();
         break;
       }
     }
-    if (!language.equals(Language.getLanguage()) && !language.equals("")) {
-      Language.saveLanguage(language);
+    */
+    // first entry is always the default language
+    if (languageSelectionBox.getSelectedIndex() != 0) {
+      /*
+      String languageCode =
+        Language.nameToCode(String.valueOf(languageSelectionBox.getSelectedItem()));
+      if (!Language.getLanguage().equals(languageCode)) {
+        Language.saveLanguage(languageCode);
+      }
+      */
+      Language.saveLanguage(languageToCode.get((String) languageSelectionBox.getSelectedItem()));
     }
 
     // The preference will have already been reset when the window was created

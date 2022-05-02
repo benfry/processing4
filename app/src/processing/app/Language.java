@@ -235,6 +235,19 @@ public class Language {
   }
 
 
+  /*
+  static public String nameToCode(String languageName) {
+    Map<String, String> languages = Language.getLanguages();
+    for (Map.Entry<String, String> lang : languages.entrySet()) {
+      if (lang.getValue().equals(languageName)) {
+        return lang.getKey().trim().toLowerCase();
+      }
+    }
+    return null;  // not found
+  }
+  */
+
+
   /**
    * Get the current language.
    * @return two-digit ISO code (lowercase)

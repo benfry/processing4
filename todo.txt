@@ -55,6 +55,8 @@ _ do we need other states for list item icons
 _ update lib/theme.txt to clean up current Frankenstein status
 _   just replace with the blue default once that's updated
 
+_ can't ship before ui.font and language bits sorted out
+_   otherwise the override to use Source Sans Pro will hose other languages
 _ Color Selector buttons misaligned
 
 preferences
@@ -76,7 +78,7 @@ _ show 'requires restart' only after making a change
 X   fixed for interface zoom
 _   hidpiDisableBox
 X   inputMethodBox
-_   languageSelectionBox and languageRestartLabel
+X   languageSelectionBox and languageRestartLabel
 _ move to separate panel
 _   background when presenting
 _   continuously check
