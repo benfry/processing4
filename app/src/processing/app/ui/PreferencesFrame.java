@@ -60,6 +60,7 @@ public class PreferencesFrame {
   JComboBox<Integer> fontSizeField;
   JComboBox<Integer> consoleFontSizeField;
   JCheckBox inputMethodBox;
+  JLabel inputRestartLabel;
   JCheckBox autoAssociateBox;
 
   ColorChooser selector;
@@ -203,7 +204,7 @@ public class PreferencesFrame {
     // [ ] Disable HiDPI Scaling (requires restart)
 
     hidpiDisableBox = new JCheckBox("Disable HiDPI Scaling (requires restart)");
-    hidpiDisableBox.setVisible(false);  // only for Windows
+//    hidpiDisableBox.setVisible(false);  // only for Windows
 
 
     // [ ] Keep sketch name and main tab name in sync
@@ -300,10 +301,28 @@ public class PreferencesFrame {
     // [ ] Enable complex text input (for Japanese et al, requires restart)
 
     inputMethodBox =
-      new JCheckBox(Language.text("preferences.enable_complex_text_input")+
-                    " ("+Language.text("preferences.enable_complex_text_input_example")+
-                    ", "+Language.text("preferences.requires_restart")+")");
-    //inputMethodBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+      new JCheckBox(Language.text("preferences.enable_complex_text_input"));
+
+    JLabel inputMethodExample =
+      new JLabel("(" + Language.text("preferences.enable_complex_text_input_example") + ")");
+    inputMethodExample.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        Platform.openURL("https://en.wikipedia.org/wiki/CJK_characters");
+      }
+
+      public void mouseEntered(MouseEvent e) {
+        inputMethodExample.setForeground(Theme.getColor("laf.accent.color"));
+      }
+
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        inputMethodExample.setForeground(sketchbookLocationLabel.getForeground());
+      }
+    });
+    inputRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+    inputRestartLabel.setVisible(false);
+
+    inputMethodBox.addChangeListener(e -> inputRestartLabel.setVisible(inputMethodBox.isSelected() != Preferences.getBoolean("editor.input_method_support")));
 
 
     // [ ] Continuously check for errors - PDE X
@@ -365,7 +384,7 @@ public class PreferencesFrame {
 
     autoAssociateBox =
       new JCheckBox(Language.text("preferences.automatically_associate_pde_files"));
-    autoAssociateBox.setVisible(false);
+//    autoAssociateBox.setVisible(false);
 
 
     // More preferences are in the ...
@@ -377,24 +396,24 @@ public class PreferencesFrame {
     JLabel preferencePathLabel = new JLabel(Preferences.getPreferencesPath());
     final JLabel clickable = preferencePathLabel;
     preferencePathLabel.addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent e) {
-          Platform.openFolder(Base.getSettingsFolder());
-        }
+      public void mousePressed(MouseEvent e) {
+        Platform.openFolder(Base.getSettingsFolder());
+      }
 
-        // Light this up in blue like a hyperlink
-        public void mouseEntered(MouseEvent e) {
-          //clickable.setForeground(new Color(0, 0, 140));
-          clickable.setForeground(Theme.getColor("laf.accent.color"));
-        }
+      // Light this up in blue like a hyperlink
+      public void mouseEntered(MouseEvent e) {
+        //clickable.setForeground(new Color(0, 0, 140));
+        clickable.setForeground(Theme.getColor("laf.accent.color"));
+      }
 
-        // Set the text back to black when the mouse is outside
-        public void mouseExited(MouseEvent e) {
-          //clickable.setForeground(Color.BLACK);
-          // steal the color from a component that doesn't change
-          // (so that it works after updateTheme() has been called)
-          clickable.setForeground(sketchbookLocationLabel.getForeground());
-        }
-      });
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        //clickable.setForeground(Color.BLACK);
+        // steal the color from a component that doesn't change
+        // (so that it works after updateTheme() has been called)
+        clickable.setForeground(sketchbookLocationLabel.getForeground());
+      }
+    });
 
     JLabel preferenceHintLabel = new JLabel("(" + Language.text("preferences.file.hint") + ")");
     //preferenceHintLabel.setForeground(Color.gray);
@@ -412,17 +431,9 @@ public class PreferencesFrame {
     JButton cancelButton = new JButton(Language.getPrompt("cancel"));
     cancelButton.addActionListener(e -> disposeFrame());
 
-    final int buttonWidth = Toolkit.getButtonWidth();
-
-//    JPanel axis = new JPanel();
-//    axis.setLayout(new GridLayout(0, 1, 0, 0));
     Box axis = Box.createVerticalBox();
-//    axis.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-//    addRow(axis, sketchbookLocationLabel);
-//    addRow(axis, sketchbookLocationField, browseButton);
     addRow(axis, sketchbookLocationLabel, sketchbookLocationField);
-    addRow(axis, languageLabel, languageSelectionBox, languageRestartLabel);
 
     addRow(axis, fontLabel, fontSelectionBox);
 
@@ -431,11 +442,14 @@ public class PreferencesFrame {
 
     addRow(axis, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
 
-    addRow(axis, hidpiDisableBox);
+    if (Platform.isWindows()) {
+      addRow(axis, hidpiDisableBox);
+    }
+
+    addRow(axis, languageLabel, languageSelectionBox, languageRestartLabel);
+    addRow(axis, inputMethodBox, inputMethodExample, inputRestartLabel);
 
     addRow(axis, backgroundColorLabel, presentColor);
-
-    addRow(axis, inputMethodBox);
 
     addRow(axis, errorCheckerBox, warningsCheckerBox);
 
@@ -450,7 +464,9 @@ public class PreferencesFrame {
 
     addRow(axis, displayLabel, displaySelectionBox);
 
-    addRow(axis, autoAssociateBox);
+    if (Platform.isWindows()) {
+      addRow(axis, autoAssociateBox);
+    }
 
     // Put these in a separate container so there's no extra gap
     // between the rows.
@@ -596,10 +612,12 @@ public class PreferencesFrame {
     );
     */
 
+    /*
     if (Platform.isWindows()) {
       autoAssociateBox.setVisible(true);
       hidpiDisableBox.setVisible(true);
     }
+    */
 
     // closing the window is same as hitting cancel button
     frame.addWindowListener(new WindowAdapter() {
@@ -898,10 +916,6 @@ public class PreferencesFrame {
     // Required to update changes to accent color or light/dark mode.
     // (No custom components, so safe to call on this Window object.)
     SwingUtilities.updateComponentTreeUI(frame);
-
-    JLabel morePreferenceLabel;
-    JLabel preferencePathLabel;
-    JLabel preferenceHintLabel;
   }
 
 

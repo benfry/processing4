@@ -68,11 +68,14 @@ X why is sketchbook location text selected when opening window?
 X   had focus by default, which apparently selects the text
 X remove 'smooth text' (too rare: manual editing should suffice)
 X switch to BoxLayout before making more layout changes?
+X move 'enable complex text' up near language?
+X   better yet, move language down below font and interface scale
+o   turn it on when selecting CJKV as a language
 _ rearrange item order in PreferencesFrame
-_ show 'requires restart' only after making a change?
+_ show 'requires restart' only after making a change
 X   fixed for interface zoom
 _   hidpiDisableBox
-_   inputMethodBox
+X   inputMethodBox
 _   languageSelectionBox and languageRestartLabel
 _ move to separate panel
 _   background when presenting
@@ -80,9 +83,6 @@ _   continuously check
 _   code completion
 _   suggest imports
 _   increase memory
-_ move 'enable complex text' up near language?
-_   better yet, move langauge down below font and interface scale
-_   turn it on when selecting CJKV as a language
 _ move delete previous pref to the Export to Application window
 _   get rid of the pref/just use the setting from export to app
 
