@@ -113,7 +113,7 @@ public class PreferencesFrame {
     // Sketchbook folder:
     // [...............................]  [ Browse ]
 
-    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location")+": ");
+    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location") + ":");
 
     sketchbookLocationField = new JTextField(25);
     /*
@@ -141,7 +141,7 @@ public class PreferencesFrame {
 
     // Language: [ English ] (requires restart of Processing)
 
-    JLabel languageLabel = new JLabel(Language.text("preferences.language")+": ");
+    JLabel languageLabel = new JLabel(Language.text("preferences.language") + ":");
     languageSelectionBox = new JComboBox<>();
 
     Map<String, String> languages = Language.getLanguages();
@@ -168,7 +168,7 @@ public class PreferencesFrame {
 
     // Editor and console font [ Source Code Pro ]
 
-    JLabel fontLabel = new JLabel(Language.text("preferences.editor_and_console_font")+": ");
+    JLabel fontLabel = new JLabel(Language.text("preferences.editor_and_console_font") + ":");
     final String fontTip = "<html>" + Language.text("preferences.editor_and_console_font.tip");
     fontLabel.setToolTipText(fontTip);
     // get a wide name in there before getPreferredSize() is called
@@ -179,11 +179,11 @@ public class PreferencesFrame {
 
     // Editor font size [ 12 ]  Console font size [ 10 ]
 
-    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size")+": ");
+    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size") + ":");
     fontSizeField = new JComboBox<>(FONT_SIZES);
     fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
 
-    JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size")+": ");
+    JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size") + ":");
     consoleFontSizeField = new JComboBox<>(FONT_SIZES);
     consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
 
@@ -196,11 +196,11 @@ public class PreferencesFrame {
 
     // Interface scale: [ 100% ] (requires restart of Processing)
 
-    zoomRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
+    zoomRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
 
-    JLabel zoomLabel = new JLabel(Language.text("preferences.zoom") + ": ");
+    JLabel zoomLabel = new JLabel(Language.text("preferences.interface_scale") + ":");
 
-    zoomAutoBox = new JCheckBox(Language.text("preferences.zoom.auto"));
+    zoomAutoBox = new JCheckBox(Language.text("preferences.interface_scale.auto"));
     zoomAutoBox.addChangeListener(e -> {
       zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected());
       updateZoomRestartRequired();
@@ -229,7 +229,7 @@ public class PreferencesFrame {
 
     // Colors
 
-    JLabel backgroundColorLabel = new JLabel(Language.text("preferences.background_color")+": ");
+    JLabel backgroundColorLabel = new JLabel(Language.text("preferences.background_color")+":");
 
     final String colorTip = "<html>" + Language.text("preferences.background_color.tip");
     backgroundColorLabel.setToolTipText(colorTip);
@@ -366,7 +366,7 @@ public class PreferencesFrame {
 
     // [ ] Increase maximum available memory to [______] MB
 
-    memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory")+": ");
+    memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory")+":");
     memoryField = new JTextField(4);
     memoryOverrideBox.addChangeListener(e -> memoryField.setEnabled(memoryOverrideBox.isSelected()));
     JLabel mbLabel = new JLabel("MB");
@@ -386,7 +386,7 @@ public class PreferencesFrame {
 
     // Run sketches on display [  1 ]
 
-    JLabel displayLabel = new JLabel(Language.text("preferences.run_sketches_on_display") + ": ");
+    JLabel displayLabel = new JLabel(Language.text("preferences.run_sketches_on_display") + ":");
     final String tip = "<html>" + Language.text("preferences.run_sketches_on_display.tip");
     displayLabel.setToolTipText(tip);
     displaySelectionBox = new JComboBox<>();
@@ -448,12 +448,18 @@ public class PreferencesFrame {
 
     addRow(axis, sketchbookLocationLabel, sketchbookLocationField);
 
-    addRow(axis, fontLabel, fontSelectionBox);
+    JPanel layoutPanel = new JPanel();
+    layoutPanel.setBorder(new TitledBorder("Interface and Fonts"));
+    layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
 
-    addRow(axis, fontSizeLabel, fontSizeField,
-                 consoleFontSizeLabel, consoleFontSizeField);
+    addRow(layoutPanel, fontLabel, fontSelectionBox);
 
-    addRow(axis, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
+    addRow(layoutPanel, fontSizeLabel, fontSizeField,
+                        consoleFontSizeLabel, consoleFontSizeField);
+
+    addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
+
+    axis.add(layoutPanel);
 
     if (Platform.isWindows()) {
       addRow(axis, hidpiDisableBox, hidpiRestartLabel);
@@ -660,7 +666,7 @@ public class PreferencesFrame {
 
 
   private void addRow(Container axis, Component... components) {
-    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 3, 3));
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 3));
     for (Component comp : components) {
       row.add(comp);
     }
@@ -669,6 +675,9 @@ public class PreferencesFrame {
 
 
   private void updateZoomRestartRequired() {
+    // TODO If this is too wide for the window, it may not appear.
+    //      Redo layout in the window on change to be sure.
+    //      May cause window to resize but need the message. [fry 220502]
     zoomRestartLabel.setVisible(
       zoomAutoBox.isSelected() != Preferences.getBoolean("editor.zoom.auto") ||
       !Preferences.get("editor.zoom").equals(String.valueOf(zoomSelectionBox.getSelectedItem()))

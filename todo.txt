@@ -59,6 +59,7 @@ _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
 _ Color Selector buttons misaligned
 
+
 preferences
 X get rid of text box for 'background color when presenting'
 X   redundant (can type numbers in the dialog) and fussy
@@ -73,13 +74,16 @@ X switch to BoxLayout before making more layout changes?
 X move 'enable complex text' up near language?
 X   better yet, move language down below font and interface scale
 o   turn it on when selecting CJKV as a language
-_ rearrange item order in PreferencesFrame
-_ show 'requires restart' only after making a change
+X show 'requires restart' only after making a change
 X   fixed for interface zoom
 X   hidpiDisableBox
 X   inputMethodBox
 X   languageSelectionBox and languageRestartLabel
+X preferences.zoom = Interface scale -> preferences.interface_scale = Scale
+X preferences.zoom.auto -> preferences.interface_scale.auto
+_ rearrange item order in PreferencesFrame
 _ move to separate panel
+_   (maybe not, because not clear which will be inherited by other modes?)
 _   background when presenting
 _   continuously check
 _   code completion
