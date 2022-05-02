@@ -101,9 +101,10 @@ footer.updates.indicator.text.color = #FFEFFF
 
 
 ## EditorConsole - stack traces of doom and println() ##
-
 # The font is handled by preferences.txt, so its size/etc are modifiable.
+
 console.color = #17101B
+# color of System.out text
 console.output.color = #9B94A2
 # text color for errors printed in the console
 console.error.color = #F071FF
@@ -126,7 +127,7 @@ editor.gradient.bottom = #301753
 # highlight for the current line
 editor.linehighlight.color = #1C1A1E
 # highlight for the current line
-editor.linehighlight=true
+editor.linehighlight = true
 
 editor.caret.color = #FFFFFE
 # also used by EditorHeader
@@ -204,14 +205,21 @@ manager.tab.background = #17002C
 
 ## ContributionTab
 
+# error window (X) close button
+manager.error.close.icon.color = #000000
+
 manager.scrollbar.thumb.enabled.color = #301753
 manager.scrollbar.thumb.rollover.color = #452A68
 manager.scrollbar.thumb.pressed.color = #452A68
 manager.scrollbar.color = #160037
 
-manager.list.search.text.color = #000000
-manager.list.search.placeholder.color = #cccccc
-manager.list.search.background.color = #ffffff
+manager.search.text.color = #FFFFFE
+manager.search.icon.color = #00ff80
+manager.search.background.color = #000000
+manager.search.caret.color = #FFFFFE
+manager.search.placeholder.color = #9281A2
+manager.search.selection.text.color = #FFFFFE
+manager.search.selection.background.color = #000000
 
 
 ## ListPanel – the listing inside a Contribution Manager tab ##
@@ -220,9 +228,11 @@ manager.list.background.color = #301753
 manager.list.header.color = #3C225F
 manager.list.section.color = #301753
 manager.list.selection.color = #8962B7
+manager.list.icon.color = #E6BFFF
 manager.list.text.color = #FFFFFE
-manager.list.incompatible.selection.color = #503373
-manager.list.incompatible.text.color = #9B79BF
+manager.list.foundation.color = #B491D9
+manager.list.incompatible.selection.color = #4E3669
+manager.list.incompatible.text.color = #9281A2
 
 
 ## StatusPanel - the bottom panel with detail about a contribution
@@ -231,6 +241,17 @@ manager.panel.font = processing.sans,plain,11
 manager.panel.background.color = #573484
 manager.panel.text.color = #FFFFFE
 manager.panel.link.color = #E5CEF7
+manager.panel.foundation.color = #E5CEF7
+
+manager.button.enabled.background.color = #381965
+manager.button.enabled.text.color = #FFFFFE
+manager.button.enabled.icon.color = #E5CEF7
+manager.button.pressed.background.color = #190048
+manager.button.pressed.text.color = #E5CEF7
+manager.button.pressed.icon.color = #E5CEF7
+manager.button.disabled.background.color = #482674
+manager.button.disabled.text.color = #B2A4BF
+manager.button.disabled.icon.color = #B2A4BF
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
