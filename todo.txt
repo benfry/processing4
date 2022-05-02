@@ -76,7 +76,7 @@ o   turn it on when selecting CJKV as a language
 _ rearrange item order in PreferencesFrame
 _ show 'requires restart' only after making a change
 X   fixed for interface zoom
-_   hidpiDisableBox
+X   hidpiDisableBox
 X   inputMethodBox
 X   languageSelectionBox and languageRestartLabel
 _ move to separate panel

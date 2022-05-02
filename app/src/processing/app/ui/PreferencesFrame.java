@@ -75,6 +75,7 @@ public class PreferencesFrame {
   JLabel zoomRestartLabel;
 
   JCheckBox hidpiDisableBox;
+  JLabel hidpiRestartLabel;
   JCheckBox syncSketchNameBox;
 
   JComboBox<String> displaySelectionBox;
@@ -212,8 +213,11 @@ public class PreferencesFrame {
 
     // [ ] Disable HiDPI Scaling (requires restart)
 
-    hidpiDisableBox = new JCheckBox("Disable HiDPI Scaling (requires restart)");
+    hidpiDisableBox = new JCheckBox("Disable HiDPI Scaling");
 //    hidpiDisableBox.setVisible(false);  // only for Windows
+    hidpiRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+    hidpiRestartLabel.setVisible(false);
+    hidpiDisableBox.addChangeListener(e -> hidpiRestartLabel.setVisible(hidpiDisableBox.isSelected() != Splash.getDisableHiDPI()));
 
 
     // [ ] Keep sketch name and main tab name in sync
@@ -452,26 +456,24 @@ public class PreferencesFrame {
     addRow(axis, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
 
     if (Platform.isWindows()) {
-      addRow(axis, hidpiDisableBox);
+      addRow(axis, hidpiDisableBox, hidpiRestartLabel);
     }
 
     addRow(axis, languageLabel, languageSelectionBox, languageRestartLabel);
     addRow(axis, inputMethodBox, inputMethodExample, inputRestartLabel);
-
-    addRow(axis, backgroundColorLabel, presentColor);
 
     addRow(axis, errorCheckerBox, warningsCheckerBox);
 
     addRow(axis, codeCompletionBox);
     addRow(axis, importSuggestionsBox);
 
+    addRow(axis, displayLabel, displaySelectionBox);
+    addRow(axis, backgroundColorLabel, presentColor);
     addRow(axis, memoryOverrideBox, memoryField, mbLabel);
 
     addRow(axis, deletePreviousBox);
     addRow(axis, checkUpdatesBox);
     addRow(axis, syncSketchNameBox);
-
-    addRow(axis, displayLabel, displaySelectionBox);
 
     if (Platform.isWindows()) {
       addRow(axis, autoAssociateBox);
