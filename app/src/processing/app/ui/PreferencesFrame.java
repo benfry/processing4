@@ -469,14 +469,14 @@ public class PreferencesFrame {
 
     //
 
-    JPanel languagePanel = new JPanel();
-    languagePanel.setBorder(new TitledBorder("Language"));
-    languagePanel.setLayout(new BoxLayout(languagePanel, BoxLayout.Y_AXIS));
+//    JPanel languagePanel = new JPanel();
+//    languagePanel.setBorder(new TitledBorder("Language"));
+//    languagePanel.setLayout(new BoxLayout(languagePanel, BoxLayout.Y_AXIS));
 
-    addRow(languagePanel, languageLabel, languageSelectionBox, languageRestartLabel);
-    addRow(languagePanel, inputMethodBox, inputMethodExample, inputRestartLabel);
+    addRow(layoutPanel, languageLabel, languageSelectionBox, languageRestartLabel);
+    addRow(layoutPanel, inputMethodBox, inputMethodExample, inputRestartLabel);
 
-    axis.add(languagePanel);
+//    axis.add(languagePanel);
 
     //
 

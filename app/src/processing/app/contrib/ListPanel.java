@@ -70,7 +70,8 @@ public class ListPanel extends JPanel implements Scrollable {
   // used in the list next to the creator name
   Icon foundationIcon;
 
-  Color headerColor;
+  Color headerFgColor;
+  Color headerBgColor;
   Color sectionColor;
   Color rowColor;
 
@@ -196,7 +197,8 @@ public class ListPanel extends JPanel implements Scrollable {
 
 
   protected void updateTheme() {
-    headerColor = Theme.getColor("manager.list.header.color");
+    headerFgColor = Theme.getColor("manager.list.header.fgcolor");
+    headerBgColor = Theme.getColor("manager.list.header.bgcolor");
     sectionColor = Theme.getColor("manager.list.section.color");
 
     textColor = Theme.getColor("manager.list.text.color");
@@ -279,38 +281,57 @@ public class ListPanel extends JPanel implements Scrollable {
       super.getTableCellRendererComponent(table, value,
               isSelected, hasFocus, row, column);
 
-      JTableHeader tableHeader = table.getTableHeader();
-      if (tableHeader != null) {
-        setForeground(tableHeader.getForeground());
-      }
+//      JTableHeader tableHeader = table.getTableHeader();
+//      if (tableHeader != null) {
+//        setForeground(tableHeader.getForeground());
+//      }
+      setForeground(headerFgColor);
+      //setText(getText() + "\u2191\u2193");
+      setText(getText() + getSortText(table, column));
       setFont(ManagerFrame.SMALL_PLAIN);
-      setIcon(getSortIcon(table, column));
-      setBackground(headerColor);
+      //setIcon(getSortIcon(table, column));
+      setBackground(headerBgColor);
       setBorder(null);
       return this;
     }
 
 
-    /**
-     * Return an icon suitable to the primary sorted column,
-     * or null if the column is not the primary sort key.
-     *
-     * @param table the <code>JTable</code>.
-     * @param column the column index.
-     * @return the sort icon, or null if the column is unsorted.
-     */
-    private Icon getSortIcon(JTable table, int column) {
+//    /**
+//     * Return an icon suitable to the primary sorted column,
+//     * or null if the column is not the primary sort key.
+//     *
+//     * @param table the <code>JTable</code>.
+//     * @param column the column index.
+//     * @return the sort icon, or null if the column is unsorted.
+//     */
+//    private Icon getSortIcon(JTable table, int column) {
+//      SortKey sortKey = getSortKey(table);
+//      if (sortKey != null && table.convertColumnIndexToView(sortKey.getColumn()) == column) {
+//        switch (sortKey.getSortOrder()) {
+//          case ASCENDING:
+//            return UIManager.getIcon("Table.ascendingSortIcon");
+//          case DESCENDING:
+//            return UIManager.getIcon("Table.descendingSortIcon");
+//        }
+//      }
+//      return null;
+//    }
+
+
+    private String getSortText(JTable table, int column) {
       SortKey sortKey = getSortKey(table);
       if (sortKey != null && table.convertColumnIndexToView(sortKey.getColumn()) == column) {
         switch (sortKey.getSortOrder()) {
           case ASCENDING:
-            return UIManager.getIcon("Table.ascendingSortIcon");
+            return "  \u2193";
           case DESCENDING:
-            return UIManager.getIcon("Table.descendingSortIcon");
+            return "  \u2191";
         }
       }
-      return null;
+      // if not sorting on this column
+      return "";
     }
+
 
     /**
      * Returns the current sort key, or null if the column is unsorted.
