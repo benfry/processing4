@@ -448,6 +448,8 @@ public class PreferencesFrame {
 
     addRow(axis, sketchbookLocationLabel, sketchbookLocationField);
 
+    //
+
     JPanel layoutPanel = new JPanel();
     layoutPanel.setBorder(new TitledBorder("Interface and Fonts"));
     layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
@@ -459,23 +461,48 @@ public class PreferencesFrame {
 
     addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
 
-    axis.add(layoutPanel);
-
     if (Platform.isWindows()) {
-      addRow(axis, hidpiDisableBox, hidpiRestartLabel);
+      addRow(layoutPanel, hidpiDisableBox, hidpiRestartLabel);
     }
 
-    addRow(axis, languageLabel, languageSelectionBox, languageRestartLabel);
-    addRow(axis, inputMethodBox, inputMethodExample, inputRestartLabel);
+    axis.add(layoutPanel);
 
-    addRow(axis, errorCheckerBox, warningsCheckerBox);
+    //
 
-    addRow(axis, codeCompletionBox);
-    addRow(axis, importSuggestionsBox);
+    JPanel languagePanel = new JPanel();
+    languagePanel.setBorder(new TitledBorder("Language"));
+    languagePanel.setLayout(new BoxLayout(languagePanel, BoxLayout.Y_AXIS));
 
-    addRow(axis, displayLabel, displaySelectionBox);
-    addRow(axis, backgroundColorLabel, presentColor);
-    addRow(axis, memoryOverrideBox, memoryField, mbLabel);
+    addRow(languagePanel, languageLabel, languageSelectionBox, languageRestartLabel);
+    addRow(languagePanel, inputMethodBox, inputMethodExample, inputRestartLabel);
+
+    axis.add(languagePanel);
+
+    //
+
+    JPanel codingPanel = new JPanel();
+    codingPanel.setBorder(new TitledBorder("Coding"));
+    codingPanel.setLayout(new BoxLayout(codingPanel, BoxLayout.Y_AXIS));
+
+    addRow(codingPanel, errorCheckerBox, warningsCheckerBox);
+    addRow(codingPanel, codeCompletionBox);
+    addRow(codingPanel, importSuggestionsBox);
+
+    axis.add(codingPanel);
+
+    //
+
+    JPanel runningPanel = new JPanel();
+    runningPanel.setBorder(new TitledBorder("Running"));
+    runningPanel.setLayout(new BoxLayout(runningPanel, BoxLayout.Y_AXIS));
+
+    addRow(runningPanel, displayLabel, displaySelectionBox);
+    addRow(runningPanel, backgroundColorLabel, presentColor);
+    addRow(runningPanel, memoryOverrideBox, memoryField, mbLabel);
+
+    axis.add(runningPanel);
+
+    //
 
     addRow(axis, deletePreviousBox);
     addRow(axis, checkUpdatesBox);
