@@ -35,7 +35,6 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import processing.app.Base;
-import processing.app.Language;
 import processing.app.Library;
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
@@ -55,7 +54,7 @@ public class ContributionTab extends JPanel {
   StatusPanel statusPanel;
   FilterField filterField;
 
-  JLabel categoryLabel;
+//  JLabel categoryLabel;
   JLabel loaderLabel;
 
   JPanel errorPanel;
@@ -173,7 +172,7 @@ public class ContributionTab extends JPanel {
 
 
   private void createComponents() {
-    categoryLabel = new JLabel(Language.text("contrib.category"));
+//    categoryLabel = new JLabel(Language.text("contrib.category"));
 
     categoryChooser = new JComboBox<>();
     categoryChooser.setMaximumRowCount(20);
@@ -186,7 +185,8 @@ public class ContributionTab extends JPanel {
       if (ManagerFrame.ANY_CATEGORY.equals(category)) {
         category = null;
       }
-      filterLibraries(category, filterField.filterWords);
+      //filterLibraries(category, filterField.filterWords);
+      filterLibraries();
     });
 
     filterField = new FilterField();
@@ -281,8 +281,9 @@ public class ContributionTab extends JPanel {
   }
 
 
-  protected void filterLibraries(String category, List<String> filters) {
-    listPanel.filterLibraries(category, filters);
+  //protected void filterLibraries(String category, List<String> filters) {
+  protected void filterLibraries() {
+    listPanel.filterLibraries(category, filterField.filterWords);
   }
 
 
@@ -329,16 +330,32 @@ public class ContributionTab extends JPanel {
   }
 
 
-  /*
-  protected void setFilterText(String filter) {
-    if (filter == null || filter.isEmpty()) {
-      filterField.setText("");
-    } else {
-      filterField.setText(filter);
-    }
-    filterField.applyFilter();
+  public void updateStatusDetail(StatusPanelDetail detail) {
+    statusPanel.updateDetail(detail);
   }
-  */
+
+
+  protected void updateAll() {
+    Collection<StatusPanelDetail> collection =
+      listPanel.detailForContrib.values();
+    for (StatusPanelDetail detail : collection) {
+      detail.update();
+    }
+    listPanel.model.fireTableDataChanged();
+  }
+
+
+  protected boolean hasUpdates() {
+    return listPanel.getRowCount() > 0;
+  }
+
+
+  public boolean filterHasFocus() {
+    return filterField != null && filterField.hasFocus();
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   class FilterField extends JTextField {
@@ -351,7 +368,7 @@ public class ContributionTab extends JPanel {
 //    Color placeholderColor;
 //    Color backgroundColor;
 
-    public FilterField () {
+    FilterField () {
 //      super("");  // necessary?
 
       // a label that appears above the component when empty and not focused
@@ -428,46 +445,45 @@ public class ContributionTab extends JPanel {
       updateTheme();
     }
 
-    public void applyFilter() {
+    private void applyFilter() {
       String filter = getText().toLowerCase();
 
       // Replace anything but 0-9, a-z, or : with a space
       //filter = filter.replaceAll("[^\\x30-\\x39^\\x61-\\x7a\\x3a]", " ");
 
       filterWords = Arrays.asList(filter.split(" "));
-      filterLibraries(category, filterWords);
+      //filterLibraries(category, filterWords);
+      filterLibraries();
     }
 
     protected void updateTheme() {
-      if (filterField != null) {
-        placeholderLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
-        placeholderLabel.setIcon(Toolkit.renderIcon("manager/search", Theme.get("manager.search.icon.color"), 16));
-        resetButton.setIcon(Toolkit.renderIcon("manager/search-reset", Theme.get("manager.search.icon.color"), 16));
+      placeholderLabel.setForeground(Theme.getColor("manager.search.placeholder.color"));
+      placeholderLabel.setIcon(Toolkit.renderIcon("manager/search", Theme.get("manager.search.icon.color"), 16));
+      resetButton.setIcon(Toolkit.renderIcon("manager/search-reset", Theme.get("manager.search.icon.color"), 16));
 
-        /*
-        if (filterField.getUI() instanceof PdeTextFieldUI) {
-          ((PdeTextFieldUI) filterField.getUI()).updateTheme();
-        } else {
-          filterField.setUI(new PdeTextFieldUI("manager.search"));
-        }
-        */
-
-//        System.out.println(filterField.getBorder().getBorderInsets(filterField));
-        //filterField.setBorder(new EmptyBorder(0, 5, 0, 5));
-        //filterField.setBorder(null);
-//        filterField.setBorder(new EmptyBorder(3, 7, 3, 7));
-
-        filterField.setBackground(Theme.getColor("manager.search.background.color"));
-        filterField.setForeground(Theme.getColor("manager.search.text.color"));
-
-        // not yet in use, so leaving out for now
-        //filterField.setDisabledTextColor(Theme.getColor("manager.search.disabled.text.color"));
-
-        filterField.setSelectionColor(Theme.getColor("manager.search.selection.background.color"));
-        filterField.setSelectedTextColor(Theme.getColor("manager.search.selection.text.color"));
-
-        filterField.setCaretColor(Theme.getColor("manager.search.caret.color"));
+      /*
+      if (getUI() instanceof PdeTextFieldUI) {
+        ((PdeTextFieldUI) getUI()).updateTheme();
+      } else {
+        setUI(new PdeTextFieldUI("manager.search"));
       }
+      */
+
+//        System.out.println(getBorder().getBorderInsets(FilterField.this));
+      //setBorder(new EmptyBorder(0, 5, 0, 5));
+      //setBorder(null);
+//        setBorder(new EmptyBorder(3, 7, 3, 7));
+
+      setBackground(Theme.getColor("manager.search.background.color"));
+      setForeground(Theme.getColor("manager.search.text.color"));
+
+      // not yet in use, so leaving out for now
+      //filterField.setDisabledTextColor(Theme.getColor("manager.search.disabled.text.color"));
+
+      setSelectionColor(Theme.getColor("manager.search.selection.background.color"));
+      setSelectedTextColor(Theme.getColor("manager.search.selection.text.color"));
+
+      setCaretColor(Theme.getColor("manager.search.caret.color"));
 
       //SwingUtilities.updateComponentTreeUI(this);
 
@@ -479,30 +495,5 @@ public class ContributionTab extends JPanel {
       setBackground(backgroundColor);
       */
     }
-  }
-
-
-  public void updateStatusDetail(StatusPanelDetail detail) {
-    statusPanel.updateDetail(detail);
-  }
-
-
-  protected void updateAll() {
-    Collection<StatusPanelDetail> collection =
-      listPanel.detailForContrib.values();
-    for (StatusPanelDetail detail : collection) {
-      detail.update();
-    }
-    listPanel.model.fireTableDataChanged();
-  }
-
-
-  protected boolean hasUpdates() {
-    return listPanel.getRowCount() > 0;
-  }
-
-
-  public boolean filterHasFocus() {
-      return filterField != null && filterField.hasFocus();
   }
 }

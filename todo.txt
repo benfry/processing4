@@ -1,5 +1,11 @@
 1284 (4.0b9)
 
+manager
+X make ContributionTab.FilterField into a static class
+o   then perhaps move to another source file
+X   nah, ContributionTabFilterField is a bit much
+X   move things around a bit so it's not quite a mess
+
 design
 X color updates based on changes from Paul (220426)
 o icons for the console items
@@ -30,15 +36,16 @@ X icons for contrib manager list entries (green/orange PNGs won't do)
 X remove ability to rearrange columns in contrib manager
 X   why tf this is the default is beyond me
 
-_ rearrange item order in PreferencesFrame
-_   remove extra space between prefs lines
+design/manager
+_ after download, list item doesn't update to show installed
+_   stays stuck with the download icon
 _ set color of the sort order icon in the ListPanel table header
 _   also the color of the text?
 _ override flatlaf for components (search, buttons, dropdown menu) in manager
 _ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
 _   should be a better way to implement this
 
-waiting
+design/manager/waiting
 _ need monochrome icon for foundation
 _ do we need other states for list item icons
 _ update lib/theme.txt to clean up current Frankenstein status
@@ -56,7 +63,9 @@ o sketchbook location to single line (drop "location"? say folder?)
 X why is sketchbook location text selected when opening window?
 X   had focus by default, which apparently selects the text
 X remove 'smooth text' (too rare: manual editing should suffice)
-_ switch to BoxLayout before making more layout changes?
+X switch to BoxLayout before making more layout changes?
+_ rearrange item order in PreferencesFrame
+_   remove extra space between prefs lines
 _ show 'requires restart' only after making a change?
 X   fixed for interface zoom
 _   hidpiDisableBox
