@@ -7,6 +7,9 @@
 laf.mode = light
 laf.accent.color = #A56200
 
+# global color used in dialog boxes that have text links
+label.link.color = #cc0000
+
 
 ## EditorToolbar ##
 
@@ -205,6 +208,14 @@ manager.tab.background = #CE9E31
 
 ## ContributionTab
 
+# category chooser for libraries
+manager.menu.bgcolor = #000000
+manager.menu.enabled.fgcolor = #00FF00
+manager.menu.disabled.fgcolor = #444444
+manager.menu.selected.fgcolor = #FF8000
+manager.menu.selected.bgcolor = #0080FF
+
+
 # error window (X) close button
 manager.error.close.icon.color = #000000
 
@@ -214,12 +225,12 @@ manager.scrollbar.thumb.pressed.color = #BD964A
 manager.scrollbar.color = #F7CB7C
 
 manager.search.text.color = #000000
-manager.search.icon.color = #00ff80
-manager.search.background.color = #FFFFFE
-manager.search.caret.color = #000000
-manager.search.placeholder.color = #8D7957
+manager.search.icon.color = #5D4200
+manager.search.background.color = #EDC379
+manager.search.caret.color = #5A2100
+manager.search.placeholder.color = #5D4200
 manager.search.selection.text.color = #000000
-manager.search.selection.background.color = #FFFFFE
+manager.search.selection.background.color = #C49635
 
 
 ## ListPanel – the listing inside a Contribution Manager tab ##
@@ -252,6 +263,11 @@ manager.button.pressed.icon.color = #FFD87D
 manager.button.disabled.background.color = #815E00
 manager.button.disabled.text.color = #CDBBA1
 manager.button.disabled.icon.color = #CDBBA1
+
+manager.progress.complete.fgcolor = #000000
+manager.progress.complete.bgcolor = #FF0000
+manager.progress.incomplete.fgcolor = #00FF00
+manager.progress.incomplete.bgcolor = #0000FF
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##

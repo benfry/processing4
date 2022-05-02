@@ -37,8 +37,6 @@ X remove ability to rearrange columns in contrib manager
 X   why tf this is the default is beyond me
 X remove extra space between prefs lines
 
-_ show hand cursor with links for labels
-
 
 design/manager
 X set color of the sort order icon in the ListPanel table header
@@ -84,6 +82,9 @@ X   languageSelectionBox and languageRestartLabel
 X preferences.zoom = Interface scale -> preferences.interface_scale = Scale
 X preferences.zoom.auto -> preferences.interface_scale.auto
 X set link color in prefs window to use accent color
+_ move 'requires restart' to one thing at the bottom
+_ put language & complex text on same line
+_ show hand cursor with links for labels
 _ rearrange item order in PreferencesFrame
 _ move to separate panel
 _   (maybe not, because not clear which will be inherited by other modes?)
