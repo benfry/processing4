@@ -35,6 +35,8 @@ X implement foundation icon using svg
 X icons for contrib manager list entries (green/orange PNGs won't do)
 X remove ability to rearrange columns in contrib manager
 X   why tf this is the default is beyond me
+X remove extra space between prefs lines
+X set link color in prefs window to use accent color
 
 design/manager
 _ after download, list item doesn't update to show installed
@@ -44,6 +46,8 @@ _   also the color of the text?
 _ override flatlaf for components (search, buttons, dropdown menu) in manager
 _ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
 _   should be a better way to implement this
+_ popup menu coloring (contribs and editor)
+_ progress bar in contrib manager
 
 design/manager/waiting
 _ need monochrome icon for foundation
@@ -65,7 +69,6 @@ X   had focus by default, which apparently selects the text
 X remove 'smooth text' (too rare: manual editing should suffice)
 X switch to BoxLayout before making more layout changes?
 _ rearrange item order in PreferencesFrame
-_   remove extra space between prefs lines
 _ show 'requires restart' only after making a change?
 X   fixed for interface zoom
 _   hidpiDisableBox

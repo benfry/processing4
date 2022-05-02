@@ -371,7 +371,8 @@ public class PreferencesFrame {
     // More preferences are in the ...
 
     JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file") + ":");
-    morePreferenceLabel.setForeground(Color.gray);
+    //morePreferenceLabel.setForeground(Color.gray);
+    morePreferenceLabel.setEnabled(false);
 
     JLabel preferencePathLabel = new JLabel(Preferences.getPreferencesPath());
     final JLabel clickable = preferencePathLabel;
@@ -382,17 +383,22 @@ public class PreferencesFrame {
 
         // Light this up in blue like a hyperlink
         public void mouseEntered(MouseEvent e) {
-          clickable.setForeground(new Color(0, 0, 140));
+          //clickable.setForeground(new Color(0, 0, 140));
+          clickable.setForeground(Theme.getColor("laf.accent.color"));
         }
 
         // Set the text back to black when the mouse is outside
         public void mouseExited(MouseEvent e) {
-          clickable.setForeground(Color.BLACK);
+          //clickable.setForeground(Color.BLACK);
+          // steal the color from a component that doesn't change
+          // (so that it works after updateTheme() has been called)
+          clickable.setForeground(sketchbookLocationLabel.getForeground());
         }
       });
 
     JLabel preferenceHintLabel = new JLabel("(" + Language.text("preferences.file.hint") + ")");
-    preferenceHintLabel.setForeground(Color.gray);
+    //preferenceHintLabel.setForeground(Color.gray);
+    preferenceHintLabel.setEnabled(false);
 
 
     // [  OK  ] [ Cancel ]
@@ -446,12 +452,13 @@ public class PreferencesFrame {
 
     addRow(axis, autoAssociateBox);
 
-//    axis.add(morePreferenceLabel);
-//    axis.add(preferencePathLabel);
-//    axis.add(preferenceHintLabel);
-    addRow(axis, morePreferenceLabel);
-    addRow(axis, preferencePathLabel);
-    addRow(axis, preferenceHintLabel);
+    // Put these in a separate container so there's no extra gap
+    // between the rows.
+    Box blurb = Box.createVerticalBox();
+    blurb.add(morePreferenceLabel);
+    blurb.add(preferencePathLabel);
+    blurb.add(preferenceHintLabel);
+    addRow(axis, blurb);
 
     JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     row.add(okButton);  // buttonWidth
@@ -891,6 +898,10 @@ public class PreferencesFrame {
     // Required to update changes to accent color or light/dark mode.
     // (No custom components, so safe to call on this Window object.)
     SwingUtilities.updateComponentTreeUI(frame);
+
+    JLabel morePreferenceLabel;
+    JLabel preferencePathLabel;
+    JLabel preferenceHintLabel;
   }
 
 
