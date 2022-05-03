@@ -209,26 +209,26 @@ manager.tab.background = #5C6066
 ## ContributionTab
 
 # category chooser for libraries
-manager.menu.bgcolor = #000000
-manager.menu.enabled.fgcolor = #00FF00
-manager.menu.disabled.fgcolor = #444444
-manager.menu.selected.fgcolor = #FF8000
-manager.menu.selected.bgcolor = #0080FF
+manager.menu.bgcolor = #313D4F
+manager.menu.enabled.fgcolor = #DDEAFF
+manager.menu.disabled.fgcolor = #6B727E
+manager.menu.selected.fgcolor = #FFFFFE
+manager.menu.selected.bgcolor = #83D9FF
 
 
 # error window (X) close button
 manager.error.close.icon.color = #000000
 
-manager.scrollbar.thumb.enabled.color = #999CA1
-manager.scrollbar.thumb.rollover.color = #888B90
-manager.scrollbar.thumb.pressed.color = #888B90
-manager.scrollbar.color = #B7BAC0
+manager.scrollbar.thumb.enabled.color = #B0B3B8
+manager.scrollbar.thumb.rollover.color = #9C9FA4
+manager.scrollbar.thumb.pressed.color = #9C9FA4
+manager.scrollbar.color = #D3D6DB
 
 manager.search.text.color = #000000
-manager.search.icon.color = #44464B
+manager.search.icon.color = #5B5E62
 manager.search.background.color = #AFB2B7
 manager.search.caret.color = #292C32
-manager.search.placeholder.color = #44464B
+manager.search.placeholder.color = #5B5E62
 manager.search.selection.text.color = #000000
 manager.search.selection.background.color = #748DB1
 
@@ -236,7 +236,8 @@ manager.search.selection.background.color = #748DB1
 ## ListPanel – the listing inside a Contribution Manager tab ##
 
 manager.list.background.color = #D9DCE1
-manager.list.header.color = #CBCED3
+manager.list.header.fgcolor = #0A2C4A
+manager.list.header.bgcolor = #CBCED3
 manager.list.section.color = #D9DCE1
 manager.list.selection.color = #8895A9
 manager.list.icon.color = #002D54
@@ -264,8 +265,8 @@ manager.button.disabled.background.color = #253243
 manager.button.disabled.text.color = #A3A6AC
 manager.button.disabled.icon.color = #A3A6AC
 
-manager.progress.complete.fgcolor = #000000
-manager.progress.complete.bgcolor = #FF0000
+manager.progress.complete.fgcolor = #FFFFFE
+manager.progress.complete.bgcolor = #83D9FF
 manager.progress.incomplete.fgcolor = #00FF00
 manager.progress.incomplete.bgcolor = #0000FF
 
