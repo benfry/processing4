@@ -1,9 +1,9 @@
 package processing.app.laf;
 
 import processing.app.ui.Theme;
+import processing.app.ui.Toolkit;
 
 import javax.swing.*;
-import javax.swing.plaf.basic.BasicArrowButton;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 
@@ -42,7 +42,14 @@ public class PdeComboBoxUI extends BasicComboBoxUI {
     button.setName("ComboBox.arrowButton");
     return button;
     */
-    JButton button = new JButton("\u2193");
+    JButton button = new JButton();
+    //JButton button = new JButton("\u2193");  // arrow down
+//    JButton button = new JButton("\u25BC");  // filled triangle
+//    JButton button = new JButton("\u25BD");  // outlined triangle
+    //JButton button = new JButton("\u02C5 . \u02EC . \u142f");
+//    JButton button = new JButton("\u02EC . \u142f");
+//    button.setFont(new Font("Dialog", Font.PLAIN, 8));
+//    button.putClientProperty("FlatLaf.styleClass", "mini");
     //button.putClientProperty();
     button.setBorder(null);
     return button;
@@ -141,9 +148,11 @@ public class PdeComboBoxUI extends BasicComboBoxUI {
     if (arrowButton.isEnabled()) {
       arrowButton.setBackground(enabledBgColor);
       arrowButton.setForeground(enabledFgColor);
+      arrowButton.setIcon(Toolkit.renderIcon("manager/chevron", Theme.get(prefix + ".enabled.fgcolor"), 16));
     } else {
       arrowButton.setBackground(disabledBgColor);
       arrowButton.setForeground(disabledFgColor);
+      arrowButton.setIcon(Toolkit.renderIcon("manager/chevron", Theme.get(prefix + ".disabled.fgcolor"), 16));
     }
   }
 }
