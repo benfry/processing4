@@ -119,7 +119,7 @@ public class PreferencesFrame {
     // Sketchbook folder:
     // [...............................]  [ Browse ]
 
-    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location") + ":");
+    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location"));
 
     sketchbookLocationField = new JTextField(25);
     /*
@@ -147,7 +147,7 @@ public class PreferencesFrame {
 
     // Language: [ English ] (requires restart of Processing)
 
-    JLabel languageLabel = new JLabel(Language.text("preferences.language") + ":");
+    JLabel languageLabel = new JLabel(Language.text("preferences.language"));
     languageSelectionBox = new JComboBox<>();
 
     Map<String, String> languages = Language.getLanguages();
@@ -170,7 +170,7 @@ public class PreferencesFrame {
 
     // Editor and console font [ Source Code Pro ]
 
-    JLabel fontLabel = new JLabel(Language.text("preferences.editor_and_console_font") + ":");
+    JLabel fontLabel = new JLabel(Language.text("preferences.editor_and_console_font"));
     final String fontTip = "<html>" + Language.text("preferences.editor_and_console_font.tip");
     fontLabel.setToolTipText(fontTip);
     // get a wide name in there before getPreferredSize() is called
@@ -181,11 +181,11 @@ public class PreferencesFrame {
 
     // Editor font size [ 12 ]  Console font size [ 10 ]
 
-    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size") + ":");
+    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size"));
     fontSizeField = new JComboBox<>(FONT_SIZES);
     fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
 
-    JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size") + ":");
+    JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size"));
     consoleFontSizeField = new JComboBox<>(FONT_SIZES);
     consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
 
@@ -200,7 +200,7 @@ public class PreferencesFrame {
 
 //    zoomRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
 
-    JLabel zoomLabel = new JLabel(Language.text("preferences.interface_scale") + ":");
+    JLabel zoomLabel = new JLabel(Language.text("preferences.interface_scale"));
 
     zoomAutoBox = new JCheckBox(Language.text("preferences.interface_scale.auto"));
     zoomAutoBox.addChangeListener(e -> {
@@ -225,14 +225,18 @@ public class PreferencesFrame {
 
     // [ ] Keep sketch name and main tab name in sync
     syncSketchNameBox =
-      new JCheckBox("<html>Keep sketch name and main tab in sync<br/>" +
-        "(disabling this is experimental: save carefully and report issues)");
-    syncSketchNameBox.setVerticalTextPosition(SwingConstants.TOP);
+      new JCheckBox("Keep sketch name and main tab in sync");
+    syncSketchNameBox.setToolTipText("<html>" +
+      "This removes the requirement for the sketch name to be<br>" +
+      "the same as the main tab, which makes it easier to use<br>" +
+      "Processing sketches with version control systems like Git.<br>" +
+      "This is experimental: save often and report any issues!");
+    //syncSketchNameBox.setVerticalTextPosition(SwingConstants.TOP);
 
 
     // Colors
 
-    JLabel backgroundColorLabel = new JLabel(Language.text("preferences.background_color")+":");
+    JLabel backgroundColorLabel = new JLabel(Language.text("preferences.background_color"));
 
     final String colorTip = "<html>" + Language.text("preferences.background_color.tip");
     backgroundColorLabel.setToolTipText(colorTip);
@@ -373,7 +377,7 @@ public class PreferencesFrame {
 
     // [ ] Increase maximum available memory to [______] MB
 
-    memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory")+":");
+    memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory"));
     memoryField = new JTextField(4);
     memoryOverrideBox.addChangeListener(e -> memoryField.setEnabled(memoryOverrideBox.isSelected()));
     JLabel mbLabel = new JLabel("MB");
@@ -393,7 +397,7 @@ public class PreferencesFrame {
 
     // Run sketches on display [  1 ]
 
-    JLabel displayLabel = new JLabel(Language.text("preferences.run_sketches_on_display") + ":");
+    JLabel displayLabel = new JLabel(Language.text("preferences.run_sketches_on_display"));
     final String tip = "<html>" + Language.text("preferences.run_sketches_on_display.tip");
     displayLabel.setToolTipText(tip);
     displaySelectionBox = new JComboBox<>();
@@ -409,7 +413,7 @@ public class PreferencesFrame {
 
     // More preferences are in the ...
 
-    JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file") + ":");
+    JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file"));
     //morePreferenceLabel.setForeground(Color.gray);
     morePreferenceLabel.setEnabled(false);
 
@@ -435,7 +439,7 @@ public class PreferencesFrame {
       }
     });
 
-    JLabel preferenceHintLabel = new JLabel("(" + Language.text("preferences.file.hint") + ")");
+    JLabel preferenceHintLabel = new JLabel(Language.text("preferences.file.hint"));
     //preferenceHintLabel.setForeground(Color.gray);
     preferenceHintLabel.setEnabled(false);
 
@@ -466,6 +470,7 @@ public class PreferencesFrame {
     addRow(layoutPanel, fontLabel, fontSelectionBox);
 
     addRow(layoutPanel, fontSizeLabel, fontSizeField,
+                        //Box.createHorizontalStrut(H_GAP),  // uglier
                         consoleFontSizeLabel, consoleFontSizeField);
 
     //addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);

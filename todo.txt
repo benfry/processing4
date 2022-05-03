@@ -89,6 +89,7 @@ X   preferences.enable_complex_text.tip
 X preferences.requires_restart = requires restart of Processing
 X   becomes preferecnes.restart_required = Restart Processing to apply changes
 X put language & complex text on same line
+X move colons into the language file
 
 _ show hand cursor with links for labels
 _ rearrange item order in PreferencesFrame
@@ -101,7 +102,6 @@ _   suggest imports
 _   increase memory
 _ move delete previous pref to the Export to Application window
 _   get rid of the pref/just use the setting from export to app
-_ move colons into the language file?
 
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
