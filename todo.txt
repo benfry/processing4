@@ -90,9 +90,9 @@ X preferences.requires_restart = requires restart of Processing
 X   becomes preferecnes.restart_required = Restart Processing to apply changes
 X put language & complex text on same line
 X move colons into the language file
+X show hand cursor with links for labels
 
-_ show hand cursor with links for labels
-_ rearrange item order in PreferencesFrame
+_ finish rearranging item order in PreferencesFrame
 _ move to separate panel
 _   (maybe not, because not clear which will be inherited by other modes?)
 _   background when presenting

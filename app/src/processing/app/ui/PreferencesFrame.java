@@ -426,13 +426,13 @@ public class PreferencesFrame {
 
       // Light this up in blue like a hyperlink
       public void mouseEntered(MouseEvent e) {
-        //clickable.setForeground(new Color(0, 0, 140));
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         clickable.setForeground(Theme.getColor("laf.accent.color"));
       }
 
       // Set the text back to black when the mouse is outside
       public void mouseExited(MouseEvent e) {
-        //clickable.setForeground(Color.BLACK);
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
         // steal the color from a component that doesn't change
         // (so that it works after updateTheme() has been called)
         clickable.setForeground(sketchbookLocationLabel.getForeground());
@@ -552,141 +552,6 @@ public class PreferencesFrame {
 
     axis.setBorder(new EmptyBorder(13, 13, 13, 13));
     pain.add(axis);
-
-    /*
-    layout.setHorizontalGroup(layout.createSequentialGroup() // sequential group for border + mainContent + border
-      .addGap(Toolkit.BORDER)
-      .addGroup(layout.createParallelGroup() // parallel group for rest of the components
-          .addComponent(sketchbookLocationLabel)
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(sketchbookLocationField)
-                      .addComponent(browseButton))
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(languageLabel)
-                      .addComponent(languageSelectionBox,GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE) // This makes the component non-resizable in the X direction
-                      .addComponent(languageRestartLabel))
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(fontLabel)
-                      .addComponent(fontSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-          .addGroup(GroupLayout.Alignment.LEADING,
-                       layout.createSequentialGroup()
-                      .addComponent(fontSizeLabel)
-                      .addComponent(fontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addComponent(consoleFontSizeLabel)
-                      .addComponent(consoleFontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(zoomLabel)
-                      .addComponent(zoomAutoBox)
-                      .addComponent(zoomSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addComponent(zoomRestartLabel))
-          .addComponent(hidpiDisableBox)
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(backgroundColorLabel)
-                      //.addComponent(hashLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addGap(0)
-                      //.addComponent(presentColorHex, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addComponent(presentColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-          //.addComponent(editorAntialiasBox)
-          .addComponent(inputMethodBox)
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(errorCheckerBox)
-                      .addComponent(warningsCheckerBox))
-          .addComponent(warningsCheckerBox)
-          .addComponent(codeCompletionBox)
-          .addComponent(importSuggestionsBox)
-          .addGroup(layout.createSequentialGroup()
-                        .addComponent(memoryOverrideBox)
-                        .addComponent(memoryField,
-                                      GroupLayout.PREFERRED_SIZE,
-                                      GroupLayout.DEFAULT_SIZE,
-                                      GroupLayout.PREFERRED_SIZE)
-                        .addComponent(mbLabel))
-          .addComponent(deletePreviousBox)
-          .addComponent(checkUpdatesBox)
-          .addComponent(syncSketchNameBox)
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(displayLabel)
-                      .addComponent(displaySelectionBox,
-                                    GroupLayout.PREFERRED_SIZE,
-                                    GroupLayout.DEFAULT_SIZE,
-                                    GroupLayout.PREFERRED_SIZE)
-          )
-          .addComponent(autoAssociateBox)
-          .addComponent(morePreferenceLabel)
-          .addComponent(preferencePathLabel)
-          .addComponent(preferenceHintLabel)
-          .addGroup(GroupLayout.Alignment.TRAILING,layout.createSequentialGroup() // Trailing so that the buttons are to the right
-                      .addComponent(okButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth) // Ok and Cancel button are now of size BUTTON_WIDTH
-                      .addComponent(cancelButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth)
-          ))
-      .addGap(Toolkit.BORDER)
-    );
-
-    layout.setVerticalGroup(layout.createSequentialGroup() // sequential group for border + mainContent + border
-      .addGap(Toolkit.BORDER)
-      .addComponent(sketchbookLocationLabel)
-      .addGroup(layout.createParallelGroup()
-                  .addComponent(sketchbookLocationField)
-                  .addComponent(browseButton))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(languageLabel)
-                  .addComponent(languageSelectionBox)
-                  .addComponent(languageRestartLabel))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).
-                  addComponent(fontLabel)
-                  .addComponent(fontSelectionBox))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(fontSizeLabel)
-                  .addComponent(fontSizeField)
-                  .addComponent(consoleFontSizeLabel)
-                  .addComponent(consoleFontSizeField))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(zoomLabel)
-                  .addComponent(zoomAutoBox)
-                  .addComponent(zoomSelectionBox)
-                  .addComponent(zoomRestartLabel))
-      .addComponent(hidpiDisableBox)
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(backgroundColorLabel)
-                  //.addComponent(hashLabel)
-                  //.addComponent(presentColorHex)
-                  .addComponent(presentColor))
-      //.addComponent(editorAntialiasBox)
-      .addComponent(inputMethodBox)
-      .addGroup(layout.createParallelGroup()
-                  .addComponent(errorCheckerBox)
-                  .addComponent(warningsCheckerBox))
-      .addComponent(codeCompletionBox)
-      .addComponent(importSuggestionsBox)
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(memoryOverrideBox)
-                .addComponent(memoryField)
-                .addComponent(mbLabel))
-      .addComponent(deletePreviousBox)
-      .addComponent(checkUpdatesBox)
-      .addComponent(syncSketchNameBox)
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(displayLabel)
-                  .addComponent(displaySelectionBox))
-      .addComponent(autoAssociateBox)
-      .addComponent(morePreferenceLabel)
-      .addGap(0)
-      .addComponent(preferencePathLabel)
-      .addGap(0)
-      .addComponent(preferenceHintLabel)
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(okButton)
-                  .addComponent(cancelButton))
-      .addGap(Toolkit.BORDER)
-    );
-    */
-
-    /*
-    if (Platform.isWindows()) {
-      autoAssociateBox.setVisible(true);
-      hidpiDisableBox.setVisible(true);
-    }
-    */
 
     // closing the window is same as hitting cancel button
     frame.addWindowListener(new WindowAdapter() {
