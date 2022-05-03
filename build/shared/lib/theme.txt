@@ -236,7 +236,8 @@ manager.search.selection.background.color = #00ffff
 ## ListPanel – the listing inside a Contribution Manager tab ##
 
 manager.list.background.color = #FFFFFF
-manager.list.header.color = #EBEBEB
+manager.list.header.fgcolor = #000000
+manager.list.header.bgcolor = #EBEBEB
 manager.list.section.color = #f8f8f8
 manager.list.selection.color = #e0fffd
 manager.list.icon.color = #0000ff
