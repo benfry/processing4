@@ -541,7 +541,7 @@ public class ContributionTab extends JPanel {
       if (categoryChooser.getUI() instanceof PdeComboBoxUI) {
         ((PdeComboBoxUI) categoryChooser.getUI()).updateTheme();
       } else {
-        categoryChooser.setUI(new PdeComboBoxUI("manager"));
+        categoryChooser.setUI(new PdeComboBoxUI("manager.categories"));
       }
 
       /*

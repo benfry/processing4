@@ -130,12 +130,12 @@ public class PdeComboBoxUI extends BasicComboBoxUI {
 
 
   public void updateTheme() {
-    enabledFgColor = Theme.getColor(prefix + ".combo_box.enabled.fgcolor");
-    enabledBgColor = Theme.getColor(prefix + ".combo_box.enabled.bgcolor");
-    disabledFgColor = Theme.getColor(prefix + ".combo_box.disabled.fgcolor");
-    disabledBgColor = Theme.getColor(prefix + ".combo_box.disabled.bgcolor");
-    selectedFgColor = Theme.getColor(prefix + ".combo_box.selected.fgcolor");
-    selectedFgColor = Theme.getColor(prefix + ".combo_box.selected.fgcolor");
+    enabledFgColor = Theme.getColor(prefix + ".enabled.fgcolor");
+    enabledBgColor = Theme.getColor(prefix + ".enabled.bgcolor");
+    disabledFgColor = Theme.getColor(prefix + ".disabled.fgcolor");
+    disabledBgColor = Theme.getColor(prefix + ".disabled.bgcolor");
+    selectedFgColor = Theme.getColor(prefix + ".selected.fgcolor");
+    selectedFgColor = Theme.getColor(prefix + ".selected.fgcolor");
 
     if (arrowButton.isEnabled()) {
       arrowButton.setBackground(enabledBgColor);
