@@ -35,7 +35,7 @@ import java.awt.*;
  * Originally based on https://stackoverflow.com/a/53662678
  */
 public class PdeScrollBarUI extends BasicScrollBarUI {
-  private final Dimension none = new Dimension();
+  private final Dimension NONE = new Dimension();
 
   final private String backgroundAttr;
   final private String pressedAttr;
@@ -49,13 +49,13 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
 
 
   public PdeScrollBarUI(String prefix) {
+    /*
     this(prefix + ".scrollbar.color",
-            prefix + ".scrollbar.thumb.pressed.color",
-            prefix + ".scrollbar.thumb.rollover.color",
-            prefix + ".scrollbar.thumb.enabled.color");
+         prefix + ".scrollbar.thumb.pressed.color",
+         prefix + ".scrollbar.thumb.rollover.color",
+         prefix + ".scrollbar.thumb.enabled.color");
 
   }
-
 
   public PdeScrollBarUI(String backgroundAttr, String pressedAttr,
                         String rolloverAttr, String enabledAttr) {
@@ -63,6 +63,12 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
     this.pressedAttr = pressedAttr;
     this.rolloverAttr = rolloverAttr;
     this.enabledAttr = enabledAttr;
+    */
+
+    this.backgroundAttr = prefix + ".scrollbar.color";
+    this.pressedAttr = prefix + ".scrollbar.thumb.pressed.color";
+    this.rolloverAttr = prefix + ".scrollbar.thumb.rollover.color";
+    this.enabledAttr = prefix + ".scrollbar.thumb.enabled.color";
   }
 
 
@@ -80,7 +86,7 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
 
       @Override
       public Dimension getPreferredSize() {
-        return none;
+        return NONE;
       }
     };
   }
@@ -92,7 +98,7 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
 
       @Override
       public Dimension getPreferredSize() {
-        return none;
+        return NONE;
       }
     };
   }

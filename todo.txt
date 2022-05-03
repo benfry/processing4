@@ -49,6 +49,8 @@ _   should be a better way to implement this
 _ override flatlaf for components (search, buttons, dropdown menu) in manager
 _ popup menu coloring (contribs and editor)
 _ progress bar in contrib manager
+_ remove ManagerFrame constants for NORMAL_PLAIN, SMALL_PLAIN, etc
+_   these should be read from theme.txt instead
 
 design/manager/waiting
 X need monochrome icon for foundation
