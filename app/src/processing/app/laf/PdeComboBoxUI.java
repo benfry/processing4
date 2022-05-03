@@ -82,22 +82,23 @@ public class PdeComboBoxUI extends BasicComboBoxUI {
       c.setBackground(enabledBgColor);
     }
     c.setFont(comboBox.getFont());
-    if (hasFocus && !isPopupVisible(comboBox)) {
-      //c.setForeground(listBox.getSelectionForeground());  // TODO do we need to mess with listBox?
-      //c.setBackground(listBox.getSelectionBackground());
-      c.setForeground(selectedFgColor);
-      c.setBackground(selectedBgColor);
-
-    } else {
+//    if (hasFocus && !isPopupVisible(comboBox)) {
+//      //c.setForeground(listBox.getSelectionForeground());  // TODO do we need to mess with listBox?
+//      //c.setBackground(listBox.getSelectionBackground());
+//      c.setForeground(selectedFgColor);
+//      c.setBackground(selectedBgColor);
+//
+//    } else {
       if (comboBox.isEnabled()) {
-        c.setForeground(comboBox.getForeground());
-        c.setBackground(comboBox.getBackground());
-      }
-      else {
+//        c.setForeground(comboBox.getForeground());
+//        c.setBackground(comboBox.getBackground());
+        c.setForeground(enabledFgColor);
+        c.setBackground(enabledBgColor);
+      } else {
         c.setForeground(disabledFgColor);
         c.setBackground(disabledBgColor);
       }
-    }
+//    }
 
     // Fix for 4238829: should lay out the JPanel.
     boolean shouldValidate = c instanceof JPanel;
@@ -135,7 +136,7 @@ public class PdeComboBoxUI extends BasicComboBoxUI {
     disabledFgColor = Theme.getColor(prefix + ".disabled.fgcolor");
     disabledBgColor = Theme.getColor(prefix + ".disabled.bgcolor");
     selectedFgColor = Theme.getColor(prefix + ".selected.fgcolor");
-    selectedFgColor = Theme.getColor(prefix + ".selected.fgcolor");
+    selectedBgColor = Theme.getColor(prefix + ".selected.bgcolor");
 
     if (arrowButton.isEnabled()) {
       arrowButton.setBackground(enabledBgColor);
