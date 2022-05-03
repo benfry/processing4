@@ -48,6 +48,9 @@ public class PreferencesFrame {
   JFrame frame;
   //GroupLayout layout;
 
+  static final int H_GAP = 5;
+  static final int V_GAP = 3;
+
   static final Integer[] FONT_SIZES = { 10, 12, 14, 18, 24, 36, 48 };
 
   JTextField sketchbookLocationField;
@@ -60,7 +63,7 @@ public class PreferencesFrame {
   JComboBox<Integer> fontSizeField;
   JComboBox<Integer> consoleFontSizeField;
   JCheckBox inputMethodBox;
-  JLabel inputRestartLabel;
+//  JLabel inputRestartLabel;
   JCheckBox autoAssociateBox;
 
   ColorChooser selector;
@@ -72,10 +75,10 @@ public class PreferencesFrame {
 
   JComboBox<String> zoomSelectionBox;
   JCheckBox zoomAutoBox;
-  JLabel zoomRestartLabel;
+//  JLabel zoomRestartLabel;
 
   JCheckBox hidpiDisableBox;
-  JLabel hidpiRestartLabel;
+//  JLabel hidpiRestartLabel;
   JCheckBox syncSketchNameBox;
 
   JComboBox<String> displaySelectionBox;
@@ -87,6 +90,9 @@ public class PreferencesFrame {
 
   String[] monoFontFamilies;
   JComboBox<String> fontSelectionBox;
+
+  Map<String, Boolean> restartMap = new HashMap<>();
+  JLabel restartLabel;
 
   JButton okButton;
 
@@ -106,7 +112,7 @@ public class PreferencesFrame {
     //pain.setLayout(layout);
 
     JLabel sketchbookLocationLabel;
-    JLabel languageRestartLabel;
+//    JLabel languageRestartLabel;
     JButton browseButton; //, button2;
 
 
@@ -155,14 +161,10 @@ public class PreferencesFrame {
       }
     }
     languageSelectionBox.setModel(new DefaultComboBoxModel<>(languageSelection));
-    languageRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
-    languageRestartLabel.setVisible(false);
-//    languageSelectionBox.addItemListener(e -> languageRestartLabel.setVisible(!Language.getLanguage().equals(e.getItem())));
-//    languageSelectionBox.addItemListener(e -> System.out.println(Language.getLanguage() + " and item is " + e.getItem().getClass()));
-//    String languageCode =
-//      Language.nameToCode(String.valueOf(languageSelectionBox.getSelectedItem()));
-//    if (!Language.getLanguage().equals(languageCode)) {
-    languageSelectionBox.addItemListener(e -> languageRestartLabel.setVisible(languageSelectionBox.getSelectedIndex() != 0));
+//    languageRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+//    languageRestartLabel.setVisible(false);
+    //languageSelectionBox.addItemListener(e -> languageRestartLabel.setVisible(languageSelectionBox.getSelectedIndex() != 0));
+    languageSelectionBox.addItemListener(e -> updateRestart("language", languageSelectionBox.getSelectedIndex() != 0));
     languageSelectionBox.setRenderer(new LanguageRenderer());
 
 
@@ -196,7 +198,7 @@ public class PreferencesFrame {
 
     // Interface scale: [ 100% ] (requires restart of Processing)
 
-    zoomRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+//    zoomRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
 
     JLabel zoomLabel = new JLabel(Language.text("preferences.interface_scale") + ":");
 
@@ -215,9 +217,10 @@ public class PreferencesFrame {
 
     hidpiDisableBox = new JCheckBox("Disable HiDPI Scaling");
 //    hidpiDisableBox.setVisible(false);  // only for Windows
-    hidpiRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
-    hidpiRestartLabel.setVisible(false);
-    hidpiDisableBox.addChangeListener(e -> hidpiRestartLabel.setVisible(hidpiDisableBox.isSelected() != Splash.getDisableHiDPI()));
+//    hidpiRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+//    hidpiRestartLabel.setVisible(false);
+//    hidpiDisableBox.addChangeListener(e -> hidpiRestartLabel.setVisible(hidpiDisableBox.isSelected() != Splash.getDisableHiDPI()));
+    hidpiDisableBox.addChangeListener(e -> updateRestart("hidpi", hidpiDisableBox.isSelected() != Splash.getDisableHiDPI()));
 
 
     // [ ] Keep sketch name and main tab name in sync
@@ -314,8 +317,10 @@ public class PreferencesFrame {
     // [ ] Enable complex text input (for Japanese et al, requires restart)
 
     inputMethodBox =
-      new JCheckBox(Language.text("preferences.enable_complex_text_input"));
+      new JCheckBox(Language.text("preferences.enable_complex_text"));
+    inputMethodBox.setToolTipText("<html>" + Language.text("preferences.enable_complex_text.tip"));
 
+    /*
     JLabel inputMethodExample =
       new JLabel("(" + Language.text("preferences.enable_complex_text_input_example") + ")");
     inputMethodExample.addMouseListener(new MouseAdapter() {
@@ -332,10 +337,12 @@ public class PreferencesFrame {
         inputMethodExample.setForeground(sketchbookLocationLabel.getForeground());
       }
     });
-    inputRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
-    inputRestartLabel.setVisible(false);
+//    inputRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+//    inputRestartLabel.setVisible(false);
+    */
 
-    inputMethodBox.addChangeListener(e -> inputRestartLabel.setVisible(inputMethodBox.isSelected() != Preferences.getBoolean("editor.input_method_support")));
+//    inputMethodBox.addChangeListener(e -> inputRestartLabel.setVisible(inputMethodBox.isSelected() != Preferences.getBoolean("editor.input_method_support")));
+    inputMethodBox.addChangeListener(e -> updateRestart("input_method", inputMethodBox.isSelected() != Preferences.getBoolean("editor.input_method_support")));
 
 
     // [ ] Continuously check for errors - PDE X
@@ -435,6 +442,8 @@ public class PreferencesFrame {
 
     // [  OK  ] [ Cancel ]
 
+    restartLabel = new JLabel(Language.text("preferences.restart_required"));
+
     okButton = new JButton(Language.getPrompt("ok"));
     okButton.addActionListener(e -> {
       applyFrame();
@@ -459,10 +468,12 @@ public class PreferencesFrame {
     addRow(layoutPanel, fontSizeLabel, fontSizeField,
                         consoleFontSizeLabel, consoleFontSizeField);
 
-    addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
+    //addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
+    addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox);
 
     if (Platform.isWindows()) {
-      addRow(layoutPanel, hidpiDisableBox, hidpiRestartLabel);
+      //addRow(layoutPanel, hidpiDisableBox, hidpiRestartLabel);
+      addRow(layoutPanel, hidpiDisableBox);
     }
 
     axis.add(layoutPanel);
@@ -473,8 +484,12 @@ public class PreferencesFrame {
 //    languagePanel.setBorder(new TitledBorder("Language"));
 //    languagePanel.setLayout(new BoxLayout(languagePanel, BoxLayout.Y_AXIS));
 
-    addRow(layoutPanel, languageLabel, languageSelectionBox, languageRestartLabel);
-    addRow(layoutPanel, inputMethodBox, inputMethodExample, inputRestartLabel);
+//    //addRow(layoutPanel, languageLabel, languageSelectionBox, languageRestartLabel);
+//    addRow(layoutPanel, languageLabel, languageSelectionBox);
+//    //addRow(layoutPanel, inputMethodBox, inputMethodExample, inputRestartLabel);
+//    addRow(layoutPanel, inputMethodBox, inputMethodExample);
+
+    addRow(layoutPanel, languageLabel, languageSelectionBox, inputMethodBox);
 
 //    axis.add(languagePanel);
 
@@ -520,8 +535,13 @@ public class PreferencesFrame {
     blurb.add(preferenceHintLabel);
     addRow(axis, blurb);
 
-    JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    //JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    Box row = Box.createHorizontalBox();
+    row.add(Box.createHorizontalStrut(H_GAP));
+    row.add(restartLabel);
+    row.add(Box.createHorizontalGlue());
     row.add(okButton);  // buttonWidth
+    row.add(Box.createHorizontalStrut(H_GAP));
     row.add(cancelButton);  // buttonWidth
     axis.add(row);
 
@@ -673,6 +693,9 @@ public class PreferencesFrame {
     ActionListener disposer = actionEvent -> disposeFrame();
     Toolkit.registerWindowCloseKeys(frame.getRootPane(), disposer);
 
+    // for good measure, and set link/highlight colors
+    updateTheme();
+
     // finishing up
     Toolkit.setIcon(frame);
     frame.setResizable(false);
@@ -693,7 +716,7 @@ public class PreferencesFrame {
 
 
   private void addRow(Container axis, Component... components) {
-    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 3));
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP));
     for (Component comp : components) {
       row.add(comp);
     }
@@ -701,11 +724,18 @@ public class PreferencesFrame {
   }
 
 
+  private void updateRestart(String key, boolean value) {
+    restartMap.put(key, value);
+    restartLabel.setVisible(restartMap.containsValue(true));
+  }
+
+
   private void updateZoomRestartRequired() {
     // TODO If this is too wide for the window, it may not appear.
     //      Redo layout in the window on change to be sure.
     //      May cause window to resize but need the message. [fry 220502]
-    zoomRestartLabel.setVisible(
+    //zoomRestartLabel.setVisible(
+    updateRestart("zoom",
       zoomAutoBox.isSelected() != Preferences.getBoolean("editor.zoom.auto") ||
       !Preferences.get("editor.zoom").equals(String.valueOf(zoomSelectionBox.getSelectedItem()))
     );
@@ -973,6 +1003,7 @@ public class PreferencesFrame {
     // Required to update changes to accent color or light/dark mode.
     // (No custom components, so safe to call on this Window object.)
     SwingUtilities.updateComponentTreeUI(frame);
+    restartLabel.setForeground(Theme.getColor("laf.accent.color"));
   }
 
 
