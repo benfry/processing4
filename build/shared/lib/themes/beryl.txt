@@ -209,11 +209,12 @@ manager.tab.background = #007F5E
 ## ContributionTab
 
 # category chooser for libraries
-manager.menu.bgcolor = #00563C
-manager.menu.enabled.fgcolor = #66FFDF
-manager.menu.disabled.fgcolor = #348672
-manager.menu.selected.fgcolor = #FFFFFE
-manager.menu.selected.bgcolor = #00F5FF
+manager.categories.enabled.fgcolor = #46E9C6
+manager.categories.enabled.bgcolor = #003D27
+manager.categories.disabled.fgcolor = #00593F
+manager.categories.disabled.bgcolor = #003D27
+manager.categories.selected.fgcolor = #FFFFFE
+manager.categories.selected.bgcolor = #00F5FF
 
 
 # error window (X) close button
