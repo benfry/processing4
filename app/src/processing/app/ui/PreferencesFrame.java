@@ -56,7 +56,7 @@ public class PreferencesFrame {
   JTextField sketchbookLocationField;
   JTextField presentColor;
   //JCheckBox editorAntialiasBox;
-  JCheckBox deletePreviousBox;
+//  JCheckBox deletePreviousBox;
   JCheckBox memoryOverrideBox;
   JTextField memoryField;
   JCheckBox checkUpdatesBox;
@@ -385,8 +385,8 @@ public class PreferencesFrame {
 
     // [ ] Delete previous application folder on export
 
-    deletePreviousBox =
-      new JCheckBox(Language.text("preferences.delete_previous_folder_on_export"));
+//    deletePreviousBox =
+//      new JCheckBox(Language.text("preferences.delete_previous_folder_on_export"));
 
 
     // [ ] Check for updates on startup
@@ -524,7 +524,7 @@ public class PreferencesFrame {
 
     //
 
-    addRow(axis, deletePreviousBox);
+//    addRow(axis, deletePreviousBox);
     addRow(axis, checkUpdatesBox);
     addRow(axis, syncSketchNameBox);
 
@@ -655,8 +655,8 @@ public class PreferencesFrame {
 //    Preferences.setBoolean("editor.smooth", //$NON-NLS-1$
 //                           editorAntialiasBox.isSelected());
 
-    Preferences.setBoolean("export.delete_target_folder", //$NON-NLS-1$
-                           deletePreviousBox.isSelected());
+//    Preferences.setBoolean("export.delete_target_folder", //$NON-NLS-1$
+//                           deletePreviousBox.isSelected());
 
     // if the sketchbook path has changed, rebuild the menus
     String oldPath = Preferences.getSketchbookPath();
@@ -801,7 +801,7 @@ public class PreferencesFrame {
     warningsCheckerBox.setEnabled(errorCheckerBox.isSelected());
     codeCompletionBox.setSelected(Preferences.getBoolean("pdex.completion"));
     importSuggestionsBox.setSelected(Preferences.getBoolean("pdex.suggest.imports"));
-    deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
+//    deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
 
     sketchbookLocationField.setText(Preferences.getSketchbookPath());
     checkUpdatesBox.setSelected(Preferences.getBoolean("update.check")); //$NON-NLS-1$

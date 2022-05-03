@@ -815,7 +815,7 @@ public abstract class Mode {
    */
   public void prepareExportFolder(File targetFolder) {
     if (targetFolder != null) {
-      // Nuke the old applet/application folder because it can cause trouble
+      // Nuke the old application folder because it can cause trouble
       if (Preferences.getBoolean("export.delete_target_folder")) {
         if (targetFolder.exists()) {
           try {
