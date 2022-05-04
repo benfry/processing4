@@ -98,6 +98,11 @@ public class Theme {
   }
 
 
+  static public void print() {
+    theme.print();
+  }
+
+
   static public String get(String attribute) {
     return theme.get(attribute);
   }

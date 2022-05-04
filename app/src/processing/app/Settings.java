@@ -281,6 +281,15 @@ public class Settings {
   }
 
 
+  public void print() {
+    String[] keys = table.keySet().toArray(new String[0]);
+    Arrays.sort(keys);
+    for (String key : keys) {
+      System.out.println(key + " = " + table.get(key));
+    }
+  }
+
+
   public Map<String, String> getMap() {
     return table;
   }
