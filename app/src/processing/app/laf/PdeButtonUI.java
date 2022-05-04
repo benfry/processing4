@@ -54,6 +54,7 @@ public class PdeButtonUI extends BasicButtonUI {
     super.installDefaults(b);
     //b.setBorder(null);
     b.setBorder(new EmptyBorder(2, 14, 2, 14));
+//    b.setBorder(new EmptyBorder(2, 2, 2, 2));
     b.setOpaque(false);  // so that rounded rect works properly
   }
 
