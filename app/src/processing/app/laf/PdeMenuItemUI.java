@@ -34,6 +34,10 @@ public class PdeMenuItemUI extends BasicMenuItemUI {
     // when drawing, this will be overridden when disabled or selected
     menuItem.setForeground(enabledFgColor);
 
+    // set bg color of the parent item instead of setting everything opaque
+//    menuItem.setOpaque(true);
+//    menuItem.setBackground(enabledBgColor);
+
     acceleratorForeground = enabledFgColor;
     acceleratorSelectionForeground = selectedFgColor;
     selectionBackground = selectedBgColor;

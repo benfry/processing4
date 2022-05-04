@@ -589,11 +589,13 @@ public abstract class Editor extends JFrame implements RunnerListener {
     toolTipErrorColor = Theme.getColor("errors.selection.error.bgcolor");
 
     JPopupMenu popup = modePopup.getPopupMenu();
-    if (!(popup.getBorder() instanceof EmptyBorder)) {
-      // wrapped here so we only run it once
-      // also, can't just set to null b/c it'll go back to the default
-      popup.setBorder(new EmptyBorder(0, 0, 0 ,0));
-    }
+    // Cannot use instanceof because com.formdev.flatlaf.ui.FlatPopupMenuBorder
+    // is a subclass of EmptyBorder, so just override each time. Cannot set
+    // null because that will reset the border to the default, not remove it.
+    // The top/bottom in FlatLaf is 6px, but feels too large.
+    popup.setBorder(new EmptyBorder(3, 0, 3, 0));
+    popup.setBackground(Theme.getColor("mode.popup.enabled.bgcolor"));
+
     for (Component comp : modePopup.getMenuComponents()) {
       if (comp instanceof JMenuItem) {
         JMenuItem item = (JMenuItem) comp;
@@ -602,6 +604,8 @@ public abstract class Editor extends JFrame implements RunnerListener {
         } else {
           item.setUI(new PdeMenuItemUI("mode.popup"));
         }
+      } else if (comp instanceof JPopupMenu.Separator) {
+        comp.setForeground(Theme.getColor("mode.popup.disabled.fgcolor"));
       }
     }
 

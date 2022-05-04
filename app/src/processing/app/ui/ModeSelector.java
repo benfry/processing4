@@ -79,6 +79,9 @@ public class ModeSelector extends JPanel {
     //titleWidth = getToolkit().getFontMetrics(titleFont).stringWidth(title);
     //titleWidth = editor.getGraphics().getFontMetrics(titleFont).stringWidth(title);
 
+    // Theme for mode popup is handled inside Editor.handleTheme()
+    // because Editor owns the parent object.
+
     backgroundColor = Theme.getColor("mode.background.color");
     outlineColor = Theme.getColor("mode.outline.color");
   }
