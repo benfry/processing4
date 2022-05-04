@@ -10,10 +10,10 @@ import java.awt.Color;
 public class PdeProgressBarUI extends BasicProgressBarUI {
   final String prefix;
 
-  Color enabledFgColor;
-  Color enabledBgColor;
-  Color selectedFgColor;
-  Color selectedBgColor;
+  Color incompleteFgColor;
+  Color incompleteBgColor;
+  Color completeFgColor;
+  Color completeBgColor;
 
 
   public PdeProgressBarUI(String prefix) {
@@ -21,25 +21,41 @@ public class PdeProgressBarUI extends BasicProgressBarUI {
   }
 
 
+  /**
+   * The "selectionForeground" is the color of the text when it is painted
+   * over a filled area of the progress bar.
+   */
   @Override
   protected Color getSelectionForeground() {
-    return selectedFgColor;
+    return completeFgColor;
   }
 
 
+  /**
+   * The "selectionBackground" is the color of the text when it is painted
+   * over an unfilled area of the progress bar.
+   *
+   * @return the color of the selected background
+   */
   @Override
   protected Color getSelectionBackground() {
-    return selectedBgColor;
+    return incompleteFgColor;
   }
 
 
   public void updateTheme() {
-    enabledFgColor = Theme.getColor(prefix + ".incomplete.fgcolor");
-    enabledBgColor = Theme.getColor(prefix + ".incomplete.bgcolor");
-    progressBar.setForeground(enabledFgColor);
-    progressBar.setBackground(enabledBgColor);
+    incompleteFgColor = Theme.getColor(prefix + ".incomplete.fgcolor");  // green
+    incompleteBgColor = Theme.getColor(prefix + ".incomplete.bgcolor");  // blue
+    completeFgColor = Theme.getColor(prefix + ".complete.fgcolor");  // black
+    completeBgColor = Theme.getColor(prefix + ".complete.bgcolor");  // red
 
-    selectedFgColor = Theme.getColor(prefix + ".complete.fgcolor");
-    selectedBgColor = Theme.getColor(prefix + ".complete.bgcolor");
+//    progressBar.setForeground(incompleteFgColor);
+    progressBar.setForeground(completeBgColor);
+    progressBar.setBackground(incompleteBgColor);  // correct
+
+//    System.out.println(incompleteFgColor);
+//    System.out.println(incompleteBgColor);
+//    System.out.println(completeFgColor);
+//    System.out.println(completeBgColor);
   }
 }
