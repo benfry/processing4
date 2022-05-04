@@ -26,6 +26,13 @@ mode.title.color = #FF939B
 mode.background.color = #882737
 mode.outline.color = #E27780
 
+mode.popup.enabled.fgcolor = #CFA4A6
+mode.popup.enabled.bgcolor = #260405
+mode.popup.disabled.fgcolor = #755051
+mode.popup.disabled.bgcolor = #260405
+mode.popup.selected.fgcolor = #FFA5AD
+mode.popup.selected.bgcolor = #882737
+
 toolbar.button.disabled.field = #9F3C49
 toolbar.button.disabled.glyph = #882737
 toolbar.button.disabled.stroke = none
@@ -213,7 +220,7 @@ manager.categories.enabled.fgcolor = #5B000D
 manager.categories.enabled.bgcolor = #F97D88
 manager.categories.disabled.fgcolor = #790023
 manager.categories.disabled.bgcolor = #F97D88
-manager.categories.selected.fgcolor = #FFFFFE
+manager.categories.selected.fgcolor = #8F001F
 manager.categories.selected.bgcolor = #FFC7D7
 
 
@@ -266,10 +273,10 @@ manager.button.disabled.background.color = #A02D41
 manager.button.disabled.text.color = #D6AFB0
 manager.button.disabled.icon.color = #D6AFB0
 
-manager.progress.complete.fgcolor = #FFFFFE
-manager.progress.complete.bgcolor = #FFC7D7
-manager.progress.incomplete.fgcolor = #00FF00
-manager.progress.incomplete.bgcolor = #0000FF
+manager.progress.complete.fgcolor = #D6AFB0
+manager.progress.complete.bgcolor = #500000
+manager.progress.incomplete.fgcolor = #FFFFFE
+manager.progress.incomplete.bgcolor = #FFC7D7
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
