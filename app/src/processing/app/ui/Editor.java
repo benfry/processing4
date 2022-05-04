@@ -48,6 +48,7 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.plaf.basic.*;
 import javax.swing.text.*;
@@ -67,6 +68,7 @@ import processing.app.Sketch;
 import processing.app.SketchCode;
 import processing.app.SketchException;
 import processing.app.contrib.ContributionManager;
+import processing.app.laf.PdeMenuItemUI;
 import processing.app.syntax.*;
 import processing.core.*;
 
@@ -585,6 +587,23 @@ public abstract class Editor extends JFrame implements RunnerListener {
     toolTipTextColor = Theme.getColor("errors.selection.fgcolor");
     toolTipWarningColor = Theme.getColor("errors.selection.warning.bgcolor");
     toolTipErrorColor = Theme.getColor("errors.selection.error.bgcolor");
+
+    JPopupMenu popup = modePopup.getPopupMenu();
+    if (!(popup.getBorder() instanceof EmptyBorder)) {
+      // wrapped here so we only run it once
+      // also, can't just set to null b/c it'll go back to the default
+      popup.setBorder(new EmptyBorder(0, 0, 0 ,0));
+    }
+    for (Component comp : modePopup.getMenuComponents()) {
+      if (comp instanceof JMenuItem) {
+        JMenuItem item = (JMenuItem) comp;
+        if (item.getUI() instanceof PdeMenuItemUI) {
+          ((PdeMenuItemUI) item.getUI()).updateTheme();
+        } else {
+          item.setUI(new PdeMenuItemUI("mode.popup"));
+        }
+      }
+    }
 
     repaint();  // for good measure
   }

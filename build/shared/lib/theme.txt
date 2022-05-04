@@ -26,6 +26,13 @@ mode.title.color = #004063
 mode.background.color = #6BA0C7
 mode.outline.color = #12577C
 
+mode.popup.enabled.fgcolor = #FF0000
+mode.popup.enabled.bgcolor = #00FF00
+mode.popup.disabled.fgcolor = #808080
+mode.popup.disabled.bgcolor = #404040
+mode.popup.selected.fgcolor = #FF8000
+mode.popup.selected.bgcolor = #008000
+
 toolbar.button.disabled.field = #00072B
 toolbar.button.disabled.glyph = #BAEDFF
 toolbar.button.disabled.stroke = none
