@@ -32,7 +32,8 @@ import java.awt.*;
 
 /**
  * Custom scroll bar style for the editor.
- * Originally based on https://stackoverflow.com/a/53662678
+ * Originally based on <a href="https://stackoverflow.com/a/53662678">this post</a>
+ * and extends <a href="https://github.com/AdoptOpenJDK/openjdk-jdk8u/blob/master/jdk/src/share/classes/javax/swing/plaf/basic/BasicScrollBarUI.java">BasicScrollBarUI</a>.
  */
 public class PdeScrollBarUI extends BasicScrollBarUI {
   private final Dimension NONE = new Dimension();

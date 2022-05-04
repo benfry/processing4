@@ -6,6 +6,7 @@ import javax.swing.plaf.basic.BasicMenuItemUI;
 import java.awt.Color;
 
 
+// https://github.com/AdoptOpenJDK/openjdk-jdk8u/blob/master/jdk/src/share/classes/javax/swing/plaf/basic/BasicMenuItemUI.java
 public class PdeMenuItemUI extends BasicMenuItemUI {
   final String prefix;
 

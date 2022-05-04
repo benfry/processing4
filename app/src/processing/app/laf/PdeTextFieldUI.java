@@ -36,10 +36,8 @@ import javax.swing.text.JTextComponent;
 import java.awt.*;
 
 
-/**
- * Custom scroll bar style for the editor.
- * Originally based on https://stackoverflow.com/a/53662678
- */
+// Not currently in use / not yet finished
+// https://github.com/AdoptOpenJDK/openjdk-jdk8u/blob/master/jdk/src/share/classes/javax/swing/plaf/basic/BasicTextFieldUI.java
 public class PdeTextFieldUI extends BasicTextFieldUI {
   final String prefix;
 
