@@ -21,7 +21,8 @@
  */
 package processing.app.contrib;
 
-import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.text.DateFormat;
 import java.util.Date;
@@ -31,6 +32,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JTextPane;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
@@ -40,6 +42,7 @@ import javax.swing.text.html.HTMLDocument;
 import processing.app.Language;
 import processing.app.Util;
 import processing.app.laf.PdeButtonUI;
+import processing.app.laf.PdeProgressBarUI;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 import processing.app.Base;
@@ -62,7 +65,7 @@ class StatusPanel extends JPanel {
 
   JTextPane label;
   JButton installButton;
-  JPanel progressPanel;
+  JProgressBar progressBar;
   JLabel updateLabel;
   JButton updateButton;
   JButton removeButton;
@@ -110,9 +113,28 @@ class StatusPanel extends JPanel {
       currentDetail.install();
       updateDetail(currentDetail);
     });
-    progressPanel = new JPanel();
-    progressPanel.setLayout(new BorderLayout());
-    progressPanel.setOpaque(false);
+
+    progressBar = new JProgressBar();
+    /*
+    progressBar = new JProgressBar() {
+      @Override
+      public void setBackground(Color c) {
+        new Exception("setting bg to " + c).printStackTrace(System.out);
+        super.setBackground(c);
+      }
+    };
+    */
+    progressBar.setStringPainted(true);
+    progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //progressBar.setOpaque(true);
+
+    resetProgressBar();
+
+    final int high = progressBar.getPreferredSize().height;
+    Dimension dim = new Dimension(BUTTON_WIDTH, high);
+    progressBar.setPreferredSize(dim);
+    progressBar.setMaximumSize(dim);
+    progressBar.setMinimumSize(dim);
 
     updateLabel = new JLabel(" ");
 //    updateLabel.setFont(buttonFont);
@@ -162,7 +184,7 @@ class StatusPanel extends JPanel {
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(installButton,
                                 BUTTON_WIDTH, BUTTON_WIDTH, BUTTON_WIDTH)
-                  .addComponent(progressPanel)
+                  .addComponent(progressBar)
                   .addComponent(updateLabel,
                                 BUTTON_WIDTH, BUTTON_WIDTH, BUTTON_WIDTH)
                   .addComponent(updateButton)
@@ -176,14 +198,14 @@ class StatusPanel extends JPanel {
       .addGroup(layout.createSequentialGroup()
                   .addComponent(installButton)
                   .addGroup(layout.createParallelGroup()
-                              .addComponent(progressPanel)
+                              .addComponent(progressBar)
                               .addComponent(updateLabel))
                   .addComponent(updateButton).addComponent(removeButton)));
 
     layout.linkSize(SwingConstants.HORIZONTAL,
-                    installButton, progressPanel, updateButton, removeButton);
+                    installButton, progressBar, updateButton, removeButton);
 
-    progressPanel.setVisible(false);
+    progressBar.setVisible(false);
 
     installButton.setEnabled(false);
     updateButton.setEnabled(false);
@@ -194,6 +216,16 @@ class StatusPanel extends JPanel {
     layout.setHonorsVisibility(updateLabel, false);
 
     validate();
+  }
+
+
+  protected void resetProgressBar() {
+    // TODO is this overkill for a reset? is this really only being used
+    //      when we mean to call setVisible(false)? [fry 220311]
+    progressBar.setString(Language.text("contrib.progress.starting"));
+    progressBar.setIndeterminate(false);
+    progressBar.setValue(0);
+    progressBar.setVisible(false);
   }
 
 
@@ -232,6 +264,12 @@ class StatusPanel extends JPanel {
       contributionTab.listPanel.getSelectedDetail();
     if (currentDetail != null) {
       currentDetail.updateTheme();
+    }
+
+    if (progressBar.getUI() instanceof PdeProgressBarUI) {
+      ((PdeProgressBarUI) progressBar.getUI()).updateTheme();
+    } else {
+      progressBar.setUI(new PdeProgressBarUI("manager.progress"));
     }
 
     /*
@@ -419,16 +457,19 @@ class StatusPanel extends JPanel {
 
     removeButton.setEnabled(contrib.isInstalled() && !detail.removeInProgress);
 
-    progressPanel.removeAll();
-    progressPanel.add(detail.getProgressBar());
-
     if (detail.updateInProgress || detail.installInProgress || detail.removeInProgress) {
-      progressPanel.setVisible(true);
+//      progressBar.setUI(new PdeProgressBarUI("manager.progress"));
+//      System.out.println(progressBar.getUI());
+//      ((PdeProgressBarUI) progressBar.getUI()).updateTheme();
+      progressBar.setVisible(true);
+//      System.out.println(progressBar.getUI());
+//      System.out.println("progress bar bg: " + progressBar.getBackground());
       updateLabel.setVisible(false);
     } else {
-      progressPanel.setVisible(false);
+      progressBar.setVisible(false);
       updateLabel.setVisible(true);
     }
+    detail.setProgressBar(progressBar);
 //    progressPanel.repaint();  // needed? [fry 220504]
   }
 }

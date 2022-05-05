@@ -21,6 +21,13 @@ public class PdeProgressBarUI extends BasicProgressBarUI {
   }
 
 
+  @Override
+  protected void installDefaults() {
+    super.installDefaults();
+    updateTheme();
+  }
+
+
   /**
    * The "selectionForeground" is the color of the text when it is painted
    * over a filled area of the progress bar.

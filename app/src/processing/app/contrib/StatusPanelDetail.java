@@ -21,8 +21,6 @@
 */
 package processing.app.contrib;
 
-import java.awt.Component;
-import java.awt.Dimension;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.AbstractQueue;
@@ -77,6 +75,12 @@ class StatusPanelDetail {
   }
 
 
+  protected void setProgressBar(JProgressBar progressBar) {
+    this.progressBar = progressBar;
+  }
+
+
+  /*
   protected JProgressBar getProgressBar() {
     if (progressBar == null) {
       initProgressBar();
@@ -113,6 +117,7 @@ class StatusPanelDetail {
     progressBar.setValue(0);
     progressBar.setVisible(false);
   }
+  */
 
 
   private void installContribution(AvailableContribution info) {
@@ -125,7 +130,7 @@ class StatusPanelDetail {
 
 
   private void finishInstall(boolean error) {
-    resetProgressBar();
+    statusPanel.resetProgressBar();
 
     if (error) {
       statusPanel.setErrorMessage(Language.text("contrib.download_error"));
@@ -210,7 +215,7 @@ class StatusPanelDetail {
       ContribProgress progress = new ContribProgress(progressBar) {
         @Override
         public void finishedAction() {
-          resetProgressBar();
+          statusPanel.resetProgressBar();
           AvailableContribution ad =
             contribListing.getAvailableContribution(contrib);
           // install the new version of the Mode (or Tool)
@@ -219,7 +224,7 @@ class StatusPanelDetail {
 
         @Override
         public void cancelAction() {
-          resetProgressBar();
+          statusPanel.resetProgressBar();
           //clearStatusMessage();
           statusPanel.clearMessage();
           updateInProgress = false;
@@ -251,13 +256,13 @@ class StatusPanelDetail {
       ContribProgress progress = new ContribProgress(progressBar) {
         @Override
         public void finishedAction() {
-          resetProgressBar();
+          statusPanel.resetProgressBar();
           removeInProgress = false;
         }
 
         @Override
         public void cancelAction() {
-          resetProgressBar();
+          statusPanel.resetProgressBar();
           removeInProgress = false;
         }
       };
@@ -269,12 +274,12 @@ class StatusPanelDetail {
   protected void updateTheme() {
     if (progressBar != null) {
       if (progressBar.getUI() instanceof PdeProgressBarUI) {
-        System.out.println("updating theme for progress bar");
+//        System.out.println("updating theme for progress bar");
         ((PdeProgressBarUI) progressBar.getUI()).updateTheme();
       } else {
-        System.out.println("setting ui for progress bar");
+//        System.out.println("setting ui for progress bar");
         progressBar.setUI(new PdeProgressBarUI("manager.progress"));
-        System.out.println("fore " + progressBar.getForeground());
+//        System.out.println("fore " + progressBar.getForeground());
       }
     }
   }

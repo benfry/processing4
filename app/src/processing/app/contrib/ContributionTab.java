@@ -36,7 +36,6 @@ import javax.swing.event.DocumentListener;
 import processing.app.Base;
 import processing.app.Library;
 import processing.app.laf.PdeComboBoxUI;
-import processing.app.laf.PdeProgressBarUI;
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
@@ -55,9 +54,6 @@ public class ContributionTab extends JPanel {
   StatusPanel statusPanel;
   FilterField filterField;
 
-  boolean inited;
-
-//  JLabel categoryLabel;
   JLabel loaderLabel;
 
   JPanel errorPanel;
@@ -82,8 +78,10 @@ public class ContributionTab extends JPanel {
 
     filter = contrib -> contrib.getType() == contribType;
 
-    statusPanel = new StatusPanel(this);
     listPanel = new ListPanel(this, filter, false);
+    // TODO init is after listPanel is created because it calls updateTheme()
+    //      which needs it, but yuck, too messy [fry 220504]
+    statusPanel = new StatusPanel(this);
 
     ContributionListing.getInstance().addListPanel(listPanel);
   }
@@ -546,17 +544,6 @@ public class ContributionTab extends JPanel {
       } else {
         categoryChooser.setUI(new PdeComboBoxUI("manager.categories"));
       }
-
-      /*
-      if (progressBar != null) {
-        if (progressBar.getUI() instanceof PdeProgressBarUI) {
-          System.out.println("setting theme for progress bar");
-          ((PdeProgressBarUI) progressBar.getUI()).updateTheme();
-        } else {
-          progressBar.setUI(new PdeProgressBarUI("manager.progress"));
-        }
-      }
-      */
 
       /*
       textColor = Theme.getColor("manager.list.search.text.color");
