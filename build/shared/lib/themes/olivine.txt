@@ -273,10 +273,10 @@ manager.button.disabled.background.color = #395000
 manager.button.disabled.text.color = #AFB499
 manager.button.disabled.icon.color = #AFB499
 
-manager.progress.complete.fgcolor = #AFB499
-manager.progress.complete.bgcolor = #141C00
-manager.progress.incomplete.fgcolor = #FFFFFE
-manager.progress.incomplete.bgcolor = #CDE774
+manager.progress.complete.fgcolor = #FFFFFE
+manager.progress.complete.bgcolor = #CDE774
+manager.progress.incomplete.fgcolor = #AFB499
+manager.progress.incomplete.bgcolor = #141C00
 
 
 ## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
