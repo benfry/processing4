@@ -49,13 +49,7 @@ public class PdeProgressBarUI extends BasicProgressBarUI {
     completeFgColor = Theme.getColor(prefix + ".complete.fgcolor");  // black
     completeBgColor = Theme.getColor(prefix + ".complete.bgcolor");  // red
 
-//    progressBar.setForeground(incompleteFgColor);
     progressBar.setForeground(completeBgColor);
-    progressBar.setBackground(incompleteBgColor);  // correct
-
-//    System.out.println(incompleteFgColor);
-//    System.out.println(incompleteBgColor);
-//    System.out.println(completeFgColor);
-//    System.out.println(completeBgColor);
+    progressBar.setBackground(incompleteBgColor);
   }
 }
