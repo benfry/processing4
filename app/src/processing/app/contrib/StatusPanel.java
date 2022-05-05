@@ -341,8 +341,9 @@ class StatusPanel extends JPanel {
 
   static String updateDescription(Contribution contrib) {
     // Avoid ugly synthesized bold
-    Font boldFont = ManagerFrame.SMALL_BOLD;
-    String fontFace = "<font face=\"" + boldFont.getName() + "\">";
+//    Font boldFont = ManagerFrame.SMALL_BOLD;
+//    String fontFace = "<font face=\"" + boldFont.getName() + "\">";
+    String fontFace = "<font face=\"" + Toolkit.getSansFont().getName() + "\">";
 
     StringBuilder desc = new StringBuilder();
     desc.append("<html><body>");

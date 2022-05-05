@@ -183,7 +183,7 @@ public class ContributionTab extends JPanel {
 
     categoryChooser = new JComboBox<>();
     categoryChooser.setMaximumRowCount(20);
-    categoryChooser.setFont(ManagerFrame.NORMAL_PLAIN);
+//    categoryChooser.setFont(ManagerFrame.NORMAL_PLAIN);
 
     updateCategoryChooser();
 
@@ -224,7 +224,7 @@ public class ContributionTab extends JPanel {
     closeButton.setContentAreaFilled(false);
     closeButton.addActionListener(e -> managerFrame.rebuildTabLayouts(false, false));
     tryAgainButton = new JButton("Try Again");
-    tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
+//    tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
     tryAgainButton.addActionListener(e -> {
       managerFrame.rebuildTabLayouts(false, true);
       managerFrame.downloadAndUpdateContributionListing();

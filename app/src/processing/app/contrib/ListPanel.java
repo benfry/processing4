@@ -145,7 +145,7 @@ public class ListPanel extends JPanel implements Scrollable {
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     table.setFillsViewportHeight(true);
     table.setDefaultRenderer(Contribution.class, new ContribStatusRenderer());
-    table.setFont(ManagerFrame.NORMAL_PLAIN);
+//    table.setFont(ManagerFrame.NORMAL_PLAIN);
     table.setRowHeight(Toolkit.zoom(28));
     table.setRowMargin(Toolkit.zoom(6));
     table.getColumnModel().setColumnMargin(0);
@@ -288,7 +288,8 @@ public class ListPanel extends JPanel implements Scrollable {
       setForeground(headerFgColor);
       //setText(getText() + "\u2191\u2193");
       setText(getText() + getSortText(table, column));
-      setFont(ManagerFrame.SMALL_PLAIN);
+      putClientProperty("FlatLaf.styleClass", "small");
+//      setFont(ManagerFrame.SMALL_PLAIN);
       //setIcon(getSortIcon(table, column));
       setBackground(headerBgColor);
       setBorder(null);
@@ -407,7 +408,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     private void configureStatusColumnLabel(JLabel label, Contribution contribution) {
       Icon icon = null;
-      label.setFont(ManagerFrame.NORMAL_PLAIN);
+//      label.setFont(ManagerFrame.NORMAL_PLAIN);
       StatusPanelDetail detail = detailForContrib.get(contribution);
 
       if (detail != null && (detail.updateInProgress || detail.installInProgress)) {
@@ -430,7 +431,8 @@ public class ListPanel extends JPanel implements Scrollable {
 
     private void configureNameColumnLabel(JTable table, JLabel label, Contribution contribution) {
       // Generating ellipses based on fontMetrics
-      final Font boldFont = ManagerFrame.NORMAL_BOLD;
+//      final Font boldFont = ManagerFrame.NORMAL_BOLD;
+      final Font boldFont = Theme.getFont("manager.list.heavy.font");
       FontMetrics fontMetrics = table.getFontMetrics(boldFont);
       int colSize = table.getColumnModel().getColumn(1).getWidth();
       int currentWidth = fontMetrics.stringWidth(contribution.getName() + " | ...");
@@ -459,7 +461,7 @@ public class ListPanel extends JPanel implements Scrollable {
       }
       text.append("</body></html>");
       label.setText(text.toString());
-      label.setFont(ManagerFrame.NORMAL_PLAIN);
+//      label.setFont(ManagerFrame.NORMAL_PLAIN);
     }
 
     private void configureAuthorsColumnLabel(JLabel label, Contribution contribution) {
@@ -471,7 +473,8 @@ public class ListPanel extends JPanel implements Scrollable {
       label.setText(name);
       label.setHorizontalAlignment(SwingConstants.LEFT);
       label.setForeground(Color.BLACK);
-      label.setFont(ManagerFrame.NORMAL_BOLD);
+      //label.setFont(ManagerFrame.NORMAL_BOLD);
+      label.setFont(Theme.getFont("manager.list.heavy.font"));
     }
   }
 

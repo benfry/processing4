@@ -1216,6 +1216,11 @@ public class Toolkit {
   }
 
 
+  static public Font getBoldFont() {
+    return getSansFont(0, Font.BOLD);
+  }
+
+
   static public Font getSansFont(int size, int style) {
     if (sansFont == null) {
       try {

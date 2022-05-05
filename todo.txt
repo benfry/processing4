@@ -105,6 +105,10 @@ X   generate manager icons
 o   slightly taller tabs, though maybe they're better than the Editor?
 o     editor tabs are different height, as are the footer tabs
 X   important for prefs window background color too
+X remove ManagerFrame constants for NORMAL_PLAIN, SMALL_PLAIN, etc
+X   these should be read from theme.txt instead
+o   or not used at all: the defaults from ui.font and FlatLaf should do
+X   only really need for the bold font
 X remove JProgressBar from ContributionTab/UpdateContributionTab
 X   StatusPanelDetail creates its own, which is the one used
 _   still need to work to prevent multiple from colliding
@@ -113,9 +117,6 @@ _ after download, list item doesn't update to show installed
 _   stays stuck with the downloading icon
 _ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
 _   should be a better way to implement this
-_ remove ManagerFrame constants for NORMAL_PLAIN, SMALL_PLAIN, etc
-_   these should be read from theme.txt instead
-_   or not used at all: the defaults from ui.font and FlatLaf should do
 
 
 finalizing

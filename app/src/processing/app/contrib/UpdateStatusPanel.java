@@ -35,7 +35,7 @@ public class UpdateStatusPanel extends StatusPanel {
 
     //updateButton = Toolkit.createIconButton("Update All", updateIcon);
     updateButton = new JButton("Update All");
-    updateButton.setFont(ManagerFrame.NORMAL_PLAIN);
+//    updateButton.setFont(ManagerFrame.NORMAL_PLAIN);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.setVisible(true);
     updateButton.setEnabled(false);
