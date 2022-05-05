@@ -4,6 +4,8 @@ import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.EmptyBorder;
 import javax.swing.plaf.basic.BasicComboBoxUI;
 import java.awt.*;
 
@@ -62,7 +64,35 @@ public class PdeComboBoxUI extends BasicComboBoxUI {
     return new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        //return null;
+        // TODO There must be a less convoluted way to do this [fry 220505]
+        Container parent = getParent();
+        if (parent instanceof CellRendererPane) {
+          Container crp = parent.getParent();
+          // anonymous class javax.swing.plaf.basic.BasicComboPopup$1
+          if (crp instanceof JComponent) {
+            Container viewport = crp.getParent();
+            if (viewport instanceof JViewport) {
+              Container scrollPane = viewport.getParent();
+              if (scrollPane instanceof JScrollPane) {
+                Container popup = scrollPane.getParent();
+                if (popup instanceof JComponent) {
+                  // com.formdev.flatlaf.ui.FlatComboBoxUI$FlatComboPopup
+                  JComponent c = (JComponent) popup;
+                  if (!(c.getBorder() instanceof EmptyBorder)) {  // just once
+                    // remove the black outline from the popup
+                    c.setBorder(new EmptyBorder(0, 0, 0, 0));
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        // Can't use instanceof because FlatLaf Border is EmptyBorder subclass.
+        // If this is the currently selected item (index == -1), do not add
+        // extra left indent, so the list items left-align with the selection.
+        setBorder(new EmptyBorder(2, index == -1 ? 0 : 6, 2, 2));
+
         if (isSelected) {
           setForeground(selectedFgColor);
           setBackground(selectedBgColor);
@@ -91,21 +121,21 @@ public class PdeComboBoxUI extends BasicComboBoxUI {
     }
     c.setFont(comboBox.getFont());
 //    if (hasFocus && !isPopupVisible(comboBox)) {
-//      //c.setForeground(listBox.getSelectionForeground());  // TODO do we need to mess with listBox?
+//      //c.setForeground(listBox.getSelectionForeground());
 //      //c.setBackground(listBox.getSelectionBackground());
 //      c.setForeground(selectedFgColor);
 //      c.setBackground(selectedBgColor);
 //
 //    } else {
-      if (comboBox.isEnabled()) {
+    if (comboBox.isEnabled()) {
 //        c.setForeground(comboBox.getForeground());
 //        c.setBackground(comboBox.getBackground());
-        c.setForeground(enabledFgColor);
-        c.setBackground(enabledBgColor);
-      } else {
-        c.setForeground(disabledFgColor);
-        c.setBackground(disabledBgColor);
-      }
+      c.setForeground(enabledFgColor);
+      c.setBackground(enabledBgColor);
+    } else {
+      c.setForeground(disabledFgColor);
+      c.setBackground(disabledBgColor);
+    }
 //    }
 
     // Fix for 4238829: should lay out the JPanel.

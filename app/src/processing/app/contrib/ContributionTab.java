@@ -191,56 +191,6 @@ public class ContributionTab extends JPanel {
       filterLibraries();
     });
 
-    /*
-    categoryChooser.setBorder(null);
-    categoryChooser.setBackground(Color.GREEN);
-    categoryChooser.setForeground(Color.RED);
-
-    // want this to be com.formdev.flatlaf.ui.FlatComboBoxUI$FlatComboPopup
-    //System.out.println("ui class for chooser is " + categoryChooser.getUI().getClass());
-
-    categoryChooser.setRenderer(new DefaultListCellRenderer() {
-      @Override
-      //public Component getListCellRendererComponent(JList<? extends String> list, String value, int index, boolean isSelected, boolean cellHasFocus) {
-      // https://docs.oracle.com/javase/7/docs/api/javax/swing/ListCellRenderer.html
-      public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-        //return null;
-        if (isSelected) {
-          setForeground(Color.GREEN);
-          setBackground(Color.BLUE);
-        } else {
-          setForeground(Color.WHITE);
-          setBackground(Color.BLACK);
-        }
-
-        Container parent = getParent();
-        if (parent instanceof CellRendererPane) {
-          Container crp = parent.getParent();
-          // anonymous class javax.swing.plaf.basic.BasicComboPopup$1
-          if (crp instanceof JComponent) {
-            Container viewport = crp.getParent();
-            if (viewport instanceof JViewport) {
-              Container scrollPane = viewport.getParent();
-              if (scrollPane instanceof JScrollPane) {
-                Container popup = scrollPane.getParent();
-                if (popup instanceof JComponent) {
-                  // com.formdev.flatlaf.ui.FlatComboBoxUI$FlatComboPopup
-                  JComponent c = (JComponent) popup;
-                  if (!(c.getBorder() instanceof EmptyBorder)) {  // just once
-                    c.setBorder(new EmptyBorder(0, 0, 0, 0));
-                  }
-                }
-              }
-            }
-          }
-        }
-
-        setText(String.valueOf(value));
-        return this;
-      }
-    });
-    */
-
     filterField = new FilterField();
   }
 

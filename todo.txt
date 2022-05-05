@@ -48,6 +48,8 @@ X override flatlaf for components (search, buttons, dropdown menu) in manager
 X popup menu coloring (contribs)
 X progress bar in contrib manager
 X need monochrome icon for foundation
+o do we need other color states for list item icons
+X   they seem to be find for now
 X remove JProgressBar from ContributionTab/UpdateContributionTab
 X   StatusPanelDetail creates its own, which is the one used
 _   still need to work to prevent multiple from colliding
@@ -61,7 +63,6 @@ _   these should be read from theme.txt instead
 _   or not used at all: the defaults from ui.font and FlatLaf should do
 
 design/manager/waiting
-_ do we need other color states for list item icons
 _ update lib/theme.txt to clean up current Frankenstein status
 _   just replace with the blue default once that's updated
 
