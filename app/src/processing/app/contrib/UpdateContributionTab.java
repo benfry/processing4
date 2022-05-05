@@ -24,7 +24,7 @@ import java.awt.Color;
 
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
-import javax.swing.JProgressBar;
+//import javax.swing.JProgressBar;
 
 import processing.app.ui.Toolkit;
 
@@ -52,9 +52,10 @@ public class UpdateContributionTab extends ContributionTab {
 
   @Override
   protected void setLayout() {
-    if (progressBar == null) {
-      progressBar = new JProgressBar();
-      progressBar.setVisible(false);
+    if (loaderLabel == null) {
+//    if (progressBar == null) {
+//      progressBar = new JProgressBar();
+//      progressBar.setVisible(false);
 
       buildErrorPanel();
 

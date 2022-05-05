@@ -42,6 +42,8 @@ _ Export to Application fonts are too tiny
 design/manager
 X set color of the sort order icon in the ListPanel table header
 X   also the color of the text?
+_ remove JProgressBar from ContributionTab/UpdateContributionTab
+_   StatusPanelDetail creates its own, which is the one used
 _ after download, list item doesn't update to show installed
 _   stays stuck with the download icon
 _ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)

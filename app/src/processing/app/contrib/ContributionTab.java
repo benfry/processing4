@@ -33,10 +33,10 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import com.formdev.flatlaf.ui.FlatComboBoxUI;
 import processing.app.Base;
 import processing.app.Library;
 import processing.app.laf.PdeComboBoxUI;
+import processing.app.laf.PdeProgressBarUI;
 import processing.app.ui.Editor;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
@@ -55,6 +55,8 @@ public class ContributionTab extends JPanel {
   StatusPanel statusPanel;
   FilterField filterField;
 
+  boolean inited;
+
 //  JLabel categoryLabel;
   JLabel loaderLabel;
 
@@ -65,7 +67,7 @@ public class ContributionTab extends JPanel {
 
   String category;
 
-  JProgressBar progressBar;
+  //protected JProgressBar progressBar;  // TODO this is not actually used?
 
 
   public ContributionTab(ManagerFrame dialog) {
@@ -116,9 +118,10 @@ public class ContributionTab extends JPanel {
 
 
   protected void setLayout() {
-    if (progressBar == null) {
-      progressBar = new JProgressBar();
-      progressBar.setVisible(false);
+    if (loaderLabel == null) {
+//    if (progressBar == null) {
+//      progressBar = new JProgressBar();
+//      progressBar.setVisible(false);
 
       createComponents();
       buildErrorPanel();
@@ -543,6 +546,17 @@ public class ContributionTab extends JPanel {
       } else {
         categoryChooser.setUI(new PdeComboBoxUI("manager.categories"));
       }
+
+      /*
+      if (progressBar != null) {
+        if (progressBar.getUI() instanceof PdeProgressBarUI) {
+          System.out.println("setting theme for progress bar");
+          ((PdeProgressBarUI) progressBar.getUI()).updateTheme();
+        } else {
+          progressBar.setUI(new PdeProgressBarUI("manager.progress"));
+        }
+      }
+      */
 
       /*
       textColor = Theme.getColor("manager.list.search.text.color");

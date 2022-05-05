@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JProgressBar;
 
 import processing.app.*;
+import processing.app.laf.PdeProgressBarUI;
 import processing.app.ui.Toolkit;
 
 
@@ -55,6 +56,9 @@ class StatusPanelDetail {
   StatusPanelDetail(Base base, StatusPanel statusPanel) {
     this.base = base;
     this.statusPanel = statusPanel;
+
+//    initProgressBar();
+//    updateTheme();
   }
 
 
@@ -84,11 +88,12 @@ class StatusPanelDetail {
   protected void initProgressBar() {
     progressBar = new JProgressBar();
 
-    progressBar.setInheritsPopupMenu(true);
+//    progressBar.setInheritsPopupMenu(true);
     progressBar.setStringPainted(true);
-    progressBar.setFont(ManagerFrame.NORMAL_PLAIN);
+//    progressBar.setFont(ManagerFrame.NORMAL_PLAIN);
     progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-    progressBar.setOpaque(false);
+//    progressBar.setOpaque(false);
+    progressBar.setOpaque(true);
 
     resetProgressBar();
 
@@ -196,9 +201,9 @@ class StatusPanelDetail {
       // For the special "Updates" tab in the manager, there are no progress
       // bars, so if that's what we're doing, this will create a dummy bar.
       // TODO Not a good workaround [fry 220312]
-      if (progressBar == null) {
-        initProgressBar();
-      }
+//      if (progressBar == null) {
+//        initProgressBar();
+//      }
       progressBar.setVisible(true);
       progressBar.setIndeterminate(true);
 
@@ -257,6 +262,20 @@ class StatusPanelDetail {
         }
       };
       getLocalContrib().removeContribution(base, progress, statusPanel, false);
+    }
+  }
+
+
+  protected void updateTheme() {
+    if (progressBar != null) {
+      if (progressBar.getUI() instanceof PdeProgressBarUI) {
+        System.out.println("updating theme for progress bar");
+        ((PdeProgressBarUI) progressBar.getUI()).updateTheme();
+      } else {
+        System.out.println("setting ui for progress bar");
+        progressBar.setUI(new PdeProgressBarUI("manager.progress"));
+        System.out.println("fore " + progressBar.getForeground());
+      }
     }
   }
 

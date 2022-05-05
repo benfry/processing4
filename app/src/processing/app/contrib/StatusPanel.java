@@ -228,6 +228,12 @@ class StatusPanel extends JPanel {
     updateButtonTheme(updateButton, "update");
     updateButtonTheme(removeButton, "remove");
 
+    StatusPanelDetail currentDetail =
+      contributionTab.listPanel.getSelectedDetail();
+    if (currentDetail != null) {
+      currentDetail.updateTheme();
+    }
+
     /*
     if (installButton.getUI() instanceof PdeButtonUI) {
       ((PdeButtonUI) installButton.getUI()).updateTheme();
@@ -423,6 +429,6 @@ class StatusPanel extends JPanel {
       progressPanel.setVisible(false);
       updateLabel.setVisible(true);
     }
-    progressPanel.repaint();
+//    progressPanel.repaint();  // needed? [fry 220504]
   }
 }
