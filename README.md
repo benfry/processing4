@@ -1,4 +1,4 @@
-This repository contains the source code for the [Processing](https://processing.org/) project for people who want to help improve the code or find bugs.
+This repository contains the source code for the [Processing](https://processing.org/) project for people who want to help improve the code.
 
 If you're interested in *using* Processing, get started at the [download](https://processing.org/download) page, or read more about the project at the [home page](https://processing.org/). There are also several [tutorials](https://processing.org/tutorials) that provide a helpful introduction. They are complemented by hundreds of examples that are included with the software itself.
 
