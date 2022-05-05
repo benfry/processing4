@@ -20,13 +20,7 @@
 */
 package processing.app.contrib;
 
-import java.awt.Color;
-
 import javax.swing.GroupLayout;
-import javax.swing.JLabel;
-//import javax.swing.JProgressBar;
-
-import processing.app.ui.Toolkit;
 
 
 public class UpdateContributionTab extends ContributionTab {
@@ -52,6 +46,7 @@ public class UpdateContributionTab extends ContributionTab {
 
   @Override
   protected void setLayout() {
+    /*
     if (loaderLabel == null) {
 //    if (progressBar == null) {
 //      progressBar = new JProgressBar();
@@ -62,6 +57,7 @@ public class UpdateContributionTab extends ContributionTab {
       loaderLabel = new JLabel(Toolkit.getLibIcon("manager/loader.gif"));
       loaderLabel.setOpaque(false);
     }
+    */
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
@@ -82,7 +78,7 @@ public class UpdateContributionTab extends ContributionTab {
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE));
     layout.setHonorsVisibility(listPanel, false);
 
-    setBackground(Color.WHITE);
+    //setBackground(Color.WHITE);
   }
 
 

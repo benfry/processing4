@@ -42,8 +42,6 @@ import processing.app.ui.Toolkit;
 
 
 public class ContributionTab extends JPanel {
-  static final int FILTER_WIDTH = Toolkit.zoom(180);
-
   Base base;
   ContributionType contribType;
   ManagerFrame managerFrame;
@@ -69,6 +67,11 @@ public class ContributionTab extends JPanel {
   public ContributionTab(ManagerFrame dialog) {
     this.managerFrame = dialog;
     this.base = dialog.base;
+
+    buildErrorPanel();
+
+    loaderLabel = new JLabel(Toolkit.getLibIcon("manager/loader.gif"));
+    loaderLabel.setOpaque(false);
   }
 
 
@@ -116,20 +119,22 @@ public class ContributionTab extends JPanel {
 
 
   protected void setLayout() {
+    if (categoryChooser == null) {
+      createComponents();
+    }
+    /*
     if (loaderLabel == null) {
-//    if (progressBar == null) {
-//      progressBar = new JProgressBar();
-//      progressBar.setVisible(false);
-
       createComponents();
       buildErrorPanel();
 
       loaderLabel = new JLabel(Toolkit.getLibIcon("manager/loader.gif"));
       loaderLabel.setOpaque(false);
-      loaderLabel.setBackground(Color.WHITE);
+      //loaderLabel.setBackground(Color.WHITE);
     }
+    */
 
-    int scrollBarWidth = listPanel.getScrollBarWidth();
+    final int scrollBarWidth = listPanel.getScrollBarWidth();
+    final int filterWidth = Toolkit.zoom(180);
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
@@ -139,7 +144,7 @@ public class ContributionTab extends JPanel {
                   .createSequentialGroup()
                   .addGap(ManagerFrame.STATUS_WIDTH)
                   .addComponent(filterField,
-                                FILTER_WIDTH, FILTER_WIDTH, FILTER_WIDTH)
+                                filterWidth, filterWidth, filterWidth)
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                        GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
                   .addComponent(categoryChooser,
