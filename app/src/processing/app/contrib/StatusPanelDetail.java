@@ -30,7 +30,6 @@ import javax.swing.JProgressBar;
 
 import processing.app.*;
 import processing.app.laf.PdeProgressBarUI;
-import processing.app.ui.Toolkit;
 
 
 /**
@@ -38,8 +37,6 @@ import processing.app.ui.Toolkit;
  * has only been used to track install/remove state information.
  */
 class StatusPanelDetail {
-  static private final int BUTTON_WIDTH = Toolkit.zoom(100);
-
   private final Base base;
   private final StatusPanel statusPanel;
 
