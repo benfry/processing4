@@ -33,8 +33,9 @@ import processing.app.laf.PdeProgressBarUI;
 
 
 /**
- * Vestigial class that was formerly a detail panel, but since 3.x
- * has only been used to track install/remove state information.
+ * An unfortunate mix of state information about the installation
+ * status of a Contribution, *as well as* the methods to handle
+ * installation and update of that Contribution.
  */
 class StatusDetail {
   private final Base base;

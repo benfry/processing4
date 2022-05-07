@@ -33,15 +33,12 @@ public class UpdateStatusPanel extends StatusPanel {
   public UpdateStatusPanel(UpdateContributionTab tab) {
     super(tab);
 
-    //updateButton = Toolkit.createIconButton("Update All", updateIcon);
     updateButton = new JButton("Update All");
-//    updateButton.setFont(ManagerFrame.NORMAL_PLAIN);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.setVisible(true);
     updateButton.setEnabled(false);
 
     updateButton.addActionListener(e -> contributionTab.updateAll());
-    setBackground(new Color(0xebebeb));
     layout = new GroupLayout(this);
     setLayout(layout);
 

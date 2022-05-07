@@ -701,14 +701,14 @@ public class ListPanel extends JPanel implements Scrollable {
 //      System.out.println(contributionTab.contribType + " tab: " +
 //        "changed " + oldContrib + " -> " + newContrib);
 //      new Exception().printStackTrace(System.out);
-      StatusDetail panel = detailForContrib.get(oldContrib);
+      StatusDetail detail = detailForContrib.get(oldContrib);
 //      if (panel == null) {
 ////        System.out.println("panel null for " + newContrib);
 //        contributionAdded(newContrib);
 //      } else {
         detailForContrib.remove(oldContrib);
-        panel.setContrib(newContrib);
-        detailForContrib.put(newContrib, panel);
+        detail.setContrib(newContrib);
+        detailForContrib.put(newContrib, detail);
         model.fireTableDataChanged();
 //      }
     }
