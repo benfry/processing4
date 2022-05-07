@@ -77,46 +77,6 @@ class StatusPanelDetail {
   }
 
 
-  /*
-  protected JProgressBar getProgressBar() {
-    if (progressBar == null) {
-      initProgressBar();
-    }
-    return progressBar;
-  }
-
-
-  protected void initProgressBar() {
-    progressBar = new JProgressBar();
-
-//    progressBar.setInheritsPopupMenu(true);
-    progressBar.setStringPainted(true);
-//    progressBar.setFont(ManagerFrame.NORMAL_PLAIN);
-    progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-//    progressBar.setOpaque(false);
-    progressBar.setOpaque(true);
-
-    resetProgressBar();
-
-    final int high = progressBar.getPreferredSize().height;
-    Dimension dim = new Dimension(BUTTON_WIDTH, high);
-    progressBar.setPreferredSize(dim);
-    progressBar.setMaximumSize(dim);
-    progressBar.setMinimumSize(dim);
-  }
-
-
-  private void resetProgressBar() {
-    // TODO is this overkill for a reset? is this really only being used
-    //      when we mean to call setVisible(false)? [fry 220311]
-    progressBar.setString(Language.text("contrib.progress.starting"));
-    progressBar.setIndeterminate(false);
-    progressBar.setValue(0);
-    progressBar.setVisible(false);
-  }
-  */
-
-
   private void installContribution(AvailableContribution info) {
     if (info.link == null) {
       statusPanel.setErrorMessage(Language.interpolate("contrib.unsupported_operating_system", info.getType()));
@@ -271,12 +231,9 @@ class StatusPanelDetail {
   protected void updateTheme() {
     if (progressBar != null) {
       if (progressBar.getUI() instanceof PdeProgressBarUI) {
-//        System.out.println("updating theme for progress bar");
         ((PdeProgressBarUI) progressBar.getUI()).updateTheme();
       } else {
-//        System.out.println("setting ui for progress bar");
         progressBar.setUI(new PdeProgressBarUI("manager.progress"));
-//        System.out.println("fore " + progressBar.getForeground());
       }
     }
   }
