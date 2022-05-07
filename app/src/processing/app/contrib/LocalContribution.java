@@ -62,46 +62,51 @@ public abstract class LocalContribution extends Contribution {
     if (propertiesFile.exists()) {
       properties = Util.readSettings(propertiesFile);
 
-      name = properties.get("name");
-      id = properties.get("id");
-      categories = parseCategories(properties);
-      imports = parseImports(properties);
-      if (name == null) {
-        name = folder.getName();
+      if (properties != null) {
+        name = properties.get("name");
+        id = properties.get("id");
+        categories = parseCategories(properties);
+        imports = parseImports(properties);
+        if (name == null) {
+          name = folder.getName();
+        }
+        // changed 'authorList' to 'authors' in 3.0a11
+        authors = properties.get(AUTHORS_PROPERTY);
+        url = properties.get("url");
+        sentence = properties.get("sentence");
+        paragraph = properties.get("paragraph");
+
+        try {
+          version = Integer.parseInt(properties.get("version"));
+        } catch (NumberFormatException e) {
+          System.err.println("The version number for the “" + name + "” library is not a number.");
+          System.err.println("Please contact the library author to fix it according to the guidelines.");
+        }
+
+        setPrettyVersion(properties.get("prettyVersion"));
+
+        try {
+          lastUpdated = Long.parseLong(properties.get("lastUpdated"));
+        } catch (NumberFormatException e) {
+          lastUpdated = 0;
+        }
+
+        String minRev = properties.get("minRevision");
+        if (minRev != null) {
+          minRevision = PApplet.parseInt(minRev, 0);
+        }
+
+        String maxRev = properties.get("maxRevision");
+        if (maxRev != null) {
+          maxRevision = PApplet.parseInt(maxRev, 0);
+        }
+      } else {
+        Messages.log("Could not read " + propertiesFile.getAbsolutePath());
       }
-      // changed 'authorList' to 'authors' in 3.0a11
-      authors = properties.get(AUTHORS_PROPERTY);
-      url = properties.get("url");
-      sentence = properties.get("sentence");
-      paragraph = properties.get("paragraph");
-
-      try {
-        version = Integer.parseInt(properties.get("version"));
-      } catch (NumberFormatException e) {
-        System.err.println("The version number for the “" + name + "” library is not a number.");
-        System.err.println("Please contact the library author to fix it according to the guidelines.");
-      }
-
-      setPrettyVersion(properties.get("prettyVersion"));
-
-      try {
-        lastUpdated = Long.parseLong(properties.get("lastUpdated"));
-      } catch (NumberFormatException e) {
-        lastUpdated = 0;
-      }
-
-      String minRev = properties.get("minRevision");
-      if (minRev != null) {
-        minRevision = PApplet.parseInt(minRev, 0);
-      }
-
-      String maxRev = properties.get("maxRevision");
-      if (maxRev != null) {
-        maxRevision = PApplet.parseInt(maxRev, 0);
-      }
-
     } else {
       Messages.log("No properties file at " + propertiesFile.getAbsolutePath());
+    }
+    if (name == null) {  // fall-through case
       // We'll need this to be set at a minimum.
       name = folder.getName();
       categories = new StringList(UNKNOWN_CATEGORY);
