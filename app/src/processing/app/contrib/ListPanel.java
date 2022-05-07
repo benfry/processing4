@@ -581,7 +581,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
   static class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
     Contribution.Filter contributionFilter;
-    Optional<String> categoryFilter = Optional.empty();
+    String categoryFilter;
     List<String> stringFilters = Collections.emptyList();
 
     ContributionRowFilter(Contribution.Filter contributionFilter) {
@@ -589,7 +589,7 @@ public class ListPanel extends JPanel implements Scrollable {
     }
 
     public void setCategoryFilter(String categoryFilter) {
-      this.categoryFilter = Optional.ofNullable(categoryFilter);
+      this.categoryFilter = categoryFilter;
     }
 
     public void setStringFilters(List<String> filters) {
@@ -607,8 +607,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     private boolean includeContribution(Contribution contribution) {
       return contributionFilter.matches(contribution) &&
-        categoryFilter.map(contribution::hasCategory).orElse(true) &&
-        //stringFilters.stream().allMatch(pattern -> ContributionListing.getInstance().matches(contribution, pattern));
+        Optional.ofNullable(categoryFilter).map(contribution::hasCategory).orElse(true) &&
         stringFilters.stream().allMatch(pattern -> matches(contribution, pattern));
     }
 
