@@ -107,9 +107,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //      downloadingIcon = Toolkit.getLibIconX("manager/downloading");
 //    }
 
-    //setLayout(new GridBagLayout());
     setOpaque(true);
-    //setBackground(rowColor);
     model = new ContributionTableModel(columns);
     model.enableSections(enableSections);
     table = new JTable(model) {
@@ -133,6 +131,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
       @Override
       public void changeSelection(int rowIndex, int columnIndex, boolean toggle, boolean extend) {
+        // disallow selection of the header lines
         if (!(getValueAt(rowIndex, columnIndex) instanceof SectionHeaderContribution)) {
           super.changeSelection(rowIndex, columnIndex, toggle, extend);
         }
@@ -549,10 +548,12 @@ public class ListPanel extends JPanel implements Scrollable {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-      if (rowIndex >= ContributionListing.getInstance().allContributions.size()) {
-        return sections[rowIndex - ContributionListing.getInstance().allContributions.size()];
+      final Set<Contribution> allContribs =
+        ContributionListing.getInstance().allContributions;
+      if (rowIndex >= allContribs.size()) {
+        return sections[rowIndex - allContribs.size()];
       }
-      return ContributionListing.getInstance().allContributions.stream().skip(rowIndex).findFirst().orElse(null);
+      return allContribs.stream().skip(rowIndex).findFirst().orElse(null);
     }
 
     public void enableSections(boolean enable) {

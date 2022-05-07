@@ -214,8 +214,6 @@ _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
 
 contribs
-_ ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
-_   seems to be out of sync/unavailable data based on more recent contrib changes?
 _ several "Could not find a matching .properties file" with clocks pdex
 _ examples window is per-Mode, but that doesn't seem helpful
 _   just like sketchbook, you can open one from the other
@@ -243,6 +241,8 @@ X disable hashCode() implementation in Contribution
 X   was getting in the way of comparisons
 _   but need to compare the entries differently so there aren't dupes
 _   i.e. it was doing a name comparison, so need to swap by name
+_ ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
+_   seems to be out of sync/unavailable data based on more recent contrib changes?
 _ currently no indication that contrib download failed
 _   so the 'try again' won't show up; everything looks fine
 _   (was this for the contrib listing? or an actual contrib?)
