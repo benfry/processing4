@@ -83,7 +83,7 @@ public class UpdateContributionTab extends ContributionTab {
 
 
   @Override
-  public void updateStatusDetail(StatusPanelDetail detail) {
+  public void updateStatusDetail(StatusDetail detail) {
     // Do nothing
   }
 }

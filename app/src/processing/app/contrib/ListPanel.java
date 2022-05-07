@@ -50,12 +50,12 @@ public class ListPanel extends JPanel implements Scrollable {
 //    new TreeMap<>(ContributionListing.COMPARATOR);
 //  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
 //    new TreeMap<>(Comparator.comparing(o -> o.getName().toLowerCase()));
-  Map<Contribution, StatusPanelDetail> detailForContrib =
+  Map<Contribution, StatusDetail> detailForContrib =
     new ConcurrentHashMap<>();
 
   private final Contribution.Filter filter;
 
-  private StatusPanelDetail selectedDetail;
+  private StatusDetail selectedDetail;
   protected ContributionRowFilter rowFilter;
   protected JTable table;
   protected TableRowSorter<ContributionTableModel> sorter;
@@ -407,8 +407,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     private void configureStatusColumnLabel(JLabel label, Contribution contribution) {
       Icon icon = null;
-//      label.setFont(ManagerFrame.NORMAL_PLAIN);
-      StatusPanelDetail detail = detailForContrib.get(contribution);
+      StatusDetail detail = detailForContrib.get(contribution);
 
       if (detail != null && (detail.updateInProgress || detail.installInProgress)) {
         // Display "loading" icon if download/install in progress
@@ -663,8 +662,8 @@ public class ListPanel extends JPanel implements Scrollable {
 //      new Exception().printStackTrace(System.out);
 //        long t1 = System.currentTimeMillis();
         //StatusPanelDetail newPanel = new StatusPanelDetail(this);
-        StatusPanelDetail newPanel =
-          new StatusPanelDetail(contributionTab.base, contributionTab.statusPanel);
+        StatusDetail newPanel =
+          new StatusDetail(contributionTab.base, contributionTab.statusPanel);
         detailForContrib.put(contribution, newPanel);
         newPanel.setContrib(contribution);
 //      add(newPanel);
@@ -684,7 +683,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //      System.out.println(contributionTab.contribType + " tab: " +
 //        "removed " + contribution.name);
 //    if (true || filter.matches(contribution)) {
-      StatusPanelDetail panel = detailForContrib.get(contribution);
+      StatusDetail panel = detailForContrib.get(contribution);
       if (panel != null) {
         detailForContrib.remove(contribution);
       }
@@ -702,7 +701,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //      System.out.println(contributionTab.contribType + " tab: " +
 //        "changed " + oldContrib + " -> " + newContrib);
 //      new Exception().printStackTrace(System.out);
-      StatusPanelDetail panel = detailForContrib.get(oldContrib);
+      StatusDetail panel = detailForContrib.get(oldContrib);
 //      if (panel == null) {
 ////        System.out.println("panel null for " + newContrib);
 //        contributionAdded(newContrib);
@@ -736,7 +735,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
 
   // Thread: EDT
-  private void setSelectedDetail(StatusPanelDetail contribDetail) {
+  private void setSelectedDetail(StatusDetail contribDetail) {
     contributionTab.updateStatusDetail(contribDetail);
 
     if (selectedDetail != contribDetail) {
@@ -746,7 +745,7 @@ public class ListPanel extends JPanel implements Scrollable {
   }
 
 
-  protected StatusPanelDetail getSelectedDetail() {
+  protected StatusDetail getSelectedDetail() {
     return selectedDetail;
   }
 

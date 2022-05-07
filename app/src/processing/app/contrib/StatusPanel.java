@@ -108,7 +108,7 @@ class StatusPanel extends JPanel {
     installButton.setHorizontalAlignment(SwingConstants.LEFT);
     installButton.addActionListener(e -> {
       installButton.setEnabled(false);
-      StatusPanelDetail currentDetail =
+      StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
       currentDetail.install();
       updateDetail(currentDetail);
@@ -146,7 +146,7 @@ class StatusPanel extends JPanel {
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.addActionListener(e -> {
       updateButton.setEnabled(false);
-      StatusPanelDetail currentDetail =
+      StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
       currentDetail.update();
       updateDetail(currentDetail);
@@ -158,7 +158,7 @@ class StatusPanel extends JPanel {
     removeButton.setHorizontalAlignment(SwingConstants.LEFT);
     removeButton.addActionListener(e -> {
       removeButton.setEnabled(false);
-      StatusPanelDetail currentPanel =
+      StatusDetail currentPanel =
         contributionTab.listPanel.getSelectedDetail();
       currentPanel.remove();
       updateDetail(currentPanel);
@@ -249,7 +249,7 @@ class StatusPanel extends JPanel {
     updateLabel.setForeground(Theme.getColor("manager.panel.text.color"));
 
     // I'm not circuitous, *you're* circuitous.
-    StatusPanelDetail detail = contributionTab.listPanel.getSelectedDetail();
+    StatusDetail detail = contributionTab.listPanel.getSelectedDetail();
     if (detail != null) {
       updateDetail(detail);
     }
@@ -260,7 +260,7 @@ class StatusPanel extends JPanel {
     updateButtonTheme(updateButton, "update");
     updateButtonTheme(removeButton, "remove");
 
-    StatusPanelDetail currentDetail =
+    StatusDetail currentDetail =
       contributionTab.listPanel.getSelectedDetail();
     if (currentDetail != null) {
       currentDetail.updateTheme();
@@ -404,7 +404,7 @@ class StatusPanel extends JPanel {
   }
 
 
-  void updateDetail(StatusPanelDetail detail) {
+  void updateDetail(StatusDetail detail) {
 //    System.out.println("rebuilding status detail for " + detail.getContrib().name);
 //    new Exception("rebuilding status detail for " + detail.getContrib().name).printStackTrace(System.out);
     Contribution contrib = detail.getContrib();

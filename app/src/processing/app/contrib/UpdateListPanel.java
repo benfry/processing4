@@ -62,7 +62,7 @@ public class UpdateListPanel extends ListPanel {
   @Override
   public void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
-    StatusPanelDetail detail = detailForContrib.get(oldContrib);
+    StatusDetail detail = detailForContrib.get(oldContrib);
     if (detail == null) {
       contributionAdded(newContrib);
     } else if (newContrib.isInstalled()) {

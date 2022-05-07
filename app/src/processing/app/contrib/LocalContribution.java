@@ -343,7 +343,7 @@ public abstract class LocalContribution extends Contribution {
       //StringList sketchPathList = new StringList();
       for (Editor editor : editors) {
         //sketchPathList.append(editor.getSketch().getMainPath());
-        StatusPanelDetail.storeSketchPath(editor.getSketch().getMainPath());
+        StatusDetail.storeSketchPath(editor.getSketch().getMainPath());
         base.handleClose(editor, true);
       }
       editors.clear();

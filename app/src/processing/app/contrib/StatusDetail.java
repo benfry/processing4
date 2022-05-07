@@ -36,7 +36,7 @@ import processing.app.laf.PdeProgressBarUI;
  * Vestigial class that was formerly a detail panel, but since 3.x
  * has only been used to track install/remove state information.
  */
-class StatusPanelDetail {
+class StatusDetail {
   private final Base base;
   private final StatusPanel statusPanel;
 
@@ -48,7 +48,7 @@ class StatusPanelDetail {
   boolean removeInProgress;
 
 
-  StatusPanelDetail(Base base, StatusPanel statusPanel) {
+  StatusDetail(Base base, StatusPanel statusPanel) {
     this.base = base;
     this.statusPanel = statusPanel;
 
