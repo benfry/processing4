@@ -66,10 +66,10 @@ public class PdeScrollBarUI extends BasicScrollBarUI {
     this.enabledAttr = enabledAttr;
     */
 
-    this.backgroundAttr = prefix + ".scrollbar.color";
-    this.pressedAttr = prefix + ".scrollbar.thumb.pressed.color";
-    this.rolloverAttr = prefix + ".scrollbar.thumb.rollover.color";
-    this.enabledAttr = prefix + ".scrollbar.thumb.enabled.color";
+    this.backgroundAttr = prefix + ".color";
+    this.pressedAttr = prefix + ".thumb.pressed.color";
+    this.rolloverAttr = prefix + ".thumb.rollover.color";
+    this.enabledAttr = prefix + ".thumb.enabled.color";
   }
 
 

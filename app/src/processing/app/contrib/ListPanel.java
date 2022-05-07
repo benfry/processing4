@@ -140,7 +140,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     scrollPane = new JScrollPane(table);
     scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-    scrollPane.getVerticalScrollBar().setUI(new PdeScrollBarUI("manager"));
+    scrollPane.getVerticalScrollBar().setUI(new PdeScrollBarUI("manager.scrollbar"));
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     table.setFillsViewportHeight(true);
     table.setDefaultRenderer(Contribution.class, new ContribStatusRenderer());

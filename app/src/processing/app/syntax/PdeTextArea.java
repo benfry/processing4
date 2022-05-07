@@ -91,8 +91,8 @@ public class PdeTextArea extends JEditTextArea {
       ((PdeScrollBarUI) horizontal.getUI()).updateTheme();
     } else {
 //      System.out.println("PdeTextArea.updateTheme() setting ui");
-      vertical.setUI(new PdeScrollBarUI("editor"));
-      horizontal.setUI(new PdeScrollBarUI("editor"));
+      vertical.setUI(new PdeScrollBarUI("editor.scrollbar"));
+      horizontal.setUI(new PdeScrollBarUI("editor.scrollbar"));
     }
 
     repaint();

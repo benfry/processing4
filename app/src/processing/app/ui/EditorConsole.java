@@ -134,14 +134,14 @@ public class EditorConsole extends JScrollPane {
     if (vertical.getUI() instanceof PdeScrollBarUI) {
       ((PdeScrollBarUI) vertical.getUI()).updateTheme();
     } else {
-      vertical.setUI(new PdeScrollBarUI("console"));
+      vertical.setUI(new PdeScrollBarUI("console.scrollbar"));
     }
 
     JScrollBar horizontal = getHorizontalScrollBar();
     if (horizontal.getUI() instanceof PdeScrollBarUI) {
       ((PdeScrollBarUI) horizontal.getUI()).updateTheme();
     } else {
-      horizontal.setUI(new PdeScrollBarUI("console"));
+      horizontal.setUI(new PdeScrollBarUI("console.scrollbar"));
     }
 
     // necessary?
