@@ -45,10 +45,11 @@ public class ContributionManager {
    * Blocks until the file is downloaded or an error occurs.
    *
    * @param source the URL of the file to download
-   * @param post Binary blob of POST data if a payload should be sent.
+   * @param post Binary blob of POST data if there is data to be sent.
    *             Must already be URL-encoded and will be Gzipped for upload.
-   * @param dest The file on the local system where the file will be written.
-   *             This must be a file (not a directory), and must already exist.
+   *             If null, the connection will use GET instead of POST.
+   * @param dest The location on the local system to write the file.
+   *             Its parent directory must already exist.
    * @param progress null if progress is irrelevant, such as when downloading
    *                 files for installation during startup, when the
    *                 ProgressMonitor is useless because the UI is unavailable.
