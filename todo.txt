@@ -1,11 +1,5 @@
 1284 (4.0b9)
 
-manager
-X make ContributionTab.FilterField into a static class
-o   then perhaps move to another source file
-X   nah, ContributionTabFilterField is a bit much
-X   move things around a bit so it's not quite a mess
-
 design
 X color updates based on changes from Paul (220426)
 X if no matching theme selected, was highlighting column -1
@@ -109,25 +103,18 @@ X remove ManagerFrame constants for NORMAL_PLAIN, SMALL_PLAIN, etc
 X   these should be read from theme.txt instead
 o   or not used at all: the defaults from ui.font and FlatLaf should do
 X   only really need for the bold font
+
+manager
+X make ContributionTab.FilterField into a static class
+o   then perhaps move to another source file
+X   nah, ContributionTabFilterField is a bit much
+X   move things around a bit so it's not quite a mess
+o add reinstall option?
+X   nah, too fussy; not a big deal to do remove and install
 X remove JProgressBar from ContributionTab/UpdateContributionTab
 X   StatusPanelDetail creates its own, which is the one used
-_   still need to work to prevent multiple from colliding
-_   (i.e. get rid of ContribProgress class)
-_ after download, list item doesn't update to show installed
-_   stays stuck with the downloading icon
-_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
-_   should be a better way to implement this
-
-
-finalizing
-_ update lib/theme.txt to clean up current Frankenstein status
-_   just replace with the blue default once that's updated
-_ can't ship before ui.font and language bits sorted out
-_   otherwise the override to use Source Sans Pro will hose other languages
-_ Color Selector buttons misaligned
-_ visual fixes for tab sizes, etc
-_ Export to Application fonts are too tiny
-_ font for stack trace dialogs is too small (and wrong)
+X after download, list item doesn't update to show installed
+X   stays stuck with the downloading icon
 
 
 contrib
@@ -139,6 +126,17 @@ X   https://github.com/processing/processing4/pull/480
 X   https://github.com/processing/processing4/pull/481
 X Update PDE_de.properties
 X   https://github.com/processing/processing4/pull/483
+
+
+finalizing
+_ update lib/theme.txt to clean up current Frankenstein status
+_   just replace with the blue default once that's updated
+_ can't ship before ui.font and language bits sorted out
+_   otherwise the override to use Source Sans Pro will hose other languages
+_ Color Selector buttons misaligned
+_ visual fixes for tab sizes, etc
+_ Export to Application fonts are too tiny
+_ font for stack trace dialogs is too small (and wrong)
 
 
 _ using other JavaFX classes now that they're modules
@@ -236,25 +234,37 @@ _ write build.xml file to automatically update the examples
 _ when adding a new library, its examples aren't added to the list until restart
 
 
+manager/contribs.txt
+_ if no internet available, install buttons disabled, but not clear why broken
+_ also if update check disabled, user isn't notified that contribs unavailable
+_ currently no indication that contrib download failed
+_   so the 'try again' won't show up; everything looks fine
+_   (was this for the contrib listing? or an actual contrib?)
+_ ContributionTab.updateContributionListing()
+_   this one shouldn't be in a single tab
+_   and it should include all contribs (method from Base to get in one swoop?)
+_   this is also likely the cause of per-Mode weirdness
+_ Base.setUpdatesAvailable() is called from half a dozen places!?
+
+
 manager
+_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
+_   should be a better way to implement this
+_ JProgressBar in StatusPanel is shared by all installing contribs
+_   which could make for weird behavior if installs before something has finished
+_   work to prevent multiple from colliding
+_   (i.e. get rid of ContribProgress class)
 X disable hashCode() implementation in Contribution
 X   was getting in the way of comparisons
 _   but need to compare the entries differently so there aren't dupes
 _   i.e. it was doing a name comparison, so need to swap by name
 _ ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
 _   seems to be out of sync/unavailable data based on more recent contrib changes?
-_ currently no indication that contrib download failed
-_   so the 'try again' won't show up; everything looks fine
-_   (was this for the contrib listing? or an actual contrib?)
 _ ManagerFrame.downloadAndUpdateContributionListing()
 _   should not even be run, because the contribs load on startup
 _   but ContributionTab.tryAgainButton needs to be able to request re-download
 _ ManagerFrame.makeAndShowTab()
 _   this one looks like it's gonna get called multiple times
-_ ContributionTab.updateContributionListing()
-_   this one shouldn't be in a single tab
-_   and it should include all contribs (method from Base to get in one swoop?)
-_   this is also likely the cause of per-Mode weirdness
 _ holy s*t ContributionTableModel is using all of the contribs
 _ after failed update of Mode, the button is no longer available
 _   have to click something else, then click back on the Mode line again
@@ -274,7 +284,6 @@ _   but what else might that change be breaking?
 _ StatusPanel seems to be recreated entirely
 _ StatusPanel being reset twice on each click
 _   is checking for previous, but apparently that's not working
-_ Base.setUpdatesAvailable() is called from half a dozen places!?
 _ AvailableContribution.install() needs status handler
 _   can either be the StatusPanel *or* EditorStatus *or* console (during startup)
 _   needs to be EditorStatus when double-clicking a .pdex file
@@ -284,7 +293,6 @@ _   https://download.processing.org/stats
 _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
 _ orange exclamation looks like an error, not "update available"
-_ add reinstall option?
 
 
 design/waiting

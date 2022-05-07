@@ -97,6 +97,8 @@ class StatusDetail {
     if (updateInProgress) {
       updateInProgress = false;
     }
+    // change the status icon from downloading to installed
+    statusPanel.contributionTab.repaint();
   }
 
 
