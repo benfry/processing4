@@ -141,33 +141,6 @@ X Update PDE_de.properties
 X   https://github.com/processing/processing4/pull/483
 
 
-manager
-X disable hashCode() implementation in Contribution
-X   was getting in the way of comparisons
-_   but need to compare the entries differently so there aren't dupes
-_   i.e. it was doing a name comparison, so need to swap by name
-_ currently no indication that contrib download failed
-_   so the 'try again' won't show up; everything looks fine
-_   (was this for the contrib listing? or an actual contrib?)
-_ ManagerFrame.downloadAndUpdateContributionListing()
-_   should not even be run, because the contribs load on startup
-_   but ContributionTab.tryAgainButton needs to be able to request re-download
-_ ManagerFrame.makeAndShowTab()
-_   this one looks like it's gonna get called multiple times
-_ ContributionTab.updateContributionListing()
-_   this one shouldn't be in a single tab
-_   and it should include all contribs (method from Base to get in one swoop?)
-_   this is also likely the cause of per-Mode weirdness
-_ holy s*t ContributionTableModel is using all of the contribs
-_ after failed update of Mode, the button is no longer available
-_   have to click something else, then click back on the Mode line again
-_ remove updateInProgress from StatusPanelDetail
-_ when starting in p5jsMode, contrib manager shows no green checks for libs
-_   tricky because those aren't gonna show up in 'Add Library'
-_   which is another case for a separate 'contrib manager' thing
-_     maybe that's the update button? when no updates, it's still a button?
-
-
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
 
@@ -266,6 +239,30 @@ _ when adding a new library, its examples aren't added to the list until restart
 
 
 manager
+X disable hashCode() implementation in Contribution
+X   was getting in the way of comparisons
+_   but need to compare the entries differently so there aren't dupes
+_   i.e. it was doing a name comparison, so need to swap by name
+_ currently no indication that contrib download failed
+_   so the 'try again' won't show up; everything looks fine
+_   (was this for the contrib listing? or an actual contrib?)
+_ ManagerFrame.downloadAndUpdateContributionListing()
+_   should not even be run, because the contribs load on startup
+_   but ContributionTab.tryAgainButton needs to be able to request re-download
+_ ManagerFrame.makeAndShowTab()
+_   this one looks like it's gonna get called multiple times
+_ ContributionTab.updateContributionListing()
+_   this one shouldn't be in a single tab
+_   and it should include all contribs (method from Base to get in one swoop?)
+_   this is also likely the cause of per-Mode weirdness
+_ holy s*t ContributionTableModel is using all of the contribs
+_ after failed update of Mode, the button is no longer available
+_   have to click something else, then click back on the Mode line again
+_ remove updateInProgress from StatusPanelDetail
+_ when starting in p5jsMode, contrib manager shows no green checks for libs
+_   tricky because those aren't gonna show up in 'Add Library'
+_   which is another case for a separate 'contrib manager' thing
+_     maybe that's the update button? when no updates, it's still a button?
 _ after opening Editor window, Processing freezes until contribs are loaded
 _ when opening manager, animation runs briefly then freezes
 _ DetailPanel setContribution() being called 4x for each contrib on startup
@@ -295,6 +292,7 @@ _ gradients
 
 design
 X menu background colors
+_ two tier dialog box (defaulting back to Lucida)
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ decision about 'debug' versions of toolbar icons
@@ -302,6 +300,7 @@ _ add notes about params to the wiki
 _ Update graphics and visual design elements for 4.x
 _   https://github.com/processing/processing4/issues/48
 _ welcome screen is a mess
+_   just remove? send to a web page when using a new revision?
 _ also lib/icons has the pde icon set and the foundation icon (for contribs)
 _ sort out ui.font plus the other fonts inside theme.txt
 _   Toolkit.getSansFont() will use the internal ProcessingSansPro font
