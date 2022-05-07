@@ -45,7 +45,7 @@ public class UpdateListPanel extends ListPanel {
     // Ensures contributionAdded in ListPanel is only run on LocalContributions
     if (contribFilter.matches(contribution)) {
       super.contributionAdded(contribution);
-      ((UpdateStatusPanel) contributionTab.statusPanel).update(); // Enables update button
+      ((UpdateStatusPanel) contributionTab.statusPanel).updateEnabled(getRowCount() > 0);  // Enables update button
     }
   }
 
@@ -54,7 +54,7 @@ public class UpdateListPanel extends ListPanel {
   @Override
   public void contributionRemoved(final Contribution contribution) {
     super.contributionRemoved(contribution);
-    ((UpdateStatusPanel) contributionTab.statusPanel).update(); // Disables update button on last contribution
+    ((UpdateStatusPanel) contributionTab.statusPanel).updateEnabled(getRowCount() > 0); // Disables update button on last contribution
   }
 
 

@@ -49,6 +49,10 @@ import processing.app.Base;
 import processing.app.Platform;
 
 
+/**
+ * The panel that explains a particular Contribution in the Manager.
+ * One for each tab (Libraries, Modes, etc) in the Manager.
+ */
 class StatusPanel extends JPanel {
   static final int LABEL_WIDTH = Toolkit.zoom(480);
   static final int BUTTON_WIDTH = Toolkit.zoom(150);

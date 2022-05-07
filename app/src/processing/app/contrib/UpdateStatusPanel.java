@@ -20,8 +20,6 @@
  */
 package processing.app.contrib;
 
-import java.awt.Color;
-
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.LayoutStyle;
@@ -38,7 +36,7 @@ public class UpdateStatusPanel extends StatusPanel {
     updateButton.setVisible(true);
     updateButton.setEnabled(false);
 
-    updateButton.addActionListener(e -> contributionTab.updateAll());
+    updateButton.addActionListener(e -> updateAll());
     layout = new GroupLayout(this);
     setLayout(layout);
 
@@ -57,7 +55,15 @@ public class UpdateStatusPanel extends StatusPanel {
   }
 
 
-  public void update() {
-    updateButton.setEnabled(contributionTab.hasUpdates());
+  private void updateAll() {
+    for (StatusDetail detail : contributionTab.listPanel.detailForContrib.values()) {
+      detail.update();
+    }
+    contributionTab.listPanel.model.fireTableDataChanged();
+  }
+
+
+  protected void updateEnabled(boolean updateEnabled) {
+    updateButton.setEnabled(updateEnabled);
   }
 }

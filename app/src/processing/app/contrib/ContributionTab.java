@@ -342,19 +342,6 @@ public class ContributionTab extends JPanel {
   }
 
 
-  protected void updateAll() {
-    for (StatusDetail detail : listPanel.detailForContrib.values()) {
-      detail.update();
-    }
-    listPanel.model.fireTableDataChanged();
-  }
-
-
-  protected boolean hasUpdates() {
-    return listPanel.getRowCount() > 0;
-  }
-
-
   public boolean filterHasFocus() {
     return filterField != null && filterField.hasFocus();
   }
