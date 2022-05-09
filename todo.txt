@@ -17,6 +17,8 @@ X   rewrite language selector to use fallback fonts
 X accent color and light/dark mode into the theme, and use with flatlaf
 X style the popup menu for Mode using the theme
 X console scroll bar colors
+X update lib/theme.txt to clean up current Frankenstein status
+X   just replace with the blue default once that's updated
 
 design/errors
 X errors table theme
@@ -116,7 +118,6 @@ X   StatusPanelDetail creates its own, which is the one used
 X after download, list item doesn't update to show installed
 X   stays stuck with the downloading icon
 
-
 contrib
 X Double-clicking a .pde file also opens an untitled/empty sketch
 X   https://github.com/processing/processing4/issues/477
@@ -129,8 +130,6 @@ X   https://github.com/processing/processing4/pull/483
 
 
 finalizing
-_ update lib/theme.txt to clean up current Frankenstein status
-_   just replace with the blue default once that's updated
 _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
 _ Color Selector buttons misaligned
@@ -142,10 +141,14 @@ _ font for stack trace dialogs is too small (and wrong)
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
 
-_ on release: submit to Microsoft
+
+release
+_ replace build/shared/lib/theme.txt with kyanite.txt
+_ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
+
 
 _ if a sketch is in the Desktop folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well

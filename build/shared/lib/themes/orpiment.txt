@@ -30,7 +30,7 @@ mode.popup.enabled.fgcolor = #534221
 mode.popup.enabled.bgcolor = #FFF3CB
 mode.popup.disabled.fgcolor = #AC9571
 mode.popup.disabled.bgcolor = #FFF3CB
-mode.popup.selected.fgcolor = #573600
+mode.popup.selected.fgcolor = #2D0000
 mode.popup.selected.bgcolor = #FFCC5F
 
 toolbar.button.disabled.field = #EAB64A
@@ -243,6 +243,7 @@ manager.search.selection.background.color = #C49635
 
 ## ListPanel – the listing inside a Contribution Manager tab ##
 
+manager.list.heavy.font = processing.sans,bold,14
 manager.list.background.color = #FFED9C
 manager.list.header.fgcolor = #482800
 manager.list.header.bgcolor = #FFDF8F
@@ -250,7 +251,7 @@ manager.list.section.color = #FFED9C
 manager.list.selection.color = #C99D44
 manager.list.icon.color = #5B1C00
 manager.list.text.color = #000000
-manager.list.foundation.color = #745505
+manager.list.foundation.color = #4D2500
 manager.list.incompatible.selection.color = #F9D394
 manager.list.incompatible.text.color = #8D7957
 
@@ -261,7 +262,7 @@ manager.panel.font = processing.sans,plain,11
 manager.panel.background.color = #9F781F
 manager.panel.text.color = #FFFFFE
 manager.panel.link.color = #FFD87D
-manager.panel.foundation.color = #FFD87D
+manager.panel.foundation.color = #FFDE6B
 
 manager.button.enabled.background.color = #644500
 manager.button.enabled.text.color = #FFFFFE
@@ -274,7 +275,7 @@ manager.button.disabled.text.color = #CDBBA1
 manager.button.disabled.icon.color = #CDBBA1
 
 manager.progress.complete.fgcolor = #FFFFFE
-manager.progress.complete.bgcolor = #FFD87D
+manager.progress.complete.bgcolor = #FDBE64
 manager.progress.incomplete.fgcolor = #CDBBA1
 manager.progress.incomplete.bgcolor = #361600
 
