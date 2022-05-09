@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2006-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -23,8 +23,7 @@
 package processing.app.ui;
 
 import processing.app.Language;
-import processing.app.Platform;
-import processing.core.*;
+import processing.core.PApplet;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -82,7 +81,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     range = new ColorRange();
     Box rangeBox = new Box(BoxLayout.Y_AXIS);
     rangeBox.setAlignmentY(0);
-    rangeBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+    //rangeBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
     rangeBox.add(range);
     box.add(rangeBox);
     box.add(Box.createHorizontalStrut(10));
@@ -90,30 +89,20 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     slider = new ColorSlider();
     Box sliderBox = new Box(BoxLayout.Y_AXIS);
     sliderBox.setAlignmentY(0);
-    sliderBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+    //sliderBox.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
     sliderBox.add(slider);
     box.add(sliderBox);
     box.add(Box.createHorizontalStrut(10));
 
     box.add(createColorFields(buttonName, buttonListener));
-//    System.out.println("1: " + hexField.getInsets());
 
     box.add(Box.createHorizontalStrut(10));
 
-//    System.out.println("2: " + hexField.getInsets());
-
     window.getContentPane().add(box, BorderLayout.CENTER);
-//    System.out.println(hexField);
-//    System.out.println("3: " + hexField.getInsets());
-//    colorPanel.setInsets(hexField.getInsets());
 
     window.pack();
     window.setResizable(false);
 
-//    Dimension size = getSize();
-//    Dimension screen = Toolkit.getScreenSize();
-//    setLocation((screen.width - size.width) / 2,
-//                (screen.height - size.height) / 2);
     window.setLocationRelativeTo(null);
 
     window.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -140,11 +129,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     hexField.getDocument().addDocumentListener(colorListener);
 
     setColor(initialColor);
-//    System.out.println("4: " + hexField.getInsets());
   }
-
-
-  //hexField.setText("#FFFFFF");
 
 
   public void show() {
@@ -324,43 +309,39 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     Box box = Box.createVerticalBox();
     box.setAlignmentY(0);
 
-    final int GAP = Platform.isWindows() ? 5 : 0;
-    final int BETWEEN = Platform.isWindows() ? 8 : 6; //10;
+    //final int GAP = Platform.isWindows() ? 5 : 0;
+    //final int BETWEEN = Platform.isWindows() ? 8 : 6;
+    final int GAP = 3;
+    final int BETWEEN = 8;
 
     Box row;
 
     row = Box.createHorizontalBox();
-    if (Platform.isMacOS()) {
-      row.add(Box.createHorizontalStrut(17));
-    } else {
-      row.add(createFixedLabel(""));
-    }
+    row.add(createFixedSpace());
+
     // Can't just set the bg color of the panel because it also tints the bevel
     // (on OS X), which looks odd. So instead we override paintComponent().
     colorPanel = new JPanel() {
-        public void paintComponent(Graphics g) {
-          g.setColor(new Color(red, green, blue));
-          Dimension size = getSize();
-          g.fillRect(0, 0, size.width, size.height);
-        }
-      };
-    colorPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-    Dimension dim = new Dimension(70, 25);
-    colorPanel.setMinimumSize(dim);
-    colorPanel.setMaximumSize(dim);
-    colorPanel.setPreferredSize(dim);
+      public void paintComponent(Graphics g) {
+        g.setColor(new Color(red, green, blue));
+        Dimension size = getSize();
+        g.fillRect(0, 0, size.width, size.height);
+      }
+    };
+//    Dimension dim = new Dimension(70, 25);
+//    colorPanel.setMinimumSize(dim);
+//    colorPanel.setMaximumSize(dim);
+//    colorPanel.setPreferredSize(dim);
     row.add(colorPanel);
     row.add(Box.createHorizontalGlue());
     box.add(row);
     box.add(Box.createVerticalStrut(BETWEEN));
-//    if (Base.isMacOS()) {  // need a little extra
-//      box.add(Box.createVerticalStrut(BETWEEN));
-//    }
 
+    //
 
     row = Box.createHorizontalBox();
     row.add(createFixedLabel("H"));
-    row.add(hueField = new NumberField(4, false));
+    row.add(hueField = new NumberField(3, false));
     row.add(new JLabel(" \u00B0"));  // degree symbol
     row.add(Box.createHorizontalGlue());
     box.add(row);
@@ -368,7 +349,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
     row = Box.createHorizontalBox();
     row.add(createFixedLabel("S"));
-    row.add(saturationField = new NumberField(4, false));
+    row.add(saturationField = new NumberField(3, false));
     row.add(new JLabel(" %"));
     row.add(Box.createHorizontalGlue());
     box.add(row);
@@ -376,7 +357,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
     row = Box.createHorizontalBox();
     row.add(createFixedLabel("B"));
-    row.add(brightnessField = new NumberField(4, false));
+    row.add(brightnessField = new NumberField(3, false));
     row.add(new JLabel(" %"));
     row.add(Box.createHorizontalGlue());
     box.add(row);
@@ -386,21 +367,21 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
     row = Box.createHorizontalBox();
     row.add(createFixedLabel("R"));
-    row.add(redField = new NumberField(4, false));
+    row.add(redField = new NumberField(3, false));
     row.add(Box.createHorizontalGlue());
     box.add(row);
     box.add(Box.createVerticalStrut(GAP));
 
     row = Box.createHorizontalBox();
     row.add(createFixedLabel("G"));
-    row.add(greenField = new NumberField(4, false));
+    row.add(greenField = new NumberField(3, false));
     row.add(Box.createHorizontalGlue());
     box.add(row);
     box.add(Box.createVerticalStrut(GAP));
 
     row = Box.createHorizontalBox();
     row.add(createFixedLabel("B"));
-    row.add(blueField = new NumberField(4, false));
+    row.add(blueField = new NumberField(3, false));
     row.add(Box.createHorizontalGlue());
     box.add(row);
     box.add(Box.createVerticalStrut(BETWEEN));
@@ -408,33 +389,17 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     //
 
     row = Box.createHorizontalBox();
-    row.add(createFixedLabel(""));
-    // Windows needs extra space, OS X and Linux do not
-    // Mac OS X needs 6 because #CCCCCC is quite wide
-    final int hexCount = Platform.isWindows() ? 7 : 6;
-    row.add(hexField = new NumberField(hexCount, true));
+    row.add(createFixedSpace());
+    row.add(hexField = new NumberField(0, true));
     row.add(Box.createHorizontalGlue());
     box.add(row);
     box.add(Box.createVerticalStrut(GAP));
 
     //
 
-//    // Not great, because the insets make things weird anyway
-//    //Dimension dim = new Dimension(hexField.getPreferredSize());
-//    Dimension dim = new Dimension(70, 20);
-//    colorPanel.setMinimumSize(dim);
-//    colorPanel.setMaximumSize(dim);
-//    colorPanel.setPreferredSize(dim);
-////    colorPanel.setBorder(new EmptyBorder(hexField.getInsets()));
-
-    //
-
     row = Box.createHorizontalBox();
-    if (Platform.isMacOS()) {
-      row.add(Box.createHorizontalStrut(11));
-    } else {
-      row.add(createFixedLabel(""));
-    }
+    row.add(createFixedLabel(""));
+
     JButton button = new JButton(buttonName);
     button.addActionListener(buttonListener);
     //System.out.println("button: " + button.getInsets());
@@ -442,12 +407,16 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     row.add(Box.createHorizontalGlue());
     box.add(row);
 
+    // Removing the "Cancel" button in 4.0 beta 9. When using the
+    // Color Selector, it's not a "Cancel" operation, and overkill
+    // to have multiple states when one can just close the window.
+    /*
     row = Box.createHorizontalBox();
-    if (Platform.isMacOS()) {
-      row.add(Box.createHorizontalStrut(11));
-    } else {
+//    if (Platform.isMacOS()) {
+//      row.add(Box.createHorizontalStrut(11));
+//    } else {
       row.add(createFixedLabel(""));
-    }
+//    }
     button = new JButton(Language.text("prompt.cancel"));
     button.addActionListener(new ActionListener() {
 
@@ -459,6 +428,20 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     row.add(button);
     row.add(Box.createHorizontalGlue());
     box.add(row);
+    */
+
+    //
+
+    Dimension dim = button.getPreferredSize();
+
+    colorPanel.setMinimumSize(dim);
+    colorPanel.setMaximumSize(dim);
+    colorPanel.setPreferredSize(dim);
+
+    hexField.setMinimumSize(dim);
+    hexField.setMaximumSize(dim);
+    hexField.setPreferredSize(dim);
+
     //
 
     box.add(Box.createVerticalGlue());
@@ -467,6 +450,11 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
 
   int labelH;
+
+  protected JLabel createFixedSpace() {
+    return createFixedLabel("");
+  }
+
 
   /**
    * return a label of a fixed width
@@ -655,13 +643,6 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
     protected Document createDefaultModel() {
       return new NumberDocument(this);
-    }
-
-    public Dimension getPreferredSize() {
-      if (!allowHex) {
-        return new Dimension(45, super.getPreferredSize().height);
-      }
-      return super.getPreferredSize();
     }
 
     public Dimension getMinimumSize() {
