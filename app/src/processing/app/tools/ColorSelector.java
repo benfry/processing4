@@ -28,7 +28,6 @@ import processing.app.ui.Toolkit;
 import java.awt.Color;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.*;
 
 
 /**
@@ -37,8 +36,9 @@ import java.awt.event.*;
  * Using the keyboard shortcuts, you can copy/paste the values for the
  * colors and paste them into your program. We didn't do any sort of
  * auto-insert of colorMode() or fill() or stroke() code cuz we couldn't
- * decide on a good way to do this.. your contributions welcome).
+ * decide on a good way to do this... your contributions welcome).
  */
+@SuppressWarnings("unused")
 public class ColorSelector implements Tool {
 
   /**
@@ -67,14 +67,10 @@ public class ColorSelector implements Tool {
           selector = new ColorChooser(base.getActiveEditor(),
                                       false, Color.WHITE,
                                       Language.text("menu.edit.copy"),
-                                      new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
+            e -> {
               Clipboard c = Toolkit.getSystemClipboard();
               c.setContents(new StringSelection(selector.getHexColor()), null);
-            }
-          });
+            });
         }
       }
     }

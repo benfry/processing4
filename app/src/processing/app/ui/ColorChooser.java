@@ -64,11 +64,6 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
   JDialog window;
 
 
-//  public String getMenuTitle() {
-//    return "Color Selector";
-//  }
-
-
   public ColorChooser(Frame owner, boolean modal, Color initialColor,
                       String buttonName, ActionListener buttonListener) {
     //super("Color Selector");
@@ -111,12 +106,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
           hide();
         }
       });
-    Toolkit.registerWindowCloseKeys(window.getRootPane(), new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-          hide();
-        }
-      });
-
+    Toolkit.registerWindowCloseKeys(window.getRootPane(), actionEvent -> hide());
     Toolkit.setIcon(window);
 
     colorListener = new ColorListener();
@@ -258,7 +248,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
    * Set the HSB values based on the current RGB values.
    */
   protected void updateHSB() {
-    float hsb[] = new float[3];
+    float[] hsb = new float[3];
     Color.RGBtoHSB(red, green, blue, hsb);
 
     hue = (int) (hsb[0] * 359.0f);
@@ -290,11 +280,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     try {
       int value = Integer.parseInt(text);
       if (value > max) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              field.setText(String.valueOf(max));
-            }
-          });
+        SwingUtilities.invokeLater(() -> field.setText(String.valueOf(max)));
         return max;
       }
       return value;
@@ -309,8 +295,6 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     Box box = Box.createVerticalBox();
     box.setAlignmentY(0);
 
-    //final int GAP = Platform.isWindows() ? 5 : 0;
-    //final int BETWEEN = Platform.isWindows() ? 8 : 6;
     final int GAP = 3;
     final int BETWEEN = 8;
 
@@ -328,10 +312,6 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
         g.fillRect(0, 0, size.width, size.height);
       }
     };
-//    Dimension dim = new Dimension(70, 25);
-//    colorPanel.setMinimumSize(dim);
-//    colorPanel.setMaximumSize(dim);
-//    colorPanel.setPreferredSize(dim);
     row.add(colorPanel);
     row.add(Box.createHorizontalGlue());
     box.add(row);
@@ -514,10 +494,10 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
       if ((mouseX >= 0) && (mouseX < WIDE) &&
             (mouseY >= 0) && (mouseY < HIGH)) {
-        int nsaturation = (int) (100 * (mouseX / 255.0f));
-        int nbrightness = 100 - ((int) (100 * (mouseY / 255.0f)));
-        saturationField.setText(String.valueOf(nsaturation));
-        brightnessField.setText(String.valueOf(nbrightness));
+        int newSaturation = (int) (100 * (mouseX / 255.0f));
+        int newBrightness = 100 - ((int) (100 * (mouseY / 255.0f)));
+        saturationField.setText(String.valueOf(newSaturation));
+        brightnessField.setText(String.valueOf(newBrightness));
 
         lastX = mouseX;
         lastY = mouseY;
@@ -596,8 +576,8 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
       if ((mouseX >= 0) && (mouseX < WIDE) &&
               (mouseY >= 0) && (mouseY < HIGH)) {
-        int nhue = 359 - (int) (359 * (mouseY / 255.0f));
-        hueField.setText(String.valueOf(nhue));
+        int newHue = 359 - (int) (359 * (mouseY / 255.0f));
+        hueField.setText(String.valueOf(newHue));
       }
     }
 
@@ -672,7 +652,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
 
       if (str == null) return;
 
-      char chars[] = str.toCharArray();
+      char[] chars = str.toCharArray();
       int charCount = 0;
       // remove any non-digit chars
       for (int i = 0; i < chars.length; i++) {
@@ -694,11 +674,4 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
       // seems to have something to do with how Document objects are set up
     }
   }
-
-
-//  static public void main(String[] args) {
-//    ColorSelector cs = new ColorSelector();
-//    cs.init(null);
-//    EventQueue.invokeLater(cs);
-//  }
 }
