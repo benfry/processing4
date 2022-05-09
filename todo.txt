@@ -19,6 +19,7 @@ X style the popup menu for Mode using the theme
 X console scroll bar colors
 X update lib/theme.txt to clean up current Frankenstein status
 X   just replace with the blue default once that's updated
+X tweaks to the splash/about screen from Paul
 
 design/errors
 X errors table theme
