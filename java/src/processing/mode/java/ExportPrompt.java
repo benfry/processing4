@@ -159,86 +159,27 @@ public class ExportPrompt {
 
 
   protected boolean trigger() throws IOException, SketchException {
+    final JDialog dialog = new JDialog(editor, Language.text("export"), true);
+
     JPanel panel = new JPanel();
     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
     panel.add(Box.createVerticalStrut(6));
 
-//    Box panel = Box.createVerticalBox();
-//    Box labelBox = Box.createHorizontalBox();
-//    String msg = "<html>Click Export to Application to create a standalone, " +
-//      "double-clickable application for the selected plaforms.";
-//    String msg = "Export to Application creates a standalone, \n" +
-//      "double-clickable application for the selected plaforms.";
-    String line1 = Language.text("export.description.line1");
-    String line2 = Language.text("export.description.line2");
-    //String line2 = "standalone application for the current plaform.";
-    JLabel label1 = new JLabel(line1, SwingConstants.CENTER);
-    JLabel label2 = new JLabel(line2, SwingConstants.CENTER);
-    label1.setAlignmentX(Component.LEFT_ALIGNMENT);
-    label2.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panel.add(label1);
-    panel.add(label2);
-    // The longer line is different between Windows and OS X.
-//    int wide = Math.max(label1.getPreferredSize().width,
-//                        label2.getPreferredSize().width);
+    JLabel label = new JLabel(Language.text("export.description"), SwingConstants.CENTER);
+    label.setBorder(new EmptyBorder(0, 8, 0, 0));
+    panel.add(label);
     panel.add(Box.createVerticalStrut(12));
 
-    /*
-    windowsButton.setSelected(Preferences.getBoolean(EXPORT_WINDOWS));
-    windowsButton.addItemListener(e -> {
-      Preferences.setBoolean(EXPORT_WINDOWS, windowsButton.isSelected());
-      updateExportButton();
-    });
-
-    // Only possible to export OS X applications on OS X
-    if (!Platform.isMacOS()) {
-      // Make sure they don't have a previous 'true' setting for this
-      Preferences.setBoolean(EXPORT_MACOSX, false);
-    }
-    macosButton.setSelected(Preferences.getBoolean(EXPORT_MACOSX));
-    macosButton.addItemListener(e -> {
-      Preferences.setBoolean(EXPORT_MACOSX, macosButton.isSelected());
-      updateExportButton();
-    });
-    if (!Platform.isMacOS()) {
-      macosButton.setEnabled(false);
-      macosButton.setToolTipText(Language.text("export.tooltip.macosx"));
-    }
-
-    linuxButton.setSelected(Preferences.getBoolean(EXPORT_LINUX));
-    linuxButton.addItemListener(e -> {
-      Preferences.setBoolean(EXPORT_LINUX, linuxButton.isSelected());
-      updateExportButton();
-    });
-
-    updateExportButton();  // do the initial enable/disable based on prefs.txt
-
     JPanel platformPanel = new JPanel();
-    //platformPanel.setLayout(new BoxLayout(platformPanel, BoxLayout.X_AXIS));
-    platformPanel.add(windowsButton);
-    platformPanel.add(Box.createHorizontalStrut(6));
-    platformPanel.add(macosButton);
-    platformPanel.add(Box.createHorizontalStrut(6));
-    platformPanel.add(linuxButton);
-    */
-
-    JPanel platformPanel = new JPanel();
-//    platformPanel.setLayout(new BoxLayout(platformPanel, BoxLayout.X_AXIS));
     int half = (variantButtons.size() + 1) / 2;
 
     Box leftPlatforms = Box.createVerticalBox();
     for (int i = 0; i < half; i++) {
-//      if (i != 0) {
-//        leftPlatforms.add(Box.createVerticalStrut(6));
-//      }
       leftPlatforms.add(variantButtons.get(i));
     }
 
     Box rightPlatforms = Box.createVerticalBox();
     for (int i = half; i < variantButtons.size(); i++) {
-//      if (i != half) {
-//        rightPlatforms.add(Box.createVerticalStrut(6));
-//      }
       rightPlatforms.add(variantButtons.get(i));
     }
 
@@ -246,21 +187,21 @@ public class ExportPrompt {
     platformPanel.add(rightPlatforms);
 
     platformPanel.setBorder(new TitledBorder(Language.text("export.platforms")));
-    //Dimension goodIdea = new Dimension(wide, platformPanel.getPreferredSize().height);
-    //platformPanel.setMaximumSize(goodIdea);
-//    wide = Math.max(wide, platformPanel.getPreferredSize().width);
     platformPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
     panel.add(platformPanel);
+
     int divWidth = platformPanel.getPreferredSize().width;
 
-    //int indent = new JCheckBox().getPreferredSize().width;
-    int indent = 0;
+//    Dimension labelDim = new Dimension(divWidth, label.getPreferredSize().height);
+//    label.setPreferredSize(labelDim);
+//    label.setMinimumSize(labelDim);
+//    label.setMaximumSize(labelDim);
 
     final JCheckBox showStopButton = new JCheckBox(Language.text("export.options.show_stop_button"));
     showStopButton.setSelected(Preferences.getBoolean("export.application.stop"));
     showStopButton.addItemListener(e -> Preferences.setBoolean("export.application.stop", showStopButton.isSelected()));
     showStopButton.setEnabled(Preferences.getBoolean("export.application.present"));
-    showStopButton.setBorder(new EmptyBorder(3, 13 + indent, 6, 13));
+    showStopButton.setBorder(new EmptyBorder(3, 13, 6, 13));
 
     final JCheckBox presentButton = new JCheckBox(Language.text("export.options.present"));
     presentButton.setSelected(Preferences.getBoolean("export.application.present"));
@@ -276,35 +217,11 @@ public class ExportPrompt {
     Box fullScreenBox = Box.createHorizontalBox();
     fullScreenBox.add(presentButton);
 
-    /*
-    //run.present.stop.color
-//    presentColorPanel = new JTextField();
-//    presentColorPanel.setFocusable(false);
-//    presentColorPanel.setEnabled(false);
-    presentColorPanel = new JPanel() {
-      public void paintComponent(Graphics g) {
-        g.setColor(Preferences.getColor("run.present.bgcolor"));
-        Dimension size = getSize();
-        g.fillRect(0, 0, size.width, size.height);
-      }
-    };
-    presentColorPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-//    presentColorPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-    presentColorPanel.setMaximumSize(new Dimension(30, 20));
-    fullScreenBox.add(presentColorPanel);
-    */
     fullScreenBox.add(new ColorPreference("run.present.bgcolor"));
-    //presentPanel.add(fullScreenButton);
     fullScreenBox.add(Box.createHorizontalStrut(10));
     fullScreenBox.add(Box.createHorizontalGlue());
 
     presentPanel.add(fullScreenBox);
-
-//    presentColorPanel.addMouseListener(new MouseAdapter() {
-//      public void mousePressed(MouseEvent e) {
-//        new ColorListener("run.present.bgcolor");
-//      }
-//    });
 
     Box showStopBox = Box.createHorizontalBox();
     showStopBox.add(showStopButton);
@@ -313,20 +230,9 @@ public class ExportPrompt {
     showStopBox.add(Box.createHorizontalGlue());
     presentPanel.add(showStopBox);
 
-    //presentPanel.add(showStopButton);
-//    presentPanel.add(Box.createHorizontalStrut(10));
-//    presentPanel.add(Box.createHorizontalGlue());
     presentPanel.setBorder(new TitledBorder(Language.text("export.full_screen")));
-//    wide = Math.max(wide, platformPanel.getPreferredSize().width);
     presentPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
     panel.add(presentPanel);
-
-//    Dimension good;
-//    good = new Dimension(wide, label1.getPreferredSize().height);
-//    label1.setMaximumSize(good);
-//    good = new Dimension(wide, label2.getPreferredSize().height);
-//    label2.setMaximumSize(good);
-//    good = new Dimension(wide, presentPanel.getPreferredSize().height);
 
     //
 
@@ -345,16 +251,16 @@ public class ExportPrompt {
     final boolean embed =
       Preferences.getBoolean("export.application.embed_java");
     final String warning1 =
-      "<html><div width=\"" + divWidth + "\"><font size=\"2\">";
+      "<html><div width=\"" + divWidth + "\">"; //<font size=\"2\">";
     final String warning2a =
       "Embedding Java will make the " + platformName + " application " +
-        "larger, but it will be far more likely to work. " +
-        "Users on other platforms will need to ";
+      "larger, but it will be far more likely to work. " +
+      "Users on other platforms will need to ";
     final String warning2b =
       "Users will need to ";
     final String warning3 =
       "<a href=\"" + JavaBuild.JAVA_DOWNLOAD_URL + "\">" +
-        "install OpenJDK " + PApplet.javaPlatform + "</a>.";  //"<br/>&nbsp;";
+      "install OpenJDK " + PApplet.javaPlatform + "</a>.";
 
     // both are needed because they change as the user hits the checkbox
     final String embedWarning = warning1 + warning2a + warning3;
@@ -366,10 +272,10 @@ public class ExportPrompt {
         Platform.openURL(JavaBuild.JAVA_DOWNLOAD_URL);
       }
     });
-    warningLabel.setBorder(new EmptyBorder(3, 13 + indent, 3, 13));
+    warningLabel.setBorder(new EmptyBorder(3, 13, 3, 13));
+    warningLabel.putClientProperty("FlatLaf.styleClass", "medium");
 
     final JCheckBox embedJavaButton =
-      //new JCheckBox(Language.text("export.embed_java.for") + " " + platformName);
       new JCheckBox(Language.interpolate("export.include_java", platformName));
     embedJavaButton.setSelected(embed);
     embedJavaButton.addItemListener(e -> {
@@ -380,6 +286,7 @@ public class ExportPrompt {
       } else {
         warningLabel.setText(nopeWarning);
       }
+      dialog.pack();
     });
     embedJavaButton.setBorder(new EmptyBorder(3, 13, 3, 13));
 
@@ -401,22 +308,22 @@ public class ExportPrompt {
       String thePain =
         //"<html><body><font size=2>" +
         "In recent versions of macOS, Apple has introduced the \u201CGatekeeper\u201D system, " +
-          "which makes it more difficult to run applications like those exported from Processing. ";
+        "which makes it more difficult to run applications like those exported from Processing. ";
 
       if (new File("/usr/bin/codesign_allocate").exists()) {
         thePain +=
           "This application will be \u201Cself-signed\u201D which means that Finder may report that the " +
-            "application is from an \u201Cunidentified developer\u201D. If the application will not " +
-            "run, try right-clicking the app and selecting Open from the pop-up menu. Or you can visit " +
-            "System Preferences \u2192 Security & Privacy and select Allow apps downloaded from: anywhere. ";
+          "application is from an \u201Cunidentified developer\u201D. If the application will not " +
+          "run, try right-clicking the app and selecting Open from the pop-up menu. Or you can visit " +
+          "System Preferences \u2192 Security & Privacy and select Allow apps downloaded from: anywhere. ";
       } else {
         thePain +=
           "Gatekeeper requires applications to be \u201Csigned\u201D, or they will be reported as damaged. " +
-            "To prevent this message, install Xcode (and the Command Line Tools) from the App Store. ";
+          "To prevent this message, install Xcode (and the Command Line Tools) from the App Store. ";
       }
       thePain +=
         "To avoid the messages entirely, manually code sign your app. " +
-          "For more information: <a href=\"\">" + APPLE_URL + "</a>";
+        "For more information: <a href=\"\">" + APPLE_URL + "</a>";
 
       // xattr -d com.apple.quarantine thesketch.app
 
@@ -430,7 +337,11 @@ public class ExportPrompt {
 //      area.setLineWrap(true);
 //      area.setWrapStyleWord(true);
       // Are you f-king serious, Java API developers?
-      JLabel area = new JLabel("<html><div width=\"" + divWidth + "\"><font size=\"2\">" + thePain + "</div></html>");
+      // (Unless it's an HTML component, even with line wrap turned on,
+      // getPreferredSize() will return the size for just a single line.)
+//      JLabel area = new JLabel("<html><div width=\"" + divWidth + "\"><font size=\"2\">" + thePain + "</div></html>");
+      JLabel area = new JLabel("<html><div width=\"" + divWidth + "\">" + thePain + "</div></html>");
+      area.putClientProperty("FlatLaf.styleClass", "medium");
 
       area.setBorder(new EmptyBorder(3, 13, 3, 13));
 //      area.setPreferredSize(new Dimension(embedPanel.getPreferredSize().width, 100));
@@ -441,7 +352,7 @@ public class ExportPrompt {
 
       area.addMouseListener(new MouseAdapter() {
         public void mousePressed(MouseEvent event) {
-          Platform.openURL("https://developer.apple.com/developer-id/");
+        Platform.openURL("https://developer.apple.com/developer-id/");
         }
       });
 
@@ -460,12 +371,9 @@ public class ExportPrompt {
       options,
       exportButton); //options[0]);
 
-
-    final JDialog dialog = new JDialog(editor, Language.text("export"), true);
     dialog.setContentPane(optionPane);
 
     exportButton.addActionListener(e -> optionPane.setValue(exportButton));
-
     cancelButton.addActionListener(e -> optionPane.setValue(cancelButton));
 
     optionPane.addPropertyChangeListener(e -> {
@@ -511,7 +419,7 @@ public class ExportPrompt {
     public ColorPreference(String pref) {
       prefName = pref;
 
-      setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
+      //setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
       setPreferredSize(new Dimension(30, 20));
       setMaximumSize(new Dimension(30, 20));
 
