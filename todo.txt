@@ -23,6 +23,8 @@ X tweaks to the splash/about screen from Paul
 X Color Selector buttons misaligned
 X   redo layout for FlatLaf, also tweak further to remove some of the quirkiness
 X Export to Application fonts are too tiny
+X menu background colors
+X updated 4x4 for themes, foundation svg icon tweaks
 
 design/errors
 X errors table theme
@@ -156,18 +158,13 @@ _ if a sketch is in the Desktop folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well
 _   (opening p5jsMode sketch on Desktop causes a zillion dialog boxes)
 
-_ get rid of IgnorableException
-
-_ contrib/mode/lib/example List objects in Base: which should be Set objects
-
-_ lots of rewriting to use SwingWorker
-_   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
 
 _ remove checkbox for detaching sketch name
 _   just do this manually, and Save As will reset the name
 
 _ update wiki with recent changes (i.e. separating sketch folder)
 _   https://github.com/processing/processing4/wiki/Processing-4
+
 
 python
 X add JavaFX handler
@@ -252,9 +249,13 @@ _   this is also likely the cause of per-Mode weirdness
 _ Base.setUpdatesAvailable() is called from half a dozen places!?
 
 
-manager
-_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
-_   should be a better way to implement this
+manager/refactor
+_ lots of rewriting to use SwingWorker
+_   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
+_   obvious places where this needs to happen, but the code is working for now
+_   needs a few hours work to untangle all of it, but worth the regressions?
+_ get rid of IgnorableException
+_ contrib/mode/lib/example List objects in Base: which should be Set objects
 _ JProgressBar in StatusPanel is shared by all installing contribs
 _   which could make for weird behavior if installs before something has finished
 _   work to prevent multiple from colliding
@@ -263,6 +264,11 @@ X disable hashCode() implementation in Contribution
 X   was getting in the way of comparisons
 _   but need to compare the entries differently so there aren't dupes
 _   i.e. it was doing a name comparison, so need to swap by name
+
+
+manager
+_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
+_   should be a better way to implement this
 _ ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
 _   seems to be out of sync/unavailable data based on more recent contrib changes?
 _ ManagerFrame.downloadAndUpdateContributionListing()
@@ -273,7 +279,6 @@ _   this one looks like it's gonna get called multiple times
 _ holy s*t ContributionTableModel is using all of the contribs
 _ after failed update of Mode, the button is no longer available
 _   have to click something else, then click back on the Mode line again
-_ remove updateInProgress from StatusPanelDetail
 _ when starting in p5jsMode, contrib manager shows no green checks for libs
 _   tricky because those aren't gonna show up in 'Add Library'
 _   which is another case for a separate 'contrib manager' thing
@@ -297,14 +302,14 @@ _ add indicator for the stats of libraries
 _   https://download.processing.org/stats
 _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
-_ orange exclamation looks like an error, not "update available"
 
 
 design/waiting
 _ gradients
 
+
 design
-X menu background colors
+_ contribs exclamation looks like an error, not "update available"
 _ two tier dialog box (defaulting back to Lucida)
 _ implement document icons on Windows
 _ implement document icons on Linux
