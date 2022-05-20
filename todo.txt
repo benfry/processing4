@@ -33,7 +33,7 @@ X     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swin
 o   Space Grotesk and Mono?
 o     https://fonts.google.com/specimen/Space+Mono
 o     https://fonts.google.com/specimen/Space+Grotesk
-X replace foundation icon that had a random black shape
+X replace foundation icon png that had a random black shape
 
 design/errors
 X errors table theme
@@ -121,8 +121,12 @@ X   these should be read from theme.txt instead
 o   or not used at all: the defaults from ui.font and FlatLaf should do
 X   only really need for the bold font
 X improved 'close' icon (thicker x)
-X better 'search' icon (less enormous circle)
-X icons for the status area (to replace the emojis)
+X better 'search' icon (search.svg with a less enormous eyeglass)
+X replace foundation-16, foundation-32, foundation-64 in lib/icons
+X icons in the status bar (using emojis at the moment, now out of place)
+X   console collapse/expand button
+X   copy to clipboard button
+X contribs exclamation looks like an error, not "update available"
 
 manager
 X make ContributionTab.FilterField into a static class
@@ -316,19 +320,16 @@ _   probably not sort by default to avoid confusion
 
 design
 _ gradients
-_ contribs exclamation looks like an error, not "update available"
-_ search.svg with less enormous eyeglass?
-_ decision about 'debug' versions of toolbar icons
+_   add a couple with gradients to the selector box?
+_ icons for debug toolbar
+_   replace variables-1x and -2x with separate SVG files in debug
 _ completion icon updates (class, field, protected, method)
-_ replace variables-1x and -2x with separate SVG files in debug
-_ replace foundation-16, foundation-32, foundation-64 in lib/icons
-_ icons in the status bar (using emojis at the moment, now out of place)
-_   console collapse/expand button
-_   copy to clipboard button
 _ overall layout/spacing/proportion
 
 
 design/implementation
+_ add buttons for 'reload theme' and 'how to create themes' to theme fella
+_   remove the other 'reload theme' tool
 _ build new welcome/examples screen for startup
 _ two tier dialog box (defaulting back to Lucida)
 _ implement document icons on Windows
