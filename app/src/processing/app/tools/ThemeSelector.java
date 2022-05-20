@@ -65,7 +65,7 @@ public class ThemeSelector extends JFrame implements Tool {
     themeContents = new String[COUNT];
     for (int i = 0; i < COUNT; i++) {
       try {
-        File file = Base.getLibFile("themes/" + themeOrder[i] + ".txt");
+        File file = Base.getLibFile("themes/Minerals/" + themeOrder[i] + ".txt");
         themeContents[i] = Util.loadFile(file);
 
       } catch (IOException e) {
@@ -178,7 +178,7 @@ public class ThemeSelector extends JFrame implements Tool {
     Image image;
 
     ColorfulPanel() {
-      image = Toolkit.getLibImage("themes/4x4.png");
+      image = Toolkit.getLibImage("themes/Minerals/4x4.png");
       addMouseListener(new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
