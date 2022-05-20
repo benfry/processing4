@@ -120,6 +120,7 @@ X   these should be read from theme.txt instead
 o   or not used at all: the defaults from ui.font and FlatLaf should do
 X   only really need for the bold font
 X improved 'close' icon (thicker x)
+X better 'search' icon (less enormous circle)
 
 manager
 X make ContributionTab.FilterField into a static class
