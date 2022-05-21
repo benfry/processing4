@@ -35,6 +35,7 @@ import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.border.EmptyBorder;
 
 import processing.app.Base;
 import processing.app.Language;
@@ -56,7 +57,8 @@ public class Welcome {
 
     JComponent panel = Box.createHorizontalBox();
     panel.setBackground(new Color(245, 245, 245));
-    Toolkit.setBorder(panel, 15, 20, 15, 20);
+    //Toolkit.setBorder(panel, 15, 20, 15, 20);
+    panel.setBorder(new EmptyBorder(15, 20, 15, 20));
 
     //panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
     //panel.add(Box.createHorizontalStrut(20));

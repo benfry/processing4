@@ -25,6 +25,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JRootPane;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.border.EmptyBorder;
 import javax.swing.text.BadLocationException;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -83,7 +84,7 @@ class Rename {
       }
     });
     Box windowBox = Box.createVerticalBox();
-    Toolkit.setBorder(windowBox);
+    windowBox.setBorder(new EmptyBorder(20, 20, 20, 20));
     final int GAP = Toolkit.zoom(5);
 
     { // old name

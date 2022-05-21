@@ -23,7 +23,9 @@ package processing.app.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
@@ -64,6 +66,7 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
@@ -989,6 +992,7 @@ public class Toolkit {
   }
 
 
+  /*
   static public final int BORDER = Platform.isMacOS() ? 20 : 13;
 
 
@@ -1001,6 +1005,20 @@ public class Toolkit {
                                int top, int left, int bottom, int right) {
     comp.setBorder(new EmptyBorder(Toolkit.zoom(top), Toolkit.zoom(left),
                                    Toolkit.zoom(bottom), Toolkit.zoom(right)));
+  }
+  */
+
+
+  static public final int ROW_H_GAP = 5;
+  static public final int ROW_V_GAP = 3;
+
+  static public void addRow(Container axis, Component... components) {
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ROW_H_GAP, ROW_V_GAP));
+    row.setOpaque(false);
+    for (Component comp : components) {
+      row.add(comp);
+    }
+    axis.add(row);
   }
 
 

@@ -24,58 +24,121 @@
 package processing.app.tools;
 
 import processing.app.*;
-import processing.app.contrib.ContributionManager;
-import processing.app.ui.Editor;
+import processing.app.laf.PdeComboBoxUI;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
+import processing.core.PApplet;
 
 import javax.swing.*;
-import java.awt.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static processing.app.ui.Toolkit.addRow;
 
 
 public class ThemeSelector extends JFrame implements Tool {
+  static final String ORDER_FILENAME = "order.txt";
+
+  /*
   static final String[] themeOrder = {
     "kyanite", "calcite", "olivine", "beryl",
     "galena", "jasper", "malachite", "pyrite",
     "gabbro", "fluorite", "orpiment", "feldspar",
     "antimony", "serandite", "bauxite", "garnet"
   };
-  static final int COUNT = themeOrder.length;
-  String[] themeContents;
+  */
+//  static final int COUNT = 16;
+
+  List<ThemeSet> sets;
+//  Set<Integer> hashes = new HashSet<>();
+
+  String defaultTheme;
 
   File sketchbookFile;
+  ThemeSet currentSet;
   int currentIndex;
 
+  JComboBox<String> setSelector;
   ColorfulPanel selector;
+
+  JLabel howtoLabel;
+  JLabel reloadTheme;
 
   Base base;
 
 
   public String getMenuTitle() {
-    return Language.text("Theme Selector...");
+    return "Theme Selector";
   }
 
 
   public void init(Base base) {
     this.base = base;
 
-    themeContents = new String[COUNT];
-    for (int i = 0; i < COUNT; i++) {
-      try {
-        File file = Base.getLibFile("themes/Minerals/" + themeOrder[i] + ".txt");
-        themeContents[i] = Util.loadFile(file);
-
-      } catch (IOException e) {
-        e.printStackTrace();
+    try {
+      File themeFolder = Base.getLibFile("themes");
+      File[] setFolders = themeFolder.listFiles(file -> {
+        if (file.isDirectory()) {
+          File orderFile = new File(file, ORDER_FILENAME);
+          return orderFile.exists();
+        }
+        return false;
+      });
+      if (setFolders == null) {
+        Messages.showWarning("Could not load themes",
+          "The themes directory could not be read.\n" +
+            "Please reinstall Processing.");
+        return;
       }
+
+      sets = new ArrayList<>();
+      for (File folder : setFolders) {
+        sets.add(new ThemeSet(folder));
+      }
+      currentSet = sets.get(0);
+      defaultTheme = getDefaultTheme();
+
+    } catch (IOException e) {
+      e.printStackTrace();
     }
 
     Container pane = getContentPane();
-    pane.setLayout(new BorderLayout());
-    pane.add(selector = new ColorfulPanel(), BorderLayout.CENTER);
+    //pane.setLayout(new BorderLayout());
+
+    Box axis = Box.createVerticalBox();
+
+    String[] setNames = new String[sets.size()];
+    for (int i = 0; i < sets.size(); i++) {
+      setNames[i] = sets.get(i).name;
+    }
+    setSelector = new JComboBox<>(setNames);
+    //pane.add(setSelector, BorderLayout.NORTH);
+    addRow(axis, setSelector);
+
+    //pane.add(selector = new ColorfulPanel(), BorderLayout.CENTER);
+    axis.add(selector = new ColorfulPanel());  // flush with sides
+
+    axis.setBorder(new EmptyBorder(13, 13, 13, 13));
+    pane.add(axis);
+
+    addRow(axis, howtoLabel = new JLabel());
+    addRow(axis, reloadTheme = new JLabel());
 
     Toolkit.registerWindowCloseKeys(getRootPane(), e -> setVisible(false));
     setTitle(getMenuTitle());
@@ -89,10 +152,32 @@ public class ThemeSelector extends JFrame implements Tool {
     // (doing this in run() in case the sketchbook location has changed)
     sketchbookFile = new File(Base.getSketchbookFolder(), "theme.txt");
 
+    updateTheme();
+
     // figure out if the current theme in sketchbook is a known one
-    currentIndex = getCurrentIndex();
+    //currentIndex = getCurrentIndex();
+    updateCurrentIndex();
 
     setVisible(true);
+  }
+
+
+  private void updateTheme() {
+    getContentPane().setBackground(Theme.getColor("theme_selector.window.color"));
+
+    if (setSelector.getUI() instanceof PdeComboBoxUI) {
+      ((PdeComboBoxUI) setSelector.getUI()).updateTheme();
+    } else {
+      setSelector.setUI(new PdeComboBoxUI("theme_selector.combo_box"));
+    }
+
+    String textColor = Theme.get("theme_selector.text.color");
+    String linkColor = Theme.get("theme_selector.link.color");
+
+    howtoLabel.setText("<html><a href=\"\" color=\"" + linkColor +
+      "\">Read</a> <font color=\"" + textColor + "\">about how to create your own themes.");
+    reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
+      "\">Reload</a> <font color=\"" + textColor + "\">theme.txt to update the current theme.");
   }
 
 
@@ -107,11 +192,44 @@ public class ThemeSelector extends JFrame implements Tool {
   }
 
 
+  private String getCurrentTheme() {
+    if (sketchbookFile.exists()) {
+      return Util.loadFile(sketchbookFile);
+    }
+    return defaultTheme;
+  }
+
+
+  private String getDefaultTheme() {
+    // should be entry 0 of set 0, but let's not make that assumption
+    try {
+      return Util.loadFile(Base.getLibFile("theme.txt"));
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    // do this as a fallback
+    return sets.get(0).themes.get(0);
+  }
+
+
+  /**
+   * @return true if sketchbook/theme.txt does not match a built-in theme.
+   */
+  private boolean userModifiedTheme() {
+    String currentTheme = getCurrentTheme();
+    for (ThemeSet set : sets) {
+      if (set.getIndex(currentTheme) != -1) {
+        return false;  // this is a built-in theme
+      }
+    }
+    return true;
+  }
+
+
   private void setCurrentIndex(int index) {
-    //System.out.println("index is " + index);
     currentIndex = index;
     try {
-      if (sketchbookFile.exists() && getCurrentIndex() == -1) {
+      if (userModifiedTheme()) {
         // If the user has a custom theme they've modified,
         // rename it to theme.001, theme.002, etc. as a backup
         // to avoid overwriting anything they've created.
@@ -124,17 +242,12 @@ public class ThemeSelector extends JFrame implements Tool {
           return;
         }
       }
-      Util.saveFile(themeContents[index], sketchbookFile);
-      Theme.load();
 
-      /*
-      ContributionManager.updateTheme();
-      for (Editor editor : base.getEditors()) {
-        editor.updateTheme();
-        //editor.repaint();
-      }
-      */
+      // Save the file and reload the theme.
+      Util.saveFile(currentSet.get(index), sketchbookFile);
+      Theme.load();
       base.updateTheme();
+      updateTheme();
 
     } catch (IOException e) {
       base.getActiveEditor().statusError(e);
@@ -142,24 +255,59 @@ public class ThemeSelector extends JFrame implements Tool {
   }
 
 
-  private int getCurrentIndex() {
-    try {
-      if (sketchbookFile.exists()) {
-        String currentContents = Util.loadFile(sketchbookFile);
-        for (int i = 0; i < COUNT; i++) {
-          if (themeContents[i].equals(currentContents)) {
-            return i;
-          }
-        }
-        return -1;
-      }
-      return 0;  // the default theme is index 0
+  private void updateCurrentIndex() {
+    String currentTheme = getCurrentTheme();
+    currentIndex = currentSet.getIndex(currentTheme);
+  }
 
-    } catch (Exception e) {
-      e.printStackTrace();
-      return -1;  // could not identify the theme
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  class ThemeSet {
+    private String name;
+    private List<String> themes;
+    private Map<String, Integer> indices;
+
+    ThemeSet(File dir) {
+      name = dir.getName();
+      themes = new ArrayList<>();
+      indices = new HashMap<>();
+
+      File orderFile = new File(dir, ORDER_FILENAME);
+      String[] lines = PApplet.loadStrings(orderFile);
+      if (lines != null) {
+        for (String name : lines) {
+          File file = new File(dir, name + ".txt");
+          String theme = Util.loadFile(file);
+          indices.put(theme, indices.size());
+//          hashes.add(theme.hashCode());
+          themes.add(theme);
+        }
+      }
+    }
+
+    String get(int index) {
+      return themes.get(index);
+    }
+
+    /**
+     * Return the index for a given theme in this set,
+     * or -1 if not part of this set.
+     */
+    int getIndex(String theme) {
+      return indices.getOrDefault(theme, -1);
+      /*
+      for (int i = 0; i < themeContents.size(); i++) {
+        if (theme.equals(themeContents.get(i))) {
+          return i;
+        }
+      }
+      return -1;
+      */
     }
   }
+
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

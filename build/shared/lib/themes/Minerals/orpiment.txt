@@ -285,6 +285,24 @@ manager.progress.incomplete.bgcolor = #361600
 tree.font = processing.sans,plain,12
 
 
+## Theme Selector - stays the same across all themes ##
+
+# dropdown for changing the theme set
+theme_selector.combo_box.enabled.fgcolor = #A4DAFF
+theme_selector.combo_box.enabled.bgcolor = #00426A
+theme_selector.combo_box.disabled.fgcolor = #00537C
+theme_selector.combo_box.disabled.bgcolor = #00426A
+theme_selector.combo_box.selected.fgcolor = #003E87
+theme_selector.combo_box.selected.bgcolor = #4EE5FF
+
+# background color for the window
+theme_selector.window.color = #000000
+
+# text for the labels at the bottom
+theme_selector.text.color = #cccccc
+theme_selector.link.color = #8080ff
+
+
 ## Token - colors for source code in the editor ##
 
 # For an explanation of these tags, see Token.java:
