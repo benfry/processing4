@@ -44,6 +44,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -441,21 +442,33 @@ public class ThemeSelector extends JFrame implements Tool {
       addMouseListener(new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
-          int col = constrain((e.getX() - MARGIN) / EACH);
-          int colEx = constrain((e.getX() - MARGIN) % EACH);
-          int row = constrain((e.getY() - MARGIN) / EACH);
-          int rowEx = constrain((e.getY() - MARGIN) % EACH);
-
-          if (colEx < DIM && rowEx < DIM) {
-            int index = row * 4 + col;
-            if (index < currentSet.count) {
-              setCurrentIndex(index);
-              repaint();
-            }
-          }
+          handleMouse(e);
         }
       });
+
+      addMouseMotionListener(new MouseMotionAdapter() {
+        @Override
+        public void mouseDragged(MouseEvent e) {
+          handleMouse(e);
+        }
+      });
+
       setOpaque(false);
+    }
+
+    private void handleMouse(MouseEvent e) {
+      int col = constrain((e.getX() - MARGIN) / EACH);
+      int colEx = constrain((e.getX() - MARGIN) % EACH);
+      int row = constrain((e.getY() - MARGIN) / EACH);
+      int rowEx = constrain((e.getY() - MARGIN) % EACH);
+
+      if (colEx < DIM && rowEx < DIM) {
+        int index = row * 4 + col;
+        if (index < currentSet.count && index != currentIndex) {
+          setCurrentIndex(index);
+          repaint();
+        }
+      }
     }
 
     private int constrain(int value) {
