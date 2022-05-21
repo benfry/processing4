@@ -24,7 +24,6 @@ package processing.app.ui;
 
 import processing.app.Base;
 import processing.app.Messages;
-import processing.app.Platform;
 import processing.app.Settings;
 import processing.app.syntax.SyntaxStyle;
 import processing.core.PApplet;
@@ -43,10 +42,10 @@ public class Theme {
 
   static public void init() {
     try {
-      File inputFile = Platform.getContentFile("lib/theme.txt");
-      if (inputFile == null) {
-        throw new RuntimeException("Missing required file (theme.txt), you may need to reinstall.");
-      }
+      File inputFile = getThemeFile();
+//      if (inputFile == null) {
+//        throw new RuntimeException("Missing required file (theme.txt), you may need to reinstall.");
+//      }
       // First load the default theme data for the whole PDE.
       theme = new Settings(inputFile);
 
@@ -90,6 +89,16 @@ public class Theme {
 
   static public void save() {
     theme.save(getSketchbookFile());
+  }
+
+
+  static public File getThemeFolder() throws IOException {
+    return Base.getLibFile("theme");
+  }
+
+
+  static public File getThemeFile() throws IOException {
+    return new File(getThemeFolder(), "theme.txt");
   }
 
 

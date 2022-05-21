@@ -88,7 +88,8 @@ public class ThemeSelector extends JFrame implements Tool {
     this.base = base;
 
     try {
-      File themeFolder = Base.getLibFile("themes");
+//      File themeFolder = Base.getLibFile("theme");
+      File themeFolder = Theme.getThemeFolder();
       File[] setFolders = themeFolder.listFiles(file -> {
         if (file.isDirectory()) {
           File orderFile = new File(file, ORDER_FILENAME);
@@ -221,7 +222,8 @@ public class ThemeSelector extends JFrame implements Tool {
   public void run() {
     // location for theme.txt in the sketchbook folder
     // (doing this in run() in case the sketchbook location has changed)
-    sketchbookFile = new File(Base.getSketchbookFolder(), "theme.txt");
+    //sketchbookFile = new File(Base.getSketchbookFolder(), "theme.txt");
+    sketchbookFile = Theme.getSketchbookFile();
 
     updateTheme();
 
