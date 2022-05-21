@@ -32,12 +32,10 @@ import processing.core.PApplet;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.BasicStroke;
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Container;
+import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -53,20 +51,10 @@ import static processing.app.ui.Toolkit.addRow;
 
 
 public class ThemeSelector extends JFrame implements Tool {
+  static final String HOWTO_URL = "https://github.com/processing/processing4/wiki/Themes";
   static final String ORDER_FILENAME = "order.txt";
 
-  /*
-  static final String[] themeOrder = {
-    "kyanite", "calcite", "olivine", "beryl",
-    "galena", "jasper", "malachite", "pyrite",
-    "gabbro", "fluorite", "orpiment", "feldspar",
-    "antimony", "serandite", "bauxite", "garnet"
-  };
-  */
-//  static final int COUNT = 16;
-
   List<ThemeSet> sets;
-//  Set<Integer> hashes = new HashSet<>();
 
   String defaultTheme;
 
@@ -143,7 +131,46 @@ public class ThemeSelector extends JFrame implements Tool {
     pane.add(axis);
 
     addRow(axis, howtoLabel = new JLabel());
+
+    howtoLabel.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        Platform.openURL(HOWTO_URL);
+      }
+
+      public void mouseEntered(MouseEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        //clickable.setForeground(Theme.getColor("laf.accent.color"));
+      }
+
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        // steal the color from a component that doesn't change
+        // (so that it works after updateTheme() has been called)
+        //clickable.setForeground(sketchbookLocationLabel.getForeground());
+      }
+    });
+
     addRow(axis, reloadTheme = new JLabel());
+    reloadTheme.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        if (!sketchbookFile.exists()) {
+          // When first called, just create the theme.txt file
+          Theme.save();
+          updateTheme();  // changes the JLabel for this fella
+        } else {
+          reloadTheme();
+        }
+      }
+
+      public void mouseEntered(MouseEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      }
+
+      public void mouseExited(MouseEvent e) {
+        setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+      }
+    });
 
     Toolkit.registerWindowCloseKeys(getRootPane(), e -> setVisible(false));
     setTitle(getMenuTitle());
@@ -181,8 +208,13 @@ public class ThemeSelector extends JFrame implements Tool {
 
     howtoLabel.setText("<html><a href=\"\" color=\"" + linkColor +
       "\">Read</a> <font color=\"" + textColor + "\">about how to create your own themes.");
-    reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
-      "\">Reload</a> <font color=\"" + textColor + "\">theme.txt to update the current theme.");
+    if (Theme.getSketchbookFile().exists()) {
+      reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
+        "\">Reload</a> <font color=\"" + textColor + "\">theme.txt to update the current theme.");
+    } else {
+      reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
+        "\">Save</a> <font color=\"" + textColor + "\">theme.txt to sketchbook for editing.");
+    }
   }
 
 
@@ -250,13 +282,18 @@ public class ThemeSelector extends JFrame implements Tool {
 
       // Save the file and reload the theme.
       Util.saveFile(currentSet.get(index), sketchbookFile);
-      Theme.load();
-      base.updateTheme();
-      updateTheme();
+      reloadTheme();
 
     } catch (IOException e) {
       base.getActiveEditor().statusError(e);
     }
+  }
+
+
+  private void reloadTheme() {
+    Theme.load();
+    base.updateTheme();
+    updateTheme();
   }
 
 

@@ -804,7 +804,7 @@ public class Base {
       }
 
       initInternalTool("processing.app.tools.ThemeSelector");
-      initInternalTool("processing.app.tools.UpdateTheme");
+      //initInternalTool("processing.app.tools.UpdateTheme");
     }
 
     // No need to reload these either
