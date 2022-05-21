@@ -26,7 +26,6 @@ X Color Selector buttons misaligned
 X   redo layout for FlatLaf, also tweak further to remove some of the quirkiness
 X Export to Application fonts are too tiny
 X menu background colors
-X updated 4x4 for themes, foundation svg icon tweaks
 X better default fonts for Swing; argh
 X   file an issue with the images
 X     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
@@ -34,6 +33,13 @@ o   Space Grotesk and Mono?
 o     https://fonts.google.com/specimen/Space+Mono
 o     https://fonts.google.com/specimen/Space+Grotesk
 X replace foundation icon png that had a random black shape
+
+design/selector
+X updated 4x4 for themes, foundation svg icon tweaks
+X implement 4x4 by auto-generating from svg versions
+X make drag events work properly
+X add buttons for 'reload theme' and 'how to create themes' to theme fella
+X remove the 'reload theme' tool
 
 design/errors
 X errors table theme
@@ -332,10 +338,9 @@ _ overall layout/spacing/proportion
 
 
 design/implementation
-_ add buttons for 'reload theme' and 'how to create themes' to theme fella
-_   remove the other 'reload theme' tool
 _ build new welcome/examples screen for startup
 _ two tier dialog box (defaulting back to Lucida)
+_ dialog box with stack trace (font is too small)
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ add notes about params to the wiki
