@@ -747,8 +747,19 @@ public class Toolkit {
 
 
   static public Image svgToImageMult(String xmlStr, int wide, int high, StringDict replacements) {
+    /*
     for (StringDict.Entry entry : replacements.entries()) {
       xmlStr = xmlStr.replace(entry.key, entry.value);
+    }
+    */
+    // 2-pass version to avoid re-assigning identical colors
+    // (Otherwise, if a color is set to #666666 before #666666 is
+    // re-assigned to its new color, the swap will happen twice.)
+    for (StringDict.Entry entry : replacements.entries()) {
+      xmlStr = xmlStr.replace(entry.key, "$" + entry.key.hashCode() + "$");
+    }
+    for (StringDict.Entry entry : replacements.entries()) {
+      xmlStr = xmlStr.replace("$" + entry.key.hashCode() + "$", entry.value);
     }
     return svgToImage(xmlStr, highResMultiply(wide), highResMultiply(high));
   }

@@ -394,13 +394,10 @@ public class ThemeSelector extends JFrame implements Tool {
         { "#FFFFFF", entries.get("editor.bgcolor") }
       });
       //replacements.print();
+      //System.out.println();
 
       return Toolkit.svgToImageMult(miniSvgXml, ColorfulPanel.DIM, ColorfulPanel.DIM, replacements);
     }
-
-//    int size() {
-//      return count;
-//    }
 
     String get(int index) {
       return themes[index];
@@ -412,14 +409,6 @@ public class ThemeSelector extends JFrame implements Tool {
      */
     int getIndex(String theme) {
       return indices.getOrDefault(theme, -1);
-      /*
-      for (int i = 0; i < themeContents.size(); i++) {
-        if (theme.equals(themeContents.get(i))) {
-          return i;
-        }
-      }
-      return -1;
-      */
     }
   }
 
