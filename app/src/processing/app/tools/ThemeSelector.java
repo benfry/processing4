@@ -128,6 +128,11 @@ public class ThemeSelector extends JFrame implements Tool {
       setNames[i] = sets.get(i).name;
     }
     setSelector = new JComboBox<>(setNames);
+    setSelector.addItemListener(e -> {
+      currentSet = sets.get(setSelector.getSelectedIndex());
+      updateCurrentIndex();
+      repaint();
+    });
     //pane.add(setSelector, BorderLayout.NORTH);
     addRow(axis, setSelector);
 
