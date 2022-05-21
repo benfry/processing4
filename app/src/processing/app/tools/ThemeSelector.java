@@ -25,6 +25,7 @@ package processing.app.tools;
 
 import processing.app.*;
 import processing.app.laf.PdeComboBoxUI;
+import processing.app.ui.Editor;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 import processing.core.PApplet;
@@ -73,7 +74,7 @@ public class ThemeSelector extends JFrame implements Tool {
 //  PdeLabel reloadTheme;
   JLabel howtoLabel;
   JLabel reloadTheme;
-  String labelStyle;
+//  String labelStyle;
 
   Base base;
 
@@ -170,8 +171,16 @@ public class ThemeSelector extends JFrame implements Tool {
           // When first called, just create the theme.txt file
           Theme.save();
           updateTheme();  // changes the JLabel for this fella
+
         } else {
           reloadTheme();
+
+          // May be too subtle, but popping up a dialog box is too much.
+          // Feels like something needed because theme.txt edits may be subtle.
+          Editor activeEditor = base.getActiveEditor();
+          if (activeEditor != null) {
+            activeEditor.statusNotice("Finished updating theme.");
+          }
         }
       }
 
@@ -238,7 +247,7 @@ public class ThemeSelector extends JFrame implements Tool {
 //    String textColor = Theme.get("theme_selector.text.color");
 //    String linkColor = Theme.get("theme_selector.link.color");
 
-    labelStyle =
+    String labelStyle =
       "body { " +
 //    "  margin: 0; " +
 //    "  padding: 0;" +
@@ -272,7 +281,7 @@ public class ThemeSelector extends JFrame implements Tool {
 //      reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
 //        "\">Save</a> <font color=\"" + textColor + "\">theme.txt to sketchbook for editing.");
 //      reloadTheme.setText(prefix + "&rarr; <a>Save</a> theme.txt to sketchbook for editing.");
-      reloadTheme.setText(prefix + "&rarr; <a href=\"\">Save</a> theme.txt to sketchbook for editing.");
+      reloadTheme.setText(prefix + "&rarr; <a href=\"\">Save</a> theme.txt to sketchbook for editing");
     }
     //((HTMLDocument) howtoLabel.getDocument()).getStyleSheet().addRule(detailStyle);
   }
