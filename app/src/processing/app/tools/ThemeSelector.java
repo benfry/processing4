@@ -69,8 +69,11 @@ public class ThemeSelector extends JFrame implements Tool {
   JComboBox<String> setSelector;
   ColorfulPanel selector;
 
+//  PdeLabel howtoLabel;
+//  PdeLabel reloadTheme;
   JLabel howtoLabel;
   JLabel reloadTheme;
+  String labelStyle;
 
   Base base;
 
@@ -187,7 +190,8 @@ public class ThemeSelector extends JFrame implements Tool {
 
     Toolkit.registerWindowCloseKeys(getRootPane(), e -> setVisible(false));
     setTitle(getMenuTitle());
-    updateTheme();
+    setResizable(false);
+    updateTheme();  // important before pack()
     pack();
     setLocationRelativeTo(null);
   }
@@ -231,18 +235,46 @@ public class ThemeSelector extends JFrame implements Tool {
       setSelector.setUI(new PdeComboBoxUI("theme_selector.combo_box"));
     }
 
-    String textColor = Theme.get("theme_selector.text.color");
-    String linkColor = Theme.get("theme_selector.link.color");
+//    String textColor = Theme.get("theme_selector.text.color");
+//    String linkColor = Theme.get("theme_selector.link.color");
 
-    howtoLabel.setText("<html><a href=\"\" color=\"" + linkColor +
-      "\">Read</a> <font color=\"" + textColor + "\">about how to create your own themes.");
+    labelStyle =
+      "body { " +
+//    "  margin: 0; " +
+//    "  padding: 0;" +
+//    "  font-family: " + detailFont.getName() + ", sans-serif;" +
+//    "  font-size: " + detailFont.getSize() + "px;" +
+//    "  font-size: 18px; " +
+        "  color: " + Theme.get("theme_selector.text.color") + ";" +
+        "} " +
+        "a { " +
+        "  color: " + Theme.get("theme_selector.link.color") + ";" +
+        "  text-decoration: none;" +
+        "}";
+
+    String prefix = "<html><head><style type='text/css'>" + labelStyle + "</style></head><body>";
+//    System.out.println(prefix);
+
+//    howtoLabel.setText("<html><a href=\"\" color=\"" + linkColor +
+//      "\">Read</a> <font color=\"" + textColor + "\">about how to create your own themes.");
+//    howtoLabel.setText(prefix + "&rarr; <a>Read</a> about how to create your own themes");
+//    howtoLabel.setText("&rarr; <a href=\"\">Read</a> about how to create your own themes", labelStyle);
+    howtoLabel.setText(prefix + "&rarr; <a href=\"\">Read</a> about how to create your own themes");
+
     if (Theme.getSketchbookFile().exists()) {
-      reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
-        "\">Reload</a> <font color=\"" + textColor + "\">theme.txt to update the current theme.");
+//      reloadTheme.setText("<html>&rarr; <a href=\"\" color=\"" + linkColor +
+//        "\">Reload</a> <font color=\"" + textColor + "\">theme.txt to update the current theme.");
+//      reloadTheme.setText(prefix + "&rarr; <a>Reload</a> theme.txt to update the current theme");
+//      reloadTheme.setText("&rarr; <a href=\"\">Reload</a> theme.txt to update the current theme", labelStyle);
+      reloadTheme.setText(prefix + "&rarr; <a href=\"\">Reload</a> theme.txt to update the current theme");
+
     } else {
-      reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
-        "\">Save</a> <font color=\"" + textColor + "\">theme.txt to sketchbook for editing.");
+//      reloadTheme.setText("<html><a href=\"\" color=\"" + linkColor +
+//        "\">Save</a> <font color=\"" + textColor + "\">theme.txt to sketchbook for editing.");
+//      reloadTheme.setText(prefix + "&rarr; <a>Save</a> theme.txt to sketchbook for editing.");
+      reloadTheme.setText(prefix + "&rarr; <a href=\"\">Save</a> theme.txt to sketchbook for editing.");
     }
+    //((HTMLDocument) howtoLabel.getDocument()).getStyleSheet().addRule(detailStyle);
   }
 
 
