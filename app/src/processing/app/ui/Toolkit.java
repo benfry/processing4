@@ -57,6 +57,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.swing.Action;
@@ -82,6 +83,7 @@ import processing.awt.PGraphicsJava2D;
 import processing.awt.PShapeJava2D;
 import processing.core.PApplet;
 import processing.core.PShape;
+import processing.data.StringDict;
 import processing.data.StringList;
 import processing.data.XML;
 
@@ -725,22 +727,38 @@ public class Toolkit {
     String xmlOrig = Util.loadFile(file);
 
     if (xmlOrig != null) {
+      /*
       final String REPLACE_COLOR = "#9B9B9B";
       String xmlStr = xmlOrig.replace(REPLACE_COLOR, color);
-
-      final int px = size * Toolkit.highResMultiplier();
-      return Toolkit.svgToImage(xmlStr, px, px);
+      return Toolkit.svgToImageMult(xmlStr, size, size);
+      */
+      StringDict replace = new StringDict(new String[][] {
+        { "#9B9B9B", color }
+      });
+      return Toolkit.svgToImageMult(xmlOrig, size, size, replace);
     }
     return null;
   }
 
+
+  static private Image svgToImageMult(String xmlStr, int wide, int high) {
+    return svgToImage(xmlStr, highResMultiply(wide), highResMultiply(high));
+  }
+
+
+  static public Image svgToImageMult(String xmlStr, int wide, int high, StringDict replacements) {
+    for (StringDict.Entry entry : replacements.entries()) {
+      xmlStr = xmlStr.replace(entry.key, entry.value);
+    }
+    return svgToImage(xmlStr, highResMultiply(wide), highResMultiply(high));
+  }
 
 
   /**
    * Render an SVG, passed in as a String, into an AWT Image at
    * the specified width and height. Used for interface buttons.
    */
-  static public Image svgToImage(String xmlStr, int wide, int high) {
+  static private Image svgToImage(String xmlStr, int wide, int high) {
     PGraphicsJava2D pg = new PGraphicsJava2D();
     pg.setPrimary(false);
     pg.setSize(wide, high);
@@ -1070,6 +1088,11 @@ public class Toolkit {
 
   static public int highResMultiplier() {
     return highResImages() ? 2 : 1;
+  }
+
+
+  static public int highResMultiply(int amount) {
+    return highResImages() ? 2*amount : amount;
   }
 
 

@@ -27,6 +27,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import processing.app.Mode;
+import processing.data.StringDict;
 
 
 abstract public class EditorButton extends JComponent
@@ -93,6 +94,7 @@ implements MouseListener, MouseMotionListener, ActionListener {
       return mode.loadImageX(name + "-" + state);
     }
 
+    /*
     final String FIELD_COLOR = "#fff";
     final String GLYPH_COLOR = "#ff5757";
     final String STROKE_COLOR = "silver";
@@ -108,6 +110,13 @@ implements MouseListener, MouseMotionListener, ActionListener {
 
     final int px = DIM * Toolkit.highResMultiplier();
     return Toolkit.svgToImage(xmlStr, px, px);
+    */
+    StringDict replacements = new StringDict(new String[][] {
+      { "#fff", Theme.get("toolbar.button." + state + ".field") },
+      { "#ff5757", Theme.get("toolbar.button." + state + ".glyph") },
+      { "silver", Theme.get("toolbar.button." + state + ".stroke") }
+    });
+    return Toolkit.svgToImageMult(xmlOrig, DIM, DIM, replacements);
   }
 
 

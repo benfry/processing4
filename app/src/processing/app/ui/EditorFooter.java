@@ -42,6 +42,7 @@ import javax.swing.*;
 import processing.app.Mode;
 import processing.app.Sketch;
 import processing.app.contrib.ContributionManager;
+import processing.data.StringDict;
 
 
 /**
@@ -349,6 +350,7 @@ public class EditorFooter extends Box {
         return mode.loadImageX(icon + "-" + state);
       }
 
+      /*
       final String ICON_COLOR = "silver";
       String iconColor = Theme.get("footer.icon." + state + ".color");
 
@@ -356,6 +358,12 @@ public class EditorFooter extends Box {
 
       final int m = Toolkit.highResMultiplier();
       return Toolkit.svgToImage(xmlStr, ICON_WIDTH * m, ICON_HEIGHT * m);
+      */
+      StringDict replacements = new StringDict(new String[][] {
+        { "silver", Theme.get("footer.icon." + state + ".color") }
+      });
+      return Toolkit.svgToImageMult(xmlOrig, ICON_WIDTH, ICON_HEIGHT, replacements);
+
     }
 
     boolean contains(int x) {
