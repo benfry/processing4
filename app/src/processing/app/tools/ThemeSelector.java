@@ -28,14 +28,17 @@ import processing.app.laf.PdeComboBoxUI;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 import processing.core.PApplet;
+import processing.data.StringDict;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -47,12 +50,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static processing.app.ui.Toolkit.addRow;
-
 
 public class ThemeSelector extends JFrame implements Tool {
   static final String HOWTO_URL = "https://github.com/processing/processing4/wiki/Themes";
   static final String ORDER_FILENAME = "order.txt";
+
+  String miniSvgXml;
 
   List<ThemeSet> sets;
 
@@ -95,6 +98,9 @@ public class ThemeSelector extends JFrame implements Tool {
         return;
       }
 
+      File miniFile = new File(themeFolder, "mini.svg");
+      miniSvgXml = Util.loadFile(miniFile);
+
       sets = new ArrayList<>();
       for (File folder : setFolders) {
         sets.add(new ThemeSet(folder));
@@ -124,14 +130,14 @@ public class ThemeSelector extends JFrame implements Tool {
     //pane.add(setSelector, BorderLayout.NORTH);
     addRow(axis, setSelector);
 
+    axis.add(Box.createVerticalStrut(13));
+
     //pane.add(selector = new ColorfulPanel(), BorderLayout.CENTER);
     axis.add(selector = new ColorfulPanel());  // flush with sides
 
-    axis.setBorder(new EmptyBorder(13, 13, 13, 13));
-    pane.add(axis);
+    axis.add(Box.createVerticalStrut(13));
 
     addRow(axis, howtoLabel = new JLabel());
-
     howtoLabel.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         Platform.openURL(HOWTO_URL);
@@ -150,6 +156,8 @@ public class ThemeSelector extends JFrame implements Tool {
         //clickable.setForeground(sketchbookLocationLabel.getForeground());
       }
     });
+
+    axis.add(Box.createVerticalStrut(6));
 
     addRow(axis, reloadTheme = new JLabel());
     reloadTheme.addMouseListener(new MouseAdapter() {
@@ -172,10 +180,27 @@ public class ThemeSelector extends JFrame implements Tool {
       }
     });
 
+    //axis.setBorder(new EmptyBorder(13, 13, 13, 13));
+    axis.setBorder(new EmptyBorder(20, 20, 20, 20));
+    pane.add(axis);
+
     Toolkit.registerWindowCloseKeys(getRootPane(), e -> setVisible(false));
     setTitle(getMenuTitle());
+    updateTheme();
     pack();
     setLocationRelativeTo(null);
+  }
+
+  static final int ROW_H_GAP = 7;
+  static final int ROW_V_GAP = 0;
+
+  static private void addRow(Container axis, Component... components) {
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ROW_H_GAP, ROW_V_GAP));
+    row.setOpaque(false);
+    for (Component comp : components) {
+      row.add(comp);
+    }
+    axis.add(row);
   }
 
 
@@ -190,6 +215,8 @@ public class ThemeSelector extends JFrame implements Tool {
     //currentIndex = getCurrentIndex();
     updateCurrentIndex();
 
+//    invalidate();
+//    pack();
     setVisible(true);
   }
 
@@ -245,7 +272,7 @@ public class ThemeSelector extends JFrame implements Tool {
       e.printStackTrace();
     }
     // do this as a fallback
-    return sets.get(0).themes.get(0);
+    return sets.get(0).themes[0];
   }
 
 
@@ -307,30 +334,75 @@ public class ThemeSelector extends JFrame implements Tool {
 
 
   class ThemeSet {
-    private String name;
-    private List<String> themes;
+    final String name;
+    private int count;
+    private String[] themes;
+    private Image[] images;
     private Map<String, Integer> indices;
 
     ThemeSet(File dir) {
       name = dir.getName();
-      themes = new ArrayList<>();
-      indices = new HashMap<>();
 
       File orderFile = new File(dir, ORDER_FILENAME);
       String[] lines = PApplet.loadStrings(orderFile);
       if (lines != null) {
-        for (String name : lines) {
-          File file = new File(dir, name + ".txt");
+        count = Math.min(16, lines.length);
+        if (count < lines.length) {
+          System.err.println("Only using the first 16 themes inside " + orderFile);
+        }
+        themes = new String[count];
+        images = new Image[count];
+        indices = new HashMap<>(count);
+
+        // don't load more than 16 entries
+        for (int i = 0; i < count; i++) {
+          File file = new File(dir, lines[i] + ".txt");
           String theme = Util.loadFile(file);
-          indices.put(theme, indices.size());
+          indices.put(theme, i);
 //          hashes.add(theme.hashCode());
-          themes.add(theme);
+          themes[i] = theme;
+          images[i] = renderImage(file.getName(), theme);
         }
       }
     }
 
+    /**
+     * Render the Mini SVG using the theme colors.
+     * @param filename only used for debug messages
+     * @param theme all the lines of the theme file, joined
+     * @return mini image of the PDE with theme colors applied
+     */
+    private Image renderImage(String filename, String theme) {
+      // parse the txt file to get entries for swapping
+      StringDict entries =
+        Util.readSettings(filename, PApplet.split(theme, '\n'));
+      //entries.print();
+
+      StringDict replacements = new StringDict(new String[][] {
+        { "#000000", entries.get("console.color") },
+        { "#111111", entries.get("editor.gutter.linehighlight.color") },
+        { "#222222", entries.get("footer.gradient.top") },
+        { "#444444", entries.get("mode.background.color") },
+        { "#555555", entries.get("toolbar.button.enabled.glyph") },
+        { "#666666", entries.get("editor.gradient.top") },
+        { "#777777", entries.get("editor.gradient.bottom") },
+        { "#888888", entries.get("toolbar.button.selected.field") },
+        { "#CCCCCC", entries.get("toolbar.button.enabled.field") },
+        { "#DDDDDD", entries.get("editor.linehighlight.color") },
+        { "#EEEEEE", entries.get("toolbar.button.selected.glyph") },
+        { "#FFFFFF", entries.get("editor.bgcolor") }
+      });
+      //replacements.print();
+
+      return Toolkit.svgToImageMult(miniSvgXml, ColorfulPanel.DIM, ColorfulPanel.DIM, replacements);
+    }
+
+//    int size() {
+//      return count;
+//    }
+
     String get(int index) {
-      return themes.get(index);
+      return themes[index];
     }
 
     /**
@@ -356,32 +428,34 @@ public class ThemeSelector extends JFrame implements Tool {
 
 
   class ColorfulPanel extends JPanel {
-    static final int SCALE = 4;
-    static final int DIM = 320 / SCALE;
-    static final int BETWEEN = 100 / SCALE;
-    static final int EACH = DIM + BETWEEN;
-    static final int SIZE = DIM*4 + BETWEEN*5;
-
     static final int OUTSET = 5;
     static final int OUTLINE = 3;
 
-    Image image;
+    static final int DIM = 80;
+    static final int BETWEEN = 25;
+    static final int EACH = DIM + BETWEEN;
+    static final int MARGIN = OUTSET + (OUTLINE + 1) / 2;
+    static final int SIZE = MARGIN*2 + DIM*4 + BETWEEN*3;
 
     ColorfulPanel() {
-      image = Toolkit.getLibImage("themes/Minerals/4x4.png");
       addMouseListener(new MouseAdapter() {
         @Override
         public void mousePressed(MouseEvent e) {
-          //super.mousePressed(e);
+          int col = constrain((e.getX() - MARGIN) / EACH);
+          int colEx = constrain((e.getX() - MARGIN) % EACH);
+          int row = constrain((e.getY() - MARGIN) / EACH);
+          int rowEx = constrain((e.getY() - MARGIN) % EACH);
 
-          int col = constrain((e.getX() - BETWEEN) / EACH);
-          int row = constrain((e.getY() - BETWEEN) / EACH);
-          int index = row*4 + col;
-
-          setCurrentIndex(index);
-          repaint();
+          if (colEx < DIM && rowEx < DIM) {
+            int index = row * 4 + col;
+            if (index < currentSet.count) {
+              setCurrentIndex(index);
+              repaint();
+            }
+          }
         }
       });
+      setOpaque(false);
     }
 
     private int constrain(int value) {
@@ -390,7 +464,13 @@ public class ThemeSelector extends JFrame implements Tool {
 
     @Override
     public void paintComponent(Graphics g) {
-      g.drawImage(image, 0, 0, SIZE, SIZE,null);
+      for (int i = 0; i < currentSet.count; i++) {
+        int col = i % 4;
+        int row = i / 4;
+        int x = MARGIN + col*EACH;
+        int y = MARGIN + row*EACH;
+        g.drawImage(currentSet.images[i], x, y, DIM, DIM, null);
+      }
 
       Graphics2D g2 = (Graphics2D) g;
       g2.setStroke(new BasicStroke(OUTLINE));
@@ -399,8 +479,8 @@ public class ThemeSelector extends JFrame implements Tool {
       if (currentIndex != -1) {
         int col = currentIndex % 4;
         int row = currentIndex / 4;
-        g2.drawRect(BETWEEN + EACH * col - OUTSET,
-          BETWEEN + EACH * row - OUTSET,
+        g2.drawRect(MARGIN + EACH * col - OUTSET,
+          MARGIN + EACH * row - OUTSET,
           DIM + OUTSET * 2,
           DIM + OUTSET * 2);
       }
@@ -409,6 +489,15 @@ public class ThemeSelector extends JFrame implements Tool {
     @Override
     public Dimension getPreferredSize() {
       return new Dimension(SIZE, SIZE);
+    }
+
+    public Dimension getMinimumSize() {
+      return getPreferredSize();
+    }
+
+    @Override
+    public Dimension getMaximumSize() {
+      return getPreferredSize();
     }
   }
 }

@@ -40,18 +40,15 @@ import processing.app.Preferences;
 import processing.awt.ShimAWT;
 import processing.core.*;
 
-import static processing.app.ui.Toolkit.addRow;
-
 
 /**
  * Creates the window for modifying preferences.
  */
 public class PreferencesFrame {
   JFrame frame;
-  //GroupLayout layout;
 
-//  static final int H_GAP = 5;
-//  static final int V_GAP = 3;
+  static final int ROW_H_GAP = 5;
+  static final int ROW_V_GAP = 3;
 
   static final Integer[] FONT_SIZES = { 10, 12, 14, 18, 24, 36, 48 };
 
@@ -544,11 +541,11 @@ public class PreferencesFrame {
 
     //JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
     Box row = Box.createHorizontalBox();
-    row.add(Box.createHorizontalStrut(Toolkit.ROW_H_GAP));
+    row.add(Box.createHorizontalStrut(ROW_H_GAP));
     row.add(restartLabel);
     row.add(Box.createHorizontalGlue());
     row.add(okButton);  // buttonWidth
-    row.add(Box.createHorizontalStrut(Toolkit.ROW_H_GAP));
+    row.add(Box.createHorizontalStrut(ROW_H_GAP));
     row.add(cancelButton);  // buttonWidth
     axis.add(row);
 
@@ -587,15 +584,13 @@ public class PreferencesFrame {
   }
 
 
-  /*
   static private void addRow(Container axis, Component... components) {
-    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, H_GAP, V_GAP));
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ROW_H_GAP, ROW_V_GAP));
     for (Component comp : components) {
       row.add(comp);
     }
     axis.add(row);
   }
-  */
 
 
   private void updateRestart(String key, boolean value) {

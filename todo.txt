@@ -151,16 +151,20 @@ X Update PDE_de.properties
 X   https://github.com/processing/processing4/pull/483
 
 
-finalizing beta 9
+fixes/changes before beta 9
 _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
 _ visual fixes for tab sizes, etc
 _ font for stack trace dialogs is too small (and wrong)
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
+_ update theme instructions at
+_   https://github.com/processing/processing4/wiki/Themes
+_ Export Application gives java.lang.ClassNotFoundException: --full-screen error
+_   https://github.com/processing/processing4/issues/488
 
 
-release
+during release of beta 9
 _ replace build/shared/lib/theme.txt with kyanite.txt
 _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission

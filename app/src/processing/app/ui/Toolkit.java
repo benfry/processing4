@@ -1026,19 +1026,6 @@ public class Toolkit {
   */
 
 
-  static public final int ROW_H_GAP = 5;
-  static public final int ROW_V_GAP = 3;
-
-  static public void addRow(Container axis, Component... components) {
-    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ROW_H_GAP, ROW_V_GAP));
-    row.setOpaque(false);
-    for (Component comp : components) {
-      row.add(comp);
-    }
-    axis.add(row);
-  }
-
-
   static private float parseZoom() {
     if (Preferences.getBoolean("editor.zoom.auto")) {
       float newZoom = Platform.getSystemZoom();
