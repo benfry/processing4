@@ -72,6 +72,8 @@ public class Util {
    * that are separated by = and ignore comments with #.
    * Changed in 3.x to return null (rather than empty hash) if no file,
    * and changed return type to StringDict instead of Map or HashMap.
+   * Changed in 4.0 beta 9 to only use # for comments at beginning of
+   * line, otherwise it cannot parse hex color entries.
    */
   static public StringDict readSettings(File inputFile) {
     if (!inputFile.exists()) {
@@ -90,7 +92,9 @@ public class Util {
   /**
    * Parse a String array that contains attribute/value pairs separated
    * by = (the equals sign). The # (hash) symbol is used to denote comments.
-   * Comments can be anywhere on a line. Blank lines are ignored.
+   * Changed in 4.0 beta 9 to only use # for comments at beginning of line,
+   * otherwise it cannot parse hex color entries. Blank lines are ignored.
+   *
    * In 3.0a6, no longer taking a blank HashMap as param; no cases in the main
    * PDE code of adding to a (Hash)Map. Also returning the Map instead of void.
    * Both changes modify the method signature, but this was only used by the
@@ -99,15 +103,10 @@ public class Util {
   static public StringDict readSettings(String filename, String[] lines) {
     StringDict settings = new StringDict();
     for (String line : lines) {
-      // Remove comments
-      int commentMarker = line.indexOf('#');
-      if (commentMarker != -1) {
-        line = line.substring(0, commentMarker);
-      }
       // Remove extra whitespace (including the x00A0 and xFEFF)
       line = PApplet.trim(line);
 
-      if (line.length() != 0) {
+      if (line.length() != 0 && line.charAt(0) != '#') {
         int equals = line.indexOf('=');
         if (equals == -1) {
           if (filename != null) {
