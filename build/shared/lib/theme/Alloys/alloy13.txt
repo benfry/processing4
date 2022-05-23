@@ -68,8 +68,8 @@ toolbar.button.debug.selected.stroke = none
 
 ## EditorStatus - status message bar directly below the editor ##
 
-status.notice.fgcolor = #CAEB5F
-status.notice.bgcolor = #496E00
+status.notice.fgcolor = #FF7ED3
+status.notice.bgcolor = #EB0060
 status.error.fgcolor = #6C0000
 status.error.bgcolor = #FFFFFE
 status.warning.bgcolor = #E46000
@@ -98,31 +98,31 @@ header.gradient.bottom = #5B1937
 
 footer.text.font = processing.sans,bold,12
 footer.text.selected.color = #FFFFFE
-footer.text.enabled.color = #274000
+footer.text.enabled.color = #FF5D9D
 footer.icon.selected.color = #FFFFFE
-footer.icon.enabled.color = #274000
-footer.gradient.top = #819A31
-footer.gradient.bottom = #819A31
-footer.tab.selected.color = #597300
-footer.tab.enabled.color = #819A31
+footer.icon.enabled.color = #FF5D9D
+footer.gradient.top = #8B002C
+footer.gradient.bottom = #8B002C
+footer.tab.selected.color = #C80058
+footer.tab.enabled.color = #8B002C
 footer.updates.text.color = #FFFFFE
-footer.updates.indicator.field.color = #F2FF9A
-footer.updates.indicator.text.color = #000D00
+footer.updates.indicator.field.color = #4E0000
+footer.updates.indicator.text.color = #FFBDF4
 
 
 ## EditorConsole - stack traces of doom and println() ##
 # The font is handled by preferences.txt, so its size/etc are modifiable.
 
-console.color = #383A2F
+console.color = #201517
 # color of System.out text
-console.output.color = #A9AB9E
+console.output.color = #A59598
 # text color for errors printed in the console
 console.error.color = #FF8900
 
-console.scrollbar.thumb.enabled.color = #64665B
+console.scrollbar.thumb.enabled.color = #544648
 console.scrollbar.thumb.rollover.color = #2F6A90
 console.scrollbar.thumb.pressed.color = #2F6A90
-console.scrollbar.color = #2D2F25
+console.scrollbar.color = #1D1114
 
 
 ## PdeTextAreaDefaults - default colors for the editor ##
@@ -132,7 +132,7 @@ editor.fgcolor = #FFFFFE
 editor.bgcolor = #000000
 
 editor.gradient.top = #5B1937
-editor.gradient.bottom = #819A31
+editor.gradient.bottom = #8B002C
 
 # highlight for the current line
 editor.linehighlight.color = #1B1B1B
@@ -152,10 +152,10 @@ editor.brackethighlight = true
 editor.brackethighlight.color = #CE94F0
 
 # colors for the custom scroll bar
-editor.scrollbar.thumb.enabled.color = #597300
-editor.scrollbar.thumb.rollover.color = #4D6800
-editor.scrollbar.thumb.pressed.color = #4D6800
-editor.scrollbar.color = #758E25
+editor.scrollbar.thumb.enabled.color = #C80058
+editor.scrollbar.thumb.rollover.color = #BB004E
+editor.scrollbar.thumb.pressed.color = #BB004E
+editor.scrollbar.color = #9D0038
 
 
 ## PdeTextAreaPainter - extras added to the editor ##
@@ -182,18 +182,18 @@ editor.column.warning.color = #9E5672
 ## ErrorTable - second tab below the console area, lists errors and warnings ##
 
 errors.header.font = processing.sans,plain,12
-errors.header.bgcolor = #1A2400
-errors.header.fgcolor = #9AA07B
-errors.bgcolor = #334E00
+errors.header.bgcolor = #480006
+errors.header.fgcolor = #C68191
+errors.bgcolor = #6B0017
 errors.row.font = processing.sans,plain,12
-errors.row.fgcolor = #C4D585
-errors.row.bgcolor = #334E00
+errors.row.fgcolor = #FF92B8
+errors.row.bgcolor = #6B0017
 errors.selection.fgcolor = #FFFFFE
-errors.selection.bgcolor = #B93D00
+errors.selection.bgcolor = #9B2100
 errors.selection.error.bgcolor = #FFFFFE
-errors.selection.warning.bgcolor = #FF9537
-errors.indicator.error.color = #C4D585
-errors.indicator.warning.color = #698217
+errors.selection.warning.bgcolor = #F08829
+errors.indicator.error.color = #FF92B8
+errors.indicator.warning.color = #BD0050
 
 
 ## ManagerTabs - tabs in the Contribution Manager ##
