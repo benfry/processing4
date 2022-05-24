@@ -40,6 +40,8 @@ X implement 4x4 by auto-generating from svg versions
 X make drag events work properly
 X add buttons for 'reload theme' and 'how to create themes' to theme fella
 X remove the 'reload theme' tool
+X both sets working, loading from folders
+X fixed up html wiring for styles
 
 design/errors
 X errors table theme
