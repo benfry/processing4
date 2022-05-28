@@ -133,7 +133,7 @@ public class Compiler {
 
         // get first line, which contains file name, line number,
         // and at least the first line of the error message
-        String errorFormat = "([\\w\\d_]+.java):(\\d+):\\s*(.*):\\s*(.*)\\s*";
+        String errorFormat = "([\\w\\d_]+\\.java):(\\d+):\\s*([^:]*):\\s*(.*)\\s*";
         String[] pieces = PApplet.match(line, errorFormat);
         //PApplet.println(pieces);
 
