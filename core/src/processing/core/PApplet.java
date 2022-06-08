@@ -1192,7 +1192,7 @@ public class PApplet implements PConstants {
    * edges and images with hard edges between the pixels
    * when enlarged rather than interpolating pixels. Note
    * that <b>smooth()</b> is active by default, so it is necessary
-   * to call <b>noSmooth()<b> to disable smoothing of geometry,
+   * to call <b>noSmooth()</b> to disable smoothing of geometry,
    * fonts, and images. Since the release of Processing 3.0,
    * the <b>noSmooth()</b> function can only be run once for each
    * sketch, either at the top of a sketch without a <b>setup()</b>,
