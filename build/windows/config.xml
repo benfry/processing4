@@ -23,6 +23,7 @@
     <cp>lib/jna-platform.jar</cp>
     <cp>lib/ant.jar</cp>
     <cp>lib/ant-launcher.jar</cp>
+    <cp>lib/flatlaf.jar</cp>
 
     <!-- <cp>%EXEDIR%/java/lib/tools.jar</cp> -->
 
