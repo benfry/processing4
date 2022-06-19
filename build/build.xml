@@ -508,6 +508,7 @@
                shortVersion="${version}"
                version="${revision}"
                mainClassName="processing.app.ui.Splash"
+               jvmRequired="${jdk.train}"
                minimumSystemVersion="10.14.6">
 
       <!-- mainClassName="processing.app.BaseSplash" -->
@@ -665,7 +666,8 @@
 
     <!-- Use the Processing executable as the stub for exported apps.
          This works b/c everything app-specific is in Info.plist. -->
-    <property name="app.stub" value="${contents.dir}/Java/modes/java/application/mac-app-stub" />
+    <property name="app.stub"
+              value="${contents.dir}/Java/modes/java/application/mac-app-stub" />
     <!-- Grab a copy of the stub binary before it is signed.
          (See processing.mode.java.JavaBuild for usage.)
          Prevents signing errors with exported apps. -->
@@ -684,7 +686,8 @@
     <!-- Python 3 required, now that Python 2 has been removed from macOS -->
     <exec executable="macos/language_gen.py" failonerror="true" />
 
-    <property name="launch4j.dir" value="${contents.dir}/Java/modes/java/application/launch4j" />
+    <property name="launch4j.dir"
+              value="${contents.dir}/Java/modes/java/application/launch4j" />
 
     <!-- rename the version we need -->
     <move file="${launch4j.dir}/bin/windres-macos"
