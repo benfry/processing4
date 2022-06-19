@@ -808,8 +808,8 @@ public class JavaBuild {
         String exportName = exportFile.getName();
         if (!exportFile.exists()) {
           System.err.println(exportFile.getName() +
-                             " is mentioned in export.txt, but it's " +
-                             "a big fat lie and does not exist.");
+                             " is mentioned in export.txt," +
+                             " but it does not exist.");
 
         } else if (exportFile.isDirectory()) {
           Util.copyDir(exportFile, new File(jarFolder, exportName));
