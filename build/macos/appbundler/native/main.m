@@ -40,6 +40,7 @@
 #define JVM_DEFAULT_OPTIONS_KEY "JVMDefaultOptions"
 #define JVM_ARGUMENTS_KEY "JVMArguments"
 #define JVM_CLASSPATH_KEY "JVMClassPath"
+#define JVM_MODULEPATH_KEY "JVMModulePath"
 #define JVM_VERSION_KEY "JVMVersion"
 #define JRE_PREFERRED_KEY "JREPreferred"
 #define JDK_PREFERRED_KEY "JDKPreferred"
@@ -110,7 +111,7 @@ int main(int argc, char *argv[]) {
         result = 0;
     } @catch (NSException *exception) {
         NSAlert *alert = [[NSAlert alloc] init];
-        [alert setAlertStyle:NSCriticalAlertStyle];
+        [alert setAlertStyle:NSAlertStyleCritical];
         [alert setMessageText:[exception reason]];
         [alert runModal];
 
@@ -320,6 +321,7 @@ int launch(char *commandName, int progargc, char *progargv[]) {
     NSString *javaPath = [mainBundlePath stringByAppendingString:@"/Contents/Java"];
     NSMutableArray *systemArguments = [[NSMutableArray alloc] init];
     NSMutableString *classPath = [NSMutableString stringWithString:@"-Djava.class.path="];
+    NSMutableString *modulePath = [NSMutableString stringWithFormat:@"--module-path="];
 
     // Set the library path
     NSString *libraryPath = [NSString stringWithFormat:@"-Djava.library.path=%@/Contents/MacOS", mainBundlePath];
@@ -477,10 +479,25 @@ int launch(char *commandName, int progargc, char *progargv[]) {
                 [classPath appendString:file];
             }
         }
+    } else {
+        NSArray *mp = [infoDictionary objectForKey:@JVM_MODULEPATH_KEY];
+        if (mp == nil) {
+            // Implicit module path, so use the contents of the "Java" folder to build an explicit module path
+            [modulePath appendFormat:@"%@", javaPath];
+        } else {
+            int k = 0;
+            for (NSString *file in mp) {
+                if (k++ > 0) [modulePath appendString:@":"]; // add separator if needed
+                file = [file stringByReplacingOccurrencesOfString:@APP_ROOT_PREFIX withString:[mainBundle bundlePath]];
+                [modulePath appendString:file];
+            }
+        }
     }
 
     if ( classPath != nil && !runningModule ) {
         [systemArguments addObject:classPath];
+    } else if (modulePath != nil && runningModule) {
+        [systemArguments addObject:modulePath];
     }
 
     // Set OSX special folders
