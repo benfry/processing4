@@ -1137,10 +1137,8 @@ public class JavaBuild {
       // Send a "build finished" event to the build listeners for this project.
       p.fireBuildFinished(e);
 
-      String out = new String(outb.toByteArray());
-      String err = new String(errb.toByteArray());
-      System.out.println(out);
-      System.err.println(err);
+      System.out.println(outb);
+      System.err.println(errb);
     }
     return false;
   }
