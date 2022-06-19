@@ -1,7 +1,24 @@
 1284 (4.0b9)
 X bump to Java 17.0.3+7
+X specify Java version with appbundler in main app
+
+export application
 X fix Export to Application on macOS with Apple Silicon
-X   gets rid of "Unable to start Java Runtime"
+X   gets rid of "Unable to load Java Runtime Environment"
+X update appbundler main.m through https://github.com/TheInfiniteKind/appbundler/commit/5946207c9e29ab85887e94d5651b329e4669e2d6
+X rewrite variable substitution for Info.plist.tmpl
+X   cleans up readability
+X   would have broken w/ anything on the same line
+X specify JVM version in exported applications
+
+        <key>JVMVersion</key>
+        <string>17</string>
+
+_ appbundler seems to prefer Java 1.8 if installed
+_ Export Application gives java.lang.ClassNotFoundException: --full-screen error
+_   https://github.com/processing/processing4/issues/488
+_   --full-screen not being added with Export to Application?
+
 
 contrib
 X add flatlaf.jar to the Windows config.xml

@@ -882,46 +882,28 @@ public class JavaBuild {
         runOptionsXML.append('\n');
       }
 
-
+      // read the template, first checking whether the sketch has its own copy
       String PLIST_TEMPLATE = "Info.plist.tmpl";
       File plistTemplate = new File(sketch.getFolder(), PLIST_TEMPLATE);
       if (!plistTemplate.exists()) {
         plistTemplate = mode.getContentFile("application/" + PLIST_TEMPLATE);
       }
+
+      // substitute variables from the template with their values
+      StringBuilder sb = new StringBuilder(Util.loadFile(plistTemplate));
+      replaceTags(sb, "jvm_runtime", jvmRuntime);
+      replaceTags(sb, "jvm_version", MIN_JAVA_VERSION);
+      replaceTags(sb, "jvm_options_list", runOptionsXML.toString());
+      replaceTags(sb, "sketch", sketch.getMainName());
+      replaceTags(sb, "lsuipresentationmode",
+        Preferences.getBoolean("export.application.present") ? "4" : "0");
+      replaceTags(sb, "lsarchitecturepriority",
+        exportVariant.substring("macos-".length()));
+
+      // write the plist file
       File plistFile = new File(dotAppFolder, "Contents/Info.plist");
       PrintWriter pw = PApplet.createWriter(plistFile);
-
-      String[] lines = PApplet.loadStrings(plistTemplate);
-      for (int i = 0; i < lines.length; i++) {
-        if (lines[i].contains("@@")) {
-          StringBuilder sb = new StringBuilder(lines[i]);
-          int index = 0;
-          while ((index = sb.indexOf("@@jvm_runtime@@")) != -1) {
-            sb.replace(index, index + "@@jvm_runtime@@".length(),
-                       jvmRuntime);
-          }
-          while ((index = sb.indexOf("@@jvm_options_list@@")) != -1) {
-            sb.replace(index, index + "@@jvm_options_list@@".length(),
-                       runOptionsXML.toString());
-          }
-          while ((index = sb.indexOf("@@sketch@@")) != -1) {
-            sb.replace(index, index + "@@sketch@@".length(),
-                       sketch.getMainName());
-          }
-          while ((index = sb.indexOf("@@lsuipresentationmode@@")) != -1) {
-            sb.replace(index, index + "@@lsuipresentationmode@@".length(),
-                       Preferences.getBoolean("export.application.present") ? "4" : "0");
-          }
-          while ((index = sb.indexOf("@@lsarchitecturepriority@@")) != -1) {
-            sb.replace(index, index + "@@lsarchitecturepriority@@".length(),
-                       exportVariant.substring("macos-".length()));
-          }
-
-          lines[i] = sb.toString();
-        }
-        // explicit newlines to avoid Windows CRLF
-        pw.print(lines[i] + "\n");
-      }
+      pw.print(sb);
       pw.flush();
       pw.close();
 
@@ -1052,6 +1034,15 @@ public class JavaBuild {
 
     /// goodbye
     return true;
+  }
+
+
+  private void replaceTags(StringBuilder sb, String replacing, String replacement) {
+    int index = 0;
+    String tag = "@@" + replacing + "@@";
+    while ((index = sb.indexOf(tag)) != -1) {
+      sb.replace(index, index + tag.length(), replacement);
+    }
   }
 
 
