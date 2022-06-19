@@ -1,6 +1,21 @@
 1284 (4.0b9)
 X bump to Java 17.0.3+7
-_ code completion seems to be broken again
+
+contrib
+X add flatlaf.jar to the Windows config.xml
+X   https://github.com/processing/processing4/pull/498
+X Fix parsing of java error messages containing ":"
+X   https://github.com/processing/processing4/issues/492
+X   https://github.com/processing/processing4/pull/493
+
+fixable?
+_ code completion seems to have broken between beta 4 and beta 5
+_   https://github.com/processing/processing4/issues/491
+_   https://github.com/processing/processing/issues/5154
+
+_ adding file to sketch should require a save?
+
+_ "core does not run on this architecture linux-amd64" on Linux
 
 design
 X color updates based on changes from Paul (220426)
@@ -331,15 +346,20 @@ _   probably not sort by default to avoid confusion
 
 
 design
-_ gradients
-_   add a couple with gradients to the selector box?
+X gradients
+X   add a couple with gradients to the selector box?
 _ icons for debug toolbar
 _   replace variables-1x and -2x with separate SVG files in debug
-_ completion icon updates (class, field, protected, method)
+_ code completion icon updates (class, field, protected, method)
 _ overall layout/spacing/proportion
 
 
 design/implementation
+_ updateTheme() in Theme Selector
+_   theme_selector.combo_box.enabled.bgcolor
+_   theme_selector.combo_box.enabled.bgcolor
+_   don’t update dynamically unless you (a) select ‘Minerals’ or ‘Alloys’
+_   or (b) open, then close the dropdown
 _ build new welcome/examples screen for startup
 _ two tier dialog box (defaulting back to Lucida)
 _ dialog box with stack trace (font is too small)
