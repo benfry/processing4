@@ -10,14 +10,11 @@ X rewrite variable substitution for Info.plist.tmpl
 X   cleans up readability
 X   would have broken w/ anything on the same line
 X specify JVM version in exported applications
-
-        <key>JVMVersion</key>
-        <string>17</string>
-
-_ appbundler seems to prefer Java 1.8 if installed
-_ Export Application gives java.lang.ClassNotFoundException: --full-screen error
+X appbundler seems to prefer Java 1.8 if installed
+X   specifying correct version for both Processing.app and Export to Application
+_ Export to Application not including --full-screen options
+o   Export Application gives java.lang.ClassNotFoundException: --full-screen error
 _   https://github.com/processing/processing4/issues/488
-_   --full-screen not being added with Export to Application?
 
 
 contrib
