@@ -1,5 +1,7 @@
 1284 (4.0b9)
 X bump to Java 17.0.3+7
+X fix Export to Application on macOS with Apple Silicon
+X   gets rid of "Unable to start Java Runtime"
 
 contrib
 X add flatlaf.jar to the Windows config.xml

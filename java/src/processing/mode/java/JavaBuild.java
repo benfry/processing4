@@ -849,7 +849,7 @@ public class JavaBuild {
     // compared to the machine being used to build/export the sketch
     // https://github.com/processing/processing/pull/4406
     if (Preferences.getBoolean("run.options.memory") &&
-        !exportVariant.equals("arm")) {
+        !exportVariant.contains("arm")) {
       runOptions.append("-Xms" + Preferences.get("run.options.memory.initial") + "m");
       runOptions.append("-Xmx" + Preferences.get("run.options.memory.maximum") + "m");
     }
@@ -870,7 +870,8 @@ public class JavaBuild {
       }
     }
 
-    /// macosx: write out Info.plist (template for classpath, etc)
+
+    /// macOS: write out Info.plist (template for classpath, etc)
 
     if (exportPlatform == PConstants.MACOS) {
       StringBuilder runOptionsXML = new StringBuilder();
@@ -910,6 +911,10 @@ public class JavaBuild {
           while ((index = sb.indexOf("@@lsuipresentationmode@@")) != -1) {
             sb.replace(index, index + "@@lsuipresentationmode@@".length(),
                        Preferences.getBoolean("export.application.present") ? "4" : "0");
+          }
+          while ((index = sb.indexOf("@@lsarchitecturepriority@@")) != -1) {
+            sb.replace(index, index + "@@lsarchitecturepriority@@".length(),
+                       exportVariant.substring("macos-".length()));
           }
 
           lines[i] = sb.toString();
