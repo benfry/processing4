@@ -150,7 +150,7 @@ public class SingleInstance {
     Messages.log("Processing is not already running (or could not connect)");
     return false;
   }
-  handleProxy("http", "http.proxyHost", "http.proxyPort");
-  handleProxy("https", "https.proxyHost", "https.proxyPort");
-  handleProxy("socks", "socksProxyHost", "socksProxyPort");
+  Preferences.handleProxy("http", "http.proxyHost", "http.proxyPort");
+  Preferences.handleProxy("https", "https.proxyHost", "https.proxyPort");
+  Preferences.handleProxy("socks", "socksProxyHost", "socksProxyPort");
 }
