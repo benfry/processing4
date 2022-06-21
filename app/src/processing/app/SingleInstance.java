@@ -22,14 +22,14 @@
 package processing.app;
 
 import java.awt.EventQueue;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.*;
+import java.util.*;
 
-import processing.core.PApplet;
+import processing.app.ui.Toolkit;
+import processing.core.*;
 
 
 /**
@@ -120,6 +120,9 @@ public class SingleInstance {
 
 
   static boolean sendArguments(String[] args) {  //, long timeout) {
+    System.clearProperty("http.proxyHost");
+    System.clearProperty("https.proxyHost");
+    System.clearProperty("socksProxyHost");
     try {
       Messages.log("Checking to see if Processing is already running");
       int port = Preferences.getInteger(SERVER_PORT);
@@ -147,4 +150,7 @@ public class SingleInstance {
     Messages.log("Processing is not already running (or could not connect)");
     return false;
   }
+  handleProxy("http", "http.proxyHost", "http.proxyPort");
+  handleProxy("https", "https.proxyHost", "https.proxyPort");
+  handleProxy("socks", "socksProxyHost", "socksProxyPort");
 }
