@@ -10277,6 +10277,7 @@ public class PApplet implements PConstants {
 
     int displayNum = -1;  // use default
     boolean present = false;
+    boolean fullScreen = false;
     float uiScale = 0;
 
     String param, value;
@@ -10342,6 +10343,9 @@ public class PApplet implements PConstants {
 
         } else if (args[argIndex].equals(ARGS_EXTERNAL)) {
           external = true;
+
+        } else if (args[argIndex].equals(ARGS_FULL_SCREEN)) {
+          fullScreen = true;
 
         } else {
           name = args[argIndex];
@@ -10418,6 +10422,7 @@ public class PApplet implements PConstants {
     sketch.display = displayNum;
 
     sketch.present = present;
+    sketch.fullScreen = fullScreen;
 
     // For 3.0.1, moved this above handleSettings() so that loadImage() can be
     // used inside settings(). Sets a terrible precedent, but the alternative

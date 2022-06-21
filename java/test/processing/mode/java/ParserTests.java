@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
+import processing.app.Preferences;
 import processing.app.SketchException;
 import processing.mode.java.preproc.PreprocessorResult;
 import processing.mode.java.preproc.PdePreprocessIssueException;
@@ -23,6 +25,11 @@ public class ParserTests {
   @BeforeClass
   public static void init() {
     ProcessingTestUtil.init();
+  }
+
+  @Before
+  public void before() {
+    Preferences.setBoolean("export.application.fullscreen", false);
   }
 
   static void expectRecognitionException(final String id,
@@ -432,7 +439,8 @@ public class ParserTests {
 
   @Test
   public void testMultiMultilineString() {
-    expectGood("multimultilinestr");
+    Preferences.setBoolean("export.application.fullscreen", true);
+    expectGood("fullscreen_export");
   }
 
 }

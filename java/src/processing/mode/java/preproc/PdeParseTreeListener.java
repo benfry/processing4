@@ -1227,21 +1227,29 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     footerWriter.addCodeLine(indent1 + "static public void main(String[] passedArgs) {");
     footerWriter.addCode(indent2 +   "String[] appletArgs = new String[] { ");
 
+
+
     { // assemble line with applet args
-      if (Preferences.getBoolean("export.application.fullscreen")) {
-        footerWriter.addCode("\"" + PApplet.ARGS_FULL_SCREEN + "\", ");
+      StringJoiner argsJoiner = new StringJoiner(", ");
+
+      boolean shouldFullScreen = Preferences.getBoolean("export.application.present");
+      shouldFullScreen = shouldFullScreen || Preferences.getBoolean("export.application.fullscreen");
+      if (shouldFullScreen) {
+        argsJoiner.add("\"" + PApplet.ARGS_FULL_SCREEN + "\"");
 
         String bgColor = Preferences.get("run.present.bgcolor");
-        footerWriter.addCode("\"" + PApplet.ARGS_BGCOLOR + "=" + bgColor + "\", ");
+        argsJoiner.add("\"" + PApplet.ARGS_BGCOLOR + "=" + bgColor + "\"");
 
         if (Preferences.getBoolean("export.application.stop")) {
           String stopColor = Preferences.get("run.present.stop.color");
-          footerWriter.addCode("\"" + PApplet.ARGS_STOP_COLOR + "=" + stopColor + "\", ");
+          argsJoiner.add("\"" + PApplet.ARGS_STOP_COLOR + "=" + stopColor + "\"");
         } else {
-          footerWriter.addCode("\"" + PApplet.ARGS_HIDE_STOP + "\", ");
+          argsJoiner.add("\"" + PApplet.ARGS_HIDE_STOP + "\"");
         }
       }
-      footerWriter.addCode("\"" + sketchName + "\"");
+      
+      argsJoiner.add("\"" + sketchName + "\"");
+      footerWriter.addCode(argsJoiner.toString());
     }
 
     footerWriter.addCodeLine(" };");
