@@ -109,6 +109,9 @@ public class PVector implements Serializable {
    * Constructor for an empty vector: x, y, and z are set to 0.
    */
   public PVector() {
+    this.x = 0f;
+    this.y = 0f;
+    this.z = 0f
   }
 
 
