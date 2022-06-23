@@ -111,7 +111,7 @@ public class PVector implements Serializable {
   public PVector() {
     this.x = 0f;
     this.y = 0f;
-    this.z = 0f
+    this.z = 0f;
   }
 
 
