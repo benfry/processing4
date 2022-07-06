@@ -162,12 +162,21 @@ public class Library extends LocalContribution {
       nativeLibraryFolder = hostLibrary;
 
     } else {
-      // if not found, try the old-style naming
-      String oldName = newToOld.get(variant);
-      if (oldName != null) {
-        hostLibrary = new File(libraryFolder, oldName);
-        if (hostLibrary.exists()) {
-          nativeLibraryFolder = hostLibrary;
+      if (variant.contains("macos")) {
+        // Try universal on mac
+        hostLibrary = new File(libraryFolder, "macos-universal");
+      }
+      if (hostLibrary.exists()) {
+        nativeLibraryFolder = hostLibrary;
+        System.out.println("Got universal libraries for macOS: " + nativeLibraryFolder);
+      } else {
+        // if not found, try the old-style naming
+        String oldName = newToOld.get(variant);
+        if (oldName != null) {
+          hostLibrary = new File(libraryFolder, oldName);
+          if (hostLibrary.exists()) {
+            nativeLibraryFolder = hostLibrary;
+          }
         }
       }
     }
@@ -191,19 +200,29 @@ public class Library extends LocalContribution {
 
     for (String variant : Platform.getSupportedVariants().keys()) {
       File variantFolder = new File(libraryFolder, variant);
+      String variantName = variant;
       if (!variantFolder.exists()) {
-        // check to see if old naming is in use
-        String oldName = newToOld.get(variant, null);
-        if (oldName != null) {
-          variantFolder = new File(libraryFolder, variant);
-          if (variantFolder.exists()) {
-            Messages.log("Please update " + getName() + " for Processing 4. " +
-              variantFolder + " is the older naming scheme.");
+        if (variant.contains("macos")) {
+          // Try universal on mac
+          variantFolder = new File(libraryFolder, "macos-universal");          
+        }
+        if (variantFolder.exists()) {
+          variantName = "macos-universal";
+          System.out.println("Got universal libraries for macOS: " + variantFolder);          
+        } else {
+          // check to see if old naming is in use
+          String oldName = newToOld.get(variant, null);
+          if (oldName != null) {
+            variantFolder = new File(libraryFolder, variant);
+            if (variantFolder.exists()) {
+              Messages.log("Please update " + getName() + " for Processing 4. " +
+                variantFolder + " is the older naming scheme.");
+            }
           }
         }
       }
       if (variantFolder.exists()) {
-        String[] entries = listPlatformEntries(libraryFolder, variant, baseList);
+        String[] entries = listPlatformEntries(libraryFolder, variantName, baseList);
         if (entries != null) {
           exportList.put(variant, entries);
         }
