@@ -28,18 +28,6 @@ _ IDE treats {} brackets as code when they're inside a String, char or comment
 _   https://github.com/processing/processing4/issues/444
 _   https://github.com/processing/processing4/pull/504
 
-
-_ code completion seems to have broken between beta 4 and beta 5
-_   https://github.com/processing/processing4/issues/491
-
-_ adding file to sketch should require a save?
-
-_ visual artifacts on Linux with new UI
-_   menu crustiness, console background color not getting set, others?
-_   need to check on an actual Linux device, not a VM
-_ check Windows for similar artifacts
-
-
 design
 X color updates based on changes from Paul (220426)
 X if no matching theme selected, was highlighting column -1
@@ -198,6 +186,12 @@ X   https://github.com/processing/processing4/pull/483
 
 
 fixes/changes before beta 9
+_ code completion seems to have broken between beta 4 and beta 5
+_   https://github.com/processing/processing4/issues/491
+_ visual artifacts on Linux with new UI
+_   menu crustiness, console background color not getting set, others?
+_   need to check on an actual Linux device, not a VM
+_ check Windows for similar artifacts
 _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
 _ visual fixes for tab sizes, etc
@@ -217,6 +211,8 @@ _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
+
+_ adding a file to an untitled sketch should require a save
 
 _ if a sketch is in the Desktop folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well
