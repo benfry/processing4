@@ -43,11 +43,11 @@ import processing.app.SketchCode;
  */
 public class EditorHeader extends JComponent {
   // height of this tab bar
-  static final int HIGH = Toolkit.zoom(29);
+  static final int HIGH = Toolkit.zoom(32);
 
   static final int ARROW_TAB_WIDTH = Toolkit.zoom(18);
-  static final int ARROW_TOP = Toolkit.zoom(11);
-  static final int ARROW_BOTTOM = Toolkit.zoom(18);
+  static final int ARROW_TOP = Toolkit.zoom(13);
+  static final int ARROW_BOTTOM = Toolkit.zoom(19);
   static final int ARROW_WIDTH = Toolkit.zoom(6);
 
   static final int CURVE_RADIUS = Toolkit.zoom(6);

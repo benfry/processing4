@@ -32,7 +32,7 @@ import processing.data.StringDict;
 
 abstract public class EditorButton extends JComponent
 implements MouseListener, MouseMotionListener, ActionListener {
-  static public final int DIM = Toolkit.zoom(30);
+  static public final int DIM = Toolkit.zoom(36);
 
   /** The lowercase short name used to load its SVG/PNG image data. */
   protected String name;

@@ -59,6 +59,7 @@ o   Space Grotesk and Mono?
 o     https://fonts.google.com/specimen/Space+Mono
 o     https://fonts.google.com/specimen/Space+Grotesk
 X replace foundation icon png that had a random black shape
+X a few size/proportion tweaks from Paul
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
