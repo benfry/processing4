@@ -1,6 +1,8 @@
 1284 (4.0b9)
 X bump to Java 17.0.3+7
 X specify Java version with appbundler in main app
+X "core does not run on this architecture linux-amd64" on Linux
+X   just need to do 'ant clean-jogl' inside core
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -24,14 +26,17 @@ X Fix parsing of java error messages containing ":"
 X   https://github.com/processing/processing4/issues/492
 X   https://github.com/processing/processing4/pull/493
 
-fixable?
+
 _ code completion seems to have broken between beta 4 and beta 5
 _   https://github.com/processing/processing4/issues/491
-_   https://github.com/processing/processing/issues/5154
 
 _ adding file to sketch should require a save?
 
-_ "core does not run on this architecture linux-amd64" on Linux
+_ visual artifacts on Linux with new UI
+_   menu crustiness, console background color not getting set, others?
+_   need to check on an actual Linux device, not a VM
+_ check Windows for similar artifacts
+
 
 design
 X color updates based on changes from Paul (220426)
