@@ -14,10 +14,6 @@ X   would have broken w/ anything on the same line
 X specify JVM version in exported applications
 X appbundler seems to prefer Java 1.8 if installed
 X   specifying correct version for both Processing.app and Export to Application
-_ Export to Application not including --full-screen options
-o   Export Application gives java.lang.ClassNotFoundException: --full-screen error
-_   https://github.com/processing/processing4/issues/488
-
 
 contrib
 X add flatlaf.jar to the Windows config.xml
@@ -25,6 +21,12 @@ X   https://github.com/processing/processing4/pull/498
 X Fix parsing of java error messages containing ":"
 X   https://github.com/processing/processing4/issues/492
 X   https://github.com/processing/processing4/pull/493
+X Export Application gives java.lang.ClassNotFoundException: --full-screen error
+X   https://github.com/processing/processing4/issues/488
+X   https://github.com/processing/processing4/pull/502
+_ IDE treats {} brackets as code when they're inside a String, char or comment
+_   https://github.com/processing/processing4/issues/444
+_   https://github.com/processing/processing4/pull/504
 
 
 _ code completion seems to have broken between beta 4 and beta 5
