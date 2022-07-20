@@ -101,11 +101,6 @@ class ErrorChecker {
       problems.addAll(curlyQuoteProblems);
     }
 
-    if (problems.isEmpty()) { // Check for missing braces
-      List<JavaProblem> missingBraceProblems = checkForMissingBraces(ps);
-      problems.addAll(missingBraceProblems);
-    }
-
     if (problems.isEmpty()) {
       AtomicReference<ClassPath> searchClassPath =
         new AtomicReference<>(null);
@@ -279,52 +274,6 @@ class ErrorChecker {
       }
     }
     problems.addAll(problems2);
-    return problems;
-  }
-
-
-  static private List<JavaProblem> checkForMissingBraces(PreprocSketch ps) {
-    List<JavaProblem> problems = new ArrayList<>(0);
-    for (int tabIndex = 0; tabIndex < ps.tabStartOffsets.length; tabIndex++) {
-      int tabStartOffset = ps.tabStartOffsets[tabIndex];
-      int tabEndOffset = (tabIndex < ps.tabStartOffsets.length - 1) ?
-          ps.tabStartOffsets[tabIndex + 1] : ps.scrubbedPdeCode.length();
-      int[] braceResult = SourceUtil.checkForMissingBraces(ps.scrubbedPdeCode, tabStartOffset, tabEndOffset);
-      if (braceResult[0] != 0) {
-        JavaProblem problem =
-            new JavaProblem(braceResult[0] < 0
-                                ? Language.interpolate("editor.status.missing.left_curly_bracket")
-                                : Language.interpolate("editor.status.missing.right_curly_bracket"),
-                            JavaProblem.ERROR, tabIndex, braceResult[1]);
-        problem.setPDEOffsets(braceResult[3], braceResult[3] + 1);
-        problems.add(problem);
-      }
-    }
-
-    if (problems.isEmpty()) {
-      return problems;
-    }
-
-    int problemTabIndex = problems.get(0).getTabIndex();
-
-    IProblem missingBraceProblem =
-      Arrays.stream(ps.compilationUnit.getProblems())
-        .filter(ErrorChecker::isMissingBraceProblem)
-        // Ignore if it is at the end of file
-        .filter(p -> p.getSourceEnd() + 1 < ps.javaCode.length())
-        // Ignore if the tab number does not match our detected tab number
-        .filter(p -> problemTabIndex == ps.mapJavaToSketch(p).tabIndex)
-        .findFirst()
-        .orElse(null);
-
-    // Prefer ECJ problem, shows location more accurately
-    if (missingBraceProblem != null) {
-      JavaProblem p = convertIProblem(missingBraceProblem, ps);
-      if (p != null) {
-        problems.clear();
-        problems.add(p);
-      }
-    }
     return problems;
   }
 
