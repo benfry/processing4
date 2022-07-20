@@ -24,9 +24,9 @@ X   https://github.com/processing/processing4/pull/493
 X Export Application gives java.lang.ClassNotFoundException: --full-screen error
 X   https://github.com/processing/processing4/issues/488
 X   https://github.com/processing/processing4/pull/502
-_ IDE treats {} brackets as code when they're inside a String, char or comment
-_   https://github.com/processing/processing4/issues/444
-_   https://github.com/processing/processing4/pull/504
+X IDE treats {} brackets as code when they're inside a String, char or comment
+X   https://github.com/processing/processing4/issues/444
+X   https://github.com/processing/processing4/pull/504
 
 design
 X color updates based on changes from Paul (220426)
