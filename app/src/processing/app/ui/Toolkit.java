@@ -1325,8 +1325,10 @@ public class Toolkit {
     Font font = Font.createFont(Font.TRUETYPE_FONT, input);
     input.close();
 
-    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    ge.registerFont(font);
+    new Thread(() -> {
+      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      ge.registerFont(font);
+    }, "FontRegisterer").start();
 
     return font.deriveFont((float) size);
   }
