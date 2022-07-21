@@ -324,6 +324,9 @@ public class ThemeSelector extends JFrame implements Tool {
    * @return true if sketchbook/theme.txt does not match a built-in theme.
    */
   private boolean userModifiedTheme() {
+    if (!sketchbookFile.exists()) {
+      return false;
+    }
     String currentTheme = getCurrentTheme();
     for (ThemeSet set : sets) {
       if (set.getIndex(currentTheme) != -1) {
