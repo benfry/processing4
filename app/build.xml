@@ -100,7 +100,7 @@
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-  <property name="flatlaf.version" value="2.2" />
+  <property name="flatlaf.version" value="2.4" />
 
   <fileset id="flatlaf.files" dir="lib">
     <include name="flatlaf.jar" />
