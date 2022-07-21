@@ -60,6 +60,11 @@ o     https://fonts.google.com/specimen/Space+Mono
 o     https://fonts.google.com/specimen/Space+Grotesk
 X replace foundation icon png that had a random black shape
 X a few size/proportion tweaks from Paul
+X visual artifacts on Linux with new UI
+X   remove editor.laf preference because it conflicts with FlatLaf
+X   menu crustiness, console background color not getting set, others?
+X   need to check on an actual Linux device, not a VM
+X   this was caused by Nimbus interactions with FlatLaf
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
@@ -189,10 +194,7 @@ X   https://github.com/processing/processing4/pull/483
 fixes/changes before beta 9
 _ code completion seems to have broken between beta 4 and beta 5
 _   https://github.com/processing/processing4/issues/491
-_ visual artifacts on Linux with new UI
-_   menu crustiness, console background color not getting set, others?
-_   need to check on an actual Linux device, not a VM
-_ check Windows for similar artifacts
+_ check Windows for any visual artifacts with FlatLaf
 _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
 _ visual fixes for tab sizes, etc

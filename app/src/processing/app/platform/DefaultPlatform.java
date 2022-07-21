@@ -108,28 +108,16 @@ public class DefaultPlatform {
    * @throws Exception Just like I said.
    */
   public void setLookAndFeel() throws Exception {
-    String laf = Preferences.get("editor.laf");
-    if (laf == null || laf.length() == 0) {  // normal situation
-      /*
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-      // Default was 8x8, but that's not enough with the insets and rounded rect
-      // https://github.com/processing/processing4/issues/473
-      //System.out.println(UIManager.get("ScrollBar.minimumThumbSize"));
-      UIManager.put("ScrollBar.minimumThumbSize", new Dimension(16, 24));
-      */
+    // In 4.0 beta 9, getting rid of the editor.laf preference,
+    // because we're using FlatLaf everywhere, and mixing others
+    // (i.e. Nimbus on Linux) with our custom components is badness.
 
-      //UIManager.setLookAndFeel(new processing.app.laf.PdeLookAndFeel());
-
-      // dummy font call so that it's registered for FlatLaf
-      Toolkit.getSansFont(12, Font.PLAIN);
-      // pull in FlatLaf.properties from the processing.app.laf folder
-      FlatLaf.registerCustomDefaultsSource("processing.app.laf");
-      // start with Light, but updateTheme() will be called soon
-      UIManager.setLookAndFeel(new FlatLightLaf());
-
-    } else {
-      UIManager.setLookAndFeel(laf);
-    }
+    // dummy font call so that it's registered for FlatLaf
+    Toolkit.getSansFont(12, Font.PLAIN);
+    // pull in FlatLaf.properties from the processing.app.laf folder
+    FlatLaf.registerCustomDefaultsSource("processing.app.laf");
+    // start with Light, but updateTheme() will be called soon
+    UIManager.setLookAndFeel(new FlatLightLaf());
 
     /*
     javax.swing.UIDefaults defaults = UIManager.getDefaults();

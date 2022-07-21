@@ -228,18 +228,6 @@ editor.untitled.prefix=sketch_
 # http://code.google.com/p/processing/issues/detail?id=283
 editor.untitled.suffix=yyMMdd
 
-# Set the default look & feel on Linux to something other than
-# the 'native' platform default, which is usually Metal (yuck!)
-# GTK isn't for everyone (and KDE users will get Metal or some
-# such anyway, so this is now broken out as an option
-# Linux is by default even uglier than metal (Motif?).
-#editor.laf.linux = com.sun.java.swing.plaf.gtk.GTKLookAndFeel
-# Trying Nimbus in 3.0a6 because the GTK menus are really dreadful.
-# Unfortunately, the Nimbus scrollbars are really gross, but...
-# As always, people can override on their own, or the next step
-# is to do a Synth LAF that gives us something not awful.
-editor.laf.linux = javax.swing.plaf.nimbus.NimbusLookAndFeel
-
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
