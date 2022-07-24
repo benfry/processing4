@@ -5,6 +5,7 @@ X "core does not run on this architecture linux-amd64" on Linux
 X   just need to do 'ant clean-jogl' inside core
 X update wiki with recent changes (i.e. separating sketch folder)
 X   https://github.com/processing/processing4/wiki/Processing-4
+X check Windows for any visual artifacts with FlatLaf
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -194,12 +195,14 @@ X   https://github.com/processing/processing4/pull/483
 
 
 fixes/changes before beta 9
+_ visual fixes for tab sizes, etc (with Paul)
+_   weirdness with gaps in tabs (editor too big, manager too small)
+_   contrib mgr: filter/dropdown vertical centering is too high
+_   fake bold being used for tab name? (Windows only?)
 _ code completion seems to have broken between beta 4 and beta 5
 _   https://github.com/processing/processing4/issues/491
-_ check Windows for any visual artifacts with FlatLaf
 _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
-_ visual fixes for tab sizes, etc
 _ font for stack trace dialogs is too small (and wrong)
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
@@ -217,12 +220,22 @@ _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-indus
 
 _ adding a file to an untitled sketch should require a save
 
-_ if a sketch is in the Desktop folder, try triggering macos access dialog
+_ if a sketch is in the Desktop folder, try triggering macos access dialog once
 _   do it once for the root, then see if it allows the folders inside as well
 _   (opening p5jsMode sketch on Desktop causes a zillion dialog boxes)
 
+
+detach sketch names
 _ remove checkbox for detaching sketch name
 _   just do this manually, and Save As will reset the name
+_   should this be a setting in the sketch itself?
+_ really need to override the save dialog and add a checkbox there
+_   or should this be on the rename for the main tab
+_   and if it's different on 'save as' then it won't update it
+_ better yet, is it on creating sketches, so it actually is a pref
+_   i.e. 'new sketches use name Sketch.java' instead of name of sketch as main tab
+_   that might be closer to where people are expecting it anyway
+_   and combined w/ the rename checkbox on the main tab, that might do it
 
 
 Python Mode
