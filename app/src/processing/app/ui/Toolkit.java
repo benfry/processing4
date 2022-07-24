@@ -1202,6 +1202,8 @@ public class Toolkit {
   static public Font getMonoFont(int size, int style) {
     if (monoFont == null) {
       try {
+//        monoFont = createFont("SourceCodePro-Regular.ttf", Font.PLAIN, size);
+//        monoBoldFont = createFont("SourceCodePro-Bold.ttf", Font.BOLD, size);
         monoFont = createFont("SourceCodePro-Regular.ttf", size);
         monoBoldFont = createFont("SourceCodePro-Bold.ttf", size);
 
@@ -1262,8 +1264,33 @@ public class Toolkit {
   static public Font getSansFont(int size, int style) {
     if (sansFont == null) {
       try {
-        sansFont = createFont("ProcessingSansPro-Regular.ttf", size);
-        sansBoldFont = createFont("ProcessingSansPro-Semibold.ttf", size);
+        sansFont = createFont("ProcessingSans-Regular.ttf", size);
+        sansBoldFont = createFont("ProcessingSans-Bold.ttf", size);
+
+        /*
+        // during beta 9, a bit of testing to make sure the right font is used
+        GraphicsEnvironment ge =
+          GraphicsEnvironment.getLocalGraphicsEnvironment();
+        Font[] fonts = ge.getAllFonts();
+        // even though these both come through as 'plain' the styles work
+        for (Font font : fonts) {
+          if (font.getName().contains("Processing")) {
+            System.out.println(font);
+          }
+        }
+        // there are no bold fonts
+        for (Font font : fonts) {
+          if (font.getStyle() == Font.BOLD) {
+            System.out.println("found bold: " + font);
+          }
+        }
+        // these pass, with the current code; even without doing
+        // deriveFont(Font.BOLD) before the registerFont() call.
+        Font f = new Font("Processing Sans", Font.BOLD, 12);
+        System.out.println("hopefully ProcessingSans-Bold: " + f.getPSName());
+        f = new Font("Processing Sans", Font.PLAIN, 12);
+        System.out.println("hopefully ProcessingSans-Regular: " + f.getPSName());
+        */
 
         // https://github.com/processing/processing/issues/2886
         // https://github.com/processing/processing/issues/4944
@@ -1324,6 +1351,11 @@ public class Toolkit {
     BufferedInputStream input = new BufferedInputStream(new FileInputStream(fontFile));
     Font font = Font.createFont(Font.TRUETYPE_FONT, input);
     input.close();
+
+    // make sure it's the correct weight (plain or bold) and specify a size
+//    System.out.println("about to derive " + font);
+//    font = font.deriveFont(style, size);
+//    System.out.println("derived to " + font);
 
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     ge.registerFont(font);

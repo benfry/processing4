@@ -68,6 +68,7 @@ X   remove editor.laf preference because it conflicts with FlatLaf
 X   menu crustiness, console background color not getting set, others?
 X   need to check on an actual Linux device, not a VM
 X   this was caused by Nimbus interactions with FlatLaf
+X command key symbol missing in pop up menus
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
@@ -195,6 +196,10 @@ X   https://github.com/processing/processing4/pull/483
 
 
 fixes/changes before beta 9
+_ update available icon looks broken (bad winding rule?)
+_ fix column widths in 'updates' tab of contrib manager
+_   also make them resizable
+_   section headings look bad (not capitalized, not plural, no bg color change)
 _ visual fixes for tab sizes, etc (with Paul)
 _   weirdness with gaps in tabs (editor too big, manager too small)
 _   contrib mgr: filter/dropdown vertical centering is too high
