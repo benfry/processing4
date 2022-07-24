@@ -3,6 +3,8 @@ X bump to Java 17.0.3+7
 X specify Java version with appbundler in main app
 X "core does not run on this architecture linux-amd64" on Linux
 X   just need to do 'ant clean-jogl' inside core
+X update wiki with recent changes (i.e. separating sketch folder)
+X   https://github.com/processing/processing4/wiki/Processing-4
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -203,8 +205,6 @@ _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
 _ update theme instructions at
 _   https://github.com/processing/processing4/wiki/Themes
-_ Export Application gives java.lang.ClassNotFoundException: --full-screen error
-_   https://github.com/processing/processing4/issues/488
 
 
 during release of beta 9
@@ -221,12 +221,8 @@ _ if a sketch is in the Desktop folder, try triggering macos access dialog
 _   do it once for the root, then see if it allows the folders inside as well
 _   (opening p5jsMode sketch on Desktop causes a zillion dialog boxes)
 
-
 _ remove checkbox for detaching sketch name
 _   just do this manually, and Save As will reset the name
-
-_ update wiki with recent changes (i.e. separating sketch folder)
-_   https://github.com/processing/processing4/wiki/Processing-4
 
 
 Python Mode
@@ -405,6 +401,9 @@ _   https://github.com/processing/processing4/issues/48
 
 
 before 4.x final
+_ anti-aliasing issues under KDE, does the cmd line arg break anything?
+_   https://github.com/processing/processing4/pull/513/files
+_   https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html#aaFonts
 _ break Movie Maker out to its own library?
 _   another big leap in file size reduction for the PDE download
 _   nope, spend the time doing auto-download for the binaries
