@@ -223,6 +223,12 @@ _   https://aka.ms/wdsi
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 
+high
+_ Cannot type quotes with an international keyboard on MacOS
+_   fixed by turning on "Enable complex text input"
+_   https://github.com/processing/processing4/issues/322
+
+
 _ adding a file to an untitled sketch should require a save
 
 _ if a sketch is in the Desktop folder, try triggering macos access dialog once
