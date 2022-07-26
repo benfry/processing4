@@ -171,6 +171,7 @@ X icons in the status bar (using emojis at the moment, now out of place)
 X   console collapse/expand button
 X   copy to clipboard button
 X contribs exclamation looks like an error, not "update available"
+X clean up the updates panel in the manager
 
 manager
 X make ContributionTab.FilterField into a static class

@@ -144,13 +144,15 @@ public class ListPanel extends JPanel implements Scrollable {
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     table.setFillsViewportHeight(true);
     table.setDefaultRenderer(Contribution.class, new ContribStatusRenderer());
-//    table.setFont(ManagerFrame.NORMAL_PLAIN);
     table.setRowHeight(Toolkit.zoom(28));
     table.setRowMargin(Toolkit.zoom(6));
-    table.getColumnModel().setColumnMargin(0);
-    table.getColumnModel().getColumn(0).setMaxWidth(ManagerFrame.STATUS_WIDTH);
-    table.getColumnModel().getColumn(2).setMinWidth(ManagerFrame.AUTHOR_WIDTH);
-    table.getColumnModel().getColumn(2).setMaxWidth(ManagerFrame.AUTHOR_WIDTH);
+
+    TableColumnModel tcm = table.getColumnModel();
+    tcm.setColumnMargin(0);
+    tcm.getColumn(0).setMaxWidth(ManagerFrame.STATUS_WIDTH);
+    tcm.getColumn(2).setMinWidth(ManagerFrame.AUTHOR_WIDTH);
+    tcm.getColumn(2).setMaxWidth(ManagerFrame.AUTHOR_WIDTH);
+
     table.setShowGrid(false);
     table.setColumnSelectionAllowed(false);
     table.setCellSelectionEnabled(false);
@@ -188,6 +190,7 @@ public class ListPanel extends JPanel implements Scrollable {
     }
     table.getTableHeader().setDefaultRenderer(new ContribHeaderRenderer());
     table.getTableHeader().setReorderingAllowed(false);
+    table.getTableHeader().setResizingAllowed(true);
     table.setVisible(true);
 
     setLayout(new BorderLayout());
