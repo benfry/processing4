@@ -633,7 +633,13 @@ public class ListPanel extends JPanel implements Scrollable {
 
     SectionHeaderContribution(ContributionType type) {
       this.type = type;
-      this.name = getTypeName();
+
+      switch (type) {
+        case LIBRARY: this.name = "Libraries"; break;
+        case MODE: this.name = "Modes"; break;
+        case TOOL: this.name = "Tools"; break;
+        case EXAMPLES: this.name = "Examples"; break;
+      }
     }
 
     @Override

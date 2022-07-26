@@ -172,6 +172,11 @@ X   console collapse/expand button
 X   copy to clipboard button
 X contribs exclamation looks like an error, not "update available"
 X clean up the updates panel in the manager
+X fix column widths in 'updates' tab of contrib manager
+X   also make them resizable
+X   section headings look bad (not capitalized, not plural, no bg color change)
+X   color change might help, but a little fussy at the moment
+X     gets into whether the type weight should change, and starts affecting too much
 
 manager
 X make ContributionTab.FilterField into a static class
@@ -198,9 +203,6 @@ X   https://github.com/processing/processing4/pull/483
 
 fixes/changes before beta 9
 _ update available icon looks broken (bad winding rule?)
-_ fix column widths in 'updates' tab of contrib manager
-_   also make them resizable
-_   section headings look bad (not capitalized, not plural, no bg color change)
 _ visual fixes for tab sizes, etc (with Paul)
 _   weirdness with gaps in tabs (editor too big, manager too small)
 _   contrib mgr: filter/dropdown vertical centering is too high
