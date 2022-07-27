@@ -1810,8 +1810,10 @@ public class Base {
           String prompt =
             "<html> " +
             "<head> <style type=\"text/css\">"+
-            "b { font: 13pt \"Lucida Grande\" }"+
-            "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
+            //"b { font: 13pt \"Lucida Grande\" }"+
+            "b { font: 13pt \"Processing Sans\" }"+
+            //"p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
+            "p { font: 11pt \"Processing Sans\"; margin-top: 8px; width: 300px }"+
             "</style> </head>" +
             "<b>Are you sure you want to Quit?</b>" +
             "<p>Closing the last open sketch will quit Processing.";

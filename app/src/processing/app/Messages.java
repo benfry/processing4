@@ -21,6 +21,8 @@
 
 package processing.app;
 
+import processing.app.ui.Toolkit;
+
 import java.awt.Frame;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -96,8 +98,8 @@ public class Messages {
         JOptionPane pane =
           new JOptionPane("<html> " +
                           "<head> <style type=\"text/css\">"+
-                          "b { font: 13pt \"Lucida Grande\" }"+
-                          "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
+                          "b { font: 13pt \"Processing Sans\" }"+
+                          "p { font: 11pt \"Processing Sans\"; margin-top: 8px; width: 300px }"+
                           "</style> </head>" +
                           "<b>" + primary + "</b>" +
                           "<p>" + secondary + "</p>",
@@ -132,7 +134,7 @@ public class Messages {
 
 
   /**
-   * Testing a new warning window that includes the stack trace.
+   * Warning window that includes the stack trace.
    */
   static public void showTrace(String title, String message,
                                Throwable t, boolean fatal) {
@@ -145,12 +147,24 @@ public class Messages {
       }
 
     } else {
+      // ensures that the mono font is loaded
+      // (inside Exception handler to avoid recursive badness)
+      String name = "Source Code Pro";
+      try {
+        name = Toolkit.getMonoFontName();
+      } catch (Exception ignored) { }
+
       StringWriter sw = new StringWriter();
       t.printStackTrace(new PrintWriter(sw));
       // Necessary to replace \n with <br/> (even if pre) otherwise Java
       // treats it as a closed tag and reverts to plain formatting.
-      message = ("<html>" + message +
-                 "<br/><font size=2><br/>" +
+      message = ("<html>" +
+                 "<head> <style type=\"text/css\">" +
+                 //"p { font: 13pt \"Processing Sans\" }" +
+                 "tt { font: 11pt \"" + name + "\"; }" +
+                 "</style> </head>" +
+                 message +
+                 "<br/><tt><br/>" +
                  sw + "</html>").replaceAll("\n", "<br/>");
 
       JOptionPane.showMessageDialog(new Frame(), message, title,
@@ -208,8 +222,8 @@ public class Messages {
       JOptionPane pane =
         new JOptionPane("<html> " +
                         "<head> <style type=\"text/css\">"+
-                        "b { font: 13pt \"Lucida Grande\" }"+
-                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
+                        "b { font: 13pt \"Processing Sans\" }"+
+                        "p { font: 11pt \"Processing Sans\"; margin-top: 8px; width: 300px }"+
                         "</style> </head>" +
                         "<b>" + primary + "</b>" +
                         // without changing \n to <br> it will close the

@@ -2149,8 +2149,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
       JOptionPane pane =
         new JOptionPane("<html> " +
                         "<head> <style type=\"text/css\">"+
-                        "b { font: 13pt \"Lucida Grande\" }"+
-                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
+                        //"b { font: 13pt \"Lucida Grande\" }"+
+                        //"b { font: 13pt \"Processing Sans\" }"+
+                        //"p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
+                        //"p { font: 11pt \"Processing Sans\"; margin-top: 8px }"+
                         "</style> </head>" +
                         "<b>" + Language.interpolate("save.title", sketch.getName()) + "</b>" +
                         "<p>" + Language.text("save.hint") + "</p>",
