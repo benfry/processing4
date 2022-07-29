@@ -1211,8 +1211,8 @@ public class Toolkit {
             Locale.CHINESE.getLanguage().equals(lang) ||
             Locale.JAPANESE.getLanguage().equals(lang) ||
             Locale.KOREAN.getLanguage().equals(lang)) {
-          sansFont = new Font("Monospaced", Font.PLAIN, size);
-          sansBoldFont = new Font("Monospaced", Font.BOLD, size);
+          monoFont = new Font("Monospaced", Font.PLAIN, size);
+          monoBoldFont = new Font("Monospaced", Font.BOLD, size);
         }
       } catch (Exception e) {
         Messages.err("Could not load mono font", e);
@@ -1262,6 +1262,8 @@ public class Toolkit {
       try {
         sansFont = createFont("ProcessingSans-Regular.ttf", size);
         sansBoldFont = createFont("ProcessingSans-Bold.ttf", size);
+        // test what the synthesized bold looks like
+        //sansBoldFont = sansFont.deriveFont(Font.BOLD);
 
         /*
         // during beta 9, a bit of testing to make sure the right font is used
