@@ -30,6 +30,8 @@ X   https://github.com/processing/processing4/pull/502
 X IDE treats {} brackets as code when they're inside a String, char or comment
 X   https://github.com/processing/processing4/issues/444
 X   https://github.com/processing/processing4/pull/504
+X Add Java arguments to enable Anti-Aliasing in bash script
+X   https://github.com/processing/processing4/pull/513
 
 design
 X color updates based on changes from Paul (220426)
@@ -202,6 +204,13 @@ X   https://github.com/processing/processing4/pull/481
 X Update PDE_de.properties
 X   https://github.com/processing/processing4/pull/483
 
+cleaning
+o should default to the local Java on Windows and Linux
+o   have export apps default to the local JRE
+o   Linux is probably using the system JRE if available
+o   launch4j may be all set, but double-check
+X   um, no--we should use the embedded version, b/c who knows what happens
+
 
 fixes/changes before beta 9
 _ dialog formatting fixes
@@ -212,7 +221,7 @@ _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
-_ update theme instructions at
+_ update theme instructions andt
 _   https://github.com/processing/processing4/wiki/Themes
 
 
@@ -769,11 +778,6 @@ _ add font fixes to the rest of the API
 _   https://github.com/processing/processing/commit/eaff673d173b2d27f276cf5c59e3abf6c0fab86b
 _   g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 _                       RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-_ should default to the local Java on Windows and Linux
-_   have export apps default to the local JRE
-_   Linux is probably using the system JRE if available
-_   launch4j may be all set, but double-check
-_   um, no--we should use the embedded version, b/c who knows what happens
 _ use platformDelete() to remove untitled sketches?
 _   would allow us to use the /tmp folder
 _ change to using platformDelete() instead of Base.removeDir() where possible
