@@ -44,7 +44,7 @@ import processing.app.Mode;
 abstract public class EditorToolbar extends JPanel implements KeyListener {
   // haven't decided how to handle this/how to make public/consistency
   // for components/does it live in theme.txt
-  static final int HIGH = Toolkit.zoom(53);
+  static final int HIGH = Toolkit.zoom(56);
   // horizontal gap between buttons
   static final int GAP = Toolkit.zoom(9);
 
