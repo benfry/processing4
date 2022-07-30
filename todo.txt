@@ -72,6 +72,12 @@ X   need to check on an actual Linux device, not a VM
 X   this was caused by Nimbus interactions with FlatLaf
 X command key symbol missing in pop up menus
 X font for stack trace dialogs is too small (and wrong)
+X overall layout/spacing/proportion
+X icons for debug toolbar (VariableInspector.java)
+X   replace variables-1x and -2x with separate SVG files in debug
+_ code completion icon updates (class, field, protected, method)
+_   these go into CompletionPanel.java
+
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
@@ -81,6 +87,8 @@ X add buttons for 'reload theme' and 'how to create themes' to theme fella
 X remove the 'reload theme' tool
 X both sets working, loading from folders
 X fixed up html wiring for styles
+X gradients
+X   add a couple with gradients to the selector box?
 
 design/errors
 X errors table theme
@@ -221,7 +229,7 @@ _ can't ship before ui.font and language bits sorted out
 _   otherwise the override to use Source Sans Pro will hose other languages
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
-_ update theme instructions andt
+_ update theme instructions
 _   https://github.com/processing/processing4/wiki/Themes
 
 
@@ -312,6 +320,7 @@ housekeeping
 _ replace bug numbers
 _   http://dev.processing.org/bugs/show_bug.cgi?id=1188
 _   with http://processing.org/bugs/bugzilla/1188.html
+_   or better yet, https://download.processing.org/bugzilla/1188.html
 _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
 
@@ -404,15 +413,6 @@ _ add indicator for the stats of libraries
 _   https://download.processing.org/stats
 _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
-
-
-design
-X gradients
-X   add a couple with gradients to the selector box?
-_ icons for debug toolbar
-_   replace variables-1x and -2x with separate SVG files in debug
-_ code completion icon updates (class, field, protected, method)
-_ overall layout/spacing/proportion
 
 
 design/implementation
