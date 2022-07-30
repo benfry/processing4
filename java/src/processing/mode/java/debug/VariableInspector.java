@@ -40,6 +40,7 @@ import com.sun.jdi.Value;
 import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Mode;
+import processing.app.ui.Toolkit;
 import processing.mode.java.JavaEditor;
 
 
@@ -295,12 +296,44 @@ public class VariableInspector extends JDialog {
    * Handles icons, text color and tool tips.
    */
   class OutlineRenderer implements RenderDataProvider {
-    Icon[][] icons;
+    static final String ENABLED_COLOR = "#000000";
+    static final String DISABLED_COLOR = "#808080";
     static final int ICON_SIZE = 16;
 
+    // Indices correspond to VariableNode.TYPE_OBJECT...TYPE_SHORT
+    static final String[] TYPE_NAMES = {
+      "object", "array", "integer", "float", "boolean",
+      "char", "string", "long", "double", "byte", "short"
+    };
+
+    Icon[][] icons;
+
+
     OutlineRenderer() {
-      icons = loadIcons("theme/variables-1x.png");
+      icons = new Icon[][] {
+        renderIcons("object"),
+        renderIcons("array"),
+        renderIcons("integer"),
+        renderIcons("float"),
+        renderIcons("boolean"),
+        renderIcons("char"),
+        renderIcons("string"),
+        renderIcons("long"),
+        renderIcons("double"),
+        renderIcons("byte"),
+        renderIcons("short")
+      };
     }
+
+
+    private ImageIcon[] renderIcons(String type) {
+      File file = editor.getMode().getContentFile("theme/variables/" + type + ".svg");
+      return new ImageIcon[] {
+        Toolkit.renderIcon(file, ENABLED_COLOR, ICON_SIZE),
+        Toolkit.renderIcon(file, DISABLED_COLOR, ICON_SIZE)
+      };
+    }
+
 
     /**
      * Load multiple icons (horizontal) with multiple states (vertical) from
@@ -334,11 +367,11 @@ public class VariableInspector extends JDialog {
     }
 
 
-    protected Icon getIcon(int type, int state) {
+    protected Icon getIcon(int type, boolean enabled) {
       if (type < 0 || type > icons.length - 1) {
         return null;
       }
-      return icons[type][state];
+      return icons[type][enabled ? 0 : 1];
     }
 
 
@@ -400,7 +433,7 @@ public class VariableInspector extends JDialog {
     public Icon getIcon(Object o) {
       VariableNode var = toVariableNode(o);
       if (var != null) {
-        return getIcon(var.getType(), tree.isEnabled() ? 0 : 1);
+        return getIcon(var.getType(), tree.isEnabled());
       }
       if (o instanceof TreeNode) {
         UIDefaults defaults = UIManager.getDefaults();
