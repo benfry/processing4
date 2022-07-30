@@ -1,5 +1,6 @@
 1284 (4.0b9)
-X allow . to start a number in SVG paths
+X allow . to start a number in SVG paths (a little)
+X   still lots of work to do here, it's an SVG 1.1 (vs 1.0) thing
 
 
 _ concurrent StringDict et al
@@ -483,6 +484,8 @@ _ for PShape, need to be able to set the origin (flash people)
 
 CORE / PShapeSVG
 
+_ loadShape() problems with SVGs that have . starting a number in a path
+_   https://github.com/processing/processing4/issues/518
 _ implement support for SVG gradients from Inkscape
 _   https://github.com/processing/processing/issues/1180
 _ need to handle <!ENTITY tags in XML for SVG documents
