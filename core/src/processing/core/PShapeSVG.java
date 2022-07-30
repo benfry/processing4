@@ -566,7 +566,6 @@ public class PShapeSVG extends PShape {
     int i = 0;
 
     char implicitCommand = '\0';
-//    char prevCommand = '\0';
     boolean prevCurve = false;
     float ctrlX, ctrlY;
     // store values for closepath so that relative coords work properly
@@ -575,7 +574,7 @@ public class PShapeSVG extends PShape {
 
     while (i < pathTokens.length) {
       char c = pathTokens[i].charAt(0);
-      if (((c >= '0' && c <= '9') || (c == '-')) && implicitCommand != '\0') {
+      if (((c >= '0' && c <= '9') || (c == '-') || (c == '.')) && implicitCommand != '\0') {
         c = implicitCommand;
         i--;
       } else {

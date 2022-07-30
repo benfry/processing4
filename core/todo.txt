@@ -1,4 +1,5 @@
 1284 (4.0b9)
+X allow . to start a number in SVG paths
 
 
 _ concurrent StringDict et al
