@@ -23,7 +23,7 @@ processingSketch
     : javaProcessingSketch
     | staticProcessingSketch
     | activeProcessingSketch
-    | warnMixedModes
+//    | warnMixedModes
     ;
 
 // java mode, is a compilation unit

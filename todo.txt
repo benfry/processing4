@@ -6,6 +6,11 @@ X   just need to do 'ant clean-jogl' inside core
 X update wiki with recent changes (i.e. separating sketch folder)
 X   https://github.com/processing/processing4/wiki/Processing-4
 X check Windows for any visual artifacts with FlatLaf
+X code completion seems to have broken between beta 4 and beta 5
+X   https://github.com/processing/processing4/issues/491
+X   git bisect good ccc62c6 / git bisect bad f583eef
+X   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c3ff88fdd53466
+X   introduces https://github.com/processing/processing4/issues/519
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -220,6 +225,11 @@ o   launch4j may be all set, but double-check
 X   um, no--we should use the embedded version, b/c who knows what happens
 
 
+known issues
+_ mixed mode warning now broken
+_   https://github.com/processing/processing4/issues/519
+
+
 fixes/changes before beta 9
 _ dialog formatting fixes
 _   move all (formerly Lucida) dialog formatting into Messages
@@ -238,10 +248,6 @@ _ visual fixes for tab sizes, etc (with Paul)
 _   weirdness with gaps in tabs (editor too big, manager too small)
 _   contrib mgr: filter/dropdown vertical centering is too high
 _   fake bold being used for tab name? (Windows only?)
-_ code completion seems to have broken between beta 4 and beta 5
-_   https://github.com/processing/processing4/issues/491
-_   git bisect good ccc62c6 / git bisect bad f583eef
-_   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c3ff88fdd53466
 
 
 during release of beta 9
