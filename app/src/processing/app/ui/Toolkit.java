@@ -689,7 +689,18 @@ public class Toolkit {
    * @param size size in pixels (handling for 2x done automatically)
    */
   static public ImageIcon renderIcon(String name, String color, int size) {
-    Image image = renderMonoImage(name, color, size);
+    return renderIcon(Platform.getContentFile("lib/" + name + ".svg"), color, size);
+  }
+
+
+  /**
+   * Create an Icon object from an SVG path name.
+   * @param file full path to icon
+   * @param color color to apply to the monochrome icon
+   * @param size size in pixels (handling for 2x done automatically)
+   */
+  static public ImageIcon renderIcon(File file, String color, int size) {
+    Image image = renderMonoImage(file, color, size);
     if (image == null) {
       return null;
     }
@@ -718,16 +729,10 @@ public class Toolkit {
   }
 
 
-  static protected Image renderMonoImage(String name, String color, int size) {
-    File file = Platform.getContentFile("lib/" + name + ".svg");
+  static protected Image renderMonoImage(File file, String color, int size) {
     String xmlOrig = Util.loadFile(file);
 
     if (xmlOrig != null) {
-      /*
-      final String REPLACE_COLOR = "#9B9B9B";
-      String xmlStr = xmlOrig.replace(REPLACE_COLOR, color);
-      return Toolkit.svgToImageMult(xmlStr, size, size);
-      */
       StringDict replace = new StringDict(new String[][] {
         { "#9B9B9B", color }
       });
@@ -737,9 +742,11 @@ public class Toolkit {
   }
 
 
+  /*
   static private Image svgToImageMult(String xmlStr, int wide, int high) {
     return svgToImage(xmlStr, highResMultiply(wide), highResMultiply(high));
   }
+  */
 
 
   static public Image svgToImageMult(String xmlStr, int wide, int high, StringDict replacements) {
