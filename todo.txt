@@ -11,9 +11,23 @@ X   https://github.com/processing/processing4/issues/491
 X   git bisect good ccc62c6 / git bisect bad f583eef
 X   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c3ff88fdd53466
 X   introduces https://github.com/processing/processing4/issues/519
+
+font
 X can't ship before ui.font and language bits sorted out
 X   otherwise the override to use Source Sans Pro will hose other languages
 X   make note of language change (Greek also removed)
+X sort out ui.font plus the other fonts inside theme.txt
+X   Toolkit.getSansFont() will use the internal ProcessingSansPro font
+X     which means it gets used inside ManagerFrame,
+X     and prevents the theme from updating the font
+X   while that font could exist in theme.txt,
+X     getSansFont() also handles the language fallback version
+X     that pref should come from the translations: i.e. an override setting
+X   decision: set the default sans, bold, and mono font in language file
+X     can be overridden in preferences.txt
+o     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
+o     need a separate identifier for the builtin sans (now called processing.sans)
+o     and when theme wants to ask for a sans font
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -237,6 +251,21 @@ o   use FileChannels, see FileInputStream.getChannel(),
 o   and use transferFrom() or transferTo().)
 o   could also use FileUtils in Apache's common io
 o   http://commons.apache.org/io/api-release/index.html
+X Switch to getModifiersEx() in `processing.app`
+X   https://github.com/processing/processing4/issues/67
+X   done in beta 2
+
+decisions
+o preferences in web frame?
+X should we use Java 11 instead of 17 to be less of an outlier?
+X   default rpi openjdk seems to be 11, we're not using any 17 features
+X   size change is negligible (17 may even be slightly smaller)
+X   or is this just a matter of 17 being new and it'll change quickly?
+X   JavaFX 17 (a good idea) seems to be compatible with Java 11
+X     JavaFX 11 has fewer builds (no ARM, prolly no Apple Silicon)
+X   11 LTS is supported until September 2026, 17 until 2029
+X   https://dzone.com/articles/whats-new-between-java-11-and-java-17
+X   switching to 17 as the default because it's now available in rpi os
 
 
 known issues
@@ -273,6 +302,8 @@ _ adding a file to an untitled sketch should require a save
 _ if a sketch is in the Desktop folder, try triggering macos access dialog once
 _   do it once for the root, then see if it allows the folders inside as well
 _   (opening p5jsMode sketch on Desktop causes a zillion dialog boxes)
+_   https://developer.apple.com/library/archive/documentation/Security/Conceptual/AppSandboxDesignGuide/DesigningYourSandbox/DesigningYourSandbox.html
+_   https://stackoverflow.com/questions/12153504/accessing-the-desktop-in-a-sandboxed-app
 
 
 detach sketch names
@@ -295,15 +326,6 @@ _ update Export to Application to use the new window
 _ add changes for the eawt mess? (too tricky)
 _   https://github.com/jdf/processing.py/issues/398
 _ submit a PR
-
-
-_ examples handling is less than ideal
-_   examples not mentioned in warning dialog when installing
-_   doesn't show in examples window for p5jsMode
-_   the extra "Contributed Examples" subfolder is awkward
-_   perhaps more important, examples need to specify their Mode
-_     not ideal for Android since there's some crossover, but ok for Example sets
-_     otherwise impossible to know how to populate the Examples window
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -337,6 +359,13 @@ _   also code.google.com URLs with Github URLs (numbers are sorta in sync)
 
 
 contribs
+_ examples handling is less than ideal
+_   examples not mentioned in warning dialog when installing
+_   doesn't show in examples window for p5jsMode
+_   the extra "Contributed Examples" subfolder is awkward
+_   perhaps more important, examples need to specify their Mode
+_     not ideal for Android since there's some crossover, but ok for Example sets
+_     otherwise impossible to know how to populate the Examples window
 _ several "Could not find a matching .properties file" with clocks pdex
 _ examples window is per-Mode, but that doesn't seem helpful
 _   just like sketchbook, you can open one from the other
@@ -444,18 +473,6 @@ _ build new welcome/examples screen for startup
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ add notes about params to the wiki
-_ sort out ui.font plus the other fonts inside theme.txt
-_   Toolkit.getSansFont() will use the internal ProcessingSansPro font
-_     which means it gets used inside ManagerFrame,
-_     and prevents the theme from updating the font
-_   while that font could exist in theme.txt,
-_     getSansFont() also handles the language fallback version
-_     that pref should come from the translations: i.e. an override setting
-_   decision: set the default sans, bold, and mono font in language file
-_     can be overridden in preferences.txt
-_     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
-_     need a separate identifier for the builtin sans (now called processing.sans)
-_     and when theme wants to ask for a sans font
 
 
 before 4.x final
@@ -489,8 +506,6 @@ _ change help menu links to go to newer FAQ and the rest
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
-_ Switch to getModifiersEx() in `processing.app`
-_   https://github.com/processing/processing4/issues/67
 _ command line complaints
 _   https://github.com/processing/processing/issues/6129
 _ editor breakpoints out of the .pde files
@@ -511,15 +526,11 @@ _ Export to Application was broken with OpenGL (Casey)
 
 
 decisions before final 4.0 release
+_ how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
+_   xz compression may cut down 2x vs zip, but we lose the .zip file reading
+_   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
 _ can we compress jdk/Contents/Home/legal into a single zip?
-_ should we use Java 11 instead of 17 to be less of an outlier?
-_   default rpi openjdk seems to be 11, we're not using any 17 features
-_   size change is negligible (17 may even be slightly smaller)
-_   or is this just a matter of 17 being new and it'll change quickly?
-_   JavaFX 17 (a good idea) seems to be compatible with Java 11
-_     JavaFX 11 has fewer builds (no ARM, prolly no Apple Silicon)
-_   11 LTS is supported until September 2026, 17 until 2029
-_   https://dzone.com/articles/whats-new-between-java-11-and-java-17
+_   it's ~300 files of the ~500 in the entire jdk directory
 _ Friendly Names for new Sketches (includes UI for switching it back)
 _   https://github.com/processing/processing/pull/6048
 _ change the license from GPL
@@ -532,7 +543,8 @@ _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   xattr -cr /path/to/application.app
 _   -c removes attributes, -r is recursive
 _   https://github.com/processing/processing/issues/4214
-_ make the call on the launcher setting for Linux
+_ Open Sketch Folder not working on Linux with java.awt.Desktop quirks
+_   make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
 _ show warnings about wrong library folder layout?
 _ Welcome screen or not?
@@ -542,14 +554,13 @@ _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _   tell users about JavaFX, Movie Maker install, changing themes
 _ Remove “Disable HiDPI Scaling” preference on Windows?
-_ auto-complete not triggering, workaround as pref?
+_ auto-complete not auto-triggering, change pref for handling?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
 _ automatic import of JavaFX when FX2D is specified
-_ preferences in web frame?
 _ intro page using webkit (launching into examples)
 _   and maybe the reference too?
-_ how to send messages from webkit server to p5 (i.e. for colors)
+_ how to send messages from webkit server to PDE (i.e. for a color tool)
 
 
 would like to fix (but not necessary for 4.0 final)
