@@ -13,6 +13,7 @@ X   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c
 X   introduces https://github.com/processing/processing4/issues/519
 X clean up dist: 'bin' and 'src' from Java Mode were included, iml files, etc
 X   cuts 67 MB down to 45 MB on disk
+X replace build/shared/lib/theme.txt with kyanite.txt
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
@@ -42,6 +43,7 @@ X     can be overridden in preferences.txt
 o     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
 o     need a separate identifier for the builtin sans (now called processing.sans)
 o     and when theme wants to ask for a sans font
+X fix fonts in the welcome page
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -293,6 +295,7 @@ _ mixed mode warning now broken
 _   https://github.com/processing/processing4/issues/519
 _ 'color' in imports shows up as an error in the editor
 _   but code still compiles and runs
+_   https://github.com/processing/processing4/issues/521
 
 
 fixes/changes before beta 9
@@ -300,26 +303,16 @@ _ dialog formatting fixes
 _   move all (formerly Lucida) dialog formatting into Messages
 _   currently a couple other classes that use it
 _   create a version that works nicely with FlatLaf
-_ fix fonts in the welcome page
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
-_ update theme instructions
-_   https://github.com/processing/processing4/wiki/Themes
 
 
 during release of beta 9
-_ replace build/shared/lib/theme.txt with kyanite.txt
 _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
-
-_ how to handle contrib manager download/retry/etc and showing progress
-_ downloader for ffmpeg and reference?
-_ do gradients in Lab space
-
-_ adding a file to an untitled sketch should require a save
 
 _ if a sketch is in the Desktop folder, try triggering macos access dialog once
 _   do it once for the root, then see if it allows the folders inside as well
@@ -490,6 +483,12 @@ _ add notes about params to the wiki
 
 
 before 4.x final
+_ how to handle contrib manager download/retry/etc and showing progress
+_ downloader for ffmpeg and reference?
+_ do gradients in Lab space
+_ update theme instructions
+_   https://github.com/processing/processing4/wiki/Themes
+_ adding a file to an untitled sketch should require a save
 _ Cannot type quotes with an international keyboard on MacOS
 _   fixed by turning on "Enable complex text input"
 _   https://github.com/processing/processing4/issues/322
