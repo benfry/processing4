@@ -150,11 +150,11 @@ public class PSurfaceAWT extends PSurfaceNone {
 //        // request focus for its canvas inside beginDraw().
 //        // http://java.sun.com/j2se/1.4.2/docs/api/java/awt/doc-files/FocusSpec.html
 //        // Disabling for 0185, because it causes an assertion failure on OS X
-//        // http://code.google.com/p/processing/issues/detail?id=258
+//        // https://github.com/processing/processing/issues/297
 //        //        requestFocus();
 //
 //        // Changing to this version for 0187
-//        // http://code.google.com/p/processing/issues/detail?id=279
+//        // https://github.com/processing/processing/issues/318
 //        //requestFocusInWindow();
 //
 //        // For 3.0, just call this directly on the Canvas object
@@ -441,7 +441,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     //frame.validate();
 
     // disabling resize has to happen after pack() to avoid apparent Apple bug
-    // http://code.google.com/p/processing/issues/detail?id=467
+    // https://github.com/processing/processing/issues/506
     frame.setResizable(false);
 
     frame.addWindowListener(new WindowAdapter() {

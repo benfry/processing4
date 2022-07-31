@@ -147,7 +147,7 @@ public class JavaInputHandler extends PdeInputHandler {
       //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
       if (event.isShiftDown()) {
         // if shift is down, the user always expects an outdent
-        // http://code.google.com/p/processing/issues/detail?id=458
+        // https://github.com/processing/processing/issues/497
         editor.handleOutdent();
 
       } else if (textarea.isSelectionActive()) {

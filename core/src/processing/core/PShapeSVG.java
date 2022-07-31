@@ -863,7 +863,7 @@ public class PShapeSVG extends PShape {
       case 'z':
         // since closing the path, the 'current' point needs
         // to return back to the last moveto location.
-        // http://code.google.com/p/processing/issues/detail?id=1058
+        // https://github.com/processing/processing/issues/1096
         cx = movetoX;
         cy = movetoY;
         close = true;

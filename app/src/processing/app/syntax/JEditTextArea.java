@@ -421,8 +421,8 @@ public class JEditTextArea extends JComponent
       int painterWidth = painter.getScrollWidth();
 
       // Update to how horizontal scrolling is handled
-      // http://code.google.com/p/processing/issues/detail?id=280
-      // http://code.google.com/p/processing/issues/detail?id=316
+      // https://github.com/processing/processing/issues/319
+      // https://github.com/processing/processing/issues/355
       //setValues(int newValue, int newExtent, int newMin, int newMax)
       if (horizontalOffset < 0) {
         horizontal.setValues(-horizontalOffset, painterWidth, -leftHandGutter, width);
@@ -1951,7 +1951,7 @@ public class JEditTextArea extends JComponent
         }
 
         // Remove tabs and replace with spaces
-        // http://code.google.com/p/processing/issues/detail?id=69
+        // https://github.com/processing/processing/issues/108
         if (selection.contains("\t")) {
           int tabSize = Preferences.getInteger("editor.tabs.size");
           char[] c = new char[tabSize];

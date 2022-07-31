@@ -2752,7 +2752,7 @@ public class PGraphics extends PImage implements PConstants {
   // Still need to do a lot of work here to make it behave across renderers
   // (e.g. not all renderers use the vertices array)
   // Also seems to be some issues on quality here (too dense)
-  // http://code.google.com/p/processing/issues/detail?id=265
+  // https://github.com/processing/processing/issues/304
 //  private void quadraticVertex(float cpx, float cpy, float x, float y) {
 //    float[] prev = vertices[vertexCount - 1];
 //    float prevX = prev[X];

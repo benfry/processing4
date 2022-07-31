@@ -2038,7 +2038,7 @@ public class PApplet implements PConstants {
           (e instanceof IllegalAccessException)) {
         if (e.getMessage().contains("cannot be <= 0")) {
           // IllegalArgumentException will be thrown if w/h is <= 0
-          // http://code.google.com/p/processing/issues/detail?id=983
+          // https://github.com/processing/processing/issues/1021
           throw new RuntimeException(e);
 
         } else {

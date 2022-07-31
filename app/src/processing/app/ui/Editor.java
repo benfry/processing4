@@ -1007,7 +1007,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   static public void showChanges() {
-    // http://code.google.com/p/processing/issues/detail?id=1520
+    // https://github.com/processing/processing/issues/1558
     if (!Base.isCommandLine()) {
       Platform.openURL("https://github.com/processing/processing/wiki/Changes");
     }
@@ -1817,7 +1817,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
         // Put the scrollbar position back, otherwise it jumps on each format.
         // Since we're not doing a good job of maintaining position anyway,
         // a more complicated workaround here is fairly pointless.
-        // http://code.google.com/p/processing/issues/detail?id=1533
+        // https://github.com/processing/processing/issues/1571
         if (scrollPos != textarea.getVerticalScrollPosition()) {
           textarea.setVerticalScrollPosition(scrollPos);
         }

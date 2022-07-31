@@ -188,7 +188,7 @@ public class DefaultInputHandler extends InputHandler {
     if ((modifiers & InputEvent.META_DOWN_MASK) != 0) return;
 
     // Prevent CTRL-/ from going through as a typed '/' character
-    // http://code.google.com/p/processing/issues/detail?id=596
+    // https://github.com/processing/processing/issues/635
     if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0 && c == '/') return;
 
     if (c != KeyEvent.CHAR_UNDEFINED) {
