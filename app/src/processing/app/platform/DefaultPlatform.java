@@ -65,6 +65,7 @@ public class DefaultPlatform {
     "CheckBox",
     "CheckBoxMenuItem",
     "ComboBox",
+    "Label",
     "List",
     "Menu",
     "MenuBar",
@@ -80,6 +81,7 @@ public class DefaultPlatform {
     "Table",
     "TableHeader",
     "TextArea",
+    "TextField",
     "TextPane",
     "TitledBorder",
     "ToggleButton",
@@ -115,13 +117,10 @@ public class DefaultPlatform {
 
     // dummy font call so that it's registered for FlatLaf
     Font defaultFont = Toolkit.getSansFont(14, Font.PLAIN);
+    UIManager.put("defaultFont", defaultFont);
 
     // pull in FlatLaf.properties from the processing.app.laf folder
     FlatLaf.registerCustomDefaultsSource("processing.app.laf");
-
-    // defaultFont = 14 "Processing Sans", "Open Sans", "Noto Sans", Roboto, Arial
-    //UIManager.put("defaultFont", "14 \"Processing Sans\", \"Open Sans\", \"Noto Sans\", Roboto, Arial");
-    UIManager.put("defaultFont", defaultFont);
 
     // start with Light, but updateTheme() will be called soon
     UIManager.setLookAndFeel(new FlatLightLaf());
@@ -133,6 +132,7 @@ public class DefaultPlatform {
     }
     */
 
+    /*
     // If the default has been overridden in the preferences, set the font
     String fontName = Preferences.get("ui.font.family");
     int fontSize = Preferences.getInteger("ui.font.size");
@@ -148,6 +148,7 @@ public class DefaultPlatform {
 //      Font font = new Font(fontName, Font.PLAIN, fontSize).deriveFont(attributes);
 //      setUIFont(new FontUIResource(font));
     }
+    */
   }
 
 //  // Adapted from https://stackoverflow.com/a/64667581/18247494
@@ -161,6 +162,7 @@ public class DefaultPlatform {
 //    }
 //  }
 
+  /*
   // Rewritten from https://stackoverflow.com/a/7434935
   static private void setUIFont(FontUIResource f) {
     for (Object key : UIManager.getLookAndFeelDefaults().keySet()) {
@@ -170,6 +172,7 @@ public class DefaultPlatform {
       }
     }
   }
+  */
 
 
   public void setInterfaceZoom() throws Exception {
@@ -179,11 +182,14 @@ public class DefaultPlatform {
         scaleDefaultFont(widgetName);
       }
 
-      String fontName = Preferences.get("ui.font.family");
-      int fontSize = Preferences.getInteger("ui.font.size");
-      FontUIResource uiFont = new FontUIResource(fontName, Font.PLAIN, Toolkit.zoom(fontSize));
-      UIManager.put("Label.font", uiFont);
-      UIManager.put("TextField.font", uiFont);
+//      Font defaultFont = Toolkit.getSansFont(14, Font.PLAIN);
+//      UIManager.put("defaultFont", defaultFont);
+
+//      String fontName = Preferences.get("ui.font.family");
+//      int fontSize = Preferences.getInteger("ui.font.size");
+//      FontUIResource uiFont = new FontUIResource(fontName, Font.PLAIN, Toolkit.zoom(fontSize));
+//      UIManager.put("Label.font", uiFont);
+//      UIManager.put("TextField.font", uiFont);
     }
   }
 

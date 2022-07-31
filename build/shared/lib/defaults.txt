@@ -95,9 +95,9 @@ platform.auto_file_type_associations = true
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# default font used for UI elements
-ui.font.family = Dialog
-ui.font.size = 12
+# default font used for UI elements (no longer in use as of beta 9)
+#ui.font.family = Dialog
+#ui.font.size = 12
 
 # default size for the main window
 editor.window.width.default = 700
