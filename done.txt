@@ -2844,12 +2844,12 @@ X   https://github.com/processing/processing/issues/3440
 X Contribution Manager design is really rough
 X   https://github.com/processing/processing/issues/3464
 o library.properties and tool.properties should reflect supported modes
-o   http://code.google.com/p/processing/issues/detail?id=1050
+o   https://github.com/processing/processing/issues/1088
 X   marked as WONTFIX in 2012
 X re/move things from Google Code downloads
 X   https://code.google.com/p/support/wiki/DownloadsFAQ
 o mismatched square brackets generate bizarre and/or misleading error messages
-X   http://code.google.com/p/processing/issues/detail?id=355
+X   https://github.com/processing/processing/issues/394
 X   marked as WONTFIX in 2011
 o using a keyword as a variable name gives unhelpful error message
 o   http://code.google.com/p/processing/issues/detail?id=54
@@ -2860,6 +2860,7 @@ X   http://code.google.com/p/processing/issues/detail?id=114
 X   https://github.com/processing/processing/issues/153
 X verify (and document) public access members of PApplet
 X   http://code.google.com/p/processing/issues/detail?id=83
+X   https://github.com/processing/processing/issues/122
 X remove PdeKeyListener, roll it into the Java InputHandler for JEditTextArea
 X   move Java-specific InputHandler to its own subclass
 X key command for prev/next tab works, but not menu
@@ -2893,6 +2894,7 @@ o   save window positions on quit, and restore them (w/ a preference?)
 o     new windows use same mode and dimensions as topmost window
 o   saved window position problematic with multiple monitors
 o     http://code.google.com/p/processing/issues/detail?id=27
+o     https://github.com/processing/processing/issues/66
 X   Closing the last window doesn't cause PDE to save it's position/contents/etc
 X     http://code.google.com/p/processing/issues/detail?id=103
 X     https://github.com/processing/processing/issues/142
@@ -2906,6 +2908,7 @@ o   make sure the application is within the bounds of the current display?
 o   (from 0, 0 to width, height)
 o   messy since some displays have negative coords
 X   http://code.google.com/p/processing/issues/detail?id=27
+X   https://github.com/processing/processing/issues/66
 o Resurrect the Eclipse plug-in project
 X   http://code.google.com/p/processing/issues/detail?id=1031
 X   https://github.com/processing/processing/issues/1069
@@ -3112,6 +3115,7 @@ X Old version number shown in Mode Manager dialog
 X   https://github.com/processing/processing/issues/2843
 o Update Windows icons for multiple sizes, implement them in the PDE
 o   http://code.google.com/p/processing/issues/detail?id=632
+o   https://github.com/processing/processing/issues/671
 X   closed during the 2.x cycle
 X try to clean up the Recent menu with the home icon
 _   make sure it doesn't break on Windows
@@ -3214,6 +3218,7 @@ X   it's too difficult for students to debug their code
 X     can the jdt be hooked in somewhat easily?
 X Replace current editor with more advanced version
 X   http://code.google.com/p/processing/issues/detail?id=1032
+X   https://github.com/processing/processing/issues/1070
 o   code coloring is imperfect because it's not based on a parser
 X rename location is awkward, do it on the tab?
 X date inconsistencies
@@ -3439,8 +3444,8 @@ X   https://github.com/processing/processing/pull/2382
 X getCaretLocation() bug in syntax.im package
 X   https://github.com/processing/processing/issues/2934
 X finish up debian package support (see the processing.mess folder)
-X   http://code.google.com/p/processing/issues/detail?id=75
 X   these bits need to be checked to ensure that they work on other distros
+X   http://code.google.com/p/processing/issues/detail?id=75
 X   https://github.com/processing/processing/issues/114
 X   https://github.com/processing/processing/pull/2972
 X   https://github.com/processing/processing/issues/2973
@@ -3667,14 +3672,14 @@ X   https://github.com/processing/processing/pull/2777
 X Add rank (starred / recommended) to contributions manager items
 X   https://github.com/processing/processing/issues/2580
 o Improve detection and handling of missing semicolons
+X   should be fixed with PDE X (closed by Dan)
 o   http://code.google.com/p/processing/issues/detail?id=136
-X   should be fixed with PDE X (closed by Dan
 X   https://github.com/processing/processing/issues/175
 X missing brackets, unmatched brackets
 X   examples added to the bug report
 X   http://code.google.com/p/processing/issues/detail?id=6
-X   closed by Shiffman, working better now
 X   https://github.com/processing/processing/issues/45
+X   closed by Shiffman, working better now
 X 64-bit versions of sound available on Windows and Linux
 
 pulls

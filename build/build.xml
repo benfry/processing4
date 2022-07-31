@@ -351,10 +351,20 @@
     <copy todir="${target.path}/modes/java" preservelastmodified="true">
       <fileset dir="../java">
         <!-- don't include LWJGL, it's not operational -->
-        <exclude name="libraries/lwjgl/**" />
+        <!-- <exclude name="libraries/lwjgl/**" /> -->
         <!-- starting with revision 1276, reference.zip stays intact -->
         <!-- <exclude name="reference.zip" /> -->
-        <exclude name="**/._*" />
+        <!-- <exclude name="**/._*" /> -->
+
+        <include name="application/**" />
+        <include name="keywords.txt" />
+
+        <include name="libraries/**/examples" />
+        <include name="libraries/**/library" />
+        <include name="libraries/**/library.properties" />
+
+        <include name="mode/**" />
+        <include name="theme/**" />
       </fileset>
     </copy>
 
