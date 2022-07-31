@@ -227,6 +227,13 @@ o   have export apps default to the local JRE
 o   Linux is probably using the system JRE if available
 o   launch4j may be all set, but double-check
 X   um, no--we should use the embedded version, b/c who knows what happens
+X Blank sketch opened even if opening an existing sketch by double-clicking
+X   https://github.com/processing/processing/issues/218
+o improve the speed of file copying
+o   use FileChannels, see FileInputStream.getChannel(),
+o   and use transferFrom() or transferTo().)
+o   could also use FileUtils in Apache's common io
+o   http://commons.apache.org/io/api-release/index.html
 
 
 known issues
@@ -812,6 +819,12 @@ _ add minimum version required (or max version?) to libraries/modes/etc
 
 DOC / Misc
 
+_ make reference build process part of dist
+_   https://github.com/processing/processing-docs/issues/85
+_   separate ant target, but only require them for dist
+_   as separate targets, folks can build explicitly if they'd like
+_   processing-docs/java_generate/ReferenceGenerator/processingrefBuild.sh
+_   remove reference.zip from main repo
 _ find in reference for copy() (on image) tries to open PVector.copy()
 _   might need disambiguation pages?
 _   if a reference page is missing, throws a bunch of exceptions
@@ -1232,6 +1245,8 @@ _   set finished to true, then join() the animation thread
 _ dispose handlers not called when stop button pressed
 _   https://github.com/processing/processing/issues/4445
 _ need to set dock icon title on osx
+_ changing number of screens between run causes things to show up off-screen
+_   so when running, check to make sure that things are out of the area
 
 
 PDE / Tweak
@@ -1306,6 +1321,17 @@ LIBRARIES / General
 
 _ need to unpack InvocationTargetException in xxxxxxEvent calls
 _   http://processing.org/discourse/yabb_beta/YaBB.cgi?board=VideoCamera;action=display;num=1116850328#3
+_ go through libraries and clean things up
+protected void finalize() throws Throwable {
+  try {
+    close();
+  } catch (Exception e) {
+    // do something
+  } finally {
+    super.finalize();
+    // more code can be written here as per need of application
+  }
+}
 
 
 LIBRARIES / Net
@@ -1453,13 +1479,6 @@ FUTURE
 
 Notes for some indefinite later release...
 
-_ make reference build process part of dist
-_   https://github.com/processing/processing-docs/issues/85
-_   separate ant target, but only require them for dist
-_   as separate targets, folks can build explicitly if they'd like
-_   processing-docs/java_generate/ReferenceGenerator/processingrefBuild.sh
-_   remove reference.zip from main repo
-_ nurbs or other architecture stuff
 _ force indentation - implement an option for beginners especially
 _ indents and loops
 _   or make the area light up gray as it's being worked on
@@ -1469,23 +1488,3 @@ _   con: people love it, most of the books use it heavily
 _ add === for String.equals()
 _   might be problematic since it might be opposite the javascript meaning
 _   jer: it's a decent time to start talking abt references/vars
-_ Blank sketch opened even if opening an existing sketch by double-clicking
-_   https://github.com/processing/processing/issues/218
-_ changing number of screens between run causes things to show up off-screen
-_   so when running, check to make sure that things are out of the area
-_ improve the speed of file copying
-_   use FileChannels, see FileInputStream.getChannel(),
-_   and use transferFrom() or transferTo().)
-_   could also use FileUtils in Apache's common io
-_   http://commons.apache.org/io/api-release/index.html
-_ go through libraries and clean things up
-protected void finalize() throws Throwable {
-  try {
-    close();
-  } catch (Exception e) {
-    // do something
-  } finally {
-    super.finalize();
-    // more code can be written here as per need of application
-  }
-}
