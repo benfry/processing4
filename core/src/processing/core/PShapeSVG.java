@@ -541,7 +541,7 @@ public class PShapeSVG extends PShape {
       }
       if (c == '-' && !lastSeparate) {
         // allow for 'e' notation in numbers, e.g. 2.10e-9
-        // http://dev.processing.org/bugs/show_bug.cgi?id=1408
+        // https://download.processing.org/bugzilla/1408.html
         if (i == 0 || pathDataChars[i-1] != 'e') {
           pathBuffer.append("|");
         }

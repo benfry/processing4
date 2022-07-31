@@ -221,7 +221,7 @@ _   idea: set frameCount to -1 when setup not run yet?
 _     then set frameCount to 0 when setup() starts?
 _ need to clean up the hints in the reference/source
 _ exactly how should pixel filling work with single pixel strokes?
-_   http://dev.processing.org/bugs/show_bug.cgi?id=1025 (no gcode)
+_   https://download.processing.org/bugzilla/1025.html (no gcode)
 _ y2 position of rectangles not same as y2 position of lines
 _   happens when the rectangle is flipped on the x or y axis
 _   probably a hack that draws the "last" point differently
@@ -255,7 +255,7 @@ _   pdf.textMode(SHAPE)
 _   also set the font *after* the record has started
 _   maybe should instead make textMode(SHAPE) the norm?
 _   and people can change it to textMode(MODEL) if they want?
-_   http://dev.processing.org/bugs/show_bug.cgi?id=1535 (no gcode)
+_   https://download.processing.org/bugzilla/1535.html (no gcode)
 _ explain the new PGL interface
 _ decide how disconnectEvent should actually be handled (and name?)
 _   was disconnect always there?
@@ -732,7 +732,7 @@ _ rounding errors on color conversion
 _   colorMode(RGB, 1.0); colorMode(255); println(red(color(0.5,1,1)));
 _   will return 127, instead of 128.
 _ gray that's greater than the colorMode() can produce strange colors
-_   http://dev.processing.org/bugs/show_bug.cgi?id=432 (no gcode)
+_   https://download.processing.org/bugzilla/432.html (no gcode)
 _   http://processing.org/discourse/yabb/YaBB.cgi?board=Syntax;action=display;num=1083650609
 _   http://processing.org/discourse/yabb/YaBB.cgi?board=Syntax;action=display;num=1082481891
 _ add stroke() to type
@@ -743,7 +743,7 @@ _   don't add api to main p5 stuff (though maybe setPaint/noPaint api?)
 _   gradient-painted lines and fills
 _     java2d will do both line and fill, illusfarter only does fills
 _   gradients not supported in java2d
-_     http://dev.processing.org/bugs/show_bug.cgi?id=371 (no gcode)
+_     https://download.processing.org/bugzilla/371.html (no gcode)
 _ bspline or nurbs (later, want to do the 3D/arch stuff correctly)
 _ non-homogenous coloring for curve vertices
 _ consider bringing back text/image using cache/names

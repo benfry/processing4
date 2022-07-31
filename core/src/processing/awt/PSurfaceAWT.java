@@ -325,7 +325,7 @@ public class PSurfaceAWT extends PSurfaceNone {
 
     // Need to save the window bounds at full screen,
     // because pack() will cause the bounds to go to zero.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=923
+    // https://download.processing.org/bugzilla/923.html
     boolean spanDisplays = sketch.sketchDisplay() == PConstants.SPAN;
     screenRect = spanDisplays ? getDisplaySpan() :
       displayDevice.getDefaultConfiguration().getBounds();
@@ -390,8 +390,8 @@ public class PSurfaceAWT extends PSurfaceNone {
     // needed before a GLDrawable can be created. So pack() needs to be
     // called on the Frame before applet.init(), which itself calls size(),
     // and launches the Thread that will kick off setup().
-    // http://dev.processing.org/bugs/show_bug.cgi?id=891
-    // http://dev.processing.org/bugs/show_bug.cgi?id=908
+    // https://download.processing.org/bugzilla/891.html
+    // https://download.processing.org/bugzilla/908.html
 
     frame.add(canvas);
     setSize(sketchWidth / windowScaleFactor, sketchHeight / windowScaleFactor);
@@ -679,7 +679,7 @@ public class PSurfaceAWT extends PSurfaceNone {
     Point frameLoc = frame.getLocation();
     if (frameLoc.y < 0) {
       // Windows actually allows you to place frames where they can't be
-      // closed. Awesome. http://dev.processing.org/bugs/show_bug.cgi?id=1508
+      // closed. Awesome. https://download.processing.org/bugzilla/1508.html
       frame.setLocation(frameLoc.x, 30);
     }
 
@@ -820,7 +820,7 @@ public class PSurfaceAWT extends PSurfaceNone {
       Point frameLoc = frame.getLocation();
       if (frameLoc.y < 0) {
         // Windows actually allows you to place frames where they can't be
-        // closed. Awesome. http://dev.processing.org/bugs/show_bug.cgi?id=1508
+        // closed. Awesome. https://download.processing.org/bugzilla/1508.html
         frame.setLocation(frameLoc.x, 30);
       }
       // make sure that windowX and windowY are set on startup
@@ -1046,9 +1046,9 @@ public class PSurfaceAWT extends PSurfaceNone {
       @Override
       public void componentResized(ComponentEvent e) {
         // Ignore bad resize events fired during setup to fix
-        // http://dev.processing.org/bugs/show_bug.cgi?id=341
+        // https://download.processing.org/bugzilla/341.html
         // This should also fix the blank screen on Linux bug
-        // http://dev.processing.org/bugs/show_bug.cgi?id=282
+        // https://download.processing.org/bugzilla/282.html
         if (frame.isResizable()) {
           // might be multiple resize calls before visible (i.e. first
           // when pack() is called, then when it's resized for use).

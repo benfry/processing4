@@ -649,7 +649,7 @@ public class Runner implements MessageConsumer {
 
 //      System.out.println("in here");
       // Bug #852 tracked to this next line in the code.
-      // http://dev.processing.org/bugs/show_bug.cgi?id=852
+      // https://download.processing.org/bugzilla/852.html
       errThread.join(); // Make sure output is forwarded
 //      System.out.println("and then");
       outThread.join(); // before we exit
@@ -905,7 +905,7 @@ public class Runner implements MessageConsumer {
 
   // made synchronized for 0087
   // attempted to remove synchronized for 0136 to fix bug #775 (no luck tho)
-  // http://dev.processing.org/bugs/show_bug.cgi?id=775
+  // https://download.processing.org/bugzilla/775.html
   synchronized public void message(String s) {
 //    System.out.println("M" + s.length() + ":" + s.trim()); // + "MMM" + s.length());
 

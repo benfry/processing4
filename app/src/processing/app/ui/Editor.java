@@ -173,7 +173,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     });
     // don't close the window when clicked, the app will take care
     // of that via the handleQuitInternal() methods
-    // http://dev.processing.org/bugs/show_bug.cgi?id=440
+    // https://download.processing.org/bugzilla/440.html
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     // When bringing a window to front, let the Base know
@@ -2107,7 +2107,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     if (!sketch.isModified()) return true;
 
     // As of Processing 1.0.10, this always happens immediately.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1456
+    // https://download.processing.org/bugzilla/1456.html
 
     // With Java 7u40 on OS X, need to bring the window forward.
     toFront();
@@ -2314,7 +2314,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * save is happening. If 'immediately' is true, then it will happen
    * immediately. This is used during a quit, because invokeLater()
    * won't run properly while a quit is happening. This fixes
-   * <A HREF="http://dev.processing.org/bugs/show_bug.cgi?id=276">Bug 276</A>.
+   * <A HREF="https://download.processing.org/bugzilla/276.html">Bug 276</A>.
    */
   public boolean handleSave(boolean immediately) {
     // This was a mistake (rectified in 0136) that would cause long-running

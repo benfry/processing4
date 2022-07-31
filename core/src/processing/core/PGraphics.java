@@ -1456,7 +1456,7 @@ public class PGraphics extends PImage implements PConstants {
     // only do this if we're using an irregular (POLYGON) shape that
     // will go through the triangulator. otherwise it'll do thinks like
     // disappear in mathematically odd ways
-    // http://dev.processing.org/bugs/show_bug.cgi?id=444
+    // https://download.processing.org/bugzilla/444.html
     if (shape == POLYGON) {
       if (vertexCount > 0) {
         float[] pvertex = vertices[vertexCount-1];

@@ -534,7 +534,7 @@ public class JavaEditor extends Editor {
    * asks the user to save the sketch or cancel the export.
    * This prevents issues where an incomplete version of the sketch
    * would be exported, and is a fix for
-   * <A HREF="http://dev.processing.org/bugs/show_bug.cgi?id=157">Bug 157</A>
+   * <A HREF="https://download.processing.org/bugzilla/157.html">Bug 157</A>
    */
   protected boolean handleExportCheckModified() {
     if (sketch.isReadOnly()) {

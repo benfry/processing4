@@ -149,7 +149,7 @@ public class CreateFont extends JFrame implements Tool {
     sample = new SampleComponent(this);
 
     // Seems that in some instances, no default font is set
-    // http://dev.processing.org/bugs/show_bug.cgi?id=777
+    // https://download.processing.org/bugzilla/777.html
     sample.setFont(new Font("Dialog", Font.PLAIN, 12));
 
     pain.add(sample);

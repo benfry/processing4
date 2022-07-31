@@ -1846,7 +1846,7 @@ public class PShape implements PConstants {
 
   protected void drawPath(PGraphics g) {
     // Paths might be empty (go figure)
-    // http://dev.processing.org/bugs/show_bug.cgi?id=982
+    // https://download.processing.org/bugzilla/982.html
     if (vertices == null) return;
 
     boolean insideContour = false;

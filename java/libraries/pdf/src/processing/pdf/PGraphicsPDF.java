@@ -167,7 +167,7 @@ public class PGraphicsPDF extends PGraphicsJava2D {
     vertexCount = 0;
 
     // Also need to push the matrix since the matrix doesn't reset on each run
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1227
+    // https://download.processing.org/bugzilla/1227.html
     pushMatrix();
   }
 
@@ -206,7 +206,7 @@ public class PGraphicsPDF extends PGraphicsJava2D {
             // This won't fix the issue if the same thing happens with
             // other removable drive devices, but should fix the
             // initial/problem as cited by the bug report:
-            // http://dev.processing.org/bugs/show_bug.cgi?id=478
+            // https://download.processing.org/bugzilla/478.html
             // If not, will need to use the other fileExists() code below.
             continue;
           }
@@ -246,7 +246,7 @@ public class PGraphicsPDF extends PGraphicsJava2D {
   /**
    * Recursive walk to get all subdirectories for font fun.
    * Patch submitted by Matthias Breuer.
-   * (<a href="http://dev.processing.org/bugs/show_bug.cgi?id=1566">Bug 1566</a>)
+   * (<a href="https://download.processing.org/bugzilla/1566.html">Bug 1566</a>)
    */
   static protected void traverseDir(File folder, DefaultFontMapper mapper) {
     File[] files = folder.listFiles();
@@ -261,10 +261,10 @@ public class PGraphicsPDF extends PGraphicsJava2D {
 
   // endDraw() needs to be overridden so that the endDraw() from
   // PGraphicsJava2D is not inherited (it calls loadPixels).
-  // http://dev.processing.org/bugs/show_bug.cgi?id=1169
+  // https://download.processing.org/bugzilla/1169.html
   public void endDraw() {
     // Also need to pop the matrix since the matrix doesn't reset on each run
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1227
+    // https://download.processing.org/bugzilla/1227.html
     popMatrix();
   }
 

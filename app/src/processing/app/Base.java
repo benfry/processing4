@@ -500,7 +500,7 @@ public class Base {
       // Fix a problem with systems that use a non-ASCII languages. Paths are
       // being passed in with 8.3 syntax, which makes the sketch loader code
       // unhappy, since the sketch folder naming doesn't match up correctly.
-      // http://dev.processing.org/bugs/show_bug.cgi?id=1089
+      // https://download.processing.org/bugzilla/1089.html
       if (Platform.isWindows()) {
         try {
           File file = new File(args[i]);

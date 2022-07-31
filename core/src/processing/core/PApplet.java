@@ -6713,7 +6713,7 @@ public class PApplet implements PConstants {
 
       } catch (FileNotFoundException fnfe) {
         // Added in 0119 b/c Java 1.5 throws FNFE when URL not available.
-        // http://dev.processing.org/bugs/show_bug.cgi?id=403
+        // https://download.processing.org/bugzilla/403.html
 
       } catch (IOException e) {
         // changed for 0117, shouldn't be throwing exception
@@ -6728,7 +6728,7 @@ public class PApplet implements PConstants {
 
     // Moved this earlier than the getResourceAsStream() checks, because
     // calling getResourceAsStream() on a directory lists its contents.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=716
+    // https://download.processing.org/bugzilla/716.html
     try {
       // First see if it's in a data folder. This may fail by throwing
       // a SecurityException. If so, this whole block will be skipped.
@@ -6782,7 +6782,7 @@ public class PApplet implements PConstants {
       // this is an irritation of sun's java plug-in, which will return
       // a non-null stream for an object that doesn't exist. like all good
       // things, this is probably introduced in java 1.5. awesome!
-      // http://dev.processing.org/bugs/show_bug.cgi?id=359
+      // https://download.processing.org/bugzilla/359.html
       if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
         return stream;
       }
@@ -6790,7 +6790,7 @@ public class PApplet implements PConstants {
 
     // When used with an online script, also need to check without the
     // data folder, in case it's not in a subfolder called 'data'.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=389
+    // https://download.processing.org/bugzilla/389.html
     stream = cl.getResourceAsStream(filename);
     if (stream != null) {
       String cn = stream.getClass().getName();
@@ -6932,7 +6932,7 @@ public class PApplet implements PConstants {
 
         } catch (FileNotFoundException fnfe) {
           // Java 1.5+ throws FNFE when URL not available
-          // http://dev.processing.org/bugs/show_bug.cgi?id=403
+          // https://download.processing.org/bugzilla/403.html
 
         } catch (IOException e) {
           printStackTrace(e);

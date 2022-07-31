@@ -157,7 +157,7 @@ public class JEditTextArea extends JComponent
     painter.addMouseMotionListener(new DragHandler());
     addFocusListener(new FocusHandler());
     // send tab keys through to the text area
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1267
+    // https://download.processing.org/bugzilla/1267.html
     setFocusTraversalKeysEnabled(false);
 
     // Load the defaults

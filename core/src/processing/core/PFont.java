@@ -281,7 +281,7 @@ public class PFont implements PConstants {
 
     } else {
       // The charset needs to be sorted to make index lookup run quickly
-      // http://dev.processing.org/bugs/show_bug.cgi?id=494
+      // https://download.processing.org/bugzilla/494.html
       // First make copy of charset[] so the user's array is not modified
       // https://github.com/processing/processing4/issues/197
       char[] sortedCharset = Arrays.copyOf(charset, charset.length);
@@ -916,7 +916,7 @@ public class PFont implements PConstants {
   /**
    * Starting with Java 1.5, Apple broke the ability to specify most fonts.
    * This bug was filed years ago as #4769141 at bugreporter.apple.com. More:
-   * <a href="http://dev.processing.org/bugs/show_bug.cgi?id=407">Bug 407</a>.
+   * <a href="https://download.processing.org/bugzilla/407.html">Bug 407</a>.
    * <br>
    * This function displays a warning when the font is not found
    * and Java's system font is used.
