@@ -1327,6 +1327,57 @@ public class Toolkit {
   }
 
 
+  static public String formatMessage(String message) {
+    String monoName = "Monospaced";
+    try {
+      monoName = Toolkit.getMonoFontName();
+    } catch (Exception ignored) { }
+
+    // Necessary to replace \n with <br/> (even if pre) otherwise Java
+    // treats it as a closed tag and reverts to plain formatting.
+    return "<html> " +
+      "<head> <style type=\"text/css\">"+
+      "tt { font: 11pt \"" + monoName + "\"; }" +
+      "</style> </head>" +
+      message.replaceAll("\n", "<br/>");
+  }
+
+
+  static public String formatMessage(String primary, String secondary) {
+    // Pane formatting originally adapted from the Quaqua guide
+    // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+
+    // This code originally disabled unless Java 1.5 is in use on OS X
+    // because of a Java bug that prevents the initial value of the
+    // dialog from being set properly (at least on my MacBook Pro).
+    // The bug causes the "Don't Save" option to be the highlighted,
+    // blinking, default. This sucks. But I'll tell you what doesn't
+    // suck--workarounds for the Mac and Apple's snobby attitude about it!
+    // I think it's nifty that they treat their developers like dirt.
+
+//    String monoName = "Monospaced";
+//    try {
+//      monoName = Toolkit.getMonoFontName();
+//    } catch (Exception ignored) { }
+
+    // Necessary to replace \n with <br/> (even if pre) otherwise Java
+    // treats it as a closed tag and reverts to plain formatting.
+    return ("<html> " +
+      "<head> <style type=\"text/css\">"+
+      //"b { font: 13pt \"Lucida Grande\" }"+
+      //"b { font: 13pt \"Processing Sans\" }"+
+      //"p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
+      //"p { font: 11pt \"Processing Sans\"; margin-top: 8px }"+
+      // sometimes with "width: 300px" but that might also be problematic
+      // <tt> never used with the two tier dialog
+      //"tt { font: 11pt \"" + monoName + "\"; }" +  // mono not used here
+      "</style> </head>" +
+      // Extra &nbsp; because the right-hand side of the text is cutting off.
+      "<b>" + primary + "</b>&nbsp;" +
+      "<p>" + secondary + "</p>").replaceAll("\n", "<br/>");
+  }
+
+
   static public HTMLEditorKit createHtmlEditorKit() {
     return new HTMLEditorKit() {
       private StyleSheet style;

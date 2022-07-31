@@ -2136,27 +2136,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
       }
 
     } else {
-      // This code is disabled unless Java 1.5 is being used on Mac OS X
-      // because of a Java bug that prevents the initial value of the
-      // dialog from being set properly (at least on my MacBook Pro).
-      // The bug causes the "Don't Save" option to be the highlighted,
-      // blinking, default. This sucks. But I'll tell you what doesn't
-      // suck--workarounds for the Mac and Apple's snobby attitude about it!
-      // I think it's nifty that they treat their developers like dirt.
-
-      // Pane formatting adapted from the quaqua guide
-      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+      String tier1 = Language.interpolate("save.title", sketch.getName());
+      String tier2 = Language.text("save.hint");
+      System.out.println(Toolkit.formatMessage(tier1, tier2));
       JOptionPane pane =
-        new JOptionPane("<html> " +
-                        "<head> <style type=\"text/css\">"+
-                        //"b { font: 13pt \"Lucida Grande\" }"+
-                        //"b { font: 13pt \"Processing Sans\" }"+
-                        //"p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
-                        //"p { font: 11pt \"Processing Sans\"; margin-top: 8px }"+
-                        "</style> </head>" +
-                        "<b>" + Language.interpolate("save.title", sketch.getName()) + "</b>" +
-                        "<p>" + Language.text("save.hint") + "</p>",
-                        JOptionPane.QUESTION_MESSAGE);
+        new JOptionPane(Toolkit.formatMessage(tier1, tier2), JOptionPane.QUESTION_MESSAGE);
 
       String[] options = new String[] {
         Language.text("save.btn.save"),

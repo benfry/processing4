@@ -1807,19 +1807,10 @@ public class Base {
         // we have to do the old behavior. Yuck!
         if (defaultFileMenu == null) {
           Object[] options = { Language.text("prompt.ok"), Language.text("prompt.cancel") };
-          String prompt =
-            "<html> " +
-            "<head> <style type=\"text/css\">"+
-            //"b { font: 13pt \"Lucida Grande\" }"+
-            "b { font: 13pt \"Processing Sans\" }"+
-            //"p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
-            "p { font: 11pt \"Processing Sans\"; margin-top: 8px; width: 300px }"+
-            "</style> </head>" +
-            "<b>Are you sure you want to Quit?</b>" +
-            "<p>Closing the last open sketch will quit Processing.";
 
           int result = JOptionPane.showOptionDialog(editor,
-            prompt,
+            Toolkit.formatMessage("Are you sure you want to Quit?",
+                "Closing the last open sketch will quit Processing."),
             "Quit",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,

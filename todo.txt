@@ -27,7 +27,7 @@ X   not bothering with todo.txt and done.txt since it's historical
 X   many of them include both, and it's easy enough to search if it's of interest
 X   updated all that are still in the source and the active todo.txt files
 
-font
+fonts
 X can't ship before ui.font and language bits sorted out
 X   otherwise the override to use Source Sans Pro will hose other languages
 X   make note of language change (Greek also removed)
@@ -44,6 +44,11 @@ o     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
 o     need a separate identifier for the builtin sans (now called processing.sans)
 o     and when theme wants to ask for a sans font
 X fix fonts in the welcome page
+X dialog formatting fixes
+X   move all (formerly Lucida) dialog formatting into Messages
+X   currently a couple other classes that use it
+/   create a version that works nicely with FlatLaf
+X   implemented in one place; still needs to just be redone
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -302,10 +307,7 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 fixes/changes before beta 9
-_ dialog formatting fixes
-_   move all (formerly Lucida) dialog formatting into Messages
-_   currently a couple other classes that use it
-_   create a version that works nicely with FlatLaf
+_ replace emoji buttons in status bar
 
 
 during release of beta 9

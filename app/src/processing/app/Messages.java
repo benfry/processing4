@@ -86,28 +86,9 @@ public class Messages {
       System.out.println(title + ": " + message);
 
     } else {
-      if (!Platform.isMacOS()) {
-        JOptionPane.showMessageDialog(new JFrame(),
-                                      "<html><body>" +
-                                      "<b>" + primary + "</b>" +
-                                      "<br>" + secondary, title,
-                                      JOptionPane.WARNING_MESSAGE);
-      } else {
-        // Pane formatting adapted from the Quaqua guide
-        // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
-        JOptionPane pane =
-          new JOptionPane("<html> " +
-                          "<head> <style type=\"text/css\">"+
-                          "b { font: 13pt \"Processing Sans\" }"+
-                          "p { font: 11pt \"Processing Sans\"; margin-top: 8px; width: 300px }"+
-                          "</style> </head>" +
-                          "<b>" + primary + "</b>" +
-                          "<p>" + secondary + "</p>",
-                          JOptionPane.WARNING_MESSAGE);
-
-        JDialog dialog = pane.createDialog(new JFrame(), null);
-        dialog.setVisible(true);
-      }
+      JOptionPane.showMessageDialog(new JFrame(),
+                                    Toolkit.formatMessage(primary, secondary),
+                                    title, JOptionPane.WARNING_MESSAGE);
     }
     if (e != null) e.printStackTrace();
   }
@@ -147,27 +128,12 @@ public class Messages {
       }
 
     } else {
-      // ensures that the mono font is loaded
-      // (inside Exception handler to avoid recursive badness)
-      String name = "Source Code Pro";
-      try {
-        name = Toolkit.getMonoFontName();
-      } catch (Exception ignored) { }
-
       StringWriter sw = new StringWriter();
       t.printStackTrace(new PrintWriter(sw));
-      // Necessary to replace \n with <br/> (even if pre) otherwise Java
-      // treats it as a closed tag and reverts to plain formatting.
-      message = ("<html>" +
-                 "<head> <style type=\"text/css\">" +
-                 //"p { font: 13pt \"Processing Sans\" }" +
-                 "tt { font: 11pt \"" + name + "\"; }" +
-                 "</style> </head>" +
-                 message +
-                 "<br/><tt><br/>" +
-                 sw + "</html>").replaceAll("\n", "<br/>");
 
-      JOptionPane.showMessageDialog(new Frame(), message, title,
+      JOptionPane.showMessageDialog(new Frame(),
+                                    Toolkit.formatMessage(message + "<br/><tt>" + sw + "</tt>"),
+                                    title,
                                     fatal ?
                                     JOptionPane.ERROR_MESSAGE :
                                     JOptionPane.WARNING_MESSAGE);
@@ -183,9 +149,11 @@ public class Messages {
                                       String primary, String secondary) {
     if (!Platform.isMacOS()) {
       return JOptionPane.showConfirmDialog(editor,
-                                           "<html><body>" +
-                                           "<b>" + primary + "</b>" +
-                                           "<br>" + secondary, title,
+                                           Toolkit.formatMessage(primary, secondary),
+                                           //"<html><body>" +
+                                           //"<b>" + primary + "</b>" +
+                                           //"<br>" + secondary,
+                                           title,
                                            JOptionPane.YES_NO_OPTION,
                                            JOptionPane.QUESTION_MESSAGE);
     } else {
@@ -213,22 +181,12 @@ public class Messages {
     Object result;
     if (!Platform.isMacOS()) {
       return JOptionPane.showOptionDialog(editor,
-          "<html><body><b>" + primary + "</b><br>" + secondary, title,
+        Toolkit.formatMessage(primary, secondary), title,
           JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           options, options[highlight]);
     } else {
-      // Pane formatting adapted from the Quaqua guide
-      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
       JOptionPane pane =
-        new JOptionPane("<html> " +
-                        "<head> <style type=\"text/css\">"+
-                        "b { font: 13pt \"Processing Sans\" }"+
-                        "p { font: 11pt \"Processing Sans\"; margin-top: 8px; width: 300px }"+
-                        "</style> </head>" +
-                        "<b>" + primary + "</b>" +
-                        // without changing \n to <br> it will close the
-                        // paragraph, removing styles from the second line
-                        "<p>" + secondary.replaceAll("\n", "<br/>"), // + "</p>",
+        new JOptionPane(Toolkit.formatMessage(primary, secondary),
                         JOptionPane.QUESTION_MESSAGE);
 
       pane.setOptions(options);
