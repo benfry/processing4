@@ -36,6 +36,7 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 import processing.app.Base;
+import processing.app.Language;
 import processing.app.Preferences;
 import processing.app.ui.Toolkit;
 import processing.awt.ShimAWT;
@@ -113,9 +114,15 @@ public class DefaultPlatform {
     // (i.e. Nimbus on Linux) with our custom components is badness.
 
     // dummy font call so that it's registered for FlatLaf
-    Toolkit.getSansFont(12, Font.PLAIN);
+    Font defaultFont = Toolkit.getSansFont(14, Font.PLAIN);
+
     // pull in FlatLaf.properties from the processing.app.laf folder
     FlatLaf.registerCustomDefaultsSource("processing.app.laf");
+
+    // defaultFont = 14 "Processing Sans", "Open Sans", "Noto Sans", Roboto, Arial
+    //UIManager.put("defaultFont", "14 \"Processing Sans\", \"Open Sans\", \"Noto Sans\", Roboto, Arial");
+    UIManager.put("defaultFont", defaultFont);
+
     // start with Light, but updateTheme() will be called soon
     UIManager.setLookAndFeel(new FlatLightLaf());
 

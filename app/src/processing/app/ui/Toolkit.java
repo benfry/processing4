@@ -30,8 +30,6 @@ import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -54,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import javax.swing.Action;
@@ -1109,13 +1106,12 @@ public class Toolkit {
   // A 5-minute search didn't turn up any such event in the Java API.
   // Also, should we use the Toolkit associated with the editor window?
   static private boolean checkRetina() {
-    GraphicsDevice graphicsDevice = GraphicsEnvironment
-            .getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice();
-    GraphicsConfiguration graphicsConfig = graphicsDevice
-            .getDefaultConfiguration();
+    AffineTransform tx = GraphicsEnvironment
+      .getLocalGraphicsEnvironment()
+      .getDefaultScreenDevice()
+      .getDefaultConfiguration()
+      .getDefaultTransform();
 
-    AffineTransform tx = graphicsConfig.getDefaultTransform();
     return Math.round(tx.getScaleX()) == 2;
   }
 
@@ -1187,11 +1183,7 @@ public class Toolkit {
 
   /** Get the name of the default (built-in) monospaced font. */
   static public String getMonoFontName() {
-    if (monoFont == null) {
-      // create a dummy version if the font has never been loaded (rare)
-      getMonoFont(12, Font.PLAIN);
-    }
-    return monoFont.getName();
+    return getMonoFont(12, Font.PLAIN).getName();
   }
 
 
@@ -1203,30 +1195,30 @@ public class Toolkit {
    * https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522
    */
   static public Font getMonoFont(int size, int style) {
-    if (monoFont == null) {
-      try {
-//        monoFont = createFont("SourceCodePro-Regular.ttf", Font.PLAIN, size);
-//        monoBoldFont = createFont("SourceCodePro-Bold.ttf", Font.BOLD, size);
-        monoFont = createFont("SourceCodePro-Regular.ttf", size);
-        monoBoldFont = createFont("SourceCodePro-Bold.ttf", size);
+    // Prior to 4.0 beta 9, we had a manual override for
+    // individual languages to use SansSerif instead.
+    // In beta 9, that was moved to the language translation file.
+    // https://github.com/processing/processing/issues/2886
+    // https://github.com/processing/processing/issues/4944
+    String fontFamilyMono = Language.text("font.family.mono");
 
-        // https://github.com/processing/processing/issues/2886
-        // https://github.com/processing/processing/issues/4944
-        String lang = Language.getLanguage();
-        if ("el".equals(lang) ||
-            "ar".equals(lang) ||
-            Locale.CHINESE.getLanguage().equals(lang) ||
-            Locale.JAPANESE.getLanguage().equals(lang) ||
-            Locale.KOREAN.getLanguage().equals(lang)) {
-          monoFont = new Font("Monospaced", Font.PLAIN, size);
-          monoBoldFont = new Font("Monospaced", Font.BOLD, size);
+    if (monoFont == null || monoBoldFont == null) {
+      try {
+        if ("Source Code Pro".equals(fontFamilyMono)) {
+          monoFont = initFont("SourceCodePro-Regular.ttf", size);
+          monoBoldFont = initFont("SourceCodePro-Bold.ttf", size);
         }
       } catch (Exception e) {
         Messages.err("Could not load mono font", e);
-        monoFont = new Font("Monospaced", Font.PLAIN, size);
-        monoBoldFont = new Font("Monospaced", Font.BOLD, size);
       }
     }
+
+    // If not using Source Code Pro above, or an Exception was thrown
+    if (monoFont == null || monoBoldFont == null) {
+      monoFont = new Font(fontFamilyMono, Font.PLAIN, size);
+      monoBoldFont = new Font(fontFamilyMono, Font.BOLD, size);
+    }
+
     if (style == Font.BOLD) {
       if (size == monoBoldFont.getSize()) {
         return monoBoldFont;
@@ -1243,77 +1235,36 @@ public class Toolkit {
   }
 
 
-  /*
   static public String getSansFontName() {
-    if (sansFont == null) {
-      // create a dummy version if the font has never been loaded (rare)
-      getSansFont(12, Font.PLAIN);
-    }
-    return sansFont.getName();
-  }
-  */
-
-
-  static public Font getSansFont() {
-    return getSansFont(0, Font.PLAIN);
-  }
-
-
-  static public Font getBoldFont() {
-    return getSansFont(0, Font.BOLD);
+    return getSansFont(12, Font.PLAIN).getName();
   }
 
 
   static public Font getSansFont(int size, int style) {
-    if (sansFont == null) {
+    // Prior to 4.0 beta 9, we had a manual override for
+    // individual languages to use SansSerif instead.
+    // In beta 9, that was moved to the language translation file.
+    // https://github.com/processing/processing/issues/2886
+    // https://github.com/processing/processing/issues/4944
+    String fontFamilySans = Language.text("font.family.sans");
+
+    if (sansFont == null || sansBoldFont == null) {
       try {
-        sansFont = createFont("ProcessingSans-Regular.ttf", size);
-        sansBoldFont = createFont("ProcessingSans-Bold.ttf", size);
-        // test what the synthesized bold looks like
-        //sansBoldFont = sansFont.deriveFont(Font.BOLD);
-
-        /*
-        // during beta 9, a bit of testing to make sure the right font is used
-        GraphicsEnvironment ge =
-          GraphicsEnvironment.getLocalGraphicsEnvironment();
-        Font[] fonts = ge.getAllFonts();
-        // even though these both come through as 'plain' the styles work
-        for (Font font : fonts) {
-          if (font.getName().contains("Processing")) {
-            System.out.println(font);
-          }
-        }
-        // there are no bold fonts
-        for (Font font : fonts) {
-          if (font.getStyle() == Font.BOLD) {
-            System.out.println("found bold: " + font);
-          }
-        }
-        // these pass, with the current code; even without doing
-        // deriveFont(Font.BOLD) before the registerFont() call.
-        Font f = new Font("Processing Sans", Font.BOLD, 12);
-        System.out.println("hopefully ProcessingSans-Bold: " + f.getPSName());
-        f = new Font("Processing Sans", Font.PLAIN, 12);
-        System.out.println("hopefully ProcessingSans-Regular: " + f.getPSName());
-        */
-
-        // https://github.com/processing/processing/issues/2886
-        // https://github.com/processing/processing/issues/4944
-        String lang = Language.getLanguage();
-        if ("el".equals(lang) ||
-            "ar".equals(lang) ||
-            Locale.CHINESE.getLanguage().equals(lang) ||
-            Locale.JAPANESE.getLanguage().equals(lang) ||
-            Locale.KOREAN.getLanguage().equals(lang)) {
-          sansFont = new Font("SansSerif", Font.PLAIN, size);
-          sansBoldFont = new Font("SansSerif", Font.BOLD, size);
+        if ("Processing Sans".equals(fontFamilySans)) {
+          sansFont = initFont("ProcessingSans-Regular.ttf", size);
+          sansBoldFont = initFont("ProcessingSans-Bold.ttf", size);
         }
       } catch (Exception e) {
         Messages.err("Could not load sans font", e);
-        sansFont = new Font("SansSerif", Font.PLAIN, size);
-        sansBoldFont = new Font("SansSerif", Font.BOLD, size);
       }
     }
+
+    // If not using "Processing Sans" above, or an Exception was thrown
+    if (sansFont == null || sansBoldFont == null) {
+      sansFont = new Font(fontFamilySans, Font.PLAIN, size);
+      sansBoldFont = new Font(fontFamilySans, Font.BOLD, size);
+    }
+
     if (style == Font.BOLD) {
       if (size == sansBoldFont.getSize() || size == 0) {
         return sansBoldFont;
@@ -1331,12 +1282,12 @@ public class Toolkit {
 
 
   /**
-   * Get a font from the lib/fonts folder. Our default fonts are also
-   * installed there so that the monospace (and others) can be used by other
-   * font listing calls (i.e. it appears in the list of monospace fonts in
-   * the Preferences window, and can be used by HTMLEditorKit for WebFrame).
+   * Load a built-in font from the Processing lib/fonts folder and register
+   * it with the GraphicsEnvironment so that it's broadly available.
+   * (i.e. shows up in getFontList() works, so it appears in the list of fonts
+   * in the Preferences window, and can be used by HTMLEditorKit for WebFrame.)
    */
-  static private Font createFont(String filename, int size) throws IOException, FontFormatException {
+  static private Font initFont(String filename, int size) throws IOException, FontFormatException {
     File fontFile = Platform.getContentFile("lib/fonts/" + filename);
 
     if (fontFile == null || !fontFile.exists()) {
@@ -1357,13 +1308,8 @@ public class Toolkit {
     Font font = Font.createFont(Font.TRUETYPE_FONT, input);
     input.close();
 
-    // make sure it's the correct weight (plain or bold) and specify a size
-//    System.out.println("about to derive " + font);
-//    font = font.deriveFont(style, size);
-//    System.out.println("derived to " + font);
-
-    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    ge.registerFont(font);
+    // Register the font to be available for other function calls
+    GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
 
     return font.deriveFont((float) size);
   }

@@ -11,6 +11,9 @@ X   https://github.com/processing/processing4/issues/491
 X   git bisect good ccc62c6 / git bisect bad f583eef
 X   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c3ff88fdd53466
 X   introduces https://github.com/processing/processing4/issues/519
+X can't ship before ui.font and language bits sorted out
+X   otherwise the override to use Source Sans Pro will hose other languages
+X   make note of language change (Greek also removed)
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -246,8 +249,7 @@ _ dialog formatting fixes
 _   move all (formerly Lucida) dialog formatting into Messages
 _   currently a couple other classes that use it
 _   create a version that works nicely with FlatLaf
-_ can't ship before ui.font and language bits sorted out
-_   otherwise the override to use Source Sans Pro will hose other languages
+_ fix fonts in the welcome page
 _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
 _ update theme instructions
