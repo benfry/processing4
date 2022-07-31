@@ -43,7 +43,7 @@ import processing.app.SketchCode;
  */
 public class EditorHeader extends JComponent {
   // height of this tab bar
-  static final int HIGH = Toolkit.zoom(30);
+  static final int HIGH = Toolkit.zoom(31);
 
   static final int ARROW_TAB_WIDTH = Toolkit.zoom(18);
   static final int ARROW_TOP = Toolkit.zoom(12);
@@ -60,7 +60,7 @@ public class EditorHeader extends JComponent {
   // bottom position as determined by TAB_BELOW gap
   static final int TAB_BOTTOM = HIGH - TAB_BELOW;
   // amount of margin on the left/right for the text on the tab
-  static final int TEXT_MARGIN = Toolkit.zoom(12);
+  static final int TEXT_MARGIN = Toolkit.zoom(13);
   // width of the tab when no text visible
   // (total tab width will be this plus TEXT_MARGIN*2)
   static final int NO_TEXT_WIDTH = Toolkit.zoom(16);
@@ -86,10 +86,6 @@ public class EditorHeader extends JComponent {
 
   static final int UNSELECTED = 0;
   static final int SELECTED = 1;
-
-  Image offscreen;
-  int sizeW, sizeH;
-  int imageW, imageH;
 
   String lastNoticeName;
 

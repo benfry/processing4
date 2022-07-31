@@ -80,9 +80,13 @@ X font for stack trace dialogs is too small (and wrong)
 X overall layout/spacing/proportion
 X icons for debug toolbar (VariableInspector.java)
 X   replace variables-1x and -2x with separate SVG files in debug
-_ code completion icon updates (class, field, protected, method)
-_   these go into CompletionPanel.java
-
+X visual fixes for tab sizes, etc (with Paul)
+X   weirdness with gaps in tabs (editor too big, manager too small)
+X   contrib mgr: filter/dropdown vertical centering is too high
+/   fake bold being used for tab name? (Windows only?)
+X   should be resolved with both fonts now being installed
+X two tier dialog box (defaulting back to Lucida)
+X dialog box with stack trace (font is too small)
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
@@ -241,13 +245,6 @@ _ using other JavaFX classes now that they're modules
 _   https://github.com/processing/processing4-javafx/issues/15
 _ update theme instructions
 _   https://github.com/processing/processing4/wiki/Themes
-
-
-waiting
-_ visual fixes for tab sizes, etc (with Paul)
-_   weirdness with gaps in tabs (editor too big, manager too small)
-_   contrib mgr: filter/dropdown vertical centering is too high
-_   fake bold being used for tab name? (Windows only?)
 
 
 during release of beta 9
@@ -421,6 +418,13 @@ _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
 
 
+design
+_ code completion icon updates (class, field, protected, method)
+_   these go into CompletionPanel.java
+_ Update graphics and visual design elements for 4.x
+_   https://github.com/processing/processing4/issues/48
+
+
 design/implementation
 _ updateTheme() in Theme Selector
 _   theme_selector.combo_box.enabled.bgcolor
@@ -428,8 +432,6 @@ _   theme_selector.combo_box.enabled.bgcolor
 _   don’t update dynamically unless you (a) select ‘Minerals’ or ‘Alloys’
 _   or (b) open, then close the dropdown
 _ build new welcome/examples screen for startup
-_ two tier dialog box (defaulting back to Lucida)
-_ dialog box with stack trace (font is too small)
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ add notes about params to the wiki
@@ -445,8 +447,6 @@ _     can be overridden in preferences.txt
 _     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
 _     need a separate identifier for the builtin sans (now called processing.sans)
 _     and when theme wants to ask for a sans font
-_ Update graphics and visual design elements for 4.x
-_   https://github.com/processing/processing4/issues/48
 
 
 before 4.x final

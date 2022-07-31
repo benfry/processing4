@@ -47,10 +47,11 @@ import processing.app.ui.Toolkit;
 /**
  * Tab button bar for Libraries, Modes, Tools, and Updates, across the
  * top of the Contribution Manager. Tab content is in ContributionTab.
+ * Most of the sizing dimensions are identical to EditorHeader.
  */
 public class ManagerTabs extends Box {
   // height of this tab bar
-  static final int HIGH = Toolkit.zoom(34);
+  static final int HIGH = Toolkit.zoom(31);
 
   // amount of space around the entire window
   static final int BORDER = Toolkit.zoom(8);
@@ -60,7 +61,7 @@ public class ManagerTabs extends Box {
   // amount of extra space between individual tabs
   static final int TAB_BETWEEN = Toolkit.zoom(2);
   // amount of margin on the left/right for the text on the tab
-  static final int MARGIN = Toolkit.zoom(14);
+  static final int MARGIN = Toolkit.zoom(13);
 
   static final int UNSELECTED = 0;
   static final int SELECTED = 1;
