@@ -270,6 +270,9 @@ o   http://commons.apache.org/io/api-release/index.html
 X Switch to getModifiersEx() in `processing.app`
 X   https://github.com/processing/processing4/issues/67
 X   done in beta 2
+/ library compilations not ordered properly w/ sorting
+/   do we still support library compilations? that was from 2016
+X   https://github.com/processing/processing/issues/4630
 
 decisions
 o preferences in web frame?
@@ -287,6 +290,8 @@ X   switching to 17 as the default because it's now available in rpi os
 known issues
 _ mixed mode warning now broken
 _   https://github.com/processing/processing4/issues/519
+_ 'color' in imports shows up as an error in the editor
+_   but code still compiles and runs
 
 
 fixes/changes before beta 9
@@ -698,10 +703,6 @@ _   then tell the user which folder to fix
 _ "Required files could not be found" when trying to run from the .zip file
 _   https://github.com/processing/processing/issues/5022
 _   use an installer instead?
-
-_ library compilations not ordered properly w/ sorting
-_   do we still support library compilations? that was from 2016
-_   https://github.com/processing/processing/issues/4630
 
 
 gui
@@ -1158,6 +1159,9 @@ _   e.g. ocd is broken in 0125 because of method signature changes
 
 PDE / Manager
 
+_ Fix vertical placement of top elements in the Manager window
+_   https://github.com/processing/processing4/issues/520
+_   vertical centering of the search box in the manager
 _ “could not move the contribution to the backup folder” message while updating
 _   problem is that any sketch that uses a library, the lib is stuck as "in use"
 _   https://github.com/processing/processing/issues/4973
