@@ -348,6 +348,13 @@
     </condition>
     <chmod file="${target.path}/tools/MovieMaker/tool/${ffmpeg.binary}" perm="ugo+x" />
 
+    <!--<echo message="ref ignoreable? ${reference.ignorable}" />-->
+    <!-- <get src="https://download.processing.org/reference4.zip" -->
+    <get src="https://download.processing.org/reference.zip"
+         dest="../java/reference.zip"
+         ignoreerrors="${reference.ignorable}"
+         usetimestamp="true" />
+
     <copy todir="${target.path}/modes/java" preservelastmodified="true">
       <fileset dir="../java">
         <!-- don't include LWJGL, it's not operational -->
@@ -364,6 +371,7 @@
         <include name="libraries/**/library.properties" />
 
         <include name="mode/**" />
+        <include name="reference.zip" />
         <include name="theme/**" />
       </fileset>
     </copy>
@@ -378,31 +386,6 @@
     <condition property="reference.ignorable" value="false" else="true">
       <isset property="version" />
     </condition>
-
-    <!--<echo message="ref ignoreable? ${reference.ignorable}" />-->
-    <get src="https://download.processing.org/reference.zip"
-         dest="../java/reference.zip"
-         ignoreerrors="${reference.ignorable}"
-         usetimestamp="true" />
-
-    <!-- starting with revision 1276, reference.zip stays intact -->
-    <!--
-    <unzip dest="${target.path}/modes/java"
-           src="../java/reference.zip"
-           overwrite="false">
-      <patternset>
-        <exclude name="__MACOSX/**" />
-        <exclude name="**/._*" />
-      </patternset>
-    </unzip>
-    -->
-
-    <!-- copy PDE X mode folder-->
-    <!--
-    <copy todir="${target.path}/modes/">
-      <fileset dir="../pdex/dist" />
-    </copy>
-    -->
   </target>
 
   <target name="version-clear">
