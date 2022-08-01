@@ -284,6 +284,11 @@ X   https://github.com/processing/processing/issues/4630
 
 decisions
 o preferences in web frame?
+o intro page using webkit (launching into examples)
+o   and maybe the reference too?
+X   nope, webkit embed way too large
+o how to send messages from webkit server to PDE (i.e. for a color tool)
+X   skipping webkit embed for now
 X should we use Java 11 instead of 17 to be less of an outlier?
 X   default rpi openjdk seems to be 11, we're not using any 17 features
 X   size change is negligible (17 may even be slightly smaller)
@@ -308,6 +313,12 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 fixes/changes before beta 9
 _ replace emoji buttons in status bar
+_ reset the theme because of significant changes
+_ how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
+o   xz compression may cut down 2x vs zip, but we lose the .zip file reading
+o   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
+_   move reference back online
+_   file an issue for the loss of local reference
 
 
 during release of beta 9
@@ -315,19 +326,6 @@ _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
-
-
-detach sketch names
-_ remove checkbox for detaching sketch name
-_   just do this manually, and Save As will reset the name
-_   should this be a setting in the sketch itself?
-_ really need to override the save dialog and add a checkbox there
-_   or should this be on the rename for the main tab
-_   and if it's different on 'save as' then it won't update it
-_ better yet, is it on creating sketches, so it actually is a pref
-_   i.e. 'new sketches use name Sketch.java' instead of name of sketch as main tab
-_   that might be closer to where people are expecting it anyway
-_   and combined w/ the rename checkbox on the main tab, that might do it
 
 
 Python Mode
@@ -359,6 +357,19 @@ _     https://github.com/glitchdotcom/friendly-words/blob/master/words/objects.t
 _   how friendly names are used in the p5.js web editor
 _     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/generateRandomName.js
 _     p5.js uses predicate followed by an object
+
+
+detach sketch names
+_ remove checkbox for detaching sketch name
+_   just do this manually, and Save As will reset the name
+_   should this be a setting in the sketch itself?
+_ really need to override the save dialog and add a checkbox there
+_   or should this be on the rename for the main tab
+_   and if it's different on 'save as' then it won't update it
+_ better yet, is it on creating sketches, so it actually is a pref
+_   i.e. 'new sketches use name Sketch.java' instead of name of sketch as main tab
+_   that might be closer to where people are expecting it anyway
+_   and combined w/ the rename checkbox on the main tab, that might do it
 
 
 contribs
@@ -410,7 +421,8 @@ _   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
 _   obvious places where this needs to happen, but the code is working for now
 _   needs a few hours work to untangle all of it, but worth the regressions?
 _ get rid of IgnorableException
-_ contrib/mode/lib/example List objects in Base: which should be Set objects
+_ contrib/mode/lib/example List objects in Base
+_   which of these should be Set objects?
 _ JProgressBar in StatusPanel is shared by all installing contribs
 _   which could make for weird behavior if installs before something has finished
 _   work to prevent multiple from colliding
@@ -480,7 +492,7 @@ _ add notes about params to the wiki
 
 before 4.x final
 _ how to handle contrib manager download/retry/etc and showing progress
-_ downloader for ffmpeg and reference?
+_ downloader for ffmpeg
 _ do gradients in Lab space
 _ update theme instructions
 _   https://github.com/processing/processing4/wiki/Themes
@@ -534,9 +546,6 @@ _ Export to Application was broken with OpenGL (Casey)
 
 
 decisions before final 4.0 release
-_ how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
-_   xz compression may cut down 2x vs zip, but we lose the .zip file reading
-_   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
 _ can we compress jdk/Contents/Home/legal into a single zip?
 _   it's ~300 files of the ~500 in the entire jdk directory
 _ Friendly Names for new Sketches (includes UI for switching it back)
@@ -566,9 +575,6 @@ _ auto-complete not auto-triggering, change pref for handling?
 _   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 _   https://github.com/processing/processing/issues/5691
 _ automatic import of JavaFX when FX2D is specified
-_ intro page using webkit (launching into examples)
-_   and maybe the reference too?
-_ how to send messages from webkit server to PDE (i.e. for a color tool)
 
 
 would like to fix (but not necessary for 4.0 final)
