@@ -69,10 +69,10 @@ public class EditorStatus extends BasicSplitPaneDivider {
   static public final int CURSOR_LINE_WARNING = 4;
   static public final int NOTICE = 0;
 
-  static final int YES = 1;
-  static final int NO = 2;
-  static final int CANCEL = 3;
-  static final int OK = 4;
+//  static final int YES = 1;
+//  static final int NO = 2;
+//  static final int CANCEL = 3;
+//  static final int OK = 4;
 
   Editor editor;
 
@@ -81,7 +81,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   String url;
 
-  int rightEdge;
+//  int rightEdge;
   int mouseX;
 
   static final int ROLLOVER_NONE = 0;
@@ -118,7 +118,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
   int buttonSize;
   boolean collapsed = false;
 
-  int response;
+//  int response;
 
   boolean indeterminate;
   Thread thread;
@@ -307,17 +307,16 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   public void startIndeterminate() {
     indeterminate = true;
-    thread = new Thread() {
+    thread = new Thread("Editor Status") {
       public void run() {
         while (Thread.currentThread() == thread) {
           repaint();
           try {
             Thread.sleep(1000 / 10);
-          } catch (InterruptedException e) { }
+          } catch (InterruptedException ignored) { }
         }
       }
     };
-    thread.setName("Editor Status");
     thread.start();
   }
 
@@ -406,7 +405,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
         g.drawLine(r, y, r, y+h);
       }
 
-    } else if (!message.isEmpty()) {
+    } else if (message != null && !message.isEmpty()) {
       g.setFont(glyphFont);
       drawButton(g, CLIPBOARD_GLYPH, 1, rolloverState == ROLLOVER_CLIPBOARD);
       g.setFont(font);
