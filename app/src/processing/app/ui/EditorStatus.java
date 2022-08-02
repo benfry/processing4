@@ -32,9 +32,7 @@ import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
+import java.awt.event.*;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -88,9 +86,15 @@ public class EditorStatus extends BasicSplitPaneDivider {
   Color urlRolloverColor;
   Color urlPressedColor;
 
+  boolean shiftDown;
+
   ImageIcon clipboardEnabledIcon;
   ImageIcon clipboardRolloverIcon;
   ImageIcon clipboardPressedIcon;
+
+  ImageIcon searchEnabledIcon;
+  ImageIcon searchRolloverIcon;
+  ImageIcon searchPressedIcon;
 
   ImageIcon collapseEnabledIcon;
   ImageIcon collapseRolloverIcon;
@@ -119,12 +123,12 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
       @Override
       public void mouseEntered(MouseEvent e) {
-        updateMouse(e.getX(), false);
+        updateMouse(e, false);
       }
 
       @Override
       public void mousePressed(MouseEvent e) {
-        updateMouse(e.getX(), true);
+        updateMouse(e, true);
       }
 
       @Override
@@ -149,12 +153,12 @@ public class EditorStatus extends BasicSplitPaneDivider {
         } else if (mouseState == COLLAPSE_PRESSED) {
           setCollapsed(!collapsed);
         }
-        updateMouse(e.getX(), false);  // no longer pressed
+        updateMouse(e, false);  // no longer pressed
       }
 
       @Override
       public void mouseExited(MouseEvent e) {
-        updateMouse(-100, false);
+        updateMouse(null, false);
       }
     });
 
@@ -166,12 +170,12 @@ public class EditorStatus extends BasicSplitPaneDivider {
         // or the button wouldn't work.
         setCollapsed(false);
 
-        updateMouse(e.getX(), true);
+        updateMouse(e, true);
       }
 
       @Override
       public void mouseMoved(MouseEvent e) {
-        updateMouse(e.getX(), false);
+        updateMouse(e, false);
       }
     });
   }
@@ -186,17 +190,24 @@ public class EditorStatus extends BasicSplitPaneDivider {
   }
 
 
-  void updateMouse(int mouseX, boolean pressed) {
+  void updateMouse(MouseEvent e, boolean pressed) {
     mouseState = NONE;
-    if (mouseX > sizeW - buttonEach && mouseX < sizeW) {
-      mouseState = pressed ? COLLAPSE_PRESSED : COLLAPSE_ROLLOVER;
+    shiftDown = false;
 
-    } else if (message != null && !message.isEmpty()) {
-      if (sizeW - 2* buttonEach < mouseX) {
-        mouseState = pressed ? CLIPBOARD_PRESSED : CLIPBOARD_ROLLOVER;
+    if (e != null) {
+      int mouseX = e.getX();
+      shiftDown = e.isShiftDown();
 
-      } else if (url != null && mouseX > LEFT_MARGIN && mouseX < messageRight) {
-        mouseState = pressed ? URL_PRESSED : URL_ROLLOVER;
+      if (mouseX > sizeW - buttonEach && mouseX < sizeW) {
+        mouseState = pressed ? COLLAPSE_PRESSED : COLLAPSE_ROLLOVER;
+
+      } else if (message != null && !message.isEmpty()) {
+        if (sizeW - 2 * buttonEach < mouseX) {
+          mouseState = pressed ? CLIPBOARD_PRESSED : CLIPBOARD_ROLLOVER;
+
+        } else if (url != null && mouseX > LEFT_MARGIN && mouseX < messageRight) {
+          mouseState = pressed ? URL_PRESSED : URL_ROLLOVER;
+        }
       }
     }
 
@@ -237,6 +248,11 @@ public class EditorStatus extends BasicSplitPaneDivider {
     clipboardEnabledIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonEnabledColor, ICON_SIZE);
     clipboardRolloverIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonRolloverColor, ICON_SIZE);
     clipboardPressedIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonPressedColor, ICON_SIZE);
+
+    // just borrowing the search icon from the manager
+    searchEnabledIcon = Toolkit.renderIcon("manager/search", buttonEnabledColor, ICON_SIZE);
+    searchRolloverIcon = Toolkit.renderIcon("manager/search", buttonRolloverColor, ICON_SIZE);
+    searchPressedIcon = Toolkit.renderIcon("manager/search", buttonPressedColor, ICON_SIZE);
 
     collapseEnabledIcon = Toolkit.renderIcon("status/console-collapse", buttonEnabledColor, ICON_SIZE);
     collapseRolloverIcon = Toolkit.renderIcon("status/console-collapse", buttonRolloverColor, ICON_SIZE);
@@ -371,11 +387,23 @@ public class EditorStatus extends BasicSplitPaneDivider {
       }
 
     } else if (message != null && !message.isEmpty()) {
-      ImageIcon glyph = clipboardEnabledIcon;
-      if (mouseState == CLIPBOARD_ROLLOVER) {
-        glyph = clipboardRolloverIcon;
-      } else if (mouseState == CLIPBOARD_PRESSED) {
-        glyph = clipboardPressedIcon;
+      ImageIcon glyph;
+      if (shiftDown) {
+        if (mouseState == CLIPBOARD_ROLLOVER) {
+          glyph = searchRolloverIcon;
+        } else if (mouseState == CLIPBOARD_PRESSED) {
+          glyph = searchPressedIcon;
+        } else {
+          glyph = searchEnabledIcon;
+        }
+      } else {
+        if (mouseState == CLIPBOARD_ROLLOVER) {
+          glyph = clipboardRolloverIcon;
+        } else if (mouseState == CLIPBOARD_PRESSED) {
+          glyph = clipboardPressedIcon;
+        } else {
+          glyph = clipboardEnabledIcon;
+        }
       }
       drawButton(g, glyph, 1);
       g.setFont(font);

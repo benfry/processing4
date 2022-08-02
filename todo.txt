@@ -319,8 +319,9 @@ _   https://github.com/processing/processing4-javafx/issues/15
 fixes/changes before beta 9
 X replace emoji buttons in status bar
 X   re-save svg files using svg 1.0
+X   sort out hover/press states here (only hovers atm)
+X   also add state for shift-click to search
 _   theme colors for emoji buttons (new themes across the board)
-_   sort out hover/press states here (only hovers atm)
 _ naming options?
 _   remove underscore and use half space for tabs?
 _ reset the theme because of significant changes
