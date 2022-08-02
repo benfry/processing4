@@ -51,11 +51,9 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Current version of JNA that works with Processing -->
-  <property name="jna.version" value="5.10.0" />
+  <property name="jna.version" value="5.12.1" />
   <!-- the .zip file to be downloaded -->
   <property name="jna.zip" value="${jna.version}.zip" />
-  <!-- the .jar file that's the actual dependency -->
-  <!-- <property name="batik.jar" value="batik-all-${batik.version}.jar" /> -->
 
   <!-- TODO implement a fallback URL that points to a location
        on download.processing.org so it's available forever. -->
