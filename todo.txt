@@ -22,6 +22,9 @@ X   https://github.com/processing/processing4/issues/524
 X Apple Silicon support
 X   https://github.com/processing/processing4/issues/128
 X   update version of JNA in use
+X Update graphics and visual design elements for 4.x
+X   https://github.com/processing/processing4/issues/48
+X   close the interface issue, major changes done
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
@@ -328,15 +331,15 @@ X   sort out hover/press states here (only hovers atm)
 X   also add state for shift-click to search
 _   theme colors for emoji buttons (new themes across the board)
 _ naming options?
-_   remove underscore and use half space for tabs?
+_   remove underscore and use (half?) space for tabs?
 _ reset the theme because of significant changes
 _   move away from writing theme.txt?
 _   instead store the theme name, for easier updating
 _   and a version in the sketchbook will always override
 _     (selecting a new theme will rename that file, but not replace a theme.txt file)
 _ check on text width calculation in the code completion popup
-_ close the interface issue, major changes done
 _ check into offscreen text rendering with JNA
+_   https://github.com/iterate-ch/rococoa
 
 
 during release of beta 9
@@ -493,8 +496,6 @@ _   probably not sort by default to avoid confusion
 design
 _ code completion icon updates (class, field, protected, method)
 _   these go into CompletionPanel.java
-_ Update graphics and visual design elements for 4.x
-_   https://github.com/processing/processing4/issues/48
 
 
 design/implementation
@@ -507,6 +508,8 @@ _ build new welcome/examples screen for startup
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ add notes about params to the wiki
+_ the gradient.top and gradient.bottom lines are used by makeGradient(),
+_   so search for makeGradient() calls to see whether they're still in use.
 
 
 before 4.x final

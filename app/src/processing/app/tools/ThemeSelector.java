@@ -54,7 +54,8 @@ import java.util.Map;
 
 
 public class ThemeSelector extends JFrame implements Tool {
-  static final String HOWTO_URL = "https://github.com/processing/processing4/wiki/Themes";
+  static final String HOWTO_URL =
+    "https://github.com/processing/processing4/wiki/Themes";
   static final String ORDER_FILENAME = "order.txt";
 
   String miniSvgXml;
@@ -70,11 +71,8 @@ public class ThemeSelector extends JFrame implements Tool {
   JComboBox<String> setSelector;
   ColorfulPanel selector;
 
-//  PdeLabel howtoLabel;
-//  PdeLabel reloadTheme;
   JLabel howtoLabel;
   JLabel reloadTheme;
-//  String labelStyle;
 
   Base base;
 
@@ -88,7 +86,6 @@ public class ThemeSelector extends JFrame implements Tool {
     this.base = base;
 
     try {
-//      File themeFolder = Base.getLibFile("theme");
       File themeFolder = Theme.getThemeFolder();
       File[] setFolders = themeFolder.listFiles(file -> {
         if (file.isDirectory()) {
@@ -119,7 +116,6 @@ public class ThemeSelector extends JFrame implements Tool {
     }
 
     Container pane = getContentPane();
-    //pane.setLayout(new BorderLayout());
 
     Box axis = Box.createVerticalBox();
 
@@ -133,12 +129,10 @@ public class ThemeSelector extends JFrame implements Tool {
       updateCurrentIndex();
       repaint();
     });
-    //pane.add(setSelector, BorderLayout.NORTH);
     addRow(axis, setSelector);
 
     axis.add(Box.createVerticalStrut(13));
 
-    //pane.add(selector = new ColorfulPanel(), BorderLayout.CENTER);
     axis.add(selector = new ColorfulPanel());  // flush with sides
 
     axis.add(Box.createVerticalStrut(13));
@@ -194,7 +188,6 @@ public class ThemeSelector extends JFrame implements Tool {
       }
     });
 
-    //axis.setBorder(new EmptyBorder(13, 13, 13, 13));
     axis.setBorder(new EmptyBorder(20, 20, 20, 20));
     pane.add(axis);
 
@@ -222,7 +215,6 @@ public class ThemeSelector extends JFrame implements Tool {
   public void run() {
     // location for theme.txt in the sketchbook folder
     // (doing this in run() in case the sketchbook location has changed)
-    //sketchbookFile = new File(Base.getSketchbookFolder(), "theme.txt");
     sketchbookFile = Theme.getSketchbookFile();
 
     updateTheme();

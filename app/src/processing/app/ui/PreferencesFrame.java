@@ -504,8 +504,7 @@ public class PreferencesFrame {
     codingPanel.setLayout(new BoxLayout(codingPanel, BoxLayout.Y_AXIS));
 
     addRow(codingPanel, errorCheckerBox, warningsCheckerBox);
-    addRow(codingPanel, codeCompletionBox);
-    addRow(codingPanel, importSuggestionsBox);
+    addRow(codingPanel, codeCompletionBox, importSuggestionsBox);
 
     axis.add(codingPanel);
 
