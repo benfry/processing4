@@ -34,7 +34,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
@@ -54,7 +54,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
   static final int LEFT_MARGIN = Editor.LEFT_GUTTER;
   static final int RIGHT_MARGIN = Toolkit.zoom(20);
 
-  Color urlColor;
   Color[] fgColor;
   Color[] bgColor;
 
@@ -70,15 +69,17 @@ public class EditorStatus extends BasicSplitPaneDivider {
   int mode;
   String message = "";
 
+  int messageRight;
   String url;
 
-  int mouseX;
-
-  static final int ROLLOVER_NONE = 0;
-  static final int ROLLOVER_URL = 1;
-  static final int ROLLOVER_COLLAPSE = 2;
-  static final int ROLLOVER_CLIPBOARD = 3;
-  int rolloverState;
+  static final int NONE = 0;
+  static final int URL_ROLLOVER = 1;
+  static final int URL_PRESSED = 2;
+  static final int COLLAPSE_ROLLOVER = 3;
+  static final int COLLAPSE_PRESSED = 4;
+  static final int CLIPBOARD_ROLLOVER = 5;
+  static final int CLIPBOARD_PRESSED = 6;
+  int mouseState;
 
   Font font;
   FontMetrics metrics;
@@ -118,15 +119,20 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
       @Override
       public void mouseEntered(MouseEvent e) {
-        updateMouse();
+        updateMouse(e.getX(), false);
       }
 
       @Override
       public void mousePressed(MouseEvent e) {
-        if (rolloverState == ROLLOVER_URL) {
+        updateMouse(e.getX(), true);
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (mouseState == URL_PRESSED) {
           Platform.openURL(url);
 
-        } else if (rolloverState == ROLLOVER_CLIPBOARD) {
+        } else if (mouseState == CLIPBOARD_PRESSED) {
           if (e.isShiftDown()) {
             // open the text in a browser window as a search
             final String fmt = Preferences.get("search.format");
@@ -140,32 +146,32 @@ public class EditorStatus extends BasicSplitPaneDivider {
                                "Use shift-click to search the web instead.");
           }
 
-        } else if (rolloverState == ROLLOVER_COLLAPSE) {
+        } else if (mouseState == COLLAPSE_PRESSED) {
           setCollapsed(!collapsed);
         }
+        updateMouse(e.getX(), false);  // no longer pressed
       }
 
       @Override
       public void mouseExited(MouseEvent e) {
-        mouseX = -100;
-        updateMouse();
+        updateMouse(-100, false);
       }
-
     });
 
-    addMouseMotionListener(new MouseMotionAdapter() {
+    addMouseMotionListener(new MouseMotionListener() {
       @Override
       public void mouseDragged(MouseEvent e) {
         // BasicSplitPaneUI.startDragging gets called even when you click but
         // don't drag, so we can't expand the console whenever that gets called
         // or the button wouldn't work.
         setCollapsed(false);
+
+        updateMouse(e.getX(), true);
       }
 
       @Override
       public void mouseMoved(MouseEvent e) {
-        mouseX = e.getX();
-        updateMouse();
+        updateMouse(e.getX(), false);
       }
     });
   }
@@ -180,16 +186,30 @@ public class EditorStatus extends BasicSplitPaneDivider {
   }
 
 
-  void updateMouse() {
-    switch (rolloverState) {
-    case ROLLOVER_CLIPBOARD:
-    case ROLLOVER_URL:
+  void updateMouse(int mouseX, boolean pressed) {
+    mouseState = NONE;
+    if (mouseX > sizeW - buttonEach && mouseX < sizeW) {
+      mouseState = pressed ? COLLAPSE_PRESSED : COLLAPSE_ROLLOVER;
+
+    } else if (message != null && !message.isEmpty()) {
+      if (sizeW - 2* buttonEach < mouseX) {
+        mouseState = pressed ? CLIPBOARD_PRESSED : CLIPBOARD_ROLLOVER;
+
+      } else if (url != null && mouseX > LEFT_MARGIN && mouseX < messageRight) {
+        mouseState = pressed ? URL_PRESSED : URL_ROLLOVER;
+      }
+    }
+
+    // only change on the rollover, no need to update on press
+    switch (mouseState) {
+    case CLIPBOARD_ROLLOVER:
+    case URL_ROLLOVER:
       setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       break;
-    case ROLLOVER_COLLAPSE:
+    case COLLAPSE_ROLLOVER:
       setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
       break;
-    case ROLLOVER_NONE:
+    case NONE:
       setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
       break;
     }
@@ -317,29 +337,24 @@ public class EditorStatus extends BasicSplitPaneDivider {
     g.setColor(bgColor[mode]);
     g.fillRect(0, 0, sizeW, sizeH);
 
-    rolloverState = ROLLOVER_NONE;
-    if (mouseX > sizeW - buttonEach && mouseX < sizeW) {
-      rolloverState = ROLLOVER_COLLAPSE;
-
-    } else if (message != null && !message.isEmpty()) {
-      if (sizeW - 2* buttonEach < mouseX) {
-        rolloverState = ROLLOVER_CLIPBOARD;
-
-      } else if (url != null && mouseX > LEFT_MARGIN &&
-        // calculate right edge of the text for rollovers (otherwise the pane
-        // cannot be resized up or down whenever a URL is being displayed)
-        mouseX < (LEFT_MARGIN + g.getFontMetrics().stringWidth(message))) {
-        rolloverState = ROLLOVER_URL;
-      }
-    }
-
+    messageRight = LEFT_MARGIN;  // needs to be reset (even) if msg null
     // https://github.com/processing/processing/issues/3265
     if (message != null) {
       // font needs to be set each time on osx
       g.setFont(font);
       // set the highlight color on rollover so that the user's not surprised
       // to see the web browser open when they click
-      g.setColor((rolloverState == ROLLOVER_URL) ? urlColor : fgColor[mode]);
+      if (mouseState == URL_ROLLOVER) {
+        g.setColor(urlRolloverColor);
+      } else if (mouseState == URL_PRESSED) {
+        g.setColor(urlPressedColor);
+      } else {
+        g.setColor(fgColor[mode]);
+      }
+      // calculate right edge of the text for rollovers (otherwise the pane
+      // cannot be resized up or down whenever a URL is being displayed)
+      messageRight += g.getFontMetrics().stringWidth(message);
+
       g.drawString(message, LEFT_MARGIN, (sizeH + ascent) / 2);
     }
 
@@ -357,8 +372,10 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
     } else if (message != null && !message.isEmpty()) {
       ImageIcon glyph = clipboardEnabledIcon;
-      if (rolloverState == ROLLOVER_CLIPBOARD) {
+      if (mouseState == CLIPBOARD_ROLLOVER) {
         glyph = clipboardRolloverIcon;
+      } else if (mouseState == CLIPBOARD_PRESSED) {
+        glyph = clipboardPressedIcon;
       }
       drawButton(g, glyph, 1);
       g.setFont(font);
@@ -367,14 +384,18 @@ public class EditorStatus extends BasicSplitPaneDivider {
     // draw collapse/expand button
     ImageIcon glyph;
     if (collapsed) {
-      if (rolloverState == ROLLOVER_COLLAPSE) {
+      if (mouseState == COLLAPSE_ROLLOVER) {
         glyph = expandRolloverIcon;
+      } else if (mouseState == COLLAPSE_PRESSED) {
+        glyph = expandPressedIcon;
       } else {
         glyph = expandEnabledIcon;
       }
     } else {
-      if (rolloverState == ROLLOVER_COLLAPSE) {
+      if (mouseState == COLLAPSE_ROLLOVER) {
         glyph = collapseRolloverIcon;
+      } else if (mouseState == COLLAPSE_PRESSED) {
+        glyph = collapsePressedIcon;
       } else {
         glyph = collapseEnabledIcon;
       }
