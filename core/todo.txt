@@ -2,6 +2,12 @@
 X allow . to start a number in SVG paths (a little)
 X   still lots of work to do here, it's an SVG 1.1 (vs 1.0) thing
 
+data
+X add getXxxxList() methods to JSONObject
+X add toXxxxList() methods to JSONArray
+X rename getXxxArray() to toXxxArray() in JSONArray for consistency
+X   deprecate the old versions
+
 
 _ concurrent StringDict et al
 _   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
