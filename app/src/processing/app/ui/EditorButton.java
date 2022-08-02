@@ -34,8 +34,14 @@ abstract public class EditorButton extends JComponent
 implements MouseListener, MouseMotionListener, ActionListener {
   static public final int DIM = Toolkit.zoom(36);
 
-  /** The lowercase short name used to load its SVG/PNG image data. */
+  /**
+   * The lowercase short name/path used to load its SVG/PNG image data.
+   * This will usually be something like /lib/toolbar/run (to pull in
+   * an icon from the Processing /lib folder) or if it's a relative path,
+   * it will be sourced from the mode folder.
+   */
   protected String name;
+
   /** Button's description. */
   protected String title;
   /** Description of alternate behavior when shift is down. */
@@ -89,28 +95,11 @@ implements MouseListener, MouseMotionListener, ActionListener {
     Mode mode = toolbar.mode;
     String xmlOrig = mode.loadString(name + ".svg");
 
+    // If no SVG available, load image data from PNG files
     if (xmlOrig == null) {
-      // load image data from PNG files
       return mode.loadImageX(name + "-" + state);
     }
 
-    /*
-    final String FIELD_COLOR = "#fff";
-    final String GLYPH_COLOR = "#ff5757";
-    final String STROKE_COLOR = "silver";
-
-    String field = Theme.get("toolbar.button." + state + ".field");
-    String glyph = Theme.get("toolbar.button." + state + ".glyph");
-    String stroke = Theme.get("toolbar.button." + state + ".stroke");
-
-    String xmlStr = xmlOrig
-      .replace(FIELD_COLOR, field)
-      .replace(GLYPH_COLOR, glyph)
-      .replace(STROKE_COLOR, stroke);
-
-    final int px = DIM * Toolkit.highResMultiplier();
-    return Toolkit.svgToImage(xmlStr, px, px);
-    */
     StringDict replacements = new StringDict(new String[][] {
       { "#fff", Theme.get("toolbar.button." + state + ".field") },
       { "#ff5757", Theme.get("toolbar.button." + state + ".glyph") },
