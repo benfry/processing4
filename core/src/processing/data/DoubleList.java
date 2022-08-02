@@ -770,6 +770,23 @@ public class DoubleList implements Iterable<Double> {
   }
 
 
+  /**
+   * Return a random value from the list.
+   */
+  public double random() {
+    return data[(int) (Math.random() * count)];
+  }
+
+
+  /**
+   * Return a random value from the list, using the
+   * randomSeed() from the specified sketch object.
+   */
+  public double random(PApplet sketch) {
+    return data[(int) sketch.random(count)];
+  }
+
+
   public DoubleList copy() {
     DoubleList outgoing = new DoubleList(data);
     outgoing.count = count;

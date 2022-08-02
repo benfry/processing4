@@ -793,6 +793,23 @@ public class FloatList implements Iterable<Float> {
   }
 
 
+  /**
+   * Return a random value from the list.
+   */
+  public float random() {
+    return data[(int) (Math.random() * count)];
+  }
+
+
+  /**
+   * Return a random value from the list, using the
+   * randomSeed() from the specified sketch object.
+   */
+  public float random(PApplet sketch) {
+    return data[(int) sketch.random(count)];
+  }
+
+
   public FloatList copy() {
     FloatList outgoing = new FloatList(data);
     outgoing.count = count;

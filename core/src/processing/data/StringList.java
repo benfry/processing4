@@ -607,6 +607,23 @@ public class StringList implements Iterable<String> {
 
 
   /**
+   * Return a random value from the list.
+   */
+  public String random() {
+    return data[(int) (Math.random() * count)];
+  }
+
+
+  /**
+   * Return a random value from the list, using the
+   * randomSeed() from the specified sketch object.
+   */
+  public String random(PApplet sketch) {
+    return data[(int) sketch.random(count)];
+  }
+
+
+  /**
    * Make the entire list lower case.
    *
    * @webref stringlist:method

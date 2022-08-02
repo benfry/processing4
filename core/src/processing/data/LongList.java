@@ -744,6 +744,23 @@ public class LongList implements Iterable<Long> {
   }
 
 
+  /**
+   * Return a random value from the list.
+   */
+  public long random() {
+    return data[(int) (Math.random() * count)];
+  }
+
+
+  /**
+   * Return a random value from the list, using the
+   * randomSeed() from the specified sketch object.
+   */
+  public long random(PApplet sketch) {
+    return data[(int) sketch.random(count)];
+  }
+
+
   public LongList copy() {
     LongList outgoing = new LongList(data);
     outgoing.count = count;

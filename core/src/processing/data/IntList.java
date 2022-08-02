@@ -742,6 +742,23 @@ public class IntList implements Iterable<Integer> {
   }
 
 
+  /**
+   * Return a random value from the list.
+   */
+  public int random() {
+    return data[(int) (Math.random() * count)];
+  }
+
+
+  /**
+   * Return a random value from the list, using the
+   * randomSeed() from the specified sketch object.
+   */
+  public int random(PApplet sketch) {
+    return data[(int) sketch.random(count)];
+  }
+
+
   public IntList copy() {
     IntList outgoing = new IntList(data);
     outgoing.count = count;
