@@ -13,7 +13,6 @@ X   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c
 X   introduces https://github.com/processing/processing4/issues/519
 X clean up dist: 'bin' and 'src' from Java Mode were included, iml files, etc
 X   cuts 67 MB down to 45 MB on disk
-X replace build/shared/lib/theme.txt with kyanite.txt
 X how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
 o   xz compression may cut down 2x vs zip, but we lose the .zip file reading
 o   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
@@ -318,11 +317,26 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 fixes/changes before beta 9
-_ replace emoji buttons in status bar
+X replace emoji buttons in status bar
+_   theme colors for emoji buttons (new themes across the board)
+_   sort out hover/press states here (only hovers atm)
+_   re-save svg files using svg 1.0
+_ naming options?
+_   remove underscore and use half space for tabs?
 _ reset the theme because of significant changes
+_   move away from writing theme.txt?
+_   instead store the theme name, for easier updating
+_   and a version in the sketchbook will always override
+_     (selecting a new theme will rename that file, but not replace a theme.txt file)
+_ check on text width calculation in the code completion popup
+_ close the M1 issue, now resolved
+_   update version of JNA in use
+_ close the interface issue, major changes done
+_ check into offscreen text rendering with JNA
 
 
 during release of beta 9
+_ replace build/shared/lib/theme.txt with final kyanite.txt
 _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
