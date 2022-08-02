@@ -1,20 +1,23 @@
 package processing.app;
 
 import processing.core.PApplet;
+import processing.data.JSONArray;
+import processing.data.JSONObject;
+import processing.data.StringList;
 
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class SketchName {
-  static final String[] months = {
-    "jan", "feb", "mar", "apr", "may", "jun",
-    "jul", "aug", "sep", "oct", "nov", "dec"
-  };
-
   static boolean breakTime = false;
+
+  static Map<String, WordList> wordLists;
 
 
   /**
@@ -26,7 +29,8 @@ public class SketchName {
    * @return File object for safe new path, or null if there were problems
    */
   static File nextFolder(File parentDir) {
-    return classicFolder(parentDir);
+    //return classicFolder(parentDir);
+    return wordsFolder(parentDir);
   }
 
 
@@ -42,9 +46,14 @@ public class SketchName {
     String format = Preferences.get("editor.untitled.suffix");
     String suffix;
     if (format == null) {
+      // If no format is specified, uses this ancient format
       Calendar cal = Calendar.getInstance();
       int day = cal.get(Calendar.DAY_OF_MONTH);  // 1..31
       int month = cal.get(Calendar.MONTH);  // 0..11
+      final String[] months = {
+        "jan", "feb", "mar", "apr", "may", "jun",
+        "jul", "aug", "sep", "oct", "nov", "dec"
+      };
       suffix = months[month] + PApplet.nf(day, 2);
     } else {
       SimpleDateFormat formatter = new SimpleDateFormat(format);
@@ -75,5 +84,49 @@ public class SketchName {
     } while (newbieDir.exists() || new File(Base.getSketchbookFolder(), newbieName).exists());
 
     return newbieDir;
+  }
+
+
+  static class WordList {
+    String name;
+    String notes;
+    StringList prefixes;
+    StringList suffixes;
+
+    WordList(JSONObject source) {
+      name = source.getString("name");
+      notes = source.getString("notes");
+      prefixes = source.getStringList("prefixes");
+      suffixes = source.getStringList("suffixes");
+    }
+
+    String getPair() {
+      return (prefixes.random() + " " + suffixes.random()).replace(' ', '_');
+    }
+  }
+
+
+  static File wordsFolder(File parentDir) {
+    if (wordLists == null) {
+      wordLists = new HashMap<>();
+      try {
+        File namingFile = Base.getLibFile("naming.json");
+        JSONArray array = PApplet.loadJSONArray(namingFile);
+        for (int i = 0; i < array.size(); i++) {
+          JSONObject obj = array.getJSONObject(i);
+          WordList wl = new WordList(obj);
+          wordLists.put(wl.name, wl);
+        }
+      } catch (IOException e) {
+        Messages.showWarning("Naming Error", "Could not load word lists from naming.json", e);
+      }
+    }
+    final String setName = "Cooking";
+    WordList wl = wordLists.get(setName);
+    File outgoing;
+    do {
+      outgoing = new File(parentDir, wl.getPair());
+    } while (outgoing.exists());
+    return outgoing;
   }
 }

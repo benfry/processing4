@@ -341,6 +341,7 @@ _   instead store the theme name, for easier updating
 _   and a version in the sketchbook will always override
 _     (selecting a new theme will rename that file, but not replace a theme.txt file)
 _ check on text width calculation in the code completion popup
+_ change array() -> toArray() in the list classes
 
 
 during release of beta 9
