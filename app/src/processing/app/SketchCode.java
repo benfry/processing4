@@ -135,12 +135,18 @@ public class SketchCode {
   }
 
 
-  /** Get the name of this file with its extension removed. */
+  /**
+   * Get the name of this file with its extension removed.
+   * Because of other uses of this method, this is not a good place
+   * to do things like swap underscores for spaces.
+   */
   public String getPrettyName() {
     String name = file.getName();
+
+    // remove the extension from the name
     int dot = name.lastIndexOf('.');
-    // should absolutely have a dot, but better not to make that
-    // assumption in case we later decide to allow things like README
+    // should have a dot in all current scenarios, but better not to make
+    // that assumption in case we later decide to allow things like README
     return (dot != -1) ? name.substring(0, dot) : name;
   }
 

@@ -31,11 +31,7 @@ import java.util.Arrays;
 
 import javax.swing.*;
 
-import processing.app.Language;
-import processing.app.Messages;
-import processing.app.Platform;
-import processing.app.Sketch;
-import processing.app.SketchCode;
+import processing.app.*;
 
 
 /**
@@ -201,14 +197,14 @@ public class EditorHeader extends JComponent {
       tab.textVisible = true;
       tab.lastVisited = code.lastVisited();
 
+      tab.text = code.getFileName();
       // hide extensions for .pde files
-      boolean hide = editor.getMode().hideExtension(code.getExtension());
-      tab.text = hide ? code.getPrettyName() : code.getFileName();
-
-      // if modified, add the li'l glyph next to the name
-//      if (code.isModified()) {
-//        tab.text += " \u00A7";
-//      }
+      if (editor.getMode().hideExtension(code.getExtension())) {
+        tab.text = code.getPrettyName();
+        if (Preferences.getBoolean("sketch.name.replace_underscore")) {
+          tab.text = tab.text.replace('_', ' ');
+        }
+      }
 
       tab.textWidth = (int)
         font.getStringBounds(tab.text, g2.getFontRenderContext()).getWidth();

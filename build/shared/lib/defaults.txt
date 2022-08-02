@@ -225,8 +225,11 @@ editor.untitled.prefix=sketch_
 # If you change this, be careful that this will work with your language
 # settings. For instance, MMMdd won't work on Korean-language systems
 # because it'll insert non-ASCII characters and break the environment.
-# http://code.google.com/p/processing/issues/detail?id=283
+# https://github.com/processing/processing/issues/322
 editor.untitled.suffix=yyMMdd
+
+# replace underscores in .pde file names with spaces
+sketch.name.replace_underscore = true
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
