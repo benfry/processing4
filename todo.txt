@@ -13,6 +13,7 @@ X   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c
 X   introduces https://github.com/processing/processing4/issues/519
 X clean up dist: 'bin' and 'src' from Java Mode were included, iml files, etc
 X   cuts 67 MB down to 45 MB on disk
+X docs are 3.x not 4.x
 X how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
 o   xz compression may cut down 2x vs zip, but we lose the .zip file reading
 o   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
@@ -25,6 +26,9 @@ X   update version of JNA in use
 X Update graphics and visual design elements for 4.x
 X   https://github.com/processing/processing4/issues/48
 X   close the interface issue, major changes done
+X remove underscore and use (half?) space for tabs?
+X   half space character not implemented, but the space looks good
+X   disable behavior with sketch.name.replace_underscore = false
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
@@ -331,15 +335,12 @@ X   sort out hover/press states here (only hovers atm)
 X   also add state for shift-click to search
 _   theme colors for emoji buttons (new themes across the board)
 _ naming options?
-_   remove underscore and use (half?) space for tabs?
 _ reset the theme because of significant changes
 _   move away from writing theme.txt?
 _   instead store the theme name, for easier updating
 _   and a version in the sketchbook will always override
 _     (selecting a new theme will rename that file, but not replace a theme.txt file)
 _ check on text width calculation in the code completion popup
-_ check into offscreen text rendering with JNA
-_   https://github.com/iterate-ch/rococoa
 
 
 during release of beta 9
@@ -532,7 +533,6 @@ _   ...as well as the other libraries? separate window?
 _ Help > Library/Tools reference links don't work
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
-_ docs are 3.x not 4.x
 _ appbundler broken when built on something later than Mojave
 _   https://github.com/processing/processing4/issues/284
 _   https://github.com/google/filament/pull/1959/files
@@ -595,6 +595,9 @@ _ automatic import of JavaFX when FX2D is specified
 
 
 would like to fix (but not necessary for 4.0 final)
+_ check into offscreen text rendering with JNA
+_   even just for tab names it'd be so much nicer
+_   https://github.com/iterate-ch/rococoa
 _ make possible to embed java for all platforms
 _   straightforward to download from adoptium
 _ detach sketch name and folder name (use sketch.properties)
