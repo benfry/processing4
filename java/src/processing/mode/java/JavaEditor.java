@@ -274,7 +274,7 @@ public class JavaEditor extends Editor {
     JMenu menu = new JMenu(Language.text("menu.help"));
     JMenuItem item;
 
-    // macosx already has its own about menu
+    // macOS already has its own about menu
     if (!Platform.isMacOS()) {
       item = new JMenuItem(Language.text("menu.help.about"));
       item.addActionListener(e -> new About(JavaEditor.this));
@@ -288,17 +288,19 @@ public class JavaEditor extends Editor {
       } catch (IOException ioe) {
         Messages.showWarning("Unwelcome Error",
                              "Please report this error to\n" +
-                             "https://github.com/processing/processing/issues", ioe);
+                             "https://github.com/processing/processing4/issues", ioe);
       }
     });
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.environment"));
-    item.addActionListener(e -> showReference("environment/index.html"));
+    //item.addActionListener(e -> showReference("environment/index.html"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/reference/"));
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.reference"));
-    item.addActionListener(e -> showReference("index.html"));
+    //item.addActionListener(e -> showReference("index.html"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/environment/"));
     menu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.help.find_in_reference"), 'F');
@@ -812,7 +814,7 @@ public class JavaEditor extends Editor {
   }
 
 
-  public void showReference(String filename) {
+  public void showReference(String name) {
     if (useReferenceServer == null) {
       File referenceZip = new File(mode.getFolder(), "reference.zip");
       if (referenceZip.exists()) {
@@ -830,12 +832,18 @@ public class JavaEditor extends Editor {
     }
 
     if (useReferenceServer) {
-      String url = referenceServer.getPrefix() + "reference/" + filename;
+      String url = referenceServer.getPrefix() + "reference/" + name;
       Platform.openURL(url);
 
     } else {
-      File file = new File(mode.getReferenceFolder(), filename);
-      showReferenceFile(file);
+      File file = new File(mode.getReferenceFolder(), name);
+      if (file.exists()) {
+        showReferenceFile(file);
+      } else {
+        // Offline reference (temporarily) removed in 4.0 beta 9
+        // https://github.com/processing/processing4/issues/524
+        Platform.openURL("https://processing.org/reference/" + name);
+      }
     }
   }
 

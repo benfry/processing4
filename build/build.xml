@@ -348,12 +348,13 @@
     </condition>
     <chmod file="${target.path}/tools/MovieMaker/tool/${ffmpeg.binary}" perm="ugo+x" />
 
-    <!--<echo message="ref ignoreable? ${reference.ignorable}" />-->
-    <!-- <get src="https://download.processing.org/reference4.zip" -->
+    <!-- See https://github.com/processing/processing4/issues/524 -->
+    <!--
     <get src="https://download.processing.org/reference.zip"
          dest="../java/reference.zip"
          ignoreerrors="${reference.ignorable}"
          usetimestamp="true" />
+    -->
 
     <copy todir="${target.path}/modes/java" preservelastmodified="true">
       <fileset dir="../java">
@@ -371,7 +372,7 @@
         <include name="libraries/**/library.properties" />
 
         <include name="mode/**" />
-        <include name="reference.zip" />
+        <!-- <include name="reference.zip" /> -->
         <include name="theme/**" />
       </fileset>
     </copy>

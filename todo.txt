@@ -14,6 +14,12 @@ X   introduces https://github.com/processing/processing4/issues/519
 X clean up dist: 'bin' and 'src' from Java Mode were included, iml files, etc
 X   cuts 67 MB down to 45 MB on disk
 X replace build/shared/lib/theme.txt with kyanite.txt
+X how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
+o   xz compression may cut down 2x vs zip, but we lose the .zip file reading
+o   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
+X   move reference back online
+X   file an issue for the loss of local reference
+X   https://github.com/processing/processing4/issues/524
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
@@ -314,11 +320,6 @@ _   https://github.com/processing/processing4-javafx/issues/15
 fixes/changes before beta 9
 _ replace emoji buttons in status bar
 _ reset the theme because of significant changes
-_ how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
-o   xz compression may cut down 2x vs zip, but we lose the .zip file reading
-o   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
-_   move reference back online
-_   file an issue for the loss of local reference
 
 
 during release of beta 9
