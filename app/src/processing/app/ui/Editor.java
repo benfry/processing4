@@ -1009,7 +1009,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   static public void showChanges() {
     // https://github.com/processing/processing/issues/1558
     if (!Base.isCommandLine()) {
-      Platform.openURL("https://github.com/processing/processing/wiki/Changes");
+      Platform.openURL("https://github.com/processing/processing4/wiki/Changes-in-4.0");
     }
   }
 
@@ -2138,7 +2138,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     } else {
       String tier1 = Language.interpolate("save.title", sketch.getName());
       String tier2 = Language.text("save.hint");
-      System.out.println(Toolkit.formatMessage(tier1, tier2));
       JOptionPane pane =
         new JOptionPane(Toolkit.formatMessage(tier1, tier2), JOptionPane.QUESTION_MESSAGE);
 
