@@ -27,7 +27,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
@@ -1197,70 +1196,28 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  boolean breakTime = false;
-  String[] months = {
-    "jan", "feb", "mar", "apr", "may", "jun",
-    "jul", "aug", "sep", "oct", "nov", "dec"
-  };
-
-
   /**
    * Create a new untitled document in a new sketch window.
    */
   public void handleNew() {
 //    long t1 = System.currentTimeMillis();
     try {
-      File newbieDir;
-      String newbieName;
-
       // In 0126, untitled sketches will begin in the temp folder,
       // and then moved to a new location because Save will default to Save As.
-//      File sketchbookDir = getSketchbookFolder();
-      File newbieParentDir = untitledFolder;
+      //File sketchbookDir = getSketchbookFolder();
+      File newbieDir = SketchName.nextFolder(untitledFolder);
 
-      String prefix = Preferences.get("editor.untitled.prefix");
-
-      // Use a generic name like sketch_031008a, the date plus a char
-      int index = 0;
-      String format = Preferences.get("editor.untitled.suffix");
-      String suffix;
-      if (format == null) {
-        Calendar cal = Calendar.getInstance();
-        int day = cal.get(Calendar.DAY_OF_MONTH);  // 1..31
-        int month = cal.get(Calendar.MONTH);  // 0..11
-        suffix = months[month] + PApplet.nf(day, 2);
-      } else {
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
-        suffix = formatter.format(new Date());
-      }
-      do {
-        if (index == 26) {
-          // In 0159, avoid running past z by sending people outdoors.
-          if (!breakTime) {
-            Messages.showWarning("Time for a Break",
-                                 "You've reached the limit for auto naming of new sketches\n" +
-                                 "for the day. How about going for a walk instead?", null);
-            breakTime = true;
-          } else {
-            Messages.showWarning("Sunshine",
-                                 "No really, time for some fresh air for you.", null);
-          }
-          return;
-        }
-        newbieName = prefix + suffix + ((char) ('a' + index));
-        // Also sanitize the name since it might do strange things on
-        // non-English systems that don't use this sort of date format.
-        // https://github.com/processing/processing/issues/322
-        newbieName = Sketch.sanitizeName(newbieName);
-        newbieDir = new File(newbieParentDir, newbieName);
-        index++;
-        // Make sure it's not in the temp folder *and* it's not in the sketchbook
-      } while (newbieDir.exists() || new File(sketchbookFolder, newbieName).exists());
+      // User was told to go outside or other problem happened inside naming.
+      if (newbieDir == null) return;
 
       // Make the directory for the new sketch
       if (!newbieDir.mkdirs()) {
         throw new IOException("Could not create directory " + newbieDir);
       }
+
+      // Retrieve the sketch name from the folder name (not a great
+      // assumption for the future, but overkill to do otherwise for now.)
+      String newbieName = newbieDir.getName();
 
       // Add any template files from the Mode itself
       File newbieFile = nextMode.addTemplateFiles(newbieDir, newbieName);
