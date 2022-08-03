@@ -85,9 +85,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
   FontMetrics metrics;
   int ascent;
 
-  Color urlRolloverColor;
-  Color urlPressedColor;
-
   boolean shiftDown;
 
   /*
@@ -113,9 +110,13 @@ public class EditorStatus extends BasicSplitPaneDivider {
   ImageIcon[] collapseIcon;
   ImageIcon[] expandIcon;
 
-  float enabledAlpha;
-  float rolloverAlpha;
-  float pressedAlpha;
+  float btnEnabledAlpha;
+  float btnRolloverAlpha;
+  float btnPressedAlpha;
+
+  int urlEnabledAlpha;
+  int urlRolloverAlpha;
+  int urlPressedAlpha;
 
   int sizeW, sizeH;
   // size of the glyph buttons (width and height are identical)
@@ -251,8 +252,9 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
 
   protected void updateTheme() {
-    urlRolloverColor = Theme.getColor("status.url.rollover.color");
-    urlPressedColor = Theme.getColor("status.url.pressed.color");
+    urlEnabledAlpha = 255 * Theme.getInteger("status.url.enabled.alpha") / 100;
+    urlRolloverAlpha = 255 * Theme.getInteger("status.url.rollover.alpha") / 100;
+    urlPressedAlpha = 255 * Theme.getInteger("status.url.pressed.alpha") / 100;
 
 //    status.button.enabled.color = #FFFF00
 //    status.button.rollover.color = #FF00FF
@@ -275,9 +277,9 @@ public class EditorStatus extends BasicSplitPaneDivider {
     collapseIcon = renderIcons("status/console-collapse", stateColors);
     expandIcon = renderIcons("status/console-expand", stateColors);
 
-    enabledAlpha = Theme.getInteger("status.button.enabled.alpha") / 100f;
-    rolloverAlpha = Theme.getInteger("status.button.rollover.alpha") / 100f;
-    pressedAlpha = Theme.getInteger("status.button.pressed.alpha") / 100f;
+    btnEnabledAlpha = Theme.getInteger("status.button.enabled.alpha") / 100f;
+    btnRolloverAlpha = Theme.getInteger("status.button.rollover.alpha") / 100f;
+    btnPressedAlpha = Theme.getInteger("status.button.pressed.alpha") / 100f;
 
     /*
     clipboardEnabledIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonEnabledColor, ICON_SIZE);
@@ -403,19 +405,27 @@ public class EditorStatus extends BasicSplitPaneDivider {
     if (message != null) {
       // font needs to be set each time on osx
       g.setFont(font);
-      // set the highlight color on rollover so that the user's not surprised
-      // to see the web browser open when they click
-      if (mouseState == URL_ROLLOVER) {
-        g.setColor(urlRolloverColor);
-      } else if (mouseState == URL_PRESSED) {
-        g.setColor(urlPressedColor);
-      } else {
-        g.setColor(fgColor[mode]);
-      }
       // calculate right edge of the text for rollovers (otherwise the pane
       // cannot be resized up or down whenever a URL is being displayed)
       messageRight += g.getFontMetrics().stringWidth(message);
 
+      // set the highlight color on rollover so that the user is
+      // not surprised to see the web browser open when they click
+      int alpha = 255;
+      if (url != null) {
+        if (mouseState == URL_ROLLOVER) {
+          alpha = urlRolloverAlpha;
+        } else if (mouseState == URL_PRESSED) {
+          alpha = urlPressedAlpha;
+        } else {
+          alpha = urlEnabledAlpha;
+        }
+      }
+      if (alpha == 255) {
+        g.setColor(fgColor[mode]);
+      } else {
+        g.setColor(new Color((alpha << 24) | (fgColor[mode].getRGB() & 0xFFFFFF), true));
+      }
       g.drawString(message, LEFT_MARGIN, (sizeH / 2) + (ascent / 4) + 1);
     }
 
@@ -438,25 +448,25 @@ public class EditorStatus extends BasicSplitPaneDivider {
         glyph = searchIcon[mode];
         if (mouseState == CLIPBOARD_ROLLOVER) {
           //glyph = searchRolloverIcon;
-          alpha = rolloverAlpha;
+          alpha = btnRolloverAlpha;
         } else if (mouseState == CLIPBOARD_PRESSED) {
           //glyph = searchPressedIcon;
-          alpha = pressedAlpha;
+          alpha = btnPressedAlpha;
         } else {
           //glyph = searchEnabledIcon;
-          alpha = enabledAlpha;
+          alpha = btnEnabledAlpha;
         }
       } else {
         glyph = clipboardIcon[mode];
         if (mouseState == CLIPBOARD_ROLLOVER) {
           //glyph = clipboardRolloverIcon;
-          alpha = rolloverAlpha;
+          alpha = btnRolloverAlpha;
         } else if (mouseState == CLIPBOARD_PRESSED) {
           //glyph = clipboardPressedIcon;
-          alpha = pressedAlpha;
+          alpha = btnPressedAlpha;
         } else {
           //glyph = clipboardEnabledIcon;
-          alpha = enabledAlpha;
+          alpha = btnEnabledAlpha;
         }
       }
       drawButton(g, 1, glyph, alpha);
@@ -470,25 +480,25 @@ public class EditorStatus extends BasicSplitPaneDivider {
       glyph = expandIcon[mode];
       if (mouseState == COLLAPSE_ROLLOVER) {
         //glyph = expandRolloverIcon;
-        alpha = rolloverAlpha;
+        alpha = btnRolloverAlpha;
       } else if (mouseState == COLLAPSE_PRESSED) {
         //glyph = expandPressedIcon;
-        alpha = pressedAlpha;
+        alpha = btnPressedAlpha;
       } else {
         //glyph = expandEnabledIcon;
-        alpha = enabledAlpha;
+        alpha = btnEnabledAlpha;
       }
     } else {
       glyph = collapseIcon[mode];
       if (mouseState == COLLAPSE_ROLLOVER) {
         //glyph = collapseRolloverIcon;
-        alpha = rolloverAlpha;
+        alpha = btnRolloverAlpha;
       } else if (mouseState == COLLAPSE_PRESSED) {
         //glyph = collapsePressedIcon;
-        alpha = pressedAlpha;
+        alpha = btnPressedAlpha;
       } else {
         //glyph = collapseEnabledIcon;
-        alpha = enabledAlpha;
+        alpha = btnEnabledAlpha;
       }
     }
     drawButton(g, 0, glyph, alpha);

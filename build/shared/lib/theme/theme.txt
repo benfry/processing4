@@ -73,13 +73,10 @@ status.error.bgcolor = #BF0019
 status.warning.bgcolor = #003775
 status.warning.fgcolor = #00DFFF
 
-# if the status is a url, the entire status text changes to this color
-status.url.rollover.color = #00D4FF
-status.url.pressed.color = #00FFFF
-
-#status.button.enabled.color = #FFFF00
-#status.button.rollover.color = #FF00FF
-#status.button.pressed.color = #0000FF
+# applies to the entire status text if it contains url
+status.url.enabled.alpha = 70
+status.url.rollover.alpha = 90
+status.url.pressed.alpha = 100
 
 status.button.enabled.alpha = 50
 status.button.rollover.alpha = 70

@@ -81,6 +81,20 @@ X   move all (formerly Lucida) dialog formatting into Messages
 X   currently a couple other classes that use it
 /   create a version that works nicely with FlatLaf
 X   implemented in one place; still needs to just be redone
+X two tier dialog box (defaulting back to Lucida)
+X font for stack trace dialogs is too small (and wrong)
+X dialog box with stack trace (font is too small)
+X   actually fix the stack trace dialog with 12pt font size change
+X text gutter doesn't seem to be hidpi
+X   or is it b/c screen not quite 2x? (nope)
+X   try to tweak the line numbers in the gutter a bit
+X   finally found the problem: Source Code Pro not hinting below 12pt (!?#$@(*)
+X   change to 12pt, add alpha params to theme.txt
+X     editor.gutter.linehighlight.color -> editor.gutter.highlight.color
+X     # transparency (0..100) for line numbers in gutter
+X     editor.gutter.text.active.alpha = 70
+X     # transparency for lines not currently in use
+X     editor.gutter.text.inactive.alpha = 30
 
 export application
 X fix Export to Application on macOS with Apple Silicon
@@ -148,7 +162,6 @@ X   menu crustiness, console background color not getting set, others?
 X   need to check on an actual Linux device, not a VM
 X   this was caused by Nimbus interactions with FlatLaf
 X command key symbol missing in pop up menus
-X font for stack trace dialogs is too small (and wrong)
 X overall layout/spacing/proportion
 X icons for debug toolbar (VariableInspector.java)
 X   replace variables-1x and -2x with separate SVG files in debug
@@ -159,14 +172,6 @@ X   weirdness with gaps in tabs (editor too big, manager too small)
 X   contrib mgr: filter/dropdown vertical centering is too high
 /   fake bold being used for tab name? (Windows only?)
 X   should be resolved with both fonts now being installed
-X two tier dialog box (defaulting back to Lucida)
-X dialog box with stack trace (font is too small)
-X   actually fix the stack trace dialog with 12pt font size change
-X text gutter doesn't seem to be hidpi
-X   or is it b/c screen not quite 2x? (nope)
-X   try to tweak the line numbers in the gutter a bit
-X   finally found the problem: Source Code Pro not hinting below 12pt (!?#$@(*)
-X   change to 12pt, add alpha params to theme.txt
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
@@ -267,9 +272,6 @@ X   only really need for the bold font
 X improved 'close' icon (thicker x)
 X better 'search' icon (search.svg with a less enormous eyeglass)
 X replace foundation-16, foundation-32, foundation-64 in lib/icons
-X icons in the status bar (using emojis at the moment, now out of place)
-X   console collapse/expand button
-X   copy to clipboard button
 X contribs exclamation looks like an error, not "update available"
 X clean up the updates panel in the manager
 X fix column widths in 'updates' tab of contrib manager
@@ -300,6 +302,18 @@ X   https://github.com/processing/processing4/pull/480
 X   https://github.com/processing/processing4/pull/481
 X Update PDE_de.properties
 X   https://github.com/processing/processing4/pull/483
+
+status
+X replace emoji buttons in status bar
+X   re-save svg files using svg 1.0
+X   sort out hover/press states here (only hovers atm)
+X   also add state for shift-click to search
+X   theme colors for emoji buttons (new themes across the board)
+X icons in the status bar (using emojis at the moment, now out of place)
+X   console collapse/expand button
+X   copy to clipboard button
+X implement alpha for url (70, 90, 100)
+X   remove the color
 
 cleaning
 o should default to the local Java on Windows and Linux
@@ -351,11 +365,6 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 fixes/changes before beta 9
-X replace emoji buttons in status bar
-X   re-save svg files using svg 1.0
-X   sort out hover/press states here (only hovers atm)
-X   also add state for shift-click to search
-_   theme colors for emoji buttons (new themes across the board)
 _ code completion icon updates (class, field, protected, method)
 _   these go into CompletionPanel.java
 _   also set the color and font with updateTheme()
@@ -367,14 +376,9 @@ _     (selecting a new theme will rename that file, but not replace a theme.txt 
 _ check on text width calculation in the code completion popup
 _   also, applyMatrix() sometimes ... and sometimes not
 _ change array() -> toArray() in the list classes
-_ implement alpha for url (70, 90, 100)
-_   remove the color
-
-editor.gutter.linehighlight.color -> editor.gutter.highlight.color
-# transparency (0..100) for line numbers in gutter
-editor.gutter.text.active.alpha = 70
-# transparency for lines not currently in use
-editor.gutter.text.inactive.alpha = 30
+_ thicker version of the search icon for the status panel
+_   copy the icon over from the manager
+_ get shift down from the editor window and pass to status
 
 
 during release of beta 9
