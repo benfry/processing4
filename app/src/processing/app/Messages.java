@@ -132,7 +132,9 @@ public class Messages {
       t.printStackTrace(new PrintWriter(sw));
 
       JOptionPane.showMessageDialog(new Frame(),
-                                    Toolkit.formatMessage(message + "<br/><tt>" + sw + "</tt>"),
+                                    // first <br/> clears to the next line
+                                    // second <br/> is a shorter height blank space before the trace
+                                    Toolkit.formatMessage(message + "<br/><tt><br/>" + sw + "</tt>"),
                                     title,
                                     fatal ?
                                     JOptionPane.ERROR_MESSAGE :

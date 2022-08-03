@@ -1336,8 +1336,10 @@ public class Toolkit {
     // Necessary to replace \n with <br/> (even if pre) otherwise Java
     // treats it as a closed tag and reverts to plain formatting.
     return "<html> " +
-      "<head> <style type=\"text/css\">"+
-      "tt { font: 11pt \"" + monoName + "\"; }" +
+      "<head> <style type=\"text/css\">" +
+      // if smaller than 12 pt, Source Code Sans doesn't get hinted
+      // (not clear if that's a font or Java issue) [fry 220803]
+      "tt { font: 12pt \"" + monoName + "\"; color: #888; }" +
       "</style> </head>" +
       message.replaceAll("\n", "<br/>");
   }

@@ -161,6 +161,7 @@ X   contrib mgr: filter/dropdown vertical centering is too high
 X   should be resolved with both fonts now being installed
 X two tier dialog box (defaulting back to Lucida)
 X dialog box with stack trace (font is too small)
+X   actually fix the stack trace dialog with 12pt font size change
 X text gutter doesn't seem to be hidpi
 X   or is it b/c screen not quite 2x? (nope)
 X   try to tweak the line numbers in the gutter a bit
