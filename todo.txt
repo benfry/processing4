@@ -29,7 +29,12 @@ X   close the interface issue, major changes done
 X remove underscore and use (half?) space for tabs?
 X   half space character not implemented, but the space looks good
 X   disable behavior with sketch.name.replace_underscore = false
-X add other naming options (cooking and classic) and prefs
+
+naming
+X Friendly Names for new Sketches (includes UI for switching it back)
+X   https://github.com/processing/processing/issues/6045
+X   https://github.com/processing/processing/pull/6048
+X   https://github.com/processing/processing4/pull/144
 X "friendly" naming for sketches
 X   master list of words
 X     https://github.com/glitchdotcom/friendly-words/tree/master/words
@@ -39,6 +44,7 @@ X     https://github.com/glitchdotcom/friendly-words/blob/master/words/objects.t
 X   how friendly names are used in the p5.js web editor
 X     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/generateRandomName.js
 X     p5.js uses predicate followed by an object
+X add other naming options (cooking and classic) and prefs
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
@@ -344,6 +350,8 @@ X   re-save svg files using svg 1.0
 X   sort out hover/press states here (only hovers atm)
 X   also add state for shift-click to search
 _   theme colors for emoji buttons (new themes across the board)
+_ code completion icon updates (class, field, protected, method)
+_   these go into CompletionPanel.java
 _ reset the theme because of significant changes
 _   move away from writing theme.txt?
 _   instead store the theme name, for easier updating
@@ -495,11 +503,6 @@ _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
 
 
-design
-_ code completion icon updates (class, field, protected, method)
-_   these go into CompletionPanel.java
-
-
 design/implementation
 _ updateTheme() in Theme Selector
 _   theme_selector.combo_box.enabled.bgcolor
@@ -566,8 +569,6 @@ _ Export to Application was broken with OpenGL (Casey)
 decisions before final 4.0 release
 _ can we compress jdk/Contents/Home/legal into a single zip?
 _   it's ~300 files of the ~500 in the entire jdk directory
-_ Friendly Names for new Sketches (includes UI for switching it back)
-_   https://github.com/processing/processing/pull/6048
 _ change the license from GPL
 _   then pass through the source to update licenses
 _   add Processing Foundation as 2012-15
