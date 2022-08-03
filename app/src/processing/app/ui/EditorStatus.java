@@ -24,12 +24,14 @@
 
 package processing.app.ui;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
@@ -88,6 +90,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   boolean shiftDown;
 
+  /*
   ImageIcon clipboardEnabledIcon;
   ImageIcon clipboardRolloverIcon;
   ImageIcon clipboardPressedIcon;
@@ -103,6 +106,16 @@ public class EditorStatus extends BasicSplitPaneDivider {
   ImageIcon expandEnabledIcon;
   ImageIcon expandRolloverIcon;
   ImageIcon expandPressedIcon;
+  */
+
+  ImageIcon[] clipboardIcon;
+  ImageIcon[] searchIcon;
+  ImageIcon[] collapseIcon;
+  ImageIcon[] expandIcon;
+
+  float enabledAlpha;
+  float rolloverAlpha;
+  float pressedAlpha;
 
   int sizeW, sizeH;
   // size of the glyph buttons (width and height are identical)
@@ -241,10 +254,32 @@ public class EditorStatus extends BasicSplitPaneDivider {
     urlRolloverColor = Theme.getColor("status.url.rollover.color");
     urlPressedColor = Theme.getColor("status.url.pressed.color");
 
-    String buttonEnabledColor = Theme.get("status.button.enabled.color");
-    String buttonRolloverColor = Theme.get("status.button.rollover.color");
-    String buttonPressedColor = Theme.get("status.button.pressed.color");
+//    status.button.enabled.color = #FFFF00
+//    status.button.rollover.color = #FF00FF
+//    status.button.pressed.color = #0000FF
 
+//    String buttonEnabledColor = Theme.get("status.button.enabled.color");
+//    String buttonRolloverColor = Theme.get("status.button.rollover.color");
+//    String buttonPressedColor = Theme.get("status.button.pressed.color");
+
+    String[] stateColors = new String[] {
+      Theme.get("status.notice.fgcolor"),
+      Theme.get("status.error.fgcolor"),
+      Theme.get("status.error.fgcolor"),
+      Theme.get("status.warning.fgcolor"),
+      Theme.get("status.warning.fgcolor")
+    };
+
+    clipboardIcon = renderIcons("status/copy-to-clipboard", stateColors);
+    searchIcon = renderIcons("manager/search", stateColors);
+    collapseIcon = renderIcons("status/console-collapse", stateColors);
+    expandIcon = renderIcons("status/console-expand", stateColors);
+
+    enabledAlpha = Theme.getInteger("status.button.enabled.alpha") / 100f;
+    rolloverAlpha = Theme.getInteger("status.button.rollover.alpha") / 100f;
+    pressedAlpha = Theme.getInteger("status.button.pressed.alpha") / 100f;
+
+    /*
     clipboardEnabledIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonEnabledColor, ICON_SIZE);
     clipboardRolloverIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonRolloverColor, ICON_SIZE);
     clipboardPressedIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonPressedColor, ICON_SIZE);
@@ -261,6 +296,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
     expandEnabledIcon = Toolkit.renderIcon("status/console-expand", buttonEnabledColor, ICON_SIZE);
     expandRolloverIcon = Toolkit.renderIcon("status/console-expand", buttonRolloverColor, ICON_SIZE);
     expandPressedIcon = Toolkit.renderIcon("status/console-expand", buttonPressedColor, ICON_SIZE);
+    */
 
     fgColor = new Color[] {
       Theme.getColor("status.notice.fgcolor"),
@@ -282,6 +318,15 @@ public class EditorStatus extends BasicSplitPaneDivider {
     metrics = null;
   }
 
+
+  static private ImageIcon[] renderIcons(String path, String[] hexColors) {
+    int count = hexColors.length;
+    ImageIcon[] outgoing = new ImageIcon[count];
+    for (int i = 0; i < count; i++) {
+      outgoing[i] = Toolkit.renderIcon(path, hexColors[i], ICON_SIZE);
+    }
+    return outgoing;
+  }
 
   public void empty() {
     mode = NOTICE;
@@ -388,47 +433,65 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
     } else if (message != null && !message.isEmpty()) {
       ImageIcon glyph;
+      float alpha;
       if (shiftDown) {
+        glyph = searchIcon[mode];
         if (mouseState == CLIPBOARD_ROLLOVER) {
-          glyph = searchRolloverIcon;
+          //glyph = searchRolloverIcon;
+          alpha = rolloverAlpha;
         } else if (mouseState == CLIPBOARD_PRESSED) {
-          glyph = searchPressedIcon;
+          //glyph = searchPressedIcon;
+          alpha = pressedAlpha;
         } else {
-          glyph = searchEnabledIcon;
+          //glyph = searchEnabledIcon;
+          alpha = enabledAlpha;
         }
       } else {
+        glyph = clipboardIcon[mode];
         if (mouseState == CLIPBOARD_ROLLOVER) {
-          glyph = clipboardRolloverIcon;
+          //glyph = clipboardRolloverIcon;
+          alpha = rolloverAlpha;
         } else if (mouseState == CLIPBOARD_PRESSED) {
-          glyph = clipboardPressedIcon;
+          //glyph = clipboardPressedIcon;
+          alpha = pressedAlpha;
         } else {
-          glyph = clipboardEnabledIcon;
+          //glyph = clipboardEnabledIcon;
+          alpha = enabledAlpha;
         }
       }
-      drawButton(g, glyph, 1);
+      drawButton(g, 1, glyph, alpha);
       g.setFont(font);
     }
 
     // draw collapse/expand button
     ImageIcon glyph;
+    float alpha;
     if (collapsed) {
+      glyph = expandIcon[mode];
       if (mouseState == COLLAPSE_ROLLOVER) {
-        glyph = expandRolloverIcon;
+        //glyph = expandRolloverIcon;
+        alpha = rolloverAlpha;
       } else if (mouseState == COLLAPSE_PRESSED) {
-        glyph = expandPressedIcon;
+        //glyph = expandPressedIcon;
+        alpha = pressedAlpha;
       } else {
-        glyph = expandEnabledIcon;
+        //glyph = expandEnabledIcon;
+        alpha = enabledAlpha;
       }
     } else {
+      glyph = collapseIcon[mode];
       if (mouseState == COLLAPSE_ROLLOVER) {
-        glyph = collapseRolloverIcon;
+        //glyph = collapseRolloverIcon;
+        alpha = rolloverAlpha;
       } else if (mouseState == COLLAPSE_PRESSED) {
-        glyph = collapsePressedIcon;
+        //glyph = collapsePressedIcon;
+        alpha = pressedAlpha;
       } else {
-        glyph = collapseEnabledIcon;
+        //glyph = collapseEnabledIcon;
+        alpha = enabledAlpha;
       }
     }
-    drawButton(g, glyph, 0);
+    drawButton(g, 0, glyph, alpha);
   }
 
 
@@ -436,11 +499,16 @@ public class EditorStatus extends BasicSplitPaneDivider {
    * @param pos A zero-based button index with 0 as the rightmost button
    */
   //private void drawButton(Graphics g, String symbol, int pos, boolean highlight) {
-  private void drawButton(Graphics g, ImageIcon icon, int pos) {
+  private void drawButton(Graphics g, int pos, ImageIcon icon, float alpha) {
     int left = sizeW - (pos + 1) * buttonEach;
-    icon.paintIcon(this, g,
-                left + (buttonEach - icon.getIconWidth()) / 2,
-                (buttonEach - icon.getIconHeight()) / 2);
+
+    Graphics2D g2 = (Graphics2D) g.create();
+    g2.setComposite(AlphaComposite.SrcAtop.derive(alpha));
+    //icon.paintIcon(c, g2, x, y);
+    icon.paintIcon(this, g2,
+      left + (buttonEach - icon.getIconWidth()) / 2,
+      (buttonEach - icon.getIconHeight()) / 2);
+    g2.dispose();
   }
 
 
