@@ -337,3 +337,11 @@ editor.token.comment1.style = #656565,plain
 editor.token.comment2.style = #656565,plain
 
 editor.token.invalid.style = #656565,bold
+
+
+## Colors used for code completion icons ##
+
+editor.completion.class.color = #ff0000
+editor.completion.field.color = #00ff00
+editor.completion.local.color = #0000ff
+editor.completion.method.color = #123456
