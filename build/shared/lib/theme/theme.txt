@@ -165,11 +165,16 @@ editor.scrollbar.color = #5E93BF
 
 ## PdeTextAreaPainter - extras added to the editor ##
 
-editor.gutter.text.font = processing.mono,plain,11
+editor.gutter.text.font = processing.mono,plain,12
 editor.gutter.text.color = #00072B
 
+# transparency (0..100) for line numbers in gutter
+editor.gutter.text.active.alpha = 70
+# transparency for lines not currently in use
+editor.gutter.text.inactive.alpha = 30
+
 # bgcolor for the current (highlighted) line
-editor.gutter.linehighlight.color = #3E76A0
+editor.gutter.highlight.color = #3E76A0
 
 # squiggly line underneath errors in the editor
 editor.error.underline.color = #FF002C

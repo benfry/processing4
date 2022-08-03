@@ -161,7 +161,11 @@ X   contrib mgr: filter/dropdown vertical centering is too high
 X   should be resolved with both fonts now being installed
 X two tier dialog box (defaulting back to Lucida)
 X dialog box with stack trace (font is too small)
-X try to tweak the line numbers in the gutter a bit
+X text gutter doesn't seem to be hidpi
+X   or is it b/c screen not quite 2x? (nope)
+X   try to tweak the line numbers in the gutter a bit
+X   finally found the problem: Source Code Pro not hinting below 12pt (!?#$@(*)
+X   change to 12pt, add alpha params to theme.txt
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
@@ -360,7 +364,16 @@ _   instead store the theme name, for easier updating
 _   and a version in the sketchbook will always override
 _     (selecting a new theme will rename that file, but not replace a theme.txt file)
 _ check on text width calculation in the code completion popup
+_   also, applyMatrix() sometimes ... and sometimes not
 _ change array() -> toArray() in the list classes
+_ implement alpha for url (70, 90, 100)
+_   remove the color
+
+editor.gutter.linehighlight.color -> editor.gutter.highlight.color
+# transparency (0..100) for line numbers in gutter
+editor.gutter.text.active.alpha = 70
+# transparency for lines not currently in use
+editor.gutter.text.inactive.alpha = 30
 
 
 during release of beta 9
@@ -741,8 +754,6 @@ _   https://github.com/processing/processing/pull/4097
 _   solution is to create a sprite sheet as a psd that'll have better type
 _     no way we're gonna fix the sizing and spacing for all platforms
 _     more than a certain amount should just be 10+, +, or whatever
-_ text gutter doesn't seem to be hidpi
-X   or is it b/c screen not quite 2x? (nope)
 _ Tooltip over variable decl has wrong style and content
 _   make all tooltips run through our style
 _   https://github.com/processing/processing/issues/3940
