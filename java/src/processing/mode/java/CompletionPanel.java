@@ -56,9 +56,7 @@ public class CompletionPanel {
   final private String subWord;
 
   /** Position where the completion has to be inserted */
-  final private int insertionPosition;
-
-  final private JavaTextArea textArea;
+  final private int caretPos;
 
   /** Scroll pane in which the completion list is displayed */
   final private JScrollPane scrollPane;
@@ -80,18 +78,16 @@ public class CompletionPanel {
 
   /**
    * Triggers the completion popup
-   * @param position - insertion position(caret pos)
-   * @param subWord - Partial word which triggered the code completion and which needs to be completed
+   * @param caret - insertion caret position
+   * @param subWord - Partial word that triggered the code completion
    * @param items - completion candidates
    * @param location - Point location where popup list is to be displayed
    */
-  public CompletionPanel(final JEditTextArea textarea,
-                         int position, String subWord,
+  public CompletionPanel(JavaEditor editor, int caret, String subWord,
                          DefaultListModel<CompletionCandidate> items,
-                         final Point location, JavaEditor editor) {
-    this.textArea = (JavaTextArea) textarea;
+                         Point location) {
     this.editor = editor;
-    this.insertionPosition = position;
+    this.caretPos = caret;
     if (subWord.indexOf('.') != -1 && subWord.indexOf('.') != subWord.length()-1) {
       this.subWord = subWord.substring(subWord.lastIndexOf('.') + 1);
     } else {
@@ -144,6 +140,7 @@ public class CompletionPanel {
     popupMenu.setPopupSize(calcWidth(), calcHeight(items.getSize())); //TODO: Eradicate this evil
     popupMenu.setFocusable(false);
     // TODO: Update JavaDoc to completionList.getSelectedValue()
+    JavaTextArea textarea = editor.getJavaTextArea();
     popupMenu.show(textarea, location.x, textarea.getBaseline(0, 0) + location.y);
     //log("Suggestion shown: " + System.currentTimeMillis());
   }
@@ -164,7 +161,8 @@ public class CompletionPanel {
    */
   private int calcHeight(int itemCount) {
     int maxHeight = 250;
-    FontMetrics fm = textArea.getGraphics().getFontMetrics();
+    // TODO not the right metrics [fry 220802]
+    FontMetrics fm = editor.getTextArea().getGraphics().getFontMetrics();
     float itemHeight = Math.max((fm.getHeight() + (fm.getDescent()) * 0.5f),
                                 classIcon.getIconHeight() * 1.2f);
 
@@ -189,7 +187,8 @@ public class CompletionPanel {
   private int calcWidth() {
     int maxWidth = 300;
     float min = 0;
-    FontMetrics fm = textArea.getGraphics().getFontMetrics();
+    // TODO these are definitely not the right metrics [fry 220802]
+    FontMetrics fm = editor.getTextArea().getGraphics().getFontMetrics();
     for (int i = 0; i < completionList.getModel().getSize(); i++) {
       float h = fm.stringWidth(completionList.getModel().getElementAt(i).getLabel());
       min = Math.max(min, h);
@@ -243,14 +242,15 @@ public class CompletionPanel {
           }
         }
 
+        JavaTextArea textArea = editor.getJavaTextArea();
         Messages.err(subWord + " <= sub word, Inserting suggestion=> " +
           selectedSuggestion + " Current sub: " + currentSubWord);
         if (currentSubWord.length() > 0) {
-          textArea.getDocument().remove(insertionPosition - currentSubWordLen,
+          textArea.getDocument().remove(caretPos - currentSubWordLen,
                                         currentSubWordLen);
         }
 
-        textArea.getDocument().insertString(insertionPosition - currentSubWordLen,
+        textArea.getDocument().insertString(caretPos - currentSubWordLen,
                                             completionString, null);
         if (selectedSuggestion.endsWith(")") && !selectedSuggestion.endsWith("()")) {
           // place the caret between '( and first ','
@@ -259,7 +259,7 @@ public class CompletionPanel {
             // the case of single param methods, containing no ','
             textArea.setCaretPosition(textArea.getCaretPosition() - 1); // just before ')'
           } else {
-            textArea.setCaretPosition(insertionPosition + x);
+            textArea.setCaretPosition(caretPos + x);
           }
         }
 
