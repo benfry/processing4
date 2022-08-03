@@ -273,7 +273,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
     };
 
     clipboardIcon = renderIcons("status/copy-to-clipboard", stateColors);
-    searchIcon = renderIcons("manager/search", stateColors);
+    searchIcon = renderIcons("status/search", stateColors);
     collapseIcon = renderIcons("status/console-collapse", stateColors);
     expandIcon = renderIcons("status/console-expand", stateColors);
 
