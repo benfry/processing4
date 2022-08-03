@@ -341,7 +341,7 @@ editor.token.invalid.style = #5E5E5E,bold
 
 ## Colors used for code completion icons ##
 
-editor.completion.class.color = #ff0000
-editor.completion.field.color = #00ff00
-editor.completion.local.color = #0000ff
-editor.completion.method.color = #123456
+editor.completion.class.color = #FF4144
+editor.completion.field.color = #0071F0
+editor.completion.local.color = #CE94F0
+editor.completion.method.color = #B813C0
