@@ -365,20 +365,24 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 fixes/changes before beta 9
-_ code completion icon updates (class, field, protected, method)
-_   these go into CompletionPanel.java
+_ thicker version of the search icon for the status panel
+_   copy the icon over from the manager
+X code completion icon updates (class, field, protected, method)
+X   these go into CompletionPanel.java
 _   also set the color and font with updateTheme()
+_   waiting on final colors from theme
 _ reset the theme because of significant changes
 _   move away from writing theme.txt?
 _   instead store the theme name, for easier updating
 _   and a version in the sketchbook will always override
 _     (selecting a new theme will rename that file, but not replace a theme.txt file)
 _ check on text width calculation in the code completion popup
-_   also, applyMatrix() sometimes ... and sometimes not
+_ applyMatrix() sometimes ... and sometimes not
 _ change array() -> toArray() in the list classes
-_ thicker version of the search icon for the status panel
-_   copy the icon over from the manager
 _ get shift down from the editor window and pass to status
+_ changing between themes not updating the combo box text (though arrow trigger works)
+_   switching between alloys and minerals will properly update
+_ completion mode pop-up not following dark and light mode conventions
 
 
 during release of beta 9
