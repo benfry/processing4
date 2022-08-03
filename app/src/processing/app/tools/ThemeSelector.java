@@ -419,7 +419,7 @@ public class ThemeSelector extends JFrame implements Tool {
 
       StringDict replacements = new StringDict(new String[][] {
         { "#000000", entries.get("console.color") },
-        { "#111111", entries.get("editor.gutter.linehighlight.color") },
+        { "#111111", entries.get("editor.gutter.highlight.color") },
         { "#222222", entries.get("footer.gradient.top") },
         { "#444444", entries.get("mode.background.color") },
         { "#555555", entries.get("toolbar.button.enabled.glyph") },
@@ -427,7 +427,7 @@ public class ThemeSelector extends JFrame implements Tool {
         { "#777777", entries.get("editor.gradient.bottom") },
         { "#888888", entries.get("toolbar.button.selected.field") },
         { "#CCCCCC", entries.get("toolbar.button.enabled.field") },
-        { "#DDDDDD", entries.get("editor.linehighlight.color") },
+        { "#DDDDDD", entries.get("editor.line.highlight.color") },
         { "#EEEEEE", entries.get("toolbar.button.selected.glyph") },
         { "#FFFFFF", entries.get("editor.bgcolor") }
       });

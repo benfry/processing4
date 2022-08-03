@@ -137,21 +137,20 @@ editor.gradient.top = #6BA0CC
 editor.gradient.bottom = #6BA0CC
 
 # highlight for the current line
-editor.linehighlight.color = #DEF3FF
-# highlight for the current line
-editor.linehighlight = true
+editor.line.highlight = true
+editor.line.highlight.color = #DEF3FF
 
 editor.caret.color = #000000
 # also used by EditorHeader
 editor.selection.color = #BFD7EF
 
 # little pooties at the end of lines that show where they finish
-editor.eolmarkers = false
-editor.eolmarkers.color = #999999
+editor.eol_markers = false
+editor.eol_markers.color = #999999
 
 # bracket/brace highlighting
-editor.brackethighlight = true
-editor.brackethighlight.color = #006698
+editor.bracket.highlight = true
+editor.bracket.highlight.color = #006698
 
 # colors for the custom scroll bar
 editor.scrollbar.thumb.enabled.color = #3E76A0
