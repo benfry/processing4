@@ -416,7 +416,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
       // cannot be resized up or down whenever a URL is being displayed)
       messageRight += g.getFontMetrics().stringWidth(message);
 
-      g.drawString(message, LEFT_MARGIN, (sizeH + ascent) / 2);
+      g.drawString(message, LEFT_MARGIN, (sizeH / 2) + (ascent / 4) + 1);
     }
 
     if (indeterminate) {
