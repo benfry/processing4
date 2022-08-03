@@ -231,6 +231,9 @@ editor.untitled.suffix=yyMMdd
 # replace underscores in .pde file names with spaces
 sketch.name.replace_underscore = true
 
+# what to use for generating sketch names (change in the prefs window)
+#sketch.name.approach =
+
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

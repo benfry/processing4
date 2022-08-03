@@ -29,6 +29,16 @@ X   close the interface issue, major changes done
 X remove underscore and use (half?) space for tabs?
 X   half space character not implemented, but the space looks good
 X   disable behavior with sketch.name.replace_underscore = false
+X add other naming options (cooking and classic) and prefs
+X "friendly" naming for sketches
+X   master list of words
+X     https://github.com/glitchdotcom/friendly-words/tree/master/words
+X   exact sources
+X     https://github.com/glitchdotcom/friendly-words/blob/master/words/predicates.txt
+X     https://github.com/glitchdotcom/friendly-words/blob/master/words/objects.txt
+X   how friendly names are used in the p5.js web editor
+X     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/generateRandomName.js
+X     p5.js uses predicate followed by an object
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
@@ -334,7 +344,6 @@ X   re-save svg files using svg 1.0
 X   sort out hover/press states here (only hovers atm)
 X   also add state for shift-click to search
 _   theme colors for emoji buttons (new themes across the board)
-_ naming options?
 _ reset the theme because of significant changes
 _   move away from writing theme.txt?
 _   instead store the theme name, for easier updating
@@ -372,15 +381,6 @@ _ Base.checkSketchFolder() is used to identify sketches for the sketchbook frame
 _   but it assumes that it's folder name + default extension as the name for it
 _   that should be moved into the Mode class as a "is this folder a sketch" call
 _   (so that Modes can work differently too)
-_ "friendly" naming for sketches
-_   master list of words
-_     https://github.com/glitchdotcom/friendly-words/tree/master/words
-_   exact sources
-_     https://github.com/glitchdotcom/friendly-words/blob/master/words/predicates.txt
-_     https://github.com/glitchdotcom/friendly-words/blob/master/words/objects.txt
-_   how friendly names are used in the p5.js web editor
-_     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/generateRandomName.js
-_     p5.js uses predicate followed by an object
 
 
 detach sketch names

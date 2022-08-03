@@ -15,6 +15,7 @@ import java.util.Map;
 
 
 public class SketchName {
+  static final String CLASSIC_NAME = "Classic (sketch_220809a)";
   static boolean breakTime = false;
 
   static Map<String, WordList> wordLists;
@@ -29,8 +30,15 @@ public class SketchName {
    * @return File object for safe new path, or null if there were problems
    */
   static File nextFolder(File parentDir) {
-    //return classicFolder(parentDir);
-    return wordsFolder(parentDir);
+    String approach = Preferences.get("sketch.name.approach");
+    if (!approach.equals(CLASSIC_NAME)) {
+      File folder = wordsFolder(parentDir, approach);
+      if (folder != null) {
+        return folder;
+      }
+    }
+    // classic was selected, or fallback due to an error
+    return classicFolder(parentDir);
   }
 
 
@@ -106,7 +114,19 @@ public class SketchName {
   }
 
 
-  static File wordsFolder(File parentDir) {
+  static File wordsFolder(File parentDir, String setName) {
+    WordList wl = getWordLists().get(setName);
+    File outgoing = null;
+    if (wl != null) {
+      do {
+        outgoing = new File(parentDir, wl.getPair());
+      } while (outgoing.exists());
+    }
+    return outgoing;
+  }
+
+
+  static Map<String, WordList> getWordLists() {
     if (wordLists == null) {
       wordLists = new HashMap<>();
       try {
@@ -121,12 +141,16 @@ public class SketchName {
         Messages.showWarning("Naming Error", "Could not load word lists from naming.json", e);
       }
     }
-    final String setName = "Cooking";
-    WordList wl = wordLists.get(setName);
-    File outgoing;
-    do {
-      outgoing = new File(parentDir, wl.getPair());
-    } while (outgoing.exists());
-    return outgoing;
+    return wordLists;
+  }
+
+
+  static public String[] getOptions() {
+    StringList outgoing = new StringList();
+    outgoing.append(CLASSIC_NAME);
+    for (String approach : getWordLists().keySet()) {
+      outgoing.append(approach);
+    }
+    return outgoing.array();
   }
 }

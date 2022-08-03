@@ -37,6 +37,7 @@ import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Preferences;
+import processing.app.SketchName;
 import processing.awt.ShimAWT;
 import processing.core.*;
 
@@ -53,6 +54,8 @@ public class PreferencesFrame {
   static final Integer[] FONT_SIZES = { 10, 12, 14, 18, 24, 36, 48 };
 
   JTextField sketchbookLocationField;
+  JComboBox<String> namingSelectionBox;
+
   JTextField presentColor;
   //JCheckBox editorAntialiasBox;
 //  JCheckBox deletePreviousBox;
@@ -142,6 +145,12 @@ public class PreferencesFrame {
       FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT,
       browseButton
     );
+
+
+    // Sketch Naming: [ Classic (sketch_220822a) ]
+
+    JLabel namingLabel = new JLabel(Language.text("preferences.sketch_naming"));
+    namingSelectionBox = new JComboBox<>(SketchName.getOptions());
 
 
     // Language: [ English ] (requires restart of Processing)
@@ -460,6 +469,8 @@ public class PreferencesFrame {
 
     addRow(axis, sketchbookLocationLabel, sketchbookLocationField);
 
+    addRow(axis, namingLabel, namingSelectionBox);
+
     //
 
     JPanel layoutPanel = new JPanel();
@@ -663,6 +674,8 @@ public class PreferencesFrame {
       base.setSketchbookFolder(new File(newPath));
     }
 
+    Preferences.set("sketch.name.approach", (String) namingSelectionBox.getSelectedItem());
+
 //    setBoolean("editor.external", externalEditorBox.isSelected());
     Preferences.setBoolean("update.check", checkUpdatesBox.isSelected()); //$NON-NLS-1$
 
@@ -802,6 +815,8 @@ public class PreferencesFrame {
 //    deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
 
     sketchbookLocationField.setText(Preferences.getSketchbookPath());
+    namingSelectionBox.setSelectedItem(Preferences.get("sketch.name.approach"));
+
     checkUpdatesBox.setSelected(Preferences.getBoolean("update.check")); //$NON-NLS-1$
 
     defaultDisplayNum = updateDisplayList();
