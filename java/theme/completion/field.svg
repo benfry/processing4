@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 26.4.1, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 16 16" enable-background="new 0 0 16 16" xml:space="preserve">
+<g id="sketch" display="none">
+	<path display="inline" d="M16,8l-8,5L0,8l8-5L16,8z"/>
+</g>
+<g id="glyph">
+	<g>
+		<defs>
+			<path id="SVGID_00000124874814274955514690000015532542968869071747_" d="M16,0v16H0V0H16z"/>
+		</defs>
+		<clipPath id="SVGID_00000021811039094732903950000004394832995824477336_">
+			<use xlink:href="#SVGID_00000124874814274955514690000015532542968869071747_"  overflow="visible"/>
+		</clipPath>
+		<path clip-path="url(#SVGID_00000021811039094732903950000004394832995824477336_)" d="M16,8l-8,5L0,8l8-5L16,8z"/>
+	</g>
+</g>
+</svg>
