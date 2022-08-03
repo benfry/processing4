@@ -352,6 +352,7 @@ X   also add state for shift-click to search
 _   theme colors for emoji buttons (new themes across the board)
 _ code completion icon updates (class, field, protected, method)
 _   these go into CompletionPanel.java
+_   also set the color and font with updateTheme()
 _ reset the theme because of significant changes
 _   move away from writing theme.txt?
 _   instead store the theme name, for easier updating
