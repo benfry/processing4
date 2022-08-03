@@ -29,6 +29,8 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
@@ -76,6 +78,9 @@ public class CompletionPanel {
   static public ImageIcon methodIcon;
   static public ImageIcon localIcon;
 
+  static private Map<String, String> iconColors = new HashMap<>();
+  static private Map<String, ImageIcon> iconCache = new HashMap<>();
+
   static Color selectionBgColor;
   static Color textColor;
 
@@ -98,23 +103,8 @@ public class CompletionPanel {
       this.subWord = subWord;
     }
 
-    if (classIcon == null) {
-      Mode mode = editor.getMode();
-      File dir = new File(mode.getFolder(), "theme/completion");
-
-      classIcon = renderIcon(dir, "class");
-      fieldIcon = renderIcon(dir, "field");
-      localIcon = renderIcon(dir, "local");
-      methodIcon = renderIcon(dir, "method");
-
-//      String classHex = Theme.get("editor.completion.class.color");
-//      classIcon = Toolkit.renderIcon(new File(dir, "class.svg"), classHex, ICON_SIZE);
-//      String fieldHex = Theme.get("editor.completion.field.color");
-//      classIcon = Toolkit.renderIcon(new File(dir, "class.svg"), classHex, ICON_SIZE);
-
-      selectionBgColor = new Color(0xffF0F0F0);
-      textColor = new Color(0xff222222);
-    }
+    // more like initTheme(), but using this for consistency
+    updateTheme();
 
     popupMenu = new JPopupMenu();
 //    popupMenu.setLightWeightPopupEnabled(true);  // doesn't help?
@@ -158,9 +148,39 @@ public class CompletionPanel {
   }
 
 
+  /**
+   * Render an icon and store it in the cache, or return the cached
+   * version if available to avoid re-rendering several SVG icons
+   * each time a completion is triggered.
+   */
   static private ImageIcon renderIcon(File dir, String word) {
     String hexColor = Theme.get("editor.completion." + word + ".color");
-    return Toolkit.renderIcon(new File(dir, word + ".svg"), hexColor, ICON_SIZE);
+    String cacheColor = iconColors.getOrDefault(word, null);
+    if (!hexColor.equals(cacheColor)) {
+      ImageIcon icon =
+        Toolkit.renderIcon(new File(dir, word + ".svg"), hexColor, ICON_SIZE);
+      iconColors.put(word, hexColor);
+      iconCache.put(word, icon);
+    }
+    return iconCache.get(word);
+  }
+
+
+  /**
+   * This is private because there's no need to call updateTheme() externally
+   * because the theme will never be updated *while* the window is open.
+   */
+  private void updateTheme() {
+    Mode mode = editor.getMode();
+    File dir = new File(mode.getFolder(), "theme/completion");
+
+    classIcon = renderIcon(dir, "class");
+    fieldIcon = renderIcon(dir, "field");
+    localIcon = renderIcon(dir, "local");
+    methodIcon = renderIcon(dir, "method");
+
+    selectionBgColor = new Color(0xffF0F0F0);
+    textColor = new Color(0xff222222);
   }
 
 
