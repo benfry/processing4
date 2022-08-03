@@ -74,8 +74,8 @@ status.warning.bgcolor = #001786
 status.warning.fgcolor = #D0C1FF
 
 # if the status is a url, the entire status text changes to this color
-status.url.rollover.color = #000035
-status.url.pressed.color = #000035
+status.url.rollover.color = #C7B9FF
+status.url.pressed.color = #FFF1FF
 
 #status.button.enabled.color = #FFFF00
 #status.button.rollover.color = #FF00FF
@@ -83,7 +83,7 @@ status.url.pressed.color = #000035
 
 status.button.enabled.alpha = 50
 status.button.rollover.alpha = 70
-status.button.pressed.alpha = 80
+status.button.pressed.alpha = 90
 
 
 ## EditorHeader - the tab area above the editor ##
