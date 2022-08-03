@@ -6,7 +6,6 @@ import processing.data.JSONObject;
 import processing.data.StringList;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,6 +14,7 @@ import java.util.Map;
 
 
 public class SketchName {
+  static final String FILENAME = "naming.json";
   static final String CLASSIC_NAME = "Classic (sketch_220809a)";
   static boolean breakTime = false;
 
@@ -119,26 +119,42 @@ public class SketchName {
     File outgoing = null;
     if (wl != null) {
       do {
-        outgoing = new File(parentDir, wl.getPair());
+        // Clean up the name in case a user-supplied word list breaks the rules
+        String name = Sketch.sanitizeName(wl.getPair());
+        outgoing = new File(parentDir, name);
       } while (outgoing.exists());
     }
     return outgoing;
   }
 
 
+  static private void load(File namingFile) {
+    JSONArray array = PApplet.loadJSONArray(namingFile);
+    for (int i = 0; i < array.size(); i++) {
+      JSONObject obj = array.getJSONObject(i);
+      WordList wl = new WordList(obj);
+      wordLists.put(wl.name, wl);
+    }
+  }
+
   static Map<String, WordList> getWordLists() {
     if (wordLists == null) {
       wordLists = new HashMap<>();
       try {
-        File namingFile = Base.getLibFile("naming.json");
-        JSONArray array = PApplet.loadJSONArray(namingFile);
-        for (int i = 0; i < array.size(); i++) {
-          JSONObject obj = array.getJSONObject(i);
-          WordList wl = new WordList(obj);
-          wordLists.put(wl.name, wl);
+        File namingFile = Base.getLibFile(FILENAME);
+        load(namingFile);
+      } catch (Exception e) {
+        Messages.showWarning("Naming Error",
+          "Could not load word lists from " + FILENAME, e);
+      }
+      File sketchbookFile = new File(Base.getSketchbookFolder(), FILENAME);
+      if (sketchbookFile.exists()) {
+        try {
+          load(sketchbookFile);
+        } catch (Exception e) {
+          Messages.showWarning("Naming Error",
+            "Error while reading " + FILENAME + " from sketchbook folder", e);
         }
-      } catch (IOException e) {
-        Messages.showWarning("Naming Error", "Could not load word lists from naming.json", e);
       }
     }
     return wordLists;

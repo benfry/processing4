@@ -45,6 +45,7 @@ X   how friendly names are used in the p5.js web editor
 X     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/generateRandomName.js
 X     p5.js uses predicate followed by an object
 X add other naming options (cooking and classic) and prefs
+X also support additional naming.json file in sketchbook folder
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
