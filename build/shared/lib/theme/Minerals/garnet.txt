@@ -73,13 +73,10 @@ status.error.bgcolor = #FFFFFE
 status.warning.bgcolor = #FF94A3
 status.warning.fgcolor = #7D0004
 
-# if the status is a url, the entire status text changes to this color
-status.url.rollover.color = #8A0011
-status.url.pressed.color = #510000
-
-#status.button.enabled.color = #FFFF00
-#status.button.rollover.color = #FF00FF
-#status.button.pressed.color = #0000FF
+# applies to the entire status text if it contains url
+status.url.enabled.alpha = 70
+status.url.rollover.alpha = 90
+status.url.pressed.alpha = 100
 
 status.button.enabled.alpha = 50
 status.button.rollover.alpha = 70
@@ -140,21 +137,20 @@ editor.gradient.top = #882737
 editor.gradient.bottom = #882737
 
 # highlight for the current line
-editor.linehighlight.color = #490B17
-# highlight for the current line
-editor.linehighlight = true
+editor.line.highlight = true
+editor.line.highlight.color = #490B17
 
 editor.caret.color = #FFFFFE
 # also used by EditorHeader
 editor.selection.color = #6C1A28
 
 # little pooties at the end of lines that show where they finish
-editor.eolmarkers = false
-editor.eolmarkers.color = #999999
+editor.eol_markers = false
+editor.eol_markers.color = #999999
 
 # bracket/brace highlighting
-editor.brackethighlight = true
-editor.brackethighlight.color = #E391C3
+editor.bracket.highlight = true
+editor.bracket.highlight.color = #006698
 
 # colors for the custom scroll bar
 editor.scrollbar.thumb.enabled.color = #B9545E
@@ -165,11 +161,16 @@ editor.scrollbar.color = #973542
 
 ## PdeTextAreaPainter - extras added to the editor ##
 
-editor.gutter.text.font = processing.mono,plain,11
+editor.gutter.text.font = processing.mono,plain,12
 editor.gutter.text.color = #FFDFE5
 
+# transparency (0..100) for line numbers in gutter
+editor.gutter.text.active.alpha = 70
+# transparency for lines not currently in use
+editor.gutter.text.inactive.alpha = 30
+
 # bgcolor for the current (highlighted) line
-editor.gutter.linehighlight.color = #B9545E
+editor.gutter.highlight.color = #B9545E
 
 # squiggly line underneath errors in the editor
 editor.error.underline.color = #FFFFFE
@@ -336,3 +337,11 @@ editor.token.comment1.style = #5E5E5E,plain
 editor.token.comment2.style = #5E5E5E,plain
 
 editor.token.invalid.style = #5E5E5E,bold
+
+
+## Colors used for code completion icons ##
+
+editor.completion.class.color = #ff0000
+editor.completion.field.color = #00ff00
+editor.completion.local.color = #0000ff
+editor.completion.method.color = #123456
