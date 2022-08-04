@@ -493,6 +493,7 @@ X disable hashCode() implementation in Contribution
 X   was getting in the way of comparisons
 _   but need to compare the entries differently so there aren't dupes
 _   i.e. it was doing a name comparison, so need to swap by name
+_ after library/tool changes, rebuild Help > Library/Tool Reference submenus
 
 
 manager
