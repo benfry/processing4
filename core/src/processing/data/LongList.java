@@ -22,7 +22,7 @@ import processing.core.PApplet;
  * To get a sorted copy, use list.copy().sort().
  *
  * @nowebref
- * @see FloatList
+ * @see IntList
  * @see StringList
  */
 public class LongList implements Iterable<Long> {
