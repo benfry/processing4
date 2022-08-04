@@ -734,14 +734,26 @@ public class DoubleList implements Iterable<Double> {
   }
 
 
+  @Deprecated
+  public double[] array() {
+    return toArray();
+  }
+
+
   /**
    * Create a new array with a copy of all the values.
    * @return an array sized by the length of the list with each of the values.
    * @webref doublelist:method
    * @brief Create a new array with a copy of all the values
    */
-  public double[] array() {
+  public double[] toArray() {
     return array(null);
+  }
+
+
+  @Deprecated
+  public double[] array(double[] array) {
+    return toArray(array);
   }
 
 
@@ -749,7 +761,7 @@ public class DoubleList implements Iterable<Double> {
    * Copy values into the specified array. If the specified array is
    * null or not the same size, a new array will be allocated.
    */
-  public double[] array(double[] array) {
+  public double[] toArray(double[] array) {
     if (array == null || array.length != count) {
       array = new double[count];
     }
