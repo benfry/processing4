@@ -172,6 +172,10 @@ X   weirdness with gaps in tabs (editor too big, manager too small)
 X   contrib mgr: filter/dropdown vertical centering is too high
 /   fake bold being used for tab name? (Windows only?)
 X   should be resolved with both fonts now being installed
+X code completion icon updates (class, field, protected, method)
+X   these go into CompletionPanel.java
+X   also set the color and font with updateTheme()
+X   waiting on final colors from theme
 
 design/selector
 X updated 4x4 for themes, foundation svg icon tweaks
@@ -366,20 +370,17 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 fixes/changes before beta 9
-_ thicker version of the search icon for the status panel
-_   copy the icon over from the manager
-X code completion icon updates (class, field, protected, method)
-X   these go into CompletionPanel.java
-_   also set the color and font with updateTheme()
-_   waiting on final colors from theme
 _ reset the theme because of significant changes
 _   move away from writing theme.txt?
 _   instead store the theme name, for easier updating
 _   and a version in the sketchbook will always override
 _     (selecting a new theme will rename that file, but not replace a theme.txt file)
-_ check on text width calculation in the code completion popup
-_ applyMatrix() sometimes ... and sometimes not
-_ change array() -> toArray() in the list classes
+_   include in this release b/c of potential for problems
+
+
+can wait until next release
+_ thicker version of the search icon for the status panel
+_   copy the icon over from the manager
 _ changing between themes not updating the combo box text (though arrow trigger works)
 _   switching between alloys and minerals will properly update
 _ completion mode pop-up not following dark and light mode conventions
@@ -561,11 +562,6 @@ _   ...as well as the other libraries? separate window?
 _ Help > Library/Tools reference links don't work
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
-_ appbundler broken when built on something later than Mojave
-_   https://github.com/processing/processing4/issues/284
-_   https://github.com/google/filament/pull/1959/files
-_ also need separate appbundler versions because Monterey build won't run on x86_64
-_   https://github.com/processing/processing4/issues/364
 _ loadShape(), show a warning when using style instead of presentation attributes
 _ change help menu links to go to newer FAQ and the rest
 _ better means of understanding Library/Mode/Tool usage
@@ -1137,6 +1133,15 @@ _   https://github.com/processing/processing/issues/94
 _ setModified() getting called on Windows (probably Linux) for key cmds
 
 
+PDE / Completion
+
+_ text overlapping in the code completion popup
+_   appears to be a bug in the text width calculations in JLabel
+_ applyMatrix() sometimes ... and sometimes not
+_   apparently "overloaded" methods are show as methodName(...) until selected
+_   but the actual behavior seems inconsistent at best
+
+
 PDE / Editor Toolbar (Buttons)
 
 _ run button issues (unconfirmed)
@@ -1475,6 +1480,11 @@ _   this may already work with SingleInstance stuff
 DIST / macOS
 
 appbundler
+_ appbundler broken when built on something later than Mojave
+_   https://github.com/processing/processing4/issues/284
+_   https://github.com/google/filament/pull/1959/files
+_ also need separate appbundler versions because Monterey build won't run on x86_64
+_   https://github.com/processing/processing4/issues/364
 _ fix appbundler problems due to rollback
 _   https://github.com/processing/processing/issues/3790
 _   the rollback re-introduces two bugs (serial export and scrolling)

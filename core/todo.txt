@@ -10,6 +10,8 @@ X   deprecate the old versions
 X add random() method to XxxList classes to return a random value from the list
 X use toArray() instead of array() in LongList
 X   did not deprecate old version because it was actually broken
+X use toArray() instead of array() in all other List classes
+X lots of cleanup (and some bug fixing) in the List classes
 
 
 _ concurrent StringDict et al
