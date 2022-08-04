@@ -192,6 +192,24 @@ public class EditorStatus extends BasicSplitPaneDivider {
         updateMouse(e, false);
       }
     });
+
+    editor.getTextArea().addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (shiftDown != e.isShiftDown()) {
+          shiftDown = e.isShiftDown();
+          repaint();
+        }
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+        if (shiftDown != e.isShiftDown()) {
+          shiftDown = e.isShiftDown();
+          repaint();
+        }
+      }
+    });
   }
 
 
