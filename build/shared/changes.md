@@ -1,3 +1,290 @@
+# Processing 4.0 beta 9
+
+*Revision 1284 – 4 August 2022*
+
+Getting very close to 4.0! Just a bit more now…
+
+
+## design, design, design
+
+Perhaps most noticeable, this release includes a ton of refinement on the design.
+
+* Another set of 16 themes, these with gradients, have been added to the Theme Selector. Have fun!
+
+* If you've changed the theme in a previous beta, it will be reset the first time you use beta 9, because of major updates to theme handling (many new parameters, others renamed and cleaned up). Relatedly, changing the theme no longer writes a `theme.txt` file to your sketchbook folder.
+
+* Added options to the Theme Selector to write `theme.txt` to your sketchbook folder (so you can make manual edits), and also to reload the theme dynamically (after you've made changes).
+
+* Lots of minor fixes to typography and layout of elements. Hopefully you'll agree that the changes add up to things feeling a lot better.
+
+* We're now using [FlatLaf](https://www.formdev.com/flatlaf/) to improve the look and feel of dialog boxes and other components that we've not customized ourselves.
+
+* Nearly all PNG-based icons and interface elements have been replaced by SVGs that are automatically re-rendered to match the theme when it changes.
+
+* The base font being used is now part of the language translation, because specific fonts are required for non-Roman languages, or languages that are not supported by the Source Sans 3 that we use everywhere else. This also helps us get the language-specific overrides for Chinese, Japanese, Korean, Greek, and Arabic out of the code and into something that can be updated more easily.
+
+* We're replacing the underscores in tab names with spaces. It looks a little nicer with the default sketch naming. If you'd like to keep underscores, open `preferences.txt` and set `sketch.name.replace_underscore = false`.
+
+* Updated the scroll bars to match the theme. [#265](https://github.com/processing/processing4/issues/265)
+
+* Implement 2x versions of the icons for the debugger window/variable inspector. [#3921](https://github.com/processing/processing/issues/3921)
+
+* Taken collectively, these are the visual design changes for 4.0. [#48](https://github.com/processing/processing4/issues/48)
+
+
+## new features
+
+* New sketch naming schemes! For those who didn't enjoy the sketch plus underscore plus six digit date, your time has come. Visit the Preferences window and behold the naming options available in the dropdown menu. You can now use the “Friendly” naming scheme that folks seem to love, as well as a pair of other less serious alternatives. [#6045](https://github.com/processing/processing/issues/6045), [#6048](https://github.com/processing/processing/pull/6048), [#144](https://github.com/processing/processing4/pull/144)
+
+* It's also possible to create your own naming schemes. Create a file named `naming.json` in your sketchbook folder that follows the same layout in the Processing download. Provide a name, a list of prefixes, and a list of suffixes just like that file. Save it and restart Processing, and your new option will be available in the dropdown.
+
+
+## other big ones
+
+* We should be fully set for Apple Silicon (i.e. M1 and M2) support. [#128](https://github.com/processing/processing4/issues/128)
+
+* Code completion stopped working between beta 4 and beta 5. Now it's back. [#491](https://github.com/processing/processing4/issues/491)
+
+
+## bug fixes
+
+* Fix “Unable to load Java Runtime Environment” errors on Apple Silicon machines. [#526](https://github.com/processing/processing4/issues/526)
+
+* Updated the Help menu entries to make sure they're going to the right locations for 4.x. As with the reference, links are no longer local (see [#524](https://github.com/processing/processing4/issues/524)).
+
+* Help → Libraries Reference and Help → Tools Reference submenu items were broken. [#5839](https://github.com/processing/processing/issues/5839)
+
+
+## community contributions!
+
+* Add `flatlaf.jar` to `config.xml` on Windows. [#498](https://github.com/processing/processing4/pull/498)
+
+* Fix parsing of java error messages containing ":" [#492](https://github.com/processing/processing4/issues/492), [#493](https://github.com/processing/processing4/pull/493)
+
+* Exported applications were giving `java.lang.ClassNotFoundException: --full-screen` errors. [#488](https://github.com/processing/processing4/issues/488), [#502](https://github.com/processing/processing4/pull/502).
+
+* Editor was treating {} brackets as code when they're inside a String, char or comment. [#444](https://github.com/processing/processing4/issues/444), [#504](https://github.com/processing/processing4/pull/504)
+
+* Add extra Java arguments to enable anti-aliasing for KDE users. [#513](https://github.com/processing/processing4/pull/513), [reference](https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html#aaFonts)
+
+
+## internal changes
+
+* Bumped the Java version to 17.0.4+8.
+
+* If you get a “core does not run on this architecture” when running from the source, you may need to run `ant clean-jogl` inside `core`.
+
+* Also added a `clean-libs` target to `build.xml` files that need it. This will re-download libraries that we rely upon like JOGL, Batik, Ant, and others.
+
+* Cleaned up several files in the download, the footprint should be a few dozen megabytes smaller.
+
+* Updated to the latest version of JNA (5.12.1) for better Apple Silicon support.
+
+* All the remaining ancient bug URLs (Bugzilla and Google Code) have been updated and removed from the source. The Google Code issues are re-linked to their Github equivalents, and the old Bugzilla pages have been [revived](https://download.processing.org/bugzilla/) since their disappearance last August.
+
+
+## known issues
+
+* We've had to remove the offline version of the reference that was accessible from the Help menu. We hope to bring it back some day. [#524](https://github.com/processing/processing4/issues/524)
+
+known issues
+_ mixed mode warning now broken
+_   https://github.com/processing/processing4/issues/519
+_ 'color' in imports shows up as an error in the editor
+_   but code still compiles and runs
+_   https://github.com/processing/processing4/issues/521
+_ need to make it possible to use module jars
+_   https://github.com/processing/processing4/issues/522
+_   https://github.com/processing/processing4-javafx/issues/15
+
+
+design/errors
+X errors table theme
+X use errors.row.bgcolor as bgcolor for the error list
+o change errors.row to errors.list in theme.txt
+X   add errors.bgcolor instead
+
+design/preferences
+X get rid of text box for 'background color when presenting'
+X   redundant (can type numbers in the dialog) and fussy
+X change "sketchbook location" to "sketchbook folder"
+X   (this is how it's referenced everywhere else in the interface)
+X shorten sketchbook location text field
+o sketchbook location to single line (drop "location"? say folder?)
+X why is sketchbook location text selected when opening window?
+X   had focus by default, which apparently selects the text
+X remove 'smooth text' (too rare: manual editing should suffice)
+X switch to BoxLayout before making more layout changes?
+X move 'enable complex text' up near language?
+X   better yet, move language down below font and interface scale
+o   turn it on when selecting CJKV as a language
+X show 'requires restart' only after making a change
+X   fixed for interface zoom
+X   hidpiDisableBox
+X   inputMethodBox
+X   languageSelectionBox and languageRestartLabel
+X preferences.zoom = Interface scale -> preferences.interface_scale = Scale
+X preferences.zoom.auto -> preferences.interface_scale.auto
+X set link color in prefs window to use accent color
+X move 'requires restart' to one thing at the bottom
+X preferences.enable_complex_text removed, replaced with
+X   preferences.enable_complex_text = Enable complex text input
+X   preferences.enable_complex_text.tip
+X preferences.requires_restart = requires restart of Processing
+X   becomes preferecnes.restart_required = Restart Processing to apply changes
+X put language & complex text on same line
+X move colons into the language file
+X show hand cursor with links for labels
+o move delete previous pref to the Export to Application window
+o   get rid of the pref/just use the setting from export to app
+X   no clear alternative for disabling this, so remove from prefs window
+X     but still supported inside preferences.txt for those who must
+X     it's moving the files to the trash anyway, which should be safe enough
+X finish rearranging item order in PreferencesFrame
+X   all set for now
+o move to separate panel
+o   (maybe not, because not clear which will be inherited by other modes?)
+o   background when presenting
+o   continuously check
+o   code completion
+o   suggest imports
+o   increase memory
+X   opting not to: not enough items, and too disruptive for unclear benefit
+X remove extra space between prefs lines
+
+design/manager
+X add manager.panel constants for colors
+X status panel not updating in updateTheme()
+X StatusPanel.getBodyStyle() has hard-coded fonts/sizes
+X changed manager.list.search to manager.search
+X implement foundation icon using svg
+X icons for contrib manager list entries (green/orange PNGs won't do)
+X remove ability to rearrange columns in contrib manager
+X   why tf this is the default is beyond me
+X set color of the sort order icon in the ListPanel table header
+X   also the color of the text?
+X override flatlaf for components (search, buttons, dropdown menu) in manager
+X popup menu coloring (contribs)
+X progress bar in contrib manager
+X need monochrome icon for foundation
+o do we need other color states for list item icons
+X   they seem to be find for now
+X add updateTheme() to contrib.ListPanel
+X   right now pulling Theme.getColor() directly
+X   but need to make sure repaint() is called anyway
+X contrib manager theme
+X   identify coloring for icons
+X   how much of theme to inherit
+X   generate manager icons
+o   slightly taller tabs, though maybe they're better than the Editor?
+o     editor tabs are different height, as are the footer tabs
+X   important for prefs window background color too
+X remove ManagerFrame constants for NORMAL_PLAIN, SMALL_PLAIN, etc
+X   these should be read from theme.txt instead
+o   or not used at all: the defaults from ui.font and FlatLaf should do
+X   only really need for the bold font
+X improved 'close' icon (thicker x)
+X better 'search' icon (search.svg with a less enormous eyeglass)
+X replace foundation-16, foundation-32, foundation-64 in lib/icons
+X contribs exclamation looks like an error, not "update available"
+X clean up the updates panel in the manager
+X fix column widths in 'updates' tab of contrib manager
+X   also make them resizable
+X   section headings look bad (not capitalized, not plural, no bg color change)
+X   color change might help, but a little fussy at the moment
+X     gets into whether the type weight should change, and starts affecting too much
+X update available icon looks broken (bad winding rule?)
+
+manager
+X make ContributionTab.FilterField into a static class
+o   then perhaps move to another source file
+X   nah, ContributionTabFilterField is a bit much
+X   move things around a bit so it's not quite a mess
+o add reinstall option?
+X   nah, too fussy; not a big deal to do remove and install
+X remove JProgressBar from ContributionTab/UpdateContributionTab
+X   StatusPanelDetail creates its own, which is the one used
+X after download, list item doesn't update to show installed
+X   stays stuck with the downloading icon
+
+contrib
+X Double-clicking a .pde file also opens an untitled/empty sketch
+X   https://github.com/processing/processing4/issues/477
+X   https://github.com/processing/processing4/pull/479
+X Update PDE_es.properties
+X   https://github.com/processing/processing4/pull/480
+X   https://github.com/processing/processing4/pull/481
+X Update PDE_de.properties
+X   https://github.com/processing/processing4/pull/483
+
+status
+X replace emoji buttons in status bar
+X   re-save svg files using svg 1.0
+X   sort out hover/press states here (only hovers atm)
+X   also add state for shift-click to search
+X   theme colors for emoji buttons (new themes across the board)
+X icons in the status bar (using emojis at the moment, now out of place)
+X   console collapse/expand button
+X   copy to clipboard button
+X implement alpha for url (70, 90, 100)
+X   remove the color
+X get shift down from the editor window and pass to status
+X thicker version of the search icon for the status panel
+X   copy the icon over from the manager
+
+cleaning
+o should default to the local Java on Windows and Linux
+o   have export apps default to the local JRE
+o   Linux is probably using the system JRE if available
+o   launch4j may be all set, but double-check
+X   um, no--we should use the embedded version, b/c who knows what happens
+X Blank sketch opened even if opening an existing sketch by double-clicking
+X   https://github.com/processing/processing/issues/218
+o improve the speed of file copying
+o   use FileChannels, see FileInputStream.getChannel(),
+o   and use transferFrom() or transferTo().)
+o   could also use FileUtils in Apache's common io
+o   http://commons.apache.org/io/api-release/index.html
+X Switch to getModifiersEx() in `processing.app`
+X   https://github.com/processing/processing4/issues/67
+X   done in beta 2
+/ library compilations not ordered properly w/ sorting
+/   do we still support library compilations? that was from 2016
+X   https://github.com/processing/processing/issues/4630
+
+decisions
+o preferences in web frame?
+o intro page using webkit (launching into examples)
+o   and maybe the reference too?
+X   nope, webkit embed way too large
+o how to send messages from webkit server to PDE (i.e. for a color tool)
+X   skipping webkit embed for now
+X should we use Java 11 instead of 17 to be less of an outlier?
+X   default rpi openjdk seems to be 11, we're not using any 17 features
+X   size change is negligible (17 may even be slightly smaller)
+X   or is this just a matter of 17 being new and it'll change quickly?
+X   JavaFX 17 (a good idea) seems to be compatible with Java 11
+X     JavaFX 11 has fewer builds (no ARM, prolly no Apple Silicon)
+X   11 LTS is supported until September 2026, 17 until 2029
+X   https://dzone.com/articles/whats-new-between-java-11-and-java-17
+X   switching to 17 as the default because it's now available in rpi os
+
+X allow . to start a number in SVG paths (a little)
+X   still lots of work to do here, it's an SVG 1.1 (vs 1.0) thing
+
+data
+X add getXxxxList() methods to JSONObject
+X add toXxxxList() methods to JSONArray
+X rename getXxxArray() to toXxxArray() in JSONArray for consistency
+X   deprecate the old versions
+X add random() method to XxxList classes to return a random value from the list
+X use toArray() instead of array() in LongList
+X   did not deprecate old version because it was actually broken
+X use toArray() instead of array() in all other List classes
+X lots of cleanup (and some bug fixing) in the List classes
+
+
+
 # Processing 4.0 beta 8
 
 *Revision 1283 – 23 April 2022*
