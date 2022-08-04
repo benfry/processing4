@@ -8,6 +8,8 @@ X add toXxxxList() methods to JSONArray
 X rename getXxxArray() to toXxxArray() in JSONArray for consistency
 X   deprecate the old versions
 X add random() method to XxxList classes to return a random value from the list
+X use toArray() instead of array() in LongList
+X   did not deprecate old version because it was actually broken
 
 
 _ concurrent StringDict et al
