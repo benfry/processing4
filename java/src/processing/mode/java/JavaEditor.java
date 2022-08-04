@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -316,96 +315,61 @@ public class JavaEditor extends Editor {
     menu.addSeparator();
 
     final JMenu libRefSubmenu = new JMenu(Language.text("menu.help.libraries_reference"));
-    // Populate only when sub-menu is opened, to avoid having spurious menu
-    // options if a library is deleted, or a missing menu option if a library is added
-    libRefSubmenu.addMenuListener(new MenuListener() {
 
-      @Override
-      public void menuSelected(MenuEvent e) {
-        // Adding this in case references are included in a core library,
-        // or other core libraries are included in the future
-        boolean isCoreLibMenuItemAdded =
-          addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
+    // Adding this in case references are included in a core library,
+    // or other core libraries are included in the future
+    boolean isCoreLibMenuItemAdded =
+      addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
 
-        if (isCoreLibMenuItemAdded && !mode.contribLibraries.isEmpty()) {
-          libRefSubmenu.addSeparator();
-        }
+    if (isCoreLibMenuItemAdded && !mode.contribLibraries.isEmpty()) {
+      libRefSubmenu.addSeparator();
+    }
 
-        boolean isContribLibMenuItemAdded =
-          addLibReferencesToSubMenu(mode.contribLibraries, libRefSubmenu);
+    boolean isContribLibMenuItemAdded =
+      addLibReferencesToSubMenu(mode.contribLibraries, libRefSubmenu);
 
-        if (!isContribLibMenuItemAdded && !isCoreLibMenuItemAdded) {
-          JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
-          emptyMenuItem.setEnabled(false);
-          emptyMenuItem.setFocusable(false);
-          emptyMenuItem.setFocusPainted(false);
-          libRefSubmenu.add(emptyMenuItem);
+    if (!isContribLibMenuItemAdded && !isCoreLibMenuItemAdded) {
+      JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
+      emptyMenuItem.setEnabled(false);
+      emptyMenuItem.setFocusable(false);
+      emptyMenuItem.setFocusPainted(false);
+      libRefSubmenu.add(emptyMenuItem);
 
-        } else if (!isContribLibMenuItemAdded && !mode.coreLibraries.isEmpty()) {
-          //re-populate the menu to get rid of terminal separator
-          libRefSubmenu.removeAll();
-          addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
-        }
-      }
-
-      @Override
-      public void menuDeselected(MenuEvent e) {
-        libRefSubmenu.removeAll();
-      }
-
-      @Override
-      public void menuCanceled(MenuEvent e) {
-        menuDeselected(e);
-      }
-    });
+    } else if (!isContribLibMenuItemAdded && !mode.coreLibraries.isEmpty()) {
+      //re-populate the menu to get rid of terminal separator
+      libRefSubmenu.removeAll();
+      addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
+    }
     menu.add(libRefSubmenu);
 
     final JMenu toolRefSubmenu = new JMenu(Language.text("menu.help.tools_reference"));
-    // Populate only when sub-menu is opened, to avoid having spurious menu
-    // options if a tool is deleted, or a missing menu option if a library is added
-    toolRefSubmenu.addMenuListener(new MenuListener() {
+    boolean coreToolMenuItemAdded;
+    boolean contribToolMenuItemAdded;
 
-      @Override
-      public void menuSelected(MenuEvent e) {
-        boolean coreToolMenuItemAdded;
-        boolean contribToolMenuItemAdded;
+    List<ToolContribution> contribTools = base.getToolContribs();
+    // Adding this in in case a reference folder is added for MovieMaker, or in case
+    // other core tools are introduced later
+    coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
 
-        List<ToolContribution> contribTools = base.getToolContribs();
-        // Adding this in in case a reference folder is added for MovieMaker, or in case
-        // other core tools are introduced later
-        coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
+    if (coreToolMenuItemAdded && !contribTools.isEmpty())
+      toolRefSubmenu.addSeparator();
 
-        if (coreToolMenuItemAdded && !contribTools.isEmpty())
-          toolRefSubmenu.addSeparator();
+    contribToolMenuItemAdded = addToolReferencesToSubMenu(contribTools, toolRefSubmenu);
 
-        contribToolMenuItemAdded = addToolReferencesToSubMenu(contribTools, toolRefSubmenu);
-
-        if (!contribToolMenuItemAdded && !coreToolMenuItemAdded) {
-          toolRefSubmenu.removeAll(); // in case a separator was added
-          final JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
-          emptyMenuItem.setEnabled(false);
-          emptyMenuItem.setBorderPainted(false);
-          emptyMenuItem.setFocusable(false);
-          emptyMenuItem.setFocusPainted(false);
-          toolRefSubmenu.add(emptyMenuItem);
-        }
-        else if (!contribToolMenuItemAdded && !contribTools.isEmpty()) {
-          // re-populate the menu to get rid of terminal separator
-          toolRefSubmenu.removeAll();
-          addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
-        }
-      }
-
-      @Override
-      public void menuDeselected(MenuEvent e) {
-        toolRefSubmenu.removeAll();
-      }
-
-      @Override
-      public void menuCanceled(MenuEvent e) {
-        menuDeselected(e);
-      }
-    });
+    if (!contribToolMenuItemAdded && !coreToolMenuItemAdded) {
+      toolRefSubmenu.removeAll(); // in case a separator was added
+      final JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
+      emptyMenuItem.setEnabled(false);
+      emptyMenuItem.setBorderPainted(false);
+      emptyMenuItem.setFocusable(false);
+      emptyMenuItem.setFocusPainted(false);
+      toolRefSubmenu.add(emptyMenuItem);
+    }
+    else if (!contribToolMenuItemAdded && !contribTools.isEmpty()) {
+      // re-populate the menu to get rid of terminal separator
+      toolRefSubmenu.removeAll();
+      addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
+    }
     menu.add(toolRefSubmenu);
 
     menu.addSeparator();

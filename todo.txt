@@ -33,6 +33,9 @@ X   disable behavior with sketch.name.replace_underscore = false
 X add clean-libs target to build.xml files that need it
 X check all Help menu entries and their destinations
 X   Help > Environment not going to the right place
+X Help > Libraries Reference > submenu items don't work
+X   same for Tools reference
+X   https://github.com/processing/processing/issues/5839
 
 naming
 X Friendly Names for new Sketches (includes UI for switching it back)
@@ -561,7 +564,6 @@ _     versions for aarch64 as well
 _     https://github.com/eugeneware/ffmpeg-static/releases
 _   but need to figure out a good way to highlight it/encourage installation
 _   ...as well as the other libraries? separate window?
-_ Help > Library/Tools reference links don't work
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ loadShape(), show a warning when using style instead of presentation attributes
