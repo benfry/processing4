@@ -10,12 +10,11 @@ import processing.core.PApplet;
 
 
 /**
- * Helper class for a list of floats. Lists are designed to have some of the
- * features of <b>ArrayLists</b>, but to maintain the simplicity and efficiency of
- * working with arrays.
- *
- * Functions like <b>sort()</b> and <b>shuffle()</b> always act on the list itself. To get
- * a sorted copy, use <b>list.copy().sort()</b>.
+ * Helper class for a list of <b>float</b> values. Lists are designed
+ * to have some features of <b>ArrayList</b>, but to maintain the
+ * simplicity and efficiency of working with arrays.
+ * Functions such as <b>sort()</b> and <b>shuffle()</b> always act on
+ * the list itself. To get a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
  * @webBrief Helper class for a list of floats
@@ -52,13 +51,13 @@ public class FloatList implements Iterable<Float> {
 
   /**
    * Construct an FloatList from an iterable pile of objects.
-   * For instance, a float array, an array of strings, who knows).
-   * Un-parseable or null values will be set to NaN.
+   * For instance, a float array, an array of strings, who knows.
+   * Un-parsable or null values will be set to NaN.
    * @nowebref
    */
-  public FloatList(Iterable<Object> iter) {
+  public FloatList(Iterable<Object> iterator) {
     this(10);
-    for (Object o : iter) {
+    for (Object o : iterator) {
       if (o == null) {
         append(Float.NaN);
       } else if (o instanceof Number) {
@@ -73,7 +72,7 @@ public class FloatList implements Iterable<Float> {
 
   /**
    * Construct an FloatList from a random pile of objects.
-   * Un-parseable or null values will be set to NaN.
+   * Un-parsable or null values will be set to NaN.
    */
   public FloatList(Object... items) {
     // nuts, no good way to pass missingValue to this fn (varargs must be last)
@@ -220,6 +219,7 @@ public class FloatList implements Iterable<Float> {
 
   // Remove the first instance of a particular value,
   // and return the index at which it was found.
+  @SuppressWarnings("unused")
   public int removeValue(int value) {
     int index = index(value);
     if (index != -1) {
@@ -232,7 +232,8 @@ public class FloatList implements Iterable<Float> {
 
   // Remove all instances of a particular value,
   // and return the number of values found and removed
-  public int removeValues(int value) {
+  @SuppressWarnings("unused")
+  public int removeValues(float value) {
     int ii = 0;
     if (Float.isNaN(value)) {
       for (int i = 0; i < count; i++) {
@@ -254,6 +255,7 @@ public class FloatList implements Iterable<Float> {
 
 
   /** Replace the first instance of a particular value */
+  @SuppressWarnings("unused")
   public boolean replaceValue(float value, float newValue) {
     if (Float.isNaN(value)) {
       for (int i = 0; i < count; i++) {
@@ -274,6 +276,7 @@ public class FloatList implements Iterable<Float> {
 
 
   /** Replace all instances of a particular value */
+  @SuppressWarnings("unused")
   public boolean replaceValues(float value, float newValue) {
     boolean changed = false;
     if (Float.isNaN(value)) {
@@ -325,41 +328,12 @@ public class FloatList implements Iterable<Float> {
 
 
   /** Add this value, but only if it's not already in the list. */
+  @SuppressWarnings("unused")
   public void appendUnique(float value) {
     if (!hasValue(value)) {
       append(value);
     }
   }
-
-
-//  public void insert(int index, int value) {
-//    if (index+1 > count) {
-//      if (index+1 < data.length) {
-//    }
-//  }
-//    if (index >= data.length) {
-//      data = PApplet.expand(data, index+1);
-//      data[index] = value;
-//      count = index+1;
-//
-//    } else if (count == data.length) {
-//    if (index >= count) {
-//      //int[] temp = new int[count << 1];
-//      System.arraycopy(data, 0, temp, 0, index);
-//      temp[index] = value;
-//      System.arraycopy(data, index, temp, index+1, count - index);
-//      data = temp;
-//
-//    } else {
-//      // data[] has room to grow
-//      // for() loop believed to be faster than System.arraycopy over itself
-//      for (int i = count; i > index; --i) {
-//        data[i] = data[i-1];
-//      }
-//      data[index] = value;
-//      count++;
-//    }
-//  }
 
 
   public void insert(int index, float value) {
@@ -401,60 +375,8 @@ public class FloatList implements Iterable<Float> {
   }
 
 
-    // below are aborted attempts at more optimized versions of the code
-    // that are harder to read and debug...
-
-//    if (index + values.length >= count) {
-//      // We're past the current 'count', check to see if we're still allocated
-//      // index 9, data.length = 10, values.length = 1
-//      if (index + values.length < data.length) {
-//        // There's still room for these entries, even though it's past 'count'.
-//        // First clear out the entries leading up to it, however.
-//        for (int i = count; i < index; i++) {
-//          data[i] = 0;
-//        }
-//        data[index] =
-//      }
-//      if (index >= data.length) {
-//        int length = index + values.length;
-//        int[] temp = new int[length];
-//        System.arraycopy(data, 0, temp, 0, count);
-//        System.arraycopy(values, 0, temp, index, values.length);
-//        data = temp;
-//        count = data.length;
-//      } else {
-//
-//      }
-//
-//    } else if (count == data.length) {
-//      int[] temp = new int[count << 1];
-//      System.arraycopy(data, 0, temp, 0, index);
-//      temp[index] = value;
-//      System.arraycopy(data, index, temp, index+1, count - index);
-//      data = temp;
-//
-//    } else {
-//      // data[] has room to grow
-//      // for() loop believed to be faster than System.arraycopy over itself
-//      for (int i = count; i > index; --i) {
-//        data[i] = data[i-1];
-//      }
-//      data[index] = value;
-//      count++;
-//    }
-
-
   /** Return the first index of a particular value. */
   public int index(float what) {
-    /*
-    if (indexCache != null) {
-      try {
-        return indexCache.get(what);
-      } catch (Exception e) {  // not there
-        return -1;
-      }
-    }
-    */
     for (int i = 0; i < count; i++) {
       if (data[i] == what) {
         return i;
@@ -580,7 +502,7 @@ public class FloatList implements Iterable<Float> {
 
   public int minIndex() {
     checkMinMax("minIndex");
-    float m = Float.NaN;
+    float m;
     int mi = -1;
     for (int i = 0; i < count; i++) {
       // find one good value to start
@@ -618,7 +540,7 @@ public class FloatList implements Iterable<Float> {
 
   public int maxIndex() {
     checkMinMax("maxIndex");
-    float m = Float.NaN;
+    float m;
     int mi = -1;
     for (int i = 0; i < count; i++) {
       // find one good value to start
@@ -723,24 +645,6 @@ public class FloatList implements Iterable<Float> {
   }
 
 
-  // use insert()
-//  public void splice(int index, int value) {
-//  }
-
-
-//  public void subset(int start) {
-//    subset(start, count - start);
-//  }
-
-
-//  public void subset(int start, int num) {
-//    for (int i = 0; i < num; i++) {
-//      data[i] = data[i+start];
-//    }
-//    count = num;
-//  }
-
-
   /**
    * Reverse the order of the list
    * 
@@ -764,6 +668,7 @@ public class FloatList implements Iterable<Float> {
    * @webref floatlist:method
    * @webBrief Randomize the order of the list elements
    */
+  @SuppressWarnings("unused")
   public void shuffle() {
     Random r = new Random();
     int num = count;
@@ -781,6 +686,7 @@ public class FloatList implements Iterable<Float> {
    * Randomize the list order using the random() function from the specified
    * sketch, allowing shuffle() to use its current randomSeed() setting.
    */
+  @SuppressWarnings("unused")
   public void shuffle(PApplet sketch) {
     int num = count;
     while (num > 1) {
@@ -831,11 +737,7 @@ public class FloatList implements Iterable<Float> {
   /** Implemented this way so that we can use a FloatList in a for loop. */
   @Override
   public Iterator<Float> iterator() {
-//  }
-//
-//
-//  public Iterator<Float> valueIterator() {
-    return new Iterator<Float>() {
+    return new Iterator<>() {
       int index = -1;
 
       public void remove() {
@@ -854,23 +756,34 @@ public class FloatList implements Iterable<Float> {
   }
 
 
+  @Deprecated
+  public float[] array() {
+    return toArray();
+  }
+
+
   /**
    * Create a new array with a copy of all the values.
    * @return an array sized by the length of the list with each of the values.
    * @webref floatlist:method
    * @webBrief Create a new array with a copy of all the values
    */
-  public float[] array() {
-    return array(null);
+  public float[] toArray() {
+    return toArray(null);
+  }
+
+
+  @Deprecated
+  public float[] array(float[] array) {
+    return toArray(array);
   }
 
 
   /**
-   * Copy values into the specified array. If the specified array is null or
-   * not the same size, a new array will be allocated.
-   * @param array
+   * Copy values into the specified array. If the specified array is
+   * null or not the same size, a new array will be allocated.
    */
-  public float[] array(float[] array) {
+  public float[] toArray(float[] array) {
     if (array == null || array.length != count) {
       array = new float[count];
     }
@@ -880,11 +793,12 @@ public class FloatList implements Iterable<Float> {
 
 
   /**
-   * Returns a normalized version of this array. Called getPercent() for
-   * consistency with the Dict classes. It's a getter method because it needs
-   * to returns a new list (because IntList/Dict can't do percentages or
-   * normalization in place on int values).
+   * Returns a normalized version of this array. Called getPercent()
+   * for consistency with the Dict classes. It's a getter method
+   * because it needs to return a new list (because IntList/Dict
+   * can't do percentages or normalization in place on int values).
    */
+  @SuppressWarnings("unused")
   public FloatList getPercent() {
     double sum = 0;
     for (float value : array()) {
@@ -899,6 +813,7 @@ public class FloatList implements Iterable<Float> {
   }
 
 
+  @SuppressWarnings("unused")
   public FloatList getSubset(int start) {
     return getSubset(start, count - start);
   }

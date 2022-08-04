@@ -15,11 +15,11 @@ import processing.core.PApplet;
 
 
 /**
- * Helper class for a list of ints. Lists are designed to have
- * some features of ArrayLists, but to maintain the simplicity and
- * efficiency of working with arrays.
- * Functions such as sort() and shuffle() always act on the list itself.
- * To get a sorted copy, use list.copy().sort().
+ * Helper class for a list of <b>long</b> values. Lists are designed
+ * to have some features of <b>ArrayList</b>, but to maintain the
+ * simplicity and efficiency of working with arrays.
+ * Functions such as <b>sort()</b> and <b>shuffle()</b> always act on
+ * the list itself. To get a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @nowebref
  * @see IntList

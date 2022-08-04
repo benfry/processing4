@@ -9,12 +9,11 @@ import java.util.Random;
 import processing.core.PApplet;
 
 /**
- * Helper class for a list of <b>Strings</b>. Lists are designed to have some of the
- * features of <b>ArrayLists</b>, but to maintain the simplicity and efficiency of
- * working with arrays.
- *
- * Functions like <b>sort()</b> and <b>shuffle()</b> always act on the list itself. To get
- * a sorted copy, use <b>list.copy().sort()</b>.
+ * Helper class for a list of <b>String</b> objects. Lists are designed
+ * to have some features of <b>ArrayList</b>, but to maintain the
+ * simplicity and efficiency of working with arrays.
+ * Functions such as <b>sort()</b> and <b>shuffle()</b> always act on
+ * the list itself. To get a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
  * @webBrief Helper class for a list of Strings
