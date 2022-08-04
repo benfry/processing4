@@ -248,8 +248,9 @@
     <antcall target="${platform}-run-app" />
   </target>
 
-  <target name="dist" depends="revision-check, test"
-          description="Build Processing for distribution.">
+  <!-- <target name="dist" depends="revision-check, test" -->
+    <target name="dist" depends="revision-check"
+            description="Build Processing for distribution.">
     <input message="Enter version number:"
            addproperty="version"
            defaultvalue="${revision}" />

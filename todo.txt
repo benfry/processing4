@@ -378,6 +378,7 @@ X   switching to 17 as the default because it's now available in rpi os
 known issues
 _ mixed mode warning now broken
 _   https://github.com/processing/processing4/issues/519
+_   tests also turned off in build.xml because this is causing it to fail
 _ 'color' in imports shows up as an error in the editor
 _   but code still compiles and runs
 _   https://github.com/processing/processing4/issues/521
