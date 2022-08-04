@@ -36,6 +36,7 @@ X   Help > Environment not going to the right place
 X Help > Libraries Reference > submenu items don't work
 X   same for Tools reference
 X   https://github.com/processing/processing/issues/5839
+X replace build/shared/lib/theme.txt with final kyanite.txt
 
 naming
 X Friendly Names for new Sketches (includes UI for switching it back)
@@ -392,7 +393,6 @@ _ completion mode pop-up not following dark and light mode conventions
 
 
 during release of beta 9
-_ replace build/shared/lib/theme.txt with final kyanite.txt
 _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
