@@ -46,6 +46,7 @@ X     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/g
 X     p5.js uses predicate followed by an object
 X add other naming options (cooking and classic) and prefs
 X also support additional naming.json file in sketchbook folder
+X add "Cosmos" name set
 
 bugs
 X re-post bugzilla entries at https://download.processing.org/bugzilla/
