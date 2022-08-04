@@ -373,9 +373,11 @@ public class JavaEditor extends Editor {
     menu.add(toolRefSubmenu);
 
     menu.addSeparator();
+    /*
     item = new JMenuItem(Language.text("menu.help.online"));
     item.setEnabled(false);
     menu.add(item);
+    */
 
     item = new JMenuItem(Language.text("menu.help.getting_started"));
     item.addActionListener(e -> Platform.openURL(Language.text("menu.help.getting_started.url")));
