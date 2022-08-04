@@ -78,8 +78,8 @@ public class CompletionPanel {
   static public ImageIcon methodIcon;
   static public ImageIcon localIcon;
 
-  static private Map<String, String> iconColors = new HashMap<>();
-  static private Map<String, ImageIcon> iconCache = new HashMap<>();
+  static private final Map<String, String> iconColors = new HashMap<>();
+  static private final Map<String, ImageIcon> iconCache = new HashMap<>();
 
   static Color selectionBgColor;
   static Color textColor;
@@ -289,7 +289,7 @@ public class CompletionPanel {
       return null; //TODO: Does this check cause problems? Verify.
     if (Base.DEBUG) System.out.print(" x char: " + s.charAt(x));
 
-    String word = (x < s.length() ? s.charAt(x) : "") + "";
+    String word = String.valueOf(s.charAt(x));
     if (s.trim().length() == 1) {
       word = word.trim();
       if (word.endsWith("."))
