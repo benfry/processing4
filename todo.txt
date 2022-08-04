@@ -333,6 +333,8 @@ X   copy to clipboard button
 X implement alpha for url (70, 90, 100)
 X   remove the color
 X get shift down from the editor window and pass to status
+X thicker version of the search icon for the status panel
+X   copy the icon over from the manager
 
 cleaning
 o should default to the local Java on Windows and Linux
@@ -384,8 +386,6 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 next release
-_ thicker version of the search icon for the status panel
-_   copy the icon over from the manager
 _ changing between themes not updating the combo box text (though arrow trigger works)
 _   switching between alloys and minerals will properly update
 _ completion mode pop-up not following dark and light mode conventions
