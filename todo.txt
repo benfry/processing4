@@ -126,7 +126,6 @@ X   https://github.com/processing/processing4/pull/513
 
 design
 X color updates based on changes from Paul (220426)
-X if no matching theme selected, was highlighting column -1
 o icons for the console items
 X   console.svg and error.svg already done
 X console scroll bar colors
@@ -138,11 +137,6 @@ X look and feel plus fonts
 X   trying out https://www.formdev.com/flatlaf/ to clean things up
 X   using Source Sans Pro as interface font
 X   rewrite language selector to use fallback fonts
-X accent color and light/dark mode into the theme, and use with flatlaf
-X style the popup menu for Mode using the theme
-X console scroll bar colors
-X update lib/theme.txt to clean up current Frankenstein status
-X   just replace with the blue default once that's updated
 X tweaks to the splash/about screen from Paul
 X Color Selector buttons misaligned
 X   redo layout for FlatLaf, also tweak further to remove some of the quirkiness
@@ -177,7 +171,7 @@ X   these go into CompletionPanel.java
 X   also set the color and font with updateTheme()
 X   waiting on final colors from theme
 
-design/selector
+design/themes
 X updated 4x4 for themes, foundation svg icon tweaks
 X implement 4x4 by auto-generating from svg versions
 X make drag events work properly
@@ -187,6 +181,18 @@ X both sets working, loading from folders
 X fixed up html wiring for styles
 X gradients
 X   add a couple with gradients to the selector box?
+X if no matching theme selected, was highlighting column -1
+X reset the theme because of significant changes
+X   move away from writing theme.txt?
+X   instead store the theme name, for easier updating
+X   and a version in the sketchbook will always override
+X     (selecting a new theme will rename that file, but not replace a theme.txt file)
+X   include in this release b/c of potential for problems
+X accent color and light/dark mode into the theme, and use with flatlaf
+X style the popup menu for Mode using the theme
+X console scroll bar colors
+X update lib/theme.txt to clean up current Frankenstein status
+X   just replace with the blue default once that's updated
 
 design/errors
 X errors table theme
@@ -367,15 +373,6 @@ _   https://github.com/processing/processing4/issues/521
 _ need to make it possible to use module jars
 _   https://github.com/processing/processing4/issues/522
 _   https://github.com/processing/processing4-javafx/issues/15
-
-
-fixes/changes before beta 9
-_ reset the theme because of significant changes
-_   move away from writing theme.txt?
-_   instead store the theme name, for easier updating
-_   and a version in the sketchbook will always override
-_     (selecting a new theme will rename that file, but not replace a theme.txt file)
-_   include in this release b/c of potential for problems
 
 
 can wait until next release

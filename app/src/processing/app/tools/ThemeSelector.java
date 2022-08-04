@@ -281,17 +281,6 @@ public class ThemeSelector extends JFrame implements Tool {
   }
 
 
-  private File nextBackupFile() {
-    int index = 0;
-    File backupFile;
-    do {
-      index++;
-      backupFile = new File(Base.getSketchbookFolder(), String.format("theme.%03d", index));
-    } while (backupFile.exists());
-    return backupFile;
-  }
-
-
   private String getCurrentTheme() {
     if (sketchbookFile.exists()) {
       return Util.loadFile(sketchbookFile);
@@ -331,33 +320,33 @@ public class ThemeSelector extends JFrame implements Tool {
 
   private void setCurrentIndex(int index) {
     currentIndex = index;
-    try {
-      if (userModifiedTheme()) {
-        // If the user has a custom theme they've modified,
-        // rename it to theme.001, theme.002, etc. as a backup
-        // to avoid overwriting anything they've created.
-        File backupFile = nextBackupFile();
-        boolean success = sketchbookFile.renameTo(backupFile);
-        if (!success) {
-          Messages.showWarning("Could not back up theme",
-            "Could not save a backup of theme.txt in your sketchbook folder.\n" +
-            "Rename it manually and try setting the theme again.");
-          return;
-        }
+
+    // If there is a theme.txt file in the sketchbook folder,
+    // archive it and move out of the way.
+    if (userModifiedTheme()) {
+      boolean success = Theme.archiveCurrent();
+      if (!success) {
+        Messages.showWarning("Could not back up theme",
+          "Could not save a backup of theme.txt in your sketchbook folder.\n" +
+          "Rename it manually and try setting the theme again.");
+        return;
       }
-
-      // Save the file and reload the theme.
-      Util.saveFile(currentSet.get(index), sketchbookFile);
-      reloadTheme();
-
-    } catch (IOException e) {
-      base.getActiveEditor().statusError(e);
     }
+
+    // No longer saving a new theme.txt when making a selection, just setting a
+    // preference so that subsequent Processing updates load new theme changes.
+    //Util.saveFile(currentSet.get(index), sketchbookFile);
+    Preferences.set("theme", currentSet.getPath(index));
+    reloadTheme();
   }
 
 
+  /**
+   * Called when user clicks the 'reload' button, or when the theme
+   * is changed by clicking on a built-in selection.
+   */
   private void reloadTheme() {
-    Theme.load();
+    Theme.reload();
     base.updateTheme();
     updateTheme();
   }
@@ -375,6 +364,7 @@ public class ThemeSelector extends JFrame implements Tool {
   class ThemeSet {
     final String name;
     private int count;
+    private String[] paths;
     private String[] themes;
     private Image[] images;
     private Map<String, Integer> indices;
@@ -389,16 +379,18 @@ public class ThemeSelector extends JFrame implements Tool {
         if (count < lines.length) {
           System.err.println("Only using the first 16 themes inside " + orderFile);
         }
+        paths = new String[count];
         themes = new String[count];
         images = new Image[count];
         indices = new HashMap<>(count);
 
         // don't load more than 16 entries
         for (int i = 0; i < count; i++) {
-          File file = new File(dir, lines[i] + ".txt");
+          String filename = lines[i] + ".txt";
+          File file = new File(dir, filename);
           String theme = Util.loadFile(file);
           indices.put(theme, i);
-//          hashes.add(theme.hashCode());
+          paths[i] = name + "/" + filename;
           themes[i] = theme;
           images[i] = renderImage(file.getName(), theme);
         }
@@ -437,9 +429,13 @@ public class ThemeSelector extends JFrame implements Tool {
       return Toolkit.svgToImageMult(miniSvgXml, ColorfulPanel.DIM, ColorfulPanel.DIM, replacements);
     }
 
-    String get(int index) {
-      return themes[index];
+    String getPath(int index) {
+      return paths[index];
     }
+
+//    String getTheme(int index) {
+//      return themes[index];
+//    }
 
     /**
      * Return the index for a given theme in this set,

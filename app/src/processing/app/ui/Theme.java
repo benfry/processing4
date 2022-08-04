@@ -24,6 +24,7 @@ package processing.app.ui;
 
 import processing.app.Base;
 import processing.app.Messages;
+import processing.app.Preferences;
 import processing.app.Settings;
 import processing.app.syntax.SyntaxStyle;
 import processing.core.PApplet;
@@ -38,36 +39,41 @@ import java.util.Arrays;
 
 
 public class Theme {
+  static final String DEFAULT_PATH = "Minerals/kyanite.txt";
   static Settings theme;
 
   static public void init() {
     try {
-      File inputFile = getThemeFile();
-//      if (inputFile == null) {
-//        throw new RuntimeException("Missing required file (theme.txt), you may need to reinstall.");
-//      }
-      // First load the default theme data for the whole PDE.
-      theme = new Settings(inputFile);
-
-      // A spot-check of Modes shows that theme.txt is not being overridden,
-      // so removing this (questionable, warned against) capability for 4.0a6.
-      /*
-      // The mode-specific theme.txt file should only contain additions,
-      // and in extremely rare cases, it might override entries from the
-      // main theme. Do not override for style changes unless they are
-      // objectively necessary for your Mode.
-      File modeTheme = new File(folder, "theme/theme.txt");
-      if (modeTheme.exists()) {
-        // Override the built-in settings with what the theme provides
-        theme.load(modeTheme);
+      File inputFile = getDefaultFile();
+      if (!inputFile.exists()) {
+        System.err.println("Missing required file (theme.txt), please reinstall Processing.");
       }
-      */
+      // First load the default theme data, in case new parameters were added
+      // that may not be covered with a custom version found in the sketchbook.
+      theme = new Settings(inputFile);
 
       // other things that have to be set explicitly for the defaults
       theme.setColor("run.window.bgcolor", SystemColor.control);
 
-      // pull in the version from the user's sketchbook folder
-      load();
+      if (Preferences.get("theme") == null) {
+        // This is not being set in defaults.txt so that we have a way
+        // to reset the theme after the major changes in 4.0 beta 9.
+        // This does a one-time archival of the theme.txt file in the
+        // sketchbook folder, because most people have not customized
+        // their theme, but they probably made a selection.
+        // If they customized the theme, they can bring it back by
+        // renaming the file from theme.001 to theme.txt.
+        // If they were using a built-in theme, they will need to
+        // re-select it using the Theme Selector.
+        Preferences.set("theme", DEFAULT_PATH);
+
+        if (getSketchbookFile().exists()) {
+          archiveCurrent();
+        }
+      }
+
+      // load sketchbook theme or the one specified in preferences
+      reload();
 
     } catch (IOException e) {
       Messages.showError("Problem loading theme.txt",
@@ -77,13 +83,37 @@ public class Theme {
 
 
   /**
-   * Load theme.txt from the user's sketchbook folder.
+   * Pull in the version from the user's sketchbook folder,
+   * or if none exists, use the setting from preferences.
    */
-  static public void load() {
+  static public void reload() {
+    if (!loadSketchbookFile()) {
+      String prefTheme = Preferences.get("theme");
+      try {
+        File prefFile = new File(getThemeFolder(), prefTheme);
+        if (prefFile.exists()) {
+          theme.load(prefFile);
+        }
+      } catch (IOException e) {
+        Messages.showWarning("Theme Reload Problem",
+          "Error while reloading the theme. Please report.", e);
+      }
+    }
+  }
+
+
+  /**
+   * Load theme.txt from the user's sketchbook folder.
+   * The caller is expected to make sure the file exists.
+   */
+  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
+  static public boolean loadSketchbookFile() {
     File sketchbookTheme = getSketchbookFile();
     if (sketchbookTheme.exists()) {
       theme.load(sketchbookTheme);
+      return true;
     }
+    return false;
   }
 
 
@@ -97,13 +127,37 @@ public class Theme {
   }
 
 
-  static public File getThemeFile() throws IOException {
+  /**
+   * Returns lib/theme/theme.txt in the Processing installation.
+   */
+  static public File getDefaultFile() throws IOException {
     return new File(getThemeFolder(), "theme.txt");
   }
 
 
   static public File getSketchbookFile() {
     return new File(Base.getSketchbookFolder(), "theme.txt");
+  }
+
+
+  /**
+   * If the user has a custom theme they've modified, rename it to theme.001,
+   * theme.002, etc. as a backup to avoid overwriting anything they've created.
+   */
+  static public boolean archiveCurrent() {
+    File backupFile = nextArchiveFile();
+    return getSketchbookFile().renameTo(backupFile);
+  }
+
+
+  static private File nextArchiveFile() {
+    int index = 0;
+    File backupFile;
+    do {
+      index++;
+      backupFile = new File(Base.getSketchbookFolder(), String.format("theme.%03d", index));
+    } while (backupFile.exists());
+    return backupFile;
   }
 
 
