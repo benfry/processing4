@@ -173,16 +173,18 @@
     <jar basedir="bin" destfile="pde.jar" />
   </target>
 
-  <target name="update" description="Update the downloaded libraries">
+  <target name="clean-libs" description="Remove the downloaded libraries">
     <delete>
       <fileset refid="ant.files" />
       <fileset refid="flatlaf.files" />
       <fileset refid="jna.files" />
     </delete>
 
+    <!--
     <antcall target="download-ant" />
     <antcall target="download-flatlaf" />
     <antcall target="download-jna" />
+    -->
   </target>
 
   <target name="clean" description="Clean the build directories">

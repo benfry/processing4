@@ -1572,12 +1572,16 @@
   </target>
 
 
-  <!-- - - - - - - - -->
-  <!-- Run It!       -->
-  <!-- - - - - - - - -->
+  <!-- Cleaning the build and libraries -->
 
   <target name="clean" description="Perform a spring cleaning"
           depends="linux-clean, windows-clean, macos-clean, subprojects-clean">
+  </target>
+
+  <target name="clean-libs" description="Purge downloaded support libraries">
+    <subant buildpath="../core" target="clean-libs"/>
+    <subant buildpath="../app" target="clean-libs"/>
+    <subant buildpath="../java/libraries/svg" target="clean-libs"/>
   </target>
 
 </project>

@@ -29,6 +29,7 @@ X   close the interface issue, major changes done
 X remove underscore and use (half?) space for tabs?
 X   half space character not implemented, but the space looks good
 X   disable behavior with sketch.name.replace_underscore = false
+X add clean-libs target to build.xml files that need it
 
 naming
 X Friendly Names for new Sketches (includes UI for switching it back)
