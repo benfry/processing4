@@ -61,9 +61,9 @@ public class LongList implements Iterable<Long> {
    * @nowebref
    */
   @SuppressWarnings("unused")
-  public LongList(Iterable<Object> iter) {
+  public LongList(Iterable<Object> iterable) {
     this(10);
-    for (Object o : iter) {
+    for (Object o : iterable) {
       if (o == null) {
         append(0);  // missing value default
       } else if (o instanceof Number) {
