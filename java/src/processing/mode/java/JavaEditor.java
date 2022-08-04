@@ -295,12 +295,12 @@ public class JavaEditor extends Editor {
 
     item = new JMenuItem(Language.text("menu.help.environment"));
     //item.addActionListener(e -> showReference("environment/index.html"));
-    item.addActionListener(e -> Platform.openURL("https://processing.org/reference/"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/environment/"));
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.reference"));
     //item.addActionListener(e -> showReference("index.html"));
-    item.addActionListener(e -> Platform.openURL("https://processing.org/environment/"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/reference/"));
     menu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.help.find_in_reference"), 'F');

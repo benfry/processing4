@@ -31,6 +31,8 @@ X remove underscore and use (half?) space for tabs?
 X   half space character not implemented, but the space looks good
 X   disable behavior with sketch.name.replace_underscore = false
 X add clean-libs target to build.xml files that need it
+X check all Help menu entries and their destinations
+X   Help > Environment not going to the right place
 
 naming
 X Friendly Names for new Sketches (includes UI for switching it back)
@@ -378,7 +380,7 @@ _   https://github.com/processing/processing4/issues/522
 _   https://github.com/processing/processing4-javafx/issues/15
 
 
-can wait until next release
+next release
 _ thicker version of the search icon for the status panel
 _   copy the icon over from the manager
 _ changing between themes not updating the combo box text (though arrow trigger works)
@@ -563,7 +565,6 @@ _ Help > Library/Tools reference links don't work
 _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 _ loadShape(), show a warning when using style instead of presentation attributes
-_ change help menu links to go to newer FAQ and the rest
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
@@ -584,6 +585,10 @@ _   is this still the case?
 _ chars[] array is never used in ascii video example
 _ ui scaling in the PDE is important for classes/seeing at a distance
 _ Export to Application was broken with OpenGL (Casey)
+_ add a version of this to the 4.x repo
+_   https://github.com/processing/processing/wiki/troubleshooting
+_   and update the Help menu to link to it
+_   and maybe the FAQ too?
 
 
 decisions before final 4.0 release
