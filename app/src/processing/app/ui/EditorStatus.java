@@ -87,24 +87,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   boolean shiftDown;
 
-  /*
-  ImageIcon clipboardEnabledIcon;
-  ImageIcon clipboardRolloverIcon;
-  ImageIcon clipboardPressedIcon;
-
-  ImageIcon searchEnabledIcon;
-  ImageIcon searchRolloverIcon;
-  ImageIcon searchPressedIcon;
-
-  ImageIcon collapseEnabledIcon;
-  ImageIcon collapseRolloverIcon;
-  ImageIcon collapsePressedIcon;
-
-  ImageIcon expandEnabledIcon;
-  ImageIcon expandRolloverIcon;
-  ImageIcon expandPressedIcon;
-  */
-
   ImageIcon[] clipboardIcon;
   ImageIcon[] searchIcon;
   ImageIcon[] collapseIcon;
@@ -274,14 +256,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
     urlRolloverAlpha = 255 * Theme.getInteger("status.url.rollover.alpha") / 100;
     urlPressedAlpha = 255 * Theme.getInteger("status.url.pressed.alpha") / 100;
 
-//    status.button.enabled.color = #FFFF00
-//    status.button.rollover.color = #FF00FF
-//    status.button.pressed.color = #0000FF
-
-//    String buttonEnabledColor = Theme.get("status.button.enabled.color");
-//    String buttonRolloverColor = Theme.get("status.button.rollover.color");
-//    String buttonPressedColor = Theme.get("status.button.pressed.color");
-
     String[] stateColors = new String[] {
       Theme.get("status.notice.fgcolor"),
       Theme.get("status.error.fgcolor"),
@@ -298,25 +272,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
     btnEnabledAlpha = Theme.getInteger("status.button.enabled.alpha") / 100f;
     btnRolloverAlpha = Theme.getInteger("status.button.rollover.alpha") / 100f;
     btnPressedAlpha = Theme.getInteger("status.button.pressed.alpha") / 100f;
-
-    /*
-    clipboardEnabledIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonEnabledColor, ICON_SIZE);
-    clipboardRolloverIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonRolloverColor, ICON_SIZE);
-    clipboardPressedIcon = Toolkit.renderIcon("status/copy-to-clipboard", buttonPressedColor, ICON_SIZE);
-
-    // just borrowing the search icon from the manager
-    searchEnabledIcon = Toolkit.renderIcon("manager/search", buttonEnabledColor, ICON_SIZE);
-    searchRolloverIcon = Toolkit.renderIcon("manager/search", buttonRolloverColor, ICON_SIZE);
-    searchPressedIcon = Toolkit.renderIcon("manager/search", buttonPressedColor, ICON_SIZE);
-
-    collapseEnabledIcon = Toolkit.renderIcon("status/console-collapse", buttonEnabledColor, ICON_SIZE);
-    collapseRolloverIcon = Toolkit.renderIcon("status/console-collapse", buttonRolloverColor, ICON_SIZE);
-    collapsePressedIcon = Toolkit.renderIcon("status/console-collapse", buttonPressedColor, ICON_SIZE);
-
-    expandEnabledIcon = Toolkit.renderIcon("status/console-expand", buttonEnabledColor, ICON_SIZE);
-    expandRolloverIcon = Toolkit.renderIcon("status/console-expand", buttonRolloverColor, ICON_SIZE);
-    expandPressedIcon = Toolkit.renderIcon("status/console-expand", buttonPressedColor, ICON_SIZE);
-    */
 
     fgColor = new Color[] {
       Theme.getColor("status.notice.fgcolor"),
@@ -464,28 +419,15 @@ public class EditorStatus extends BasicSplitPaneDivider {
       float alpha;
       if (shiftDown) {
         glyph = searchIcon[mode];
-        if (mouseState == CLIPBOARD_ROLLOVER) {
-          //glyph = searchRolloverIcon;
-          alpha = btnRolloverAlpha;
-        } else if (mouseState == CLIPBOARD_PRESSED) {
-          //glyph = searchPressedIcon;
-          alpha = btnPressedAlpha;
-        } else {
-          //glyph = searchEnabledIcon;
-          alpha = btnEnabledAlpha;
-        }
       } else {
         glyph = clipboardIcon[mode];
-        if (mouseState == CLIPBOARD_ROLLOVER) {
-          //glyph = clipboardRolloverIcon;
-          alpha = btnRolloverAlpha;
-        } else if (mouseState == CLIPBOARD_PRESSED) {
-          //glyph = clipboardPressedIcon;
-          alpha = btnPressedAlpha;
-        } else {
-          //glyph = clipboardEnabledIcon;
-          alpha = btnEnabledAlpha;
-        }
+      }
+      if (mouseState == CLIPBOARD_ROLLOVER) {
+        alpha = btnRolloverAlpha;
+      } else if (mouseState == CLIPBOARD_PRESSED) {
+        alpha = btnPressedAlpha;
+      } else {
+        alpha = btnEnabledAlpha;
       }
       drawButton(g, 1, glyph, alpha);
       g.setFont(font);
@@ -496,28 +438,15 @@ public class EditorStatus extends BasicSplitPaneDivider {
     float alpha;
     if (collapsed) {
       glyph = expandIcon[mode];
-      if (mouseState == COLLAPSE_ROLLOVER) {
-        //glyph = expandRolloverIcon;
-        alpha = btnRolloverAlpha;
-      } else if (mouseState == COLLAPSE_PRESSED) {
-        //glyph = expandPressedIcon;
-        alpha = btnPressedAlpha;
-      } else {
-        //glyph = expandEnabledIcon;
-        alpha = btnEnabledAlpha;
-      }
     } else {
       glyph = collapseIcon[mode];
-      if (mouseState == COLLAPSE_ROLLOVER) {
-        //glyph = collapseRolloverIcon;
-        alpha = btnRolloverAlpha;
-      } else if (mouseState == COLLAPSE_PRESSED) {
-        //glyph = collapsePressedIcon;
-        alpha = btnPressedAlpha;
-      } else {
-        //glyph = collapseEnabledIcon;
-        alpha = btnEnabledAlpha;
-      }
+    }
+    if (mouseState == COLLAPSE_ROLLOVER) {
+      alpha = btnRolloverAlpha;
+    } else if (mouseState == COLLAPSE_PRESSED) {
+      alpha = btnPressedAlpha;
+    } else {
+      alpha = btnEnabledAlpha;
     }
     drawButton(g, 0, glyph, alpha);
   }
