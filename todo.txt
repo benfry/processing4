@@ -1,5 +1,6 @@
 1284 (4.0b9)
 X bump to Java 17.0.3+7
+X   and again to Java 17.0.4+8
 X specify Java version with appbundler in main app
 X "core does not run on this architecture linux-amd64" on Linux
 X   just need to do 'ant clean-jogl' inside core
