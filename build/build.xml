@@ -368,8 +368,8 @@
         <include name="application/**" />
         <include name="keywords.txt" />
 
-        <include name="libraries/**/examples" />
-        <include name="libraries/**/library" />
+        <include name="libraries/**/examples/**" />
+        <include name="libraries/**/library/**" />
         <include name="libraries/**/library.properties" />
 
         <include name="mode/**" />
