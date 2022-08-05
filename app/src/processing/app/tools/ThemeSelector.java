@@ -333,6 +333,9 @@ public class ThemeSelector extends JFrame implements Tool {
       }
     }
 
+    // required to update the color of the dropdown menu
+    setSelector.repaint();
+
     // No longer saving a new theme.txt when making a selection, just setting a
     // preference so that subsequent Processing updates load new theme changes.
     //Util.saveFile(currentSet.get(index), sketchbookFile);

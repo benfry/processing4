@@ -1,6 +1,11 @@
 1285 (4.0?)
 X try gradients in Lab space
 X   not an obvious win, so set as a pref and come back to it later
+X updateTheme() in Theme Selector not updating color for dropdown on changes
+X   theme_selector.combo_box.enabled.bgcolor
+X   theme_selector.combo_box.enabled.bgcolor
+X   doesn't update dynamically unless you (a) select ‘Minerals’ or ‘Alloys’
+X   or (b) open, then close the dropdown
 
 docs
 X update theme instructions
@@ -175,15 +180,6 @@ _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
 
 
-design/implementation
-_ updateTheme() in Theme Selector
-_   theme_selector.combo_box.enabled.bgcolor
-_   theme_selector.combo_box.enabled.bgcolor
-_   don’t update dynamically unless you (a) select ‘Minerals’ or ‘Alloys’
-_   or (b) open, then close the dropdown
-_ implement document icons on Windows
-_ implement document icons on Linux
-_ add notes about params to the wiki
 
 
 4.0
@@ -1120,7 +1116,8 @@ _ p5 assets need to be licensed differently from the source
 
 DIST / Windows
 
-_ Resolve “Successfully created” chatter and “illegal reflective access” errors from launch4j
+_ implement more document icons on Windows
+_ Resolve “Successfully created” and “illegal reflective access” errors from launch4j
 _   https://github.com/processing/processing4/issues/137
 _ does launching p5 from inside the .zip folder cause it to quit immediately?
 _   how can we provide an error message here?
@@ -1199,6 +1196,7 @@ _   https://github.com/processing/processing/issues/186
 
 DIST / Linux
 
+_ implement more document icons on Linux
 _ Need better method than reflection for setting application name
 _   https://github.com/processing/processing4/issues/349
 _ update install.sh for .pdex and .pdez file associations
