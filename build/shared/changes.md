@@ -23,7 +23,7 @@ Perhaps most noticeable, this release includes a ton of refinement on the design
 
 * The base font being used is now part of the language translation, because specific fonts are required for non-Roman languages, or languages that are not supported by the Source Sans 3 that we use everywhere else. This also helps us get the language-specific overrides for Chinese, Japanese, Korean, Greek, and Arabic out of the code and into something that can be updated more easily.
 
-* The Preferences window has had a major facelift. It was giving me anxiety. It was so, so ugly. It is now less ugly.
+* The Preferences window has had a major facelift. It was giving me great anxiety. It was so, so ugly. It is now less ugly.
 
 * The Contributions Manager is now themed and cleaned up to match the rest of the interface.
 
