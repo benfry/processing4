@@ -81,6 +81,9 @@ chooser.files.native = true
 # https://github.com/processing/processing4/issues/77
 #chooser.files.native.macos = false
 
+# set to 'lab' to interpolate theme gradients using L*a*b* color space
+theme.gradient.method = rgb
+
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -92,6 +95,7 @@ update.check = true
 
 # on windows, automatically associate .pde files with processing.exe
 platform.auto_file_type_associations = true
+
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 

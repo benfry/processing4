@@ -1,6 +1,18 @@
 1285 (4.0?)
+X try gradients in Lab space
+X   not an obvious win, so set as a pref and come back to it later
+
+docs
 X update theme instructions
 X   https://github.com/processing/processing4/wiki/Themes
+X update the platforms page
+X   https://github.com/processing/processing4/wiki/Supported-Platforms
+o   rename to 'platforms'?
+
+cleaning
+X the gradient.top and gradient.bottom lines are used by makeGradient(),
+X   so search for makeGradient() calls to see whether they're still in use.
+X   having brought back some gradient themes for beta 9, we'll keep this in place
 
 
 known issues
@@ -169,17 +181,13 @@ _   theme_selector.combo_box.enabled.bgcolor
 _   theme_selector.combo_box.enabled.bgcolor
 _   don’t update dynamically unless you (a) select ‘Minerals’ or ‘Alloys’
 _   or (b) open, then close the dropdown
-_ build new welcome/examples screen for startup
 _ implement document icons on Windows
 _ implement document icons on Linux
 _ add notes about params to the wiki
-_ the gradient.top and gradient.bottom lines are used by makeGradient(),
-_   so search for makeGradient() calls to see whether they're still in use.
 
 
 4.0
 _ how to handle contrib manager download/retry/etc and showing progress
-_ do gradients in Lab space
 _ adding a file to an untitled sketch should require a save
 _ Cannot type quotes with an international keyboard on MacOS
 _   fixed by turning on "Enable complex text input"
@@ -195,17 +203,20 @@ _   really a drag for version control
 _     https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
 _     https://github.com/processing/processing4/issues/330
-_ update the platforms page
-_   https://github.com/processing/processing4/wiki/Supported-Platforms
 _ if error in the code during export, it's just saying "error during export"
 _   is this still the case?
-_ chars[] array is never used in ascii video example
 _ ui scaling in the PDE is important for classes/seeing at a distance
-_ Export to Application was broken with OpenGL (Casey)
 _ add a version of this to the 4.x repo
 _   https://github.com/processing/processing/wiki/troubleshooting
 _   and update the Help menu to link to it
 _   and maybe the FAQ too?
+
+
+4.0 / with Casey
+_ Export to Application was broken with OpenGL (Casey)
+_ resolution for the About screen
+_ examples still coming from processing-docs repo
+_ chars[] array is never used in ascii video example
 
 
 4.0 / movie maker
