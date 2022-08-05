@@ -5,25 +5,44 @@ If you're interested in *using* Processing, get started at the [download](https:
 
 ## Processing 4.0
 
-Processing 4 makes important updates to the code to prepare the platform for its future. Most significantly, this includes the move to Java 17 and support for new Java language features. The changes should be transparent to most users, but because of the massive shift behind the scenes, this is 4.0.
+Processing 4 has important updates that prepare the platform for its future. Most significantly, this includes the move to Java 17 as well as major changes to the range of platforms we support (Apple Silicon! Raspberry Pi on 32- and 64-bit ARM!)
+
+With any luck, the changes should be transparent to most users, in spite of how mcuh is updated behind the scenes. More immediately visible changes include major work on the UI, including “themes” and the ability to change how sketches are named by default.
 
 We've also moved to a new repository for this release so that we could cull a lot of the accumulated mess of the last 20 years, which makes `git clone` (and most other `git` operations) a lot faster.
 
 
 ## Roadmap
 
-This software is currently in beta. We don't have a schedule for the final 4.0 release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-06-01&type=c) who continue working on it, unpaid, because they care about it. The beta is the default download on the site because it's more usable than the 3.5.4 release.
+This software is currently in beta. We don't have a schedule for the final 4.0 release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-08-09&type=c) who continue working on it, unpaid, because they care about it. The beta is the default download on the site because it's more usable than the 3.5.4 release.
 
 * We're currently using JDK 17, which is the latest “Long Term Support” (LTS) release. (Before beta 3, we were using JDK 11. In 3.x we were using Java 8.)
-
-* ~~The current release runs well on Apple Silicon using Rosetta. We are currently unable to move to a fully native version for Apple Silicon because of other libraries that we rely upon (JavaFX, JOGL, etc). Once those are ready, we'll need to do additional work to add Apple Silicon as a target (the same way we support both 64-bit and 32-bit, or ARM instead of Intel.)~~ With beta 8, we have OpenGL working on Apple Silicon, so we're down to the last few things. Please help us get this over the finish line! You'll find more [here](https://github.com/processing/processing4/issues/128).
 
 
 ## API and Internal Changes
 
 As with all releases, we'll do [everything possible](https://twitter.com/ben_fry/status/1426282574683516928) to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
 
-The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/changes.md). The list below only covers internal changes that may have an impact on Libraries, Modes, or Tools.
+The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/changes.md). <b>The list below only covers changes for developers working on this repository, or that may have an impact on Library, Mode, or Tool development.</b>
+
+
+### Beta 9
+
+* Major changes to themes and some libraries too. Also changed the default branch. If you have an older checkout, do this:
+
+        git pull
+        git checkout main
+        ant clean
+        ant clean-libs
+        ant run
+
+    …or just do a fresh `git clone` and pull down the latest.
+
+* Apple Silicon support should be complete, as far as we know. If you find otherwise, file an issue.
+
+* Check out the long [changes](https://github.com/processing/processing4/blob/master/build/shared/changes.md) update for this one. Too much to cover here.
+
+* Now using Java 17.0.4+8 from [Adoptium](https://adoptium.net/).
 
 
 ### Beta 8
