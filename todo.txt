@@ -1,4 +1,6 @@
 1285 (4.0?)
+X update theme instructions
+X   https://github.com/processing/processing4/wiki/Themes
 
 
 known issues
@@ -175,25 +177,13 @@ _ the gradient.top and gradient.bottom lines are used by makeGradient(),
 _   so search for makeGradient() calls to see whether they're still in use.
 
 
-before 4.x final
+4.0
 _ how to handle contrib manager download/retry/etc and showing progress
-_ downloader for ffmpeg
 _ do gradients in Lab space
-_ update theme instructions
-_   https://github.com/processing/processing4/wiki/Themes
 _ adding a file to an untitled sketch should require a save
 _ Cannot type quotes with an international keyboard on MacOS
 _   fixed by turning on "Enable complex text input"
 _   https://github.com/processing/processing4/issues/322
-_ break Movie Maker out to its own library?
-_   another big leap in file size reduction for the PDE download
-_   nope, spend the time doing auto-download for the binaries
-_     versions for aarch64 as well
-_     https://github.com/eugeneware/ffmpeg-static/releases
-_   but need to figure out a good way to highlight it/encourage installation
-_   ...as well as the other libraries? separate window?
-_ Export to Application not working with the current video library
-_   https://github.com/processing/processing-video/issues/188
 _ loadShape(), show a warning when using style instead of presentation attributes
 _ better means of understanding Library/Mode/Tool usage
 _ jeditsyntax is a mess of old-style getModifiers()
@@ -205,9 +195,6 @@ _   really a drag for version control
 _     https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
 _     https://github.com/processing/processing4/issues/330
-_ ffmpeg binaries for all our platforms
-_   also should probably download these on demand, when not in the PATH
-_ update Video library to use the new layout
 _ update the platforms page
 _   https://github.com/processing/processing4/wiki/Supported-Platforms
 _ if error in the code during export, it's just saying "error during export"
@@ -219,6 +206,25 @@ _ add a version of this to the 4.x repo
 _   https://github.com/processing/processing/wiki/troubleshooting
 _   and update the Help menu to link to it
 _   and maybe the FAQ too?
+
+
+4.0 / movie maker
+_ break Movie Maker out to its own library?
+_   another big leap in file size reduction for the PDE download
+_   nope, spend the time doing auto-download for the binaries
+_     versions for aarch64 as well
+_     https://github.com/eugeneware/ffmpeg-static/releases
+_   but need to figure out a good way to highlight it/encourage installation
+_   ...as well as the other libraries? separate window?
+_   downloader for ffmpeg
+_ ffmpeg binaries for all our platforms
+_   also should probably download these on demand, when not in the PATH
+
+
+waiting/video library
+_ update Video library to use the new layout
+_ Export to Application not working with the current video library
+_   https://github.com/processing/processing-video/issues/188
 
 
 decisions before final 4.0 release
