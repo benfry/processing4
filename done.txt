@@ -1,3 +1,380 @@
+1284 (4.0b9)
+X bump to Java 17.0.3+7
+X   and again to Java 17.0.4+8
+X specify Java version with appbundler in main app
+X "core does not run on this architecture linux-amd64" on Linux
+X   just need to do 'ant clean-jogl' inside core
+X update wiki with recent changes (i.e. separating sketch folder)
+X   https://github.com/processing/processing4/wiki/Processing-4
+X check Windows for any visual artifacts with FlatLaf
+X code completion seems to have broken between beta 4 and beta 5
+X   https://github.com/processing/processing4/issues/491
+X   git bisect good ccc62c6 / git bisect bad f583eef
+X   https://github.com/processing/processing4/commit/0f9b290398aac86ef56fe3c4e9c3ff88fdd53466
+X   introduces https://github.com/processing/processing4/issues/519
+X clean up dist: 'bin' and 'src' from Java Mode were included, iml files, etc
+X   cuts 67 MB down to 45 MB on disk
+X docs are 3.x not 4.x
+X how to handle new reference (about 100 MB with DSI version vs 4.2 MB for 3.x)
+o   xz compression may cut down 2x vs zip, but we lose the .zip file reading
+o   https://mvnrepository.com/artifact/org.tukaani/xz/1.9
+X   move reference back online
+X   file an issue for the loss of local reference
+X   https://github.com/processing/processing4/issues/524
+X Apple Silicon support
+X   https://github.com/processing/processing4/issues/128
+X   update version of JNA in use
+X Update graphics and visual design elements for 4.x
+X   https://github.com/processing/processing4/issues/48
+X   close the interface issue, major changes done
+X remove underscore and use (half?) space for tabs?
+X   half space character not implemented, but the space looks good
+X   disable behavior with sketch.name.replace_underscore = false
+X add clean-libs target to build.xml files that need it
+X check all Help menu entries and their destinations
+X   Help > Environment not going to the right place
+X Help > Libraries Reference > submenu items don't work
+X   same for Tools reference
+X   https://github.com/processing/processing/issues/5839
+X replace build/shared/lib/theme.txt with final kyanite.txt
+
+naming
+X Friendly Names for new Sketches (includes UI for switching it back)
+X   https://github.com/processing/processing/issues/6045
+X   https://github.com/processing/processing/pull/6048
+X   https://github.com/processing/processing4/pull/144
+X "friendly" naming for sketches
+X   master list of words
+X     https://github.com/glitchdotcom/friendly-words/tree/master/words
+X   exact sources
+X     https://github.com/glitchdotcom/friendly-words/blob/master/words/predicates.txt
+X     https://github.com/glitchdotcom/friendly-words/blob/master/words/objects.txt
+X   how friendly names are used in the p5.js web editor
+X     https://github.com/processing/p5.js-web-editor/blob/develop/client/utils/generateRandomName.js
+X     p5.js uses predicate followed by an object
+X add other naming options (cooking and classic) and prefs
+X also support additional naming.json file in sketchbook folder
+X add "Cosmos" name set
+
+bugs
+X re-post bugzilla entries at https://download.processing.org/bugzilla/
+X create an index.html page for easier scraping
+X replace dev.processing.org bug numbers
+X   http://dev.processing.org/bugs/show_bug.cgi?id=1188
+X   with http://processing.org/bugs/bugzilla/1188.html
+X   or better yet, https://download.processing.org/bugzilla/1188.html
+X replace code.google.com URLs with Github URLs (numbers are sorta in sync)
+X   not bothering with todo.txt and done.txt since it's historical
+X   many of them include both, and it's easy enough to search if it's of interest
+X   updated all that are still in the source and the active todo.txt files
+
+fonts
+X can't ship before ui.font and language bits sorted out
+X   otherwise the override to use Source Sans Pro will hose other languages
+X   make note of language change (Greek also removed)
+X sort out ui.font plus the other fonts inside theme.txt
+X   Toolkit.getSansFont() will use the internal ProcessingSansPro font
+X     which means it gets used inside ManagerFrame,
+X     and prevents the theme from updating the font
+X   while that font could exist in theme.txt,
+X     getSansFont() also handles the language fallback version
+X     that pref should come from the translations: i.e. an override setting
+X   decision: set the default sans, bold, and mono font in language file
+X     can be overridden in preferences.txt
+o     specify ui.sans.plain, ui.sans.bold, ui.sans.mono in theme.txt
+o     need a separate identifier for the builtin sans (now called processing.sans)
+o     and when theme wants to ask for a sans font
+X fix fonts in the welcome page
+X dialog formatting fixes
+X   move all (formerly Lucida) dialog formatting into Messages
+X   currently a couple other classes that use it
+/   create a version that works nicely with FlatLaf
+X   implemented in one place; still needs to just be redone
+X two tier dialog box (defaulting back to Lucida)
+X font for stack trace dialogs is too small (and wrong)
+X dialog box with stack trace (font is too small)
+X   actually fix the stack trace dialog with 12pt font size change
+X text gutter doesn't seem to be hidpi
+X   or is it b/c screen not quite 2x? (nope)
+X   try to tweak the line numbers in the gutter a bit
+X   finally found the problem: Source Code Pro not hinting below 12pt (!?#$@(*)
+X   change to 12pt, add alpha params to theme.txt
+X     editor.gutter.linehighlight.color -> editor.gutter.highlight.color
+X     # transparency (0..100) for line numbers in gutter
+X     editor.gutter.text.active.alpha = 70
+X     # transparency for lines not currently in use
+X     editor.gutter.text.inactive.alpha = 30
+
+export application
+X fix Export to Application on macOS with Apple Silicon
+X   gets rid of "Unable to load Java Runtime Environment"
+X update appbundler main.m through https://github.com/TheInfiniteKind/appbundler/commit/5946207c9e29ab85887e94d5651b329e4669e2d6
+X rewrite variable substitution for Info.plist.tmpl
+X   cleans up readability
+X   would have broken w/ anything on the same line
+X specify JVM version in exported applications
+X appbundler seems to prefer Java 1.8 if installed
+X   specifying correct version for both Processing.app and Export to Application
+
+contrib
+X add flatlaf.jar to the Windows config.xml
+X   https://github.com/processing/processing4/pull/498
+X Fix parsing of java error messages containing ":"
+X   https://github.com/processing/processing4/issues/492
+X   https://github.com/processing/processing4/pull/493
+X Export Application gives java.lang.ClassNotFoundException: --full-screen error
+X   https://github.com/processing/processing4/issues/488
+X   https://github.com/processing/processing4/pull/502
+X IDE treats {} brackets as code when they're inside a String, char or comment
+X   https://github.com/processing/processing4/issues/444
+X   https://github.com/processing/processing4/pull/504
+X Add Java arguments to enable Anti-Aliasing in bash script
+X   anti-aliasing issues under KDE, does the cmd line arg break anything?
+X   https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html#aaFonts
+X   https://github.com/processing/processing4/pull/513
+
+design
+X color updates based on changes from Paul (220426)
+o icons for the console items
+X   console.svg and error.svg already done
+X console scroll bar colors
+X   https://github.com/processing/processing4/issues/265
+X remove the 2 pixel line from the tab bar in the footer
+X also round both edges of the editor footer tabs
+X   because the deselected tab no longer has an outline
+X look and feel plus fonts
+X   trying out https://www.formdev.com/flatlaf/ to clean things up
+X   using Source Sans Pro as interface font
+X   rewrite language selector to use fallback fonts
+X tweaks to the splash/about screen from Paul
+X Color Selector buttons misaligned
+X   redo layout for FlatLaf, also tweak further to remove some of the quirkiness
+X Export to Application fonts are too tiny
+X menu background colors
+X better default fonts for Swing; argh
+X   file an issue with the images
+X     https://www.pushing-pixels.org/2017/01/17/using-san-francisco-font-in-swing-applications-on-a-mac.html
+o   Space Grotesk and Mono?
+o     https://fonts.google.com/specimen/Space+Mono
+o     https://fonts.google.com/specimen/Space+Grotesk
+X replace foundation icon png that had a random black shape
+X a few size/proportion tweaks from Paul
+X visual artifacts on Linux with new UI
+X   remove editor.laf preference because it conflicts with FlatLaf
+X   menu crustiness, console background color not getting set, others?
+X   need to check on an actual Linux device, not a VM
+X   this was caused by Nimbus interactions with FlatLaf
+X command key symbol missing in pop up menus
+X overall layout/spacing/proportion
+X icons for debug toolbar (VariableInspector.java)
+X   replace variables-1x and -2x with separate SVG files in debug
+X implement 2x versions of the icons for the debugger window/variable inspector
+X   https://github.com/processing/processing/issues/3921
+X visual fixes for tab sizes, etc (with Paul)
+X   weirdness with gaps in tabs (editor too big, manager too small)
+X   contrib mgr: filter/dropdown vertical centering is too high
+/   fake bold being used for tab name? (Windows only?)
+X   should be resolved with both fonts now being installed
+X code completion icon updates (class, field, protected, method)
+X   these go into CompletionPanel.java
+X   also set the color and font with updateTheme()
+X   waiting on final colors from theme
+
+design/themes
+X updated 4x4 for themes, foundation svg icon tweaks
+X implement 4x4 by auto-generating from svg versions
+X make drag events work properly
+X add buttons for 'reload theme' and 'how to create themes' to theme fella
+X remove the 'reload theme' tool
+X both sets working, loading from folders
+X fixed up html wiring for styles
+X gradients
+X   add a couple with gradients to the selector box?
+X if no matching theme selected, was highlighting column -1
+X reset the theme because of significant changes
+X   move away from writing theme.txt?
+X   instead store the theme name, for easier updating
+X   and a version in the sketchbook will always override
+X     (selecting a new theme will rename that file, but not replace a theme.txt file)
+X   include in this release b/c of potential for problems
+X accent color and light/dark mode into the theme, and use with flatlaf
+X style the popup menu for Mode using the theme
+X console scroll bar colors
+X update lib/theme.txt to clean up current Frankenstein status
+X   just replace with the blue default once that's updated
+
+design/errors
+X errors table theme
+X use errors.row.bgcolor as bgcolor for the error list
+o change errors.row to errors.list in theme.txt
+X   add errors.bgcolor instead
+
+design/preferences
+X get rid of text box for 'background color when presenting'
+X   redundant (can type numbers in the dialog) and fussy
+X change "sketchbook location" to "sketchbook folder"
+X   (this is how it's referenced everywhere else in the interface)
+X shorten sketchbook location text field
+o sketchbook location to single line (drop "location"? say folder?)
+X why is sketchbook location text selected when opening window?
+X   had focus by default, which apparently selects the text
+X remove 'smooth text' (too rare: manual editing should suffice)
+X switch to BoxLayout before making more layout changes?
+X move 'enable complex text' up near language?
+X   better yet, move language down below font and interface scale
+o   turn it on when selecting CJKV as a language
+X show 'requires restart' only after making a change
+X   fixed for interface zoom
+X   hidpiDisableBox
+X   inputMethodBox
+X   languageSelectionBox and languageRestartLabel
+X preferences.zoom = Interface scale -> preferences.interface_scale = Scale
+X preferences.zoom.auto -> preferences.interface_scale.auto
+X set link color in prefs window to use accent color
+X move 'requires restart' to one thing at the bottom
+X preferences.enable_complex_text removed, replaced with
+X   preferences.enable_complex_text = Enable complex text input
+X   preferences.enable_complex_text.tip
+X preferences.requires_restart = requires restart of Processing
+X   becomes preferecnes.restart_required = Restart Processing to apply changes
+X put language & complex text on same line
+X move colons into the language file
+X show hand cursor with links for labels
+o move delete previous pref to the Export to Application window
+o   get rid of the pref/just use the setting from export to app
+X   no clear alternative for disabling this, so remove from prefs window
+X     but still supported inside preferences.txt for those who must
+X     it's moving the files to the trash anyway, which should be safe enough
+X finish rearranging item order in PreferencesFrame
+X   all set for now
+o move to separate panel
+o   (maybe not, because not clear which will be inherited by other modes?)
+o   background when presenting
+o   continuously check
+o   code completion
+o   suggest imports
+o   increase memory
+X   opting not to: not enough items, and too disruptive for unclear benefit
+X remove extra space between prefs lines
+
+design/manager
+X add manager.panel constants for colors
+X status panel not updating in updateTheme()
+X StatusPanel.getBodyStyle() has hard-coded fonts/sizes
+X changed manager.list.search to manager.search
+X implement foundation icon using svg
+X icons for contrib manager list entries (green/orange PNGs won't do)
+X remove ability to rearrange columns in contrib manager
+X   why tf this is the default is beyond me
+X set color of the sort order icon in the ListPanel table header
+X   also the color of the text?
+X override flatlaf for components (search, buttons, dropdown menu) in manager
+X popup menu coloring (contribs)
+X progress bar in contrib manager
+X need monochrome icon for foundation
+o do we need other color states for list item icons
+X   they seem to be find for now
+X add updateTheme() to contrib.ListPanel
+X   right now pulling Theme.getColor() directly
+X   but need to make sure repaint() is called anyway
+X contrib manager theme
+X   identify coloring for icons
+X   how much of theme to inherit
+X   generate manager icons
+o   slightly taller tabs, though maybe they're better than the Editor?
+o     editor tabs are different height, as are the footer tabs
+X   important for prefs window background color too
+X remove ManagerFrame constants for NORMAL_PLAIN, SMALL_PLAIN, etc
+X   these should be read from theme.txt instead
+o   or not used at all: the defaults from ui.font and FlatLaf should do
+X   only really need for the bold font
+X improved 'close' icon (thicker x)
+X better 'search' icon (search.svg with a less enormous eyeglass)
+X replace foundation-16, foundation-32, foundation-64 in lib/icons
+X contribs exclamation looks like an error, not "update available"
+X clean up the updates panel in the manager
+X fix column widths in 'updates' tab of contrib manager
+X   also make them resizable
+X   section headings look bad (not capitalized, not plural, no bg color change)
+X   color change might help, but a little fussy at the moment
+X     gets into whether the type weight should change, and starts affecting too much
+X update available icon looks broken (bad winding rule?)
+
+manager
+X make ContributionTab.FilterField into a static class
+o   then perhaps move to another source file
+X   nah, ContributionTabFilterField is a bit much
+X   move things around a bit so it's not quite a mess
+o add reinstall option?
+X   nah, too fussy; not a big deal to do remove and install
+X remove JProgressBar from ContributionTab/UpdateContributionTab
+X   StatusPanelDetail creates its own, which is the one used
+X after download, list item doesn't update to show installed
+X   stays stuck with the downloading icon
+
+contrib
+X Double-clicking a .pde file also opens an untitled/empty sketch
+X   https://github.com/processing/processing4/issues/477
+X   https://github.com/processing/processing4/pull/479
+X Update PDE_es.properties
+X   https://github.com/processing/processing4/pull/480
+X   https://github.com/processing/processing4/pull/481
+X Update PDE_de.properties
+X   https://github.com/processing/processing4/pull/483
+
+status
+X replace emoji buttons in status bar
+X   re-save svg files using svg 1.0
+X   sort out hover/press states here (only hovers atm)
+X   also add state for shift-click to search
+X   theme colors for emoji buttons (new themes across the board)
+X icons in the status bar (using emojis at the moment, now out of place)
+X   console collapse/expand button
+X   copy to clipboard button
+X implement alpha for url (70, 90, 100)
+X   remove the color
+X get shift down from the editor window and pass to status
+X thicker version of the search icon for the status panel
+X   copy the icon over from the manager
+
+cleaning
+o should default to the local Java on Windows and Linux
+o   have export apps default to the local JRE
+o   Linux is probably using the system JRE if available
+o   launch4j may be all set, but double-check
+X   um, no--we should use the embedded version, b/c who knows what happens
+X Blank sketch opened even if opening an existing sketch by double-clicking
+X   https://github.com/processing/processing/issues/218
+o improve the speed of file copying
+o   use FileChannels, see FileInputStream.getChannel(),
+o   and use transferFrom() or transferTo().)
+o   could also use FileUtils in Apache's common io
+o   http://commons.apache.org/io/api-release/index.html
+X Switch to getModifiersEx() in `processing.app`
+X   https://github.com/processing/processing4/issues/67
+X   done in beta 2
+/ library compilations not ordered properly w/ sorting
+/   do we still support library compilations? that was from 2016
+X   https://github.com/processing/processing/issues/4630
+
+decisions
+o preferences in web frame?
+o intro page using webkit (launching into examples)
+o   and maybe the reference too?
+X   nope, webkit embed way too large
+o how to send messages from webkit server to PDE (i.e. for a color tool)
+X   skipping webkit embed for now
+X should we use Java 11 instead of 17 to be less of an outlier?
+X   default rpi openjdk seems to be 11, we're not using any 17 features
+X   size change is negligible (17 may even be slightly smaller)
+X   or is this just a matter of 17 being new and it'll change quickly?
+X   JavaFX 17 (a good idea) seems to be compatible with Java 11
+X     JavaFX 11 has fewer builds (no ARM, prolly no Apple Silicon)
+X   11 LTS is supported until September 2026, 17 until 2029
+X   https://dzone.com/articles/whats-new-between-java-11-and-java-17
+X   switching to 17 as the default because it's now available in rpi os
+
+
 1283 (4.0b8)
 X fix logic for opening the correct 'main' tab in handleOpen()
 X   opening AspectHelper.js makes it the main tab

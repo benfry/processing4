@@ -1,17 +1,4 @@
-1284 (4.0b9)
-X allow . to start a number in SVG paths (a little)
-X   still lots of work to do here, it's an SVG 1.1 (vs 1.0) thing
-
-data
-X add getXxxxList() methods to JSONObject
-X add toXxxxList() methods to JSONArray
-X rename getXxxArray() to toXxxArray() in JSONArray for consistency
-X   deprecate the old versions
-X add random() method to XxxList classes to return a random value from the list
-X use toArray() instead of array() in LongList
-X   did not deprecate old version because it was actually broken
-X use toArray() instead of array() in all other List classes
-X lots of cleanup (and some bug fixing) in the List classes
+1285 (4.0?)
 
 
 _ concurrent StringDict et al
