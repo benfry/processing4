@@ -148,7 +148,7 @@
   </target>
 
   <!-- Set the version of Java that must be present to build. -->
-  <property name="jdk.path.macos" value="macos/${jdk.folder}" />
+  <property name="jdk.path.macos" location="macos/${jdk.folder}" />
   <available file="${jdk.path.macos}" property="macos_jdk_found" />
 
   <!--
@@ -486,6 +486,13 @@
       <arg value="../${jdk.archive.path}"/>
     </exec>
 
+    <!--
+    <echo message="creating ${jdk.path.macos}/Contents/Home/legal.zip" />
+    <zip destfile="${jdk.path.macos}/Contents/Home/legal.zip"
+         basedir="${jdk.path.macos}/Contents/Home"
+         includes="legal/**" />
+    -->
+
     <!-- Need a working fat binary of appbundler.jar.
          https://github.com/processing/processing4/issues/284 -->
     <taskdef name="bundleapp"
@@ -640,10 +647,16 @@
       <arg line="${jdk.path.macos}/Contents/Home/jmods macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/jmods"/>
     </exec>
 
+    <!--
     <exec executable="cp">
       <arg value="-r"/>
       <arg line="${jdk.path.macos}/Contents/Home/legal macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/legal"/>
     </exec>
+    -->
+    <!-- Throw these 300(!) files into a single zip -->
+    <zip destfile="macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/legal.zip"
+         basedir="${jdk.path.macos}/Contents/Home"
+         includes="legal/**" />
 
     <exec executable="cp">
       <arg value="-r"/>
@@ -1053,6 +1066,12 @@
       <fileset refid="jdk-optional-linux" />
     </delete>
 
+    <!-- Throw these 300(!) files into a single zip -->
+    <zip destfile="linux/work/java/legal.zip"
+         basedir="linux/work/java"
+         includes="legal/**" />
+    <delete dir="linux/work/java/legal" />
+
     <exec executable="rm">
       <arg value="-r"/>
       <arg line="linux/${jdk.folder}"/>
@@ -1293,7 +1312,8 @@
     <!-- Execute launch4j task -->
     <taskdef name="launch4j"
              classname="net.sf.launch4j.ant.Launch4jTask"
-             classpath="${launch4j.dir}/launch4j.jar; ${launch4j.dir}/lib/xstream.jar" />
+             classpath="${launch4j.dir}/launch4j.jar;
+                        ${launch4j.dir}/lib/xstream.jar" />
 
     <!-- not all launch4j options are available when embedded inside this
          file (i.e. the icon param doesn't work), so use a config file -->
@@ -1321,6 +1341,12 @@
 
     <!-- Rename the unpacked JDK to just 'java' and move to dist -->
     <move file="windows/work/${jdk.folder}" tofile="windows/work/java" />
+
+    <!-- Throw these 300(!) files into a single zip -->
+    <zip destfile="windows/work/java/legal.zip"
+         basedir="windows/work/java"
+         includes="legal/**" />
+    <delete dir="windows/work/java/legal" />
 
     <!-- Remove unused Java bloat -->
     <delete failonerror="true">

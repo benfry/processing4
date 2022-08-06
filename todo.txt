@@ -10,6 +10,11 @@ X changing between themes not updating the combo box text (though arrow trigger 
 X   switching between alloys and minerals will properly update
 X if error in the code during export, was just saying "error during export"
 X   now sending the error to the status bar as expected
+X can we compress jdk/Contents/Home/legal into a single zip?
+X   it's ~300 files of the ~500 in the entire jdk directory
+X   working on macOS, written up for Windows and Linux
+_   test on Windows
+_   test on Linux
 
 docs
 X update theme instructions
@@ -27,6 +32,12 @@ o for tools, maybe don't run on event thread? (makes the gui hang)
 o   but instead, things that affect gui need to be called w/ invokeLater?
 X Export to Application was broken with OpenGL (Casey)
 X   verified to be working
+o show warnings about wrong library folder layout?
+X   nah, too fussy to get this to work; spend time on library dev help instead
+o check into offscreen text rendering with JNA
+o   even just for tab names it'd be so much nicer
+o   https://github.com/iterate-ch/rococoa
+X   looking good enough for now
 
 movie maker
 o break Movie Maker out to its own library?
@@ -126,6 +137,8 @@ _ when adding a new library, its examples aren't added to the list until restart
 
 
 manager/contribs.txt
+_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
+_   should be a better way to implement this
 _ if no internet available, install buttons disabled, but not clear why broken
 _ also if update check disabled, user isn't notified that contribs unavailable
 _ currently no indication that contrib download failed
@@ -138,28 +151,7 @@ _   this is also likely the cause of per-Mode weirdness
 _ Base.setUpdatesAvailable() is called from half a dozen places!?
 
 
-manager/refactor
-_ lots of rewriting to use SwingWorker
-_   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
-_   obvious places where this needs to happen, but the code is working for now
-_   needs a few hours work to untangle all of it, but worth the regressions?
-_ get rid of IgnorableException
-_ contrib/mode/lib/example List objects in Base
-_   which of these should be Set objects?
-_ JProgressBar in StatusPanel is shared by all installing contribs
-_   which could make for weird behavior if installs before something has finished
-_   work to prevent multiple from colliding
-_   (i.e. get rid of ContribProgress class)
-X disable hashCode() implementation in Contribution
-X   was getting in the way of comparisons
-_   but need to compare the entries differently so there aren't dupes
-_   i.e. it was doing a name comparison, so need to swap by name
-_ after library/tool changes, rebuild Help > Library/Tool Reference submenus
-
-
 manager
-_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
-_   should be a better way to implement this
 _ ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
 _   seems to be out of sync/unavailable data based on more recent contrib changes?
 _ ManagerFrame.downloadAndUpdateContributionListing()
@@ -193,6 +185,22 @@ _ add indicator for the stats of libraries
 _   https://download.processing.org/stats
 _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
+_ lots of rewriting to use SwingWorker
+_   https://docs.oracle.com/javase/tutorial/uiswing/concurrency/worker.html
+_   obvious places where this needs to happen, but the code is working for now
+_   needs a few hours work to untangle all of it, but worth the regressions?
+_ get rid of IgnorableException
+_ contrib/mode/lib/example List objects in Base
+_   which of these should be Set objects?
+_ JProgressBar in StatusPanel is shared by all installing contribs
+_   which could make for weird behavior if installs before something has finished
+_   work to prevent multiple from colliding
+_   (i.e. get rid of ContribProgress class)
+X disable hashCode() implementation in Contribution
+X   was getting in the way of comparisons
+_   but need to compare the entries differently so there aren't dupes
+_   i.e. it was doing a name comparison, so need to swap by name
+_ after library/tool changes, rebuild Help > Library/Tool Reference submenus
 
 
 priorities
@@ -227,6 +235,11 @@ _   and maybe the FAQ too?
 _ resolution for the About screen
 _ examples still coming from processing-docs repo
 _ chars[] array is never used in ascii video example
+_ change the license from GPL
+_   then pass through the source to update licenses
+_   add Processing Foundation as 2012-15
+_   update license info to state gplv2 not v3
+_   run through that online license checker
 
 
 waiting/video library
@@ -236,13 +249,6 @@ _   https://github.com/processing/processing-video/issues/188
 
 
 decisions before final 4.0 release
-_ can we compress jdk/Contents/Home/legal into a single zip?
-_   it's ~300 files of the ~500 in the entire jdk directory
-_ change the license from GPL
-_   then pass through the source to update licenses
-_   add Processing Foundation as 2012-15
-_   update license info to state gplv2 not v3
-_   run through that online license checker
 _ add a Tool for removing extended attributes? xattr -cr /path/to/Something.app
 _ when exporting an app, run xattr on it to handle "app is damaged" errors?
 _   xattr -cr /path/to/application.app
@@ -251,7 +257,6 @@ _   https://github.com/processing/processing/issues/4214
 _ Open Sketch Folder not working on Linux with java.awt.Desktop quirks
 _   make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
-_ show warnings about wrong library folder layout?
 _ Welcome screen or not?
 _   set a new preference for it, so people see it
 _   just skip the welcome screen on Windows hidpi dipslays?
@@ -266,9 +271,6 @@ _ automatic import of JavaFX when FX2D is specified
 
 
 would like to fix (but not necessary for 4.0 final)
-_ check into offscreen text rendering with JNA
-_   even just for tab names it'd be so much nicer
-_   https://github.com/iterate-ch/rococoa
 _ make possible to embed java for all platforms
 _   straightforward to download from adoptium
 _ detach sketch name and folder name (use sketch.properties)
