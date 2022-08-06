@@ -18,6 +18,21 @@ cleaning
 X the gradient.top and gradient.bottom lines are used by makeGradient(),
 X   so search for makeGradient() calls to see whether they're still in use.
 X   having brought back some gradient themes for beta 9, we'll keep this in place
+X create default tools folder (just like libraries)
+o for tools, maybe don't run on event thread? (makes the gui hang)
+o   but instead, things that affect gui need to be called w/ invokeLater?
+
+movie maker
+o break Movie Maker out to its own library?
+o   another big leap in file size reduction for the PDE download
+o   nope, spend the time doing auto-download for the binaries
+o   would need to figure out a good way to highlight it/encourage installation
+o   ...as well as the other libraries? separate window?
+X versions for aarch64 as well
+X   https://github.com/eugeneware/ffmpeg-static/releases
+X ffmpeg binaries for all our platforms
+X   native version for ARM on macOS, also versions for Raspberry Pi
+X updated ffmpeg to 5.0.1
 
 
 known issues
@@ -180,6 +195,8 @@ _   add rank for libraries/modes/tools (use unicode chars?)
 _   probably not sort by default to avoid confusion
 
 
+priorities
+_ ui scaling in the PDE is important for classes/seeing at a distance
 
 
 4.0
@@ -201,7 +218,6 @@ _   or at least avoid the multiple
 _     https://github.com/processing/processing4/issues/330
 _ if error in the code during export, it's just saying "error during export"
 _   is this still the case?
-_ ui scaling in the PDE is important for classes/seeing at a distance
 _ add a version of this to the 4.x repo
 _   https://github.com/processing/processing/wiki/troubleshooting
 _   and update the Help menu to link to it
@@ -215,17 +231,6 @@ _ examples still coming from processing-docs repo
 _ chars[] array is never used in ascii video example
 
 
-4.0 / movie maker
-_ break Movie Maker out to its own library?
-_   another big leap in file size reduction for the PDE download
-_   nope, spend the time doing auto-download for the binaries
-_     versions for aarch64 as well
-_     https://github.com/eugeneware/ffmpeg-static/releases
-_   but need to figure out a good way to highlight it/encourage installation
-_   ...as well as the other libraries? separate window?
-_   downloader for ffmpeg
-_ ffmpeg binaries for all our platforms
-_   also should probably download these on demand, when not in the PATH
 
 
 waiting/video library
@@ -997,12 +1002,14 @@ _ hitting ESC on "create this, move file, continue" opened anyway
 ////////////////////////////////////////////////////////////////////
 
 
+TOOLS / Movie Maker
 
-TOOLS / General
-
-_ create default tools folder (just like libraries)
-_ for tools, maybe don't run on event thread? (makes the gui hang)
-_   but instead, things that affect gui need to be called w/ invokeLater?
+_ downloader for ffmpeg instead of including in download
+_   would save ~20-25 MB in the download
+_   should prompt the user before starting the download (not nice to use bandwidth)
+_   need to disable creation of movies until the download has finished
+_   handle failed downloads as well
+_   make sure there are no signing problems on macOS after downloading
 
 
 TOOLS / Ideas
