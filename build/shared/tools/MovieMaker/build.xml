@@ -61,7 +61,6 @@
 
   <property name="ffmpeg.gz" value="ffmpeg-${ffmpeg.version}.gz" />
   <available file="${ffmpeg.gz}" property="ffmpeg.present" />
-  <echo message="${ffmpeg.gz} ${ffmpeg.present}" />
 
   <!-- ok to ignore failed downloads if we at least have a version that's local -->
   <condition property="ffmpeg.ignorable" value="false" else="true">
