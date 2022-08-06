@@ -476,24 +476,24 @@ public class JavaEditor extends Editor {
    * Handler for Sketch &rarr; Export Application
    */
   public void handleExportApplication() {
-//    toolbar.activate(JavaToolbar.EXPORT);
-
     if (handleExportCheckModified()) {
       statusNotice(Language.text("export.notice.exporting"));
       try {
         if (ExportPrompt.trigger(this)) {
           Platform.openFolder(sketch.getFolder());
           statusNotice(Language.text("export.notice.exporting.done"));
-        //} else {
+          //} else {
           // error message will already be visible
           // or there was no error, in which case it was canceled.
         }
+      } catch (SketchException se) {
+        EventQueue.invokeLater(() -> statusError(se));
+
       } catch (Exception e) {
         statusNotice(Language.text("export.notice.exporting.error"));
         e.printStackTrace();
       }
     }
-//    toolbar.deactivate(JavaToolbar.EXPORT);
   }
 
 

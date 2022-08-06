@@ -6,6 +6,10 @@ X   theme_selector.combo_box.enabled.bgcolor
 X   theme_selector.combo_box.enabled.bgcolor
 X   doesn't update dynamically unless you (a) select ‘Minerals’ or ‘Alloys’
 X   or (b) open, then close the dropdown
+X changing between themes not updating the combo box text (though arrow trigger works)
+X   switching between alloys and minerals will properly update
+X if error in the code during export, was just saying "error during export"
+X   now sending the error to the status bar as expected
 
 docs
 X update theme instructions
@@ -21,6 +25,8 @@ X   having brought back some gradient themes for beta 9, we'll keep this in plac
 X create default tools folder (just like libraries)
 o for tools, maybe don't run on event thread? (makes the gui hang)
 o   but instead, things that affect gui need to be called w/ invokeLater?
+X Export to Application was broken with OpenGL (Casey)
+X   verified to be working
 
 movie maker
 o break Movie Maker out to its own library?
@@ -45,12 +51,6 @@ _   https://github.com/processing/processing4/issues/521
 _ need to make it possible to use module jars
 _   https://github.com/processing/processing4/issues/522
 _   https://github.com/processing/processing4-javafx/issues/15
-
-
-next release
-_ changing between themes not updating the combo box text (though arrow trigger works)
-_   switching between alloys and minerals will properly update
-_ completion mode pop-up not following dark and light mode conventions
 
 
 during release of beta 9
@@ -200,6 +200,7 @@ _ ui scaling in the PDE is important for classes/seeing at a distance
 
 
 4.0
+_ completion mode pop-up not following dark and light mode conventions
 _ how to handle contrib manager download/retry/etc and showing progress
 _ adding a file to an untitled sketch should require a save
 _ Cannot type quotes with an international keyboard on MacOS
@@ -216,8 +217,6 @@ _   really a drag for version control
 _     https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
 _     https://github.com/processing/processing4/issues/330
-_ if error in the code during export, it's just saying "error during export"
-_   is this still the case?
 _ add a version of this to the 4.x repo
 _   https://github.com/processing/processing/wiki/troubleshooting
 _   and update the Help menu to link to it
@@ -225,12 +224,9 @@ _   and maybe the FAQ too?
 
 
 4.0 / with Casey
-_ Export to Application was broken with OpenGL (Casey)
 _ resolution for the About screen
 _ examples still coming from processing-docs repo
 _ chars[] array is never used in ascii video example
-
-
 
 
 waiting/video library
