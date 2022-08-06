@@ -217,7 +217,7 @@ public class PreferencesFrame {
     });
 
     zoomSelectionBox = new JComboBox<>();
-    zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.array()));
+    zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.toArray()));
     zoomSelectionBox.addActionListener(e -> updateZoomRestartRequired());
 
 

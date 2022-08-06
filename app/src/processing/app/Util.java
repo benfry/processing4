@@ -418,7 +418,7 @@ public class Util {
       }
       return outgoing;
     }
-    return list.array();
+    return list.toArray();
   }
 
 

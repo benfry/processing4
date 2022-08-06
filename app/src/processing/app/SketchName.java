@@ -167,6 +167,6 @@ public class SketchName {
     for (String approach : getWordLists().keySet()) {
       outgoing.append(approach);
     }
-    return outgoing.array();
+    return outgoing.toArray();
   }
 }

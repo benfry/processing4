@@ -1171,7 +1171,7 @@ public class Toolkit {
       families.appendUnique(font.getFamily());
     }
     families.sort();
-    return families.array();
+    return families.toArray();
   }
 
 
