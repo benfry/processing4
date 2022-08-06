@@ -25,6 +25,8 @@ X   https://github.com/processing/processing4/wiki/Supported-Platforms
 o   rename to 'platforms'?
 
 temp
+X temp folders (particularly on Windows)
+X   a whole section down below about this
 X inside Sketch, makeTempFolder() would be the place to modify the location
 X   perhaps make a 'temp' inside the sketchbook folder?
 X   on startup, check to see if there are a lot of files, remove them?
@@ -39,6 +41,8 @@ o   it's sometimes copying the files to a different drive on windows
 X clean up /tmp folders used during build
 X   https://github.com/processing/processing/issues/1896 (moved)
 X   https://github.com/processing/processing4/issues/529
+X use Platform.delete() to remove untitled sketches
+X   would allow us to use the /tmp folder
 
 cleaning
 X the gradient.top and gradient.bottom lines are used by makeGradient(),
@@ -63,6 +67,17 @@ X   closing in the hope that it's resolved in Java 17
 X Icon instead of an "X" for the "could not connect" message
 X   https://github.com/processing/processing/issues/3706
 X   done back in 3.0.2
+X change to using Platform.delete() instead of Base.removeDir() where possible
+X   verify that the OS X version uses the real call
+X   and doesn't just look for .Trash
+o move old Google Code SVN back to processing.org
+o   then cull out the old branches/tags from the Github repo
+o   and/or start bundling separate source downloads
+X   managed to merge in what was necessary
+o getCoreLibrary() is breaking OpenGL
+o   "new Library()" constructor needs to go back to private
+X   this is ancient
+o add .bat file to lib on windows so that we can get better debugging info
 
 movie maker
 o break Movie Maker out to its own library?
@@ -247,7 +262,8 @@ _   and maybe the FAQ too?
 
 
 4.0 / with Casey
-_ resolution for the About screen
+_ what things do we want to call out for the release?
+_ final call on the About screen
 _ examples still coming from processing-docs repo
 _ chars[] array is never used in ascii video example
 _ change the license from GPL
@@ -336,8 +352,6 @@ _   https://github.com/processing/processing/issues/4736
 _   related: https://github.com/processing/processing/issues/3543
 _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
-_ temp folders (particularly on Windows)
-_   a whole section down below about this
 _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
@@ -484,19 +498,8 @@ _ add font fixes to the rest of the API
 _   https://github.com/processing/processing/commit/eaff673d173b2d27f276cf5c59e3abf6c0fab86b
 _   g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
 _                       RenderingHints.VALUE_FRACTIONALMETRICS_ON);
-_ use platformDelete() to remove untitled sketches?
-_   would allow us to use the /tmp folder
-_ change to using platformDelete() instead of Base.removeDir() where possible
-_   verify that the OS X version uses the real call
-_   and doesn't just look for .Trash
-_ getCoreLibrary() is breaking OpenGL
-_   "new Library()" constructor needs to go back to private
-_ add .bat file to lib on windows so that we can get better debugging info
 _ changing modes brings the PDE back on the second screen
 _   the Find window (also the save windows) also have the same problem
-_ move old Google Code SVN back to processing.org
-_   then cull out the old branches/tags from the Github repo
-_   and/or start bundling separate source downloads
 _ look through all isPopupTrigger() code
 _   make sure both press/release are implemented
 _ emacs style errors in commander aren't quite right
