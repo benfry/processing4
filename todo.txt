@@ -16,6 +16,8 @@ X   working on macOS, written up for Windows and Linux
 X   test on Windows and Linux
 X working on an updated welcome screen
 X fix usages of .array() method in PDE code
+X get code signing to work again on macOS for exported applications
+X   absolutely floored that it was broken this long
 
 docs
 X update theme instructions
@@ -253,6 +255,8 @@ _ add a version of this to the 4.x repo
 _   https://github.com/processing/processing/wiki/troubleshooting
 _   and update the Help menu to link to it
 _   and maybe the FAQ too?
+
+lipo stub-aarch64-fat -remove x86_64 -output stub-aarch64
 
 
 4.0 / with Casey

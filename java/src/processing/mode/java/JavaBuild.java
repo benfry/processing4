@@ -710,8 +710,14 @@ public class JavaBuild {
       File macosFolder = new File(contentsFolder, "MacOS");
       macosFolder.mkdirs();
       // This is an unsigned copy of the app binary (see build/build.xml)
-      Util.copyFile(mode.getContentFile("application/mac-app-stub"),
-                    new File(contentsFolder, "MacOS/" + sketch.getMainName()));
+      File stubFile =
+        mode.getContentFile("application/stub-" + exportVariant);
+      File execFile =
+        new File(contentsFolder, "MacOS/" + sketch.getMainName());
+      Util.copyFile(stubFile, execFile);
+      if (!execFile.setExecutable(true)) {
+        throw new IOException("Could not make " + execFile + " executable.");
+      }
 
       File pkgInfo = new File(contentsFolder, "PkgInfo");
       PrintWriter writer = PApplet.createWriter(pkgInfo);
@@ -908,12 +914,17 @@ public class JavaBuild {
       pw.close();
 
       // attempt to code sign if the Xcode tools appear to be installed
-      if (Platform.isMacOS() && isXcodeInstalled()) {
-        if (embedJava) {
-          ProcessHelper.ffs("codesign", "--force", "--sign", "-", jdkPath);
+      String appPath = dotAppFolder.getAbsolutePath();
+      if (Platform.isMacOS()) {
+        if (isXcodeInstalled()) {
+//        if (embedJava) {
+//          ProcessHelper.ffs("codesign", "--force", "--sign", "--deep", "-", jdkPath);
+//        }
+          ProcessHelper.ffs("codesign", "--force", "--deep", "--sign", "-", appPath);
+        } else {
+          System.err.println("Xcode not installed, install it and manually sign this app:");
+          System.err.println("codesign --force --deep --sign - " + appPath);
         }
-        String appPath = dotAppFolder.getAbsolutePath();
-        ProcessHelper.ffs("codesign", "--force", "--sign", "-", appPath);
       }
 
     } else if (exportPlatform == PConstants.WINDOWS) {
@@ -1078,13 +1089,15 @@ public class JavaBuild {
 
   static protected boolean isXcodeInstalled() {
     if (xcodeInstalled == null) {
+      // Note that this is *not* an xcrun tool, because it's part of the OS.
+      // pkgutil --file-info /usr/bin/xcode-select
+      // https://stackoverflow.com/a/32752859/18247494
+      StringList stdout = new StringList();
+      StringList stderr = new StringList();
+      int result = PApplet.exec(stdout, stderr, "/usr/bin/xcode-select", "-p");
+
+      // Returns 0 if installed, 2 if not (-1 if exception)
       // http://stackoverflow.com/questions/15371925
-      Process p = PApplet.launch("xcode-select", "-p");
-      int result = -1;
-      try {
-        result = p.waitFor();
-      } catch (InterruptedException ignored) { }
-      // returns 0 if installed, 2 if not (-1 if exception)
       xcodeInstalled = (result == 0);
     }
     return xcodeInstalled;

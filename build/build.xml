@@ -672,16 +672,26 @@
       <fileset file="shared/changes.md" />
     </copy>
 
+    <!-- Can't use this method since the appbundler builds have split:
+         we have a fat binary on aarch64 that has a broken x86_64 build,
+         and the x86_64 version has no aarch64 build at all.
+         For 4.0, this is being copied manually. -->
     <!-- Use the Processing executable as the stub for exported apps.
          This works b/c everything app-specific is in Info.plist. -->
+    <!--
     <property name="app.stub"
               value="${contents.dir}/Java/modes/java/application/mac-app-stub" />
+    -->
     <!-- Grab a copy of the stub binary before it is signed.
          (See processing.mode.java.JavaBuild for usage.)
          Prevents signing errors with exported apps. -->
+    <!--
     <copy file="${contents.dir}/MacOS/Processing" tofile="${app.stub}" />
+    -->
     <!-- The ant copy command does not preserve permissions. -->
+    <!--
     <chmod file="${app.stub}" perm="ugo+x" />
+    -->
 
     <antcall target="assemble">
       <param name="target.path" value="${contents.dir}/Java" />
