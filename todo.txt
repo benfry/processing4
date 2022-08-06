@@ -15,7 +15,7 @@ X   it's ~300 files of the ~500 in the entire jdk directory
 X   working on macOS, written up for Windows and Linux
 X   test on Windows and Linux
 X working on an updated welcome screen
-_ fix usages of .array() method in PDE code
+X fix usages of .array() method in PDE code
 
 docs
 X update theme instructions
@@ -39,6 +39,14 @@ o check into offscreen text rendering with JNA
 o   even just for tab names it'd be so much nicer
 o   https://github.com/iterate-ch/rococoa
 X   looking good enough for now
+o Pasting text into PDE results in "Clipboard does not contain a string"
+X   https://github.com/processing/processing/issues/3651
+X   this was just a workaround, not a fix
+X     https://github.com/processing/processing/pull/4040
+X   closing in the hope that it's resolved in Java 17
+X Icon instead of an "X" for the "could not connect" message
+X   https://github.com/processing/processing/issues/3706
+X   done back in 3.0.2
 
 movie maker
 o break Movie Maker out to its own library?
@@ -82,16 +90,6 @@ _ submit a PR
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-sketchbook
-_ fix up the code for sketchbook building
-_   is it time to make the internal representation into a tree object
-_   and then build the GUI versions separately (on the EDT)
-_ Base.checkSketchFolder() is used to identify sketches for the sketchbook frame
-_   but it assumes that it's folder name + default extension as the name for it
-_   that should be moved into the Mode class as a "is this folder a sketch" call
-_   (so that Modes can work differently too)
 
 
 detach sketch names
@@ -329,14 +327,6 @@ _   https://github.com/processing/processing4/issues/25
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 
-contrib
-_ Saving sketch with the same name as a class
-_   https://github.com/processing/processing/pull/4033
-_ Pasting text into PDE results in "Clipboard does not contain a string"
-_   https://github.com/processing/processing/issues/3651
-_   https://github.com/processing/processing/pull/4040
-
-
 high
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
@@ -368,7 +358,7 @@ _   it's sometimes copying the files to a different drive on windows
 modes
 _ allow modes to specify their own base file name
 _   need to move "is this a sketch?" handling into Mode
-_ mode list does not updated after changing sketchbook folder
+_ mode list does not update after changing sketchbook folder
 _   already reported?
 
 
@@ -477,16 +467,6 @@ _ me: undo not in the correct location
 _ improve error message when creating a tab with the same name
 _   right now it's generic, based on "a file exists"
 _ don't allow users to create 'blah.java' when 'blah.pde' already in sketch
-
-
-sketchbook
-_ Mode.rebuildLibraryList() called too many times on startup?
-_   and when sketches saved as well?
-_   makes saving *really* slow with a lot of libraries
-_ New/Rename/Save As is reloading the whole sketchbook, argh
-_ improve start time by populating sketchbook/libraries on threads
-_   https://github.com/processing/processing/issues/2945
-
 
 
 medium
@@ -891,8 +871,6 @@ _ scrolling "past" top/bottom causes the screen to jiggle (OS X and Trackpad)
 _   looks like ContributionListing.getScrollableUnitIncrement() returns early
 _ Examples window closes and re-opens during library install/remove
 _   https://github.com/processing/processing/issues/3304
-_ CM - Icon instead of an "X" for the "could not connect" message
-_   https://github.com/processing/processing/issues/3706
 _ several TODO items listed in ContributionPanel
 _ something to set min/max versions that are supported by a library
 _ ability to cancel a download/install
@@ -982,6 +960,21 @@ _   https://github.com/processing/processing/issues/4605
 
 PDE / Sketch & Sketchbook
 
+_ Saving sketch with the same name as a class
+_   https://github.com/processing/processing/pull/4033
+_ fix up the code for sketchbook building
+_   is it time to make the internal representation into a tree object
+_   and then build the GUI versions separately (on the EDT)
+_ Base.checkSketchFolder() is used to identify sketches for the sketchbook frame
+_   but it assumes that it's folder name + default extension as the name for it
+_   that should be moved into the Mode class as a "is this folder a sketch" call
+_   (so that Modes can work differently too)
+_ Mode.rebuildLibraryList() called too many times on startup?
+_   and when sketches saved as well?
+_   makes saving *really* slow with a lot of libraries
+_ New/Rename/Save As is reloading the whole sketchbook, argh
+_ improve start time by populating sketchbook/libraries on threads
+_   https://github.com/processing/processing/issues/2945
 _ Large number of files in sketchbook folder can cause slow startup
 _   and/or errors with launch4j
 _   https://github.com/processing/processing/issues/1190
@@ -1122,7 +1115,7 @@ _ p5 assets need to be licensed differently from the source
 
 DIST / Windows
 
-_ implement more document icons on Windows
+_ implement document icons for pdez etc on Windows
 _ Resolve “Successfully created” and “illegal reflective access” errors from launch4j
 _   https://github.com/processing/processing4/issues/137
 _ does launching p5 from inside the .zip folder cause it to quit immediately?
@@ -1157,7 +1150,7 @@ _ Find a long-term solution for OS X bundler to address signing/symlink issues
 _   https://github.com/processing/processing/issues/2967
 _ don't re-copy JRE into work folder if already exists
 
-others
+other
 _ Opening a sketch from the Desktop folder can result in several macOS access prompts
 _   https://github.com/processing/processing4/issues/523
 _   if a sketch is in the Desktop folder, try triggering macos access dialog once
