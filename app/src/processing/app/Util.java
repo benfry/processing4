@@ -94,7 +94,7 @@ public class Util {
    * by = (the equals sign). The # (hash) symbol is used to denote comments.
    * Changed in 4.0 beta 9 to only use # for comments at beginning of line,
    * otherwise it cannot parse hex color entries. Blank lines are ignored.
-   *
+   * <p>
    * In 3.0a6, no longer taking a blank HashMap as param; no cases in the main
    * PDE code of adding to a (Hash)Map. Also returning the Map instead of void.
    * Both changes modify the method signature, but this was only used by the
@@ -140,7 +140,9 @@ public class Util {
     to.flush();
     to.close();
 
+    //noinspection ResultOfMethodCallIgnored
     targetFile.setLastModified(sourceFile.lastModified());
+    //noinspection ResultOfMethodCallIgnored
     targetFile.setExecutable(sourceFile.canExecute());
   }
 
@@ -178,7 +180,7 @@ public class Util {
       throw new IOException("Could not resolve canonical representation of " +
                             file.getAbsolutePath());
     }
-    // Could use saveStrings(), but the we wouldn't be able to checkError()
+    // Could use saveStrings(), but we wouldn't be able to checkError()
     PrintWriter writer = PApplet.createWriter(temp);
     for (String line : lines) {
       writer.println(line);
@@ -209,7 +211,7 @@ public class Util {
    * Create a temporary folder by using the createTempFile() mechanism,
    * deleting the file it creates, and making a folder using the location
    * that was provided.
-   *
+   * <p>
    * Unlike createTempFile(), there is no minimum size for prefix. If
    * prefix is less than 3 characters, the remaining characters will be
    * filled with underscores
@@ -217,15 +219,37 @@ public class Util {
   static public File createTempFolder(String prefix, String suffix,
                                       File directory) throws IOException {
     int fillChars = 3 - prefix.length();
-    for (int i = 0; i < fillChars; i++) {
-      prefix += '_';
+    if (fillChars > 0) {
+      prefix += "_".repeat(fillChars);
+    }
+    if (directory == null) {
+      directory = getProcessingTemp();
     }
     File folder = File.createTempFile(prefix, suffix, directory);
     // Now delete that file and create a folder in its place
-    folder.delete();
-    folder.mkdirs();
+    if (!folder.delete()) {
+      throw new IOException("Could not remove " + folder +
+        " to create a temporary folder");
+    }
+    if (!folder.mkdirs()) {
+      throw new IOException("Unable to create " + folder +
+        ", please check permissions for " + folder.getParentFile());
+    }
     // And send the folder back to your friends
     return folder;
+  }
+
+
+  static public File getProcessingTemp() throws IOException {
+    String tmpDir = System.getProperty("java.io.tmpdir");
+    File directory = new File(tmpDir, "processing");
+    if (!directory.exists()) {
+      if (!directory.mkdirs()) {
+        throw new IOException("Could not create temp directory. " +
+          "Check that you have permissions to write to " + tmpDir);
+      }
+    }
+    return directory;
   }
 
 
@@ -240,21 +264,28 @@ public class Util {
       final String urDum = "source and target directories are identical";
       throw new IllegalArgumentException(urDum);
     }
-    targetDir.mkdirs();
+    if (!targetDir.mkdirs()) {
+      throw new IOException("Could not create " + targetDir);
+    }
     String[] filenames = sourceDir.list();
-    for (String filename : filenames) {
-      // Ignore dot files (.DS_Store), dot folders (.svn) while copying
-      if (filename.charAt(0) != '.') {
-        File source = new File(sourceDir, filename);
-        File target = new File(targetDir, filename);
-        if (source.isDirectory()) {
-          //target.mkdirs();
-          copyDir(source, target);
-          target.setLastModified(source.lastModified());
-        } else {
-          copyFile(source, target);
+    if (filenames != null) {
+      for (String filename : filenames) {
+        // Ignore dot files (.DS_Store), dot folders (.svn) while copying
+        if (filename.charAt(0) != '.') {
+          File source = new File(sourceDir, filename);
+          File target = new File(targetDir, filename);
+          if (source.isDirectory()) {
+            //target.mkdirs();
+            copyDir(source, target);
+            //noinspection ResultOfMethodCallIgnored
+            target.setLastModified(source.lastModified());
+          } else {
+            copyFile(source, target);
+          }
         }
       }
+    } else {
+      throw new IOException("Could not read " + sourceDir);
     }
   }
 
@@ -279,26 +310,6 @@ public class Util {
       e.printStackTrace();
     }
   }
-
-
-//  /**
-//   * Delete a file or directory in a platform-specific manner. Removes a File
-//   * object (a file or directory) from the system by placing it in the Trash
-//   * or Recycle Bin (if available) or simply deleting it (if not).
-//   *
-//   * When the file/folder is on another file system, it may simply be removed
-//   * immediately, without additional warning. So only use this if you want to,
-//   * you know, "delete" the subject in question.
-//   *
-//   * NOTE: Not yet tested nor ready for prime-time.
-//   *
-//   * @param file the victim (a directory or individual file)
-//   * @return true if all ends well
-//   * @throws IOException what went wrong
-//   */
-//  static public boolean platformDelete(File file) throws IOException {
-//    return Base.getPlatform().deleteFile(file);
-//  }
 
 
   /**
@@ -461,12 +472,12 @@ public class Util {
   /**
    * Given a folder, return a list of absolute paths to all jar or zip files
    * inside that folder, separated by pathSeparatorChar.
-   *
+   * <p>
    * This will prepend a colon (or whatever the path separator is)
    * so that it can be directly appended to another path string.
-   *
+   * <p>
    * As of 0136, this will no longer add the root folder as well.
-   *
+   * <p>
    * This function doesn't bother checking to see if there are any .class
    * files in the folder or within a subfolder.
    */
@@ -486,15 +497,17 @@ public class Util {
       }
 
       String[] list = folder.list();
-      for (String item : list) {
-        // Skip . and ._ files. Prior to 0125p3, .jar files that had
-        // OS X AppleDouble files associated would cause trouble.
-        if (!item.startsWith(".")) {
-          if (item.toLowerCase().endsWith(".jar") ||
+      if (list != null) {
+        for (String item : list) {
+          // Skip . and ._ files. Prior to 0125p3, .jar files that had
+          // OS X AppleDouble files associated would cause trouble.
+          if (!item.startsWith(".")) {
+            if (item.toLowerCase().endsWith(".jar") ||
               item.toLowerCase().endsWith(".zip")) {
-            sb.append(sep);
-            sb.append(path);
-            sb.append(item);
+              sb.append(sep);
+              sb.append(path);
+              sb.append(item);
+            }
           }
         }
       }
@@ -591,24 +604,26 @@ public class Util {
    */
   static private void packageListFromFolder(File dir, String sofar,
                                             StringList list) {
-//                                            Map<String, Object> map) {
     boolean foundClass = false;
     String[] filenames = dir.list();
+    if (filenames != null) {
+      for (String filename : filenames) {
+        if (filename.equals(".") || filename.equals("..")) continue;
 
-    for (String filename : filenames) {
-      if (filename.equals(".") || filename.equals("..")) continue;
-
-      File sub = new File(dir, filename);
-      if (sub.isDirectory()) {
-        String nowfar =
-          (sofar == null) ? filename : (sofar + "." + filename);
-        packageListFromFolder(sub, nowfar, list);
-      } else if (!foundClass) {  // if no classes found in this folder yet
-        if (filename.endsWith(".class")) {
-          list.appendUnique(sofar);
-          foundClass = true;
+        File sub = new File(dir, filename);
+        if (sub.isDirectory()) {
+          String nowfar =
+            (sofar == null) ? filename : (sofar + "." + filename);
+          packageListFromFolder(sub, nowfar, list);
+        } else if (!foundClass) {  // if no classes found in this folder yet
+          if (filename.endsWith(".class")) {
+            list.appendUnique(sofar);
+            foundClass = true;
+          }
         }
       }
+    } else {
+      System.err.println("Could not read " + dir);
     }
   }
 
@@ -686,9 +701,9 @@ public class Util {
 
   /**
    * This has a [link](http://example.com/) in [it](http://example.org/).
-   *
+   * <p>
    * Becomes...
-   *
+   * <p>
    * This has a <a href="http://example.com/">link</a> in <a
    * href="http://example.org/">it</a>.
    */
