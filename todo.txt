@@ -24,6 +24,22 @@ X update the platforms page
 X   https://github.com/processing/processing4/wiki/Supported-Platforms
 o   rename to 'platforms'?
 
+temp
+X inside Sketch, makeTempFolder() would be the place to modify the location
+X   perhaps make a 'temp' inside the sketchbook folder?
+X   on startup, check to see if there are a lot of files, remove them?
+X   or maybe auto-delete once older than 24 hours?
+X   also don't search it when walking the sketchbook
+X untitled folders are stored in temp folder
+o add a note about temp dir to the bug on windows temp dirs
+o   move away from using a temp dir at all for sketches
+o   -Djava.io.tmpdir=Z:\temp
+o change up how temp directories are handled
+o   it's sometimes copying the files to a different drive on windows
+X clean up /tmp folders used during build
+X   https://github.com/processing/processing/issues/1896 (moved)
+X   https://github.com/processing/processing4/issues/529
+
 cleaning
 X the gradient.top and gradient.bottom lines are used by makeGradient(),
 X   so search for makeGradient() calls to see whether they're still in use.
@@ -335,24 +351,8 @@ _ errors inside setup() aren't coming through at all?
 _   seen in Eclipse; have to turn on the debugger... same as #4703?
 
 
-temp
-_ inside Sketch, makeTempFolder() would be the place to modify the location
-_   perhaps make a 'temp' inside the sketchbook folder?
-_   on startup, check to see if there are a lot of files, remove them?
-_   or maybe auto-delete once older than 24 hours?
-_   also don't search it when walking the sketchbook
-_ untitled folders are stored in temp folder
-_ add a note about temp dir to the bug on windows temp dirs
-_   move away from using a temp dir at all for sketches
-_   -Djava.io.tmpdir=Z:\temp
-_ clean up /tmp folders used during build
-_   https://github.com/processing/processing/issues/1896
-_ clean Windows temp folders
-_   https://github.com/processing/processing/issues/1896
 _ could not write to temporary directory (virus checker problems)
 _   https://github.com/processing/processing/issues/4757
-_ change up how temp directories are handled
-_   it's sometimes copying the files to a different drive on windows
 
 
 modes

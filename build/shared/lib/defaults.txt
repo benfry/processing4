@@ -189,6 +189,10 @@ console.lines = 4
 # each time 'run' is hit
 console.auto_clear = true
 
+# number of days of history to keep around before cleaning
+# setting to 0 will never clean files
+console.temp.days = 7
+
 # set the maximum number of lines remembered by the console
 # the default is 500, lengthen at your own peril
 console.scrollback.lines = 500
@@ -214,7 +218,7 @@ run.options.bits.macos = 32
 # -1 means the default display, 0 means all displays
 run.display = -1
 
-# set internally
+# set internally because it comes from the system
 #run.window.bgcolor=
 
 # set to false to open a new untitled window when closing the last window
@@ -237,6 +241,10 @@ sketch.name.replace_underscore = true
 
 # what to use for generating sketch names (change in the prefs window)
 #sketch.name.approach =
+
+# number of days of build history and other temp files to keep around
+# these are kept around for debugging purposes, and in case code is lost
+temp.days = 7
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

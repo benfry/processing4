@@ -88,27 +88,7 @@ public class Console {
       final String stamp = formatter.format(new Date());
 
       File consoleDir = Base.getSettingsFile("console");
-      if (consoleDir.exists()) {
-        // clear old debug files
-        File[] stdFiles = consoleDir.listFiles(new FileFilter() {
-          final String todayPrefix = stamp.substring(0, 4);
-
-          public boolean accept(File file) {
-            if (!file.isDirectory()) {
-              String name = file.getName();
-              if (name.endsWith(".err") || name.endsWith(".out")) {
-                // don't delete any of today's debug messages
-                return !name.startsWith(todayPrefix);
-              }
-            }
-            return false;
-          }
-        });
-        // Remove any files that aren't from today
-        for (File file : stdFiles) {
-          file.delete();
-        }
-      } else {
+      if (!consoleDir.exists()) {
         consoleDir.mkdirs();
         consoleDir.setWritable(true, false);
       }
@@ -137,6 +117,36 @@ public class Console {
       System.setErr(systemErr);
 
       e.printStackTrace();
+    }
+  }
+
+
+  static public void cleanTempFiles() {
+    final File consoleDir = Base.getSettingsFile("console");
+    final int days = Preferences.getInteger("console.temp.days");
+
+    if (days > 0) {
+      final long now = new Date().getTime();
+      final long diff = days * 24 * 60 * 60 * 1000L;
+      File[] expiredFiles = consoleDir.listFiles(file -> {
+        if (!file.isDirectory()) {
+          String name = file.getName();
+          // Not really
+          if (name.endsWith(".err") || name.endsWith(".out")) {
+            return now - file.lastModified() > diff;
+          }
+        }
+        return false;
+      });
+      // Remove the files approved for deletion
+      for (File file : expiredFiles) {
+        //file.delete();  // not as safe
+        try {
+          Platform.deleteFile(file);  // move to trash
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
     }
   }
 

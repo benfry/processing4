@@ -258,8 +258,10 @@ public class Base {
 
       // Create a location for untitled sketches
       try {
-        untitledFolder = Util.createTempFolder("untitled", "sketches", null);
-        untitledFolder.deleteOnExit();
+        //untitledFolder = Util.createTempFolder("untitled", "sketches", null);
+        //untitledFolder.deleteOnExit();
+        untitledFolder = Util.getProcessingTemp();
+
       } catch (IOException e) {
         Messages.showError("Trouble without a name",
                            "Could not create a place to store untitled sketches.\n" +
@@ -281,6 +283,7 @@ public class Base {
 
         handleWelcomeScreen(base);
         handleCrustyDisplay();
+        handleTempCleaning();
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
@@ -404,6 +407,49 @@ public class Base {
       }
     }
   }
+
+
+  static private void handleTempCleaning() {
+    new Thread(() -> {
+      Console.cleanTempFiles();
+      cleanTempFolders();
+    }).start();
+  }
+
+
+  /**
+   * Clean folders and files from the Processing subdirectory
+   * of the user's temp folder (java.io.tmpdir).
+   */
+  static public void cleanTempFolders() {
+    try {
+      final File tempDir = Util.getProcessingTemp();
+      final int days = Preferences.getInteger("temp.days");
+
+      if (days > 0) {
+        final long now = new Date().getTime();
+        final long diff = days * 24 * 60 * 60 * 1000L;
+        File[] expiredFiles =
+          tempDir.listFiles(file -> (now - file.lastModified()) > diff);
+        if (expiredFiles != null) {
+          // Remove the files approved for deletion
+          for (File file : expiredFiles) {
+            //file.delete();  // not as safe
+            try {
+              Platform.deleteFile(file);  // move to trash
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
