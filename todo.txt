@@ -13,8 +13,8 @@ X   now sending the error to the status bar as expected
 X can we compress jdk/Contents/Home/legal into a single zip?
 X   it's ~300 files of the ~500 in the entire jdk directory
 X   working on macOS, written up for Windows and Linux
-_   test on Windows
-_   test on Linux
+X   test on Windows and Linux
+_ fix usages of .array() method in PDE code
 
 docs
 X update theme instructions
