@@ -14,6 +14,7 @@ X can we compress jdk/Contents/Home/legal into a single zip?
 X   it's ~300 files of the ~500 in the entire jdk directory
 X   working on macOS, written up for Windows and Linux
 X   test on Windows and Linux
+X working on an updated welcome screen
 _ fix usages of .array() method in PDE code
 
 docs
