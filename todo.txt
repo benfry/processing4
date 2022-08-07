@@ -6,6 +6,7 @@ X   test on Windows and Linux
 X working on an updated welcome screen
 X fix usages of .array() method in PDE code
 X default naming selection not being set in prefs window
+X make sure mono font is coming from languages file when first setting editor pref
 
 themes
 X try gradients in Lab space
@@ -50,6 +51,7 @@ X   https://github.com/processing/processing-examples
 X   can safely clone this repo instead of using processing-docs
 X 'chars' array is never used in ascii video example
 X   https://github.com/processing/processing-video/blob/master/examples/Capture/AsciiVideo/AsciiVideo.pde
+X add wiki page for preferences and customization
 o auto-complete not auto-triggering, change pref for handling?
 o   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 o   https://github.com/processing/processing/issues/5691
@@ -176,6 +178,21 @@ o     more than a certain amount should just be 10+, +, or whatever
 X   resolved earlier
 X me: undo not in the correct location
 X   this should be resolved elsewhere
+o if the lib folder goes missing from export, give an error
+o   also any .jar files that are missing, give an error
+o   showing more debug messages (command line?)
+o when exporting to application (or applet) don't copy .java files from folder
+o   (they'll be copied as source files later)
+o   make .java files and friends go to correct locations on export (app)
+o warn on export when people call their sketches things like Server
+o warn if someone extends PApplet but mis-names the sketch
+o   or don't allow it to be exported
+o   add bug reference to the faq once added to the db
+X   or at least add a note about this to the faq
+o show error when no main() is included but class extends PApplet
+o   error can happen or be checked
+o exporting application copies .java files
+o   .java files are copied to the root folder as well as the source folder
 
 fonts
 X fonts are still really ugly (on non-retina)
@@ -338,7 +355,7 @@ _   https://github.com/processing/processing/issues/4757
 _ what things do we want to call out for the release?
 _   this is also the welcome screen
 _ Welcome screen
-_   set a new preference for it, so people see it
+_   set a new preference for it (the old pref had .beta in the name)
 _   just skip the welcome screen on Windows hidpi dipslays?
 _   better to launch a web browser
 _     also use id/ask for login to help understand community?
@@ -359,15 +376,13 @@ old things
 * Reference, Discourse, Github, Wiki
 
 
-4.0 / fixes
-_ completion mode pop-up not following dark and light mode conventions
-_ make sure mono font is coming from languages file when first setting editor pref
-_ add wiki page for preferences and customization
-
-
 4.0 / housekeeping
 _ make sure the numbers scripts are working again before launch
 _   anything else we need to be tracking?
+_ add a version of the Troubleshooting page to the 4.x repo
+_   https://github.com/processing/processing/wiki/troubleshooting
+_   and update the Help menu to link to it
+_   and maybe the FAQ too?
 o change the license from GPL
 _   make notes about it
 _ pass through the source to update licenses
@@ -399,49 +414,29 @@ _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 
 
-would like to fix (but not necessary for 4.0 final)
+priorities/would like to fix (but not necessary for 4.0 final)
+_ completion mode pop-up not following dark and light mode conventions
 _ Remove “Disable HiDPI Scaling” preference on Windows?
 _   document it in the troubleshooting doc, ask people to report
 _   put it into the Preferences page?
 _ adding a file to an untitled sketch should require a save
-_ Cannot type quotes with an international keyboard on MacOS
-_   fixed by turning on "Enable complex text input"
-_   https://github.com/processing/processing4/issues/322
-_ loadShape(), show a warning when using style instead of presentation attributes
-_ jeditsyntax is a mess of old-style getModifiers()
-_   would like to switch this over, but needs to be tested a lot
 _ editor breakpoints out of the .pde files
 _   really a drag for version control
 _     https://github.com/processing/processing/issues/5848
 _   or at least avoid the multiple
 _     https://github.com/processing/processing4/issues/330
-_ add a version of the Troubleshooting page to the 4.x repo
-_   https://github.com/processing/processing/wiki/troubleshooting
-_   and update the Help menu to link to it
-_   and maybe the FAQ too?
-_ make possible to embed java for all platforms
-_   straightforward to download from adoptium
-_ startup is so incredibly slow
-X   the splash screen comes up fairly quickly, so what gives?
-_   lots of EDT thread stuff, particularly with loading contribs
-_   handleNew() taking 2-3s?
-_ implement support for Java “modules” and clean up JavaFX-specific workarounds
-_   https://github.com/processing/processing4/issues/212
-_   modules and classpath ugh https://stackoverflow.com/a/46289257
-_ also the Crusty2D renderer for use with macOS hack stuff
-_   actually need separate alpha/1.5/2.x versions of this
+_ Cannot type quotes with an international keyboard on MacOS
+_   fixed by turning on "Enable complex text input"
+_   https://github.com/processing/processing4/issues/322
+_ loadShape(), show a warning when using style instead of presentation attributes
 _ apt package for easier rpi install (especially)
+_ better means of understanding Library/Mode/Tool usage
 _ Open Sketch Folder not working on Linux with java.awt.Desktop quirks
 _   make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
 X   https://github.com/processing/processing/pull/5642 (closed)
-_ errors inside setup() aren't coming through at all?
-_   seen in Eclipse; have to turn on the debugger... same as #4703?
-_ better means of understanding Library/Mode/Tool usage
-_ mode list does not update after changing sketchbook folder
-_   already reported?
 
 
 priorities/teaching
@@ -459,7 +454,16 @@ _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 _   https://github.com/processing/processing4/wiki/Preferences#proxies
 
 
-organize this mess into the sections below
+organize this mess
+_ implement support for Java “modules” and clean up JavaFX-specific workarounds
+_   https://github.com/processing/processing4/issues/212
+_   modules and classpath ugh https://stackoverflow.com/a/46289257
+_ also the Crusty2D renderer for use with macOS hack stuff
+_   actually need separate alpha/1.5/2.x versions of this
+_ errors inside setup() aren't coming through at all?
+_   seen in Eclipse; have to turn on the debugger... same as #4703?
+_ mode list does not update after changing sketchbook folder
+_   already reported?
 _ how to make "Could not get the settings folder" message more helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
@@ -499,6 +503,12 @@ _   https://github.com/processing/processing/issues/4493
 _ changing modes brings the PDE back on the second screen
 _   the Find window (also the save windows) also have the same problem
 _ modes are being loaded multiple times, which can cause trouble
+_ jeditsyntax is a mess of old-style getModifiers()
+_   would like to switch this over, but needs to be tested a lot
+_ startup is so incredibly slow
+X   the splash screen comes up fairly quickly, so what gives?
+_   lots of EDT thread stuff, particularly with loading contribs
+_   handleNew() taking 2-3s?
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -783,26 +793,13 @@ _ EditorToolbar has two TODO items for open menu handling
 
 PDE / Export
 
+_ make possible to embed java for all platforms
+_   straightforward to download from adoptium
 _ export application ubuntu -> windows not working (2.2.1)
 _   https://github.com/processing/processing/issues/2698
 _   might be something with libraries (native or otherwise)
 _ "error during export" message, but no error message contents come through
 _   e.g. https://github.com/processing/processing/issues/4792
-_ if the lib folder goes missing from export, give an error
-_   also any .jar files that are missing, give an error
-_   showing more debug messages (command line?)
-_ when exporting to application (or applet) don't copy .java files from folder
-_   (they'll be copied as source files later)
-_   make .java files and friends go to correct locations on export (app)
-_ warn on export when people call their sketches things like Server
-_ warn if someone extends PApplet but mis-names the sketch
-_   or don't allow it to be exported
-_   add bug reference to the faq once added to the db
-X   or at least add a note about this to the faq
-_ show error when no main() is included but class extends PApplet
-_   error can happen or be checked
-_ exporting application copies .java files
-_   .java files are copied to the root folder as well as the source folder
 
 
 PDE / Libraries
