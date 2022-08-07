@@ -815,7 +815,13 @@ public class PreferencesFrame {
 //    deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
 
     sketchbookLocationField.setText(Preferences.getSketchbookPath());
+
     namingSelectionBox.setSelectedItem(Preferences.get("sketch.name.approach"));
+    if (namingSelectionBox.getSelectedIndex() < 0) {
+      // If no selection, revert to the classic style, and set the pref as well
+      namingSelectionBox.setSelectedItem(SketchName.CLASSIC);
+      Preferences.set("sketch.name.approach", SketchName.CLASSIC);
+    }
 
     checkUpdatesBox.setSelected(Preferences.getBoolean("update.check")); //$NON-NLS-1$
 

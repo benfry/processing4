@@ -15,7 +15,7 @@ import java.util.Map;
 
 public class SketchName {
   static final String FILENAME = "naming.json";
-  static final String CLASSIC_NAME = "Classic (sketch_220809a)";
+  static final public String CLASSIC = "Classic (sketch_220809a)";
   static boolean breakTime = false;
 
   static Map<String, WordList> wordLists;
@@ -31,7 +31,7 @@ public class SketchName {
    */
   static File nextFolder(File parentDir) {
     String approach = Preferences.get("sketch.name.approach");
-    if (!CLASSIC_NAME.equals(approach)) {
+    if (!CLASSIC.equals(approach)) {
       File folder = wordsFolder(parentDir, approach);
       if (folder != null) {
         return folder;
@@ -163,7 +163,7 @@ public class SketchName {
 
   static public String[] getOptions() {
     StringList outgoing = new StringList();
-    outgoing.append(CLASSIC_NAME);
+    outgoing.append(CLASSIC);
     for (String approach : getWordLists().keySet()) {
       outgoing.append(approach);
     }

@@ -5,6 +5,7 @@ X   working on macOS, written up for Windows and Linux
 X   test on Windows and Linux
 X working on an updated welcome screen
 X fix usages of .array() method in PDE code
+X default naming selection not being set in prefs window
 
 themes
 X try gradients in Lab space
@@ -355,12 +356,12 @@ new things
 
 old things
 + Examples window (Casey will pick 3-4)
+* Reference, Discourse, Github, Wiki
 
 
 4.0 / fixes
 _ completion mode pop-up not following dark and light mode conventions
 _ make sure mono font is coming from languages file when first setting editor pref
-_ default naming selection not being set in prefs window
 _ add wiki page for preferences and customization
 
 
