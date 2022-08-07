@@ -8,6 +8,9 @@ X fix usages of .array() method in PDE code
 X default naming selection not being set in prefs window
 X make sure mono font is coming from languages file when first setting editor pref
 X fix the processing.foundation cert
+X remove links to old pages from the language translations
+X   cd build/shared/lib/languages
+X   grep menu.help * | grep url
 
 themes
 X try gradients in Lab space
@@ -64,6 +67,7 @@ X   https://github.com/processing/processing/wiki/troubleshooting
 X   and update the Help menu to link to it
 X add a version of the FAQ to the processing4 wiki
 X   and link to it from the Help menu
+X rewrite https://github.com/processing/processing4/wiki/FAQ for 4.0
 
 temp
 X temp folders (particularly on Windows)
@@ -248,15 +252,6 @@ _   https://aka.ms/wdsi
 _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 
-Python Mode
-X add JavaFX handler
-X opening an example throws an NPE
-_ update Export to Application to use the new window
-_ add changes for the eawt mess? (too tricky)
-_   https://github.com/jdf/processing.py/issues/398
-_ submit a PR
-
-
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
@@ -394,10 +389,6 @@ old things
 _ make sure the numbers scripts are working again before launch
 _   anything else we need to be tracking?
 
-_ remove links to old pages from the language translations
-_   cd build/shared/lib/languages
-_   grep menu.help * | grep url
-_ make edits/updates to https://github.com/processing/processing4/wiki/FAQ
 o change the license from GPL
 _   make notes about it in the FAQ
 
@@ -1052,12 +1043,6 @@ _   set the 'tabs' var based on how many spaces on previous line
 _   http://processing.org/discourse/yabb/YaBB.cgi?board=Proce55ing_Software;action=display;num=1087227217
 
 
-
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-
-
 LIBRARIES / General
 
 _ need to unpack InvocationTargetException in xxxxxxEvent calls
@@ -1080,6 +1065,16 @@ LIBRARIES / Net
 _ modernize Client/Server code to use synchronized lists
 _   do we let people use the public vars in Server and Client?
 _   are they documented?
+
+
+MODES / Python 2
+
+X add JavaFX handler
+X opening an example throws an NPE
+_ update Export to Application to use the new window
+_ add changes for the eawt mess? (too tricky)
+_   https://github.com/jdf/processing.py/issues/398
+_ submit a PR
 
 
 
