@@ -675,7 +675,10 @@
     <!-- Can't use this method since the appbundler builds have split:
          we have a fat binary on aarch64 that has a broken x86_64 build,
          and the x86_64 version has no aarch64 build at all.
-         For 4.0, this is being copied manually. -->
+         For 4.0, this is being copied manually after also doing:
+         lipo stub-aarch64-fat -remove x86_64 -output stub-aarch64
+         on the binary produce on Apple Silicon, otherwise it looks
+         like a legitimate 'Fat' binary which confuses debugging. -->
     <!-- Use the Processing executable as the stub for exported apps.
          This works b/c everything app-specific is in Info.plist. -->
     <!--
