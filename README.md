@@ -23,7 +23,7 @@ This software is currently in beta. We don't have a schedule for the final 4.0 r
 
 As with all releases, we'll do [everything possible](https://twitter.com/ben_fry/status/1426282574683516928) to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
 
-The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/changes.md). <b>The list below only covers changes for developers working on this repository, or that may have an impact on Library, Mode, or Tool development.</b>
+The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/revisions.md). <b>The list below only covers changes for developers working on this repository, or that may have an impact on Library, Mode, or Tool development.</b>
 
 
 ### Beta 9
@@ -40,7 +40,7 @@ The full list of changes can be seen in [the release notes for each version](htt
 
 * Apple Silicon support should be complete, as far as we know. If you find otherwise, file an issue.
 
-* Check out the long [changes](https://github.com/processing/processing4/blob/master/build/shared/changes.md) update for this one. Too much to cover here.
+* Check out the long [revisions](https://github.com/processing/processing4/blob/master/build/shared/revisions.md) update for this one. Too much to cover here.
 
 * Now using Java 17.0.4+8 from [Adoptium](https://adoptium.net/).
 
@@ -55,7 +55,7 @@ The full list of changes can be seen in [the release notes for each version](htt
 
 ### Beta 6
 
-* Major rewrite of `handleOpen()`, now possible to use something besides the folder name for the main sketch file (see `changes.md` for details).
+* Major rewrite of `handleOpen()`, now possible to use something besides the folder name for the main sketch file (see `revisions.md` for details).
 
 * Now using Java 17.0.2+8 from [Adoptium](https://adoptium.net/).
 
@@ -113,7 +113,7 @@ The full list of changes can be seen in [the release notes for each version](htt
 
 * ~~The minimum system version for macOS (for the PDE and exported applications) is now set to 10.13.6 (the last update of High Sierra). Apple will likely be dropping support for High Sierra in late 2020, so we may make the minimum 10.14.x by the time 4.x ships.~~
 
-* ~~See `changes.md` if you're using `surface.setResizable()` with this release on macOS and with P2D or P3D renderers.~~
+* ~~See `revisions.md` if you're using `surface.setResizable()` with this release on macOS and with P2D or P3D renderers.~~
 
 * The `static` versions of `selectInput()`, `selectOutput()`, and `selectFolder()` in `PApplet` have been removed. These were not documented, hopefully they were not in use anyway.
 

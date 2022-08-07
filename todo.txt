@@ -68,6 +68,11 @@ X   and update the Help menu to link to it
 X add a version of the FAQ to the processing4 wiki
 X   and link to it from the Help menu
 X rewrite https://github.com/processing/processing4/wiki/FAQ for 4.0
+X rename changes.md to revisions.md
+X   this document replaced revisions.txt, and the name was changed to changes.md
+X   to prevent confusion with the old revisions.txt file
+X   however, it's far more confusion, because "changes" is used on the  wiki
+X   which documents the differences between 3.x and 4.x et al
 
 housekeeping
 X make sure the numbers scripts are working again before launch

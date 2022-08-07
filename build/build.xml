@@ -669,7 +669,7 @@
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
       <fileset dir="shared" includes="lib/**" />
-      <fileset file="shared/changes.md" />
+      <fileset file="shared/revisions.md" />
     </copy>
 
     <!-- Can't use this method since the appbundler builds have split:
@@ -978,7 +978,7 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**"  />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/changes.md" />
+      <fileset file="shared/revisions.md" />
     </copy>
 
     <antcall target="assemble">
@@ -1281,10 +1281,10 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**" />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/changes.md" />
+      <fileset file="shared/revisions.md" />
     </copy>
 
-    <fixcrlf file="windows/work/changes.md" eol="crlf" encoding="UTF-8" />
+    <fixcrlf file="windows/work/revisions.md" eol="crlf" encoding="UTF-8" />
 
     <antcall target="assemble">
       <param name="target.path" value="windows/work" />
