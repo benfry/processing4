@@ -7,6 +7,7 @@ X working on an updated welcome screen
 X fix usages of .array() method in PDE code
 X default naming selection not being set in prefs window
 X make sure mono font is coming from languages file when first setting editor pref
+X fix the processing.foundation cert
 
 themes
 X try gradients in Lab space
@@ -55,6 +56,14 @@ X add wiki page for preferences and customization
 o auto-complete not auto-triggering, change pref for handling?
 o   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
 o   https://github.com/processing/processing/issues/5691
+X docs about settings.path and sketchbook.path.four
+X   https://github.com/processing/processing4/issues/362
+X   https://github.com/processing/processing4/wiki/Preferences#sketchbook-and-settings-location
+X add a version of the Troubleshooting page to the 4.x repo
+X   https://github.com/processing/processing/wiki/troubleshooting
+X   and update the Help menu to link to it
+X add a version of the FAQ to the processing4 wiki
+X   and link to it from the Help menu
 
 temp
 X temp folders (particularly on Windows)
@@ -354,7 +363,8 @@ _   https://github.com/processing/processing/issues/4757
 4.0 / with Casey
 _ what things do we want to call out for the release?
 _   this is also the welcome screen
-_ Welcome screen
+_ Welcome
+_   better startup experience/something to really make it feel like 4
 _   set a new preference for it (the old pref had .beta in the name)
 _   just skip the welcome screen on Windows hidpi dipslays?
 _   better to launch a web browser
@@ -370,6 +380,10 @@ new things
 + raspberry pi 32/64 support
 + Java 17/faster/more up to date
 + JavaFX now needs to be imported
++ sketch name detached
+
+minor new things
++ ability to create truly portable versions/more options for school environments
 
 old things
 + Examples window (Casey will pick 3-4)
@@ -379,16 +393,19 @@ old things
 4.0 / housekeeping
 _ make sure the numbers scripts are working again before launch
 _   anything else we need to be tracking?
-_ add a version of the Troubleshooting page to the 4.x repo
-_   https://github.com/processing/processing/wiki/troubleshooting
-_   and update the Help menu to link to it
-_   and maybe the FAQ too?
+
+_ remove links to old pages from the language translations
+_   cd build/shared/lib/languages
+_   grep menu.help * | grep url
+_ make edits/updates to https://github.com/processing/processing4/wiki/FAQ
 o change the license from GPL
-_   make notes about it
+_   make notes about it in the FAQ
+
 _ pass through the source to update licenses
 _   add Processing Foundation as 2012-15
 _   update license info to state gplv2 not v3
 _   run through that online license checker
+_ add warnings to the old wiki pages with links to the newer versions
 
 
 detach sketch names
