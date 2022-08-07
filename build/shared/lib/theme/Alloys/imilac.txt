@@ -122,8 +122,8 @@ console.output.color = #A6A6A6
 console.error.color = #00C3FF
 
 console.scrollbar.thumb.enabled.color = #606060
-console.scrollbar.thumb.rollover.color = #2F6A90
-console.scrollbar.thumb.pressed.color = #2F6A90
+console.scrollbar.thumb.rollover.color = #606060
+console.scrollbar.thumb.pressed.color = #606060
 console.scrollbar.color = #292929
 
 
