@@ -260,6 +260,11 @@ public class Platform {
   }
 
 
+  static public String getPrettyName() {
+    return supportedVariants.get(getVariant());
+  }
+
+
 //  /**
 //   * Map a platform constant to its name.
 //   * @param which PConstants.WINDOWS, PConstants.MACOSX, PConstants.LINUX

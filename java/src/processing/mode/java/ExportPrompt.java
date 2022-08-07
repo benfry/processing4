@@ -33,7 +33,6 @@ import processing.data.StringDict;
 import processing.data.StringList;
 
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
@@ -41,30 +40,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class ExportPrompt {
-  // Can't be .windows because that'll be stripped off as a per-platform pref
+  static final String MACOS_EXPORT_WIKI =
+    "https://github.com/processing/processing4/wiki/Exporting-Applications#macos";
   static final String EXPORT_VARIANTS = "export.application.variants";
-  /*
-  static final String EXPORT_PREFIX = "export.application.platform_";
-  static final String EXPORT_MACOSX = EXPORT_PREFIX + "macosx";
-  static final String EXPORT_WINDOWS = EXPORT_PREFIX + "windows";
-  static final String EXPORT_LINUX = EXPORT_PREFIX + "linux";
-  */
 
   final JButton exportButton = new JButton(Language.text("prompt.export"));
   final JButton cancelButton = new JButton(Language.text("prompt.cancel"));
 
-  /*
-  final JCheckBox windowsButton = new JCheckBox("Windows");
-  final JCheckBox macosButton = new JCheckBox("Mac OS X");
-  final JCheckBox linuxButton = new JCheckBox("Linux");
-  */
   List<JCheckBox> variantButtons;
 
   final JavaEditor editor;
@@ -94,16 +82,6 @@ public class ExportPrompt {
       button.setActionCommand(variant);
       button.addActionListener(e -> updateVariants());
       variantButtons.add(button);
-      /*
-      final String variant = entry.key;
-      button.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          e.getActionCommand();
-          toggleVariant(variant);
-        }
-      });
-      */
     }
   }
 
@@ -118,26 +96,6 @@ public class ExportPrompt {
     Preferences.set(EXPORT_VARIANTS, list.join(","));
     exportButton.setEnabled(anyExportButton());
   }
-
-
-  /*
-  protected void toggleVariant(String variant) {
-    String pref = Preferences.get(EXPORT_VARIANTS);
-    StringList list = new StringList(pref.split(","));
-    if (list.hasValue(variant)) {
-      list.removeValue(variant);
-    } else {
-      list.append(variant);
-    }
-    pref = list.join(",");
-    Preferences.set(EXPORT_VARIANTS, pref);
-  }
-
-
-  protected void updateExportButton() {
-    exportButton.setEnabled(anyExportButton());
-  }
-  */
 
 
   protected boolean anyExportButton() {
@@ -191,11 +149,6 @@ public class ExportPrompt {
     panel.add(platformPanel);
 
     int divWidth = platformPanel.getPreferredSize().width;
-
-//    Dimension labelDim = new Dimension(divWidth, label.getPreferredSize().height);
-//    label.setPreferredSize(labelDim);
-//    label.setMinimumSize(labelDim);
-//    label.setMaximumSize(labelDim);
 
     final JCheckBox showStopButton = new JCheckBox(Language.text("export.options.show_stop_button"));
     showStopButton.setSelected(Preferences.getBoolean("export.application.stop"));
@@ -251,7 +204,7 @@ public class ExportPrompt {
     final boolean embed =
       Preferences.getBoolean("export.application.embed_java");
     final String warning1 =
-      "<html><div width=\"" + divWidth + "\">"; //<font size=\"2\">";
+      "<html><div width=\"" + divWidth + "\">";
     final String warning2a =
       "Embedding Java will make the " + platformName + " application " +
       "larger, but it will be far more likely to work. " +
@@ -276,7 +229,8 @@ public class ExportPrompt {
     warningLabel.putClientProperty("FlatLaf.styleClass", "medium");
 
     final JCheckBox embedJavaButton =
-      new JCheckBox(Language.interpolate("export.include_java", platformName));
+      new JCheckBox(Language.interpolate("export.include_java", Platform.getPrettyName()));
+      //new JCheckBox(Language.interpolate("export.include_java", platformName));
     embedJavaButton.setSelected(embed);
     embedJavaButton.addItemListener(e -> {
       boolean selected = embedJavaButton.isSelected();
@@ -302,40 +256,24 @@ public class ExportPrompt {
       signPanel.setLayout(new BoxLayout(signPanel, BoxLayout.Y_AXIS));
       signPanel.setBorder(new TitledBorder(Language.text("export.code_signing")));
 
-      // gatekeeper: http://support.apple.com/kb/ht5290
-      // for developers: https://developer.apple.com/developer-id/
-      final String APPLE_URL = "https://developer.apple.com/developer-id/";
       String thePain =
-        //"<html><body><font size=2>" +
-        "In recent versions of macOS, Apple has introduced the \u201CGatekeeper\u201D system, " +
-        "which makes it more difficult to run applications like those exported from Processing. ";
+        "Applications on macOS must be \u201Csigned\u201D and \u201Cnotarized,\u201D " +
+        "or they will be reported as damaged or unsafe. ";
 
-      if (new File("/usr/bin/codesign_allocate").exists()) {
+      //if (false && new File("/usr/bin/codesign_allocate").exists()) {
+      if (JavaBuild.isXcodeInstalled()) {
         thePain +=
-          "This application will be \u201Cself-signed\u201D which means that Finder may report that the " +
-          "application is from an \u201Cunidentified developer\u201D. If the application will not " +
-          "run, try right-clicking the app and selecting Open from the pop-up menu. Or you can visit " +
-          "System Preferences \u2192 Security & Privacy and select Allow apps downloaded from: anywhere. ";
+          "This application will be \u201Cself-signed\u201D which means that " +
+          "macOS may complain that is from an unidentified developer. " +
+          "If the application will not run, try right-clicking the app and " +
+          "selecting Open from the pop-up menu. " +
+          "More details at the <a href=\"\">Exporting Applications</a> wiki page.";
       } else {
         thePain +=
-          "Gatekeeper requires applications to be \u201Csigned\u201D, or they will be reported as damaged. " +
-          "To prevent this message, install Xcode (and the Command Line Tools) from the App Store. ";
+          "To sign the app, <a href=\"\">click here</a> to begin " +
+          "installing the Command Line Tools from Apple. ";
       }
-      thePain +=
-        "To avoid the messages entirely, manually code sign your app. " +
-        "For more information: <a href=\"\">" + APPLE_URL + "</a>";
 
-      // xattr -d com.apple.quarantine thesketch.app
-
-      //signPanel.add(new JLabel(thePain));
-      //JEditorPane area = new JEditorPane("text/html", thePain);
-      //JTextPane area = new JEditorPane("text/html", thePain);
-
-//      JTextArea area = new JTextArea(thePain);
-//      area.setBackground(null);
-//      area.setFont(new Font("Dialog", Font.PLAIN, 10));
-//      area.setLineWrap(true);
-//      area.setWrapStyleWord(true);
       // Are you f-king serious, Java API developers?
       // (Unless it's an HTML component, even with line wrap turned on,
       // getPreferredSize() will return the size for just a single line.)
@@ -344,15 +282,23 @@ public class ExportPrompt {
       area.putClientProperty("FlatLaf.styleClass", "medium");
 
       area.setBorder(new EmptyBorder(3, 13, 3, 13));
-//      area.setPreferredSize(new Dimension(embedPanel.getPreferredSize().width, 100));
-//      area.setPreferredSize(new Dimension(300, 200));
+      // Using area.setPreferredSize() here doesn't help,
+      // but setting the div width in CSS above worked.
       signPanel.add(area);
-//      signPanel.add(Box.createHorizontalGlue());
       signPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
       area.addMouseListener(new MouseAdapter() {
         public void mousePressed(MouseEvent event) {
-        Platform.openURL("https://developer.apple.com/developer-id/");
+          if (JavaBuild.isXcodeInstalled()) {
+            Platform.openURL(MACOS_EXPORT_WIKI);
+
+          } else {
+            // Launch the process asynchronously
+            PApplet.exec("xcode-select", "--install");
+            // Close the window so that we can rebuild it with different text
+            // once they've finished installing the Command Line Tools.
+            dialog.setVisible(false);
+          }
         }
       });
 
@@ -361,7 +307,6 @@ public class ExportPrompt {
 
     //
 
-    //String[] options = { Language.text("prompt.export"), Language.text("prompt.cancel") };
     final JButton[] options = { exportButton, cancelButton };
 
     final JOptionPane optionPane = new JOptionPane(panel,
@@ -388,8 +333,6 @@ public class ExportPrompt {
       }
     });
     dialog.pack();
-//    System.out.println("after pack: " + panel.getPreferredSize());
-//    dialog.setSize(optionPane.getPreferredSize());
     dialog.setResizable(false);
 
     // Center the window in the middle of the editor
@@ -446,17 +389,4 @@ public class ExportPrompt {
       chooser.hide();
     }
   }
-
-
-//  protected void selectColor(String prefName) {
-//    Color color = Preferences.getColor(prefName);
-//    final ColorChooser chooser = new ColorChooser(JavaEditor.this, true, color,
-//                                            "Select", new ActionListener() {
-//
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-//        Preferences.setColor(prefName, c.getColor());
-//      }
-//    });
-//  }
 }

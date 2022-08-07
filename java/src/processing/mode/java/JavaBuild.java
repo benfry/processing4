@@ -1089,7 +1089,7 @@ public class JavaBuild {
 
   static protected boolean isXcodeInstalled() {
     if (xcodeInstalled == null) {
-      // Note that this is *not* an xcrun tool, because it's part of the OS.
+      // Note that xcode-select is *not* an xcrun tool: it's part of the OS.
       // pkgutil --file-info /usr/bin/xcode-select
       // https://stackoverflow.com/a/32752859/18247494
       StringList stdout = new StringList();

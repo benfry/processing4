@@ -18,6 +18,7 @@ X working on an updated welcome screen
 X fix usages of .array() method in PDE code
 X get code signing to work again on macOS for exported applications
 X   absolutely floored that it was broken this long
+X   new docs added, window text redone
 
 docs
 X update theme instructions
@@ -25,6 +26,8 @@ X   https://github.com/processing/processing4/wiki/Themes
 X update the platforms page
 X   https://github.com/processing/processing4/wiki/Supported-Platforms
 o   rename to 'platforms'?
+X rewrote Exporting Applications wiki page
+X   include more details about Gatekeeper et al
 
 temp
 X temp folders (particularly on Windows)
@@ -270,10 +273,6 @@ _     also use id/ask for login to help understand community?
 _   tell users about JavaFX, Movie Maker install, changing themes
 _ final call on the About screen
 
-
-_ make sure mono font is coming from languages file when first setting editor pref
-_ add wiki page for customization
-
 new things
 + themes
 + naming
@@ -285,6 +284,14 @@ new things
 
 old things
 + Examples window (Casey will pick 3-4)
+
+
+_ make sure mono font is coming from languages file when first setting editor pref
+_ naming selection not being set in prefs window
+_ add wiki page for customization
+_ "include Java for macOS" only relevant for current macOS platform
+_   better to fix that, or make it possible to download both?
+
 
 
 4.0 / in the queue
@@ -301,8 +308,8 @@ _   update license info to state gplv2 not v3
 _   run through that online license checker
 _ Export to Application on Apple Silicon is including a broken "Universal" appbundler
 _   need to lipo a new appbundler, or have it export one of the two files
-_ “Array_Test.app” is damaged and can’t be opened. You should move it to the Trash.
-_   https://github.com/processing/processing/issues/4214 (closed)
+X “Array_Test.app” is damaged and can’t be opened. You should move it to the Trash.
+X   https://github.com/processing/processing/issues/4214 (closed)
 _   figure out if we can do anything with signing applications
 _   https://developer.apple.com/forums/thread/128166
 _   https://developer.apple.com/forums/thread/701514#701514021
