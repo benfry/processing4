@@ -49,6 +49,9 @@ X   https://github.com/processing/processing-examples
 X   can safely clone this repo instead of using processing-docs
 X 'chars' array is never used in ascii video example
 X   https://github.com/processing/processing-video/blob/master/examples/Capture/AsciiVideo/AsciiVideo.pde
+o auto-complete not auto-triggering, change pref for handling?
+o   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
+o   https://github.com/processing/processing/issues/5691
 
 temp
 X temp folders (particularly on Windows)
@@ -395,15 +398,10 @@ _ Export to Application not working with the current video library
 _   https://github.com/processing/processing-video/issues/188
 
 
-decisions before final 4.0 release
+would like to fix (but not necessary for 4.0 final)
 _ Remove “Disable HiDPI Scaling” preference on Windows?
 _   document it in the troubleshooting doc, ask people to report
-_ auto-complete not auto-triggering, change pref for handling?
-o   Auto-completion: [ ] Disabled  [ ] Show on Ctrl-Space  [ ] Always show
-_   https://github.com/processing/processing/issues/5691
-
-
-would like to fix (but not necessary for 4.0 final)
+_   put it into the Preferences page?
 _ adding a file to an untitled sketch should require a save
 _ Cannot type quotes with an international keyboard on MacOS
 _   fixed by turning on "Enable complex text input"
@@ -457,6 +455,7 @@ _   ideen2011.blogspot.de/2011/08/java-proxyselector-usesystemproxies-and.html
 _   malformed proxy issues http://stackoverflow.com/q/376101
 _   docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
 _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
+_   https://github.com/processing/processing4/wiki/Preferences#proxies
 
 
 organize this mess into the sections below

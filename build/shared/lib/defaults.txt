@@ -9,7 +9,7 @@
 # Users -> [username] -> AppData -> Roaming ->
 #    Processing -> preferences.txt (on Windows 10)
 
-# ~/Library -> Processing -> preferences.txt (on Mac OS X)
+# ~/Library -> Processing -> preferences.txt (on macOS)
 
 # ~/.config/processing -> preferences.txt (on Linux)
 
@@ -29,14 +29,6 @@
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# DEFAULT PATHS FOR SKETCHBOOK AND SETTINGS
-
-# relative paths will be relative to processing.exe or processing.app.
-# absolute paths may also be used.
-
-# note that this path should use forward slashes (like unix)
-# instead of \ on windows or : on macos or whatever else
-
 # If you don't want users to have their sketchbook default to
 # "My Documents/Processing" on Windows and "Documents/Processing" on OS X,
 # set this to another path that will be used by default.
@@ -50,24 +42,16 @@
 welcome.four.beta.show = true
 welcome.four.beta.seen = false
 
-# By default, no sketches currently open
-last.sketch.count = 0
-# true if you want sketches to re-open when you next run processing
-last.sketch.restore = true
-
 # set 'true' for the default behavior before 4.0b6
 editor.sync_folder_and_filename = true
 
-# by default, contributions are moved to backup folders when
-# they are removed or replaced. The locations of the backup
-# folders are:
-#              sketchbook/libraries/old
-#              sketchbook/tools/old
-#              sketchbook/modes/old
+# By default, contributions are moved to backup folders when
+# they are removed or replaced. The backups can be found at
+# sketchbook/libraries/old, sketchbook/tools/old, and sketchbook/modes/old
+
 # true to backup contributions when "Remove" button is pressed
 contribution.backup.on_remove = true
 # true to backup contributions when installing a newer version
-# (for example, from a plb file)
 contribution.backup.on_install = true
 
 recent.count = 10
@@ -85,9 +69,6 @@ chooser.files.native = true
 theme.gradient.method = rgb
 
 
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-
 # by default, check the processing server for any updates
 # (please avoid disabling, this also helps us know basic numbers
 # on how many people are using Processing)
@@ -99,9 +80,6 @@ platform.auto_file_type_associations = true
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# default font used for UI elements (no longer in use as of beta 9)
-#ui.font.family = Dialog
-#ui.font.size = 12
 
 # default size for the main window
 editor.window.width.default = 700
@@ -206,11 +184,6 @@ run.options =
 run.options.memory = false
 run.options.memory.initial = 64
 run.options.memory.maximum = 512
-
-# By default, Mac OS X 10.6 launches applications in 32-bit mode,
-# which is more compatible with libraries (many have not updated to 64-bit).
-# Changing this doesn't do anything on other platforms.
-run.options.bits.macos = 32
 
 # Index of the display to use for running sketches (starts at 1).
 # Kept this 1-indexed because older vesions of Processing were setting
@@ -323,4 +296,4 @@ pdex.completion.trigger = false
 # Suggest libraries to import when a class is undefined/unavailable
 pdex.suggest.imports = true
 # Set to false to disable ctrl/cmd-click jump to definition
-pdex.inspectMode.hotkey=true
+pdex.inspectMode.hotkey = true
