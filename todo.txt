@@ -73,6 +73,14 @@ X   this document replaced revisions.txt, and the name was changed to changes.md
 X   to prevent confusion with the old revisions.txt file
 X   however, it's far more confusion, because "changes" is used on the  wiki
 X   which documents the differences between 3.x and 4.x et al
+X other projects on which p5 is built
+X   no longer oro matcher and jikes
+X   add: quaqua, jna, registry stuff, .. ?
+X i can't fix these:
+An unexpected error has been detected by HotSpot Virtual Machine:
+# EXCEPTION_ACCESS_VIOLATION
+all i can do is find things that might trigger them, but it's more likely
+than not to be a java problem, and not something that can be fixed
 
 housekeeping
 X make sure the numbers scripts are working again before launch
@@ -235,6 +243,34 @@ X   done back in 3.x
 X Library path mismatch between processing-java and export
 X   https://github.com/processing/processing/issues/4493
 X   duplicate of https://github.com/processing/processing-video/issues/188
+o need to deal with classpath conflicts
+o   avoid garbage that people have installed on their machines
+o   antlr.jar in the classpath will cause trouble..
+o     https://forum.processing.org/beta/num_1138652326.html
+o   jogl jar files, or jogl install will cause trouble
+o     /System/Library/Java/Extensions or /Library/Java/Extensions
+o     the /System one contains qtjava
+o     the /Library one is empty (by default), maybe skip it?
+X   these should be long fixed
+o classpath conflicts also problem with PDE itself
+o   catch antlr conflicts, and put up an error message
+o   https://download.processing.org/bugzilla/1225.html (no Google issue)
+X   also should be long since fixed
+o java.ext.dirs for /System/Library/Java/Extensions
+o   http://java.sun.com/j2se/1.5.0/docs/guide/extensions/spec.html
+o   can set java.ext.dirs to something else
+o   on osx, just ignore anything in /Library/Java/Extensions (but not others)?
+X   removed after Java 8: https://docs.oracle.com/en/java/javase/17/migrate/migrating-jdk-8-later-jdk-releases.html#GUID-2C896CA8-927C-4381-A737-B1D81D964B7B
+o native lib stuff, use native.txt in lib folder, then:
+o   String osName = System.getProperty("os.name");
+o   String osArch = System.getProperty("os.arch");
+o   http://stackoverflow.com/questions/1611357/how-to-make-a-jar-file-that-include-dll-files
+o need better error messages for broken api / library troubles
+o   e.g. ocd is broken in 0125 because of method signature changes
+o make sure there aren't library jar files named the same thing
+o   i.e. if one library has db.jar, then that's gonna kill another db.jar
+o   when the files are copied over
+X   other issues filed for this
 
 fonts
 X fonts are still really ugly (on non-retina)
@@ -424,8 +460,6 @@ _   right now it's generic, based on "a file exists"
 _ don't allow users to create 'blah.java' when 'blah.pde' already in sketch
 _ detect changes in case with libraries
 _   https://github.com/processing/processing/issues/4507
-_ changing modes brings the PDE back on the second screen
-_   the Find window (also the save windows) also have the same problem
 _ modes are being loaded multiple times, which can cause trouble
 _ jeditsyntax is a mess of old-style getModifiers()
 _   would like to switch this over, but needs to be tested a lot
@@ -560,30 +594,6 @@ _ alternate handling of duplicate library conflicts
 _   https://github.com/processing/processing/pull/5126
 _ Add a means to specify packages to import in library.properties
 _   https://github.com/processing/processing/issues/2134
-_ need to deal with classpath conflicts
-_   avoid garbage that people have installed on their machines
-_   antlr.jar in the classpath will cause trouble..
-_     http://processing.org/discourse/yabb_beta/YaBB.cgi?board=SoftwareBugs;action=display;num=1138652326
-_   jogl jar files, or jogl install will cause trouble
-_     /System/Library/Java/Extensions or /Library/Java/Extensions
-_     the /System one contains qtjava
-_     the /Library one is empty (by default), maybe skip it?
-_ classpath conflicts also problem with PDE itself
-_   catch antlr conflicts, and put up an error message
-_   https://download.processing.org/bugzilla/1225.html (no Google issue)
-_ make sure there aren't library jar files named the same thing
-_   i.e. if one library has db.jar, then that's gonna kill another db.jar
-_   when the files are copied over
-_ java.ext.dirs for /System/Library/Java/Extensions
-_   http://java.sun.com/j2se/1.5.0/docs/guide/extensions/spec.html
-_   can set java.ext.dirs to something else
-_   on osx, just ignore anything in /Library/Java/Extensions (but not others)?
-_ native lib stuff, use native.txt in lib folder, then:
-_   String osName = System.getProperty("os.name");
-_   String osArch = System.getProperty("os.arch");
-_   http://stackoverflow.com/questions/1611357/how-to-make-a-jar-file-that-include-dll-files
-_ need better error messages for broken api / library troubles
-_   e.g. ocd is broken in 0125 because of method signature changes
 
 
 PDE / Examples
@@ -807,6 +817,12 @@ _   https://github.com/processing/processing/issues/3925
 _ deactivate step, continue, stop when not running?
 _ disable the debug toggle menu while running
 _   otherwise could run in one mode, then try to stop in another
+
+
+PDE / Multiple Monitors
+
+_ changing modes brings the PDE back on the second screen
+_   the Find window (also the save windows) also have the same problem
 
 
 PDE / Tweak
@@ -1138,26 +1154,18 @@ _   also note that ellipse() et al use beginShape()
 _   and that java2d should complain if people try it
 _ method to go from function name to the included examples where used?
 _ encourage use of set() instead of point() in the drawing api
-_   http://processing.org/discourse/yabb_beta/YaBB.cgi?board=SoftwareBugs;action=display;num=1114204116
-_ other projects on which p5 is built
-_   no longer oro matcher and jikes
-_   add: quaqua, jna, registry stuff, .. ?
+_   https://forum.processing.org/beta/num_1114204116.html
 _ noLoop() isn't the same as "finished", though it's sometimes used that way
 _   to finish, use exit() (though that will make the window close)
 _   add this to ref once halt() is finished
 _ errors in pdf/index.html examples
 _   probably remove these, move the useful ones to the examples folder
 _   that way people will read the reference
-_ i can't fix these:
-An unexpected error has been detected by HotSpot Virtual Machine:
-# EXCEPTION_ACCESS_VIOLATION
-all i can do is find things that might trigger them, but it's more likely
-than not to be a java problem, and not something that can be fixed
 _ explanation of how we see libraries in the PDE
 _   We're making an assumption that the idea of a "library" refers to a block of Java-based code. The reasoning is that from within the PDE, we anticipate that it will be Java-compatible versions of other languages (such as Jython, JRuby, or Scala) as opposed to more generic languages. In the future we could open this up, but we'd rather not complicate things for the moment.
 _ add to troubleshooting
-_   problem with big floats: http://processing.org/discourse/yabb/YaBB.cgi?board=Syntax;action=display;num=1061302380
-_   problem with small floats: http://processing.org/discourse/yabb_beta/YaBB.cgi?board=Programs;action=display;num=1115500448
+_   problem with big floats: https://forum.processing.org/alpha/board_Syntax_action_display_num_1061302380.html
+_   problem with small floats: https://forum.processing.org/beta/num_1115500448.html
 _ console stored in prefs location
 _   console may be useful for debugging
 
@@ -1231,22 +1239,18 @@ _ write a threading example
 _   show an example of how to handle callback into the app
 X   or handle this some more intelligent way, super.stop() is needed.
 X   registerDispose() does the trick
-_   http://processing.org/discourse/yabb/YaBB.cgi?board=Syntax;action=display;num=1083574943
-_   http://processing.org/discourse/yabb/YaBB.cgi?board=Syntax;action=display;num=1067383998
+_   https://forum.processing.org/alpha/board_Syntax_action_display_num_1083574943.html
+_   https://forum.processing.org/alpha/board_Syntax_action_display_num_1067383998.html
 _   scripts: how to make a long setup() sleep so that things don't lock way up
 _ write an example that uses HashMap (or Hashtable)
 _ write an example that uses ArrayList properly
 _ get xml library example in there
 _ simple method for having a clickable region or sprite with rollover
-_ post to web example
+_ POST to web url example
 _   particularly for uploading image data
 _   along with php script to handle receive
 _   this is in hacks, but
-_   http://processing.org/discourse/yabb_beta/YaBB.cgi?board=VideoCamera;action=display;num=1117194066#7
-
-
-DOC / Hacks
-
+_   (broken link) http://processing.org/discourse/yabb_beta/YaBB.cgi?board=VideoCamera;action=display;num=1117194066#7
 _ write a timer class/example library
 _ how do i add gui to a sketch?
 _   don't use awt components
@@ -1254,9 +1258,7 @@ _   how to use swing and embed components inside p5
 _ explain how to integrate code with swing
 _   use a separate environment, call init(), use noLoop(), redraw()
 _   use JPopupMenu.setDefaultLightWeightPopupEnabled(false); for zorder
-_   http://processing.org/discourse/yabb_beta/YaBB.cgi?board=Integrate;action=display;num=1147670059
-_ write documentation on general use of processing.core
-_   note that applet is itself a Component
+_   https://forum.processing.org/beta/num_1147670059.html
 _ eclipse
 _   document how to properly integrate with eclipse
 _   add runtime args to opengl library so that it sets path properly
