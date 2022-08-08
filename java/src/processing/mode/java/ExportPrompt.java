@@ -296,6 +296,8 @@ public class ExportPrompt {
           } else {
             // Launch the process asynchronously
             PApplet.exec("xcode-select", "--install");
+            // Reset the installed state so that the message will change.
+            JavaBuild.resetXcodeInstalled();
             // Close the window so that we can rebuild it with different text
             // once they've finished installing the Command Line Tools.
             dialog.setVisible(false);

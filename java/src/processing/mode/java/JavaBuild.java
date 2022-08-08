@@ -1104,6 +1104,11 @@ public class JavaBuild {
   }
 
 
+  static protected void resetXcodeInstalled() {
+    xcodeInstalled = null;  // give them another chance
+  }
+
+
   /**
    * Run the launch4j build.xml file through ant to create the exe.
    * Most of this code was lifted from Android mode.
