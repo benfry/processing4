@@ -317,6 +317,9 @@ o update Video library to use the new layout
 o Export to Application not working with the current video library
 o   https://github.com/processing/processing-video/issues/188
 
+design
+X final call on the About screen
+
 
 known issues
 _ mixed mode warning now broken
@@ -344,8 +347,6 @@ _   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-indus
 
 
 4.0 / with Casey
-_ what things do we want to call out for the release?
-_   this is also the welcome screen
 _ Welcome
 _   better startup experience/something to really make it feel like 4
 _   set a new preference for it (the old pref had .beta in the name)
@@ -353,7 +354,6 @@ _   just skip the welcome screen on Windows hidpi dipslays?
 _   better to launch a web browser
 _     also use id/ask for login to help understand community?
 _   tell users about JavaFX, Movie Maker install, changing themes
-_ final call on the About screen
 
 new things
 + themes
@@ -366,6 +366,7 @@ new things
 + sketch name detached
 
 minor new things
++ absolutely massive number of small bug fixes and usability tweaks
 + ability to create truly portable versions/more options for school environments
 
 old things
@@ -373,14 +374,9 @@ old things
 * Reference, Discourse, Github, Wiki
 
 
-4.0 / housekeeping
-_ pass through the source to update licenses
-_   add Processing Foundation as 2012-15
-_   update license info to state gplv2 not v3
-_   run through that online license checker
-_ add warnings to the old wiki pages with links to the newer versions
-o change the license from GPL
-_   make notes about the decision in the FAQ
+
+_ Xcode command line tools must be installed first
+_   show a message before even opening the Export dialog
 
 
 detach sketch names
@@ -401,6 +397,13 @@ _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 
 
 priorities/would like to fix (but not necessary for 4.0 final)
+_ pass through the source to update licenses
+_   add Processing Foundation as 2012-15
+_   update license info to state gplv2 not v3
+_   run through that online license checker
+_ add warnings to the old wiki pages with links to the newer versions
+o change the license from GPL
+_   make notes about the decision in the FAQ
 _ completion mode pop-up not following dark and light mode conventions
 _ Remove “Disable HiDPI Scaling” preference on Windows?
 _   document it in the troubleshooting doc, ask people to report
