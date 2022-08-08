@@ -30,11 +30,11 @@ The full list of changes can be seen in [the release notes for each version](htt
 
 * Major changes to themes and some libraries too. Also changed the default branch. If you have an older checkout, do this:
 
-        git pull
-        git checkout main
-        ant clean
-        ant clean-libs
-        ant run
+      git pull
+      git checkout main
+      ant clean
+      ant clean-libs
+      ant run
 
     …or just do a fresh `git clone` and pull down the latest.
 
