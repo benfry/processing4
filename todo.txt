@@ -228,6 +228,13 @@ X   switched to FlatLaf
 o confirmation dialogs (save and don't save.. who'd a thunk it)
 o   http://msdn.microsoft.com/en-us/library/aa511273.aspx
 o   http://i.msdn.microsoft.com/Aa511273.Confirmations03(en-us,MSDN.10).png
+X Tooltip over variable decl has wrong style and content
+X   make all tooltips run through our style
+X   https://github.com/processing/processing/issues/3940
+X   done back in 3.x
+X Library path mismatch between processing-java and export
+X   https://github.com/processing/processing/issues/4493
+X   duplicate of https://github.com/processing/processing-video/issues/188
 
 fonts
 X fonts are still really ugly (on non-retina)
@@ -254,6 +261,11 @@ X ffmpeg binaries for all our platforms
 X   native version for ARM on macOS, also versions for Raspberry Pi
 X updated ffmpeg to 5.0.1
 
+waiting/video library
+o update Video library to use the new layout
+o Export to Application not working with the current video library
+o   https://github.com/processing/processing-video/issues/188
+
 
 known issues
 _ mixed mode warning now broken
@@ -267,7 +279,10 @@ _   https://github.com/processing/processing4/issues/522
 _   https://github.com/processing/processing4-javafx/issues/15
 
 
-during release of beta 9
+during release the next release
+_ update README.md in the root
+_   move api/internal changes elsewhere
+_   link to other wiki things that are more useful
 _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
@@ -334,12 +349,6 @@ _   single file thing is long gone
 _   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 
 
-waiting/video library
-_ update Video library to use the new layout
-_ Export to Application not working with the current video library
-_   https://github.com/processing/processing-video/issues/188
-
-
 priorities/would like to fix (but not necessary for 4.0 final)
 _ completion mode pop-up not following dark and light mode conventions
 _ Remove “Disable HiDPI Scaling” preference on Windows?
@@ -357,6 +366,7 @@ _   https://github.com/processing/processing4/issues/322
 _ loadShape(), show a warning when using style instead of presentation attributes
 _ apt package for easier rpi install (especially)
 _ better means of understanding Library/Mode/Tool usage
+
 _ Open Sketch Folder not working on Linux with java.awt.Desktop quirks
 _   make the call on the launcher setting for Linux
 _   https://github.com/processing/processing4/issues/247
@@ -390,23 +400,14 @@ _ errors inside setup() aren't coming through at all?
 _   seen in Eclipse; have to turn on the debugger... same as #4703?
 _ mode list does not update after changing sketchbook folder
 _   already reported?
-_ how to make "Could not get the settings folder" message more helpful
+_ make "Could not get the settings folder" message more helpful
 _   https://github.com/processing/processing/issues/5744
 _   need to check the locations it'd be writing to, and see if available
 _   then tell the user which folder to fix
-_ mouse events (i.e. toggle breakpoint) seem to be firing twice
-_   wonder if this is mousePressed and mouseClicked?
-_   this may also be the cause of the double entries in files
-_ Tooltip over variable decl has wrong style and content
-_   make all tooltips run through our style
-_   https://github.com/processing/processing/issues/3940
+_   already fairly close, the problem is that they get a "report this" dialog box
+_   but the useful information is in the actual exception message
 _ import suggestions box needs design review
 _   https://github.com/processing/processing/issues/3407
-_ fix background color for selected lines in VariableInspector
-_   https://github.com/processing/processing/issues/3925
-_ deactivate step, continue, stop when not running?
-_ disable the debug toggle menu while running
-_   otherwise could run in one mode, then try to stop in another
 _ show compiling/startup animation after clicking run
 _   or maybe show an animation for starting up
 _   rather than post-compile
@@ -418,14 +419,11 @@ _ save() and saveAs() need to be refactored
 _   https://github.com/processing/processing/issues/3843
 _ search the source for 'applet' references (i.e. SVG docs)
 _ move Library to LibraryContribution and into contrib?
-_ reas: comments go nasty when auto-formatted
 _ improve error message when creating a tab with the same name
 _   right now it's generic, based on "a file exists"
 _ don't allow users to create 'blah.java' when 'blah.pde' already in sketch
 _ detect changes in case with libraries
 _   https://github.com/processing/processing/issues/4507
-_ Library path mismatch between processing-java and export
-_   https://github.com/processing/processing/issues/4493
 _ changing modes brings the PDE back on the second screen
 _   the Find window (also the save windows) also have the same problem
 _ modes are being loaded multiple times, which can cause trouble
@@ -799,6 +797,18 @@ _ changing number of screens between run causes things to show up off-screen
 _   so when running, check to make sure that things are out of the area
 
 
+PDE / Debug
+
+_ mouse events (i.e. toggle breakpoint) seem to be firing twice
+_   wonder if this is mousePressed and mouseClicked?
+_   this may also be the cause of the double entries in files
+_ fix background color for selected lines in VariableInspector
+_   https://github.com/processing/processing/issues/3925
+_ deactivate step, continue, stop when not running?
+_ disable the debug toggle menu while running
+_   otherwise could run in one mode, then try to stop in another
+
+
 PDE / Tweak
 
 _ TweakMode listener mess in JavaTextArea
@@ -880,6 +890,7 @@ _   update will update classes from shared in the current folder
 
 TOOLS / Auto Format
 
+_ Reas: comments go nasty when auto-formatted
 _ Switch block cases not indented
 _   https://github.com/processing/processing/issues/1042
 _ do a better job of maintaining cursor
