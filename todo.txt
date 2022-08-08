@@ -271,6 +271,13 @@ o make sure there aren't library jar files named the same thing
 o   i.e. if one library has db.jar, then that's gonna kill another db.jar
 o   when the files are copied over
 X   other issues filed for this
+X manager huh
+X   highlight color seems to be incorrect?
+o   after installing, the item in the manager list doesn't change color
+o 'recent' menu doesn't respect examples folder of other p5 versions
+o   could write that into the file, that it's an example
+o   or write the path as shown in the PDE to the file as simpler
+X   oh well; want folks using the latest anyway
 
 fonts
 X fonts are still really ugly (on non-retina)
@@ -526,9 +533,6 @@ _   https://github.com/processing/processing/issues/533
 
 PDE / Editor
 
-_ 'recent' menu doesn't respect examples folder of other p5 versions
-_   could write that into the file, that it's an example
-_   or write the path as shown in the PDE to the file as simpler
 _ 'recent' menu paths can get enormous
 _ active editor not being set null
 _   in Base.nextEditorLocation(), changed to "editors.size() == 0"
@@ -762,8 +766,6 @@ _ check with Casey about coloring for error messages
 _ test on Windows and Linux
 _ font size for "Downloading" on progress bar is too large
 _   but changing the size breaks the vertical centering
-_ highlight color seems to be incorrect?
-_ after installing, the item in the manager list doesn't change color
 _ wheel mouse is super jumpy
 _   something about unit increment in ContributionListPanel
 _ arrow keys up/down move scroll bar, not selection
