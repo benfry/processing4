@@ -43,6 +43,13 @@ X   figure out if we can do anything with signing applications
 X   https://developer.apple.com/forums/thread/128166
 X   https://developer.apple.com/forums/thread/701514#701514021
 X   https://developer.apple.com/forums/thread/701581#701581021
+/ Xcode command line tools must be installed first
+/   show a message before even opening the Export dialog
+X   can't restrict to installation b/c may want to do other platforms
+X   or detection of the CLT may not be correct
+X   or users may be doing their own manual signing anyway
+X   for now, just cleaning up the messages a bit for clarity
+X   and bump the font size back up for legibility
 
 docs
 X update theme instructions
@@ -373,10 +380,8 @@ old things
 + Examples window (Casey will pick 3-4)
 * Reference, Discourse, Github, Wiki
 
-
-
-_ Xcode command line tools must be installed first
-_   show a message before even opening the Export dialog
+_ recent errors from AndroidMode
+_ add a note about underscores in sketch tabs in prefs doc
 
 
 detach sketch names

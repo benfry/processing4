@@ -206,7 +206,7 @@ public class ExportPrompt {
     final String warning1 =
       "<html><div width=\"" + divWidth + "\">";
     final String warning2a =
-      "Embedding Java will make the " + platformName + " application " +
+      "This option will make the " + platformName + " application " +
       "larger, but it will be far more likely to work. " +
       "Users on other platforms will need to ";
     final String warning2b =
@@ -226,7 +226,7 @@ public class ExportPrompt {
       }
     });
     warningLabel.setBorder(new EmptyBorder(3, 13, 3, 13));
-    warningLabel.putClientProperty("FlatLaf.styleClass", "medium");
+//    warningLabel.putClientProperty("FlatLaf.styleClass", "medium");
 
     final JCheckBox embedJavaButton =
       new JCheckBox(Language.interpolate("export.include_java", Platform.getPrettyName()));
@@ -262,16 +262,17 @@ public class ExportPrompt {
 
       //if (false && new File("/usr/bin/codesign_allocate").exists()) {
       if (JavaBuild.isXcodeInstalled()) {
-        thePain +=
+        thePain += "<br/>" +
           "This application will be \u201Cself-signed\u201D which means that " +
-          "macOS may complain that is from an unidentified developer. " +
+          "macOS may complain that it comes from an unidentified developer. " +
           "If the application will not run, try right-clicking the app and " +
           "selecting Open from the pop-up menu. " +
           "More details at the <a href=\"\">Exporting Applications</a> wiki page.";
       } else {
         thePain +=
-          "To sign the app, <a href=\"\">click here</a> to begin " +
-          "installing the Command Line Tools from Apple. ";
+          "To create a working macOS application, " +
+          "<a href=\"\">click here</a> to install " +
+          "the Command Line Tools from Apple.";
       }
 
       // Are you f-king serious, Java API developers?
@@ -279,7 +280,7 @@ public class ExportPrompt {
       // getPreferredSize() will return the size for just a single line.)
 //      JLabel area = new JLabel("<html><div width=\"" + divWidth + "\"><font size=\"2\">" + thePain + "</div></html>");
       JLabel area = new JLabel("<html><div width=\"" + divWidth + "\">" + thePain + "</div></html>");
-      area.putClientProperty("FlatLaf.styleClass", "medium");
+//      area.putClientProperty("FlatLaf.styleClass", "medium");
 
       area.setBorder(new EmptyBorder(3, 13, 3, 13));
       // Using area.setPreferredSize() here doesn't help,
