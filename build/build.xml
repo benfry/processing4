@@ -820,8 +820,8 @@
           <!-- <include name="**/*.jar" /> -->
           <!-- <include name="**/*.app" /> -->
 
-          <include name="modes/java/application/mac-app-stub" />
-          <include name="modes/java/application/template-app/Contents/MacOS/JavaApplicationStub" />
+          <include name="modes/java/application/stub-macos-aarch64" />
+          <include name="modes/java/application/stub-macos-x86_64" />
           <include name="modes/java/application/launch4j/bin/windres" />
           <include name="modes/java/application/launch4j/bin/ld" />
           <include name="tools/MovieMaker/tool/ffmpeg" />
