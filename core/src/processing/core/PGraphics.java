@@ -971,7 +971,7 @@ public class PGraphics extends PImage implements PConstants {
     textAlign = LEFT;
     textMode = MODEL;
 
-    // if this fella is associated with an applet, then clear its background.
+    // if this fella is associated with a component, then clear its background.
     // if it's been created by someone else through createGraphics,
     // they have to call background() themselves, otherwise everything gets
     // a gray background (when just a transparent surface or an empty pdf

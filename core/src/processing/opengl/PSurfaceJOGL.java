@@ -549,30 +549,26 @@ public class PSurfaceJOGL implements PSurface {
     } catch (IOException ignored) { }
 
     try {
-      // attempt to load from a local file, used when running as
-      // an application, or as a signed applet
-      try {  // first try to catch any security exceptions
-        try {
-          String path = sketch.dataPath(filename);
-          stream = new FileInputStream(path);
-          stream.close();
-          return path;
-        } catch (IOException ignored) { }
+      // attempt to load from a local file
+      try {
+        String path = sketch.dataPath(filename);
+        stream = new FileInputStream(path);
+        stream.close();
+        return path;
+      } catch (IOException ignored) { }
 
-        try {
-          String path = sketch.sketchPath(filename);
-          stream = new FileInputStream(path);
-          stream.close();
-          return path;
-        } catch (Exception ignored) { }
+      try {
+        String path = sketch.sketchPath(filename);
+        stream = new FileInputStream(path);
+        stream.close();
+        return path;
+      } catch (Exception ignored) { }
 
-        try {
-          stream = new FileInputStream(filename);
-          stream.close();
-          return filename;
-        } catch (IOException ignored) { }
-
-      } catch (SecurityException ignored) { }  // online, whups
+      try {
+        stream = new FileInputStream(filename);
+        stream.close();
+        return filename;
+      } catch (IOException ignored) { }
 
     } catch (Exception e) {
       //die(e.getMessage(), e);

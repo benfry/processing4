@@ -33,17 +33,17 @@ import java.net.*;
 
 
 /**
- * 
- * A server sends and receives data to and from its associated clients 
- * (other programs connected to it). When a server is started, it begins 
- * listening for connections on the port specified by the <b>port</b> 
- * parameter. Computers have many ports for transferring data and some are 
- * commonly used so be sure to not select one of these. For example, web 
+ *
+ * A server sends and receives data to and from its associated clients
+ * (other programs connected to it). When a server is started, it begins
+ * listening for connections on the port specified by the <b>port</b>
+ * parameter. Computers have many ports for transferring data and some are
+ * commonly used so be sure to not select one of these. For example, web
  * servers usually use port 80 and POP mail uses port 110.
- * 
+ *
  * @webref server
  * @usage application
- * @webBrief The server class is used to create server objects which send 
+ * @webBrief The server class is used to create server objects which send
  * and receives data to and from its associated clients (other programs connected to it)
  * @instanceName server  	any variable of type Server
  */
@@ -61,7 +61,7 @@ public class Server implements Runnable {
   /** Array of client objects, useful length is determined by clientCount. */
   public Client[] clients;
 
-  
+
   /**
    * @param parent typically use "this"
    * @param port port used to transfer data
@@ -69,12 +69,12 @@ public class Server implements Runnable {
   public Server(PApplet parent, int port) {
     this(parent, port, null);
   }
-    
-    
+
+
   /**
    * @param parent typically use "this"
    * @param port port used to transfer data
-   * @param host when multiple NICs are in use, the ip (or name) to bind from 
+   * @param host when multiple NICs are in use, the ip (or name) to bind from
    */
   public Server(PApplet parent, int port, String host) {
     this.parent = parent;
@@ -94,7 +94,7 @@ public class Server implements Runnable {
 
       parent.registerMethod("dispose", this);
 
-      // reflection to check whether host applet has a call for
+      // reflection to check whether host sketch has a call for
       // public void serverEvent(Server s, Client c);
       // which is called when a new guy connects
       try {
@@ -114,9 +114,9 @@ public class Server implements Runnable {
 
 
   /**
-   * 
+   *
    * Disconnect a particular client.
-   * 
+   *
    * @webref server
    * @webBrief Disconnect a particular client
    * @param client the client to disconnect
@@ -130,8 +130,8 @@ public class Server implements Runnable {
       }
     }
   }
-  
-  
+
+
   protected void removeIndex(int index) {
     synchronized (clientsLock) {
       clientCount--;
@@ -143,8 +143,8 @@ public class Server implements Runnable {
       clients[clientCount] = null;
     }
   }
-  
-  
+
+
   protected void disconnectAll() {
     synchronized (clientsLock) {
       for (int i = 0; i < clientCount; i++) {
@@ -158,8 +158,8 @@ public class Server implements Runnable {
       clientCount = 0;
     }
   }
-  
-  
+
+
   protected void addClient(Client client) {
     synchronized (clientsLock) {
       if (clientCount == clients.length) {
@@ -168,8 +168,8 @@ public class Server implements Runnable {
       clients[clientCount++] = client;
     }
   }
-  
-  
+
+
   protected int clientIndex(Client client) {
     synchronized (clientsLock) {
       for (int i = 0; i < clientCount; i++) {
@@ -181,20 +181,20 @@ public class Server implements Runnable {
     }
   }
 
-  
+
   /**
-   * 
+   *
    * Returns <b>true</b> if this server is still active and hasn't run
    * into any trouble.
-   * 
+   *
    * @webref server
    * @webBrief Return <b>true</b> if this server is still active
    */
   public boolean active() {
     return thread != null;
   }
-  
-  
+
+
   static public String ip() {
     try {
       return InetAddress.getLocalHost().getHostAddress();
@@ -211,9 +211,9 @@ public class Server implements Runnable {
   int lastAvailable = -1;
 
   /**
-   * 
+   *
    * Returns the next client in line with a new message.
-   * 
+   *
    * @webref server
    * @webBrief Returns the next client in line with a new message
    * @usage application
@@ -247,13 +247,13 @@ public class Server implements Runnable {
 
 
   /**
-   * 
+   *
    * Disconnects all clients and stops the server.
-   * 
+   *
    * <h3>Advanced</h3>
-   * Use this to shut down the server if you finish using it while your applet 
-   * is still running. Otherwise, it will be automatically be shut down by the 
-   * host PApplet using dispose(), which is identical. 
+   * Use this to shut down the server if you finish using it while your sketch
+   * is still running. Otherwise, it will be automatically be shut down by the
+   * host PApplet using dispose(), which is identical.
    * @webref server
    * @webBrief Disconnects all clients and stops the server
    * @usage application
@@ -323,10 +323,10 @@ public class Server implements Runnable {
 
 
   /**
-   * 
-   * Writes a value to all the connected clients. It sends bytes out from the 
+   *
+   * Writes a value to all the connected clients. It sends bytes out from the
    * Server object.
-   * 
+   *
    * @webref server
    * @webBrief Writes data to all connected clients
    * @param data data to write
@@ -344,7 +344,7 @@ public class Server implements Runnable {
       }
     }
   }
-  
+
 
   public void write(byte data[]) {
     synchronized (clientsLock) {
@@ -359,7 +359,7 @@ public class Server implements Runnable {
       }
     }
   }
-  
+
 
   public void write(String data) {
     synchronized (clientsLock) {

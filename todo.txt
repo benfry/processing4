@@ -81,6 +81,7 @@ An unexpected error has been detected by HotSpot Virtual Machine:
 # EXCEPTION_ACCESS_VIOLATION
 all i can do is find things that might trigger them, but it's more likely
 than not to be a java problem, and not something that can be fixed
+X search the source for 'applet' references (i.e. SVG docs)
 
 housekeeping
 X make sure the numbers scripts are working again before launch
@@ -460,7 +461,6 @@ _   or for now, tell users how to do it manually
 _   batik and ant have both broken the build when old versions were removed
 _ save() and saveAs() need to be refactored
 _   https://github.com/processing/processing/issues/3843
-_ search the source for 'applet' references (i.e. SVG docs)
 _ move Library to LibraryContribution and into contrib?
 _ improve error message when creating a tab with the same name
 _   right now it's generic, based on "a file exists"
