@@ -13,7 +13,7 @@ Below is a list of the incremental changes in this release since beta 9 a few da
 
 ## welcome, welcome!
 
-* Added a new “Welcome” screen that links to a couple examples as well as the changes and updates page. 
+* Added a new “Welcome” screen that links to a couple examples as well as the changes and updates page.
 
 * The splash screen has also been updated with a new image for 4.0.
 
