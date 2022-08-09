@@ -1,3 +1,7 @@
+1285 (4.0)
+X no changes in core
+
+
 1284 (4.0b9)
 X allow . to start a number in SVG paths (a little)
 X   still lots of work to do here, it's an SVG 1.1 (vs 1.0) thing
