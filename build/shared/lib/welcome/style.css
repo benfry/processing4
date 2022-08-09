@@ -24,14 +24,15 @@ p, td {
 }
 
 table {
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   margin-bottom: 0;
 }
 
-p.inset, table.inset {
+div.inset, p.inset, table.inset {
   padding: 10px;
   /* background-color: rgb(224, 253, 251); */
-  background-color: rgb(240, 240, 240);
+  /* background-color: rgb(240, 240, 240); */
+  background-color: white;
 }
 
 a {

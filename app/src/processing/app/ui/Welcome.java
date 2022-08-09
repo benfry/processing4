@@ -52,28 +52,20 @@ public class Welcome {
   public Welcome(Base base, boolean sketchbook) throws IOException {
     this.base = base;
 
-    // TODO this should live inside theme or somewhere modifiable
-    Font dialogFont = Toolkit.getSansFont(14, Font.PLAIN);
-
     JComponent panel = Box.createHorizontalBox();
-    panel.setBackground(new Color(245, 245, 245));
-    //Toolkit.setBorder(panel, 15, 20, 15, 20);
+    //panel.setBackground(new Color(245, 245, 245));
+    panel.setBackground(Color.WHITE);
+    panel.setOpaque(true);
     panel.setBorder(new EmptyBorder(15, 20, 15, 20));
 
-    //panel.setLayout(new BoxLayout(panel, BoxLayout.X_AXIS));
-    //panel.add(Box.createHorizontalStrut(20));
     JCheckBox checkbox = new JCheckBox("Show this message on startup");
-    checkbox.setFont(dialogFont);
     // handles the Help menu invocation, and also the pref not existing
-    checkbox.setSelected("true".equals(Preferences.get("welcome.four.beta.show")));
-    checkbox.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-          Preferences.setBoolean("welcome.four.beta.show", true);
-        } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-          Preferences.setBoolean("welcome.four.beta.show", false);
-        }
+    checkbox.setSelected("true".equals(Preferences.get("welcome.four.show")));
+    checkbox.addItemListener(e -> {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        Preferences.setBoolean("welcome.four.show", true);
+      } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+        Preferences.setBoolean("welcome.four.show", false);
       }
     });
     panel.add(checkbox);
@@ -82,13 +74,8 @@ public class Welcome {
 
     JButton button = new JButton("Get Started");
     button.setFont(Toolkit.getSansFont(14, Font.PLAIN));
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        view.handleClose();
-      }
-    });
+    button.addActionListener(e -> view.handleClose());
     panel.add(button);
-    //panel.add(Box.createHorizontalGlue());
 
     view = new WebFrame(getIndexFile(sketchbook), 425, panel) {
       /*
@@ -124,7 +111,7 @@ public class Welcome {
 
       @Override
       public void handleClose() {
-        Preferences.setBoolean("welcome.four.beta.seen", true);
+        Preferences.setBoolean("welcome.four.seen", true);
         Preferences.save();
         super.handleClose();
       }
@@ -138,34 +125,28 @@ public class Welcome {
     if (folder != null) {
       if (base != null) {
         base.setSketchbookFolder(folder);
-//      } else {
-//        System.out.println("user selected " + folder);
       }
     }
   }
 
 
-//  @Override
-//  public void handleClose() {
-//    dispose();
-//  }
-
-
   static private File getIndexFile(boolean sketchbook) {
-    String filename =
-      "welcome/" + (sketchbook ? "sketchbook.html" : "generic.html");
+    String filename = "welcome/index.html";
 
-    // version when running from command line for editing
-    File htmlFile = new File("../build/shared/lib/" + filename);
+    // version when running from IntelliJ for editing
+    File htmlFile = new File("build/shared/lib/" + filename);
     if (htmlFile.exists()) {
       return htmlFile;
     }
+
+    /* needs to be tested/updated for 4.0
     // processing/build/macosx/work/Processing.app/Contents/Java
     // version for Scott to use for OS X debugging
     htmlFile = Platform.getContentFile("../../../../../shared/lib/" + filename);
     if (htmlFile.exists()) {
       return htmlFile;
     }
+    */
 
     try {
       return Base.getLibFile(filename);
@@ -178,6 +159,11 @@ public class Welcome {
 
   static public void main(String[] args) {
     Platform.init();
+    try {
+      Platform.setLookAndFeel();  // set font for checkbox and button
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
     Preferences.init();
 
     EventQueue.invokeLater(new Runnable() {

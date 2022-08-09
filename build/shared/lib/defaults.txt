@@ -38,11 +38,13 @@
 # In 3.0, the location has changed.
 #sketchbook.path.three=
 
-# Rolling this over for the beta release
-welcome.four.beta.show = true
-welcome.four.beta.seen = false
+# Whether or not to show the Welcome screen for 4.0
+# (It's always available under Help → Welcome)
+welcome.four.show = true
+welcome.four.seen = false
 
-# set 'true' for the default behavior before 4.0b6
+# Set 'true' for the default behavior before 4.0, where the
+# main tab must have the same name as the sketch folder
 editor.sync_folder_and_filename = true
 
 # By default, contributions are moved to backup folders when
