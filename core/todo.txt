@@ -1,5 +1,4 @@
-1286 (4.0.1)
-X no changes to core
+1287 (4.0.2)
 
 
 _ concurrent StringDict et al

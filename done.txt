@@ -1,3 +1,11 @@
+1286 (4.0.1)
+X Changing into p5.js mode gives an error
+X   https://github.com/processing/processing4/issues/530
+X add another rollover for the "more prefs" text in the Preferences window
+X   open the wiki page on click
+X   also pull the foreground color from the LaF instead of disabling the label
+
+
 1285 (4.0)
 X can we compress jdk/Contents/Home/legal into a single zip?
 X   it's ~300 files of the ~500 in the entire jdk directory
