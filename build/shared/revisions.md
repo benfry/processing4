@@ -1,3 +1,52 @@
+# Processing 4.0
+
+*Revision 1285 – 9 August 2022*
+
+On the 21st anniversary of the very first Processing release (revision 0001), we're posting the final 4.0, which is the 286th release of the software.
+
+The primary goal for Processing 4 is to keep everyone's code running, even as operating systems, hardware, and hairlines continue to change.
+
+There are really too many changes to list, but you can start by reading about them [at this link](https://github.com/processing/processing4/wiki/Changes-in-4.0).
+
+Below is a list of the incremental changes in this release since beta 9 a few days ago:
+
+
+## welcome, welcome!
+
+* Added a new “Welcome” screen that links to a couple examples as well as the changes and updates page. 
+
+* The splash screen has also been updated with a new image for 4.0.
+
+
+## wait, what?
+
+* Export to Application was almost completely broken on macOS, where all apps were reporting as “damaged” when transferred to another machine. It's now working again, and also prompts users to install the Xcode tools. See the [wiki](https://github.com/processing/processing4/wiki/Exporting-Applications#macos) for more information about how to work with Apple's code signing restrictions.
+
+* There was a *lot* of out-of-date material on the wiki pages in the Processing 3 repository on Github. We now have new versions of the major pages in the Processing 4 repository. This includes pages on [Themes](https://github.com/processing/processing4/wiki/Themes), [Supported Platforms](https://github.com/processing/processing4/wiki/Supported-Platforms), [Exporting Applications](https://github.com/processing/processing4/wiki/Exporting-Applications), [Troubleshooting](https://github.com/processing/processing4/wiki/Troubleshooting), and the [FAQ](https://github.com/processing/processing4/wiki/FAQ).
+
+* There are many entries in `preferences.txt` that are important, but not important enough to make it into the Preferences window. Some of those are now documented [here](https://github.com/processing/processing4/wiki/Preferences).
+
+* Processing sometimes creates a *lot* of temporary files (basically, each time you run a sketch), which didn't always get cleaned up by the operating system. With 4.0, those are all being written to a separate “processing” folder, so that they can be automatically removed after 7 days. [#529](https://github.com/processing/processing4/issues/529)
+
+
+## the last of the bugs
+
+* When using Export to Application, errors in the code would cause the software to just report “error during export.” Now it provides the usual error message (about the error itself).
+
+* The dropdown menu in the Theme Selector wasn't updating properly when new themes were selected.
+
+* The rollover and pressed color for the console scrollbar was always blue.
+
+* Inside Movie Maker, `ffmpeg` wasn't available on all platforms, that's now fixed. We've also updated to version 5.0.1.
+
+
+## you probably won't notice
+
+* Examples have been updated, and are now being pulled from the [processing-examples](https://github.com/processing/processing-examples) repository. May have also had to remove the sin/cos lookup tables from the Rotating Arcs example so that we could comfortably put it on the Welcome screen.
+
+* Compress `jdk/Contents/Home/legal` into a single zip. It was 300 files, or 60% of the 500 files in the entire JDK. Lawyers FTW.
+
+
 # Processing 4.0 beta 9
 
 *Revision 1284 – 4 August 2022*

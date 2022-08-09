@@ -1,4 +1,5 @@
-1285 (4.0?)
+1285 (4.0)
+X no changes in core
 
 
 _ concurrent StringDict et al
