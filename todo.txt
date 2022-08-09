@@ -1,6 +1,9 @@
 1286 (4.0.1)
 X Changing into p5.js mode gives an error
 X   https://github.com/processing/processing4/issues/530
+X add another rollover for the "more prefs" text in the Preferences window
+X   open the wiki page on click
+X   also pull the foreground color from the LaF instead of disabling the label
 
 
 known issues
@@ -19,7 +22,7 @@ finalizing a release
 _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi
-_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
+_   https://www.microsoft.com/security/oblog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 
 
 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

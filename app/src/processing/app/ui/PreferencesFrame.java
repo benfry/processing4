@@ -421,9 +421,26 @@ public class PreferencesFrame {
 
     // More preferences are in the ...
 
-    JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file"));
-    //morePreferenceLabel.setForeground(Color.gray);
-    morePreferenceLabel.setEnabled(false);
+    final JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file"));
+    morePreferenceLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
+    morePreferenceLabel.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        // Starting in 4.0.1, open the Wiki page about the prefs
+        Platform.openURL("https://github.com/processing/processing4/wiki/Preferences");
+      }
+
+      // Light this up in blue like a hyperlink
+      public void mouseEntered(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        morePreferenceLabel.setForeground(Theme.getColor("laf.accent.color"));
+      }
+
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        morePreferenceLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
+      }
+    });
 
     JLabel preferencePathLabel = new JLabel(Preferences.getPreferencesPath());
     final JLabel clickable = preferencePathLabel;
@@ -441,9 +458,7 @@ public class PreferencesFrame {
       // Set the text back to black when the mouse is outside
       public void mouseExited(MouseEvent e) {
         frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        // steal the color from a component that doesn't change
-        // (so that it works after updateTheme() has been called)
-        clickable.setForeground(sketchbookLocationLabel.getForeground());
+        clickable.setForeground(UIManager.getColor("Label.foreground"));
       }
     });
 
