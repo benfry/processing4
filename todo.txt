@@ -351,6 +351,8 @@ o just skip the welcome screen on Windows hidpi dipslays?
 o better to launch a web browser
 o   also use id/ask for login to help understand community?
 o tell users about JavaFX, Movie Maker install, changing themes
+X make the examples work in the startup window
+X smaller images so they're not so crunchy?
 
 new things
 + themes
@@ -384,8 +386,6 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 finalizing 4.0
-_ make the examples work in the startup window
-_   smaller images so they're not so crunchy?
 _ update "changes in 4.0" because so much left out
 _ update README.md in the root
 _   move api/internal changes elsewhere
