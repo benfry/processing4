@@ -11,6 +11,11 @@ X fix the processing.foundation cert
 X remove links to old pages from the language translations
 X   cd build/shared/lib/languages
 X   grep menu.help * | grep url
+X make sure the numbers scripts are working again before launch
+o   anything else we need to be tracking?
+X recent errors from AndroidMode
+X   seems related to the random JavaBuild issue
+X final call on the About screen
 
 themes
 X try gradients in Lab space
@@ -89,10 +94,8 @@ An unexpected error has been detected by HotSpot Virtual Machine:
 all i can do is find things that might trigger them, but it's more likely
 than not to be a java problem, and not something that can be fixed
 X search the source for 'applet' references (i.e. SVG docs)
+X add a note about underscores in sketch tabs in prefs doc
 
-housekeeping
-X make sure the numbers scripts are working again before launch
-o   anything else we need to be tracking?
 
 temp
 X temp folders (particularly on Windows)
@@ -324,8 +327,22 @@ o update Video library to use the new layout
 o Export to Application not working with the current video library
 o   https://github.com/processing/processing-video/issues/188
 
-design
-X final call on the About screen
+detach sketch names
+o remove checkbox for detaching sketch name
+o   just do this manually, and Save As will reset the name
+o   should this be a setting in the sketch itself?
+X   no, some people may want to keep the old behavior, make this obvious
+o really need to override the save dialog and add a checkbox there
+o   or should this be on the rename for the main tab
+o   and if it's different on 'save as' then it won't update it
+o better yet, is it on creating sketches, so it actually is a pref
+o   i.e. 'new sketches use name Sketch.java' instead of name of sketch as main tab
+o   that might be closer to where people are expecting it anyway
+o   and combined w/ the rename checkbox on the main tab, that might do it
+X detach sketch name and folder name (use sketch.properties)
+X   better for git, etc
+X   single file thing is long gone
+o   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 
 
 known issues
@@ -380,28 +397,12 @@ old things
 + Examples window (Casey will pick 3-4)
 * Reference, Discourse, Github, Wiki
 
-_ recent errors from AndroidMode
-_ add a note about underscores in sketch tabs in prefs doc
 
-
-detach sketch names
-_ remove checkbox for detaching sketch name
-_   just do this manually, and Save As will reset the name
-_   should this be a setting in the sketch itself?
-_ really need to override the save dialog and add a checkbox there
-_   or should this be on the rename for the main tab
-_   and if it's different on 'save as' then it won't update it
-_ better yet, is it on creating sketches, so it actually is a pref
-_   i.e. 'new sketches use name Sketch.java' instead of name of sketch as main tab
-_   that might be closer to where people are expecting it anyway
-_   and combined w/ the rename checkbox on the main tab, that might do it
-_ detach sketch name and folder name (use sketch.properties)
-_   better for git, etc
-_   single file thing is long gone
-_   introduce the idea of 'scraps' (ala gist) that are just single page blobs
-
-
-priorities/would like to fix (but not necessary for 4.0 final)
+priorities/would like to fix soon (but not necessary for 4.0 final)
+_ write a local.properties file when there's more than one file in the sketch
+_   this will fix the majority of cases where sketch name is accidentally detached
+_   for single .pde sketches, it's not a problem because it will find the file
+_   but for multiple files, it needs to identify the main
 _ pass through the source to update licenses
 _   add Processing Foundation as 2012-15
 _   update license info to state gplv2 not v3
@@ -431,14 +432,13 @@ _   https://github.com/processing/processing4/issues/247
 _ Find in Reference disabled for various keywords (draw, for, if, catch, while)
 _   https://github.com/processing/processing/issues/5562
 X   https://github.com/processing/processing/pull/5642 (closed)
-
-
-priorities/teaching
 _ ui scaling in the PDE is important for classes/seeing at a distance
 _   some interface zoom now conflicting with the Java 9+ defaults
 _   things look terrible (tiny fonts) on Windows, adjusting has weird effects
 _   resolve in DefaultPlatform and Toolkit, disable ui in PreferencesFrame
 _ proxy trouble with p5? since adding the system proxy?
+_   this can be a problem in school environments (where proxies show up)
+_   really difficult to test, however, without a proxy setup
 _   https://github.com/processing/processing/pull/3251/files
 _   larger problem thread https://github.com/processing/processing/issues/3891
 _   ideen2011.blogspot.de/2011/08/java-proxyselector-usesystemproxies-and.html
