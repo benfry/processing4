@@ -24,10 +24,7 @@ package processing.app.ui;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -49,7 +46,7 @@ public class Welcome {
   WebFrame view;
 
 
-  public Welcome(Base base, boolean sketchbook) throws IOException {
+  public Welcome(Base base) throws IOException {
     this.base = base;
 
     JComponent panel = Box.createHorizontalBox();
@@ -77,7 +74,7 @@ public class Welcome {
     button.addActionListener(e -> view.handleClose());
     panel.add(button);
 
-    view = new WebFrame(getIndexFile(sketchbook), 425, panel) {
+    view = new WebFrame(getIndexFile(), 420, panel) {
       /*
       @Override
       public void handleSubmit(StringDict dict) {
@@ -130,7 +127,7 @@ public class Welcome {
   }
 
 
-  static private File getIndexFile(boolean sketchbook) {
+  static private File getIndexFile() {
     String filename = "welcome/index.html";
 
     // version when running from IntelliJ for editing
@@ -169,7 +166,7 @@ public class Welcome {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
-          new Welcome(null, true);
+          new Welcome(null);
         } catch (IOException e) {
           e.printStackTrace();
         }

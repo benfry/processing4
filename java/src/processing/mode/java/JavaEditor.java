@@ -283,7 +283,8 @@ public class JavaEditor extends Editor {
     item = new JMenuItem(Language.text("menu.help.welcome"));
     item.addActionListener(e -> {
       try {
-        new Welcome(base, Preferences.getSketchbookPath().equals(Preferences.getOldSketchbookPath()));
+        new Welcome(base);
+        //new Welcome(base, Preferences.getSketchbookPath().equals(Preferences.getOldSketchbookPath()));
       } catch (IOException ioe) {
         Messages.showWarning("Unwelcome Error",
                              "Please report this error to\n" +

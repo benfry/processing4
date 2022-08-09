@@ -348,6 +348,7 @@ public class Base {
 
 
   static private void handleWelcomeScreen(Base base) {
+    /*
     boolean sketchbookPrompt = false;
     if (Preferences.getBoolean("welcome.four.beta.show")) {
       // only ask once about split sketchbooks
@@ -369,16 +370,18 @@ public class Base {
         }
       }
     }
+    */
 
     // Needs to be shown after the first editor window opens, so that it
     // shows up on top, and doesn't prevent an editor window from opening.
-    if (Preferences.getBoolean("welcome.four.beta.show")) {
+    if (Preferences.getBoolean("welcome.four.show")) {
       try {
-        new Welcome(base, sketchbookPrompt);
+        //new Welcome(base, sketchbookPrompt);
+        new Welcome(base);
       } catch (IOException e) {
         Messages.showTrace("Unwelcoming",
           "Please report this error to\n" +
-            "https://github.com/processing/processing/issues", e, false);
+            "https://github.com/processing/processing4/issues", e, false);
       }
     }
   }
