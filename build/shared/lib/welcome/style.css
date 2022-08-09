@@ -40,6 +40,12 @@ a {
   text-decoration: none;
 }
 
+ul {
+  margin-left: 20px;
+  margin-right: 0px;
+  padding: 0;
+}
+
 #startButton {
   margin-left: 50px;
 }
