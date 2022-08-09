@@ -178,6 +178,7 @@ public class Welcome {
 
   static public void main(String[] args) {
     Platform.init();
+    Preferences.init();
 
     EventQueue.invokeLater(new Runnable() {
       public void run() {
