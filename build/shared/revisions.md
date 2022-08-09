@@ -1,3 +1,16 @@
+# Processing 4.0.1
+
+*Revision 1286 – 9 August 2022*
+
+And what sort of anniversary would it be without a regression that breaks a major feature? Ahem. Here's 4.0.1…
+
+* In the 4.0 release, switching to p5.js Mode caused an error message to pop up. Now fixed. [#530](https://github.com/processing/processing4/issues/530)
+
+* One minor addition: in the Preferences window, clicking the “More preferences can be found…” text will open the [wiki page](https://github.com/processing/processing4/wiki/Preferences) with more details about all these wonderful options.
+
+Other than that, please see the release notes for 4.0…
+
+
 # Processing 4.0
 
 *Revision 1285 – 9 August 2022*
