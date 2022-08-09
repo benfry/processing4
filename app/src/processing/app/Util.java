@@ -264,7 +264,7 @@ public class Util {
       final String urDum = "source and target directories are identical";
       throw new IllegalArgumentException(urDum);
     }
-    if (!targetDir.mkdirs()) {
+    if (!targetDir.exists() && !targetDir.mkdirs()) {
       throw new IOException("Could not create " + targetDir);
     }
     String[] filenames = sourceDir.list();

@@ -1280,9 +1280,9 @@ public class Base {
       handleOpenUntitled(path);
 
     } catch (IOException e) {
-      Messages.showWarning("That's new to me",
-                           "A strange and unexplainable error occurred\n" +
-                           "while trying to create a new sketch.", e);
+      Messages.showTrace("That's new to me",
+                         "A strange and unexplainable error occurred\n" +
+                         "while trying to create a new sketch.", e, false);
     }
   }
 

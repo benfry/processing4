@@ -1,4 +1,6 @@
 1286 (4.0.1)
+X Changing into p5.js mode gives an error
+X   https://github.com/processing/processing4/issues/530
 
 
 known issues
