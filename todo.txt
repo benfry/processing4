@@ -95,7 +95,10 @@ all i can do is find things that might trigger them, but it's more likely
 than not to be a java problem, and not something that can be fixed
 X search the source for 'applet' references (i.e. SVG docs)
 X add a note about underscores in sketch tabs in prefs doc
-
+X update "changes in 4.0" because so much left out
+X update README.md in the root
+/   move api/internal changes elsewhere
+X   link to other wiki things that are more useful
 
 temp
 X temp folders (particularly on Windows)
@@ -386,10 +389,6 @@ _   https://github.com/processing/processing4-javafx/issues/15
 
 
 finalizing 4.0
-_ update "changes in 4.0" because so much left out
-_ update README.md in the root
-_   move api/internal changes elsewhere
-_   link to other wiki things that are more useful
 _ submit to Microsoft
 _   https://www.microsoft.com/en-us/wdsi/filesubmission
 _   https://aka.ms/wdsi

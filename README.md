@@ -3,20 +3,20 @@ This repository contains the source code for the [Processing](https://processing
 If you're interested in *using* Processing, get started at the [download](https://processing.org/download) page, or read more about the project at the [home page](https://processing.org/). There are also several [tutorials](https://processing.org/tutorials) that provide a helpful introduction. They are complemented by hundreds of examples that are included with the software itself.
 
 
-## Processing 4.0
+# Processing 4.0
 
-Processing 4 has important updates that prepare the platform for its future. Most significantly, this includes the move to Java 17 as well as major changes to the range of platforms we support (Apple Silicon! Raspberry Pi on 32- and 64-bit ARM!)
+Processing 4 has [important updates](https://github.com/processing/processing4/wiki/Changes-in-4.0) that prepare the platform for its future. Most significantly, this includes the move to Java 17 as well as major changes to the range of platforms we support (Apple Silicon! Raspberry Pi on 32- and 64-bit ARM!)
 
-With any luck, the changes should be transparent to most users, in spite of how mcuh is updated behind the scenes. More immediately visible changes include major work on the UI, including “themes” and the ability to change how sketches are named by default.
+With any luck, many changes should be transparent to most users, in spite of how much is updated behind the scenes. More immediately visible changes include major work on the UI, including “themes” and the ability to change how sketches are named by default.
+
+
+## Building the Code
+
+[Instructions on how to build the code](https://github.com/processing/processing4/blob/master/build/README.md) are found in a README inside the `build` folder.
 
 We've also moved to a new repository for this release so that we could cull a lot of the accumulated mess of the last 20 years, which makes `git clone` (and most other `git` operations) a lot faster.
 
-
-## Roadmap
-
-This software is currently in beta. We don't have a schedule for the final 4.0 release. This work is being done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-08-09&type=c) who continue working on it, unpaid, because they care about it. The beta is the default download on the site because it's more usable than the 3.5.4 release.
-
-* We're currently using JDK 17, which is the latest “Long Term Support” (LTS) release. (Before beta 3, we were using JDK 11. In 3.x we were using Java 8.)
+The work on 4.0 was done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-08-09&type=c) who continue working on it, unpaid, because they care about it. Please help!
 
 
 ## API and Internal Changes
@@ -132,8 +132,3 @@ The full list of changes can be seen in [the release notes for each version](htt
 * `Base.defaultFileMenu` is now `protected` instead of `static public`
 
 * Processing 4 is 64-bit only. This is the overwhelming majority of users, and we don't have the necessary help to maintain and support 32-bit systems.
-
-
-## Building the Code
-
-[Instructions on how to build the code](https://github.com/processing/processing4/blob/master/build/README.md) are found in a README inside the `build` folder.
