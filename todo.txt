@@ -344,40 +344,13 @@ X   better for git, etc
 X   single file thing is long gone
 o   introduce the idea of 'scraps' (ala gist) that are just single page blobs
 
-
-known issues
-_ mixed mode warning now broken
-_   https://github.com/processing/processing4/issues/519
-_   tests also turned off in build.xml because this is causing it to fail
-_ 'color' in imports shows up as an error in the editor
-_   but code still compiles and runs
-_   https://github.com/processing/processing4/issues/521
-_ need to make it possible to use module jars
-_   https://github.com/processing/processing4/issues/522
-_   https://github.com/processing/processing4-javafx/issues/15
-
-
-during release the next release
-_ update README.md in the root
-_   move api/internal changes elsewhere
-_   link to other wiki things that are more useful
-_ submit to Microsoft
-_   https://www.microsoft.com/en-us/wdsi/filesubmission
-_   https://aka.ms/wdsi
-_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
-
-
-. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-4.0 / with Casey
-_ Welcome
-_   better startup experience/something to really make it feel like 4
-_   set a new preference for it (the old pref had .beta in the name)
-_   just skip the welcome screen on Windows hidpi dipslays?
-_   better to launch a web browser
-_     also use id/ask for login to help understand community?
-_   tell users about JavaFX, Movie Maker install, changing themes
+welcome
+X better startup experience/something to really make it feel like 4
+X set a new preference for it (the old pref had .beta in the name)
+o just skip the welcome screen on Windows hidpi dipslays?
+o better to launch a web browser
+o   also use id/ask for login to help understand community?
+o tell users about JavaFX, Movie Maker install, changing themes
 
 new things
 + themes
@@ -396,6 +369,34 @@ minor new things
 old things
 + Examples window (Casey will pick 3-4)
 * Reference, Discourse, Github, Wiki
+
+
+known issues
+_ mixed mode warning now broken
+_   https://github.com/processing/processing4/issues/519
+_   tests also turned off in build.xml because this is causing it to fail
+_ 'color' in imports shows up as an error in the editor
+_   but code still compiles and runs
+_   https://github.com/processing/processing4/issues/521
+_ need to make it possible to use module jars
+_   https://github.com/processing/processing4/issues/522
+_   https://github.com/processing/processing4-javafx/issues/15
+
+
+finalizing 4.0
+_ make the examples work in the startup window
+_   smaller images so they're not so crunchy?
+_ update "changes in 4.0" because so much left out
+_ update README.md in the root
+_   move api/internal changes elsewhere
+_   link to other wiki things that are more useful
+_ submit to Microsoft
+_   https://www.microsoft.com/en-us/wdsi/filesubmission
+_   https://aka.ms/wdsi
+_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
+
+
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
 priorities/would like to fix soon (but not necessary for 4.0 final)
