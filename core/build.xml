@@ -3,19 +3,6 @@
 
   <property environment="env" />
 
-  <target name="clean" description="Clean out the build directories">
-    <delete dir="bin" />
-    <delete dir="bin-test" />
-    <delete file="library/core.jar" />
-  </target>
-
-  <target name="clean-jogl" description="Clean out the JOGL binaries">
-    <delete>
-      <fileset dir="library" includes="gluegen-rt*.jar" />
-      <fileset dir="library" includes="jogl-all*.jar" />
-    </delete>
-  </target>
-
   <target name="methods-check">
     <available file="methods/methods.jar" property="methods.present" />
   </target>
@@ -214,6 +201,21 @@
       <fileset dir="src" includes="**/*.java" />
     </jar>
     <echo message="Wrote source jar to ${source.jar.path}" />
+  </target>
+
+  <target name="clean-libs" description="Clean out the JOGL binary downloads">
+    <delete>
+      <fileset dir="library" includes="gluegen-rt*.jar" />
+      <fileset dir="library" includes="jogl-all*.jar" />
+    </delete>
+
+    <!-- <antcall target="download-jogl" /> -->
+  </target>
+
+  <target name="clean" description="Clean out the build directories">
+    <delete dir="bin" />
+    <delete dir="bin-test" />
+    <delete file="library/core.jar" />
   </target>
 
 </project>

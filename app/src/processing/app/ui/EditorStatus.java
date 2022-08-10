@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -24,23 +24,22 @@
 
 package processing.app.ui;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.Graphics2D;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 
+import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
 
-import processing.app.Mode;
 import processing.app.Platform;
 import processing.app.Preferences;
 import processing.core.PApplet;
@@ -51,16 +50,12 @@ import processing.core.PApplet;
  */
 public class EditorStatus extends BasicSplitPaneDivider {
   static final int HIGH = Toolkit.zoom(28);
+  static final int ICON_SIZE = Toolkit.zoom(16);
   static final int LEFT_MARGIN = Editor.LEFT_GUTTER;
   static final int RIGHT_MARGIN = Toolkit.zoom(20);
 
-  Color urlColor;
   Color[] fgColor;
   Color[] bgColor;
-  Image[] bgImage;
-
-  // for beta 1, had to shut off the images because they were out of date
-  static final boolean USE_IMAGES = false;
 
   @SuppressWarnings("hiding")
   static public final int ERROR = 1;
@@ -69,56 +64,46 @@ public class EditorStatus extends BasicSplitPaneDivider {
   static public final int CURSOR_LINE_WARNING = 4;
   static public final int NOTICE = 0;
 
-  static final int YES = 1;
-  static final int NO = 2;
-  static final int CANCEL = 3;
-  static final int OK = 4;
-
   Editor editor;
 
   int mode;
   String message = "";
 
+  int messageRight;
   String url;
 
-  int rightEdge;
-  int mouseX;
-
-  static final int ROLLOVER_NONE = 0;
-  static final int ROLLOVER_URL = 1;
-  static final int ROLLOVER_COLLAPSE = 2;
-  static final int ROLLOVER_CLIPBOARD = 3;
-  int rolloverState;
+  static final int NONE = 0;
+  static final int URL_ROLLOVER = 1;
+  static final int URL_PRESSED = 2;
+  static final int COLLAPSE_ROLLOVER = 3;
+  static final int COLLAPSE_PRESSED = 4;
+  static final int CLIPBOARD_ROLLOVER = 5;
+  static final int CLIPBOARD_PRESSED = 6;
+  int mouseState;
 
   Font font;
   FontMetrics metrics;
   int ascent;
 
-  // actual Clipboard character not available [fry 180326]
-  //static final String CLIPBOARD_GLYPH = "\uD83D\uDCCB";
-  // other apps seem to use this one as a hack
-  static final String CLIPBOARD_GLYPH = "\u2398";
+  boolean shiftDown;
 
-  // https://en.wikipedia.org/wiki/Geometric_Shapes
-//  static final String COLLAPSE_GLYPH = "\u25B3";  // large up
-//  static final String EXPAND_GLYPH = "\u25BD";  // large down
-//  static final String COLLAPSE_GLYPH = "\u25B5";  // small up (unavailable)
-//  static final String EXPAND_GLYPH = "\u25BF";  // small down (unavailable)
-  static final String COLLAPSE_GLYPH = "\u25C1";  // left
-  static final String EXPAND_GLYPH = "\u25B7";  // right
-//  static final String COLLAPSE_GLYPH = "\u25F8";  // upper-left (unavailable)
-//  static final String EXPAND_GLYPH = "\u25FF";  // lower-right (unavailable)
+  ImageIcon[] clipboardIcon;
+  ImageIcon[] searchIcon;
+  ImageIcon[] collapseIcon;
+  ImageIcon[] expandIcon;
 
-  // a font that supports the Unicode glyphs we need
-  Font glyphFont;
+  float btnEnabledAlpha;
+  float btnRolloverAlpha;
+  float btnPressedAlpha;
 
-//  Image offscreen;
+  int urlEnabledAlpha;
+  int urlRolloverAlpha;
+  int urlPressedAlpha;
+
   int sizeW, sizeH;
   // size of the glyph buttons (width and height are identical)
-  int buttonSize;
+  int buttonEach;
   boolean collapsed = false;
-
-  int response;
 
   boolean indeterminate;
   Thread thread;
@@ -134,15 +119,20 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
       @Override
       public void mouseEntered(MouseEvent e) {
-        updateMouse();
+        updateMouse(e, false);
       }
 
       @Override
       public void mousePressed(MouseEvent e) {
-        if (rolloverState == ROLLOVER_URL) {
+        updateMouse(e, true);
+      }
+
+      @Override
+      public void mouseReleased(MouseEvent e) {
+        if (mouseState == URL_PRESSED) {
           Platform.openURL(url);
 
-        } else if (rolloverState == ROLLOVER_CLIPBOARD) {
+        } else if (mouseState == CLIPBOARD_PRESSED) {
           if (e.isShiftDown()) {
             // open the text in a browser window as a search
             final String fmt = Preferences.get("search.format");
@@ -156,32 +146,50 @@ public class EditorStatus extends BasicSplitPaneDivider {
                                "Use shift-click to search the web instead.");
           }
 
-        } else if (rolloverState == ROLLOVER_COLLAPSE) {
+        } else if (mouseState == COLLAPSE_PRESSED) {
           setCollapsed(!collapsed);
         }
+        updateMouse(e, false);  // no longer pressed
       }
 
       @Override
       public void mouseExited(MouseEvent e) {
-        mouseX = -100;
-        updateMouse();
+        updateMouse(null, false);
       }
-
     });
 
-    addMouseMotionListener(new MouseMotionAdapter() {
+    addMouseMotionListener(new MouseMotionListener() {
       @Override
       public void mouseDragged(MouseEvent e) {
         // BasicSplitPaneUI.startDragging gets called even when you click but
         // don't drag, so we can't expand the console whenever that gets called
         // or the button wouldn't work.
         setCollapsed(false);
+
+        updateMouse(e, true);
       }
 
       @Override
       public void mouseMoved(MouseEvent e) {
-        mouseX = e.getX();
-        updateMouse();
+        updateMouse(e, false);
+      }
+    });
+
+    editor.getTextArea().addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        if (shiftDown != e.isShiftDown()) {
+          shiftDown = e.isShiftDown();
+          repaint();
+        }
+      }
+
+      @Override
+      public void keyReleased(KeyEvent e) {
+        if (shiftDown != e.isShiftDown()) {
+          shiftDown = e.isShiftDown();
+          repaint();
+        }
       }
     });
   }
@@ -196,16 +204,37 @@ public class EditorStatus extends BasicSplitPaneDivider {
   }
 
 
-  void updateMouse() {
-    switch (rolloverState) {
-    case ROLLOVER_CLIPBOARD:
-    case ROLLOVER_URL:
+  void updateMouse(MouseEvent e, boolean pressed) {
+    mouseState = NONE;
+    shiftDown = false;
+
+    if (e != null) {
+      int mouseX = e.getX();
+      shiftDown = e.isShiftDown();
+
+      if (mouseX > sizeW - buttonEach && mouseX < sizeW) {
+        mouseState = pressed ? COLLAPSE_PRESSED : COLLAPSE_ROLLOVER;
+
+      } else if (message != null && !message.isEmpty()) {
+        if (sizeW - 2 * buttonEach < mouseX) {
+          mouseState = pressed ? CLIPBOARD_PRESSED : CLIPBOARD_ROLLOVER;
+
+        } else if (url != null && mouseX > LEFT_MARGIN && mouseX < messageRight) {
+          mouseState = pressed ? URL_PRESSED : URL_ROLLOVER;
+        }
+      }
+    }
+
+    // only change on the rollover, no need to update on press
+    switch (mouseState) {
+    case CLIPBOARD_ROLLOVER:
+    case URL_ROLLOVER:
       setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       break;
-    case ROLLOVER_COLLAPSE:
+    case COLLAPSE_ROLLOVER:
       setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
       break;
-    case ROLLOVER_NONE:
+    case NONE:
       setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
       break;
     }
@@ -223,7 +252,26 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
 
   protected void updateTheme() {
-    urlColor = Theme.getColor("status.url.fgcolor");
+    urlEnabledAlpha = 255 * Theme.getInteger("status.url.enabled.alpha") / 100;
+    urlRolloverAlpha = 255 * Theme.getInteger("status.url.rollover.alpha") / 100;
+    urlPressedAlpha = 255 * Theme.getInteger("status.url.pressed.alpha") / 100;
+
+    String[] stateColors = new String[] {
+      Theme.get("status.notice.fgcolor"),
+      Theme.get("status.error.fgcolor"),
+      Theme.get("status.error.fgcolor"),
+      Theme.get("status.warning.fgcolor"),
+      Theme.get("status.warning.fgcolor")
+    };
+
+    clipboardIcon = renderIcons("status/copy-to-clipboard", stateColors);
+    searchIcon = renderIcons("status/search", stateColors);
+    collapseIcon = renderIcons("status/console-collapse", stateColors);
+    expandIcon = renderIcons("status/console-expand", stateColors);
+
+    btnEnabledAlpha = Theme.getInteger("status.button.enabled.alpha") / 100f;
+    btnRolloverAlpha = Theme.getInteger("status.button.rollover.alpha") / 100f;
+    btnPressedAlpha = Theme.getInteger("status.button.pressed.alpha") / 100f;
 
     fgColor = new Color[] {
       Theme.getColor("status.notice.fgcolor"),
@@ -241,20 +289,19 @@ public class EditorStatus extends BasicSplitPaneDivider {
       Theme.getColor("status.warning.bgcolor")
     };
 
-    Mode mode = editor.getMode();
-    bgImage = new Image[] {
-      mode.loadImage("/lib/status/notice.png"),
-      mode.loadImage("/lib/status/error.png"),
-      mode.loadImage("/lib/status/error.png"),
-      mode.loadImage("/lib/status/warning.png"),
-      mode.loadImage("/lib/status/warning.png")
-    };
-
     font = Theme.getFont("status.font");
-    glyphFont = Theme.getFont("status.emoji.font");
     metrics = null;
   }
 
+
+  static private ImageIcon[] renderIcons(String path, String[] hexColors) {
+    int count = hexColors.length;
+    ImageIcon[] outgoing = new ImageIcon[count];
+    for (int i = 0; i < count; i++) {
+      outgoing[i] = Toolkit.renderIcon(path, hexColors[i], ICON_SIZE);
+    }
+    return outgoing;
+  }
 
   public void empty() {
     mode = NOTICE;
@@ -275,49 +322,31 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   public void notice(String message) {
     message(message, NOTICE);
-//    mode = NOTICE;
-//    this.message = message;
-//    url = findURL(message);
-//    repaint();
   }
-
-
-//  public void unnotice(String unmessage) {
-//    if (message.equals(unmessage)) empty();
-//  }
 
 
   public void warning(String message) {
     message(message, WARNING);
-//    this.message = message;
-//    mode = WARNING;
-//    url = findURL(message);
-//    repaint();
   }
 
 
   public void error(String message) {
     message(message, ERROR);
-//    this.message = message;
-//    mode = ERROR;
-//    url = findURL(message);
-//    repaint();
   }
 
 
   public void startIndeterminate() {
     indeterminate = true;
-    thread = new Thread() {
+    thread = new Thread("Editor Status") {
       public void run() {
         while (Thread.currentThread() == thread) {
           repaint();
           try {
             Thread.sleep(1000 / 10);
-          } catch (InterruptedException e) { }
+          } catch (InterruptedException ignored) { }
         }
       }
     };
-    thread.setName("Editor Status");
     thread.start();
   }
 
@@ -329,29 +358,11 @@ public class EditorStatus extends BasicSplitPaneDivider {
   }
 
 
-  //public void paintComponent(Graphics g) {
   public void paint(Graphics g) {
-    /*
-  public void paint(Graphics screen) {
-    Dimension size = getSize();
-    if ((size.width != sizeW) || (size.height != sizeH)) {
-      // component has been resized
-      offscreen = null;
-    }
-
-    if (offscreen == null) {
-      sizeW = size.width;
-      sizeH = size.height;
-      buttonSize = sizeH;
-      offscreen = Toolkit.offscreenGraphics(this, sizeW, sizeH);
-    }
-
-    Graphics g = offscreen.getGraphics();
-    */
     Toolkit.prepareGraphics(g);
     sizeW = getWidth();
     sizeH = getHeight();
-    buttonSize = sizeH;
+    buttonEach = sizeH;
 
     g.setFont(font);
     if (metrics == null) {
@@ -359,44 +370,41 @@ public class EditorStatus extends BasicSplitPaneDivider {
       ascent = metrics.getAscent();
     }
 
-    if (USE_IMAGES) {
-      g.drawImage(bgImage[mode], 0, 0, sizeW, sizeH, this);
-    } else {
-      g.setColor(bgColor[mode]);
-      g.fillRect(0, 0, sizeW, sizeH);
-    }
+    g.setColor(bgColor[mode]);
+    g.fillRect(0, 0, sizeW, sizeH);
 
-    rolloverState = ROLLOVER_NONE;
-    if (mouseX > sizeW - buttonSize && mouseX < sizeW) {
-      rolloverState = ROLLOVER_COLLAPSE;
-
-    } else if (message != null && !message.isEmpty()) {
-      if (sizeW - 2*buttonSize < mouseX) {
-        rolloverState = ROLLOVER_CLIPBOARD;
-
-      } else if (url != null && mouseX > LEFT_MARGIN &&
-        // calculate right edge of the text for rollovers (otherwise the pane
-        // cannot be resized up or down whenever a URL is being displayed)
-        mouseX < (LEFT_MARGIN + g.getFontMetrics().stringWidth(message))) {
-        rolloverState = ROLLOVER_URL;
-      }
-    }
-
+    messageRight = LEFT_MARGIN;  // needs to be reset (even) if msg null
     // https://github.com/processing/processing/issues/3265
     if (message != null) {
       // font needs to be set each time on osx
       g.setFont(font);
-      // set the highlight color on rollover so that the user's not surprised
-      // to see the web browser open when they click
-      g.setColor((rolloverState == ROLLOVER_URL) ? urlColor : fgColor[mode]);
-      g.drawString(message, LEFT_MARGIN, (sizeH + ascent) / 2);
+      // calculate right edge of the text for rollovers (otherwise the pane
+      // cannot be resized up or down whenever a URL is being displayed)
+      messageRight += g.getFontMetrics().stringWidth(message);
+
+      // set the highlight color on rollover so that the user is
+      // not surprised to see the web browser open when they click
+      int alpha = 255;
+      if (url != null) {
+        if (mouseState == URL_ROLLOVER) {
+          alpha = urlRolloverAlpha;
+        } else if (mouseState == URL_PRESSED) {
+          alpha = urlPressedAlpha;
+        } else {
+          alpha = urlEnabledAlpha;
+        }
+      }
+      if (alpha == 255) {
+        g.setColor(fgColor[mode]);
+      } else {
+        g.setColor(new Color((alpha << 24) | (fgColor[mode].getRGB() & 0xFFFFFF), true));
+      }
+      g.drawString(message, LEFT_MARGIN, (sizeH / 2) + (ascent / 4) + 1);
     }
 
     if (indeterminate) {
-      //int x = cancelButton.getX();
-      //int w = cancelButton.getWidth();
       int w = Toolkit.getButtonWidth();
-      int x = getWidth() - Math.max(RIGHT_MARGIN, (int)(buttonSize*1.2)) - w;
+      int x = getWidth() - Math.max(RIGHT_MARGIN, (int)(buttonEach * 1.2)) - w;
       int y = sizeH / 3;
       int h = sizeH / 3;
       g.setColor(new Color(0x80000000, true));
@@ -406,46 +414,58 @@ public class EditorStatus extends BasicSplitPaneDivider {
         g.drawLine(r, y, r, y+h);
       }
 
-    } else if (!message.isEmpty()) {
-      g.setFont(glyphFont);
-      drawButton(g, CLIPBOARD_GLYPH, 1, rolloverState == ROLLOVER_CLIPBOARD);
+    } else if (message != null && !message.isEmpty()) {
+      ImageIcon glyph;
+      float alpha;
+      if (shiftDown) {
+        glyph = searchIcon[mode];
+      } else {
+        glyph = clipboardIcon[mode];
+      }
+      if (mouseState == CLIPBOARD_ROLLOVER) {
+        alpha = btnRolloverAlpha;
+      } else if (mouseState == CLIPBOARD_PRESSED) {
+        alpha = btnPressedAlpha;
+      } else {
+        alpha = btnEnabledAlpha;
+      }
+      drawButton(g, 1, glyph, alpha);
       g.setFont(font);
     }
 
     // draw collapse/expand button
-    String collapseGlyph = collapsed ? EXPAND_GLYPH : COLLAPSE_GLYPH;
-    drawButton(g, collapseGlyph, 0, rolloverState == ROLLOVER_COLLAPSE);
-
-    //screen.drawImage(offscreen, 0, 0, sizeW, sizeH, null);
+    ImageIcon glyph;
+    float alpha;
+    if (collapsed) {
+      glyph = expandIcon[mode];
+    } else {
+      glyph = collapseIcon[mode];
+    }
+    if (mouseState == COLLAPSE_ROLLOVER) {
+      alpha = btnRolloverAlpha;
+    } else if (mouseState == COLLAPSE_PRESSED) {
+      alpha = btnPressedAlpha;
+    } else {
+      alpha = btnEnabledAlpha;
+    }
+    drawButton(g, 0, glyph, alpha);
   }
 
-
-  //private final Color whitishTint = new Color(0x20eeeeee, true);
 
   /**
    * @param pos A zero-based button index with 0 as the rightmost button
    */
-  private void drawButton(Graphics g, String symbol, int pos, boolean highlight) {
-    int left = sizeW - (pos + 1) * buttonSize;
-    // Overlap very long errors
-    if (USE_IMAGES) {
-      g.drawImage(bgImage[mode], left, 0, buttonSize, sizeH, this);
-    } else {
-      g.setColor(bgColor[mode]);
-      g.fillRect(left, 0, buttonSize, sizeH);
-    }
+  //private void drawButton(Graphics g, String symbol, int pos, boolean highlight) {
+  private void drawButton(Graphics g, int pos, ImageIcon icon, float alpha) {
+    int left = sizeW - (pos + 1) * buttonEach;
 
-    if (highlight) {
-      // disabling since this doesn't match any of our other UI
-//      g.setColor(whitishTint);
-//      g.fillRect(left, 0, sizeH, sizeH);
-      g.setColor(urlColor);
-    } else {
-      g.setColor(fgColor[mode]);
-    }
-    g.drawString(symbol,
-                 left + (buttonSize - g.getFontMetrics().stringWidth(symbol))/2,
-                 (sizeH + ascent) / 2);
+    Graphics2D g2 = (Graphics2D) g.create();
+    g2.setComposite(AlphaComposite.SrcAtop.derive(alpha));
+    //icon.paintIcon(c, g2, x, y);
+    icon.paintIcon(this, g2,
+      left + (buttonEach - icon.getIconWidth()) / 2,
+      (buttonEach - icon.getIconHeight()) / 2);
+    g2.dispose();
   }
 
 

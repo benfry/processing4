@@ -46,11 +46,11 @@ public class ModeSelector extends JPanel {
   int titleAscent;
   int titleWidth;
 
-  final int MODE_GAP_WIDTH = Toolkit.zoom(13);
+  final int MODE_GAP_WIDTH = Toolkit.zoom(10);
   final int ARROW_GAP_WIDTH = Toolkit.zoom(6);
   final int ARROW_WIDTH = Toolkit.zoom(6);
-  final int ARROW_TOP = Toolkit.zoom(12);
-  final int ARROW_BOTTOM = Toolkit.zoom(18);
+  final int ARROW_TOP = Toolkit.zoom(16);
+  final int ARROW_BOTTOM = Toolkit.zoom(22);
 
   int[] triangleX = new int[3];
   int[] triangleY = new int[] { ARROW_TOP, ARROW_TOP, ARROW_BOTTOM };
@@ -99,6 +99,8 @@ public class ModeSelector extends JPanel {
 
     final int width = getWidth();
     final int height = getHeight();
+    final int inset = Toolkit.zoom(4);
+    final int outline = Toolkit.zoom(1);
 
     // clear the background
     g.setColor(backgroundColor);
@@ -107,11 +109,11 @@ public class ModeSelector extends JPanel {
     // draw the outline for this feller
     g.setColor(outlineColor);
     //Toolkit.dpiStroke(g2);
-    g2.draw(Toolkit.createRoundRect(1, 1, width-1, height-1,
+    g2.draw(Toolkit.createRoundRect(outline, outline + inset, width - outline, height - outline - inset,
         RADIUS, RADIUS, RADIUS, RADIUS));
 
     g.setColor(titleColor);
-    g.drawString(title, MODE_GAP_WIDTH, (height + titleAscent) / 2);
+    g.drawString(title, MODE_GAP_WIDTH, (height + titleAscent) / 2 + 1);
 
     int x = MODE_GAP_WIDTH + titleWidth + ARROW_GAP_WIDTH;
     triangleX[0] = x;

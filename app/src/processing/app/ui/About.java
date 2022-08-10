@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or
@@ -52,18 +52,6 @@ public class About extends Window {
     width = icon.getIconWidth();
     height = icon.getIconHeight();
 
-    /*
-    if (Toolkit.highResDisplay()) {
-      image = Toolkit.getLibImage("about-2x.jpg"); //$NON-NLS-1$
-      width = image.getWidth(null) / 2;
-      height = image.getHeight(null) / 2;
-    } else {
-      image = Toolkit.getLibImage("about.jpg"); //$NON-NLS-1$
-      width = image.getWidth(null);
-      height = image.getHeight(null);
-    }
-    */
-
     addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent e) {
         dispose();
@@ -79,10 +67,7 @@ public class About extends Window {
       }
     });
 
-//    Dimension screen = Toolkit.getScreenSize();
-//    setBounds((screen.width-width)/2, (screen.height-height)/2, width, height);
     setSize(width, height);
-//    setLocationRelativeTo(null);
     setLocationRelativeTo(frame);
     setVisible(true);
     requestFocus();
@@ -90,22 +75,18 @@ public class About extends Window {
 
 
   public void paint(Graphics g) {
-//    Graphics2D g2 = Toolkit.prepareGraphics(g);
-//    g2.scale(0.5, 0.5);
-
     Graphics2D g2 = (Graphics2D) g;
-    // OS X looks better doing its own thing, Windows and Linux need AA
+
+    // macOS looks better doing its own thing, Windows and Linux need AA
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         Platform.isMacOS() ?
                         RenderingHints.VALUE_TEXT_ANTIALIAS_DEFAULT :
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
     g.drawImage(icon.getImage(), 0, 0, width, height, null);
-//    g.setColor(Color.ORANGE);
-//    g.fillRect(0, 0, width, height);
 
     g.setFont(Toolkit.getSansFont(12, Font.PLAIN));
-    g.setColor(Color.WHITE);
-    g.drawString(Base.getVersionName(), 26, 29);
+    g.setColor(Color.DARK_GRAY);
+    g.drawString(Base.getVersionName(), width - 40, height - 15);
   }
 }

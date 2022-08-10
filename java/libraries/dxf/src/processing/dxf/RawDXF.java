@@ -233,7 +233,7 @@ public class RawDXF extends PGraphics {
   public void write(String cmd, float val) {
     writer.println(cmd);
     // Don't number format, will cause trouble on systems that aren't en-US
-    // http://dev.processing.org/bugs/show_bug.cgi?id=495
+    // https://download.processing.org/bugzilla/495.html
     writer.println(val);
   }
 

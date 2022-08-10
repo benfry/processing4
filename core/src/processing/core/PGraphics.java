@@ -971,7 +971,7 @@ public class PGraphics extends PImage implements PConstants {
     textAlign = LEFT;
     textMode = MODEL;
 
-    // if this fella is associated with an applet, then clear its background.
+    // if this fella is associated with a component, then clear its background.
     // if it's been created by someone else through createGraphics,
     // they have to call background() themselves, otherwise everything gets
     // a gray background (when just a transparent surface or an empty pdf
@@ -1456,7 +1456,7 @@ public class PGraphics extends PImage implements PConstants {
     // only do this if we're using an irregular (POLYGON) shape that
     // will go through the triangulator. otherwise it'll do thinks like
     // disappear in mathematically odd ways
-    // http://dev.processing.org/bugs/show_bug.cgi?id=444
+    // https://download.processing.org/bugzilla/444.html
     if (shape == POLYGON) {
       if (vertexCount > 0) {
         float[] pvertex = vertices[vertexCount-1];
@@ -2752,7 +2752,7 @@ public class PGraphics extends PImage implements PConstants {
   // Still need to do a lot of work here to make it behave across renderers
   // (e.g. not all renderers use the vertices array)
   // Also seems to be some issues on quality here (too dense)
-  // http://code.google.com/p/processing/issues/detail?id=265
+  // https://github.com/processing/processing/issues/304
 //  private void quadraticVertex(float cpx, float cpy, float x, float y) {
 //    float[] prev = vertices[vertexCount - 1];
 //    float prevX = prev[X];

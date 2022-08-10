@@ -27,7 +27,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
@@ -55,9 +54,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1284;
+  static private final int REVISION = 1287;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1284"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1287"; //$NON-NLS-1$
 
   static final public String SKETCH_BUNDLE_EXT = ".pdez";
   static final public String CONTRIB_BUNDLE_EXT = ".pdex";
@@ -259,8 +258,10 @@ public class Base {
 
       // Create a location for untitled sketches
       try {
-        untitledFolder = Util.createTempFolder("untitled", "sketches", null);
-        untitledFolder.deleteOnExit();
+        //untitledFolder = Util.createTempFolder("untitled", "sketches", null);
+        //untitledFolder.deleteOnExit();
+        untitledFolder = Util.getProcessingTemp();
+
       } catch (IOException e) {
         Messages.showError("Trouble without a name",
                            "Could not create a place to store untitled sketches.\n" +
@@ -282,6 +283,7 @@ public class Base {
 
         handleWelcomeScreen(base);
         handleCrustyDisplay();
+        handleTempCleaning();
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
@@ -346,6 +348,7 @@ public class Base {
 
 
   static private void handleWelcomeScreen(Base base) {
+    /*
     boolean sketchbookPrompt = false;
     if (Preferences.getBoolean("welcome.four.beta.show")) {
       // only ask once about split sketchbooks
@@ -367,16 +370,18 @@ public class Base {
         }
       }
     }
+    */
 
     // Needs to be shown after the first editor window opens, so that it
     // shows up on top, and doesn't prevent an editor window from opening.
-    if (Preferences.getBoolean("welcome.four.beta.show")) {
+    if (Preferences.getBoolean("welcome.four.show")) {
       try {
-        new Welcome(base, sketchbookPrompt);
+        //new Welcome(base, sketchbookPrompt);
+        new Welcome(base);
       } catch (IOException e) {
         Messages.showTrace("Unwelcoming",
           "Please report this error to\n" +
-            "https://github.com/processing/processing/issues", e, false);
+            "https://github.com/processing/processing4/issues", e, false);
       }
     }
   }
@@ -405,6 +410,49 @@ public class Base {
       }
     }
   }
+
+
+  static private void handleTempCleaning() {
+    new Thread(() -> {
+      Console.cleanTempFiles();
+      cleanTempFolders();
+    }).start();
+  }
+
+
+  /**
+   * Clean folders and files from the Processing subdirectory
+   * of the user's temp folder (java.io.tmpdir).
+   */
+  static public void cleanTempFolders() {
+    try {
+      final File tempDir = Util.getProcessingTemp();
+      final int days = Preferences.getInteger("temp.days");
+
+      if (days > 0) {
+        final long now = new Date().getTime();
+        final long diff = days * 24 * 60 * 60 * 1000L;
+        File[] expiredFiles =
+          tempDir.listFiles(file -> (now - file.lastModified()) > diff);
+        if (expiredFiles != null) {
+          // Remove the files approved for deletion
+          for (File file : expiredFiles) {
+            //file.delete();  // not as safe
+            try {
+              Platform.deleteFile(file);  // move to trash
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
+
+
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -500,7 +548,7 @@ public class Base {
       // Fix a problem with systems that use a non-ASCII languages. Paths are
       // being passed in with 8.3 syntax, which makes the sketch loader code
       // unhappy, since the sketch folder naming doesn't match up correctly.
-      // http://dev.processing.org/bugs/show_bug.cgi?id=1089
+      // https://download.processing.org/bugzilla/1089.html
       if (Platform.isWindows()) {
         try {
           File file = new File(args[i]);
@@ -1197,70 +1245,28 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  boolean breakTime = false;
-  String[] months = {
-    "jan", "feb", "mar", "apr", "may", "jun",
-    "jul", "aug", "sep", "oct", "nov", "dec"
-  };
-
-
   /**
    * Create a new untitled document in a new sketch window.
    */
   public void handleNew() {
 //    long t1 = System.currentTimeMillis();
     try {
-      File newbieDir;
-      String newbieName;
-
       // In 0126, untitled sketches will begin in the temp folder,
       // and then moved to a new location because Save will default to Save As.
-//      File sketchbookDir = getSketchbookFolder();
-      File newbieParentDir = untitledFolder;
+      //File sketchbookDir = getSketchbookFolder();
+      File newbieDir = SketchName.nextFolder(untitledFolder);
 
-      String prefix = Preferences.get("editor.untitled.prefix");
-
-      // Use a generic name like sketch_031008a, the date plus a char
-      int index = 0;
-      String format = Preferences.get("editor.untitled.suffix");
-      String suffix;
-      if (format == null) {
-        Calendar cal = Calendar.getInstance();
-        int day = cal.get(Calendar.DAY_OF_MONTH);  // 1..31
-        int month = cal.get(Calendar.MONTH);  // 0..11
-        suffix = months[month] + PApplet.nf(day, 2);
-      } else {
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
-        suffix = formatter.format(new Date());
-      }
-      do {
-        if (index == 26) {
-          // In 0159, avoid running past z by sending people outdoors.
-          if (!breakTime) {
-            Messages.showWarning("Time for a Break",
-                                 "You've reached the limit for auto naming of new sketches\n" +
-                                 "for the day. How about going for a walk instead?", null);
-            breakTime = true;
-          } else {
-            Messages.showWarning("Sunshine",
-                                 "No really, time for some fresh air for you.", null);
-          }
-          return;
-        }
-        newbieName = prefix + suffix + ((char) ('a' + index));
-        // Also sanitize the name since it might do strange things on
-        // non-English systems that don't use this sort of date format.
-        // https://github.com/processing/processing/issues/322
-        newbieName = Sketch.sanitizeName(newbieName);
-        newbieDir = new File(newbieParentDir, newbieName);
-        index++;
-        // Make sure it's not in the temp folder *and* it's not in the sketchbook
-      } while (newbieDir.exists() || new File(sketchbookFolder, newbieName).exists());
+      // User was told to go outside or other problem happened inside naming.
+      if (newbieDir == null) return;
 
       // Make the directory for the new sketch
       if (!newbieDir.mkdirs()) {
         throw new IOException("Could not create directory " + newbieDir);
       }
+
+      // Retrieve the sketch name from the folder name (not a great
+      // assumption for the future, but overkill to do otherwise for now.)
+      String newbieName = newbieDir.getName();
 
       // Add any template files from the Mode itself
       File newbieFile = nextMode.addTemplateFiles(newbieDir, newbieName);
@@ -1274,9 +1280,9 @@ public class Base {
       handleOpenUntitled(path);
 
     } catch (IOException e) {
-      Messages.showWarning("That's new to me",
-                           "A strange and unexplainable error occurred\n" +
-                           "while trying to create a new sketch.", e);
+      Messages.showTrace("That's new to me",
+                         "A strange and unexplainable error occurred\n" +
+                         "while trying to create a new sketch.", e, false);
     }
   }
 
@@ -1807,17 +1813,10 @@ public class Base {
         // we have to do the old behavior. Yuck!
         if (defaultFileMenu == null) {
           Object[] options = { Language.text("prompt.ok"), Language.text("prompt.cancel") };
-          String prompt =
-            "<html> " +
-            "<head> <style type=\"text/css\">"+
-            "b { font: 13pt \"Lucida Grande\" }"+
-            "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
-            "</style> </head>" +
-            "<b>Are you sure you want to Quit?</b>" +
-            "<p>Closing the last open sketch will quit Processing.";
 
           int result = JOptionPane.showOptionDialog(editor,
-            prompt,
+            Toolkit.formatMessage("Are you sure you want to Quit?",
+                "Closing the last open sketch will quit Processing."),
             "Quit",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,

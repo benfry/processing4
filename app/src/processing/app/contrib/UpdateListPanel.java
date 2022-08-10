@@ -20,6 +20,8 @@
 */
 package processing.app.contrib;
 
+import javax.swing.table.TableColumnModel;
+
 
 public class UpdateListPanel extends ListPanel {
   Contribution.Filter contribFilter;
@@ -34,7 +36,15 @@ public class UpdateListPanel extends ListPanel {
           ContributionColumn.INSTALLED_VERSION,
           ContributionColumn.AVAILABLE_VERSION);
 
+    TableColumnModel tcm = table.getColumnModel();
+    tcm.getColumn(3).setMaxWidth(ManagerFrame.VERSION_WIDTH);
+    tcm.getColumn(4).setMaxWidth(ManagerFrame.VERSION_WIDTH);
+
     this.contribFilter = contribFilter;
+    // This is apparently a hack to prevent rows from being sorted by
+    // clicking on the column headers, which makes a mess because this
+    // list has sub-headers for the categories mixed into the list.
+    // However, unfortunately it also breaks column resizing. [fry 220726]
     table.getTableHeader().setEnabled(false);
   }
 

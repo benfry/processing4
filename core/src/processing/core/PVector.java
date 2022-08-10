@@ -979,13 +979,13 @@ public class PVector implements Serializable {
     // This should be a number between -1 and 1, since it's "normalized"
     double amt = dot / (v1mag * v2mag);
     // But if it's not due to rounding error, then we need to fix it
-    // http://code.google.com/p/processing/issues/detail?id=340
+    // https://github.com/processing/processing/issues/379
     // Otherwise if outside the range, acos() will return NaN
     // http://www.cppreference.com/wiki/c/math/acos
     if (amt <= -1) {
       return PConstants.PI;
     } else if (amt >= 1) {
-      // http://code.google.com/p/processing/issues/detail?id=435
+      // https://github.com/processing/processing/issues/474
       return 0;
     }
     return (float) Math.acos(amt);

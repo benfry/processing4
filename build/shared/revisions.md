@@ -1,3 +1,188 @@
+# Processing 4.0.1
+
+*Revision 1286 – 9 August 2022*
+
+And what sort of anniversary would it be without a regression that breaks a major feature? Ahem. Here's 4.0.1…
+
+* In the 4.0 release, switching to p5.js Mode caused an error message to pop up. Now fixed. [#530](https://github.com/processing/processing4/issues/530)
+
+* One minor addition: in the Preferences window, clicking the “More preferences can be found…” text will open the [wiki page](https://github.com/processing/processing4/wiki/Preferences) with more details about all these wonderful options.
+
+Other than that, please see the release notes for 4.0…
+
+
+# Processing 4.0
+
+*Revision 1285 – 9 August 2022*
+
+On the 21st anniversary of the very first Processing release (revision 0001), we're posting the final 4.0, which is the 286th release of the software.
+
+The primary goal for Processing 4 is to keep everyone's code running, even as operating systems, hardware, and hairlines continue to change.
+
+There are really too many changes to list, but you can start by reading about them [at this link](https://github.com/processing/processing4/wiki/Changes-in-4.0).
+
+Below is a list of the incremental changes in this release since beta 9 a few days ago:
+
+
+## welcome, welcome!
+
+* Added a new “Welcome” screen that links to a couple examples as well as the changes and updates page.
+
+* The splash screen has also been updated with a new image for 4.0.
+
+
+## wait, what?
+
+* Export to Application was almost completely broken on macOS, where all apps were reporting as “damaged” when transferred to another machine. It's now working again, and also prompts users to install the Xcode tools. See the [wiki](https://github.com/processing/processing4/wiki/Exporting-Applications#macos) for more information about how to work with Apple's code signing restrictions.
+
+* There was a *lot* of out-of-date material on the wiki pages in the Processing 3 repository on Github. We now have new versions of the major pages in the Processing 4 repository. This includes pages on [Themes](https://github.com/processing/processing4/wiki/Themes), [Supported Platforms](https://github.com/processing/processing4/wiki/Supported-Platforms), [Exporting Applications](https://github.com/processing/processing4/wiki/Exporting-Applications), [Troubleshooting](https://github.com/processing/processing4/wiki/Troubleshooting), and the [FAQ](https://github.com/processing/processing4/wiki/FAQ).
+
+* There are many entries in `preferences.txt` that are important, but not important enough to make it into the Preferences window. Some of those are now documented [here](https://github.com/processing/processing4/wiki/Preferences).
+
+* Processing sometimes creates a *lot* of temporary files (basically, each time you run a sketch), which didn't always get cleaned up by the operating system. With 4.0, those are all being written to a separate “processing” folder, so that they can be automatically removed after 7 days. [#529](https://github.com/processing/processing4/issues/529)
+
+
+## the last of the bugs
+
+* When using Export to Application, errors in the code would cause the software to just report “error during export.” Now it provides the usual error message (about the error itself).
+
+* The dropdown menu in the Theme Selector wasn't updating properly when new themes were selected.
+
+* The rollover and pressed color for the console scrollbar was always blue.
+
+* Inside Movie Maker, `ffmpeg` wasn't available on all platforms, that's now fixed. We've also updated to version 5.0.1.
+
+
+## you probably won't notice
+
+* Examples have been updated, and are now being pulled from the [processing-examples](https://github.com/processing/processing-examples) repository. May have also had to remove the sin/cos lookup tables from the Rotating Arcs example so that we could comfortably put it on the Welcome screen.
+
+* Compress `jdk/Contents/Home/legal` into a single zip. It was 300 files, or 60% of the 500 files in the entire JDK. Lawyers FTW.
+
+
+# Processing 4.0 beta 9
+
+*Revision 1284 – 4 August 2022*
+
+Getting very close to 4.0! Just a bit more now…
+
+
+## design, design, design
+
+Perhaps most noticeable, this release includes a ton of refinement on the design.
+
+* Another set of 16 themes, these with gradients, have been added to the Theme Selector. Have fun!
+
+* If you've changed the theme in a previous beta, it will be reset the first time you use beta 9, because of major updates to theme handling (many new parameters, others renamed and cleaned up). Relatedly, changing the theme no longer writes a `theme.txt` file to your sketchbook folder.
+
+* Added options to the Theme Selector to write `theme.txt` to your sketchbook folder (so you can make manual edits), and also to reload the theme dynamically (after you've made changes).
+
+* Lots of minor fixes to typography and layout of elements. Hopefully you'll agree that the changes add up to things feeling a lot better.
+
+* We're now using [FlatLaf](https://www.formdev.com/flatlaf/) to improve the look and feel of dialog boxes and other components that we've not customized ourselves.
+
+* Nearly all PNG-based icons and interface elements have been replaced by SVGs that are automatically re-rendered to match the theme when it changes.
+
+* The base font being used is now part of the language translation, because specific fonts are required for non-Roman languages, or languages that are not supported by the Source Sans 3 that we use everywhere else. This also helps us get the language-specific overrides for Chinese, Japanese, Korean, Greek, and Arabic out of the code and into something that can be updated more easily.
+
+* The Preferences window has had a major facelift. It was giving me great anxiety. It was so, so ugly. It is now less ugly.
+
+* The Contributions Manager is now themed and cleaned up to match the rest of the interface.
+
+* We're replacing the underscores in tab names with spaces. It looks a little nicer with the default sketch naming. If you'd like to keep underscores, open `preferences.txt` and set `sketch.name.replace_underscore = false`.
+
+* Updated the scroll bars to match the theme. [#265](https://github.com/processing/processing4/issues/265)
+
+* New icon buttons for the status bar instead of hacky emojis. The clipboard icon even changes to a search icon when holding down shift!
+
+* Implement 2x versions of the icons for the debugger window/variable inspector. [#3921](https://github.com/processing/processing/issues/3921)
+
+* Taken collectively, these are the visual design changes for 4.0. [#48](https://github.com/processing/processing4/issues/48)
+
+
+## new features
+
+* New sketch naming schemes! For those who didn't enjoy the sketch plus underscore plus six digit date, your time has come. Visit the Preferences window and behold the naming options available in the dropdown menu. You can now use the “Friendly” naming scheme that folks seem to love, as well as a pair of other less serious alternatives. [#6045](https://github.com/processing/processing/issues/6045), [#6048](https://github.com/processing/processing/pull/6048), [#144](https://github.com/processing/processing4/pull/144)
+
+* It's also possible to create your own naming schemes. Create a file named `naming.json` in your sketchbook folder that follows the same layout in the Processing download. Provide a name, a list of prefixes, and a list of suffixes just like that file. Save it and restart Processing, and your new option will be available in the dropdown.
+
+
+## other big ones
+
+* We should be fully set for Apple Silicon (i.e. M1 and M2) support. [#128](https://github.com/processing/processing4/issues/128)
+
+* Code completion stopped working between beta 4 and beta 5. Now it's back. [#491](https://github.com/processing/processing4/issues/491)
+
+
+## community contributions!
+
+* Double-clicking a `.pde` file also opens an untitled/empty sketch. [#477](https://github.com/processing/processing4/issues/477), [#479](https://github.com/processing/processing4/pull/479), [#218](https://github.com/processing/processing/issues/218)
+
+* Updates to the Spanish translation. [#480](https://github.com/processing/processing4/pull/480), [#481](https://github.com/processing/processing4/pull/481)
+
+* Updates to the German translation. [#483](https://github.com/processing/processing4/pull/483)
+
+* Add `flatlaf.jar` to `config.xml` on Windows. [#498](https://github.com/processing/processing4/pull/498)
+
+* Fix parsing of java error messages containing ":" [#492](https://github.com/processing/processing4/issues/492), [#493](https://github.com/processing/processing4/pull/493)
+
+* Exported applications were giving `java.lang.ClassNotFoundException: --full-screen` errors. [#488](https://github.com/processing/processing4/issues/488), [#502](https://github.com/processing/processing4/pull/502).
+
+* Editor was treating {} brackets as code when they're inside a String, char or comment. [#444](https://github.com/processing/processing4/issues/444), [#504](https://github.com/processing/processing4/pull/504)
+
+* Add extra Java arguments to enable anti-aliasing for KDE users. [#513](https://github.com/processing/processing4/pull/513), [reference](https://docs.oracle.com/javase/7/docs/technotes/guides/2d/flags.html#aaFonts)
+
+
+## bug fixes
+
+* Fix “Unable to load Java Runtime Environment” errors on Apple Silicon machines. [#526](https://github.com/processing/processing4/issues/526)
+
+* Updated the Help menu entries to make sure they're going to the right locations for 4.x. As with the reference, links are no longer local (see [#524](https://github.com/processing/processing4/issues/524)).
+
+* Help → Libraries Reference and Help → Tools Reference submenu items were broken. [#5839](https://github.com/processing/processing/issues/5839)
+
+
+## data updates
+
+* Added `random()` method to the `XxxxList` classes to return a random value from the list.
+
+* Added `getXxxxList()` methods to `JSONObject`
+
+* Added `toXxxxList()` methods to `JSONArray`
+
+* Renamed `getXxxArray()` to `toXxxArray()` in `JSONArray` for consistency. The old versions are still available, but deprecated.
+
+* Switch to `toArray()` instead of `array()` in the `XxxxList` classes. Did not deprecate old version because it was actually broken.
+
+* Lots of cleanup (and some bug fixing) in the `XxxxList` classes.
+
+
+## internal changes
+
+* Bumped the Java version to 17.0.4+8.
+
+* If you get a “core does not run on this architecture” when running from the source, you may need to run `ant clean-jogl` inside `core`.
+
+* Also added a `clean-libs` target to `build.xml` files that need it. This will re-download libraries that we rely upon like JOGL, Batik, Ant, and others.
+
+* Cleaned up several files in the download, the footprint should be a few dozen megabytes smaller.
+
+* Updated to the latest version of JNA (5.12.1) for better Apple Silicon support.
+
+* All the remaining ancient bug URLs (Bugzilla and Google Code) have been updated and removed from the source. The Google Code issues are re-linked to their Github equivalents, and the old Bugzilla pages have been [revived](https://download.processing.org/bugzilla/) since their disappearance last August.
+
+
+## known issues
+
+* We've had to remove the offline version of the reference that was accessible from the Help menu. We hope to bring it back some day. [#524](https://github.com/processing/processing4/issues/524)
+
+* The mixed mode warning is temporarily missing. [#519](https://github.com/processing/processing4/issues/519)
+
+* `color` in imports shows up as an error, but code still compiles and runs. [#521](https://github.com/processing/processing4/issues/521)
+
+* Need to make it possible to use “module” jars so that other JavaFX classes can be imported. [#522](https://github.com/processing/processing4/issues/522), [#15](https://github.com/processing/processing4-javafx/issues/15)
+
+
 # Processing 4.0 beta 8
 
 *Revision 1283 – 23 April 2022*

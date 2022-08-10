@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -274,7 +273,7 @@ public class JavaEditor extends Editor {
     JMenu menu = new JMenu(Language.text("menu.help"));
     JMenuItem item;
 
-    // macosx already has its own about menu
+    // macOS already has its own about menu
     if (!Platform.isMacOS()) {
       item = new JMenuItem(Language.text("menu.help.about"));
       item.addActionListener(e -> new About(JavaEditor.this));
@@ -284,21 +283,24 @@ public class JavaEditor extends Editor {
     item = new JMenuItem(Language.text("menu.help.welcome"));
     item.addActionListener(e -> {
       try {
-        new Welcome(base, Preferences.getSketchbookPath().equals(Preferences.getOldSketchbookPath()));
+        new Welcome(base);
+        //new Welcome(base, Preferences.getSketchbookPath().equals(Preferences.getOldSketchbookPath()));
       } catch (IOException ioe) {
         Messages.showWarning("Unwelcome Error",
                              "Please report this error to\n" +
-                             "https://github.com/processing/processing/issues", ioe);
+                             "https://github.com/processing/processing4/issues", ioe);
       }
     });
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.environment"));
-    item.addActionListener(e -> showReference("environment/index.html"));
+    //item.addActionListener(e -> showReference("environment/index.html"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/environment/"));
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.reference"));
-    item.addActionListener(e -> showReference("index.html"));
+    //item.addActionListener(e -> showReference("index.html"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/reference/"));
     menu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.help.find_in_reference"), 'F');
@@ -314,102 +316,69 @@ public class JavaEditor extends Editor {
     menu.addSeparator();
 
     final JMenu libRefSubmenu = new JMenu(Language.text("menu.help.libraries_reference"));
-    // Populate only when sub-menu is opened, to avoid having spurious menu
-    // options if a library is deleted, or a missing menu option if a library is added
-    libRefSubmenu.addMenuListener(new MenuListener() {
 
-      @Override
-      public void menuSelected(MenuEvent e) {
-        // Adding this in case references are included in a core library,
-        // or other core libraries are included in the future
-        boolean isCoreLibMenuItemAdded =
-          addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
+    // Adding this in case references are included in a core library,
+    // or other core libraries are included in the future
+    boolean isCoreLibMenuItemAdded =
+      addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
 
-        if (isCoreLibMenuItemAdded && !mode.contribLibraries.isEmpty()) {
-          libRefSubmenu.addSeparator();
-        }
+    if (isCoreLibMenuItemAdded && !mode.contribLibraries.isEmpty()) {
+      libRefSubmenu.addSeparator();
+    }
 
-        boolean isContribLibMenuItemAdded =
-          addLibReferencesToSubMenu(mode.contribLibraries, libRefSubmenu);
+    boolean isContribLibMenuItemAdded =
+      addLibReferencesToSubMenu(mode.contribLibraries, libRefSubmenu);
 
-        if (!isContribLibMenuItemAdded && !isCoreLibMenuItemAdded) {
-          JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
-          emptyMenuItem.setEnabled(false);
-          emptyMenuItem.setFocusable(false);
-          emptyMenuItem.setFocusPainted(false);
-          libRefSubmenu.add(emptyMenuItem);
+    if (!isContribLibMenuItemAdded && !isCoreLibMenuItemAdded) {
+      JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
+      emptyMenuItem.setEnabled(false);
+      emptyMenuItem.setFocusable(false);
+      emptyMenuItem.setFocusPainted(false);
+      libRefSubmenu.add(emptyMenuItem);
 
-        } else if (!isContribLibMenuItemAdded && !mode.coreLibraries.isEmpty()) {
-          //re-populate the menu to get rid of terminal separator
-          libRefSubmenu.removeAll();
-          addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
-        }
-      }
-
-      @Override
-      public void menuDeselected(MenuEvent e) {
-        libRefSubmenu.removeAll();
-      }
-
-      @Override
-      public void menuCanceled(MenuEvent e) {
-        menuDeselected(e);
-      }
-    });
+    } else if (!isContribLibMenuItemAdded && !mode.coreLibraries.isEmpty()) {
+      //re-populate the menu to get rid of terminal separator
+      libRefSubmenu.removeAll();
+      addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
+    }
     menu.add(libRefSubmenu);
 
     final JMenu toolRefSubmenu = new JMenu(Language.text("menu.help.tools_reference"));
-    // Populate only when sub-menu is opened, to avoid having spurious menu
-    // options if a tool is deleted, or a missing menu option if a library is added
-    toolRefSubmenu.addMenuListener(new MenuListener() {
+    boolean coreToolMenuItemAdded;
+    boolean contribToolMenuItemAdded;
 
-      @Override
-      public void menuSelected(MenuEvent e) {
-        boolean coreToolMenuItemAdded;
-        boolean contribToolMenuItemAdded;
+    List<ToolContribution> contribTools = base.getToolContribs();
+    // Adding this in in case a reference folder is added for MovieMaker, or in case
+    // other core tools are introduced later
+    coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
 
-        List<ToolContribution> contribTools = base.getToolContribs();
-        // Adding this in in case a reference folder is added for MovieMaker, or in case
-        // other core tools are introduced later
-        coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
+    if (coreToolMenuItemAdded && !contribTools.isEmpty())
+      toolRefSubmenu.addSeparator();
 
-        if (coreToolMenuItemAdded && !contribTools.isEmpty())
-          toolRefSubmenu.addSeparator();
+    contribToolMenuItemAdded = addToolReferencesToSubMenu(contribTools, toolRefSubmenu);
 
-        contribToolMenuItemAdded = addToolReferencesToSubMenu(contribTools, toolRefSubmenu);
-
-        if (!contribToolMenuItemAdded && !coreToolMenuItemAdded) {
-          toolRefSubmenu.removeAll(); // in case a separator was added
-          final JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
-          emptyMenuItem.setEnabled(false);
-          emptyMenuItem.setBorderPainted(false);
-          emptyMenuItem.setFocusable(false);
-          emptyMenuItem.setFocusPainted(false);
-          toolRefSubmenu.add(emptyMenuItem);
-        }
-        else if (!contribToolMenuItemAdded && !contribTools.isEmpty()) {
-          // re-populate the menu to get rid of terminal separator
-          toolRefSubmenu.removeAll();
-          addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
-        }
-      }
-
-      @Override
-      public void menuDeselected(MenuEvent e) {
-        toolRefSubmenu.removeAll();
-      }
-
-      @Override
-      public void menuCanceled(MenuEvent e) {
-        menuDeselected(e);
-      }
-    });
+    if (!contribToolMenuItemAdded && !coreToolMenuItemAdded) {
+      toolRefSubmenu.removeAll(); // in case a separator was added
+      final JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
+      emptyMenuItem.setEnabled(false);
+      emptyMenuItem.setBorderPainted(false);
+      emptyMenuItem.setFocusable(false);
+      emptyMenuItem.setFocusPainted(false);
+      toolRefSubmenu.add(emptyMenuItem);
+    }
+    else if (!contribToolMenuItemAdded && !contribTools.isEmpty()) {
+      // re-populate the menu to get rid of terminal separator
+      toolRefSubmenu.removeAll();
+      addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
+    }
     menu.add(toolRefSubmenu);
 
     menu.addSeparator();
+    /*
     item = new JMenuItem(Language.text("menu.help.online"));
     item.setEnabled(false);
     menu.add(item);
+    */
 
     item = new JMenuItem(Language.text("menu.help.getting_started"));
     item.addActionListener(e -> Platform.openURL(Language.text("menu.help.getting_started.url")));
@@ -508,24 +477,24 @@ public class JavaEditor extends Editor {
    * Handler for Sketch &rarr; Export Application
    */
   public void handleExportApplication() {
-//    toolbar.activate(JavaToolbar.EXPORT);
-
     if (handleExportCheckModified()) {
       statusNotice(Language.text("export.notice.exporting"));
       try {
         if (ExportPrompt.trigger(this)) {
           Platform.openFolder(sketch.getFolder());
           statusNotice(Language.text("export.notice.exporting.done"));
-        //} else {
+          //} else {
           // error message will already be visible
           // or there was no error, in which case it was canceled.
         }
+      } catch (SketchException se) {
+        EventQueue.invokeLater(() -> statusError(se));
+
       } catch (Exception e) {
         statusNotice(Language.text("export.notice.exporting.error"));
         e.printStackTrace();
       }
     }
-//    toolbar.deactivate(JavaToolbar.EXPORT);
   }
 
 
@@ -534,7 +503,7 @@ public class JavaEditor extends Editor {
    * asks the user to save the sketch or cancel the export.
    * This prevents issues where an incomplete version of the sketch
    * would be exported, and is a fix for
-   * <A HREF="http://dev.processing.org/bugs/show_bug.cgi?id=157">Bug 157</A>
+   * <A HREF="https://download.processing.org/bugzilla/157.html">Bug 157</A>
    */
   protected boolean handleExportCheckModified() {
     if (sketch.isReadOnly()) {
@@ -812,7 +781,7 @@ public class JavaEditor extends Editor {
   }
 
 
-  public void showReference(String filename) {
+  public void showReference(String name) {
     if (useReferenceServer == null) {
       File referenceZip = new File(mode.getFolder(), "reference.zip");
       if (referenceZip.exists()) {
@@ -830,12 +799,18 @@ public class JavaEditor extends Editor {
     }
 
     if (useReferenceServer) {
-      String url = referenceServer.getPrefix() + "reference/" + filename;
+      String url = referenceServer.getPrefix() + "reference/" + name;
       Platform.openURL(url);
 
     } else {
-      File file = new File(mode.getReferenceFolder(), filename);
-      showReferenceFile(file);
+      File file = new File(mode.getReferenceFolder(), name);
+      if (file.exists()) {
+        showReferenceFile(file);
+      } else {
+        // Offline reference (temporarily) removed in 4.0 beta 9
+        // https://github.com/processing/processing4/issues/524
+        Platform.openURL("https://processing.org/reference/" + name);
+      }
     }
   }
 

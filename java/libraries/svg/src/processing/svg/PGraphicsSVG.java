@@ -1,7 +1,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-2015 The Processing Foundation
+  Copyright (c) 2013-2022 The Processing Foundation
   Copyright (c) 2012 Ben Fry and Casey Reas
 
   This library is free software; you can redistribute it and/or
@@ -95,14 +95,14 @@ public class PGraphicsSVG extends PGraphicsJava2D {
     vertexCount = 0;
 
     // Also need to push the matrix since the matrix doesn't reset on each run
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1227
+    // https://download.processing.org/bugzilla/1227.html
     pushMatrix();
   }
 
 
   public void endDraw() {
     // Also need to pop the matrix since the matrix doesn't reset on each run
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1227
+    // https://download.processing.org/bugzilla/1227.html
     popMatrix();
 
     // Figure out where the output goes. If the sketch is calling setOutput()
@@ -126,7 +126,7 @@ public class PGraphicsSVG extends PGraphicsJava2D {
 
     // This needs to be overridden so that the endDraw() from PGraphicsJava2D
     // is not inherited (it calls loadPixels).
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1169
+    // https://download.processing.org/bugzilla/1169.html
 
     // Finally, stream out SVG to the standard output using UTF-8 encoding.
     boolean useCSS = true; // we want to use CSS style attributes

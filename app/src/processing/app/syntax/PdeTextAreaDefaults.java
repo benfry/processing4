@@ -95,11 +95,11 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
 
     caretColor = Theme.getColor("editor.caret.color");
     selectionColor = Theme.getColor("editor.selection.color");
-    lineHighlight = Theme.getBoolean("editor.linehighlight");
-    lineHighlightColor = Theme.getColor("editor.linehighlight.color");
-    bracketHighlight = Theme.getBoolean("editor.brackethighlight");
-    bracketHighlightColor = Theme.getColor("editor.brackethighlight.color");
-    eolMarkers = Theme.getBoolean("editor.eolmarkers");
-    eolMarkerColor = Theme.getColor("editor.eolmarkers.color");
+    lineHighlight = Theme.getBoolean("editor.line.highlight");
+    lineHighlightColor = Theme.getColor("editor.line.highlight.color");
+    bracketHighlight = Theme.getBoolean("editor.bracket.highlight");
+    bracketHighlightColor = Theme.getColor("editor.bracket.highlight.color");
+    eolMarkers = Theme.getBoolean("editor.eol_markers");
+    eolMarkerColor = Theme.getColor("editor.eol_markers.color");
   }
 }

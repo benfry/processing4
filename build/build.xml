@@ -28,12 +28,12 @@
   </condition>
 
   <property name="examples.dir"
-            location="../../processing-docs/content/examples" />
+            location="../../processing-examples" />
 
-  <!-- 17.0.3+7 -->
+  <!-- 17.0.4+8 -->
   <property name="jdk.train" value="17" />
-  <property name="jdk.detail" value="${jdk.train}.0.3" />
-  <property name="jdk.build" value="7" />
+  <property name="jdk.detail" value="${jdk.train}.0.4" />
+  <property name="jdk.build" value="8" />
   <property name="jdk.folder" value="jdk-${jdk.detail}+${jdk.build}" />
 
 
@@ -148,7 +148,7 @@
   </target>
 
   <!-- Set the version of Java that must be present to build. -->
-  <property name="jdk.path.macos" value="macos/${jdk.folder}" />
+  <property name="jdk.path.macos" location="macos/${jdk.folder}" />
   <available file="${jdk.path.macos}" property="macos_jdk_found" />
 
   <!--
@@ -248,14 +248,15 @@
     <antcall target="${platform}-run-app" />
   </target>
 
-  <target name="dist" depends="revision-check, test"
-          description="Build Processing for distribution.">
+  <!-- <target name="dist" depends="revision-check, test" -->
+    <target name="dist" depends="revision-check"
+            description="Build Processing for distribution.">
     <input message="Enter version number:"
            addproperty="version"
            defaultvalue="${revision}" />
 
     <available file="${examples.dir}" property="examples.exist" />
-    <fail unless="examples.exist" message="To do a distribution, the processing-docs repo must be checked out at the same level as the processing repo." />
+    <fail unless="examples.exist" message="To do a distribution, the processing-examples repo must be checked out at the same level as the processing repo." />
 
     <!-- do a git pull in the docs repo so that it is up to date -->
     <exec executable="git" dir="${examples.dir}">
@@ -348,13 +349,32 @@
     </condition>
     <chmod file="${target.path}/tools/MovieMaker/tool/${ffmpeg.binary}" perm="ugo+x" />
 
+    <!-- See https://github.com/processing/processing4/issues/524 -->
+    <!--
+    <get src="https://download.processing.org/reference.zip"
+         dest="../java/reference.zip"
+         ignoreerrors="${reference.ignorable}"
+         usetimestamp="true" />
+    -->
+
     <copy todir="${target.path}/modes/java" preservelastmodified="true">
       <fileset dir="../java">
         <!-- don't include LWJGL, it's not operational -->
-        <exclude name="libraries/lwjgl/**" />
+        <!-- <exclude name="libraries/lwjgl/**" /> -->
         <!-- starting with revision 1276, reference.zip stays intact -->
         <!-- <exclude name="reference.zip" /> -->
-        <exclude name="**/._*" />
+        <!-- <exclude name="**/._*" /> -->
+
+        <include name="application/**" />
+        <include name="keywords.txt" />
+
+        <include name="libraries/**/examples/**" />
+        <include name="libraries/**/library/**" />
+        <include name="libraries/**/library.properties" />
+
+        <include name="mode/**" />
+        <!-- <include name="reference.zip" /> -->
+        <include name="theme/**" />
       </fileset>
     </copy>
 
@@ -368,31 +388,6 @@
     <condition property="reference.ignorable" value="false" else="true">
       <isset property="version" />
     </condition>
-
-    <!--<echo message="ref ignoreable? ${reference.ignorable}" />-->
-    <get src="https://download.processing.org/reference.zip"
-         dest="../java/reference.zip"
-         ignoreerrors="${reference.ignorable}"
-         usetimestamp="true" />
-
-    <!-- starting with revision 1276, reference.zip stays intact -->
-    <!--
-    <unzip dest="${target.path}/modes/java"
-           src="../java/reference.zip"
-           overwrite="false">
-      <patternset>
-        <exclude name="__MACOSX/**" />
-        <exclude name="**/._*" />
-      </patternset>
-    </unzip>
-    -->
-
-    <!-- copy PDE X mode folder-->
-    <!--
-    <copy todir="${target.path}/modes/">
-      <fileset dir="../pdex/dist" />
-    </copy>
-    -->
   </target>
 
   <target name="version-clear">
@@ -490,6 +485,13 @@
       <arg value="xfz" />
       <arg value="../${jdk.archive.path}"/>
     </exec>
+
+    <!--
+    <echo message="creating ${jdk.path.macos}/Contents/Home/legal.zip" />
+    <zip destfile="${jdk.path.macos}/Contents/Home/legal.zip"
+         basedir="${jdk.path.macos}/Contents/Home"
+         includes="legal/**" />
+    -->
 
     <!-- Need a working fat binary of appbundler.jar.
          https://github.com/processing/processing4/issues/284 -->
@@ -645,10 +647,16 @@
       <arg line="${jdk.path.macos}/Contents/Home/jmods macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/jmods"/>
     </exec>
 
+    <!--
     <exec executable="cp">
       <arg value="-r"/>
       <arg line="${jdk.path.macos}/Contents/Home/legal macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/legal"/>
     </exec>
+    -->
+    <!-- Throw these 300(!) files into a single zip -->
+    <zip destfile="macos/work/Processing.app/Contents/PlugIns/${jdk.folder}/Contents/Home/legal.zip"
+         basedir="${jdk.path.macos}/Contents/Home"
+         includes="legal/**" />
 
     <exec executable="cp">
       <arg value="-r"/>
@@ -661,19 +669,32 @@
     <copy todir="${contents.dir}/Java" preservelastmodified="true">
       <fileset dir=".." includes="core/library/**" /> <!-- why this? -->
       <fileset dir="shared" includes="lib/**" />
-      <fileset file="shared/changes.md" />
+      <fileset file="shared/revisions.md" />
     </copy>
 
+    <!-- Can't use this method since the appbundler builds have split:
+         we have a fat binary on aarch64 that has a broken x86_64 build,
+         and the x86_64 version has no aarch64 build at all.
+         For 4.0, this is being copied manually after also doing:
+         lipo stub-aarch64-fat -remove x86_64 -output stub-aarch64
+         on the binary produce on Apple Silicon, otherwise it looks
+         like a legitimate 'Fat' binary which confuses debugging. -->
     <!-- Use the Processing executable as the stub for exported apps.
          This works b/c everything app-specific is in Info.plist. -->
+    <!--
     <property name="app.stub"
               value="${contents.dir}/Java/modes/java/application/mac-app-stub" />
+    -->
     <!-- Grab a copy of the stub binary before it is signed.
          (See processing.mode.java.JavaBuild for usage.)
          Prevents signing errors with exported apps. -->
+    <!--
     <copy file="${contents.dir}/MacOS/Processing" tofile="${app.stub}" />
+    -->
     <!-- The ant copy command does not preserve permissions. -->
+    <!--
     <chmod file="${app.stub}" perm="ugo+x" />
+    -->
 
     <antcall target="assemble">
       <param name="target.path" value="${contents.dir}/Java" />
@@ -799,8 +820,8 @@
           <!-- <include name="**/*.jar" /> -->
           <!-- <include name="**/*.app" /> -->
 
-          <include name="modes/java/application/mac-app-stub" />
-          <include name="modes/java/application/template-app/Contents/MacOS/JavaApplicationStub" />
+          <include name="modes/java/application/stub-macos-aarch64" />
+          <include name="modes/java/application/stub-macos-x86_64" />
           <include name="modes/java/application/launch4j/bin/windres" />
           <include name="modes/java/application/launch4j/bin/ld" />
           <include name="tools/MovieMaker/tool/ffmpeg" />
@@ -957,7 +978,7 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**"  />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/changes.md" />
+      <fileset file="shared/revisions.md" />
     </copy>
 
     <antcall target="assemble">
@@ -1057,6 +1078,12 @@
     <delete failonerror="true">
       <fileset refid="jdk-optional-linux" />
     </delete>
+
+    <!-- Throw these 300(!) files into a single zip -->
+    <zip destfile="linux/work/java/legal.zip"
+         basedir="linux/work/java"
+         includes="legal/**" />
+    <delete dir="linux/work/java/legal" />
 
     <exec executable="rm">
       <arg value="-r"/>
@@ -1254,10 +1281,10 @@
       <fileset dir="shared" includes="launch4j/**" />
       <fileset dir="shared" includes="lib/**" />
       <fileset dir="shared" includes="modes/**" />
-      <fileset file="shared/changes.md" />
+      <fileset file="shared/revisions.md" />
     </copy>
 
-    <fixcrlf file="windows/work/changes.md" eol="crlf" encoding="UTF-8" />
+    <fixcrlf file="windows/work/revisions.md" eol="crlf" encoding="UTF-8" />
 
     <antcall target="assemble">
       <param name="target.path" value="windows/work" />
@@ -1298,7 +1325,8 @@
     <!-- Execute launch4j task -->
     <taskdef name="launch4j"
              classname="net.sf.launch4j.ant.Launch4jTask"
-             classpath="${launch4j.dir}/launch4j.jar; ${launch4j.dir}/lib/xstream.jar" />
+             classpath="${launch4j.dir}/launch4j.jar;
+                        ${launch4j.dir}/lib/xstream.jar" />
 
     <!-- not all launch4j options are available when embedded inside this
          file (i.e. the icon param doesn't work), so use a config file -->
@@ -1326,6 +1354,12 @@
 
     <!-- Rename the unpacked JDK to just 'java' and move to dist -->
     <move file="windows/work/${jdk.folder}" tofile="windows/work/java" />
+
+    <!-- Throw these 300(!) files into a single zip -->
+    <zip destfile="windows/work/java/legal.zip"
+         basedir="windows/work/java"
+         includes="legal/**" />
+    <delete dir="windows/work/java/legal" />
 
     <!-- Remove unused Java bloat -->
     <delete failonerror="true">
@@ -1578,12 +1612,16 @@
   </target>
 
 
-  <!-- - - - - - - - -->
-  <!-- Run It!       -->
-  <!-- - - - - - - - -->
+  <!-- Cleaning the build and libraries -->
 
   <target name="clean" description="Perform a spring cleaning"
           depends="linux-clean, windows-clean, macos-clean, subprojects-clean">
+  </target>
+
+  <target name="clean-libs" description="Purge downloaded support libraries">
+    <subant buildpath="../core" target="clean-libs"/>
+    <subant buildpath="../app" target="clean-libs"/>
+    <subant buildpath="../java/libraries/svg" target="clean-libs"/>
   </target>
 
 </project>

@@ -1,11 +1,6 @@
 <?xml version="1.0"?>
 <project name="Processing SVG Library" default="build">
 
-  <target name="clean" description="Clean the build directories">
-    <delete dir="bin" />
-    <delete file="library/svg.jar" />
-  </target>
-
   <property name="core.library.jar" location="../../../core/library/core.jar" />
 
   <property name="batik.version" value="1.14" />
@@ -75,5 +70,14 @@
 
   <target name="build" depends="compile" description="Build SVG library">
     <jar basedir="bin" destfile="library/svg.jar" />
+  </target>
+
+  <target name="clean" description="Clean the build directories">
+    <delete dir="bin" />
+    <delete file="library/svg.jar" />
+  </target>
+
+  <target name="clean-libs" description="Clean the build directories">
+    <delete file="${batik.library.jar}" />
   </target>
 </project>

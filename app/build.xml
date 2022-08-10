@@ -51,11 +51,9 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Current version of JNA that works with Processing -->
-  <property name="jna.version" value="5.10.0" />
+  <property name="jna.version" value="5.12.1" />
   <!-- the .zip file to be downloaded -->
   <property name="jna.zip" value="${jna.version}.zip" />
-  <!-- the .jar file that's the actual dependency -->
-  <!-- <property name="batik.jar" value="batik-all-${batik.version}.jar" /> -->
 
   <!-- TODO implement a fallback URL that points to a location
        on download.processing.org so it's available forever. -->
@@ -100,7 +98,7 @@
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-  <property name="flatlaf.version" value="2.2" />
+  <property name="flatlaf.version" value="2.4" />
 
   <fileset id="flatlaf.files" dir="lib">
     <include name="flatlaf.jar" />
@@ -175,16 +173,18 @@
     <jar basedir="bin" destfile="pde.jar" />
   </target>
 
-  <target name="update" description="Update the downloaded libraries">
+  <target name="clean-libs" description="Remove the downloaded libraries">
     <delete>
       <fileset refid="ant.files" />
       <fileset refid="flatlaf.files" />
       <fileset refid="jna.files" />
     </delete>
 
+    <!--
     <antcall target="download-ant" />
     <antcall target="download-flatlaf" />
     <antcall target="download-jna" />
+    -->
   </target>
 
   <target name="clean" description="Clean the build directories">

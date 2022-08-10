@@ -658,7 +658,7 @@ public class PApplet implements PConstants {
   public boolean focused = false;
 
   /**
-   * Time in milliseconds when the applet was started.
+   * Time in milliseconds when the sketch was started.
    * <p>
    * Used by the millis() function.
    */
@@ -716,16 +716,16 @@ public class PApplet implements PConstants {
 
   /**
    * Position of the upper left-hand corner of the editor window
-   * that launched this applet.
+   * that launched this sketch.
    */
   static public final String ARGS_EDITOR_LOCATION = "--editor-location";
 
   static public final String ARGS_EXTERNAL = "--external";
 
   /**
-   * Location for where to position the applet window on screen.
+   * Location for where to position the sketch window on screen.
    * <p>
-   * This is used by the editor to when saving the previous applet
+   * This is used by the editor to when saving the previous sketch
    * location, or could be used by other classes to launch at a
    * specific position on-screen.
    */
@@ -768,7 +768,7 @@ public class PApplet implements PConstants {
   static public final String EXTERNAL_STOP = "__STOP__";
 
   /**
-   * When run externally to a PDE Editor, this is sent by the applet
+   * When run externally to a PDE Editor, this is sent by the sketch
    * whenever the window is moved.
    * <p>
    * This is used so that the editor can re-open the sketch window
@@ -1239,16 +1239,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Called by the browser or applet viewer to inform this applet that it
-   * should start its execution. It is called after the init method and
-   * each time the applet is revisited in a Web page.
-   * <p/>
-   * Called explicitly via the first call to PApplet.paint(), because
-   * PAppletGL needs to have a usable screen before getting things rolling.
+   * Called by the application context to start running (or resume) the sketch.
    */
   public void start() {
-//    paused = false; // unpause the thread  // removing for 3.0a5, don't think we want this here
-
     resume();
     handleMethods("resume");
     surface.resumeThread();
@@ -1256,44 +1249,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Called by the browser or applet viewer to inform
-   * this applet that it should stop its execution.
-   * <p/>
-   * Unfortunately, there are no guarantees from the Java spec
-   * when or if stop() will be called (i.e. on browser quit,
-   * or when moving between web pages), and it's not always called.
+   * Called by the application context to stop running (or pause) the sketch.
    */
   public void stop() {
-    // this used to shut down the sketch, but that code has
-    // been moved to destroy/dispose()
-
-//    if (paused) {
-//      synchronized (pauseObject) {
-//      try {
-//          pauseObject.wait();
-//        } catch (InterruptedException e) {
-//          // waiting for this interrupt on a start() (resume) call
-//        }
-//      }
-//    }
-
-    //paused = true; // causes animation thread to sleep  // 3.0a5
     pause();
     handleMethods("pause");
     // calling this down here, since it's another thread it's safer to call
     // pause() and the registered pause methods first.
     surface.pauseThread();
-
-    // actual pause will happen in the run() method
-
-//    synchronized (pauseObject) {
-//      debug("stop() calling pauseObject.wait()");
-//      try {
-//        pauseObject.wait();
-//      } catch (InterruptedException e) {
-//        // waiting for this interrupt on a start() (resume) call
-//      }
-//    }
   }
 
 
@@ -1311,23 +1274,6 @@ public class PApplet implements PConstants {
    * Use this to safely disable things like serial, sound, or sensors.
    */
   public void resume() { }
-
-
-//  /**
-//   * Called by the browser or applet viewer to inform this applet
-//   * that it is being reclaimed and that it should destroy
-//   * any resources that it has allocated.
-//   * <p/>
-//   * destroy() supposedly gets called as the applet viewer
-//   * is shutting down the applet. stop() is called
-//   * first, and then destroy() to really get rid of things.
-//   * no guarantees on when they're run (on browser quit, or
-//   * when moving between pages), though.
-//   */
-//  @Override
-//  public void destroy() {
-//    this.dispose();
-//  }
 
 
   //////////////////////////////////////////////////////////////
@@ -2038,7 +1984,7 @@ public class PApplet implements PConstants {
           (e instanceof IllegalAccessException)) {
         if (e.getMessage().contains("cannot be <= 0")) {
           // IllegalArgumentException will be thrown if w/h is <= 0
-          // http://code.google.com/p/processing/issues/detail?id=983
+          // https://github.com/processing/processing/issues/1021
           throw new RuntimeException(e);
 
         } else {
@@ -2871,7 +2817,7 @@ public class PApplet implements PConstants {
    *    keyReleased with key == CODED and keyCode == SHIFT
    *    (note there is no keyTyped)
    *
-   * 6. Pressing the tab key in an applet with Java 1.4 will
+   * 6. Pressing the tab key in a Component with Java 1.4 will
    *    normally do nothing, but PApplet dynamically shuts
    *    this behavior off if Java 1.4 is in use (tested 1.4.2_05 Windows).
    *    Java 1.1 (Microsoft VM) passes the TAB key through normally.
@@ -2974,7 +2920,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Returns the number of milliseconds (thousandths of a second) since
-   * starting an applet. This information is often used for timing animation
+   * starting the sketch. This information is often used for timing animation
    * sequences.
    *
    *
@@ -2985,7 +2931,7 @@ public class PApplet implements PConstants {
    *
    * @webref input:time date
    * @webBrief Returns the number of milliseconds (thousandths of a second) since
-   * starting an applet
+   * the sketch started.
    * @see PApplet#second()
    * @see PApplet#minute()
    * @see PApplet#hour()
@@ -3191,12 +3137,6 @@ public class PApplet implements PConstants {
   /**
    * Links to a webpage either in the same window or in a new window. The
    * complete URL must be specified.
-   *
-   * <h3>Advanced</h3>
-   * Link to an external page without all the muss.
-   * <p>
-   * When run with an applet, uses the browser to open the url,
-   * for applications, attempts to launch a browser with the url.
    *
    * @param url the complete URL, as a String in quotes
    */
@@ -3491,8 +3431,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Function for an applet/application to kill itself and
-   * display an error. Mostly this is here to be improved later.
+   * Function for an application to kill itself and display an error.
+   * Mostly this is here to be improved later.
    */
   public void die(String what) {
     dispose();
@@ -3563,11 +3503,7 @@ public class PApplet implements PConstants {
    * they have in mind when cleaning up.
    */
   public void exitActual() {
-    try {
-      System.exit(0);
-    } catch (SecurityException e) {
-      // don't care about applet security exceptions
-    }
+    System.exit(0);
   }
 
 
@@ -3718,12 +3654,7 @@ public class PApplet implements PConstants {
   /**
    */
   public void saveFrame() {
-    try {
-      g.save(savePath("screen-" + nf(frameCount, 4) + ".tif"));
-    } catch (SecurityException se) {
-      System.err.println("Can't use saveFrame() when running in a browser, " +
-                         "unless using a signed applet.");
-    }
+    g.save(savePath("screen-" + nf(frameCount, 4) + ".tif"));
   }
 
 
@@ -3763,12 +3694,7 @@ public class PApplet implements PConstants {
    *          ".tga", ".jpg", or ".png"
    */
   public void saveFrame(String filename) {
-    try {
-      g.save(savePath(insertFrame(filename)));
-    } catch (SecurityException se) {
-      System.err.println("Can't use saveFrame() when running in a browser, " +
-                         "unless using a signed applet.");
-    }
+    g.save(savePath(insertFrame(filename)));
   }
 
 
@@ -4214,7 +4140,7 @@ public class PApplet implements PConstants {
   // MATH
 
   // lots of convenience methods for math with floats.
-  // doubles are overkill for processing applets, and casting
+  // doubles are overkill for processing sketches, and casting
   // things all the time is annoying, thus the functions below.
 
 /**
@@ -6041,21 +5967,6 @@ public class PApplet implements PConstants {
   }
 
 
-  /*
-  static public void selectInput(String prompt, String callbackMethod,
-                                 File file, Object callbackObject, Frame parent,
-                                 PApplet sketch) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD, sketch);
-  }
-
-
-  static public void selectInput(String prompt, String callbackMethod,
-                                 File file, Object callbackObject, Frame parent) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD, null);
-  }
-  */
-
-
   /**
    * Opens a platform-specific file chooser dialog to select a file for output.
    * After the selection is made, the selected File will be passed to the
@@ -6083,77 +5994,6 @@ public class PApplet implements PConstants {
     //selectOutput(prompt, callback, file, callbackObject, null, this);
     surface.selectOutput(prompt, callback, file, callbackObject);
   }
-
-
-  /*
-  static public void selectOutput(String prompt, String callbackMethod,
-                                  File file, Object callbackObject, Frame parent) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE, null);
-  }
-
-
-  static public void selectOutput(String prompt, String callbackMethod,
-                                  File file, Object callbackObject, Frame parent,
-                                  PApplet sketch) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE, sketch);
-  }
-
-
-  // Will remove the 'sketch' parameter once we get an upstream JOGL fix
-  // https://github.com/processing/processing/issues/3831
-  static protected void selectImpl(final String prompt,
-                                   final String callbackMethod,
-                                   final File defaultSelection,
-                                   final Object callbackObject,
-                                   final Frame parentFrame,
-                                   final int mode,
-                                   final PApplet sketch) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        File selectedFile = null;
-
-        boolean hide = (sketch != null) &&
-          (sketch.g instanceof PGraphicsOpenGL) && (platform == WINDOWS);
-        if (hide) sketch.surface.setVisible(false);
-
-        if (useNativeSelect) {
-          FileDialog dialog = new FileDialog(parentFrame, prompt, mode);
-          if (defaultSelection != null) {
-            dialog.setDirectory(defaultSelection.getParent());
-            dialog.setFile(defaultSelection.getName());
-          }
-
-          dialog.setVisible(true);
-          String directory = dialog.getDirectory();
-          String filename = dialog.getFile();
-          if (filename != null) {
-            selectedFile = new File(directory, filename);
-          }
-
-        } else {
-          JFileChooser chooser = new JFileChooser();
-          chooser.setDialogTitle(prompt);
-          if (defaultSelection != null) {
-            chooser.setSelectedFile(defaultSelection);
-          }
-
-          int result = -1;
-          if (mode == FileDialog.SAVE) {
-            result = chooser.showSaveDialog(parentFrame);
-          } else if (mode == FileDialog.LOAD) {
-            result = chooser.showOpenDialog(parentFrame);
-          }
-          if (result == JFileChooser.APPROVE_OPTION) {
-            selectedFile = chooser.getSelectedFile();
-          }
-        }
-
-        if (hide) sketch.surface.setVisible(true);
-        selectCallback(selectedFile, callbackMethod, callbackObject);
-      }
-    });
-  }
-  */
 
 
   /**
@@ -6184,68 +6024,6 @@ public class PApplet implements PConstants {
     //selectFolder(prompt, callback, file, callbackObject, null, this);
     surface.selectFolder(prompt, callback, file, callbackObject);
   }
-
-
-  /*
-  static public void selectFolder(final String prompt,
-                                  final String callbackMethod,
-                                  final File defaultSelection,
-                                  final Object callbackObject,
-                                  final Frame parentFrame) {
-    selectFolder(prompt, callbackMethod, defaultSelection, callbackObject, parentFrame, null);
-  }
-
-
-  // Will remove the 'sketch' parameter once we get an upstream JOGL fix
-  // https://github.com/processing/processing/issues/3831
-  static public void selectFolder(final String prompt,
-                                  final String callbackMethod,
-                                  final File defaultSelection,
-                                  final Object callbackObject,
-                                  final Frame parentFrame,
-                                  final PApplet sketch) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        File selectedFile = null;
-
-        boolean hide = (sketch != null) &&
-          (sketch.g instanceof PGraphicsOpenGL) && (platform == WINDOWS);
-        if (hide) sketch.surface.setVisible(false);
-
-        if (platform == MACOS && useNativeSelect != false) {
-          FileDialog fileDialog =
-            new FileDialog(parentFrame, prompt, FileDialog.LOAD);
-          if (defaultSelection != null) {
-            fileDialog.setDirectory(defaultSelection.getAbsolutePath());
-          }
-          System.setProperty("apple.awt.fileDialogForDirectories", "true");
-          fileDialog.setVisible(true);
-          System.setProperty("apple.awt.fileDialogForDirectories", "false");
-          String filename = fileDialog.getFile();
-          if (filename != null) {
-            selectedFile = new File(fileDialog.getDirectory(), fileDialog.getFile());
-          }
-        } else {
-          checkLookAndFeel();
-          JFileChooser fileChooser = new JFileChooser();
-          fileChooser.setDialogTitle(prompt);
-          fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-          if (defaultSelection != null) {
-            fileChooser.setCurrentDirectory(defaultSelection);
-          }
-
-          int result = fileChooser.showOpenDialog(parentFrame);
-          if (result == JFileChooser.APPROVE_OPTION) {
-            selectedFile = fileChooser.getSelectedFile();
-          }
-        }
-
-        if (hide) sketch.surface.setVisible(true);
-        selectCallback(selectedFile, callbackMethod, callbackObject);
-      }
-    });
-  }
-  */
 
 
   static public void selectCallback(File selectedFile,
@@ -6619,7 +6397,7 @@ public class PApplet implements PConstants {
    * methods to take more control of how the stream is read.
    * <p>
    * If the requested item doesn't exist, null is returned.
-   * (Prior to 0096, die() would be called, killing the applet)
+   * (Prior to 0096, die() would be called, killing the sketch)
    * <p>
    * For 0096+, the "data" folder is exported intact with subfolders,
    * and openStream() properly handles subdirectories from the data folder
@@ -6713,7 +6491,7 @@ public class PApplet implements PConstants {
 
       } catch (FileNotFoundException fnfe) {
         // Added in 0119 b/c Java 1.5 throws FNFE when URL not available.
-        // http://dev.processing.org/bugs/show_bug.cgi?id=403
+        // https://download.processing.org/bugzilla/403.html
 
       } catch (IOException e) {
         // changed for 0117, shouldn't be throwing exception
@@ -6728,7 +6506,7 @@ public class PApplet implements PConstants {
 
     // Moved this earlier than the getResourceAsStream() checks, because
     // calling getResourceAsStream() on a directory lists its contents.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=716
+    // https://download.processing.org/bugzilla/716.html
     try {
       // First see if it's in a data folder. This may fail by throwing
       // a SecurityException. If so, this whole block will be skipped.
@@ -6782,7 +6560,7 @@ public class PApplet implements PConstants {
       // this is an irritation of sun's java plug-in, which will return
       // a non-null stream for an object that doesn't exist. like all good
       // things, this is probably introduced in java 1.5. awesome!
-      // http://dev.processing.org/bugs/show_bug.cgi?id=359
+      // https://download.processing.org/bugzilla/359.html
       if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
         return stream;
       }
@@ -6790,7 +6568,7 @@ public class PApplet implements PConstants {
 
     // When used with an online script, also need to check without the
     // data folder, in case it's not in a subfolder called 'data'.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=389
+    // https://download.processing.org/bugzilla/389.html
     stream = cl.getResourceAsStream(filename);
     if (stream != null) {
       String cn = stream.getClass().getName();
@@ -6800,8 +6578,7 @@ public class PApplet implements PConstants {
     }
 
     try {
-      // attempt to load from a local file, used when running as
-      // an application, or as a signed applet
+      // attempt to load from a local file
       try {  // first try to catch any security exceptions
         try {
           return new FileInputStream(dataPath(filename));
@@ -6932,7 +6709,7 @@ public class PApplet implements PConstants {
 
         } catch (FileNotFoundException fnfe) {
           // Java 1.5+ throws FNFE when URL not available
-          // http://dev.processing.org/bugs/show_bug.cgi?id=403
+          // https://download.processing.org/bugzilla/403.html
 
         } catch (IOException e) {
           printStackTrace(e);
@@ -7542,10 +7319,6 @@ public class PApplet implements PConstants {
    * passed in. External libraries should use this function to save to
    * the sketch folder.
    * <p/>
-   * Note that when running as an applet inside a web browser,
-   * the sketchPath will be set to null, because security restrictions
-   * prevent applets from accessing that information.
-   * <p/>
    * This will also cause an error if the sketch is not inited properly,
    * meaning that init() was never called on the PApplet when hosted
    * my some other main() or by other code. For proper use of init(),
@@ -7575,12 +7348,12 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Returns a path inside the applet folder to save to. Like sketchPath(),
+   * Returns a path adjacent the application to save to. Like sketchPath(),
    * but creates any in-between folders so that things save properly.
    * <p/>
    * All saveXxxx() functions use the path to the sketch folder, rather than
    * its data folder. Once exported, the data folder will be found inside the
-   * jar file of the exported application or applet. In this case, it's not
+   * jar file of the exported application. In this case, it's not
    * possible to save data into the jar file, because it will often be running
    * from a server, or marked in-use if running from a local file system.
    * With this in mind, saving to the data path doesn't make sense anyway.
@@ -10135,7 +9908,7 @@ public class PApplet implements PConstants {
    * <PRE>
    * Parameters useful for launching or also used by the PDE:
    *
-   * --location=x,y         Upper left-hand corner of where the applet
+   * --location=x,y         Upper left-hand corner of where the sketch
    *                        should appear on screen. If not used,
    *                        the default is to center on the main screen.
    *
@@ -10172,10 +9945,10 @@ public class PApplet implements PConstants {
    *
    * Parameters used by Processing when running via the PDE
    *
-   * --external             set when the applet is being used by the PDE
+   * --external             set when the sketch is being used by the PDE
    *
    * --editor-location=x,y  position of the upper left-hand corner of the
-   *                        editor window, for placement of applet window
+   *                        editor window, for placement of sketch window
    *
    * All parameters *after* the sketch class name are passed to the sketch
    * itself and available from its 'args' array while the sketch is running.
@@ -10277,6 +10050,7 @@ public class PApplet implements PConstants {
 
     int displayNum = -1;  // use default
     boolean present = false;
+    boolean fullScreen = false;
     float uiScale = 0;
 
     String param, value;
@@ -10342,6 +10116,9 @@ public class PApplet implements PConstants {
 
         } else if (args[argIndex].equals(ARGS_EXTERNAL)) {
           external = true;
+
+        } else if (args[argIndex].equals(ARGS_FULL_SCREEN)) {
+          fullScreen = true;
 
         } else {
           name = args[argIndex];
@@ -10418,6 +10195,7 @@ public class PApplet implements PConstants {
     sketch.display = displayNum;
 
     sketch.present = present;
+    sketch.fullScreen = fullScreen;
 
     // For 3.0.1, moved this above handleSettings() so that loadImage() can be
     // used inside settings(). Sets a terrible precedent, but the alternative

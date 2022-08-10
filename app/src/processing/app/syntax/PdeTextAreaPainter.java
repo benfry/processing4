@@ -27,8 +27,6 @@ import java.awt.geom.GeneralPath;
 import java.util.List;
 
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Segment;
-import javax.swing.text.Utilities;
 
 import processing.app.Problem;
 import processing.app.ui.Editor;
@@ -44,9 +42,9 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   public Color warningUnderlineColor;
 
   protected Font gutterTextFont;
-  protected Color gutterTextColor;
-  protected Color gutterPastColor;
-  protected Color gutterLineHighlightColor;
+  protected Color gutterTextActiveColor;
+  protected Color gutterTextInactiveColor;
+  protected Color gutterHighlightColor;
 
 
   public PdeTextAreaPainter(JEditTextArea textArea, TextAreaDefaults defaults) {
@@ -94,12 +92,17 @@ public class PdeTextAreaPainter extends TextAreaPainter {
     warningUnderlineColor = Theme.getColor("editor.warning.underline.color");
 
     gutterTextFont = Theme.getFont("editor.gutter.text.font");
-    gutterTextColor = Theme.getColor("editor.gutter.text.color");
-    gutterPastColor = new Color(gutterTextColor.getRed(),
-                                gutterTextColor.getGreen(),
-                                gutterTextColor.getBlue(),
-                                96);
-    gutterLineHighlightColor = Theme.getColor("editor.gutter.linehighlight.color");
+
+    Color textColor = Theme.getColor("editor.gutter.text.color");
+    int textRGB = textColor.getRGB() & 0xFFFFFF;
+
+    int activeAlpha = 255 * Theme.getInteger("editor.gutter.text.active.alpha") / 100;
+    gutterTextActiveColor = new Color(activeAlpha << 24 | textRGB, true);
+
+    int inactiveAlpha = 255 * Theme.getInteger("editor.gutter.text.inactive.alpha") / 100;
+    gutterTextInactiveColor = new Color(inactiveAlpha << 24 | textRGB, true);
+
+    gutterHighlightColor = Theme.getColor("editor.gutter.highlight.color");
 
     // pull in changes for syntax style, as well as foreground and background color
     if (defaults instanceof PdeTextAreaDefaults) {
@@ -212,7 +215,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected void paintLeftGutter(Graphics gfx, int line, int x) {
     int y = textArea.lineToY(line) + getLineDisplacement();
     if (line == textArea.getSelectionStopLine()) {
-      gfx.setColor(gutterLineHighlightColor);
+      gfx.setColor(gutterHighlightColor);
       gfx.fillRect(0, y, Editor.LEFT_GUTTER, fontMetrics.getHeight());
     } else {
       Rectangle clip = gfx.getClipBounds();
@@ -226,7 +229,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       text = getPdeTextArea().getGutterText(line);
     }
 
-    gfx.setColor(line < textArea.getLineCount() ? gutterTextColor : gutterPastColor);
+    gfx.setColor(line < textArea.getLineCount() ? gutterTextActiveColor : gutterTextInactiveColor);
 //    if (line >= textArea.getLineCount()) {
 //      //gfx.setColor(new Color(gutterTextColor.getRGB(), );
 //    }
@@ -252,11 +255,14 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       // Right-align the text
       char[] txt = text.toCharArray();
       int tx = textRight - gfx.getFontMetrics().charsWidth(txt, 0, txt.length);
+      /*
       // Using 'fm' here because it's relative to the editor text size,
       // not the numbers in the gutter
       Utilities.drawTabbedText(new Segment(txt, 0, text.length()),
                                (float) tx, (float) textBaseline,
                                (Graphics2D) gfx, this, 0);
+       */
+      gfx.drawString(text, tx, textBaseline);
     }
   }
 

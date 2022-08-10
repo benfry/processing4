@@ -10,6 +10,21 @@ The short version:
         ant run
 
 
+### Updating an older 4.x checkout
+
+If you checked out this repository before, but now it's behaving strangely, try the following:
+
+    git pull
+    git checkout main
+    ant clean
+    ant clean-libs
+    ant run
+
+Major changes happened during the 4.x series, including a reorganization of the *core* library, changes to how `.jar` files for libraries were downloaded, and the `master` branch was renamed to `main`.
+
+The `ant clean-libs` task (added in 4.0 beta 9) clears out downloaded support files (JOGL, Ant, etc) and makes sure they're the latest versions.
+
+
 ### Java version complaints
 
 You might have multiple versions of Java installed. Type `java -version` and if it says something other than 17, you'll need to set the `JAVA_HOME` environment variable.

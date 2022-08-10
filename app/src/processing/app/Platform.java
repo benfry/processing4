@@ -140,12 +140,11 @@ public class Platform {
 
   /**
    * Implements the cross-platform headache of opening URLs.
-   *
-   * For 2.0a8 and later, this requires the parameter to be an actual URL,
-   * meaning that you can't send it a file:// path without a prefix. It also
-   * just calls into Platform, which now uses java.awt.Desktop (where
-   * possible, meaning not on Linux) now that we're requiring Java 6.
-   * As it happens the URL must also be properly URL-encoded.
+   * <p>
+   * Since 2.0a8, this requires the parameter to be an actual URL,
+   * meaning that you can't send it a file:// path without a prefix.
+   * It also just calls into Platform, which now uses java.awt.Desktop
+   * (where possible). The URL must also be properly URL-encoded.
    */
   static public void openURL(String url) {
     try {
@@ -258,6 +257,11 @@ public class Platform {
    */
   static public String getName() {
     return PConstants.platformNames[PApplet.platform];
+  }
+
+
+  static public String getPrettyName() {
+    return supportedVariants.get(getVariant());
   }
 
 
@@ -399,11 +403,18 @@ public class Platform {
 
 
   /**
-   * Attempts to move to the Trash on macOS, or the Recycle Bin on Windows.
+   * Delete a file or directory in a platform-specific manner. Removes a File
+   * object (a file or directory) from the system by placing it in the Trash
+   * or Recycle Bin (if available) or simply deleting it (if not).
    * Also tries to find a suitable Trash location on Linux.
-   * If not possible, just deletes the file or folder instead.
-   * @param file the folder or file to be removed/deleted
-   * @return true if the folder was successfully removed
+   * <p>
+   * When the file/folder is on another file system, it may simply be removed
+   * immediately, without additional warning. So only use this if you want to,
+   * you know, "delete" the subject in question.
+   *
+   * @param file the victim (a directory or individual file)
+   * @return true if all ends well
+   * @throws IOException what went wrong
    */
   static public boolean deleteFile(File file) throws IOException {
     try {

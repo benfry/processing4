@@ -41,6 +41,7 @@ public class ManagerFrame {
 
   static final int AUTHOR_WIDTH = Toolkit.zoom(240);
   static final int STATUS_WIDTH = Toolkit.zoom(66);
+  static final int VERSION_WIDTH = Toolkit.zoom(66);
 
   static final String title = "Contribution Manager";
 

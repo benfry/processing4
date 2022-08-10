@@ -380,7 +380,7 @@ public class ShimAWT implements PConstants {
 
     // For jpeg, gif, and png, load them using createImage(),
     // because the javax.imageio code was found to be much slower.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=392
+    // https://download.processing.org/bugzilla/392.html
     try {
       if (extension.equals("jpg") || extension.equals("jpeg") ||
           extension.equals("gif") || extension.equals("png") ||

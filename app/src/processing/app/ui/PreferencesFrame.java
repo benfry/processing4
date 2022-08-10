@@ -37,6 +37,7 @@ import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Preferences;
+import processing.app.SketchName;
 import processing.awt.ShimAWT;
 import processing.core.*;
 
@@ -53,6 +54,8 @@ public class PreferencesFrame {
   static final Integer[] FONT_SIZES = { 10, 12, 14, 18, 24, 36, 48 };
 
   JTextField sketchbookLocationField;
+  JComboBox<String> namingSelectionBox;
+
   JTextField presentColor;
   //JCheckBox editorAntialiasBox;
 //  JCheckBox deletePreviousBox;
@@ -144,6 +147,12 @@ public class PreferencesFrame {
     );
 
 
+    // Sketch Naming: [ Classic (sketch_220822a) ]
+
+    JLabel namingLabel = new JLabel(Language.text("preferences.sketch_naming"));
+    namingSelectionBox = new JComboBox<>(SketchName.getOptions());
+
+
     // Language: [ English ] (requires restart of Processing)
 
     JLabel languageLabel = new JLabel(Language.text("preferences.language"));
@@ -208,7 +217,7 @@ public class PreferencesFrame {
     });
 
     zoomSelectionBox = new JComboBox<>();
-    zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.array()));
+    zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.toArray()));
     zoomSelectionBox.addActionListener(e -> updateZoomRestartRequired());
 
 
@@ -412,9 +421,26 @@ public class PreferencesFrame {
 
     // More preferences are in the ...
 
-    JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file"));
-    //morePreferenceLabel.setForeground(Color.gray);
-    morePreferenceLabel.setEnabled(false);
+    final JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file"));
+    morePreferenceLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
+    morePreferenceLabel.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        // Starting in 4.0.1, open the Wiki page about the prefs
+        Platform.openURL("https://github.com/processing/processing4/wiki/Preferences");
+      }
+
+      // Light this up in blue like a hyperlink
+      public void mouseEntered(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        morePreferenceLabel.setForeground(Theme.getColor("laf.accent.color"));
+      }
+
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        morePreferenceLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
+      }
+    });
 
     JLabel preferencePathLabel = new JLabel(Preferences.getPreferencesPath());
     final JLabel clickable = preferencePathLabel;
@@ -432,9 +458,7 @@ public class PreferencesFrame {
       // Set the text back to black when the mouse is outside
       public void mouseExited(MouseEvent e) {
         frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        // steal the color from a component that doesn't change
-        // (so that it works after updateTheme() has been called)
-        clickable.setForeground(sketchbookLocationLabel.getForeground());
+        clickable.setForeground(UIManager.getColor("Label.foreground"));
       }
     });
 
@@ -459,6 +483,8 @@ public class PreferencesFrame {
     Box axis = Box.createVerticalBox();
 
     addRow(axis, sketchbookLocationLabel, sketchbookLocationField);
+
+    addRow(axis, namingLabel, namingSelectionBox);
 
     //
 
@@ -504,8 +530,7 @@ public class PreferencesFrame {
     codingPanel.setLayout(new BoxLayout(codingPanel, BoxLayout.Y_AXIS));
 
     addRow(codingPanel, errorCheckerBox, warningsCheckerBox);
-    addRow(codingPanel, codeCompletionBox);
-    addRow(codingPanel, importSuggestionsBox);
+    addRow(codingPanel, codeCompletionBox, importSuggestionsBox);
 
     axis.add(codingPanel);
 
@@ -664,6 +689,8 @@ public class PreferencesFrame {
       base.setSketchbookFolder(new File(newPath));
     }
 
+    Preferences.set("sketch.name.approach", (String) namingSelectionBox.getSelectedItem());
+
 //    setBoolean("editor.external", externalEditorBox.isSelected());
     Preferences.setBoolean("update.check", checkUpdatesBox.isSelected()); //$NON-NLS-1$
 
@@ -803,6 +830,14 @@ public class PreferencesFrame {
 //    deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
 
     sketchbookLocationField.setText(Preferences.getSketchbookPath());
+
+    namingSelectionBox.setSelectedItem(Preferences.get("sketch.name.approach"));
+    if (namingSelectionBox.getSelectedIndex() < 0) {
+      // If no selection, revert to the classic style, and set the pref as well
+      namingSelectionBox.setSelectedItem(SketchName.CLASSIC);
+      Preferences.set("sketch.name.approach", SketchName.CLASSIC);
+    }
+
     checkUpdatesBox.setSelected(Preferences.getBoolean("update.check")); //$NON-NLS-1$
 
     defaultDisplayNum = updateDisplayList();

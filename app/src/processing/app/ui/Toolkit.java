@@ -23,17 +23,13 @@ package processing.app.ui;
 
 import java.awt.BasicStroke;
 import java.awt.Component;
-import java.awt.Container;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -56,8 +52,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 import javax.swing.Action;
@@ -67,7 +61,6 @@ import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
@@ -693,7 +686,18 @@ public class Toolkit {
    * @param size size in pixels (handling for 2x done automatically)
    */
   static public ImageIcon renderIcon(String name, String color, int size) {
-    Image image = renderMonoImage(name, color, size);
+    return renderIcon(Platform.getContentFile("lib/" + name + ".svg"), color, size);
+  }
+
+
+  /**
+   * Create an Icon object from an SVG path name.
+   * @param file full path to icon
+   * @param color color to apply to the monochrome icon
+   * @param size size in pixels (handling for 2x done automatically)
+   */
+  static public ImageIcon renderIcon(File file, String color, int size) {
+    Image image = renderMonoImage(file, color, size);
     if (image == null) {
       return null;
     }
@@ -722,16 +726,10 @@ public class Toolkit {
   }
 
 
-  static protected Image renderMonoImage(String name, String color, int size) {
-    File file = Platform.getContentFile("lib/" + name + ".svg");
+  static protected Image renderMonoImage(File file, String color, int size) {
     String xmlOrig = Util.loadFile(file);
 
     if (xmlOrig != null) {
-      /*
-      final String REPLACE_COLOR = "#9B9B9B";
-      String xmlStr = xmlOrig.replace(REPLACE_COLOR, color);
-      return Toolkit.svgToImageMult(xmlStr, size, size);
-      */
       StringDict replace = new StringDict(new String[][] {
         { "#9B9B9B", color }
       });
@@ -741,9 +739,11 @@ public class Toolkit {
   }
 
 
+  /*
   static private Image svgToImageMult(String xmlStr, int wide, int high) {
     return svgToImage(xmlStr, highResMultiply(wide), highResMultiply(high));
   }
+  */
 
 
   static public Image svgToImageMult(String xmlStr, int wide, int high, StringDict replacements) {
@@ -1106,13 +1106,12 @@ public class Toolkit {
   // A 5-minute search didn't turn up any such event in the Java API.
   // Also, should we use the Toolkit associated with the editor window?
   static private boolean checkRetina() {
-    GraphicsDevice graphicsDevice = GraphicsEnvironment
-            .getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice();
-    GraphicsConfiguration graphicsConfig = graphicsDevice
-            .getDefaultConfiguration();
+    AffineTransform tx = GraphicsEnvironment
+      .getLocalGraphicsEnvironment()
+      .getDefaultScreenDevice()
+      .getDefaultConfiguration()
+      .getDefaultTransform();
 
-    AffineTransform tx = graphicsConfig.getDefaultTransform();
     return Math.round(tx.getScaleX()) == 2;
   }
 
@@ -1172,7 +1171,7 @@ public class Toolkit {
       families.appendUnique(font.getFamily());
     }
     families.sort();
-    return families.array();
+    return families.toArray();
   }
 
 
@@ -1184,11 +1183,7 @@ public class Toolkit {
 
   /** Get the name of the default (built-in) monospaced font. */
   static public String getMonoFontName() {
-    if (monoFont == null) {
-      // create a dummy version if the font has never been loaded (rare)
-      getMonoFont(12, Font.PLAIN);
-    }
-    return monoFont.getName();
+    return getMonoFont(12, Font.PLAIN).getName();
   }
 
 
@@ -1200,28 +1195,30 @@ public class Toolkit {
    * https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522
    */
   static public Font getMonoFont(int size, int style) {
-    if (monoFont == null) {
-      try {
-        monoFont = createFont("SourceCodePro-Regular.ttf", size);
-        monoBoldFont = createFont("SourceCodePro-Bold.ttf", size);
+    // Prior to 4.0 beta 9, we had a manual override for
+    // individual languages to use SansSerif instead.
+    // In beta 9, that was moved to the language translation file.
+    // https://github.com/processing/processing/issues/2886
+    // https://github.com/processing/processing/issues/4944
+    String fontFamilyMono = Language.text("font.family.mono");
 
-        // https://github.com/processing/processing/issues/2886
-        // https://github.com/processing/processing/issues/4944
-        String lang = Language.getLanguage();
-        if ("el".equals(lang) ||
-            "ar".equals(lang) ||
-            Locale.CHINESE.getLanguage().equals(lang) ||
-            Locale.JAPANESE.getLanguage().equals(lang) ||
-            Locale.KOREAN.getLanguage().equals(lang)) {
-          sansFont = new Font("Monospaced", Font.PLAIN, size);
-          sansBoldFont = new Font("Monospaced", Font.BOLD, size);
+    if (monoFont == null || monoBoldFont == null) {
+      try {
+        if ("Source Code Pro".equals(fontFamilyMono)) {
+          monoFont = initFont("SourceCodePro-Regular.ttf", size);
+          monoBoldFont = initFont("SourceCodePro-Bold.ttf", size);
         }
       } catch (Exception e) {
         Messages.err("Could not load mono font", e);
-        monoFont = new Font("Monospaced", Font.PLAIN, size);
-        monoBoldFont = new Font("Monospaced", Font.BOLD, size);
       }
     }
+
+    // If not using Source Code Pro above, or an Exception was thrown
+    if (monoFont == null || monoBoldFont == null) {
+      monoFont = new Font(fontFamilyMono, Font.PLAIN, size);
+      monoBoldFont = new Font(fontFamilyMono, Font.BOLD, size);
+    }
+
     if (style == Font.BOLD) {
       if (size == monoBoldFont.getSize()) {
         return monoBoldFont;
@@ -1238,50 +1235,36 @@ public class Toolkit {
   }
 
 
-  /*
   static public String getSansFontName() {
-    if (sansFont == null) {
-      // create a dummy version if the font has never been loaded (rare)
-      getSansFont(12, Font.PLAIN);
-    }
-    return sansFont.getName();
-  }
-  */
-
-
-  static public Font getSansFont() {
-    return getSansFont(0, Font.PLAIN);
-  }
-
-
-  static public Font getBoldFont() {
-    return getSansFont(0, Font.BOLD);
+    return getSansFont(12, Font.PLAIN).getName();
   }
 
 
   static public Font getSansFont(int size, int style) {
-    if (sansFont == null) {
-      try {
-        sansFont = createFont("ProcessingSansPro-Regular.ttf", size);
-        sansBoldFont = createFont("ProcessingSansPro-Semibold.ttf", size);
+    // Prior to 4.0 beta 9, we had a manual override for
+    // individual languages to use SansSerif instead.
+    // In beta 9, that was moved to the language translation file.
+    // https://github.com/processing/processing/issues/2886
+    // https://github.com/processing/processing/issues/4944
+    String fontFamilySans = Language.text("font.family.sans");
 
-        // https://github.com/processing/processing/issues/2886
-        // https://github.com/processing/processing/issues/4944
-        String lang = Language.getLanguage();
-        if ("el".equals(lang) ||
-            "ar".equals(lang) ||
-            Locale.CHINESE.getLanguage().equals(lang) ||
-            Locale.JAPANESE.getLanguage().equals(lang) ||
-            Locale.KOREAN.getLanguage().equals(lang)) {
-          sansFont = new Font("SansSerif", Font.PLAIN, size);
-          sansBoldFont = new Font("SansSerif", Font.BOLD, size);
+    if (sansFont == null || sansBoldFont == null) {
+      try {
+        if ("Processing Sans".equals(fontFamilySans)) {
+          sansFont = initFont("ProcessingSans-Regular.ttf", size);
+          sansBoldFont = initFont("ProcessingSans-Bold.ttf", size);
         }
       } catch (Exception e) {
         Messages.err("Could not load sans font", e);
-        sansFont = new Font("SansSerif", Font.PLAIN, size);
-        sansBoldFont = new Font("SansSerif", Font.BOLD, size);
       }
     }
+
+    // If not using "Processing Sans" above, or an Exception was thrown
+    if (sansFont == null || sansBoldFont == null) {
+      sansFont = new Font(fontFamilySans, Font.PLAIN, size);
+      sansBoldFont = new Font(fontFamilySans, Font.BOLD, size);
+    }
+
     if (style == Font.BOLD) {
       if (size == sansBoldFont.getSize() || size == 0) {
         return sansBoldFont;
@@ -1299,12 +1282,12 @@ public class Toolkit {
 
 
   /**
-   * Get a font from the lib/fonts folder. Our default fonts are also
-   * installed there so that the monospace (and others) can be used by other
-   * font listing calls (i.e. it appears in the list of monospace fonts in
-   * the Preferences window, and can be used by HTMLEditorKit for WebFrame).
+   * Load a built-in font from the Processing lib/fonts folder and register
+   * it with the GraphicsEnvironment so that it's broadly available.
+   * (i.e. shows up in getFontList() works, so it appears in the list of fonts
+   * in the Preferences window, and can be used by HTMLEditorKit for WebFrame.)
    */
-  static private Font createFont(String filename, int size) throws IOException, FontFormatException {
+  static private Font initFont(String filename, int size) throws IOException, FontFormatException {
     File fontFile = Platform.getContentFile("lib/fonts/" + filename);
 
     if (fontFile == null || !fontFile.exists()) {
@@ -1325,8 +1308,8 @@ public class Toolkit {
     Font font = Font.createFont(Font.TRUETYPE_FONT, input);
     input.close();
 
-    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    ge.registerFont(font);
+    // Register the font to be available for other function calls
+    GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
 
     return font.deriveFont((float) size);
   }
@@ -1341,6 +1324,59 @@ public class Toolkit {
     FontRenderContext frc = g2.getFontRenderContext();
     //return new TextLayout("H", font, frc).getBounds().getHeight();
     return new TextLayout("H", g.getFont(), frc).getBounds().getHeight();
+  }
+
+
+  static public String formatMessage(String message) {
+    String monoName = "Monospaced";
+    try {
+      monoName = Toolkit.getMonoFontName();
+    } catch (Exception ignored) { }
+
+    // Necessary to replace \n with <br/> (even if pre) otherwise Java
+    // treats it as a closed tag and reverts to plain formatting.
+    return "<html> " +
+      "<head> <style type=\"text/css\">" +
+      // if smaller than 12 pt, Source Code Sans doesn't get hinted
+      // (not clear if that's a font or Java issue) [fry 220803]
+      "tt { font: 12pt \"" + monoName + "\"; color: #888; }" +
+      "</style> </head>" +
+      message.replaceAll("\n", "<br/>");
+  }
+
+
+  static public String formatMessage(String primary, String secondary) {
+    // Pane formatting originally adapted from the Quaqua guide
+    // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+
+    // This code originally disabled unless Java 1.5 is in use on OS X
+    // because of a Java bug that prevents the initial value of the
+    // dialog from being set properly (at least on my MacBook Pro).
+    // The bug causes the "Don't Save" option to be the highlighted,
+    // blinking, default. This sucks. But I'll tell you what doesn't
+    // suck--workarounds for the Mac and Apple's snobby attitude about it!
+    // I think it's nifty that they treat their developers like dirt.
+
+//    String monoName = "Monospaced";
+//    try {
+//      monoName = Toolkit.getMonoFontName();
+//    } catch (Exception ignored) { }
+
+    // Necessary to replace \n with <br/> (even if pre) otherwise Java
+    // treats it as a closed tag and reverts to plain formatting.
+    return ("<html> " +
+      "<head> <style type=\"text/css\">"+
+      //"b { font: 13pt \"Lucida Grande\" }"+
+      //"b { font: 13pt \"Processing Sans\" }"+
+      //"p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
+      //"p { font: 11pt \"Processing Sans\"; margin-top: 8px }"+
+      // sometimes with "width: 300px" but that might also be problematic
+      // <tt> never used with the two tier dialog
+      //"tt { font: 11pt \"" + monoName + "\"; }" +  // mono not used here
+      "</style> </head>" +
+      // Extra &nbsp; because the right-hand side of the text is cutting off.
+      "<b>" + primary + "</b>&nbsp;" +
+      "<p>" + secondary + "</p>").replaceAll("\n", "<br/>");
   }
 
 

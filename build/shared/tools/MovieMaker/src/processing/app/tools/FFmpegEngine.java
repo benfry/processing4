@@ -9,8 +9,10 @@ import java.io.*;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.NumberFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +23,21 @@ class FFmpegEngine {
 
   Component parent;
   String ffmpegPath;
+
+  static Map<String, String> variantToFilename = new HashMap<>();
+  static {
+    variantToFilename.put("macos-x86_64", "darwin-x64");
+    variantToFilename.put("macos-aarch64", "darwin-arm64");
+    variantToFilename.put("windows-amd64", "win32-x64");
+    variantToFilename.put("linux-amd64", "linux-x64");
+    variantToFilename.put("linux-arm", "linux-arm");
+    variantToFilename.put("linux-aarch64", "linux-arm64");
+  }
+
+  // https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/darwin-arm64.gz
+  static final String DOWNLOAD_URL =
+    "https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/" +
+    variantToFilename.get(Platform.getVariant()) + ".gz";
 
 
   FFmpegEngine(Component parent) {
@@ -34,7 +51,13 @@ class FFmpegEngine {
     File toolFolder = new File(jarPath).getParentFile();
     // Use that path to get the full path to our copy of the ffmpeg binary
     String ffmpegName = Platform.isWindows() ? "ffmpeg.exe" : "ffmpeg";
-    ffmpegPath = new File(toolFolder, ffmpegName).getAbsolutePath();
+    File ffmpegFile = new File(toolFolder, ffmpegName);
+    ffmpegPath = ffmpegFile.getAbsolutePath();
+
+    if (!ffmpegFile.exists()) {
+      // download the binary from DOWNLOAD_URL, use a ProgressMonitor to track it
+      // https://docs.oracle.com/javase/tutorial/uiswing/components/progress.html
+    }
   }
 
 

@@ -32,11 +32,11 @@ import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 /**
-   * 
-   * A client connects to a server and sends data back and forth. If anything 
-   * goes wrong with the connection, for example the host is not there or is 
+   *
+   * A client connects to a server and sends data back and forth. If anything
+   * goes wrong with the connection, for example the host is not there or is
    * listening on a different port, an exception is thrown.
-   * 
+   *
  * @webref client
  * @webBrief The client class is used to create client Objects which connect to a server to exchange data
  * @instanceName client any variable of type Client
@@ -67,8 +67,8 @@ public class Client implements Runnable {
   int bufferLast;
 
   boolean disposeRegistered = false;
-  
-  
+
+
   /**
    * @param parent typically use "this"
    * @param host address of the server
@@ -113,7 +113,7 @@ public class Client implements Runnable {
     }
   }
 
-  
+
   /**
    * @param socket any object of type Socket
    */
@@ -147,15 +147,15 @@ public class Client implements Runnable {
 
 
   /**
-   * 
-   * Disconnects from the server. Use to shut the connection when you're 
+   *
+   * Disconnects from the server. Use to shut the connection when you're
    * finished with the Client.
-   * 
+   *
    * @webref client
    * @webBrief Disconnects from the server
    * @usage application
    */
-  public void stop() {    
+  public void stop() {
     if (disconnectEventMethod != null && thread != null){
       try {
         disconnectEventMethod.invoke(parent, this);
@@ -181,7 +181,7 @@ public class Client implements Runnable {
    * Disconnect from the server: internal use only.
    * <P>
    * This should only be called by the internal functions in PApplet,
-   * use stop() instead from within your own applets.
+   * use stop() instead from within your own sketches.
    */
   public void dispose() {
     thread = null;
@@ -202,7 +202,7 @@ public class Client implements Runnable {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    
+
     try {
       if (socket != null) {
         socket.close();
@@ -230,7 +230,7 @@ public class Client implements Runnable {
         while (input != null) {
           int readCount;
 
-          // try to read a byte using a blocking read. 
+          // try to read a byte using a blocking read.
           // An exception will occur when the sketch is exits.
           try {
             readCount = input.read(readBuffer, 0, readBuffer.length);
@@ -240,7 +240,7 @@ public class Client implements Runnable {
              stop();
              return;
           }
-        
+
           // read returns -1 if end-of-stream occurs (for example if the host disappears)
           if (readCount == -1) {
             System.err.println("Client got end-of-stream.");
@@ -303,10 +303,10 @@ public class Client implements Runnable {
 
 
   /**
-   * 
+   *
    * Returns <b>true</b> if this client is still active and hasn't run
    * into any trouble.
-   * 
+   *
    * @webref client
    * @webBrief Returns <b>true</b> if this client is still active
    * @usage application
@@ -317,9 +317,9 @@ public class Client implements Runnable {
 
 
   /**
-   * 
+   *
    * Returns the IP address of the computer to which the Client is attached.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Returns the IP address of the machine as a <b>String</b>
@@ -333,10 +333,10 @@ public class Client implements Runnable {
 
 
   /**
-   * 
-   * Returns the number of bytes available. When any client has bytes 
+   *
+   * Returns the number of bytes available. When any client has bytes
    * available from the server, it returns the number of bytes.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Returns the number of bytes in the buffer waiting to be read
@@ -349,9 +349,9 @@ public class Client implements Runnable {
 
 
   /**
-   * 
+   *
    * Empty the buffer, removes all the data stored there.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Clears the buffer
@@ -365,11 +365,11 @@ public class Client implements Runnable {
 
 
   /**
-   * 
-   * Returns a number between 0 and 255 for the next byte that's waiting in 
-   * the buffer. Returns -1 if there is no byte, although this should be 
+   *
+   * Returns a number between 0 and 255 for the next byte that's waiting in
+   * the buffer. Returns -1 if there is no byte, although this should be
    * avoided by first checking <b>available()</b> to see if any data is available.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Returns a value from the buffer
@@ -389,10 +389,10 @@ public class Client implements Runnable {
 
 
   /**
-   * 
-   * Returns the next byte in the buffer as a char. Returns <b>-1</b> or 
+   *
+   * Returns the next byte in the buffer as a char. Returns <b>-1</b> or
    * <b>0xffff</b> if nothing is there.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Returns the next byte in the buffer as a char
@@ -406,21 +406,21 @@ public class Client implements Runnable {
 
 
   /**
-   * 
-   * Reads a group of bytes from the buffer. The version with no parameters 
-   * returns a byte array of all data in the buffer. This is not efficient, 
-   * but is easy to use. The version with the <b>byteBuffer</b> parameter is 
-   * more memory and time efficient. It grabs the data in the buffer and puts 
-   * it into the byte array passed in and returns an int value for the number 
-   * of bytes read. If more bytes are available than can fit into the 
+   *
+   * Reads a group of bytes from the buffer. The version with no parameters
+   * returns a byte array of all data in the buffer. This is not efficient,
+   * but is easy to use. The version with the <b>byteBuffer</b> parameter is
+   * more memory and time efficient. It grabs the data in the buffer and puts
+   * it into the byte array passed in and returns an int value for the number
+   * of bytes read. If more bytes are available than can fit into the
    * <b>byteBuffer</b>, only those that fit are read.
-   * 
+   *
    * <h3>Advanced</h3>
    * Return a byte array of anything that's in the serial buffer.
    * Not particularly memory/speed efficient, because it creates
    * a byte array on each read, but it's easier to use than
    * readBytes(byte b[]) (see below).
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Reads a group of bytes from the buffer
@@ -479,7 +479,7 @@ public class Client implements Runnable {
    * Returns an int for how many bytes were read. If more bytes
    * are available than can fit into the byte array, only those
    * that will fit are read.
-   * 
+   *
    * @param bytebuffer passed in byte array to be altered
    */
   public int readBytes(byte[] bytebuffer) {
@@ -501,18 +501,18 @@ public class Client implements Runnable {
 
 
   /**
-   * 
-   * Reads from the port into a buffer of bytes up to and including a 
-   * particular character. If the character isn't in the buffer, 'null' is 
-   * returned. The version with no <b>byteBuffer</b> parameter returns a byte 
-   * array of all data up to and including the <b>interesting</b> byte. This 
-   * is not efficient, but is easy to use. The version with the 
-   * <b>byteBuffer</b> parameter is more memory and time efficient. It grabs 
-   * the data in the buffer and puts it into the byte array passed in and 
-   * returns an int value for the number of bytes read. If the byte buffer is 
-   * not large enough, -1 is returned and an error is printed to the message 
+   *
+   * Reads from the port into a buffer of bytes up to and including a
+   * particular character. If the character isn't in the buffer, 'null' is
+   * returned. The version with no <b>byteBuffer</b> parameter returns a byte
+   * array of all data up to and including the <b>interesting</b> byte. This
+   * is not efficient, but is easy to use. The version with the
+   * <b>byteBuffer</b> parameter is more memory and time efficient. It grabs
+   * the data in the buffer and puts it into the byte array passed in and
+   * returns an int value for the number of bytes read. If the byte buffer is
+   * not large enough, -1 is returned and an error is printed to the message
    * area. If nothing is in the buffer, 0 is returned.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Reads from the buffer of bytes up to and including a particular character
@@ -557,7 +557,7 @@ public class Client implements Runnable {
    *   and an error message is printed on the console.
    * If nothing is in the buffer, zero is returned.
    * If 'interesting' byte is not in the buffer, then 0 is returned.
-   * 
+   *
    * @param byteBuffer passed in byte array to be altered
    */
   public int readBytesUntil(int interesting, byte[] byteBuffer) {
@@ -601,7 +601,7 @@ public class Client implements Runnable {
    *
    * In 4.0 beta 3, changed to using UTF-8 as the encoding,
    * otherwise the behavior is platform-dependent.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Returns the buffer as a <b>String</b>
@@ -616,14 +616,14 @@ public class Client implements Runnable {
 
 
   /**
-   * 
-   * Combination of <b>readBytesUntil()</b> and <b>readString()</b>. Returns 
+   *
+   * Combination of <b>readBytesUntil()</b> and <b>readString()</b>. Returns
    * <b>null</b> if it doesn't find what you're looking for.
-   * 
+   *
    * <h3>Advanced</h3>
    * In 4.0 beta 3, changed to using UTF-8 as the encoding,
    * otherwise the behavior is platform-dependent.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief Returns the buffer as a <b>String</b> up to and including a particular character
@@ -641,9 +641,9 @@ public class Client implements Runnable {
   /**
    *
    * Writes data to a server specified when constructing the client, or writes
-   * data to the specific client obtained from the Server <b>available()</b> 
+   * data to the specific client obtained from the Server <b>available()</b>
    * method.
-   * 
+   *
    * @webref client
    * @usage application
    * @webBrief  Writes <b>bytes</b>, <b>chars</b>, <b>ints</b>, <b>bytes[]</b>, <b>Strings</b>

@@ -174,7 +174,7 @@ public class PGraphicsJava2D extends PGraphics {
 
         if (useOffscreen) {
           // Needs to be RGB otherwise there's a major performance hit [0204]
-          // http://code.google.com/p/processing/issues/detail?id=729
+          // https://github.com/processing/processing/issues/768
           image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 //        GraphicsConfiguration gc = parent.getGraphicsConfiguration();
 //        image = gc.createCompatibleImage(width, height);
@@ -575,7 +575,7 @@ public class PGraphicsJava2D extends PGraphics {
     super.hint(which);
 
     // Avoid badness when drawing shorter strokes.
-    // http://code.google.com/p/processing/issues/detail?id=1068
+    // https://github.com/processing/processing/issues/1106
     // Unfortunately cannot always be enabled, because it makes the
     // stroke in many standard Processing examples really gross.
     if (which == ENABLE_STROKE_PURE) {
@@ -960,11 +960,11 @@ public class PGraphicsJava2D extends PGraphics {
 
   /**
    *
-   * Blends the pixels in the display window according to a defined mode. 
-   * There is a choice of the following modes to blend the source pixels (A) 
-   * with the ones of pixels already in the display window (B). Each pixel's 
-   * final color is the result of applying one of the blend modes with each 
-   * channel of (A) and (B) independently. The red channel is compared with 
+   * Blends the pixels in the display window according to a defined mode.
+   * There is a choice of the following modes to blend the source pixels (A)
+   * with the ones of pixels already in the display window (B). Each pixel's
+   * final color is the result of applying one of the blend modes with each
+   * channel of (A) and (B) independently. The red channel is compared with
    * red, green with green, and blue with blue.<br />
    * <br />
    * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
@@ -987,11 +987,11 @@ public class PGraphicsJava2D extends PGraphics {
    * <br />
    * REPLACE - the pixels entirely replace the others and don't utilize alpha (transparency) values<br />
    * <br />
-   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b> 
-   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function 
-   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE, 
-   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might 
-   * not be available as well. 
+   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b>
+   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function
+   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE,
+   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might
+   * not be available as well.
    *
    *
    * @webref Rendering

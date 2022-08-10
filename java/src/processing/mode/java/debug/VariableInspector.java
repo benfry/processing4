@@ -2,7 +2,7 @@
 
 /*
   Part of the Processing project - http://processing.org
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2
@@ -21,7 +21,6 @@
 package processing.mode.java.debug;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +38,7 @@ import com.sun.jdi.Value;
 
 import processing.app.Language;
 import processing.app.Messages;
-import processing.app.Mode;
+import processing.app.ui.Toolkit;
 import processing.mode.java.JavaEditor;
 
 
@@ -168,10 +167,11 @@ public class VariableInspector extends JDialog {
 
   /**
    * Model for a Outline Row (excluding the tree column). Column 0 is "Value".
-   * Column 1 is "Type". Handles setting and getting values. TODO: Maybe use a
-   * TableCellRenderer instead of this to also have a different icon based on
-   * expanded state. See:
-   * http://kickjava.com/src/org/netbeans/swing/outline/DefaultOutlineCellRenderer.java.htm
+   * Column 1 is "Type". Handles setting and getting values.
+   *
+   * TODO: Maybe use a TableCellRenderer instead of this to also have a
+   *       different icon based on expanded state, for instance:
+   *       http://kickjava.com/src/org/netbeans/swing/outline/DefaultOutlineCellRenderer.java.htm
    */
   protected class VariableRowModel implements RowModel {
     final String column0 = Language.text("debugger.value");
@@ -295,50 +295,40 @@ public class VariableInspector extends JDialog {
    * Handles icons, text color and tool tips.
    */
   class OutlineRenderer implements RenderDataProvider {
-    Icon[][] icons;
+    static final String ENABLED_COLOR = "#000000";
+    static final String DISABLED_COLOR = "#808080";
     static final int ICON_SIZE = 16;
 
+    // Indices correspond to VariableNode.TYPE_OBJECT...TYPE_SHORT
+    final String[] TYPE_NAMES = {
+      "object", "array", "integer", "float", "boolean",
+      "char", "string", "long", "double", "byte", "short"
+    };
+    final int TYPE_COUNT = TYPE_NAMES.length;
+
+    Icon[] enabledIcons;
+    Icon[] disabledIcons;
+
+
     OutlineRenderer() {
-      icons = loadIcons("theme/variables-1x.png");
-    }
+      enabledIcons = new Icon[TYPE_COUNT];
+      disabledIcons = new Icon[TYPE_COUNT];
 
-    /**
-     * Load multiple icons (horizontal) with multiple states (vertical) from
-     * a single file.
-     *
-     * @param fileName file path in the mode folder.
-     * @return a nested array (first index: icon, second index: state) or
-     * null if the file wasn't found.
-     */
-    private ImageIcon[][] loadIcons(String fileName) {
-      Mode mode = editor.getMode();
-      File file = mode.getContentFile(fileName);
-      if (!file.exists()) {
-        Messages.log(getClass().getName(), "icon file not found: " + file.getAbsolutePath());
-        return null;
+      for (int i = 0; i < TYPE_COUNT; i++) {
+        String type = TYPE_NAMES[i];
+        File file = editor.getMode().getContentFile("theme/variables/" + type + ".svg");
+        enabledIcons[i] = Toolkit.renderIcon(file, ENABLED_COLOR, ICON_SIZE);
+        disabledIcons[i] = Toolkit.renderIcon(file, DISABLED_COLOR, ICON_SIZE);
       }
-      Image allIcons = mode.loadImage(fileName);
-      int cols = allIcons.getWidth(null) / ICON_SIZE;
-      int rows = allIcons.getHeight(null) / ICON_SIZE;
-      ImageIcon[][] iconImages = new ImageIcon[cols][rows];
-
-      for (int i = 0; i < cols; i++) {
-        for (int j = 0; j < rows; j++) {
-          Image image = new BufferedImage(ICON_SIZE, ICON_SIZE, BufferedImage.TYPE_INT_ARGB);
-          Graphics g = image.getGraphics();
-          g.drawImage(allIcons, -i * ICON_SIZE, -j * ICON_SIZE, null);
-          iconImages[i][j] = new ImageIcon(image);
-        }
-      }
-      return iconImages;
     }
 
 
-    protected Icon getIcon(int type, int state) {
+    protected Icon getIcon(int type, boolean enabled) {
+      Icon[] icons = enabled ? enabledIcons : disabledIcons;
       if (type < 0 || type > icons.length - 1) {
         return null;
       }
-      return icons[type][state];
+      return icons[type];
     }
 
 
@@ -400,7 +390,7 @@ public class VariableInspector extends JDialog {
     public Icon getIcon(Object o) {
       VariableNode var = toVariableNode(o);
       if (var != null) {
-        return getIcon(var.getType(), tree.isEnabled() ? 0 : 1);
+        return getIcon(var.getType(), tree.isEnabled());
       }
       if (o instanceof TreeNode) {
         UIDefaults defaults = UIManager.getDefaults();
@@ -426,13 +416,12 @@ public class VariableInspector extends JDialog {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  // TODO: could probably extend the simpler DefaultTableCellRenderer here
   /**
    * Renderer for the value column. Uses an italic font for null values and
-   * Object values ("instance of ..."). Uses a gray color when tree is not
-   * enabled.
+   * Object values ("instance of ..."). Uses a gray color when tree disabled.
+   * TODO: could probably extend the simpler DefaultTableCellRenderer here
    */
-  protected class ValueCellRenderer extends DefaultOutlineCellRenderer {
+  static protected class ValueCellRenderer extends DefaultOutlineCellRenderer {
 
     public ValueCellRenderer() {
       super();
@@ -469,7 +458,7 @@ public class VariableInspector extends JDialog {
    * Editor for the value column. Will show an empty string when editing
    * String values that are null.
    */
-  protected class ValueCellEditor extends DefaultCellEditor {
+  static protected class ValueCellEditor extends DefaultCellEditor {
 
     public ValueCellEditor() {
       super(new JTextField());
@@ -555,24 +544,6 @@ public class VariableInspector extends JDialog {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  // removed in 3.0a9, doesn't seem to be used?
-//  protected static void run(final VariableInspector vi) {
-//    EventQueue.invokeLater(new Runnable() {
-//      @Override
-//      public void run() {
-//        vi.setVisible(true);
-//      }
-//    });
-//  }
-
-
-  /*
-  public DefaultMutableTreeNode getRootNode() {
-    return rootNode;
-  }
-  */
 
 
   /**
@@ -696,8 +667,6 @@ public class VariableInspector extends JDialog {
       path = synthesizePath(path);
       if (path != null) {
         tree.expandPath(path);
-      } else {
-        //System.out.println("couldn't synthesize path");
       }
     }
 
@@ -771,7 +740,7 @@ public class VariableInspector extends JDialog {
   public interface VariableNodeFilter {
 
     /** Check whether the filter accepts a {@link VariableNode}. */
-    public boolean accept(VariableNode var);
+    boolean accept(VariableNode var);
   }
 
 
@@ -779,7 +748,7 @@ public class VariableInspector extends JDialog {
    * A {@link VariableNodeFilter} that accepts Processing built-in variable
    * names.
    */
-  public class P5BuiltinsFilter implements VariableNodeFilter {
+  static public class P5BuiltinsFilter implements VariableNodeFilter {
 
     protected String[] p5Builtins = {
       "focused",
@@ -809,7 +778,7 @@ public class VariableInspector extends JDialog {
    * A {@link VariableNodeFilter} that rejects implicit this references.
    * (Names starting with "this$")
    */
-  public class ThisFilter implements VariableNodeFilter {
+  static public class ThisFilter implements VariableNodeFilter {
 
     @Override
     public boolean accept(VariableNode var) {
@@ -825,7 +794,7 @@ public class VariableInspector extends JDialog {
    * A {@link VariableNodeFilter} that either rejects this-fields if hidden by
    * a local, or prefixes its name with "this."
    */
-  public class LocalHidesThisFilter implements VariableNodeFilter {
+  static public class LocalHidesThisFilter implements VariableNodeFilter {
     // Reject a this-field if hidden by a local.
     public static final int MODE_HIDE = 0; // don't show hidden this fields
 

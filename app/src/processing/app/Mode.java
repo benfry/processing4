@@ -810,7 +810,7 @@ public abstract class Mode {
 
 
   /**
-   * Create a fresh applet/application folder if the 'delete target folder'
+   * Create a fresh application folder if the 'delete target folder'
    * pref has been set in the preferences.
    */
   public void prepareExportFolder(File targetFolder) {

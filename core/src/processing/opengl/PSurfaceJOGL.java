@@ -528,7 +528,7 @@ public class PSurfaceJOGL implements PSurface {
         // this is an irritation of sun's java plug-in, which will return
         // a non-null stream for an object that doesn't exist. like all good
         // things, this is probably introduced in java 1.5. awesome!
-        // http://dev.processing.org/bugs/show_bug.cgi?id=359
+        // https://download.processing.org/bugzilla/359.html
         if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
           stream.close();
           return "data/" + filename;
@@ -537,7 +537,7 @@ public class PSurfaceJOGL implements PSurface {
 
       // When used with an online script, also need to check without the
       // data folder, in case it's not in a subfolder called 'data'.
-      // http://dev.processing.org/bugs/show_bug.cgi?id=389
+      // https://download.processing.org/bugzilla/389.html
       stream = cl.getResourceAsStream(filename);
       if (stream != null) {
         String cn = stream.getClass().getName();
@@ -549,30 +549,26 @@ public class PSurfaceJOGL implements PSurface {
     } catch (IOException ignored) { }
 
     try {
-      // attempt to load from a local file, used when running as
-      // an application, or as a signed applet
-      try {  // first try to catch any security exceptions
-        try {
-          String path = sketch.dataPath(filename);
-          stream = new FileInputStream(path);
-          stream.close();
-          return path;
-        } catch (IOException ignored) { }
+      // attempt to load from a local file
+      try {
+        String path = sketch.dataPath(filename);
+        stream = new FileInputStream(path);
+        stream.close();
+        return path;
+      } catch (IOException ignored) { }
 
-        try {
-          String path = sketch.sketchPath(filename);
-          stream = new FileInputStream(path);
-          stream.close();
-          return path;
-        } catch (Exception ignored) { }
+      try {
+        String path = sketch.sketchPath(filename);
+        stream = new FileInputStream(path);
+        stream.close();
+        return path;
+      } catch (Exception ignored) { }
 
-        try {
-          stream = new FileInputStream(filename);
-          stream.close();
-          return filename;
-        } catch (IOException ignored) { }
-
-      } catch (SecurityException ignored) { }  // online, whups
+      try {
+        stream = new FileInputStream(filename);
+        stream.close();
+        return filename;
+      } catch (IOException ignored) { }
 
     } catch (Exception e) {
       //die(e.getMessage(), e);
@@ -620,7 +616,7 @@ public class PSurfaceJOGL implements PSurface {
     Point frameLoc = new Point(x, y);
     if (frameLoc.y < 0) {
       // Windows actually allows you to place frames where they can't be
-      // closed. Awesome. http://dev.processing.org/bugs/show_bug.cgi?id=1508
+      // closed. Awesome. https://download.processing.org/bugzilla/1508.html
       window.setTopLevelPosition(frameLoc.x, 30);
     }
   }

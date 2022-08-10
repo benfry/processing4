@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2014-15 The Processing Foundation
+  Copyright (c) 2014-22 The Processing Foundation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -26,7 +26,7 @@ import java.io.File;
 
 public interface PSurface {
   /**
-   * Minimum dimensions for the window holding an applet. This varies between
+   * Minimum dimensions for the window holding a sketch. This varies between
    * platforms, Mac OS X 10.3 (confirmed with 10.7 and Java 6) can do any
    * height but requires at least 128 pixels width. Windows XP has another
    * set of limitations. And for all I know, Linux probably allows window

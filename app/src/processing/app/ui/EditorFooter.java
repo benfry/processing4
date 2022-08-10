@@ -56,14 +56,14 @@ public class EditorFooter extends Box {
   static final int CURVE_RADIUS = Toolkit.zoom(6);
 
   static final int TAB_TOP = Toolkit.zoom(0);
-  static final int TAB_BOTTOM = Toolkit.zoom(27);
+  static final int TAB_BOTTOM = Toolkit.zoom(26);
   // amount of extra space between individual tabs
   static final int TAB_BETWEEN = Toolkit.zoom(2);
   // amount of margin on the left/right for the text on the tab
-  static final int MARGIN = Toolkit.zoom(14);
+  static final int MARGIN = Toolkit.zoom(8);
 
-  static final int ICON_WIDTH = Toolkit.zoom(16);
-  static final int ICON_HEIGHT = Toolkit.zoom(16);
+  static final int ICON_WIDTH = Toolkit.zoom(14);
+  static final int ICON_HEIGHT = Toolkit.zoom(14);
   static final int ICON_TOP = Toolkit.zoom(5);
   static final int ICON_SIDE = Toolkit.zoom(7);
 

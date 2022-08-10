@@ -87,7 +87,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   static public final int LEFT_GUTTER = Toolkit.zoom(45);
 
   static public final int RIGHT_GUTTER = Toolkit.zoom(12);
-  static public final int GUTTER_MARGIN = Toolkit.zoom(3);
+  static public final int GUTTER_MARGIN = Toolkit.zoom(5);
 
   protected MarkerColumn errorColumn;
 
@@ -173,7 +173,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     });
     // don't close the window when clicked, the app will take care
     // of that via the handleQuitInternal() methods
-    // http://dev.processing.org/bugs/show_bug.cgi?id=440
+    // https://download.processing.org/bugzilla/440.html
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     // When bringing a window to front, let the Base know
@@ -1007,9 +1007,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   static public void showChanges() {
-    // http://code.google.com/p/processing/issues/detail?id=1520
+    // https://github.com/processing/processing/issues/1558
     if (!Base.isCommandLine()) {
-      Platform.openURL("https://github.com/processing/processing/wiki/Changes");
+      Platform.openURL("https://github.com/processing/processing4/wiki/Changes-in-4.0");
     }
   }
 
@@ -1817,7 +1817,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
         // Put the scrollbar position back, otherwise it jumps on each format.
         // Since we're not doing a good job of maintaining position anyway,
         // a more complicated workaround here is fairly pointless.
-        // http://code.google.com/p/processing/issues/detail?id=1533
+        // https://github.com/processing/processing/issues/1571
         if (scrollPos != textarea.getVerticalScrollPosition()) {
           textarea.setVerticalScrollPosition(scrollPos);
         }
@@ -2107,7 +2107,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     if (!sketch.isModified()) return true;
 
     // As of Processing 1.0.10, this always happens immediately.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1456
+    // https://download.processing.org/bugzilla/1456.html
 
     // With Java 7u40 on OS X, need to bring the window forward.
     toFront();
@@ -2136,25 +2136,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
       }
 
     } else {
-      // This code is disabled unless Java 1.5 is being used on Mac OS X
-      // because of a Java bug that prevents the initial value of the
-      // dialog from being set properly (at least on my MacBook Pro).
-      // The bug causes the "Don't Save" option to be the highlighted,
-      // blinking, default. This sucks. But I'll tell you what doesn't
-      // suck--workarounds for the Mac and Apple's snobby attitude about it!
-      // I think it's nifty that they treat their developers like dirt.
-
-      // Pane formatting adapted from the quaqua guide
-      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+      String tier1 = Language.interpolate("save.title", sketch.getName());
+      String tier2 = Language.text("save.hint");
       JOptionPane pane =
-        new JOptionPane("<html> " +
-                        "<head> <style type=\"text/css\">"+
-                        "b { font: 13pt \"Lucida Grande\" }"+
-                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
-                        "</style> </head>" +
-                        "<b>" + Language.interpolate("save.title", sketch.getName()) + "</b>" +
-                        "<p>" + Language.text("save.hint") + "</p>",
-                        JOptionPane.QUESTION_MESSAGE);
+        new JOptionPane(Toolkit.formatMessage(tier1, tier2), JOptionPane.QUESTION_MESSAGE);
 
       String[] options = new String[] {
         Language.text("save.btn.save"),
@@ -2312,7 +2297,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * save is happening. If 'immediately' is true, then it will happen
    * immediately. This is used during a quit, because invokeLater()
    * won't run properly while a quit is happening. This fixes
-   * <A HREF="http://dev.processing.org/bugs/show_bug.cgi?id=276">Bug 276</A>.
+   * <A HREF="https://download.processing.org/bugzilla/276.html">Bug 276</A>.
    */
   public boolean handleSave(boolean immediately) {
     // This was a mistake (rectified in 0136) that would cause long-running
