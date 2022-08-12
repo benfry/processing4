@@ -9037,55 +9037,55 @@ public class PApplet implements PConstants {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  static final public String str(boolean x) {
-    return String.valueOf(x);
+  static final public String str(boolean value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(byte x) {
-    return String.valueOf(x);
+  static final public String str(byte value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(char x) {
-    return String.valueOf(x);
+  static final public String str(char value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(int x) {
-    return String.valueOf(x);
+  static final public String str(int value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(float x) {
-    return String.valueOf(x);
+  static final public String str(float value) {
+    return String.valueOf(value);
   }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  static final public String[] str(boolean[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(boolean[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(byte[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(byte[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(char[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(char[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(int[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(int[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(float[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(float[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
