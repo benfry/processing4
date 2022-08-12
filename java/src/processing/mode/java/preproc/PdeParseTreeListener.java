@@ -1225,9 +1225,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     footerWriter.addEmptyLine();
     footerWriter.addCodeLine(indent1 + "static public void main(String[] passedArgs) {");
-    footerWriter.addCode(indent2 +   "String[] appletArgs = new String[] { ");
-
-
+    footerWriter.addCodeLine(indent2 + "String sketchName = MethodHandles.lookup().lookupClass().getName();");
+    footerWriter.addCode(indent2 + "String[] appletArgs = new String[] { ");
 
     { // assemble line with applet args
       StringJoiner argsJoiner = new StringJoiner(", ");
@@ -1248,7 +1247,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         }
       }
       
-      argsJoiner.add("\"" + sketchName + "\"");
+      argsJoiner.add("sketchName");
       footerWriter.addCode(argsJoiner.toString());
     }
 

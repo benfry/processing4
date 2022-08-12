@@ -22,7 +22,8 @@ int c2 = test ? 0xFFA011CD : 0xC0C0C0C0;
     }
 
     static public void main(String[] passedArgs) {
-        String[] appletArgs = new String[] { "color" };
+        String sketchName = MethodHandles.lookup().lookupClass().getName();
+        String[] appletArgs = new String[] { sketchName };
         if (passedArgs != null) {
             PApplet.main(concat(appletArgs, passedArgs));
         } else {

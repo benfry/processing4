@@ -31,7 +31,8 @@ println(t.toString());
     }
 
     static public void main(String[] passedArgs) {
-        String[] appletArgs = new String[] { "classinstatic" };
+        String sketchName = MethodHandles.lookup().lookupClass().getName();
+        String[] appletArgs = new String[] { sketchName };
         if (passedArgs != null) {
             PApplet.main(concat(appletArgs, passedArgs));
         } else {
