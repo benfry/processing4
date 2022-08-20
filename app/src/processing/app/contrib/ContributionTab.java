@@ -161,7 +161,8 @@ public class ContributionTab extends JPanel {
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(categoryChooser)
                   .addComponent(filterField))
-      .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+      // fix for issue #520 https://github.com/processing/processing4/issues/520            
+      .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(loaderLabel)
                   .addComponent(listPanel))
@@ -270,6 +271,9 @@ public class ContributionTab extends JPanel {
       Set<String> categories = listCategories();
       if (categories.size() == 1 &&
           categories.contains(Contribution.UNKNOWN_CATEGORY)) {
+        // Add dummy item for sizing purpose
+        // fix for issue #520 https://github.com/processing/processing4/issues/520 
+        categoryChooser.addItem("NULL");
         // If no unique categories, hide the category chooser
         categoryChooser.setVisible(false);
 

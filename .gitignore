@@ -89,3 +89,7 @@ bin-test
 # dated folders
 /19*
 /20*
+
+# VS Code Java project files
+.project
+.vscode/
