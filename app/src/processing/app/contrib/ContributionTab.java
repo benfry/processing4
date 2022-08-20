@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -161,7 +161,7 @@ public class ContributionTab extends JPanel {
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(categoryChooser)
                   .addComponent(filterField))
-      // fix for issue #520 https://github.com/processing/processing4/issues/520            
+      // https://github.com/processing/processing4/issues/520
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(loaderLabel)
@@ -271,8 +271,8 @@ public class ContributionTab extends JPanel {
       Set<String> categories = listCategories();
       if (categories.size() == 1 &&
           categories.contains(Contribution.UNKNOWN_CATEGORY)) {
-        // Add dummy item for sizing purpose
-        // fix for issue #520 https://github.com/processing/processing4/issues/520 
+        // Add dummy item for sizing purposes
+        // https://github.com/processing/processing4/issues/520
         categoryChooser.addItem("NULL");
         // If no unique categories, hide the category chooser
         categoryChooser.setVisible(false);

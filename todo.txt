@@ -1,6 +1,12 @@
 1287 (4.0.2)
 
 
+contrib
+X Fix vertical placement of top elements in the Manager window
+X   https://github.com/processing/processing4/issues/520
+X   https://github.com/processing/processing4/pull/539
+
+
 known issues
 _ mixed mode warning now broken
 _   https://github.com/processing/processing4/issues/519
@@ -35,7 +41,6 @@ _   run through that online license checker
 _ add warnings to the old wiki pages with links to the newer versions
 o change the license from GPL
 _   make notes about the decision in the FAQ
-_ completion mode pop-up not following dark and light mode conventions
 _ Remove “Disable HiDPI Scaling” preference on Windows?
 _   document it in the troubleshooting doc, ask people to report
 _   put it into the Preferences page?
@@ -71,6 +76,13 @@ _   malformed proxy issues http://stackoverflow.com/q/376101
 _   docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
 _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 _   https://github.com/processing/processing4/wiki/Preferences#proxies
+
+
+design
+_ completion mode pop-up not following dark and light mode conventions
+_ tool tips for errors/warnings not picking up correct colors
+_ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pressed.color
+_   currently just using .enabled.color because they weren't in ColorSet
 
 
 organize this mess
@@ -333,8 +345,6 @@ _   https://github.com/processing/processing/issues/4757
 
 PDE / Manager (3.x notes)
 
-_ Fix vertical placement of top elements in the Manager window
-_   https://github.com/processing/processing4/issues/520
 _   vertical centering of the search box in the manager
 _ “could not move the contribution to the backup folder” message while updating
 _   problem is that any sketch that uses a library, the lib is stuck as "in use"
