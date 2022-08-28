@@ -81,7 +81,7 @@ import processing.opengl.*;
  * project of our (tiny) size, we should be focusing on the future, rather
  * than working around legacy Java code.
  */
-@SuppressWarnings({"unused", "FinalStaticMethod", "ManualMinMaxCalculation", "JavadocDeclaration"})
+@SuppressWarnings({"unused", "FinalStaticMethod", "ManualMinMaxCalculation"})
 public class PApplet implements PConstants {
 //public class PApplet extends PSketch {  // possible in the next alpha
   /** Full name of the Java version (i.e. 1.5.0_11). */
@@ -5014,8 +5014,8 @@ public class PApplet implements PConstants {
    * <br />
    * By default, noise is computed over 4 octaves with each octave contributing
    * exactly half than its predecessor, starting at 50% strength for the first
-   * octave. This falloff amount can be changed by adding an additional function
-   * parameter. For example, a falloff factor of 0.75 means each octave will now
+   * octave. This falloff amount can be changed by adding a function parameter.
+   * For example, a falloff factor of 0.75 means each octave will now
    * have 75% impact (25% less) of the previous lower octave. While any number
    * between 0.0 and 1.0 is valid, note that values greater than 0.5 may result
    * in <b>noise()</b> returning values greater than 1.0.<br />
@@ -5566,7 +5566,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Reads the contents of a file or URL and creates an Table object with its
+   * Reads the contents of a file or URL and creates a Table object with its
    * values. If a file is specified, it must be located in the sketch's "data"
    * folder. The filename parameter can also be a URL to a file found online.
    * The filename must either end in an extension or an extension must be
@@ -5611,7 +5611,7 @@ public class PApplet implements PConstants {
    * specify a "dictionary" file that contains a mapping of the column titles
    * and the data types used in the table file. This can be far more efficient
    * (in terms of speed and memory usage) for loading and parsing tables. The
-   * dictionary file can only be tab separated values (.tsv) and its extension
+   * dictionary file can only be tab-separated values (.tsv) and its extension
    * will be ignored. This option was added in Processing 2.0.2.
    *
    * @param options may contain "header", "tsv", "csv", or "bin" separated by commas
@@ -6399,7 +6399,7 @@ public class PApplet implements PConstants {
           return url.openStream();
         }
       } catch (MalformedURLException mfue) {
-        // not a url, that's fine
+        // not a URL, that's fine
 
       } catch (FileNotFoundException fnfe) {
         // Added in 0119 b/c Java 1.5 throws FNFE when URL not available.
@@ -7532,7 +7532,7 @@ public class PApplet implements PConstants {
    * individually. This function only copies references, which means that for
    * most purposes it only copies one-dimensional arrays (a single set of
    * brackets). If used with a two (or three or more) dimensional array, it will
-   * only copy the references at the first level, because a two dimensional
+   * only copy the references at the first level, because a two-dimensional
    * array is simply an "array of arrays". This does not produce an error,
    * however, because this is often the desired behavior. Internally, this
    * function calls Java's <a href=
@@ -8571,12 +8571,12 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * This function is used to apply a regular expression to a piece of text, and
-   * return a list of matching groups (elements found inside parentheses) as a
-   * two-dimensional String array. If there are no matches, a <b>null</b> value will be
-   * returned. If no groups are specified in the regular expression, but the
-   * sequence matches, a two dimensional array is still returned, but the second
-   * dimension is only of length one.<br />
+   * This function is used to apply a regular expression to a piece of text,
+   * and return a list of matching groups (elements found inside parentheses)
+   * as a two-dimensional String array. If there are no matches, a <b>null</b>
+   * value will be returned. If no groups are specified in the regular
+   * expression, but the sequence matches, a two-dimensional array is still
+   * returned, but the second dimension is only of length one.<br />
    * <br />
    * To use the function, first check to see if the result is <b>null</b>. If the
    * result is null, then the sequence did not match at all. If the sequence did
@@ -9129,7 +9129,7 @@ public class PApplet implements PConstants {
 
   /**
    * Utility function for formatting numbers into strings. Similar to
-   * <b>nf()</b> but leaves a blank space in front of positive numbers so
+   * <b>nf()</b> but leaves a blank space in front of positive numbers, so
    * they align with negative numbers in spite of the minus symbol. There are
    * two versions, one for formatting floats and one for formatting ints. The
    * values for the <b>digits</b>, <b>left</b>, and <b>right</b> parameters
@@ -9817,7 +9817,7 @@ public class PApplet implements PConstants {
    *
    * --present              Presentation mode: blanks the entire screen and
    *                        shows the sketch by itself. If the sketch is
-   *                        smaller than the screen, the background around it
+   *                        smaller than the screen, the surrounding area
    *                        will use the --window-color setting.
    *
    * --hide-stop            Use to hide the stop button in situations where
@@ -9825,7 +9825,7 @@ public class PApplet implements PConstants {
    *                        see the FAQ on information for capturing the ESC
    *                        key when running in presentation mode.
    *
-   * --stop-color=#xxxxxx   Color of the 'stop' text used to quit an
+   * --stop-color=#xxxxxx   Color of the 'stop' text used to quit a
    *                        sketch when it's in present mode.
    *
    * --window-color=#xxxxxx Background color of the window. The color used
@@ -10325,7 +10325,7 @@ public class PApplet implements PConstants {
 
   /**
    * Convenience method for Python Mode to run an already-constructed sketch.
-   * This makes it makes it easy to launch a sketch in Jython:
+   * This makes it easy to launch a sketch in Jython:
    *
    * <pre>class MySketch(PApplet):
    *     pass
@@ -10431,7 +10431,7 @@ public class PApplet implements PConstants {
    * <br /><br />
    * If you want a background to show up in your files, use <b>rect(0, 0,
    * width, height)</b> after setting the <b>fill()</b> to the background
-   * color. Otherwise the background will not be rendered to the file because
+   * color. Otherwise, the background will not be rendered to the file because
    * the background is not shape.
    * <br /><br />
    * Using <b>hint(ENABLE_DEPTH_SORT)</b> can improve the appearance of 3D
