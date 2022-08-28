@@ -54,7 +54,6 @@ import processing.awt.ShimAWT;
  * To create a new image, use the <b>createImage()</b> function. Do not use the
  * syntax <b>new PImage()</b>.
  *
- *
  * @webref image
  * @webBrief Datatype for storing images
  * @usage Web &amp; Application
@@ -63,6 +62,7 @@ import processing.awt.ShimAWT;
  * @see PApplet#imageMode(int)
  * @see PApplet#createImage(int, int, int)
  */
+@SuppressWarnings("ManualMinMaxCalculation")
 public class PImage implements PConstants, Cloneable {
 
   /**
@@ -79,12 +79,11 @@ public class PImage implements PConstants, Cloneable {
    * meaning if the image is 100 x 100 pixels, there will be 10,000 values and if
    * the window is 200 x 300 pixels, there will be 60,000 values. <br />
    * <br />
-   * Before accessing this array, the data must loaded with the
+   * Before accessing this array, the data must be loaded with the
    * <b>loadPixels()</b> method. Failure to do so may result in a
    * NullPointerException. After the array data has been modified, the
    * <b>updatePixels()</b> method must be run to update the content of the display
    * window.
-   *
    *
    * @webref image:pixels
    * @webBrief Array containing the color of every pixel in the image
@@ -168,7 +167,6 @@ public class PImage implements PConstants, Cloneable {
 
   /**
    * ( begin auto-generated from PImage.xml )
-   *
    * Datatype for storing images. Processing can display <b>.gif</b>,
    * <b>.jpg</b>, <b>.tga</b>, and <b>.png</b> images. Images may be
    * displayed in 2D and 3D space. Before an image is used, it must be loaded
@@ -239,7 +237,7 @@ public class PImage implements PConstants, Cloneable {
 
   /**
    * Function to be used by subclasses of PImage to init later than
-   * at the constructor, or re-init later when things changes.
+   * at the constructor, or re-init later when things change.
    * Used by Capture and Movie classes (and perhaps others),
    * because the width/height will not be known when super() is called.
    * (Leave this public so that other libraries can do the same.)
@@ -284,6 +282,7 @@ public class PImage implements PConstants, Cloneable {
   public void checkAlpha() {
     if (pixels == null) return;
 
+    //noinspection ForLoopReplaceableByForEach
     for (int i = 0; i < pixels.length; i++) {
       // since transparency is often at corners, hopefully this
       // will find a non-transparent pixel quickly and exit
@@ -388,12 +387,10 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   *
    * Loads the pixel data of the current display window into the <b>pixels[]</b>
    * array. This function must always be called before reading from or writing to
    * <b>pixels[]</b>. Subsequent changes to the display window will not be
    * reflected in <b>pixels</b> until <b>loadPixels()</b> is called again.
-   *
    *
    * <h3>Advanced</h3> Call this when you want to mess with the pixels[] array.
    * <p/>
@@ -543,8 +540,8 @@ public class PImage implements PConstants, Cloneable {
    * <b>y</b> parameters define the coordinates for the upper-left corner of
    * the image, regardless of the current <b>imageMode()</b>.<br />
    * <br />
-   * If the pixel requested is outside of the image window, black is
-   * returned. The numbers returned are scaled according to the current color
+   * If the pixel requested is outside the image window, black is returned.
+   * The numbers returned are scaled according to the current color
    * ranges, but only RGB values are returned by this function. For example,
    * even though you may have drawn a shape with <b>colorMode(HSB)</b>, the
    * numbers returned will be in RGB format.<br />
@@ -554,9 +551,8 @@ public class PImage implements PConstants, Cloneable {
    * equivalent statement to <b>get(x, y)</b> using <b>pixels[]</b> is
    * <b>pixels[y*width+x]</b>. See the reference for <b>pixels[]</b> for more information.
    *
-   *
    * <h3>Advanced</h3>
-   * Returns an ARGB "color" type (a packed 32 bit int with the color.
+   * Returns an ARGB "color" type (a packed 32-bit int) with the color.
    * If the coordinate is outside the image, zero is returned
    * (black, but completely transparent).
    * <P>
@@ -585,17 +581,12 @@ public class PImage implements PConstants, Cloneable {
   public int get(int x, int y) {
     if ((x < 0) || (y < 0) || (x >= pixelWidth) || (y >= pixelHeight)) return 0;
 
-    switch (format) {
-      case RGB:
-        return pixels[y*pixelWidth + x] | 0xff000000;
-
-      case ARGB:
-        return pixels[y*pixelWidth + x];
-
-      case ALPHA:
-        return (pixels[y*pixelWidth + x] << 24) | 0xffffff;
-    }
-    return 0;
+    return switch (format) {
+      case RGB -> pixels[y * pixelWidth + x] | 0xff000000;
+      case ARGB -> pixels[y * pixelWidth + x];
+      case ALPHA -> (pixels[y * pixelWidth + x] << 24) | 0xffffff;
+      default -> 0;
+    };
   }
 
 
@@ -708,7 +699,6 @@ public class PImage implements PConstants, Cloneable {
    * is <b>pixels[y*width+x] = #000000</b>. See the reference for
    * <b>pixels[]</b> for more information.
    *
-   *
    * @webref image:pixels
    * @webBrief Writes a color to any pixel or writes an image into another
    * @usage web_application
@@ -723,20 +713,12 @@ public class PImage implements PConstants, Cloneable {
     if ((x < 0) || (y < 0) || (x >= pixelWidth) || (y >= pixelHeight)) return;
 
     switch (format) {
-      case RGB:
-        pixels[y * pixelWidth + x] = 0xff000000 | c;
-        break;
-
-      case ARGB:
-        pixels[y * pixelWidth + x] = c;
-        break;
-
-      case ALPHA:
-        pixels[y * pixelWidth + x] = ((c & 0xff) << 24) | 0xffffff;
-        break;
+      case RGB -> pixels[y * pixelWidth + x] = 0xff000000 | c;
+      case ARGB -> pixels[y * pixelWidth + x] = c;
+      case ALPHA -> pixels[y * pixelWidth + x] = ((c & 0xff) << 24) | 0xffffff;
     }
 
-      updatePixels(x, y, 1, 1);  // slow...
+    updatePixels(x, y, 1, 1);  // slow...
   }
 
 
@@ -836,7 +818,6 @@ public class PImage implements PConstants, Cloneable {
    * creating dynamically generated alpha masks. This array must be of the
    * same length as the target image's pixels array and should contain only
    * grayscale data of values between 0-255.
-   *
    *
    * <h3>Advanced</h3>
    *
@@ -941,14 +922,13 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   *
    * Filters the image as defined by one of the following modes:<br />
    * <br />
    * THRESHOLD<br />
-   * Converts the image to black and white pixels depending if they are above or
-   * below the threshold defined by the level parameter. The parameter must be
-   * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
-   * used.<br />
+   * Converts the image to black and white pixels depending on if they
+   * are above or below the threshold defined by the level parameter.
+   * The parameter must be between 0.0 (black) and 1.0 (white).
+   * If no level is specified, 0.5 is used.<br />
    * <br />
    * GRAY<br />
    * Converts any colors in the image to grayscale equivalents. No parameter is
@@ -975,7 +955,6 @@ public class PImage implements PConstants, Cloneable {
    * <br />
    * DILATE<br />
    * Increases the light areas. No parameter is used.
-   *
    *
    * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
    * <P>
@@ -1494,7 +1473,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   *
    * Copies a region of pixels from one image into another. If the source and
    * destination regions aren't the same size, it will automatically resize
    * source pixels to fit the specified target region. No alpha information
@@ -1502,7 +1480,6 @@ public class PImage implements PConstants, Cloneable {
    * set, it will be copied as well.
    * <br /><br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies the entire image
@@ -1620,30 +1597,24 @@ public class PImage implements PConstants, Cloneable {
    * @see PApplet#color(float, float, float, float)
    */
   static public int blendColor(int c1, int c2, int mode) {  // ignore
-    switch (mode) {
-    case REPLACE:    return c2;
-    case BLEND:      return blend_blend(c1, c2);
-
-    case ADD:        return blend_add_pin(c1, c2);
-    case SUBTRACT:   return blend_sub_pin(c1, c2);
-
-    case LIGHTEST:   return blend_lightest(c1, c2);
-    case DARKEST:    return blend_darkest(c1, c2);
-
-    case DIFFERENCE: return blend_difference(c1, c2);
-    case EXCLUSION:  return blend_exclusion(c1, c2);
-
-    case MULTIPLY:   return blend_multiply(c1, c2);
-    case SCREEN:     return blend_screen(c1, c2);
-
-    case HARD_LIGHT: return blend_hard_light(c1, c2);
-    case SOFT_LIGHT: return blend_soft_light(c1, c2);
-    case OVERLAY:    return blend_overlay(c1, c2);
-
-    case DODGE:      return blend_dodge(c1, c2);
-    case BURN:       return blend_burn(c1, c2);
-    }
-    return 0;
+    return switch (mode) {
+      case REPLACE -> c2;
+      case BLEND -> blend_blend(c1, c2);
+      case ADD -> blend_add_pin(c1, c2);
+      case SUBTRACT -> blend_sub_pin(c1, c2);
+      case LIGHTEST -> blend_lightest(c1, c2);
+      case DARKEST -> blend_darkest(c1, c2);
+      case DIFFERENCE -> blend_difference(c1, c2);
+      case EXCLUSION -> blend_exclusion(c1, c2);
+      case MULTIPLY -> blend_multiply(c1, c2);
+      case SCREEN -> blend_screen(c1, c2);
+      case HARD_LIGHT -> blend_hard_light(c1, c2);
+      case SOFT_LIGHT -> blend_soft_light(c1, c2);
+      case OVERLAY -> blend_overlay(c1, c2);
+      case DODGE -> blend_dodge(c1, c2);
+      case BURN -> blend_burn(c1, c2);
+      default -> 0;
+    };
   }
 
 
@@ -1693,14 +1664,13 @@ public class PImage implements PConstants, Cloneable {
    * BURN - Darker areas are applied, increasing contrast, ignores lights.
    * Called "Color Burn" in Illustrator and Photoshop.<br />
    * <br />
-   * All modes use the alpha information (highest byte) of source image
+   * All modes use the alpha information (the highest byte) of source image
    * pixels as the blending factor. If the source and destination regions are
    * different sizes, the image will be automatically resized to match the
    * destination size. If the <b>srcImg</b> parameter is not used, the
    * display window is used as the source image.<br />
    * <br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies a pixel or rectangle of pixels using different blending modes
@@ -2390,7 +2360,7 @@ public class PImage implements PConstants, Cloneable {
    * channel in the upper 16 bits and BLUE channel in the lower 16 bits. This
    * decreases the number of operations per pixel and thus makes things faster.
    *
-   * Some of the modes are hand tweaked (various +1s etc.) to be more accurate
+   * Some modes are hand tweaked (various +1s etc.) to be more accurate
    * and to produce correct values in extremes. Below is a sketch you can use
    * to check any blending function for
    *
@@ -2702,10 +2672,11 @@ int testFunction(int dst, int src) {
 
   /**
    * Hard Light
-   * O = OVERLAY(S, D)
+   * <pre>O = OVERLAY(S, D)
    *
    * O = 2 * MULTIPLY(D, S) = 2DS                   for S < 0.5
    * O = 2 * SCREEN(D, S) - 1 = 2(S + D - DS) - 1   otherwise
+   * </pre>
    */
   private static int blend_hard_light(int dst, int src) {
     int a = src >>> 24;
@@ -2971,21 +2942,14 @@ int testFunction(int dst, int src) {
         boolean isRLE = (num & 0x80) != 0;
         if (isRLE) {
           num -= 127;  // (num & 0x7F) + 1
-          int pixel = 0;
-          switch (format) {
-          case ALPHA:
-            pixel = input.read();
-            break;
-          case RGB:
-            pixel = 0xFF000000 |
+          int pixel = switch (format) {
+            case ALPHA -> input.read();
+            case RGB -> 0xFF000000 |
               input.read() | (input.read() << 8) | (input.read() << 16);
-            //(is.read() << 16) | (is.read() << 8) | is.read();
-            break;
-          case ARGB:
-            pixel = input.read() |
+            case ARGB -> input.read() |
               (input.read() << 8) | (input.read() << 16) | (input.read() << 24);
-            break;
-          }
+            default -> 0;
+          };
           for (int i = 0; i < num; i++) {
             px[index++] = pixel;
             if (index == px.length) break;
@@ -3195,7 +3159,7 @@ int testFunction(int dst, int src) {
    * may be opened by selecting "Show sketch folder" from the "Sketch" menu.
    * <br /><br />To save an image created within the code, rather
    * than through loading, it's necessary to make the image with the
-   * <b>createImage()</b> function so it is aware of the location of the
+   * <b>createImage()</b> function, so it is aware of the location of the
    * program and can therefore save the file to the right place. See the
    * <b>createImage()</b> reference for more information.
    *

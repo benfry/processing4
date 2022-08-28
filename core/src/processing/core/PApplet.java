@@ -14903,8 +14903,8 @@ public class PApplet implements PConstants {
    * <b>y</b> parameters define the coordinates for the upper-left corner of
    * the image, regardless of the current <b>imageMode()</b>.<br />
    * <br />
-   * If the pixel requested is outside of the image window, black is
-   * returned. The numbers returned are scaled according to the current color
+   * If the pixel requested is outside the image window, black is returned.
+   * The numbers returned are scaled according to the current color
    * ranges, but only RGB values are returned by this function. For example,
    * even though you may have drawn a shape with <b>colorMode(HSB)</b>, the
    * numbers returned will be in RGB format.<br />
@@ -14914,9 +14914,8 @@ public class PApplet implements PConstants {
    * equivalent statement to <b>get(x, y)</b> using <b>pixels[]</b> is
    * <b>pixels[y*width+x]</b>. See the reference for <b>pixels[]</b> for more information.
    *
-   *
    * <h3>Advanced</h3>
-   * Returns an ARGB "color" type (a packed 32 bit int with the color.
+   * Returns an ARGB "color" type (a packed 32-bit int) with the color.
    * If the coordinate is outside the image, zero is returned
    * (black, but completely transparent).
    * <P>
@@ -14988,7 +14987,6 @@ public class PApplet implements PConstants {
    * is <b>pixels[y*width+x] = #000000</b>. See the reference for
    * <b>pixels[]</b> for more information.
    *
-   *
    * @webref image:pixels
    * @webBrief Writes a color to any pixel or writes an image into another
    * @usage web_application
@@ -15032,7 +15030,6 @@ public class PApplet implements PConstants {
    * same length as the target image's pixels array and should contain only
    * grayscale data of values between 0-255.
    *
-   *
    * <h3>Advanced</h3>
    *
    * Set alpha channel for an image. Black colors in the source
@@ -15065,14 +15062,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Filters the image as defined by one of the following modes:<br />
    * <br />
    * THRESHOLD<br />
-   * Converts the image to black and white pixels depending if they are above or
-   * below the threshold defined by the level parameter. The parameter must be
-   * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
-   * used.<br />
+   * Converts the image to black and white pixels depending on if they
+   * are above or below the threshold defined by the level parameter.
+   * The parameter must be between 0.0 (black) and 1.0 (white).
+   * If no level is specified, 0.5 is used.<br />
    * <br />
    * GRAY<br />
    * Converts any colors in the image to grayscale equivalents. No parameter is
@@ -15099,7 +15095,6 @@ public class PApplet implements PConstants {
    * <br />
    * DILATE<br />
    * Increases the light areas. No parameter is used.
-   *
    *
    * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
    * <P>
@@ -15132,7 +15127,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Copies a region of pixels from one image into another. If the source and
    * destination regions aren't the same size, it will automatically resize
    * source pixels to fit the specified target region. No alpha information
@@ -15140,7 +15134,6 @@ public class PApplet implements PConstants {
    * set, it will be copied as well.
    * <br /><br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies the entire image
@@ -15221,14 +15214,13 @@ public class PApplet implements PConstants {
    * BURN - Darker areas are applied, increasing contrast, ignores lights.
    * Called "Color Burn" in Illustrator and Photoshop.<br />
    * <br />
-   * All modes use the alpha information (highest byte) of source image
+   * All modes use the alpha information (the highest byte) of source image
    * pixels as the blending factor. If the source and destination regions are
    * different sizes, the image will be automatically resized to match the
    * destination size. If the <b>srcImg</b> parameter is not used, the
    * display window is used as the source image.<br />
    * <br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies a pixel or rectangle of pixels using different blending modes
