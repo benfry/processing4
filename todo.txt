@@ -1,5 +1,17 @@
 1287 (4.0.2)
 X using Java 17 in more syntax
+X fix potential casting problem with Platform and DefaultPlatform
+X   should be unreachable, but fixed anyway
+
+_ set more build.xml files to use Java 17
+_ remove target.path from build/build.xml
+_   maybe simpler way to write version? sheesh
+
+_ args passed to main() aren't working
+_   (there was a bug report for this already?)
+_   were the run() and runSketch() methods merged w/o realizing loss of args?
+_   runSketch() probably needs to pass applet args and sketch args separately
+_   though this can't be done w/o breaking Python
 
 
 contrib
