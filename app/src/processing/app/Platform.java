@@ -86,15 +86,20 @@ public class Platform {
 
   static public void init() {
     try {
-      Class<?> platformClass = Class.forName("processing.app.Platform"); //$NON-NLS-1$
+      // Start with DefaultPlatform, but try to upgrade to a known platform
+      final String packageName = DefaultPlatform.class.getPackageName();
+      Class<?> platformClass =
+        Class.forName(packageName + ".DefaultPlatform");
+
       if (Platform.isMacOS()) {
-        platformClass = Class.forName("processing.app.platform.MacPlatform"); //$NON-NLS-1$
+        platformClass = Class.forName(packageName + ".MacPlatform");
       } else if (Platform.isWindows()) {
-        platformClass = Class.forName("processing.app.platform.WindowsPlatform"); //$NON-NLS-1$
+        platformClass = Class.forName(packageName + ".WindowsPlatform");
       } else if (Platform.isLinux()) {
-        platformClass = Class.forName("processing.app.platform.LinuxPlatform"); //$NON-NLS-1$
+        platformClass = Class.forName(packageName + ".LinuxPlatform");
       }
       inst = (DefaultPlatform) platformClass.getDeclaredConstructor().newInstance();
+
     } catch (Exception e) {
       Messages.showError("Problem Setting the Platform",
                          "An unknown error occurred while trying to load\n" +
