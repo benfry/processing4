@@ -90,6 +90,7 @@ public class Language {
     // Also remember to add it to build/shared/lib/languages/languages.txt.
     return new String[] {
       "ar", // Arabic
+      "ca", // Catalan
       "de", // German, Deutsch
       "en", // English
       "el", // Greek

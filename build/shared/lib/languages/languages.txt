@@ -6,6 +6,7 @@
 # reduce the risk of merge conflicts
 
 ar  # Arabic
+ca  # Catalan
 de  # German, Deutsch
 el  # Greek
 en  # English, English
