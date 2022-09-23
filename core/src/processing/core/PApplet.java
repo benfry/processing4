@@ -13657,7 +13657,7 @@ public class PApplet implements PConstants {
    * provide more control (see the second example above for a demonstration.)
    *
    * @webref structure
-   * @webBrief Saves the current style settings and <b>popStyle()</b> restores the prior settings
+   * @webBrief The <b>pushStyle()</b> function saves the current style settings and <b>popStyle()</b> restores the prior settings
    * @see PGraphics#pushStyle()
    */
   public void popStyle() {
