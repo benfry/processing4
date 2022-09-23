@@ -16,9 +16,20 @@ X   https://github.com/processing/processing4/wiki/Translations
 X   https://github.com/processing/processing/wiki/Localization
 
 
+before 4.0.2
+_ temp folders owned by one user can't be overwritten by another
+_   this was on Linux; curious if Windows has an issue too?
+_   overwrite with -Djava.io.tmpdir=/path/to/tmpdir
+_   https://github.com/processing/processing4/issues/549
+_ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
+_   and with that, switch to another directory
+_   https://github.com/processing/processing4/issues/548
+
+
 _ set more build.xml files to use Java 17
 _ remove target.path from build/build.xml
 _   maybe simpler way to write version? sheesh
+
 
 _ args passed to main() aren't working
 _   (there was a bug report for this already?)
@@ -102,7 +113,9 @@ _   malformed proxy issues http://stackoverflow.com/q/376101
 _   docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
 _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 _   https://github.com/processing/processing4/wiki/Preferences#proxies
-
+_ right-click/ctrl-click for jump to declaration causes hang
+_   https://github.com/processing/processing4/issues/527
+_   https://github.com/processing/processing4/issues/551
 
 design
 _ completion mode pop-up not following dark and light mode conventions
@@ -705,7 +718,9 @@ _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
 _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
-_   https://www.microsoft.com/security/blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
+_   https://www.microsoft.com/security/
+blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
+_   https://shop.certum.eu/open-source-code-signing-code.html
 _ how to handle double-clicked files on windows?
 _   big deal for psk and others
 _   this may already work with SingleInstance stuff
