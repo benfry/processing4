@@ -2,6 +2,19 @@
 X using Java 17 in more syntax
 X fix potential casting problem with Platform and DefaultPlatform
 X   should be unreachable, but fixed anyway
+X bring back getCodeIndex() for GUI Builder Tool
+X   https://github.com/processing/processing4/issues/545
+
+contribs
+X Catalan translation for Processing 4.0.1
+X   https://github.com/processing/processing4/issues/550
+X   https://github.com/processing/processing4/pull/554
+
+docs
+X added a "Translations" page to the wiki
+X   https://github.com/processing/processing4/wiki/Translations
+X   https://github.com/processing/processing/wiki/Localization
+
 
 _ set more build.xml files to use Java 17
 _ remove target.path from build/build.xml

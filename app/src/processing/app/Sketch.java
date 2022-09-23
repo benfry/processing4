@@ -1769,7 +1769,8 @@ public class Sketch {
   }
 
 
-  /*
+  // Cannot remove because this is used by GUI Builder for Processing
+  // https://github.com/processing/processing4/issues/545
   public int getCodeIndex(SketchCode who) {
     for (int i = 0; i < codeCount; i++) {
       if (who == code[i]) {
@@ -1778,7 +1779,6 @@ public class Sketch {
     }
     return -1;
   }
-  */
 
 
   public SketchCode getCurrentCode() {
