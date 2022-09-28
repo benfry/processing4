@@ -78,7 +78,8 @@ public class PreprocService {
   private final static int TIMEOUT_MILLIS = 100;
   private final static int BLOCKING_TIMEOUT_SECONDS = 3000;
 
-  protected final JavaEditor editor;
+  protected final JavaMode javaMode;
+  protected final Sketch sketch;
 
   protected final ASTParser parser = ASTParser.newParser(AST.JLS11);
 
@@ -104,8 +105,9 @@ public class PreprocService {
    * Create a new preprocessing service to support an editor.
    * @param editor The editor supported by this service and receives issues.
    */
-  public PreprocService(JavaEditor editor) {
-    this.editor = editor;
+  public PreprocService(JavaMode javaMode, Sketch sketch) {
+    this.javaMode = javaMode;
+    this.sketch = sketch;
 
     // Register listeners for first run
     whenDone(this::fireListeners);
@@ -342,8 +344,7 @@ public class PreprocService {
     List<ImportStatement> codeFolderImports = result.codeFolderImports;
     List<ImportStatement> programImports = result.programImports;
 
-    JavaMode javaMode = (JavaMode) editor.getMode();
-    Sketch sketch = result.sketch = editor.getSketch();
+    result.sketch = this.sketch;
     String className = sketch.getMainName();
 
     StringBuilder workBuffer = new StringBuilder();
@@ -385,7 +386,7 @@ public class PreprocService {
 
     // Core and default imports
     PdePreprocessor preProcessor =
-      editor.createPreprocessor(editor.getSketch().getMainName());
+      PdePreprocessor.builderFor(this.sketch.getName()).build();
     if (coreAndDefaultImports == null) {
       coreAndDefaultImports = buildCoreAndDefaultImports(preProcessor);
     }
@@ -421,7 +422,7 @@ public class PreprocService {
       final int endNumLines = numLines;
 
       preprocessorResult.getPreprocessIssues().stream()
-          .map((x) -> ProblemFactory.build(x, tabLineStarts, endNumLines, editor))
+          .map((x) -> ProblemFactory.build(x, tabLineStarts))
           .forEach(result.otherProblems::add);
 
       result.hasSyntaxErrors = true;
