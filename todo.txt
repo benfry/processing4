@@ -14,12 +14,17 @@ docs
 X added a "Translations" page to the wiki
 X   https://github.com/processing/processing4/wiki/Translations
 X   https://github.com/processing/processing/wiki/Localization
+X explanation of how to create a naming.json file
+X   https://github.com/processing/processing4/wiki/Naming-Sketches
 
 
 before 4.0.2
+_ if naming scheme produces a sketch w/ the same name, what happens?
+_   probably a crash (or infinite loop?) need to check
 _ temp folders owned by one user can't be overwritten by another
 _   this was on Linux; curious if Windows has an issue too?
 _   overwrite with -Djava.io.tmpdir=/path/to/tmpdir
+_   maybe we should use java.io.tmpdir -> processing -> $USER
 _   https://github.com/processing/processing4/issues/549
 _ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
 _   and with that, switch to another directory
