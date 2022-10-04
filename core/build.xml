@@ -126,8 +126,8 @@
     <attribute name="classpath" />
     <sequential>
       <taskdef name="methods"
-  	     classname="PAppletMethods"
-  	     classpath="methods/methods.jar" />
+               classname="PAppletMethods"
+               classpath="methods/methods.jar" />
       <methods dir="${basedir}/src/processing/core" recorder="true" />
 
       <!-- Where can I expect to find Java Mode JARs? -->
@@ -135,12 +135,12 @@
 
       <mkdir dir="@{destdir}" />
       <javac source="17"
-  	   target="17"
-  	   encoding="UTF-8"
-  	   includeAntRuntime="false"
-  	   debug="true"
-  	   destdir="@{destdir}"
-  	   nowarn="true">
+             target="17"
+             encoding="UTF-8"
+             includeAntRuntime="false"
+             debug="true"
+             destdir="@{destdir}"
+             nowarn="true">
         <classpath refid="@{classpath}" />
         <src path="@{srcdir}" />
         <include name="processing/**" />
