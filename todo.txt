@@ -9,6 +9,9 @@ contribs
 X Catalan translation for Processing 4.0.1
 X   https://github.com/processing/processing4/issues/550
 X   https://github.com/processing/processing4/pull/554
+X JSSC update for M1/M2
+X   https://github.com/processing/processing4/pull/577
+X   https://github.com/processing/processing4/issues/525
 
 docs
 X added a "Translations" page to the wiki
