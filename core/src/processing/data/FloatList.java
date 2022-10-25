@@ -703,6 +703,9 @@ public class FloatList implements Iterable<Float> {
    * Return a random value from the list.
    */
   public float random() {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this FloatList");
+    }
     return data[(int) (Math.random() * count)];
   }
 
@@ -712,6 +715,9 @@ public class FloatList implements Iterable<Float> {
    * randomSeed() from the specified sketch object.
    */
   public float random(PApplet sketch) {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this FloatList");
+    }
     return data[(int) sketch.random(count)];
   }
 

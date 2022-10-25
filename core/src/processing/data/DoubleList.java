@@ -681,6 +681,9 @@ public class DoubleList implements Iterable<Double> {
    * Return a random value from the list.
    */
   public double random() {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this DoubleList");
+    }
     return data[(int) (Math.random() * count)];
   }
 
@@ -690,6 +693,9 @@ public class DoubleList implements Iterable<Double> {
    * randomSeed() from the specified sketch object.
    */
   public double random(PApplet sketch) {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this DoubleList");
+    }
     return data[(int) sketch.random(count)];
   }
 

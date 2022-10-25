@@ -678,6 +678,9 @@ public class IntList implements Iterable<Integer> {
    * Return a random value from the list.
    */
   public int random() {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this IntList");
+    }
     return data[(int) (Math.random() * count)];
   }
 
@@ -687,6 +690,9 @@ public class IntList implements Iterable<Integer> {
    * randomSeed() from the specified sketch object.
    */
   public int random(PApplet sketch) {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this IntList");
+    }
     return data[(int) sketch.random(count)];
   }
 

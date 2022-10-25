@@ -581,6 +581,9 @@ public class StringList implements Iterable<String> {
    * Return a random value from the list.
    */
   public String random() {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this StringList");
+    }
     return data[(int) (Math.random() * count)];
   }
 
@@ -590,6 +593,9 @@ public class StringList implements Iterable<String> {
    * randomSeed() from the specified sketch object.
    */
   public String random(PApplet sketch) {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this StringList");
+    }
     return data[(int) sketch.random(count)];
   }
 
