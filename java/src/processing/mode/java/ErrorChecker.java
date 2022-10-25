@@ -29,7 +29,8 @@ import processing.app.Problem;
 
 
 class ErrorChecker {
-  // Delay delivering error check result after last sketch change #2677
+  // Delay delivering error check result after last sketch change
+  // https://github.com/processing/processing/issues/2677
   private final static long DELAY_BEFORE_UPDATE = 650;
 
   final private ScheduledExecutorService scheduler;
@@ -37,7 +38,8 @@ class ErrorChecker {
   private volatile long nextUiUpdate = 0;
   private volatile boolean enabled;
 
-  private final Consumer<PreprocSketch> errorHandlerListener = this::handleSketchProblems;
+  private final Consumer<PreprocSketch> errorHandlerListener =
+    this::handleSketchProblems;
 
   final private JavaEditor editor;
   final private PreprocService pps;
@@ -46,8 +48,9 @@ class ErrorChecker {
   public ErrorChecker(JavaEditor editor, PreprocService pps) {
     this.editor = editor;
     this.pps = pps;
+
     scheduler = Executors.newSingleThreadScheduledExecutor();
-    this.enabled = JavaMode.errorCheckEnabled;
+    enabled = JavaMode.errorCheckEnabled;
     if (enabled) {
       pps.registerListener(errorHandlerListener);
     }
@@ -81,9 +84,8 @@ class ErrorChecker {
 
 
   private void handleSketchProblems(PreprocSketch ps) {
-
     Map<String, String[]> suggCache =
-        JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
+      JavaMode.importSuggestEnabled ? new HashMap<>() : Collections.emptyMap();
 
     List<IProblem> iproblems;
     if (ps.compilationUnit == null) {
@@ -99,35 +101,30 @@ class ErrorChecker {
       problems.addAll(curlyQuoteProblems);
     }
 
-    if (problems.isEmpty()) { // Check for missing braces
-      List<JavaProblem> missingBraceProblems = checkForMissingBraces(ps);
-      problems.addAll(missingBraceProblems);
-    }
-
     if (problems.isEmpty()) {
-      AtomicReference<ClassPath> searchClassPath = new AtomicReference<>(null);
+      AtomicReference<ClassPath> searchClassPath =
+        new AtomicReference<>(null);
 
       List<Problem> cuProblems = iproblems.stream()
-          // Filter Warnings if they are not enabled
-          .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
-          .filter(iproblem -> !(isIgnorableProblem(iproblem)))
-          // Transform into our Problems
-          .map(iproblem -> {
-            JavaProblem p = convertIProblem(iproblem, ps);
+        // Filter Warnings if they are not enabled
+        .filter(iproblem -> !(iproblem.isWarning() && !JavaMode.warningsEnabled))
+        .filter(iproblem -> !(isIgnorableProblem(iproblem)))
+        // Transform into our Problems
+        .map(iproblem -> {
+          JavaProblem p = convertIProblem(iproblem, ps);
 
-            // Handle import suggestions
-            if (p != null && JavaMode.importSuggestEnabled && isUndefinedTypeProblem(iproblem)) {
-              ClassPath cp = searchClassPath.updateAndGet(prev -> prev != null ?
-                  prev : new ClassPathFactory().createFromPaths(ps.searchClassPathArray));
-              String[] s = suggCache.computeIfAbsent(iproblem.getArguments()[0],
-                                                     name -> getImportSuggestions(cp, name));
-              p.setImportSuggestions(s);
-            }
-
-            return p;
-          })
-          .filter(Objects::nonNull)
-          .collect(Collectors.toList());
+          // Handle import suggestions
+          if (p != null && JavaMode.importSuggestEnabled && isUndefinedTypeProblem(iproblem)) {
+            ClassPath cp = searchClassPath.updateAndGet(prev -> prev != null ?
+                prev : new ClassPathFactory().createFromPaths(ps.searchClassPathArray));
+            String[] s = suggCache.computeIfAbsent(iproblem.getArguments()[0],
+                                                   name -> getImportSuggestions(cp, name));
+            p.setImportSuggestions(s);
+          }
+          return p;
+        })
+        .filter(Objects::nonNull)
+        .collect(Collectors.toList());
 
       problems.addAll(cuProblems);
     }
@@ -135,7 +132,7 @@ class ErrorChecker {
     if (scheduledUiUpdate != null) {
       scheduledUiUpdate.cancel(true);
     }
-    // Update UI after a delay. See #2677
+    // https://github.com/processing/processing/issues/2677
     long delay = nextUiUpdate - System.currentTimeMillis();
     Runnable uiUpdater = () -> {
       if (nextUiUpdate > 0 && System.currentTimeMillis() >= nextUiUpdate) {
@@ -156,7 +153,7 @@ class ErrorChecker {
    * cause issues when reaching javac.
    * </p>
    *
-   * @return True if ignoreable and false otherwise.
+   * @return True if ignorable and false otherwise.
    */
   static private boolean isIgnorableProblem(IProblem iproblem) {
     String message = iproblem.getMessage();
@@ -166,14 +163,11 @@ class ErrorChecker {
     // also produced and is preferred over this one.
     // (Syntax error, insert ":: IdentifierOrNew" to complete Expression)
     // See: https://bugs.eclipse.org/bugs/show_bug.cgi?id=405780
-    boolean ignorable = message.contains(
-        "Syntax error, insert \":: IdentifierOrNew\""
-    );
+    boolean ignorable =
+      message.contains("Syntax error, insert \":: IdentifierOrNew\"");
 
     // It's ok if the file names do not line up during preprocessing.
-    ignorable = ignorable || message.contains(
-        "must be defined in its own file"
-    );
+    ignorable |= message.contains("must be defined in its own file");
 
     return ignorable;
   }
@@ -216,6 +210,10 @@ class ErrorChecker {
   static private final Pattern CURLY_QUOTE_REGEX =
     Pattern.compile("([“”‘’])", Pattern.UNICODE_CHARACTER_CLASS);
 
+  /**
+   * Check the scrubbed code for curly quotes.
+   * They are a common copy/paste error, especially on macOS.
+   */
   static private List<JavaProblem> checkForCurlyQuotes(PreprocSketch ps) {
     if (ps.compilationUnit == null) {
       return new ArrayList<>();
@@ -223,7 +221,6 @@ class ErrorChecker {
 
     List<JavaProblem> problems = new ArrayList<>(0);
 
-    // Go through the scrubbed code and look for curly quotes (they should not be any)
     Matcher matcher = CURLY_QUOTE_REGEX.matcher(ps.scrubbedPdeCode);
     while (matcher.find()) {
       int pdeOffset = matcher.start();
@@ -239,7 +236,6 @@ class ErrorChecker {
 
       problems.add(problem);
     }
-
 
     // Go through iproblems and look for problems involving curly quotes
     List<JavaProblem> problems2 = new ArrayList<>(0);
@@ -277,86 +273,38 @@ class ErrorChecker {
           }
       }
     }
-
     problems.addAll(problems2);
-
-    return problems;
-  }
-
-
-  static private List<JavaProblem> checkForMissingBraces(PreprocSketch ps) {
-    List<JavaProblem> problems = new ArrayList<>(0);
-    for (int tabIndex = 0; tabIndex < ps.tabStartOffsets.length; tabIndex++) {
-      int tabStartOffset = ps.tabStartOffsets[tabIndex];
-      int tabEndOffset = (tabIndex < ps.tabStartOffsets.length - 1) ?
-          ps.tabStartOffsets[tabIndex + 1] : ps.scrubbedPdeCode.length();
-      int[] braceResult = SourceUtil.checkForMissingBraces(ps.scrubbedPdeCode, tabStartOffset, tabEndOffset);
-      if (braceResult[0] != 0) {
-        JavaProblem problem =
-            new JavaProblem(braceResult[0] < 0
-                                ? Language.interpolate("editor.status.missing.left_curly_bracket")
-                                : Language.interpolate("editor.status.missing.right_curly_bracket"),
-                            JavaProblem.ERROR, tabIndex, braceResult[1]);
-        problem.setPDEOffsets(braceResult[3], braceResult[3] + 1);
-        problems.add(problem);
-      }
-    }
-
-    if (problems.isEmpty()) {
-      return problems;
-    }
-
-    int problemTabIndex = problems.get(0).getTabIndex();
-
-    IProblem missingBraceProblem = Arrays.stream(ps.compilationUnit.getProblems())
-        .filter(ErrorChecker::isMissingBraceProblem)
-        // Ignore if it is at the end of file
-        .filter(p -> p.getSourceEnd() + 1 < ps.javaCode.length())
-        // Ignore if the tab number does not match our detected tab number
-        .filter(p -> problemTabIndex == ps.mapJavaToSketch(p).tabIndex)
-        .findFirst()
-        .orElse(null);
-
-    // Prefer ECJ problem, shows location more accurately
-    if (missingBraceProblem != null) {
-      JavaProblem p = convertIProblem(missingBraceProblem, ps);
-      if (p != null) {
-        problems.clear();
-        problems.add(p);
-      }
-    }
-
     return problems;
   }
 
 
   static public String[] getImportSuggestions(ClassPath cp, String className) {
     className = className.replace("[", "\\[").replace("]", "\\]");
-    RegExpResourceFilter regf = new RegExpResourceFilter(
+    RegExpResourceFilter filter = new RegExpResourceFilter(
         Pattern.compile(".*"),
         Pattern.compile("(.*\\$)?" + className + "\\.class",
                         Pattern.CASE_INSENSITIVE));
 
-    String[] resources = cp.findResources("", regf);
+    String[] resources = cp.findResources("", filter);
     return Arrays.stream(resources)
-        // remove ".class" suffix
-        .map(res -> res.substring(0, res.length() - 6))
-        // replace path separators with dots
-        .map(res -> res.replace('/', '.'))
-        // replace inner class separators with dots
-        .map(res -> res.replace('$', '.'))
-        // sort, prioritize clases from java. package
-        .map(res -> res.startsWith("classes.") ? res.substring(8) : res)
-        .sorted((o1, o2) -> {
-          // put java.* first, should be prioritized more
-          boolean o1StartsWithJava = o1.startsWith("java");
-          boolean o2StartsWithJava = o2.startsWith("java");
-          if (o1StartsWithJava != o2StartsWithJava) {
-            if (o1StartsWithJava) return -1;
-            return 1;
-          }
-          return o1.compareTo(o2);
-        })
-        .toArray(String[]::new);
+      // remove ".class" suffix
+      .map(res -> res.substring(0, res.length() - 6))
+      // replace path separators with dots
+      .map(res -> res.replace('/', '.'))
+      // replace inner class separators with dots
+      .map(res -> res.replace('$', '.'))
+      // sort, prioritize classes from java. package
+      .map(res -> res.startsWith("classes.") ? res.substring(8) : res)
+      .sorted((o1, o2) -> {
+        // put java.* first, should be prioritized more
+        boolean o1StartsWithJava = o1.startsWith("java");
+        boolean o2StartsWithJava = o2.startsWith("java");
+        if (o1StartsWithJava != o2StartsWithJava) {
+          if (o1StartsWithJava) return -1;
+          return 1;
+        }
+        return o1.compareTo(o2);
+      })
+      .toArray(String[]::new);
   }
 }

@@ -31,7 +31,6 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import processing.app.contrib.ContributionManager;
 import processing.core.PApplet;
 
 
@@ -59,24 +58,20 @@ public class UpdateCheck {
 
   static private final long ONE_DAY = 24 * 60 * 60 * 1000;
 
-  static boolean allowed;
-
 
   public UpdateCheck(Base base) {
     this.base = base;
 
     if (isAllowed()) {
-      new Thread(new Runnable() {
-        public void run() {
-          try {
-            Thread.sleep(5 * 1000);  // give the PDE time to get rolling
-            updateCheck();
+      new Thread(() -> {
+        try {
+          Thread.sleep(5 * 1000);  // give the PDE time to get rolling
+          updateCheck();
 
-          } catch (Exception e) {
-            // This can safely be ignored, too many situations where no net
-            // connection is available that behave in strange ways.
-            // Covers likely IOException, InterruptedException, and any others.
-          }
+        } catch (Exception e) {
+          // This can safely be ignored, too many situations where no net
+          // connection is available that behave in strange ways.
+          // Covers likely IOException, InterruptedException, and any others.
         }
       }, "Update Checker").start();
     }
@@ -84,7 +79,7 @@ public class UpdateCheck {
 
 
   /**
-   * Turned into a separate method so that anyone needed update.id will get
+   * Turned into a separate method so that anyone needed "update.id" will get
    * a legit answer. Had a problem with the contribs script where the id
    * wouldn't be set so a null id would be sent to the contribs server.
    */
@@ -103,7 +98,7 @@ public class UpdateCheck {
   }
 
 
-  public void updateCheck() throws IOException, InterruptedException {
+  public void updateCheck() throws IOException {
     String info = PApplet.urlEncode(getUpdateID() + "\t" +
                                     PApplet.nf(Base.getRevision(), 4) + "\t" +
                                     System.getProperty("java.version") + "\t" +
@@ -152,7 +147,7 @@ public class UpdateCheck {
   }
 
 
-  protected boolean promptToVisitDownloadPage() {
+  protected void promptToVisitDownloadPage() {
     String prompt = Language.text("update_check.updates_available.core");
 
     Object[] options = { Language.text("prompt.yes"), Language.text("prompt.no") };
@@ -166,13 +161,11 @@ public class UpdateCheck {
                                               options[0]);
     if (result == JOptionPane.YES_OPTION) {
       Platform.openURL(DOWNLOAD_URL);
-      return true;
     }
-
-    return false;
   }
 
 
+  /*
   protected boolean promptToOpenContributionManager() {
     String contributionPrompt =
       Language.text("update_check.updates_available.contributions");
@@ -195,6 +188,7 @@ public class UpdateCheck {
 
     return false;
   }
+  */
 
 
   protected int readInt(String filename) throws IOException {

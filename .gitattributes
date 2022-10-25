@@ -8,5 +8,4 @@
 
 # Files that will always have CRLF line endings on checkout.
 *.bat eol=crlf
-build/macosx/jAppleMenuBar.url eol=crlf
-
+*.url eol=crlf

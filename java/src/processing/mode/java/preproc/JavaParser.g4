@@ -294,9 +294,22 @@ literal
     : integerLiteral
     | floatLiteral
     | CHAR_LITERAL
-    | STRING_LITERAL
+    | stringLiteral
     | BOOL_LITERAL
     | NULL_LITERAL
+    ;
+
+baseStringLiteral
+    : STRING_LITERAL
+    ;
+
+multilineStringLiteral
+    : MULTI_STRING_LIT
+    ;
+
+stringLiteral
+    : baseStringLiteral
+    | multilineStringLiteral
     ;
 
 integerLiteral

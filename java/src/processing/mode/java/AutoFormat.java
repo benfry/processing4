@@ -732,7 +732,7 @@ public class AutoFormat implements Formatter {
       case ':':
         // Java 8 :: operator.
         if (peek() == ':') {
-          result.append(c).append(nextChar());
+          buf.append(c).append(nextChar());
           break;
         }
 

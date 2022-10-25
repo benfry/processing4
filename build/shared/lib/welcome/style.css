@@ -6,13 +6,13 @@
 body {
   padding-left: 20px;
   padding-right: 20px;
-  font-family: "Processing Sans Pro", sans-serif;
+  font-family: "Processing Sans", sans-serif;
 }
 
 h1 {
   margin-bottom: 0;
   /* can't get the Semibold to work properly */
-  font-family: "Processing Sans Pro", sans-serif;
+  font-family: "Processing Sans", sans-serif;
   font-size: 18px;
   font-weight: normal;
 }
@@ -24,19 +24,26 @@ p, td {
 }
 
 table {
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   margin-bottom: 0;
 }
 
-p.inset, table.inset {
+div.inset, p.inset, table.inset {
   padding: 10px;
   /* background-color: rgb(224, 253, 251); */
-  background-color: rgb(240, 240, 240);
+  /* background-color: rgb(240, 240, 240); */
+  background-color: white;
 }
 
 a {
   color: #2c7bb5;
   text-decoration: none;
+}
+
+ul {
+  margin-left: 20px;
+  margin-right: 0px;
+  padding: 0;
 }
 
 #startButton {

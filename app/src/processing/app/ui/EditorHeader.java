@@ -31,11 +31,7 @@ import java.util.Arrays;
 
 import javax.swing.*;
 
-import processing.app.Language;
-import processing.app.Messages;
-import processing.app.Platform;
-import processing.app.Sketch;
-import processing.app.SketchCode;
+import processing.app.*;
 
 
 /**
@@ -43,21 +39,24 @@ import processing.app.SketchCode;
  */
 public class EditorHeader extends JComponent {
   // height of this tab bar
-  static final int HIGH = Toolkit.zoom(29);
+  static final int HIGH = Toolkit.zoom(31);
 
   static final int ARROW_TAB_WIDTH = Toolkit.zoom(18);
-  static final int ARROW_TOP = Toolkit.zoom(11);
+  static final int ARROW_TOP = Toolkit.zoom(12);
   static final int ARROW_BOTTOM = Toolkit.zoom(18);
   static final int ARROW_WIDTH = Toolkit.zoom(6);
 
   static final int CURVE_RADIUS = Toolkit.zoom(6);
 
   static final int TAB_TOP = 0;
-  static final int TAB_BOTTOM = Toolkit.zoom(27);
   // amount of extra space between individual tabs
-  static final int TAB_BETWEEN = Toolkit.zoom(3);
+  static final int TAB_BETWEEN = Toolkit.zoom(2);
+  // space between tab and editor
+  static final int TAB_BELOW = TAB_BETWEEN;
+  // bottom position as determined by TAB_BELOW gap
+  static final int TAB_BOTTOM = HIGH - TAB_BELOW;
   // amount of margin on the left/right for the text on the tab
-  static final int TEXT_MARGIN = Toolkit.zoom(16);
+  static final int TEXT_MARGIN = Toolkit.zoom(13);
   // width of the tab when no text visible
   // (total tab width will be this plus TEXT_MARGIN*2)
   static final int NO_TEXT_WIDTH = Toolkit.zoom(16);
@@ -83,10 +82,6 @@ public class EditorHeader extends JComponent {
 
   static final int UNSELECTED = 0;
   static final int SELECTED = 1;
-
-  Image offscreen;
-  int sizeW, sizeH;
-  int imageW, imageH;
 
   String lastNoticeName;
 
@@ -156,44 +151,34 @@ public class EditorHeader extends JComponent {
   }
 
 
-  public void paintComponent(Graphics screen) {
-    if (screen == null) return;
+  public void paintComponent(Graphics g) {
+    if (g == null) return;
     Sketch sketch = editor.getSketch();
-    if (sketch == null) return;  // possible?
+    if (sketch == null) return;  // is this even possible?
 
-    Dimension size = getSize();
-    if ((size.width != sizeW) || (size.height != sizeH)) {
-      // component has been resized
-
-      if ((size.width > imageW) || (size.height > imageH)) {
-        // nix the image and recreate, it's too small
-        offscreen = null;
-
-      } else {
-        // if the image is larger than necessary, no need to change
-        sizeW = size.width;
-        sizeH = size.height;
-      }
-    }
-
-    if (offscreen == null) {
-      sizeW = size.width;
-      sizeH = size.height;
-      imageW = sizeW;
-      imageH = sizeH;
-      offscreen = Toolkit.offscreenGraphics(this, imageW, imageH);
-    }
-
-    Graphics g = offscreen.getGraphics();
     g.setFont(font);  // need to set this each time through
     if (fontAscent == 0) {
       fontAscent = (int) Toolkit.getAscent(g);
     }
 
-    Graphics2D g2 = Toolkit.prepareGraphics(g);
-//    Toolkit.dpiStroke(g2);
+    Graphics2D g2 = Toolkit.prepareGraphics(g, false);
 
-    g.drawImage(gradient, 0, 0, imageW, imageH, this);
+    /*
+    Graphics2D g2 = (Graphics2D) g;
+
+    if (!Toolkit.isRetina()) {
+      g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+                          RenderingHints.VALUE_ANTIALIAS_ON);
+      g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+                          RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+      g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+                          RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//      g2.setRenderingHint(RenderingHints.KEY_FRACTIONALMETRICS,
+//                          RenderingHints.VALUE_FRACTIONALMETRICS_ON);
+    }
+    */
+
+    g.drawImage(gradient, 0, 0, getWidth(), getHeight(), this);
 
     if (tabs.length != sketch.getCodeCount()) {
       tabs = new Tab[sketch.getCodeCount()];
@@ -212,14 +197,14 @@ public class EditorHeader extends JComponent {
       tab.textVisible = true;
       tab.lastVisited = code.lastVisited();
 
+      tab.text = code.getFileName();
       // hide extensions for .pde files
-      boolean hide = editor.getMode().hideExtension(code.getExtension());
-      tab.text = hide ? code.getPrettyName() : code.getFileName();
-
-      // if modified, add the li'l glyph next to the name
-//      if (code.isModified()) {
-//        tab.text += " \u00A7";
-//      }
+      if (editor.getMode().hideExtension(code.getExtension())) {
+        tab.text = code.getPrettyName();
+        if (Preferences.getBoolean("sketch.name.replace_underscore")) {
+          tab.text = tab.text.replace('_', ' ');
+        }
+      }
 
       tab.textWidth = (int)
         font.getStringBounds(tab.text, g2.getFontRenderContext()).getWidth();
@@ -254,16 +239,18 @@ public class EditorHeader extends JComponent {
       menuRight = menuLeft + ARROW_TAB_WIDTH;
     }
 
+    /*
     // draw the two pixel line that extends left/right below the tabs
     g.setColor(tabColor[SELECTED]);
     // can't be done with lines, b/c retina leaves tiny hairlines
     g.fillRect(Editor.LEFT_GUTTER, TAB_BOTTOM,
                editor.getTextArea().getWidth() - Editor.LEFT_GUTTER,
                Toolkit.zoom(2));
+     */
 
     // draw the tab for the menu
     g.setColor(tabColor[UNSELECTED]);
-    drawTab(g, menuLeft, menuRight, false, true);
+    drawTab(g, menuLeft, menuRight, false, true, false);
 
     // draw the arrow on the menu tab
     g.setColor(arrowColor);
@@ -275,8 +262,6 @@ public class EditorHeader extends JComponent {
     trianglePath.lineTo((x1 + x2) / 2, ARROW_BOTTOM);
     trianglePath.closePath();
     g2.fill(trianglePath);
-
-    screen.drawImage(offscreen, 0, 0, imageW, imageH, null);
   }
 
 
@@ -284,116 +269,57 @@ public class EditorHeader extends JComponent {
     Sketch sketch = editor.getSketch();
     int x = left;
 
-//    final int bottom = getHeight(); // - TAB_STRETCH;
-//    final int top = bottom - TAB_HEIGHT;
-//    GeneralPath path = null;
-
     for (int i = 0; i < sketch.getCodeCount(); i++) {
       SketchCode code = sketch.getCode(i);
       Tab tab = tabs[i];
 
-//      int pieceCount = 2 + (tab.textWidth / PIECE_WIDTH);
-//      if (tab.textVisible == false) {
-//        pieceCount = 4;
-//      }
-//      int pieceWidth = pieceCount * PIECE_WIDTH;
-
       int state = (code == sketch.getCurrentCode()) ? SELECTED : UNSELECTED;
-//      if (g != null) {
-//        //g.drawImage(pieces[state][LEFT], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
-//        path = new GeneralPath();
-//        path.moveTo(x, bottom);
-//        path.lineTo(x, top + NOTCH);
-//        path.lineTo(x + NOTCH, top);
-//      }
       tab.left = x;
       x += TEXT_MARGIN;
-//      x += PIECE_WIDTH;
 
-//      int contentLeft = x;
-//      for (int j = 0; j < pieceCount; j++) {
-//        if (g != null) {
-//          g.drawImage(pieces[state][MIDDLE], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
-//        }
-//        x += PIECE_WIDTH;
-//      }
-//      if (g != null) {
       int drawWidth = tab.textVisible ? tab.textWidth : NO_TEXT_WIDTH;
       x += drawWidth + TEXT_MARGIN;
-//        path.moveTo(x, top);
-//      }
       tab.right = x;
 
       if (g != null && tab.right < right) {
         g.setColor(tabColor[state]);
-        drawTab(g, tab.left, tab.right, i == 0, false);
-//        path.lineTo(x - NOTCH, top);
-//        path.lineTo(x, top + NOTCH);
-//        path.lineTo(x, bottom);
-//        path.closePath();
-//        g.setColor(tabColor[state]);
-//        g.fill(path);
-//        // have to draw an extra outline to make things line up on retina
-//        g.draw(path);
-//        //g.drawImage(pieces[state][RIGHT], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
+        drawTab(g, tab.left, tab.right, i == 0, false, state == SELECTED);
 
         if (tab.textVisible) {
           int textLeft = tab.left + ((tab.right - tab.left) - tab.textWidth) / 2;
           g.setColor(textColor[state]);
-//          int baseline = (int) Math.ceil((sizeH + fontAscent) / 2.0);
-          //int baseline = bottom - (TAB_HEIGHT - fontAscent)/2;
           int tabHeight = TAB_BOTTOM - TAB_TOP;
-          int baseline = TAB_TOP + (tabHeight + fontAscent) / 2;
-          //g.drawString(sketch.code[i].name, textLeft, baseline);
+          int baseline = TAB_TOP + (tabHeight + fontAscent) / 2 + 1;
           g.drawString(tab.text, textLeft, baseline);
-//          g.drawLine(tab.left, baseline-fontAscent, tab.right, baseline-fontAscent);
-//          g.drawLine(tab.left, baseline, tab.right, baseline);
         }
 
         if (code.isModified()) {
           g.setColor(modifiedColor);
-          //g.drawLine(tab.left + NOTCH, top, tab.right - NOTCH, top);
-          //g.drawLine(tab.left + (i == 0 ? CURVE_RADIUS : 0), TAB_TOP, tab.right-1, TAB_TOP);
-          g.drawLine(tab.right, TAB_TOP, tab.right, TAB_BOTTOM);
+          int barTop = TAB_TOP;
+          int barWidth = Toolkit.zoom(1);
+          int barHeight = (TAB_BOTTOM - barTop) + ((state == SELECTED) ? TAB_BELOW : 0);
+          int barLeft = tab.right - barWidth;
+          g.fillRect(barLeft, barTop,
+                  barWidth,
+                  barHeight);
         }
       }
-
-//      if (g != null) {
-//        g.drawImage(pieces[state][RIGHT], x, 0, PIECE_WIDTH, PIECE_HEIGHT, null);
-//      }
-//      x += PIECE_WIDTH - 1;  // overlap by 1 pixel
       x += TAB_BETWEEN;
     }
-
-    // removed 150130
-//    // Draw this last because of half-pixel overlaps on retina displays
-//    if (g != null) {
-//      g.setColor(tabColor[SELECTED]);
-//      g.fillRect(0, bottom, getWidth(), TAB_STRETCH);
-//    }
-
     return x <= right;
   }
 
 
   private void drawTab(Graphics g, int left, int right,
-                       boolean leftNotch, boolean rightNotch) {
-//    final int bottom = getHeight(); // - TAB_STRETCH;
-//    final int top = bottom - TAB_HEIGHT;
-//    g.fillRect(left, top, right - left, bottom - top);
-
+                       boolean leftNotch, boolean rightNotch,
+                       boolean selected) {
     Graphics2D g2 = (Graphics2D) g;
+    final int bottom = TAB_BOTTOM + (selected ? TAB_BELOW : 0);
     g2.fill(Toolkit.createRoundRect(left, TAB_TOP,
-                                    right, TAB_BOTTOM,
+                                    right, bottom,
                                     leftNotch ? CURVE_RADIUS : 0,
                                     rightNotch ? CURVE_RADIUS : 0,
                                     0, 0));
-
-//    path.moveTo(left, TAB_BOTTOM);
-//    if (left == MARGIN_WIDTH) {  // first tab on the left
-//      path.lineTo(left, TAB_TOP - CURVE_RADIUS);
-//    }
-
   }
 
 

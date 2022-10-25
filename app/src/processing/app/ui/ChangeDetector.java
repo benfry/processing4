@@ -45,12 +45,12 @@ public class ChangeDetector implements WindowFocusListener {
   private final Sketch sketch;
   private final Editor editor;
 
-  private List<SketchCode> ignoredRemovals = new ArrayList<>();
-  private List<SketchCode> ignoredModifications = new ArrayList<>();
+  final private List<SketchCode> ignoredRemovals = new ArrayList<>();
+  final private List<SketchCode> ignoredModifications = new ArrayList<>();
 
   // Windows and others seem to have a few hundred ms difference in reported
   // times, so we're arbitrarily setting a gap in time here.
-  // Mac OS X has an (exactly) one second difference. Not sure if it's a Java
+  // Mac OS X has an (exactly) one-second difference. Not sure if it's a Java
   // bug or something else about how OS X is writing files.
   static private final int MODIFICATION_WINDOW_MILLIS =
     Preferences.getInteger("editor.watcher.window");
@@ -116,7 +116,7 @@ public class ChangeDetector implements WindowFocusListener {
 
     // REMOVED FILES
 
-    // Get codes which don't have file
+    // Get codes that do not have a file
     List<SketchCode> removedCodes = Optional.ofNullable(existsMap.get(Boolean.FALSE))
         .orElse(Collections.emptyList());
     List<SketchCode> removedCodesFinal = removedCodes.stream()
@@ -129,9 +129,9 @@ public class ChangeDetector implements WindowFocusListener {
 
     /// MODIFIED FILES
 
-    // Get codes which have file with different modification time
-    List<SketchCode> modifiedCodes = existsMap.containsKey(Boolean.TRUE) ?
-      existsMap.get(Boolean.TRUE) : Collections.emptyList();
+    // Get codes that have a file with different modification time
+    List<SketchCode> modifiedCodes =
+      existsMap.getOrDefault(Boolean.TRUE, Collections.emptyList());
     List<SketchCode> modifiedCodesFinal = new ArrayList<>();
     for (SketchCode code : modifiedCodes) {
       if (ignoredModifications.contains(code)) continue;
@@ -210,7 +210,7 @@ public class ChangeDetector implements WindowFocusListener {
             scKeep.setLastModified();
             scKeep.setModified(true);
           },
-          scDelete -> sketch.removeCode(scDelete),
+          sketch::removeCode,
           scResave -> {
             try {
               scResave.save();

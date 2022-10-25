@@ -130,7 +130,7 @@ public class PdeInputHandler extends DefaultInputHandler {
     if (Platform.isMacOS()) {
       // Additional OS X key bindings added for 0215.
       // Also note that two more are added above and marked 0215.
-      // http://code.google.com/p/processing/issues/detail?id=1354
+      // https://github.com/processing/processing/issues/1392
       // "Mac keyboard shortcuts" document from Apple:
       // https://support.apple.com/en-us/HT201236
 

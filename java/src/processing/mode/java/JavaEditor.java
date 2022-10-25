@@ -3,7 +3,7 @@
 /*
 Part of the Processing project - http://processing.org
 
-Copyright (c) 2012-19 The Processing Foundation
+Copyright (c) 2012-22 The Processing Foundation
 Copyright (c) 2004-12 Ben Fry and Casey Reas
 Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.*;
-import javax.swing.border.*;
 import javax.swing.event.*;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -176,7 +175,7 @@ public class JavaEditor extends Editor {
 
 
   protected JEditTextArea createTextArea() {
-    return new JavaTextArea(new PdeTextAreaDefaults(mode), this);
+    return new JavaTextArea(new PdeTextAreaDefaults(), this);
   }
 
 
@@ -274,7 +273,7 @@ public class JavaEditor extends Editor {
     JMenu menu = new JMenu(Language.text("menu.help"));
     JMenuItem item;
 
-    // macosx already has its own about menu
+    // macOS already has its own about menu
     if (!Platform.isMacOS()) {
       item = new JMenuItem(Language.text("menu.help.about"));
       item.addActionListener(e -> new About(JavaEditor.this));
@@ -284,21 +283,24 @@ public class JavaEditor extends Editor {
     item = new JMenuItem(Language.text("menu.help.welcome"));
     item.addActionListener(e -> {
       try {
-        new Welcome(base, Preferences.getSketchbookPath().equals(Preferences.getOldSketchbookPath()));
+        new Welcome(base);
+        //new Welcome(base, Preferences.getSketchbookPath().equals(Preferences.getOldSketchbookPath()));
       } catch (IOException ioe) {
         Messages.showWarning("Unwelcome Error",
                              "Please report this error to\n" +
-                             "https://github.com/processing/processing/issues", ioe);
+                             "https://github.com/processing/processing4/issues", ioe);
       }
     });
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.environment"));
-    item.addActionListener(e -> showReference("environment/index.html"));
+    //item.addActionListener(e -> showReference("environment/index.html"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/environment/"));
     menu.add(item);
 
     item = new JMenuItem(Language.text("menu.help.reference"));
-    item.addActionListener(e -> showReference("index.html"));
+    //item.addActionListener(e -> showReference("index.html"));
+    item.addActionListener(e -> Platform.openURL("https://processing.org/reference/"));
     menu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.help.find_in_reference"), 'F');
@@ -314,102 +316,69 @@ public class JavaEditor extends Editor {
     menu.addSeparator();
 
     final JMenu libRefSubmenu = new JMenu(Language.text("menu.help.libraries_reference"));
-    // Populate only when sub-menu is opened, to avoid having spurious menu
-    // options if a library is deleted, or a missing menu option if a library is added
-    libRefSubmenu.addMenuListener(new MenuListener() {
 
-      @Override
-      public void menuSelected(MenuEvent e) {
-        // Adding this in case references are included in a core library,
-        // or other core libraries are included in the future
-        boolean isCoreLibMenuItemAdded =
-          addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
+    // Adding this in case references are included in a core library,
+    // or other core libraries are included in the future
+    boolean isCoreLibMenuItemAdded =
+      addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
 
-        if (isCoreLibMenuItemAdded && !mode.contribLibraries.isEmpty()) {
-          libRefSubmenu.addSeparator();
-        }
+    if (isCoreLibMenuItemAdded && !mode.contribLibraries.isEmpty()) {
+      libRefSubmenu.addSeparator();
+    }
 
-        boolean isContribLibMenuItemAdded =
-          addLibReferencesToSubMenu(mode.contribLibraries, libRefSubmenu);
+    boolean isContribLibMenuItemAdded =
+      addLibReferencesToSubMenu(mode.contribLibraries, libRefSubmenu);
 
-        if (!isContribLibMenuItemAdded && !isCoreLibMenuItemAdded) {
-          JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
-          emptyMenuItem.setEnabled(false);
-          emptyMenuItem.setFocusable(false);
-          emptyMenuItem.setFocusPainted(false);
-          libRefSubmenu.add(emptyMenuItem);
+    if (!isContribLibMenuItemAdded && !isCoreLibMenuItemAdded) {
+      JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
+      emptyMenuItem.setEnabled(false);
+      emptyMenuItem.setFocusable(false);
+      emptyMenuItem.setFocusPainted(false);
+      libRefSubmenu.add(emptyMenuItem);
 
-        } else if (!isContribLibMenuItemAdded && !mode.coreLibraries.isEmpty()) {
-          //re-populate the menu to get rid of terminal separator
-          libRefSubmenu.removeAll();
-          addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
-        }
-      }
-
-      @Override
-      public void menuDeselected(MenuEvent e) {
-        libRefSubmenu.removeAll();
-      }
-
-      @Override
-      public void menuCanceled(MenuEvent e) {
-        menuDeselected(e);
-      }
-    });
+    } else if (!isContribLibMenuItemAdded && !mode.coreLibraries.isEmpty()) {
+      //re-populate the menu to get rid of terminal separator
+      libRefSubmenu.removeAll();
+      addLibReferencesToSubMenu(mode.coreLibraries, libRefSubmenu);
+    }
     menu.add(libRefSubmenu);
 
     final JMenu toolRefSubmenu = new JMenu(Language.text("menu.help.tools_reference"));
-    // Populate only when sub-menu is opened, to avoid having spurious menu
-    // options if a tool is deleted, or a missing menu option if a library is added
-    toolRefSubmenu.addMenuListener(new MenuListener() {
+    boolean coreToolMenuItemAdded;
+    boolean contribToolMenuItemAdded;
 
-      @Override
-      public void menuSelected(MenuEvent e) {
-        boolean coreToolMenuItemAdded;
-        boolean contribToolMenuItemAdded;
+    List<ToolContribution> contribTools = base.getToolContribs();
+    // Adding this in in case a reference folder is added for MovieMaker, or in case
+    // other core tools are introduced later
+    coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
 
-        List<ToolContribution> contribTools = base.getToolContribs();
-        // Adding this in in case a reference folder is added for MovieMaker, or in case
-        // other core tools are introduced later
-        coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
+    if (coreToolMenuItemAdded && !contribTools.isEmpty())
+      toolRefSubmenu.addSeparator();
 
-        if (coreToolMenuItemAdded && !contribTools.isEmpty())
-          toolRefSubmenu.addSeparator();
+    contribToolMenuItemAdded = addToolReferencesToSubMenu(contribTools, toolRefSubmenu);
 
-        contribToolMenuItemAdded = addToolReferencesToSubMenu(contribTools, toolRefSubmenu);
-
-        if (!contribToolMenuItemAdded && !coreToolMenuItemAdded) {
-          toolRefSubmenu.removeAll(); // in case a separator was added
-          final JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
-          emptyMenuItem.setEnabled(false);
-          emptyMenuItem.setBorderPainted(false);
-          emptyMenuItem.setFocusable(false);
-          emptyMenuItem.setFocusPainted(false);
-          toolRefSubmenu.add(emptyMenuItem);
-        }
-        else if (!contribToolMenuItemAdded && !contribTools.isEmpty()) {
-          // re-populate the menu to get rid of terminal separator
-          toolRefSubmenu.removeAll();
-          addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
-        }
-      }
-
-      @Override
-      public void menuDeselected(MenuEvent e) {
-        toolRefSubmenu.removeAll();
-      }
-
-      @Override
-      public void menuCanceled(MenuEvent e) {
-        menuDeselected(e);
-      }
-    });
+    if (!contribToolMenuItemAdded && !coreToolMenuItemAdded) {
+      toolRefSubmenu.removeAll(); // in case a separator was added
+      final JMenuItem emptyMenuItem = new JMenuItem(Language.text("menu.help.empty"));
+      emptyMenuItem.setEnabled(false);
+      emptyMenuItem.setBorderPainted(false);
+      emptyMenuItem.setFocusable(false);
+      emptyMenuItem.setFocusPainted(false);
+      toolRefSubmenu.add(emptyMenuItem);
+    }
+    else if (!contribToolMenuItemAdded && !contribTools.isEmpty()) {
+      // re-populate the menu to get rid of terminal separator
+      toolRefSubmenu.removeAll();
+      addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
+    }
     menu.add(toolRefSubmenu);
 
     menu.addSeparator();
+    /*
     item = new JMenuItem(Language.text("menu.help.online"));
     item.setEnabled(false);
     menu.add(item);
+    */
 
     item = new JMenuItem(Language.text("menu.help.getting_started"));
     item.addActionListener(e -> Platform.openURL(Language.text("menu.help.getting_started.url")));
@@ -508,416 +477,25 @@ public class JavaEditor extends Editor {
    * Handler for Sketch &rarr; Export Application
    */
   public void handleExportApplication() {
-//    toolbar.activate(JavaToolbar.EXPORT);
-
     if (handleExportCheckModified()) {
       statusNotice(Language.text("export.notice.exporting"));
       try {
-        if (exportApplicationPrompt()) {
+        if (ExportPrompt.trigger(this)) {
           Platform.openFolder(sketch.getFolder());
           statusNotice(Language.text("export.notice.exporting.done"));
-        //} else {
+          //} else {
           // error message will already be visible
           // or there was no error, in which case it was canceled.
         }
+      } catch (SketchException se) {
+        EventQueue.invokeLater(() -> statusError(se));
+
       } catch (Exception e) {
         statusNotice(Language.text("export.notice.exporting.error"));
         e.printStackTrace();
       }
     }
-//    toolbar.deactivate(JavaToolbar.EXPORT);
   }
-
-
-  // Can't be .windows because that'll be stripped off as a per-platform pref
-  static final String EXPORT_PREFIX = "export.application.platform_";
-  static final String EXPORT_MACOSX = EXPORT_PREFIX + "macosx";
-  static final String EXPORT_WINDOWS = EXPORT_PREFIX + "windows";
-  static final String EXPORT_LINUX = EXPORT_PREFIX + "linux";
-
-  final JButton exportButton = new JButton(Language.text("prompt.export"));
-  final JButton cancelButton = new JButton(Language.text("prompt.cancel"));
-
-  final JCheckBox windowsButton = new JCheckBox("Windows");
-  final JCheckBox macosButton = new JCheckBox("Mac OS X");
-  final JCheckBox linuxButton = new JCheckBox("Linux");
-
-
-  protected void updateExportButton() {
-    exportButton.setEnabled(windowsButton.isSelected() ||
-                            macosButton.isSelected() ||
-                            linuxButton.isSelected());
-  }
-
-
-  protected boolean exportApplicationPrompt() throws IOException, SketchException {
-    JPanel panel = new JPanel();
-    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-    panel.add(Box.createVerticalStrut(6));
-
-//    Box panel = Box.createVerticalBox();
-//    Box labelBox = Box.createHorizontalBox();
-//    String msg = "<html>Click Export to Application to create a standalone, " +
-//      "double-clickable application for the selected plaforms.";
-//    String msg = "Export to Application creates a standalone, \n" +
-//      "double-clickable application for the selected plaforms.";
-    String line1 = Language.text("export.description.line1");
-    String line2 = Language.text("export.description.line2");
-    //String line2 = "standalone application for the current plaform.";
-    JLabel label1 = new JLabel(line1, SwingConstants.CENTER);
-    JLabel label2 = new JLabel(line2, SwingConstants.CENTER);
-    label1.setAlignmentX(Component.LEFT_ALIGNMENT);
-    label2.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panel.add(label1);
-    panel.add(label2);
-    // The longer line is different between Windows and OS X.
-//    int wide = Math.max(label1.getPreferredSize().width,
-//                        label2.getPreferredSize().width);
-    panel.add(Box.createVerticalStrut(12));
-
-//    final JCheckBox windowsButton = new JCheckBox("Windows");
-//    final JCheckBox macosxButton = new JCheckBox("Mac OS X");
-//    final JCheckBox linuxButton = new JCheckBox("Linux");
-
-    windowsButton.setSelected(Preferences.getBoolean(EXPORT_WINDOWS));
-    windowsButton.addItemListener(e -> {
-      Preferences.setBoolean(EXPORT_WINDOWS, windowsButton.isSelected());
-      updateExportButton();
-    });
-
-    // Only possible to export OS X applications on OS X
-    if (!Platform.isMacOS()) {
-      // Make sure they don't have a previous 'true' setting for this
-      Preferences.setBoolean(EXPORT_MACOSX, false);
-    }
-    macosButton.setSelected(Preferences.getBoolean(EXPORT_MACOSX));
-    macosButton.addItemListener(e -> {
-      Preferences.setBoolean(EXPORT_MACOSX, macosButton.isSelected());
-      updateExportButton();
-    });
-    if (!Platform.isMacOS()) {
-      macosButton.setEnabled(false);
-      macosButton.setToolTipText(Language.text("export.tooltip.macosx"));
-    }
-
-    linuxButton.setSelected(Preferences.getBoolean(EXPORT_LINUX));
-    linuxButton.addItemListener(e -> {
-      Preferences.setBoolean(EXPORT_LINUX, linuxButton.isSelected());
-      updateExportButton();
-    });
-
-    updateExportButton();  // do the initial enable/disable based on prefs.txt
-
-    JPanel platformPanel = new JPanel();
-    //platformPanel.setLayout(new BoxLayout(platformPanel, BoxLayout.X_AXIS));
-    platformPanel.add(windowsButton);
-    platformPanel.add(Box.createHorizontalStrut(6));
-    platformPanel.add(macosButton);
-    platformPanel.add(Box.createHorizontalStrut(6));
-    platformPanel.add(linuxButton);
-    platformPanel.setBorder(new TitledBorder(Language.text("export.platforms")));
-    //Dimension goodIdea = new Dimension(wide, platformPanel.getPreferredSize().height);
-    //platformPanel.setMaximumSize(goodIdea);
-//    wide = Math.max(wide, platformPanel.getPreferredSize().width);
-    platformPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panel.add(platformPanel);
-    int divWidth = platformPanel.getPreferredSize().width;
-
-    //int indent = new JCheckBox().getPreferredSize().width;
-    int indent = 0;
-
-    final JCheckBox showStopButton = new JCheckBox(Language.text("export.options.show_stop_button"));
-    showStopButton.setSelected(Preferences.getBoolean("export.application.stop"));
-    showStopButton.addItemListener(e -> Preferences.setBoolean("export.application.stop", showStopButton.isSelected()));
-    showStopButton.setEnabled(Preferences.getBoolean("export.application.present"));
-    showStopButton.setBorder(new EmptyBorder(3, 13 + indent, 6, 13));
-
-    final JCheckBox presentButton = new JCheckBox(Language.text("export.options.present"));
-    presentButton.setSelected(Preferences.getBoolean("export.application.present"));
-    presentButton.addItemListener(e -> {
-      boolean sal = presentButton.isSelected();
-      Preferences.setBoolean("export.application.present", sal);
-      showStopButton.setEnabled(sal);
-    });
-    presentButton.setBorder(new EmptyBorder(3, 13, 3, 13));
-
-    JPanel presentPanel = new JPanel();
-    presentPanel.setLayout(new BoxLayout(presentPanel, BoxLayout.Y_AXIS));
-    Box fullScreenBox = Box.createHorizontalBox();
-    fullScreenBox.add(presentButton);
-
-    /*
-    //run.present.stop.color
-//    presentColorPanel = new JTextField();
-//    presentColorPanel.setFocusable(false);
-//    presentColorPanel.setEnabled(false);
-    presentColorPanel = new JPanel() {
-      public void paintComponent(Graphics g) {
-        g.setColor(Preferences.getColor("run.present.bgcolor"));
-        Dimension size = getSize();
-        g.fillRect(0, 0, size.width, size.height);
-      }
-    };
-    presentColorPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-//    presentColorPanel.setBorder(BorderFactory.createBevelBorder(BevelBorder.RAISED));
-    presentColorPanel.setMaximumSize(new Dimension(30, 20));
-    fullScreenBox.add(presentColorPanel);
-    */
-    fullScreenBox.add(new ColorPreference("run.present.bgcolor"));
-    //presentPanel.add(fullScreenButton);
-    fullScreenBox.add(Box.createHorizontalStrut(10));
-    fullScreenBox.add(Box.createHorizontalGlue());
-
-    presentPanel.add(fullScreenBox);
-
-//    presentColorPanel.addMouseListener(new MouseAdapter() {
-//      public void mousePressed(MouseEvent e) {
-//        new ColorListener("run.present.bgcolor");
-//      }
-//    });
-
-    Box showStopBox = Box.createHorizontalBox();
-    showStopBox.add(showStopButton);
-    showStopBox.add(new ColorPreference("run.present.stop.color"));
-    showStopBox.add(Box.createHorizontalStrut(10));
-    showStopBox.add(Box.createHorizontalGlue());
-    presentPanel.add(showStopBox);
-
-    //presentPanel.add(showStopButton);
-//    presentPanel.add(Box.createHorizontalStrut(10));
-//    presentPanel.add(Box.createHorizontalGlue());
-    presentPanel.setBorder(new TitledBorder(Language.text("export.full_screen")));
-//    wide = Math.max(wide, platformPanel.getPreferredSize().width);
-    presentPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    panel.add(presentPanel);
-
-//    Dimension good;
-//    good = new Dimension(wide, label1.getPreferredSize().height);
-//    label1.setMaximumSize(good);
-//    good = new Dimension(wide, label2.getPreferredSize().height);
-//    label2.setMaximumSize(good);
-//    good = new Dimension(wide, presentPanel.getPreferredSize().height);
-
-    //
-
-    JPanel embedPanel = new JPanel();
-    embedPanel.setLayout(new BoxLayout(embedPanel, BoxLayout.Y_AXIS));
-
-    String platformName = null;
-    if (Platform.isMacOS()) {
-      platformName = "macOS";
-    } else if (Platform.isWindows()) {
-      platformName = "Windows (" + Platform.getNativeBits() + "-bit)";
-    } else if (Platform.isLinux()) {
-      platformName = "Linux (" + Platform.getNativeBits() + "-bit)";
-    }
-
-    final boolean embed =
-      Preferences.getBoolean("export.application.embed_java");
-    final String warning1 =
-      "<html><div width=\"" + divWidth + "\"><font size=\"2\">";
-    final String warning2a =
-      "Embedding Java will make the " + platformName + " application " +
-      "larger, but it will be far more likely to work. " +
-      "Users on other platforms will need to ";
-    final String warning2b =
-      "Users will need to ";
-    final String warning3 =
-      "<a href=\"" + JavaBuild.JAVA_DOWNLOAD_URL + "\">" +
-      "install OpenJDK " + PApplet.javaPlatform + "</a>.";  //"<br/>&nbsp;";
-
-    // both are needed because they change as the user hits the checkbox
-    final String embedWarning = warning1 + warning2a + warning3;
-    final String nopeWarning = warning1 + warning2b + warning3;
-
-    final JLabel warningLabel = new JLabel(embed ? embedWarning : nopeWarning);
-    warningLabel.addMouseListener(new MouseAdapter() {
-      public void mousePressed(MouseEvent event) {
-        Platform.openURL(JavaBuild.JAVA_DOWNLOAD_URL);
-      }
-    });
-    warningLabel.setBorder(new EmptyBorder(3, 13 + indent, 3, 13));
-
-    final JCheckBox embedJavaButton =
-      //new JCheckBox(Language.text("export.embed_java.for") + " " + platformName);
-      new JCheckBox(Language.interpolate("export.include_java", platformName));
-    embedJavaButton.setSelected(embed);
-    embedJavaButton.addItemListener(e -> {
-      boolean selected = embedJavaButton.isSelected();
-      Preferences.setBoolean("export.application.embed_java", selected);
-      if (selected) {
-        warningLabel.setText(embedWarning);
-      } else {
-        warningLabel.setText(nopeWarning);
-      }
-    });
-    embedJavaButton.setBorder(new EmptyBorder(3, 13, 3, 13));
-
-    embedPanel.add(embedJavaButton);
-    embedPanel.add(warningLabel);
-    embedPanel.setBorder(new TitledBorder(Language.text("export.embed_java")));
-    panel.add(embedPanel);
-
-    //
-
-    if (Platform.isMacOS()) {
-      JPanel signPanel = new JPanel();
-      signPanel.setLayout(new BoxLayout(signPanel, BoxLayout.Y_AXIS));
-      signPanel.setBorder(new TitledBorder(Language.text("export.code_signing")));
-
-      // gatekeeper: http://support.apple.com/kb/ht5290
-      // for developers: https://developer.apple.com/developer-id/
-      final String APPLE_URL = "https://developer.apple.com/developer-id/";
-      String thePain =
-        //"<html><body><font size=2>" +
-        "In recent versions of macOS, Apple has introduced the \u201CGatekeeper\u201D system, " +
-        "which makes it more difficult to run applications like those exported from Processing. ";
-
-      if (new File("/usr/bin/codesign_allocate").exists()) {
-        thePain +=
-          "This application will be \u201Cself-signed\u201D which means that Finder may report that the " +
-          "application is from an \u201Cunidentified developer\u201D. If the application will not " +
-          "run, try right-clicking the app and selecting Open from the pop-up menu. Or you can visit " +
-          "System Preferences \u2192 Security & Privacy and select Allow apps downloaded from: anywhere. ";
-      } else {
-        thePain +=
-          "Gatekeeper requires applications to be \u201Csigned\u201D, or they will be reported as damaged. " +
-          "To prevent this message, install Xcode (and the Command Line Tools) from the App Store. ";
-      }
-      thePain +=
-        "To avoid the messages entirely, manually code sign your app. " +
-        "For more information: <a href=\"\">" + APPLE_URL + "</a>";
-
-      // xattr -d com.apple.quarantine thesketch.app
-
-      //signPanel.add(new JLabel(thePain));
-      //JEditorPane area = new JEditorPane("text/html", thePain);
-      //JTextPane area = new JEditorPane("text/html", thePain);
-
-//      JTextArea area = new JTextArea(thePain);
-//      area.setBackground(null);
-//      area.setFont(new Font("Dialog", Font.PLAIN, 10));
-//      area.setLineWrap(true);
-//      area.setWrapStyleWord(true);
-      // Are you f-king serious, Java API developers?
-      JLabel area = new JLabel("<html><div width=\"" + divWidth + "\"><font size=\"2\">" + thePain + "</div></html>");
-
-      area.setBorder(new EmptyBorder(3, 13, 3, 13));
-//      area.setPreferredSize(new Dimension(embedPanel.getPreferredSize().width, 100));
-//      area.setPreferredSize(new Dimension(300, 200));
-      signPanel.add(area);
-//      signPanel.add(Box.createHorizontalGlue());
-      signPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-      area.addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent event) {
-          Platform.openURL("https://developer.apple.com/developer-id/");
-        }
-      });
-
-      panel.add(signPanel);
-    }
-
-    //
-
-    //String[] options = { Language.text("prompt.export"), Language.text("prompt.cancel") };
-    final JButton[] options = { exportButton, cancelButton };
-
-    final JOptionPane optionPane = new JOptionPane(panel,
-                                                   JOptionPane.PLAIN_MESSAGE,
-                                                   JOptionPane.YES_NO_OPTION,
-                                                   null,
-                                                   options,
-                                                   exportButton); //options[0]);
-
-
-    final JDialog dialog = new JDialog(this, Language.text("export"), true);
-    dialog.setContentPane(optionPane);
-
-    exportButton.addActionListener(e -> optionPane.setValue(exportButton));
-
-    cancelButton.addActionListener(e -> optionPane.setValue(cancelButton));
-
-    optionPane.addPropertyChangeListener(e -> {
-      String prop = e.getPropertyName();
-
-      if (dialog.isVisible() &&
-          (e.getSource() == optionPane) &&
-          (prop.equals(JOptionPane.VALUE_PROPERTY))) {
-        // If you were going to check something before
-        // closing the window, you'd do it here.
-        dialog.setVisible(false);
-      }
-    });
-    dialog.pack();
-//    System.out.println("after pack: " + panel.getPreferredSize());
-//    dialog.setSize(optionPane.getPreferredSize());
-    dialog.setResizable(false);
-
-    // Center the window in the middle of the editor
-    Rectangle bounds = getBounds();
-    dialog.setLocation(bounds.x + (bounds.width - dialog.getSize().width) / 2,
-                       bounds.y + (bounds.height - dialog.getSize().height) / 2);
-    dialog.setVisible(true);
-
-    Object value = optionPane.getValue();
-    if (value.equals(exportButton)) {
-      return jmode.handleExportApplication(sketch);
-    } else if (value.equals(cancelButton) || value.equals(-1)) {
-      // closed window by hitting Cancel or ESC
-      statusNotice(Language.text("export.notice.exporting.cancel"));
-    }
-    return false;
-  }
-
-
-  class ColorPreference extends JPanel implements ActionListener {
-    ColorChooser chooser;
-    String prefName;
-
-    public ColorPreference(String pref) {
-      prefName = pref;
-
-      setBorder(BorderFactory.createBevelBorder(BevelBorder.LOWERED));
-      setPreferredSize(new Dimension(30, 20));
-      setMaximumSize(new Dimension(30, 20));
-
-      addMouseListener(new MouseAdapter() {
-        public void mouseReleased(MouseEvent e) {
-          Color color = Preferences.getColor(prefName);
-          chooser = new ColorChooser(JavaEditor.this, true, color, Language.text("color_chooser.select"), ColorPreference.this);
-          chooser.show();
-        }
-      });
-    }
-
-    public void paintComponent(Graphics g) {
-      g.setColor(Preferences.getColor(prefName));
-      Dimension size = getSize();
-      g.fillRect(0, 0, size.width, size.height);
-    }
-
-    public void actionPerformed(ActionEvent e) {
-      Color color = chooser.getColor();
-      Preferences.setColor(prefName, color);
-      //presentColorPanel.repaint();
-      repaint();
-      chooser.hide();
-    }
-  }
-
-
-//  protected void selectColor(String prefName) {
-//    Color color = Preferences.getColor(prefName);
-//    final ColorChooser chooser = new ColorChooser(JavaEditor.this, true, color,
-//                                            "Select", new ActionListener() {
-//
-//      @Override
-//      public void actionPerformed(ActionEvent e) {
-//        Preferences.setColor(prefName, c.getColor());
-//      }
-//    });
-//  }
 
 
   /**
@@ -925,7 +503,7 @@ public class JavaEditor extends Editor {
    * asks the user to save the sketch or cancel the export.
    * This prevents issues where an incomplete version of the sketch
    * would be exported, and is a fix for
-   * <A HREF="http://dev.processing.org/bugs/show_bug.cgi?id=157">Bug 157</A>
+   * <A HREF="https://download.processing.org/bugzilla/157.html">Bug 157</A>
    */
   protected boolean handleExportCheckModified() {
     if (sketch.isReadOnly()) {
@@ -1203,7 +781,7 @@ public class JavaEditor extends Editor {
   }
 
 
-  public void showReference(String filename) {
+  public void showReference(String name) {
     if (useReferenceServer == null) {
       File referenceZip = new File(mode.getFolder(), "reference.zip");
       if (referenceZip.exists()) {
@@ -1221,12 +799,18 @@ public class JavaEditor extends Editor {
     }
 
     if (useReferenceServer) {
-      String url = referenceServer.getPrefix() + "reference/" + filename;
+      String url = referenceServer.getPrefix() + "reference/" + name;
       Platform.openURL(url);
 
     } else {
-      File file = new File(mode.getReferenceFolder(), filename);
-      showReferenceFile(file);
+      File file = new File(mode.getReferenceFolder(), name);
+      if (file.exists()) {
+        showReferenceFile(file);
+      } else {
+        // Offline reference (temporarily) removed in 4.0 beta 9
+        // https://github.com/processing/processing4/issues/524
+        Platform.openURL("https://processing.org/reference/" + name);
+      }
     }
   }
 
@@ -2173,19 +1757,20 @@ public class JavaEditor extends Editor {
     frmImportSuggest.setVisible(true);
   }
 
-  /**
-   * Checks if the sketch contains java tabs. If it does, the editor ain't
-   * built for it, yet. Also, user should really start looking at a full IDE
-   * like Eclipse. Disable compilation check and some more features.
-   */
-  private boolean checkForJavaTabs() {
-    for (SketchCode code : getSketch().getCode()) {
-      if (code.getExtension().equals("java")) {
-        return true;
-      }
-    }
-    return false;
-  }
+
+//  /**
+//   * Checks if the sketch contains java tabs. If it does, the editor ain't
+//   * built for it, yet. Also, user should really start looking at a full IDE
+//   * like Eclipse. Disable compilation check and some more features.
+//   */
+//  private boolean checkForJavaTabs() {
+//    for (SketchCode code : getSketch().getCode()) {
+//      if (code.getExtension().equals("java")) {
+//        return true;
+//      }
+//    }
+//    return false;
+//  }
 
 
   @Override

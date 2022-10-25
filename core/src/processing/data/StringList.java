@@ -9,12 +9,11 @@ import java.util.Random;
 import processing.core.PApplet;
 
 /**
- * Helper class for a list of <b>Strings</b>. Lists are designed to have some of the
- * features of <b>ArrayLists</b>, but to maintain the simplicity and efficiency of
- * working with arrays.
- *
- * Functions like <b>sort()</b> and <b>shuffle()</b> always act on the list itself. To get
- * a sorted copy, use <b>list.copy().sort()</b>.
+ * Helper class for a list of <b>String</b> objects. Lists are designed
+ * to have some features of <b>ArrayList</b>, but to maintain the
+ * simplicity and efficiency of working with arrays.
+ * Functions such as <b>sort()</b> and <b>shuffle()</b> always act on
+ * the list itself. To get a sorted copy, use <b>list.copy().sort()</b>.
  *
  * @webref data:composite
  * @webBrief Helper class for a list of Strings
@@ -58,9 +57,6 @@ public class StringList implements Iterable<String> {
     data = new String[count];
     int index = 0;
     for (Object o : items) {
-//      // Not gonna go with null values staying that way because perhaps
-//      // the most common case here is to immediately call join() or similar.
-//      data[index++] = String.valueOf(o);
       // Keep null values null (because join() will make non-null anyway)
       if (o != null) {  // leave null values null
         data[index] = o.toString();
@@ -76,9 +72,9 @@ public class StringList implements Iterable<String> {
    *
    * @nowebref
    */
-  public StringList(Iterable<String> iter) {
+  public StringList(Iterable<String> iterable) {
     this(10);
-    for (String s : iter) {
+    for (String s : iterable) {
       append(s);
     }
   }
@@ -115,7 +111,7 @@ public class StringList implements Iterable<String> {
       data = temp;
 
     } else if (length > count) {
-      Arrays.fill(data, count, length, 0);
+      Arrays.fill(data, count, length, null);
     }
     count = length;
   }
@@ -193,11 +189,6 @@ public class StringList implements Iterable<String> {
       throw new ArrayIndexOutOfBoundsException(index);
     }
     String entry = data[index];
-//    int[] outgoing = new int[count - 1];
-//    System.arraycopy(data, 0, outgoing, 0, index);
-//    count--;
-//    System.arraycopy(data, index + 1, outgoing, 0, count - index);
-//    data = outgoing;
     for (int i = index; i < count-1; i++) {
       data[i] = data[i+1];
     }
@@ -207,6 +198,7 @@ public class StringList implements Iterable<String> {
 
 
   // Remove the first instance of a particular value and return its index.
+  @SuppressWarnings("unused")
   public int removeValue(String value) {
     if (value == null) {
       for (int i = 0; i < count; i++) {
@@ -227,6 +219,7 @@ public class StringList implements Iterable<String> {
 
 
   // Remove all instances of a particular value and return the count removed.
+  @SuppressWarnings("unused")
   public int removeValues(String value) {
     int ii = 0;
     if (value == null) {
@@ -249,6 +242,7 @@ public class StringList implements Iterable<String> {
 
 
   // replace the first value that matches, return the index that was replaced
+  @SuppressWarnings("unused")
   public int replaceValue(String value, String newValue) {
     if (value == null) {
       for (int i = 0; i < count; i++) {
@@ -270,6 +264,7 @@ public class StringList implements Iterable<String> {
 
 
   // replace all values that match, return the count of those replaced
+  @SuppressWarnings("unused")
   public int replaceValues(String value, String newValue) {
     int changed = 0;
     if (value == null) {
@@ -458,15 +453,6 @@ public class StringList implements Iterable<String> {
   }
 
 
-  // !!! TODO this is not yet correct, because it's not being reset when
-  // the rest of the entries are changed
-//  protected void cacheIndices() {
-//    indexCache = new HashMap<Integer, Integer>();
-//    for (int i = 0; i < count; i++) {
-//      indexCache.put(data[i], i);
-//    }
-//  }
-
   /**
    * Check if a value is a part of the list
    *
@@ -537,23 +523,6 @@ public class StringList implements Iterable<String> {
   }
 
 
-  // use insert()
-//  public void splice(int index, int value) {
-//  }
-
-
-//  public void subset(int start) {
-//    subset(start, count - start);
-//  }
-//
-//
-//  public void subset(int start, int num) {
-//    for (int i = 0; i < num; i++) {
-//      data[i] = data[i+start];
-//    }
-//    count = num;
-//  }
-
   /**
    * Reverse the order of the list
    *
@@ -577,6 +546,7 @@ public class StringList implements Iterable<String> {
    * @webref stringlist:method
    * @webBrief Randomize the order of the list elements
    */
+  @SuppressWarnings("unused")
   public void shuffle() {
     Random r = new Random();
     int num = count;
@@ -594,6 +564,7 @@ public class StringList implements Iterable<String> {
    * Randomize the list order using the random() function from the specified
    * sketch, allowing shuffle() to use its current randomSeed() setting.
    */
+  @SuppressWarnings("unused")
   public void shuffle(PApplet sketch) {
     int num = count;
     while (num > 1) {
@@ -603,6 +574,23 @@ public class StringList implements Iterable<String> {
       data[num] = data[value];
       data[value] = temp;
     }
+  }
+
+
+  /**
+   * Return a random value from the list.
+   */
+  public String random() {
+    return data[(int) (Math.random() * count)];
+  }
+
+
+  /**
+   * Return a random value from the list, using the
+   * randomSeed() from the specified sketch object.
+   */
+  public String random(PApplet sketch) {
+    return data[(int) sketch.random(count)];
   }
 
 
@@ -656,12 +644,7 @@ public class StringList implements Iterable<String> {
 
   @Override
   public Iterator<String> iterator() {
-//    return valueIterator();
-//  }
-//
-//
-//  public Iterator<String> valueIterator() {
-    return new Iterator<String>() {
+    return new Iterator<>() {
       int index = -1;
 
       public void remove() {
@@ -680,6 +663,12 @@ public class StringList implements Iterable<String> {
   }
 
 
+  @Deprecated
+  public String[] array() {
+    return toArray();
+  }
+
+
   /**
    * Create a new array with a copy of all the values.
    *
@@ -687,17 +676,22 @@ public class StringList implements Iterable<String> {
    * @webref stringlist:method
    * @webBrief Create a new array with a copy of all the values
    */
-  public String[] array() {
-    return array(null);
+  public String[] toArray() {
+    return toArray(null);
+  }
+
+
+  @Deprecated
+  public String[] array(String[] array) {
+    return toArray(array);
   }
 
 
   /**
    * Copy values into the specified array. If the specified array is null or
    * not the same size, a new array will be allocated.
-   * @param array
    */
-  public String[] array(String[] array) {
+  public String[] toArray(String[] array) {
     if (array == null || array.length != count) {
       array = new String[count];
     }
@@ -706,6 +700,7 @@ public class StringList implements Iterable<String> {
   }
 
 
+  @SuppressWarnings("unused")
   public StringList getSubset(int start) {
     return getSubset(start, count - start);
   }

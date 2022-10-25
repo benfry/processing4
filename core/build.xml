@@ -3,19 +3,6 @@
 
   <property environment="env" />
 
-  <target name="clean" description="Clean out the build directories">
-    <delete dir="bin" />
-    <delete dir="bin-test" />
-    <delete file="library/core.jar" />
-  </target>
-
-  <target name="clean-jogl" description="Clean out the JOGL binaries">
-    <delete>
-      <fileset dir="library" includes="gluegen-rt*.jar" />
-      <fileset dir="library" includes="jogl-all*.jar" />
-    </delete>
-  </target>
-
   <target name="methods-check">
     <available file="methods/methods.jar" property="methods.present" />
   </target>
@@ -25,13 +12,19 @@
   </target>
 
   <!-- Base URL for the current version of JOGL. -->
+  <!--
   <property name="jogl.url"
             value="https://jogamp.org/deployment/archive/rc/v2.4.0-rc-20210111/jar" />
+  -->
   <!-- This is for posterity, and is not used at present. When updating
        the release, also make a copy of the files on download.processing.org
        so that they can be retrieved even after the original link goes dead. -->
+  <!--
   <property name="jogl.url.backup"
             value="https://download.processing.org/jogl/v2.4.0-rc-20210111" />
+  -->
+  <property name="jogl.url"
+            value="https://download.processing.org/jogl/v2.4.0-rc-20210111y" />
 
   <available file="library/jogl-all.jar" property="jogl.present" />
 
@@ -42,44 +35,87 @@
 
   <target name="download-jogl" unless="jogl.present">
     <get dest="library" usetimestamp="true" ignoreerrors="${jogl.ignorable}">
+      <!--
       <url url="${jogl.url}/gluegen-rt-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-linux-amd64.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-linux-i586.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-macosx-universal.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-linux-arm.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-macos-aarch64.jar" />
+      <url url="${jogl.url}/gluegen-rt-natives-macos-x86_64.jar" />
       <url url="${jogl.url}/gluegen-rt-natives-windows-amd64.jar" />
-      <url url="${jogl.url}/gluegen-rt-natives-windows-i586.jar" />
+      -->
       <url url="${jogl.url}/gluegen-rt.jar" />
+      <!--
       <url url="${jogl.url}/jogl-all-natives-linux-aarch64.jar" />
       <url url="${jogl.url}/jogl-all-natives-linux-amd64.jar" />
-      <url url="${jogl.url}/jogl-all-natives-linux-armv6hf.jar" />
-      <url url="${jogl.url}/jogl-all-natives-linux-i586.jar" />
-      <url url="${jogl.url}/jogl-all-natives-macosx-universal.jar" />
+      <url url="${jogl.url}/jogl-all-natives-linux-arm.jar" />
+      <url url="${jogl.url}/jogl-all-natives-macos-aarch64.jar" />
+      <url url="${jogl.url}/jogl-all-natives-macos-x86_64.jar" />
       <url url="${jogl.url}/jogl-all-natives-windows-amd64.jar" />
-      <url url="${jogl.url}/jogl-all-natives-windows-i586.jar" />
+      -->
       <url url="${jogl.url}/jogl-all.jar" />
     </get>
+
+    <antcall target="retrieve-variant">
+      <param name="variant" value="linux-aarch64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="linux-arm" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="linux-amd64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="macos-aarch64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="macos-x86_64" />
+    </antcall>
+    <antcall target="retrieve-variant">
+      <param name="variant" value="windows-amd64" />
+    </antcall>
+  </target>
+
+  <target name="retrieve-variant">
+    <get src="${jogl.url}/gluegen-rt-natives-${variant}.jar"
+         dest="temp-gluegen.jar"
+         ignoreerrors="${jogl.ignorable}"
+         usetimestamp="true" />
+    <get src="${jogl.url}/jogl-all-natives-${variant}.jar"
+         dest="temp-jogl.jar"
+         ignoreerrors="${jogl.ignorable}"
+         usetimestamp="true" />
+
+    <mkdir dir="library/${variant}" />
+
+    <unzip dest="library/${variant}" src="temp-gluegen.jar" overwrite="true">
+      <patternset>
+        <include name="**/*.dll" />
+        <include name="**/*.dylib" />
+        <include name="**/*.so" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+    <unzip dest="library/${variant}" src="temp-jogl.jar" overwrite="true">
+      <patternset>
+        <include name="**/*.dll" />
+        <include name="**/*.dylib" />
+        <include name="**/*.so" />
+      </patternset>
+      <mapper type="flatten" />
+    </unzip>
+
+    <delete file="temp-gluegen.jar" />
+    <delete file="temp-jogl.jar" />
   </target>
 
   <path id="classpath.base">
     <pathelement location="library/jogl-all.jar" />
     <pathelement location="library/gluegen-rt.jar" />
-
-    <!-- <pathelement location="library/javafx-swt.jar" /> -->
-    <pathelement location="library/javafx.base.jar" />
-    <pathelement location="library/javafx.controls.jar" />
-    <pathelement location="library/javafx.fxml.jar" />
-    <pathelement location="library/javafx.graphics.jar" />
-    <pathelement location="library/javafx.media.jar" />
-    <!-- error? it's not a .jar, but is this how config is handled? [fry 210619] -->
-    <pathelement location="library/javafx.properties" />
-    <pathelement location="library/javafx.swing.jar" />
-    <!-- <pathelement location="library/javafx.web.jar" /> -->
   </path>
 
   <path id="classpath.test">
-    <pathelement location="library-test/junit-4.8.1.jar" />
-    <pathelement location="library-test/mockito-all-1.10.19.jar" />
+    <pathelement location="library-test/junit-4.13.2.jar" />
+    <pathelement location="library-test/hamcrest-core-1.3.jar" />
     <pathelement location="bin-test" />
     <path refid="classpath.base" />
   </path>
@@ -90,38 +126,33 @@
     <attribute name="classpath" />
     <sequential>
       <taskdef name="methods"
-  	     classname="PAppletMethods"
-  	     classpath="methods/methods.jar" />
+               classname="PAppletMethods"
+               classpath="methods/methods.jar" />
       <methods dir="${basedir}/src/processing/core" recorder="true" />
 
       <!-- Where can I expect to find Java Mode JARs? -->
       <property name="java.mode" value="../java/mode/" />
 
-      <!-- JavaFX got removed from the Oracle's JDK for arm and Java 11 -->
-      <condition property="fx.unavailable" value="true">
-        <or>
-          <equals arg1="${os.arch}" arg2="arm" />
-          <equals arg1="${os.arch}" arg2="aarch64" />
-        </or>
-      </condition>
-
       <mkdir dir="@{destdir}" />
-      <javac source="11"
-  	   target="11"
-  	   encoding="UTF-8"
-  	   includeAntRuntime="false"
-  	   debug="true"
-  	   destdir="@{destdir}"
-  	   nowarn="true">
+      <javac source="17"
+             target="17"
+             encoding="UTF-8"
+             includeAntRuntime="false"
+             debug="true"
+             destdir="@{destdir}"
+             nowarn="true">
         <classpath refid="@{classpath}" />
         <src path="@{srcdir}" />
         <include name="processing/**" />
-        <exclude name="processing/javafx/**" if="fx.unavailable" />
       </javac>
 
       <!-- Copy the jnilib to the bin folder so it's included. -->
-      <copy todir="bin/japplemenubar"
-  	  file="src/japplemenubar/libjAppleMenuBar.jnilib" />
+      <copy todir="bin/processing/core"
+            file="src/processing/core/libDifferent.jnilib" />
+
+      <!-- Copy the helper code for checking Windows resolution. -->
+      <copy todir="library/windows-amd64"
+            file="../build/windows/fenster/fenster.exe" />
 
       <!-- Copy shaders to bin. (Eclipse does this automatically.) -->
       <copy todir="bin">
@@ -160,7 +191,7 @@
   </target>
 
   <target name="build" depends="download-jogl, methods-build, compile"
-          description="Build core library">
+          description="Build core library jar">
     <jar basedir="bin" destfile="library/core.jar" />
   </target>
 
@@ -170,6 +201,21 @@
       <fileset dir="src" includes="**/*.java" />
     </jar>
     <echo message="Wrote source jar to ${source.jar.path}" />
+  </target>
+
+  <target name="clean-libs" description="Clean out the JOGL binary downloads">
+    <delete>
+      <fileset dir="library" includes="gluegen-rt*.jar" />
+      <fileset dir="library" includes="jogl-all*.jar" />
+    </delete>
+
+    <!-- <antcall target="download-jogl" /> -->
+  </target>
+
+  <target name="clean" description="Clean out the build directories">
+    <delete dir="bin" />
+    <delete dir="bin-test" />
+    <delete file="library/core.jar" />
   </target>
 
 </project>

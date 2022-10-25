@@ -55,10 +55,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private static final String NO_SMOOTH_METHOD_NAME = "noSmooth";
   private static final String PIXEL_DENSITY_METHOD_NAME = "pixelDensity";
   private static final String FULLSCREEN_METHOD_NAME = "fullScreen";
+  private static final boolean SIMULATE_MULTILINE_STRINGS = true;
 
-  private String sketchName;
+  final private String sketchName;
   private boolean isTesting;
-  private TokenStreamRewriter rewriter;
+  final private TokenStreamRewriter rewriter;
   private Optional<String> destinationPackageName;
 
   private Mode mode = Mode.JAVA;
@@ -66,17 +67,18 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
   private int lineOffset;
 
-  private ArrayList<ImportStatement> coreImports = new ArrayList<>();
-  private ArrayList<ImportStatement> defaultImports = new ArrayList<>();
-  private ArrayList<ImportStatement> codeFolderImports = new ArrayList<>();
-  private ArrayList<ImportStatement> foundImports = new ArrayList<>();
-  private ArrayList<TextTransform.Edit> edits = new ArrayList<>();
+  private List<ImportStatement> coreImports = new ArrayList<>();
+  private List<ImportStatement> defaultImports = new ArrayList<>();
+  private List<ImportStatement> codeFolderImports = new ArrayList<>();
+  private List<ImportStatement> foundImports = new ArrayList<>();
+  private List<TextTransform.Edit> edits = new ArrayList<>();
 
   private String sketchWidth;
   private String sketchHeight;
   private String pixelDensity;
   private String smoothParam;
   private String sketchRenderer = null;
+  private String fullscreenArgs = "";
   private String sketchOutputFilename = null;
 
   private boolean sizeRequiresRewrite = false;
@@ -255,7 +257,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   /**
    * Get the result of the last preprocessing.
    *
-   * @param issues The errors (if any) encountered.
    * @return The result of the last preprocessing.
    */
   public PreprocessorResult getResult() {
@@ -289,6 +290,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         allEdits,
         sketchWidth,
         sketchHeight,
+        sketchRenderer,
         issues
     );
   }
@@ -318,6 +320,31 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   }
 
   /**
+   * Detect if the user is programming with "mixed" modes.
+   *
+   * <p>Detect if the user is programming with "mixed" modes where they are
+   * combining active and static mode features. This may be, for example, a
+   * method call followed by method definition.</p>
+   *
+   * @param ctx The context from ANTLR for the mixed modes sketch.
+   */
+  public void enterWarnMixedModes(ProcessingParser.WarnMixedModesContext ctx) {
+    pdeParseTreeErrorListenerMaybe.ifPresent((listener) -> {
+      Token token = ctx.getStart();
+      int line = token.getLine();
+      int charOffset = token.getCharPositionInLine();
+
+      listener.onError(new PdePreprocessIssue(
+        line,
+        charOffset,
+        PreprocessIssueMessageSimplifier.getLocalStr(
+            "editor.status.bad.mixed_mode"
+        )
+      ));
+    });
+  }
+
+  /**
    * Endpoint for ANTLR to call when finished parsing a method invocatino.
    *
    * @param ctx The ANTLR context for the method call.
@@ -325,6 +352,25 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   public void exitMethodCall(ProcessingParser.MethodCallContext ctx) {
     String methodName = ctx.getChild(0).getText();
 
+    // Check if calling on something other than this.
+    boolean impliedThis = ctx.getParent().getChildCount() == 1;
+    boolean usesThis;
+    if (impliedThis) {
+      usesThis = true;
+    } else {
+      String statmentTarget = ctx.getParent().getChild(0).getText();
+      boolean explicitThis = statmentTarget.equals("this");
+      boolean explicitSuper = statmentTarget.equals("super");
+      usesThis = explicitThis || explicitSuper;
+    }
+
+    // If not using this or super, no rewrite as the user is calling their own
+    // declaration or instance of PGraphics.
+    if (!usesThis) {
+      return;
+    }
+
+    // If referring to the applet, check for rewrites.
     if (SIZE_METHOD_NAME.equals(methodName) || FULLSCREEN_METHOD_NAME.equals(methodName)) {
       handleSizeCall(ctx);
     } else if (PIXEL_DENSITY_METHOD_NAME.equals(methodName)) {
@@ -414,6 +460,29 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     String cTxt = ctx.getText().toLowerCase();
     if (!cTxt.endsWith("f") && !cTxt.endsWith("d")) {
       insertAfter(ctx.stop, "f");
+    }
+  }
+
+  /**
+   * Endpoint for ANTLR to call after parsing a String literal.
+   *
+   * <p>
+   *   Endpoint for ANTLR to call when finished parsing a string literal, simulating multiline
+   *   strings if configured to do so.
+   * </p>
+   *
+   * @param ctx ANTLR context for the literal.
+   */
+  public void exitMultilineStringLiteral(ProcessingParser.MultilineStringLiteralContext ctx) {
+    String fullLiteral = ctx.getText();
+    if (SIMULATE_MULTILINE_STRINGS) {
+      delete(ctx.start, ctx.stop);
+      int endIndex = fullLiteral.length() - 3;
+      String literalContents = fullLiteral.substring(3, endIndex);
+      String newLiteralContents = literalContents
+          .replace("\n", "\\n")
+          .replace("\"", "\\\"");
+      insertAfter(ctx.stop, "\"" + newLiteralContents + "\"");
     }
   }
 
@@ -648,18 +717,36 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     if (isFullscreen) {
       sketchWidth = "displayWidth";
-      sketchWidth = "displayHeight";
+      sketchHeight = "displayHeight";
 
       thisRequiresRewrite = true;
       sizeIsFullscreen = true;
 
+      StringJoiner fullscreenArgsBuilder = new StringJoiner(", ");
+
+      // First arg can be either screen or renderer
       if (argsContext.getChildCount() > 0) {
-        sketchRenderer = argsContext.getChild(0).getText();
+        String firstArg = argsContext.getChild(0).getText();
+        boolean isNumeric = firstArg.matches("\\d+");
+        boolean isSpan = firstArg.equals("SPAN");
+        boolean isRenderer = !isNumeric && !isSpan;
+
+        fullscreenArgsBuilder.add(firstArg);
+        if (isRenderer) {
+          sketchRenderer = firstArg;
+        }
       }
+
+      // Second arg can only be screen
+      if (argsContext.getChildCount() > 2) {
+        fullscreenArgsBuilder.add(argsContext.getChild(2).getText());
+      }
+
+      fullscreenArgs = fullscreenArgsBuilder.toString();
     }
 
     if (thisRequiresRewrite) {
-      delete(ctx.start, ctx.stop);
+      delete(ctx.getParent().start, ctx.getParent().stop);
       insertAfter(ctx.stop, "/* size commented out by preprocessor */");
       sizeRequiresRewrite = true;
     }
@@ -678,8 +765,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     pixelDensity = argsContext.getChild(0).getText();
 
-    delete(ctx.start, ctx.stop);
-    insertAfter(ctx.stop, "/* pixelDensity commented out by preprocessor */");
+    delete(ctx.getParent().start, ctx.getParent().stop);
+    insertAfter(ctx.getParent().stop, "/* pixelDensity commented out by preprocessor */");
     pixelDensityRequiresRewrite = true;
   }
 
@@ -694,8 +781,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       return; // User override of noSmooth.
     }
 
-    delete(ctx.start, ctx.stop);
-    insertAfter(ctx.stop, "/* noSmooth commented out by preprocessor */");
+    delete(ctx.getParent().start, ctx.getParent().stop);
+    insertAfter(
+      ctx.getParent().stop,
+      "/* noSmooth commented out by preprocessor */"
+    );
     noSmoothRequiresRewrite = true;
   }
 
@@ -716,8 +806,11 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       smoothParam = "";
     }
 
-    delete(ctx.start, ctx.stop);
-    insertAfter(ctx.stop, "/* smooth commented out by preprocessor */");
+    delete(ctx.getParent().start, ctx.getParent().stop);
+    insertAfter(
+      ctx.getParent().stop,
+      "/* smooth commented out by preprocessor */"
+    );
     smoothRequiresRewrite = true;
   }
 
@@ -746,7 +839,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @return True if setup and false otherwise.
    */
   protected boolean isMethodSetup(ParserRuleContext declaration) {
-    if (declaration.getChildCount() < 2) {
+    if (declaration == null || declaration.getChildCount() < 2) {
       return false;
     }
     return declaration.getChild(1).getText().equals("setup");
@@ -1026,7 +1119,6 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
         RewriteResultBuilder resultBuilder) {
 
     headerWriter.addCodeLine("public class " + sketchName + " extends PApplet {");
-
     headerWriter.addEmptyLine();
   }
 
@@ -1081,8 +1173,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     if (sizeRequiresRewrite) {
       if (sizeIsFullscreen) {
-        String fullscreenInner = sketchRenderer == null ? "" : sketchRenderer;
-        settingsInner.add(String.format("fullScreen(%s);", fullscreenInner));
+        settingsInner.add(String.format("fullScreen(%s);", fullscreenArgs));
       } else {
 
         if (sketchWidth.isEmpty() || sketchHeight.isEmpty()) {
@@ -1136,21 +1227,29 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     footerWriter.addCodeLine(indent1 + "static public void main(String[] passedArgs) {");
     footerWriter.addCode(indent2 +   "String[] appletArgs = new String[] { ");
 
+
+
     { // assemble line with applet args
-      if (Preferences.getBoolean("export.application.fullscreen")) {
-        footerWriter.addCode("\"" + PApplet.ARGS_FULL_SCREEN + "\", ");
+      StringJoiner argsJoiner = new StringJoiner(", ");
+
+      boolean shouldFullScreen = Preferences.getBoolean("export.application.present");
+      shouldFullScreen = shouldFullScreen || Preferences.getBoolean("export.application.fullscreen");
+      if (shouldFullScreen) {
+        argsJoiner.add("\"" + PApplet.ARGS_FULL_SCREEN + "\"");
 
         String bgColor = Preferences.get("run.present.bgcolor");
-        footerWriter.addCode("\"" + PApplet.ARGS_BGCOLOR + "=" + bgColor + "\", ");
+        argsJoiner.add("\"" + PApplet.ARGS_BGCOLOR + "=" + bgColor + "\"");
 
         if (Preferences.getBoolean("export.application.stop")) {
           String stopColor = Preferences.get("run.present.stop.color");
-          footerWriter.addCode("\"" + PApplet.ARGS_STOP_COLOR + "=" + stopColor + "\", ");
+          argsJoiner.add("\"" + PApplet.ARGS_STOP_COLOR + "=" + stopColor + "\"");
         } else {
-          footerWriter.addCode("\"" + PApplet.ARGS_HIDE_STOP + "\", ");
+          argsJoiner.add("\"" + PApplet.ARGS_HIDE_STOP + "\"");
         }
       }
-      footerWriter.addCode("\"" + sketchName + "\"");
+      
+      argsJoiner.add("\"" + sketchName + "\"");
+      footerWriter.addCode(argsJoiner.toString());
     }
 
     footerWriter.addCodeLine(" };");

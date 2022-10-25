@@ -1,30 +1,10 @@
 <?xml version="1.0"?>
 <project name="Processing PDE" default="build">
 
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
-  <!-- VAqua library (not sure if we'll be including this in the final 4.0) -->
-  <property name="vaqua.version" value="9" />
-  <property name="vaqua.jar" value="VAqua${vaqua.version}.jar" />
-
-  <available file="lib/${vaqua.jar}" property="vaqua.present"/>
-
-  <property name="vaqua.url"
-            value="https://violetlib.org/release/vaqua/${vaqua.version}" />
-
-  <target name="download-vaqua" unless="vaqua.present">
-    <get dest="lib" usetimestamp="true">
-      <url url="${vaqua.url}/${vaqua.jar}" />
-    </get>
-  </target>
-
-  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
-
   <!-- Current version of Ant that works with Processing -->
-  <!-- (Can't use ant.version because that conflicts w/ the built-in variable) -->
-  <!-- <property name="ant.version" value="1.8.2" /> -->
-  <!-- <echoproperties /> -->
-  <property name="ant.version.num" value="1.10.10" />
+  <!-- (Cannot use ant.version as the name of the property
+       because that conflicts with the built-in variable) -->
+  <property name="ant.version.num" value="1.10.12" />
   <!-- the .zip file to be downloaded -->
   <property name="ant.zip" value="apache-ant-${ant.version.num}-bin.zip" />
 
@@ -71,11 +51,9 @@
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
   <!-- Current version of JNA that works with Processing -->
-  <property name="jna.version" value="5.8.0" />
+  <property name="jna.version" value="5.12.1" />
   <!-- the .zip file to be downloaded -->
   <property name="jna.zip" value="${jna.version}.zip" />
-  <!-- the .jar file that's the actual dependency -->
-  <!-- <property name="batik.jar" value="batik-all-${batik.version}.jar" /> -->
 
   <!-- TODO implement a fallback URL that points to a location
        on download.processing.org so it's available forever. -->
@@ -120,8 +98,34 @@
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
+  <property name="flatlaf.version" value="2.4" />
+
+  <fileset id="flatlaf.files" dir="lib">
+    <include name="flatlaf.jar" />
+  </fileset>
+
+  <!-- TODO implement a fallback URL that points to a location
+       on download.processing.org so it's available forever. -->
+  <property name="flatlaf.url"
+            value="https://repo1.maven.org/maven2/com/formdev/flatlaf/${flatlaf.version}/flatlaf-${flatlaf.version}.jar" />
+
+  <available file="lib/flatlaf.jar" property="flatlaf.present" />
+
+  <!-- ok to ignore failed downloads if we at least have a version that's local -->
+  <condition property="flatlaf.ignorable" value="false" else="true">
+    <isset property="flatlaf.present" />
+  </condition>
+
+  <target name="download-flatlaf" unless="flatlaf.present">
+    <get src="${flatlaf.url}" dest="lib/flatlaf.jar"
+         ignoreerrors="${flatlaf.ignorable}"
+         usetimestamp="true" />
+  </target>
+
+  <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
+
   <target name="compile" description="Compile sources"
-          depends="download-vaqua, download-ant, download-jna">
+          depends="download-ant, download-jna, download-flatlaf">
     <condition property="core-built">
       <available file="../core/library/core.jar" />
     </condition>
@@ -129,10 +133,12 @@
 
     <mkdir dir="bin" />
 
-    <!-- copy languages files -->
     <copy todir="bin">
       <fileset dir="src">
+        <!-- copy languages files -->
         <include name="processing/app/languages/*.properties" />
+        <!-- FlatLaf.properties and any others -->
+        <include name="processing/app/laf/*.properties" />
       </fileset>
     </copy>
 
@@ -143,19 +149,18 @@
     <!-- env used to set classpath below -->
     <property environment="env" />
 
-    <javac source="11"
-           target="11"
+    <javac source="17"
+           target="17"
            destdir="bin"
            excludes="**/tools/format/**"
            encoding="UTF-8"
            includeAntRuntime="false"
            classpath="../core/library/core.jar;
-                      ../core/apple.jar;
                       lib/ant.jar;
                       lib/ant-launcher.jar;
+                      lib/flatlaf.jar;
                       lib/jna.jar;
-                      lib/jna-platform.jar;
-                      lib/VAqua9.jar"
+                      lib/jna-platform.jar"
            debug="on"
            nowarn="true">
       <compilerarg value="-Xlint:deprecation" />
@@ -167,18 +172,18 @@
     <jar basedir="bin" destfile="pde.jar" />
   </target>
 
-<target name="update" description="Update the downloaded libraries">
+  <target name="clean-libs" description="Remove the downloaded libraries">
     <delete>
-      <fileset refid="jna.files" />
       <fileset refid="ant.files" />
-      <fileset dir="lib">
-        <include name="VAqua*.jar" />
-      </fileset>
+      <fileset refid="flatlaf.files" />
+      <fileset refid="jna.files" />
     </delete>
 
+    <!--
     <antcall target="download-ant" />
+    <antcall target="download-flatlaf" />
     <antcall target="download-jna" />
-    <antcall target="download-vaqua" />
+    -->
   </target>
 
   <target name="clean" description="Clean the build directories">

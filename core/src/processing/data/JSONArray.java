@@ -561,6 +561,13 @@ public class JSONArray {
   }
 
 
+  /** Use toStringArray() instead. */
+  @Deprecated
+  public String[] getStringArray() {
+    return toStringArray();
+  }
+
+
   /**
    * Returns the entire <b>JSONArray</b> as an array of <b>Strings</b>.  
    * (All values in the array must be of the <b>String</b> type.)
@@ -569,12 +576,24 @@ public class JSONArray {
    * @webBrief Returns the entire <b>JSONArray</b> as an array of <b>Strings</b>
    * @see JSONArray#getIntArray()
    */
-  public String[] getStringArray() {
+  public String[] toStringArray() {
     String[] outgoing = new String[size()];
     for (int i = 0; i < size(); i++) {
       outgoing[i] = getString(i);
     }
     return outgoing;
+  }
+
+
+  public StringList toStringList() {
+    return new StringList(getStringArray());
+  }
+
+
+  /** Use toIntArray() instead. */
+  @Deprecated
+  public int[] getIntArray() {
+    return toIntArray();
   }
 
 
@@ -586,7 +605,7 @@ public class JSONArray {
    * @webBrief Returns the entire <b>JSONArray</b> as an array of <b>ints</b>
    * @see JSONArray#getStringArray()
    */
-  public int[] getIntArray() {
+  public int[] toIntArray() {
     int[] outgoing = new int[size()];
     for (int i = 0; i < size(); i++) {
       outgoing[i] = getInt(i);
@@ -595,8 +614,20 @@ public class JSONArray {
   }
 
 
-  /** Get this entire array as a long array. Everything must be an long. */
+  public IntList toIntList() {
+    return new IntList(toIntArray());
+  }
+
+
+  /** Use toLongArray() instead. */
+  @Deprecated
   public long[] getLongArray() {
+    return toLongArray();
+  }
+
+
+  /** Get this entire array as a long array. Everything must be an long. */
+  public long[] toLongArray() {
     long[] outgoing = new long[size()];
     for (int i = 0; i < size(); i++) {
       outgoing[i] = getLong(i);
@@ -605,8 +636,20 @@ public class JSONArray {
   }
 
 
-  /** Get this entire array as a float array. Everything must be an float. */
+  public LongList toLongList() {
+    return new LongList(toLongArray());
+  }
+
+
+  /** Use toFloatArray() instead. */
+  @Deprecated
   public float[] getFloatArray() {
+    return toFloatArray();
+  }
+
+
+  /** Get this entire array as a float array. Everything must be an float. */
+  public float[] toFloatArray() {
     float[] outgoing = new float[size()];
     for (int i = 0; i < size(); i++) {
       outgoing[i] = getFloat(i);
@@ -615,8 +658,20 @@ public class JSONArray {
   }
 
 
-  /** Get this entire array as a double array. Everything must be an double. */
+  public FloatList toFloatList() {
+    return new FloatList(toFloatArray());
+  }
+
+
+  /** Use toDoubleArray() instead. */
+  @Deprecated
   public double[] getDoubleArray() {
+    return toDoubleArray();
+  }
+
+
+  /** Get this entire array as a double array. Everything must be an double. */
+  public double[] toDoubleArray() {
     double[] outgoing = new double[size()];
     for (int i = 0; i < size(); i++) {
       outgoing[i] = getDouble(i);
@@ -625,8 +680,19 @@ public class JSONArray {
   }
 
 
-  /** Get this entire array as a boolean array. Everything must be a boolean. */
+  public DoubleList toDoubleList() {
+    return new DoubleList(toDoubleArray());
+  }
+
+
+  /** Use toBooleanArray() instead. */
   public boolean[] getBooleanArray() {
+    return toBooleanArray();
+  }
+
+
+  /** Get this entire array as a boolean array. Everything must be a boolean. */
+  public boolean[] toBooleanArray() {
     boolean[] outgoing = new boolean[size()];
     for (int i = 0; i < size(); i++) {
       outgoing[i] = getBoolean(i);

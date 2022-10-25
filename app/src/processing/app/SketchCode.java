@@ -36,9 +36,6 @@ import javax.swing.undo.*;
  * Represents a single tab of a sketch.
  */
 public class SketchCode {
-  /** Pretty name (no extension), not the full file name */
-  private String prettyName;
-
   /** File object for where this code is located */
   private File file;
 
@@ -51,7 +48,7 @@ public class SketchCode {
   /** Last version of the program on disk. */
   private String savedProgram;
 
-  /** Document object for this tab. Currently this is a SyntaxDocument. */
+  /** Document object for this tab. This is currently a SyntaxDocument. */
   private Document document;
 
   /** Last time this tab was visited */
@@ -61,9 +58,8 @@ public class SketchCode {
   private long lastModified;
 
   /**
-   * Undo Manager for this tab, each tab keeps track of their own
-   * Editor.undo will be set to this object when this code is the tab
-   * that's currently the front.
+   * Undo Manager for this tab; each tab keeps track of their own.
+   * Editor.undo will be set to this object when this tab is current.
    */
   private final UndoManager undo = new UndoManager();
 
@@ -75,9 +71,6 @@ public class SketchCode {
   private final Stack<Integer> caretUndoStack = new Stack<>();
   private final Stack<Integer> caretRedoStack = new Stack<>();
 
-  /** What was on top of the undo stack when last saved. */
-//  private UndoableEdit lastEdit;
-
   // saved positions from last time this tab was used
   private int selectionStart;
   private int selectionStop;
@@ -85,9 +78,7 @@ public class SketchCode {
 
   private boolean modified;
 
-  /** name of .java file after preproc */
-//  private String preprocName;
-  /** where this code starts relative to the concat'd code */
+  /** where this code starts relative to the concatenated code */
   private int preprocOffset;
 
 
@@ -95,20 +86,11 @@ public class SketchCode {
     this.file = file;
     this.extension = extension;
 
-    makePrettyName();
-
     try {
       load();
     } catch (IOException e) {
       System.err.println("Error while loading code " + file.getName());
     }
-  }
-
-
-  protected void makePrettyName() {
-    prettyName = file.getName();
-    int dot = prettyName.lastIndexOf('.');
-    prettyName = prettyName.substring(0, dot);
   }
 
 
@@ -133,13 +115,11 @@ public class SketchCode {
 
 
   protected boolean renameTo(File what, String ext) {
-//    System.out.println("renaming " + file);
-//    System.out.println("      to " + what);
     boolean success = file.renameTo(what);
     if (success) {
-      this.file = what;  // necessary?
+      // reassign file because renameTo() (ironically?) does not update
+      this.file = what;
       this.extension = ext;
-      makePrettyName();
     }
     return success;
   }
@@ -155,8 +135,19 @@ public class SketchCode {
   }
 
 
+  /**
+   * Get the name of this file with its extension removed.
+   * Because of other uses of this method, this is not a good place
+   * to do things like swap underscores for spaces.
+   */
   public String getPrettyName() {
-    return prettyName;
+    String name = file.getName();
+
+    // remove the extension from the name
+    int dot = name.lastIndexOf('.');
+    // should have a dot in all current scenarios, but better not to make
+    // that assumption in case we later decide to allow things like README
+    return (dot != -1) ? name.substring(0, dot) : name;
   }
 
 
@@ -201,16 +192,6 @@ public class SketchCode {
   public boolean isModified() {
     return modified;
   }
-
-
-//  public void setPreprocName(String preprocName) {
-//    this.preprocName = preprocName;
-//  }
-//
-//
-//  public String getPreprocName() {
-//    return preprocName;
-//  }
 
 
   public void setPreprocOffset(int preprocOffset) {
@@ -351,7 +332,6 @@ public class SketchCode {
     Util.saveFile(program, newFile);
     savedProgram = program;
     file = newFile;
-    makePrettyName();
     setLastModified();
     setModified(false);
   }

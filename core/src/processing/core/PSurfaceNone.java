@@ -137,8 +137,10 @@ public class PSurfaceNone implements PSurface {
   public void placePresent(int stopColor) { }
 
 
+  /*
   @Override
   public void setupExternalMessages() { }
+  */
 
 
   @Override

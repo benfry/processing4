@@ -19,6 +19,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Line2D;
 
 import javax.swing.ToolTipManager;
 import javax.swing.text.*;
@@ -46,7 +47,8 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   private boolean antialias;
 
   protected int tabSize;
-  protected FontMetrics fm;
+//  protected FontMetrics fm;
+  protected FontMetrics fontMetrics;
 
   protected Highlight highlights;
 
@@ -91,8 +93,8 @@ public class TextAreaPainter extends JComponent implements TabExpander {
     antialias = Preferences.getBoolean("editor.smooth");
 
     // moved from setFont() override (never quite comfortable w/ that override)
-    fm = super.getFontMetrics(plainFont);
-    tabSize = fm.charWidth(' ') * Preferences.getInteger("editor.tabs.size");
+    fontMetrics = super.getFontMetrics(plainFont);
+    tabSize = fontMetrics.charWidth(' ') * Preferences.getInteger("editor.tabs.size");
     textArea.recalculateVisibleLines();
   }
 
@@ -177,9 +179,9 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   }
 
 
-  /** Returns the font metrics used by this component. */
+  /** Updates and returns the font metrics used by this component. */
   public FontMetrics getFontMetrics() {
-    return fm;
+    return fontMetrics = getFontMetrics(plainFont);
   }
 
 
@@ -190,7 +192,13 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
   // fry [160806 for 3.2]
   public int getLineHeight() {
-    return fm.getHeight() + fm.getDescent();
+    return fontMetrics.getHeight() + fontMetrics.getDescent();
+  }
+
+
+  // how much space a line might take up [fry 220119]
+  protected int getLineDisplacement() {
+    return fontMetrics.getLeading() + fontMetrics.getMaxDescent();
   }
 
 
@@ -199,6 +207,9 @@ public class TextAreaPainter extends JComponent implements TabExpander {
    * @param gfx The graphics context
    */
   public void paint(Graphics gfx) {
+    // Good time to update the metrics; about to draw
+    fontMetrics = getFontMetrics(plainFont);
+
     Graphics2D g2 = (Graphics2D) gfx;
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                         antialias ?
@@ -216,7 +227,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
     // We don't use yToLine() here because that method doesn't
     // return lines past the end of the document
-    int height = fm.getHeight();
+    int height = fontMetrics.getHeight();
     int firstLine = textArea.getFirstLine();
     int firstInvalid = firstLine + clipRect.y / height;
     // Because the clipRect height is usually an even multiple
@@ -249,8 +260,8 @@ public class TextAreaPainter extends JComponent implements TabExpander {
    * @param line The line to invalidate
    */
   final public void invalidateLine(int line) {
-    repaint(0, textArea.lineToY(line) + fm.getMaxDescent() + fm.getLeading(),
-            getWidth(), fm.getHeight());
+    repaint(0, textArea.lineToY(line) + getLineDisplacement(),
+            getWidth(), fontMetrics.getHeight());
   }
 
 
@@ -260,9 +271,8 @@ public class TextAreaPainter extends JComponent implements TabExpander {
    * @param lastLine The last line to invalidate
    */
   final void invalidateLineRange(int firstLine, int lastLine) {
-    repaint(0,textArea.lineToY(firstLine) +
-            fm.getMaxDescent() + fm.getLeading(),
-            getWidth(),(lastLine - firstLine + 1) * fm.getHeight());
+    repaint(0,textArea.lineToY(firstLine) + getLineDisplacement(),
+            getWidth(),(lastLine - firstLine + 1) * fontMetrics.getHeight());
   }
 
 
@@ -283,8 +293,9 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
 
   public Dimension getPreferredSize() {
-    return new Dimension(fm.charWidth('w') * defaults.cols,
-                         fm.getHeight() * defaults.rows);
+    fontMetrics = getFontMetrics(plainFont);
+    return new Dimension(fontMetrics.charWidth('w') * defaults.cols,
+      fontMetrics.getHeight() * defaults.rows);
   }
 
 
@@ -362,15 +373,14 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       gfx.setColor(defaults.fgcolor);
       gfx.setFont(plainFont);
 
-      y += fm.getHeight();
-      // doesn't respect fixed width like it should
-//    x = Utilities.drawTabbedText(currentLine, x, y, gfx, this, 0);
-//    int w = fm.charWidth(' ');
+      y += fontMetrics.getHeight();
       for (int i = 0; i < currentLine.count; i++) {
-        gfx.drawChars(currentLine.array, currentLine.offset+i, 1, x, y);
-        x = currentLine.array[currentLine.offset + i] == '\t' ?
-          x0 + (int)nextTabStop(x - x0, i) :
-          x + fm.charWidth(currentLine.array[currentLine.offset+i]);
+        gfx.drawChars(currentLine.array, currentLine.offset + i, 1, x, y);
+        if (currentLine.array[currentLine.offset + i] == '\t') {
+          x = x0 + (int) nextTabStop(x - x0, i);
+        } else {
+          x += fontMetrics.charWidth(currentLine.array[currentLine.offset + i]);  // TODO why this char?
+        }
         //textArea.offsetToX(line, currentLine.offset + i);
       }
 
@@ -397,7 +407,7 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
 //    gfx.setFont(defaultFont);
 //    gfx.setColor(defaultColor);
-    y += fm.getHeight();
+    y += fontMetrics.getHeight();
 //    x = paintSyntaxLine(currentLine,
 //                        currentLineTokens,
 //                        defaults.styles, this, gfx, x, y);
@@ -458,20 +468,15 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         gfx.setFont(ss.isBold() ? boldFont : plainFont);
       }
       line.count = length;  // huh? suspicious
-      // doesn't respect mono metrics, insists on spacing w/ fractional or something
-//      x = Utilities.drawTabbedText(line, x, y, gfx, this, 0);
-//      gfx.drawChars(line.array, line.offset, line.count, x, y);
-//      int w = fm.charWidth(' ');
       for (int i = 0; i < line.count; i++) {
-        gfx.drawChars(line.array, line.offset+i, 1, x, y);
-        x = line.array[line.offset + i] == '\t' ?
-            x0 + (int)nextTabStop(x - x0, i) :
-            x + fm.charWidth(line.array[line.offset+i]);
+        gfx.drawChars(line.array, line.offset + i, 1, x, y);
+        if (line.array[line.offset + i] == '\t') {
+          x = x0 + (int) nextTabStop(x - x0, i);
+        } else {
+          x += fontMetrics.charWidth(line.array[line.offset + i]);
+        }
       }
-      //x += fm.charsWidth(line.array, line.offset, line.count);
-      //x += fm.charWidth(' ') * line.count;
       line.offset += length;
-
       tokens = tokens.next;
     }
 
@@ -500,8 +505,8 @@ public class TextAreaPainter extends JComponent implements TabExpander {
 
 
   protected void paintLineHighlight(Graphics gfx, int line, int y) {
-    int height = fm.getHeight();
-    y += fm.getLeading() + fm.getMaxDescent();
+    int height = fontMetrics.getHeight();
+    y += getLineDisplacement();
 
     int selectionStart = textArea.getSelectionStart();
     int selectionEnd = textArea.getSelectionStop();
@@ -522,10 +527,12 @@ public class TextAreaPainter extends JComponent implements TabExpander {
       if (selectionStartLine == selectionEndLine) {
         x1 = textArea._offsetToX(line, selectionStart - lineStart);
         x2 = textArea._offsetToX(line, selectionEnd - lineStart);
-      } else if(line == selectionStartLine) {
+
+      } else if (line == selectionStartLine) {
         x1 = textArea._offsetToX(line, selectionStart - lineStart);
         x2 = getWidth();
-      } else if(line == selectionEndLine) {
+
+      } else if (line == selectionEndLine) {
         //x1 = 0;
         // hack from Stendahl to avoid doing weird side selection thing
         x1 = textArea._offsetToX(line, 0);
@@ -549,31 +556,28 @@ public class TextAreaPainter extends JComponent implements TabExpander {
   protected void paintBracketHighlight(Graphics gfx, int line, int y) {
     int position = textArea.getBracketPosition();
     if (position != -1) {
-      y += fm.getLeading() + fm.getMaxDescent();
+      y += getLineDisplacement();
       int x = textArea._offsetToX(line, position);
       gfx.setColor(defaults.bracketHighlightColor);
       // Hack!!! Since there is no fast way to get the character
       // from the bracket matching routine, we use ( since all
       // brackets probably have the same width anyway
-      gfx.drawRect(x,y,fm.charWidth('(') - 1, fm.getHeight() - 1);
+      gfx.drawRect(x, y,fontMetrics.charWidth('(') - 1, fontMetrics.getHeight() - 1);
     }
   }
 
 
   protected void paintCaret(Graphics gfx, int line, int y) {
-    //System.out.println("painting caret " + line + " " + y);
     if (textArea.isCaretVisible()) {
-      //System.out.println("caret is visible");
       int offset =
         textArea.getCaretPosition() - textArea.getLineStartOffset(line);
       int caretX = textArea._offsetToX(line, offset);
-      int caretWidth = ((defaults.blockCaret ||
-                         textArea.isOverwriteEnabled()) ?
-                        fm.charWidth('w') : 1);
-      y += fm.getLeading() + fm.getMaxDescent();
-      int height = fm.getHeight();
-
-      //System.out.println("caretX, width = " + caretX + " " + caretWidth);
+      int caretWidth = 1;
+      if (defaults.blockCaret || textArea.isOverwriteEnabled()) {
+        caretWidth = fontMetrics.charWidth('w');
+      }
+      y += getLineDisplacement();
+      int height = fontMetrics.getHeight();
 
       gfx.setColor(defaults.caretColor);
 
@@ -581,13 +585,15 @@ public class TextAreaPainter extends JComponent implements TabExpander {
         gfx.fillRect(caretX, y + height - 1, caretWidth,1);
 
       } else {
-        // some machines don't like the drawRect for the single
-        // pixel caret.. this caused a lot of hell because on that
+        // Some machines don't like the drawRect when the caret is a
+        // single pixel wide. This caused a lot of hell because on that
         // minority of machines, the caret wouldn't show up past
-        // the first column. the fix is to use drawLine() in
-        // those cases, as a workaround.
+        // the first column. The fix is to use drawLine() instead.
         if (caretWidth == 1) {
-          gfx.drawLine(caretX, y, caretX, y + height - 1);
+          //gfx.drawLine(caretX, y, caretX, y + height - 1);
+          // workaround for single pixel dots showing up when caret
+          // is rendered a single pixel too tall [fry 220129]
+          ((Graphics2D) gfx).draw(new Line2D.Float(caretX, y + 0.5f, caretX, y + height - 0.5f));
         } else {
           gfx.drawRect(caretX, y, caretWidth - 1, height - 1);
         }

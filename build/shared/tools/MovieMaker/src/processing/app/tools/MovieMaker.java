@@ -1,6 +1,6 @@
 package processing.app.tools;
 /*
- * Nearly all of this code is
+ * This GUI is from the old Movie Maker which was based on code from:
  * Copyright (c) 2010-2011 Werner Randelshofer, Immensee, Switzerland.
  * All rights reserved.
  * (However, he should not be held responsible for the current mess of a hack

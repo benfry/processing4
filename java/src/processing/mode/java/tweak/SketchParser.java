@@ -115,7 +115,7 @@ public class SketchParser {
     // for every number found:
     // save its type (int/float), name, value and position in code.
 
-    Pattern p = Pattern.compile("[\\[\\{<>(),\\t\\s\\+\\-\\/\\*^%!|&=?:~]\\d+\\.?\\d*");
+    Pattern p = Pattern.compile("[\\[\\{<>(),\\t\\s\\+\\-\\/\\*^%!|&=?:~]\\d+(_+\\d+)*(\\.\\d+(_+\\d+)*)?"); // Matches any "delimiting" character, and then a decimal number.
     for (int i = 0; i < codeTabs.length; i++) {
       List<Handle> handles = new ArrayList<>();
       allHandles.add(handles);
@@ -185,7 +185,7 @@ public class SketchParser {
           continue;
 
         int line = countLines(c.substring(0, start)) - 1;      // zero based
-        String value = c.substring(start, end);
+        String value = c.substring(start, end).replace("_", "");
         if (value.contains(".") || forceFloat) {
           // consider this as a float
           String name = varPrefix + "_float[" + floatVarCount +"]";
@@ -211,7 +211,7 @@ public class SketchParser {
   private void addAllHexNumbers() {
     // for every number found:
     // save its type (int/float), name, value and position in code.
-    Pattern p = Pattern.compile("[\\[\\{<>(),\\t\\s\\+\\-\\/\\*^%!|&=?:~]0x[A-Fa-f0-9]+");
+    Pattern p = Pattern.compile("[\\[\\{<>(),\\t\\s\\+\\-\\/\\*^%!|&=?:~]0x[A-Fa-f0-9]+(_+[A-Fa-f0-9]+)*");
     for (int i = 0; i < codeTabs.length; i++) {
       String c = codeTabs[i];
       Matcher m = p.matcher(c);
@@ -248,7 +248,7 @@ public class SketchParser {
         }
 
         int line = countLines(c.substring(0, start)) - 1;      // zero based
-        String value = c.substring(start, end);
+        String value = c.substring(start, end).replace("_", "");
         String name = varPrefix + "_int[" + intVarCount + "]";
         Handle handle;
         try {

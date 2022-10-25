@@ -1,26 +1,18 @@
-1277 (4.0b2)
-X fix apparent problem in PShape with QUADRATIC_VERTEX (wrong vertex index)
+1287 (4.0.2)
+X Updating PApplet to use Java 17 (switch statements, etc)
 
 
-contribs
-X Remove two redundant variable assignments in PShader
-X   https://github.com/processing/processing4/pull/172
+_ concurrent StringDict et al
+_   why no concurrent TreemMap? https://stackoverflow.com/a/17656453
+_   https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/ConcurrentSkipListMap.html
 
-
-_ put opengl libs for core into platform-specific subfolders?
-_   may also be useful for Windows antivirus slowdowns:
-_   https://github.com/processing/processing/issues/4783#issuecomment-269328168
-
-_ setting surface size needs to happen outside draw()
-_   surface.setSize() sadness etc
-_   https://github.com/processing/processing4/issues/162
-_   https://github.com/processing/processing4/issues/186
-_   https://github.com/processing/processing/issues/4129
+_ how to handle fallback fonts
+_   could implement this for the default, but also, SansSerif sucks
+_   https://stackoverflow.com/a/9482676
+_   in addition, it would need to be implemented for textWidth()
 
 _ update P2D reference to make clear about drawing order and quality
 _   https://github.com/processing/processing/issues/5880
-
-_ why does GL flash red when resizing?
 
 
 load/save image
@@ -32,49 +24,30 @@ _   https://github.com/processing/processing4/pull/97
 _   https://github.com/processing/processing4/pull/98
 
 
-noted by Casey
-_ Sketches on Windows/Linux don't take UI sizing into account
-_   https://github.com/processing/processing/issues/4894
-_   https://github.com/processing/processing/issues/4895
-_   https://github.com/processing/processing/issues/4897
-
-
 api changes
-_ static versions of selectInput/selectOutput/selectFolder removed from PApplet
-_ java.awt.Frame object "frame" removed from PApplet (been warning since 2015)
-X   https://github.com/processing/processing4/issues/54
-_ protected PImage.checkAlpha() now public
-_ all AWT calls have been moved out of PImage
-_   this may be a problem for anything that was relying on those internals
-_ removed MouseEvent.getClickCount() and MouseEvent.getAmount()
-_   these had been deprecated, not clear they were used anywhere
 _ add callbacks to requestImage() and others
+_   these would be a lot easier with newer Java syntax
+_   (and also familiar to folks who have spent time with JS)
 _ new FloatList(float...)
 
 
 api todo
 _ Surface not available inside handleSettings()
 _   therefore impossible to get displays, displayWidth/Height, and pixelDensity
-_   should surface be set on command line?
-_   or can we just require that size() goes first, and inits surface *type* w/o sizes
+_     (in a non-AWT way on a system that cannot use AWT)
+_   does surface have to be passed on the command line?
+_   can we just require that size() goes first
+_     and have it set surface *type* w/o actually setting up the size info yet
 _   or even that it inits a surface-specific class for getting that info
 _ implement selectInput/Output/Folder methods in PSurfaceJOGL
-_ implement selectInput/Output/Folder methods in PSurfaceFX
-_ implement openLink() in PSurfaceFX
 _ implement openLink() in PSurfaceJOGL
 
 
 before final release
-_ replace japplemenubar with something that's more likely to work in the future
-_   https://github.com/processing/processing4/issues/221
 _ Warn users or provide auto-fix when `frame` is used in a sketch
 _   https://github.com/processing/processing4/issues/59
-_ Intel HD Graphics 3000 workaround is causing a big fat warning
-_   https://github.com/processing/processing4/issues/50
 _ ThinkDifferent unavailable with --disable-awt, needs workaround
 _   https://github.com/processing/processing4/issues/52
-_ Better solution for frame/surface methods
-_   https://github.com/processing/processing4/issues/53
 _ Remove frame from PApplet
 _   https://github.com/processing/processing4/issues/54
 _ Remove all usage of AWT from PApplet
@@ -83,11 +56,12 @@ _   https://github.com/codeanticode/processing-lwjgl/wiki#making-awt-optional-in
 _   https://github.com/processing/processing4/issues/57
 _ move loadImage() into surface
 _   move AWT code out of PImage, and into its own PImageJava2D class
-_   how to handle with JavaFX?
 _   https://github.com/processing/processing4/issues/56
 
 
 high-ish
+_ Sort out display() being sometimes called from the EDT inside OpenGL
+_   https://github.com/processing/processing4/issues/385
 _ add separator option to loadTable()
 _   https://github.com/processing/processing/issues/5068
 _ make setting the window icon automatic, based on files in local dirs
@@ -96,9 +70,6 @@ X   https://github.com/processing/processing/pull/5202
 _   need to make this work behind the scenes instead
 _   create icon.png or have an 'icons' folder with multiple sizes
 _   don't override the window icon w/ p5 logo if already set
-_ NullPointerException at java.awt.Window.init(Window.java:497) when using Airplay
-_   https://github.com/processing/processing/issues/5620
-_   try to catch the NPE and warn the user about what's happening
 _ requestSize() and xxxxTitle() (to diminish use of 'surface')
 _   mostly held up by cross-renderer inconsistency with these
 _ textAlign(CENTER) and pixelDensity(2) aligning incorrectly with Java2D
@@ -112,40 +83,21 @@ _   y coords on macOS seem to be one pixel off
 
 
 retina/hi-dpi/sizing
-_ notes from jetbrains
-_   https://intellij-support.jetbrains.com/hc/en-us/articles/360007994999-HiDPI-configuration
-_ implement sketch scaling into PApplet
-_   https://github.com/processing/processing/issues/4897
-_ Sketches on Windows don't take UI sizing into account
-_   https://github.com/processing/processing/issues/4894
 _ Sketches on Linux don't take UI scaling into account
-_   https://github.com/processing/processing/issues/4895
-_   gohai says "xrdb -query" or "xdpyinfo" might work
+_   gohai mentioned "xrdb -query" or "xdpyinfo" might work
+_   https://github.com/processing/processing4/issues/407
+_   formerly at
+_     https://github.com/processing/processing/issues/4895
+_   native code for checking the system dpi
+_     https://github.com/processing/processing/issues/5758
 _ should fullScreen() set width and height to displayWidth/Height
 _   or is that being set/unset used for any state info?
 _ present window draws in stages (OS X)
-_ crash on startup when "Mirror Displays" selected (cantfix?)
-_   suspect that this is a specific chipset since Oracle didn't reproduce
-_   AMD Radeon HD 6770M was in the Oracle bug report
-_   https://github.com/processing/processing/issues/2186
-_   https://bugs.openjdk.java.net/browse/JDK-8027391
-_   test with JG's 13" retina laptop
-
-
-https://bkaradzic.github.io/bgfx/
-https://bkaradzic.github.io/bgfx/examples.html
 
 
 possible additions for 4.x?
-_ Tint on FX2D now works properly, and improved JavaFX/Scenebuilder integration
-_   https://github.com/processing/processing/pull/6051
-_ make offscreen PGraphicsFX2D work
-_   https://github.com/processing/processing/issues/4638
-_   https://github.com/processing/processing/pull/4698
 _ Add support for floating point textures to OpenGL (using a hint?)
 _   https://github.com/processing/processing/issues/3321
-_ Friendly Names for new Sketches (includes UI for switching it back)
-_   https://github.com/processing/processing/pull/6048
 
 
 misc
@@ -214,7 +166,6 @@ _   decision: go with what looks like javascript/ios
 _   touchEvent(), gestureEvent()?
 _   touch event doesn't make sense for mouseMove on desktop, hover on Android
 _   probably go with pointer: more universal for touch/mouse
-_ size() function that scales to screen, keeps aspect, re-scales mouse coords
 
 
 discussion/decisions
@@ -269,7 +220,7 @@ _   idea: set frameCount to -1 when setup not run yet?
 _     then set frameCount to 0 when setup() starts?
 _ need to clean up the hints in the reference/source
 _ exactly how should pixel filling work with single pixel strokes?
-_   http://dev.processing.org/bugs/show_bug.cgi?id=1025 (no gcode)
+_   https://download.processing.org/bugzilla/1025.html (no gcode)
 _ y2 position of rectangles not same as y2 position of lines
 _   happens when the rectangle is flipped on the x or y axis
 _   probably a hack that draws the "last" point differently
@@ -303,7 +254,7 @@ _   pdf.textMode(SHAPE)
 _   also set the font *after* the record has started
 _   maybe should instead make textMode(SHAPE) the norm?
 _   and people can change it to textMode(MODEL) if they want?
-_   http://dev.processing.org/bugs/show_bug.cgi?id=1535 (no gcode)
+_   https://download.processing.org/bugzilla/1535.html (no gcode)
 _ explain the new PGL interface
 _ decide how disconnectEvent should actually be handled (and name?)
 _   was disconnect always there?
@@ -532,6 +483,8 @@ _ for PShape, need to be able to set the origin (flash people)
 
 CORE / PShapeSVG
 
+_ loadShape() problems with SVGs that have . starting a number in a path
+_   https://github.com/processing/processing4/issues/518
 _ implement support for SVG gradients from Inkscape
 _   https://github.com/processing/processing/issues/1180
 _ need to handle <!ENTITY tags in XML for SVG documents
@@ -555,51 +508,6 @@ _   http://www.adobe.com/svg/eol.html
 _ PShape getVertex() not implemented properly for SVG files
 _   https://github.com/processing/processing/issues/1596
 
-
-FX2D / Issues
-
-_ Remove usage of com.sun.* in JavaFX library
-_   https://github.com/processing/processing4/issues/208
-_ many shift- keys not working properly in FX2D (added a test sketch)
-_   https://github.com/processing/processing/issues/5317
-_ Hitting ESC in FX2D app on macOS throws IllegalStateException
-_   https://github.com/processing/processing/issues/5249
-_ wrong window size with fullScreen()
-_   https://github.com/processing/processing/issues/4737
-_ menu bar not hiding properly in exported applications with FX2D
-_   https://github.com/processing/processing/issues/4527
-_   hideMenuBar() called from setup() works fine
-_   just call it around setup time?
-_ the --hide-stop option not working (FX only? traces?)
-_ make wiki about quirks
-_   starving the thread makes things really slow down
-_   keyPressed() is always uppercase, keyTyped() will be correct
-_ do we really need setTextFont/Size when we already have Impl?
-_ need keyPressed() to do lower and upper case
-_ static mode sketches (draw once and halt w/o closing window)
-_ fix display handling, line up the device order with AWT
-_   https://docs.oracle.com/javafx/2/api/javafx/stage/Screen.html
-_ noLoop()
-_ present mode not working at all
-_   stage in the center, clear the rest of the screen
-_ createGraphics() should probably create PGraphicsJava2D
-_   or is Canvas specific to the PGraphics, and we get another Context2D?
-_   http://docs.oracle.com/javafx/2/api/javafx/scene/canvas/Canvas.html
-_ loadPixels() (also 2x)
-_ text and fonts?
-_   maybe helpful: https://wiki.openjdk.java.net/display/OpenJFX/Font+Setup
-_ updatePixels()
-_ save() and saveFrame()
-_ get() and set()
-_ clip/noClip
-_   https://github.com/processing/processing/issues/3274
-_ getNative() in PImage problematic because it gives back a BufferedImage
-_   move loadImage() into PGraphics, with AWT version the default
-_   or pass createImage() through to renderer?
-_ implement external messages (moving the window)
-_ implement PSurfaceFX.setIcon()
-_ javafx not supported with ARM (so we're screwed on raspberry pi)
-_   https://www.linkedin.com/pulse/oracle-just-removed-javafx-support-arm-jan-snelders
 
 
 OPENGL / Known Issues
@@ -823,7 +731,7 @@ _ rounding errors on color conversion
 _   colorMode(RGB, 1.0); colorMode(255); println(red(color(0.5,1,1)));
 _   will return 127, instead of 128.
 _ gray that's greater than the colorMode() can produce strange colors
-_   http://dev.processing.org/bugs/show_bug.cgi?id=432 (no gcode)
+_   https://download.processing.org/bugzilla/432.html (no gcode)
 _   http://processing.org/discourse/yabb/YaBB.cgi?board=Syntax;action=display;num=1083650609
 _   http://processing.org/discourse/yabb/YaBB.cgi?board=Syntax;action=display;num=1082481891
 _ add stroke() to type
@@ -834,7 +742,7 @@ _   don't add api to main p5 stuff (though maybe setPaint/noPaint api?)
 _   gradient-painted lines and fills
 _     java2d will do both line and fill, illusfarter only does fills
 _   gradients not supported in java2d
-_     http://dev.processing.org/bugs/show_bug.cgi?id=371 (no gcode)
+_     https://download.processing.org/bugzilla/371.html (no gcode)
 _ bspline or nurbs (later, want to do the 3D/arch stuff correctly)
 _ non-homogenous coloring for curve vertices
 _ consider bringing back text/image using cache/names

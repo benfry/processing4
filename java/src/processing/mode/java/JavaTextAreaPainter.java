@@ -98,7 +98,7 @@ public class JavaTextAreaPainter extends PdeTextAreaPainter {
 				// update n position and width, and draw it
 				int lineStartChar = textArea.getLineStartOffset(n.line);
 				int x = textArea.offsetToX(n.line, n.newStartChar - lineStartChar);
-				int y = textArea.lineToY(n.line) + fm.getHeight() + 1;
+				int y = textArea.lineToY(n.line) + fontMetrics.getHeight() + 1;
 				int end = textArea.offsetToX(n.line, n.newEndChar - lineStartChar);
 				n.setPos(x, y);
 				n.setWidth(end - x);
@@ -109,7 +109,7 @@ public class JavaTextAreaPainter extends PdeTextAreaPainter {
 			for (ColorControlBox cBox: colorBoxes.get(currentTab)) {
 				int lineStartChar = textArea.getLineStartOffset(cBox.getLine());
 				int x = textArea.offsetToX(cBox.getLine(), cBox.getCharIndex() - lineStartChar);
-				int y = textArea.lineToY(cBox.getLine()) + fm.getDescent();
+				int y = textArea.lineToY(cBox.getLine()) + fontMetrics.getDescent();
 				cBox.setPos(x, y+1);
 				cBox.draw(g2d);
 			}
@@ -253,15 +253,15 @@ public class JavaTextAreaPainter extends PdeTextAreaPainter {
 				int lineStartChar = textArea.getLineStartOffset(n.line);
 				int x = textArea.offsetToX(n.line, n.newStartChar - lineStartChar);
 				int end = textArea.offsetToX(n.line, n.newEndChar - lineStartChar);
-				int y = textArea.lineToY(n.line) + fm.getHeight() + 1;
-				n.initInterface(x, y, end-x, fm.getHeight());
+				int y = textArea.lineToY(n.line) + fontMetrics.getHeight() + 1;
+				n.initInterface(x, y, end-x, fontMetrics.getHeight());
 			}
 
 			for (ColorControlBox cBox : colorBoxes.get(tab)) {
 				int lineStartChar = textArea.getLineStartOffset(cBox.getLine());
 				int x = textArea.offsetToX(cBox.getLine(), cBox.getCharIndex() - lineStartChar);
-				int y = textArea.lineToY(cBox.getLine()) + fm.getDescent();
-				cBox.initInterface(this, x, y+1, fm.getHeight()-2, fm.getHeight()-2);
+				int y = textArea.lineToY(cBox.getLine()) + fontMetrics.getDescent();
+				cBox.initInterface(this, x, y+1, fontMetrics.getHeight()-2, fontMetrics.getHeight()-2);
 			}
 		}
 
@@ -340,7 +340,7 @@ public class JavaTextAreaPainter extends PdeTextAreaPainter {
 
 
 	private void showHideColorBoxes(int y) {
-	  // display the box if the mouse if in the same line.
+	  // display the box if the mouse is in the same line.
 	  // always keep the color box of the color selector.
 		int currentTab = getCurrentCodeIndex();
 

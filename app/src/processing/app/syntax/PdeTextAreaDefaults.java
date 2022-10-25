@@ -30,16 +30,16 @@ import processing.app.ui.Theme;
 
 
 /**
- * Defaults that are PDE (but not Mode) specific. PDE specific in this case
- * means that it's using other PDE classes like Preferences.
+ * Defaults that are PDE (but not Mode) specific. PDE specific in this
+ * case means that it's using other PDE classes like Preferences.
  */
 public class PdeTextAreaDefaults extends TextAreaDefaults {
 
-  public PdeTextAreaDefaults(Mode mode) {
+  public PdeTextAreaDefaults() {
     document = new SyntaxDocument();
 
     // Set to 0 for revision 0215 because it causes strange jumps
-    // http://code.google.com/p/processing/issues/detail?id=1055
+    // https://github.com/processing/processing/issues/1093
     electricScroll = 0;
 
     caretVisible = true;
@@ -47,11 +47,21 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
     blockCaret = Preferences.getBoolean("editor.caret.block");
     cols = 80;
     // Set the number of rows lower to avoid layout badness with large fonts
-    // http://code.google.com/p/processing/issues/detail?id=1275
+    // https://github.com/processing/processing/issues/1313
     rows = 5;
 
     styles = new SyntaxStyle[Token.ID_COUNT];
     updateTheme();
+  }
+
+
+  /**
+   * Deprecated since 4.0 beta 5, because the Mode is no longer used;
+   * simply use the default constructor instead.
+   */
+  @Deprecated
+  public PdeTextAreaDefaults(Mode ignoredMode) {
+    this();
   }
 
 
@@ -85,11 +95,11 @@ public class PdeTextAreaDefaults extends TextAreaDefaults {
 
     caretColor = Theme.getColor("editor.caret.color");
     selectionColor = Theme.getColor("editor.selection.color");
-    lineHighlight = Theme.getBoolean("editor.linehighlight");
-    lineHighlightColor = Theme.getColor("editor.linehighlight.color");
-    bracketHighlight = Theme.getBoolean("editor.brackethighlight");
-    bracketHighlightColor = Theme.getColor("editor.brackethighlight.color");
-    eolMarkers = Theme.getBoolean("editor.eolmarkers");
-    eolMarkerColor = Theme.getColor("editor.eolmarkers.color");
+    lineHighlight = Theme.getBoolean("editor.line.highlight");
+    lineHighlightColor = Theme.getColor("editor.line.highlight.color");
+    bracketHighlight = Theme.getBoolean("editor.bracket.highlight");
+    bracketHighlightColor = Theme.getColor("editor.bracket.highlight.color");
+    eolMarkers = Theme.getBoolean("editor.eol_markers");
+    eolMarkerColor = Theme.getColor("editor.eol_markers.color");
   }
 }

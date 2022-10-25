@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -104,7 +104,7 @@ class FontTexture implements PConstants {
     offsetY = 0;
     lineHeight = 0;
 
-    texinfoMap = new HashMap<PFont.Glyph, TextureInfo>();
+    texinfoMap = new HashMap<>();
     glyphTexinfos = new TextureInfo[font.getGlyphCount()];
     addAllGlyphsToTexture(pg, font);
   }

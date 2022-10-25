@@ -1,0 +1,7 @@
+"JRELoadError" = "Impossível carregar o Java Runtime Environment.";
+"JRExLoadError" = "Impossível carregar um Java %d Runtime Environment.";
+"JRExLoadFullError" = "Este programa requer o Java %d ou mais recente instalado no seu computador. Baixe e instale a última versão do Java em www.java.com e tente outra vez.";
+"JDKxLoadFullError" = "Este programa requer o Java %d JDK ou mais recente instalado no seu computador. Baixe e instale a última versão do Java JDK em Oracle.com e tente outra vez.";
+"MainClassNameRequired" = "Nome de classe principal é necessário.";
+"JavaDirectoryNotFound" = "Impossível enumerar o conteúdo da pasta do Java.";
+"BundlePathContainsColon" = "Impossível iniciar a partir de uma pasta que contém o caractere \"/\" em seu nome.";

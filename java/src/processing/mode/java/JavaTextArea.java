@@ -517,8 +517,8 @@ public class JavaTextArea extends PdeTextArea {
           new Point(offsetToX(getCaretLine(),
                               position - getLineStartOffset(getCaretLine())),
                     lineToY(getCaretLine()) + getPainter().getLineHeight());
-        suggestion = new CompletionPanel(this, position, subWord,
-                                         listModel, location, getJavaEditor());
+        suggestion = new CompletionPanel(getJavaEditor(), position, subWord,
+                                         listModel, location);
         requestFocusInWindow();
 
       } catch (Exception e) {

@@ -24,7 +24,6 @@ package processing.mode.java.runner;
 
 import processing.app.*;
 import processing.app.exec.StreamRedirectThread;
-import processing.app.ui.Toolkit;
 import processing.core.*;
 import processing.data.StringList;
 import processing.mode.java.JavaBuild;
@@ -33,6 +32,7 @@ import processing.mode.java.JavaEditor;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.io.*;
 import java.net.ConnectException;
 import java.net.InetAddress;
@@ -108,20 +108,11 @@ public class Runner implements MessageConsumer {
     }
 
     // Make sure all the imported libraries will actually run with this setup.
-    int bits = Platform.getNativeBits();
+//    int bits = Platform.getNativeBits();
     String variant = Platform.getVariant();
-
     for (Library library : build.getImportedLibraries()) {
-      if (!library.supportsArch(PApplet.platform, variant)) {
+      if (library.isUnsupported(variant)) {
         sketchErr.println(library.getName() + " does not run on this architecture: " + variant);
-        int opposite = (bits == 32) ? 64 : 32;
-        if (Platform.isMacOS()) {
-          throw new SketchException("To use " + library.getName() + ", " +
-                                    "switch to " + opposite + "-bit mode in Preferences.");
-        } else {
-          throw new SketchException(library.getName() + " is only compatible " +
-                                    "with the  " + opposite + "-bit download of Processing.");
-        }
       }
     }
   }
@@ -351,12 +342,15 @@ public class Runner implements MessageConsumer {
       // No longer needed / doesn't seem to do anything differently
       //params.append("-Dcom.apple.mrj.application.apple.menu.about.name=" +
       //              build.getSketchClassName());
-    } else if (Platform.isWindows()) {
+    }
+    /*
+    if (Platform.isWindows()) {
       // No scaling of Swing on zoomed displays until some issues
       // regarding JEP 263 with rendering artifacts are sorted out.
       // https://github.com/processing/processing/issues/5753
       params.append("-Dsun.java2d.uiScale=1");
     }
+    */
 
     // sketch.libraryPath might be ""
     // librariesClassPath will always have sep char prepended
@@ -463,7 +457,7 @@ public class Runner implements MessageConsumer {
             Point editorLocation = editor.getLocation();
             params.append(PApplet.ARGS_EDITOR_LOCATION + "=" +
                           editorLocation.x + "," + editorLocation.y);
-          } else {
+//          } else {
             // The sketch's main() will set a location centered on the new
             // display. It has to happen in main() because the width/height
             // of the sketch are not known here.
@@ -496,8 +490,16 @@ public class Runner implements MessageConsumer {
       // removed for 3.0a6 because it would break the args passed to sketches.
       params.append(PApplet.ARGS_SKETCH_FOLDER + "=" + build.getSketchPath());
 
+      /*
       if (Toolkit.zoom(100) >= 200) { // Use 100 to bypass possible rounding in zoom()
         params.append(PApplet.ARGS_DENSITY + "=2");
+      }
+      */
+      if (Platform.isWindows()) {
+        // Pass the DPI setting to the app to avoid using the helper app.
+        int dpi = Toolkit.getDefaultToolkit().getScreenResolution();
+        int uiScale = PApplet.constrain(dpi / 96, 1, 2);
+        params.append(PApplet.ARGS_UI_SCALE + "=" + uiScale);
       }
 
       params.append(build.getSketchClassName());
@@ -647,7 +649,7 @@ public class Runner implements MessageConsumer {
 
 //      System.out.println("in here");
       // Bug #852 tracked to this next line in the code.
-      // http://dev.processing.org/bugs/show_bug.cgi?id=852
+      // https://download.processing.org/bugzilla/852.html
       errThread.join(); // Make sure output is forwarded
 //      System.out.println("and then");
       outThread.join(); // before we exit
@@ -740,7 +742,7 @@ public class Runner implements MessageConsumer {
                                            final PrintStream err) {
     if (exceptionClass.equals("java.lang.OutOfMemoryError")) {
       if (message.contains("exceeds VM budget")) {
-        // TODO this is a kludge for Android, since there's no memory preference
+        // TODO this is a kludge for Android, since there is no memory preference
         listener.statusError("OutOfMemoryError: This code attempts to use more memory than available.");
         err.println("An OutOfMemoryError means that your code is either using up too much memory");
         err.println("because of a bug (e.g. creating an array that's too large, or unintentionally");
@@ -755,13 +757,8 @@ public class Runner implements MessageConsumer {
         err.println("you can increase the memory available to your sketch using the Preferences window.");
       }
     } else if (exceptionClass.equals("java.lang.UnsatisfiedLinkError")) {
-      listener.statusError("A library used by this sketch is not installed properly.");
-      if (PApplet.platform == PConstants.LINUX) {
-        err.println(message);
-      }
-      err.println("A library relies on native code that's not available.");
-      err.println("Or only works properly when the sketch is run as a " +
-        ((Platform.getNativeBits() == 32) ? "64-bit" : "32-bit") + " application.");
+      err.println("A library used by this sketch relies on native code that is not available.");
+      err.println(message);
 
     } else if (exceptionClass.equals("java.lang.StackOverflowError")) {
       listener.statusError("StackOverflowError: This sketch is attempting too much recursion.");
@@ -788,9 +785,9 @@ public class Runner implements MessageConsumer {
   }
 
 
-  // TODO: This may be called more than one time per error in the VM,
-  // presumably because exceptions might be wrapped inside others,
-  // and this will fire for both.
+  // TODO This may be called more than one time per error in the VM,
+  //      presumably because exceptions may be wrapped inside others,
+  //      and this will fire for both.
   protected void reportException(String message, ObjectReference or, ThreadReference thread) {
     listener.statusError(findException(message, or, thread));
   }
@@ -908,7 +905,7 @@ public class Runner implements MessageConsumer {
 
   // made synchronized for 0087
   // attempted to remove synchronized for 0136 to fix bug #775 (no luck tho)
-  // http://dev.processing.org/bugs/show_bug.cgi?id=775
+  // https://download.processing.org/bugzilla/775.html
   synchronized public void message(String s) {
 //    System.out.println("M" + s.length() + ":" + s.trim()); // + "MMM" + s.length());
 

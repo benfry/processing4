@@ -1,4 +1,3 @@
-
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
@@ -7,15 +6,12 @@
 # These are the default preferences. If you want to modify
 # them directly, use the per-user local version of the file:
 
-# Documents and Settings -> [username] -> Application Data ->
-#    Processing -> preferences.txt (on Windows XP)
-
 # Users -> [username] -> AppData -> Roaming ->
-#    Processing -> preferences.txt (on Windows Vista and 7)
+#    Processing -> preferences.txt (on Windows 10)
 
-# ~/Library -> Processing -> preferences.txt (on Mac OS X)
+# ~/Library -> Processing -> preferences.txt (on macOS)
 
-# ~/.processing -> preferences.txt (on Linux)
+# ~/.config/processing -> preferences.txt (on Linux)
 
 # The exact location of your preferences file can be found at
 # the bottom of the Preferences window inside Processing.
@@ -33,42 +29,31 @@
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-# DEFAULT PATHS FOR SKETCHBOOK AND SETTINGS
-
-# relative paths will be relative to processing.exe or processing.app.
-# absolute paths may also be used.
-
-# note that this path should use forward slashes (like unix)
-# instead of \ on windows or : on macos or whatever else
-
 # If you don't want users to have their sketchbook default to
 # "My Documents/Processing" on Windows and "Documents/Processing" on OS X,
 # set this to another path that will be used by default.
 # Note that this path must exist already otherwise it won't see
 # the sketchbook folder, and will instead assume the sketchbook
 # has gone missing, and that it should instead use the default.
-# In 3.0, the location has changed.
-#sketchbook.path.three=
+# In 4.0, the location has changed.
+#sketchbook.path.four=
 
-# Rolling this over for the beta release
-welcome.four.beta.show = true
-welcome.four.beta.seen = false
+# Whether or not to show the Welcome screen for 4.0
+# (It's always available under Help → Welcome)
+welcome.four.show = true
+welcome.four.seen = false
 
-# By default, no sketches currently open
-last.sketch.count = 0
-# true if you want sketches to re-open when you next run processing
-last.sketch.restore = true
+# Set 'true' for the default behavior before 4.0, where the
+# main tab must have the same name as the sketch folder
+editor.sync_folder_and_filename = true
 
-# by default, contributions are moved to backup folders when
-# they are removed or replaced. The locations of the backup
-# folders are:
-#              sketchbook/libraries/old
-#              sketchbook/tools/old
-#              sketchbook/modes/old
+# By default, contributions are moved to backup folders when
+# they are removed or replaced. The backups can be found at
+# sketchbook/libraries/old, sketchbook/tools/old, and sketchbook/modes/old
+
 # true to backup contributions when "Remove" button is pressed
 contribution.backup.on_remove = true
 # true to backup contributions when installing a newer version
-# (for example, from a plb file)
 contribution.backup.on_install = true
 
 recent.count = 10
@@ -77,13 +62,13 @@ recent.count = 10
 chooser.files.native = true
 # We were shutting this off on macOS because it broke Copy/Paste:
 # https://github.com/processing/processing/issues/1035
+# But removing again for 4.0 alpha 5, because the JFileChooser is awful,
+# and worse on Big Sur, so a bigger problem than the Copy/Paste issue.
 # https://github.com/processing/processing4/issues/77
-# But changing this for 4.0 alpha 5, because the JFileChooser is awful,
-# and even worse on Big Sur, and worse than the Copy/Paste issue.
-#chooser.files.native.macosx = false
+#chooser.files.native.macos = false
 
-
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# set to 'lab' to interpolate theme gradients using L*a*b* color space
+theme.gradient.method = rgb
 
 
 # by default, check the processing server for any updates
@@ -94,11 +79,9 @@ update.check = true
 # on windows, automatically associate .pde files with processing.exe
 platform.auto_file_type_associations = true
 
+
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-# default font used for UI elements
-ui.font.family = Dialog
-ui.font.size = 12
 
 # default size for the main window
 editor.window.width.default = 700
@@ -107,7 +90,7 @@ editor.window.height.default = 600
 editor.window.width.min = 400
 editor.window.height.min = 500
 # tested as approx 440 on OS X
-editor.window.height.min.macosx = 450
+editor.window.height.min.macos = 450
 # tested to be 515 on Windows XP, this leaves some room
 editor.window.height.min.windows = 530
 # tested with Raspberry Pi display
@@ -136,7 +119,7 @@ editor.caret.block = false
 # enable ctrl-ins, shift-ins, shift-delete for cut/copy/paste
 # on windows and linux, but disable on the mac
 editor.keys.alternative_cut_copy_paste = true
-editor.keys.alternative_cut_copy_paste.macosx = false
+editor.keys.alternative_cut_copy_paste.macos = false
 
 # true if shift-backspace sends the delete character,
 # false if shift-backspace just means backspace
@@ -150,7 +133,7 @@ editor.keys.home_and_end_travel_far = false
 editor.keys.home_and_end_travel_smart = true
 # The OS X HI Guidelines say that home/end are relative to the document,
 # but that drives some people nuts. This pref enables/disables it.
-editor.keys.home_and_end_travel_far.macosx = true
+editor.keys.home_and_end_travel_far.macos = true
 
 # Enable/disable support for complex scripts. Used for Japanese and others,
 # but disable when not needed, otherwise basic Western European chars break.
@@ -186,6 +169,10 @@ console.lines = 4
 # each time 'run' is hit
 console.auto_clear = true
 
+# number of days of history to keep around before cleaning
+# setting to 0 will never clean files
+console.temp.days = 7
+
 # set the maximum number of lines remembered by the console
 # the default is 500, lengthen at your own peril
 console.scrollback.lines = 500
@@ -200,18 +187,13 @@ run.options.memory = false
 run.options.memory.initial = 64
 run.options.memory.maximum = 512
 
-# By default, Mac OS X 10.6 launches applications in 32-bit mode,
-# which is more compatible with libraries (many have not updated to 64-bit).
-# Changing this doesn't do anything on other platforms.
-run.options.bits.macosx = 32
-
 # Index of the display to use for running sketches (starts at 1).
 # Kept this 1-indexed because older vesions of Processing were setting
 # the preference even before it was being used.
 # -1 means the default display, 0 means all displays
 run.display = -1
 
-# set internally
+# set internally because it comes from the system
 #run.window.bgcolor=
 
 # set to false to open a new untitled window when closing the last window
@@ -219,39 +201,29 @@ run.display = -1
 # default to the relative norm for the different platforms,
 # but the setting can be changed in the prefs dialog anyway
 #sketchbook.closing_last_window_quits = true
-#sketchbook.closing_last_window_quits.macosx = false
+#sketchbook.closing_last_window_quits.macos = false
 
 editor.untitled.prefix=sketch_
 # The old (pre-1.0, back for 2.0) style for default sketch name.
 # If you change this, be careful that this will work with your language
 # settings. For instance, MMMdd won't work on Korean-language systems
 # because it'll insert non-ASCII characters and break the environment.
-# http://code.google.com/p/processing/issues/detail?id=283
+# https://github.com/processing/processing/issues/322
 editor.untitled.suffix=yyMMdd
 
-# Set the default look & feel on Linux to something other than
-# the 'native' platform default, which is usually Metal (yuck!)
-# GTK isn't for everyone (and KDE users will get Metal or some
-# such anyway, so this is now broken out as an option
-# Linux is by default even uglier than metal (Motif?).
-#editor.laf.linux = com.sun.java.swing.plaf.gtk.GTKLookAndFeel
-# Trying Nimbus in 3.0a6 because the GTK menus are really dreadful.
-# Unfortunately, the Nimbus scrollbars are really gross, but...
-# As always, people can override on their own, or the next step
-# is to do a Synth LAF that gives us something not awful.
-editor.laf.linux = javax.swing.plaf.nimbus.NimbusLookAndFeel
+# replace underscores in .pde file names with spaces
+sketch.name.replace_underscore = true
 
-# use this to enable the VAqua Look and Feel (may be removed later)
-#editor.laf.macosx = org.violetlib.aqua.AquaLookAndFeel
+# what to use for generating sketch names (change in the prefs window)
+#sketch.name.approach =
+
+# number of days of build history and other temp files to keep around
+# these are kept around for debugging purposes, and in case code is lost
+temp.days = 7
 
 
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-
-# which platforms to export by default
-#export.application.platform.windows = true
-#export.application.platform.macosx = true
-#export.application.platform.linux = true
 
 # whether or not to export as full screen (present) mode
 export.application.fullscreen = false
@@ -262,7 +234,8 @@ export.application.stop = true
 # embed Java by default for lower likelihood of problems
 export.application.embed_java = true
 
-# set to false to no longer delete applet or application folders before export
+# set to false to no longer delete application folders before export
+# (removed from the Preferences windows in 4.0 beta 9)
 export.delete_target_folder = true
 
 # may be useful when attempting to debug the preprocessor
@@ -278,26 +251,11 @@ preproc.enhanced_casting = true
 
 # preprocessor: PdeEmitter.java
 preproc.substitute_floats = true
-#preproc.substitute_image = false
-#preproc.substitute_font = false
 
 # PdePreproc.java
 # writes out the parse tree as parseTree.xml, which can be usefully
 # viewed in (at least) Mozilla or IE.  useful when debugging the preprocessor.
 preproc.output_parse_tree = false
-
-# Changed after 2.0b6 to remove those that aren't compatible with Android,
-# as we move to the new built-in event types. Also remove .list from the end
-# of the name, so that the pref will reset. These are now the same imports
-# as are used over on the Android side.
-# Changed again for revision 0215 (around 2.0b7) to remove all default
-# imports that aren't covered by the reference. This has been done to improve
-# overall cross-platform parity and to avoid users unknowingly adding
-# Java classes, and then the sadness that comes when switching to Android
-# or JavaScript modes.
-#preproc.imports.list = java.applet.*,java.awt.Dimension,java.awt.Frame,java.awt.event.MouseEvent,java.awt.event.KeyEvent,java.awt.event.FocusEvent,java.awt.Image,java.io.*,java.net.*,java.text.*,java.util.*,java.util.zip.*,java.util.regex.*
-#preproc.imports = java.io.*,java.net.*,java.text.*,java.util.*,java.util.zip.*,java.util.regex.*
-#preproc.imports = java.io.*,java.util.*
 
 # set to the program to be used for opening HTML files, folders, etc.
 #launcher.linux = xdg-open
@@ -305,11 +263,6 @@ preproc.output_parse_tree = false
 # FULL SCREEN (PRESENT MODE)
 run.present.bgcolor = #666666
 run.present.stop.color = #cccccc
-# Starting in 2.0a6, don't use FSEM at all, embed native lib to hide menubar
-# starting in release 0159, don't use full screen exclusive anymore
-#run.present.exclusive = false
-# use this by default to hide the menu bar and dock on osx
-#run.present.exclusive.macosx = true
 
 # PROXIES
 # Set a proxy server for folks that require it. This will allow the update
@@ -340,9 +293,9 @@ pdex.autoSave.autoSaveByDefault = true
 
 # Enable auto-completion when hitting ctrl-space
 pdex.completion = false
-# Trigger happy version of completion that fires more often
+# Setting this true will show completions whenever available, not just after ctrl-space
 pdex.completion.trigger = false
 # Suggest libraries to import when a class is undefined/unavailable
 pdex.suggest.imports = true
 # Set to false to disable ctrl/cmd-click jump to definition
-pdex.inspectMode.hotkey=true
+pdex.inspectMode.hotkey = true

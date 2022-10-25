@@ -131,6 +131,12 @@ public class DefaultInputHandler extends InputHandler {
     int keyCode = evt.getKeyCode();
     int modifiers = evt.getModifiersEx();
 
+    // Remove mouse button down masks that get mixed in with KeyEvent.
+    // https://github.com/processing/processing4/issues/403
+    modifiers &= ~(InputEvent.BUTTON1_DOWN_MASK |
+      InputEvent.BUTTON2_DOWN_MASK |
+      InputEvent.BUTTON3_DOWN_MASK);
+
     // moved this earlier so it doesn't get random meta clicks
     if (keyCode == KeyEvent.VK_CONTROL ||
         keyCode == KeyEvent.VK_SHIFT ||
@@ -182,7 +188,7 @@ public class DefaultInputHandler extends InputHandler {
     if ((modifiers & InputEvent.META_DOWN_MASK) != 0) return;
 
     // Prevent CTRL-/ from going through as a typed '/' character
-    // http://code.google.com/p/processing/issues/detail?id=596
+    // https://github.com/processing/processing/issues/635
     if ((modifiers & InputEvent.CTRL_DOWN_MASK) != 0 && c == '/') return;
 
     if (c != KeyEvent.CHAR_UNDEFINED) {

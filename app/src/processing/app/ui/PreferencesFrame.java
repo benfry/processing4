@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -30,13 +30,14 @@ import java.util.*;
 
 import javax.swing.*;
 import javax.swing.border.*;
-import javax.swing.event.*;
 
+import com.formdev.flatlaf.FlatClientProperties;
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Preferences;
+import processing.app.SketchName;
 import processing.awt.ShimAWT;
 import processing.core.*;
 
@@ -46,21 +47,25 @@ import processing.core.*;
  */
 public class PreferencesFrame {
   JFrame frame;
-  GroupLayout layout;
+
+  static final int ROW_H_GAP = 5;
+  static final int ROW_V_GAP = 3;
 
   static final Integer[] FONT_SIZES = { 10, 12, 14, 18, 24, 36, 48 };
 
   JTextField sketchbookLocationField;
+  JComboBox<String> namingSelectionBox;
+
   JTextField presentColor;
-  JTextField presentColorHex;
-  JCheckBox editorAntialiasBox;
-  JCheckBox deletePreviousBox;
+  //JCheckBox editorAntialiasBox;
+//  JCheckBox deletePreviousBox;
   JCheckBox memoryOverrideBox;
   JTextField memoryField;
   JCheckBox checkUpdatesBox;
   JComboBox<Integer> fontSizeField;
   JComboBox<Integer> consoleFontSizeField;
   JCheckBox inputMethodBox;
+//  JLabel inputRestartLabel;
   JCheckBox autoAssociateBox;
 
   ColorChooser selector;
@@ -72,15 +77,24 @@ public class PreferencesFrame {
 
   JComboBox<String> zoomSelectionBox;
   JCheckBox zoomAutoBox;
+//  JLabel zoomRestartLabel;
+
+  JCheckBox hidpiDisableBox;
+//  JLabel hidpiRestartLabel;
+  JCheckBox syncSketchNameBox;
 
   JComboBox<String> displaySelectionBox;
   JComboBox<String> languageSelectionBox;
+  Map<String, String> languageToCode = new HashMap<>();
 
   int displayCount;
   int defaultDisplayNum;
 
   String[] monoFontFamilies;
   JComboBox<String> fontSelectionBox;
+
+  Map<String, Boolean> restartMap = new HashMap<>();
+  JLabel restartLabel;
 
   JButton okButton;
 
@@ -93,26 +107,33 @@ public class PreferencesFrame {
 
     frame = new JFrame(Language.text("preferences"));
     Container pain = frame.getContentPane();
-    layout = new GroupLayout(pain);
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
 
-    pain.setLayout(layout);
+    //layout = new GroupLayout(pain);
+    //layout.setAutoCreateGaps(true);
+    //layout.setAutoCreateContainerGaps(true);
+    //pain.setLayout(layout);
 
     JLabel sketchbookLocationLabel;
-    JLabel languageRestartLabel;
-    JLabel zoomRestartLabel;
+//    JLabel languageRestartLabel;
     JButton browseButton; //, button2;
 
 
-    // Sketchbook location:
+    // Sketchbook folder:
     // [...............................]  [ Browse ]
 
-    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location")+":");
+    sketchbookLocationLabel = new JLabel(Language.text("preferences.sketchbook_location"));
 
-    sketchbookLocationField = new JTextField(40);
+    sketchbookLocationField = new JTextField(25);
+    /*
+    sketchbookLocationField.putClientProperty(
+      FlatClientProperties.TEXT_FIELD_TRAILING_ICON,
+      UIManager.getIcon("Tree.closedIcon")
+    );
+    sketchbookLocationField.setEditable(false);
+    */
 
-    browseButton = new JButton(Language.getPrompt("browse"));
+    //browseButton = new JButton(Language.getPrompt("browse"));
+    browseButton = new JButton(UIManager.getIcon("Tree.closedIcon"));
     browseButton.addActionListener(e -> {
       File defaultLocation = new File(sketchbookLocationField.getText());
       ShimAWT.selectFolder(Language.text("preferences.sketchbook_location.popup"),
@@ -120,10 +141,21 @@ public class PreferencesFrame {
                            PreferencesFrame.this);
     });
 
+    sketchbookLocationField.putClientProperty(
+      FlatClientProperties.TEXT_FIELD_TRAILING_COMPONENT,
+      browseButton
+    );
+
+
+    // Sketch Naming: [ Classic (sketch_220822a) ]
+
+    JLabel namingLabel = new JLabel(Language.text("preferences.sketch_naming"));
+    namingSelectionBox = new JComboBox<>(SketchName.getOptions());
+
 
     // Language: [ English ] (requires restart of Processing)
 
-    JLabel languageLabel = new JLabel(Language.text("preferences.language")+": ");
+    JLabel languageLabel = new JLabel(Language.text("preferences.language"));
     languageSelectionBox = new JComboBox<>();
 
     Map<String, String> languages = Language.getLanguages();
@@ -131,17 +163,22 @@ public class PreferencesFrame {
     languageSelection[0] = languages.get(Language.getLanguage());
     int i = 1;
     for (Map.Entry<String, String> lang : languages.entrySet()) {
-      if(!lang.getKey().equals(Language.getLanguage())){
+      languageToCode.put(lang.getValue(), lang.getKey());
+      if (!lang.getKey().equals(Language.getLanguage())) {
         languageSelection[i++] = lang.getValue();
       }
     }
     languageSelectionBox.setModel(new DefaultComboBoxModel<>(languageSelection));
-    languageRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
+//    languageRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+//    languageRestartLabel.setVisible(false);
+    //languageSelectionBox.addItemListener(e -> languageRestartLabel.setVisible(languageSelectionBox.getSelectedIndex() != 0));
+    languageSelectionBox.addItemListener(e -> updateRestart("language", languageSelectionBox.getSelectedIndex() != 0));
+    languageSelectionBox.setRenderer(new LanguageRenderer());
 
 
     // Editor and console font [ Source Code Pro ]
 
-    JLabel fontLabel = new JLabel(Language.text("preferences.editor_and_console_font")+": ");
+    JLabel fontLabel = new JLabel(Language.text("preferences.editor_and_console_font"));
     final String fontTip = "<html>" + Language.text("preferences.editor_and_console_font.tip");
     fontLabel.setToolTipText(fontTip);
     // get a wide name in there before getPreferredSize() is called
@@ -152,11 +189,11 @@ public class PreferencesFrame {
 
     // Editor font size [ 12 ]  Console font size [ 10 ]
 
-    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size")+": ");
+    JLabel fontSizeLabel = new JLabel(Language.text("preferences.editor_font_size"));
     fontSizeField = new JComboBox<>(FONT_SIZES);
     fontSizeField.setSelectedItem(Preferences.getInteger("editor.font.size"));
 
-    JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size")+": ");
+    JLabel consoleFontSizeLabel = new JLabel(Language.text("preferences.console_font_size"));
     consoleFontSizeField = new JComboBox<>(FONT_SIZES);
     consoleFontSizeField.setSelectedItem(Preferences.getInteger("console.font.size"));
 
@@ -169,18 +206,45 @@ public class PreferencesFrame {
 
     // Interface scale: [ 100% ] (requires restart of Processing)
 
-    JLabel zoomLabel = new JLabel(Language.text("preferences.zoom") + ": ");
+//    zoomRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
 
-    zoomAutoBox = new JCheckBox(Language.text("preferences.zoom.auto"));
-    zoomAutoBox.addChangeListener(e -> zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected()));
+    JLabel zoomLabel = new JLabel(Language.text("preferences.interface_scale"));
+
+    zoomAutoBox = new JCheckBox(Language.text("preferences.interface_scale.auto"));
+    zoomAutoBox.addChangeListener(e -> {
+      zoomSelectionBox.setEnabled(!zoomAutoBox.isSelected());
+      updateZoomRestartRequired();
+    });
 
     zoomSelectionBox = new JComboBox<>();
-    zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.array()));
-    zoomRestartLabel = new JLabel(" (" + Language.text("preferences.requires_restart") + ")");
+    zoomSelectionBox.setModel(new DefaultComboBoxModel<>(Toolkit.zoomOptions.toArray()));
+    zoomSelectionBox.addActionListener(e -> updateZoomRestartRequired());
 
-    //
 
-    JLabel backgroundColorLabel = new JLabel(Language.text("preferences.background_color")+": ");
+    // [ ] Disable HiDPI Scaling (requires restart)
+
+    hidpiDisableBox = new JCheckBox("Disable HiDPI Scaling");
+//    hidpiDisableBox.setVisible(false);  // only for Windows
+//    hidpiRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+//    hidpiRestartLabel.setVisible(false);
+//    hidpiDisableBox.addChangeListener(e -> hidpiRestartLabel.setVisible(hidpiDisableBox.isSelected() != Splash.getDisableHiDPI()));
+    hidpiDisableBox.addChangeListener(e -> updateRestart("hidpi", hidpiDisableBox.isSelected() != Splash.getDisableHiDPI()));
+
+
+    // [ ] Keep sketch name and main tab name in sync
+    syncSketchNameBox =
+      new JCheckBox("Keep sketch name and main tab in sync");
+    syncSketchNameBox.setToolTipText("<html>" +
+      "This removes the requirement for the sketch name to be<br>" +
+      "the same as the main tab, which makes it easier to use<br>" +
+      "Processing sketches with version control systems like Git.<br>" +
+      "This is experimental: save often and report any issues!");
+    //syncSketchNameBox.setVerticalTextPosition(SwingConstants.TOP);
+
+
+    // Colors
+
+    JLabel backgroundColorLabel = new JLabel(Language.text("preferences.background_color"));
 
     final String colorTip = "<html>" + Language.text("preferences.background_color.tip");
     backgroundColorLabel.setToolTipText(colorTip);
@@ -194,6 +258,7 @@ public class PreferencesFrame {
     presentColor.setBorder(cb);
     presentColor.setBackground(Preferences.getColor("run.present.bgcolor"));
 
+    /*
     presentColorHex = new JTextField(6);
     presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));
     presentColorHex.getDocument().addDocumentListener(new DocumentListener() {
@@ -226,13 +291,12 @@ public class PreferencesFrame {
 
       @Override public void changedUpdate(DocumentEvent e) {}
     });
+    */
 
     selector = new ColorChooser(frame, false,
                                 Preferences.getColor("run.present.bgcolor"),
                                 Language.text("prompt.ok"), e -> {
-      String colorValue = selector.getHexColor();
-      colorValue = colorValue.substring(1);  // remove the #
-      presentColorHex.setText(colorValue);
+      String colorValue = selector.getHexColor().substring(1);
       presentColor.setBackground(new Color(PApplet.unhex(colorValue)));
       selector.hide();
     });
@@ -254,20 +318,43 @@ public class PreferencesFrame {
       }
     });
 
-    JLabel hashLabel = new JLabel("#");
+    //JLabel hashLabel = new JLabel("#");
 
 
     // [ ] Use smooth text in editor window
 
-    editorAntialiasBox = new JCheckBox(Language.text("preferences.use_smooth_text"));
+    //editorAntialiasBox = new JCheckBox(Language.text("preferences.use_smooth_text"));
 
 
     // [ ] Enable complex text input (for Japanese et al, requires restart)
 
     inputMethodBox =
-      new JCheckBox(Language.text("preferences.enable_complex_text_input")+
-                    " ("+Language.text("preferences.enable_complex_text_input_example")+
-                    ", "+Language.text("preferences.requires_restart")+")");
+      new JCheckBox(Language.text("preferences.enable_complex_text"));
+    inputMethodBox.setToolTipText("<html>" + Language.text("preferences.enable_complex_text.tip"));
+
+    /*
+    JLabel inputMethodExample =
+      new JLabel("(" + Language.text("preferences.enable_complex_text_input_example") + ")");
+    inputMethodExample.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        Platform.openURL("https://en.wikipedia.org/wiki/CJK_characters");
+      }
+
+      public void mouseEntered(MouseEvent e) {
+        inputMethodExample.setForeground(Theme.getColor("laf.accent.color"));
+      }
+
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        inputMethodExample.setForeground(sketchbookLocationLabel.getForeground());
+      }
+    });
+//    inputRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
+//    inputRestartLabel.setVisible(false);
+    */
+
+//    inputMethodBox.addChangeListener(e -> inputRestartLabel.setVisible(inputMethodBox.isSelected() != Preferences.getBoolean("editor.input_method_support")));
+    inputMethodBox.addChangeListener(e -> updateRestart("input_method", inputMethodBox.isSelected() != Preferences.getBoolean("editor.input_method_support")));
 
 
     // [ ] Continuously check for errors - PDE X
@@ -298,7 +385,7 @@ public class PreferencesFrame {
 
     // [ ] Increase maximum available memory to [______] MB
 
-    memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory")+": ");
+    memoryOverrideBox = new JCheckBox(Language.text("preferences.increase_max_memory"));
     memoryField = new JTextField(4);
     memoryOverrideBox.addChangeListener(e -> memoryField.setEnabled(memoryOverrideBox.isSelected()));
     JLabel mbLabel = new JLabel("MB");
@@ -306,8 +393,8 @@ public class PreferencesFrame {
 
     // [ ] Delete previous application folder on export
 
-    deletePreviousBox =
-      new JCheckBox(Language.text("preferences.delete_previous_folder_on_export"));
+//    deletePreviousBox =
+//      new JCheckBox(Language.text("preferences.delete_previous_folder_on_export"));
 
 
     // [ ] Check for updates on startup
@@ -318,7 +405,7 @@ public class PreferencesFrame {
 
     // Run sketches on display [  1 ]
 
-    JLabel displayLabel = new JLabel(Language.text("preferences.run_sketches_on_display") + ": ");
+    JLabel displayLabel = new JLabel(Language.text("preferences.run_sketches_on_display"));
     final String tip = "<html>" + Language.text("preferences.run_sketches_on_display.tip");
     displayLabel.setToolTipText(tip);
     displaySelectionBox = new JComboBox<>();
@@ -329,37 +416,60 @@ public class PreferencesFrame {
 
     autoAssociateBox =
       new JCheckBox(Language.text("preferences.automatically_associate_pde_files"));
-    autoAssociateBox.setVisible(false);
+//    autoAssociateBox.setVisible(false);
 
 
     // More preferences are in the ...
 
-    JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file") + ":");
-    morePreferenceLabel.setForeground(Color.gray);
+    final JLabel morePreferenceLabel = new JLabel(Language.text("preferences.file"));
+    morePreferenceLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
+    morePreferenceLabel.addMouseListener(new MouseAdapter() {
+      public void mousePressed(MouseEvent e) {
+        // Starting in 4.0.1, open the Wiki page about the prefs
+        Platform.openURL("https://github.com/processing/processing4/wiki/Preferences");
+      }
+
+      // Light this up in blue like a hyperlink
+      public void mouseEntered(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        morePreferenceLabel.setForeground(Theme.getColor("laf.accent.color"));
+      }
+
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        morePreferenceLabel.setForeground(UIManager.getColor("Label.disabledForeground"));
+      }
+    });
 
     JLabel preferencePathLabel = new JLabel(Preferences.getPreferencesPath());
     final JLabel clickable = preferencePathLabel;
     preferencePathLabel.addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent e) {
-          Platform.openFolder(Base.getSettingsFolder());
-        }
+      public void mousePressed(MouseEvent e) {
+        Platform.openFolder(Base.getSettingsFolder());
+      }
 
-        // Light this up in blue like a hyperlink
-        public void mouseEntered(MouseEvent e) {
-          clickable.setForeground(new Color(0, 0, 140));
-        }
+      // Light this up in blue like a hyperlink
+      public void mouseEntered(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        clickable.setForeground(Theme.getColor("laf.accent.color"));
+      }
 
-        // Set the text back to black when the mouse is outside
-        public void mouseExited(MouseEvent e) {
-          clickable.setForeground(Color.BLACK);
-        }
-      });
+      // Set the text back to black when the mouse is outside
+      public void mouseExited(MouseEvent e) {
+        frame.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+        clickable.setForeground(UIManager.getColor("Label.foreground"));
+      }
+    });
 
-    JLabel preferenceHintLabel = new JLabel("(" + Language.text("preferences.file.hint") + ")");
-    preferenceHintLabel.setForeground(Color.gray);
+    JLabel preferenceHintLabel = new JLabel(Language.text("preferences.file.hint"));
+    //preferenceHintLabel.setForeground(Color.gray);
+    preferenceHintLabel.setEnabled(false);
 
 
     // [  OK  ] [ Cancel ]
+
+    restartLabel = new JLabel(Language.text("preferences.restart_required"));
 
     okButton = new JButton(Language.getPrompt("ok"));
     okButton.addActionListener(e -> {
@@ -370,134 +480,104 @@ public class PreferencesFrame {
     JButton cancelButton = new JButton(Language.getPrompt("cancel"));
     cancelButton.addActionListener(e -> disposeFrame());
 
-    final int buttonWidth = Toolkit.getButtonWidth();
-    layout.setHorizontalGroup(layout.createSequentialGroup() // sequential group for border + mainContent + border
-      .addGap(Toolkit.BORDER)
-      .addGroup(layout.createParallelGroup() // parallel group for rest of the components
-          .addComponent(sketchbookLocationLabel)
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(sketchbookLocationField)
-                      .addComponent(browseButton))
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(languageLabel)
-                      .addComponent(languageSelectionBox,GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE) // This makes the component non-resizable in the X direction
-                      .addComponent(languageRestartLabel))
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(fontLabel)
-                      .addComponent(fontSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-          .addGroup(GroupLayout.Alignment.LEADING,
-                       layout.createSequentialGroup()
-                      .addComponent(fontSizeLabel)
-                      .addComponent(fontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addComponent(consoleFontSizeLabel)
-                      .addComponent(consoleFontSizeField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(zoomLabel)
-                      .addComponent(zoomAutoBox)
-                      .addComponent(zoomSelectionBox, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addComponent(zoomRestartLabel))
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(backgroundColorLabel)
-                      .addComponent(hashLabel, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addGap(0)
-                      .addComponent(presentColorHex, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                      .addComponent(presentColor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-          .addComponent(editorAntialiasBox)
-          .addComponent(inputMethodBox)
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(errorCheckerBox)
-                      .addComponent(warningsCheckerBox))
-          .addComponent(warningsCheckerBox)
-          .addComponent(codeCompletionBox)
-          .addComponent(importSuggestionsBox)
-          .addGroup(layout.createSequentialGroup()
-                        .addComponent(memoryOverrideBox)
-                        .addComponent(memoryField,
-                                      GroupLayout.PREFERRED_SIZE,
-                                      GroupLayout.DEFAULT_SIZE,
-                                      GroupLayout.PREFERRED_SIZE)
-                        .addComponent(mbLabel))
-          .addComponent(deletePreviousBox)
-          .addComponent(checkUpdatesBox)
-          .addGroup(layout.createSequentialGroup()
-                      .addComponent(displayLabel)
-                      .addComponent(displaySelectionBox,
-                                    GroupLayout.PREFERRED_SIZE,
-                                    GroupLayout.DEFAULT_SIZE,
-                                    GroupLayout.PREFERRED_SIZE)
-          )
-          .addComponent(autoAssociateBox)
-          .addComponent(morePreferenceLabel)
-          .addComponent(preferencePathLabel)
-          .addComponent(preferenceHintLabel)
-          .addGroup(GroupLayout.Alignment.TRAILING,layout.createSequentialGroup() // Trailing so that the buttons are to the right
-                      .addComponent(okButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth) // Ok and Cancel button are now of size BUTTON_WIDTH
-                      .addComponent(cancelButton, buttonWidth, GroupLayout.DEFAULT_SIZE, buttonWidth)
-          ))
-      .addGap(Toolkit.BORDER)
-    );
+    Box axis = Box.createVerticalBox();
 
-    layout.setVerticalGroup(layout.createSequentialGroup() // sequential group for border + mainContent + border
-      .addGap(Toolkit.BORDER)
-      .addComponent(sketchbookLocationLabel)
-      .addGroup(layout.createParallelGroup()
-                  .addComponent(sketchbookLocationField)
-                  .addComponent(browseButton))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(languageLabel)
-                  .addComponent(languageSelectionBox)
-                  .addComponent(languageRestartLabel))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER).
-                  addComponent(fontLabel)
-                  .addComponent(fontSelectionBox))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(fontSizeLabel)
-                  .addComponent(fontSizeField)
-                  .addComponent(consoleFontSizeLabel)
-                  .addComponent(consoleFontSizeField))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(zoomLabel)
-                  .addComponent(zoomAutoBox)
-                  .addComponent(zoomSelectionBox)
-                  .addComponent(zoomRestartLabel))
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(backgroundColorLabel)
-                  .addComponent(hashLabel)
-                  .addComponent(presentColorHex)
-                  .addComponent(presentColor))
-      .addComponent(editorAntialiasBox)
-      .addComponent(inputMethodBox)
-      .addGroup(layout.createParallelGroup()
-                  .addComponent(errorCheckerBox)
-                  .addComponent(warningsCheckerBox))
-      .addComponent(codeCompletionBox)
-      .addComponent(importSuggestionsBox)
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                .addComponent(memoryOverrideBox)
-                .addComponent(memoryField)
-                .addComponent(mbLabel))
-      .addComponent(deletePreviousBox)
-      .addComponent(checkUpdatesBox)
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(displayLabel)
-                  .addComponent(displaySelectionBox))
-      .addComponent(autoAssociateBox)
-      .addComponent(morePreferenceLabel)
-      .addGap(0)
-      .addComponent(preferencePathLabel)
-      .addGap(0)
-      .addComponent(preferenceHintLabel)
-      .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(okButton)
-                  .addComponent(cancelButton))
-      .addGap(Toolkit.BORDER)
-      );
+    addRow(axis, sketchbookLocationLabel, sketchbookLocationField);
 
-    if (Platform.isWindows()){
-      autoAssociateBox.setVisible(true);
+    addRow(axis, namingLabel, namingSelectionBox);
+
+    //
+
+    JPanel layoutPanel = new JPanel();
+    layoutPanel.setBorder(new TitledBorder("Interface and Fonts"));
+    layoutPanel.setLayout(new BoxLayout(layoutPanel, BoxLayout.Y_AXIS));
+
+    addRow(layoutPanel, fontLabel, fontSelectionBox);
+
+    addRow(layoutPanel, fontSizeLabel, fontSizeField,
+                        //Box.createHorizontalStrut(H_GAP),  // uglier
+                        consoleFontSizeLabel, consoleFontSizeField);
+
+    //addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox, zoomRestartLabel);
+    addRow(layoutPanel, zoomLabel, zoomAutoBox, zoomSelectionBox);
+
+    if (Platform.isWindows()) {
+      //addRow(layoutPanel, hidpiDisableBox, hidpiRestartLabel);
+      addRow(layoutPanel, hidpiDisableBox);
     }
-    // closing the window is same as hitting cancel button
 
+    axis.add(layoutPanel);
+
+    //
+
+//    JPanel languagePanel = new JPanel();
+//    languagePanel.setBorder(new TitledBorder("Language"));
+//    languagePanel.setLayout(new BoxLayout(languagePanel, BoxLayout.Y_AXIS));
+
+//    //addRow(layoutPanel, languageLabel, languageSelectionBox, languageRestartLabel);
+//    addRow(layoutPanel, languageLabel, languageSelectionBox);
+//    //addRow(layoutPanel, inputMethodBox, inputMethodExample, inputRestartLabel);
+//    addRow(layoutPanel, inputMethodBox, inputMethodExample);
+
+    addRow(layoutPanel, languageLabel, languageSelectionBox, inputMethodBox);
+
+//    axis.add(languagePanel);
+
+    //
+
+    JPanel codingPanel = new JPanel();
+    codingPanel.setBorder(new TitledBorder("Coding"));
+    codingPanel.setLayout(new BoxLayout(codingPanel, BoxLayout.Y_AXIS));
+
+    addRow(codingPanel, errorCheckerBox, warningsCheckerBox);
+    addRow(codingPanel, codeCompletionBox, importSuggestionsBox);
+
+    axis.add(codingPanel);
+
+    //
+
+    JPanel runningPanel = new JPanel();
+    runningPanel.setBorder(new TitledBorder("Running"));
+    runningPanel.setLayout(new BoxLayout(runningPanel, BoxLayout.Y_AXIS));
+
+    addRow(runningPanel, displayLabel, displaySelectionBox);
+    addRow(runningPanel, backgroundColorLabel, presentColor);
+    addRow(runningPanel, memoryOverrideBox, memoryField, mbLabel);
+
+    axis.add(runningPanel);
+
+    //
+
+//    addRow(axis, deletePreviousBox);
+    addRow(axis, checkUpdatesBox);
+    addRow(axis, syncSketchNameBox);
+
+    if (Platform.isWindows()) {
+      addRow(axis, autoAssociateBox);
+    }
+
+    // Put these in a separate container so there's no extra gap
+    // between the rows.
+    Box blurb = Box.createVerticalBox();
+    blurb.add(morePreferenceLabel);
+    blurb.add(preferencePathLabel);
+    blurb.add(preferenceHintLabel);
+    addRow(axis, blurb);
+
+    //JPanel row = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    Box row = Box.createHorizontalBox();
+    row.add(Box.createHorizontalStrut(ROW_H_GAP));
+    row.add(restartLabel);
+    row.add(Box.createHorizontalGlue());
+    row.add(okButton);  // buttonWidth
+    row.add(Box.createHorizontalStrut(ROW_H_GAP));
+    row.add(cancelButton);  // buttonWidth
+    axis.add(row);
+
+    axis.setBorder(new EmptyBorder(13, 13, 13, 13));
+    pain.add(axis);
+
+    // closing the window is same as hitting cancel button
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
         disposeFrame();
@@ -505,9 +585,12 @@ public class PreferencesFrame {
     });
 
     ActionListener disposer = actionEvent -> disposeFrame();
-    // finish up
-
     Toolkit.registerWindowCloseKeys(frame.getRootPane(), disposer);
+
+    // for good measure, and set link/highlight colors
+    updateTheme();
+
+    // finishing up
     Toolkit.setIcon(frame);
     frame.setResizable(false);
     frame.pack();
@@ -523,6 +606,54 @@ public class PreferencesFrame {
         }
       }
     });
+  }
+
+
+  static private void addRow(Container axis, Component... components) {
+    JPanel row = new JPanel(new FlowLayout(FlowLayout.LEFT, ROW_H_GAP, ROW_V_GAP));
+    for (Component comp : components) {
+      row.add(comp);
+    }
+    axis.add(row);
+  }
+
+
+  private void updateRestart(String key, boolean value) {
+    restartMap.put(key, value);
+    restartLabel.setVisible(restartMap.containsValue(true));
+  }
+
+
+  private void updateZoomRestartRequired() {
+    // TODO If this is too wide for the window, it may not appear.
+    //      Redo layout in the window on change to be sure.
+    //      May cause window to resize but need the message. [fry 220502]
+    //zoomRestartLabel.setVisible(
+    updateRestart("zoom",
+      zoomAutoBox.isSelected() != Preferences.getBoolean("editor.zoom.auto") ||
+      !Preferences.get("editor.zoom").equals(String.valueOf(zoomSelectionBox.getSelectedItem()))
+    );
+  }
+
+
+  class LanguageRenderer extends JLabel implements ListCellRenderer<String> {
+    final int fontSize = languageSelectionBox.getFont().getSize();
+    final Font sansFont = Toolkit.getSansFont(fontSize, Font.PLAIN);
+    final Font fallbackFont = new Font("Dialog", Font.PLAIN,fontSize);
+
+    @Override
+    public Component getListCellRendererComponent(JList<? extends String> list, String text, int index,
+                                                  boolean isSelected, boolean cellHasFocus) {
+      if (sansFont.canDisplayUpTo(text) == -1) {
+        // if the sans font can display the chars, use it
+        setFont(sansFont);
+      } else {
+        // otherwise, use the fallback font (Dialog)
+        setFont(fallbackFont);
+      }
+      setText(text);
+      return this;
+    }
   }
 
 
@@ -545,11 +676,11 @@ public class PreferencesFrame {
    * then send a message to the editor saying that it's time to do the same.
    */
   protected void applyFrame() {
-    Preferences.setBoolean("editor.smooth", //$NON-NLS-1$
-                           editorAntialiasBox.isSelected());
+//    Preferences.setBoolean("editor.smooth", //$NON-NLS-1$
+//                           editorAntialiasBox.isSelected());
 
-    Preferences.setBoolean("export.delete_target_folder", //$NON-NLS-1$
-                           deletePreviousBox.isSelected());
+//    Preferences.setBoolean("export.delete_target_folder", //$NON-NLS-1$
+//                           deletePreviousBox.isSelected());
 
     // if the sketchbook path has changed, rebuild the menus
     String oldPath = Preferences.getSketchbookPath();
@@ -558,20 +689,32 @@ public class PreferencesFrame {
       base.setSketchbookFolder(new File(newPath));
     }
 
+    Preferences.set("sketch.name.approach", (String) namingSelectionBox.getSelectedItem());
+
 //    setBoolean("editor.external", externalEditorBox.isSelected());
     Preferences.setBoolean("update.check", checkUpdatesBox.isSelected()); //$NON-NLS-1$
 
     // Save Language
+    /*
     Map<String, String> languages = Language.getLanguages();
-    String language = "";
+    String language = null;
     for (Map.Entry<String, String> lang : languages.entrySet()) {
       if (lang.getValue().equals(String.valueOf(languageSelectionBox.getSelectedItem()))) {
         language = lang.getKey().trim().toLowerCase();
         break;
       }
     }
-    if (!language.equals(Language.getLanguage()) && !language.equals("")) {
-      Language.saveLanguage(language);
+    */
+    // first entry is always the default language
+    if (languageSelectionBox.getSelectedIndex() != 0) {
+      /*
+      String languageCode =
+        Language.nameToCode(String.valueOf(languageSelectionBox.getSelectedItem()));
+      if (!Language.getLanguage().equals(languageCode)) {
+        Language.saveLanguage(languageCode);
+      }
+      */
+      Language.saveLanguage(languageToCode.get((String) languageSelectionBox.getSelectedItem()));
     }
 
     // The preference will have already been reset when the window was created
@@ -651,6 +794,11 @@ public class PreferencesFrame {
     Preferences.set("editor.zoom",
                     String.valueOf(zoomSelectionBox.getSelectedItem()));
 
+    if (Platform.isWindows()) {
+      Splash.setDisableHiDPI(hidpiDisableBox.isSelected());
+    }
+    Preferences.setBoolean("editor.sync_folder_and_filename", syncSketchNameBox.isSelected());
+
     Preferences.setColor("run.present.bgcolor", presentColor.getBackground());
 
     Preferences.setBoolean("editor.input_method_support", inputMethodBox.isSelected()); //$NON-NLS-1$
@@ -672,16 +820,24 @@ public class PreferencesFrame {
 
 
   public void showFrame() {
-    editorAntialiasBox.setSelected(Preferences.getBoolean("editor.smooth")); //$NON-NLS-1$
+    //editorAntialiasBox.setSelected(Preferences.getBoolean("editor.smooth")); //$NON-NLS-1$
     inputMethodBox.setSelected(Preferences.getBoolean("editor.input_method_support")); //$NON-NLS-1$
     errorCheckerBox.setSelected(Preferences.getBoolean("pdex.errorCheckEnabled"));
     warningsCheckerBox.setSelected(Preferences.getBoolean("pdex.warningsEnabled"));
     warningsCheckerBox.setEnabled(errorCheckerBox.isSelected());
     codeCompletionBox.setSelected(Preferences.getBoolean("pdex.completion"));
     importSuggestionsBox.setSelected(Preferences.getBoolean("pdex.suggest.imports"));
-    deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
+//    deletePreviousBox.setSelected(Preferences.getBoolean("export.delete_target_folder")); //$NON-NLS-1$
 
     sketchbookLocationField.setText(Preferences.getSketchbookPath());
+
+    namingSelectionBox.setSelectedItem(Preferences.get("sketch.name.approach"));
+    if (namingSelectionBox.getSelectedIndex() < 0) {
+      // If no selection, revert to the classic style, and set the pref as well
+      namingSelectionBox.setSelectedItem(SketchName.CLASSIC);
+      Preferences.set("sketch.name.approach", SketchName.CLASSIC);
+    }
+
     checkUpdatesBox.setSelected(Preferences.getBoolean("update.check")); //$NON-NLS-1$
 
     defaultDisplayNum = updateDisplayList();
@@ -712,9 +868,13 @@ public class PreferencesFrame {
     } else {
       zoomSelectionBox.setSelectedIndex(0);
     }
+    if (Platform.isWindows()) {
+      hidpiDisableBox.setSelected(Splash.getDisableHiDPI());
+    }
+    syncSketchNameBox.setSelected(Preferences.getBoolean("editor.sync_folder_and_filename"));
 
     presentColor.setBackground(Preferences.getColor("run.present.bgcolor"));
-    presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));
+    //presentColorHex.setText(Preferences.get("run.present.bgcolor").substring(1));
 
     memoryOverrideBox.
       setSelected(Preferences.getBoolean("run.options.memory")); //$NON-NLS-1$
@@ -729,12 +889,25 @@ public class PreferencesFrame {
     // PrefWindow is to be displayed
     frame.getRootPane().setDefaultButton(okButton);
 
+    // Prevent the location field from being highlighted by default
+    sketchbookLocationField.select(0, 0);
+    // Could make the Cancel button the default, but seems odd
+    okButton.requestFocusInWindow();
+
     // The pack is called again here second time to fix layout bugs
-    // the bugs are not due to groupLayout but due to HTML rendering of components
-    // more info can be found here -> https://netbeans.org/bugzilla/show_bug.cgi?id=79967
+    // due to HTML rendering of components. [akarshit 150430]
+    // https://netbeans.org/bugzilla/show_bug.cgi?id=79967
     frame.pack();
 
     frame.setVisible(true);
+  }
+
+
+  public void updateTheme() {
+    // Required to update changes to accent color or light/dark mode.
+    // (No custom components, so safe to call on this Window object.)
+    SwingUtilities.updateComponentTreeUI(frame);
+    restartLabel.setForeground(Theme.getColor("laf.accent.color"));
   }
 
 
@@ -789,7 +962,8 @@ public class PreferencesFrame {
     String[] items = new String[displayCount];
     for (int i = 0; i < displayCount; i++) {
       DisplayMode mode = devices[i].getDisplayMode();
-      String title = String.format("%d (%d \u2715 %d)",  // or \u00d7?
+      //String title = String.format("%d (%d \u2715 %d)",  // or \u00d7?
+      String title = String.format("%d (%d \u00d7 %d)",  // or \u2715?
                                    i + 1, mode.getWidth(), mode.getHeight());
       if (devices[i] == defaultDevice) {
         title += " default";

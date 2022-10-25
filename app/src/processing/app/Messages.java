@@ -21,6 +21,8 @@
 
 package processing.app;
 
+import processing.app.ui.Toolkit;
+
 import java.awt.Frame;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -84,28 +86,9 @@ public class Messages {
       System.out.println(title + ": " + message);
 
     } else {
-      if (!Platform.isMacOS()) {
-        JOptionPane.showMessageDialog(new JFrame(),
-                                      "<html><body>" +
-                                      "<b>" + primary + "</b>" +
-                                      "<br>" + secondary, title,
-                                      JOptionPane.WARNING_MESSAGE);
-      } else {
-        // Pane formatting adapted from the Quaqua guide
-        // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
-        JOptionPane pane =
-          new JOptionPane("<html> " +
-                          "<head> <style type=\"text/css\">"+
-                          "b { font: 13pt \"Lucida Grande\" }"+
-                          "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
-                          "</style> </head>" +
-                          "<b>" + primary + "</b>" +
-                          "<p>" + secondary + "</p>",
-                          JOptionPane.WARNING_MESSAGE);
-
-        JDialog dialog = pane.createDialog(new JFrame(), null);
-        dialog.setVisible(true);
-      }
+      JOptionPane.showMessageDialog(new JFrame(),
+                                    Toolkit.formatMessage(primary, secondary),
+                                    title, JOptionPane.WARNING_MESSAGE);
     }
     if (e != null) e.printStackTrace();
   }
@@ -132,7 +115,7 @@ public class Messages {
 
 
   /**
-   * Testing a new warning window that includes the stack trace.
+   * Warning window that includes the stack trace.
    */
   static public void showTrace(String title, String message,
                                Throwable t, boolean fatal) {
@@ -147,13 +130,12 @@ public class Messages {
     } else {
       StringWriter sw = new StringWriter();
       t.printStackTrace(new PrintWriter(sw));
-      // Necessary to replace \n with <br/> (even if pre) otherwise Java
-      // treats it as a closed tag and reverts to plain formatting.
-      message = ("<html>" + message +
-                 "<br/><font size=2><br/>" +
-                 sw + "</html>").replaceAll("\n", "<br/>");
 
-      JOptionPane.showMessageDialog(new Frame(), message, title,
+      JOptionPane.showMessageDialog(new Frame(),
+                                    // first <br/> clears to the next line
+                                    // second <br/> is a shorter height blank space before the trace
+                                    Toolkit.formatMessage(message + "<br/><tt><br/>" + sw + "</tt>"),
+                                    title,
                                     fatal ?
                                     JOptionPane.ERROR_MESSAGE :
                                     JOptionPane.WARNING_MESSAGE);
@@ -169,9 +151,11 @@ public class Messages {
                                       String primary, String secondary) {
     if (!Platform.isMacOS()) {
       return JOptionPane.showConfirmDialog(editor,
-                                           "<html><body>" +
-                                           "<b>" + primary + "</b>" +
-                                           "<br>" + secondary, title,
+                                           Toolkit.formatMessage(primary, secondary),
+                                           //"<html><body>" +
+                                           //"<b>" + primary + "</b>" +
+                                           //"<br>" + secondary,
+                                           title,
                                            JOptionPane.YES_NO_OPTION,
                                            JOptionPane.QUESTION_MESSAGE);
     } else {
@@ -199,20 +183,12 @@ public class Messages {
     Object result;
     if (!Platform.isMacOS()) {
       return JOptionPane.showOptionDialog(editor,
-          "<html><body><b>" + primary + "</b><br>" + secondary, title,
+        Toolkit.formatMessage(primary, secondary), title,
           JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
           options, options[highlight]);
     } else {
-      // Pane formatting adapted from the Quaqua guide
-      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
       JOptionPane pane =
-        new JOptionPane("<html> " +
-                        "<head> <style type=\"text/css\">"+
-                        "b { font: 13pt \"Lucida Grande\" }"+
-                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
-                        "</style> </head>" +
-                        "<b>" + primary + "</b>" +
-                        "<p>" + secondary, // + "</p>",
+        new JOptionPane(Toolkit.formatMessage(primary, secondary),
                         JOptionPane.QUESTION_MESSAGE);
 
       pane.setOptions(options);

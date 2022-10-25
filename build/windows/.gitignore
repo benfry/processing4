@@ -1,1 +1,3 @@
-jre-*.tgz
+jdk-17*.zip
+/processing-*.zip
+work

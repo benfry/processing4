@@ -1,0 +1,347 @@
+## Look-and-Feel Entries ##
+
+laf.mode = light
+laf.accent.color = #EA9EFF
+
+# global color used in dialog boxes that have text links
+label.link.color = #cc0000
+
+
+## EditorToolbar ##
+
+# TOOLBAR BUTTON TEXT
+toolbar.rollover.font = processing.sans,plain,12
+toolbar.rollover.color = #FFFFFE
+toolbar.gradient.top = #4B2564
+toolbar.gradient.bottom = #4B2564
+
+# MODE SELECTOR (EditorToolbar)
+mode.title.font = processing.sans,plain,12
+mode.title.color = #C597DF
+# stolen from gradient bottom
+mode.background.color = #4B2564
+mode.outline.color = #A579BF
+
+mode.popup.enabled.fgcolor = #B9A7C2
+mode.popup.enabled.bgcolor = #17041D
+mode.popup.disabled.fgcolor = #615269
+mode.popup.disabled.bgcolor = #17041D
+mode.popup.selected.fgcolor = #FFEDFF
+mode.popup.selected.bgcolor = #4B2564
+
+toolbar.button.disabled.field = #5F3878
+toolbar.button.disabled.glyph = #4B2564
+toolbar.button.disabled.stroke = none
+toolbar.button.enabled.field = #EA9EFF
+toolbar.button.enabled.glyph = #49116F
+toolbar.button.enabled.stroke = none
+toolbar.button.pressed.field = #2F0056
+toolbar.button.pressed.glyph = #FFB6FF
+toolbar.button.pressed.stroke = #FFB6FF
+toolbar.button.rollover.field = #FFB6FF
+toolbar.button.rollover.glyph = #49116F
+toolbar.button.rollover.stroke = none
+toolbar.button.selected.field = #FFFFFE
+toolbar.button.selected.glyph = #870CD6
+toolbar.button.selected.stroke = none
+
+toolbar.button.debug.disabled.field = #000009
+toolbar.button.debug.disabled.glyph = #E4E8E4
+toolbar.button.debug.disabled.stroke = none
+toolbar.button.debug.enabled.field = #909699
+toolbar.button.debug.enabled.glyph = #DEE2DF
+toolbar.button.debug.enabled.stroke = none
+toolbar.button.debug.pressed.field = #909699
+toolbar.button.debug.pressed.glyph = #FFFFF2
+toolbar.button.debug.pressed.stroke = #60605B
+toolbar.button.debug.rollover.field = #5B6165
+toolbar.button.debug.rollover.glyph = #FFFFF2
+toolbar.button.debug.rollover.stroke = none
+toolbar.button.debug.selected.field = #FFFFF2
+toolbar.button.debug.selected.glyph = #0075FF
+toolbar.button.debug.selected.stroke = none
+
+
+## EditorStatus - status message bar directly below the editor ##
+
+status.font = processing.sans,plain,13
+
+status.notice.fgcolor = #233741
+status.notice.bgcolor = #8399A5
+status.error.fgcolor = #4F00A5
+status.error.bgcolor = #FFFFFE
+status.warning.bgcolor = #EA9EFF
+status.warning.fgcolor = #41008D
+
+# applies to the entire status text if it contains url
+status.url.enabled.alpha = 70
+status.url.rollover.alpha = 90
+status.url.pressed.alpha = 100
+
+status.button.enabled.alpha = 50
+status.button.rollover.alpha = 70
+status.button.pressed.alpha = 90
+
+
+## EditorHeader - the tab area above the editor ##
+
+header.text.font = processing.sans,bold,14
+header.text.selected.color = #FBA8FF
+header.text.unselected.color = #7D638B
+header.tab.arrow.color = #7D638B
+header.tab.selected.color = #1D012E
+header.tab.unselected.color = #2E1440
+header.tab.modified.color = #FFFFFE
+header.gradient.top = #4B2564
+header.gradient.bottom = #4B2564
+
+
+## EditorFooter - the tabs below the editor ##
+
+footer.text.font = processing.sans,bold,12
+footer.text.selected.color = #FFFFFE
+footer.text.enabled.color = #B3C4CE
+footer.icon.selected.color = #FFFFFE
+footer.icon.enabled.color = #B3C4CE
+footer.gradient.top = #5F6F78
+footer.gradient.bottom = #5F6F78
+footer.tab.selected.color = #80919B
+footer.tab.enabled.color = #5F6F78
+footer.updates.text.color = #FFFFFE
+footer.updates.indicator.field.color = #00030F
+footer.updates.indicator.text.color = #EFFFFF
+
+
+## EditorConsole - stack traces of doom and println() ##
+# The font is handled by preferences.txt, so its size/etc are modifiable.
+
+console.color = #202E35
+# color of System.out text
+console.output.color = #96A6AF
+# text color for errors printed in the console
+console.error.color = #FF5FFF
+
+console.scrollbar.thumb.enabled.color = #4E5D65
+console.scrollbar.thumb.rollover.color = #4E5D65
+console.scrollbar.thumb.pressed.color = #4E5D65
+console.scrollbar.color = #19272D
+
+
+## PdeTextAreaDefaults - default colors for the editor ##
+
+# foreground and background colors
+editor.fgcolor = #FFFFFE
+editor.bgcolor = #000000
+
+editor.gradient.top = #4B2564
+editor.gradient.bottom = #5F6F78
+
+# highlight for the current line
+editor.line.highlight = true
+editor.line.highlight.color = #2D1141
+
+editor.caret.color = #FFFFFE
+# also used by EditorHeader
+editor.selection.color = #482262
+
+# little pooties at the end of lines that show where they finish
+editor.eol_markers = false
+editor.eol_markers.color = #999999
+
+# bracket/brace highlighting
+editor.bracket.highlight = true
+editor.bracket.highlight.color = #006698
+
+# colors for the custom scroll bar
+editor.scrollbar.thumb.enabled.color = #80919B
+editor.scrollbar.thumb.rollover.color = #71828B
+editor.scrollbar.thumb.pressed.color = #71828B
+editor.scrollbar.color = #697982
+
+
+## PdeTextAreaPainter - extras added to the editor ##
+
+editor.gutter.text.font = processing.mono,plain,12
+editor.gutter.text.color = #EFFFFF
+
+# transparency (0..100) for line numbers in gutter
+editor.gutter.text.active.alpha = 70
+# transparency for lines not currently in use
+editor.gutter.text.inactive.alpha = 30
+
+# bgcolor for the current (highlighted) line
+editor.gutter.highlight.color = #7C5295
+
+# squiggly line underneath errors in the editor
+editor.error.underline.color = #FFFFFE
+# squiggly line underneath warnings
+editor.warning.underline.color = #EA9EFF
+
+
+## MarkerColumn - shows ticks adjacent the scroll bar ##
+
+# lines next to the scrollbar showing where errors are located
+editor.column.error.color = #FFFFFE
+editor.column.warning.color = #BACBD5
+
+
+## ErrorTable - second tab below the console area, lists errors and warnings ##
+
+errors.header.font = processing.sans,plain,12
+errors.header.bgcolor = #101B20
+errors.header.fgcolor = #959B9E
+errors.bgcolor = #293941
+errors.row.font = processing.sans,plain,12
+errors.row.fgcolor = #BDCAD2
+errors.row.bgcolor = #293941
+errors.selection.fgcolor = #FFFFFE
+errors.selection.bgcolor = #9D57CB
+errors.selection.error.bgcolor = #9A00FF
+errors.selection.warning.bgcolor = #4B5B64
+errors.indicator.error.color = #FF90FF
+errors.indicator.warning.color = #70818A
+
+
+## ManagerTabs - tabs in the Contribution Manager ##
+
+manager.tab.selected.color = #4B2564
+manager.tab.unselected.color = #2C113F
+manager.tab.text.font = processing.sans,bold,14
+manager.tab.text.selected.color = #FFFFFE
+manager.tab.text.unselected.color = #9B78AF
+manager.tab.gradient.top = #1D012E
+manager.tab.gradient.bottom = #1D012E
+
+
+## ManagerFrame - main window for the Contribution Manager ##
+
+# same as manager.tab.gradient.top, because .bottom is between the tabs
+manager.tab.background = #1D012E
+
+
+## ContributionTab
+
+# category chooser for libraries
+manager.categories.enabled.fgcolor = #112028
+manager.categories.enabled.bgcolor = #7D8E97
+manager.categories.disabled.fgcolor = #24343C
+manager.categories.disabled.bgcolor = #7D8E97
+manager.categories.selected.fgcolor = #52008B
+manager.categories.selected.bgcolor = #FFB6FF
+
+
+# error window (X) close button
+manager.error.close.icon.color = #000000
+
+manager.scrollbar.thumb.enabled.color = #6C4485
+manager.scrollbar.thumb.rollover.color = #7D5396
+manager.scrollbar.thumb.pressed.color = #7D5396
+manager.scrollbar.color = #502A69
+
+manager.search.text.color = #FFFFFE
+manager.search.icon.color = #AA80C3
+manager.search.background.color = #1A002C
+manager.search.caret.color = #E599FF
+manager.search.placeholder.color = #AA80C3
+manager.search.selection.text.color = #FFFFFE
+manager.search.selection.background.color = #490F71
+
+
+## ListPanel – the listing inside a Contribution Manager tab ##
+
+manager.list.heavy.font = processing.sans,bold,14
+manager.list.background.color = #4B2564
+manager.list.header.fgcolor = #FDB7FF
+manager.list.header.bgcolor = #573170
+manager.list.section.color = #4B2564
+manager.list.selection.color = #72838C
+manager.list.icon.color = #FFA7FF
+manager.list.text.color = #FFFFFE
+manager.list.foundation.color = #FFADFF
+manager.list.incompatible.selection.color = #644477
+manager.list.incompatible.text.color = #A08AAB
+
+
+## StatusPanel - the bottom panel with detail about a contribution
+
+manager.panel.font = processing.sans,plain,11
+manager.panel.background.color = #4B5B64
+manager.panel.text.color = #FFFFFE
+manager.panel.link.color = #FFB6FF
+manager.panel.foundation.color = #FFB7FF
+
+manager.button.enabled.background.color = #293840
+manager.button.enabled.text.color = #FFFFFE
+manager.button.enabled.icon.color = #FFB6FF
+manager.button.pressed.background.color = #08181F
+manager.button.pressed.text.color = #FFB6FF
+manager.button.pressed.icon.color = #FFB6FF
+manager.button.disabled.background.color = #3A4952
+manager.button.disabled.text.color = #ACB1B4
+manager.button.disabled.icon.color = #ACB1B4
+
+manager.progress.complete.fgcolor = #FFFFFE
+manager.progress.complete.bgcolor = #EB93FF
+manager.progress.incomplete.fgcolor = #ACB1B4
+manager.progress.incomplete.bgcolor = #08181F
+
+
+## ZoomTreeCellRenderer - tree for Examples and Sketchbook windows ##
+
+tree.font = processing.sans,plain,12
+
+
+## Theme Selector - stays the same across all themes ##
+
+# dropdown for changing the theme set
+theme_selector.combo_box.enabled.fgcolor = #D3BFDD
+theme_selector.combo_box.enabled.bgcolor = #392A42
+theme_selector.combo_box.disabled.fgcolor = #695872
+theme_selector.combo_box.disabled.bgcolor = #392A42
+theme_selector.combo_box.selected.fgcolor = #190048
+theme_selector.combo_box.selected.bgcolor = #BD75EC
+
+# background color for the window
+theme_selector.window.color = #000000
+
+# text for the labels at the bottom
+theme_selector.text.color = #7B747F
+theme_selector.link.color = #F3A7FF
+
+
+## Token - colors for source code in the editor ##
+
+# For an explanation of these tags, see Token.java:
+# processing/app/src/processing/app/syntax/Token.java
+
+editor.token.function1.style = #CE94F0,plain
+editor.token.function2.style = #CE94F0,plain
+editor.token.function3.style = #00B068,plain
+editor.token.function4.style = #CE94F0,bold
+
+editor.token.keyword1.style = #B813C0,plain
+editor.token.keyword2.style = #B813C0,plain
+editor.token.keyword3.style = #00B068,plain
+editor.token.keyword4.style = #CC3D92,plain
+editor.token.keyword5.style = #FF4144,plain
+editor.token.keyword6.style = #B813C0,plain
+
+editor.token.literal1.style = #008DAF,plain
+editor.token.literal2.style = #0071F0,plain
+
+editor.token.operator.style = #CE94F0,plain
+
+editor.token.label.style = #5E5E5E,bold
+
+editor.token.comment1.style = #5E5E5E,plain
+editor.token.comment2.style = #5E5E5E,plain
+
+editor.token.invalid.style = #5E5E5E,bold
+
+
+## Colors used for code completion icons ##
+
+editor.completion.class.color = #FF4144
+editor.completion.field.color = #0071F0
+editor.completion.local.color = #CE94F0
+editor.completion.method.color = #B813C0

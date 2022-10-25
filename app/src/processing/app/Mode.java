@@ -30,7 +30,6 @@ import java.util.*;
 import java.util.List;
 
 import javax.swing.*;
-import javax.swing.tree.*;
 
 import processing.app.contrib.ContributionManager;
 import processing.app.syntax.*;
@@ -39,7 +38,6 @@ import processing.app.ui.EditorException;
 import processing.app.ui.EditorState;
 import processing.app.ui.ExamplesFrame;
 import processing.app.ui.Recent;
-import processing.app.ui.SketchbookFrame;
 import processing.app.ui.Toolkit;
 import processing.core.PApplet;
 
@@ -63,7 +61,6 @@ public abstract class Mode {
   protected JMenu importMenu;
 
   protected ExamplesFrame examplesFrame;
-  protected SketchbookFrame sketchbookFrame;
 
   // popup menu used for the toolbar
   protected JMenu toolbarMenu;
@@ -85,14 +82,6 @@ public abstract class Mode {
    * to grab any additional classes that subclass what's in the mode folder.
    */
   protected ClassLoader classLoader;
-
-//  static final int BACKGROUND_WIDTH = 1025;
-//  static final int BACKGROUND_HEIGHT = 65;
-//  protected Image backgroundImage;
-
-//  public Mode(Base base, File folder) {
-//    this(base, folder, base.getSketchbookLibrariesFolder());
-//  }
 
 
   public Mode(Base base, File folder) {
@@ -138,42 +127,44 @@ public abstract class Mode {
   @SuppressWarnings("SameParameterValue")
   protected void loadKeywords(File keywordFile,
                               String commentPrefix) throws IOException {
-    BufferedReader reader = PApplet.createReader(keywordFile);
-    String line;
-    while ((line = reader.readLine()) != null) {
-      if (!line.trim().startsWith(commentPrefix)) {
-        // Was difficult to make sure that mode authors were properly doing
-        // tab-separated values. By definition, there can't be additional
-        // spaces inside a keyword (or filename), so just splitting on tokens.
-        String[] pieces = PApplet.splitTokens(line);
-        if (pieces.length >= 2) {
-          String keyword = pieces[0];
-          String coloring = pieces[1];
+    String[] lines = PApplet.loadStrings(keywordFile);
+    if (lines != null) {
+      for (String line : lines) {
+        if (!line.trim().startsWith(commentPrefix)) {
+          // Was difficult to make sure that mode authors were properly doing
+          // tab-separated values. By definition, there can't be additional
+          // spaces inside a keyword (or filename), so just splitting on tokens.
+          String[] pieces = PApplet.splitTokens(line);
+          if (pieces.length >= 2) {
+            String keyword = pieces[0];
+            String coloring = pieces[1];
 
-          if (coloring.length() > 0) {
-            tokenMarker.addColoring(keyword, coloring);
-          }
-          if (pieces.length == 3) {
-            String htmlFilename = pieces[2];
-            if (htmlFilename.length() > 0) {
-              // if the file is for the version with parens,
-              // add a paren to the keyword
-              if (htmlFilename.endsWith("_")) {
-                keyword += "_";
-              }
-              // Allow the bare size() command to override the lookup
-              // for StringList.size() and others, but not vice-versa.
-              // https://github.com/processing/processing/issues/4224
-              boolean seen = keywordToReference.containsKey(keyword);
-              if (!seen || keyword.equals(htmlFilename)) {
-                keywordToReference.put(keyword, htmlFilename);
+            if (coloring.length() > 0) {
+              tokenMarker.addColoring(keyword, coloring);
+            }
+            if (pieces.length == 3) {
+              String htmlFilename = pieces[2];
+              if (htmlFilename.length() > 0) {
+                // if the file is for the version with parens,
+                // add a paren to the keyword
+                if (htmlFilename.endsWith("_")) {
+                  keyword += "_";
+                }
+                // Allow the bare size() command to override the lookup
+                // for StringList.size() and others, but not vice-versa.
+                // https://github.com/processing/processing/issues/4224
+                boolean seen = keywordToReference.containsKey(keyword);
+                if (!seen || keyword.equals(htmlFilename)) {
+                  keywordToReference.put(keyword, htmlFilename);
+                }
               }
             }
           }
         }
       }
+    } else {
+      System.err.println("Could not read " + keywordFile);
     }
-    reader.close();
   }
 
 
@@ -187,51 +178,12 @@ public abstract class Mode {
   }
 
 
-//  /**
-//   * Setup additional elements that are only required when running with a GUI,
-//   * rather than from the command-line. Note that this will not be called when
-//   * the Mode is used from the command line (because Base will be null).
-//   */
-  /*
-  public void setupGUI() {
-    try {
-      // First load the default theme data for the whole PDE.
-      theme = new Settings(Platform.getContentFile("lib/theme.txt"));
-
-      // The mode-specific theme.txt file should only contain additions,
-      // and in extremely rare cases, it might override entries from the
-      // main theme. Do not override for style changes unless they are
-      // objectively necessary for your Mode.
-      File modeTheme = new File(folder, "theme/theme.txt");
-      if (modeTheme.exists()) {
-        // Override the built-in settings with what the theme provides
-        theme.load(modeTheme);
-      }
-
-      // Against my better judgment, adding the ability to override themes
-      // https://github.com/processing/processing/issues/5445
-      File sketchbookTheme =
-        new File(Base.getSketchbookFolder(), "theme.txt");
-      if (sketchbookTheme.exists()) {
-        theme.load(sketchbookTheme);
-      }
-
-      // other things that have to be set explicitly for the defaults
-      theme.setColor("run.window.bgcolor", SystemColor.control);
-
-    } catch (IOException e) {
-      Messages.showError("Problem loading theme.txt",
-                         "Could not load theme.txt, please re-install Processing", e);
-    }
-  }
-  */
-
-
   public File getContentFile(String path) {
     return new File(folder, path);
   }
 
 
+  @SuppressWarnings("unused")
   public InputStream getContentStream(String path) throws FileNotFoundException {
     return new FileInputStream(getContentFile(path));
   }
@@ -430,6 +382,7 @@ public abstract class Mode {
 //  abstract public EditorToolbar createToolbar(Editor editor);
 
 
+  @SuppressWarnings("unused")
   public JMenu getToolbarMenu() {
     if (toolbarMenu == null) {
       rebuildToolbarMenu();
@@ -544,9 +497,9 @@ public abstract class Mode {
       importMenu.removeAll();
     }
 
-    JMenuItem addLib = new JMenuItem(Language.text("menu.library.add_library"));
-    addLib.addActionListener(e -> ContributionManager.openLibraries());
-    importMenu.add(addLib);
+    JMenuItem manageLibs = new JMenuItem(Language.text("menu.library.manage_libraries"));
+    manageLibs.addActionListener(e -> ContributionManager.openLibraries());
+    importMenu.add(manageLibs);
     importMenu.addSeparator();
 
     rebuildLibraryList();
@@ -563,6 +516,7 @@ public abstract class Mode {
       JMenuItem item = new JMenuItem(getTitle() + " " + Language.text("menu.library.no_core_libraries"));
       item.setEnabled(false);
       importMenu.add(item);
+
     } else {
       for (Library library : coreLibraries) {
         JMenuItem item = new JMenuItem(library.getName());
@@ -581,7 +535,7 @@ public abstract class Mode {
       contrib.setEnabled(false);
       importMenu.add(contrib);
 
-      HashMap<String, JMenu> subfolders = new HashMap<>();
+      Map<String, JMenu> subfolders = new HashMap<>();
 
       for (Library library : contribLibraries) {
         JMenuItem item = new JMenuItem(library.getName());
@@ -657,48 +611,6 @@ public abstract class Mode {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  public DefaultMutableTreeNode buildSketchbookTree() {
-    DefaultMutableTreeNode sbNode =
-      new DefaultMutableTreeNode(Language.text("sketchbook.tree"));
-    try {
-      base.addSketches(sbNode, Base.getSketchbookFolder(), false);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return sbNode;
-  }
-
-
-  /** Sketchbook has changed, update it on next viewing. */
-  public void rebuildSketchbookFrame() {
-    if (sketchbookFrame != null) {
-      boolean visible = sketchbookFrame.isVisible();
-      Rectangle bounds = null;
-      if (visible) {
-        bounds = sketchbookFrame.getBounds();
-        sketchbookFrame.setVisible(false);
-        sketchbookFrame.dispose();
-      }
-      sketchbookFrame = null;
-      if (visible) {
-        showSketchbookFrame();
-        sketchbookFrame.setBounds(bounds);
-      }
-    }
-  }
-
-
-  public void showSketchbookFrame() {
-    if (sketchbookFrame == null) {
-      sketchbookFrame = new SketchbookFrame(base, this);
-    }
-    sketchbookFrame.setVisible();
-  }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
   /**
    * Get an ImageIcon object from the Mode folder.
    * Or when prefixed with /lib, load it from the main /lib folder.
@@ -710,10 +622,8 @@ public abstract class Mode {
     }
     File file = new File(folder, filename);
     if (!file.exists()) {
-//      EditorConsole.systemErr.println("file does not exist: " + file.getAbsolutePath());
       return null;
     }
-//    EditorConsole.systemErr.println("found: " + file.getAbsolutePath());
     return new ImageIcon(file.getAbsolutePath());
   }
 
@@ -732,19 +642,20 @@ public abstract class Mode {
 
 
   public Image loadImageX(String filename) {
-    final int res = Toolkit.highResImages() ? 2 : 1;
-    return loadImage(filename + "-" + res +  "x.png");
+    return loadImage(filename + "-" + Toolkit.highResMultiplier() +  "x.png");
   }
 
 
-//  public EditorButton loadButton(String name) {
-//    return new EditorButton(this, name);
-//  }
-
-
-  //public Settings getTheme() {
-  //  return theme;
-  //}
+  public String loadString(String filename) {
+    File file;
+    if (filename.startsWith("/lib/")) {
+      // remove the slash from the front
+      file = Platform.getContentFile(filename.substring(1));
+    } else {
+      file = new File(folder, filename);
+    }
+    return Util.loadFile(file);
+  }
 
 
   /**
@@ -778,111 +689,7 @@ public abstract class Mode {
   }
 
 
-//  abstract public Formatter createFormatter();
-
-
-//  public Formatter getFormatter() {
-//    return formatter;
-//  }
-
-
-//  public Tool getFormatter() {
-//    return formatter;
-//  }
-
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  /*
-  // Get attributes/values from the theme.txt file. To discourage burying this
-  // kind of information in code where it doesn't belong (and is difficult to
-  // track down), these don't have a "default" option as a second parameter.
-
-
-  // removing, this doesn't seem to have been in use
-  /// @since 3.0a6
-  public String getString(String attribute) {
-    return theme.get(attribute);
-  }
-
-
-  public boolean getBoolean(String attribute) {
-    return theme.getBoolean(attribute);
-  }
-
-
-  public int getInteger(String attribute) {
-    return theme.getInteger(attribute);
-  }
-
-
-  public Color getColor(String attribute) {
-    return theme.getColor(attribute);
-  }
-
-
-  public Font getFont(String attribute) {
-    return theme.getFont(attribute);
-  }
-
-
-  public SyntaxStyle getStyle(String attribute) {
-    String str = Preferences.get("editor.token." + attribute + ".style");
-    if (str == null) {
-      throw new IllegalArgumentException("No style found for " + attribute);
-    }
-
-    StringTokenizer st = new StringTokenizer(str, ",");
-
-    String s = st.nextToken();
-    if (s.indexOf("#") == 0) s = s.substring(1);
-    Color color = new Color(Integer.parseInt(s, 16));
-
-    s = st.nextToken();
-    boolean bold = s.contains("bold");
-//    boolean italic = (s.indexOf("italic") != -1);
-
-//    return new SyntaxStyle(color, italic, bold);
-    return new SyntaxStyle(color, bold);
-  }
-
-
-  public Image makeGradient(String attribute, int wide, int high) {
-    int top = getColor(attribute + ".gradient.top").getRGB();
-    int bot = getColor(attribute + ".gradient.bottom").getRGB();
-
-//    float r1 = (top >> 16) & 0xff;
-//    float g1 = (top >> 8) & 0xff;
-//    float b1 = top & 0xff;
-//    float r2 = (bot >> 16) & 0xff;
-//    float g2 = (bot >> 8) & 0xff;
-//    float b2 = bot & 0xff;
-
-    BufferedImage outgoing =
-      new BufferedImage(wide, high, BufferedImage.TYPE_INT_RGB);
-    int[] row = new int[wide];
-    WritableRaster wr = outgoing.getRaster();
-    for (int i = 0; i < high; i++) {
-//      Arrays.fill(row, (255 - (i + GRADIENT_TOP)) << 24);
-//      int r = (int) PApplet.map(i, 0, high-1, r1, r2);
-      int rgb = PApplet.lerpColor(top, bot, i / (float)(high-1), PConstants.RGB);
-      Arrays.fill(row, rgb);
-//      System.out.println(PApplet.hex(row[0]));
-      wr.setDataElements(0, i, wide, 1, row);
-    }
-//    Graphics g = outgoing.getGraphics();
-//    for (int i = 0; i < steps; i++) {
-//      g.setColor(new Color(1, 1, 1, 255 - (i + GRADIENT_TOP)));
-//      //g.fillRect(0, i, EditorButton.DIM, 10);
-//      g.drawLine(0, i, EditorButton.DIM, i);
-//    }
-    return outgoing;
-  }
-   */
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
 
   // Breaking out extension types in order to clean up the code, and make it
   // easier for other environments (like Arduino) to incorporate changes.
@@ -893,8 +700,8 @@ public abstract class Mode {
    * For Processing, this is true for .pde files. (Broken out for subclasses.)
    * You can override this in your Mode subclass to handle it differently.
    */
-  public boolean hideExtension(String what) {
-    return what.equals(getDefaultExtension());
+  public boolean hideExtension(String ext) {
+    return ext.equals(getDefaultExtension());
   }
 
 
@@ -909,21 +716,21 @@ public abstract class Mode {
   /**
    * True if the specified extension is the default file extension.
    */
-  public boolean isDefaultExtension(String what) {
-    return what.equals(getDefaultExtension());
+  public boolean isDefaultExtension(String ext) {
+    return ext.equals(getDefaultExtension());
   }
 
 
   /**
-   * @param f File to be checked against this mode's accepted extensions.
-   * @return Whether or not the given file name features an extension supported by this mode.
+   * True if this Mode can edit this file (usually meaning that
+   * its extension matches one that is supported by the Mode).
    */
-  public boolean canEdit(final File f) {
-    final int dot = f.getName().lastIndexOf('.');
+  public boolean canEdit(final File file) {
+    final int dot = file.getName().lastIndexOf('.');
     if (dot < 0) {
       return false;
     }
-    return validExtension(f.getName().substring(dot + 1));
+    return validExtension(file.getName().substring(dot + 1));
   }
 
 
@@ -957,12 +764,12 @@ public abstract class Mode {
 
 
   /**
-   * Returns the appropriate file extension to use for auxilliary source files in a sketch.
-   * For example, in a Java-mode sketch, auxilliary files should be name "Foo.java"; in
-   * Python mode, they should be named "foo.py".
+   * Returns the appropriate file extension to use for auxiliary source
+   * files in a sketch. For example, in a Java-mode sketch, auxiliary files
+   * can be named "Foo.java"; in Python mode, they should be named "foo.py".
    *
-   * <p>Modes that do not override this function will get the default behavior of returning the
-   * default extension.
+   * Modes that do not override this function will get the
+   * default behavior of returning the default extension.
    */
   public String getModuleExtension() {
     return getDefaultExtension();
@@ -983,33 +790,32 @@ public abstract class Mode {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
+
   /**
    * Checks coreLibraries and contribLibraries for a library with the specified name
    * @param libName the name of the library to find
    * @return the Library or null if not found
    */
   public Library findLibraryByName(String libName) {
-
     for (Library lib : this.coreLibraries) {
       if (libName.equals(lib.getName()))
         return lib;
     }
-
     for (Library lib : this.contribLibraries) {
       if (libName.equals(lib.getName()))
         return lib;
     }
-
     return null;
   }
 
+
   /**
-   * Create a fresh applet/application folder if the 'delete target folder'
+   * Create a fresh application folder if the 'delete target folder'
    * pref has been set in the preferences.
    */
   public void prepareExportFolder(File targetFolder) {
     if (targetFolder != null) {
-      // Nuke the old applet/application folder because it can cause trouble
+      // Nuke the old application folder because it can cause trouble
       if (Preferences.getBoolean("export.delete_target_folder")) {
         if (targetFolder.exists()) {
           try {
@@ -1028,21 +834,6 @@ public abstract class Mode {
       }
     }
   }
-
-//  public void handleNew() {
-//    base.handleNew();
-//  }
-//
-//
-//  public void handleNewReplace() {
-//    base.handleNewReplace();
-//  }
-
-
-  // this is Java-specific, so keeping it in JavaMode
-//  public String getSearchPath() {
-//    return null;
-//  }
 
 
   @Override

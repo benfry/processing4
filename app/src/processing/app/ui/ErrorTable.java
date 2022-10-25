@@ -106,6 +106,7 @@ public class ErrorTable extends JTable {
 
 
   protected void updateTheme() {
+    setBackground(Theme.getColor("errors.bgcolor"));
     getTableHeader().setDefaultRenderer(new GradyHeaderRenderer());
     setDefaultRenderer(Object.class, new GradyRowRenderer());
   }

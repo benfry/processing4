@@ -17,9 +17,8 @@ import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Vector;
 
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.text.*;
 import javax.swing.undo.*;
@@ -29,6 +28,7 @@ import java.awt.im.InputMethodRequests;
 
 import processing.app.syntax.im.InputMethodSupport;
 import processing.core.PApplet;
+
 
 /**
  * The text area component from the JEdit Syntax (syntax.jedit.org) project.
@@ -123,10 +123,31 @@ public class JEditTextArea extends JComponent
     partialPixelWidth = 0;
 
     // Initialize the GUI
+    /*
     setLayout(new ScrollLayout());
     add(CENTER, painter);
     add(RIGHT, vertical = new JScrollBar(Adjustable.VERTICAL));
     add(BOTTOM, horizontal = new JScrollBar(Adjustable.HORIZONTAL));
+    */
+
+    setLayout(new BorderLayout());
+    add(painter, BorderLayout.CENTER);
+    add(vertical = new JScrollBar(Adjustable.VERTICAL), BorderLayout.EAST);
+    add(horizontal = new JScrollBar(Adjustable.HORIZONTAL), BorderLayout.SOUTH);
+    // what a dreadful hack to get the scrollbar to align
+    horizontal.setBorder(new EmptyBorder(0, 0, 0, vertical.getPreferredSize().width));
+
+    /*
+    // this fixes the glitch at the lower-right of the scrollbars,
+    // but results in the scrolling area behaving very oddly,
+    // presumably due to quirks in this very old JEditSyntax code.
+    JScrollPane pane = new JScrollPane(painter);
+    pane.setBorder(BorderFactory.createEmptyBorder());
+    horizontal = pane.getHorizontalScrollBar();
+    vertical = pane.getVerticalScrollBar();
+    setLayout(new BorderLayout());
+    add(pane, BorderLayout.CENTER);
+    */
 
     // Add some event listeners
     vertical.addAdjustmentListener(new AdjustHandler());
@@ -136,7 +157,7 @@ public class JEditTextArea extends JComponent
     painter.addMouseMotionListener(new DragHandler());
     addFocusListener(new FocusHandler());
     // send tab keys through to the text area
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1267
+    // https://download.processing.org/bugzilla/1267.html
     setFocusTraversalKeysEnabled(false);
 
     // Load the defaults
@@ -400,8 +421,8 @@ public class JEditTextArea extends JComponent
       int painterWidth = painter.getScrollWidth();
 
       // Update to how horizontal scrolling is handled
-      // http://code.google.com/p/processing/issues/detail?id=280
-      // http://code.google.com/p/processing/issues/detail?id=316
+      // https://github.com/processing/processing/issues/319
+      // https://github.com/processing/processing/issues/355
       //setValues(int newValue, int newExtent, int newMin, int newMax)
       if (horizontalOffset < 0) {
         horizontal.setValues(-horizontalOffset, painterWidth, -leftHandGutter, width);
@@ -633,7 +654,6 @@ public class JEditTextArea extends JComponent
   public int _offsetToX(int line, int offset) {
     TokenMarkerState tokenMarker = getTokenMarker();
 
-    // Use painter's cached info for speed
     FontMetrics fm = painter.getFontMetrics();
 
     getLineText(line, lineSegment);
@@ -1219,6 +1239,19 @@ public class JEditTextArea extends JComponent
   }
 
   /**
+   * Selects all text in the given line.
+   * @param line The line number to select all text in it.
+   */
+  private void selectLine(final int line) {
+    selectLine = true;
+    final int lineStart = getLineStartOffset(line);
+    final int lineEnd = getLineSelectionStopOffset(line);
+    select(lineStart, lineEnd);
+    selectionAncorStart = selectionStart;
+    selectionAncorEnd = selectionEnd;
+  }
+
+  /**
    * Moves the mark to the caret position.
    */
   public final void selectNone()
@@ -1326,66 +1359,125 @@ public class JEditTextArea extends JComponent
       return CharacterKinds.Other;
   }
 
-  /**
-   * Get the width in pixels of a segment of text within the IDE.
-   *
-   * <p>
-   * Fractional-font aware implementation of Utilities.getTabbedTextWidth that determines if there
-   * are fractional character widths present in a font in order to return a more accurate pixel
-   * width for an input segment.
-   * </p>
-   *
-   * @param s The segment of text for which a pixel width should be returned.
-   * @param metrics The metrics for the font in which the given segment will be drawn.
-   * @param x The x origin.
-   * @param expander The strategy for converting tabs into characters.
-   * @param startOffset The offset to apply before the text will be drawn.
-   * @return The width of the input segment in pixels with fractional character widths considered.
-   */
-  private int getTabbedTextWidth(Segment s, FontMetrics metrics, float x,
-                                 TabExpander expander, int startOffset) {
-    float additionalOffset =
-      getPartialPixelWidth(metrics, x, expander, startOffset) * s.length();
 
-    return Math.round(
-      Utilities.getTabbedTextWidth(s, metrics, x, expander, startOffset) + additionalOffset
-    );
+  /*
+  static float getFontCharWidth(char c, FontMetrics fm) {
+    return getFontCharsWidth(new char[] { c }, 0, 1, fm);
   }
 
-  /**
-   * Get any partial widths applied within a font.
-   *
-   * <p>
-   * Get any partial widths applied within a font, caching results for the latest requested font
-   * (as identified via a FontMetrics object). Note that this is calculated for a sample character
-   * and is only valid for extrapolation in a monospaced font (that one might want to use in an
-   * IDE).
-   * </p>
-   *
-   * @param candidateMetrics The FontMetrics for which partial character pixel widths should be
-   *    returned.
-   * @param x The x origin.
-   * @param expander The strategy for converting tabs into characters.
-   * @param startOffset The offset to apply before the text will be drawn.
-   * @return The partial width of a sample character within a font.
-   */
-  private float getPartialPixelWidth(FontMetrics candidateMetrics, float x, TabExpander expander,
-      int startOffset) {
 
-    // See https://github.com/sampottinger/processing/issues/103
-    // Requires reference not object equality check
-    if (candidateMetrics != cachedPartialPixelWidthFont) {
-      float withFractional =
-        Utilities.getTabbedTextWidth(TEST_SEGMENT, candidateMetrics,
-                                     x, expander, startOffset);
-      int withoutFractional = (int) withFractional;
+  static final char[] spaceChar = new char[] { ' ' };
 
-      partialPixelWidth = withFractional - withoutFractional;
-      cachedPartialPixelWidthFont = candidateMetrics;
+  static float getFontCharsWidth(char[] data, int offset, int len,
+                                        FontMetrics fm) {
+    if (len == 0) {
+      return 0;
+    }
+    // doesn't seem to do anything fractional
+    float wi = fm.charsWidth(data, offset, len);
+    if (wi != ((int) wi)) {
+      System.out.println("extra: " + wi);
     }
 
-    return partialPixelWidth;
+    int spaceWidth = fm.charsWidth(spaceChar, 0, 1);
+    //return fm.charsWidth(data, offset, len);
+    return len * spaceWidth;
   }
+  */
+
+
+  /**
+   * Hacked up version of the function with the same name from
+   * javax.swing.text.Utilities.
+   *
+   * In spite of being a fixed width font, Source Code Pro (the default
+   * font starting in Processing 3) returns slightly different widths
+   * depending on the number of characters shown. Using the getBounds()
+   * method on text won't even give us these metrics for individual
+   * characters, which returns a float but never with any fractional.
+   *
+   * This function forces the width of each character to stay the same,
+   * just as we're doing by drawing individual characters in the
+   * TextAreaPainter class.
+   *
+   * <a href="https://github.com/processing/processing4/issues/447">#447</a>,
+   * <a href="https://github.com/processing/processing4/issues/226">#226</a>,
+   * <a href="https://github.com/processing/processing4/issues/194">#194</a>,
+   * and <a href="https://github.com/sampottinger/processing/issues/103">Sam's 103</a>
+   */
+
+  static int getTabbedTextWidth(Segment s,
+                                FontMetrics metrics, int x,
+                                TabExpander e, int startOffset) {
+    int nextX = x;
+    char[] txt = s.array;
+    int txtOffset = s.offset;
+    int n = s.offset + s.count;
+
+    for (int i = txtOffset; i < n; i++) {
+      if (txt[i] == '\t' && e != null) {
+        nextX = (int) e.nextTabStop(nextX, startOffset + i - txtOffset);
+        continue;
+      }
+      nextX += metrics.charWidth(txt[i]);
+    }
+    return nextX - x;
+  }
+/*
+  static int getTabbedTextWidth(Segment s,
+                                FontMetrics metrics, int x,
+                                TabExpander e, int startOffset) {
+    int nextX = x;
+    char[] txt = s.array;
+    int txtOffset = s.offset;
+    int n = s.offset + s.count;
+    int charCount = 0;
+//    int spaceAddon = 0;
+
+    int spaceWidth = metrics.charWidth(' ');
+
+    for (int i = txtOffset; i < n; i++) {
+      if (txt[i] == '\t') {
+        //nextX += metrics.charsWidth(txt, i-charCount, charCount);
+        nextX += charCount * spaceWidth;
+        charCount = 0;
+        if (txt[i] == '\t') {
+          if (e != null) {
+            nextX = (int) e.nextTabStop(nextX, startOffset + i - txtOffset);
+          } else {
+            // if no tab expander, just return the size of a space
+            //nextX += getFontCharWidth(' ', metrics);
+            nextX += spaceWidth;
+          }
+        } else if (txt[i] == ' ') {
+          //float spaceWidth = getFontCharWidth(' ', metrics);
+          //nextX += spaceWidth + spaceAddon;
+          nextX += spaceWidth;
+        }
+      } else if (txt[i] == '\n') {
+        // Ignore newlines, they take up space, and shouldn't be counted.
+        //nextX += getFontCharsWidth(txt, i - charCount, charCount, metrics);
+        nextX += charCount * spaceWidth;
+        // But this doesn't make any sense: why are we adding horizontally,
+        // shouldn't nextX be *reset* here? Guessing that segments never
+        // include a new line, so we never run into this. [fry 220129]
+        charCount = 0;
+      } else {
+        charCount++;
+      }
+    }
+    //nextX += getFontCharsWidth(txt, n - charCount, charCount, metrics);
+    nextX += charCount * spaceWidth;
+
+//    int amt = (int) (nextX - x);
+//    float spc = getFontCharWidth(' ', metrics);
+//    System.out.println(amt + " % " + spc + " = " + (amt % spc));
+
+//    return (int) (nextX - x);  // nextX was a float, this was returning a float [fry 220128]
+    return nextX - x;
+  }
+*/
+
 
   protected void setNewSelectionWord( int line, int offset )
   {
@@ -1641,6 +1733,7 @@ public class JEditTextArea extends JComponent
   /**
    * Deletes the selected text from the text area and places it
    * into the clipboard.
+   * If no selection is made, the whole line with caret will be selectd.
    */
   public void cut() {
     if (editable) {
@@ -1652,16 +1745,21 @@ public class JEditTextArea extends JComponent
 
   /**
    * Places the selected text into the clipboard.
+   * If no selection is made, the whole line with caret will be selectd.
    */
   public void copy() {
-    if (selectionStart != selectionEnd) {
-      Clipboard clipboard = getToolkit().getSystemClipboard();
-
-      String selection = getSelectedText();
-      if (selection != null) {
-        int repeatCount = inputHandler.getRepeatCount();
-        clipboard.setContents(new StringSelection(selection.repeat(Math.max(0, repeatCount))), null);
+    if (selectionStart == selectionEnd) {
+      selectLine(getCaretLine());
+    }
+    Clipboard clipboard = getToolkit().getSystemClipboard();
+    String selection = getSelectedText();
+    if (selection != null) {
+      int repeatCount = inputHandler.getRepeatCount();
+      StringBuilder sb = new StringBuilder();
+      for(int i = 0; i < repeatCount; i++) {
+        sb.append(selection);
       }
+      clipboard.setContents(new StringSelection(sb.toString()), null);
     }
   }
 
@@ -1853,7 +1951,7 @@ public class JEditTextArea extends JComponent
         }
 
         // Remove tabs and replace with spaces
-        // http://code.google.com/p/processing/issues/detail?id=69
+        // https://github.com/processing/processing/issues/108
         if (selection.contains("\t")) {
           int tabSize = Preferences.getInteger("editor.tabs.size");
           char[] c = new char[tabSize];
@@ -2096,6 +2194,7 @@ public class JEditTextArea extends JComponent
     }
   }
 
+  /*
   class ScrollLayout implements LayoutManager
   {
     //final int LEFT_EXTRA = 5;
@@ -2210,6 +2309,7 @@ public class JEditTextArea extends JComponent
     private Component bottom;
     private final Vector<Component> leftOfScrollBar = new Vector<>();
   }
+  */
 
   class MutableCaretEvent extends CaretEvent
   {
@@ -2323,8 +2423,8 @@ public class JEditTextArea extends JComponent
   }
 
 
-  class DragHandler implements MouseMotionListener
-  {
+  class DragHandler implements MouseMotionListener {
+
     public void mouseDragged(MouseEvent evt) {
       if (popup != null && popup.isVisible()) return;
 
@@ -2515,10 +2615,7 @@ public class JEditTextArea extends JComponent
 
 
     private void doTripleClick(MouseEvent evt, int line, int offset, int dot) {
-      selectLine = true;
-      select(getLineStartOffset(line),getLineSelectionStopOffset(line));
-      selectionAncorStart = selectionStart;
-      selectionAncorEnd = selectionEnd;
+      selectLine(line);
     }
   }
 

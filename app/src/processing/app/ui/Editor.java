@@ -23,23 +23,6 @@
 
 package processing.app.ui;
 
-import processing.app.Base;
-import processing.app.Formatter;
-import processing.app.Language;
-import processing.app.Messages;
-import processing.app.Mode;
-import processing.app.Platform;
-import processing.app.Preferences;
-import processing.app.Problem;
-import processing.app.RunnerListener;
-import processing.app.Sketch;
-import processing.app.SketchCode;
-import processing.app.SketchException;
-import processing.app.Util;
-import processing.app.contrib.ContributionManager;
-import processing.app.syntax.*;
-import processing.core.*;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -65,11 +48,29 @@ import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.*;
 import javax.swing.plaf.basic.*;
 import javax.swing.text.*;
 import javax.swing.text.html.*;
 import javax.swing.undo.*;
+
+import processing.app.Base;
+import processing.app.Formatter;
+import processing.app.Language;
+import processing.app.Messages;
+import processing.app.Mode;
+import processing.app.Platform;
+import processing.app.Preferences;
+import processing.app.Problem;
+import processing.app.RunnerListener;
+import processing.app.Sketch;
+import processing.app.SketchCode;
+import processing.app.SketchException;
+import processing.app.contrib.ContributionManager;
+import processing.app.laf.PdeMenuItemUI;
+import processing.app.syntax.*;
+import processing.core.*;
 
 
 /**
@@ -80,12 +81,13 @@ public abstract class Editor extends JFrame implements RunnerListener {
   protected EditorState state;
   protected Mode mode;
 
-  // There may be certain gutter sizes which cause text bounds inside the console to be calculated incorrectly. 45
-  // seems to work but change with caution.
+  // There may be certain gutter sizes that cause text bounds
+  // inside the console to be calculated incorrectly.
+  // 45 seems to work but change with caution. [sampottinger 191107]
   static public final int LEFT_GUTTER = Toolkit.zoom(45);
 
   static public final int RIGHT_GUTTER = Toolkit.zoom(12);
-  static public final int GUTTER_MARGIN = Toolkit.zoom(3);
+  static public final int GUTTER_MARGIN = Toolkit.zoom(5);
 
   protected MarkerColumn errorColumn;
 
@@ -171,7 +173,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     });
     // don't close the window when clicked, the app will take care
     // of that via the handleQuitInternal() methods
-    // http://dev.processing.org/bugs/show_bug.cgi?id=440
+    // https://download.processing.org/bugzilla/440.html
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 
     // When bringing a window to front, let the Base know
@@ -347,7 +349,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   protected JEditTextArea createTextArea() {
-    return new JEditTextArea(new PdeTextAreaDefaults(mode),
+    return new JEditTextArea(new PdeTextAreaDefaults(),
                              new PdeInputHandler(this));
   }
 
@@ -465,20 +467,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     for (final Mode m : base.getModeList()) {
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(m.getTitle());
       item.addActionListener(e -> {
-        /*
-        if (!sketch.isModified()) {
-          if (!base.changeMode(m)) {
-            reselectMode();
-            Messages.showWarning(Language.text("warn.cannot_change_mode.title"),
-                                 Language.interpolate("warn.cannot_change_mode.body", m));
-          }
-        } else {
-          reselectMode();
-          Messages.showWarning("Save",
-                               "Please save the sketch before changing the mode.");
-        }
-        */
-        //if (sketch.isModified() || !base.changeMode(m)) {
         if (!base.changeMode(m)) {
           // Returns false if unable to change the mode in this window
           // (which will open a new window with the new Mode), in which case
@@ -494,9 +482,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
     }
 
     modePopup.addSeparator();
-    JMenuItem addLib = new JMenuItem(Language.text("toolbar.add_mode"));
-    addLib.addActionListener(e -> ContributionManager.openModes());
-    modePopup.add(addLib);
+    JMenuItem manageModes = new JMenuItem(Language.text("toolbar.manage_modes"));
+    manageModes.addActionListener(e -> ContributionManager.openModes());
+    modePopup.add(manageModes);
 
     Toolkit.setMenuMnemsInside(modePopup);
   }
@@ -535,6 +523,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   abstract public EditorToolbar createToolbar();
 
 
+  @SuppressWarnings("unused")
   public EditorToolbar getToolbar() {
     return toolbar;
   }
@@ -571,27 +560,14 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * with things in the Preferences window.
    */
   public void applyPreferences() {
-    // Even though this is only updating the theme (colors, icons), subclasses
-    // use this to apply other preferences (i.e. error checking changes in Java Mode).
+    // Even though this is only updating the theme (colors, icons),
+    // subclasses use this to apply other preferences.
+    // For instance, Java Mode applies changes to error checking.
     updateTheme();
-
-//    // Update fonts and other items controllable from the prefs
-////    textarea.getPainter().updateAppearance();
-////    textarea.repaint();
-//    textarea.updateTheme();
-//    console.updateTheme();
   }
 
 
   public void updateTheme() {
-    /*
-    PdeTextArea pta = getPdeTextArea();
-    // will be null if a subclass has overridden createTextArea()
-    // to return something besides a PdeTextArea
-    if (pta != null) {
-      pta.updateAppearance();
-    }
-    */
     header.updateTheme();
     toolbar.updateTheme();
     textarea.updateTheme();
@@ -611,6 +587,29 @@ public abstract class Editor extends JFrame implements RunnerListener {
     toolTipTextColor = Theme.getColor("errors.selection.fgcolor");
     toolTipWarningColor = Theme.getColor("errors.selection.warning.bgcolor");
     toolTipErrorColor = Theme.getColor("errors.selection.error.bgcolor");
+
+    JPopupMenu popup = modePopup.getPopupMenu();
+    // Cannot use instanceof because com.formdev.flatlaf.ui.FlatPopupMenuBorder
+    // is a subclass of EmptyBorder, so just override each time. Cannot set
+    // null because that will reset the border to the default, not remove it.
+    // The top/bottom in FlatLaf is 6px, but feels too large.
+    popup.setBorder(new EmptyBorder(3, 0, 3, 0));
+    popup.setBackground(Theme.getColor("mode.popup.enabled.bgcolor"));
+
+    for (Component comp : modePopup.getMenuComponents()) {
+      if (comp instanceof JMenuItem) {
+        JMenuItem item = (JMenuItem) comp;
+        if (item.getUI() instanceof PdeMenuItemUI) {
+          ((PdeMenuItemUI) item.getUI()).updateTheme();
+        } else {
+          item.setUI(new PdeMenuItemUI("mode.popup"));
+        }
+      } else if (comp instanceof JPopupMenu.Separator) {
+        comp.setForeground(Theme.getColor("mode.popup.disabled.fgcolor"));
+      }
+    }
+
+    repaint();  // for good measure
   }
 
 
@@ -643,15 +642,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   abstract public JMenu buildFileMenu();
 
 
-//  public JMenu buildFileMenu(Editor editor) {
-//    return buildFileMenu(editor, null);
-//  }
-//
-//
-//  // most of these items are per-mode
-//  protected JMenu buildFileMenu(Editor editor, JMenuItem[] exportItems) {
-
-
   protected JMenu buildFileMenu(JMenuItem[] exportItems) {
     JMenuItem item;
     JMenu fileMenu = new JMenu(Language.text("menu.file"));
@@ -664,10 +654,8 @@ public abstract class Editor extends JFrame implements RunnerListener {
     item.addActionListener(e -> base.handleOpenPrompt());
     fileMenu.add(item);
 
-//    fileMenu.add(base.getSketchbookMenu());
-
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
-    item.addActionListener(e -> mode.showSketchbookFrame());
+    item.addActionListener(e -> base.showSketchbookFrame());
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');
@@ -680,12 +668,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     item = Toolkit.newJMenuItem(Language.text("menu.file.save"), 'S');
     item.addActionListener(e -> handleSave(false));
-//    saveMenuItem = item;
     fileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.save_as"), 'S');
     item.addActionListener(e -> handleSaveAs());
-//    saveAsMenuItem = item;
     fileMenu.add(item);
 
     if (exportItems != null) {
@@ -722,16 +708,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
-//  public void setSaveItem(JMenuItem item) {
-//    saveMenuItem = item;
-//  }
-
-
-//  public void setSaveAsItem(JMenuItem item) {
-//    saveAsMenuItem = item;
-//  }
-
-
   protected JMenu buildEditMenu() {
     JMenu menu = new JMenu(Language.text("menu.edit"));
     JMenuItem item;
@@ -764,36 +740,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
     item = Toolkit.newJMenuItem(Language.text("menu.edit.select_all"), 'A');
     item.addActionListener(e -> textarea.selectAll());
     menu.add(item);
-
-    /*
-    menu.addSeparator();
-
-    item = Toolkit.newJMenuItem("Delete Selected Lines", 'D');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        handleDeleteLines();
-      }
-    });
-    menu.add(item);
-
-    item = new JMenuItem("Move Selected Lines Up");
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_UP, Event.ALT_MASK));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleMoveLines(true);
-        }
-      });
-    menu.add(item);
-
-    item = new JMenuItem("Move Selected Lines Down");
-    item.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, Event.ALT_MASK));
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          handleMoveLines(false);
-        }
-      });
-    menu.add(item);
-     */
 
     menu.addSeparator();
 
@@ -914,6 +860,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
     });
     sketchMenu.add(item);
 
+    //noinspection ConstantConditions
     if (runItems != null && runItems.length != 0) {
       sketchMenu.addSeparator();
     }
@@ -1005,20 +952,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
-  /*
-  public JMenu getToolMenu() {
-    if (toolsMenu == null) {
-      rebuildToolMenu();
-    }
-    return toolsMenu;
-  }
-
-  public void removeTool() {
-    rebuildToolMenu();
-  }
-  */
-
-
   /**
    * Clears the Tool menu and runs the gc so that contributions can be updated
    * without classes still being in use.
@@ -1074,9 +1007,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   static public void showChanges() {
-    // http://code.google.com/p/processing/issues/detail?id=1520
+    // https://github.com/processing/processing/issues/1558
     if (!Base.isCommandLine()) {
-      Platform.openURL("https://github.com/processing/processing/wiki/Changes");
+      Platform.openURL("https://github.com/processing/processing4/wiki/Changes-in-4.0");
     }
   }
 
@@ -1426,6 +1359,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
+  @SuppressWarnings("unused")
   public void insertText(String what) {
     startCompoundEdit();
     int caret = getCaretOffset();
@@ -1440,6 +1374,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   }
 
 
+  @SuppressWarnings("unused")
   public void setSelectedText(String what) {
     textarea.setSelectedText(what);
   }
@@ -1505,6 +1440,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   /**
    * Replace the text on a specified line.
    */
+  @SuppressWarnings("unused")
   public void setLineText(int line, String what) {
     startCompoundEdit();
     textarea.select(getLineStartOffset(line), getLineStopOffset(line));
@@ -1881,7 +1817,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
         // Put the scrollbar position back, otherwise it jumps on each format.
         // Since we're not doing a good job of maintaining position anyway,
         // a more complicated workaround here is fairly pointless.
-        // http://code.google.com/p/processing/issues/detail?id=1533
+        // https://github.com/processing/processing/issues/1571
         if (scrollPos != textarea.getVerticalScrollPosition()) {
           textarea.setVerticalScrollPosition(scrollPos);
         }
@@ -2166,11 +2102,12 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * Check if the sketch is modified and ask user to save changes.
    * @return false if canceling the close/quit operation
    */
+  @SuppressWarnings({"BooleanMethodIsAlwaysInverted", "RedundantIfStatement"})
   public boolean checkModified() {
     if (!sketch.isModified()) return true;
 
     // As of Processing 1.0.10, this always happens immediately.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=1456
+    // https://download.processing.org/bugzilla/1456.html
 
     // With Java 7u40 on OS X, need to bring the window forward.
     toFront();
@@ -2199,25 +2136,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
       }
 
     } else {
-      // This code is disabled unless Java 1.5 is being used on Mac OS X
-      // because of a Java bug that prevents the initial value of the
-      // dialog from being set properly (at least on my MacBook Pro).
-      // The bug causes the "Don't Save" option to be the highlighted,
-      // blinking, default. This sucks. But I'll tell you what doesn't
-      // suck--workarounds for the Mac and Apple's snobby attitude about it!
-      // I think it's nifty that they treat their developers like dirt.
-
-      // Pane formatting adapted from the quaqua guide
-      // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+      String tier1 = Language.interpolate("save.title", sketch.getName());
+      String tier2 = Language.text("save.hint");
       JOptionPane pane =
-        new JOptionPane("<html> " +
-                        "<head> <style type=\"text/css\">"+
-                        "b { font: 13pt \"Lucida Grande\" }"+
-                        "p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
-                        "</style> </head>" +
-                        "<b>" + Language.interpolate("save.title", sketch.getName()) + "</b>" +
-                        "<p>" + Language.text("save.hint") + "</p>",
-                        JOptionPane.QUESTION_MESSAGE);
+        new JOptionPane(Toolkit.formatMessage(tier1, tier2), JOptionPane.QUESTION_MESSAGE);
 
       String[] options = new String[] {
         Language.text("save.btn.save"),
@@ -2257,6 +2179,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * shouldn't rely on any of its variables being initialized already.
    */
   protected void handleOpenInternal(String path) throws EditorException {
+    // All this logic should be happening back in Base, not here.
+    // Presumably it lived here so that other Modes could override the
+    // behavior, but that changes with 4.0 beta 6. [fry 220206]
+
+    /*
     // check to make sure that this .pde file is
     // in a folder of the same name
     final File file = new File(path);
@@ -2330,6 +2257,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
         throw new EditorException();
       }
     }
+    */
 
     try {
       sketch = new Sketch(path, this);
@@ -2339,13 +2267,6 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     header.rebuild();
     updateTitle();
-    // Disable untitled setting from previous document, if any
-//    untitled = false;
-
-    // Store information on who's open and running
-    // (in case there's a crash or something that can't be recovered)
-    // TODO this probably need not be here because of the Recent menu, right?
-    Preferences.save();
   }
 
 
@@ -2357,15 +2278,15 @@ public abstract class Editor extends JFrame implements RunnerListener {
     setTitle(sketch.getName() + " | Processing " + Base.getVersionName());
 
     if (!sketch.isUntitled()) {
-      // set current file for OS X so that cmd-click in title bar works
-      File sketchFile = sketch.getMainFile();
-      getRootPane().putClientProperty("Window.documentFile", sketchFile);
+      // Set current file for macOS so that cmd-click in title bar works.
+      // For 4.0 beta 6 changing this to the sketch folder, rather than the
+      // .pde for the main tab. (Otherwise, we should have it update when
+      // the tab changes, which seems like overkill for how this is used.)
+      getRootPane().putClientProperty("Window.documentFile", sketch.getFolder());
     } else {
       // per other applications, don't set this until the file has been saved
       getRootPane().putClientProperty("Window.documentFile", null);
     }
-
-//    toolbar.setText(sketch.getName());
   }
 
 
@@ -2376,10 +2297,12 @@ public abstract class Editor extends JFrame implements RunnerListener {
    * save is happening. If 'immediately' is true, then it will happen
    * immediately. This is used during a quit, because invokeLater()
    * won't run properly while a quit is happening. This fixes
-   * <A HREF="http://dev.processing.org/bugs/show_bug.cgi?id=276">Bug 276</A>.
+   * <A HREF="https://download.processing.org/bugzilla/276.html">Bug 276</A>.
    */
   public boolean handleSave(boolean immediately) {
-//    handleStop();  // 0136
+    // This was a mistake (rectified in 0136) that would cause long-running
+    // sketches to be interrupted, causing much sadness.
+    //handleStop();
 
     if (sketch.isUntitled()) {
       return handleSaveAs();

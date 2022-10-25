@@ -821,6 +821,31 @@ public class JSONObject {
   }
 
 
+  public IntList getIntList(String key) {
+    return getJSONArray(key).toIntList();
+  }
+
+
+  public LongList getLongList(String key) {
+    return getJSONArray(key).toLongList();
+  }
+
+
+  public FloatList getFloatList(String key) {
+    return getJSONArray(key).toFloatList();
+  }
+
+
+  public DoubleList getDoubleList(String key) {
+    return getJSONArray(key).toDoubleList();
+  }
+
+
+  public StringList getStringList(String key) {
+    return getJSONArray(key).toStringList();
+  }
+
+
   /**
    * Given a key value, retrieves the associated <b>JSONObject</b>.
    *

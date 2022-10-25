@@ -20,18 +20,13 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.app.syntax;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.GeneralPath;
 import java.util.List;
 
 import javax.swing.text.BadLocationException;
-import javax.swing.text.Segment;
-import javax.swing.text.Utilities;
 
 import processing.app.Problem;
 import processing.app.ui.Editor;
@@ -40,20 +35,24 @@ import processing.app.ui.Theme;
 
 /**
  * Adds support to TextAreaPainter for background colors,
- * and the left hand gutter area with background color and text.
+ * and the left-hand gutter area with background color and text.
  */
 public class PdeTextAreaPainter extends TextAreaPainter {
   public Color errorUnderlineColor;
   public Color warningUnderlineColor;
 
   protected Font gutterTextFont;
-  protected Color gutterTextColor;
-  protected Color gutterPastColor;
-  protected Color gutterLineHighlightColor;
+  protected Color gutterTextActiveColor;
+  protected Color gutterTextInactiveColor;
+  protected Color gutterHighlightColor;
 
 
   public PdeTextAreaPainter(JEditTextArea textArea, TextAreaDefaults defaults) {
     super(textArea, defaults);
+
+    // Was looking a little flickery on Windows, but not 100% sure
+    // that adding this is actually doing anything. [fry 220129]
+    setDoubleBuffered(true);
 
     // Handle mouse clicks to toggle breakpoints
     addMouseListener(new MouseAdapter() {
@@ -93,12 +92,17 @@ public class PdeTextAreaPainter extends TextAreaPainter {
     warningUnderlineColor = Theme.getColor("editor.warning.underline.color");
 
     gutterTextFont = Theme.getFont("editor.gutter.text.font");
-    gutterTextColor = Theme.getColor("editor.gutter.text.color");
-    gutterPastColor = new Color(gutterTextColor.getRed(),
-                                gutterTextColor.getGreen(),
-                                gutterTextColor.getBlue(),
-                                96);
-    gutterLineHighlightColor = Theme.getColor("editor.gutter.linehighlight.color");
+
+    Color textColor = Theme.getColor("editor.gutter.text.color");
+    int textRGB = textColor.getRGB() & 0xFFFFFF;
+
+    int activeAlpha = 255 * Theme.getInteger("editor.gutter.text.active.alpha") / 100;
+    gutterTextActiveColor = new Color(activeAlpha << 24 | textRGB, true);
+
+    int inactiveAlpha = 255 * Theme.getInteger("editor.gutter.text.inactive.alpha") / 100;
+    gutterTextInactiveColor = new Color(inactiveAlpha << 24 | textRGB, true);
+
+    gutterHighlightColor = Theme.getColor("editor.gutter.highlight.color");
 
     // pull in changes for syntax style, as well as foreground and background color
     if (defaults instanceof PdeTextAreaDefaults) {
@@ -151,7 +155,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       int wiggleStart = Math.max(startOffset, lineOffset);
       int wiggleStop = Math.min(stopOffset, textArea.getLineStopOffset(line));
 
-      int y = textArea.lineToY(line) + fm.getLeading() + fm.getMaxDescent();
+      int y = textArea.lineToY(line) + getLineDisplacement();
 
       try {
         String badCode;
@@ -182,8 +186,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
         int x1 = textArea.offsetToX(line, goodCode.length() + leftTrimLength);
         int x2 = textArea.offsetToX(line, goodCode.length() + rightTrimmedLength);
-        if (x1 == x2) x2 += fm.stringWidth(" ");
-        int y1 = y + fm.getHeight() - 2;
+        if (x1 == x2) x2 += fontMetrics.stringWidth(" ");
+        int y1 = y + fontMetrics.getHeight() - 2;
 
         if (line != problem.getLineNumber()) {
           x1 = Editor.LEFT_GUTTER; // on the following lines, wiggle extends to the left border
@@ -209,15 +213,15 @@ public class PdeTextAreaPainter extends TextAreaPainter {
    * @param x horizontal position
    */
   protected void paintLeftGutter(Graphics gfx, int line, int x) {
-    int y = textArea.lineToY(line) + fm.getLeading() + fm.getMaxDescent();
+    int y = textArea.lineToY(line) + getLineDisplacement();
     if (line == textArea.getSelectionStopLine()) {
-      gfx.setColor(gutterLineHighlightColor);
-      gfx.fillRect(0, y, Editor.LEFT_GUTTER, fm.getHeight());
+      gfx.setColor(gutterHighlightColor);
+      gfx.fillRect(0, y, Editor.LEFT_GUTTER, fontMetrics.getHeight());
     } else {
-      //gfx.setColor(getJavaTextArea().gutterBgColor);
-      gfx.setClip(0, y, Editor.LEFT_GUTTER, fm.getHeight());
+      Rectangle clip = gfx.getClipBounds();
+      gfx.setClip(0, y, Editor.LEFT_GUTTER, fontMetrics.getHeight());
       gfx.drawImage(((PdeTextArea) textArea).getGutterGradient(), 0, 0, getWidth(), getHeight(), this);
-      gfx.setClip(null);  // reset
+      gfx.setClip(clip);  // reset
     }
 
     String text = null;
@@ -225,12 +229,12 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       text = getPdeTextArea().getGutterText(line);
     }
 
-    gfx.setColor(line < textArea.getLineCount() ? gutterTextColor : gutterPastColor);
+    gfx.setColor(line < textArea.getLineCount() ? gutterTextActiveColor : gutterTextInactiveColor);
 //    if (line >= textArea.getLineCount()) {
 //      //gfx.setColor(new Color(gutterTextColor.getRGB(), );
 //    }
     int textRight = Editor.LEFT_GUTTER - Editor.GUTTER_MARGIN;
-    int textBaseline = textArea.lineToY(line) + fm.getHeight();
+    int textBaseline = textArea.lineToY(line) + fontMetrics.getHeight();
 
     if (text != null) {
       if (text.equals(PdeTextArea.BREAK_MARKER)) {
@@ -251,15 +255,19 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       // Right-align the text
       char[] txt = text.toCharArray();
       int tx = textRight - gfx.getFontMetrics().charsWidth(txt, 0, txt.length);
+      /*
       // Using 'fm' here because it's relative to the editor text size,
       // not the numbers in the gutter
       Utilities.drawTabbedText(new Segment(txt, 0, text.length()),
                                (float) tx, (float) textBaseline,
                                (Graphics2D) gfx, this, 0);
+       */
+      gfx.drawString(text, tx, textBaseline);
     }
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private void drawDiamond(Graphics g,
                                   float x, float y, float w, float h) {
     Graphics2D g2 = (Graphics2D) g;
@@ -273,6 +281,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private void drawRightArrow(Graphics g,
                                      float x, float y, float w, float h) {
     Graphics2D g2 = (Graphics2D) g;
@@ -311,7 +320,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
   @Override
   public String getToolTipText(MouseEvent event) {
-    int line = event.getY() / getFontMetrics().getHeight() + textArea.getFirstLine();
+    fontMetrics = getFontMetrics();
+    int line = event.getY() / fontMetrics.getHeight() + textArea.getFirstLine();
     if (line >= 0 || line < textArea.getLineCount()) {
       List<Problem> problems = getEditor().findProblems(line);
       for (Problem problem : problems) {
@@ -343,7 +353,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
   @Override
   public int getScrollWidth() {
-    // TODO https://github.com/processing/processing/issues/3591
+    // https://github.com/processing/processing/issues/3591
     return super.getWidth() - Editor.LEFT_GUTTER;
   }
 

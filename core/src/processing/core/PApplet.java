@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-20 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -81,7 +81,7 @@ import processing.opengl.*;
  * project of our (tiny) size, we should be focusing on the future, rather
  * than working around legacy Java code.
  */
-@SuppressWarnings({"unused", "FinalStaticMethod"})
+@SuppressWarnings({"unused", "FinalStaticMethod", "ManualMinMaxCalculation"})
 public class PApplet implements PConstants {
 //public class PApplet extends PSketch {  // possible in the next alpha
   /** Full name of the Java version (i.e. 1.5.0_11). */
@@ -141,8 +141,8 @@ public class PApplet implements PConstants {
   public PGraphics g;
 
   /**
-   * System variable that stores the width of the computer screen. For
-   * example, if the current screen resolution is 1920x1080,
+   * System variable that stores the width of the computer screen.
+   * For example, if the current screen resolution is 1920x1080,
    * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
    * @webref environment
@@ -153,8 +153,8 @@ public class PApplet implements PConstants {
   public int displayWidth;
 
   /**
-   * System variable that stores the height of the computer screen. For
-   * example, if the current screen resolution is 1920x1080,
+   * System variable that stores the height of the computer screen.
+   * For example, if the current screen resolution is 1920x1080,
    * <b>displayWidth</b> is 1920 and <b>displayHeight</b> is 1080.
    *
    * @webref environment
@@ -163,6 +163,9 @@ public class PApplet implements PConstants {
    * @see PApplet#size(int, int)
    */
   public int displayHeight;
+
+  public int windowX;
+  public int windowY;
 
   /** A leech graphics object that is echoing all events. */
   public PGraphics recorder;
@@ -175,12 +178,11 @@ public class PApplet implements PConstants {
   public String[] args;
 
   /**
-   * Path to sketch folder. Previously undocumented, made private in 3.0a5
-   * so that people use the sketchPath() method and it's initialized properly.
-   * Call sketchPath() once to set the default.
+   * Path to sketch folder. Previously undocumented, and made private
+   * in 3.0 alpha 5 so that people use the sketchPath() method which
+   * will initialize it properly. Call sketchPath() once to set it.
    */
   private String sketchPath;
-//  public String sketchPath;
 
   static final boolean DEBUG = false;
 //  static final boolean DEBUG = true;
@@ -190,7 +192,6 @@ public class PApplet implements PConstants {
   static public final int DEFAULT_HEIGHT = 100;
 
   /**
-   *
    * The <b>pixels[]</b> array contains the values for all the pixels in the
    * display window. These values are of the color datatype. This array is
    * defined by the size of the display window. For example, if the window is
@@ -200,13 +201,12 @@ public class PApplet implements PConstants {
    * will change. See the reference for <b>pixelWidth</b> or <b>pixelHeight</b>
    * for more information.
    * <br /><br />
-   * Before accessing this array, the data must loaded with the <b>loadPixels()</b>
+   * Before accessing this array, the data must be loaded with the <b>loadPixels()</b>
    * function. Failure to do so may result in a NullPointerException. Subsequent
    * changes to the display window will not be reflected in <b>pixels</b> until
    * <b>loadPixels()</b> is called again. After <b>pixels</b> has been modified,
    * the <b>updatePixels()</b> function must be run to update the content of the
    * display window.
-   *
    *
    * @webref image:pixels
    * @webBrief Array containing the values for all the pixels in the display window
@@ -264,7 +264,6 @@ public class PApplet implements PConstants {
    * array, for instance, because the number of elements in the array will
    * be <b>pixelWidth*pixelHeight</b>, not <b>width*height</b>.
    *
-   *
    * @webref environment
    * @webBrief The actual pixel width when using high resolution display
    * @see PApplet#pixelHeight
@@ -275,7 +274,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * When <b>pixelDensity(2)</b> is used to make use of a high resolution
    * display (called a Retina display on OS X or high-dpi on Windows and
    * Linux), the width and height of the sketch do not change, but the
@@ -295,13 +293,38 @@ public class PApplet implements PConstants {
    */
   public int pixelHeight;
 
+  // Making this private until we have a compelling reason to make it public.
+  // Seems problematic/weird for it to be possible to set windowRatio = false
+  // relative to how other API works. And not sure what the use case would be.
+  private boolean windowRatio;
+
+  /**
+   * Version of mouseX/mouseY to use with windowRatio().
+   */
+  public int rmouseX;
+  public int rmouseY;
+
+  /**
+   * Version of width/height to use with windowRatio().
+   */
+  public int rwidth;
+  public int rheight;
+
+  /** Offset from left when windowRatio is in use. */
+  public float ratioLeft;
+
+  /** Offset from the top when windowRatio is in use. */
+  public float ratioTop;
+
+  /** Amount of scaling to be applied for the window ratio. */
+  public float ratioScale;
+
   /**
    * Keeps track of ENABLE_KEY_REPEAT hint
    */
   protected boolean keyRepeatEnabled = false;
 
   /**
-   *
    * The system variable <b>mouseX</b> always contains the current horizontal
    * coordinate of the mouse.
    * <br /><br />
@@ -325,15 +348,12 @@ public class PApplet implements PConstants {
    * @see PApplet#mouseDragged()
    * @see PApplet#mouseButton
    * @see PApplet#mouseWheel(MouseEvent)
-   *
-   *
    */
   public int mouseX;
 
   /**
-   *
-   * The system variable <b>mouseY</b> always contains the current vertical
-   * coordinate of the mouse.
+   * The system variable <b>mouseY</b> always contains the current
+   * vertical coordinate of the mouse.
    * <br /><br />
    * Note that Processing can only track the mouse position when the pointer
    * is over the current window. The default value of <b>mouseY</b> is <b>0</b>,
@@ -360,7 +380,6 @@ public class PApplet implements PConstants {
   public int mouseY;
 
   /**
-   *
    * The system variable <b>pmouseX</b> always contains the horizontal
    * position of the mouse in the frame previous to the current frame.<br />
    * <br />
@@ -398,7 +417,6 @@ public class PApplet implements PConstants {
   public int pmouseX;
 
   /**
-   *
    * The system variable <b>pmouseY</b> always contains the vertical position
    * of the mouse in the frame previous to the current frame. More detailed
    * information about how <b>pmouseY</b> is updated inside of <b>draw()</b>
@@ -452,7 +470,6 @@ public class PApplet implements PConstants {
   public boolean firstMouse = true;
 
   /**
-   *
    * When a mouse button is pressed, the value of the system variable
    * <b>mouseButton</b> is set to either <b>LEFT</b>, <b>RIGHT</b>, or
    * <b>CENTER</b>, depending on which button is pressed. (If no button is
@@ -461,10 +478,9 @@ public class PApplet implements PConstants {
    * pressed, and only then test the value of <b>mouseButton</b>, as shown in
    * the examples above.)
    *
-   *
    * <h3>Advanced:</h3>
    *
-   * If running on Mac OS, a ctrl-click will be interpreted as the right-hand
+   * If running on macOS, a ctrl-click will be interpreted as the right-hand
    * mouse button (unlike Java, which reports it as the left mouse).
    * @webref input:mouse
    * @webBrief Shows which mouse button is pressed
@@ -483,7 +499,6 @@ public class PApplet implements PConstants {
   public int mouseButton;
 
   /**
-   *
    * The <b>mousePressed()</b> function is called once after every time a
    * mouse button is pressed. The <b>mouseButton</b> variable (see the
    * related reference entry) can be used to determine which button has
@@ -509,12 +524,12 @@ public class PApplet implements PConstants {
    */
   public boolean mousePressed;
 
-  // MACOSX: CTRL + Left Mouse is converted to Right Mouse. This boolean keeps
-  // track of whether the conversion happened on PRESS, because we should report
-  // the same button during DRAG and on RELEASE, even though CTRL might have
-  // been released already. Otherwise the events are inconsistent, e.g.
-  // Left Pressed - Left Drag - CTRL Pressed - Right Drag - Right Released.
-  // See: https://github.com/processing/processing/issues/5672
+  // macOS: Ctrl + Left Mouse is converted to Right Mouse.
+  // This boolean tracks whether the conversion happened on PRESS,
+  // to report the same button during DRAG and on RELEASE,
+  // even though CTRL might have been released already.
+  // Otherwise, the events are inconsistent.
+  // https://github.com/processing/processing/issues/5672
   private boolean macosCtrlClick;
 
 
@@ -523,7 +538,6 @@ public class PApplet implements PConstants {
   public MouseEvent mouseEvent;
 
   /**
-   *
    * The system variable <b>key</b> always contains the value of the most
    * recent key on the keyboard that was used (either pressed or released).
    * <br/> <br/>
@@ -558,7 +572,6 @@ public class PApplet implements PConstants {
   public char key;
 
   /**
-   *
    * The variable <b>keyCode</b> is used to detect special keys such as the
    * UP, DOWN, LEFT, RIGHT arrow keys and ALT, CONTROL, SHIFT.
    * <br /><br />
@@ -580,20 +593,19 @@ public class PApplet implements PConstants {
    * <a href="https://docs.oracle.com/javase/8/docs/api/java/awt/event/KeyEvent.html">KeyEvent</a>
    * reference.
    * <br /><br />
-   * There are issues with how <b>keyCode</b> behaves across different renderers
-   * and operating systems. Watch out for unexpected behavior as you switch
-   * renderers and operating systems and you are using keys are aren't mentioned
-   * in this reference entry.
+   * There are issues with how <b>keyCode</b> behaves across different
+   * renderers and operating systems. Watch out for unexpected behavior
+   * as you switch renderers and operating systems, and also whenever
+   * you are using keys not mentioned in this reference entry.
    * <br /><br />
    * If you are using P2D or P3D as your renderer, use the
    * <a href="https://jogamp.org/deployment/jogamp-next/javadoc/jogl/javadoc/com/jogamp/newt/event/KeyEvent.html">NEWT KeyEvent constants</a>.
-   *
    *
    * <h3>Advanced</h3>
    * When "key" is set to CODED, this will contain a Java key code.
    * <p>
    * For the arrow keys, keyCode will be one of UP, DOWN, LEFT and RIGHT.
-   * Also available are ALT, CONTROL and SHIFT. A full set of constants
+   * ALT, CONTROL and SHIFT are also available. A full set of constants
    * can be obtained from java.awt.event.KeyEvent, from the VK_XXXX variables.
    *
    * @webref input:keyboard
@@ -606,9 +618,8 @@ public class PApplet implements PConstants {
   public int keyCode;
 
   /**
-   *
-   * The boolean system variable <b>keyPressed</b> is <b>true</b> if any key
-   * is pressed and <b>false</b> if no keys are pressed.
+   * The boolean system variable <b>keyPressed</b> is <b>true</b>
+   * if any key is pressed and <b>false</b> if no keys are pressed.
    * <br /><br />
    * Note that there is a similarly named function called <b>keyPressed()</b>.
    * See its reference page for more information.
@@ -642,19 +653,8 @@ public class PApplet implements PConstants {
    */
   public boolean focused = false;
 
-//  /**
-//   * Confirms if a Processing program is running inside a web browser. This
-//   * variable is "true" if the program is online and "false" if not.
-//   */
-//  @Deprecated
-//  public boolean online = false;
-//  // This is deprecated because it's poorly named (and even more poorly
-//  // understood). Further, we'll probably be removing applets soon, in which
-//  // case this won't work at all. If you want this feature, you can check
-//  // whether getAppletContext() returns null.
-
   /**
-   * Time in milliseconds when the applet was started.
+   * Time in milliseconds when the sketch was started.
    * <p>
    * Used by the millis() function.
    */
@@ -677,14 +677,13 @@ public class PApplet implements PConstants {
 
   protected boolean looping = true;
 
-  /** flag set to true when a redraw is asked for by the user */
+  /** flag set to true when redraw() is called by the user */
   protected boolean redraw = true;
 
   /**
-   *
-   * The system variable <b>frameCount</b> contains the number of frames
-   * displayed since the program started. Inside <b>setup()</b> the value is
-   * 0 and and after the first iteration of draw it is 1, etc.
+   * The system variable <b>frameCount</b> contains the number o
+   * frames displayed since the program started. Inside <b>setup()</b>
+   * the value is 0 and during the first iteration of draw it is 1, etc.
    *
    * @webref environment
    * @webBrief The system variable that contains the number of frames
@@ -700,12 +699,6 @@ public class PApplet implements PConstants {
   /** used by the UncaughtExceptionHandler, so has to be static */
   static Throwable uncaughtThrowable;
 
-  // public, but undocumented.. removing for 3.0a5
-//  /**
-//   * true if the animation thread is paused.
-//   */
-//  public volatile boolean paused;
-
   /**
    * true if exit() has been called so that things shut down
    * once the main thread kicks off.
@@ -719,16 +712,16 @@ public class PApplet implements PConstants {
 
   /**
    * Position of the upper left-hand corner of the editor window
-   * that launched this applet.
+   * that launched this sketch.
    */
   static public final String ARGS_EDITOR_LOCATION = "--editor-location";
 
   static public final String ARGS_EXTERNAL = "--external";
 
   /**
-   * Location for where to position the applet window on screen.
+   * Location for where to position the sketch window on screen.
    * <p>
-   * This is used by the editor to when saving the previous applet
+   * This is used by the editor to when saving the previous sketch
    * location, or could be used by other classes to launch at a
    * specific position on-screen.
    */
@@ -762,7 +755,7 @@ public class PApplet implements PConstants {
    */
   static public final String ARGS_SKETCH_FOLDER = "--sketch-path";
 
-  static public final String ARGS_DENSITY = "--density";
+  static public final String ARGS_UI_SCALE = "--ui-scale";
 
   /**
    * When run externally to a PdeEditor,
@@ -771,7 +764,7 @@ public class PApplet implements PConstants {
   static public final String EXTERNAL_STOP = "__STOP__";
 
   /**
-   * When run externally to a PDE Editor, this is sent by the applet
+   * When run externally to a PDE Editor, this is sent by the sketch
    * whenever the window is moved.
    * <p>
    * This is used so that the editor can re-open the sketch window
@@ -797,13 +790,6 @@ public class PApplet implements PConstants {
   }
 
 
-//  /**
-//   * A dummy frame to keep compatibility with 2.x code
-//   * and encourage users to update.
-//   */
-//  public Frame frame;
-
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
@@ -814,11 +800,9 @@ public class PApplet implements PConstants {
 
   boolean fullScreen;
   int display = -1;  // use default
-//  GraphicsDevice[] displayDevices;
   // Unlike the others above, needs to be public to support
   // the pixelWidth and pixelHeight fields.
   public int pixelDensity = 1;
-  int suggestedDensity = -1;
 
   boolean present;
 
@@ -834,7 +818,7 @@ public class PApplet implements PConstants {
 
   /**
    * @param method "size" or "fullScreen"
-   * @param args parameters passed to the function so we can show the user
+   * @param args parameters passed to the function to show the user
    * @return true if safely inside the settings() method
    */
   boolean insideSettings(String method, Object... args) {
@@ -895,17 +879,25 @@ public class PApplet implements PConstants {
       } catch (InterruptedException ignored) { }
 
       if (resultCode == 1) {
-        System.err.println("Could not check the status of “Displays have separate spaces.”");
-        System.err.format("Received message '%s' and result code %d.%n", trim(stderr.toString()), resultCode);
+        String msg = trim(stderr.toString());
+        // This message is confusing, so don't print if it's something typical
+        if (!(msg.contains("The domain/default pair") && msg.contains("does not exist"))) {
+          System.err.println("Could not check the status of “Displays have separate spaces.”");
+          System.err.println("Result for 'defaults read' was " + resultCode);
+          System.err.println(msg);
+        }
       }
 
       String processOutput = trim(stdout.toString());
-      // It looks like on Catalina, the option may not be set, so resultCode
-      // will be 1 (an error, since the param doesn't exist. But "Displays
-      // have separate spaces" is on by default, so show the message.
+      // On Catalina, the option may not be set, so resultCode
+      // will be 1 (an error, since the param doesn't exist.)
+      // But "Displays have separate spaces" is on by default.
+      // For Monterey, it appears to not be set until the user
+      // has visited the Mission Control preference pane once.
       if (resultCode == 1 || "0".equals(processOutput)) {
-        System.err.println("To use fullScreen(SPAN), first turn off “Displays have separate spaces”");
-        System.err.println("in System Preferences \u2192 Mission Control. Then log out and log back in.");
+        System.err.println("To use fullScreen(SPAN), visit System Preferences \u2192 Mission Control");
+        System.err.println("and make sure that “Displays have separate spaces” is turned off.");
+        System.err.println("Then log out and log back in.");
       }
     }
 
@@ -914,32 +906,31 @@ public class PApplet implements PConstants {
 
 
   /**
-  *
-  * The <b>settings()</b> function is new with Processing 3.0.
-  * It's not needed in most sketches. It's only useful when it's
-  * absolutely necessary to define the parameters to <b>size()</b>
-  * with a variable. Alternately, the <b>settings()</b> function
-  * is necessary when using Processing code outside of the
-  * Processing Development Environment (PDE). For example, when
-  * using the Eclipse code editor, it's necessary to use
-  * <b>settings()</b> to define the <b>size()</b> and
-  * <b>smooth()</b> values for a sketch.</b>.
-  * <br /> <br />
-  * The <b>settings()</b> method runs before the sketch has been
-  * set up, so other Processing functions cannot be used at that
-  * point. For instance, do not use loadImage() inside settings().
-  * The settings() method runs "passively" to set a few variables,
-  * compared to the <b>setup()</b> command that call commands in
-  * the Processing API.
-  *
-  * @webref environment
-  * @webBrief Used when absolutely necessary to define the parameters to <b>size()</b>
-  * with a variable
-  * @see PApplet#fullScreen()
-  * @see PApplet#setup()
-  * @see PApplet#size(int,int)
-  * @see PApplet#smooth()
-  */
+   * The <b>settings()</b> function is new with Processing 3.0.
+   * It's not needed in most sketches. It's only useful when it's
+   * absolutely necessary to define the parameters to <b>size()</b>
+   * with a variable. Alternately, the <b>settings()</b> function
+   * is necessary when using Processing code outside the
+   * Processing Development Environment (PDE). For example, when
+   * using the Eclipse code editor, it's necessary to use
+   * <b>settings()</b> to define the <b>size()</b> and
+   * <b>smooth()</b> values for a sketch.</b>.
+   * <br /> <br />
+   * The <b>settings()</b> method runs before the sketch has been
+   * set up, so other Processing functions cannot be used at that
+   * point. For instance, do not use loadImage() inside settings().
+   * The settings() method runs "passively" to set a few variables,
+   * compared to the <b>setup()</b> command that call commands in
+   * the Processing API.
+   *
+   * @webref environment
+   * @webBrief Used when absolutely necessary to define the parameters to <b>size()</b>
+   * with a variable
+   * @see PApplet#fullScreen()
+   * @see PApplet#setup()
+   * @see PApplet#size(int,int)
+   * @see PApplet#smooth()
+   */
   public void settings() {
     // is this necessary? (doesn't appear to be, so removing)
     //size(DEFAULT_WIDTH, DEFAULT_HEIGHT, JAVA2D);
@@ -1007,7 +998,6 @@ public class PApplet implements PConstants {
   * and a "1" if not. This information is useful for a program to adapt to
   * run at double the pixel density on a screen that supports it.
   *
-  *
   * @webref environment
   * @webBrief Returns "2" if the screen is high-density and "1" if not
   * @see PApplet#pixelDensity(int)
@@ -1062,31 +1052,30 @@ public class PApplet implements PConstants {
 
 
  /**
-  * This function is new with Processing 3.0. It makes it
-  * possible for Processing to render using all of the
-  * pixels on high resolutions screens like Apple Retina
-  * displays and Windows High-DPI displays. This function
-  * can only be run once within a program and it must be
-  * used right after <b>size()</b> in a program without a <b>setup()</b>
-  * and used within <b>setup()</b> when a program has one. The
+  * This function makes it possible to render using all the pixels
+  * on high resolutions screens like Apple Retina and Windows HiDPI.
+  * This function can only be run once within a program, and must
+  * be called right after <b>size()</b> in a program without a
+  * <b>setup()</b> function, or within <b>setup()</b> if present.
+  * <p/>
   * <b>pixelDensity()</b> should only be used with hardcoded
   * numbers (in almost all cases this number will be 2)
   * or in combination with <b>displayDensity()</b> as in the
   * third example above.
-  *
-  * When the pixel density is set to more than 1, it
-  * changes all of the pixel operations including the way
-  * <b>get()</b>, <b>set()</b>, <b>blend()</b>, <b>copy()</b>, and <b>updatePixels()</b>
+  * <p/>
+  * When the pixel density is set to more than 1, it changes  the
+  * pixel operations including the way <b>get()</b>, <b>set()</b>,
+  * <b>blend()</b>, <b>copy()</b>, and <b>updatePixels()</b>
   * all work. See the reference for <b>pixelWidth</b> and
   * pixelHeight for more information.
-  *
+  * <p/>
   * To use variables as the arguments to <b>pixelDensity()</b>
   * function, place the <b>pixelDensity()</b> function within
   * the <b>settings()</b> function. There is more information
   * about this on the <b>settings()</b> reference page.
   *
   * @webref environment
-  * @webBrief It makes it possible for Processing to render using all of the
+  * @webBrief It makes it possible for Processing to render using all the
   * pixels on high resolutions screens
   * @param density 1 or 2
   * @see PApplet#pixelWidth
@@ -1146,7 +1135,7 @@ public class PApplet implements PConstants {
    * in a different way. The level parameter increases
    * the amount of smoothness. This is the level of over
    * sampling applied to the graphics buffer.
-   *
+   * <p/>
    * With the P2D and P3D renderers, <b>smooth(2)</b> is the
    * default, this is called "2x anti-aliasing." The code
    * <b>smooth(4)</b> is used for 4x anti-aliasing and <b>smooth(8)</b>
@@ -1154,20 +1143,21 @@ public class PApplet implements PConstants {
    * anti-aliasing level is determined by the hardware of
    * the machine that is running the software, so <b>smooth(4)</b>
    * and <b>smooth(8)</b> will not work with every computer.
-   *
+   * <p/>
    * The default renderer uses <b>smooth(3)</b> by default. This
    * is bicubic smoothing. The other option for the default
    * renderer is <b>smooth(2)</b>, which is bilinear smoothing.
-   *
-   * With Processing 3.0, <b>smooth()</b> is different than before.
-   * It was common to use <b>smooth()</b> and <b>noSmooth()</b> to turn on
+   * <p/>
+   * With Processing 3.0, <b>smooth()</b> is handled differently
+   * than in earlier releases. In 2.x and earlier, it was possible
+   * to use <b>smooth()</b> and <b>noSmooth()</b> to turn on
    * and off antialiasing within a sketch. Now, because of
    * how the software has changed, <b>smooth()</b> can only be set
    * once within a sketch. It can be used either at the top
    * of a sketch without a <b>setup()</b>, or after the <b>size()</b>
    * function when used in a sketch with <b>setup()</b>. The
    * <b>noSmooth()</b> function also follows the same rules.
-   *
+   * <p/>
    * When <b>smooth()</b> is used with a PGraphics object, it should
    * be run right after the object is created with
    * <b>createGraphics()</b>, as shown in the Reference in the third
@@ -1191,7 +1181,7 @@ public class PApplet implements PConstants {
    * edges and images with hard edges between the pixels
    * when enlarged rather than interpolating pixels. Note
    * that <b>smooth()</b> is active by default, so it is necessary
-   * to call <b>noSmooth()<b> to disable smoothing of geometry,
+   * to call <b>noSmooth()</b> to disable smoothing of geometry,
    * fonts, and images. Since the release of Processing 3.0,
    * the <b>noSmooth()</b> function can only be run once for each
    * sketch, either at the top of a sketch without a <b>setup()</b>,
@@ -1238,16 +1228,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Called by the browser or applet viewer to inform this applet that it
-   * should start its execution. It is called after the init method and
-   * each time the applet is revisited in a Web page.
-   * <p/>
-   * Called explicitly via the first call to PApplet.paint(), because
-   * PAppletGL needs to have a usable screen before getting things rolling.
+   * Called by the application context to start running (or resume) the sketch.
    */
   public void start() {
-//    paused = false; // unpause the thread  // removing for 3.0a5, don't think we want this here
-
     resume();
     handleMethods("resume");
     surface.resumeThread();
@@ -1255,44 +1238,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Called by the browser or applet viewer to inform
-   * this applet that it should stop its execution.
-   * <p/>
-   * Unfortunately, there are no guarantees from the Java spec
-   * when or if stop() will be called (i.e. on browser quit,
-   * or when moving between web pages), and it's not always called.
+   * Called by the application context to stop running (or pause) the sketch.
    */
   public void stop() {
-    // this used to shut down the sketch, but that code has
-    // been moved to destroy/dispose()
-
-//    if (paused) {
-//      synchronized (pauseObject) {
-//      try {
-//          pauseObject.wait();
-//        } catch (InterruptedException e) {
-//          // waiting for this interrupt on a start() (resume) call
-//        }
-//      }
-//    }
-
-    //paused = true; // causes animation thread to sleep  // 3.0a5
     pause();
     handleMethods("pause");
     // calling this down here, since it's another thread it's safer to call
     // pause() and the registered pause methods first.
     surface.pauseThread();
-
-    // actual pause will happen in the run() method
-
-//    synchronized (pauseObject) {
-//      debug("stop() calling pauseObject.wait()");
-//      try {
-//        pauseObject.wait();
-//      } catch (InterruptedException e) {
-//        // waiting for this interrupt on a start() (resume) call
-//      }
-//    }
   }
 
 
@@ -1312,41 +1265,11 @@ public class PApplet implements PConstants {
   public void resume() { }
 
 
-//  /**
-//   * Called by the browser or applet viewer to inform this applet
-//   * that it is being reclaimed and that it should destroy
-//   * any resources that it has allocated.
-//   * <p/>
-//   * destroy() supposedly gets called as the applet viewer
-//   * is shutting down the applet. stop() is called
-//   * first, and then destroy() to really get rid of things.
-//   * no guarantees on when they're run (on browser quit, or
-//   * when moving between pages), though.
-//   */
-//  @Override
-//  public void destroy() {
-//    this.dispose();
-//  }
-
-
   //////////////////////////////////////////////////////////////
 
 
   /** Map of registered methods, stored by method name. */
   Map<String, RegisteredMethods> registerMap = new ConcurrentHashMap<>();
-
-
-  /*
-  static class RegisteredMethod {
-    Object object;
-    Method method;
-
-    RegisteredMethod(Object object, Method method) {
-      this.object = object;
-      this.method = method;
-    }
-  }
-  */
 
 
   class RegisteredMethods {
@@ -1388,13 +1311,12 @@ public class PApplet implements PConstants {
         } catch (Exception e) {
           // check for wrapped exception, get root exception
           Throwable t;
-          if (e instanceof InvocationTargetException) {
-            InvocationTargetException ite = (InvocationTargetException) e;
+          if (e instanceof InvocationTargetException ite) {
             t = ite.getCause();
           } else {
             t = e;
           }
-          // check for RuntimeException, and allow to bubble up
+          // check for RuntimeException, and allow it to bubble up
           if (t instanceof RuntimeException) {
             // re-throw exception
             throw (RuntimeException) t;
@@ -1435,7 +1357,7 @@ public class PApplet implements PConstants {
         entries.remove(object);
         methods.remove(object);
       } else {
-        // Currently iterating the list of methods, remove this afterwards
+        // Iterates the list of methods, remove this afterwards
         removals.add(object);
       }
     }
@@ -1453,7 +1375,7 @@ public class PApplet implements PConstants {
    * <li>resume – called when the sketch is resumed
    * <li>dispose – when the sketch is shutting down (definitely not safe to draw)
    * <ul>
-   * In addition, the new (for 2.0) processing.event classes are passed to
+   * In addition, the new (for 2.0) <tt>processing.event</tt> classes are passed to
    * the following event types:
    * <ul>
    * <li>mouseEvent
@@ -1466,17 +1388,11 @@ public class PApplet implements PConstants {
    * @param target the target object that should receive the event
    */
   public void registerMethod(String methodName, Object target) {
-    if (methodName.equals("mouseEvent")) {
-      registerWithArgs("mouseEvent", target, new Class[] { processing.event.MouseEvent.class });
-
-    } else if (methodName.equals("keyEvent")) {
-      registerWithArgs("keyEvent", target, new Class[] { processing.event.KeyEvent.class });
-
-    } else if (methodName.equals("touchEvent")) {
-      registerWithArgs("touchEvent", target, new Class[] { processing.event.TouchEvent.class });
-
-    } else {
-      registerNoArgs(methodName, target);
+    switch (methodName) {
+      case "mouseEvent" -> registerWithArgs("mouseEvent", target, new Class[] { MouseEvent.class });
+      case "keyEvent" -> registerWithArgs("keyEvent", target, new Class[] { KeyEvent.class });
+      case "touchEvent" -> registerWithArgs("touchEvent", target, new Class[] { TouchEvent.class });
+      default -> registerNoArgs(methodName, target);
     }
   }
 
@@ -1551,7 +1467,7 @@ public class PApplet implements PConstants {
    * The <b>setup()</b> function is run once, when the program starts. It's used
    * to define initial environment properties such as screen size and to load media
    * such as images and fonts as the program starts. There can only be one
-   * <b>setup()</b> function for each program and it shouldn't be called again
+   * <b>setup()</b> function for each program, and it shouldn't be called again
    * after its initial execution.<br />
    * <br />
    * If the sketch is a different dimension than the default, the <b>size()</b>
@@ -1560,7 +1476,6 @@ public class PApplet implements PConstants {
    * <br />
    * Note: Variables declared within <b>setup()</b> are not accessible within
    * other functions, including <b>draw()</b>.
-   *
    *
  * @webref structure
  * @webBrief  The <b>setup()</b> function is called once when the program starts
@@ -1670,7 +1585,7 @@ public class PApplet implements PConstants {
   * program on (e.g. 1, 2, 3...). When used with two parameters, the first
   * defines the renderer to use (e.g. P2D) and the second defines the screen.
   * The <b>SPAN</b> parameter can be used in place of a screen number to draw
-  * the sketch as a full-screen window across all of the attached displays if
+  * the sketch as a full-screen window across all the attached displays if
   * there are more than one.<br />
   * <br />
   * Prior to Processing 3.0, a full-screen program was defined with
@@ -1854,7 +1769,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Creates and returns a new <b>PGraphics</b> object. Use this class if you
-   * need to draw into an off-screen graphics buffer. The first two parameters
+   * need to draw into an offscreen graphics buffer. The first two parameters
    * define the width and height in pixels. The third, optional parameter
    * specifies the renderer. It can be defined as P2D, P3D, PDF, or SVG. If the
    * third parameter isn't used, the default renderer is set. The PDF and SVG
@@ -2037,7 +1952,7 @@ public class PApplet implements PConstants {
           (e instanceof IllegalAccessException)) {
         if (e.getMessage().contains("cannot be <= 0")) {
           // IllegalArgumentException will be thrown if w/h is <= 0
-          // http://code.google.com/p/processing/issues/detail?id=983
+          // https://github.com/processing/processing/issues/1021
           throw new RuntimeException(e);
 
         } else {
@@ -2079,7 +1994,6 @@ public class PApplet implements PConstants {
    * Advanced users please note that createImage() should be used instead of
    * the syntax <tt>new PImage()</tt>.
    *
-   *
    * <h3>Advanced</h3>
    * Preferred method of creating new PImage objects, ensures that a
    * reference to the parent PApplet is included, which makes save() work
@@ -2110,24 +2024,8 @@ public class PApplet implements PConstants {
 
 
   public void handleDraw() {
-    //debug("handleDraw() " + g + " " + looping + " " + redraw + " valid:" + this.isValid() + " visible:" + this.isVisible());
-
-    // canDraw = g != null && (looping || redraw);
     if (g == null) return;
     if (!looping && !redraw) return;
-//    System.out.println("looping/redraw = " + looping + " " + redraw);
-
-    // no longer in use by any of our renderers
-//    if (!g.canDraw()) {
-//      debug("g.canDraw() is false");
-//      // Don't draw if the renderer is not yet ready.
-//      // (e.g. OpenGL has to wait for a peer to be on screen)
-//      return;
-//    }
-
-    // Store the quality setting in case it's changed during draw and the
-    // drawing context needs to be re-built before the next frame.
-//    int pquality = g.smooth;
 
     if (insideDraw) {
       System.err.println("handleDraw() called before finishing");
@@ -2140,22 +2038,21 @@ public class PApplet implements PConstants {
       recorder.beginDraw();
     }
 
+    // apply window ratio if set
+    if (windowRatio) {
+      float aspectH = width / (float) rwidth;
+      float aspectV = height / (float) rheight;
+      ratioScale = min(aspectH, aspectV);
+      ratioTop = (height - ratioScale* rheight) / 2;
+      ratioLeft = (width - ratioScale* rwidth) / 2;
+      translate(ratioLeft, ratioTop);
+      scale(ratioScale);
+    }
+
     long now = System.nanoTime();
 
     if (frameCount == 0) {
-        // 3.0a5 should be no longer needed; handled by PSurface
-        //surface.checkDisplaySize();
-
-//        try {
-        //println("Calling setup()");
       setup();
-        //println("Done with setup()");
-
-//        } catch (RendererChangeException e) {
-//          // Give up, instead set the new renderer and re-attempt setup()
-//          return;
-//        }
-//      defaultSize = false;
 
     } else {  // frameCount > 0, meaning an actual draw()
       // update the current frameRate
@@ -2188,18 +2085,17 @@ public class PApplet implements PConstants {
         frameRate = (float) (1.0 / avgFrameTimeSecs);
       }
 
-      //if (frameCount != 0) {  // always the case for this block
+      // post move and resize events to the sketch here
+      dequeueWindowEvents();
+
       handleMethods("pre");
-      //}
 
       // use dmouseX/Y as previous mouse pos, since this is the
       // last position the mouse was in during the previous draw.
       pmouseX = dmouseX;
       pmouseY = dmouseY;
 
-        //println("Calling draw()");
       draw();
-        //println("Done calling draw()");
 
       // dmouseX/Y is updated only once per frame (unlike emouseX/Y)
       dmouseX = mouseX;
@@ -2217,10 +2113,6 @@ public class PApplet implements PConstants {
       // (only do this once draw() has run, not just setup())
     }
     g.endDraw();
-
-//    if (pquality != g.smooth) {
-//      surface.setSmooth(g.smooth);
-//    }
 
     if (recorder != null) {
       recorder.endDraw();
@@ -2370,12 +2262,8 @@ public class PApplet implements PConstants {
       while (!eventQueue.isEmpty()) {
         Event e = eventQueue.remove();
         switch (e.getFlavor()) {
-        case Event.MOUSE:
-          handleMouseEvent((MouseEvent) e);
-          break;
-        case Event.KEY:
-          handleKeyEvent((KeyEvent) e);
-          break;
+          case Event.MOUSE -> handleMouseEvent((MouseEvent) e);
+          case Event.KEY -> handleKeyEvent((KeyEvent) e);
         }
       }
     }
@@ -2396,7 +2284,7 @@ public class PApplet implements PConstants {
     // https://processing.org/bugs/bugzilla/170.html
     // also prevents mouseExited() on the mac from hosing the mouse
     // position, because x/y are bizarre values on the exit event.
-    // see also the id check below.. both of these go together.
+    // see also the id check below... both of these go together.
     // Not necessary to set mouseX/Y on RELEASE events because the
     // actual position will have been set by a PRESS or DRAG event.
     // However, PRESS events might come without a preceding move,
@@ -2407,13 +2295,17 @@ public class PApplet implements PConstants {
         action == MouseEvent.PRESS) {
       pmouseX = emouseX;
       pmouseY = emouseY;
+      if (windowRatio) {
+        rmouseX = floor((event.getX() - ratioLeft) / ratioScale);
+        rmouseY = floor((event.getY() - ratioTop) / ratioScale);
+      }
       mouseX = event.getX();
       mouseY = event.getY();
     }
 
     int button = event.getButton();
 
-    // If running on Mac OS, allow ctrl-click as right mouse click.
+    // If running on macOS, allow ctrl-click as right mouse click.
     // Handled inside PApplet so that the same logic need not be redone
     // for each Surface independently, since the code seems to be identical:
     // no native code backing Surface objects (AWT, JavaFX, JOGL) handle it.
@@ -2473,43 +2365,21 @@ public class PApplet implements PConstants {
     // boolean for mousePressed.
 
     switch (action) {
-    case MouseEvent.PRESS:
-      mousePressed = true;
-      break;
-    case MouseEvent.RELEASE:
-      mousePressed = false;
-      break;
+      case MouseEvent.PRESS -> mousePressed = true;
+      case MouseEvent.RELEASE -> mousePressed = false;
     }
 
     handleMethods("mouseEvent", event);
 
     switch (action) {
-    case MouseEvent.PRESS:
-//      mousePressed = true;
-      mousePressed(event);
-      break;
-    case MouseEvent.RELEASE:
-//      mousePressed = false;
-      mouseReleased(event);
-      break;
-    case MouseEvent.CLICK:
-      mouseClicked(event);
-      break;
-    case MouseEvent.DRAG:
-      mouseDragged(event);
-      break;
-    case MouseEvent.MOVE:
-      mouseMoved(event);
-      break;
-    case MouseEvent.ENTER:
-      mouseEntered(event);
-      break;
-    case MouseEvent.EXIT:
-      mouseExited(event);
-      break;
-    case MouseEvent.WHEEL:
-      mouseWheel(event);
-      break;
+      case MouseEvent.PRESS -> mousePressed(event);
+      case MouseEvent.RELEASE -> mouseReleased(event);
+      case MouseEvent.CLICK -> mouseClicked(event);
+      case MouseEvent.DRAG -> mouseDragged(event);
+      case MouseEvent.MOVE -> mouseMoved(event);
+      case MouseEvent.ENTER -> mouseEntered(event);
+      case MouseEvent.EXIT -> mouseExited(event);
+      case MouseEvent.WHEEL -> mouseWheel(event);
     }
 
     if ((action == MouseEvent.DRAG) ||
@@ -2602,7 +2472,7 @@ public class PApplet implements PConstants {
    *
    * <h3>Advanced</h3> When the mouse is clicked, mousePressed() will be called,
    * then mouseReleased(), then mouseClicked(). Note that mousePressed is
-   * already false inside of mouseClicked().
+   * already false inside mouseClicked().
    *
    * @webref input:mouse
    * @webBrief Called once after a mouse button has been pressed and then
@@ -2669,7 +2539,6 @@ public class PApplet implements PConstants {
    * Mouse and keyboard events only work when a program has <b>draw()</b>.
    * Without <b>draw()</b>, the code is only run once and then stops listening
    * for events.
-   *
    *
    * @webref input:mouse
    * @webBrief Called every time the mouse moves and a mouse button is not
@@ -2764,20 +2633,18 @@ public class PApplet implements PConstants {
     keyCode = event.getKeyCode();
 
     switch (event.getAction()) {
-    case KeyEvent.PRESS:
-      Long hash = ((long) keyCode << Character.SIZE) | key;
-      if (!pressedKeys.contains(hash)) pressedKeys.add(hash);
-      keyPressed = true;
-      keyPressed(keyEvent);
-      break;
-    case KeyEvent.RELEASE:
-      pressedKeys.remove(((long) keyCode << Character.SIZE) | key);
-      keyPressed = !pressedKeys.isEmpty();
-      keyReleased(keyEvent);
-      break;
-    case KeyEvent.TYPE:
-      keyTyped(keyEvent);
-      break;
+      case KeyEvent.PRESS -> {
+        Long hash = ((long) keyCode << Character.SIZE) | key;
+        if (!pressedKeys.contains(hash)) pressedKeys.add(hash);
+        keyPressed = true;
+        keyPressed(keyEvent);
+      }
+      case KeyEvent.RELEASE -> {
+        pressedKeys.remove(((long) keyCode << Character.SIZE) | key);
+        keyPressed = !pressedKeys.isEmpty();
+        keyReleased(keyEvent);
+      }
+      case KeyEvent.TYPE -> keyTyped(keyEvent);
     }
 
     /*
@@ -2854,7 +2721,7 @@ public class PApplet implements PConstants {
    * multiple calls to keyPressed(), because the OS repeat takes over.
    * <p>
    * Examples for key handling: (Tested on Windows XP, please notify if
-   * different on other platforms, I have a feeling Mac OS and Linux may do
+   * different on other platforms, I have a feeling macOS and Linux may do
    * otherwise)
    *
    * <PRE>
@@ -2888,7 +2755,7 @@ public class PApplet implements PConstants {
    *    keyReleased with key == CODED and keyCode == SHIFT
    *    (note there is no keyTyped)
    *
-   * 6. Pressing the tab key in an applet with Java 1.4 will
+   * 6. Pressing the tab key in a Component with Java 1.4 will
    *    normally do nothing, but PApplet dynamically shuts
    *    this behavior off if Java 1.4 is in use (tested 1.4.2_05 Windows).
    *    Java 1.1 (Microsoft VM) passes the TAB key through normally.
@@ -2968,9 +2835,9 @@ public class PApplet implements PConstants {
 
   //////////////////////////////////////////////////////////////
 
-  // i am focused man, and i'm not afraid of death.
-  // and i'm going all out. i circle the vultures in a van
-  // and i run the block.
+  // I am focused man, and I'm not afraid of death.
+  // and I'm going all out. I circle the vultures in a van
+  // and I run the block.
 
 
   public void focusGained() { }
@@ -2991,18 +2858,16 @@ public class PApplet implements PConstants {
   /**
    *
    * Returns the number of milliseconds (thousandths of a second) since
-   * starting an applet. This information is often used for timing animation
+   * starting the sketch. This information is often used for timing animation
    * sequences.
    *
-   *
    * <h3>Advanced</h3>
-   * <p>
    * This is a function, rather than a variable, because it may
    * change multiple times per frame.
    *
    * @webref input:time date
    * @webBrief Returns the number of milliseconds (thousandths of a second) since
-   * starting an applet
+   * the sketch started.
    * @see PApplet#second()
    * @see PApplet#minute()
    * @see PApplet#hour()
@@ -3018,10 +2883,10 @@ public class PApplet implements PConstants {
   /**
    *
    * Processing communicates with the clock on your computer. The
-   * <b>second()</b> function returns the current second as a value from 0 - 59.
+   * <b>second()</b> function returns the current second as a value from 0 to 59.
    *
    * @webref input:time date
-   * @webBrief Returns the current second as a value from 0 - 59
+   * @webBrief Returns the current second as a value from 0 to 59
    * @see PApplet#millis()
    * @see PApplet#minute()
    * @see PApplet#hour()
@@ -3036,11 +2901,9 @@ public class PApplet implements PConstants {
   /**
    *
    * Processing communicates with the clock on your computer. The
-   * <b>minute()</b> function returns the current minute as a value from 0 - 59.
-   *
-   *
+   * <b>minute()</b> function returns the current minute as a value from 0 to 59.
    * @webref input:time date
-   * @webBrief Returns the current minute as a value from 0 - 59
+   * @webBrief Returns the current minute as a value from 0 to 59
    * @see PApplet#millis()
    * @see PApplet#second()
    * @see PApplet#hour()
@@ -3056,10 +2919,10 @@ public class PApplet implements PConstants {
   /**
    *
    * Processing communicates with the clock on your computer. The
-   * <b>hour()</b> function returns the current hour as a value from 0 - 23.
+   * <b>hour()</b> function returns the current hour as a value from 0 to 23.
    *
    * @webref input:time date
-   * @webBrief Returns the current hour as a value from 0 - 23
+   * @webBrief Returns the current hour as a value from 0 to 23
    * @see PApplet#millis()
    * @see PApplet#second()
    * @see PApplet#minute()
@@ -3075,8 +2938,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Processing communicates with the clock on your computer. The
-   * <b>day()</b> function returns the current day as a value from 1 - 31.
-   *
+   * <b>day()</b> function returns the current day as a value from 1 to 31.
    *
    * <h3>Advanced</h3>
    * Get the current day of the month (1 through 31).
@@ -3085,7 +2947,7 @@ public class PApplet implements PConstants {
    * or day of the year (1..365) then use java's Calendar.get()
    *
    * @webref input:time date
-   * @webBrief Returns the current day as a value from 1 - 31
+   * @webBrief Returns the current day as a value from 1 to 31
    * @see PApplet#millis()
    * @see PApplet#second()
    * @see PApplet#minute()
@@ -3100,11 +2962,10 @@ public class PApplet implements PConstants {
   /**
    *
    * Processing communicates with the clock on your computer. The
-   * <b>month()</b> function returns the current month as a value from 1 - 12.
-   *
+   * <b>month()</b> function returns the current month as a value from 1 to 12.
    *
    * @webref input:time date
-   * @webBrief Returns the current month as a value from 1 - 12
+   * @webBrief Returns the current month as a value from 1 to 12
    * @see PApplet#millis()
    * @see PApplet#second()
    * @see PApplet#minute()
@@ -3118,11 +2979,9 @@ public class PApplet implements PConstants {
   }
 
   /**
-   *
    * Processing communicates with the clock on your computer. The
    * <b>year()</b> function returns the current year as an integer (2003,
    * 2004, 2005, etc).
-   *
    *
    * @webref input:time date
    * @webBrief Returns the current year as an integer (2003,
@@ -3150,11 +3009,11 @@ public class PApplet implements PConstants {
    * Delay times are specified in thousandths of a second. For example,
    * running <b>delay(3000)</b> will stop the program for three seconds and
    * <b>delay(500)</b> will stop the program for a half-second.
-   *
+   * <p/>
    * The screen only updates when the end of <b>draw()</b> is reached, so <b>delay()</b>
    * cannot be used to slow down drawing. For instance, you cannot use <b>delay()</b>
    * to control the timing of an animation.
-   *
+   * <p/>
    * The <b>delay()</b> function should only be used for pausing scripts (i.e.
    * a script that needs to pause a few seconds before attempting a download,
    * or a sketch that needs to wait a few milliseconds before reading from
@@ -3209,12 +3068,6 @@ public class PApplet implements PConstants {
    * Links to a webpage either in the same window or in a new window. The
    * complete URL must be specified.
    *
-   * <h3>Advanced</h3>
-   * Link to an external page without all the muss.
-   * <p>
-   * When run with an applet, uses the browser to open the url,
-   * for applications, attempts to launch a browser with the url.
-   *
    * @param url the complete URL, as a String in quotes
    */
   public void link(String url) {
@@ -3261,7 +3114,7 @@ public class PApplet implements PConstants {
    * @webBrief Attempts to open an application or file using your platform's
    *           launcher
    * @param args
-   *          arguments to the launcher, eg. a filename.
+   *          arguments to the launcher, e.g. a filename.
    * @usage Application
    */
   static public Process launch(String... args) {
@@ -3459,7 +3312,7 @@ public class PApplet implements PConstants {
     } else {
       shell = "/bin/sh";
       runCmd = "-c";
-      // attempt emulate the behavior of an interactive shell
+      // attempt to emulate the behavior of an interactive shell
       // can't use -i or -l since the version of bash shipped with macOS does not support this together with -c
       // also we want to make sure no motd or similar gets returned as stdout
       argList.append("if [ -f /etc/profile ]; then . /etc/profile >/dev/null 2>&1; fi;");
@@ -3508,8 +3361,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Function for an applet/application to kill itself and
-   * display an error. Mostly this is here to be improved later.
+   * Function for an application to kill itself and display an error.
+   * Mostly this is here to be improved later.
    */
   public void die(String what) {
     dispose();
@@ -3580,11 +3433,7 @@ public class PApplet implements PConstants {
    * they have in mind when cleaning up.
    */
   public void exitActual() {
-    try {
-      System.exit(0);
-    } catch (SecurityException e) {
-      // don't care about applet security exceptions
-    }
+    System.exit(0);
   }
 
 
@@ -3593,7 +3442,7 @@ public class PApplet implements PConstants {
    * Destroys the thread, dispose the renderer,and notify listeners.
    * <p>
    * Not to be called or overridden by users. If called multiple times,
-   * will only notify listeners once. Register a dispose listener instead.
+   * will only notify listeners once. Register a "dispose" listener instead.
    */
   public void dispose() {
     // moved here from stop()
@@ -3735,12 +3584,7 @@ public class PApplet implements PConstants {
   /**
    */
   public void saveFrame() {
-    try {
-      g.save(savePath("screen-" + nf(frameCount, 4) + ".tif"));
-    } catch (SecurityException se) {
-      System.err.println("Can't use saveFrame() when running in a browser, " +
-                         "unless using a signed applet.");
-    }
+    g.save(savePath("screen-" + nf(frameCount, 4) + ".tif"));
   }
 
 
@@ -3780,12 +3624,7 @@ public class PApplet implements PConstants {
    *          ".tga", ".jpg", or ".png"
    */
   public void saveFrame(String filename) {
-    try {
-      g.save(savePath(insertFrame(filename)));
-    } catch (SecurityException se) {
-      System.err.println("Can't use saveFrame() when running in a browser, " +
-                         "unless using a signed applet.");
-    }
+    g.save(savePath(insertFrame(filename)));
   }
 
 
@@ -4111,15 +3950,14 @@ public class PApplet implements PConstants {
    * for occasional messages, but does not support high-speed,
    * real-time output (such as at 60 frames per second).
    *
-   *
- * @webref output:text area
- * @webBrief Writes array data to the text
- * area of the Processing environment's console.
- * @param what one-dimensional array
- * @usage IDE
- * @see PApplet#print(byte)
- * @see PApplet#println()
- */
+   * @webref output:text area
+   * @webBrief Writes array data to the text
+   * area of the Processing environment's console.
+   * @param what one-dimensional array
+   * @usage IDE
+   * @see PApplet#print(byte)
+   * @see PApplet#println()
+   */
   static public void printArray(Object what) {
     if (what == null) {
       // special case since this does fugly things on > 1.1
@@ -4129,75 +3967,64 @@ public class PApplet implements PConstants {
       String name = what.getClass().getName();
       if (name.charAt(0) == '[') {
         switch (name.charAt(1)) {
-        case '[':
-          // don't even mess with multi-dimensional arrays (case '[')
-          // or anything else that's not int, float, boolean, char
-          System.out.println(what);
-          break;
-
-        case 'L':
-          // print a 1D array of objects as individual elements
-          Object[] poo = (Object[]) what;
-          for (int i = 0; i < poo.length; i++) {
-            if (poo[i] instanceof String) {
-              System.out.println("[" + i + "] \"" + poo[i] + "\"");
-            } else {
-              System.out.println("[" + i + "] " + poo[i]);
+          case '[' ->
+            // don't even mess with multi-dimensional arrays (case '[')
+            // or anything else that's not int, float, boolean, char
+            System.out.println(what);
+          case 'L' -> {
+            // print a 1D array of objects as individual elements
+            Object[] poo = (Object[]) what;
+            for (int i = 0; i < poo.length; i++) {
+              if (poo[i] instanceof String) {
+                System.out.println("[" + i + "] \"" + poo[i] + "\"");
+              } else {
+                System.out.println("[" + i + "] " + poo[i]);
+              }
             }
           }
-          break;
-
-        case 'Z':  // boolean
-          boolean[] zz = (boolean[]) what;
-          for (int i = 0; i < zz.length; i++) {
-            System.out.println("[" + i + "] " + zz[i]);
+          case 'Z' -> {  // boolean
+            boolean[] zz = (boolean[]) what;
+            for (int i = 0; i < zz.length; i++) {
+              System.out.println("[" + i + "] " + zz[i]);
+            }
           }
-          break;
-
-        case 'B':  // byte
-          byte[] bb = (byte[]) what;
-          for (int i = 0; i < bb.length; i++) {
-            System.out.println("[" + i + "] " + bb[i]);
+          case 'B' -> {  // byte
+            byte[] bb = (byte[]) what;
+            for (int i = 0; i < bb.length; i++) {
+              System.out.println("[" + i + "] " + bb[i]);
+            }
           }
-          break;
-
-        case 'C':  // char
-          char[] cc = (char[]) what;
-          for (int i = 0; i < cc.length; i++) {
-            System.out.println("[" + i + "] '" + cc[i] + "'");
+          case 'C' -> {  // char
+            char[] cc = (char[]) what;
+            for (int i = 0; i < cc.length; i++) {
+              System.out.println("[" + i + "] '" + cc[i] + "'");
+            }
           }
-          break;
-
-        case 'I':  // int
-          int[] ii = (int[]) what;
-          for (int i = 0; i < ii.length; i++) {
-            System.out.println("[" + i + "] " + ii[i]);
+          case 'I' -> {  // int
+            int[] ii = (int[]) what;
+            for (int i = 0; i < ii.length; i++) {
+              System.out.println("[" + i + "] " + ii[i]);
+            }
           }
-          break;
-
-        case 'J':  // int
-          long[] jj = (long[]) what;
-          for (int i = 0; i < jj.length; i++) {
-            System.out.println("[" + i + "] " + jj[i]);
+          case 'J' -> {  // int
+            long[] jj = (long[]) what;
+            for (int i = 0; i < jj.length; i++) {
+              System.out.println("[" + i + "] " + jj[i]);
+            }
           }
-          break;
-
-        case 'F':  // float
-          float[] ff = (float[]) what;
-          for (int i = 0; i < ff.length; i++) {
-            System.out.println("[" + i + "] " + ff[i]);
+          case 'F' -> {  // float
+            float[] ff = (float[]) what;
+            for (int i = 0; i < ff.length; i++) {
+              System.out.println("[" + i + "] " + ff[i]);
+            }
           }
-          break;
-
-        case 'D':  // double
-          double[] dd = (double[]) what;
-          for (int i = 0; i < dd.length; i++) {
-            System.out.println("[" + i + "] " + dd[i]);
+          case 'D' -> {  // double
+            double[] dd = (double[]) what;
+            for (int i = 0; i < dd.length; i++) {
+              System.out.println("[" + i + "] " + dd[i]);
+            }
           }
-          break;
-
-        default:
-          System.out.println(what);
+          default -> System.out.println(what);
         }
       } else {  // not an array
         System.out.println(what);
@@ -4231,14 +4058,13 @@ public class PApplet implements PConstants {
   // MATH
 
   // lots of convenience methods for math with floats.
-  // doubles are overkill for processing applets, and casting
+  // doubles are overkill for processing sketches, and casting
   // things all the time is annoying, thus the functions below.
 
 /**
    *
    * Calculates the absolute value (magnitude) of a number. The absolute
    * value of a number is always positive.
-   *
    *
    * @webref math:calculation
    * @webBrief Calculates the absolute value (magnitude) of a number
@@ -4639,7 +4465,7 @@ public class PApplet implements PConstants {
    * returned as a <b>float</b> in the range from <b>PI</b> to <b>-PI</b>.
    * The <b>atan2()</b> function is most often used for orienting geometry to
    * the position of the cursor.  Note: The y-coordinate of the point is the
-   * first parameter and the x-coordinate is the second due the the structure
+   * first parameter and the x-coordinate is the second due the structure
    * of calculating the tangent.
    *
    * @webref math:trigonometry
@@ -4809,7 +4635,7 @@ public class PApplet implements PConstants {
    * Normalizes a number from another range into a value between 0 and 1.
    * Identical to <b>map(value, low, high, 0, 1)</b>.<br />
    * <br />
-   * Numbers outside of the range are not clamped to 0 and 1, because
+   * Numbers outside the range are not clamped to 0 and 1, because
    * out-of-range values are often intentional and useful. (See the second
    * example above.)
    *
@@ -4837,9 +4663,9 @@ public class PApplet implements PConstants {
    * range of 0 to 100 into a value that ranges from the left edge of the window
    * (0) to the right edge (width).<br />
    * <br />
-   * As shown in the second example, numbers outside of the range are not
-   * clamped to the minimum and maximum parameters values, because out-of-range
-   * values are often intentional and useful.
+   * As shown in the second example, numbers outside the range are
+   * not clamped to the minimum and maximum parameters values,
+   * because out-of-range values are often intentional and useful.
    *
    * @webref math:calculation
    * @webBrief Re-maps a number from one range to another
@@ -5087,7 +4913,6 @@ public class PApplet implements PConstants {
    * Processing. For clarification, it's an implementation of "classic Perlin
    * noise" from 1983, and not the newer "simplex noise" method from 2001.
    *
-   *
    * @webref math:random
    * @webBrief Returns the Perlin noise value at specified coordinates
    * @param x
@@ -5189,8 +5014,8 @@ public class PApplet implements PConstants {
    * <br />
    * By default, noise is computed over 4 octaves with each octave contributing
    * exactly half than its predecessor, starting at 50% strength for the first
-   * octave. This falloff amount can be changed by adding an additional function
-   * parameter. For example, a falloff factor of 0.75 means each octave will now
+   * octave. This falloff amount can be changed by adding a function parameter.
+   * For example, a falloff factor of 0.75 means each octave will now
    * have 75% impact (25% less) of the previous lower octave. While any number
    * between 0.0 and 1.0 is valid, note that values greater than 0.5 may result
    * in <b>noise()</b> returning values greater than 1.0.<br />
@@ -5281,7 +5106,6 @@ public class PApplet implements PConstants {
    * redirect to a password prompt, because <b>loadImage()</b> will attempt to
    * interpret the HTML as image data.
    *
-   *
    * @webref image:loading & displaying
    * @webBrief Loads an image into a variable of type <b>PImage</b>
    * @param filename
@@ -5308,6 +5132,11 @@ public class PApplet implements PConstants {
       g.awaitAsyncSaveCompletion(filename);
     }
 
+    // Hack so that calling loadImage() in settings() will work
+    // https://github.com/processing/processing4/issues/299
+    if (surface == null) {
+      return ShimAWT.loadImage(this, filename, extension);
+    }
     return surface.loadImage(filename, extension);
   }
 
@@ -5335,7 +5164,6 @@ public class PApplet implements PConstants {
    * The <b>extension</b> parameter is used to determine the image type in cases
    * where the image filename does not end with a proper extension. Specify the
    * extension as the second parameter to <b>requestImage()</b>.
-   *
    *
    * @webref image:loading & displaying
    * @webBrief Loads images on a separate thread so that your sketch does not
@@ -5738,7 +5566,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Reads the contents of a file or URL and creates an Table object with its
+   * Reads the contents of a file or URL and creates a Table object with its
    * values. If a file is specified, it must be located in the sketch's "data"
    * folder. The filename parameter can also be a URL to a file found online.
    * The filename must either end in an extension or an extension must be
@@ -5778,12 +5606,12 @@ public class PApplet implements PConstants {
 
   /**
    * Options may contain "header", "tsv", "csv", or "bin" separated by commas.
-   *
+   * <p/>
    * Another option is "dictionary=filename.tsv", which allows users to
    * specify a "dictionary" file that contains a mapping of the column titles
    * and the data types used in the table file. This can be far more efficient
    * (in terms of speed and memory usage) for loading and parsing tables. The
-   * dictionary file can only be tab separated values (.tsv) and its extension
+   * dictionary file can only be tab-separated values (.tsv) and its extension
    * will be ignored. This option was added in Processing 2.0.2.
    *
    * @param options may contain "header", "tsv", "csv", or "bin" separated by commas
@@ -6053,21 +5881,6 @@ public class PApplet implements PConstants {
   }
 
 
-  /*
-  static public void selectInput(String prompt, String callbackMethod,
-                                 File file, Object callbackObject, Frame parent,
-                                 PApplet sketch) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD, sketch);
-  }
-
-
-  static public void selectInput(String prompt, String callbackMethod,
-                                 File file, Object callbackObject, Frame parent) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.LOAD, null);
-  }
-  */
-
-
   /**
    * Opens a platform-specific file chooser dialog to select a file for output.
    * After the selection is made, the selected File will be passed to the
@@ -6095,77 +5908,6 @@ public class PApplet implements PConstants {
     //selectOutput(prompt, callback, file, callbackObject, null, this);
     surface.selectOutput(prompt, callback, file, callbackObject);
   }
-
-
-  /*
-  static public void selectOutput(String prompt, String callbackMethod,
-                                  File file, Object callbackObject, Frame parent) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE, null);
-  }
-
-
-  static public void selectOutput(String prompt, String callbackMethod,
-                                  File file, Object callbackObject, Frame parent,
-                                  PApplet sketch) {
-    selectImpl(prompt, callbackMethod, file, callbackObject, parent, FileDialog.SAVE, sketch);
-  }
-
-
-  // Will remove the 'sketch' parameter once we get an upstream JOGL fix
-  // https://github.com/processing/processing/issues/3831
-  static protected void selectImpl(final String prompt,
-                                   final String callbackMethod,
-                                   final File defaultSelection,
-                                   final Object callbackObject,
-                                   final Frame parentFrame,
-                                   final int mode,
-                                   final PApplet sketch) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        File selectedFile = null;
-
-        boolean hide = (sketch != null) &&
-          (sketch.g instanceof PGraphicsOpenGL) && (platform == WINDOWS);
-        if (hide) sketch.surface.setVisible(false);
-
-        if (useNativeSelect) {
-          FileDialog dialog = new FileDialog(parentFrame, prompt, mode);
-          if (defaultSelection != null) {
-            dialog.setDirectory(defaultSelection.getParent());
-            dialog.setFile(defaultSelection.getName());
-          }
-
-          dialog.setVisible(true);
-          String directory = dialog.getDirectory();
-          String filename = dialog.getFile();
-          if (filename != null) {
-            selectedFile = new File(directory, filename);
-          }
-
-        } else {
-          JFileChooser chooser = new JFileChooser();
-          chooser.setDialogTitle(prompt);
-          if (defaultSelection != null) {
-            chooser.setSelectedFile(defaultSelection);
-          }
-
-          int result = -1;
-          if (mode == FileDialog.SAVE) {
-            result = chooser.showSaveDialog(parentFrame);
-          } else if (mode == FileDialog.LOAD) {
-            result = chooser.showOpenDialog(parentFrame);
-          }
-          if (result == JFileChooser.APPROVE_OPTION) {
-            selectedFile = chooser.getSelectedFile();
-          }
-        }
-
-        if (hide) sketch.surface.setVisible(true);
-        selectCallback(selectedFile, callbackMethod, callbackObject);
-      }
-    });
-  }
-  */
 
 
   /**
@@ -6196,68 +5938,6 @@ public class PApplet implements PConstants {
     //selectFolder(prompt, callback, file, callbackObject, null, this);
     surface.selectFolder(prompt, callback, file, callbackObject);
   }
-
-
-  /*
-  static public void selectFolder(final String prompt,
-                                  final String callbackMethod,
-                                  final File defaultSelection,
-                                  final Object callbackObject,
-                                  final Frame parentFrame) {
-    selectFolder(prompt, callbackMethod, defaultSelection, callbackObject, parentFrame, null);
-  }
-
-
-  // Will remove the 'sketch' parameter once we get an upstream JOGL fix
-  // https://github.com/processing/processing/issues/3831
-  static public void selectFolder(final String prompt,
-                                  final String callbackMethod,
-                                  final File defaultSelection,
-                                  final Object callbackObject,
-                                  final Frame parentFrame,
-                                  final PApplet sketch) {
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        File selectedFile = null;
-
-        boolean hide = (sketch != null) &&
-          (sketch.g instanceof PGraphicsOpenGL) && (platform == WINDOWS);
-        if (hide) sketch.surface.setVisible(false);
-
-        if (platform == MACOS && useNativeSelect != false) {
-          FileDialog fileDialog =
-            new FileDialog(parentFrame, prompt, FileDialog.LOAD);
-          if (defaultSelection != null) {
-            fileDialog.setDirectory(defaultSelection.getAbsolutePath());
-          }
-          System.setProperty("apple.awt.fileDialogForDirectories", "true");
-          fileDialog.setVisible(true);
-          System.setProperty("apple.awt.fileDialogForDirectories", "false");
-          String filename = fileDialog.getFile();
-          if (filename != null) {
-            selectedFile = new File(fileDialog.getDirectory(), fileDialog.getFile());
-          }
-        } else {
-          checkLookAndFeel();
-          JFileChooser fileChooser = new JFileChooser();
-          fileChooser.setDialogTitle(prompt);
-          fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-          if (defaultSelection != null) {
-            fileChooser.setCurrentDirectory(defaultSelection);
-          }
-
-          int result = fileChooser.showOpenDialog(parentFrame);
-          if (result == JFileChooser.APPROVE_OPTION) {
-            selectedFile = fileChooser.getSelectedFile();
-          }
-        }
-
-        if (hide) sketch.surface.setVisible(true);
-        selectCallback(selectedFile, callbackMethod, callbackObject);
-      }
-    });
-  }
-  */
 
 
   static public void selectCallback(File selectedFile,
@@ -6374,6 +6054,16 @@ public class PApplet implements PConstants {
   }
 
 
+  static private boolean listFilesExt(String name, String[] extensions) {
+    for (String ext : extensions) {
+      if (name.toLowerCase().endsWith(ext)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
   static void listFilesImpl(File folder, boolean recursive,
                             String[] extensions, boolean hidden,
                             boolean directories, boolean files,
@@ -6390,17 +6080,13 @@ public class PApplet implements PConstants {
             listFilesImpl(item, recursive, extensions, hidden, directories, files, list);
           }
           if (directories) {
-            list.add(item);
+            if (extensions == null || listFilesExt(item.getName(), extensions)) {
+              list.add(item);
+            }
           }
         } else if (files) {
-          if (extensions == null) {
+          if (extensions == null || listFilesExt(item.getName(), extensions)) {
             list.add(item);
-          } else {
-            for (String ext : extensions) {
-              if (item.getName().toLowerCase().endsWith(ext)) {
-                list.add(item);
-              }
-            }
           }
         }
       }
@@ -6496,7 +6182,7 @@ public class PApplet implements PConstants {
   /**
    * @nowebref
    * I want to read lines from a stream. If I have to type the
-   * following lines any more I'm gonna send Sun my medical bills.
+   * following lines anymore I'm gonna send Sun my medical bills.
    */
   static public BufferedReader createReader(InputStream input) {
     InputStreamReader isr =
@@ -6529,7 +6215,6 @@ public class PApplet implements PConstants {
    * Processing API use UTF-8 encoding. In previous releases, the default
    * encoding for your platform was used, which causes problems when files
    * are moved to other platforms.
-   *
    *
    * @webref output:files
    * @webBrief Creates a new file in the sketch folder, and a <b>PrintWriter</b> object
@@ -6606,7 +6291,7 @@ public class PApplet implements PConstants {
    * will be printed to the console. This helps prevent issues that appear
    * when a sketch is exported to the web, where case sensitivity matters, as
    * opposed to running from inside the Processing Development Environment on
-   * Windows or Mac OS, where case sensitivity is preserved but ignored.<br />
+   * Windows or macOS, where case sensitivity is preserved but ignored.<br />
    * <br />
    * If the file ends with <b>.gz</b>, the stream will automatically be gzip
    * decompressed. If you don't want the automatic decompression, use the
@@ -6625,7 +6310,7 @@ public class PApplet implements PConstants {
    * methods to take more control of how the stream is read.
    * <p>
    * If the requested item doesn't exist, null is returned.
-   * (Prior to 0096, die() would be called, killing the applet)
+   * (Prior to 0096, die() would be called, killing the sketch)
    * <p>
    * For 0096+, the "data" folder is exported intact with subfolders,
    * and openStream() properly handles subdirectories from the data folder
@@ -6633,7 +6318,7 @@ public class PApplet implements PConstants {
    * If not online, this will also check to see if the user is asking
    * for a file whose name isn't properly capitalized. This helps prevent
    * issues when a sketch is exported to the web, where case sensitivity
-   * matters, as opposed to Windows and the Mac OS default where
+   * matters, as opposed to Windows and the macOS default where
    * case sensitivity is preserved but ignored.
    * <p>
    * It is strongly recommended that libraries use this method to open
@@ -6699,8 +6384,7 @@ public class PApplet implements PConstants {
         URL url = new URL(filename);
         URLConnection conn = url.openConnection();
 
-        if (conn instanceof HttpURLConnection) {
-          HttpURLConnection httpConn = (HttpURLConnection) conn;
+        if (conn instanceof HttpURLConnection httpConn) {
           // Will not handle a protocol change (see below)
           httpConn.setInstanceFollowRedirects(true);
           int response = httpConn.getResponseCode();
@@ -6715,11 +6399,11 @@ public class PApplet implements PConstants {
           return url.openStream();
         }
       } catch (MalformedURLException mfue) {
-        // not a url, that's fine
+        // not a URL, that's fine
 
       } catch (FileNotFoundException fnfe) {
         // Added in 0119 b/c Java 1.5 throws FNFE when URL not available.
-        // http://dev.processing.org/bugs/show_bug.cgi?id=403
+        // https://download.processing.org/bugzilla/403.html
 
       } catch (IOException e) {
         // changed for 0117, shouldn't be throwing exception
@@ -6734,7 +6418,7 @@ public class PApplet implements PConstants {
 
     // Moved this earlier than the getResourceAsStream() checks, because
     // calling getResourceAsStream() on a directory lists its contents.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=716
+    // https://download.processing.org/bugzilla/716.html
     try {
       // First see if it's in a data folder. This may fail by throwing
       // a SecurityException. If so, this whole block will be skipped.
@@ -6788,7 +6472,7 @@ public class PApplet implements PConstants {
       // this is an irritation of sun's java plug-in, which will return
       // a non-null stream for an object that doesn't exist. like all good
       // things, this is probably introduced in java 1.5. awesome!
-      // http://dev.processing.org/bugs/show_bug.cgi?id=359
+      // https://download.processing.org/bugzilla/359.html
       if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
         return stream;
       }
@@ -6796,7 +6480,7 @@ public class PApplet implements PConstants {
 
     // When used with an online script, also need to check without the
     // data folder, in case it's not in a subfolder called 'data'.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=389
+    // https://download.processing.org/bugzilla/389.html
     stream = cl.getResourceAsStream(filename);
     if (stream != null) {
       String cn = stream.getClass().getName();
@@ -6806,8 +6490,7 @@ public class PApplet implements PConstants {
     }
 
     try {
-      // attempt to load from a local file, used when running as
-      // an application, or as a signed applet
+      // attempt to load from a local file
       try {  // first try to catch any security exceptions
         try {
           return new FileInputStream(dataPath(filename));
@@ -6900,8 +6583,7 @@ public class PApplet implements PConstants {
           URLConnection conn = url.openConnection();
           int length = -1;
 
-          if (conn instanceof HttpURLConnection) {
-            HttpURLConnection httpConn = (HttpURLConnection) conn;
+          if (conn instanceof HttpURLConnection httpConn) {
             // Will not handle a protocol change (see below)
             httpConn.setInstanceFollowRedirects(true);
             int response = httpConn.getResponseCode();
@@ -6938,7 +6620,7 @@ public class PApplet implements PConstants {
 
         } catch (FileNotFoundException fnfe) {
           // Java 1.5+ throws FNFE when URL not available
-          // http://dev.processing.org/bugs/show_bug.cgi?id=403
+          // https://download.processing.org/bugzilla/403.html
 
         } catch (IOException e) {
           printStackTrace(e);
@@ -7098,7 +6780,6 @@ public class PApplet implements PConstants {
    * encoding for your platform was used, which causes problems when files are
    * moved to other platforms.
    *
-   *
    * <h3>Advanced</h3> Load data from a file and shove it into a String array.
    * <p>
    * Exceptions are handled internally, when an error, occurs, an exception is
@@ -7106,8 +6787,8 @@ public class PApplet implements PConstants {
    * running. This is a tradeoff between 1) showing the user that there was a
    * problem but 2) not requiring that all i/o code is contained in try/catch
    * blocks, for the sake of new users (or people who are just trying to get
-   * things done in a "scripting" fashion. If you want to handle exceptions, use
-   * Java methods for I/O.
+   * things done in an informal "scripting" fashion). If you want to handle
+   * exceptions, use Java methods for I/O.
    *
    * @webref input:files
    * @webBrief Reads the contents of a file or url and creates a <b>String</b> array of
@@ -7245,7 +6926,6 @@ public class PApplet implements PConstants {
    * that, unlike some other functions, this will not automatically compress or
    * uncompress gzip files.)
    *
-   *
    * @webref output:files
    * @webBrief Save the contents of a stream to a file in the sketch folder
    * @param target
@@ -7338,7 +7018,6 @@ public class PApplet implements PConstants {
    * Folder" from the "Sketch" menu. Alternatively, the files can be saved to
    * any location on the computer by using an absolute path (something that
    * starts with / on Unix and Linux, or a drive letter on Windows).
-   *
    *
    * @webref output:files
    * @webBrief Opposite of <b>loadBytes()</b>, will write an entire array of
@@ -7548,10 +7227,6 @@ public class PApplet implements PConstants {
    * passed in. External libraries should use this function to save to
    * the sketch folder.
    * <p/>
-   * Note that when running as an applet inside a web browser,
-   * the sketchPath will be set to null, because security restrictions
-   * prevent applets from accessing that information.
-   * <p/>
    * This will also cause an error if the sketch is not inited properly,
    * meaning that init() was never called on the PApplet when hosted
    * my some other main() or by other code. For proper use of init(),
@@ -7581,12 +7256,12 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Returns a path inside the applet folder to save to. Like sketchPath(),
+   * Returns a path adjacent the application to save to. Like sketchPath(),
    * but creates any in-between folders so that things save properly.
    * <p/>
    * All saveXxxx() functions use the path to the sketch folder, rather than
    * its data folder. Once exported, the data folder will be found inside the
-   * jar file of the exported application or applet. In this case, it's not
+   * jar file of the exported application. In this case, it's not
    * possible to save data into the jar file, because it will often be running
    * from a server, or marked in-use if running from a local file system.
    * With this in mind, saving to the data path doesn't make sense anyway.
@@ -7857,7 +7532,7 @@ public class PApplet implements PConstants {
    * individually. This function only copies references, which means that for
    * most purposes it only copies one-dimensional arrays (a single set of
    * brackets). If used with a two (or three or more) dimensional array, it will
-   * only copy the references at the first level, because a two dimensional
+   * only copy the references at the first level, because a two-dimensional
    * array is simply an "array of arrays". This does not produce an error,
    * however, because this is often the desired behavior. Internally, this
    * function calls Java's <a href=
@@ -7938,12 +7613,11 @@ public class PApplet implements PConstants {
    *
    * Increases the size of a one-dimensional array. By default, this function
    * doubles the size of the array, but the optional <b>newSize</b> parameter
-   * provides precise control over the increase in size. <br />
-   * <br />
+   * provides precise control over the increase in size.
+   * <p/>
    * When using an array of objects, the data returned from the function must be
    * cast to the object array's data type. For example: <em>SomeClass[] items =
    * (SomeClass[]) expand(originalArray)</em>
-   *
    *
    * @webref data:array functions
    * @webBrief Increases the size of an array
@@ -8065,7 +7739,6 @@ public class PApplet implements PConstants {
    * be cast to the object array's data type. For example: <em>SomeClass[]
    * items = (SomeClass[]) append(originalArray, element)</em>.
    *
-   *
    * @webref data:array functions
    * @webBrief Expands an array by one element and adds data to the new position
    * @param array array to append
@@ -8118,7 +7791,6 @@ public class PApplet implements PConstants {
    * When using an array of objects, the data returned from the function must
    * be cast to the object array's data type. For example: <em>SomeClass[]
    * items = (SomeClass[]) shorten(originalArray)</em>.
-   *
    *
    * @webref data:array functions
    * @webBrief Decreases an array by one element and returns the shortened array
@@ -8899,12 +8571,12 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * This function is used to apply a regular expression to a piece of text, and
-   * return a list of matching groups (elements found inside parentheses) as a
-   * two-dimensional String array. If there are no matches, a <b>null</b> value will be
-   * returned. If no groups are specified in the regular expression, but the
-   * sequence matches, a two dimensional array is still returned, but the second
-   * dimension is only of length one.<br />
+   * This function is used to apply a regular expression to a piece of text,
+   * and return a list of matching groups (elements found inside parentheses)
+   * as a two-dimensional String array. If there are no matches, a <b>null</b>
+   * value will be returned. If no groups are specified in the regular
+   * expression, but the sequence matches, a two-dimensional array is still
+   * returned, but the second dimension is only of length one.<br />
    * <br />
    * To use the function, first check to see if the result is <b>null</b>. If the
    * result is null, then the sequence did not match at all. If the sequence did
@@ -9125,7 +8797,10 @@ public class PApplet implements PConstants {
 
   /**
    * Parse a String to an int, and provide an alternate value that
-   * should be used when the number is invalid.
+   * should be used when the number is invalid. If there's a decimal place,
+   * it will be truncated, making this more of a toInt() than parseInt()
+   * function. This is because the method is used internally for casting.
+   * Not ideal, but the name was chosen before that clarification was made.
    */
   static final public int parseInt(String what, int otherwise) {
     try {
@@ -9177,11 +8852,11 @@ public class PApplet implements PConstants {
   /**
    * Make an array of int elements from an array of String objects.
    * If the String can't be parsed as a number, it will be set to zero.
-   *
+   * <pre>
    * String s[] = { "1", "300", "44" };
    * int numbers[] = parseInt(s);
-   *
-   * numbers will contain { 1, 300, 44 }
+   * // numbers will contain { 1, 300, 44 }
+   * </pre>
    */
   static public int[] parseInt(String[] what) {
     return parseInt(what, 0);
@@ -9191,11 +8866,11 @@ public class PApplet implements PConstants {
    * Make an array of int elements from an array of String objects.
    * If the String can't be parsed as a number, its entry in the
    * array will be set to the value of the "missing" parameter.
-   *
+   * <pre>
    * String s[] = { "1", "300", "apple", "44" };
    * int numbers[] = parseInt(s, 9999);
-   *
-   * numbers will contain { 1, 300, 9999, 44 }
+   * // numbers will contain { 1, 300, 9999, 44 }
+   * </pre>
    */
   static public int[] parseInt(String[] what, int missing) {
     int[] output = new int[what.length];
@@ -9267,55 +8942,55 @@ public class PApplet implements PConstants {
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  static final public String str(boolean x) {
-    return String.valueOf(x);
+  static final public String str(boolean value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(byte x) {
-    return String.valueOf(x);
+  static final public String str(byte value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(char x) {
-    return String.valueOf(x);
+  static final public String str(char value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(int x) {
-    return String.valueOf(x);
+  static final public String str(int value) {
+    return String.valueOf(value);
   }
 
-  static final public String str(float x) {
-    return String.valueOf(x);
+  static final public String str(float value) {
+    return String.valueOf(value);
   }
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
-  static final public String[] str(boolean[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(boolean[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(byte[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(byte[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(char[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(char[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(int[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(int[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
-  static final public String[] str(float[] x) {
-    String[] s = new String[x.length];
-    for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+  static final public String[] str(float[] values) {
+    String[] s = new String[values.length];
+    for (int i = 0; i < values.length; i++) s[i] = String.valueOf(values[i]);
     return s;
   }
 
@@ -9454,7 +9129,7 @@ public class PApplet implements PConstants {
 
   /**
    * Utility function for formatting numbers into strings. Similar to
-   * <b>nf()</b> but leaves a blank space in front of positive numbers so
+   * <b>nf()</b> but leaves a blank space in front of positive numbers, so
    * they align with negative numbers in spite of the minus symbol. There are
    * two versions, one for formatting floats and one for formatting ints. The
    * values for the <b>digits</b>, <b>left</b>, and <b>right</b> parameters
@@ -9689,7 +9364,6 @@ public class PApplet implements PConstants {
   *
   * Converts a <b>String</b> representation of a hexadecimal number to its
   * equivalent integer value.
-  *
   *
   * @webref data:conversion
   * @webBrief Converts a <b>String</b> representation of a hexadecimal number to its
@@ -9958,7 +9632,6 @@ public class PApplet implements PConstants {
    * because otherwise numbers outside the range will produce strange and
    * unexpected colors.
    *
-   *
    * @webref color:creating & reading
    * @webBrief Calculates a <b>color</b> or <b>colors</b> between two <b>colors</b> at a specific
    *           increment
@@ -9991,6 +9664,7 @@ public class PApplet implements PConstants {
   //////////////////////////////////////////////////////////////
 
 
+  /*
   public void frameMoved(int x, int y) {
     if (!fullScreen) {
       System.err.println(EXTERNAL_MOVE + " " + x + " " + y);
@@ -10000,6 +9674,112 @@ public class PApplet implements PConstants {
 
 
   public void frameResized(int w, int h) {
+  }
+  */
+
+
+  //////////////////////////////////////////////////////////////
+
+  // WINDOW METHODS
+
+  Map<String, Integer> windowEventQueue = new ConcurrentHashMap<>();
+
+
+  public void windowTitle(String title) {
+    surface.setTitle(title);
+  }
+
+
+  public void windowResize(int newWidth, int newHeight) {
+    surface.setSize(newWidth, newHeight);
+  }
+
+
+  /**
+   * Internal use only: called by Surface objects to queue a resize
+   * event to call windowResized() when it's safe, which is after
+   * the beginDraw() call and before the draw(). Note that this is
+   * only the notification that the resize has happened.
+   */
+  public void postWindowResized(int newWidth, int newHeight) {
+    windowEventQueue.put("w", newWidth);
+    windowEventQueue.put("h", newHeight);
+  }
+
+
+  /** Called when window is resized. */
+  public void windowResized() {  }
+
+
+  public void windowResizable(boolean resizable) {
+    surface.setResizable(resizable);
+  }
+
+
+  public void windowMove(int x, int y) {
+    surface.setLocation(x, y);
+  }
+
+
+  /**
+   * When running from the PDE, this saves the window position for
+   * next time the sketch is run. Needs to remain a separate method
+   * so that it can be overridden by Python Mode.
+   */
+  public void frameMoved(int newX, int newY) {
+    System.err.println(EXTERNAL_MOVE + " " + newX + " " + newY);
+    System.err.flush();  // doesn't seem to help or hurt
+  }
+
+
+  /**
+   * Internal use only: called by Surface objects to queue a position
+   * event to call windowPositioned() when it's safe, which is after
+   * the beginDraw() call and before the draw(). Note that this is
+   * only the notification that the window is in a new position.
+   */
+  public void postWindowMoved(int newX, int newY) {
+    if (external && !fullScreen) {
+      frameMoved(newX, newY);
+    }
+
+    windowEventQueue.put("x", newX);
+    windowEventQueue.put("y", newY);
+  }
+
+
+  /** Called when the window is moved */
+  public void windowMoved() {  }
+
+
+  private void dequeueWindowEvents() {
+    if (windowEventQueue.containsKey("x")) {
+      windowX = windowEventQueue.remove("x");
+      windowY = windowEventQueue.remove("y");
+      windowMoved();
+    }
+    if (windowEventQueue.containsKey("w")) {
+      // these should already match width/height
+      //windowResized(windowEventQueue.remove("w"),
+      //              windowEventQueue.remove("h"));
+      windowEventQueue.remove("w");
+      windowEventQueue.remove("h");
+      windowResized();
+    }
+  }
+
+
+  /**
+   * Scale the sketch as if it fits this specific width and height.
+   * This will also scale the mouseX and mouseY variables (as well as
+   * pmouseX and pmouseY). Note that it will not have an effect on
+   * MouseEvent objects (i.e. event.getX() and event.getY()) because
+   * their exact behavior may interact strangely with other libraries.
+   */
+  public void windowRatio(int wide, int high) {
+    rwidth = wide;
+    rheight = high;
+    windowRatio = true;
   }
 
 
@@ -10031,13 +9811,13 @@ public class PApplet implements PConstants {
    * <PRE>
    * Parameters useful for launching or also used by the PDE:
    *
-   * --location=x,y         Upper left-hand corner of where the applet
+   * --location=x,y         Upper left-hand corner of where the sketch
    *                        should appear on screen. If not used,
    *                        the default is to center on the main screen.
    *
    * --present              Presentation mode: blanks the entire screen and
    *                        shows the sketch by itself. If the sketch is
-   *                        smaller than the screen, the background around it
+   *                        smaller than the screen, the surrounding area
    *                        will use the --window-color setting.
    *
    * --hide-stop            Use to hide the stop button in situations where
@@ -10045,7 +9825,7 @@ public class PApplet implements PConstants {
    *                        see the FAQ on information for capturing the ESC
    *                        key when running in presentation mode.
    *
-   * --stop-color=#xxxxxx   Color of the 'stop' text used to quit an
+   * --stop-color=#xxxxxx   Color of the 'stop' text used to quit a
    *                        sketch when it's in present mode.
    *
    * --window-color=#xxxxxx Background color of the window. The color used
@@ -10068,10 +9848,10 @@ public class PApplet implements PConstants {
    *
    * Parameters used by Processing when running via the PDE
    *
-   * --external             set when the applet is being used by the PDE
+   * --external             set when the sketch is being used by the PDE
    *
    * --editor-location=x,y  position of the upper left-hand corner of the
-   *                        editor window, for placement of applet window
+   *                        editor window, for placement of sketch window
    *
    * All parameters *after* the sketch class name are passed to the sketch
    * itself and available from its 'args' array while the sketch is running.
@@ -10172,87 +9952,123 @@ public class PApplet implements PConstants {
     boolean hideStop = false;
 
     int displayNum = -1;  // use default
-//    boolean fullScreen = false;
     boolean present = false;
-//    boolean spanDisplays = false;
-    int density = -1;
+    boolean fullScreen = false;
+    float uiScale = 0;
 
     String param, value;
     String folder = calcSketchPath();
 
     int argIndex = 0;
+    label:
     while (argIndex < args.length) {
       int equals = args[argIndex].indexOf('=');
       if (equals != -1) {
         param = args[argIndex].substring(0, equals);
         value = args[argIndex].substring(equals + 1);
 
-        if (param.equals(ARGS_EDITOR_LOCATION)) {
-          external = true;
-          editorLocation = parseInt(split(value, ','));
+        switch (param) {
+          case ARGS_EDITOR_LOCATION:
+            external = true;
+            editorLocation = parseInt(split(value, ','));
+            break;
 
-        } else if (param.equals(ARGS_DISPLAY)) {
-          displayNum = parseInt(value, -2);
-          if (displayNum == -2) {
-            // this means the display value couldn't be parsed properly
-            System.err.println(value + " is not a valid choice for " + ARGS_DISPLAY);
-            displayNum = -1;  // use the default
-          }
+          case ARGS_DISPLAY:
+            displayNum = parseInt(value, -2);
+            if (displayNum == -2) {
+              // this means the display value couldn't be parsed properly
+              System.err.println(value + " is not a valid choice for " + ARGS_DISPLAY);
+              displayNum = -1;  // use the default
+            }
+            break;
 
-        } else if (param.equals(ARGS_DISABLE_AWT)) {
-          disableAWT = true;
+          case ARGS_DISABLE_AWT:
+            disableAWT = true;
+            break;
 
-        } else if (param.equals(ARGS_WINDOW_COLOR)) {
-          if (value.charAt(0) == '#' && value.length() == 7) {
-            value = value.substring(1);
-            windowColor = 0xff000000 | Integer.parseInt(value, 16);
-          } else {
-            System.err.println(ARGS_WINDOW_COLOR + " should be a # followed by six digits");
-          }
+          case ARGS_WINDOW_COLOR:
+            if (value.charAt(0) == '#' && value.length() == 7) {
+              value = value.substring(1);
+              windowColor = 0xff000000 | Integer.parseInt(value, 16);
+            } else {
+              System.err.println(ARGS_WINDOW_COLOR + " should be a # followed by six digits");
+            }
+            break;
 
-        } else if (param.equals(ARGS_STOP_COLOR)) {
-          if (value.charAt(0) == '#' && value.length() == 7) {
-            value = value.substring(1);
-            stopColor = 0xff000000 | Integer.parseInt(value, 16);
-          } else {
-            System.err.println(ARGS_STOP_COLOR + " should be a # followed by six digits");
-          }
+          case ARGS_STOP_COLOR:
+            if (value.charAt(0) == '#' && value.length() == 7) {
+              value = value.substring(1);
+              stopColor = 0xff000000 | Integer.parseInt(value, 16);
+            } else {
+              System.err.println(ARGS_STOP_COLOR + " should be a # followed by six digits");
+            }
+            break;
 
-        } else if (param.equals(ARGS_SKETCH_FOLDER)) {
-          folder = value;
+          case ARGS_SKETCH_FOLDER:
+            folder = value;
+            break;
 
-        } else if (param.equals(ARGS_LOCATION)) {
-          location = parseInt(split(value, ','));
+          case ARGS_LOCATION:
+            location = parseInt(split(value, ','));
+            break;
 
-        } else if (param.equals(ARGS_DENSITY)) {
-          density = parseInt(value, -1);
-          if (density == -1) {
-            System.err.println("Could not parse " + value + " for " + ARGS_DENSITY);
-          } else if (density != 1 && density != 2) {
-            density = -1;
-            System.err.println(ARGS_DENSITY + " should be 1 or 2");
-          }
+          case ARGS_UI_SCALE:
+            uiScale = parseFloat(value, 0);
+            if (uiScale == 0) {
+              System.err.println("Could not parse " + value + " for " + ARGS_UI_SCALE);
+            }
+            break;
         }
-
       } else {
-        if (args[argIndex].equals(ARGS_PRESENT)) {
-          present = true;
+        switch (args[argIndex]) {
+          case ARGS_PRESENT:
+            present = true;
+            break;
 
-//        } else if (args[argIndex].equals(ARGS_SPAN_DISPLAYS)) {
-//          spanDisplays = true;
+          case ARGS_HIDE_STOP:
+            hideStop = true;
+            break;
 
-        } else if (args[argIndex].equals(ARGS_HIDE_STOP)) {
-          hideStop = true;
+          case ARGS_EXTERNAL:
+            external = true;
+            break;
 
-        } else if (args[argIndex].equals(ARGS_EXTERNAL)) {
-          external = true;
+          case ARGS_FULL_SCREEN:
+            fullScreen = true;
+            break;
 
-        } else {
-          name = args[argIndex];
-          break;  // because of break, argIndex won't increment again
+          default:
+            name = args[argIndex];
+            break label;  // because of break, argIndex won't increment again
         }
       }
       argIndex++;
+    }
+
+    if (platform == WINDOWS) {
+      // Set DPI scaling to either 1 or 2, but avoid fractional
+      // settings such as 125% and 250% that make things look gross.
+      // Also applies to 300% since that is not even a thing.
+
+      // no longer possible to set prop after this line initializes AWT
+      //int dpi = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+
+      // Attempt to get the resolution using a helper app. This code is
+      // fairly conservative: if there is trouble, we go with the default.
+      if (uiScale == 0) {
+        int dpi = getWindowsDPI();
+        if (dpi != 0) {
+          //uiScale = constrain(dpi / 96, 1, 2);
+          // If larger than 150% set scale to 2. Using scale 1 at 175% feels
+          // reeaally small. 150% is more of a tossup; it could also use 2.
+          uiScale = (dpi > 144) ? 2 : 1;
+        }
+      }
+      if (uiScale != 0) {
+        System.setProperty("sun.java2d.uiScale", String.valueOf(uiScale));
+      //} else {
+        //System.err.println("Could not identify Windows DPI, not setting sun.java2d.uiScale");
+      }
     }
 
     if (!disableAWT) {
@@ -10277,7 +10093,7 @@ public class PApplet implements PConstants {
     }
 
     // TODO When disabling AWT for LWJGL or others, we need to figure out
-    // how to make Cmd-Q and the rest of this still work properly.
+    //      how to make Cmd-Q and the rest of this still work properly.
     if (platform == MACOS && !disableAWT) {
       try {
         final String td = "processing.core.ThinkDifferent";
@@ -10295,19 +10111,12 @@ public class PApplet implements PConstants {
     // (and most likely, from the PDE's preference setting).
     sketch.display = displayNum;
 
-    // Set the suggested density that is coming from command line
-    // (most likely set from the PDE based on a system DPI scaling)
-    sketch.suggestedDensity = density;
-
     sketch.present = present;
+    sketch.fullScreen = fullScreen;
 
     // For 3.0.1, moved this above handleSettings() so that loadImage() can be
     // used inside settings(). Sets a terrible precedent, but the alternative
     // of not being able to size a sketch to an image is driving people loopy.
-    // A handful of things that need to be set before init/start.
-//    if (folder == null) {
-//      folder = calcSketchPath();
-//    }
     sketch.sketchPath = folder;
 
     // Don't set 'args' to a zero-length array if it should be null [3.0a8]
@@ -10337,11 +10146,13 @@ public class PApplet implements PConstants {
       surface.placeWindow(location, editorLocation);
     }
 
+    /*
     // not always running externally when in present mode
     // moved above setVisible() in 3.0 alpha 11
     if (sketch.external) {
       surface.setupExternalMessages();
     }
+    */
 
     sketch.showSurface();
     sketch.startSurface();
@@ -10458,17 +10269,63 @@ public class PApplet implements PConstants {
 
   /** Convenience method, should only be called by PSurface subclasses. */
   static public void hideMenuBar() {
-    if (PApplet.platform == PConstants.MACOS) {
-      // Call some native code to remove the menu bar on OS X. Not necessary
+    if (platform == MACOS) {
+      // Call some native code to remove the menu bar on macOS. Not necessary
       // on Linux and Windows, who are happy to make full screen windows.
-      japplemenubar.JAppleMenuBar.hide();
+      try {
+        final String td = "processing.core.ThinkDifferent";
+        final Class<?> thinkDifferent = PApplet.class.getClassLoader().loadClass(td);
+        thinkDifferent.getMethod("hideMenuBar").invoke(null);
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
   }
 
 
   /**
+   * Find the location of fenster.exe by walking through java.library.path.
+   * (It will be on the path because it's part of core/library/windows-amd64)
+   */
+  static private String findFenster() {
+    String libraryPath = System.getProperty("java.library.path");
+    // Should not be null, but cannot assume
+    if (libraryPath != null) {
+      String[] folders = split(libraryPath, ';');
+      // Usually, the most relevant paths will be at the front of the list,
+      // so hopefully this will not walk several entries.
+      for (String folder : folders) {
+        File file = new File(folder, "fenster.exe");
+        if (file.exists()) {
+          return file.getAbsolutePath();
+        }
+      }
+    }
+    return null;
+  }
+
+
+  /**
+   * Get the display scaling for Windows by calling out to a helper app.
+   * https://github.com/processing/processing4/tree/master/build/windows/fenster
+   */
+  static private int getWindowsDPI() {
+    String fensterPath = findFenster();
+    if (fensterPath != null) {
+      StringList stdout = new StringList();
+      StringList stderr = new StringList();
+      int result = exec(stdout, stderr, fensterPath);
+      if (result == 0) {
+        return parseInt(stdout.join(""), 0);
+      }
+    }
+    return 0;
+  }
+
+
+  /**
    * Convenience method for Python Mode to run an already-constructed sketch.
-   * This makes it makes it easy to launch a sketch in Jython:
+   * This makes it easy to launch a sketch in Jython:
    *
    * <pre>class MySketch(PApplet):
    *     pass
@@ -10509,7 +10366,6 @@ public class PApplet implements PConstants {
    * that you're recording to. <br />
    * <br />
    * <b>beginRecord()</b> works only with the PDF and SVG renderers.
-   *
    *
    * @webref output:files
    * @webBrief Opens a new file and all subsequent drawing functions are echoed
@@ -10575,7 +10431,7 @@ public class PApplet implements PConstants {
    * <br /><br />
    * If you want a background to show up in your files, use <b>rect(0, 0,
    * width, height)</b> after setting the <b>fill()</b> to the background
-   * color. Otherwise the background will not be rendered to the file because
+   * color. Otherwise, the background will not be rendered to the file because
    * the background is not shape.
    * <br /><br />
    * Using <b>hint(ENABLE_DEPTH_SORT)</b> can improve the appearance of 3D
@@ -10584,7 +10440,6 @@ public class PApplet implements PConstants {
    * <br /><br />
    * See examples in the reference for the <b>PDF</b> and <b>DXF</b>
    * libraries for more information.
-   *
    *
    * @webref output:files
    * @webBrief To create vectors from 3D data, use the <b>beginRaw()</b> and
@@ -10606,12 +10461,12 @@ public class PApplet implements PConstants {
   /**
    * @nowebref
    * Begin recording raw shape data to the specified renderer.
-   *
+   * <p/>
    * This simply echoes to g.beginRaw(), but since is placed here (rather than
    * generated by preproc.pl) for clarity and so that it doesn't echo the
    * command should beginRecord() be in use.
    *
-   * @param rawGraphics ???
+   * @param rawGraphics PGraphics context that raw shapes will be written to
    */
   public void beginRaw(PGraphics rawGraphics) {
     g.beginRaw(rawGraphics);
@@ -10622,7 +10477,6 @@ public class PApplet implements PConstants {
    *
    * Complement to <b>beginRaw()</b>; they must always be used together. See
    * the <b>beginRaw()</b> reference for details.
-   *
    *
    * @webref output:files
    * @webBrief Complement to <b>beginRaw()</b>; they must always be used together
@@ -10785,12 +10639,12 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Sets the current normal vector. Used for drawing three dimensional shapes and
-   * surfaces, <b>normal()</b> specifies a vector perpendicular to a shape's
-   * surface which, in turn, determines how lighting affects it. Processing
-   * attempts to automatically assign normals to shapes, but since that's
-   * imperfect, this is a better option when you want more control. This function
-   * is identical to <b>glNormal3f()</b> in OpenGL.
+   * Sets the current normal vector. Used for drawing three-dimensional
+   * shapes and surfaces, <b>normal()</b> specifies a vector perpendicular
+   * to a shape's surface which, in turn, determines how lighting affects it.
+   * Processing attempts to automatically assign normals to shapes, but since
+   * that's imperfect, this is a better option when you want more control.
+   * This function is identical to <b>glNormal3f()</b> in OpenGL.
    *
    * @webref lights_camera:lights
    * @webBrief Sets the current normal vector
@@ -10867,11 +10721,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Defines if textures repeat or draw once within a texture map.
    * The two parameters are CLAMP (the default behavior) and REPEAT.
    * This function only works with the P2D and P3D renderers.
-   *
    *
    * @webref image:textures
    * @webBrief Defines if textures repeat or draw once within a texture map
@@ -10886,12 +10738,11 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets a texture to be applied to vertex points. The <b>texture()</b> function
    * must be called between <b>beginShape()</b> and <b>endShape()</b> and before
    * any calls to <b>vertex()</b>. This function only works with the P2D and P3D
-   * renderers.<br />
-   * <br />
+   * renderers.
+   * <p/>
    * When textures are in use, the fill color is ignored. Instead, use
    * <b>tint()</b> to specify the color of the texture as it is applied to the
    * shape.
@@ -10992,7 +10843,7 @@ public class PApplet implements PConstants {
   /**
    * Use the <b>beginContour()</b> and <b>endContour()</b> function to
    * create negative shapes within shapes such as the center of the
-   * letter 'O'. <b>beginContour()</b> begins recording vertices for the
+   * letter "O". <b>beginContour()</b> begins recording vertices for the
    * shape and <b>endContour()</b> stops recording. The vertices that
    * define a negative shape must "wind" in the opposite direction from
    * the exterior shape. First draw vertices for the exterior shape in
@@ -11016,7 +10867,7 @@ public class PApplet implements PConstants {
   /**
    * Use the <b>beginContour()</b> and <b>endContour()</b> function to
    * create negative shapes within shapes such as the center of the
-   * letter 'O'. <b>beginContour()</b> begins recording vertices for
+   * letter "O". <b>beginContour()</b> begins recording vertices for
    * the shape and <b>endContour()</b> stops recording. The vertices
    * that define a negative shape must "wind" in the opposite direction
    * from the exterior shape. First draw vertices for the exterior shape
@@ -11047,7 +10898,7 @@ public class PApplet implements PConstants {
    *
    * The <b>endShape()</b> function is the companion to <b>beginShape()</b>
    * and may only be called after <b>beginShape()</b>. When <b>endshape()</b>
-   * is called, all of image data defined since the previous call to
+   * is called, all the image data defined since the previous call to
    * <b>beginShape()</b> is written into the image buffer. The constant CLOSE
    * as the value for the MODE parameter to close the shape (to connect the
    * beginning and the end).
@@ -11194,7 +11045,6 @@ public class PApplet implements PConstants {
    * Applies the shader specified by the parameters. It's compatible with
    * the P2D and P3D renderers, but not with the default renderer.
    *
-   *
    * @webref rendering:shaders
    * @webBrief Applies the shader specified by the parameters
    * @param shader name of shader file
@@ -11215,10 +11065,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Restores the default shaders. Code that runs after <b>resetShader()</b>
    * will not be affected by previously defined shaders.
-   *
    *
    * @webref rendering:shaders
    * @webBrief Restores the default shaders
@@ -11253,7 +11101,6 @@ public class PApplet implements PConstants {
    * by the parameters. The boundaries are drawn based on the state
    * of the <b>imageMode()</b> function, either CORNER, CORNERS, or CENTER.
    *
-   *
    * @webref rendering
    * @webBrief Limits the rendering to the boundaries of a rectangle defined
    * by the parameters
@@ -11269,9 +11116,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Disables the clipping previously started by the <b>clip()</b> function.
-   *
    *
    * @webref rendering
    * @webBrief Disables the clipping previously started by the <b>clip()</b> function
@@ -11317,7 +11162,6 @@ public class PApplet implements PConstants {
    * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might
    * not be available as well.
    *
-   *
    * @webref rendering
    * @webBrief Blends the pixels in the display window according to a defined mode
    * @param mode the blending mode to use
@@ -11338,9 +11182,9 @@ public class PApplet implements PConstants {
 
 /**
    *
-   * Specifies vertex coordinates for Bezier curves. Each call to
+   * Specifies vertex coordinates for Bézier curves. Each call to
    * <b>bezierVertex()</b> defines the position of two control points and one
-   * anchor point of a Bezier curve, adding a new segment to a line or shape.
+   * anchor point of a Bézier curve, adding a new segment to a line or shape.
    * The first time <b>bezierVertex()</b> is used within a
    * <b>beginShape()</b> call, it must be prefaced with a call to
    * <b>vertex()</b> to set the first anchor point. This function must be
@@ -11374,9 +11218,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   * Specifies vertex coordinates for quadratic Bezier curves. Each call
+   * Specifies vertex coordinates for quadratic Bézier curves. Each call
    * to <b>quadraticVertex()</b> defines the position of one control
-   * point and one anchor point of a Bezier curve, adding a new segment
+   * point and one anchor point of a Bézier curve, adding a new segment
    * to a line or shape. The first time <b>quadraticVertex()</b> is used
    * within a <b>beginShape()</b> call, it must be prefaced with a call
    * to <b>vertex()</b> to set the first anchor point. This function must
@@ -11415,19 +11259,17 @@ public class PApplet implements PConstants {
 
 
  /**
-   *
-   * Specifies vertex coordinates for curves. This function may only be used
-   * between <b>beginShape()</b> and <b>endShape()</b> and only when there is
-   * no MODE parameter specified to <b>beginShape()</b>. The first and last
-   * points in a series of <b>curveVertex()</b> lines will be used to guide
-   * the beginning and end of a the curve. A minimum of four points is
-   * required to draw a tiny curve between the second and third points.
-   * Adding a fifth point with <b>curveVertex()</b> will draw the curve
-   * between the second, third, and fourth points. The <b>curveVertex()</b>
-   * function is an implementation of Catmull-Rom splines. Using the 3D
-   * version requires rendering with P3D (see the Environment reference for
-   * more information).
-   *
+  * Specifies vertex coordinates for curves. This function may only be used
+  * between <b>beginShape()</b> and <b>endShape()</b> and only when there is
+  * no MODE parameter specified to <b>beginShape()</b>. The first and last
+  * points in a series of <b>curveVertex()</b> lines will be used to guide
+  * the beginning and end of the curve. A minimum of four points is
+  * required to draw a tiny curve between the second and third points.
+  * Adding a fifth point with <b>curveVertex()</b> will draw the curve
+  * between the second, third, and fourth points. The <b>curveVertex()</b>
+  * function is an implementation of Catmull-Rom splines. Using the 3D
+  * version requires rendering with P3D (see the Environment reference for
+  * more information).
   *
   * @webref shape:vertex
   * @webBrief Specifies vertex coordinates for curves
@@ -11474,7 +11316,6 @@ public class PApplet implements PConstants {
    * depending on the graphics settings of the computer. Workarounds include
    * setting the pixel using <b>set()</s> or drawing the point using either
    * <b>circle()</b> or <b>square()</b>.
-   *
    *
    * @webref shape:2d primitives
    * @webBrief Draws a point, a coordinate in space at the dimension of one pixel
@@ -11637,7 +11478,6 @@ public class PApplet implements PConstants {
    * each corner separately, starting with the top-left corner and moving
    * clockwise around the rectangle.
    *
-   *
    * @webref shape:2d primitives
    * @webBrief Draws a rectangle to the screen
    * @param a x-coordinate of the rectangle by default
@@ -11683,7 +11523,6 @@ public class PApplet implements PConstants {
    * upper-left corner, the third sets the width and height. The way
    * these parameters are interpreted, however, may be changed with the
    * <b>rectMode()</b> function.
-   *
    *
    * @webref shape:2d primitives
    * @webBrief Draws a square to the screen
@@ -11830,10 +11669,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
-   * A box is an extruded <b>rectangle</b>. A box with equal dimension on all sides
-   * is a cube.
-   *
+   * A box is an extruded <b>rectangle</b>. A box with equal dimension
+   * on all sides is a cube.
    *
    * @webref shape:3d primitives
    * @webBrief A box is an extruded <b>rectangle</b>
@@ -11872,7 +11709,6 @@ public class PApplet implements PConstants {
    * and vertical resolution independently, use the version of the functions
    * with two parameters.
    *
-   *
    * <h3>Advanced</h3>
    * Code for sphereDetail() submitted by toxi [031031].
    * Code for enhanced u/v version from davbol [080801].
@@ -11900,9 +11736,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * A sphere is a hollow ball made from tessellated triangles.
-   *
    *
    * <h3>Advanced</h3>
    * <P>
@@ -11913,7 +11747,7 @@ public class PApplet implements PConstants {
    * in the center point
    * <P>
    * sphere is a series of concentric circles who radii vary
-   * along the shape, based on, er.. cos or something
+   * along the shape, based on, err... cos or something
    * <PRE>
    * [toxi 031031] new sphere code. removed all multiplies with
    * radius, as scale() will take care of that anyway
@@ -11941,9 +11775,8 @@ public class PApplet implements PConstants {
    * Evaluates the Bezier at point t for points a, b, c, d. The parameter t
    * varies between 0 and 1, a and d are points on the curve, and b and c are
    * the control points. This can be done once with the x coordinates and a
-   * second time with the y coordinates to get the location of a bezier curve
+   * second time with the y coordinates to get the location of a Bézier curve
    * at t.
-   *
    *
    * <h3>Advanced</h3>
    * For instance, to convert the following example:<PRE>
@@ -11983,17 +11816,15 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
-   * Calculates the tangent of a point on a Bezier curve. There is a good
+   * Calculates the tangent of a point on a Bézier curve. There is a good
    * definition of <a href="http://en.wikipedia.org/wiki/Tangent"
    * target="new"><em>tangent</em> on Wikipedia</a>.
-   *
    *
    * <h3>Advanced</h3>
    * Code submitted by Dave Bollinger (davbol) for release 0136.
    *
    * @webref shape:curves
-   * @webBrief Calculates the tangent of a point on a Bezier curve
+   * @webBrief Calculates the tangent of a point on a Bézier curve
    * @param a coordinate of first point on the curve
    * @param b coordinate of first control point
    * @param c coordinate of second control point
@@ -12009,14 +11840,12 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
-   * Sets the resolution at which Beziers display. The default value is 20. This
-   * function is only useful when using the <b>P3D</b> renderer; the default
-   * <b>P2D</b> renderer does not use this information.
-   *
+   * Sets the resolution at which Bézier curves display. The default value is 20.
+   * This function is only useful when using the <b>P2D</b> or <b>P3D</b> renderer;
+   * the default (JAVA2D) renderer does not use this information.
    *
    * @webref shape:curves
-   * @webBrief Sets the resolution at which Beziers display
+   * @webBrief Sets the resolution at which Bézier curves display
    * @param detail resolution of the curves
    * @see PGraphics#curve(float, float, float, float, float, float, float, float,
    *      float, float, float, float)
@@ -12040,17 +11869,16 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Draws a Bezier curve on the screen. These curves are defined by a series
+   * Draws a Bézier curve on the screen. These curves are defined by a series
    * of anchor and control points. The first two parameters specify the first
    * anchor point and the last two parameters specify the other anchor point.
    * The middle parameters specify the control points which define the shape
-   * of the curve. Bezier curves were developed by French engineer Pierre
+   * of the curve. The curves were developed by French engineer Pierre
    * Bezier. Using the 3D version requires rendering with P3D (see the
    * Environment reference for more information).
    *
-   *
    * <h3>Advanced</h3>
-   * Draw a cubic bezier curve. The first and last points are
+   * Draw a cubic Bézier curve. The first and last points are
    * the on-curve points. The middle two are the 'control' points,
    * or 'handles' in an application like Illustrator.
    * <P>
@@ -12073,7 +11901,7 @@ public class PApplet implements PConstants {
    * <PRE>bezier(x1, y1, cx, cy, cx, cy, x2, y2);</PRE>
    *
    * @webref shape:curves
-   * @webBrief Draws a Bezier curve on the screen
+   * @webBrief Draws a Bézier curve on the screen
    * @param x1 coordinates for the first anchor point
    * @param y1 coordinates for the first anchor point
    * @param z1 coordinates for the first anchor point
@@ -12100,7 +11928,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Evaluates the curve at point <b>t</b> for points <b>a</b>, <b>b</b>,
    * <b>c</b>, <b>d</b>. The parameter <b>t</b> may range from 0 (the start of the
    * curve) and 1 (the end of the curve). <b>a</b> and <b>d</b> are the control
@@ -12108,7 +11935,6 @@ public class PApplet implements PConstants {
    * example above, this can be used once with the <b>x</b> coordinates and a
    * second time with the <b>y</b> coordinates to get the location of a curve at
    * <b>t</b>.
-   *
    *
    * @webref shape:curves
    * @webBrief Evaluates the curve at point t for points a, b, c, d
@@ -12128,11 +11954,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Calculates the tangent of a point on a curve. There's a good definition
    * of <em><a href="http://en.wikipedia.org/wiki/Tangent"
    * target="new">tangent</em> on Wikipedia</a>.
-   *
    *
    * <h3>Advanced</h3>
    * Code thanks to Dave Bollinger (Bug #715)
@@ -12155,11 +11979,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the resolution at which curves display. The default value is 20.
    * This function is only useful when using the P3D renderer as the default
    * P2D renderer does not use this information.
-   *
    *
    * @webref shape:curves
    * @webBrief Sets the resolution at which curves display
@@ -12211,12 +12033,11 @@ public class PApplet implements PConstants {
    * implementation of Catmull-Rom splines. Using the 3D version requires
    * rendering with P3D (see the Environment reference for more information).
    *
-   *
    * <h3>Advanced</h3>
    * As of revision 0070, this function no longer doubles the first
    * and last points. The curves are a bit more boring, but it's more
    * mathematically correct, and properly mirrored in curvePoint().
-   * <P>
+   * <p/>
    * Identical to typing out:<PRE>
    * beginShape();
    * curveVertex(x1, y1);
@@ -12284,7 +12105,6 @@ public class PApplet implements PConstants {
    * <br />
    * The parameter must be written in ALL CAPS because Processing is a
    * case-sensitive language.
-   *
    *
    * @webref image:loading & displaying
    * @webBrief Modifies the location from which images draw
@@ -12375,8 +12195,7 @@ public class PApplet implements PConstants {
    * <b>shapeMode(CENTER)</b> draws the shape from its center point and uses
    * the third and forth parameters of <b>shape()</b> to specify the width
    * and height. The parameter must be written in "ALL CAPS" because
-   * Processing is a case sensitive language.
-   *
+   * Processing is a case-sensitive language.
    *
    * @webref shape:loading & displaying
    * @webBrief Modifies the location from which shapes draw
@@ -12398,7 +12217,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Draws shapes to the display window. Shapes must be in the sketch's "data"
    * directory to load correctly. Select "Add file..." from the "Sketch" menu to
    * add the shape. Processing currently works with SVG, OBJ, and custom-created
@@ -12408,7 +12226,6 @@ public class PApplet implements PConstants {
    * <b>d</b> parameters specify a different size. The <b>shapeMode()</b> function
    * can be used to change the way these parameters are interpreted.
    *
-   *
    * @webref shape:loading & displaying
    * @webBrief Displays shapes to the screen
    * @param shape the shape to display
@@ -12417,8 +12234,6 @@ public class PApplet implements PConstants {
    * @see PShape
    * @see PApplet#loadShape(String)
    * @see PGraphics#shapeMode(int)
-   *
-   *      Convenience method to draw at a particular location.
    */
   public void shape(PShape shape, float x, float y) {
     if (recorder != null) recorder.shape(shape, x, y);
@@ -12445,7 +12260,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the current alignment for drawing text. The parameters LEFT, CENTER, and
    * RIGHT set the display characteristics of the letters in relation to the
    * values for the <b>x</b> and <b>y</b> parameters of the <b>text()</b>
@@ -12470,8 +12284,6 @@ public class PApplet implements PConstants {
    * <b>textDescent()</b> so that the hack works even if you change the size of
    * the font.
    *
-   *
-   *
    * @webref typography:attributes
    * @webBrief Sets the current alignment for drawing text
    * @param alignX horizontal alignment, either LEFT, CENTER, or RIGHT
@@ -12490,10 +12302,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Returns ascent of the current font at its current size. This information is
    * useful for determining the height of the font above the baseline.
-   *
    *
    * @webref typography:metrics
    * @webBrief Returns ascent of the current font at its current size
@@ -12505,7 +12315,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Returns descent of the current font at its current size. This information is
    * useful for determining the height of the font below the baseline.
    *
@@ -12563,14 +12372,12 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the spacing between lines of text in units of pixels. This setting will
    * be used in all subsequent calls to the <b>text()</b> function. Note, however,
    * that the leading is reset by <b>textSize()</b>. For example, if the leading
    * is set to 20 with <b>textLeading(20)</b>, then if <b>textSize(48)</b> is run
    * at a later point, the leading will be reset to the default for the text size
    * of 48.
-   *
    *
    * @webref typography:attributes
    * @webBrief Sets the spacing between lines of text in units of pixels
@@ -12588,7 +12395,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the way text draws to the screen, either as texture maps or as vector
    * geometry. The default <b>textMode(MODEL)</b>, uses textures to render the
    * fonts. The <b>textMode(SHAPE)</b> mode draws text using the glyph outlines of
@@ -12622,10 +12428,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the current font size. This size will be used in all subsequent
    * calls to the <b>text()</b> function. Font size is measured in units of pixels.
-   *
    *
    * @webref typography:attributes
    * @webBrief Sets the current font size
@@ -12650,9 +12454,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Calculates and returns the width of any character or text string.
-   *
    *
    * @webref typography:attributes
    * @webBrief Calculates and returns the width of any character or text string
@@ -12677,7 +12479,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Draws text to the screen. Displays the information specified in the first
    * parameter on the screen in the position specified by the additional
    * parameters. A default font will be used unless a font is set with the
@@ -12696,7 +12497,6 @@ public class PApplet implements PConstants {
    * Note that Processing now lets you call <b>text()</b> without first specifying
    * a PFont with <b>textFont()</b>. In that case, a generic sans-serif font will
    * be used instead. (See the third example above.)
-   *
    *
    * @webref typography:loading & displaying
    * @webBrief Draws text to the screen
@@ -12858,7 +12658,6 @@ public class PApplet implements PConstants {
    * transformations (rotate, scale, translate) and the drawing styles
    * at the same time.
    *
-   *
    * @webref structure
    * @webBrief The <b>push()</b> function saves the current drawing style
    * settings and transformations, while <b>pop()</b> restores these
@@ -12897,7 +12696,6 @@ public class PApplet implements PConstants {
    * transformations (rotate, scale, translate) and the drawing styles
    * at the same time.
    *
-   *
    * @webref structure
    * @webBrief The <b>pop()</b> function restores the previous drawing style
    * settings and transformations after <b>push()</b> has changed them
@@ -12910,7 +12708,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Pushes the current transformation matrix onto the matrix stack.
    * Understanding <b>pushMatrix()</b> and <b>popMatrix()</b> requires
    * understanding the concept of a matrix stack. The <b>pushMatrix()</b>
@@ -12919,7 +12716,6 @@ public class PApplet implements PConstants {
    * <b>pushMatrix()</b> and <b>popMatrix()</b> are used in conjunction with
    * the other transformation functions and may be embedded to control the
    * scope of the transformations.
-   *
    *
    * @webref transform
    * @webBrief Pushes the current transformation matrix onto the matrix stack
@@ -12938,7 +12734,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Pops the current transformation matrix off the matrix stack.
    * Understanding pushing and popping requires understanding the concept of
    * a matrix stack. The <b>pushMatrix()</b> function saves the current
@@ -12946,7 +12741,6 @@ public class PApplet implements PConstants {
    * coordinate system. <b>pushMatrix()</b> and <b>popMatrix()</b> are used
    * in conjunction with the other transformation functions and may be
    * embedded to control the scope of the transformations.
-   *
    *
    * @webref transform
    * @webBrief Pops the current transformation matrix off the matrix stack
@@ -12959,14 +12753,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Specifies an amount to displace objects within the display window. The
    * <b>x</b> parameter specifies left/right translation, the <b>y</b> parameter
    * specifies up/down translation, and the <b>z</b> parameter specifies
    * translations toward/away from the screen. Using this function with the
    * <b>z</b> parameter requires using P3D as a parameter in combination with size
-   * as shown in the above example. <br />
-   * <br />
+   * as shown in the above example.
+   * <p/>
    * Transformations are cumulative and apply to everything that happens after and
    * subsequent calls to the function accumulates the effect. For example, calling
    * <b>translate(50, 0)</b> and then <b>translate(20, 0)</b> is the same as
@@ -12974,7 +12767,6 @@ public class PApplet implements PConstants {
    * <b>draw()</b>, the transformation is reset when the loop begins again. This
    * function can be further controlled by using <b>pushMatrix()</b> and
    * <b>popMatrix()</b>.
-   *
    *
    * @webref transform
    * @webBrief Specifies an amount to displace objects within the display window
@@ -13021,7 +12813,6 @@ public class PApplet implements PConstants {
    * matrix by a rotation matrix. This function can be further controlled by
    * the <b>pushMatrix()</b> and <b>popMatrix()</b>.
    *
-   *
    * @webref transform
    * @webBrief Rotates a shape the amount specified by the <b>angle</b> parameter
    * @param angle angle of rotation specified in radians
@@ -13053,7 +12844,6 @@ public class PApplet implements PConstants {
    * <b>draw()</b>, the transformation is reset when the loop begins again.
    * This function requires using P3D as a third parameter to <b>size()</b>
    * as shown in the example above.
-   *
    *
    * @webref transform
    * @webBrief Rotates a shape around the x-axis the amount specified by the
@@ -13088,7 +12878,6 @@ public class PApplet implements PConstants {
    * This function requires using P3D as a third parameter to <b>size()</b>
    * as shown in the examples above.
    *
-   *
    * @webref transform
    * @webBrief Rotates a shape around the y-axis the amount specified by the
    * <b>angle</b> parameter
@@ -13121,7 +12910,6 @@ public class PApplet implements PConstants {
    * <b>draw()</b>, the transformation is reset when the loop begins again.
    * This function requires using P3D as a third parameter to <b>size()</b>
    * as shown in the examples above.
-   *
    *
    * @webref transform
    * @webBrief Rotates a shape around the z-axis the amount specified by the
@@ -13169,7 +12957,6 @@ public class PApplet implements PConstants {
    * example above. This function can be further controlled with
    * <b>pushMatrix()</b> and <b>popMatrix()</b>.
    *
-   *
    * @webref transform
    * @webBrief Increases or decreases the size of a shape by expanding and
    *           contracting vertices
@@ -13191,7 +12978,7 @@ public class PApplet implements PConstants {
   /**
    * <h3>Advanced</h3>
    * Scale in X and Y. Equivalent to scale(sx, sy, 1).
-   *
+   * <p/>
    * Not recommended for use in 3D, because the z-dimension is just
    * scaled by 1, since there's no way to know what else to scale it by.
    *
@@ -13230,7 +13017,6 @@ public class PApplet implements PConstants {
    * matrix by a rotation matrix. This function can be further controlled by
    * the <b>pushMatrix()</b> and <b>popMatrix()</b> functions.
    *
-   *
    * @webref transform
    * @webBrief Shears a shape around the x-axis the amount specified by the
    * <b>angle</b> parameter
@@ -13265,7 +13051,6 @@ public class PApplet implements PConstants {
    * matrix by a rotation matrix. This function can be further controlled by
    * the <b>pushMatrix()</b> and <b>popMatrix()</b> functions.
    *
-   *
    * @webref transform
    * @webBrief Shears a shape around the y-axis the amount specified by the
    * <b>angle</b> parameter
@@ -13284,10 +13069,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
-   * Replaces the current matrix with the identity matrix. The equivalent function
-   * in OpenGL is <b>glLoadIdentity()</b>.
-   *
+   * Replaces the current matrix with the identity matrix.
+   * The equivalent function in OpenGL is <b>glLoadIdentity()</b>.
    *
    * @webref transform
    * @webBrief Replaces the current matrix with the identity matrix
@@ -13303,16 +13086,14 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Multiplies the current matrix by the one specified through the
    * parameters. This is very slow because it will try to calculate the
    * inverse of the transform, so avoid it whenever possible. The equivalent
    * function in OpenGL is <b>glMultMatrix()</b>.
    *
-   *
    * @webref transform
-   * @webBrief Multiplies the current matrix by the one specified through the
-   * parameters
+   * @webBrief Multiplies the current matrix by the one specified in the
+   * parameter
    * @see PGraphics#pushMatrix()
    * @see PGraphics#popMatrix()
    * @see PGraphics#resetMatrix()
@@ -13423,10 +13204,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Prints the current matrix to the Console (the text window at the bottom
    * of Processing).
-   *
    *
    * @webref transform
    * @webBrief Prints the current matrix to the Console (the text window at the bottom
@@ -13443,7 +13222,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
    * advanced customization of the camera space. The functions are useful if
    * you want to more control over camera movement, however for most users,
@@ -13460,7 +13238,6 @@ public class PApplet implements PConstants {
    * affect the camera. <b>beginCamera()</b> should always be used with a
    * following <b>endCamera()</b> and pairs of <b>beginCamera()</b> and
    * <b>endCamera()</b> cannot be nested.
-   *
    *
    * @webref lights_camera:camera
    * @webBrief The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
@@ -13479,11 +13256,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
    * advanced customization of the camera space. Please see the reference for
    * <b>beginCamera()</b> for a description of how the functions are used.
-   *
    *
    * @webref lights_camera:camera
    * @webBrief The <b>beginCamera()</b> and <b>endCamera()</b> functions enable
@@ -13498,7 +13273,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the position of the camera through setting the eye position, the
    * center of the scene, and which axis is facing upward. Moving the eye
    * position and the direction it is pointing (the center of the scene)
@@ -13508,7 +13282,6 @@ public class PApplet implements PConstants {
    * are <b>camera(width/2.0, height/2.0, (height/2.0) / tan(PI*30.0 /
    * 180.0), width/2.0, height/2.0, 0, 0, 1, 0)</b>. This function is similar
    * to <b>gluLookAt()</b> in OpenGL, but it first clears the current camera settings.
-   *
    *
    * @webref lights_camera:camera
    * @webBrief Sets the position of the camera
@@ -13567,7 +13340,6 @@ public class PApplet implements PConstants {
    * are the minimum and maximum z values. If no parameters are given, the default
    * is used: <b>ortho(-width/2, width/2, -height/2, height/2)</b>.
    *
-   *
    * @webref lights_camera:camera
    * @webBrief Sets an orthographic projection and defines a parallel clipping
    *           volume
@@ -13616,7 +13388,6 @@ public class PApplet implements PConstants {
    * default values are: <b>perspective(PI/3.0, width/height, cameraZ/10.0,
    * cameraZ*10.0)</b> where cameraZ is <b>((height/2.0) / tan(PI*60.0/360.0))</b>
    *
-   *
    * @webref lights_camera:camera
    * @webBrief Sets a perspective projection applying foreshortening, making distant
    * objects appear smaller than closer ones
@@ -13631,7 +13402,7 @@ public class PApplet implements PConstants {
    * @param fovy field-of-view angle (in radians) for vertical direction
    * @param aspect ratio of width to height
    * @param zNear z-position of nearest clipping plane
-   * @param zFar z-position of farthest clipping plane
+   * @param zFar z-position of the farthest clipping plane
    */
   public void perspective(float fovy, float aspect, float zNear, float zFar) {
     if (recorder != null) recorder.perspective(fovy, aspect, zNear, zFar);
@@ -13661,7 +13432,6 @@ public class PApplet implements PConstants {
    * Works like glFrustum, except it wipes out the current perspective matrix
    * rather than multiplying itself with it.
    *
-   *
    * @webref lights_camera:camera
    * @webBrief Sets a perspective matrix defined through the parameters
    * @param left   left coordinate of the clipping plane
@@ -13686,10 +13456,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Prints the current projection matrix to the Console (the text window at
    * the bottom of Processing).
-   *
    *
    * @webref lights_camera:camera
    * @webBrief Prints the current projection matrix to the Console
@@ -13702,10 +13470,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Takes a three-dimensional X, Y, Z position and returns the X value for
    * where it will appear on a (two-dimensional) screen.
-   *
    *
    * @webref lights_camera:coordinates
    * @webBrief Takes a three-dimensional X, Y, Z position and returns the X value for
@@ -13721,10 +13487,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Takes a three-dimensional X, Y, Z position and returns the Y value for
    * where it will appear on a (two-dimensional) screen.
-   *
    *
    * @webref lights_camera:coordinates
    * @webBrief Takes a three-dimensional X, Y, Z position and returns the Y value for
@@ -13756,10 +13520,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Takes a three-dimensional X, Y, Z position and returns the Z value for
    * where it will appear on a (two-dimensional) screen.
-   *
    *
    * @webref lights_camera:coordinates
    * @webBrief Takes a three-dimensional X, Y, Z position and returns the Z value for
@@ -13790,7 +13552,6 @@ public class PApplet implements PConstants {
    * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
    *
-   *
    * @webref lights_camera:coordinates
    * @webBrief Returns the three-dimensional X, Y, Z position in model space
    * @param x 3D x-coordinate to be mapped
@@ -13805,7 +13566,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Returns the three-dimensional X, Y, Z position in model space. This
    * returns the Y value for a given coordinate based on the current set of
    * transformations (scale, rotate, translate, etc.) The Y value can be used
@@ -13818,7 +13578,6 @@ public class PApplet implements PConstants {
    * <b>popMatrix()</b> is called, those transformations no longer apply, but the
    * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
-   *
    *
    * @webref lights_camera:coordinates
    * @webBrief Returns the three-dimensional X, Y, Z position in model space
@@ -13847,7 +13606,6 @@ public class PApplet implements PConstants {
    * <b>popMatrix()</b> is called, those transformations no longer apply, but the
    * <b>(x, y, z)</b> coordinate returned by the model functions is used to place
    * another box in the same location.
-   *
    *
    * @webref lights_camera:coordinates
    * @webBrief Returns the three-dimensional X, Y, Z position in model space
@@ -13879,7 +13637,6 @@ public class PApplet implements PConstants {
    * <b>textAlign()</b>, <b>textFont()</b>, <b>textMode()</b>, <b>textSize()</b>, <b>textLeading()</b>,
    * <b>emissive()</b>, <b>specular()</b>, <b>shininess()</b>, <b>ambient()</b>
    *
-   *
    * @webref structure
    * @webBrief Saves the current style settings and <b>popStyle()</b> restores the prior settings
    * @see PGraphics#popStyle()
@@ -13891,7 +13648,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * The <b>pushStyle()</b> function saves the current style settings and
    * <b>popStyle()</b> restores the prior settings; these functions are
    * always used together. They allow you to change the style settings and
@@ -13899,7 +13655,6 @@ public class PApplet implements PConstants {
    * <b>pushStyle()</b>, it builds on the current style information. The
    * <b>pushStyle()</b> and <b>popStyle()</b> functions can be embedded to
    * provide more control (see the second example above for a demonstration.)
-   *
    *
    * @webref structure
    * @webBrief Saves the current style settings and <b>popStyle()</b> restores the prior settings
@@ -13918,7 +13673,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the width of the stroke used for lines, points, and the border around
    * shapes. All widths are set in units of pixels. <br />
    * <br />
@@ -13926,7 +13680,6 @@ public class PApplet implements PConstants {
    * depending on the graphics settings of the computer. Workarounds include
    * setting the pixel using <b>set()</s> or drawing the point using either
    * <b>circle()</b> or <b>square()</b>.
-   *
    *
    * @webref shape:attributes
    * @webBrief Sets the width of the stroke used for lines, points, and the border
@@ -13943,11 +13696,9 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the style of the joints which connect line segments. These joints are
    * either mitered, beveled, or rounded and specified with the corresponding
    * parameters MITER, BEVEL, and ROUND. The default joint is MITER.
-   *
    *
    * @webref shape:attributes
    * @webBrief Sets the style of the joints which connect line segments
@@ -13963,7 +13714,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Sets the style for rendering line endings. These ends are either squared,
    * extended, or rounded, each of which specified with the corresponding
    * parameters: SQUARE, PROJECT, and ROUND. The default cap is ROUND. <br />
@@ -13986,10 +13736,8 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Disables drawing the stroke (outline). If both <b>noStroke()</b> and
    * <b>noFill()</b> are called, nothing will be drawn to the screen.
-   *
    *
    * @webref color:setting
    * @webBrief Disables drawing the stroke (outline)
@@ -14091,7 +13839,6 @@ public class PApplet implements PConstants {
    * Removes the current fill value for displaying images and reverts to
    * displaying images with their original hues.
    *
-   *
    * @webref image:loading & displaying
    * @webBrief Removes the current fill value for displaying images and reverts to
    * displaying images with their original hues
@@ -14129,7 +13876,6 @@ public class PApplet implements PConstants {
    * <br />
    * The <b>tint()</b> function is also used to control the coloring of textures
    * in 3D.
-   *
    *
    * @webref image:loading & displaying
    * @webBrief Sets the fill value for displaying images
@@ -14190,7 +13936,6 @@ public class PApplet implements PConstants {
    * Disables filling geometry. If both <b>noStroke()</b> and <b>noFill()</b>
    * are called, nothing will be drawn to the screen.
    *
-   *
    * @webref color:setting
    * @webBrief Disables filling geometry
    * @usage web_application
@@ -14225,7 +13970,6 @@ public class PApplet implements PConstants {
    * maximum value is 255.
    * <br/> <br/>
    * To change the color of an image (or a texture), use tint().
-   *
    *
    * @webref color:setting
    * @webBrief Sets the color used to fill shapes
@@ -14295,7 +14039,6 @@ public class PApplet implements PConstants {
    * reflect. Used in combination with <b>emissive()</b>, <b>specular()</b>,
    * and <b>shininess()</b> in setting the material properties of shapes.
    *
-   *
    * @webref lights_camera:material properties
    * @webBrief Sets the ambient reflectance for shapes drawn to the screen
    * @usage web_application
@@ -14337,7 +14080,6 @@ public class PApplet implements PConstants {
    * bouncing in all directions like a diffuse light). Used in combination
    * with <b>emissive()</b>, <b>ambient()</b>, and <b>shininess()</b> in
    * setting the material properties of shapes.
-   *
    *
    * @webref lights_camera:material properties
    * @webBrief Sets the specular color of the materials used for shapes drawn to the
@@ -14383,7 +14125,6 @@ public class PApplet implements PConstants {
    * with <b>ambient()</b>, <b>specular()</b>, and <b>emissive()</b> in
    * setting the material properties of shapes.
    *
-   *
    * @webref lights_camera:material properties
    * @webBrief Sets the amount of gloss in the surface of shapes
    * @usage web_application
@@ -14404,7 +14145,6 @@ public class PApplet implements PConstants {
    * the screen. Used in combination with <b>ambient()</b>,
    * <b>specular()</b>, and <b>shininess()</b> in setting the material
    * properties of shapes.
-   *
    *
    * @webref lights_camera:material properties
    * @webBrief Sets the emissive color of the material used for drawing shapes drawn to
@@ -14453,7 +14193,6 @@ public class PApplet implements PConstants {
    * looping program will cause them to only have an effect the first time
    * through the loop.
    *
-   *
    * @webref lights_camera:lights
    * @webBrief Sets the default ambient light, directional light, falloff, and specular
    * values
@@ -14477,7 +14216,6 @@ public class PApplet implements PConstants {
    * lighting so that 2D geometry (which does not require lighting) can be
    * drawn after a set of lighted 3D geometry.
    *
-   *
    * @webref lights_camera:lights
    * @webBrief Disable all lighting
    * @usage web_application
@@ -14499,7 +14237,6 @@ public class PApplet implements PConstants {
    * a looping program will cause them to only have an effect the first time
    * through the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are
    * interpreted as either RGB or HSB values, depending on the current color mode.
-   *
    *
    * @webref lights_camera:lights
    * @webBrief Adds an ambient light
@@ -14534,7 +14271,7 @@ public class PApplet implements PConstants {
   /**
    *
    * Adds a directional light. Directional light comes from one direction and
-   * is stronger when hitting a surface squarely and weaker if it hits at a a
+   * is stronger when hitting a surface squarely and weaker if it hits at a
    * gentle angle. After hitting a surface, a directional lights scatters in
    * all directions. Lights need to be included in the <b>draw()</b> to
    * remain persistent in a looping program. Placing them in the
@@ -14544,7 +14281,6 @@ public class PApplet implements PConstants {
    * mode. The <b>nx</b>, <b>ny</b>, and <b>nz</b> parameters specify the
    * direction the light is facing. For example, setting <b>ny</b> to -1 will
    * cause the geometry to be lit from below (the light is facing directly upward).
-   *
    *
    * @webref lights_camera:lights
    * @webBrief Adds a directional light
@@ -14576,7 +14312,6 @@ public class PApplet implements PConstants {
    * as either RGB or HSB values, depending on the current color mode. The
    * <b>x</b>, <b>y</b>, and <b>z</b> parameters set the position of the light.
    *
-   *
    * @webref lights_camera:lights
    * @webBrief Adds a point light
    * @usage web_application
@@ -14601,7 +14336,7 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Adds a spot light. Lights need to be included in the <b>draw()</b> to remain
+   * Adds a spotlight. Lights need to be included in the <b>draw()</b> to remain
    * persistent in a looping program. Placing them in the <b>setup()</b> of a
    * looping program will cause them to only have an effect the first time through
    * the loop. The <b>v1</b>, <b>v2</b>, and <b>v3</b> parameters are interpreted
@@ -14613,7 +14348,7 @@ public class PApplet implements PConstants {
    * that cone.
    *
    * @webref lights_camera:lights
-   * @webBrief Adds a spot light
+   * @webBrief Adds a spotlight
    * @usage web_application
    * @param v1            red or hue value (depending on current color mode)
    * @param v2            green or saturation value (depending on current color
@@ -14623,9 +14358,9 @@ public class PApplet implements PConstants {
    * @param x             x-coordinate of the light
    * @param y             y-coordinate of the light
    * @param z             z-coordinate of the light
-   * @param nx            direction along the x axis
-   * @param ny            direction along the y axis
-   * @param nz            direction along the z axis
+   * @param nx            direction along the x-axis
+   * @param ny            direction along the y-axis
+   * @param nz            direction along the z-axis
    * @param angle         angle of the spotlight cone
    * @param concentration exponent determining the center bias of the cone
    * @see PGraphics#lights()
@@ -14644,7 +14379,7 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Sets the falloff rates for point lights, spot lights, and ambient lights.
+   * Sets the falloff rates for point lights, spotlights, and ambient lights.
    * Like <b>fill()</b>, it affects only the elements which are created after it
    * in the code. The default value is <b>lightFalloff(1.0, 0.0, 0.0)</b>, and the
    * parameters are used to calculate the falloff with the following
@@ -14659,9 +14394,8 @@ public class PApplet implements PConstants {
    * location and falloff. You can think of it as a point light that doesn't care
    * which direction a surface is facing.
    *
-   *
    * @webref lights_camera:lights
-   * @webBrief Sets the falloff rates for point lights, spot lights, and ambient
+   * @webBrief Sets the falloff rates for point lights, spotlights, and ambient
    *           lights
    * @usage web_application
    * @param constant  constant value or determining falloff
@@ -14689,7 +14423,6 @@ public class PApplet implements PConstants {
    * creating highlights. The specular quality of a light interacts with the
    * specular material qualities set through the <b>specular()</b> and
    * <b>shininess()</b> functions.
-   *
    *
    * @webref lights_camera:lights
    * @webBrief Sets the specular color for lights
@@ -14727,7 +14460,6 @@ public class PApplet implements PConstants {
    * It is not possible to use the transparency <b>alpha</b> parameter with
    * background colors on the main drawing surface. It can only be used along with
    * a <b>PGraphics</b> object and <b>createGraphics()</b>.
-   *
    *
    * <h3>Advanced</h3>
    * <p>
@@ -14805,7 +14537,7 @@ public class PApplet implements PConstants {
    * function. Unlike the main graphics context (the display window),
    * pixels in additional graphics areas created with <b>createGraphics()</b>
    * can be entirely or partially transparent. This function clears
-   * everything in a <b>PGraphics</b> object to make all of the pixels
+   * everything in a <b>PGraphics</b> object to make all the pixels
    * 100% transparent.
    *
    * @webref color:setting
@@ -14856,7 +14588,6 @@ public class PApplet implements PConstants {
    * this, be explicit about the ranges when changing the color mode. For
    * instance, instead of <b>colorMode(RGB)</b>, write <b>colorMode(RGB, 255, 255,
    * 255)</b>.
-   *
    *
    * @webref color:setting
    * @webBrief Changes the way Processing interprets color data
@@ -15078,9 +14809,7 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Extracts the brightness value from a color.
-   *
    *
    * @webref color:creating & reading
    * @webBrief Extracts the brightness value from a color
@@ -15174,8 +14903,8 @@ public class PApplet implements PConstants {
    * <b>y</b> parameters define the coordinates for the upper-left corner of
    * the image, regardless of the current <b>imageMode()</b>.<br />
    * <br />
-   * If the pixel requested is outside of the image window, black is
-   * returned. The numbers returned are scaled according to the current color
+   * If the pixel requested is outside the image window, black is returned.
+   * The numbers returned are scaled according to the current color
    * ranges, but only RGB values are returned by this function. For example,
    * even though you may have drawn a shape with <b>colorMode(HSB)</b>, the
    * numbers returned will be in RGB format.<br />
@@ -15185,9 +14914,8 @@ public class PApplet implements PConstants {
    * equivalent statement to <b>get(x, y)</b> using <b>pixels[]</b> is
    * <b>pixels[y*width+x]</b>. See the reference for <b>pixels[]</b> for more information.
    *
-   *
    * <h3>Advanced</h3>
-   * Returns an ARGB "color" type (a packed 32 bit int with the color.
+   * Returns an ARGB "color" type (a packed 32-bit int) with the color.
    * If the coordinate is outside the image, zero is returned
    * (black, but completely transparent).
    * <P>
@@ -15259,7 +14987,6 @@ public class PApplet implements PConstants {
    * is <b>pixels[y*width+x] = #000000</b>. See the reference for
    * <b>pixels[]</b> for more information.
    *
-   *
    * @webref image:pixels
    * @webBrief Writes a color to any pixel or writes an image into another
    * @usage web_application
@@ -15303,7 +15030,6 @@ public class PApplet implements PConstants {
    * same length as the target image's pixels array and should contain only
    * grayscale data of values between 0-255.
    *
-   *
    * <h3>Advanced</h3>
    *
    * Set alpha channel for an image. Black colors in the source
@@ -15336,14 +15062,13 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Filters the image as defined by one of the following modes:<br />
    * <br />
    * THRESHOLD<br />
-   * Converts the image to black and white pixels depending if they are above or
-   * below the threshold defined by the level parameter. The parameter must be
-   * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
-   * used.<br />
+   * Converts the image to black and white pixels depending on if they
+   * are above or below the threshold defined by the level parameter.
+   * The parameter must be between 0.0 (black) and 1.0 (white).
+   * If no level is specified, 0.5 is used.<br />
    * <br />
    * GRAY<br />
    * Converts any colors in the image to grayscale equivalents. No parameter is
@@ -15370,7 +15095,6 @@ public class PApplet implements PConstants {
    * <br />
    * DILATE<br />
    * Increases the light areas. No parameter is used.
-   *
    *
    * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
    * <P>
@@ -15403,7 +15127,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Copies a region of pixels from one image into another. If the source and
    * destination regions aren't the same size, it will automatically resize
    * source pixels to fit the specified target region. No alpha information
@@ -15411,7 +15134,6 @@ public class PApplet implements PConstants {
    * set, it will be copied as well.
    * <br /><br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies the entire image
@@ -15492,14 +15214,13 @@ public class PApplet implements PConstants {
    * BURN - Darker areas are applied, increasing contrast, ignores lights.
    * Called "Color Burn" in Illustrator and Photoshop.<br />
    * <br />
-   * All modes use the alpha information (highest byte) of source image
+   * All modes use the alpha information (the highest byte) of source image
    * pixels as the blending factor. If the source and destination regions are
    * different sizes, the image will be automatically resized to match the
    * destination size. If the <b>srcImg</b> parameter is not used, the
    * display window is used as the source image.<br />
    * <br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies a pixel or rectangle of pixels using different blending modes

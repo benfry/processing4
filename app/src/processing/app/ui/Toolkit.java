@@ -30,8 +30,6 @@ import java.awt.FontMetrics;
 import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.GraphicsConfiguration;
-import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.RenderingHints;
@@ -54,13 +52,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import javax.swing.Action;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -69,15 +64,21 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JRootPane;
 import javax.swing.KeyStroke;
-import javax.swing.border.EmptyBorder;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 import processing.app.Language;
 import processing.app.Messages;
 import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.Util;
+import processing.awt.PGraphicsJava2D;
+import processing.awt.PShapeJava2D;
 import processing.core.PApplet;
+import processing.core.PShape;
+import processing.data.StringDict;
 import processing.data.StringList;
+import processing.data.XML;
 
 
 /**
@@ -155,7 +156,7 @@ public class Toolkit {
 
   /**
    * Create a menu item and set its KeyStroke by name (so it can be stored
-   * in the language settings or the preferences. Syntax is here:
+   * in the language settings or the preferences). Syntax is here:
    * https://docs.oracle.com/javase/8/docs/api/javax/swing/KeyStroke.html#getKeyStroke-java.lang.String-
    */
   static public JMenuItem newJMenuItemExt(String base) {
@@ -254,8 +255,8 @@ public class Toolkit {
    *  'A'. </li>
    * <li> If the first letters are all taken/non-ASCII, then it loops through the
    *  ASCII letters in the item, widest to narrowest, seeing if any of them is not taken.
-   *  To improve readability, it discriminates against decenders (qypgj), imagining they
-   *  have 2/3 their actual width. (MS guidelines: avoid decenders). It also discriminates
+   *  To improve readability, it discriminates against descenders (qypgj), imagining they
+   *  have 2/3 their actual width. (MS guidelines: avoid descenders). It also discriminates
    *  against vowels, imagining they have 2/3 their actual width. (MS and Gnome guidelines:
    *  avoid vowels.) </li>
    * <li>Failing that, it will loop left-to-right for an available digit. This is a last
@@ -281,8 +282,9 @@ public class Toolkit {
 
     // The English is http://techbase.kde.org/Projects/Usability/HIG/Keyboard_Accelerators,
     // made lowercase.
-    // Nothing but [a-z] except for '&' before mnemonics and regexes for changable text.
-    final String[] kdePreDefStrs = { "&file", "&new", "&open", "open&recent",
+    // Nothing but [a-z] except for '&' before mnemonics and regexes for changeable text.
+    final String[] kdePreDefStrs = {
+      "&file", "&new", "&open", "open&recent",
       "&save", "save&as", "saveacop&y", "saveas&template", "savea&ll", "reloa&d",
       "&print", "printpre&view", "&import", "e&xport", "&closefile",
       "clos&eallfiles", "&quit", "&edit", "&undo", "re&do", "cu&t", "&copy",
@@ -298,9 +300,10 @@ public class Toolkit {
       "&newbookmarksfolder", "&tools", "&settings", "&toolbars",
       "configure&shortcuts", "configuretool&bars", "&configure.*", "&help",
       ".+&handbook", "&whatsthis", "report&bug", "&aboutprocessing", "about&kde",
-      "&beenden", "&suchen",   // de
-      "&preferncias", "&sair", // Preferências; pt
-      "&rechercher" };         // fr
+      "&beenden", "&suchen",  // de
+      "&preferncias", "&sair",  // Preferências; pt
+      "&rechercher"  // fr
+    };
     Pattern[] kdePreDefPats = new Pattern[kdePreDefStrs.length];
     for (int i = 0; i < kdePreDefStrs.length; i++) {
       kdePreDefPats[i] = Pattern.compile(kdePreDefStrs[i].replace("&",""));
@@ -548,6 +551,18 @@ public class Toolkit {
   }
 
 
+  /*
+  static public String getLibString(String filename) {
+    File file = Platform.getContentFile("lib/" + filename);
+    if (file == null || !file.exists()) {
+      Messages.err("does not exist: " + file);
+      return null;
+    }
+    return PApplet.join(PApplet.loadStrings(file), "\n");
+  }
+  */
+
+
   /**
    * Get an icon of the format base-NN.png where NN is the size, but if it's
    * a hidpi display, get the NN*2 version automatically, sized at NN
@@ -562,6 +577,9 @@ public class Toolkit {
       return null;
     }
 
+    // Not broken into separate class because it requires (and is
+    // optimized for) an image file, and the SVG version does not.
+    // Also moving away from images from files anyway. [fry 220501]
     return new ImageIcon(file.getAbsolutePath()) {
       @Override
       public int getIconWidth() {
@@ -599,28 +617,28 @@ public class Toolkit {
   }
 
 
-  /**
-   * Create a JButton with an icon, and set its disabled and pressed images
-   * to be the same image, so that 2x versions of the icon work properly.
-   */
-  static public JButton createIconButton(String title, String base) {
-    ImageIcon icon = Toolkit.getLibIconX(base);
-    return createIconButton(title, icon);
-  }
-
-
-  /** Same as above, but with no text title (follows JButton constructor) */
-  static public JButton createIconButton(String base) {
-    return createIconButton(null, base);
-  }
-
-
-  static public JButton createIconButton(String title, Icon icon) {
-    JButton button = new JButton(title, icon);
-    button.setDisabledIcon(icon);
-    button.setPressedIcon(icon);
-    return button;
-  }
+//  /**
+//   * Create a JButton with an icon, and set its disabled and pressed images
+//   * to be the same image, so that 2x versions of the icon work properly.
+//   */
+//  static public JButton createIconButton(String title, String base) {
+//    ImageIcon icon = Toolkit.getLibIconX(base);
+//    return createIconButton(title, icon);
+//  }
+//
+//
+//  /** Same as above, but with no text title (follows JButton constructor) */
+//  static public JButton createIconButton(String base) {
+//    return createIconButton(null, base);
+//  }
+//
+//
+//  static public JButton createIconButton(String title, Icon icon) {
+//    JButton button = new JButton(title, icon);
+//    button.setDisabledIcon(icon);
+//    button.setPressedIcon(icon);
+//    return button;
+//  }
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -629,9 +647,11 @@ public class Toolkit {
   static List<Image> iconImages;
 
 
-  // Deprecated version of the function, but can't get rid of it without
-  // breaking tools and modes (they'd only require a recompile, but they would
-  // no longer be backwards compatible.
+  /**
+   * Unnecessary version of the function, but can't get rid of it
+   * without breaking tools and modes (they'd only require a recompile,
+   * but they would no longer be backwards compatible).
+   */
   static public void setIcon(Frame frame) {
     setIcon((Window) frame);
   }
@@ -654,6 +674,124 @@ public class Toolkit {
       window.setIconImages(iconImages);
     }
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  /**
+   * Create an Icon object from an SVG path name.
+   * @param name subpath relative to lib/
+   * @param color color to apply to the monochrome icon
+   * @param size size in pixels (handling for 2x done automatically)
+   */
+  static public ImageIcon renderIcon(String name, String color, int size) {
+    return renderIcon(Platform.getContentFile("lib/" + name + ".svg"), color, size);
+  }
+
+
+  /**
+   * Create an Icon object from an SVG path name.
+   * @param file full path to icon
+   * @param color color to apply to the monochrome icon
+   * @param size size in pixels (handling for 2x done automatically)
+   */
+  static public ImageIcon renderIcon(File file, String color, int size) {
+    Image image = renderMonoImage(file, color, size);
+    if (image == null) {
+      return null;
+    }
+    final int scale = Toolkit.highResImages() ? 2 : 1;
+
+    return new ImageIcon(image) {
+      @Override
+      public int getIconWidth() {
+        return Toolkit.zoom(super.getIconWidth()) / scale;
+      }
+
+      @Override
+      public int getIconHeight() {
+        return Toolkit.zoom(super.getIconHeight()) / scale;
+      }
+
+      @Override
+      public synchronized void paintIcon(Component c, Graphics g, int x, int y) {
+        ImageObserver imageObserver = getImageObserver();
+        if (imageObserver == null) {
+          imageObserver = c;
+        }
+        g.drawImage(getImage(), x, y, getIconWidth(), getIconHeight(), imageObserver);
+      }
+    };
+  }
+
+
+  static protected Image renderMonoImage(File file, String color, int size) {
+    String xmlOrig = Util.loadFile(file);
+
+    if (xmlOrig != null) {
+      StringDict replace = new StringDict(new String[][] {
+        { "#9B9B9B", color }
+      });
+      return Toolkit.svgToImageMult(xmlOrig, size, size, replace);
+    }
+    return null;
+  }
+
+
+  /*
+  static private Image svgToImageMult(String xmlStr, int wide, int high) {
+    return svgToImage(xmlStr, highResMultiply(wide), highResMultiply(high));
+  }
+  */
+
+
+  static public Image svgToImageMult(String xmlStr, int wide, int high, StringDict replacements) {
+    /*
+    for (StringDict.Entry entry : replacements.entries()) {
+      xmlStr = xmlStr.replace(entry.key, entry.value);
+    }
+    */
+    // 2-pass version to avoid re-assigning identical colors
+    // (Otherwise, if a color is set to #666666 before #666666 is
+    // re-assigned to its new color, the swap will happen twice.)
+    for (StringDict.Entry entry : replacements.entries()) {
+      xmlStr = xmlStr.replace(entry.key, "$" + entry.key.hashCode() + "$");
+    }
+    for (StringDict.Entry entry : replacements.entries()) {
+      xmlStr = xmlStr.replace("$" + entry.key.hashCode() + "$", entry.value);
+    }
+    return svgToImage(xmlStr, highResMultiply(wide), highResMultiply(high));
+  }
+
+
+  /**
+   * Render an SVG, passed in as a String, into an AWT Image at
+   * the specified width and height. Used for interface buttons.
+   */
+  static private Image svgToImage(String xmlStr, int wide, int high) {
+    PGraphicsJava2D pg = new PGraphicsJava2D();
+    pg.setPrimary(false);
+    pg.setSize(wide, high);
+    pg.smooth();
+
+    pg.beginDraw();
+
+    try {
+      XML xml = XML.parse(xmlStr);
+      PShape shape = new PShapeJava2D(xml);
+      pg.shape(shape, 0, 0, wide, high);
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    pg.endDraw();
+    return pg.image;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   static public Shape createRoundRect(float x1, float y1, float x2, float y2,
@@ -722,14 +860,40 @@ public class Toolkit {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  /*
+  static final boolean ISSUE_342 = false;
+
+  //static private float dpiScale(Component comp) {
+  static private float dpiScale() {
+    if (Platform.isWindows()) {
+      return awtToolkit.getScreenResolution() / 96f;
+//      return comp.getToolkit().getScreenResolution() / 96f;
+    }
+    return Toolkit.isRetina() ? 2 : 1;
+  }
+
+
+  static private int dpiScale(int what) {
+    return (int) Math.floor(what * dpiScale());
+  }
+  */
+
+
   /**
    * Create an Image to be used as an offscreen drawing context,
    * automatically doubling the size if running on a retina display.
    */
   static public Image offscreenGraphics(Component comp, int width, int height) {
+//    if (ISSUE_342) {
+//      return comp.createImage(dpiScale(width), dpiScale(height));
+//    }
     int m = Toolkit.isRetina() ? 2 : 1;
-    //return comp.createImage(m * dpi(width), m * dpi(height));
     return comp.createImage(m * width, m * height);
+  }
+
+
+  static public Graphics2D prepareGraphics(Graphics g) {
+    return prepareGraphics(g, false);
   }
 
 
@@ -739,15 +903,22 @@ public class Toolkit {
    * Moved to a utility function because it's used in several classes.
    * @return a Graphics2D object, as a bit o sugar
    */
-  static public Graphics2D prepareGraphics(Graphics g) {
+  static public Graphics2D prepareGraphics(Graphics g, boolean scale) {
     Graphics2D g2 = (Graphics2D) g;
 
-    //float z = zoom * (Toolkit.isRetina() ? 2 : 1);
-    if (Toolkit.isRetina()) {
+    if (scale && Toolkit.isRetina()) {
       // scale everything 2x, will be scaled down when drawn to the screen
       g2.scale(2, 2);
     }
-    //g2.scale(z, z);
+
+//    float s = dpiScale();
+//    if (s != 1) {
+//      if (ISSUE_342) {
+//        System.out.println("Toolkit.prepareGraphics() with dpi scale " + s);
+//      }
+//      g2.scale(s, s);
+//    }
+
     g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
                         RenderingHints.VALUE_ANTIALIAS_ON);
     g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
@@ -759,7 +930,9 @@ public class Toolkit {
       g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
                           RenderingHints.VALUE_TEXT_ANTIALIAS_GASP);
     }
-    zoomStroke(g2);
+    if (scale) {
+      zoomStroke(g2);
+    }
     return g2;
   }
 
@@ -847,6 +1020,7 @@ public class Toolkit {
   }
 
 
+  /*
   static public final int BORDER = Platform.isMacOS() ? 20 : 13;
 
 
@@ -860,6 +1034,7 @@ public class Toolkit {
     comp.setBorder(new EmptyBorder(Toolkit.zoom(top), Toolkit.zoom(left),
                                    Toolkit.zoom(bottom), Toolkit.zoom(right)));
   }
+  */
 
 
   static private float parseZoom() {
@@ -909,6 +1084,16 @@ public class Toolkit {
   }
 
 
+  static public int highResMultiplier() {
+    return highResImages() ? 2 : 1;
+  }
+
+
+  static public int highResMultiply(int amount) {
+    return highResImages() ? 2*amount : amount;
+  }
+
+
   static public boolean isRetina() {
     if (retinaProp == null) {
       retinaProp = checkRetina();
@@ -921,13 +1106,12 @@ public class Toolkit {
   // A 5-minute search didn't turn up any such event in the Java API.
   // Also, should we use the Toolkit associated with the editor window?
   static private boolean checkRetina() {
-    GraphicsDevice graphicsDevice = GraphicsEnvironment
-            .getLocalGraphicsEnvironment()
-            .getDefaultScreenDevice();
-    GraphicsConfiguration graphicsConfig = graphicsDevice
-            .getDefaultConfiguration();
+    AffineTransform tx = GraphicsEnvironment
+      .getLocalGraphicsEnvironment()
+      .getDefaultScreenDevice()
+      .getDefaultConfiguration()
+      .getDefaultTransform();
 
-    AffineTransform tx = graphicsConfig.getDefaultTransform();
     return Math.round(tx.getScaleX()) == 2;
   }
 
@@ -987,7 +1171,7 @@ public class Toolkit {
       families.appendUnique(font.getFamily());
     }
     families.sort();
-    return families.array();
+    return families.toArray();
   }
 
 
@@ -999,11 +1183,7 @@ public class Toolkit {
 
   /** Get the name of the default (built-in) monospaced font. */
   static public String getMonoFontName() {
-    if (monoFont == null) {
-      // create a dummy version if the font has never been loaded (rare)
-      getMonoFont(12, Font.PLAIN);
-    }
-    return monoFont.getName();
+    return getMonoFont(12, Font.PLAIN).getName();
   }
 
 
@@ -1015,28 +1195,30 @@ public class Toolkit {
    * https://www.oracle.com/java/technologies/javase/11-relnote-issues.html#JDK-8191522
    */
   static public Font getMonoFont(int size, int style) {
-    if (monoFont == null) {
-      try {
-        monoFont = createFont("SourceCodePro-Regular.ttf", size);
-        monoBoldFont = createFont("SourceCodePro-Bold.ttf", size);
+    // Prior to 4.0 beta 9, we had a manual override for
+    // individual languages to use SansSerif instead.
+    // In beta 9, that was moved to the language translation file.
+    // https://github.com/processing/processing/issues/2886
+    // https://github.com/processing/processing/issues/4944
+    String fontFamilyMono = Language.text("font.family.mono");
 
-        // https://github.com/processing/processing/issues/2886
-        // https://github.com/processing/processing/issues/4944
-        String lang = Language.getLanguage();
-        if ("el".equals(lang) ||
-            "ar".equals(lang) ||
-            Locale.CHINESE.getLanguage().equals(lang) ||
-            Locale.JAPANESE.getLanguage().equals(lang) ||
-            Locale.KOREAN.getLanguage().equals(lang)) {
-          sansFont = new Font("Monospaced", Font.PLAIN, size);
-          sansBoldFont = new Font("Monospaced", Font.BOLD, size);
+    if (monoFont == null || monoBoldFont == null) {
+      try {
+        if ("Source Code Pro".equals(fontFamilyMono)) {
+          monoFont = initFont("SourceCodePro-Regular.ttf", size);
+          monoBoldFont = initFont("SourceCodePro-Bold.ttf", size);
         }
       } catch (Exception e) {
         Messages.err("Could not load mono font", e);
-        monoFont = new Font("Monospaced", Font.PLAIN, size);
-        monoBoldFont = new Font("Monospaced", Font.BOLD, size);
       }
     }
+
+    // If not using Source Code Pro above, or an Exception was thrown
+    if (monoFont == null || monoBoldFont == null) {
+      monoFont = new Font(fontFamilyMono, Font.PLAIN, size);
+      monoBoldFont = new Font(fontFamilyMono, Font.BOLD, size);
+    }
+
     if (style == Font.BOLD) {
       if (size == monoBoldFont.getSize()) {
         return monoBoldFont;
@@ -1054,45 +1236,43 @@ public class Toolkit {
 
 
   static public String getSansFontName() {
-    if (sansFont == null) {
-      // create a dummy version if the font has never been loaded (rare)
-      getSansFont(12, Font.PLAIN);
-    }
-    return sansFont.getName();
+    return getSansFont(12, Font.PLAIN).getName();
   }
 
 
   static public Font getSansFont(int size, int style) {
-    if (sansFont == null) {
-      try {
-        sansFont = createFont("ProcessingSansPro-Regular.ttf", size);
-        sansBoldFont = createFont("ProcessingSansPro-Semibold.ttf", size);
+    // Prior to 4.0 beta 9, we had a manual override for
+    // individual languages to use SansSerif instead.
+    // In beta 9, that was moved to the language translation file.
+    // https://github.com/processing/processing/issues/2886
+    // https://github.com/processing/processing/issues/4944
+    String fontFamilySans = Language.text("font.family.sans");
 
-        // https://github.com/processing/processing/issues/2886
-        // https://github.com/processing/processing/issues/4944
-        String lang = Language.getLanguage();
-        if ("el".equals(lang) ||
-            "ar".equals(lang) ||
-            Locale.CHINESE.getLanguage().equals(lang) ||
-            Locale.JAPANESE.getLanguage().equals(lang) ||
-            Locale.KOREAN.getLanguage().equals(lang)) {
-          sansFont = new Font("SansSerif", Font.PLAIN, size);
-          sansBoldFont = new Font("SansSerif", Font.BOLD, size);
+    if (sansFont == null || sansBoldFont == null) {
+      try {
+        if ("Processing Sans".equals(fontFamilySans)) {
+          sansFont = initFont("ProcessingSans-Regular.ttf", size);
+          sansBoldFont = initFont("ProcessingSans-Bold.ttf", size);
         }
       } catch (Exception e) {
         Messages.err("Could not load sans font", e);
-        sansFont = new Font("SansSerif", Font.PLAIN, size);
-        sansBoldFont = new Font("SansSerif", Font.BOLD, size);
       }
     }
+
+    // If not using "Processing Sans" above, or an Exception was thrown
+    if (sansFont == null || sansBoldFont == null) {
+      sansFont = new Font(fontFamilySans, Font.PLAIN, size);
+      sansBoldFont = new Font(fontFamilySans, Font.BOLD, size);
+    }
+
     if (style == Font.BOLD) {
-      if (size == sansBoldFont.getSize()) {
+      if (size == sansBoldFont.getSize() || size == 0) {
         return sansBoldFont;
       } else {
         return sansBoldFont.deriveFont((float) size);
       }
     } else {
-      if (size == sansFont.getSize()) {
+      if (size == sansFont.getSize() || size == 0) {
         return sansFont;
       } else {
         return sansFont.deriveFont((float) size);
@@ -1102,12 +1282,12 @@ public class Toolkit {
 
 
   /**
-   * Get a font from the lib/fonts folder. Our default fonts are also
-   * installed there so that the monospace (and others) can be used by other
-   * font listing calls (i.e. it appears in the list of monospace fonts in
-   * the Preferences window, and can be used by HTMLEditorKit for WebFrame).
+   * Load a built-in font from the Processing lib/fonts folder and register
+   * it with the GraphicsEnvironment so that it's broadly available.
+   * (i.e. shows up in getFontList() works, so it appears in the list of fonts
+   * in the Preferences window, and can be used by HTMLEditorKit for WebFrame.)
    */
-  static private Font createFont(String filename, int size) throws IOException, FontFormatException {
+  static private Font initFont(String filename, int size) throws IOException, FontFormatException {
     File fontFile = Platform.getContentFile("lib/fonts/" + filename);
 
     if (fontFile == null || !fontFile.exists()) {
@@ -1128,8 +1308,8 @@ public class Toolkit {
     Font font = Font.createFont(Font.TRUETYPE_FONT, input);
     input.close();
 
-    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    ge.registerFont(font);
+    // Register the font to be available for other function calls
+    GraphicsEnvironment.getLocalGraphicsEnvironment().registerFont(font);
 
     return font.deriveFont((float) size);
   }
@@ -1144,5 +1324,83 @@ public class Toolkit {
     FontRenderContext frc = g2.getFontRenderContext();
     //return new TextLayout("H", font, frc).getBounds().getHeight();
     return new TextLayout("H", g.getFont(), frc).getBounds().getHeight();
+  }
+
+
+  static public String formatMessage(String message) {
+    String monoName = "Monospaced";
+    try {
+      monoName = Toolkit.getMonoFontName();
+    } catch (Exception ignored) { }
+
+    // Necessary to replace \n with <br/> (even if pre) otherwise Java
+    // treats it as a closed tag and reverts to plain formatting.
+    return "<html> " +
+      "<head> <style type=\"text/css\">" +
+      // if smaller than 12 pt, Source Code Sans doesn't get hinted
+      // (not clear if that's a font or Java issue) [fry 220803]
+      "tt { font: 12pt \"" + monoName + "\"; color: #888; }" +
+      "</style> </head>" +
+      message.replaceAll("\n", "<br/>");
+  }
+
+
+  static public String formatMessage(String primary, String secondary) {
+    // Pane formatting originally adapted from the Quaqua guide
+    // http://www.randelshofer.ch/quaqua/guide/joptionpane.html
+
+    // This code originally disabled unless Java 1.5 is in use on OS X
+    // because of a Java bug that prevents the initial value of the
+    // dialog from being set properly (at least on my MacBook Pro).
+    // The bug causes the "Don't Save" option to be the highlighted,
+    // blinking, default. This sucks. But I'll tell you what doesn't
+    // suck--workarounds for the Mac and Apple's snobby attitude about it!
+    // I think it's nifty that they treat their developers like dirt.
+
+//    String monoName = "Monospaced";
+//    try {
+//      monoName = Toolkit.getMonoFontName();
+//    } catch (Exception ignored) { }
+
+    // Necessary to replace \n with <br/> (even if pre) otherwise Java
+    // treats it as a closed tag and reverts to plain formatting.
+    return ("<html> " +
+      "<head> <style type=\"text/css\">"+
+      //"b { font: 13pt \"Lucida Grande\" }"+
+      //"b { font: 13pt \"Processing Sans\" }"+
+      //"p { font: 11pt \"Lucida Grande\"; margin-top: 8px }"+
+      //"p { font: 11pt \"Processing Sans\"; margin-top: 8px }"+
+      // sometimes with "width: 300px" but that might also be problematic
+      // <tt> never used with the two tier dialog
+      //"tt { font: 11pt \"" + monoName + "\"; }" +  // mono not used here
+      "</style> </head>" +
+      // Extra &nbsp; because the right-hand side of the text is cutting off.
+      "<b>" + primary + "</b>&nbsp;" +
+      "<p>" + secondary + "</p>").replaceAll("\n", "<br/>");
+  }
+
+
+  static public HTMLEditorKit createHtmlEditorKit() {
+    return new HTMLEditorKit() {
+      private StyleSheet style;
+
+      @Override
+      public StyleSheet getStyleSheet() {
+        return style == null ? super.getStyleSheet() : style;
+      }
+
+      @Override
+      public void setStyleSheet(StyleSheet s) {
+        this.style = s;
+      }
+
+      public StyleSheet getDefaultStyleSheet() {
+        return super.getStyleSheet();
+      }
+
+      public void setDefaultStyleSheet(StyleSheet s) {
+        super.setStyleSheet(s);
+      }
+    };
   }
 }

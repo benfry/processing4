@@ -1,9 +1,9 @@
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Part of the Processing project - http://processing.org
+  Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-20 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -27,11 +27,10 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 import java.util.*;
 
-import javax.swing.SwingWorker;
-
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Messages;
+import processing.app.Platform;
 import processing.app.Util;
 import processing.app.ui.Editor;
 import processing.core.PApplet;
@@ -46,18 +45,19 @@ public class ContributionManager {
    * Blocks until the file is downloaded or an error occurs.
    *
    * @param source the URL of the file to download
-   * @param post Binary blob of POST data if a payload should be sent.
+   * @param post Binary blob of POST data if there is data to be sent.
    *             Must already be URL-encoded and will be Gzipped for upload.
-   * @param dest The file on the local system where the file will be written.
-   *             This must be a file (not a directory), and must already exist.
+   *             If null, the connection will use GET instead of POST.
+   * @param dest The location on the local system to write the file.
+   *             Its parent directory must already exist.
    * @param progress null if progress is irrelevant, such as when downloading
-   *                 for an install during startup, when the ProgressMonitor
-   *                 is useless since UI isn't setup yet.
+   *                 files for installation during startup, when the
+   *                 ProgressMonitor is useless because the UI is unavailable.
    *
    * @return true if the file was successfully downloaded, false otherwise.
    */
   static boolean download(URL source, byte[] post,
-                          File dest, ContribProgressMonitor progress) {
+                          File dest, ContribProgress progress) {
     boolean success = false;
     try {
       HttpURLConnection conn = (HttpURLConnection) source.openConnection();
@@ -85,7 +85,6 @@ public class ContributionManager {
       if (progress != null) {
         // TODO this is often -1, may need to set progress to indeterminate
         int fileSize = conn.getContentLength();
-        progress.max = fileSize;
 //      System.out.println("file size is " + fileSize);
         progress.startTask(Language.text("contrib.progress.downloading"), fileSize);
       }
@@ -123,7 +122,7 @@ public class ContributionManager {
       }
     } catch (IOException ioe) {
       if (progress != null) {
-        progress.error(ioe);
+        progress.setException(ioe);
         progress.cancel();
       }
     }
@@ -140,8 +139,8 @@ public class ContributionManager {
   static void downloadAndInstall(final Base base,
                                  final URL url,
                                  final AvailableContribution ad,
-                                 final ContribProgressBar downloadProgress,
-                                 final ContribProgressBar installProgress,
+                                 final ContribProgress downloadProgress,
+                                 final ContribProgress installProgress,
                                  final StatusPanel status) {
     // TODO: replace with SwingWorker [jv]
     new Thread(() -> {
@@ -154,8 +153,8 @@ public class ContributionManager {
         try {
           download(url, null, contribZip, downloadProgress);
 
-          if (!downloadProgress.isCanceled() && !downloadProgress.isError()) {
-            installProgress.startTask(Language.text("contrib.progress.installing"), ContribProgressMonitor.UNKNOWN);
+          if (!downloadProgress.isCanceled() && !downloadProgress.isException()) {
+            installProgress.startTask(Language.text("contrib.progress.installing"));
             final LocalContribution contribution =
               ad.install(base, contribZip, false, status);
 
@@ -164,14 +163,6 @@ public class ContributionManager {
                 // TODO: run this in SwingWorker done() [jv]
                 EventQueue.invokeAndWait(() -> {
                   listing.replaceContribution(ad, contribution);
-                  /*
-                  if (contribution.getType() == ContributionType.MODE) {
-                    List<ModeContribution> contribModes = editor.getBase().getModeContribs();
-                    if (!contribModes.contains(contribution)) {
-                      contribModes.add((ModeContribution) contribution);
-                    }
-                  }
-                  */
                   base.refreshContribs(contribution.getType());
                   base.setUpdatesAvailable(listing.countUpdates(base));
                 });
@@ -184,14 +175,16 @@ public class ContributionManager {
             installProgress.finished();
 
           } else {
-            if (downloadProgress.exception instanceof SocketTimeoutException) {
+            Exception exception = downloadProgress.getException();
+            if (exception instanceof SocketTimeoutException) {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.contrib_download.timeout",
                              ad.getName()));
-            } else {
+            } else if (exception != null) {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.download_and_install",
                              ad.getName()));
+              exception.printStackTrace();
             }
           }
           contribZip.delete();
@@ -204,14 +197,13 @@ public class ContributionManager {
                 cause instanceof NoSuchMethodError) {
               msg = "This item is not compatible with this version of Processing";
             } else if (cause instanceof UnsupportedClassVersionError) {
-              msg = "This item needs to be recompiled for Java " +
-                PApplet.javaPlatform;
+              msg = "This needs to be recompiled for Java " + PApplet.javaPlatform;
             }
           }
 
           if (msg == null) {
             msg = Language.interpolate("contrib.errors.download_and_install", ad.getName());
-            // Something unexpected, so print the trace
+            // Something unexpected, so print the trace for bug tracking
             e.printStackTrace();
           }
           status.setErrorMessage(msg);
@@ -225,7 +217,6 @@ public class ContributionManager {
       }
     }, "Contribution Installer").start();
   }
-
 
 
   /**
@@ -245,13 +236,10 @@ public class ContributionManager {
       filename = filename.substring(filename.lastIndexOf('/') + 1);
       try {
         File contribZip = File.createTempFile("download", filename);
-        contribZip.setWritable(true); // necessary?
-
         try {
           download(url, null, contribZip, null);
-
-          final LocalContribution contribution = ad.install(base, contribZip,
-                                                      false, null);
+          final LocalContribution contribution =
+            ad.install(base, contribZip, false, null);
 
           if (contribution != null) {
             try {
@@ -272,8 +260,9 @@ public class ContributionManager {
               }
             }
           }
-
-          contribZip.delete();
+          if (contribZip.exists() && !contribZip.delete()) {
+            System.err.println("Could not delete " + contribZip);
+          }
           handleUpdateFailedMarkers(ad);
 
         } catch (Exception e) {
@@ -334,17 +323,16 @@ public class ContributionManager {
    */
   static public void downloadAndInstallOnImport(final Base base,
                                                 final List<AvailableContribution> list) {
-    // To avoid the user from modifying stuff, since this function is only
-    // called during pre-processing
+    // Disable the Editor to avoid the user from modifying anything,
+    // because this function is only called during pre-processing.
     Editor editor = base.getActiveEditor();
     editor.getTextArea().setEditable(false);
-//    base.getActiveEditor().getConsole().clear();
 
     List<String> installedLibList = new ArrayList<>();
 
     // boolean variable to check if previous lib was installed successfully,
     // to give the user an idea about progress being made.
-    boolean isPrevDone = false;
+    boolean prevDone = false;
 
     for (final AvailableContribution contrib : list) {
       if (contrib.getType() != ContributionType.LIBRARY) {
@@ -365,7 +353,7 @@ public class ContributionManager {
             // one install is completed and the next download has begun without
             // interfering with other status messages that may arise in the meanwhile
             String statusMsg = editor.getStatusMessage();
-            if (isPrevDone) {
+            if (prevDone) {
               String status = statusMsg + " "
                 + Language.interpolate("contrib.import.progress.download", contrib.name);
               editor.statusNotice(status);
@@ -375,7 +363,7 @@ public class ContributionManager {
               editor.statusNotice(status);
             }
 
-            isPrevDone = false;
+            prevDone = false;
 
             download(url, null, contribZip, null);
 
@@ -406,7 +394,7 @@ public class ContributionManager {
             contribZip.delete();
 
             installedLibList.add(contrib.name);
-            isPrevDone = true;
+            prevDone = true;
 
             arg = "contrib.import.progress.done";
             editor.statusNotice(Language.interpolate(arg,contrib.name));
@@ -431,18 +419,6 @@ public class ContributionManager {
       System.out.println("  * " + l);
     }
   }
-
-
-  /*
-  static void refreshInstalled(Editor e) {
-    for (Editor ed : e.getBase().getEditors()) {
-      ed.getMode().rebuildImportMenu();
-      ed.getMode().rebuildExamplesFrame();
-      ed.rebuildToolMenu();
-      ed.rebuildModeMenu();
-    }
-  }
-  */
 
 
   /**
@@ -513,25 +489,10 @@ public class ContributionManager {
     updateFlagged(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
-    SwingWorker<Void, Void> s = new SwingWorker<>() {
-
-      @Override
-      protected Void doInBackground() throws Exception {
-        try {
-          // TODO: pls explain the sleep and why this runs on a worker thread,
-          //   but a couple of lines above on EDT [jv]
-          Thread.sleep(1000);
-          installPreviouslyFailed(base, Base.getSketchbookToolsFolder());
-        } catch (InterruptedException e) {
-          e.printStackTrace();
-        }
-        return null;
-      }
-    };
-    s.execute();
-
+    /*
     clearRestartFlags(Base.getSketchbookModesFolder());
     clearRestartFlags(Base.getSketchbookToolsFolder());
+    */
   }
 
 
@@ -546,7 +507,12 @@ public class ContributionManager {
     if (possible != null) {
       for (File f : possible) {
         if (f.getName().matches(pattern)) {
-          Util.removeDir(f);
+          //Util.removeDir(f);
+          try {
+            Platform.deleteFile(f);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
       }
     }
@@ -562,7 +528,12 @@ public class ContributionManager {
     );
     if (markedForDeletion != null) {
       for (File folder : markedForDeletion) {
-        Util.removeDir(folder);
+        //Util.removeDir(folder);
+        try {
+          Platform.deleteFile(folder);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
       }
     }
   }
@@ -573,7 +544,7 @@ public class ContributionManager {
    * auto-update the previous time Processing was started up.
    */
   static private void installPreviouslyFailed(Base base, File root) throws Exception {
-    File[] installList = root.listFiles(folder -> folder.isFile());
+    File[] installList = root.listFiles(File::isFile);
 
     // https://github.com/processing/processing/issues/5823
     if (installList != null) {
@@ -614,22 +585,29 @@ public class ContributionManager {
     //      Not sure the function here so I'm not fixing it at the moment,
     //      but this whole function could use some cleaning. [fry 180105]
 
-    String type = root.getName().substring(root.getName().lastIndexOf('/') + 1);
+    // TODO getName() will (should?) never have a slash, wtf [fry 220312]
+    String contribType = root.getName().substring(root.getName().lastIndexOf('/') + 1);
     String propFileName = null;
 
-    if (type.equalsIgnoreCase("tools"))
+    if (contribType.equalsIgnoreCase("tools"))
       propFileName = "tool.properties";
-    else if (type.equalsIgnoreCase("modes"))
+    else if (contribType.equalsIgnoreCase("modes"))
       propFileName = "mode.properties";
 
     if (markedForUpdate != null) {
       for (File folder : markedForUpdate) {
         StringDict props = Util.readSettings(new File(folder, propFileName));
-        String name = props.get("name");
-        if (name != null) {  // should not happen, but...
-          updateContribsNames.add(name);
+        if (props != null) {
+          String name = props.get("name", null);
+          if (name != null) {  // should not happen, but...
+            updateContribsNames.add(name);
+          }
+          try {
+            Platform.deleteFile(folder);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
         }
-        Util.removeDir(folder);
       }
     }
 
@@ -663,27 +641,29 @@ public class ContributionManager {
   }
 
 
+  /*
   static private void clearRestartFlags(File root) {
     File[] folderList = root.listFiles(File::isDirectory);
     if (folderList != null) {
       for (File folder : folderList) {
-        LocalContribution.clearRestartFlags(folder);
+        LocalContribution.clearRestartFlag(folder);
       }
     }
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static ManagerFrame managerDialog;
+  static ManagerFrame managerFrame;
 
 
   static public void init(Base base) throws Exception {
 //    long t1 = System.currentTimeMillis();
     listing = ContributionListing.getInstance(); // Moved here to make sure it runs on EDT [jv 170121]
 //    long t2 = System.currentTimeMillis();
-    managerDialog = new ManagerFrame(base);
+    managerFrame = new ManagerFrame(base);
 //    long t3 = System.currentTimeMillis();
     cleanup(base);
 //    long t4 = System.currentTimeMillis();
@@ -691,11 +671,18 @@ public class ContributionManager {
   }
 
 
+  static public void updateTheme() {
+    if (managerFrame != null) {
+      managerFrame.updateTheme();
+    }
+  }
+
+
   /**
    * Show the Library installer window.
    */
   static public void openLibraries() {
-    managerDialog.showFrame(ContributionType.LIBRARY);
+    managerFrame.showFrame(ContributionType.LIBRARY);
   }
 
 
@@ -703,7 +690,7 @@ public class ContributionManager {
    * Show the Mode installer window.
    */
   static public void openModes() {
-    managerDialog.showFrame(ContributionType.MODE);
+    managerFrame.showFrame(ContributionType.MODE);
   }
 
 
@@ -711,7 +698,7 @@ public class ContributionManager {
    * Show the Tool installer window.
    */
   static public void openTools() {
-    managerDialog.showFrame(ContributionType.TOOL);
+    managerFrame.showFrame(ContributionType.TOOL);
   }
 
 
@@ -719,7 +706,7 @@ public class ContributionManager {
    * Show the Examples installer window.
    */
   static public void openExamples() {
-    managerDialog.showFrame(ContributionType.EXAMPLES);
+    managerFrame.showFrame(ContributionType.EXAMPLES);
   }
 
 
@@ -727,28 +714,6 @@ public class ContributionManager {
    * Open the updates panel.
    */
   static public void openUpdates() {
-    managerDialog.showFrame(null);
+    managerFrame.showFrame(null);
   }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  /*
-  static int getTypeIndex(ContributionType contributionType) {
-    int index;
-    if (contributionType == ContributionType.LIBRARY) {
-      index = 0;
-    } else if (contributionType == ContributionType.MODE) {
-      index = 1;
-    } else if (contributionType == ContributionType.TOOL) {
-      index = 2;
-    } else if (contributionType == ContributionType.EXAMPLES) {
-      index = 3;
-    } else {
-      index = 4;
-    }
-    return index;
-  }
-  */
 }

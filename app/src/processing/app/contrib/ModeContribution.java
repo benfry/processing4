@@ -1,9 +1,9 @@
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Part of the Processing project - http://processing.org
+  Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-15 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import processing.app.Base;
 import processing.app.Messages;
@@ -54,12 +55,10 @@ public class ModeContribution extends LocalContribution {
       Messages.log(ig.getMessage());
 
     } catch (Throwable err) {
-      System.out.println("err is " + err);
-      // Throwable to catch Exceptions or UnsupportedClassVersionError et al
+      // Throwable to catch Exceptions or UnsupportedClassVersionError et al.
       if (searchName == null) {
-        //err.printStackTrace(System.out);
-        // for 3.0b1, pass this through to the Contribution Manager so that
-        // we can provide better error messages
+        // for 3.0b1, pass this through to the Contribution Manager
+        // so that we can provide better error messages
         throw new RuntimeException(err);
 
       } else {
@@ -74,7 +73,6 @@ public class ModeContribution extends LocalContribution {
 
 
   /**
-   *
    * @param base the base object that this will be tied to
    * @param folder location inside the sketchbook modes folder or contrib
    * @param className name of class and full package, or null to use default
@@ -89,24 +87,18 @@ public class ModeContribution extends LocalContribution {
       Constructor<?> con = modeClass.getConstructor(Base.class, File.class);
       mode = (Mode) con.newInstance(base, folder);
       mode.setClassLoader(loader);
-//      if (base != null) {
-//        mode.setupGUI();
-//      }
     }
   }
 
 
   /**
-   * Method to close the ClassLoader so that the archives are no longer "locked"
-   * and a mode can be removed without restart.
+   * Method to close the ClassLoader so that the archives are no longer
+   * "locked" and a Mode can be removed without restart.
    */
   public void clearClassLoader(Base base) {
     List<ModeContribution> contribModes = base.getModeContribs();
-    int botherToRemove = contribModes.indexOf(this);
-    // The poor thing isn't even loaded, and we're trying to remove it...
-    if (botherToRemove != -1) {
-      contribModes.remove(botherToRemove);
-
+    if (contribModes.contains(this)) {
+      contribModes.remove(this);
       try {
         // This cast should be safe, since the only case when loader is not a
         // URLClassLoader is when no archives were found in the first place.
@@ -149,12 +141,12 @@ public class ModeContribution extends LocalContribution {
         }
       }
 
-      ArrayList<URL> extraUrls = new ArrayList<>();
+      List<URL> extraUrls = new ArrayList<>();
       if (imports != null && imports.size() > 0) {
         // if the mode has any dependencies (defined as imports in
         // mode.properties), add the dependencies to the classloader
 
-        HashMap<String, Mode> installedModes = new HashMap<>();
+        Map<String, Mode> installedModes = new HashMap<>();
         for(Mode m: base.getModeList()){
           // Base.log("Mode contrib: " + m.getClass().getName() + " : "+ m.getFolder());
           installedModes.put(m.getClass().getName(), m);

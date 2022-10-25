@@ -34,9 +34,9 @@ import jssc.*;
 
 
 /**
- * 
+ *
  * Class for sending and receiving data using the serial communication protocol.
- * 
+ *
  * @webref serial
  * @webBrief Class for sending and receiving data using the serial communication protocol
  * @instanceName serial any variable of type Serial
@@ -186,7 +186,7 @@ public class Serial implements SerialPortEventListener {
 
   /**
    * Returns the number of bytes available.
-   * 
+   *
    * @generate Serial_available.xml
    * @webref serial
    * @webBrief Returns the number of bytes available
@@ -212,7 +212,7 @@ public class Serial implements SerialPortEventListener {
 
   /**
    * Sets a specific byte to buffer until before calling <b>serialEvent()</b>.
-   * 
+   *
    * @generate Serial_bufferUntil.xml
    * @webref serial
    * @webBrief Sets a specific byte to buffer until before calling <b>serialEvent()</b>
@@ -266,7 +266,7 @@ public class Serial implements SerialPortEventListener {
 
   /**
    * Returns last byte received or -1 if there is none available.
-   * 
+   *
    * @generate Serial_last.xml
    * <h3>Advanced</h3>
    * Same as read() but returns the very last value received
@@ -292,7 +292,7 @@ public class Serial implements SerialPortEventListener {
 
   /**
    * Returns the last byte received as a char or -1 if there is none available.
-   * 
+   *
    * @generate Serial_lastChar.xml
    * @webref serial
    * @webBrief Returns the last byte received as a char or -1 if there is none available
@@ -304,9 +304,9 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Gets a list of all available serial ports. Use <b>println()</b> to write the 
+   * Gets a list of all available serial ports. Use <b>println()</b> to write the
    * information to the text window.
-   * 
+   *
    * @generate Serial_list.xml
    * @webref serial
    * @webBrief Gets a list of all available serial ports
@@ -320,10 +320,10 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Returns a number between 0 and 255 for the next byte that's waiting in the buffer. 
-   * Returns -1 if there is no byte, although this should be avoided by first cheacking 
+   * Returns a number between 0 and 255 for the next byte that's waiting in the buffer.
+   * Returns -1 if there is no byte, although this should be avoided by first cheacking
    * <b>available()</b> to see if data is available.
-   * 
+   *
    * @generate Serial_read.xml
    * @webref serial
    * @webBrief Returns a number between 0 and 255 for the next byte that's waiting in the buffer
@@ -346,11 +346,11 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Reads a group of bytes from the buffer or <b>null</b> if there are none available. The version 
-   * with no parameters returns a byte array of all data in the buffer. This is not efficient, but 
-   * is easy to use. The version with the <b>byteBuffer</b> parameter is more memory and time 
-   * efficient. It grabs the data in the buffer and puts it into the byte array passed in and returns 
-   * an int value for the number of bytes read. If more bytes are available than can fit into the 
+   * Reads a group of bytes from the buffer or <b>null</b> if there are none available. The version
+   * with no parameters returns a byte array of all data in the buffer. This is not efficient, but
+   * is easy to use. The version with the <b>byteBuffer</b> parameter is more memory and time
+   * efficient. It grabs the data in the buffer and puts it into the byte array passed in and returns
+   * an int value for the number of bytes read. If more bytes are available than can fit into the
    * <b>byteBuffer</b>, only those that fit are read.
    * @generate Serial_readBytes.xml
    * @webref serial
@@ -370,7 +370,7 @@ public class Serial implements SerialPortEventListener {
       return ret;
     }
   }
-  
+
 
   /**
    * <h3>Advanced</h3>
@@ -432,18 +432,18 @@ public class Serial implements SerialPortEventListener {
       return toCopy;
     }
   }
-  
+
 
   /**
-   * Reads from the port into a buffer of bytes up to and including a particular character. If the 
-   * character isn't in the buffer, <b>null</b> is returned. The version with without the 
-   * <b>byteBuffer</b> parameter returns a byte array of all data up to and including the 
-   * <b>interesting</b> byte. This is not efficient, but is easy to use. The version with the 
-   * <b>byteBuffer</b> parameter is more memory and time efficient. It grabs the data in the buffer 
-   * and puts it into the byte array passed in and returns an int value for the number of bytes read. 
-   * If the byte buffer is not large enough, -1 is returned and an error is printed to the message 
+   * Reads from the port into a buffer of bytes up to and including a particular character. If the
+   * character isn't in the buffer, <b>null</b> is returned. The version with without the
+   * <b>byteBuffer</b> parameter returns a byte array of all data up to and including the
+   * <b>interesting</b> byte. This is not efficient, but is easy to use. The version with the
+   * <b>byteBuffer</b> parameter is more memory and time efficient. It grabs the data in the buffer
+   * and puts it into the byte array passed in and returns an int value for the number of bytes read.
+   * If the byte buffer is not large enough, -1 is returned and an error is printed to the message
    * area. If nothing is in the buffer, 0 is returned.
-   * 
+   *
    * @generate Serial_readBytesUntil.xml
    * @webref serial
    * @webBrief Reads from the port into a buffer of bytes up to and including a particular character
@@ -527,7 +527,7 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Returns the next byte in the buffer as a char. Returns <b>-1</b> or <b>0xffff</b> 
+   * Returns the next byte in the buffer as a char. Returns <b>-1</b> or <b>0xffff</b>
    * if nothing is there.
    *
    * @generate Serial_readChar.xml
@@ -541,9 +541,9 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Returns all the data from the buffer as a <b>String</b> or <b>null</b> if there is nothing available. 
-   * This method assumes the incoming characters are ASCII. If you want to transfer Unicode data, 
-   * first convert the String to a byte stream in the representation of your choice (i.e. UTF8 or 
+   * Returns all the data from the buffer as a <b>String</b> or <b>null</b> if there is nothing available.
+   * This method assumes the incoming characters are ASCII. If you want to transfer Unicode data,
+   * first convert the String to a byte stream in the representation of your choice (i.e. UTF8 or
    * two-byte Unicode data), and send it as a byte array.
    *
    * @generate Serial_readString.xml
@@ -560,7 +560,7 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Combination of <b>readBytesUntil()</b> and <b>readString()</b>. Returns <b>null</b> 
+   * Combination of <b>readBytesUntil()</b> and <b>readString()</b>. Returns <b>null</b>
    * if it doesn't find what you're looking for.
    *
    * @generate Serial_readStringUntil.xml
@@ -585,11 +585,11 @@ public class Serial implements SerialPortEventListener {
 
 
   /**
-   * Called when data is available. Use one of the <b>read()</b> methods to capture this data. 
-   * The <b>serialEvent()</b> can be set with <b>buffer()</b> to only trigger after a certain 
-   * number of data elements are read and can be set with <b>bufferUntil()</b> to only trigger 
-   * after a specific character is read. The <b>which</b> parameter contains the name of the 
-   * port where new data is available, but is only useful when there is more than one serial 
+   * Called when data is available. Use one of the <b>read()</b> methods to capture this data.
+   * The <b>serialEvent()</b> can be set with <b>buffer()</b> to only trigger after a certain
+   * number of data elements are read and can be set with <b>bufferUntil()</b> to only trigger
+   * after a specific character is read. The <b>which</b> parameter contains the name of the
+   * port where new data is available, but is only useful when there is more than one serial
    * connection open and it's necessary to distinguish between the two.
    *
    * @generate serialEvent.xml
@@ -630,7 +630,7 @@ public class Serial implements SerialPortEventListener {
                 // serialAvailable() does not provide any real benefits over using
                 // available() and read() inside draw - but this function has no
                 // thread-safety issues since it's being invoked during pre in the context
-                // of the Processing applet
+                // of the Processing sketch
                 serialEventMethod.invoke(parent, this);
               } catch (Exception e) {
                 System.err.println("Error, disabling serialEvent() for "+port.getPortName());
@@ -676,7 +676,7 @@ public class Serial implements SerialPortEventListener {
 
   /**
    * Stops data communication on this port. Use to shut the connection when you're finished with the Serial.
-   * 
+   *
    * @generate Serial_stop.xml
    * @webref serial
    * @webBrief Stops data communication on this port
@@ -723,7 +723,7 @@ public class Serial implements SerialPortEventListener {
 
   /**
    * Writes <b>bytes</b>, <b>chars</b>, <b>ints</b>, <b>bytes[]</b>, <b>Strings</b> to the serial port
-   * 
+   *
    * <h3>Advanced</h3>
    * Write a String to the output. Note that this doesn't account
    * for Unicode (two bytes per char), nor will it send UTF8

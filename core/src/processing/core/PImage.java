@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 
 import processing.awt.ShimAWT;
 
@@ -53,7 +54,6 @@ import processing.awt.ShimAWT;
  * To create a new image, use the <b>createImage()</b> function. Do not use the
  * syntax <b>new PImage()</b>.
  *
- *
  * @webref image
  * @webBrief Datatype for storing images
  * @usage Web &amp; Application
@@ -62,18 +62,8 @@ import processing.awt.ShimAWT;
  * @see PApplet#imageMode(int)
  * @see PApplet#createImage(int, int, int)
  */
+@SuppressWarnings("ManualMinMaxCalculation")
 public class PImage implements PConstants, Cloneable {
-
-  private static final byte[] TIFF_HEADER = {
-    77, 77, 0, 42, 0, 0, 0, 8, 0, 9, 0, -2, 0, 4, 0, 0, 0, 1, 0, 0,
-    0, 0, 1, 0, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 0, 3, 0, 0, 0, 1,
-    0, 0, 0, 0, 1, 2, 0, 3, 0, 0, 0, 3, 0, 0, 0, 122, 1, 6, 0, 3, 0,
-    0, 0, 1, 0, 2, 0, 0, 1, 17, 0, 4, 0, 0, 0, 1, 0, 0, 3, 0, 1, 21,
-    0, 3, 0, 0, 0, 1, 0, 3, 0, 0, 1, 22, 0, 3, 0, 0, 0, 1, 0, 0, 0, 0,
-    1, 23, 0, 4, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 8, 0, 8
-  };
-
-  private static final String TIFF_ERROR = "Error: Processing can only read its own TIFF files.";
 
   /**
    * Format for this image, one of RGB, ARGB or ALPHA.
@@ -89,12 +79,11 @@ public class PImage implements PConstants, Cloneable {
    * meaning if the image is 100 x 100 pixels, there will be 10,000 values and if
    * the window is 200 x 300 pixels, there will be 60,000 values. <br />
    * <br />
-   * Before accessing this array, the data must loaded with the
+   * Before accessing this array, the data must be loaded with the
    * <b>loadPixels()</b> method. Failure to do so may result in a
    * NullPointerException. After the array data has been modified, the
    * <b>updatePixels()</b> method must be run to update the content of the display
    * window.
-   *
    *
    * @webref image:pixels
    * @webBrief Array containing the color of every pixel in the image
@@ -178,7 +167,6 @@ public class PImage implements PConstants, Cloneable {
 
   /**
    * ( begin auto-generated from PImage.xml )
-   *
    * Datatype for storing images. Processing can display <b>.gif</b>,
    * <b>.jpg</b>, <b>.tga</b>, and <b>.png</b> images. Images may be
    * displayed in 2D and 3D space. Before an image is used, it must be loaded
@@ -249,7 +237,7 @@ public class PImage implements PConstants, Cloneable {
 
   /**
    * Function to be used by subclasses of PImage to init later than
-   * at the constructor, or re-init later when things changes.
+   * at the constructor, or re-init later when things change.
    * Used by Capture and Movie classes (and perhaps others),
    * because the width/height will not be known when super() is called.
    * (Leave this public so that other libraries can do the same.)
@@ -264,6 +252,12 @@ public class PImage implements PConstants, Cloneable {
     pixelHeight = height * pixelDensity;
 
     pixels = new int[pixelWidth * pixelHeight];
+
+    if (format == RGB) {
+      // Initialize the pixels as opaque, because Java2D gets quirky otherwise.
+      // https://github.com/processing/processing4/issues/388
+      Arrays.fill(pixels, 0xFF000000);
+    }
   }
 
 
@@ -288,6 +282,7 @@ public class PImage implements PConstants, Cloneable {
   public void checkAlpha() {
     if (pixels == null) return;
 
+    //noinspection ForLoopReplaceableByForEach
     for (int i = 0; i < pixels.length; i++) {
       // since transparency is often at corners, hopefully this
       // will find a non-transparent pixel quickly and exit
@@ -392,12 +387,10 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   *
    * Loads the pixel data of the current display window into the <b>pixels[]</b>
    * array. This function must always be called before reading from or writing to
    * <b>pixels[]</b>. Subsequent changes to the display window will not be
    * reflected in <b>pixels</b> until <b>loadPixels()</b> is called again.
-   *
    *
    * <h3>Advanced</h3> Call this when you want to mess with the pixels[] array.
    * <p/>
@@ -547,8 +540,8 @@ public class PImage implements PConstants, Cloneable {
    * <b>y</b> parameters define the coordinates for the upper-left corner of
    * the image, regardless of the current <b>imageMode()</b>.<br />
    * <br />
-   * If the pixel requested is outside of the image window, black is
-   * returned. The numbers returned are scaled according to the current color
+   * If the pixel requested is outside the image window, black is returned.
+   * The numbers returned are scaled according to the current color
    * ranges, but only RGB values are returned by this function. For example,
    * even though you may have drawn a shape with <b>colorMode(HSB)</b>, the
    * numbers returned will be in RGB format.<br />
@@ -558,9 +551,8 @@ public class PImage implements PConstants, Cloneable {
    * equivalent statement to <b>get(x, y)</b> using <b>pixels[]</b> is
    * <b>pixels[y*width+x]</b>. See the reference for <b>pixels[]</b> for more information.
    *
-   *
    * <h3>Advanced</h3>
-   * Returns an ARGB "color" type (a packed 32 bit int with the color.
+   * Returns an ARGB "color" type (a packed 32-bit int) with the color.
    * If the coordinate is outside the image, zero is returned
    * (black, but completely transparent).
    * <P>
@@ -589,17 +581,12 @@ public class PImage implements PConstants, Cloneable {
   public int get(int x, int y) {
     if ((x < 0) || (y < 0) || (x >= pixelWidth) || (y >= pixelHeight)) return 0;
 
-    switch (format) {
-      case RGB:
-        return pixels[y*pixelWidth + x] | 0xff000000;
-
-      case ARGB:
-        return pixels[y*pixelWidth + x];
-
-      case ALPHA:
-        return (pixels[y*pixelWidth + x] << 24) | 0xffffff;
-    }
-    return 0;
+    return switch (format) {
+      case RGB -> pixels[y * pixelWidth + x] | 0xff000000;
+      case ARGB -> pixels[y * pixelWidth + x];
+      case ALPHA -> (pixels[y * pixelWidth + x] << 24) | 0xffffff;
+      default -> 0;
+    };
   }
 
 
@@ -665,7 +652,7 @@ public class PImage implements PConstants, Cloneable {
    */
   public PImage get() {
     // Formerly this used clone(), which caused memory problems.
-    // http://code.google.com/p/processing/issues/detail?id=42
+    // https://github.com/processing/processing/issues/81
     return get(0, 0, pixelWidth, pixelHeight);
   }
 
@@ -712,7 +699,6 @@ public class PImage implements PConstants, Cloneable {
    * is <b>pixels[y*width+x] = #000000</b>. See the reference for
    * <b>pixels[]</b> for more information.
    *
-   *
    * @webref image:pixels
    * @webBrief Writes a color to any pixel or writes an image into another
    * @usage web_application
@@ -725,7 +711,13 @@ public class PImage implements PConstants, Cloneable {
    */
   public void set(int x, int y, int c) {
     if ((x < 0) || (y < 0) || (x >= pixelWidth) || (y >= pixelHeight)) return;
-    pixels[y*pixelWidth + x] = c;
+
+    switch (format) {
+      case RGB -> pixels[y * pixelWidth + x] = 0xff000000 | c;
+      case ARGB -> pixels[y * pixelWidth + x] = c;
+      case ALPHA -> pixels[y * pixelWidth + x] = ((c & 0xff) << 24) | 0xffffff;
+    }
+
     updatePixels(x, y, 1, 1);  // slow...
   }
 
@@ -826,7 +818,6 @@ public class PImage implements PConstants, Cloneable {
    * creating dynamically generated alpha masks. This array must be of the
    * same length as the target image's pixels array and should contain only
    * grayscale data of values between 0-255.
-   *
    *
    * <h3>Advanced</h3>
    *
@@ -931,14 +922,13 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   *
    * Filters the image as defined by one of the following modes:<br />
    * <br />
    * THRESHOLD<br />
-   * Converts the image to black and white pixels depending if they are above or
-   * below the threshold defined by the level parameter. The parameter must be
-   * between 0.0 (black) and 1.0 (white). If no level is specified, 0.5 is
-   * used.<br />
+   * Converts the image to black and white pixels depending on if they
+   * are above or below the threshold defined by the level parameter.
+   * The parameter must be between 0.0 (black) and 1.0 (white).
+   * If no level is specified, 0.5 is used.<br />
    * <br />
    * GRAY<br />
    * Converts any colors in the image to grayscale equivalents. No parameter is
@@ -965,7 +955,6 @@ public class PImage implements PConstants, Cloneable {
    * <br />
    * DILATE<br />
    * Increases the light areas. No parameter is used.
-   *
    *
    * <h3>Advanced</h3> Method to apply a variety of basic filters to this image.
    * <P>
@@ -1484,7 +1473,6 @@ public class PImage implements PConstants, Cloneable {
 
 
   /**
-   *
    * Copies a region of pixels from one image into another. If the source and
    * destination regions aren't the same size, it will automatically resize
    * source pixels to fit the specified target region. No alpha information
@@ -1492,7 +1480,6 @@ public class PImage implements PConstants, Cloneable {
    * set, it will be copied as well.
    * <br /><br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies the entire image
@@ -1610,30 +1597,24 @@ public class PImage implements PConstants, Cloneable {
    * @see PApplet#color(float, float, float, float)
    */
   static public int blendColor(int c1, int c2, int mode) {  // ignore
-    switch (mode) {
-    case REPLACE:    return c2;
-    case BLEND:      return blend_blend(c1, c2);
-
-    case ADD:        return blend_add_pin(c1, c2);
-    case SUBTRACT:   return blend_sub_pin(c1, c2);
-
-    case LIGHTEST:   return blend_lightest(c1, c2);
-    case DARKEST:    return blend_darkest(c1, c2);
-
-    case DIFFERENCE: return blend_difference(c1, c2);
-    case EXCLUSION:  return blend_exclusion(c1, c2);
-
-    case MULTIPLY:   return blend_multiply(c1, c2);
-    case SCREEN:     return blend_screen(c1, c2);
-
-    case HARD_LIGHT: return blend_hard_light(c1, c2);
-    case SOFT_LIGHT: return blend_soft_light(c1, c2);
-    case OVERLAY:    return blend_overlay(c1, c2);
-
-    case DODGE:      return blend_dodge(c1, c2);
-    case BURN:       return blend_burn(c1, c2);
-    }
-    return 0;
+    return switch (mode) {
+      case REPLACE -> c2;
+      case BLEND -> blend_blend(c1, c2);
+      case ADD -> blend_add_pin(c1, c2);
+      case SUBTRACT -> blend_sub_pin(c1, c2);
+      case LIGHTEST -> blend_lightest(c1, c2);
+      case DARKEST -> blend_darkest(c1, c2);
+      case DIFFERENCE -> blend_difference(c1, c2);
+      case EXCLUSION -> blend_exclusion(c1, c2);
+      case MULTIPLY -> blend_multiply(c1, c2);
+      case SCREEN -> blend_screen(c1, c2);
+      case HARD_LIGHT -> blend_hard_light(c1, c2);
+      case SOFT_LIGHT -> blend_soft_light(c1, c2);
+      case OVERLAY -> blend_overlay(c1, c2);
+      case DODGE -> blend_dodge(c1, c2);
+      case BURN -> blend_burn(c1, c2);
+      default -> 0;
+    };
   }
 
 
@@ -1683,14 +1664,13 @@ public class PImage implements PConstants, Cloneable {
    * BURN - Darker areas are applied, increasing contrast, ignores lights.
    * Called "Color Burn" in Illustrator and Photoshop.<br />
    * <br />
-   * All modes use the alpha information (highest byte) of source image
+   * All modes use the alpha information (the highest byte) of source image
    * pixels as the blending factor. If the source and destination regions are
    * different sizes, the image will be automatically resized to match the
    * destination size. If the <b>srcImg</b> parameter is not used, the
    * display window is used as the source image.<br />
    * <br />
    * As of release 0149, this function ignores <b>imageMode()</b>.
-   *
    *
    * @webref image:pixels
    * @webBrief Copies a pixel or rectangle of pixels using different blending modes
@@ -2380,7 +2360,7 @@ public class PImage implements PConstants, Cloneable {
    * channel in the upper 16 bits and BLUE channel in the lower 16 bits. This
    * decreases the number of operations per pixel and thus makes things faster.
    *
-   * Some of the modes are hand tweaked (various +1s etc.) to be more accurate
+   * Some modes are hand tweaked (various +1s etc.) to be more accurate
    * and to produce correct values in extremes. Below is a sketch you can use
    * to check any blending function for
    *
@@ -2692,10 +2672,11 @@ int testFunction(int dst, int src) {
 
   /**
    * Hard Light
-   * O = OVERLAY(S, D)
+   * <pre>O = OVERLAY(S, D)
    *
    * O = 2 * MULTIPLY(D, S) = 2DS                   for S < 0.5
    * O = 2 * SCREEN(D, S) - 1 = 2(S + D - DS) - 1   otherwise
+   * </pre>
    */
   private static int blend_hard_light(int dst, int src) {
     int a = src >>> 24;
@@ -2820,99 +2801,6 @@ int testFunction(int dst, int src) {
   //////////////////////////////////////////////////////////////
 
   // FILE I/O
-
-
-  static public PImage loadTIFF(InputStream input) {  // ignore
-    byte[] tiff = PApplet.loadBytes(input);
-    if (tiff == null) {
-      return null;
-    }
-
-    if ((tiff[42] != tiff[102]) ||  // width/height in both places
-        (tiff[43] != tiff[103])) {
-      System.err.println(TIFF_ERROR);
-      return null;
-    }
-
-    int width =
-      ((tiff[30] & 0xff) << 8) | (tiff[31] & 0xff);
-    int height =
-      ((tiff[42] & 0xff) << 8) | (tiff[43] & 0xff);
-
-    int count =
-      ((tiff[114] & 0xff) << 24) |
-      ((tiff[115] & 0xff) << 16) |
-      ((tiff[116] & 0xff) << 8) |
-      (tiff[117] & 0xff);
-    if (count != width * height * 3) {
-      System.err.println(TIFF_ERROR + " (" + width + ", " + height +")");
-      return null;
-    }
-
-    // check the rest of the header
-    for (int i = 0; i < TIFF_HEADER.length; i++) {
-      if ((i == 30) || (i == 31) || (i == 42) || (i == 43) ||
-          (i == 102) || (i == 103) ||
-          (i == 114) || (i == 115) || (i == 116) || (i == 117)) continue;
-
-      if (tiff[i] != TIFF_HEADER[i]) {
-        System.err.println(TIFF_ERROR + " (" + i + ")");
-        return null;
-      }
-    }
-
-    PImage outgoing = new PImage(width, height, RGB);
-    int index = 768;
-    count /= 3;
-    for (int i = 0; i < count; i++) {
-      outgoing.pixels[i] =
-        0xFF000000 |
-        (tiff[index++] & 0xff) << 16 |
-        (tiff[index++] & 0xff) << 8 |
-        (tiff[index++] & 0xff);
-    }
-    return outgoing;
-  }
-
-  protected boolean saveTIFF(OutputStream output) {
-    /*
-    // shutting off this warning, people can figure this out themselves
-    if (format != RGB) {
-      System.err.println("Warning: only RGB information is saved with " +
-                         ".tif files. Use .tga or .png for ARGB images and others.");
-    }
-    */
-    try {
-      byte[] tiff = new byte[768];
-      System.arraycopy(TIFF_HEADER, 0, tiff, 0, TIFF_HEADER.length);
-
-      tiff[30] = (byte) ((pixelWidth >> 8) & 0xff);
-      tiff[31] = (byte) ((pixelWidth) & 0xff);
-      tiff[42] = tiff[102] = (byte) ((pixelHeight >> 8) & 0xff);
-      tiff[43] = tiff[103] = (byte) ((pixelHeight) & 0xff);
-
-      int count = pixelWidth*pixelHeight*3;
-      tiff[114] = (byte) ((count >> 24) & 0xff);
-      tiff[115] = (byte) ((count >> 16) & 0xff);
-      tiff[116] = (byte) ((count >> 8) & 0xff);
-      tiff[117] = (byte) ((count) & 0xff);
-
-      // spew the header to the disk
-      output.write(tiff);
-
-      for (int i = 0; i < pixels.length; i++) {
-        output.write((pixels[i] >> 16) & 0xff);
-        output.write((pixels[i] >> 8) & 0xff);
-        output.write(pixels[i] & 0xff);
-      }
-      output.flush();
-      return true;
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    return false;
-  }
 
 
   /**
@@ -3054,21 +2942,14 @@ int testFunction(int dst, int src) {
         boolean isRLE = (num & 0x80) != 0;
         if (isRLE) {
           num -= 127;  // (num & 0x7F) + 1
-          int pixel = 0;
-          switch (format) {
-          case ALPHA:
-            pixel = input.read();
-            break;
-          case RGB:
-            pixel = 0xFF000000 |
+          int pixel = switch (format) {
+            case ALPHA -> input.read();
+            case RGB -> 0xFF000000 |
               input.read() | (input.read() << 8) | (input.read() << 16);
-            //(is.read() << 16) | (is.read() << 8) | is.read();
-            break;
-          case ARGB:
-            pixel = input.read() |
+            case ARGB -> input.read() |
               (input.read() << 8) | (input.read() << 16) | (input.read() << 24);
-            break;
-          }
+            default -> 0;
+          };
           for (int i = 0; i < num; i++) {
             px[index++] = pixel;
             if (index == px.length) break;
@@ -3278,7 +3159,7 @@ int testFunction(int dst, int src) {
    * may be opened by selecting "Show sketch folder" from the "Sketch" menu.
    * <br /><br />To save an image created within the code, rather
    * than through loading, it's necessary to make the image with the
-   * <b>createImage()</b> function so it is aware of the location of the
+   * <b>createImage()</b> function, so it is aware of the location of the
    * program and can therefore save the file to the right place. See the
    * <b>createImage()</b> reference for more information.
    *
@@ -3299,13 +3180,12 @@ int testFunction(int dst, int src) {
    * To get a list of the supported formats for writing, use: <BR>
    * <TT>println(javax.imageio.ImageIO.getReaderFormatNames())</TT>
    * <p>
-   * To use the original built-in image writers, use .tga or .tif as the
-   * extension, or don't include an extension. When no extension is used,
-   * the extension .tif will be added to the file name.
+   * In Processing 4.0 beta 5, the old (and sometimes buggy) TIFF
+   * reader/writer was removed, so ImageIO is used for TIFF files.
    * <p>
-   * The ImageIO API claims to support wbmp files, however they probably
-   * require a black and white image. Basic testing produced a zero-length
-   * file with no error.
+   * Also, files must have an extension: we're no longer adding .tif to
+   * files with no extension, because that can lead to confusing results,
+   * and the behavior is inconsistent with the rest of the API.
    *
    * @webref pimage:method
    * @webBrief Saves the image to a TIFF, TARGA, PNG, or JPEG file
@@ -3313,58 +3193,27 @@ int testFunction(int dst, int src) {
    * @param filename a sequence of letters and numbers
    */
   public boolean save(String filename) {  // ignore
-    boolean success;
+    String path;
 
     if (parent != null) {
       // use savePath(), so that the intermediate directories are created
-      filename = parent.savePath(filename);
+      path = parent.savePath(filename);
 
     } else {
       File file = new File(filename);
       if (file.isAbsolute()) {
         // make sure that the intermediate folders have been created
         PApplet.createPath(file);
+        path = file.getAbsolutePath();
       } else {
         String msg =
-            "PImage.save() requires an absolute path. " +
-                "Use createImage(), or pass savePath() to save().";
+          "PImage.save() requires an absolute path. " +
+          "Use createImage(), or pass savePath() to save().";
         PGraphics.showException(msg);
+        return false;
       }
     }
-
-    // Make sure the pixel data is ready to go
-    loadPixels();
-
-    try {
-      final String lower = filename.toLowerCase();
-
-      if (saveImpl(filename)) {
-        return true;
-      }
-
-      if (lower.endsWith(".tga")) {
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-        success = saveTGA(os); //, pixels, width, height, format);
-        os.close();
-
-      } else {  // fall-through case is TIFF
-        // add a default extension and save uncompressed
-        // TODO this is the only place in the api that we mess w/ file names,
-        // and while arguably useful, seems like a weird precedent [fry 200816]
-        if (!lower.endsWith(".tif") && !lower.endsWith(".tiff")) {
-          filename += ".tif";
-        }
-        OutputStream os = new BufferedOutputStream(new FileOutputStream(filename), 32768);
-        success = saveTIFF(os); //, pixels, width, height);
-        os.close();
-      }
-
-    } catch (IOException e) {
-      System.err.println("Error while saving image.");
-      e.printStackTrace();
-      success = false;
-    }
-    return success;
+    return saveImpl(path);
   }
 
 
@@ -3376,11 +3225,28 @@ int testFunction(int dst, int src) {
    * @param path must be a full path (not relative or simply a filename)
    */
   protected boolean saveImpl(String path) {
-    // TODO Imperfect/temporary solution for current 4.x releases
-    // https://github.com/processing/processing4/wiki/Exorcising-AWT
-    //if (!PApplet.disableAWT) {  // TODO necessary? will this trigger NEWT?
-    return ShimAWT.saveImage(this, path);
-    //}
-    //return false;
+    // Make sure the pixel data is ready to go
+    loadPixels();
+    boolean success;
+
+    try {
+      final String lower = path.toLowerCase();
+
+      if (lower.endsWith(".tga")) {
+        OutputStream os = new BufferedOutputStream(new FileOutputStream(path), 32768);
+        success = saveTGA(os); //, pixels, width, height, format);
+        os.close();
+
+      } else {
+        // TODO Imperfect, possibly temporary solution for 4.x releases
+        //      https://github.com/processing/processing4/wiki/Exorcising-AWT
+        success = ShimAWT.saveImage(this, path);
+      }
+    } catch (IOException e) {
+      System.err.println("Error while saving " + path);
+      e.printStackTrace();
+      success = false;
+    }
+    return success;
   }
 }

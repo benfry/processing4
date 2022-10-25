@@ -25,6 +25,8 @@ package processing.app;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.*;
 
 import processing.core.PApplet;
@@ -53,7 +55,7 @@ public class Util {
   static public byte[] loadBytesRaw(File file) throws IOException {
     int size = (int) file.length();
     FileInputStream input = new FileInputStream(file);
-    byte buffer[] = new byte[size];
+    byte[] buffer = new byte[size];
     int offset = 0;
     int bytesRead;
     while ((bytesRead = input.read(buffer, offset, size-offset)) != -1) {
@@ -61,7 +63,6 @@ public class Util {
       if (bytesRead == 0) break;
     }
     input.close();  // weren't properly being closed
-    input = null;
     return buffer;
   }
 
@@ -71,13 +72,15 @@ public class Util {
    * that are separated by = and ignore comments with #.
    * Changed in 3.x to return null (rather than empty hash) if no file,
    * and changed return type to StringDict instead of Map or HashMap.
+   * Changed in 4.0 beta 9 to only use # for comments at beginning of
+   * line, otherwise it cannot parse hex color entries.
    */
   static public StringDict readSettings(File inputFile) {
     if (!inputFile.exists()) {
       Messages.err(inputFile + " does not exist inside readSettings()");
       return null;
     }
-    String lines[] = PApplet.loadStrings(inputFile);
+    String[] lines = PApplet.loadStrings(inputFile);
     if (lines == null) {
       System.err.println("Could not read " + inputFile);
       return null;
@@ -89,7 +92,9 @@ public class Util {
   /**
    * Parse a String array that contains attribute/value pairs separated
    * by = (the equals sign). The # (hash) symbol is used to denote comments.
-   * Comments can be anywhere on a line. Blank lines are ignored.
+   * Changed in 4.0 beta 9 to only use # for comments at beginning of line,
+   * otherwise it cannot parse hex color entries. Blank lines are ignored.
+   * <p>
    * In 3.0a6, no longer taking a blank HashMap as param; no cases in the main
    * PDE code of adding to a (Hash)Map. Also returning the Map instead of void.
    * Both changes modify the method signature, but this was only used by the
@@ -98,15 +103,10 @@ public class Util {
   static public StringDict readSettings(String filename, String[] lines) {
     StringDict settings = new StringDict();
     for (String line : lines) {
-      // Remove comments
-      int commentMarker = line.indexOf('#');
-      if (commentMarker != -1) {
-        line = line.substring(0, commentMarker);
-      }
       // Remove extra whitespace (including the x00A0 and xFEFF)
       line = PApplet.trim(line);
 
-      if (line.length() != 0) {
+      if (line.length() != 0 && line.charAt(0) != '#') {
         int equals = line.indexOf('=');
         if (equals == -1) {
           if (filename != null) {
@@ -136,13 +136,13 @@ public class Util {
       to.write(buffer, 0, bytesRead);
     }
     from.close();
-    from = null;
 
     to.flush();
     to.close();
-    to = null;
 
+    //noinspection ResultOfMethodCallIgnored
     targetFile.setLastModified(sourceFile.lastModified());
+    //noinspection ResultOfMethodCallIgnored
     targetFile.setExecutable(sourceFile.canExecute());
   }
 
@@ -151,10 +151,14 @@ public class Util {
    * Grab the contents of a file as a string. Connects lines with \n,
    * even if the input file used \r\n.
    */
-  static public String loadFile(File file) throws IOException {
-    String[] contents = PApplet.loadStrings(file);
-    if (contents == null) return null;
-    return PApplet.join(contents, "\n");
+  static public String loadFile(File file) {
+    if (file != null && file.exists()) {
+      String[] contents = PApplet.loadStrings(file);
+      if (contents != null) {
+        return PApplet.join(contents, "\n");
+      }
+    }
+    return null;
   }
 
 
@@ -170,14 +174,13 @@ public class Util {
     File temp = File.createTempFile(file.getName(), null, file.getParentFile());
     try {
       // fix from cjwant to prevent symlinks from being destroyed.
-      File canon = file.getCanonicalFile();
-      // assign the var as second step since previous line may throw exception
-      file = canon;
+      file = file.getCanonicalFile();
+
     } catch (IOException e) {
       throw new IOException("Could not resolve canonical representation of " +
                             file.getAbsolutePath());
     }
-    // Could use saveStrings(), but the we wouldn't be able to checkError()
+    // Could use saveStrings(), but we wouldn't be able to checkError()
     PrintWriter writer = PApplet.createWriter(temp);
     for (String line : lines) {
       writer.println(line);
@@ -208,7 +211,7 @@ public class Util {
    * Create a temporary folder by using the createTempFile() mechanism,
    * deleting the file it creates, and making a folder using the location
    * that was provided.
-   *
+   * <p>
    * Unlike createTempFile(), there is no minimum size for prefix. If
    * prefix is less than 3 characters, the remaining characters will be
    * filled with underscores
@@ -216,15 +219,37 @@ public class Util {
   static public File createTempFolder(String prefix, String suffix,
                                       File directory) throws IOException {
     int fillChars = 3 - prefix.length();
-    for (int i = 0; i < fillChars; i++) {
-      prefix += '_';
+    if (fillChars > 0) {
+      prefix += "_".repeat(fillChars);
+    }
+    if (directory == null) {
+      directory = getProcessingTemp();
     }
     File folder = File.createTempFile(prefix, suffix, directory);
     // Now delete that file and create a folder in its place
-    folder.delete();
-    folder.mkdirs();
+    if (!folder.delete()) {
+      throw new IOException("Could not remove " + folder +
+        " to create a temporary folder");
+    }
+    if (!folder.mkdirs()) {
+      throw new IOException("Unable to create " + folder +
+        ", please check permissions for " + folder.getParentFile());
+    }
     // And send the folder back to your friends
     return folder;
+  }
+
+
+  static public File getProcessingTemp() throws IOException {
+    String tmpDir = System.getProperty("java.io.tmpdir");
+    File directory = new File(tmpDir, "processing");
+    if (!directory.exists()) {
+      if (!directory.mkdirs()) {
+        throw new IOException("Could not create temp directory. " +
+          "Check that you have permissions to write to " + tmpDir);
+      }
+    }
+    return directory;
   }
 
 
@@ -239,28 +264,35 @@ public class Util {
       final String urDum = "source and target directories are identical";
       throw new IllegalArgumentException(urDum);
     }
-    targetDir.mkdirs();
-    String files[] = sourceDir.list();
-    for (int i = 0; i < files.length; i++) {
-      // Ignore dot files (.DS_Store), dot folders (.svn) while copying
-      if (files[i].charAt(0) == '.') continue;
-      //if (files[i].equals(".") || files[i].equals("..")) continue;
-      File source = new File(sourceDir, files[i]);
-      File target = new File(targetDir, files[i]);
-      if (source.isDirectory()) {
-        //target.mkdirs();
-        copyDir(source, target);
-        target.setLastModified(source.lastModified());
-      } else {
-        copyFile(source, target);
+    if (!targetDir.exists() && !targetDir.mkdirs()) {
+      throw new IOException("Could not create " + targetDir);
+    }
+    String[] filenames = sourceDir.list();
+    if (filenames != null) {
+      for (String filename : filenames) {
+        // Ignore dot files (.DS_Store), dot folders (.svn) while copying
+        if (filename.charAt(0) != '.') {
+          File source = new File(sourceDir, filename);
+          File target = new File(targetDir, filename);
+          if (source.isDirectory()) {
+            //target.mkdirs();
+            copyDir(source, target);
+            //noinspection ResultOfMethodCallIgnored
+            target.setLastModified(source.lastModified());
+          } else {
+            copyFile(source, target);
+          }
+        }
       }
+    } else {
+      throw new IOException("Could not read " + sourceDir);
     }
   }
 
 
   static public void copyDirNative(File sourceDir,
                                    File targetDir) throws IOException {
-    Process process = null;
+    Process process;
     if (Platform.isMacOS() || Platform.isLinux()) {
       process = Runtime.getRuntime().exec(new String[] {
         "cp", "-a", sourceDir.getAbsolutePath(), targetDir.getAbsolutePath()
@@ -280,37 +312,20 @@ public class Util {
   }
 
 
-//  /**
-//   * Delete a file or directory in a platform-specific manner. Removes a File
-//   * object (a file or directory) from the system by placing it in the Trash
-//   * or Recycle Bin (if available) or simply deleting it (if not).
-//   *
-//   * When the file/folder is on another file system, it may simply be removed
-//   * immediately, without additional warning. So only use this if you want to,
-//   * you know, "delete" the subject in question.
-//   *
-//   * NOTE: Not yet tested nor ready for prime-time.
-//   *
-//   * @param file the victim (a directory or individual file)
-//   * @return true if all ends well
-//   * @throws IOException what went wrong
-//   */
-//  static public boolean platformDelete(File file) throws IOException {
-//    return Base.getPlatform().deleteFile(file);
-//  }
-
-
   /**
    * Remove all files in a directory and the directory itself.
    * Prints error messages with failed filenames. Does not follow symlinks.
+   * Use Platform.deleteFile() instead, which first attempts to use
+   * the Trash or Recycle Bin, out of an abundance of caution.
    */
   static public boolean removeDir(File dir) {
     return removeDir(dir, true);
   }
 
+
   /**
    * Remove all files in a directory and the directory itself.
-   * Optinally prints error messages with failed filenames.
+   * Optionally, prints error messages with failed filenames.
    * Does not follow symlinks.
    */
   static public boolean removeDir(File dir, boolean printErrorMessages) {
@@ -358,21 +373,25 @@ public class Util {
    * Note that the function calls itself recursively.
    */
   static public long calcFolderSize(File folder) {
-    int size = 0;
+    long size = 0;
 
-    String files[] = folder.list();
+    String[] filenames = folder.list();
     // null if folder doesn't exist, happens when deleting sketch
-    if (files == null) return -1;
+    if (filenames == null) return -1;
 
-    for (int i = 0; i < files.length; i++) {
-      if (files[i].equals(".") ||
-          files[i].equals("..") ||
-          files[i].equals(".DS_Store")) continue;
-      File fella = new File(folder, files[i]);
-      if (fella.isDirectory()) {
-        size += calcFolderSize(fella);
-      } else {
-        size += (int) fella.length();
+    for (String file : filenames) {
+      if (!file.equals(".") && !file.equals("..") && !file.equals(".DS_Store")) {
+        File fella = new File(folder, file);
+        if (fella.isDirectory()) {
+          long subfolderSize = calcFolderSize(fella);
+          if (subfolderSize == -1) {
+            return -1;
+          } else {
+            size += subfolderSize;
+          }
+        } else {
+          size += fella.length();
+        }
       }
     }
     return size;
@@ -410,7 +429,7 @@ public class Util {
       }
       return outgoing;
     }
-    return list.array();
+    return list.toArray();
   }
 
 
@@ -440,13 +459,10 @@ public class Util {
    * @return a list of .jar and .zip files in that folder
    */
   static public File[] listJarFiles(File folder) {
-    return folder.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return (!name.startsWith(".") &&
-                (name.toLowerCase().endsWith(".jar") ||
-                 name.toLowerCase().endsWith(".zip")));
-      }
-    });
+    return folder.listFiles((dir, name) ->
+      (!name.startsWith(".") &&
+       (name.toLowerCase().endsWith(".jar") ||
+        name.toLowerCase().endsWith(".zip"))));
   }
 
 
@@ -456,12 +472,12 @@ public class Util {
   /**
    * Given a folder, return a list of absolute paths to all jar or zip files
    * inside that folder, separated by pathSeparatorChar.
-   *
+   * <p>
    * This will prepend a colon (or whatever the path separator is)
    * so that it can be directly appended to another path string.
-   *
+   * <p>
    * As of 0136, this will no longer add the root folder as well.
-   *
+   * <p>
    * This function doesn't bother checking to see if there are any .class
    * files in the folder or within a subfolder.
    */
@@ -480,17 +496,19 @@ public class Util {
         path += File.separator;
       }
 
-      String list[] = folder.list();
-      for (int i = 0; i < list.length; i++) {
-        // Skip . and ._ files. Prior to 0125p3, .jar files that had
-        // OS X AppleDouble files associated would cause trouble.
-        if (list[i].startsWith(".")) continue;
-
-        if (list[i].toLowerCase().endsWith(".jar") ||
-            list[i].toLowerCase().endsWith(".zip")) {
-          sb.append(sep);
-          sb.append(path);
-          sb.append(list[i]);
+      String[] list = folder.list();
+      if (list != null) {
+        for (String item : list) {
+          // Skip . and ._ files. Prior to 0125p3, .jar files that had
+          // OS X AppleDouble files associated would cause trouble.
+          if (!item.startsWith(".")) {
+            if (item.toLowerCase().endsWith(".jar") ||
+              item.toLowerCase().endsWith(".zip")) {
+              sb.append(sep);
+              sb.append(path);
+              sb.append(item);
+            }
+          }
         }
       }
     } catch (IOException e) {
@@ -511,25 +529,25 @@ public class Util {
   static public StringList packageListFromClassPath(String path) {
 //    Map<String, Object> map = new HashMap<String, Object>();
     StringList list = new StringList();
-    String pieces[] =
+    String[] pieces =
       PApplet.split(path, File.pathSeparatorChar);
 
-    for (int i = 0; i < pieces.length; i++) {
+    for (String piece : pieces) {
       //System.out.println("checking piece '" + pieces[i] + "'");
-      if (pieces[i].length() == 0) continue;
+      if (piece.length() != 0) {
+        if (piece.toLowerCase().endsWith(".jar") ||
+          piece.toLowerCase().endsWith(".zip")) {
+          //System.out.println("checking " + pieces[i]);
+          packageListFromZip(piece, list);
 
-      if (pieces[i].toLowerCase().endsWith(".jar") ||
-          pieces[i].toLowerCase().endsWith(".zip")) {
-        //System.out.println("checking " + pieces[i]);
-        packageListFromZip(pieces[i], list);
-
-      } else {  // it's another type of file or directory
-        File dir = new File(pieces[i]);
-        if (dir.exists() && dir.isDirectory()) {
-          packageListFromFolder(dir, null, list);
-          //importCount = magicImportsRecursive(dir, null,
-          //                                  map);
-                                              //imports, importCount);
+        } else {  // it's another type of file or directory
+          File dir = new File(piece);
+          if (dir.exists() && dir.isDirectory()) {
+            packageListFromFolder(dir, null, list);
+            //importCount = magicImportsRecursive(dir, null,
+            //                                  map);
+            //imports, importCount);
+          }
         }
       }
     }
@@ -586,30 +604,26 @@ public class Util {
    */
   static private void packageListFromFolder(File dir, String sofar,
                                             StringList list) {
-//                                            Map<String, Object> map) {
     boolean foundClass = false;
-    String files[] = dir.list();
+    String[] filenames = dir.list();
+    if (filenames != null) {
+      for (String filename : filenames) {
+        if (filename.equals(".") || filename.equals("..")) continue;
 
-    for (int i = 0; i < files.length; i++) {
-      if (files[i].equals(".") || files[i].equals("..")) continue;
-
-      File sub = new File(dir, files[i]);
-      if (sub.isDirectory()) {
-        String nowfar =
-          (sofar == null) ? files[i] : (sofar + "." + files[i]);
-        packageListFromFolder(sub, nowfar, list);
-        //System.out.println(nowfar);
-        //imports[importCount++] = nowfar;
-        //importCount = magicImportsRecursive(sub, nowfar,
-        //                                  imports, importCount);
-      } else if (!foundClass) {  // if no classes found in this folder yet
-        if (files[i].endsWith(".class")) {
-          //System.out.println("unique class: " + files[i] + " for " + sofar);
-//          map.put(sofar, new Object());
-          list.appendUnique(sofar);
-          foundClass = true;
+        File sub = new File(dir, filename);
+        if (sub.isDirectory()) {
+          String nowfar =
+            (sofar == null) ? filename : (sofar + "." + filename);
+          packageListFromFolder(sub, nowfar, list);
+        } else if (!foundClass) {  // if no classes found in this folder yet
+          if (filename.endsWith(".class")) {
+            list.appendUnique(sofar);
+            foundClass = true;
+          }
         }
       }
+    } else {
+      System.err.println("Could not read " + dir);
     }
   }
 
@@ -623,7 +637,7 @@ public class Util {
       FileInputStream fis = new FileInputStream(zipFile);
       CheckedInputStream checksum = new CheckedInputStream(fis, new Adler32());
       ZipInputStream zis = new ZipInputStream(new BufferedInputStream(checksum));
-      ZipEntry entry = null;
+      ZipEntry entry;
       while ((entry = zis.getNextEntry()) != null) {
         final String name = entry.getName();
         if (!name.startsWith(("__MACOSX"))) {
@@ -650,7 +664,7 @@ public class Util {
   static protected void unzipEntry(ZipInputStream zin, File f) throws IOException {
     FileOutputStream out = new FileOutputStream(f);
     byte[] b = new byte[512];
-    int len = 0;
+    int len;
     while ((len = zin.read(b)) != -1) {
       out.write(b, 0, len);
     }
@@ -668,10 +682,73 @@ public class Util {
   }
 
 
-  static public final boolean containsNonASCII(String what) {
+  static public boolean containsNonASCII(String what) {
     for (char c : what.toCharArray()) {
       if (c < 32 || c > 127) return true;
     }
     return false;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static public String sanitizeHtmlTags(String str) {
+    return str.replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;");
+  }
+
+
+  /**
+   * This has a [link](http://example.com/) in [it](http://example.org/).
+   * <p>
+   * Becomes...
+   * <p>
+   * This has a <a href="http://example.com/">link</a> in <a
+   * href="http://example.org/">it</a>.
+   */
+  static public String markDownLinksToHtml(String str) {
+    Pattern p = Pattern.compile("\\[(.*?)]\\((.*?)\\)");
+    Matcher m = p.matcher(str);
+
+    StringBuilder sb = new StringBuilder();
+
+    int start = 0;
+    while (m.find(start)) {
+      sb.append(str, start, m.start());
+
+      String text = m.group(1);
+      String url = m.group(2);
+
+      sb.append("<a href=\"");
+      sb.append(url);
+      sb.append("\">");
+      sb.append(text);
+      sb.append("</a>");
+
+      start = m.end();
+    }
+    sb.append(str.substring(start));
+    return sb.toString();
+  }
+
+
+  static public String removeMarkDownLinks(String str) {
+    StringBuilder name = new StringBuilder();
+    if (str != null) {
+      int parentheses = 0;
+      for (char c : str.toCharArray()) {
+        if (c == '[' || c == ']') {
+          // pass
+        } else if (c == '(') {
+          parentheses++;
+        } else if (c == ')') {
+          parentheses--;
+        } else if (parentheses == 0) {
+          name.append(c);
+        }
+      }
+    }
+    return name.toString();
   }
 }

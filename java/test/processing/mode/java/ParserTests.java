@@ -11,8 +11,10 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
+import processing.app.Preferences;
 import processing.app.SketchException;
 import processing.mode.java.preproc.PreprocessorResult;
 import processing.mode.java.preproc.PdePreprocessIssueException;
@@ -23,6 +25,11 @@ public class ParserTests {
   @BeforeClass
   public static void init() {
     ProcessingTestUtil.init();
+  }
+
+  @Before
+  public void before() {
+    Preferences.setBoolean("export.application.fullscreen", false);
   }
 
   static void expectRecognitionException(final String id,
@@ -326,6 +333,11 @@ public class ParserTests {
   }
 
   @Test
+  public void fullscreenArg() {
+    expectGood("fullscreen_arg", true);
+  }
+
+  @Test
   public void customMain() {
     expectGood("custommain", true);
   }
@@ -376,6 +388,11 @@ public class ParserTests {
   }
 
   @Test
+  public void testSmoothThis() {
+    expectGood("smoothnoparamthis");
+  }
+
+  @Test
   public void testSmoothWithParam() {
     expectGood("smoothparam");
   }
@@ -383,6 +400,47 @@ public class ParserTests {
   @Test
   public void testSmoothWithParamStatic() {
     expectGood("smoothparamstatic");
+  }
+
+  @Test
+  public void testColorInImport() {
+    expectGood("colorimport");
+  }
+
+  @Test
+  public void testPGraphicsStandalone() {
+    expectGood("pgraphics");
+  }
+
+  @Test
+  public void testSizeThis() {
+    expectGood("sizethis");
+  }
+
+  @Test
+  public void testMixing() {
+    expectRunnerException("mixing", 1);
+  }
+
+  @Test
+  public void testSizeClass() {
+    expectGood("sizeclass");
+  }
+
+  @Test
+  public void testMultilineString() {
+    expectGood("multilinestr");
+  }
+
+  @Test
+  public void testMultilineStringClass() {
+    expectGood("multilinestrclass");
+  }
+
+  @Test
+  public void testMultiMultilineString() {
+    Preferences.setBoolean("export.application.fullscreen", true);
+    expectGood("fullscreen_export");
   }
 
 }

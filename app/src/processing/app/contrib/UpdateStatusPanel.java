@@ -1,9 +1,9 @@
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
-  Part of the Processing project - http://processing.org
+  Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-16 The Processing Foundation
+  Copyright (c) 2013-22 The Processing Foundation
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2
@@ -20,36 +20,23 @@
  */
 package processing.app.contrib;
 
-import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.GroupLayout;
+import javax.swing.JButton;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
-
-import processing.app.ui.Toolkit;
 
 
 public class UpdateStatusPanel extends StatusPanel {
 
-  public UpdateStatusPanel(UpdateContributionTab tab, int width) {
-    super();
-    this.contributionTab = tab;
+  public UpdateStatusPanel(UpdateContributionTab tab) {
+    super(tab);
 
-    updateButton = Toolkit.createIconButton("Update All", "manager/update");
-    updateButton.setFont(ManagerFrame.NORMAL_PLAIN);
+    updateButton = new JButton("Update All");
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.setVisible(true);
     updateButton.setEnabled(false);
 
-    updateButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        contributionTab.updateAll();
-      }
-    });
-    setBackground(new Color(0xebebeb));
+    updateButton.addActionListener(e -> updateAll());
     layout = new GroupLayout(this);
     setLayout(layout);
 
@@ -68,7 +55,15 @@ public class UpdateStatusPanel extends StatusPanel {
   }
 
 
-  public void update() {
-    updateButton.setEnabled(contributionTab.hasUpdates());
+  private void updateAll() {
+    for (StatusDetail detail : contributionTab.listPanel.detailForContrib.values()) {
+      detail.update();
+    }
+    contributionTab.listPanel.model.fireTableDataChanged();
+  }
+
+
+  protected void updateEnabled(boolean updateEnabled) {
+    updateButton.setEnabled(updateEnabled);
   }
 }

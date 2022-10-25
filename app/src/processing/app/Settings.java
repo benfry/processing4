@@ -44,7 +44,7 @@ public class Settings {
    * defaults, then replace those with what was in the user's preferences file.
    * Problem is, if something like a font entry in the user's file no longer
    * parses properly, we need to be able to get back to a clean version of that
-   * setting so we can recover.
+   * setting so that we can recover.
    */
   Map<String, String> defaults;
 
@@ -253,5 +253,44 @@ public class Settings {
       Messages.log("Error with font " + get(attr) + " for attribute " + attr);
     }
     return new Font("Dialog", Font.PLAIN, 12);
+  }
+
+
+  public String remove(String key) {
+    return table.remove(key);
+  }
+
+
+  /**
+   * The day of reckoning: save() a file if it has entries, or delete
+   * if the file exists but the table no longer has any entries.
+   */
+  public void reckon() {
+    if (table.isEmpty()) {
+      if (file.exists() && !file.delete()) {
+        System.err.println("Could not remove empty " + file);
+      }
+    } else {
+      save();
+    }
+  }
+
+
+  public boolean isEmpty() {
+    return table.isEmpty();
+  }
+
+
+  public void print() {
+    String[] keys = table.keySet().toArray(new String[0]);
+    Arrays.sort(keys);
+    for (String key : keys) {
+      System.out.println(key + " = " + table.get(key));
+    }
+  }
+
+
+  public Map<String, String> getMap() {
+    return table;
   }
 }

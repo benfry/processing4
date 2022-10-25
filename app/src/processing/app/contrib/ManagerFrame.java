@@ -1,9 +1,9 @@
 /* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
 
 /*
- Part of the Processing project - http://processing.org
+ Part of the Processing project - https://processing.org
 
- Copyright (c) 2013-15 The Processing Foundation
+ Copyright (c) 2013-22 The Processing Foundation
  Copyright (c) 2011-12 Ben Fry and Casey Reas
 
  This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,8 @@ import java.awt.event.*;
 
 import javax.swing.*;
 
-import processing.app.*;
-import processing.app.ui.Editor;
+import processing.app.Base;
+import processing.app.Language;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
@@ -41,6 +41,7 @@ public class ManagerFrame {
 
   static final int AUTHOR_WIDTH = Toolkit.zoom(240);
   static final int STATUS_WIDTH = Toolkit.zoom(66);
+  static final int VERSION_WIDTH = Toolkit.zoom(66);
 
   static final String title = "Contribution Manager";
 
@@ -54,38 +55,33 @@ public class ManagerFrame {
   ContributionTab examplesTab;
   UpdateContributionTab updatesTab;
 
-  static Font SMALL_PLAIN;
-  static Font SMALL_BOLD;
-  static Font NORMAL_PLAIN;
-  static Font NORMAL_BOLD;
+  ContributionTab[] tabList;
 
 
   public ManagerFrame(Base base) {
     this.base = base;
 
-//    long t1 = System.currentTimeMillis();
-    final int smallSize = Toolkit.zoom(12);
-    final int normalSize = Toolkit.zoom(14);
-    SMALL_PLAIN = Toolkit.getSansFont(smallSize, Font.PLAIN);
-    SMALL_BOLD = Toolkit.getSansFont(smallSize, Font.BOLD);
-    NORMAL_PLAIN = Toolkit.getSansFont(normalSize, Font.PLAIN);
-    NORMAL_BOLD = Toolkit.getSansFont(normalSize, Font.BOLD);
-
     // TODO Optimize these inits... unfortunately it needs to run on the EDT,
     //      and Swing is a piece of s*t, so it's gonna be slow with lots of contribs.
-    //      All the time is being used up between t2 and t3.
     //      In particular, load everything and then fire the update events.
     //      Also, don't pull all the colors over and over again.
-//    long t2 = System.currentTimeMillis();
+//    long t1 = System.currentTimeMillis();
     librariesTab = new ContributionTab(this, ContributionType.LIBRARY);
+//    long t2 = System.currentTimeMillis();
     modesTab = new ContributionTab(this, ContributionType.MODE);
-    toolsTab = new ContributionTab(this, ContributionType.TOOL);
-    examplesTab = new ContributionTab(this, ContributionType.EXAMPLES);
 //    long t3 = System.currentTimeMillis();
-    updatesTab = new UpdateContributionTab(this);
-
+    toolsTab = new ContributionTab(this, ContributionType.TOOL);
 //    long t4 = System.currentTimeMillis();
-//    System.out.println("ManagerFrame.<init> " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3));
+    examplesTab = new ContributionTab(this, ContributionType.EXAMPLES);
+//    long t5 = System.currentTimeMillis();
+    updatesTab = new UpdateContributionTab(this);
+//    long t6 = System.currentTimeMillis();
+
+    tabList = new ContributionTab[] {
+      librariesTab, modesTab, toolsTab, examplesTab, updatesTab
+    };
+
+//    System.out.println("ManagerFrame.<init> " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) + " " + (t5-t4) + " " + (t6-t5));
   }
 
 
@@ -96,7 +92,8 @@ public class ManagerFrame {
       // done before as downloadAndUpdateContributionListing()
       // requires the current selected tab
       tabs.setPanel(showTab);
-      downloadAndUpdateContributionListing(base);
+      //downloadAndUpdateContributionListing(base);
+      downloadAndUpdateContributionListing();
     } else {
       tabs.setPanel(showTab);
     }
@@ -109,9 +106,9 @@ public class ManagerFrame {
   private void makeFrame() {
     frame = new JFrame(title);
     frame.setMinimumSize(Toolkit.zoom(750, 500));
-    tabs = new ManagerTabs(base);
+    tabs = new ManagerTabs();
 
-    makeAndShowTab(false, true);
+    rebuildTabLayouts(false, true);
 
     tabs.addPanel(librariesTab, "Libraries");
     tabs.addPanel(modesTab, "Modes");
@@ -121,9 +118,6 @@ public class ManagerFrame {
 
     frame.setResizable(true);
 
-//    Container c = frame.getContentPane();
-//    c.add(tabs);
-//    c.setBackground(Theme.getColor("manager.tab.background"));
     frame.getContentPane().add(tabs);
     updateTheme();
 
@@ -139,7 +133,18 @@ public class ManagerFrame {
 
 
   protected void updateTheme() {
-    frame.getContentPane().setBackground(Theme.getColor("manager.tab.background"));
+    // don't update if the Frame doesn't actually exist yet
+    // https://github.com/processing/processing4/issues/476
+    if (frame != null) {
+      Color bgColor = Theme.getColor("manager.tab.background");
+      frame.getContentPane().setBackground(bgColor);
+
+      tabs.updateTheme();
+
+      for (ContributionTab tab : tabList) {
+        tab.updateTheme();
+      }
+    }
   }
 
 
@@ -177,53 +182,56 @@ public class ManagerFrame {
 
 
   // TODO move this to ContributionTab (this is handled weirdly, period) [fry]
-  void downloadAndUpdateContributionListing(Base base) {
+  //void downloadAndUpdateContributionListing(Base base) {
+  void downloadAndUpdateContributionListing() {
     //activeTab is required now but should be removed
-    //as there is only one instance of contribListing and it should be present in this class
+    //as there is only one instance of contribListing, and it should be present in this class
     final ContributionTab activeTab = getActiveTab();
 
-    ContribProgressMonitor progress =
-      new ContribProgressBar(activeTab.progressBar) {
-
+    /*
+    final JProgressBar bar = activeTab.progressBar;
+    ContribProgress progress = new ContribProgress(bar) {
       @Override
       public void startTask(String name, int maxValue) {
         super.startTask(name, maxValue);
-        progressBar.setVisible(true);
-        progressBar.setString(null);
+        bar.setVisible(true);
+        bar.setString(null);
       }
 
       @Override
       public void setProgress(int value) {
         super.setProgress(value);
-//        int percent = 100 * value / this.max;
-        progressBar.setValue(value);
+        bar.setValue(value);
       }
 
       @Override
       public void finishedAction() {
-        progressBar.setVisible(false);
+        bar.setVisible(false);
+    */
         activeTab.updateContributionListing();
         activeTab.updateCategoryChooser();
 
-        if (error) {
+    /*
+        Exception exception = getException();
+        if (exception != null) {
           exception.printStackTrace();
           makeAndShowTab(true, false);
         } else {
-          makeAndShowTab(false, false);
+     */
+          rebuildTabLayouts(false, false);
+    /*
         }
       }
     };
-    activeTab.contribListing.downloadAvailableList(base, progress);
+    ContributionListing.getInstance().downloadAvailableList(base, progress);
+    */
   }
 
 
-  void makeAndShowTab(boolean error, boolean loading) {
-    Editor editor = base.getActiveEditor();
-    librariesTab.showFrame(editor, error, loading);
-    modesTab.showFrame(editor, error, loading);
-    toolsTab.showFrame(editor, error, loading);
-    examplesTab.showFrame(editor, error, loading);
-    updatesTab.showFrame(editor, error, loading);
+  protected void rebuildTabLayouts(boolean error, boolean loading) {
+    for (ContributionTab tab : tabList) {
+      tab.rebuildLayout(error, loading);
+    }
   }
 
 

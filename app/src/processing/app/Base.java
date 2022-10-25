@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -27,7 +27,6 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 import java.util.Map.Entry;
@@ -35,6 +34,9 @@ import java.util.Map.Entry;
 import javax.swing.*;
 import javax.swing.tree.DefaultMutableTreeNode;
 
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import processing.app.contrib.*;
 import processing.app.tools.Tool;
 import processing.app.ui.*;
@@ -52,9 +54,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1277;
+  static private final int REVISION = 1287;
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1277"; //$NON-NLS-1$
+  static private String VERSION_NAME = "1287"; //$NON-NLS-1$
 
   static final public String SKETCH_BUNDLE_EXT = ".pdez";
   static final public String CONTRIB_BUNDLE_EXT = ".pdex";
@@ -66,13 +68,18 @@ public class Base {
    */
   static public boolean DEBUG;
 
+  /** True if running via Commander. */
   static private boolean commandLine;
+
+  /**
+   * If settings.txt is present inside lib, it will be used to override
+   * the location of the settings folder so that "portable" versions
+   * of the software are possible.
+   */
+  static private File settingsOverride;
 
   // A single instance of the preferences window
   PreferencesFrame preferencesFrame;
-
-  // A single instance of the library manager window
-//  ContributionManagerDialog contributionManagerFrame;
 
   // Location for untitled items
   static File untitledFolder;
@@ -81,20 +88,30 @@ public class Base {
   final protected List<Editor> editors =
     Collections.synchronizedList(new ArrayList<>());
   protected Editor activeEditor;
+
   /** A lone file menu to be used when all sketch windows are closed. */
   protected JMenu defaultFileMenu;
 
   /**
-   * Starts with the last mode used with the environment,
-   * or the default mode if not used.
+   * The next Mode to be used with handleNew() or handleOpen()
+   * (unless it's overridden by something else). Starts with the last
+   * Mode used with the environment, or the default mode if not used.
    */
   private Mode nextMode;
 
-  /** The built-in modes. coreModes[0] will be considered the 'default'. */
-  private Mode[] coreModes;
+  /** Only one built-in Mode these days, removing the extra fluff. */
+  private Mode coreMode;
 
-  protected List<ModeContribution> modeContribs;
-  protected List<ExamplesContribution> exampleContribs;
+  // TODO can these be Set objects, or are they expected to be in order?
+  protected List<ModeContribution> contribModes;
+  protected List<ExamplesContribution> contribExamples;
+
+  /** These aren't even dynamically loaded, they're hard-wired here. */
+  private List<Tool> internalTools;
+
+  // TODO can these be Set objects, or are they expected to be in order?
+  private List<ToolContribution> coreTools;
+  private List<ToolContribution> contribTools;
 
   // Used by handleOpen(), this saves the chooser to remember the directory.
   // Doesn't appear to be necessary with the AWT native file dialog.
@@ -102,7 +119,6 @@ public class Base {
   private JFileChooser openChooser;
 
   static protected File sketchbookFolder;
-//  protected File toolsFolder;
 
 
   static public void main(final String[] args) {
@@ -145,6 +161,7 @@ public class Base {
 
 
   static private void createAndShowGUI(String[] args) {
+    // these times are fairly negligible relative to Base.<init>
 //    long t1 = System.currentTimeMillis();
 
     File versionFile = Platform.getContentFile("lib/version.txt");
@@ -156,6 +173,35 @@ public class Base {
         }
       }
     }
+
+    // Detect settings.txt in the lib folder for portable versions
+    File settingsFile = Platform.getContentFile("lib/settings.txt");
+    if (settingsFile != null && settingsFile.exists()) {
+      try {
+        Settings portable = new Settings(settingsFile);
+        String path = portable.get("settings.path");
+        File folder = new File(path);
+        boolean success = true;
+        if (!folder.exists()) {
+          success = folder.mkdirs();
+          if (!success) {
+            Messages.err("Could not create " + folder + " to store settings.");
+          }
+        }
+        if (success) {
+          if (!folder.canRead()) {
+            Messages.err("Cannot read from " + folder);
+          } else if (!folder.canWrite()) {
+            Messages.err("Cannot write to " + folder);
+          } else {
+            settingsOverride = folder.getAbsoluteFile();
+          }
+        }
+      } catch (IOException e) {
+        Messages.err("Error while reading the settings.txt file", e);
+      }
+    }
+
 
     Platform.init();
     // call after Platform.init() because we need the settings folder
@@ -172,7 +218,7 @@ public class Base {
       DEBUG = true;
     }
 
-    // Use native popups so they don't look crappy on macOS
+    // Use native popups to avoid looking crappy on macOS
     JPopupMenu.setDefaultLightWeightPopupEnabled(false);
 
     // Don't put anything above this line that might make GUI,
@@ -199,10 +245,11 @@ public class Base {
       }
 
 //      long t3 = System.currentTimeMillis();
-//      long t4 = System.currentTimeMillis();
 
       // Get the sketchbook path, and make sure it's set properly
       locateSketchbookFolder();
+
+//      long t4 = System.currentTimeMillis();
 
       // Load colors for UI elements. This must happen after Preferences.init()
       // (so that fonts are set) and locateSketchbookFolder() so that a
@@ -211,8 +258,10 @@ public class Base {
 
       // Create a location for untitled sketches
       try {
-        untitledFolder = Util.createTempFolder("untitled", "sketches", null);
-        untitledFolder.deleteOnExit();
+        //untitledFolder = Util.createTempFolder("untitled", "sketches", null);
+        //untitledFolder.deleteOnExit();
+        untitledFolder = Util.getProcessingTemp();
+
       } catch (IOException e) {
         Messages.showError("Trouble without a name",
                            "Could not create a place to store untitled sketches.\n" +
@@ -220,11 +269,12 @@ public class Base {
       }
 
 //      long t5 = System.currentTimeMillis();
-//      long t6 = 0;
+//      long t6 = 0;  // replaced below, just needs decl outside try { }
 
       Messages.log("About to create Base..."); //$NON-NLS-1$
       try {
         final Base base = new Base(args);
+        base.updateTheme();
         Messages.log("Base() constructor succeeded");
 //        t6 = System.currentTimeMillis();
 
@@ -232,17 +282,19 @@ public class Base {
         SingleInstance.startServer(base);
 
         handleWelcomeScreen(base);
-        //checkDriverBug();  // that was 2017, right?
+        handleCrustyDisplay();
+        handleTempCleaning();
 
       } catch (Throwable t) {
         // Catch-all to pick up badness during startup.
+        Throwable err = t;
         if (t.getCause() != null) {
           // Usually this is the more important piece of information. We'll
           // show this one so that it's not truncated in the error window.
-          t = t.getCause();
+          err = t.getCause();
         }
         Messages.showTrace("We're off on the wrong foot",
-                           "An error occurred during startup.", t, true);
+                           "An error occurred during startup.", err, true);
       }
       Messages.log("Done creating Base..."); //$NON-NLS-1$
 
@@ -252,7 +304,51 @@ public class Base {
   }
 
 
+  public void updateTheme() {
+    try {
+      //System.out.println("updating theme");
+      FlatLaf laf = "dark".equals(Theme.get("laf.mode")) ?
+        new FlatDarkLaf() : new FlatLightLaf();
+      laf.setExtraDefaults(Collections.singletonMap("@accentColor",
+        Theme.get("laf.accent.color")));
+      //System.out.println(laf.getExtraDefaults());
+      //UIManager.setLookAndFeel(laf);
+      FlatLaf.setup(laf);
+      // updateUI() will wipe out our custom components
+      // even if we do a setUI() call and invalidate/revalidate/repaint
+//      FlatLaf.updateUI();
+//      System.out.println("FlatLaf.updateUI() should be done");
+//      FlatLaf.updateUILater();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    if (preferencesFrame != null) {
+      preferencesFrame.updateTheme();
+    }
+
+    ContributionManager.updateTheme();
+    for (Editor editor : getEditors()) {
+      editor.updateTheme();
+
+//      Component sb = editor.getPdeTextArea();
+//      sb.invalidate();
+//      sb.revalidate();
+//      sb.repaint();
+    }
+
+    /*
+    Window[] windows = Window.getWindows();
+    for (Window w : windows) {
+      SwingUtilities.updateComponentTreeUI(w);
+    }
+    */
+  }
+
+
   static private void handleWelcomeScreen(Base base) {
+    /*
     boolean sketchbookPrompt = false;
     if (Preferences.getBoolean("welcome.four.beta.show")) {
       // only ask once about split sketchbooks
@@ -274,58 +370,86 @@ public class Base {
         }
       }
     }
+    */
 
     // Needs to be shown after the first editor window opens, so that it
     // shows up on top, and doesn't prevent an editor window from opening.
-    if (Preferences.getBoolean("welcome.four.beta.show")) {
+    if (Preferences.getBoolean("welcome.four.show")) {
       try {
-        new Welcome(base, sketchbookPrompt);
+        //new Welcome(base, sketchbookPrompt);
+        new Welcome(base);
       } catch (IOException e) {
         Messages.showTrace("Unwelcoming",
           "Please report this error to\n" +
-            "https://github.com/processing/processing/issues", e, false);
+            "https://github.com/processing/processing4/issues", e, false);
       }
     }
   }
 
 
-  /*
-  // Remove this code in a couple of months [fry 170211]
-  // https://github.com/processing/processing/issues/4853
-  // Or maybe not, if NVIDIA keeps doing this [fry 170423]
-  // https://github.com/processing/processing/issues/4997
-  @SuppressWarnings("SpellCheckingInspection")
-  static private void checkDriverBug() {
-    if (System.getProperty("os.name").contains("Windows 10")) {
-      new Thread(() -> {
-        try {
-          Process p = Runtime.getRuntime().exec("powershell Get-WmiObject Win32_PnPSignedDriver| select devicename, driverversion | where {$_.devicename -like \\\"*nvidia*\\\"}");
-          BufferedReader reader = PApplet.createReader(p.getInputStream());
-          String line;
-          while ((line = reader.readLine()) != null) {
-            if (line.contains("3.7849")) {
-              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up",
-                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                   "otherwise you won't be able to run any sketches. Update here:\n" +
-                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4378\n" +
-                                   "or read background about the issue at this link:\n" +
-                                   "https://github.com/processing/processing/issues/4853"));
-            } else if (line.contains("3.8165")) {
-              EventQueue.invokeLater(() -> Messages.showWarning("NVIDIA screwed up again",
-                                   "Due to an NVIDIA bug, you need to update your graphics drivers,\n" +
-                                   "otherwise you won't be able to run any sketches. Update here:\n" +
-                                   "http://nvidia.custhelp.com/app/answers/detail/a_id/4453/\n" +
-                                   "or read background about the issue at this link:\n" +
-                                   "https://github.com/processing/processing/issues/4997"));
-            }
-          }
-        } catch (Exception e) {
-          Messages.err("Problem checking NVIDIA driver", e);
+  /**
+   * Temporary workaround as we try to sort out
+   * https://github.com/processing/processing4/issues/231
+   * and https://github.com/processing/processing4/issues/226
+   */
+  static private void handleCrustyDisplay() {
+    /*
+    System.out.println("retina is " + Toolkit.isRetina());
+    System.out.println("system zoom " + Platform.getSystemZoom());
+    System.out.println("java2d param is " + System.getProperty("sun.java2d.uiScale.enabled"));
+    System.out.println("toolkit res is " + java.awt.Toolkit.getDefaultToolkit().getScreenResolution());
+    */
+    if (Platform.isWindows()) {  // only an issue on Windows
+      if (!Toolkit.isRetina() && !Splash.getDisableHiDPI()) {
+        int res = java.awt.Toolkit.getDefaultToolkit().getScreenResolution();
+        if (res % 96 != 0) {
+          // fractional dpi scaling on a low-res screen
+          System.out.println("If the editor cursor is in the wrong place or the interface is blocky or fuzzy,");
+          System.out.println("open Preferences and select the “Disable HiDPI Scaling” option to fix it.");
         }
-      }).start();
+      }
     }
   }
-  */
+
+
+  static private void handleTempCleaning() {
+    new Thread(() -> {
+      Console.cleanTempFiles();
+      cleanTempFolders();
+    }).start();
+  }
+
+
+  /**
+   * Clean folders and files from the Processing subdirectory
+   * of the user's temp folder (java.io.tmpdir).
+   */
+  static public void cleanTempFolders() {
+    try {
+      final File tempDir = Util.getProcessingTemp();
+      final int days = Preferences.getInteger("temp.days");
+
+      if (days > 0) {
+        final long now = new Date().getTime();
+        final long diff = days * 24 * 60 * 60 * 1000L;
+        File[] expiredFiles =
+          tempDir.listFiles(file -> (now - file.lastModified()) > diff);
+        if (expiredFiles != null) {
+          // Remove the files approved for deletion
+          for (File file : expiredFiles) {
+            //file.delete();  // not as safe
+            try {
+              Platform.deleteFile(file);  // move to trash
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -362,29 +486,23 @@ public class Base {
 
 
   public Base(String[] args) throws Exception {
-//    long t1 = System.currentTimeMillis();
-    // TODO Taking 3-5 seconds with several things installed, which is unacceptable.
-    //      Will take longer to optimize because most needs to run on the EDT.
+    long t1 = System.currentTimeMillis();
     ContributionManager.init(this);
-//      } catch (Exception e) {
-//        Messages.showWarning("Contribution Manager Error",
-//                    "Error while setting up the Contribution Manager. Please report.", e);
-//      }
-//    });
 
-//    long t2 = System.currentTimeMillis();
+    long t2 = System.currentTimeMillis();
     buildCoreModes();
+    long t2b = System.currentTimeMillis();
     rebuildContribModes();
+    long t2c = System.currentTimeMillis();
     rebuildContribExamples();
 
-//    long t3 = System.currentTimeMillis();
+    long t3 = System.currentTimeMillis();
     // Needs to happen after the sketchbook folder has been located.
-    // Also relies on the modes to be loaded so it knows what can be
+    // Also relies on the modes to be loaded, so it knows what can be
     // marked as an example.
-//    recent = new Recent(this);
     Recent.init(this);
 
-//    long t4 = System.currentTimeMillis();
+    long t4 = System.currentTimeMillis();
     String lastModeIdentifier = Preferences.get("mode.last"); //$NON-NLS-1$
     if (lastModeIdentifier == null) {
       nextMode = getDefaultMode();
@@ -404,7 +522,7 @@ public class Base {
 
     //contributionManagerFrame = new ContributionManagerDialog();
 
-//    long t5 = System.currentTimeMillis();
+    long t5 = System.currentTimeMillis();
 
     // Make sure ThinkDifferent has library examples too
     nextMode.rebuildLibraryList();
@@ -413,7 +531,7 @@ public class Base {
     // menu works on Mac OS X (since it needs examplesFolder to be set).
     Platform.initBase(this);
 
-//    long t6 = System.currentTimeMillis();
+    long t6 = System.currentTimeMillis();
 
 //    // Check if there were previously opened sketches to be restored
 //    boolean opened = restoreSketches();
@@ -427,7 +545,7 @@ public class Base {
       // Fix a problem with systems that use a non-ASCII languages. Paths are
       // being passed in with 8.3 syntax, which makes the sketch loader code
       // unhappy, since the sketch folder naming doesn't match up correctly.
-      // http://dev.processing.org/bugs/show_bug.cgi?id=1089
+      // https://download.processing.org/bugzilla/1089.html
       if (Platform.isWindows()) {
         try {
           File file = new File(args[i]);
@@ -442,7 +560,7 @@ public class Base {
       }
     }
 
-//    long t7 = System.currentTimeMillis();
+    long t7 = System.currentTimeMillis();
 
     // Create a new empty window (will be replaced with any files to be opened)
     if (!opened) {
@@ -452,16 +570,18 @@ public class Base {
       Messages.log("No handleNew(), something passed on the command line");
     }
 
-//    long t8 = System.currentTimeMillis();
+    long t8 = System.currentTimeMillis();
 
     // check for updates
     new UpdateCheck(this);
 
     ContributionListing cl = ContributionListing.getInstance();
-    cl.downloadAvailableList(this, new ContribProgressMonitor() { });
-//    long t9 = System.currentTimeMillis();
+    cl.downloadAvailableList(this, new ContribProgress(null));
+    long t9 = System.currentTimeMillis();
+
+//    System.out.println("core modes: " + (t2b-t2) + ", contrib modes: " + (t2c-t2b) + ", contrib ex: " + (t2c-t2b));
 //    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
-//      " " + (t5-t4) + " 6-5=" + (t6-t5) + " " + (t7-t6) + " " + (t8-t7) + " " + (t9-t8) + " ms");
+//      " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) + " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");
   }
 
 
@@ -483,7 +603,7 @@ public class Base {
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.sketchbook"), 'K');
-    item.addActionListener(e -> getNextMode().showSketchbookFrame());
+    item.addActionListener(e -> showSketchbookFrame());
     defaultFileMenu.add(item);
 
     item = Toolkit.newJMenuItemShift(Language.text("menu.file.examples"), 'O');
@@ -505,19 +625,20 @@ public class Base {
 
     } else {
       // PDE X calls getModeList() while it's loading, so coreModes must be set
-      coreModes = new Mode[] { javaModeContrib.getMode() };
+      //coreModes = new Mode[] { javaModeContrib.getMode() };
+      coreMode = javaModeContrib.getMode();
     }
   }
 
 
   /**
    * Instantiates and adds new contributed modes to the contribModes list.
-   * Checks for duplicates so the same mode isn't instantiates twice. Does not
+   * Checks for duplicates so the same mode isn't instantiated twice. Does not
    * remove modes because modes can't be removed once they are instantiated.
    */
   void rebuildContribModes() {
-    if (modeContribs == null) {
-      modeContribs = new ArrayList<>();
+    if (contribModes == null) {
+      contribModes = new ArrayList<>();
     }
     File modesFolder = getSketchbookModesFolder();
     List<ModeContribution> contribModes = getModeContribs();
@@ -553,7 +674,7 @@ public class Base {
       }
     }
 
-    // This allows you to build and test your Mode code from Eclipse.
+    // This allows you to build and test a Mode from Eclipse
     // -Dusemode=com.foo.FrobMode:/path/to/FrobMode
     final String useMode = System.getProperty("usemode");
     if (useMode != null) {
@@ -593,8 +714,8 @@ public class Base {
    * remove modes because modes can't be removed once they are instantiated.
    */
   void rebuildContribExamples() {
-    if (exampleContribs == null) {
-      exampleContribs = new ArrayList<>();
+    if (contribExamples == null) {
+      contribExamples = new ArrayList<>();
     }
     ExamplesContribution.loadMissing(this);
   }
@@ -697,11 +818,6 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  List<Tool> internalTools;
-  List<ToolContribution> coreTools;
-  List<ToolContribution> contribTools;
-
-
   public List<ToolContribution> getCoreTools() {
     return coreTools;
   }
@@ -724,13 +840,16 @@ public class Base {
     if (internalTools == null) {
       internalTools = new ArrayList<>();
 
-      initInternalTool("processing.app.tools.CreateFont");
-      initInternalTool("processing.app.tools.ColorSelector");
       initInternalTool("processing.app.tools.Archiver");
+      initInternalTool("processing.app.tools.ColorSelector");
+      initInternalTool("processing.app.tools.CreateFont");
 
       if (Platform.isMacOS()) {
         initInternalTool("processing.app.tools.InstallCommander");
       }
+
+      initInternalTool("processing.app.tools.ThemeSelector");
+      //initInternalTool("processing.app.tools.UpdateTheme");
     }
 
     // No need to reload these either
@@ -824,9 +943,10 @@ public class Base {
       toolsMenu.addSeparator();
     }
 
-    JMenuItem item = new JMenuItem(Language.text("menu.tools.add_tool"));
-    item.addActionListener(e -> ContributionManager.openTools());
-    toolsMenu.add(item);
+    JMenuItem manageTools =
+      new JMenuItem(Language.text("menu.tools.manage_tools"));
+    manageTools.addActionListener(e -> ContributionManager.openTools());
+    toolsMenu.add(manageTools);
   }
 
 
@@ -882,48 +1002,48 @@ public class Base {
 
 
   public List<ModeContribution> getModeContribs() {
-    return modeContribs;
+    return contribModes;
   }
 
 
   public List<Mode> getModeList() {
-    List<Mode> allModes = new ArrayList<>(Arrays.asList(coreModes));
-    if (modeContribs != null) {
-      for (ModeContribution contrib : modeContribs) {
-        allModes.add(contrib.getMode());
+    //List<Mode> outgoing = new ArrayList<>(Arrays.asList(coreModes));
+    List<Mode> outgoing = new ArrayList<>();
+    outgoing.add(coreMode);
+    if (contribModes != null) {
+      for (ModeContribution contrib : contribModes) {
+        outgoing.add(contrib.getMode());
       }
     }
-    return allModes;
+    return outgoing;
   }
 
 
-  public List<ExamplesContribution> getExampleContribs() {
-    return exampleContribs;
+  public List<ExamplesContribution> getContribExamples() {
+    return contribExamples;
   }
 
 
-  private List<Contribution> getInstalledContribs() {
+  private Set<Contribution> getInstalledContribs() {
     List<ModeContribution> modeContribs = getModeContribs();
-    List<Contribution> contributions = new ArrayList<>(modeContribs);
+    Set<Contribution> contributions = new HashSet<>(modeContribs);
 
     for (ModeContribution modeContrib : modeContribs) {
       Mode mode = modeContrib.getMode();
       contributions.addAll(new ArrayList<>(mode.contribLibraries));
     }
 
+    // how is this different from getToolContribs()?
     // TODO this duplicates code in Editor, but it's not editor-specific
-//    List<ToolContribution> toolContribs =
-//      ToolContribution.loadAll(Base.getSketchbookToolsFolder());
-//    contributions.addAll(toolContribs);
     contributions.addAll(ToolContribution.loadAll(getSketchbookToolsFolder()));
 
-    contributions.addAll(getExampleContribs());
+    contributions.addAll(getContribExamples());
     return contributions;
   }
 
 
   public byte[] getInstalledContribsInfo() {
-    List<Contribution> contribs = getInstalledContribs();
+    Set<Contribution> contribs = getInstalledContribs();
     StringList entries = new StringList();
     for (Contribution c : contribs) {
       String entry = c.getTypeName() + "=" +
@@ -934,22 +1054,6 @@ public class Base {
     }
     String joined =
       "id=" + UpdateCheck.getUpdateID() + "&" + entries.join("&");
-//    StringBuilder sb = new StringBuilder();
-//    try {
-//      // Truly ridiculous attempt to shove everything into a GET request.
-//      // More likely to be seen as part of a grand plot.
-//      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//      GZIPOutputStream output = new GZIPOutputStream(baos);
-//      PApplet.saveStream(output, new ByteArrayInputStream(joined.getBytes()));
-//      output.close();
-//      byte[] b = baos.toByteArray();
-//      for (int i = 0; i < b.length; i++) {
-//        sb.append(PApplet.hex(b[i], 2));
-//      }
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//    return sb.toString();
     return joined.getBytes();
   }
 
@@ -957,34 +1061,15 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /**
-   * Create or modify a sketch.properties file to specify the given Mode.
-   */
-  private void saveModeSettings(final File sketchProps, final Mode mode) {
-    try {
-      final Settings settings = new Settings(sketchProps);
-      settings.set("mode", mode.getTitle());
-      settings.set("mode.id", mode.getIdentifier());
-      settings.save();
-    } catch (IOException e) {
-      System.err.println("While creating " + sketchProps + ": " + e.getMessage());
-    }
-  }
-
-
   String getDefaultModeIdentifier() {
+    // Used to initialize coreModes, so cannot use coreModes[0].getIdentifier()
     return "processing.mode.java.JavaMode";
   }
 
 
   public Mode getDefaultMode() {
-    return coreModes[0];
-  }
-
-
-  /** Used by ThinkDifferent so that it can have a Sketchbook menu. */
-  public Mode getNextMode() {
-    return nextMode;
+    //return coreModes[0];
+    return coreMode;
   }
 
 
@@ -998,30 +1083,34 @@ public class Base {
       nextMode = mode;
 
       if (sketch.isModified()) {
-        handleNew();  // don't bother with error messages, just switch
+        // If sketch is modified, simpler to just open a new window.
+        // https://github.com/processing/processing4/issues/189
+        handleNew();
         return false;
 
       } else if (sketch.isUntitled()) {
         // The current sketch is empty, just close and start fresh.
         // (Otherwise the editor would lose its 'untitled' status.)
+        // Safe to do here because of the 'modified' check above.
         handleClose(activeEditor, true);
         handleNew();
 
       } else {
-        // If the current sketch contains file extensions that the new mode
-        // can handle, then write a sketch.properties file with the new mode
-        // specified, and reopen. (Really only useful for Java <-> Android)
-        //if (isCompatible(sketch, mode)) {
+        // If the current sketch contains file extensions that the new Mode
+        // can handle, then write a sketch.properties file with that Mode
+        // specified, and reopen. Currently, only used for Java <-> Android.
         if (mode.canEdit(sketch)) {
-          final File props = new File(sketch.getCodeFolder(), "sketch.properties");
-          saveModeSettings(props, nextMode);
+          //final File props = new File(sketch.getFolder(), "sketch.properties");
+          //saveModeSettings(props, nextMode);
+          sketch.updateModeProperties(nextMode, getDefaultMode());
           handleClose(activeEditor, true);
-          Editor editor = handleOpen(sketch.getMainFilePath());
+          Editor editor = handleOpen(sketch.getMainPath());
           if (editor == null) {
             // the Mode change failed (probably code that's out of date)
             // re-open the sketch using the mode we were in before
-            saveModeSettings(props, oldMode);
-            handleOpen(sketch.getMainFilePath());
+            //saveModeSettings(props, oldMode);
+            sketch.updateModeProperties(oldMode, getDefaultMode());
+            handleOpen(sketch.getMainPath());
             return false;
           }
         } else {
@@ -1044,7 +1133,6 @@ public class Base {
     }
     return true;
   }
-  */
 
 
   private static class ModeInfo {
@@ -1078,51 +1166,48 @@ public class Base {
     }
     return null;
   }
+  */
 
 
-  private Mode promptForMode(final File sketch, final ModeInfo preferredMode) {
+  /*
+  private Mode promptForMode(final File passedFile) {
+    final String filename = passedFile.getName();
     final String extension =
-      sketch.getName().substring(sketch.getName().lastIndexOf('.') + 1);
+      filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
     final List<Mode> possibleModes = new ArrayList<>();
     for (final Mode mode : getModeList()) {
-      if (mode.canEdit(sketch)) {
+      if (mode.canEdit(passedFile)) {
         possibleModes.add(mode);
       }
     }
-    if (possibleModes.size() == 1 &&
-        possibleModes.get(0).getIdentifier().equals(getDefaultModeIdentifier())) {
-      // If default mode can open it, then do so without prompting.
-      return possibleModes.get(0);
-    }
     if (possibleModes.size() == 0) {
-      if (preferredMode == null) {
-        final String msg =
-          "I don't know how to open a sketch with the \"" + extension + "\"\n" +
-          "file extension. You'll have to install a different\n" +
-          "Mode for that.";
-        Messages.showWarning("Modeless Dialog", msg);
-      } else {
-        Messages.showWarning("Modeless Dialog",
-                             "Install " + preferredMode.title + " Mode " +
-                             "to open this sketch.");
-      }
+      final String msg =
+        "I don't know how to open a sketch with the \"" + extension + "\"\n" +
+        "file extension. You'll have to install a different\n" +
+        "Mode for that.";
+      Messages.showWarning("Modeless Dialog", msg);
       return null;
+
+    } else if (possibleModes.size() == 1) {
+      // If there's one Mode that can open this sketch, just open it
+      return possibleModes.get(0);
+
+    } else {
+      // More than one Mode possible, prompt the user
+      Mode[] modes = possibleModes.toArray(new Mode[0]);
+      return (Mode) JOptionPane.showInputDialog(null,
+        (nextMode.getTitle() + " Mode can't open ." + extension + " files, " +
+          "but you have more than one Mode\ninstalled that can. " +
+          "Select which you would like to use:"),
+        "Choose Wisely",
+        JOptionPane.QUESTION_MESSAGE,
+        null, modes, modes[0]);
     }
-    final Mode[] modes = possibleModes.toArray(new Mode[0]);
-    final String message = preferredMode == null ?
-      (nextMode.getTitle() + " Mode can't open ." + extension + " files, " +
-       "but you have one or more modes\ninstalled that can. " +
-       "Would you like to try one?") :
-      ("That's a " + preferredMode.title + " Mode sketch, " +
-       "but you don't have " + preferredMode.title + " installed.\n" +
-       "Would you like to try a different mode for opening a " +
-       "." + extension + " sketch?");
-    return (Mode) JOptionPane.showInputDialog(null, message, "Choose Wisely",
-                                              JOptionPane.QUESTION_MESSAGE,
-                                              null, modes, modes[0]);
   }
+  */
 
 
+  /*
   private Mode selectMode(final File sketch) {
     final ModeInfo modeInfo = modeInfoFor(sketch);
     final Mode specifiedMode = modeInfo == null ? null : findMode(modeInfo.id);
@@ -1131,6 +1216,7 @@ public class Base {
     }
     return promptForMode(sketch, modeInfo);
   }
+  */
 
 
   protected Mode findMode(String id) {
@@ -1143,14 +1229,17 @@ public class Base {
   }
 
 
+  /**
+   * Called when a Mode is uninstalled, in case it's the current Mode.
+   */
+  public void modeRemoved(Mode mode) {
+    if (nextMode == mode) {
+      nextMode = getDefaultMode();
+    }
+  }
+
+
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-  boolean breakTime = false;
-  String[] months = {
-    "jan", "feb", "mar", "apr", "may", "jun",
-    "jul", "aug", "sep", "oct", "nov", "dec"
-  };
 
 
   /**
@@ -1159,76 +1248,38 @@ public class Base {
   public void handleNew() {
 //    long t1 = System.currentTimeMillis();
     try {
-      File newbieDir;
-      String newbieName;
-
       // In 0126, untitled sketches will begin in the temp folder,
       // and then moved to a new location because Save will default to Save As.
-//      File sketchbookDir = getSketchbookFolder();
-      File newbieParentDir = untitledFolder;
+      //File sketchbookDir = getSketchbookFolder();
+      File newbieDir = SketchName.nextFolder(untitledFolder);
 
-      String prefix = Preferences.get("editor.untitled.prefix");
-
-      // Use a generic name like sketch_031008a, the date plus a char
-      int index = 0;
-      String format = Preferences.get("editor.untitled.suffix");
-      String suffix;
-      if (format == null) {
-        Calendar cal = Calendar.getInstance();
-        int day = cal.get(Calendar.DAY_OF_MONTH);  // 1..31
-        int month = cal.get(Calendar.MONTH);  // 0..11
-        suffix = months[month] + PApplet.nf(day, 2);
-      } else {
-        SimpleDateFormat formatter = new SimpleDateFormat(format);
-        suffix = formatter.format(new Date());
-      }
-      do {
-        if (index == 26) {
-          // In 0159, avoid running past z by sending people outdoors.
-          if (!breakTime) {
-            Messages.showWarning("Time for a Break",
-                                 "You've reached the limit for auto naming of new sketches\n" +
-                                 "for the day. How about going for a walk instead?", null);
-            breakTime = true;
-          } else {
-            Messages.showWarning("Sunshine",
-                                 "No really, time for some fresh air for you.", null);
-          }
-          return;
-        }
-        newbieName = prefix + suffix + ((char) ('a' + index));
-        // Also sanitize the name since it might do strange things on
-        // non-English systems that don't use this sort of date format.
-        // https://github.com/processing/processing/issues/322
-        newbieName = Sketch.sanitizeName(newbieName);
-        newbieDir = new File(newbieParentDir, newbieName);
-        index++;
-        // Make sure it's not in the temp folder *and* it's not in the sketchbook
-      } while (newbieDir.exists() || new File(sketchbookFolder, newbieName).exists());
+      // User was told to go outside or other problem happened inside naming.
+      if (newbieDir == null) return;
 
       // Make the directory for the new sketch
       if (!newbieDir.mkdirs()) {
         throw new IOException("Could not create directory " + newbieDir);
       }
 
+      // Retrieve the sketch name from the folder name (not a great
+      // assumption for the future, but overkill to do otherwise for now.)
+      String newbieName = newbieDir.getName();
+
       // Add any template files from the Mode itself
       File newbieFile = nextMode.addTemplateFiles(newbieDir, newbieName);
 
       // Create sketch properties file if it's not the default mode.
       if (!nextMode.equals(getDefaultMode())) {
-        saveModeSettings(new File(newbieDir, "sketch.properties"), nextMode);
+        Sketch.updateModeProperties(newbieDir, nextMode, getDefaultMode());
       }
 
       String path = newbieFile.getAbsolutePath();
-//      long t2 = System.currentTimeMillis();
-      /*Editor editor =*/ handleOpen(path, true);
-//      long t3 = System.currentTimeMillis();
-//      System.out.println("handleNew " + (t2-t1) + " " + (t3-t2));
+      handleOpenUntitled(path);
 
     } catch (IOException e) {
-      Messages.showWarning("That's new to me",
-                           "A strange and unexplainable error occurred\n" +
-                           "while trying to create a new sketch.", e);
+      Messages.showTrace("That's new to me",
+                         "A strange and unexplainable error occurred\n" +
+                         "while trying to create a new sketch.", e, false);
     }
   }
 
@@ -1245,6 +1296,7 @@ public class Base {
     // Add the extensions for each installed Mode
     for (Mode mode : getModeList()) {
       extensions.append(mode.getDefaultExtension());
+      // not adding aux extensions b/c we're looking for the main
     }
 
     final String prompt = Language.text("open");
@@ -1284,7 +1336,7 @@ public class Base {
         public boolean accept(File file) {
           // JFileChooser requires you to explicitly say yes to directories
           // as well (unlike the AWT chooser). Useful, but... different.
-          // http://code.google.com/p/processing/issues/detail?id=1151
+          // https://github.com/processing/processing/issues/1189
           if (file.isDirectory()) {
             return true;
           }
@@ -1307,147 +1359,367 @@ public class Base {
   }
 
 
+  private Editor openSketchBundle(String path) {
+    File zipFile = new File(path);
+    try {
+      File destFolder = File.createTempFile("zip", "tmp", untitledFolder);
+      if (!destFolder.delete() || !destFolder.mkdirs()) {
+        // Hard to imagine why this would happen, but...
+        System.err.println("Could not create temporary folder " + destFolder);
+        return null;
+      }
+      Util.unzip(zipFile, destFolder);
+      File[] fileList = destFolder.listFiles(File::isDirectory);
+      if (fileList != null) {
+        if (fileList.length == 1) {
+          File sketchFile = Sketch.findMain(fileList[0], getModeList());
+          if (sketchFile != null) {
+            return handleOpenUntitled(sketchFile.getAbsolutePath());
+          }
+        } else {
+          System.err.println("Expecting one folder inside " +
+            SKETCH_BUNDLE_EXT + " file, found " + fileList.length + ".");
+        }
+      } else {
+        System.err.println("Could not read " + destFolder);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;  // no luck
+  }
+
+
+  private void openContribBundle(String path) {
+    EventQueue.invokeLater(() -> {
+      Editor editor = getActiveEditor();
+      if (editor == null) {
+        // Shouldn't really happen, but if it's still null, it's a no-go
+        Messages.showWarning("Failure is the only option",
+            "Please open an Editor window before installing an extension.");
+      } else {
+        File contribFile = new File(path);
+        String baseName = contribFile.getName();
+        baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
+        int result =
+          Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
+          "Install " + baseName + "?",
+          "Libraries, Modes, and Tools should<br>" +
+          "only be installed from trusted sources.");
+
+        if (result == JOptionPane.YES_OPTION) {
+          editor.statusNotice("Installing " + baseName + "...");
+          editor.startIndeterminate();
+
+          new Thread(() -> {
+            try {
+              // do the work of the actual install
+              LocalContribution contrib =
+                AvailableContribution.install(this, new File(path));
+
+              EventQueue.invokeLater(() -> {
+                editor.stopIndeterminate();
+
+                if (contrib != null) {
+                  editor.statusEmpty();
+                } else {
+                  editor.statusError("Could not install " + path);
+                }
+              });
+            } catch (IOException e) {
+              EventQueue.invokeLater(() ->
+                  Messages.showWarning("Exception During Installation",
+                      "Could not install contrib from " + path, e));
+            }
+          }).start();
+        }
+      }
+    });
+  }
+
+
+  /**
+   * Return true if it's an obvious sketch folder: only .pde files,
+   * and maybe a data folder. Dot files (.DS_Store, ._blah) are ignored.
+   */
+  private boolean smellsLikeSketchFolder(File folder) {
+    File[] files = folder.listFiles();
+    if (files == null) {  // unreadable, assume badness
+      return false;
+    }
+    for (File file : files) {
+      String name = file.getName();
+      if (!(name.startsWith(".") ||
+            name.toLowerCase().endsWith(".pde")) ||
+            (file.isDirectory() && name.equals("data"))) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+
+  private File moveLikeSketchFolder(File pdeFile, String baseName) throws IOException {
+    Object[] options = {
+      "Keep", "Move", "Cancel"
+    };
+    String prompt =
+      "Would you like to keep “" + pdeFile.getParentFile().getName() + "” as the sketch folder,\n" +
+      "or move “" + pdeFile.getName() + "” to its own folder?\n" +
+      "(Usually, “" + pdeFile.getName() + "” would be stored inside a\n" +
+      "sketch folder named “" + baseName + "”.)";
+
+    int result = JOptionPane.showOptionDialog(null,
+      prompt,
+      "Keep it? Move it?",
+      JOptionPane.YES_NO_CANCEL_OPTION,
+      JOptionPane.QUESTION_MESSAGE,
+      null,
+      options,
+      options[0]);
+
+    if (result == JOptionPane.YES_OPTION) {  // keep
+      return pdeFile;
+
+    } else if (result == JOptionPane.NO_OPTION) {  // move
+      // create properly named folder
+      File properFolder = new File(pdeFile.getParent(), baseName);
+      if (properFolder.exists()) {
+        throw new IOException("A folder named \"" + baseName + "\" " +
+          "already exists. Cannot open sketch.");
+      }
+      if (!properFolder.mkdirs()) {
+        throw new IOException("Could not create the sketch folder.");
+      }
+      // copy the sketch inside
+      File properPdeFile = new File(properFolder, pdeFile.getName());
+      Util.copyFile(pdeFile, properPdeFile);
+
+      // remove the original file, so user doesn't get confused
+      if (!pdeFile.delete()) {
+        Messages.err("Could not delete " + pdeFile);
+      }
+
+      // update with the new path
+      return properPdeFile;
+    }
+
+    // Catch all other cases, including Cancel or ESC
+    return null;
+  }
+
+
   /**
    * Open a sketch from the path specified. Do not use for untitled sketches.
+   * Note that the user may have selected/double-clicked any .pde in a sketch.
    */
   public Editor handleOpen(String path) {
     if (path.endsWith(SKETCH_BUNDLE_EXT)) {
-      File zipFile = new File(path);
-      try {
-        File destFolder = File.createTempFile("zip", "tmp", untitledFolder);
-        if (!destFolder.delete() || !destFolder.mkdirs()) {
-          // Hard to imagine why this would happen, but...
-          System.err.println("Could not create temporary folder " + destFolder);
-          return null;
-        }
-        Util.unzip(zipFile, destFolder);
-        File[] fileList = destFolder.listFiles(File::isDirectory);
-        if (fileList != null) {
-          if (fileList.length == 1) {
-            File sketchFile = checkSketchFolder(fileList[0]);
-            if (sketchFile != null) {
-              return handleOpen(sketchFile.getAbsolutePath(), true);
-            }
-          } else {
-            System.err.println("Expecting one folder inside " +
-              SKETCH_BUNDLE_EXT + " file, found " + fileList.length + ".");
-          }
-        } else {
-          System.err.println("Could not read " + destFolder);
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      return null;  // no luck
+      return openSketchBundle(path);
 
     } else if (path.endsWith(CONTRIB_BUNDLE_EXT)) {
-      EventQueue.invokeLater(() -> {
-        Editor editor = getActiveEditor();
-        if (editor == null) {
-          // Shouldn't really happen, but if it's still null, it's a no-go
-          Messages.showWarning("Failure is the only option",
-                      "Please open an Editor window before installing an extension.");
-        } else {
-          File contribFile = new File(path);
-          String baseName = contribFile.getName();
-          baseName = baseName.substring(0, baseName.length() - CONTRIB_BUNDLE_EXT.length());
-          int result =
-            Messages.showYesNoQuestion(editor, "How to Handle " + CONTRIB_BUNDLE_EXT,
-              "Install " + baseName + "?",
-              "Libraries, Modes, and Tools should<br>" +
-                "only be installed from trusted sources.");
+      openContribBundle(path);
+      return null;  // never returning an Editor for a contrib
+    }
 
-          if (result == JOptionPane.YES_OPTION) {
-            editor.statusNotice("Installing " + baseName + "...");
-            editor.startIndeterminate();
-
-            new Thread(() -> {
-              try {
-                // do the work of the actual install
-                LocalContribution contrib =
-                  AvailableContribution.install(this, new File(path));
-
-                EventQueue.invokeLater(() -> {
-                  editor.stopIndeterminate();
-
-                  if (contrib != null) {
-                    editor.statusEmpty();
-                  } else {
-                    editor.statusError("Could not install " + path);
-                  }
-                });
-              } catch (IOException e) {
-                EventQueue.invokeLater(() -> Messages.showWarning("Exception During Installation", "Could not install contrib from " + path, e));
-              }
-            }).start();
-          }
-        }
-      });
+    File pdeFile = new File(path);
+    if (!pdeFile.exists()) {
+      System.err.println(path + " does not exist");
       return null;
     }
 
-    return handleOpen(path, false);
-  }
+    // Cycle through open windows to make sure that it's not already open.
+    for (Editor editor : editors) {
+      // User may have double-clicked any PDE in the sketch folder,
+      // so we have to check each open tab (not just the main one).
+      // https://github.com/processing/processing/issues/2506
+      for (SketchCode tab : editor.getSketch().getCode()) {
+        if (tab.getFile().equals(pdeFile)) {
+          editor.toFront();
+          // move back to the top of the recent list
+          Recent.append(editor);
+          return editor;
+        }
+      }
+    }
 
+    File parentFolder = pdeFile.getParentFile();
 
-  /**
-   * Open a sketch in a new window.
-   * @param path Path to the pde file for the sketch in question
-   * @return the Editor object, so that properties (like 'untitled')
-   *         can be set by the caller
-   */
-  public Editor handleOpen(String path, boolean untitled) {
-    return handleOpen(path, untitled, EditorState.nextEditor(editors));
-  }
-
-
-  protected Editor handleOpen(String path, boolean untitled,
-                              EditorState state) {
     try {
-      // System.err.println("entering handleOpen " + path);
+      // read the sketch.properties file or get an empty Settings object
+      Settings props = Sketch.loadProperties(parentFolder);
+      if (!props.isEmpty()) {
+        // First check for the Mode, because it may not even be available
+        String modeIdentifier = props.get("mode.id");
+        if (modeIdentifier != null) {
+          if (modeIdentifier.equals("galsasson.mode.tweak.TweakMode")) {
+            // Tweak Mode has been built into Processing since 2015,
+            // but there are some old sketch.properties files out there.
+            // https://github.com/processing/processing4/issues/415
+            nextMode = getDefaultMode();
 
-      final File file = new File(path);
-      if (!file.exists()) {
+            // Clean up sketch.properties and re-save or remove if necessary
+            props.remove("mode");
+            props.remove("mode.id");
+            props.reckon();
+
+          } else {
+            // sketch.properties specifies a Mode, see if it's available
+            Mode mode = findMode(modeIdentifier);
+            if (mode != null) {
+              nextMode = mode;
+            } else {
+              ContributionManager.openModes();
+              Messages.showWarning("Missing Mode",
+                "You must first install " + props.get("mode") + " Mode to use this sketch.");
+              return null;
+            }
+          }
+        }
+
+        String main = props.get("main");
+        if (main != null) {
+          // this may be exactly what was passed, but override anyway
+          String mainPath = new File(parentFolder, main).getAbsolutePath();
+          if (!path.equals(mainPath)) {
+            // for now, post a warning if the main was different
+            System.out.println(path + " selected, but main is " + mainPath);
+          }
+          return handleOpenInternal(mainPath, false);
+        }
+      } else {
+        // Switch back to defaultMode, because a sketch.properties
+        // file is required whenever not using the default Mode.
+        // (Unless being called from, say, the Examples frame, which
+        // uses a version of this function that takes a Mode object.)
+        nextMode = getDefaultMode();
+      }
+
+      // Do some checks to make sure the file can be opened, and identify the
+      // Mode that it's using. (In 4.0b8, this became the fall-through case.)
+
+      if (!Sketch.isSanitaryName(pdeFile.getName())) {
+        Messages.showWarning("You're tricky, but not tricky enough",
+          pdeFile.getName() + " is not a valid name for sketch code.\n" +
+          "Better to stick to ASCII, no spaces, and make sure\n" +
+          "it doesn't start with a number.", null);
         return null;
       }
 
-      // Cycle through open windows to make sure that it's not already open.
-      for (Editor editor : editors) {
-        // User may have double-clicked any PDE in the sketch folder,
-        // so we have to check each open tab (not just the main one).
-        // https://github.com/processing/processing/issues/2506
-        for (SketchCode tab : editor.getSketch().getCode()) {
-          if (tab.getFile().equals(file)) {
-            editor.toFront();
-            // move back to the top of the recent list
-            Recent.append(editor);
-            return editor;
+      // Check if the name of the file matches the parent folder name.
+      String baseName = pdeFile.getName();
+      int dot = baseName.lastIndexOf('.');
+      if (dot == -1) {
+        // Shouldn't really be possible, right?
+        System.err.println(pdeFile + " does not have an extension.");
+        return null;
+      }
+      baseName = baseName.substring(0, dot);
+      if (!baseName.equals(parentFolder.getName())) {
+        // Parent folder name does not match, and because sketch.properties
+        // did not exist or did not specify it above, need to determine main.
+
+        // Check whether another .pde file has a matching name, and if so,
+        // switch to using that instead. Handles when a user selects a .pde
+        // file in the open dialog box that isn't the main tab.
+        // (Also important to use nextMode here, because the Mode
+        // may be set by sketch.properties when it's loaded above.)
+        String filename =
+          parentFolder.getName() + "." + nextMode.getDefaultExtension();
+        File mainFile = new File(parentFolder, filename);
+        if (mainFile.exists()) {
+          // User was opening the wrong file in a legit sketch folder.
+          pdeFile = mainFile;
+
+        } else if (smellsLikeSketchFolder(parentFolder)) {
+          // Looks like a sketch folder, set this as the main.
+          props.set("main", pdeFile.getName());
+          // Save for later use, then fall through.
+          props.save();
+
+        } else {
+          // If it's not an obvious sketch folder (just .pde files,
+          // maybe a data folder) prompt the user whether to
+          // 1) move sketch into its own folder, or
+          // 2) call this the main, and write sketch.properties.
+          File newFile = moveLikeSketchFolder(pdeFile, baseName);
+
+          if (newFile == pdeFile) {
+            // User wanted to keep this sketch folder, so update the
+            // property for the main tab and write sketch.properties.
+            props.set("main", newFile.getName());
+            props.save();
+
+          } else if (newFile == null) {
+            // User canceled, so exit handleOpen()
+            return null;
+
+          } else {
+            // User asked to move the sketch file
+            pdeFile = newFile;
           }
         }
       }
 
-      if (!Sketch.isSanitaryName(file.getName())) {
-        Messages.showWarning("You're tricky, but not tricky enough",
-                             file.getName() + " is not a valid name for a sketch.\n" +
-                             "Better to stick to ASCII, no spaces, and make sure\n" +
-                             "it doesn't start with a number.", null);
-        return null;
-      }
+      // TODO Remove this selector? Seems too messy/precious. [fry 220205]
+      //      Opting to remove in beta 7, because sketches that use another
+      //      Mode should have a working sketch.properties. [fry 220302]
+      /*
+      // If the current Mode cannot open this file, try to find another.
+      if (!nextMode.canEdit(pdeFile)) {
 
-      if (!nextMode.canEdit(file)) {
-        final Mode mode = selectMode(file);
+        final Mode mode = promptForMode(pdeFile);
         if (mode == null) {
           return null;
         }
         nextMode = mode;
       }
+      */
+      return handleOpenInternal(pdeFile.getAbsolutePath(), false);
 
+    } catch (IOException e) {
+      Messages.showWarning("sketch.properties",
+        "Error while reading sketch.properties from\n" + parentFolder, e);
+      return null;
+    }
+  }
+
+
+  /**
+   * Open a (vetted) sketch location using a particular Mode. Used by the
+   * Examples window, because Modes like Python and Android do not have
+   * "sketch.properties" files in each example folder.
+   */
+  public Editor handleOpen(String path, Mode mode) {
+    nextMode = mode;
+    return handleOpenInternal(path, false);
+  }
+
+
+  /**
+   * Open the sketch associated with this .pde file in a new window
+   * as an "Untitled" sketch.
+   * @param path Path to the pde file for the sketch in question
+   * @return the Editor object, so that properties (like 'untitled')
+   *         can be set by the caller
+   */
+  protected Editor handleOpenUntitled(String path) {
+    return handleOpenInternal(path, true);
+  }
+
+
+  /**
+   * Internal function to actually open the sketch. At this point, the
+   * sketch file/folder must have been vetted, and nextMode set properly.
+   */
+  protected Editor handleOpenInternal(String path, boolean untitled) {
+    try {
       try {
+        EditorState state = EditorState.nextEditor(editors);
         Editor editor = nextMode.createEditor(this, path, state);
 
-        editor.setUpdatesAvailable(updatesAvailable);
-
         // opened successfully, let's go to work
+        editor.setUpdatesAvailable(updatesAvailable);
         editor.getSketch().setUntitled(untitled);
         editors.add(editor);
         Recent.append(editor);
@@ -1462,10 +1734,10 @@ public class Base {
         if (ee.getMessage() != null) {  // null if the user canceled
           Messages.showWarning("Error opening sketch", ee.getMessage(), ee);
         }
-      } catch (NoSuchMethodError nsme) {
+      } catch (NoSuchMethodError me) {
         Messages.showWarning("Mode out of date",
                              nextMode.getTitle() + " is not compatible with this version of Processing.\n" +
-                             "Try updating the Mode or contact its author for a new version.", nsme);
+                             "Try updating the Mode or contact its author for a new version.", me);
       } catch (Throwable t) {
         if (nextMode.equals(getDefaultMode())) {
           Messages.showTrace("Serious Problem",
@@ -1502,24 +1774,6 @@ public class Base {
           }
         }
       }
-
-      /*
-        if (editors.isEmpty()) {
-          // if the bad mode is the default mode, don't go into an infinite loop
-          // trying to recreate a window with the default mode.
-          Mode defaultMode = getDefaultMode();
-          if (nextMode == defaultMode) {
-            Base.showError("Editor Problems",
-                           "An error occurred while trying to change modes.\n" +
-                           "We'll have to quit for now because it's an\n" +
-                           "unfortunate bit of indigestion with the default Mode.",
-                           null);
-          } else {
-            editor = defaultMode.createEditor(this, path, state);
-          }
-        }
-      */
-
     } catch (Throwable t) {
       Messages.showTrace("Terrible News",
                          "A serious error occurred while " +
@@ -1537,13 +1791,12 @@ public class Base {
   /**
    * Close a sketch as specified by its editor window.
    * @param editor Editor object of the sketch to be closed.
-   * @param modeSwitch Whether this close is being done in the context of a
-   *      mode switch.
+   * @param preventQuit For platforms that must have a window open,
+   *                    prevent a quit because a new window will be opened
+   *                    (i.e. when upgrading or changing the Mode)
    * @return true if succeeded in closing, false if canceled.
    */
-  public boolean handleClose(Editor editor, boolean modeSwitch) {
-    // Check if modified
-//    boolean immediate = editors.size() == 1;
+  public boolean handleClose(Editor editor, boolean preventQuit) {
     if (!editor.checkModified()) {
       return false;
     }
@@ -1551,28 +1804,16 @@ public class Base {
     // Close the running window, avoid window boogers with multiple sketches
     editor.internalCloseRunner();
 
-//    System.out.println("editors size is " + editors.size());
     if (editors.size() == 1) {
-      // For 0158, when closing the last window /and/ it was already an
-      // untitled sketch, just give up and let the user quit.
-//      if (Preferences.getBoolean("sketchbook.closing_last_window_quits") ||
-//          (editor.untitled && !editor.getSketch().isModified())) {
       if (Platform.isMacOS()) {
         // If the central menu bar isn't supported on this macOS JVM,
         // we have to do the old behavior. Yuck!
         if (defaultFileMenu == null) {
           Object[] options = { Language.text("prompt.ok"), Language.text("prompt.cancel") };
-          String prompt =
-            "<html> " +
-            "<head> <style type=\"text/css\">"+
-            "b { font: 13pt \"Lucida Grande\" }"+
-            "p { font: 11pt \"Lucida Grande\"; margin-top: 8px; width: 300px }"+
-            "</style> </head>" +
-            "<b>Are you sure you want to Quit?</b>" +
-            "<p>Closing the last open sketch will quit Processing.";
 
           int result = JOptionPane.showOptionDialog(editor,
-            prompt,
+            Toolkit.formatMessage("Are you sure you want to Quit?",
+                "Closing the last open sketch will quit Processing."),
             "Quit",
             JOptionPane.YES_NO_OPTION,
             JOptionPane.QUESTION_MESSAGE,
@@ -1586,19 +1827,20 @@ public class Base {
         }
       }
 
+      /*
+      // wow, this is wrong (should only be called after the last window)
+      // but also outdated, because it's instance_server.* not server.*
+      // and Preferences.save() is also about restoring sketches.
+
       Preferences.unset("server.port"); //$NON-NLS-1$
       Preferences.unset("server.key"); //$NON-NLS-1$
 
-//      // This will store the sketch count as zero
-//      editors.remove(editor);
-//      System.out.println("editors size now " + editors.size());
-//      storeSketches();
-
       // Save out the current prefs state
       Preferences.save();
+       */
 
       if (defaultFileMenu == null) {
-        if (modeSwitch) {
+        if (preventQuit) {
           // need to close this editor, ever so temporarily
           editor.setVisible(false);
           editor.dispose();
@@ -1698,18 +1940,68 @@ public class Base {
   }
 
 
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  protected SketchbookFrame sketchbookFrame;
+
+  public DefaultMutableTreeNode buildSketchbookTree() {
+    DefaultMutableTreeNode sbNode =
+      new DefaultMutableTreeNode(Language.text("sketchbook.tree"));
+    try {
+      addSketches(sbNode, Base.getSketchbookFolder(), false);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return sbNode;
+  }
+
+
+  /** Sketchbook has changed, update it on next viewing. */
+  public void rebuildSketchbookFrame() {
+    if (sketchbookFrame != null) {
+      sketchbookFrame.rebuild();
+      /*
+      boolean visible = sketchbookFrame.isVisible();
+      Rectangle bounds = null;
+      if (visible) {
+        bounds = sketchbookFrame.getBounds();
+        sketchbookFrame.setVisible(false);
+        sketchbookFrame.dispose();
+      }
+      sketchbookFrame = null;
+      if (visible) {
+        showSketchbookFrame();
+        sketchbookFrame.setBounds(bounds);
+      }
+      */
+    }
+  }
+
+
+  public void showSketchbookFrame() {
+    if (sketchbookFrame == null) {
+      sketchbookFrame = new SketchbookFrame(this);
+    }
+    sketchbookFrame.setVisible();
+  }
+
+
   /**
    * Synchronous version of rebuild, used when the sketchbook folder has
    * changed, so that the libraries are properly re-scanned before those menus
    * (and the examples window) are rebuilt.
    */
-  protected void rebuildSketchbookMenus() {
+  public void rebuildSketchbook() {
     for (Mode mode : getModeList()) {
       mode.rebuildImportMenu();  // calls rebuildLibraryList
       mode.rebuildToolbarMenu();
       mode.rebuildExamplesFrame();
-      mode.rebuildSketchbookFrame();
     }
+    // Unlike libraries, examples, etc. the sketchbook is global
+    // (because you need to be able to open sketches from the Mode
+    // that you're not currently using).
+    rebuildSketchbookFrame();
   }
 
 
@@ -1736,7 +2028,7 @@ public class Base {
    * sketch should open in a new window.
    */
   protected boolean addSketches(JMenu menu, File folder) {
-    // skip .DS_Store files, etc (this shouldn't actually be necessary)
+    // skip .DS_Store files, etc. (this shouldn't actually be necessary)
     if (!folder.isDirectory()) {
       return false;
     }
@@ -1746,7 +2038,7 @@ public class Base {
     }
 
     if (folder.getName().equals("sdk")) {
-      // This could be Android's SDK folder. Let's double check:
+      // This could be Android's SDK folder. Let's double-check:
       File suspectSDKPath = new File(folder.getParent(), folder.getName());
       File expectedSDKPath = new File(sketchbookFolder, "android" + File.separator + "sdk");
       if (expectedSDKPath.getAbsolutePath().equals(suspectSDKPath.getAbsolutePath())) {
@@ -1792,7 +2084,7 @@ public class Base {
       File entry = new File(folder, name);
       File sketchFile = null;
       if (entry.isDirectory()) {
-        sketchFile = checkSketchFolder(entry);
+        sketchFile = Sketch.findMain(entry, getModeList());
       } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
         name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
         sketchFile = entry;
@@ -1826,7 +2118,7 @@ public class Base {
    */
   public boolean addSketches(DefaultMutableTreeNode node, File folder,
                              boolean examples) throws IOException {
-    // skip .DS_Store files, etc (this shouldn't actually be necessary)
+    // skip .DS_Store files, etc. (this shouldn't actually be necessary)
     if (!folder.isDirectory()) {
       return false;
     }
@@ -1871,7 +2163,7 @@ public class Base {
       File entry = new File(folder, name);
       File sketchFile = null;
       if (entry.isDirectory()) {
-        sketchFile = checkSketchFolder(entry);
+        sketchFile = Sketch.findMain(entry, getModeList());
       } else if (name.toLowerCase().endsWith(SKETCH_BUNDLE_EXT)) {
         name = name.substring(0, name.length() - SKETCH_BUNDLE_EXT.length());
         sketchFile = entry;
@@ -1899,21 +2191,33 @@ public class Base {
   }
 
 
-  /**
-   * Check through the various modes and see if this is a legit sketch.
-   * Because the default mode will be the first in the list, this will always
-   * prefer that one over the others.
-   */
-  private File checkSketchFolder(File folder) {
-    for (Mode mode : getModeList()) {
+  /*
+  static private Mode findSketchMode(File folder, List<Mode> modeList) {
+    try {
+      Settings props = Sketch.loadProperties(folder);
+      if (props != null) {
+        String id = props.get("mode.id");
+        if (id != null) {
+          Mode mode = findMode(id);
+          if (mode != null) {
+            return mode;
+          }
+        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    for (Mode mode : modeList) {
       // Test whether a .pde file of the same name as its parent folder exists.
-      File entry = new File(folder, folder.getName() + "." + mode.getDefaultExtension()); //$NON-NLS-1$
+      String defaultName = folder.getName() + "." + mode.getDefaultExtension();
+      File entry = new File(folder, defaultName);
       if (entry.exists()) {
-        return entry;
+        return mode;
       }
     }
     return null;
   }
+  */
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
@@ -1953,7 +2257,8 @@ public class Base {
   /**
    * Get the directory that can store settings. (Library on OS X, App Data or
    * something similar on Windows, a dot folder on Linux.) Removed this as a
-   * preference for 3.0a3 because we need this to be stable.
+   * preference for 3.0a3 because we need this to be stable, but adding back
+   * for 4.0 beta 4 so that folks can do 'portable' versions again.
    */
   static public File getSettingsFolder() {
     File settingsFolder = null;
@@ -1977,6 +2282,11 @@ public class Base {
                          e, true);
     }
     return settingsFolder;
+  }
+
+
+  static public File getSettingsOverride() {
+    return settingsOverride;
   }
 
 
@@ -2033,7 +2343,7 @@ public class Base {
   public void setSketchbookFolder(File folder) {
     sketchbookFolder = folder;
     Preferences.setSketchbookPath(folder.getAbsolutePath());
-    rebuildSketchbookMenus();
+    rebuildSketchbook();
     makeSketchbookSubfolders();
   }
 

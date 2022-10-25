@@ -1,35 +1,63 @@
 <?xml version="1.0"?>
 <project name="Movie Maker Tool" default="build">
 
-  <!-- set things up to make sure we have necessary ffmpeg files -->
+  <!--
+  Determine the variant name based on how the names work at our source:
+  https://github.com/eugeneware/ffmpeg-static/releases/download/b5.0.1/darwin-arm64.gz
+  i.e. darwin-x64, darwin-arm64, win32-x64, linux-x64, linux-arm, linux-arm64
+  -->
 
-  <condition property="platform" value="macos">
-    <os family="mac" />
-  </condition>
-
-  <condition property="platform" value="windows">
-    <os family="windows" />
-  </condition>
-
-  <condition property="platform" value="linux">
+  <condition property="ffmpeg.variant" value="darwin-x64">
     <and>
-      <os family="unix" />
-      <not>
-        <os family="mac" />
-      </not>
+      <os family="mac" />
+      <equals arg1="${os.arch}" arg2="x86_64" />
     </and>
   </condition>
 
+  <condition property="ffmpeg.variant" value="darwin-arm64">
+    <and>
+      <os family="mac" />
+      <equals arg1="${os.arch}" arg2="aarch64" />
+    </and>
+  </condition>
+
+  <condition property="ffmpeg.variant" value="win32-x64">
+    <os family="windows" />
+  </condition>
+
+  <condition property="ffmpeg.variant" value="linux-x64">
+    <and>
+      <os family="unix" />
+      <equals arg1="${os.arch}" arg2="amd64" />
+    </and>
+  </condition>
+
+  <condition property="ffmpeg.variant" value="linux-arm">
+    <and>
+      <os family="unix" />
+      <equals arg1="${os.arch}" arg2="arm" />
+    </and>
+  </condition>
+
+  <condition property="ffmpeg.variant" value="linux-arm64">
+    <and>
+      <os family="unix" />
+      <equals arg1="${os.arch}" arg2="aarch64" />
+    </and>
+  </condition>
+
+
+  <!-- Windows needs .exe on the end of the local filename -->
   <condition property="ffmpeg.binary" value="tool/ffmpeg.exe" else="tool/ffmpeg">
     <os family="windows" />
   </condition>
 
-  <property name="ffmpeg.version" value="4.4" />
+  <property name="ffmpeg.version" value="5.0.1" />
   <!-- Using download.processing.org because the static builds are
        from several locations, and are all packaged differently.
        This could be automated, but too much effort relative to utility. -->
   <property name="ffmpeg.url"
-            value="https://download.processing.org/ffmpeg/${ffmpeg.version}/ffmpeg-${platform}-${os.arch}.gz" />
+            value="https://github.com/eugeneware/ffmpeg-static/releases/download/b${ffmpeg.version}/${ffmpeg.variant}.gz" />
 
   <property name="ffmpeg.gz" value="ffmpeg-${ffmpeg.version}.gz" />
   <available file="${ffmpeg.gz}" property="ffmpeg.present" />

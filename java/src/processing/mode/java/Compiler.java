@@ -63,8 +63,8 @@ public class Compiler {
       "-g",
       "-Xemacs",
       //"-noExit",  // not necessary for ecj
-      "-source", "11",
-      "-target", "11",
+      "-source", "11",  // TODO: 17 if using new language features
+      "-target", "11",  // TODO: 17 if using new language features
       "-encoding", "utf8",
       "-classpath", classpathEmptyRemoved,
       "-nowarn", // we're not currently interested in warnings (works in ecj)
@@ -133,7 +133,7 @@ public class Compiler {
 
         // get first line, which contains file name, line number,
         // and at least the first line of the error message
-        String errorFormat = "([\\w\\d_]+.java):(\\d+):\\s*(.*):\\s*(.*)\\s*";
+        String errorFormat = "([\\w\\d_]+\\.java):(\\d+):\\s*([^:]*):\\s*(.*)\\s*";
         String[] pieces = PApplet.match(line, errorFormat);
         //PApplet.println(pieces);
 

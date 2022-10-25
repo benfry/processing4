@@ -25,11 +25,8 @@ package processing.app.ui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Cursor;
-import java.awt.FlowLayout;
+import java.awt.Container;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -38,13 +35,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
@@ -65,6 +61,7 @@ import processing.app.contrib.Contribution;
 import processing.app.contrib.ContributionManager;
 import processing.app.contrib.ContributionType;
 import processing.app.contrib.ExamplesContribution;
+
 import processing.core.PApplet;
 import processing.data.StringDict;
 
@@ -85,31 +82,11 @@ public class ExamplesFrame extends JFrame {
     examplesContribFolder = Base.getSketchbookExamplesFolder();
 
     Toolkit.setIcon(this);
-    Toolkit.registerWindowCloseKeys(getRootPane(), new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        setVisible(false);
-      }
-    });
+    Toolkit.registerWindowCloseKeys(getRootPane(), e -> setVisible(false));
 
     JPanel examplesPanel = new JPanel();
     examplesPanel.setLayout(new BorderLayout());
     examplesPanel.setBackground(Color.WHITE);
-
-    final JPanel openExamplesManagerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    JButton addExamplesButton = new JButton(Language.text("examples.add_examples"));
-    openExamplesManagerPanel.add(addExamplesButton);
-    openExamplesManagerPanel.setOpaque(false);
-    Border lineBorder = BorderFactory.createMatteBorder(0, 0, 1, 0, Color.LIGHT_GRAY);
-    Border paddingBorder = BorderFactory.createEmptyBorder(3, 5, 1, 4);
-    openExamplesManagerPanel.setBorder(BorderFactory.createCompoundBorder(lineBorder, paddingBorder));
-    openExamplesManagerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    openExamplesManagerPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    addExamplesButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openExamples();
-      }
-    });
 
     final JTree tree = new JTree(buildTree());
 
@@ -124,7 +101,7 @@ public class ExamplesFrame extends JFrame {
     tree.setRootVisible(false);
 
     // After 2.0a7, no longer expanding each of the categories at Casey's
-    // request. He felt that the window was too complicated too quickly.
+    // request. He felt that the window was too complicated, too quickly.
 //      for (int row = tree.getRowCount()-1; row >= 0; --row) {
 //        tree.expandRow(row);
 //      }
@@ -140,7 +117,7 @@ public class ExamplesFrame extends JFrame {
           //if (node != null && node.isLeaf() && node.getPath().equals(selPath)) {
           if (node != null && node.isLeaf() && selRow != -1) {
             SketchReference sketch = (SketchReference) node.getUserObject();
-            base.handleOpen(sketch.getPath());
+            base.handleOpen(sketch.getPath(), mode);
           }
         }
       }
@@ -157,7 +134,7 @@ public class ExamplesFrame extends JFrame {
             (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
           if (node != null && node.isLeaf()) {
             SketchReference sketch = (SketchReference) node.getUserObject();
-            base.handleOpen(sketch.getPath());
+            base.handleOpen(sketch.getPath(), mode);
           }
         }
       }
@@ -176,13 +153,9 @@ public class ExamplesFrame extends JFrame {
     });
 
     tree.setBorder(new EmptyBorder(0, 5, 5, 5));
-    if (Platform.isMacOS()) {
-      tree.setToggleClickCount(2);
-    } else {
-      tree.setToggleClickCount(1);
-    }
+    tree.setToggleClickCount(Platform.isMacOS() ? 2 : 1);
 
-    // Special cell renderer that takes the UI zoom into account
+    // Special cell renderer that takes the Toolkit zoom setting into account
     tree.setCellRenderer(new ZoomTreeCellRenderer());
 
     JScrollPane treePane = new JScrollPane(tree);
@@ -192,8 +165,19 @@ public class ExamplesFrame extends JFrame {
     treePane.setBackground(Color.WHITE);
     treePane.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-    examplesPanel.add(openExamplesManagerPanel,BorderLayout.PAGE_START);
+    //examplesPanel.add(openExamplesManagerPanel,BorderLayout.PAGE_START);
     examplesPanel.add(treePane, BorderLayout.CENTER);
+
+    Container buttons = Box.createHorizontalBox();
+    JButton addButton = new JButton(Language.text("examples.add_examples"));
+    addButton.addActionListener(e -> ContributionManager.openExamples());
+    buttons.add(Box.createHorizontalGlue());
+    buttons.add(addButton);
+    buttons.add(Box.createHorizontalGlue());
+
+    JPanel buttonPanel = new JPanel();  // adds extra border
+    buttonPanel.add(buttons);
+    examplesPanel.add(buttonPanel, BorderLayout.SOUTH);
 
     getContentPane().add(examplesPanel);
     pack();
@@ -204,29 +188,32 @@ public class ExamplesFrame extends JFrame {
   public void setVisible() {
     // Space for the editor plus a li'l gap
     int roughWidth = getWidth() + 20;
-    Point p = null;
     // If no window open, or the editor is at the edge of the screen
     Editor editor = base.getActiveEditor();
-    if (editor == null ||
-        (p = editor.getLocation()).x < roughWidth) {
-      // Center the window on the screen
+    if (editor == null) {
       setLocationRelativeTo(null);
     } else {
-      // Open the window relative to the editor
-      setLocation(p.x - roughWidth, p.y);
+      Point p = editor.getLocation();
+      if (p.x < roughWidth) {
+        // Center the window on the screen
+        setLocationRelativeTo(null);
+      } else {
+        // Open the window relative to the editor
+        setLocation(p.x - roughWidth, p.y);
+      }
     }
     setVisible(true);
   }
 
 
   protected void updateExpanded(JTree tree) {
-    Enumeration en = tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot()));
+    Enumeration<TreePath> en =
+      tree.getExpandedDescendants(new TreePath(tree.getModel().getRoot()));
     //en.nextElement();  // skip the root "Examples" node
 
     StringBuilder s = new StringBuilder();
     while (en.hasMoreElements()) {
-      //System.out.println(en.nextElement());
-      TreePath tp = (TreePath) en.nextElement();
+      TreePath tp = en.nextElement();
       Object[] path = tp.getPath();
       for (Object o : path) {
         DefaultMutableTreeNode p = (DefaultMutableTreeNode) o;
@@ -358,10 +345,10 @@ public class ExamplesFrame extends JFrame {
       new DefaultMutableTreeNode(Language.text("examples.contributed"));
 
     try {
-      File[] subfolders =
+      File[] folders =
         ContributionType.EXAMPLES.listCandidates(examplesContribFolder);
-      if (subfolders != null) {
-        for (File sub : subfolders) {
+      if (folders != null) {
+        for (File sub : folders) {
           StringDict props =
             Contribution.loadProperties(sub, ContributionType.EXAMPLES);
           if (props != null) {
@@ -371,8 +358,8 @@ public class ExamplesFrame extends JFrame {
               if (base.addSketches(subNode, sub, true)) {
                 contribExamplesNode.add(subNode);
 
-                // TODO there has to be a simpler way of handling this along
-                // with addSketches() as well [fry 150811]
+                // TODO there has to be a simpler way of handling this
+                //      along with addSketches() as well [fry 150811]
                 int exampleNodeNumber = -1;
                 // The contrib may have other items besides the examples folder
                 for (int i = 0; i < subNode.getChildCount(); i++) {
@@ -388,12 +375,6 @@ public class ExamplesFrame extends JFrame {
                     subNode.add((DefaultMutableTreeNode) exampleNode.getChildAt(0));
                   }
                 }
-
-//                if (subNode.getChildCount() != 1) {
-//                  System.err.println("more children than expected when one is enough");
-//                }
-//                TreeNode exampleNode = subNode.getChildAt(0);
-//                subNode.add((DefaultMutableTreeNode) exampleNode.getChildAt(0));
               }
             }
           }

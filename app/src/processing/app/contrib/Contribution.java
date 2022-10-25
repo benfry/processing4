@@ -23,7 +23,8 @@ package processing.app.contrib;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import processing.core.PApplet;
 import processing.data.StringDict;
@@ -38,19 +39,20 @@ abstract public class Contribution {
   static final String MODES_PROPERTY = "modes";
   static final String AUTHORS_PROPERTY = "authors";
 
-  static final String SPECIAL_CATEGORY = "Starred";
   static final String UNKNOWN_CATEGORY = "Unknown";
-  static final List validCategories =
-    Arrays.asList("3D", "Animation", "Data", "Geometry", "GUI", "Hardware",
-                  "I/O", "Math", "Simulation", "Sound", SPECIAL_CATEGORY,
-                  "Typography", "Utilities", "Video & Vision", "Other");
+  static final Set<String> validCategories =
+    new HashSet<>(Arrays.asList(
+      "3D", "Animation", "Data", "Geometry", "GUI", "Hardware",
+      "I/O", "Math", "Renderer", "Simulation", "Sound",
+      "Typography", "Utilities", "Video & Vision", "Other"
+    ));
 
   static final String FOUNDATION_AUTHOR = "The Processing Foundation";
 
   protected StringList categories;  // "Sound", "Typography"
   protected String name;            // "pdf" or "PDF Export"
   protected String authors;         // [Ben Fry](http://benfry.com)
-  protected String url;             // http://processing.org
+  protected String url;             // https://processing.org
   protected String sentence;        // Write graphics to PDF files.
   protected String paragraph;       // <paragraph length description for site>
   protected int version;            // 102
@@ -95,21 +97,8 @@ abstract public class Contribution {
     return imports;
   }
 
-/*
-  protected String getImportStr() {
-    if (imports == null || imports.isEmpty()) {
-      return "";
-    }
-    StringBuilder sb = new StringBuilder();
-    for (String importName : imports) {
-      sb.append(importName);
-      sb.append(',');
-    }
-    sb.deleteCharAt(sb.length() - 1); // delete last comma
-    return sb.toString();
-  }
-*/
 
+  /*
   protected boolean hasImport(String importName) {
     if (imports != null && importName != null) {
       for (String c : imports) {
@@ -120,6 +109,7 @@ abstract public class Contribution {
     }
     return false;
   }
+  */
 
 
   // "pdf" or "PDF Export"
@@ -241,32 +231,18 @@ abstract public class Contribution {
 
 
   /**
-   * Returns true if the contribution is a starred/recommended contribution,
-   * or is by the Processing Foundation.
+   * Returns true if the contrib is from the Processing Foundation.
    */
-  boolean isSpecial() {
-    if (authors != null &&
-        authors.contains(FOUNDATION_AUTHOR)) {
-      return true;
-    }
-
-    if (categories != null &&
-        categories.hasValue(SPECIAL_CATEGORY)) {
-      return true;
-    }
-
-    return false;
-  }
-
-
   public boolean isFoundation() {
     return FOUNDATION_AUTHOR.equals(authors);
   }
 
 
+  /*
   public StringDict loadProperties(File contribFolder) {
     return loadProperties(contribFolder, getType());
   }
+  */
 
 
   static public StringDict loadProperties(File contribFolder,
@@ -278,13 +254,6 @@ abstract public class Contribution {
     return null;
   }
 
-  /**
-   * @return a single element list with "Unknown" as the category.
-   */
-  static StringList unknownCategoryList() {
-    return new StringList(UNKNOWN_CATEGORY);
-  }
-
 
   /**
    * @return the list of categories that this contribution is part of
@@ -294,9 +263,6 @@ abstract public class Contribution {
     StringList outgoing = new StringList();
 
     String categoryStr = properties.get(CATEGORIES_PROPERTY);
-    if (categoryStr == null) {
-      categoryStr = properties.get("category");  // try the old way
-    }
     if (categoryStr != null) {
       // Can't use splitTokens() because the names sometimes have spaces
       String[] listing = PApplet.trim(PApplet.split(categoryStr, ','));
@@ -308,7 +274,7 @@ abstract public class Contribution {
       }
     }
     if (outgoing.size() == 0) {
-      return unknownCategoryList();
+      outgoing.append(UNKNOWN_CATEGORY);
     }
     return outgoing;
   }
@@ -373,15 +339,22 @@ abstract public class Contribution {
 
     if (o instanceof Contribution) {
       Contribution that = (Contribution) o;
-      return name.toLowerCase().equals(that.name.toLowerCase());
+      return name.equalsIgnoreCase(that.name);
     }
     return false;
   }
 
 
+  // TODO remove this because it hides actual differences in objects
   @Override
   public int hashCode() {
     return name.toLowerCase().hashCode();
+  }
+
+
+  @Override
+  public String toString() {
+    return getName() + " @" + Integer.toHexString(super.hashCode());
   }
 
 

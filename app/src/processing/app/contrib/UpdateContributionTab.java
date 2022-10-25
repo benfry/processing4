@@ -1,19 +1,32 @@
+/* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
+
+/*
+  Part of the Processing project - https://processing.org
+
+  Copyright (c) 2015-22 The Processing Foundation
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License version 2
+  as published by the Free Software Foundation.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.
+  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 package processing.app.contrib;
 
-import java.awt.Color;
-
 import javax.swing.GroupLayout;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
-
-import processing.app.ui.Toolkit;
 
 
 public class UpdateContributionTab extends ContributionTab {
 
   public UpdateContributionTab(ManagerFrame dialog) {
-    super();
-    this.contribDialog = dialog;
+    super(dialog);
 
     filter = contrib -> {
       if (contrib instanceof ListPanel.SectionHeaderContribution) {
@@ -24,34 +37,34 @@ public class UpdateContributionTab extends ContributionTab {
       }
       return false;
     };
-    contributionListPanel = new UpdateListPanel(this, filter);
-//    contributionListPanel.setBorder(new EmptyBorder(8, 8, 8, 8));
+    listPanel = new UpdateListPanel(this, filter);
 
-    statusPanel = new UpdateStatusPanel(this, 650);
-    contribListing = ContributionListing.getInstance();
-    contribListing.addListener(contributionListPanel);
+    statusPanel = new UpdateStatusPanel(this);
+    ContributionListing.getInstance().addListPanel(listPanel);
   }
 
 
   @Override
-  protected void setLayout(boolean error, boolean loading) {
-    if (progressBar == null) {
-      progressBar = new JProgressBar();
-      progressBar.setVisible(false);
+  protected void setLayout() {
+    /*
+    if (loaderLabel == null) {
+//    if (progressBar == null) {
+//      progressBar = new JProgressBar();
+//      progressBar.setVisible(false);
 
       buildErrorPanel();
 
       loaderLabel = new JLabel(Toolkit.getLibIcon("manager/loader.gif"));
       loaderLabel.setOpaque(false);
-//      loaderLabel.setBackground(Color.WHITE);
     }
+    */
 
     GroupLayout layout = new GroupLayout(this);
     setLayout(layout);
     layout.setHorizontalGroup(layout
       .createParallelGroup(GroupLayout.Alignment.CENTER)
       .addComponent(loaderLabel)
-      .addComponent(contributionListPanel)
+      .addComponent(listPanel)
       .addComponent(errorPanel)
       .addComponent(statusPanel));
 
@@ -59,17 +72,18 @@ public class UpdateContributionTab extends ContributionTab {
       .createSequentialGroup()
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                   .addComponent(loaderLabel)
-                  .addComponent(contributionListPanel))
+                  .addComponent(listPanel))
       .addComponent(errorPanel)
       .addComponent(statusPanel, GroupLayout.PREFERRED_SIZE,
                     GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE));
-    layout.setHonorsVisibility(contributionListPanel, false);
+    layout.setHonorsVisibility(listPanel, false);
 
-    setBackground(Color.WHITE);
+    //setBackground(Color.WHITE);
   }
 
+
   @Override
-  public void updateStatusPanel(DetailPanel contributionPanel) {
+  public void updateStatusDetail(StatusDetail detail) {
     // Do nothing
   }
 }

@@ -13,10 +13,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import processing.mode.java.TextTransform.Edit;
-import processing.mode.java.preproc.PdePreprocessor;
+
 
 public class SourceUtil {
 
+  // No longer needed with use of ANTLR in the preprocessor service.
+  private static final boolean PERFORM_SOURCE_UTIL_TRANSFORMS = false;
 
   public static final Pattern IMPORT_REGEX =
       Pattern.compile("(?:^|;)\\s*(import\\s+(?:(static)\\s+)?((?:\\w+\\s*\\.)*)\\s*(\\S+)\\s*;)",
@@ -36,6 +38,7 @@ public class SourceUtil {
     return result;
   }
 
+  /*
   public static List<Edit> parseProgramImports(CharSequence source,
                                                List<ImportStatement> outImports) {
     List<Edit> result = new ArrayList<>();
@@ -52,7 +55,7 @@ public class SourceUtil {
     }
     return result;
   }
-
+  */
 
 
   // Positive lookahead and lookbehind are needed to match all type constructors
@@ -82,7 +85,6 @@ public class SourceUtil {
   }
 
 
-
   public static final Pattern HEX_LITERAL_REGEX =
       Pattern.compile("(?<=^|\\W)(#[A-Fa-f0-9]{6})(?=\\W|$)");
 
@@ -101,54 +103,12 @@ public class SourceUtil {
   }
 
 
-
-  public static List<Edit> insertImports(List<ImportStatement> imports) {
-    List<Edit> result = new ArrayList<>();
-    for (ImportStatement imp : imports) {
-      result.add(Edit.insert(0, imp.getFullSourceLine() + "\n"));
-    }
-    return result;
-  }
-
-  public static List<Edit> wrapSketch(PdePreprocessor.Mode mode, String className, int sourceLength) {
-
-    List<Edit> edits = new ArrayList<>();
-
-    StringBuilder b = new StringBuilder();
-
-    // Header
-    if (mode != PdePreprocessor.Mode.JAVA) {
-      b.append("\npublic class ").append(className).append(" extends PApplet {\n");
-      if (mode == PdePreprocessor.Mode.STATIC) {
-        b.append("public void setup() {\n");
-      }
-    }
-
-    edits.add(Edit.insert(0, b.toString()));
-
-    // Reset builder
-    b.setLength(0);
-
-    // Footer
-    if (mode != PdePreprocessor.Mode.JAVA) {
-      if (mode == PdePreprocessor.Mode.STATIC) {
-        // no noLoop() here so it does not tell you
-        // "can't invoke noLoop() on obj" when you type "obj."
-        b.append("\n}");
-      }
-      b.append("\n}\n");
-    }
-
-    edits.add(Edit.insert(sourceLength, b.toString()));
-
-    return edits;
-  }
-
-
   // Verifies that whole input String is floating point literal. Can't be used for searching.
   // https://docs.oracle.com/javase/specs/jls/se8/html/jls-3.html#jls-DecimalFloatingPointLiteral
   public static final Pattern FLOATING_POINT_LITERAL_VERIFIER;
   static {
+    // TODO lots of "Unnecessary non-capturing group" sequences here,
+    //      but not touching until someone can look more closely.
     final String DIGITS = "(?:[0-9]|[0-9][0-9_]*[0-9])";
     final String EXPONENT_PART = "(?:[eE][+-]?" + DIGITS + ")";
     FLOATING_POINT_LITERAL_VERIFIER = Pattern.compile(
@@ -163,6 +123,10 @@ public class SourceUtil {
       Modifier.PUBLIC | Modifier.PRIVATE | Modifier.PROTECTED;
 
   public static List<Edit> preprocessAST(CompilationUnit cu) {
+    if (!PERFORM_SOURCE_UTIL_TRANSFORMS) {
+      return new ArrayList<>();
+    }
+
     final List<Edit> edits = new ArrayList<>();
 
     // Walk the tree
@@ -242,13 +206,19 @@ public class SourceUtil {
   }
 
 
+  /*
   static public String scrubCommentsAndStrings(String p) {
     StringBuilder sb = new StringBuilder(p);
     scrubCommentsAndStrings(sb);
     return sb.toString();
   }
+  */
+
 
   static public void scrubCommentsAndStrings(StringBuilder p) {
+    if (!PERFORM_SOURCE_UTIL_TRANSFORMS) {
+      return;
+    }
 
     final int length = p.length();
 
@@ -318,7 +288,7 @@ public class SourceUtil {
         } else {
           // Exiting block
           int blockEnd = i;
-          if (prevState == IN_BLOCK_COMMENT && i < length) blockEnd--; // preserve star in '*/'
+          if (prevState == IN_BLOCK_COMMENT && i < length) blockEnd--;  // preserve star in '*/'
           for (int j = blockStart; j < blockEnd; j++) {
             char c = p.charAt(j);
             if (c != '\n' && c != '\r') p.setCharAt(j, ' ');
@@ -328,7 +298,6 @@ public class SourceUtil {
 
       prevState = state;
     }
-
   }
 
 

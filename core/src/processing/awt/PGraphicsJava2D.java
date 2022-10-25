@@ -50,18 +50,8 @@ import processing.core.*;
  * Advanced <a href="http://docs.oracle.com/javase/7/docs/webnotes/tsg/TSG-Desktop/html/java2d.html">debugging notes</a> for Java2D.
  */
 public class PGraphicsJava2D extends PGraphics {
-////  BufferStrategy strategy;
-////  BufferedImage bimage;
-////  VolatileImage vimage;
-//  Canvas canvas;
-////  boolean useCanvas = true;
-//  boolean useCanvas = false;
-////  boolean useRetina = true;
-////  boolean useOffscreen = true;  // ~40fps
-//  boolean useOffscreen = false;
-
   public Graphics2D g2;
-//  protected BufferedImage offscreen;
+  private Dimension sizeChange;
 
   Composite defaultComposite;
 
@@ -102,8 +92,6 @@ public class PGraphicsJava2D extends PGraphics {
   public boolean strokeGradient;
   public Paint strokeGradientObject;
 
-  Font fontObject;
-
 
 
   //////////////////////////////////////////////////////////////
@@ -123,21 +111,19 @@ public class PGraphicsJava2D extends PGraphics {
   //public void setPath(String path)
 
 
-//  /**
-//   * Called in response to a resize event, handles setting the
-//   * new width and height internally, as well as re-allocating
-//   * the pixel buffer for the new size.
-//   *
-//   * Note that this will nuke any cameraMode() settings.
-//   */
-//  @Override
-//  public void setSize(int iwidth, int iheight) {  // ignore
-//    width = iwidth;
-//    height = iheight;
-//
-//    allocate();
-//    reapplySettings();
-//  }
+  /**
+   * Queues a size change, won't happen until beginDraw().
+   */
+  @Override
+  public void setSize(int w, int h) {  // ignore
+    // If this is the initial setup, need to assign width/height;
+    // especially necessary for renderer subclasses.
+    // https://github.com/processing/processing4/issues/395
+    if (width == 0 || height == 0) {
+      super.setSize(w, h);
+    }
+    sizeChange = new Dimension(w, h);
+  }
 
 
 //  @Override
@@ -188,7 +174,7 @@ public class PGraphicsJava2D extends PGraphics {
 
         if (useOffscreen) {
           // Needs to be RGB otherwise there's a major performance hit [0204]
-          // http://code.google.com/p/processing/issues/detail?id=729
+          // https://github.com/processing/processing/issues/768
           image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
 //        GraphicsConfiguration gc = parent.getGraphicsConfiguration();
 //        image = gc.createCompatibleImage(width, height);
@@ -294,47 +280,24 @@ public class PGraphicsJava2D extends PGraphics {
 //  Graphics2D g2old;
 
   public Graphics2D checkImage() {
+    if (sizeChange != null) {
+      // Size changes are queued here where they're safe to run.
+      // https://github.com/processing/processing4/issues/186
+      super.setSize(sizeChange.width, sizeChange.height);
+      sizeChange = null;
+    }
     if (image == null ||
       ((BufferedImage) image).getWidth() != width*pixelDensity ||
       ((BufferedImage) image).getHeight() != height*pixelDensity) {
-//      ((VolatileImage) image).getWidth() != width ||
-//      ((VolatileImage) image).getHeight() != height) {
-//        image = new BufferedImage(width * pixelFactor, height * pixelFactor
-//                                  format == RGB ?  BufferedImage.TYPE_INT_ARGB);
 
-// Commenting this out, because we are not drawing directly to the screen [jv 2018-06-01]
-//
-//      GraphicsConfiguration gc = null;
-//      if (surface != null) {
-//        Component comp = null;  //surface.getComponent();
-//        if (comp == null) {
-////          System.out.println("component null, but parent.frame is " + parent.frame);
-//          comp = parent.frame;
-//        }
-//        if (comp != null) {
-//          gc = comp.getGraphicsConfiguration();
-//        }
-//      }
-//      // If not realized (off-screen, i.e the Color Selector Tool), gc will be null.
-//      if (gc == null) {
-//        //System.err.println("GraphicsConfiguration null in initImage()");
-//        GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-//        gc = ge.getDefaultScreenDevice().getDefaultConfiguration();
-//      }
-
-      // Formerly this was broken into separate versions based on offscreen or
-      // not, but we may as well create a compatible image; it won't hurt, right?
-      // P.S.: Three years later, I'm happy to report it did in fact hurt [jv 2018-06-01]
       int wide = width * pixelDensity;
       int high = height * pixelDensity;
-//      System.out.println("re-creating image");
 
-      // For now we expect non-premultiplied INT ARGB and the compatible image
+      // For now, we expect non-pre-multiplied INT ARGB and the compatible image
       // might not be it... create the image directly. It's important that the
       // image has all four bands, otherwise we get garbage alpha during blending
       // (see https://github.com/processing/processing/pull/2645,
       //      https://github.com/processing/processing/pull/3523)
-      //
       // image = gc.createCompatibleImage(wide, high, Transparency.TRANSLUCENT);
       image = new BufferedImage(wide, high, BufferedImage.TYPE_INT_ARGB);
     }
@@ -353,8 +316,11 @@ public class PGraphicsJava2D extends PGraphics {
       g2.setStroke(strokeObject);
     }
     // https://github.com/processing/processing/issues/2617
-    if (fontObject != null) {
-      g2.setFont(fontObject);
+    if (textFont != null) {
+      Font fontObject = (Font) textFont.getNative();
+      if (fontObject != null) {
+        g2.setFont(fontObject);
+      }
     }
     // https://github.com/processing/processing/issues/4019
     if (blendMode != 0) {
@@ -609,7 +575,7 @@ public class PGraphicsJava2D extends PGraphics {
     super.hint(which);
 
     // Avoid badness when drawing shorter strokes.
-    // http://code.google.com/p/processing/issues/detail?id=1068
+    // https://github.com/processing/processing/issues/1106
     // Unfortunately cannot always be enabled, because it makes the
     // stroke in many standard Processing examples really gross.
     if (which == ENABLE_STROKE_PURE) {
@@ -994,11 +960,11 @@ public class PGraphicsJava2D extends PGraphics {
 
   /**
    *
-   * Blends the pixels in the display window according to a defined mode. 
-   * There is a choice of the following modes to blend the source pixels (A) 
-   * with the ones of pixels already in the display window (B). Each pixel's 
-   * final color is the result of applying one of the blend modes with each 
-   * channel of (A) and (B) independently. The red channel is compared with 
+   * Blends the pixels in the display window according to a defined mode.
+   * There is a choice of the following modes to blend the source pixels (A)
+   * with the ones of pixels already in the display window (B). Each pixel's
+   * final color is the result of applying one of the blend modes with each
+   * channel of (A) and (B) independently. The red channel is compared with
    * red, green with green, and blue with blue.<br />
    * <br />
    * BLEND - linear interpolation of colors: C = A*factor + B. This is the default.<br />
@@ -1021,16 +987,15 @@ public class PGraphicsJava2D extends PGraphics {
    * <br />
    * REPLACE - the pixels entirely replace the others and don't utilize alpha (transparency) values<br />
    * <br />
-   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b> 
-   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function 
-   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE, 
-   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might 
-   * not be available as well. 
+   * We recommend using <b>blendMode()</b> and not the previous <b>blend()</b>
+   * function. However, unlike <b>blend()</b>, the <b>blendMode()</b> function
+   * does not support the following: HARD_LIGHT, SOFT_LIGHT, OVERLAY, DODGE,
+   * BURN. On older hardware, the LIGHTEST, DARKEST, and DIFFERENCE modes might
+   * not be available as well.
    *
    *
    * @webref Rendering
    * @webBrief Blends the pixels in the display window according to a defined mode
-   * @param mode the blending mode to use
    */
   @Override
   protected void blendModeImpl() {
@@ -1038,15 +1003,7 @@ public class PGraphicsJava2D extends PGraphics {
       g2.setComposite(defaultComposite);
 
     } else {
-      g2.setComposite(new Composite() {
-
-        @Override
-        public CompositeContext createContext(ColorModel srcColorModel,
-                                              ColorModel dstColorModel,
-                                              RenderingHints hints) {
-          return new BlendingContext(blendMode);
-        }
-      });
+      g2.setComposite((srcColorModel, dstColorModel, hints) -> new BlendingContext(blendMode));
     }
   }
 
@@ -1055,7 +1012,7 @@ public class PGraphicsJava2D extends PGraphics {
   // demo and terrific writeup on blending modes in Java 2D.
   // http://www.curious-creature.org/2006/09/20/new-blendings-modes-for-java2d/
   private static final class BlendingContext implements CompositeContext {
-    private int mode;
+    private final int mode;
 
     private BlendingContext(int mode) {
       this.mode = mode;
@@ -1818,7 +1775,10 @@ public class PGraphicsJava2D extends PGraphics {
 //          op.filter(image, image);
         }
       } else {  // !tint
-        if (targetType == RGB && (source.pixels[0] >> 24 == 0)) {
+        // Java2D must always use ARGB, so we need to ensure RGB pixels
+        // have their high bits set to 0xFF, which requires some hackery.
+        // https://github.com/processing/processing4/issues/388
+        if (targetType == RGB && anyAlpha(source.pixels)) {
           // If it's an RGB image and the high bits aren't set, need to set
           // the high bits to opaque because we're drawing ARGB images.
           source.filter(OPAQUE);
@@ -1832,16 +1792,29 @@ public class PGraphicsJava2D extends PGraphics {
       }
       this.tinted = tint;
       this.tintedColor = tintColor;
-
-//      GraphicsConfiguration gc = parent.getGraphicsConfiguration();
-//      compat = gc.createCompatibleImage(image.getWidth(),
-//                                        image.getHeight(),
-//                                        Transparency.TRANSLUCENT);
-//
-//      Graphics2D g = compat.createGraphics();
-//      g.drawImage(image, 0, 0, null);
-//      g.dispose();
     }
+  }
+
+
+  static private boolean anyAlpha(int[] pixels) {
+    // The upper-left corner is a good bet to test first, but not sufficient.
+    if ((pixels[0] & 0xFF000000) != 0xFF000000) {
+      return true;
+    }
+
+    // Otherwise, take a random sample for our best guess. This is much
+    // faster (and hopefully reliable enough) to avoid exhaustively rewriting
+    // all pixel alpha values, which would be dreadful for performance.
+    int count = (int) Math.sqrt(pixels.length);
+    for (int i = 0; i < count; i++) {
+      // select a random pixel
+      int index = (int) (Math.random() * pixels.length);
+      // if it has alpha, return true
+      if ((pixels[index] & 0xFF000000) != 0xFF000000) {
+        return true;
+      }
+    }
+    return false;
   }
 
 
@@ -1902,7 +1875,6 @@ public class PGraphicsJava2D extends PGraphics {
 
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getAscent();
       return g2.getFontMetrics(font).getAscent();
     }
     return super.textAscent();
@@ -1916,7 +1888,6 @@ public class PGraphicsJava2D extends PGraphics {
     }
     Font font = (Font) textFont.getNative();
     if (font != null) {
-      //return getFontMetrics(font).getDescent();
       return g2.getFontMetrics(font).getDescent();
     }
     return super.textDescent();
@@ -1951,21 +1922,17 @@ public class PGraphicsJava2D extends PGraphics {
   protected void handleTextSize(float size) {
     // if a native version available, derive this font
     Font font = (Font) textFont.getNative();
-    // don't derive again if the font size has not changed
     if (font != null) {
+      // don't derive again if the font size has not changed
       if (font.getSize2D() != size) {
-        Map<TextAttribute, Object> map =
-          new HashMap<>();
+        Map<TextAttribute, Object> map = new HashMap<>();
         map.put(TextAttribute.SIZE, size);
-        map.put(TextAttribute.KERNING,
-                TextAttribute.KERNING_ON);
-//      map.put(TextAttribute.TRACKING,
-//              TextAttribute.TRACKING_TIGHT);
+        map.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
+        // map.put(TextAttribute.TRACKING, TextAttribute.TRACKING_TIGHT);
         font = font.deriveFont(map);
       }
       g2.setFont(font);
       textFont.setNative(font);
-      fontObject = font;
 
       /*
       Map<TextAttribute, ?> attrs = font.getAttributes();
@@ -2061,8 +2028,20 @@ public class PGraphicsJava2D extends PGraphics {
   protected void textLineImpl(char[] buffer, int start, int stop,
                               float x, float y) {
     Font font = (Font) textFont.getNative();
-//    if (font != null && (textFont.isStream() || hints[ENABLE_NATIVE_FONTS])) {
     if (font != null) {
+      // If using the default font, warn the user when their code calls
+      // text() called with unavailable characters. Not done with all
+      // fonts because it would be too slow, but useful/acceptable for
+      // the default case because it will hit beginners/casual use.
+      if (textFont.getName().equals(defaultFontName)) {
+        if (font.canDisplayUpTo(buffer, start, stop) != -1) {
+          final String msg =
+            "Some characters not available in the current font, " +
+            "use createFont() to specify a typeface the includes them.";
+          showWarning(msg);
+        }
+      }
+
       /*
       // save the current setting for text smoothing. note that this is
       // different from the smooth() function, because the font smoothing
@@ -2115,7 +2094,7 @@ public class PGraphicsJava2D extends PGraphics {
       //g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, textAntialias);
       g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, antialias);
 
-    } else {  // otherwise just do the default
+    } else {  // otherwise, just do the default
       super.textLineImpl(buffer, start, stop, x, y);
     }
   }
@@ -2603,13 +2582,13 @@ public class PGraphicsJava2D extends PGraphics {
     // (an array for width*height would waste lots of memory if it stayed
     // resident, and would terrify the gc if it were re-created on each trip
     // to background().
-//    WritableRaster raster = ((BufferedImage) image).getRaster();
-//    WritableRaster raster = image.getRaster();
     WritableRaster raster = getRaster();
     if ((clearPixels == null) || (clearPixels.length < imageWidth)) {
       clearPixels = new int[imageWidth];
     }
-    Arrays.fill(clearPixels, 0, imageWidth, backgroundColor);
+    Arrays.fill(clearPixels, 0, imageWidth, color);
+
+    // Clear the raster/image for this renderer, one line at a time
     for (int i = 0; i < imageHeight; i++) {
       raster.setDataElements(0, i, imageWidth, 1, clearPixels);
     }
@@ -2796,9 +2775,6 @@ public class PGraphicsJava2D extends PGraphics {
         pixels[i] = 0xff000000 | pixels[i];
       }
     }
-      //((BufferedImage) image).getRGB(0, 0, width, height, pixels, 0, width);
-//    WritableRaster raster = ((BufferedImage) (useOffscreen && primarySurface ? offscreen : image)).getRaster();
-//    WritableRaster raster = image.getRaster();
   }
 
 

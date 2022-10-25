@@ -171,13 +171,6 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
   }
 
 
-  /*
-  Object getWrappedObject() {
-    return wrappedObject;
-  }
-  */
-
-
   public String getElementName() {
     return elementName;
   }
@@ -195,33 +188,6 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
 
   public String getLabel() {
     return label;
-  }
-
-
-  // TODO this is gross [fry 180326]
-  /*
-  private String getNoHtmlLabel(){
-    if (!label.contains("<html>")) {
-      return label;
-
-    } else {
-      StringBuilder ans = new StringBuilder(label);
-      while (ans.indexOf("<") > -1) {
-        int a = ans.indexOf("<"), b = ans.indexOf(">");
-        if (a > b) break;
-        ans.replace(a, b+1, "");
-      }
-      return ans.toString();
-    }
-  }
-  */
-
-
-  boolean startsWith(String newWord) {
-//    System.out.println("checking " + newWord);
-//    return getNoHtmlLabel().toLowerCase().startsWith(newWord);
-    // this seems to be elementName in all cases [fry 180326]
-    return elementName.startsWith(newWord);
   }
 
 
@@ -289,10 +255,8 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
         }
       }
       labelBuilder.append(')');
-      if (method.getReturnType() != null) {
-        labelBuilder.append(" : ");
-        labelBuilder.append(method.getReturnType().getSimpleName());
-      }
+      labelBuilder.append(" : ");
+      labelBuilder.append(method.getReturnType().getSimpleName());
 
       labelBuilder.append(" - <font color=#777777>");
       labelBuilder.append(method.getDeclaringClass().getSimpleName());
@@ -335,10 +299,8 @@ public class CompletionCandidate implements Comparable<CompletionCandidate> {
       }
     }
     labelBuilder.append(")");
-    if (method.getReturnType() != null) {
-      labelBuilder.append(" : ");
-      labelBuilder.append(method.getReturnType().getSimpleName());
-    }
+    labelBuilder.append(" : ");
+    labelBuilder.append(method.getReturnType().getSimpleName());
     labelBuilder.append(" - <font color=#777777>");
     labelBuilder.append(method.getDeclaringClass().getSimpleName());
     labelBuilder.append("</font>");

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2014-15 The Processing Foundation
+  Copyright (c) 2014-22 The Processing Foundation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -26,7 +26,7 @@ import java.io.File;
 
 public interface PSurface {
   /**
-   * Minimum dimensions for the window holding an applet. This varies between
+   * Minimum dimensions for the window holding a sketch. This varies between
    * platforms, Mac OS X 10.3 (confirmed with 10.7 and Java 6) can do any
    * height but requires at least 128 pixels width. Windows XP has another
    * set of limitations. And for all I know, Linux probably allows window
@@ -52,21 +52,6 @@ public interface PSurface {
 //  public void initFrame(PApplet sketch, int backgroundColor,
 //                        int deviceIndex, boolean fullScreen, boolean spanDisplays);
   public void initFrame(PApplet sketch);
-
-  //
-
-  public PImage loadImage(String path, Object... args);
-
-  //
-
-  public void selectInput(String prompt, String callback,
-                          File file, Object callbackObject);
-
-  public void selectOutput(String prompt, String callback,
-                           File file, Object callbackObject);
-
-  public void selectFolder(String prompt, String callback,
-                           File file, Object callbackObject);
 
   //
 
@@ -110,7 +95,7 @@ public interface PSurface {
   public void placePresent(int stopColor);
 
   // Sketch is running from the PDE, set up messaging back to the PDE
-  public void setupExternalMessages();
+  //public void setupExternalMessages();
 
   //
 
@@ -163,11 +148,22 @@ public interface PSurface {
 
   //
 
+  public PImage loadImage(String path, Object... args);
+
   /**
    * @param url the link to open
    * @return false if unable to find a viable way to open
    */
   public boolean openLink(String url);
+
+  public void selectInput(String prompt, String callback,
+                          File file, Object callbackObject);
+
+  public void selectOutput(String prompt, String callback,
+                           File file, Object callbackObject);
+
+  public void selectFolder(String prompt, String callback,
+                           File file, Object callbackObject);
 
   //
 

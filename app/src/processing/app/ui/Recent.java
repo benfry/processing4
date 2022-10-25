@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -22,8 +22,6 @@
 
 package processing.app.ui;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -83,16 +81,12 @@ public class Recent {
       BufferedReader reader = PApplet.createReader(file);
       String version = reader.readLine();
       if (version != null && version.equals(VERSION)) {
-        String line = null;
+        String line;
         while ((line = reader.readLine()) != null) {
-//          String[] pieces = PApplet.split(line, '\t');
-//          Record record = new Record(pieces[0], new EditorState(pieces[1]));
-//          Record record = new Record(pieces[0]); //, new EditorState(pieces[1]));
-//          records.add(record);
           if (new File(line).exists()) {  // don't add ghost entries
             records.add(new Record(line));
           } else {
-            Messages.log("ghost file: " + line);
+            Messages.log("Ghost file found in recent: " + line);
           }
         }
       }
@@ -104,12 +98,16 @@ public class Recent {
 
 
   static protected void save() {
-    file.setWritable(true, false);
+    // Need to check whether file exists and may already be writable.
+    // Otherwise, setWritable() will actually return false.
+    if (file.exists() && !file.canWrite()) {
+      if (!file.setWritable(true, false)) {
+        System.err.println("Warning: could not set " + file + " to writable");
+      }
+    }
     PrintWriter writer = PApplet.createWriter(file);
     writer.println(VERSION);
     for (Record record : records) {
-//      System.out.println(record.getPath() + "\t" + record.getState());
-//      writer.println(record.path + "\t" + record.getState());
       writer.println(record.path); // + "\t" + record.getState());
     }
     writer.flush();
@@ -206,29 +204,14 @@ public class Recent {
         }
       }
 
-//      JMenuItem item = new JMenuItem(rec.getName() + " | " + purtyPath);
       JMenuItem item = new JMenuItem(purtyPath);
-      item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          // Base will call handle() (below) which will cause this entry to
-          // be removed from the list and re-added to the end. If already
-          // opened, Base will bring the window forward, and also call handle()
-          // so that it's re-queued to the newest slot in the Recent menu.
-          base.handleOpen(rec.path);
-//          if (rec.sketch == null) {
-//            // this will later call 'add' to put it back on the stack
-//            base.handleOpen(rec.path); //, rec.state);
-////            int index = findRecord(rec);
-////            if (index != -1) {
-////              records.remove(index);  // remove from the list
-////              save();  // write the recent file with the latest
-////            }
-//          } else {
-////              System.out.println("sketch not null in handleOpen: " + record.getPath());
-//          }
-        }
+      item.addActionListener(e -> {
+        // Base will call handle() (below) which will cause this entry to
+        // be removed from the list and re-added to the end. If already
+        // opened, Base will bring the window forward, and also call handle()
+        // so that it's re-queued to the newest slot in the Recent menu.
+        base.handleOpen(rec.path);
       });
-      //menu.add(item);
       menu.insert(item, 0);
 
     } catch (Exception e) {
@@ -240,45 +223,11 @@ public class Recent {
 
 
   synchronized static public void remove(Editor editor) {
-    int index = findRecord(editor.getSketch().getMainFilePath());
+    int index = findRecord(editor.getSketch().getMainPath());
     if (index != -1) {
       records.remove(index);
     }
   }
-
-
-//  synchronized void handleRename(String oldPath, String newPath) {
-//    int index = findRecord(oldPath);
-//    if (index != -1) {
-//      Record rec = records.get(index);
-//      rec.path = newPath;
-//      save();
-//    } else {
-//      Base.log(this, "Could not find " + oldPath +
-//               " in list of recent sketches to replace with " + newPath);
-//    }
-//  }
-
-
-//  /** Opened from the recent sketches menu. */
-//  synchronized void handleOpen(Record record) {
-//    if (record.sketch == null) {
-////      Editor editor = base.handleOpen(record.path, record.state);
-//      base.handleOpen(record.path, record.state);
-//      int index = findRecord(record);
-//      if (index != -1) {
-//        records.remove(index);  // remove from the list
-////      if (editor != null) {
-////        record.sketch = editor.getSketch();
-////        records.add(record);  // move to the end of the line
-////      }
-//        save();  // write the recent file with the latest
-//      }
-//    } else {
-////      System.out.println("sketch not null in handleOpen: " + record.getPath());
-//    }
-//    // otherwise the other handleOpen() will be called once it opens
-//  }
 
 
   /**
@@ -296,14 +245,8 @@ public class Recent {
         records.remove(0);  // remove the first entry
       }
 
-//      new Exception("adding to recent: " + editor.getSketch().getMainFilePath()).printStackTrace(System.out);
-//    Record newRec = new Record(editor, editor.getSketch());
-//    records.add(newRec);
       records.add(new Record(editor));
-//    updateMenu();
       save();
-//    } else {
-//      new Exception("NOT adding to recent: " + editor.getSketch().getMainFilePath()).printStackTrace(System.out);
     }
   }
 
@@ -332,78 +275,28 @@ public class Recent {
   }
 
 
-//  int findRecord(Record rec) {
-//    int index = records.indexOf(rec);
-//    if (index != -1) {
-//      return index;
-//    }
-//    return findRecord(rec.path);
-////    index = 0;
-////    for (Record r : records) {
-////      System.out.println("checking " + r + "\n  against " + rec);
-////      if (r.equals(rec)) {
-////        return index;
-////      }
-////      index++;
-////    }
-////    return -1;
-//  }
-
-
   static class Record {
     String path;  // if not loaded, this is non-null
-//    EditorState state;  // if not loaded, this is non-null
-
-//    Sketch sketch;
-
-//    Record(String path, EditorState state) {
-//      this.path = path;
-//      this.state = state;
-//    }
 
     Record(String path) {
       this.path = path;
     }
 
-//    Record(Editor editor, Sketch sketch) {
-//      this.editor = editor;
-//      this.sketch = sketch;
-//    }
-
     Record(Editor editor) {
-      this(editor.getSketch().getMainFilePath());
+      this(editor.getSketch().getMainPath());
     }
 
+    /*
     String getName() {
       // Get the filename of the .pde (or .js or .py...)
       String name = path.substring(path.lastIndexOf(File.separatorChar) + 1);
       // Return the name with the extension removed
       return name.substring(0, name.indexOf('.'));
     }
+    */
 
     String getPath() {
       return path;
     }
-
-//    String getPath() {
-//      if (sketch != null) {
-//        return sketch.getMainFilePath();
-//      } else {
-//        return path;
-//      }
-//    }
-
-//    EditorState getState() {
-////      return sketch == null ? state : editor.getEditorState();
-//      if (editor != null) {  // update state if editor is open
-//        state = editor.getEditorState();
-//      }
-//      return state;
-//    }
-
-//    public boolean equals(Object o) {
-//      Record r = (Record) o;
-//      return getPath().equals(r.getPath());
-//    }
   }
 }

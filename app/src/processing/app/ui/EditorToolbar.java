@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-22 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -23,14 +23,7 @@
 
 package processing.app.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,11 +32,9 @@ import java.util.List;
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 
 import processing.app.Base;
 import processing.app.Language;
-import processing.app.Messages;
 import processing.app.Mode;
 
 
@@ -53,11 +44,9 @@ import processing.app.Mode;
 abstract public class EditorToolbar extends JPanel implements KeyListener {
   // haven't decided how to handle this/how to make public/consistency
   // for components/does it live in theme.txt
-  static final int HIGH = Toolkit.zoom(53);
+  static final int HIGH = Toolkit.zoom(56);
   // horizontal gap between buttons
   static final int GAP = Toolkit.zoom(9);
-  // corner radius on the mode selector
-  static final int RADIUS = Toolkit.zoom(3);
 
   protected Editor editor;
   protected Base base;
@@ -68,6 +57,8 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
   protected EditorButton rolloverButton;
   protected JLabel rolloverLabel;
+
+  protected ModeSelector modeSelector;
 
   protected Box box;
 
@@ -95,26 +86,14 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
     for (EditorButton button : buttons) {
       box.add(button);
       box.add(Box.createHorizontalStrut(GAP));
-//      registerButton(button);
     }
-//    // remove the last gap
-//    box.remove(box.getComponentCount() - 1);
 
-//    box.add(Box.createHorizontalStrut(LABEL_GAP));
     box.add(rolloverLabel);
-//    currentButton = runButton;
-
-//    runButton.setRolloverLabel(label);
-//    stopButton.setRolloverLabel(label);
 
     box.add(Box.createHorizontalGlue());
     addModeButtons(box, rolloverLabel);
-//    Component items = createModeButtons();
-//    if (items != null) {
-//      box.add(items);
-//    }
-    ModeSelector ms = new ModeSelector();
-    box.add(ms);
+
+    box.add(modeSelector = new ModeSelector(editor));
     box.add(Box.createHorizontalStrut(Editor.RIGHT_GUTTER));
 
     setLayout(new BorderLayout());
@@ -129,23 +108,15 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
     rolloverLabel.setFont(Theme.getFont("toolbar.rollover.font"));
     rolloverLabel.setForeground(Theme.getColor("toolbar.rollover.color"));
+
+    for (Component c : box.getComponents()) {
+      if (c instanceof EditorButton) {
+        ((EditorButton) c).updateTheme();
+      }
+    }
+    modeSelector.updateTheme();
+    repaint();
   }
-
-
-//  public void registerButton(EditorButton button) {
-    //button.setRolloverLabel(rolloverLabel);
-    //editor.getTextArea().addKeyListener(button);
-//  }
-
-
-//  public void setReverse(EditorButton button) {
-//    button.setGradient(reverseGradient);
-//  }
-
-
-//  public void setText(String text) {
-//    label.setText(text);
-//  }
 
 
   public void paintComponent(Graphics g) {
@@ -186,22 +157,6 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
   }
 
 
-//  public Component createModeSelector() {
-//    return new ModeSelector();
-//  }
-
-
-//  protected void swapButton(EditorButton replacement) {
-//    if (currentButton != replacement) {
-//      box.remove(currentButton);
-//      box.add(replacement, 1);  // has to go after the strut
-//      box.revalidate();
-//      box.repaint();  // may be needed
-//      currentButton = replacement;
-//    }
-//  }
-
-
   public void activateRun() {
     runButton.setSelected(true);
     repaint();
@@ -234,19 +189,15 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
   void setRollover(EditorButton button, InputEvent e) {
     rolloverButton = button;
-//    if (rolloverButton != null) {
     updateRollover(e);
-//    } else {
-//      rolloverLabel.setText("");
-//    }
   }
 
 
   void updateRollover(InputEvent e) {
-    if (rolloverButton != null) {
-      rolloverLabel.setText(rolloverButton.getRolloverText(e));
-    } else {
+    if (rolloverButton == null) {
       rolloverLabel.setText("");
+    } else {
+      rolloverLabel.setText(rolloverButton.getRolloverText(e));
     }
   }
 
@@ -279,124 +230,5 @@ abstract public class EditorToolbar extends JPanel implements KeyListener {
 
   public Dimension getMaximumSize() {
     return new Dimension(super.getMaximumSize().width, HIGH);
-  }
-
-
-  class ModeSelector extends JPanel {
-    Image offscreen;
-    int width, height;
-
-    String title;
-    Font titleFont;
-    Color titleColor;
-    int titleAscent;
-    int titleWidth;
-
-    final int MODE_GAP_WIDTH = Toolkit.zoom(13);
-    final int ARROW_GAP_WIDTH = Toolkit.zoom(6);
-    final int ARROW_WIDTH = Toolkit.zoom(6);
-    final int ARROW_TOP = Toolkit.zoom(12);
-    final int ARROW_BOTTOM = Toolkit.zoom(18);
-
-    int[] triangleX = new int[3];
-    int[] triangleY = new int[] { ARROW_TOP, ARROW_TOP, ARROW_BOTTOM };
-
-//    Image background;
-    Color backgroundColor;
-    Color outlineColor;
-
-    public ModeSelector() {
-      title = mode.getTitle(); //.toUpperCase();
-
-      addMouseListener(new MouseAdapter() {
-        public void mousePressed(MouseEvent event) {
-        JPopupMenu popup = editor.getModePopup();
-        popup.show(ModeSelector.this, event.getX(), event.getY());
-        }
-      });
-
-      updateTheme();
-    }
-
-    public void updateTheme() {
-      titleFont = Theme.getFont("mode.title.font");
-      titleColor = Theme.getColor("mode.title.color");
-
-      // getGraphics() is null (even for editor) and no offscreen yet
-      //titleWidth = getToolkit().getFontMetrics(titleFont).stringWidth(title);
-      //titleWidth = editor.getGraphics().getFontMetrics(titleFont).stringWidth(title);
-
-      backgroundColor = Theme.getColor("mode.background.color");
-      outlineColor = Theme.getColor("mode.outline.color");
-    }
-
-    @Override
-    public void paintComponent(Graphics screen) {
-      Dimension size = getSize();
-      width = 0;
-      if (width != size.width || height != size.height) {
-        offscreen = Toolkit.offscreenGraphics(this, size.width, size.height);
-        width = size.width;
-        height = size.height;
-      }
-
-      Graphics g = offscreen.getGraphics();
-      Graphics2D g2 = Toolkit.prepareGraphics(g);
-
-      g.setFont(titleFont);
-      if (titleAscent == 0) {
-        titleAscent = (int) Toolkit.getAscent(g); //metrics.getAscent();
-      }
-      FontMetrics metrics = g.getFontMetrics();
-      titleWidth = metrics.stringWidth(title);
-
-      // clear the background
-      g.setColor(backgroundColor);
-      g.fillRect(0, 0, width, height);
-
-      // draw the outline for this feller
-      g.setColor(outlineColor);
-      //Toolkit.dpiStroke(g2);
-      g2.draw(Toolkit.createRoundRect(1, 1, width-1, height-1,
-                                      RADIUS, RADIUS, RADIUS, RADIUS));
-
-      g.setColor(titleColor);
-      g.drawString(title, MODE_GAP_WIDTH, (height + titleAscent) / 2);
-
-      int x = MODE_GAP_WIDTH + titleWidth + ARROW_GAP_WIDTH;
-      triangleX[0] = x;
-      triangleX[1] = x + ARROW_WIDTH;
-      triangleX[2] = x + ARROW_WIDTH/2;
-      g.fillPolygon(triangleX, triangleY, 3);
-
-      screen.drawImage(offscreen, 0, 0, width, height, this);
-    }
-
-    @Override
-    public Dimension getPreferredSize() {
-      int tempWidth = titleWidth;  // with any luck, this is set
-      if (tempWidth == 0) {
-        Graphics g = getGraphics();
-        // the Graphics object may not be ready yet, being careful
-        if (g != null) {
-          tempWidth = getFontMetrics(titleFont).stringWidth(title);
-        } else {
-          Messages.err("null Graphics in EditorToolbar.getPreferredSize()");
-        }
-      }
-      return new Dimension(MODE_GAP_WIDTH + tempWidth +
-                           ARROW_GAP_WIDTH + ARROW_WIDTH + MODE_GAP_WIDTH,
-                           EditorButton.DIM);
-    }
-
-    @Override
-    public Dimension getMinimumSize() {
-      return getPreferredSize();
-    }
-
-    @Override
-    public Dimension getMaximumSize() {
-      return getPreferredSize();
-    }
   }
 }

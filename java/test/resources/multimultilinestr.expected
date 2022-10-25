@@ -1,0 +1,35 @@
+import processing.core.*;
+import processing.data.*;
+import processing.event.*;
+import processing.opengl.*;
+
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.IOException;
+
+public class multimultilinestr extends PApplet {
+
+    public void setup() {
+String testMultiline1 = "\nline1 \"\nline 2 \"\"\nline  3\nline   4";
+final String testMultiline2 = "\nline5 \"\nline 6 \"\"\nline  7\nline   8";
+
+println(testMultiline1);
+println(testMultiline2);
+
+        noLoop();
+    }
+
+    static public void main(String[] passedArgs) {
+        String[] appletArgs = new String[] { "multimultilinestr" };
+        if (passedArgs != null) {
+            PApplet.main(concat(appletArgs, passedArgs));
+        } else {
+            PApplet.main(appletArgs);
+        }
+    }
+}

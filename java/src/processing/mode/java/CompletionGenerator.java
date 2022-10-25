@@ -20,7 +20,6 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.mode.java;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -68,8 +67,6 @@ public class CompletionGenerator {
 
   public CompletionGenerator(JavaMode mode) {
     this.mode = mode;
-    //addCompletionPopupListner();
-    //loadJavaDoc();
   }
 
 
@@ -87,8 +84,6 @@ public class CompletionGenerator {
       CompletionCandidate[] cand = new CompletionCandidate[params.size() + 1];
       cand[0] = new CompletionCandidate(md);
       for (int i = 0; i < params.size(); i++) {
-//        cand[i + 1] = new CompletionCandidate(params.get(i).toString(), "", "",
-//                                              CompletionCandidate.LOCAL_VAR);
         cand[i + 1] = new CompletionCandidate((SingleVariableDeclaration) params.get(i));
       }
       return cand;
@@ -121,65 +116,6 @@ public class CompletionGenerator {
     }
     return null;
   }
-
-
-//  /**
-//   * Find the parent of the expression in a().b, this would give me the return
-//   * type of a(), so that we can find all children of a() beginning with b
-//   */
-//  public static ASTNode resolveExpression(ASTNode nearestNode,
-//                                          ASTNode expression, boolean noCompare) {
-//    log("Resolving " + getNodeAsString(expression) + " noComp "
-//        + noCompare);
-//    if (expression instanceof SimpleName) {
-//      return findDeclaration2(((SimpleName) expression), nearestNode);
-//    } else if (expression instanceof MethodInvocation) {
-//      log("3. Method Invo "
-//          + ((MethodInvocation) expression).getName());
-//      return findDeclaration2(((MethodInvocation) expression).getName(),
-//                              nearestNode);
-//    } else if (expression instanceof FieldAccess) {
-//      log("2. Field access "
-//          + getNodeAsString(((FieldAccess) expression).getExpression()) + "|||"
-//          + getNodeAsString(((FieldAccess) expression).getName()));
-//      if (noCompare) {
-//        /*
-//         * ASTNode ret = findDeclaration2(((FieldAccess) expression).getName(),
-//         * nearestNode); log("Found as ->"+getNodeAsString(ret));
-//         * return ret;
-//         */
-//        return findDeclaration2(((FieldAccess) expression).getName(),
-//                                nearestNode);
-//      } else {
-//
-//        /*
-//         * Note how for the next recursion, noCompare is reversed. Let's say
-//         * I've typed getABC().quark.nin where nin is incomplete(ninja being the
-//         * field), when execution first enters here, it calls resolveExpr again
-//         * for "getABC().quark" where we know that quark field must be complete,
-//         * so we toggle noCompare. And kaboom.
-//         */
-//        return resolveExpression(nearestNode,
-//                                 ((FieldAccess) expression).getExpression(),
-//                                 true);
-//      }
-//      //return findDeclaration2(((FieldAccess) expression).getExpression(), nearestNode);
-//    } else if (expression instanceof QualifiedName) {
-//      log("1. Resolving "
-//          + ((QualifiedName) expression).getQualifier() + " ||| "
-//          + ((QualifiedName) expression).getName());
-//      if (noCompare) { // no compare, as in "abc.hello." need to resolve hello here
-//        return findDeclaration2(((QualifiedName) expression).getName(),
-//                                nearestNode);
-//      } else {
-//        //User typed "abc.hello.by" (bye being complete), so need to resolve "abc.hello." only
-//        return findDeclaration2(((QualifiedName) expression).getQualifier(),
-//                          nearestNode);
-//      }
-//    }
-//
-//    return null;
-//  }
 
 
   /**
@@ -889,23 +825,6 @@ public class CompletionGenerator {
   }
 
 
-  /*
-  protected SketchOutline sketchOutline;
-
-  public void showSketchOutline() {
-    if (editor.hasJavaTabs()) return;
-
-    sketchOutline = new SketchOutline(editor, codeTree);
-    sketchOutline.show();
-  }
-
-
-  public void showTabOutline() {
-    new TabOutline(editor).show();
-  }
-  */
-
-
   /**
    * Give this thing a {@link Name} instance - a {@link SimpleName} from the
    * ASTNode for ex, and it tries its level best to locate its declaration in
@@ -961,7 +880,7 @@ public class CompletionGenerator {
           }
         }
       } else {
-        parent = parent.getParent(); // Move one up the ast. V V IMP!!
+        parent = parent.getParent(); // Move one up the AST. Very important.
       }
     } else if (parent.getNodeType() == ASTNode.FIELD_ACCESS) {
       FieldAccess fa = (FieldAccess) parent;
@@ -1327,7 +1246,7 @@ public class CompletionGenerator {
   static class ClassMember {
     private Field field;
     private Method method;
-    private Constructor<?> cons;
+//    private Constructor<?> cons;
     private Class<?> thisClass;
     private final String stringVal;
     private String classType;
@@ -1477,7 +1396,7 @@ public class CompletionGenerator {
 
 
   static private ASTNode definedIn(ASTNode node, String name,
-                                   ArrayList<Integer> constrains) {
+                                   List<Integer> constrains) {
     if (node == null)
       return null;
     if (constrains != null) {
@@ -1618,43 +1537,6 @@ public class CompletionGenerator {
   }
 
 
-//  public void jdocWindowVisible(boolean visible) {
-//   // frmJavaDoc.setVisible(visible);
-//  }
-
-//  public static String readFile2(String path) {
-//    BufferedReader reader = null;
-//    try {
-//      reader = new BufferedReader(
-//                                  new InputStreamReader(
-//                                                        new FileInputStream(
-//                                                                            new File(
-//                                                                                     path))));
-//    } catch (FileNotFoundException e) {
-//      e.printStackTrace();
-//    }
-//    try {
-//      StringBuilder ret = new StringBuilder();
-//      // ret.append("package " + className + ";\n");
-//      String line;
-//      while ((line = reader.readLine()) != null) {
-//        ret.append(line);
-//        ret.append("\n");
-//      }
-//      return ret.toString();
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    } finally {
-//      try {
-//        reader.close();
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//      }
-//    }
-//    return null;
-//  }
-
-
   static private void log(Object object) {
     Messages.log(object == null ? "null" : object.toString());
   }
@@ -1668,7 +1550,7 @@ public class CompletionGenerator {
     newWord = newWord.toLowerCase();
     for (CompletionCandidate comp : candidates) {
       //if (comp.getNoHtmlLabel().toLowerCase().startsWith(newWord)) {
-      if (comp.startsWith(newWord)) {
+      if (comp.getElementName().startsWith(newWord)) {
         newCandidate.add(comp);
       }
     }
@@ -1926,112 +1808,4 @@ public class CompletionGenerator {
     }
     return defListModel;
   }
-
-
-
-  /// JavaDocs -----------------------------------------------------------------
-
-  //TODO: Work on this later.
-/*
-  protected TreeMap<String, String> jdocMap;
-
-
-  protected void loadJavaDoc() {
-    jdocMap = new TreeMap<>();
-
-    // presently loading only p5 reference for PApplet
-    // TODO: use something like ExecutorService here [jv]
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          loadJavaDoc(jdocMap, editor.getMode().getReferenceFolder());
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }).start();
-  }
-
-
-  static void loadJavaDoc(TreeMap<String, String> jdocMap,
-                          File referenceFolder) throws IOException {
-    Document doc;
-
-    FileFilter fileFilter = new FileFilter() {
-      @Override
-      public boolean accept(File file) {
-        if(!file.getName().endsWith("_.html"))
-          return false;
-        int k = 0;
-        for (int i = 0; i < file.getName().length(); i++) {
-          if(file.getName().charAt(i)== '_')
-            k++;
-          if(k > 1)
-            return false;
-        }
-        return true;
-      }
-    };
-
-    for (File docFile : referenceFolder.listFiles(fileFilter)) {
-      doc = Jsoup.parse(docFile, null);
-      Elements elm = doc.getElementsByClass("ref-item");
-      String msg = "";
-      String methodName = docFile.getName().substring(0, docFile.getName().indexOf('_'));
-      //System.out.println(methodName);
-      for (org.jsoup.nodes.Element ele : elm) {
-        msg = "<html><body> <strong><div style=\"width: 300px; text-justification: justify;\"></strong><table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"ref-item\">"
-            + ele.html() + "</table></div></html></body></html>";
-        //mat.replaceAll("");
-        msg = msg.replaceAll("img src=\"", "img src=\""
-            + referenceFolder.toURI().toURL().toString() + "/");
-        //System.out.println(ele.text());
-      }
-      jdocMap.put(methodName, msg);
-    }
-    //System.out.println("JDoc loaded " + jdocMap.size());
-  }
-
-
-  public void updateJavaDoc(final CompletionCandidate candidate) {
-    String methodmatch = candidate.toString();
-    if (methodmatch.indexOf('(') != -1) {
-      methodmatch = methodmatch.substring(0, methodmatch.indexOf('('));
-    }
-
-    //log("jdoc match " + methodmatch);
-    String temp = "<html> </html>";
-    for (final String key : jdocMap.keySet()) {
-      if (key.startsWith(methodmatch) && key.length() > 3) {
-        log("Matched jdoc " + key);
-        if (candidate.getWrappedObject() != null) {
-          String definingClass = "";
-          if (candidate.getWrappedObject() instanceof Field)
-            definingClass = ((Field) candidate.getWrappedObject())
-                .getDeclaringClass().getName();
-          else if (candidate.getWrappedObject() instanceof Method)
-            definingClass = ((Method) candidate.getWrappedObject())
-                .getDeclaringClass().getName();
-          if (definingClass.equals("processing.core.PApplet")) {
-            temp = (jdocMap.get(key));
-            break;
-          }
-        }
-      }
-    }
-
-    final String jdocString = temp;
-    SwingUtilities.invokeLater(new Runnable() {
-      public void run() {
-        javadocPane.setText(jdocString);
-        scrollPane.getVerticalScrollBar().setValue(0);
-        //frmJavaDoc.setVisible(!jdocString.equals("<html> </html>"));
-        editor.toFront();
-        editor.ta.requestFocus();
-      }
-    });
-  }
-*/
-
 }

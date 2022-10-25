@@ -26,17 +26,21 @@ package processing.app.platform;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.File;
-import java.net.URI;
 
 import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
 import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 import processing.app.Base;
+import processing.app.Language;
 import processing.app.Preferences;
 import processing.app.ui.Toolkit;
+import processing.awt.ShimAWT;
+import processing.core.PApplet;
 
 
 /**
@@ -61,6 +65,7 @@ public class DefaultPlatform {
     "CheckBox",
     "CheckBoxMenuItem",
     "ComboBox",
+    "Label",
     "List",
     "Menu",
     "MenuBar",
@@ -76,6 +81,7 @@ public class DefaultPlatform {
     "Table",
     "TableHeader",
     "TextArea",
+    "TextField",
     "TextPane",
     "TitledBorder",
     "ToggleButton",
@@ -105,26 +111,58 @@ public class DefaultPlatform {
    * @throws Exception Just like I said.
    */
   public void setLookAndFeel() throws Exception {
-    String laf = Preferences.get("editor.laf");
-    if (laf == null || laf.length() == 0) {  // normal situation
-      UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-    } else {
-      UIManager.setLookAndFeel(laf);
-    }
+    // In 4.0 beta 9, getting rid of the editor.laf preference,
+    // because we're using FlatLaf everywhere, and mixing others
+    // (i.e. Nimbus on Linux) with our custom components is badness.
 
+    // dummy font call so that it's registered for FlatLaf
+    Font defaultFont = Toolkit.getSansFont(14, Font.PLAIN);
+    UIManager.put("defaultFont", defaultFont);
+
+    // pull in FlatLaf.properties from the processing.app.laf folder
+    FlatLaf.registerCustomDefaultsSource("processing.app.laf");
+
+    // start with Light, but updateTheme() will be called soon
+    UIManager.setLookAndFeel(new FlatLightLaf());
+
+    /*
+    javax.swing.UIDefaults defaults = UIManager.getDefaults();
+    for (java.util.Map.Entry<Object, Object> entry : defaults.entrySet()) {
+      System.out.println(entry.getKey() + " = " + entry.getValue());
+    }
+    */
+
+    /*
     // If the default has been overridden in the preferences, set the font
     String fontName = Preferences.get("ui.font.family");
     int fontSize = Preferences.getInteger("ui.font.size");
+//    fontName = "Processing Sans Pro";
+//    fontSize = 13;
     if (!"Dialog".equals(fontName) || fontSize != 12) {
       setUIFont(new FontUIResource(fontName, Font.PLAIN, fontSize));
+//      setUIFont(new FontUIResource(createFallingFont(fontName, Font.PLAIN, fontSize)));
+//      setUIFont((FontUIResource) StyleContext.getDefaultStyleContext().getFont(fontName, Font.PLAIN, fontSize));
+
 //      Map<TextAttribute, Object> attributes = new HashMap<>();
 //      attributes.put(TextAttribute.KERNING, TextAttribute.KERNING_ON);
 //      Font font = new Font(fontName, Font.PLAIN, fontSize).deriveFont(attributes);
 //      setUIFont(new FontUIResource(font));
     }
+    */
   }
 
+//  // Adapted from https://stackoverflow.com/a/64667581/18247494
+//  static Font createFallingFont(final String family, final int style, final int size) {
+//    return new NonUIResourceFont(StyleContext.getDefaultStyleContext().getFont(family, style, size));
+//  }
+//
+//  static class NonUIResourceFont extends Font {
+//    public NonUIResourceFont(final Font font) {
+//      super(font);
+//    }
+//  }
 
+  /*
   // Rewritten from https://stackoverflow.com/a/7434935
   static private void setUIFont(FontUIResource f) {
     for (Object key : UIManager.getLookAndFeelDefaults().keySet()) {
@@ -134,6 +172,7 @@ public class DefaultPlatform {
       }
     }
   }
+  */
 
 
   public void setInterfaceZoom() throws Exception {
@@ -143,11 +182,14 @@ public class DefaultPlatform {
         scaleDefaultFont(widgetName);
       }
 
-      String fontName = Preferences.get("ui.font.family");
-      int fontSize = Preferences.getInteger("ui.font.size");
-      FontUIResource uiFont = new FontUIResource(fontName, Font.PLAIN, Toolkit.zoom(fontSize));
-      UIManager.put("Label.font", uiFont);
-      UIManager.put("TextField.font", uiFont);
+//      Font defaultFont = Toolkit.getSansFont(14, Font.PLAIN);
+//      UIManager.put("defaultFont", defaultFont);
+
+//      String fontName = Preferences.get("ui.font.family");
+//      int fontSize = Preferences.getInteger("ui.font.size");
+//      FontUIResource uiFont = new FontUIResource(fontName, Font.PLAIN, Toolkit.zoom(fontSize));
+//      UIManager.put("Label.font", uiFont);
+//      UIManager.put("TextField.font", uiFont);
     }
   }
 
@@ -166,7 +208,13 @@ public class DefaultPlatform {
    * Do not return null.
    */
   public File getSettingsFolder() throws Exception {
-    // otherwise make a .processing directory int the user's home dir
+    File override = Base.getSettingsOverride();
+    if (override != null) {
+      return override;
+    }
+
+    // If no subclass has a behavior, default to making a
+    // ".processing" directory in the user's home directory.
     File home = new File(System.getProperty("user.home"));
     return new File(home, ".processing");
   }
@@ -181,17 +229,24 @@ public class DefaultPlatform {
   }
 
 
+  // TODO this should be openLink(), as in PApplet, but need to look
+  //      into what else it might break by changing it [fry 220202]
   public void openURL(String url) throws Exception {
-    Desktop.getDesktop().browse(new URI(url));
+    if (!ShimAWT.openLink(url)) {
+      PApplet.launch(url);
+    }
   }
 
 
   public boolean openFolderAvailable() {
-    return Desktop.isDesktopSupported();
+    return Desktop.isDesktopSupported() &&
+      Desktop.getDesktop().isSupported(Desktop.Action.OPEN);
   }
 
 
   public void openFolder(File file) throws Exception {
+    // TODO Looks like this should instead be Action.BROWSE_FILE_DIR,
+    //      which was added in Java 9. (Also update available method.)
     Desktop.getDesktop().open(file);
   }
 

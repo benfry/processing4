@@ -27,11 +27,20 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import processing.app.Mode;
+import processing.data.StringDict;
 
 
 abstract public class EditorButton extends JComponent
 implements MouseListener, MouseMotionListener, ActionListener {
-  static public final int DIM = Toolkit.zoom(30);
+  static public final int DIM = Toolkit.zoom(36);
+
+  /**
+   * The lowercase short name/path used to load its SVG/PNG image data.
+   * This will usually be something like /lib/toolbar/run (to pull in
+   * an icon from the Processing /lib folder) or if it's a relative path,
+   * it will be sourced from the mode folder.
+   */
+  protected String name;
 
   /** Button's description. */
   protected String title;
@@ -69,18 +78,43 @@ implements MouseListener, MouseMotionListener, ActionListener {
 
   public EditorButton(EditorToolbar parent, String name,
                       String title, String titleShift, String titleAlt) {
+    this.name = name;
     this.toolbar = parent;
     this.title = title;
     this.titleShift = titleShift;
     this.titleAlt = titleAlt;
 
-    Mode mode = toolbar.mode;
+    updateTheme();
 
-    disabledImage = mode.loadImageX(name + "-disabled");
-    enabledImage = mode.loadImageX(name + "-enabled");
-    selectedImage = mode.loadImageX(name + "-selected");
-    pressedImage = mode.loadImageX(name + "-pressed");
-    rolloverImage = mode.loadImageX(name + "-rollover");
+    addMouseListener(this);
+    addMouseMotionListener(this);
+  }
+
+
+  protected Image renderImage(String state) {
+    Mode mode = toolbar.mode;
+    String xmlOrig = mode.loadString(name + ".svg");
+
+    // If no SVG available, load image data from PNG files
+    if (xmlOrig == null) {
+      return mode.loadImageX(name + "-" + state);
+    }
+
+    StringDict replacements = new StringDict(new String[][] {
+      { "#fff", Theme.get("toolbar.button." + state + ".field") },
+      { "#ff5757", Theme.get("toolbar.button." + state + ".glyph") },
+      { "silver", Theme.get("toolbar.button." + state + ".stroke") }
+    });
+    return Toolkit.svgToImageMult(xmlOrig, DIM, DIM, replacements);
+  }
+
+
+  public void updateTheme() {
+    disabledImage = renderImage("disabled");
+    enabledImage = renderImage("enabled");
+    selectedImage = renderImage("selected");
+    pressedImage =  renderImage("pressed");
+    rolloverImage = renderImage("rollover");
 
     if (disabledImage == null) {
       disabledImage = enabledImage;
@@ -94,8 +128,6 @@ implements MouseListener, MouseMotionListener, ActionListener {
     if (rolloverImage == null) {
       rolloverImage = enabledImage;  // could be pressed image
     }
-    addMouseListener(this);
-    addMouseMotionListener(this);
   }
 
 
@@ -191,12 +223,16 @@ implements MouseListener, MouseMotionListener, ActionListener {
   @Override
   public void mouseEntered(MouseEvent e) {
     toolbar.setRollover(this, e);
+    rollover = true;
+    repaint();
   }
 
 
   @Override
   public void mouseExited(MouseEvent e) {
     toolbar.setRollover(null, e);
+    rollover = false;
+    repaint();
   }
 
 

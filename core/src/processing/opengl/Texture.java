@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-21 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -815,7 +815,7 @@ public class Texture implements PConstants {
   public void copyBufferFromSource(Object natRef, ByteBuffer byteBuf,
                                    int w, int h) {
     if (bufferCache == null) {
-      bufferCache = new LinkedList<BufferData>();
+      bufferCache = new LinkedList<>();
     }
 
     if (bufferCache.size() + 1 <= MAX_BUFFER_CACHE_SIZE) {
@@ -872,7 +872,7 @@ public class Texture implements PConstants {
       // renderer draws the texture, and hence put the pixels put of sync, we
       // simply empty the cache.
       if (usedBuffers == null) {
-        usedBuffers = new LinkedList<BufferData>();
+        usedBuffers = new LinkedList<>();
       }
       while (0 < bufferCache.size()) {
         data = bufferCache.remove(0);
@@ -911,7 +911,7 @@ public class Texture implements PConstants {
       // Putting the buffer in the used buffers list to dispose at the end of
       // draw.
       if (usedBuffers == null) {
-        usedBuffers = new LinkedList<BufferData>();
+        usedBuffers = new LinkedList<>();
       }
       usedBuffers.add(data);
 

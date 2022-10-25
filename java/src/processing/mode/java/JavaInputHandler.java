@@ -147,7 +147,7 @@ public class JavaInputHandler extends PdeInputHandler {
       //if ((event.getModifiers() & InputEvent.SHIFT_MASK) != 0) {
       if (event.isShiftDown()) {
         // if shift is down, the user always expects an outdent
-        // http://code.google.com/p/processing/issues/detail?id=458
+        // https://github.com/processing/processing/issues/497
         editor.handleOutdent();
 
       } else if (textarea.isSelectionActive()) {
@@ -242,7 +242,7 @@ public class JavaInputHandler extends PdeInputHandler {
         if (braceCount > 0) {
           int sel = textarea.getSelectionStart();
           // sel - tabSize will be -1 if start/end parens on the same line
-          // http://dev.processing.org/bugs/show_bug.cgi?id=484
+          // https://download.processing.org/bugzilla/484.html
           if (sel - tabSize >= 0) {
             textarea.select(sel - tabSize, sel);
             String s = spaces(tabSize);
@@ -257,7 +257,7 @@ public class JavaInputHandler extends PdeInputHandler {
       } else {
         // Enter/Return was being consumed by somehow even if false
         // was returned, so this is a band-aid to simply fire the event again.
-        // http://dev.processing.org/bugs/show_bug.cgi?id=1073
+        // https://download.processing.org/bugzilla/1073.html
         textarea.setSelectedText(String.valueOf(c));
       }
       // mark this event as already handled (all but ignored)

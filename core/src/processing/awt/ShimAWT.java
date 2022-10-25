@@ -3,14 +3,13 @@ package processing.awt;
 import java.awt.*;
 import java.awt.color.ColorSpace;
 import java.awt.image.*;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.awt.geom.AffineTransform;
+import java.util.Map;
 
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
@@ -51,10 +50,10 @@ public class ShimAWT implements PConstants {
   */
   static private ShimAWT instance;
 
-  private GraphicsDevice[] displayDevices;
+  final private GraphicsDevice[] displayDevices;
 
-  private int displayWidth;
-  private int displayHeight;
+  final private int displayWidth;
+  final private int displayHeight;
 
 
   /** Only needed for display functions */
@@ -192,7 +191,7 @@ public class ShimAWT implements PConstants {
         new PixelGrabber(img, 0, 0, out.width, out.height, out.pixels, 0, out.width);
       try {
         pg.grabPixels();
-      } catch (InterruptedException e) { }
+      } catch (InterruptedException ignored) { }
     }
     out.pixelDensity = 1;
     out.pixelWidth = out.width;
@@ -279,7 +278,7 @@ public class ShimAWT implements PConstants {
         if (w < targetWidth) {
           w = targetWidth;
         }
-      } else if (targetWidth >= w) {
+      } else {  //if (targetWidth >= w) {
         w = targetWidth;
       }
       if (h > targetHeight) {
@@ -287,7 +286,7 @@ public class ShimAWT implements PConstants {
         if (h < targetHeight) {
           h = targetHeight;
         }
-      } else if (targetHeight >= h) {
+      } else {  //if (targetHeight >= h) {
         h = targetHeight;
       }
       if (scratchImage == null || isTranslucent) {
@@ -304,9 +303,9 @@ public class ShimAWT implements PConstants {
       outgoing = scratchImage;
     } while (w != targetWidth || h != targetHeight);
 
-    if (g2 != null) {
-      g2.dispose();
-    }
+    //if (g2 != null) {
+    g2.dispose();
+    //}
 
     // If we used a scratch buffer that is larger than our target size,
     // create an image of the right size and copy the results into it
@@ -322,7 +321,7 @@ public class ShimAWT implements PConstants {
   }
 
 
-  static protected String[] loadImageFormats;  // list of ImageIO formats
+  static protected String[] loadImageExtensions;  // list of ImageIO formats
 
 
   static public PImage loadImage(PApplet sketch, String filename, Object... args) {
@@ -359,7 +358,9 @@ public class ShimAWT implements PConstants {
         if (input == null) return null;
 
         PImage image = PImage.loadTGA(input);
-        image.parent = sketch;
+        if (image != null) {
+          image.parent = sketch;
+        }
         return image;
 
       } catch (IOException e) {
@@ -368,15 +369,18 @@ public class ShimAWT implements PConstants {
       }
     }
 
+    // Disabling for 4.0 beta 5, we're now using ImageIO for TIFF
+    /*
     if (extension.equals("tif") || extension.equals("tiff")) {
       InputStream input = sketch.createInput(filename);
       PImage image =  (input == null) ? null : PImage.loadTIFF(input);
       return image;
     }
+    */
 
     // For jpeg, gif, and png, load them using createImage(),
     // because the javax.imageio code was found to be much slower.
-    // http://dev.processing.org/bugs/show_bug.cgi?id=392
+    // https://download.processing.org/bugzilla/392.html
     try {
       if (extension.equals("jpg") || extension.equals("jpeg") ||
           extension.equals("gif") || extension.equals("png") ||
@@ -430,19 +434,23 @@ public class ShimAWT implements PConstants {
       e.printStackTrace();
     }
 
-    if (loadImageFormats == null) {
-      loadImageFormats = ImageIO.getReaderFormatNames();
+    if (loadImageExtensions == null) {
+      loadImageExtensions = ImageIO.getReaderFormatNames();
     }
-    if (loadImageFormats != null) {
-      for (int i = 0; i < loadImageFormats.length; i++) {
-        if (extension.equals(loadImageFormats[i])) {
+    if (loadImageExtensions != null) {
+      for (String loadImageExtension : loadImageExtensions) {
+        if (extension.equals(loadImageExtension)) {
           return loadImageIO(sketch, filename);
         }
       }
-    }
 
-    // failed, could not load image after all those attempts
-    System.err.println("Could not find a method to load " + filename);
+      // failed, could not load image after all those attempts
+      System.err.println("Could not load " + filename + ", " +
+        "make sure it ends with a supported extension " +
+        "(" + PApplet.join(loadImageExtensions, ", ") + ")");
+    } else {
+      System.err.println("Could not load " + filename);
+    }
     return null;
   }
 
@@ -489,21 +497,24 @@ public class ShimAWT implements PConstants {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static public boolean saveImage(PImage image, String path) {
-    if (saveImageFormats == null) {
-      saveImageFormats = javax.imageio.ImageIO.getWriterFormatNames();
+  static public boolean saveImage(PImage image, String path, String... args) {
+    if (saveImageExtensions == null) {
+      saveImageExtensions = javax.imageio.ImageIO.getWriterFormatNames();
     }
     try {
-      if (saveImageFormats != null) {
-        for (int i = 0; i < saveImageFormats.length; i++) {
-          if (path.endsWith("." + saveImageFormats[i])) {
-            if (!saveImageIO(image, path)) {
+      if (saveImageExtensions != null) {
+        for (String saveImageFormat : saveImageExtensions) {
+          if (path.endsWith("." + saveImageFormat)) {
+            if (!saveImageIO(image, path, args)) {
               System.err.println("Error while saving image.");
               return false;
             }
             return true;
           }
         }
+        System.err.println("Could not save " + path + ", " +
+                           "make sure it ends with a supported extension " +
+                           "(" + PApplet.join(saveImageExtensions, ", ") + ")");
       }
     } catch (IOException e) {
       e.printStackTrace();
@@ -512,7 +523,7 @@ public class ShimAWT implements PConstants {
   }
 
 
-  static protected String[] saveImageFormats;
+  static protected String[] saveImageExtensions;
 
 
   /**
@@ -521,17 +532,31 @@ public class ShimAWT implements PConstants {
    * To get a list of the supported formats for writing, use: <BR>
    * <TT>println(javax.imageio.ImageIO.getReaderFormatNames())</TT>
    */
-  static protected boolean saveImageIO(PImage image, String path) throws IOException {
+  static protected boolean saveImageIO(PImage image, String path, String... args) throws IOException {
     try {
       int outputFormat = (image.format == ARGB) ?
         BufferedImage.TYPE_INT_ARGB : BufferedImage.TYPE_INT_RGB;
+
+      Map<String, Number> params = new HashMap<>();
+      params.put("quality", 0.9f);  // default JPEG quality
+      params.put("dpi", 100.0);  // default DPI for PNG
+
+      if (args != null) {
+        for (String arg : args) {
+          if (arg.startsWith("quality=")) {
+            params.put("quality", Float.parseFloat(arg.substring(8)));
+          } else if (arg.startsWith("dpi=")) {
+            params.put("dpi", Double.parseDouble(arg.substring(4)));
+          }
+        }
+      }
 
       String extension =
         path.substring(path.lastIndexOf('.') + 1).toLowerCase();
 
       // JPEG and BMP images that have an alpha channel set get pretty unhappy.
       // BMP just doesn't write, and JPEG writes it as a CMYK image.
-      // http://code.google.com/p/processing/issues/detail?id=415
+      // https://github.com/processing/processing/issues/454
       if (extension.equals("bmp") || extension.equals("jpg") || extension.equals("jpeg")) {
         outputFormat = BufferedImage.TYPE_INT_RGB;
       }
@@ -553,24 +578,24 @@ public class ShimAWT implements PConstants {
           // it's a completely different algorithm.
           param = writer.getDefaultWriteParam();
           param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
-          param.setCompressionQuality(0.9f);
+          //param.setCompressionQuality(0.9f);
+          param.setCompressionQuality((Float) params.get("quality"));
         }
       }
 
       if (extension.equals("png")) {
         if ((writer = imageioWriter("png")) != null) {
           param = writer.getDefaultWriteParam();
-          if (false) {
-            metadata = imageioDPI(writer, param, 100);
-          }
+          metadata = imageioDPI(writer, param, (Double) params.get("dpi"));
         }
       }
 
       if (writer != null) {
-        BufferedOutputStream output =
-          new BufferedOutputStream(PApplet.createOutput(file));
+        OutputStream output = PApplet.createOutput(file);
+        if (output == null) {
+          return false;
+        }
         writer.setOutput(ImageIO.createImageOutputStream(output));
-//        writer.write(null, new IIOImage(bimage, null, null), param);
         writer.write(metadata, new IIOImage(bimage, null, metadata), param);
         writer.dispose();
 
@@ -597,6 +622,7 @@ public class ShimAWT implements PConstants {
   }
 
 
+  @SuppressWarnings("SameParameterValue")
   static private IIOMetadata imageioDPI(ImageWriter writer, ImageWriteParam param, double dpi) {
     // http://stackoverflow.com/questions/321736/how-to-set-dpi-information-in-an-image
     ImageTypeSpecifier typeSpecifier =
@@ -695,10 +721,8 @@ public class ShimAWT implements PConstants {
 
   static public void selectInput(String prompt, String callbackMethod,
                                  File file, Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      selectImpl(prompt, callbackMethod, file,
-                 callbackObject, null, FileDialog.LOAD);
-    });
+    EventQueue.invokeLater(() -> selectImpl(prompt, callbackMethod, file,
+      callbackObject, null, FileDialog.LOAD));
   }
 
 
@@ -719,10 +743,8 @@ public class ShimAWT implements PConstants {
 
   static public void selectOutput(String prompt, String callbackMethod,
                                   File file, Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      selectImpl(prompt, callbackMethod, file,
-                 callbackObject, null, FileDialog.SAVE);
-    });
+    EventQueue.invokeLater(() -> selectImpl(prompt, callbackMethod, file,
+      callbackObject, null, FileDialog.SAVE));
   }
 
 
@@ -800,10 +822,8 @@ public class ShimAWT implements PConstants {
                                   final String callbackMethod,
                                   final File defaultSelection,
                                   final Object callbackObject) {
-    EventQueue.invokeLater(() -> {
-      selectFolderImpl(prompt, callbackMethod, defaultSelection,
-                       callbackObject, null);
-    });
+    EventQueue.invokeLater(() -> selectFolderImpl(prompt, callbackMethod,
+      defaultSelection, callbackObject, null));
   }
 
 
@@ -883,7 +903,7 @@ public class ShimAWT implements PConstants {
         // Which also is not scaled properly with HiDPI interfaces.
         try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) { }
+        } catch (Exception ignored) { }
       }
       lookAndFeelCheck = true;
     }
@@ -891,7 +911,7 @@ public class ShimAWT implements PConstants {
 
 
   // TODO maybe call this with reflection from inside PApplet?
-  // longer term, develop a more general method for other platforms
+  //      longer term, develop a more general method for other platforms
   static public File getWindowsDesktop() {
     return FileSystemView.getFileSystemView().getHomeDirectory();
   }
@@ -900,12 +920,13 @@ public class ShimAWT implements PConstants {
   static public boolean openLink(String url) {
     try {
       if (Desktop.isDesktopSupported()) {
-        Desktop.getDesktop().browse(new URI(url));
-        return true;
+        Desktop desktop = Desktop.getDesktop();
+        if (desktop.isSupported(Desktop.Action.BROWSE)) {
+          desktop.browse(new URI(url));
+          return true;
+        }
       }
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (URISyntaxException e) {
+    } catch (IOException | URISyntaxException e) {
       e.printStackTrace();
     }
     return false;

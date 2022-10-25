@@ -1,6 +1,5 @@
 bin
 bin-test
-.idea
 
 /library/gluegen-rt*.jar
 /library/jogl-all*.jar

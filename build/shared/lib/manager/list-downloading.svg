@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.0" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32" xml:space="preserve">
+<g>
+<rect x="15" y="2" fill="#9B9B9B" width="2" height="8"/>
+
+<rect x="9.9996" y="3.3399" transform="matrix(0.866 -0.5 0.5 0.866 -2.1962 6.4833)" opacity="0.9" fill="#9B9B9B" width="2" height="8"/>
+
+<rect x="6.3392" y="7.0001" transform="matrix(0.5 -0.866 0.866 0.5 -5.8566 11.8557)" opacity="0.8" fill="#9B9B9B" width="2" height="8"/>
+
+<rect x="2" y="15" opacity="0.7" fill="#9B9B9B" width="8" height="2"/>
+
+<rect x="3.3399" y="20.0007" transform="matrix(0.8661 -0.4999 0.4999 0.8661 -9.5152 6.4815)" opacity="0.6" fill="#9B9B9B" width="8" height="2"/>
+
+<rect x="7.0004" y="23.6594" transform="matrix(0.4999 -0.8661 0.8661 0.4999 -15.8558 21.8597)" opacity="0.5" fill="#9B9B9B" width="8" height="2"/>
+
+<rect x="15" y="22" opacity="0.4" fill="#9B9B9B" width="2" height="8"/>
+
+<rect x="19.9987" y="20.6593" transform="matrix(0.866 -0.5 0.5 0.866 -9.5164 13.8034)" opacity="0.3" fill="#9B9B9B" width="2" height="8"/>
+
+<rect x="23.659" y="17.0015" transform="matrix(0.5 -0.866 0.866 0.5 -5.8583 31.8556)" opacity="0.2" fill="#9B9B9B" width="2" height="8"/>
+
+<rect x="22" y="15" opacity="0.15" fill="#9B9B9B" width="8" height="2"/>
+
+<rect x="20.6609" y="10.0009" transform="matrix(0.8661 -0.4999 0.4999 0.8661 -2.1969 13.801)" opacity="0.1" fill="#9B9B9B" width="8" height="2"/>
+
+<rect x="17.0004" y="6.3389" transform="matrix(0.4999 -0.8661 0.8661 0.4999 4.1464 21.8585)" opacity="0.05" fill="#9B9B9B" width="8" height="2"/>
+</g>
+</svg>

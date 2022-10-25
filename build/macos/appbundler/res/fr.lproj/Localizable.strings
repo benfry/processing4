@@ -1,0 +1,7 @@
+"JRELoadError" = "Impossible de charger l'environnement d'exécution Java.";
+"JRExLoadError" = "Impossible de charger l'environnement d'exécution Java %d.";
+"JRExLoadFullError" = "Cette application nécessite la présence de Java %d ou supérieur sur votre ordinateur. Veuillez télécharger et installer la dernière version de Java depuis www.java.com et essayez à nouveau.";
+"JDKxLoadFullError" = "Cette application nécessite la présence d'un JDK Java %d ou supérieur sur votre ordinateur. Veuillez télécharger et installer le dernier JDK Java depuis www.java.com et essayez à nouveau.";
+"MainClassNameRequired" = "Le nom de la classe principale est obligatoire.";
+"JavaDirectoryNotFound" = "Impossible d'énumérer le contenu du répertoire Java.";
+"BundlePathContainsColon" = "Impossible de lancer à partir d'un dossier dont le nom comporte un « / ».";
