@@ -3,7 +3,15 @@ X Updating PApplet to use Java 17 (switch statements, etc)
 X XxxList bug with random() if there are zero elements in the array
 X   now throws ArrayIndexOutOfBoundsException
 X   kinda want to return null, but later getting an NPE is more confusing
+X can't do pixelDensity 2 with fullScreen and Java2D
+X   when using fullScreen(), shows error:
+X   "Display -1 does not exist, returning 1 for displayDensity(-1)"
+X   maybe https://github.com/processing/processing4/issues/487
 
+
+_ need alphabetical ordering for json serialization
+_ use choice() instead of random() for list classes
+_ add choice() as a PApplet method for int values of random()?
 
 _ concurrent StringDict et al
 _   why no concurrent TreemMap? https://stackoverflow.com/a/17656453

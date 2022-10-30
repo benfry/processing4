@@ -129,16 +129,34 @@ public class ShimAWT implements PConstants {
 
 
   private int displayDensityImpl(int display) {
-    if (display > 0 && display <= displayDevices.length) {
-      GraphicsConfiguration graphicsConfig =
-        displayDevices[display - 1].getDefaultConfiguration();
+    GraphicsConfiguration graphicsConfig = null;
+
+    if (display == -1) {  // the default display
+      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      graphicsConfig = ge.getDefaultScreenDevice().getDefaultConfiguration();
+
+    } else if (display == SPAN) {
+      // walk through all displays, go with lowest common denominator
+      for (int i = 0; i < displayDevices.length; i++) {
+        if (displayDensityImpl(i) == 1) {
+          return 1;
+        }
+      }
+      return 2;  // everyone is density 2
+
+    } else if (display <= displayDevices.length) {
+      graphicsConfig = displayDevices[display - 1].getDefaultConfiguration();
+    }
+
+    if (graphicsConfig == null) {
+      System.err.println("Display " + display + " does not exist, " +
+        "returning 1 for displayDensity(" + display + ")");
+      return 1;  // not the end of the world, so don't throw a RuntimeException
+
+    } else {
       AffineTransform tx = graphicsConfig.getDefaultTransform();
       return (int) Math.round(tx.getScaleX());
     }
-
-    System.err.println("Display " + display + " does not exist, " +
-                       "returning 1 for displayDensity(" + display + ")");
-    return 1;  // not the end of the world, so don't throw a RuntimeException
   }
 
 
