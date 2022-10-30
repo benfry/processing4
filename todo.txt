@@ -34,6 +34,17 @@ _   and with that, switch to another directory
 _   https://github.com/processing/processing4/issues/548
 
 
+_ preproc inserting weird number of spaces
+_   before 'public' in functions, it's an extra single space
+_   not indenting the rest of the code at all
+_   many blank lines at the beginning
+_   'exported at' text at the top is awkward
+
+_ export to IntelliJ? how tricky?
+_   just copy jars to /lib?
+_   point to binaries in /Applications/Processing.app? (no)
+
+
 _ set more build.xml files to use Java 17
 _ remove target.path from build/build.xml
 _   maybe simpler way to write version? sheesh
