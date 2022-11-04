@@ -249,7 +249,7 @@ abstract public class Contribution {
                                           ContributionType type) {
     File propertiesFile = new File(contribFolder, type.getPropertiesName());
     if (propertiesFile.exists()) {
-      return Util.readSettings(propertiesFile);
+      return Util.readSettings(propertiesFile, false);
     }
     return null;
   }
@@ -337,8 +337,7 @@ abstract public class Contribution {
   public boolean equals(Object o) {
     if (this == o) return true;
 
-    if (o instanceof Contribution) {
-      Contribution that = (Contribution) o;
+    if (o instanceof Contribution that) {
       return name.equalsIgnoreCase(that.name);
     }
     return false;

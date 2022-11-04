@@ -409,7 +409,7 @@ public class ThemeSelector extends JFrame implements Tool {
     private Image renderImage(String filename, String theme) {
       // parse the txt file to get entries for swapping
       StringDict entries =
-        Util.readSettings(filename, PApplet.split(theme, '\n'));
+        Util.readSettings(filename, PApplet.split(theme, '\n'), true);
       //entries.print();
 
       StringDict replacements = new StringDict(new String[][] {

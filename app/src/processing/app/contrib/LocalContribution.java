@@ -60,7 +60,7 @@ public abstract class LocalContribution extends Contribution {
     // required for contributed modes, but not for built-in core modes
     File propertiesFile = new File(folder, getTypeName() + ".properties");
     if (propertiesFile.exists()) {
-      properties = Util.readSettings(propertiesFile);
+      properties = Util.readSettings(propertiesFile, false);
 
       if (properties != null) {
         name = properties.get("name");

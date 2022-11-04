@@ -265,7 +265,7 @@ public class AvailableContribution extends Contribution {
    */
   private boolean rewritePropertiesFile(File propFile) {
     try {
-      StringDict properties = Util.readSettings(propFile);
+      StringDict properties = Util.readSettings(propFile, false);
 
       String name = properties.get("name");
       if (name == null || name.isEmpty()) {

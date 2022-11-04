@@ -27,9 +27,9 @@ X   https://github.com/processing/processing4/wiki/Naming-Sketches
 
 
 before 4.0.2
-_ library version number parsing isn't ignoring comments properly
-_   https://github.com/processing/processing4/issues/586
-_   https://github.com/processing/processing4/issues/553
+X library version number parsing isn't ignoring comments properly
+X   https://github.com/processing/processing4/issues/586
+X   https://github.com/processing/processing4/issues/553
 _ Can't Update Libraries due to "this.progressBar" is null error message
 _   https://github.com/processing/processing4/issues/567
 _ if naming scheme produces a sketch w/ the same name, what happens?

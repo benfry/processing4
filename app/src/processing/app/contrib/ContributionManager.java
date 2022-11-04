@@ -292,7 +292,7 @@ public class ContributionManager {
           if (contribDir.isDirectory()) {
             File propsFile = new File(contribDir, c.getType() + ".properties");
             if (propsFile.exists()) {
-              StringDict props = Util.readSettings(propsFile);
+              StringDict props = Util.readSettings(propsFile, false);
               if (props != null) {
                 if (c.getName().equals(props.get("name"))) {
                   return;
@@ -596,7 +596,7 @@ public class ContributionManager {
 
     if (markedForUpdate != null) {
       for (File folder : markedForUpdate) {
-        StringDict props = Util.readSettings(new File(folder, propFileName));
+        StringDict props = Util.readSettings(new File(folder, propFileName), false);
         if (props != null) {
           String name = props.get("name", null);
           if (name != null) {  // should not happen, but...

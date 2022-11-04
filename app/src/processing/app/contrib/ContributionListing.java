@@ -305,7 +305,7 @@ public class ContributionListing {
             }
 
             String[] contribLines = PApplet.subset(lines, start, end - start);
-            StringDict contribParams = Util.readSettings(file.getName(), contribLines);
+            StringDict contribParams = Util.readSettings(file.getName(), contribLines, false);
             outgoing.add(new AvailableContribution(contribType, contribParams));
             start = end + 1;
           }

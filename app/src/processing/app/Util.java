@@ -70,12 +70,12 @@ public class Util {
   /**
    * Read from a file with a bunch of attribute/value pairs
    * that are separated by = and ignore comments with #.
-   * Changed in 3.x to return null (rather than empty hash) if no file,
-   * and changed return type to StringDict instead of Map or HashMap.
-   * Changed in 4.0 beta 9 to only use # for comments at beginning of
-   * line, otherwise it cannot parse hex color entries.
+   * As of 4.0.2, set allowHex to true if hex colors are used in the file.
+   * This will disable support for comments that begin later in the line.
+   * If allowHex is false, then comments can appear later on a line, which is
+   * necessary for the contribution .properties files. Blank lines are ignored.
    */
-  static public StringDict readSettings(File inputFile) {
+  static public StringDict readSettings(File inputFile, boolean allowHex) {
     if (!inputFile.exists()) {
       Messages.err(inputFile + " does not exist inside readSettings()");
       return null;
@@ -85,26 +85,27 @@ public class Util {
       System.err.println("Could not read " + inputFile);
       return null;
     }
-    return readSettings(inputFile.toString(), lines);
+    return readSettings(inputFile.toString(), lines, allowHex);
   }
 
 
   /**
    * Parse a String array that contains attribute/value pairs separated
    * by = (the equals sign). The # (hash) symbol is used to denote comments.
-   * Changed in 4.0 beta 9 to only use # for comments at beginning of line,
-   * otherwise it cannot parse hex color entries. Blank lines are ignored.
-   * <p>
-   * In 3.0a6, no longer taking a blank HashMap as param; no cases in the main
-   * PDE code of adding to a (Hash)Map. Also returning the Map instead of void.
-   * Both changes modify the method signature, but this was only used by the
-   * contrib classes.
+   * As of 4.0.2, set allowHex to true if hex colors are used in the file.
+   * This will disable support for comments that begin later in the line.
+   * If allowHex is false, then comments can appear later on a line, which is
+   * necessary for the contribution .properties files. Blank lines are ignored.
    */
-  static public StringDict readSettings(String filename, String[] lines) {
+  static public StringDict readSettings(String filename, String[] lines, boolean allowHex) {
     StringDict settings = new StringDict();
     for (String line : lines) {
       // Remove extra whitespace (including the x00A0 and xFEFF)
       line = PApplet.trim(line);
+
+      if (!allowHex && line.contains("#")) {
+        line = line.substring(0, line.indexOf('#')).trim();
+      }
 
       if (line.length() != 0 && line.charAt(0) != '#') {
         int equals = line.indexOf('=');
