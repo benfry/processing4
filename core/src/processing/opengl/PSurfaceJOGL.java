@@ -145,8 +145,10 @@ public class PSurfaceJOGL implements PSurface {
     this.sketch = sketch;
 
     initIcons();
-    initDisplay();
+    // For 4.0.2, swapped the order to do initGL() before initDisplay()
+    // https://github.com/processing/processing4/issues/544
     initGL();
+    initDisplay();
     initWindow();
     initListeners();
     initAnimator();

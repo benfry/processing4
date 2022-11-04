@@ -8,6 +8,10 @@ X   when using fullScreen(), shows error:
 X   "Display -1 does not exist, returning 1 for displayDensity(-1)"
 X   maybe https://github.com/processing/processing4/issues/487
 
+contribs
+X P3D & P2D window not showing on MacOS Ventura (thx @jaegonlee)
+X   https://github.com/processing/processing4/issues/544
+
 
 _ need alphabetical ordering for json serialization
 _ use choice() instead of random() for list classes
