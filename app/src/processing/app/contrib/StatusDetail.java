@@ -166,11 +166,16 @@ class StatusDetail {
       // For the special "Updates" tab in the manager, there are no progress
       // bars, so if that's what we're doing, this will create a dummy bar.
       // TODO Not a good workaround [fry 220312]
-//      if (progressBar == null) {
-//        initProgressBar();
-//      }
-      progressBar.setVisible(true);
-      progressBar.setIndeterminate(true);
+      // TODO This is really, really gross [fry 221104]
+      if (progressBar == null) {
+        // This was removed in 4.x and brought back for 4.0.2 because
+        // it broke the "Update All" option in the Contributions Manager.
+        // https://github.com/processing/processing4/issues/567
+        progressBar = new JProgressBar();
+      } else {
+        progressBar.setVisible(true);
+        progressBar.setIndeterminate(true);
+      }
 
       ContribProgress progress = new ContribProgress(progressBar) {
         @Override

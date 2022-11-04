@@ -357,6 +357,8 @@ _ when adding a new library, its examples aren't added to the list until restart
 
 PDE / Manager (4.x notes)
 
+_ get rid of dummy progress bar being created in StatusDetail.update()
+_   would be good to *add* a progress bar of some kind, but sheesh
 _ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
 _   should be a better way to implement this
 _ if no internet available, install buttons disabled, but not clear why broken
