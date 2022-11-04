@@ -12,8 +12,10 @@ contribs
 X P3D & P2D window not showing on MacOS Ventura (thx @jaegonlee)
 X   https://github.com/processing/processing4/issues/544
 
+_ freeze on resize with Windows (even the default renderer)
+_   https://github.com/processing/processing4/issues/507
 
-_ need alphabetical ordering for json serialization
+_ need option for alphabetical ordering for json serialization
 _ use choice() instead of random() for list classes
 _ add choice() as a PApplet method for int values of random()?
 

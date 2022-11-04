@@ -9,6 +9,11 @@ contribs
 X Catalan translation for Processing 4.0.1
 X   https://github.com/processing/processing4/issues/550
 X   https://github.com/processing/processing4/pull/554
+X Update to Ukranian language strings
+X   https://github.com/processing/processing4/pull/585
+X Fix errors in the Spanish translation
+X   https://github.com/processing/processing4/issues/552
+X   https://github.com/processing/processing4/pull/574
 X JSSC update for M1/M2
 X   https://github.com/processing/processing4/pull/577
 X   https://github.com/processing/processing4/issues/525
@@ -22,6 +27,11 @@ X   https://github.com/processing/processing4/wiki/Naming-Sketches
 
 
 before 4.0.2
+_ library version number parsing isn't ignoring comments properly
+_   https://github.com/processing/processing4/issues/586
+_   https://github.com/processing/processing4/issues/553
+_ Can't Update Libraries due to "this.progressBar" is null error message
+_   https://github.com/processing/processing4/issues/567
 _ if naming scheme produces a sketch w/ the same name, what happens?
 _   probably a crash (or infinite loop?) need to check
 _ temp folders owned by one user can't be overwritten by another
@@ -29,10 +39,13 @@ _   this was on Linux; curious if Windows has an issue too?
 _   overwrite with -Djava.io.tmpdir=/path/to/tmpdir
 _   maybe we should use java.io.tmpdir -> processing -> $USER
 _   https://github.com/processing/processing4/issues/549
+_ too many temp folders prevent restart
+_   https://github.com/processing/processing4/issues/582
 _ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
 _   and with that, switch to another directory
 _   https://github.com/processing/processing4/issues/548
-
+_ a report that theme is not being kept after Processing restart on Windows
+_   https://github.com/processing/processing4/issues/565
 
 _ preproc inserting weird number of spaces
 _   before 'public' in functions, it's an extra single space
@@ -40,9 +53,18 @@ _   not indenting the rest of the code at all
 _   many blank lines at the beginning
 _   'exported at' text at the top is awkward
 
+_ look into LSP code contribution
+_   https://github.com/processing/processing4/issues/117
+_   https://github.com/processing/processing4/pull/564
+
+
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
 _   point to binaries in /Applications/Processing.app? (no)
+
+
+_ add a protocol handler for pdex and pdez
+_   https://github.com/processing/processing4/issues/559
 
 
 _ set more build.xml files to use Java 17
