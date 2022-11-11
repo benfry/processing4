@@ -4,6 +4,8 @@ X fix potential casting problem with Platform and DefaultPlatform
 X   should be unreachable, but fixed anyway
 X bring back getCodeIndex() for GUI Builder Tool
 X   https://github.com/processing/processing4/issues/545
+X   ...and remove again
+X   https://github.com/processing/processing4/issues/596
 
 contribs
 X Catalan translation for Processing 4.0.1
@@ -30,8 +32,8 @@ before 4.0.2
 X library version number parsing isn't ignoring comments properly
 X   https://github.com/processing/processing4/issues/586
 X   https://github.com/processing/processing4/issues/553
-_ Can't Update Libraries due to "this.progressBar" is null error message
-_   https://github.com/processing/processing4/issues/567
+X Can't Update Libraries due to "this.progressBar" is null error message
+X   https://github.com/processing/processing4/issues/567
 _ if naming scheme produces a sketch w/ the same name, what happens?
 _   probably a crash (or infinite loop?) need to check
 _ temp folders owned by one user can't be overwritten by another
@@ -46,6 +48,12 @@ _   and with that, switch to another directory
 _   https://github.com/processing/processing4/issues/548
 _ a report that theme is not being kept after Processing restart on Windows
 _   https://github.com/processing/processing4/issues/565
+
+_ if user clicks "no" when asked to access Documents folder, will cause weird problems later
+_   "Please fix read/write" in ContributionManager.updateFlagged()
+_   but that also shouldn't prevent users from continuing
+_   https://github.com/processing/processing4/issues/581
+_   use tccutil or some api to check whether user has disallowed access
 
 _ preproc inserting weird number of spaces
 _   before 'public' in functions, it's an extra single space
@@ -157,6 +165,7 @@ _   https://github.com/processing/processing4/wiki/Preferences#proxies
 _ right-click/ctrl-click for jump to declaration causes hang
 _   https://github.com/processing/processing4/issues/527
 _   https://github.com/processing/processing4/issues/551
+_   https://github.com/processing/processing4/issues/595
 
 design
 _ completion mode pop-up not following dark and light mode conventions
