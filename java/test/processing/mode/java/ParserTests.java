@@ -448,4 +448,9 @@ public class ParserTests {
     expectGood("staticclass");
   }
 
+  @Test
+  public void testCustomRootClass() {
+    expectGood("customrootclass");
+  }
+
 }
