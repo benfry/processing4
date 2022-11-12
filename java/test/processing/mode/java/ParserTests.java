@@ -419,7 +419,7 @@ public class ParserTests {
 
   @Test
   public void testMixing() {
-    expectRunnerException("mixing", 1);
+    expectRunnerException("mixing", 6);
   }
 
   @Test

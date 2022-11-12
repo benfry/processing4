@@ -15,7 +15,7 @@ public class ProblemFactoryTest {
 
   private PdePreprocessIssue pdePreprocessIssue;
   private List<Integer> tabStarts;
-  private Editor editor;
+
   private List<Integer> starts;
 
   @Before
@@ -25,24 +25,10 @@ public class ProblemFactoryTest {
     tabStarts = new ArrayList<>();
     tabStarts.add(5);
 
-    editor = Mockito.mock(Editor.class);
-    Mockito.when(editor.getLineStartOffset(3)).thenReturn(10);
-    Mockito.when(editor.getLineStopOffset(3)).thenReturn(12);
-
     starts = new ArrayList<>();
     starts.add(0);
     starts.add(5);
     starts.add(10);
-  }
-
-  @Test
-  public void buildWithEditor() {
-    Problem problem = ProblemFactory.build(pdePreprocessIssue, tabStarts, 15, editor);
-
-    Assert.assertEquals(3, problem.getLineNumber());
-    Assert.assertEquals("test", problem.getMessage());
-    Assert.assertEquals(10, problem.getStartOffset());
-    Assert.assertEquals(11, problem.getStopOffset());
   }
 
   @Test
