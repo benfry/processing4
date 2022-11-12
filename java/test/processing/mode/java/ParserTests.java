@@ -443,4 +443,9 @@ public class ParserTests {
     expectGood("fullscreen_export");
   }
 
+  @Test
+  public void testStaticClass() {
+    expectGood("staticclass");
+  }
+
 }
