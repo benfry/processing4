@@ -20,8 +20,8 @@ import JavaParser;
 
 // main entry point, select sketch type
 processingSketch
-    : javaProcessingSketch
-    | staticProcessingSketch
+    : staticProcessingSketch
+    | javaProcessingSketch
     | activeProcessingSketch
 //    | warnMixedModes
     ;
@@ -33,7 +33,7 @@ javaProcessingSketch
 
 // No method declarations, just statements
 staticProcessingSketch
-    : (importDeclaration | blockStatement)* EOF
+    : (importDeclaration | blockStatement | typeDeclaration)* EOF
     ;
 
 // active mode, has function definitions
