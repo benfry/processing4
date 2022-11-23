@@ -12,6 +12,10 @@ contribs
 X P3D & P2D window not showing on MacOS Ventura (thx @jaegonlee)
 X   https://github.com/processing/processing4/issues/544
 
+_ Loading SVG file gives Illegal base64 character 20 encoding error (worked in v3.5.4)
+_   https://github.com/processing/processing4/issues/592
+_   https://github.com/processing/processing4/issues/592
+
 _ freeze on resize with Windows (even the default renderer)
 _   https://github.com/processing/processing4/issues/507
 
