@@ -187,28 +187,6 @@ public class SketchName {
   }
 
 
-  /*
-  static File wordsFolder(File parentDir, String setName) {
-    WordList wl = getWordLists().get(setName);
-    File outgoing = null;
-    // Still may be other possibilities after this, but if we hit
-    // this many attempts, we've pretty much exhausted the list.
-    final int maxAttempts = wl.getComboCount();
-    int attempts = 0;
-    do {
-      // Clean up the name in case a user-supplied word list breaks the rules
-      String name = Sketch.sanitizeName(wl.getPair());
-      outgoing = new File(parentDir, name);
-      attempts++;
-      if (attempts == maxAttempts) {
-        return null;  // avoid infinite loop
-      }
-    } while (outgoing.exists());
-    return outgoing;
-  }
-  */
-
-
   static private void load(File namingFile) {
     JSONArray array = PApplet.loadJSONArray(namingFile);
     for (int i = 0; i < array.size(); i++) {
