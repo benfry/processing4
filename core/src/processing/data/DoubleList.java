@@ -688,15 +688,25 @@ public class DoubleList implements Iterable<Double> {
   }
 
 
-  /**
-   * Return a random value from the list, using the
-   * randomSeed() from the specified sketch object.
-   */
-  public double random(PApplet sketch) {
+  // see notes in StringList
+//  /**
+//   * Return a random value from the list, using the
+//   * randomSeed() from the specified sketch object.
+//   */
+//  public double random(PApplet sketch) {
+//    if (count == 0) {
+//      throw new ArrayIndexOutOfBoundsException("No entries in this DoubleList");
+//    }
+//    return data[(int) sketch.random(count)];
+//  }
+
+
+  public double removeChoice() {
     if (count == 0) {
       throw new ArrayIndexOutOfBoundsException("No entries in this DoubleList");
     }
-    return data[(int) sketch.random(count)];
+    int index = (int) (Math.random() * count);
+    return remove(index);
   }
 
 

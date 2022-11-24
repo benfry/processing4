@@ -578,9 +578,11 @@ public class StringList implements Iterable<String> {
 
 
   /**
-   * Return a random value from the list.
+   * Return a random value from the list. Throws an exception if there are no
+   * entries available. (Can't just return null because IntList and FloatList
+   * can't do that, and would be inconsistent.)
    */
-  public String random() {
+  public String choice() {
     if (count == 0) {
       throw new ArrayIndexOutOfBoundsException("No entries in this StringList");
     }
@@ -588,15 +590,26 @@ public class StringList implements Iterable<String> {
   }
 
 
-  /**
-   * Return a random value from the list, using the
-   * randomSeed() from the specified sketch object.
-   */
-  public String random(PApplet sketch) {
+  // removing in 4.0.2, seems like overkill... if something this specific is
+  // needed, then better to use a more elaborate/pedantic setup anyway.
+//  /**
+//   * Return a random value from the list, using the
+//   * randomSeed() from the specified sketch object.
+//   */
+//  public String choice(PApplet sketch) {
+//    if (count == 0) {
+//      throw new ArrayIndexOutOfBoundsException("No entries in this StringList");
+//    }
+//    return data[(int) sketch.random(count)];
+//  }
+
+
+  public String removeChoice() {
     if (count == 0) {
       throw new ArrayIndexOutOfBoundsException("No entries in this StringList");
     }
-    return data[(int) sketch.random(count)];
+    int index = (int) (Math.random() * count);
+    return remove(index);
   }
 
 

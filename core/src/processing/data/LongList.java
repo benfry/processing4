@@ -676,17 +676,27 @@ public class LongList implements Iterable<Long> {
   /**
    * Return a random value from the list.
    */
-  public long random() {
+  public long choice() {
     return data[(int) (Math.random() * count)];
   }
 
 
-  /**
-   * Return a random value from the list, using the
-   * randomSeed() from the specified sketch object.
-   */
-  public long random(PApplet sketch) {
-    return data[(int) sketch.random(count)];
+  // see notes in StringList
+//  /**
+//   * Return a random value from the list, using the
+//   * randomSeed() from the specified sketch object.
+//   */
+//  public long choice(PApplet sketch) {
+//    return data[(int) sketch.random(count)];
+//  }
+
+
+  public long removeChoice() {
+    if (count == 0) {
+      throw new ArrayIndexOutOfBoundsException("No entries in this IntList");
+    }
+    int index = (int) (Math.random() * count);
+    return remove(index);
   }
 
 
