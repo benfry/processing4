@@ -419,7 +419,7 @@ public class ParserTests {
 
   @Test
   public void testMixing() {
-    expectRunnerException("mixing", 1);
+    expectRunnerException("mixing", 6);
   }
 
   @Test
@@ -441,6 +441,16 @@ public class ParserTests {
   public void testMultiMultilineString() {
     Preferences.setBoolean("export.application.fullscreen", true);
     expectGood("fullscreen_export");
+  }
+
+  @Test
+  public void testStaticClass() {
+    expectGood("staticclass");
+  }
+
+  @Test
+  public void testCustomRootClass() {
+    expectGood("customrootclass");
   }
 
 }

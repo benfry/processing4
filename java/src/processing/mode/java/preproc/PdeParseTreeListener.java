@@ -86,6 +86,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   private boolean sizeIsFullscreen = false;
   private boolean noSmoothRequiresRewrite = false;
   private boolean smoothRequiresRewrite = false;
+  private boolean userImportingManually = false;
   private RewriteResult headerResult;
   private RewriteResult footerResult;
 
@@ -443,6 +444,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     foundImports.add(ImportStatement.parse(importStringNoSemi));
 
+    if (importStringNoSemi.startsWith("processing.core.")) {
+      userImportingManually = true;
+    }
+
     delete(ctx.start, ctx.stop);
   }
 
@@ -498,7 +503,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param ctx ANTLR context for the sketch.
    */
   public void exitStaticProcessingSketch(ProcessingParser.StaticProcessingSketchContext ctx) {
-    mode = Mode.STATIC;
+    mode = foundMain ? Mode.JAVA : Mode.STATIC;
   }
 
   /**
@@ -1072,10 +1077,16 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
   protected void writeImports(PrintWriterWithEditGen headerWriter,
         RewriteResultBuilder resultBuilder) {
 
-    writeImportList(headerWriter, coreImports, resultBuilder);
+    if (!userImportingManually) {
+      writeImportList(headerWriter, coreImports, resultBuilder);
+    }
+
     writeImportList(headerWriter, codeFolderImports, resultBuilder);
     writeImportList(headerWriter, foundImports, resultBuilder);
-    writeImportList(headerWriter, defaultImports, resultBuilder);
+
+    if (!userImportingManually) {
+      writeImportList(headerWriter, defaultImports, resultBuilder);
+    }
   }
 
   /**
