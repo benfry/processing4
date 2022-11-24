@@ -4830,6 +4830,26 @@ public class PApplet implements PConstants {
   }
 
 
+  /**
+   * Return a random integer from 0 up to (but not including)
+   * the specified value for “high”. This is the same as calling random()
+   * and casting the result to an <b>int</b>.
+   */
+  public final int choice(int high) {
+    return (int) random(high);
+  }
+
+
+  /**
+   * Return a random integer from “low” up to (but not including)
+   * the specified value for “high”. This is the same as calling random()
+   * and casting the result to an <b>int</b>.
+   */
+  public final int choice(int low, int high) {
+    return (int) random(low, high);
+  }
+
+
 
   //////////////////////////////////////////////////////////////
 
