@@ -11,17 +11,15 @@ X   maybe https://github.com/processing/processing4/issues/487
 contribs
 X P3D & P2D window not showing on MacOS Ventura (thx @jaegonlee)
 X   https://github.com/processing/processing4/issues/544
+X Loading SVG file gives Illegal base64 character 20 encoding error (worked in v3.5.4)
+X   https://github.com/processing/processing4/issues/592
+X   https://github.com/processing/processing4/pull/599
 
 data
 X use choice() instead of random() for list classes
 X remove random(PApplet) since unlikely to be used/seems overkill
 X add choice() as a PApplet method for int values of random()
 
-
-contrib
-_ Loading SVG file gives Illegal base64 character 20 encoding error (worked in v3.5.4)
-_   https://github.com/processing/processing4/issues/592
-_   https://github.com/processing/processing4/issues/592
 
 _ freeze on resize with Windows (even the default renderer)
 _   https://github.com/processing/processing4/issues/507
