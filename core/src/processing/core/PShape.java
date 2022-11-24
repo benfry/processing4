@@ -1985,7 +1985,23 @@ public class PShape implements PConstants {
     String extension = parts[0].substring(11);
     String encodedData = parts[1];
 
-    byte[] decodedBytes = Base64.getDecoder().decode(encodedData);
+    // If a SVG image has an error, the base 64 will fail, but the browser will work.
+    // So we are sanitizing the values before reading it.
+    // If you have any questions, please, read this 
+    // reference: https://www.prostdev.com/post/understanding-the-illegal-base64-character-error-java-groovy-and-mule-4-dw-2-0
+    Base64.Decoder decoder;
+    if (encodedData.contains("+") || encodedData.contains("/")) {
+      decoder = Base64.getDecoder();
+      encodedData = encodedData.replaceAll("[^A-Za-z0-9+/=]", "");
+    } else if (encodedData.contains("-") || encodedData.contains("_")) {
+      decoder = Base64.getUrlDecoder();
+      encodedData = encodedData.replaceAll("[^A-Za-z0-9-_=]", "");
+    } else {
+      decoder = Base64.getDecoder();
+      encodedData = encodedData.replaceAll("[^A-Za-z0-9+/=]", "");
+    }
+
+    byte[] decodedBytes = decoder.decode(encodedData);
 
     if (decodedBytes == null) {
       System.err.println("Decode Error on image: " + imagePath.substring(0, 20));
