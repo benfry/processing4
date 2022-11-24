@@ -33,15 +33,16 @@ public class SketchName {
     String approach = Preferences.get("sketch.name.approach");
     if ((approach != null) && !CLASSIC.equals(approach)) {
       WordList wl = getWordLists().get(approach);
-      //File folder = wordsFolder(parentDir, approach);
-      File folder = wl.wordsFolder(parentDir);
-      if (folder == null) {
-        Messages.showWarning("Out of Options", """
-          All possible naming combinations have been used.
-          Use “Preferences” to choose a different naming system,
-          or restart Processing.""");
+      if (wl != null) {  // just in case the naming scheme no longer available
+        File folder = wl.wordsFolder(parentDir);
+        if (folder == null) {
+          Messages.showWarning("Out of Options", """
+            All possible naming combinations have been used.
+            Use “Preferences” to choose a different naming system,
+            or restart Processing.""");
+        }
+        return folder;  // null or otherwise
       }
-      return folder;  // null or otherwise
     }
     // classic was selected, or fallback due to an error
     return classicFolder(parentDir);
