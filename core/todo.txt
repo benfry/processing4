@@ -14,6 +14,7 @@ X   https://github.com/processing/processing4/issues/544
 
 data
 X use choice() instead of random() for list classes
+X remove random(PApplet) since unlikely to be used/seems overkill
 _ add choice() as a PApplet method for int values of random()?
 
 contrib
