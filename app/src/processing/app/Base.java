@@ -258,9 +258,17 @@ public class Base {
 
       // Create a location for untitled sketches
       try {
-        //untitledFolder = Util.createTempFolder("untitled", "sketches", null);
-        //untitledFolder.deleteOnExit();
-        untitledFolder = Util.getProcessingTemp();
+        // Users on a shared machine may also share a TEMP folder,
+        // which can cause naming collisions; use a UUID as the name
+        // for the subfolder to introduce another layer of indirection.
+        // https://github.com/processing/processing4/issues/549
+        // The UUID also prevents collisions when restarting the
+        // software. Otherwise, after using up the a-z naming options
+        // it was not possible for users to restart (without manually
+        // finding and deleting the TEMP files).
+        // https://github.com/processing/processing4/issues/582
+        String uuid = UUID.randomUUID().toString();
+        untitledFolder = new File(Util.getProcessingTemp(), uuid);
 
       } catch (IOException e) {
         Messages.showError("Trouble without a name",
@@ -437,9 +445,9 @@ public class Base {
         if (expiredFiles != null) {
           // Remove the files approved for deletion
           for (File file : expiredFiles) {
-            //file.delete();  // not as safe
             try {
-              Platform.deleteFile(file);  // move to trash
+              // move to trash or delete if unavailable
+              Platform.deleteFile(file);
             } catch (IOException e) {
               e.printStackTrace();
             }

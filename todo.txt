@@ -41,11 +41,14 @@ _   this was on Linux; curious if Windows has an issue too?
 _   overwrite with -Djava.io.tmpdir=/path/to/tmpdir
 _   maybe we should use java.io.tmpdir -> processing -> $USER
 _   https://github.com/processing/processing4/issues/549
+_   put in a note about the cleaning process
 _ too many temp folders prevent restart
 _   https://github.com/processing/processing4/issues/582
+
 _ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
 _   and with that, switch to another directory
 _   https://github.com/processing/processing4/issues/548
+
 _ theme is not being kept after Processing restart on Windows?
 _   https://github.com/processing/processing4/issues/565
 
