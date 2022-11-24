@@ -2344,6 +2344,8 @@ public class Base {
         }
       }
     }
+
+    // make sure the libraries/modes/tools directories exist
     makeSketchbookSubfolders();
   }
 

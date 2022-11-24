@@ -31,7 +31,7 @@ public class SketchName {
    */
   static File nextFolder(File parentDir) {
     String approach = Preferences.get("sketch.name.approach");
-    if (!CLASSIC.equals(approach)) {
+    if ((approach != null) && !CLASSIC.equals(approach)) {
       WordList wl = getWordLists().get(approach);
       //File folder = wordsFolder(parentDir, approach);
       File folder = wl.wordsFolder(parentDir);

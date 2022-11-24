@@ -571,7 +571,31 @@ public class ContributionManager {
     if (!root.exists()) return;  // folder doesn't exist, nothing to update
 
     if (!root.canRead() || !root.canWrite()) {
-      throw new Exception("Please fix read/write permissions for " + root);
+      // Sometimes macOS users disallow access to the Documents folder,
+      // then wonder why there's a problem accessing the Documents folder.
+      // https://github.com/processing/processing4/issues/581
+      // TODO would like this to be in a more central location, but this is
+      //      where it's triggered most consistently, so it's here for now.
+      if (Platform.isMacOS()) {
+        // we're on the EDT here, so it's safe to show the error
+        Messages.showError("Cannot access sketchbook",
+          """
+            There is a problem with the “permissions” for the sketchbook folder.
+            Processing needs access to the Documents folder to save your work.
+            Usually this happens after you click “Don't Allow” when macOS asks
+            for access to your Documents folder. To fix:
+            
+            1. Quit Processing
+            2. Open Applications → Utilities → Terminal
+            3. Type “tccutil reset All org.processing.four” and press return
+            4. Restart Processing, and when prompted for access, click “OK”
+            
+            If that's not the problem, the forum is a good place to get help:
+            https://discourse.processing.org
+            """, null);
+      } else {
+        throw new Exception("Please fix read/write permissions for " + root);
+      }
     }
 
     File[] markedForUpdate = root.listFiles(folder ->

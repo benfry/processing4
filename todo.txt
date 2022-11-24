@@ -46,6 +46,12 @@ X   https://github.com/processing/processing4/issues/549
 X   put in a note about the cleaning process
 X too many temp folders prevent restart
 X   https://github.com/processing/processing4/issues/582
+X if user clicks "no" when asked to access Documents folder, will cause weird problems later
+X   "Please fix read/write" in ContributionManager.updateFlagged()
+X   but that also shouldn't prevent users from continuing
+X   https://github.com/processing/processing4/issues/581
+X   use tccutil or some api to check whether user has disallowed access
+X   https://recoursive.com/2020/03/03/reset_macos_privacy_permissions/
 
 
 _ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
@@ -57,12 +63,6 @@ _   https://github.com/processing/processing4/issues/565
 
 _ expanded language codes to support traditional Chinese translation
 _   https://github.com/processing/processing4/issues/600
-
-_ if user clicks "no" when asked to access Documents folder, will cause weird problems later
-_   "Please fix read/write" in ContributionManager.updateFlagged()
-_   but that also shouldn't prevent users from continuing
-_   https://github.com/processing/processing4/issues/581
-_   use tccutil or some api to check whether user has disallowed access
 
 _ preproc inserting weird number of spaces
 _   before 'public' in functions, it's an extra single space
