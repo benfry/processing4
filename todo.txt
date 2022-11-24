@@ -22,6 +22,9 @@ X   https://github.com/processing/processing4/issues/525
 X Fix vertical placement of top elements in the Manager window
 X   https://github.com/processing/processing4/issues/520
 X   https://github.com/processing/processing4/pull/539
+X function/variable "does not exist" errors reported when defining a class without setup/draw
+X   https://github.com/processing/processing4/issues/579
+X   https://github.com/processing/processing4/pull/597
 
 docs
 X added a "Translations" page to the wiki
