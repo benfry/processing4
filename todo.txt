@@ -34,8 +34,8 @@ X   https://github.com/processing/processing4/issues/586
 X   https://github.com/processing/processing4/issues/553
 X Can't Update Libraries due to "this.progressBar" is null error message
 X   https://github.com/processing/processing4/issues/567
-_ if naming scheme produces a sketch w/ the same name, what happens?
-_   probably a crash (or infinite loop?) need to check
+X if naming scheme produces a sketch w/ the same name, what happens?
+X   probably a crash (or infinite loop?) need to check
 _ temp folders owned by one user can't be overwritten by another
 _   this was on Linux; curious if Windows has an issue too?
 _   overwrite with -Djava.io.tmpdir=/path/to/tmpdir
@@ -48,6 +48,9 @@ _   and with that, switch to another directory
 _   https://github.com/processing/processing4/issues/548
 _ theme is not being kept after Processing restart on Windows?
 _   https://github.com/processing/processing4/issues/565
+
+_ expanded language codes to support traditional Chinese translation
+_   https://github.com/processing/processing4/issues/600
 
 _ if user clicks "no" when asked to access Documents folder, will cause weird problems later
 _   "Please fix read/write" in ContributionManager.updateFlagged()

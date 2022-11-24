@@ -33,9 +33,13 @@ public class SketchName {
     String approach = Preferences.get("sketch.name.approach");
     if (!CLASSIC.equals(approach)) {
       File folder = wordsFolder(parentDir, approach);
-      if (folder != null) {
-        return folder;
+      if (folder == null) {
+        Messages.showWarning("Out of Options", """
+          All possible naming combinations have been used.
+          Use “Preferences” to choose a different naming system,
+          or restart Processing.""");
       }
+      return folder;  // null or otherwise
     }
     // classic was selected, or fallback due to an error
     return classicFolder(parentDir);
@@ -77,7 +81,8 @@ public class SketchName {
           breakTime = true;
         } else {
           Messages.showWarning("Sunshine",
-                  "No really, time for some fresh air for you.", null);
+                  "No really, time for some fresh air for you.\n" +
+                  "(At a minimum, you'll need to restart Processing.)", null);
         }
         return null;
       }
@@ -111,17 +116,29 @@ public class SketchName {
     String getPair() {
       return (prefixes.random() + " " + suffixes.random()).replace(' ', '_');
     }
+
+    int getComboCount() {
+      return prefixes.size() * suffixes.size();
+    }
   }
 
 
   static File wordsFolder(File parentDir, String setName) {
     WordList wl = getWordLists().get(setName);
     File outgoing = null;
+    // Still may be other possibilities after this, but if we hit
+    // this many attempts, we've pretty much exhausted the list.
+    final int maxAttempts = wl.getComboCount();
+    int attempts = 0;
     if (wl != null) {
       do {
         // Clean up the name in case a user-supplied word list breaks the rules
         String name = Sketch.sanitizeName(wl.getPair());
         outgoing = new File(parentDir, name);
+        attempts++;
+        if (attempts == maxAttempts) {
+          return null;  // avoid infinite loop
+        }
       } while (outgoing.exists());
     }
     return outgoing;
