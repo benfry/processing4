@@ -499,10 +499,9 @@ public class PApplet implements PConstants {
   public int mouseButton;
 
   /**
-   * The <b>mousePressed()</b> function is called once after every time a
-   * mouse button is pressed. The <b>mouseButton</b> variable (see the
-   * related reference entry) can be used to determine which button has
-   * been pressed.
+   * The <b>mousePressed</b> variable stores whether a mouse button has been pressed.
+   * The <b>mouseButton</b> variable (see the related reference entry) can be used to
+   * determine which button has been pressed.
    * <br /><br />
    * Mouse and keyboard events only work when a program has <b>draw()</b>.
    * Without <b>draw()</b>, the code is only run once and then stops
