@@ -1,3 +1,98 @@
+# Processing 4.0.2
+
+*Revision 1287 – 24 November 2022*
+
+🦃 Happy Thanksgiving! 🦃
+
+Fixing more regressions and other steps backward found since the 4.0 release.
+
+
+## the big ones
+
+* OpenGL apps now work with macOS Ventura, once again thanks to @jaegonlee. [#544](https://github.com/processing/processing4/issues/544)
+
+* `fullScreen()` with `pixelDensity(2)` was broken with the default renderer. On startup, the sketch would report `Display -1 does not exist, returning 1 for displayDensity(-1)`. [#487](https://github.com/processing/processing4/issues/487)
+
+
+## the li'l ones
+
+* When calling `random()` on a list (now `choice()`) with no elements, it would throw a weird `Exception`. Now it throws a more descriptive exception.
+
+
+## need some help here
+
+* Loading SVG file was giving `Illegal base64 character 20 encoding error`. Fixed thanks to @jaegonlee and @vepo. [#592](https://github.com/processing/processing4/issues/592), [#599](https://github.com/processing/processing4/pull/599)
+
+
+## steps forward
+
+* Added a `choice()` method to the `XxxxList` classes, which returns a random value from the list. Similarly `removeChoice()` removes a random element from the list and returns the value.
+
+* Also added a `choice()` method that returns random integers. So `int value = choice(10)` is a shorthand way of saying `int value = (int) random(10)`
+
+* Removed the `choice()` (formerly `random()`) method from the `XxxxList` classes that took a `PApplet` object for its random number seed/generator. Just feels like overkill at this point.
+
+
+## internal changes
+
+* Using more Java 17 syntax in the code. No plans to really scrub everything to change the syntax over, just a matter of cleaning things up as we go.
+
+* Fixed a potential casting problem with `Platform` and `DefaultPlatform`. Should have been unreachable, but fixed anyway.
+
+* Brought back `getCodeIndex()` for GUI Builder Tool… then removed it again. [#545](https://github.com/processing/processing4/issues/545), [#596](https://github.com/processing/processing4/issues/596)
+
+
+contribs
+X Catalan translation for Processing 4.0.1
+X   https://github.com/processing/processing4/issues/550
+X   https://github.com/processing/processing4/pull/554
+X Update to Ukranian language strings
+X   https://github.com/processing/processing4/pull/585
+X Fix errors in the Spanish translation
+X   https://github.com/processing/processing4/issues/552
+X   https://github.com/processing/processing4/pull/574
+X JSSC update for M1/M2
+X   https://github.com/processing/processing4/pull/577
+X   https://github.com/processing/processing4/issues/525
+X Fix vertical placement of top elements in the Manager window
+X   https://github.com/processing/processing4/issues/520
+X   https://github.com/processing/processing4/pull/539
+X function/variable "does not exist" errors reported when defining a class without setup/draw
+X   https://github.com/processing/processing4/issues/579
+X   https://github.com/processing/processing4/pull/597
+
+docs
+X added a "Translations" page to the wiki
+X   https://github.com/processing/processing4/wiki/Translations
+X   https://github.com/processing/processing/wiki/Localization
+X explanation of how to create a naming.json file
+X   https://github.com/processing/processing4/wiki/Naming-Sketches
+
+before 4.0.2
+X library version number parsing isn't ignoring comments properly
+X   https://github.com/processing/processing4/issues/586
+X   https://github.com/processing/processing4/issues/553
+X Can't Update Libraries due to "this.progressBar" is null error message
+X   https://github.com/processing/processing4/issues/567
+X if naming scheme produces a sketch w/ the same name, what happens?
+X   probably a crash (or infinite loop?) need to check
+X temp folders owned by one user can't be overwritten by another
+X   this was on Linux; curious if Windows has an issue too?
+X   overwrite with -Djava.io.tmpdir=/path/to/tmpdir
+X   maybe we should use java.io.tmpdir -> processing -> $USER
+X   https://github.com/processing/processing4/issues/549
+X   put in a note about the cleaning process
+X too many temp folders prevent restart
+X   https://github.com/processing/processing4/issues/582
+X if user clicks "no" when asked to access Documents folder, will cause weird problems later
+X   "Please fix read/write" in ContributionManager.updateFlagged()
+X   but that also shouldn't prevent users from continuing
+X   https://github.com/processing/processing4/issues/581
+X   use tccutil or some api to check whether user has disallowed access
+X   https://recoursive.com/2020/03/03/reset_macos_privacy_permissions/
+
+
+
 # Processing 4.0.1
 
 *Revision 1286 – 9 August 2022*
