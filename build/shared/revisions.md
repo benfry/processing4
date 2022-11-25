@@ -13,6 +13,8 @@ Fixing more regressions and other steps backward found since the 4.0 release.
 
 * `fullScreen()` with `pixelDensity(2)` was broken with the default renderer. On startup, the sketch would report `Display -1 does not exist, returning 1 for displayDensity(-1)`. [#487](https://github.com/processing/processing4/issues/487)
 
+* JSSC update for M1/M2 from @sampottinger [#525](https://github.com/processing/processing4/issues/525), [#577](https://github.com/processing/processing4/pull/577)
+
 
 ## the li'l ones
 
@@ -21,7 +23,19 @@ Fixing more regressions and other steps backward found since the 4.0 release.
 
 ## need some help here
 
+Contributions from the community!
+
 * Loading SVG file was giving `Illegal base64 character 20 encoding error`. Fixed thanks to @jaegonlee and @vepo. [#592](https://github.com/processing/processing4/issues/592), [#599](https://github.com/processing/processing4/pull/599)
+
+* Updated Catalan translation thanks to @trikaphundo. [#550](https://github.com/processing/processing4/issues/550), [#554](https://github.com/processing/processing4/pull/554)
+
+* Updates to the Spanish translation, also from @trikaphundo! [#552](https://github.com/processing/processing4/issues/552), [#574](https://github.com/processing/processing4/pull/574)
+
+* A couple fixes for the Ukranian language strings from @rzats. [#585](https://github.com/processing/processing4/pull/585)
+
+* @LesleyWagner fixed the vertical placement of top elements in the Manager window. [#520](https://github.com/processing/processing4/issues/520), [#539](https://github.com/processing/processing4/pull/539)
+
+* Preprocessor fix from @sampottinger for function/variable "does not exist" errors reported when defining a class without `setup()` or `draw()`. [#579](https://github.com/processing/processing4/issues/579), [#597](https://github.com/processing/processing4/pull/597)
 
 
 ## steps forward
@@ -41,25 +55,6 @@ Fixing more regressions and other steps backward found since the 4.0 release.
 
 * Brought back `getCodeIndex()` for GUI Builder Tool… then removed it again. [#545](https://github.com/processing/processing4/issues/545), [#596](https://github.com/processing/processing4/issues/596)
 
-
-contribs
-X Catalan translation for Processing 4.0.1
-X   https://github.com/processing/processing4/issues/550
-X   https://github.com/processing/processing4/pull/554
-X Update to Ukranian language strings
-X   https://github.com/processing/processing4/pull/585
-X Fix errors in the Spanish translation
-X   https://github.com/processing/processing4/issues/552
-X   https://github.com/processing/processing4/pull/574
-X JSSC update for M1/M2
-X   https://github.com/processing/processing4/pull/577
-X   https://github.com/processing/processing4/issues/525
-X Fix vertical placement of top elements in the Manager window
-X   https://github.com/processing/processing4/issues/520
-X   https://github.com/processing/processing4/pull/539
-X function/variable "does not exist" errors reported when defining a class without setup/draw
-X   https://github.com/processing/processing4/issues/579
-X   https://github.com/processing/processing4/pull/597
 
 docs
 X added a "Translations" page to the wiki
