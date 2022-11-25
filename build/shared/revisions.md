@@ -4,19 +4,31 @@
 
 🦃 Happy Thanksgiving! 🦃
 
-Fixing more regressions and other steps backward found since the 4.0 release.
+Fixing more regressions and other steps backward found since the 4.0 release. Enjoy!
 
 
 ## the big ones
 
 * OpenGL apps now work with macOS Ventura, once again thanks to @jaegonlee. [#544](https://github.com/processing/processing4/issues/544)
 
+* Library version number parsing wasn't ignoring comments properly, so libraries that followed the template closely were showing `The version number for “…” is not a number`. [#586](https://github.com/processing/processing4/issues/586), [#553](https://github.com/processing/processing4/issues/553)
+
+* The Updates tab of the Contribution Manager was throwing error messages about `this.progressBar`. [#567](https://github.com/processing/processing4/issues/567)
+
 * `fullScreen()` with `pixelDensity(2)` was broken with the default renderer. On startup, the sketch would report `Display -1 does not exist, returning 1 for displayDensity(-1)`. [#487](https://github.com/processing/processing4/issues/487)
 
 * JSSC update for M1/M2 from @sampottinger [#525](https://github.com/processing/processing4/issues/525), [#577](https://github.com/processing/processing4/pull/577)
 
 
-## the li'l ones
+## the li'l and medium ones
+
+* After creating 26 sketches, the “take a break” message still showed up after restarting Processing. [#582](https://github.com/processing/processing4/issues/582)
+
+* With multiple users sharing a machine, Processing would not work properly for the second user due to a problem with the temporary directory. [#549](https://github.com/processing/processing4/issues/549)
+
+* Added explanation for how to fix Processing when a user disallows access to the Documents folder on macOS. [#581](https://github.com/processing/processing4/issues/581)
+
+* Fixed an infinite loop that could be caused by running out of options for a sketch naming scheme.
 
 * When calling `random()` on a list (now `choice()`) with no elements, it would throw a weird `Exception`. Now it throws a more descriptive exception.
 
@@ -56,36 +68,11 @@ Contributions from the community!
 * Brought back `getCodeIndex()` for GUI Builder Tool… then removed it again. [#545](https://github.com/processing/processing4/issues/545), [#596](https://github.com/processing/processing4/issues/596)
 
 
-docs
-X added a "Translations" page to the wiki
-X   https://github.com/processing/processing4/wiki/Translations
-X   https://github.com/processing/processing/wiki/Localization
-X explanation of how to create a naming.json file
-X   https://github.com/processing/processing4/wiki/Naming-Sketches
+## me talking on the wiki
 
-before 4.0.2
-X library version number parsing isn't ignoring comments properly
-X   https://github.com/processing/processing4/issues/586
-X   https://github.com/processing/processing4/issues/553
-X Can't Update Libraries due to "this.progressBar" is null error message
-X   https://github.com/processing/processing4/issues/567
-X if naming scheme produces a sketch w/ the same name, what happens?
-X   probably a crash (or infinite loop?) need to check
-X temp folders owned by one user can't be overwritten by another
-X   this was on Linux; curious if Windows has an issue too?
-X   overwrite with -Djava.io.tmpdir=/path/to/tmpdir
-X   maybe we should use java.io.tmpdir -> processing -> $USER
-X   https://github.com/processing/processing4/issues/549
-X   put in a note about the cleaning process
-X too many temp folders prevent restart
-X   https://github.com/processing/processing4/issues/582
-X if user clicks "no" when asked to access Documents folder, will cause weird problems later
-X   "Please fix read/write" in ContributionManager.updateFlagged()
-X   but that also shouldn't prevent users from continuing
-X   https://github.com/processing/processing4/issues/581
-X   use tccutil or some api to check whether user has disallowed access
-X   https://recoursive.com/2020/03/03/reset_macos_privacy_permissions/
+* Added a [Translations](https://github.com/processing/processing4/wiki/Translations) page to the 4.x wiki, which is update to the [Localization](https://github.com/processing/processing/wiki/Localization) page from the 3.x repository.
 
+* Posted [an explanation](https://github.com/processing/processing4/wiki/Naming-Sketches) of how to create a `naming.json` file so you can set up your own sketch naming schemes.
 
 
 # Processing 4.0.1
