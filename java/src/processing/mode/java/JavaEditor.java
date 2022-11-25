@@ -320,7 +320,7 @@ public class JavaEditor extends Editor {
     // specific to a version of the software anyway. [fry 221125]
 //    item = new JMenuItem(isReferenceDownloaded() ?
 //      "menu.help.reference.update" : "menu.help.reference.download");
-    item = new JMenuItem("menu.help.reference.download");
+    item = new JMenuItem(Language.text("menu.help.reference.download"));
     item.addActionListener(e -> new Thread(this::downloadReference).start());
     menu.add(item);
 
