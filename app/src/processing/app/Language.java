@@ -139,7 +139,7 @@ public class Language {
       if (prefFile.exists()) {
         String[] lines = PApplet.loadStrings(prefFile);
         if (lines != null && lines.length > 0) {
-          String language = lines[0].trim().toLowerCase();
+          String language = lines[0].trim();
           if (language.length() != 0) {
             return language;
           }
