@@ -856,11 +856,23 @@ public class JavaEditor extends Editor {
       conn.setRequestMethod("GET");
       conn.connect();
 
+      int length = conn.getContentLength();
+//      float size = (length >> 10) / 1024f;
+      //float size = (length / 1000) / 1000f;
+//      String msg =
+//        "Downloading reference (" + PApplet.nf(size, 0, 1) + " MB)… ";
+      String mb = PApplet.nf((length >> 10) / 1024f, 0, 1);
+      if (mb.endsWith(".0")) {
+        mb = mb.substring(0, mb.length() - 2);  // don't show .0
+      }
       ProgressMonitorInputStream input =
         new ProgressMonitorInputStream(this,
-          "Downloading reference…", conn.getInputStream());
-      input.getProgressMonitor().setMaximum(conn.getContentLength());
+          "Downloading reference (" + mb + " MB)… ", conn.getInputStream());
+      input.getProgressMonitor().setMaximum(length);
+//      ProgressMonitor monitor = input.getProgressMonitor();
+//      monitor.setMaximum(length);
       PApplet.saveStream(getOfflineReferenceFile(), input);
+      // reset the internal handling for the reference server
       useReferenceServer = null;
 
     } catch (InterruptedIOException iioe) {

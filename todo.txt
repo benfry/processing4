@@ -11,7 +11,7 @@ _   https://github.com/processing/processing4/wiki/Translations
 _   https://www.oracle.com/java/technologies/javase/jdk17-suported-locales.html
 X implement offline reference download
 X   https://github.com/processing/processing-website/releases/download/2022-10-05-1459/reference.zip
-_   add a note about the file size to the progress window
+X   add a note about the file size to the progress window
 _   document and grab other notes from elsewhere here
 
 
