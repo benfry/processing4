@@ -25,6 +25,7 @@ import java.io.*;
 import java.util.*;
 
 import processing.core.PApplet;
+import processing.data.StringList;
 
 
 /**
@@ -39,8 +40,11 @@ public class Language {
   /** Single instance of this Language class */
   static private volatile Language instance;
 
-  /** The system language */
-  private String language;
+  /**
+   * The system language. List of all support locales:
+   * https://www.oracle.com/java/technologies/javase/jdk17-suported-locales.html
+   */
+  private String language;  // 2-digit (en) or with country specifier (zh-TW)
 
   /** Available languages */
   private final Map<String, String> languages;
@@ -49,29 +53,48 @@ public class Language {
 
 
   private Language() {
-    String systemLanguage = Locale.getDefault().getLanguage();
     language = loadLanguage();
-    boolean writePrefs = false;
-
-    if (language == null) {
-      language = systemLanguage;
-      writePrefs = true;
-    }
+    String origLanguage = language;
+//    boolean writePrefs = false;
 
     // Set available languages
     languages = new HashMap<>();
     for (String code : listSupported()) {
       Locale locale = Locale.forLanguageTag(code);
-      languages.put(code, locale.getDisplayLanguage(locale));
+//      languages.put(code, locale.getDisplayLanguage(locale));
+//      System.out.println(locale.getDisplayName());
+      // display name will include the extra suffix information
+      languages.put(code, locale.getDisplayName(locale));
     }
 
-    // Set default language
+    // null out the language if unavailable (may already be null)
     if (!languages.containsKey(language)) {
-      language = "en";
-      writePrefs = true;
+      language = null;
     }
 
-    if (writePrefs) {
+    // if language is null, try to set based on the system language
+    if (language == null) {
+      Locale defaultLocale = Locale.getDefault();
+//      String systemLanguage = Locale.getDefault().getLanguage();
+      String shortCode = defaultLocale.getLanguage();
+      String fullCode = shortCode + "-" + defaultLocale.getCountry();
+      if (languages.containsKey(fullCode)) {
+        language = fullCode;
+      } else if (languages.containsKey(shortCode)) {
+        language = shortCode;
+      }
+//      writePrefs = true;
+    }
+
+    // If still null, fall back to English, sorry.
+//    if (!languages.containsKey(language)) {
+    if (language == null) {
+      language = "en";
+//      writePrefs = true;
+    }
+
+    // If there was a change, write the file that sets the language
+    if (!language.equals(origLanguage)) {
       saveLanguage(language);
     }
 
@@ -86,42 +109,27 @@ public class Language {
 
 
   static private String[] listSupported() {
-    // List of languages in alphabetical order. (Add yours here.)
-    // Also remember to add it to build/shared/lib/languages/languages.txt.
-    return new String[] {
-      "ar", // Arabic
-      "ca", // Catalan
-      "de", // German, Deutsch
-      "en", // English
-      "el", // Greek
-      "es", // Spanish
-      "fr", // French, Français
-      "it", // Italiano, Italian
-      "ja", // Japanese
-      "ko", // Korean
-      "nl", // Dutch, Nederlands
-      "pt", // Portuguese
-      "ru", // Russian
-      "tr", // Turkish
-      "uk", // Ukrainian
-      "zh"  // Chinese
-    };
-
-    /*
-    // come back to this when bundles are placed outside the JAR
-    InputStream input = getClass().getResourceAsStream(LISTING);
-    String[] lines = PApplet.loadStrings(input);
-    ArrayList<String> list = new ArrayList<String>();
-    for (String line : lines) {
-      int index = line.indexOf('#');
-      if (index != -1) {
-        line = line.substring(0, index);
+    StringList supported = new StringList();
+    try {
+      File baseFolder = Base.getLibFile("languages");
+      String[] names = baseFolder.list();
+      if (names != null) {
+        for (String filename : names) {
+          if (filename.startsWith("PDE_") && filename.endsWith(".properties")) {
+            int dotIndex = filename.lastIndexOf(".properties");
+            String language = filename.substring(4, dotIndex);
+            supported.append(language);
+          }
+        }
+      } else {
+        throw new IOException("Could not read list of files inside " + baseFolder);
       }
-      line = line.trim();
-      list.add(line);
+    } catch (IOException e) {
+      Messages.showError("Translation Trouble",
+        "There was a problem reading the language translations folder.\n" +
+        "You may need to reinstall, or report if the problem persists.", e);
     }
-    return list.toArray(new String[0]);
-    */
+    return supported.toArray();
   }
 
 
@@ -251,7 +259,7 @@ public class Language {
 
   /**
    * Get the current language.
-   * @return two-digit ISO code (lowercase)
+   * @return two-digit ISO code (lowercase) or extended code (en-US)
    */
   static public String getLanguage() {
     return init().language;
@@ -343,8 +351,10 @@ public class Language {
     LanguageBundle(String language) throws IOException {
       table = new HashMap<>();
 
-      // Check to see if the user is working on localization,
+      // Also check to see if the user is working on localization,
       // and has their own .properties files in their sketchbook.
+      // https://github.com/processing/processing4/wiki/Translations
+
       String baseFilename = "languages/PDE.properties";
       String langFilename = "languages/PDE_" + language + ".properties";
 

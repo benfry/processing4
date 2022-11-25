@@ -160,7 +160,9 @@ public class PreferencesFrame {
 
     Map<String, String> languages = Language.getLanguages();
     String[] languageSelection = new String[languages.size()];
+    // Set the current language as the first/default choice
     languageSelection[0] = languages.get(Language.getLanguage());
+    // Start counting from 1 to fill out the rest of the list
     int i = 1;
     for (Map.Entry<String, String> lang : languages.entrySet()) {
       languageToCode.put(lang.getValue(), lang.getKey());
