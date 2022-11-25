@@ -340,6 +340,9 @@ public class ThemeSelector extends JFrame implements Tool {
     // preference so that subsequent Processing updates load new theme changes.
     //Util.saveFile(currentSet.get(index), sketchbookFile);
     Preferences.set("theme", currentSet.getPath(index));
+    // On some machines, the theme wasn't getting saved; try an explicit save
+    // https://github.com/processing/processing4/issues/565
+    Preferences.save();
     reloadTheme();
   }
 
