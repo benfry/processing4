@@ -1,3 +1,26 @@
+1287 (4.0.2)
+X Updating PApplet to use Java 17 (switch statements, etc)
+X XxxList bug with random() if there are zero elements in the array
+X   now throws ArrayIndexOutOfBoundsException
+X   kinda want to return null, but later getting an NPE is more confusing
+X can't do pixelDensity 2 with fullScreen and Java2D
+X   when using fullScreen(), shows error:
+X   "Display -1 does not exist, returning 1 for displayDensity(-1)"
+X   maybe https://github.com/processing/processing4/issues/487
+
+contribs
+X P3D & P2D window not showing on MacOS Ventura (thx @jaegonlee)
+X   https://github.com/processing/processing4/issues/544
+X Loading SVG file gives Illegal base64 character 20 encoding error (worked in v3.5.4)
+X   https://github.com/processing/processing4/issues/592
+X   https://github.com/processing/processing4/pull/599
+
+data
+X use choice() instead of random() for list classes
+X remove random(PApplet) since unlikely to be used/seems overkill
+X add choice() as a PApplet method for int values of random()
+
+
 1286 (4.0.1)
 X no changes to core
 
