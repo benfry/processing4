@@ -5,7 +5,7 @@ X   unable to reproduce so just hoping this works
 X   https://github.com/processing/processing4/issues/565
 X update languages to work with more specific locales
 X expanded language codes to support traditional Chinese translation
-_   https://github.com/processing/processing4/issues/600
+X   https://github.com/processing/processing4/issues/600
 _ update wiki
 _   https://github.com/processing/processing4/wiki/Translations
 _   https://www.oracle.com/java/technologies/javase/jdk17-suported-locales.html
@@ -14,7 +14,6 @@ _   https://www.oracle.com/java/technologies/javase/jdk17-suported-locales.html
 _ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
 _   and with that, switch to another directory
 _   https://github.com/processing/processing4/issues/548
-
 
 _ preproc inserting weird number of spaces
 _   before 'public' in functions, it's an extra single space

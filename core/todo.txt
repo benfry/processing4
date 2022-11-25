@@ -1,4 +1,9 @@
 1288 (4.1?)
+X updates and clarifications for the size() reference
+
+contribs
+X fix the JavaDoc for mousePressed variable
+X   https://github.com/processing/processing4/pull/605
 
 
 _ args passed to main() aren't working
