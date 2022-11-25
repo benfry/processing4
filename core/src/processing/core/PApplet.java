@@ -1627,7 +1627,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * Defines the dimension of the display window width and height in units of
    * pixels. In a program that has the <b>setup()</b> function, the
    * <b>size()</b> function must be the first line of code inside
@@ -1641,11 +1640,45 @@ public class PApplet implements PConstants {
    * default size of 100 x 100 pixels.<br />
    * <br />
    * The <b>size()</b> function can only be used once inside a sketch, and it
-   * cannot be used for resizing.<br />
+   * cannot be used for resizing. Use <b>windowResize()</b> instead.<br />
    * <br />
-   * As of Processing 3, to run a sketch at the full dimensions of a screen, use
-   * the <b>fullScreen()</b> function, rather than the older way of using
-   * <b>size(displayWidth, displayHeight)</b>.<br />
+   * To run a sketch that fills the screen, use the <b>fullScreen()</b> function,
+   * rather than using <b>size(displayWidth, displayHeight)</b>.<br />
+   * <br />
+   * The <b>renderer</b> parameter selects which rendering engine to use. For
+   * example, if you will be drawing 3D shapes, use <b>P3D</b>. The default
+   * renderer is slower for some situations (for instance large or
+   * high-resolution displays) but generally has higher quality than the
+   * other renderers for 2D drawing. <br />
+   * <br />
+   * In addition to the default renderer, other renderers are:<br />
+   * <br />
+   * <b>P2D</b> (Processing 2D): 2D graphics renderer that makes use of
+   * OpenGL-compatible graphics hardware.<br />
+   * <br />
+   * <b>P3D</b> (Processing 3D): 3D graphics renderer that makes use of
+   * OpenGL-compatible graphics hardware.<br />
+   * <br />
+   * <b>FX2D</b> (JavaFX 2D): A 2D renderer that uses JavaFX, which may be
+   * faster for some applications, but has some compatibility quirks.
+   * Use “Manage Libraries” to download and install the JavaFX library.<br />
+   * <br />
+   * <b>PDF</b>: The PDF renderer draws 2D graphics directly to an Acrobat PDF
+   * file. This produces excellent results when you need vector shapes for
+   * high-resolution output or printing. You must first use Import Library
+   * &rarr; PDF to make use of the library. More information can be found in the
+   * PDF library reference.<br />
+   * <br />
+   * <b>SVG</b>: The SVG renderer draws 2D graphics directly to an SVG file.
+   * This is great for importing into other vector programs or using for
+   * digital fabrication. It is not as feature-complete as other renderers.
+   * Like PDF, you must first use Import Library &rarr; SVG Export to
+   * make use the SVG library.<br />
+   * <br />
+   * As of Processing 3.0, to use variables as the parameters to <b>size()</b>
+   * function, place the <b>size()</b> function within the <b>settings()</b>
+   * function (instead of <b>setup()</b>). There is more information about this
+   * on the <b>settings()</b> reference page.<br />
    * <br />
    * The maximum width and height is limited by your operating system, and is
    * usually the width and height of your actual screen. On some machines it may
@@ -1660,43 +1693,7 @@ public class PApplet implements PConstants {
    * is the smallest that is supported across Windows, macOS, and Linux. We
    * enforce the minimum size so that sketches will run identically on different
    * machines. <br />
-   * The <b>renderer</b> parameter selects which rendering engine to use. For
-   * example, if you will be drawing 3D shapes, use <b>P3D</b>. In addition to
-   * the default renderer, other renderers are:<br />
    * <br />
-   * <b>P2D</b> (Processing 2D): 2D graphics renderer that makes use of
-   * OpenGL-compatible graphics hardware.<br />
-   * <br />
-   * <b>P3D</b> (Processing 3D): 3D graphics renderer that makes use of
-   * OpenGL-compatible graphics hardware.<br />
-   * <br />
-   * <b>FX2D</b> (JavaFX 2D): A 2D renderer that uses JavaFX, which may be
-   * faster for some applications, but has some compatibility quirks. <br />
-   * <b>PDF</b>: The PDF renderer draws 2D graphics directly to an Acrobat PDF
-   * file. This produces excellent results when you need vector shapes for
-   * high-resolution output or printing. You must first use Import Library
-   * &rarr; PDF to make use of the library. More information can be found in the
-   * PDF library reference.<br />
-   * <br />
-   * <b>SVG</b>: The SVG renderer draws 2D graphics directly to an SVG file.
-   * This is great for importing into other vector programs or using for digital
-   * fabrication. You must first use Import Library &rarr; SVG Export to make
-   * use of the library.<br />
-   * <br />
-   * As of Processing 3.0, to use variables as the parameters to <b>size()</b>
-   * function, place the <b>size()</b> function within the <b>settings()</b>
-   * function (instead of <b>setup()</b>). There is more information about this
-   * on the <b>settings()</b> reference page.<br />
-   * <br />
-   *
-   * <h3>Advanced</h3> If using Java 1.3 or later, this will default to using
-   * PGraphics2, the Java2D-based renderer. If using Java 1.1, or if PGraphics2
-   * is not available, then PGraphics will be used. To set your own renderer,
-   * use the other version of the size() method that takes a renderer as its
-   * last parameter.
-   * <p>
-   * If called once a renderer has already been set, this will use the previous
-   * renderer and simply resize it.
    *
    * @webref environment
    * @webBrief Defines the dimension of the display window in units of pixels
