@@ -32,6 +32,7 @@ import javax.swing.*;
 import javax.swing.border.*;
 
 import com.formdev.flatlaf.FlatClientProperties;
+
 import processing.app.Base;
 import processing.app.Language;
 import processing.app.Messages;
@@ -39,7 +40,9 @@ import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.SketchName;
 import processing.awt.ShimAWT;
-import processing.core.*;
+
+import processing.core.PApplet;
+import processing.data.StringList;
 
 
 /**
@@ -160,20 +163,29 @@ public class PreferencesFrame {
 
     Map<String, String> languages = Language.getLanguages();
     String[] languageSelection = new String[languages.size()];
+    StringList codeList = new StringList(languages.keySet());
+
+    // Build a map from the display names of the languages to their codes
+    for (String code : codeList) {
+      languageToCode.put(languages.get(code), code);
+    }
+
     // Set the current language as the first/default choice
-    languageSelection[0] = languages.get(Language.getLanguage());
+    String currentCode = Language.getLanguage();
+    languageSelection[0] = languages.get(currentCode);
+
+    // Remove that language from the list of other possible choices
+    codeList.removeValue(currentCode);
+    // Sort the language list based on its code; this avoids showing preference
+    // to any language, and keeps related variants together (zh_CN and zh_TW).
+    codeList.sort();
+
     // Start counting from 1 to fill out the rest of the list
     int i = 1;
-    for (Map.Entry<String, String> lang : languages.entrySet()) {
-      languageToCode.put(lang.getValue(), lang.getKey());
-      if (!lang.getKey().equals(Language.getLanguage())) {
-        languageSelection[i++] = lang.getValue();
-      }
+    for (String code : codeList) {
+      languageSelection[i++] = languages.get(code);
     }
     languageSelectionBox.setModel(new DefaultComboBoxModel<>(languageSelection));
-//    languageRestartLabel = new JLabel(Language.text("preferences.requires_restart"));
-//    languageRestartLabel.setVisible(false);
-    //languageSelectionBox.addItemListener(e -> languageRestartLabel.setVisible(languageSelectionBox.getSelectedIndex() != 0));
     languageSelectionBox.addItemListener(e -> updateRestart("language", languageSelectionBox.getSelectedIndex() != 0));
     languageSelectionBox.setRenderer(new LanguageRenderer());
 
