@@ -341,7 +341,7 @@ public class JavaTextArea extends PdeTextArea {
   }
 
 
-  protected static String parsePhrase(final String lineText) {
+  public static String parsePhrase(final String lineText) {
     boolean overloading = false;
 
     { // Check if we can provide suggestions for this phrase ending

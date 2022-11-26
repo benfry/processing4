@@ -1762,7 +1762,7 @@ public class CompletionGenerator {
   }
 
 
-  protected static DefaultListModel<CompletionCandidate> filterPredictions(List<CompletionCandidate> candidates) {
+  public static DefaultListModel<CompletionCandidate> filterPredictions(List<CompletionCandidate> candidates) {
     Messages.log("* filterPredictions");
     DefaultListModel<CompletionCandidate> defListModel = new DefaultListModel<>();
     if (candidates.isEmpty())
