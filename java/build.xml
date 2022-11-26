@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="Java Mode" default="build" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="Java Mode" default="build">
 
   <property name="generated"
 	    value="${basedir}/generated/processing/mode/java/preproc" />
@@ -18,34 +18,6 @@
     <classpath path="${antlr_jar}" />
   </classloader>
 
-  <property name="ivy.version" value="2.5.0" />
-  <fileset id="ivy.files" dir="lib">
-    <include name="ivy.jar" />
-  </fileset>
-  <property name="ivy.url"
-            value="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.version}/ivy-${ivy.version}.jar" />
-
-  <available file="ivy.jar" property="ivy.present" />
-
-  <condition property="ivy.ignorable" value="false" else="true">
-    <isset property="ivy.present" />
-  </condition>
-
-  <target name="download-ivy" unless="ivy.present">
-    <get src="${ivy.url}" dest="ivy.jar"
-         ignoreerrors="${ivy.ignorable}"
-         usetimestamp="true" />
-  </target>
-
-  <target name="init-ivy" depends="download-ivy">
-    <taskdef resource="org/apache/ivy/ant/antlib.xml"
-        uri="antlib:org.apache.ivy.ant" classpath="ivy.jar"/>
-  </target>
-
-  <target name="download-ivy-dependencies" depends="init-ivy">
-    <ivy:retrieve />
-  </target>
-
   <target name="clean" description="Clean the build directories">
     <delete dir="bin" />
     <delete dir="bin-test" />
@@ -58,11 +30,6 @@
 	<include name="*.g" />
 	<include name="*.smap" />
 	<include name="*.properties" />
-      </fileset>
-    </delete>
-    <delete>
-      <fileset dir="lib">
-	      <include name="*.jar" />
       </fileset>
     </delete>
   </target>
@@ -104,8 +71,6 @@
     <pathelement location="mode/org.eclipse.jdt.core.jar" />
     <pathelement location="mode/org.eclipse.osgi.jar" />
     <pathelement location="mode/org.eclipse.text.jar" />
-    <pathelement location="mode/org.eclipse.ui.workbench.jar" />
-    <fileset dir="lib" includes="*.jar" />
   </path>
 
   <path id="classpath.test">
@@ -158,7 +123,7 @@
     </sequential>
   </macrodef>
 
-  <target name="test-compile" depends="preproc, download-ivy-dependencies">
+  <target name="test-compile" depends="preproc">
     <compilecommon srcdir="src; test/processing" destdir="bin-test" classpath="classpath.test" />
   </target>
 
@@ -175,7 +140,7 @@
     </junit>
   </target>
 
-  <target name="compile" description="Compile sources" depends="preproc, download-ivy-dependencies">
+  <target name="compile" description="Compile sources" depends="preproc">
     <compilecommon srcdir="src" destdir="bin" classpath="classpath.base" />
   </target>
 

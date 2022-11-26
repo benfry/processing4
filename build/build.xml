@@ -377,11 +377,6 @@
         <include name="theme/**" />
       </fileset>
     </copy>
-    <copy todir="${target.path}/modes/java/mode" preservelastmodified="true">
-      <fileset dir="../java/lib">
-        <include name="**/*.jar" />
-      </fileset>
-    </copy>
 
     <!-- get the examples folder, but don't require it to buid -->
     <copy todir="${target.path}/modes/java/examples"

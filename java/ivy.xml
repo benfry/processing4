@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<ivy-module version="2.0">
-    <info organisation="" module="" />
-    <dependencies>
-        <dependency org="org.eclipse.lsp4j" name="org.eclipse.lsp4j" rev="0.12.0"/>
-    </dependencies>
-</ivy-module>

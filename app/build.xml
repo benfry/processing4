@@ -181,8 +181,8 @@
 
     <!--
     <antcall target="download-ant" />
-    <antcall target="download-jna" />
     <antcall target="download-flatlaf" />
+    <antcall target="download-jna" />
     -->
   </target>
 
