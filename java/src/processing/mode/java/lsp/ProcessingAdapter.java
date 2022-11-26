@@ -1,33 +1,19 @@
-package processing.mode.java.languageServer;
+package processing.mode.java.lsp;
 
-import org.eclipse.lsp4j.services.LanguageServer;
-import org.eclipse.lsp4j.services.TextDocumentService;
-import org.eclipse.lsp4j.services.WorkspaceService;
-import org.eclipse.lsp4j.InitializeResult;
-import org.eclipse.lsp4j.InitializeParams;
 import java.util.concurrent.CompletableFuture;
-import org.eclipse.lsp4j.ServerCapabilities;
-import org.eclipse.lsp4j.TextDocumentSyncKind;
-import org.eclipse.lsp4j.CompletionOptions;
-import org.eclipse.lsp4j.CompletionParams;
+
 import org.eclipse.lsp4j.CompletionItem;
-import org.eclipse.lsp4j.CompletionList;
 import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
 import java.util.List;
 import processing.app.Base;
 import processing.app.Platform;
-import processing.app.Console;
-import processing.app.Language;
 import processing.app.Preferences;
 import processing.app.contrib.ModeContribution;
 import processing.mode.java.JavaMode;
 import java.io.File;
 import processing.app.Sketch;
-import processing.mode.java.JavaBuild;
 import processing.mode.java.CompletionGenerator;
 import processing.mode.java.PreprocService;
-import org.eclipse.lsp4j.WorkspaceFoldersOptions;
-import org.eclipse.lsp4j.services.LanguageClientAware;
 import org.eclipse.lsp4j.services.LanguageClient;
 import processing.mode.java.ErrorChecker;
 import processing.app.Problem;
@@ -40,7 +26,6 @@ import processing.mode.java.PreprocSketch;
 import processing.mode.java.JavaTextArea;
 import java.util.Collections;
 import processing.mode.java.CompletionCandidate;
-import javax.swing.DefaultListModel;
 import org.eclipse.lsp4j.InsertTextFormat;
 import org.eclipse.lsp4j.CompletionItemKind;
 import org.jsoup.Jsoup;
@@ -55,7 +40,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.Map;
 import java.util.AbstractMap;
-import java.util.HashMap;
 import java.util.Set;
 
 class Offset {

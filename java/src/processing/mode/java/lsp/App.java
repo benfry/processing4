@@ -1,10 +1,6 @@
-package processing.mode.java.languageServer;
+package processing.mode.java.lsp;
 
 import org.eclipse.lsp4j.launch.LSPLauncher;
-import java.io.File;
-import java.net.ServerSocket;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class App {
   public static void main(String[] args) {

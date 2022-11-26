@@ -1,9 +1,9 @@
-package processing.mode.java.languageServer;
+package processing.mode.java.lsp;
 
 import org.eclipse.lsp4j.services.WorkspaceService;
 import org.eclipse.lsp4j.DidChangeConfigurationParams;
 import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
-import org.eclipse.lsp4j.FileChangeType;
+
 import java.net.URI;
 import java.io.IOException;
 

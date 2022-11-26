@@ -1,4 +1,4 @@
-package processing.mode.java.languageServer;
+package processing.mode.java.lsp;
 
 import org.eclipse.lsp4j.services.TextDocumentService;
 import org.eclipse.lsp4j.CompletionParams;
@@ -14,21 +14,8 @@ import org.eclipse.lsp4j.DidCloseTextDocumentParams;
 import org.eclipse.lsp4j.DidChangeTextDocumentParams;
 import org.eclipse.lsp4j.DocumentFormattingParams;
 import org.eclipse.lsp4j.TextEdit;
-import java.io.File;
-import processing.mode.java.AutoFormat;
-import org.eclipse.lsp4j.Position;
-import org.eclipse.lsp4j.Range;
+
 import java.util.Collections;
-import processing.mode.java.CompletionGenerator;
-import processing.mode.java.JavaTextArea;
-import java.util.Arrays;
-import processing.mode.java.CompletionCandidate;
-import javax.swing.DefaultListModel;
-import org.eclipse.lsp4j.CompletionItemKind;
-import org.eclipse.lsp4j.MarkupContent;
-import org.eclipse.lsp4j.MarkupKind;
-import org.jsoup.Jsoup;
-import org.eclipse.lsp4j.InsertTextFormat;
 import java.net.URI;
 
 class ProcessingTextDocumentService implements TextDocumentService {
