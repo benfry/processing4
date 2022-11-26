@@ -59,30 +59,32 @@ class PdeAdapter {
   PdeAdapter(File rootPath, LanguageClient client) {
     this.rootPath = rootPath;
     this.client = client;
-    this.javaMode = (JavaMode) ModeContribution
-      .load(
-        null,
-        Platform.getContentFile("modes/java"),
-        "processing.mode.java.JavaMode"
-      )
-      .getMode();
-    this.pdeFile = new File(rootPath, rootPath.getName() + ".pde");
-    this.sketch = new Sketch(pdeFile.toString(), javaMode);
-    this.completionGenerator = new CompletionGenerator(javaMode);
-    this.preprocService = new PreprocService(javaMode, sketch);
-    this.errorChecker = new ErrorChecker(
-      this::updateProblems,
-      preprocService
-    );
-    this.cps = CompletableFutures.computeAsync(_x -> {
+
+    File location = Platform.getContentFile("modes/java");
+    ModeContribution mc =
+      ModeContribution.load(null, location, JavaMode.class.getName());
+    if (mc == null) {
+      // Shouldn't be possible but IntelliJ is complaining about it,
+      // and we may run into path issues when running externally [fry 221126]
+      throw new RuntimeException("Could not load Java Mode from " + location);
+    }
+    javaMode = (JavaMode) mc.getMode();
+
+    pdeFile = new File(rootPath, rootPath.getName() + ".pde");
+    sketch = new Sketch(pdeFile.toString(), javaMode);
+    completionGenerator = new CompletionGenerator(javaMode);
+    preprocService = new PreprocService(javaMode, sketch);
+    errorChecker = new ErrorChecker(this::updateProblems, preprocService);
+    cps = CompletableFutures.computeAsync(_x -> {
       throw new RuntimeException("unreachable");
     });
-    this.suggestionGenerator = new CompletionGenerator(this.javaMode);
-    
-    this.notifySketchChanged();
+    suggestionGenerator = new CompletionGenerator(javaMode);
+
+    notifySketchChanged();
   }
 
-    static Optional<File> uriToPath(URI uri) {
+
+  static Optional<File> uriToPath(URI uri) {
     try {
       return Optional.of(new File(uri));
     } catch (Exception e) {
@@ -124,8 +126,8 @@ class PdeAdapter {
       );
   }
 
-   void updateProblems(List<Problem> probs) {
-      Map<URI, List<Diagnostic>> dias = probs.stream()
+   void updateProblems(List<Problem> problems) {
+      Map<URI, List<Diagnostic>> dias = problems.stream()
       .map(prob -> {
         SketchCode code = sketch.getCode(prob.getTabIndex());
         Diagnostic dia = new Diagnostic(
@@ -191,14 +193,18 @@ class PdeAdapter {
     } else if (insert.contains(",")) {
       int n = 1;
       char[] chs = insert.replace("(,", "($1,").toCharArray();
-      insert = "";
+      //insert = "";
+      StringBuilder newInsert = new StringBuilder();
       for (char ch : chs) {
         if (ch == ',') {
           n += 1;
-          insert += ",$" + n;
+          //insert += ",$" + n;
+          newInsert.append(",$").append(n);
         }
-        insert += ch;
+        //insert += ch;
+        newInsert.append(ch);
       }
+      insert = newInsert.toString();
     }
     item.setInsertText(insert);
     CompletionItemKind kind = switch (c.getType()) {
