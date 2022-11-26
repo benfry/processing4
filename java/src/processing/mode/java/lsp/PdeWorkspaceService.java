@@ -24,28 +24,22 @@ class PdeWorkspaceService implements WorkspaceService {
       URI uri = URI.create(change.getUri());
       pls.getAdapter(uri).ifPresent(adapter -> {
         switch (change.getType()) {
-          case Created:
-            PdeAdapter.uriToPath(uri).ifPresent(path -> {
-              adapter.sketch.loadNewTab(path.getName().toString(), "pde", true);
-              adapter.notifySketchChanged();
-            });
-            break;
-          case Changed:
-            adapter.findCodeByUri(uri).ifPresent(code -> {
-              try {
-                code.load();
-              } catch (IOException e) {
-                throw new RuntimeException(e);
-              }
-              adapter.notifySketchChanged();
-            });
-            break;
-          case Deleted:
-            adapter.findCodeByUri(uri).ifPresent(code -> {
-              adapter.sketch.removeCode(code);
-              adapter.notifySketchChanged();
-            });
-            break;
+          case Created -> PdeAdapter.uriToPath(uri).ifPresent(path -> {
+            adapter.sketch.loadNewTab(path.getName(), "pde", true);
+            adapter.notifySketchChanged();
+          });
+          case Changed -> adapter.findCodeByUri(uri).ifPresent(code -> {
+            try {
+              code.load();
+            } catch (IOException e) {
+              throw new RuntimeException(e);
+            }
+            adapter.notifySketchChanged();
+          });
+          case Deleted -> adapter.findCodeByUri(uri).ifPresent(code -> {
+            adapter.sketch.removeCode(code);
+            adapter.notifySketchChanged();
+          });
         }
       });
     }

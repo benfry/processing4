@@ -1,56 +1,46 @@
 package processing.mode.java.lsp;
 
-import java.util.concurrent.CompletableFuture;
-
-import org.eclipse.lsp4j.CompletionItem;
-import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
-import java.util.List;
-import processing.app.Base;
-import processing.app.Platform;
-import processing.app.Preferences;
-import processing.app.contrib.ModeContribution;
-import processing.mode.java.JavaMode;
 import java.io.File;
-import processing.app.Sketch;
-import processing.mode.java.CompletionGenerator;
-import processing.mode.java.PreprocService;
-import org.eclipse.lsp4j.services.LanguageClient;
-import processing.mode.java.ErrorChecker;
-import processing.app.Problem;
-import org.eclipse.lsp4j.PublishDiagnosticsParams;
-import org.eclipse.lsp4j.Diagnostic;
-import org.eclipse.lsp4j.Range;
-import org.eclipse.lsp4j.Position;
-import org.eclipse.lsp4j.DiagnosticSeverity;
-import processing.mode.java.PreprocSketch;
-import processing.mode.java.JavaTextArea;
-import java.util.Collections;
-import processing.mode.java.CompletionCandidate;
-import org.eclipse.lsp4j.InsertTextFormat;
-import org.eclipse.lsp4j.CompletionItemKind;
-import org.jsoup.Jsoup;
 import java.net.URI;
-import processing.app.SketchCode;
-import org.eclipse.lsp4j.TextEdit;
-import processing.mode.java.AutoFormat;
-import java.util.Optional;
-import java.util.HashSet;
+import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.concurrent.CompletableFuture;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.Map;
-import java.util.AbstractMap;
-import java.util.Set;
+import org.eclipse.lsp4j.CompletionItem;
+import org.eclipse.lsp4j.CompletionItemKind;
+import org.eclipse.lsp4j.Diagnostic;
+import org.eclipse.lsp4j.DiagnosticSeverity;
+import org.eclipse.lsp4j.InsertTextFormat;
+import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
+import org.eclipse.lsp4j.Position;
+import org.eclipse.lsp4j.PublishDiagnosticsParams;
+import org.eclipse.lsp4j.Range;
+import org.eclipse.lsp4j.services.LanguageClient;
+import org.eclipse.lsp4j.TextEdit;
+import org.jsoup.Jsoup;
+import processing.app.Base;
+import processing.app.contrib.ModeContribution;
+import processing.app.Platform;
+import processing.app.Preferences;
+import processing.app.Problem;
+import processing.app.Sketch;
+import processing.app.SketchCode;
+import processing.mode.java.AutoFormat;
+import processing.mode.java.CompletionCandidate;
+import processing.mode.java.CompletionGenerator;
+import processing.mode.java.ErrorChecker;
+import processing.mode.java.JavaMode;
+import processing.mode.java.JavaTextArea;
+import processing.mode.java.PreprocService;
+import processing.mode.java.PreprocSketch;
 
-class Offset {
-  int line;
-  int col;
-
-  Offset(int line, int col) {
-    this.line = line;
-    this.col = col;
-  }
-}
 
 class PdeAdapter {
   File rootPath;
@@ -63,7 +53,7 @@ class PdeAdapter {
   ErrorChecker errorChecker;
   CompletableFuture<PreprocSketch> cps;
   CompletionGenerator suggestionGenerator;
-  Set<URI> prevDiagnosticReportUris = new HashSet<URI>();
+  Set<URI> prevDiagnosticReportUris = new HashSet<>();
   
 
   PdeAdapter(File rootPath, LanguageClient client) {
@@ -100,6 +90,7 @@ class PdeAdapter {
     }
   }
 
+
   static URI pathToUri(File path) {
     return path.toURI();
   }
@@ -118,16 +109,14 @@ class PdeAdapter {
   }
 
   void notifySketchChanged() {
-    CompletableFuture<PreprocSketch> cps = new CompletableFuture<PreprocSketch>();
+    CompletableFuture<PreprocSketch> cps = new CompletableFuture<>();
     this.cps = cps;
     preprocService.notifySketchChanged();
     errorChecker.notifySketchChanged();
-    preprocService.whenDone(ps -> {
-      cps.complete(ps);
-    });
+    preprocService.whenDone(cps::complete);
   }
 
-   Optional<SketchCode> findCodeByUri(URI uri) {
+  Optional<SketchCode> findCodeByUri(URI uri) {
     return PdeAdapter.uriToPath(uri)
       .flatMap(path -> Arrays.stream(sketch.getCode())
         .filter(code -> code.getFile().equals(path))
@@ -161,7 +150,7 @@ class PdeAdapter {
             ? DiagnosticSeverity.Error
             : DiagnosticSeverity.Warning
         );
-        return new AbstractMap.SimpleEntry<URI, Diagnostic>(
+        return new AbstractMap.SimpleEntry<>(
           PdeAdapter.pathToUri(code.getFile()),
           dia
         );
@@ -204,42 +193,31 @@ class PdeAdapter {
       char[] chs = insert.replace("(,", "($1,").toCharArray();
       insert = "";
       for (char ch : chs) {
-        switch (ch) {
-          case ',': {
-            n += 1;
-            insert += ",$" + n;
-          }
-          default: insert += ch;
+        if (ch == ',') {
+          n += 1;
+          insert += ",$" + n;
         }
+        insert += ch;
       }
     }
     item.setInsertText(insert);
-    CompletionItemKind kind;
-    switch (c.getType()) {
-      case 0: // PREDEF_CLASS
-        kind = CompletionItemKind.Class;
-        break;
-      case 1: // PREDEF_FIELD
-        kind = CompletionItemKind.Constant;
-        break;
-      case 2: // PREDEF_METHOD
-        kind = CompletionItemKind.Function;
-        break;
-      case 3: // LOCAL_CLASS
-        kind = CompletionItemKind.Class;
-        break;
-      case 4: // LOCAL_METHOD
-        kind = CompletionItemKind.Method;
-        break;
-      case 5: // LOCAL_FIELD
-        kind = CompletionItemKind.Field;
-        break;
-      case 6: // LOCAL_VARIABLE
-        kind = CompletionItemKind.Variable;
-        break;
-      default:
-        throw new IllegalArgumentException("Unknown completion type: " + c.getType());
-    }
+    CompletionItemKind kind = switch (c.getType()) {
+      case 0 -> // PREDEF_CLASS
+        CompletionItemKind.Class;
+      case 1 -> // PREDEF_FIELD
+        CompletionItemKind.Constant;
+      case 2 -> // PREDEF_METHOD
+        CompletionItemKind.Function;
+      case 3 -> // LOCAL_CLASS
+        CompletionItemKind.Class;
+      case 4 -> // LOCAL_METHOD
+        CompletionItemKind.Method;
+      case 5 -> // LOCAL_FIELD
+        CompletionItemKind.Field;
+      case 6 -> // LOCAL_VARIABLE
+        CompletionItemKind.Variable;
+      default -> throw new IllegalArgumentException("Unknown completion type: " + c.getType());
+    };
     item.setKind(kind);
     item.setDetail(Jsoup.parse(c.getLabel()).text());
     return item;
@@ -326,5 +304,16 @@ class PdeAdapter {
           newCode
         );
       });
+  }
+
+
+  static class Offset {
+    int line;
+    int col;
+
+    Offset(int line, int col) {
+      this.line = line;
+      this.col = col;
+    }
   }
 }

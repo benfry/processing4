@@ -57,23 +57,18 @@ class PdeTextDocumentService implements TextDocumentService {
   public CompletableFuture<Either<List<CompletionItem>, CompletionList>> completion(CompletionParams params) {
     System.out.println("completion");
     URI uri = URI.create(params.getTextDocument().getUri());
-    return pls.getAdapter(uri).map(adapter -> {
-        CompletableFuture<Either<List<CompletionItem>, CompletionList>> result = adapter.generateCompletion(
-            uri,
-            params.getPosition().getLine(),
-            params.getPosition().getCharacter()
-          ).thenApply(Either::forLeft);
-        return result;
-      })
+    return pls.getAdapter(uri).map(adapter -> adapter.generateCompletion(
+        uri,
+        params.getPosition().getLine(),
+        params.getPosition().getCharacter()
+      ).<Either<List<CompletionItem>, CompletionList>>thenApply(Either::forLeft))
       .orElse(CompletableFutures.computeAsync(_x -> Either.forLeft(Collections.emptyList())));
   }
 
   @Override
   public CompletableFuture<CompletionItem> resolveCompletionItem(CompletionItem params) {
     System.out.println("resolveCompletionItem");
-    return CompletableFutures.computeAsync(_x -> {
-      return params;
-    });
+    return CompletableFutures.computeAsync(_x -> params);
   }
 
   @Override
@@ -81,11 +76,10 @@ class PdeTextDocumentService implements TextDocumentService {
     System.out.println("formatting");
     URI uri = URI.create(params.getTextDocument().getUri());
     return pls.getAdapter(uri).map(adapter -> {
-        CompletableFuture<List<? extends TextEdit>> result = CompletableFutures.computeAsync(_x -> {
-          return adapter.format(uri).map(Collections::singletonList).orElse(Collections.emptyList());
-        });
-        return result;
-      })
-      .orElse(CompletableFuture.completedFuture(Collections.emptyList()));
+      return CompletableFutures.<List<? extends TextEdit>>computeAsync(_x -> {
+        return adapter.format(uri).map(Collections::singletonList).orElse(Collections.emptyList());
+      });
+    })
+    .orElse(CompletableFuture.completedFuture(Collections.emptyList()));
   }
 }
