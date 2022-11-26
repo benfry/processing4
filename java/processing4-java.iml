@@ -168,5 +168,25 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.lsp4j">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.lsp4j.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.lsp4j.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="org.eclipse.lsp4j.jsonrpc">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/mode/org.eclipse.lsp4j.jsonrpc.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

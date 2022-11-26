@@ -9,12 +9,16 @@ X   https://github.com/processing/processing4/issues/600
 _ update wiki
 _   https://github.com/processing/processing4/wiki/Translations
 _   https://www.oracle.com/java/technologies/javase/jdk17-suported-locales.html
-X implement offline reference download
+X Offline reference has been removed for 4.x, build a new version
+X   implement offline reference download
 X   https://github.com/processing/processing-website/releases/download/2022-10-05-1459/reference.zip
 X   add a note about the file size to the progress window
-_   document and grab other notes from elsewhere here
-X Offline reference has been removed for 4.x, build a new version
+_   document on wiki
 _   https://github.com/processing/processing4/issues/524
+X look into LSP code contribution
+X   https://github.com/processing/processing4/pull/564
+_   https://github.com/processing/processing4/issues/117
+
 
 _ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
 _   and with that, switch to another directory
@@ -25,10 +29,6 @@ _   before 'public' in functions, it's an extra single space
 _   not indenting the rest of the code at all
 _   many blank lines at the beginning
 _   'exported at' text at the top is awkward
-
-_ look into LSP code contribution
-_   https://github.com/processing/processing4/issues/117
-_   https://github.com/processing/processing4/pull/564
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
