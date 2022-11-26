@@ -28,7 +28,7 @@ import processing.app.Language;
 import processing.app.Problem;
 
 
-class ErrorChecker {
+public class ErrorChecker {
   // Delay delivering error check result after last sketch change
   // https://github.com/processing/processing/issues/2677
   private final static long DELAY_BEFORE_UPDATE = 650;
@@ -41,11 +41,11 @@ class ErrorChecker {
   private final Consumer<PreprocSketch> errorHandlerListener =
     this::handleSketchProblems;
 
-  final private JavaEditor editor;
+  final private Consumer<List<Problem>> editor;
   final private PreprocService pps;
 
 
-  public ErrorChecker(JavaEditor editor, PreprocService pps) {
+  public ErrorChecker(Consumer<List<Problem>> editor, PreprocService pps) {
     this.editor = editor;
     this.pps = pps;
 
@@ -69,7 +69,7 @@ class ErrorChecker {
         pps.registerListener(errorHandlerListener);
       } else {
         pps.unregisterListener(errorHandlerListener);
-        editor.setProblemList(Collections.emptyList());
+        editor.accept(Collections.emptyList());
         nextUiUpdate = 0;
       }
     }
@@ -136,7 +136,7 @@ class ErrorChecker {
     long delay = nextUiUpdate - System.currentTimeMillis();
     Runnable uiUpdater = () -> {
       if (nextUiUpdate > 0 && System.currentTimeMillis() >= nextUiUpdate) {
-        EventQueue.invokeLater(() -> editor.setProblemList(problems));
+        EventQueue.invokeLater(() -> editor.accept(problems));
       }
     };
     scheduledUiUpdate =

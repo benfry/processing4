@@ -134,7 +134,7 @@ public class JavaEditor extends Editor {
     box.add(textAndError);
     */
 
-    preprocService = new PreprocService(this);
+    preprocService = new PreprocService(this.jmode, this.sketch); 
 
 //    long t5 = System.currentTimeMillis();
 
@@ -146,7 +146,7 @@ public class JavaEditor extends Editor {
       astViewer = new ASTViewer(this, preprocService);
     }
 
-    errorChecker = new ErrorChecker(this, preprocService);
+    errorChecker = new ErrorChecker(this::setProblemList, preprocService);
 
 //    long t7 = System.currentTimeMillis();
 
