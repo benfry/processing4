@@ -25,7 +25,7 @@ class PdeWorkspaceService implements WorkspaceService {
       pls.getAdapter(uri).ifPresent(adapter -> {
         switch (change.getType()) {
           case Created:
-            ProcessingAdapter.uriToPath(uri).ifPresent(path -> {
+            PdeAdapter.uriToPath(uri).ifPresent(path -> {
               adapter.sketch.loadNewTab(path.getName().toString(), "pde", true);
               adapter.notifySketchChanged();
             });

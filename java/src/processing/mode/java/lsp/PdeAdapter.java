@@ -52,7 +52,7 @@ class Offset {
   }
 }
 
-class ProcessingAdapter {
+class PdeAdapter {
   File rootPath;
   LanguageClient client;
   JavaMode javaMode;
@@ -66,7 +66,7 @@ class ProcessingAdapter {
   Set<URI> prevDiagnosticReportUris = new HashSet<URI>();
   
 
-  ProcessingAdapter(File rootPath, LanguageClient client) {
+  PdeAdapter(File rootPath, LanguageClient client) {
     this.rootPath = rootPath;
     this.client = client;
     this.javaMode = (JavaMode) ModeContribution
@@ -128,7 +128,7 @@ class ProcessingAdapter {
   }
 
    Optional<SketchCode> findCodeByUri(URI uri) {
-    return ProcessingAdapter.uriToPath(uri)
+    return PdeAdapter.uriToPath(uri)
       .flatMap(path -> Arrays.stream(sketch.getCode())
         .filter(code -> code.getFile().equals(path))
         .findFirst()
@@ -143,13 +143,13 @@ class ProcessingAdapter {
           new Range(
             new Position(
               prob.getLineNumber(),
-              ProcessingAdapter
+              PdeAdapter
                 .toLineCol(code.getProgram(), prob.getStartOffset())
                 .col - 1
             ),
             new Position(
               prob.getLineNumber(),
-              ProcessingAdapter
+              PdeAdapter
                 .toLineCol(code.getProgram(), prob.getStopOffset())
                 .col - 1
             )
@@ -162,7 +162,7 @@ class ProcessingAdapter {
             : DiagnosticSeverity.Warning
         );
         return new AbstractMap.SimpleEntry<URI, Diagnostic>(
-          ProcessingAdapter.pathToUri(code.getFile()),
+          PdeAdapter.pathToUri(code.getFile()),
           dia
         );
       })
@@ -317,7 +317,7 @@ class ProcessingAdapter {
       .map(SketchCode::getProgram)
       .map(code -> {
         String newCode = new AutoFormat().format(code);
-        Offset end = ProcessingAdapter.toLineCol(code, code.length());
+        Offset end = PdeAdapter.toLineCol(code, code.length());
         return new TextEdit(
           new Range(
             new Position(0, 0),
