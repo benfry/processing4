@@ -7,9 +7,9 @@ import org.eclipse.lsp4j.DidChangeWatchedFilesParams;
 import java.net.URI;
 import java.io.IOException;
 
-class ProcessingWorkspaceService implements WorkspaceService {
-  ProcessingLanguageServer pls;
-  ProcessingWorkspaceService(ProcessingLanguageServer pls) {
+class PdeWorkspaceService implements WorkspaceService {
+  PdeLanguageServer pls;
+  PdeWorkspaceService(PdeLanguageServer pls) {
     this.pls = pls;
   }
 

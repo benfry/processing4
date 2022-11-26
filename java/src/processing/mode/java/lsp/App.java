@@ -8,7 +8,7 @@ public class App {
     var output = System.out;
     System.setOut(System.err);
 
-    var server = new ProcessingLanguageServer();
+    var server = new PdeLanguageServer();
     var launcher =
       LSPLauncher.createServerLauncher(
         server,

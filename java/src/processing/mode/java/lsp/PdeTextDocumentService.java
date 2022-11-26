@@ -18,9 +18,9 @@ import org.eclipse.lsp4j.TextEdit;
 import java.util.Collections;
 import java.net.URI;
 
-class ProcessingTextDocumentService implements TextDocumentService {
-  ProcessingLanguageServer pls;
-  ProcessingTextDocumentService(ProcessingLanguageServer pls) {
+class PdeTextDocumentService implements TextDocumentService {
+  PdeLanguageServer pls;
+  PdeTextDocumentService(PdeLanguageServer pls) {
     this.pls = pls;
   }
 

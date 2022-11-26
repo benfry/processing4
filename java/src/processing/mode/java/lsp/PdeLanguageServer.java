@@ -21,7 +21,7 @@ import java.util.Optional;
 import java.util.HashMap;
 import java.util.Arrays;
 
-class ProcessingLanguageServer implements LanguageServer, LanguageClientAware {
+class PdeLanguageServer implements LanguageServer, LanguageClientAware {
   static Optional<String> lowerExtension(File file) {
     String s = file.toString();
     int dot = s.lastIndexOf('.');
@@ -31,8 +31,8 @@ class ProcessingLanguageServer implements LanguageServer, LanguageClientAware {
 
   HashMap<File, ProcessingAdapter> adapters = new HashMap<>();
   LanguageClient client = null;
-  ProcessingTextDocumentService textDocumentService = new ProcessingTextDocumentService(this);
-  ProcessingWorkspaceService workspaceService = new ProcessingWorkspaceService(this);
+  PdeTextDocumentService textDocumentService = new PdeTextDocumentService(this);
+  PdeWorkspaceService workspaceService = new PdeWorkspaceService(this);
 
   @Override
   public void exit() {
