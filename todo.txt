@@ -26,18 +26,21 @@ X look into LSP code contribution
 X   https://github.com/processing/processing4/pull/564
 X   https://github.com/processing/processing4/issues/117
 X   App was merged into processing.mode.java.lsp.PdeLanguageServer
+X "Show Sketch Folder" for library examples need to treat the sketch as Untitled
+o   and with that, switch to another directory
+X   https://github.com/processing/processing4/issues/548
+X   was working as intended
+o remove target.path from build/build.xml
+o   maybe simpler way to write version? sheesh
+X   not sure what this was about, but confirmed that things are set up as they should be
 
-
-_ "Show Sketch Folder" for library examples need to treat the sketch as Untitled
-_   and with that, switch to another directory
-_   https://github.com/processing/processing4/issues/548
 
 _ preproc inserting weird number of spaces
+_   https://github.com/processing/processing4/issues/607
 _   before 'public' in functions, it's an extra single space
 _   not indenting the rest of the code at all
 _   many blank lines at the beginning
 _   'exported at' text at the top is awkward
-_   https://github.com/processing/processing4/issues/607
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
@@ -47,9 +50,6 @@ _ add a protocol handler for pdex and pdez
 _   https://github.com/processing/processing4/issues/559
 
 _ set more build.xml files to use Java 17
-_ remove target.path from build/build.xml
-_   maybe simpler way to write version? sheesh
-
 
 
 known issues

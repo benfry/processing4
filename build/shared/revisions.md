@@ -1,3 +1,33 @@
+# Processing 4.1
+
+*Revision 1288 – 27 or 28 November 2022*
+
+Compared with the 4.0.2 release which was focused on stability, this 4.1 release is focused on ~~instability~~ adding a couple new features. They'll need more testing, but hopefully you'll find them useful.
+
+
+## what makes this 4.1 instead of 4.0.3
+
+* This release adds initial support for [Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol), which means we will soon be able to integrate the compile/run process with other editors like Visual Studio Code. There is still a lot of work to be done here (this code is probably more “alpha” quality) but it's a good step forward. Thanks to @kgtkr for the LSP code here, it's a huge help. [#117](https://github.com/processing/processing4/issues/117)
+
+* Support has been added for extended language tags, which makes available a Traditional Chinese (`zh_TW`) translation in addition to the previously available Simplified Chinese translation (originally `zh`, now renamed to `zh_CN`). You can see the full list of supported language tags [here](https://www.oracle.com/java/technologies/javase/jdk17-suported-locales.html#modules). We will keep the existing two-digit tags in place for now, and update them as needed when new language translations are added. Read more on the [Translations](https://github.com/processing/processing4/wiki/Translations) page on the Wiki. Thanks to @jsyeh for the `zh_TW` translation. [#600](https://github.com/processing/processing4/issues/600)
+
+* A “Download Offline Reference” item was added to the Help Menu, which takes care of downloading an offline copy. It creates a file called `reference.zip` in the sketchbook. If that file is present, then the Help menu links and Find in Reference will use that copy of the reference. If it is not present, online URLs will be used. You can also manually copy the `reference.zip` file from sketchbook to sketchbook. Put `reference.zip` in the root of your sketchbook and restart Processing so that it picks up the new file. For instance, in a class situation, you might put the file on a shared server and tell people where to find it. Read more on the [Offline Reference](https://github.com/processing/processing4/wiki/Offline-Reference) page on the Wiki. [#524](https://github.com/processing/processing4/issues/524)
+
+
+## contributed fixes
+
+* Fix the JavaDoc for mousePressed variable from @SableRaf. [#605](https://github.com/processing/processing4/pull/605)
+
+
+## other updates
+
+* In some cases, the Theme was not being saved after Processing was restarted. [#565](https://github.com/processing/processing4/issues/565)
+
+* A few updates and clarifications in the `size()` reference.
+
+* The Java version has been bumped from 17.0.4 to 17.0.5.
+
+
 # Processing 4.0.2
 
 *Revision 1287 – 24 November 2022*
