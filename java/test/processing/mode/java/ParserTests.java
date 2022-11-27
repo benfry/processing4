@@ -50,6 +50,22 @@ public class ParserTests {
     }
   }
 
+  static void expectRunnerException(final String id) {
+    try {
+      preprocess(id, res(id + ".pde"));
+      fail("Expected to fail");
+    } catch (SketchException e) {
+      assertNotNull(e);
+    } catch (PdePreprocessIssueException e) {
+      assertNotNull(e.getIssue().getMsg());
+    } catch (Exception e) {
+      if (!e.equals(e.getCause()) && e.getCause() != null)
+        fail(e.getCause().toString());
+      else
+        fail(e.toString());
+    }
+  }
+
   static void expectRunnerException(final String id,
                                     final int expectedLine) {
 
@@ -451,6 +467,21 @@ public class ParserTests {
   @Test
   public void testCustomRootClass() {
     expectGood("customrootclass");
+  }
+
+  @Test
+  public void testExpessionSize() {
+    expectGood("expressionsize");
+  }
+
+  @Test
+  public void testExpessionSizeMethod() {
+    expectRunnerException("expressionsizemethod");
+  }
+
+  @Test
+  public void testExpessionSizeVar() {
+    expectRunnerException("expressionsizevar");
   }
 
 }

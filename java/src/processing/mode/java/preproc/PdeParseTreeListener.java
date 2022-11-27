@@ -693,17 +693,17 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     if (isSize && argsContext.getChildCount() > 2) {
       thisRequiresRewrite = true;
 
-      sketchWidth = argsContext.getChild(0).getText();
-      boolean invalidWidth = PApplet.parseInt(sketchWidth, -1) == -1;
-      invalidWidth = invalidWidth && !sketchWidth.equals("displayWidth");
-      if (invalidWidth) {
+      boolean widthValid = sizeParamValid(argsContext.getChild(0));
+      if (widthValid) {
+        sketchWidth = argsContext.getChild(0).getText();
+      } else {
         thisRequiresRewrite = false;
       }
 
-      sketchHeight = argsContext.getChild(2).getText();
-      boolean invalidHeight = PApplet.parseInt(sketchHeight, -1) == -1;
-      invalidHeight = invalidHeight && !sketchHeight.equals("displayHeight");
-      if (invalidHeight) {
+      boolean validHeight = sizeParamValid(argsContext.getChild(2));
+      if (validHeight) {
+        sketchHeight = argsContext.getChild(2).getText();
+      } else {
         thisRequiresRewrite = false;
       }
 
@@ -1533,6 +1533,38 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    */
   private ImportStatement createPlainImportStatementInfo(String fullyQualifiedName) {
     return ImportStatement.parse(fullyQualifiedName);
+  }
+
+  private boolean isMethodCall(ParseTree ctx) {
+    return ctx instanceof ProcessingParser.MethodCallContext;
+  }
+
+  private boolean isVariable(ParseTree ctx) {
+    boolean isPrimary = ctx instanceof ProcessingParser.PrimaryContext;
+    if (!isPrimary) {
+      return false;
+    }
+
+    String text = ctx.getText();
+    boolean startsWithAlpha = text.length() > 0 && Character.isAlphabetic(text.charAt(0));
+    return startsWithAlpha;
+  }
+
+  private boolean sizeParamValid(ParseTree ctx) {
+    // Method calls and variables not allowed.
+    if (isMethodCall(ctx) || isVariable(ctx)) {
+      return false;
+    }
+    
+    // If user passed an expression, check subexpressions.
+    for (int i = 0; i < ctx.getChildCount(); i++) {
+      if (!sizeParamValid(ctx.getChild(i))) {
+        return false;
+      }
+    }
+    
+    // If all sub-expressions passed and not identifier, is valid.
+    return true;
   }
 
 }
