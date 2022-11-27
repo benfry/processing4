@@ -1,9 +1,5 @@
 import processing.pdf.*;
 
-int getWidth() {
-  return 400*2;
-}
-
 void setup() {
   int newWidth = 400*2;
   size(newWidth, 400/2);

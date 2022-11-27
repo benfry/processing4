@@ -476,12 +476,12 @@ public class ParserTests {
 
   @Test
   public void testExpessionSizeMethod() {
-    expectRunnerException("expressionsizemethod");
+    expectGood("expressionsizemethod");
   }
 
   @Test
   public void testExpessionSizeVar() {
-    expectRunnerException("expressionsizevar");
+    expectGood("expressionsizevar");
   }
 
 }
