@@ -48,7 +48,7 @@
 
   <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -->
 
-  <property name="lsp4j.version" value="0.12.0" />
+  <property name="lsp4j.version" value="0.19.0" />
 
   <fileset id="lsp4j.files" dir="mode">
     <include name="org.eclipse.lsp4j.jar" />
