@@ -1698,9 +1698,9 @@ public class Base {
    * Examples window, because Modes like Python and Android do not have
    * "sketch.properties" files in each example folder.
    */
-  public Editor handleOpen(String path, Mode mode) {
+  public Editor handleOpenExample(String path, Mode mode) {
     nextMode = mode;
-    return handleOpenInternal(path, false);
+    return handleOpenInternal(path, true);
   }
 
 

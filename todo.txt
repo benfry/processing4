@@ -28,7 +28,7 @@ X   https://github.com/processing/processing4/issues/117
 X   App was merged into processing.mode.java.lsp.PdeLanguageServer
 
 
-_ "Show Sketch Folder" for libraries needs to treat the sketch as Untitled
+_ "Show Sketch Folder" for library examples need to treat the sketch as Untitled
 _   and with that, switch to another directory
 _   https://github.com/processing/processing4/issues/548
 
