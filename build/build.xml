@@ -161,6 +161,9 @@
   <!-- <property name="dist.suffix" value="${os.arch}" /> -->
 
   <!-- Figure out the platform-specific output directory for all this work. -->
+  <!-- This is set by antcall to assemble. If we set these up here, then we
+       can't detect when someone is attempting 'ant assemble' (which is bad). -->
+  <!--
   <condition property="target.path"
              value="macos/work/Processing.app/Contents/Java">
     <os family="mac" />
@@ -173,6 +176,7 @@
   <condition property="target.path" value="windows/work">
     <os family="windows" />
   </condition>
+  -->
 
   <!-- Libraries required for running processing -->
   <!-- also need to copy these to the bundleapp task for macos -->
@@ -378,7 +382,7 @@
       </fileset>
     </copy>
 
-    <!-- get the examples folder, but don't require it to buid -->
+    <!-- get the examples folder, but don't require it to build (only required for dist) -->
     <copy todir="${target.path}/modes/java/examples"
           preservelastmodified="true" failonerror="false">
       <fileset dir="${examples.dir}" />
