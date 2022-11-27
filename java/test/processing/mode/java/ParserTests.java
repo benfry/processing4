@@ -484,4 +484,9 @@ public class ParserTests {
     expectGood("expressionsizevar");
   }
 
+  @Test
+  public void testWhitespace() {
+    expectGood("whitespace", false);
+  }
+
 }
