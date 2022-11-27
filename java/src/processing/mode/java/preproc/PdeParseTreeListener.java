@@ -589,9 +589,9 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     // Insert at start of method or after annoation
     if (!hasVisibilityModifier) {
       if (annoationPoint == null) {
-        insertBefore(possibleModifiers.getStart(), " public ");
+        insertBefore(possibleModifiers.getStart(), "public ");
       } else {
-        insertAfter(annoationPoint.getStop(), " public ");
+        insertAfter(annoationPoint.getStop(), "public ");
       }
     }
 
