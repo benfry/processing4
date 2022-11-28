@@ -53,10 +53,11 @@
   <fileset id="lsp4j.files" dir="mode">
     <include name="org.eclipse.lsp4j.jar" />
     <include name="org.eclipse.lsp4j.jsonrpc.jar" />
+    <include name="gson.jar" />
   </fileset>
 
   <condition property="lsp4j.present">
-    <resourcecount refid="lsp4j.files" when="eq" count="2" />
+    <resourcecount refid="lsp4j.files" when="eq" count="3" />
   </condition>
 
   <!-- ok to ignore failed downloads if we at least have a version that's local -->
@@ -77,6 +78,11 @@
 
     <get src="${lsp4j.prefix}/org.eclipse.lsp4j.jsonrpc/${lsp4j.version}/org.eclipse.lsp4j.jsonrpc-${lsp4j.version}.jar"
          dest="mode/org.eclipse.lsp4j.jsonrpc.jar"
+         ignoreerrors="${lsp4j.ignorable}"
+         usetimestamp="true" />
+
+    <get src="https://repo1.maven.org/maven2/com/google/code/gson/gson/2.9.1/gson-2.9.1.jar"
+         dest="mode/gson.jar"
          ignoreerrors="${lsp4j.ignorable}"
          usetimestamp="true" />
   </target>
