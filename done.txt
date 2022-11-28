@@ -1,3 +1,50 @@
+1288 (4.1)
+X bump Java version to 17.0.5
+X theme is not being kept after Processing restart on Windows
+X   unable to reproduce so just hoping this works
+X   https://github.com/processing/processing4/issues/565
+X update languages to work with more specific locales
+X expanded language codes to support traditional Chinese translation
+X   https://github.com/processing/processing4/issues/600
+X update wiki
+X   https://github.com/processing/processing4/wiki/Translations
+X   https://www.oracle.com/java/technologies/javase/jdk17-suported-locales.html
+X Offline reference has been removed for 4.x, build a new version
+X   implement offline reference download
+X   https://github.com/processing/processing-website/releases/download/2022-10-05-1459/reference.zip
+X   add a note about the file size to the progress window
+X   document on wiki
+X     https://github.com/processing/processing4/wiki/Offline-Reference
+X   https://github.com/processing/processing4/issues/524
+X   https://github.com/processing/processing4/issues/589
+X offline documentation source?
+o   https://github.com/processing/processing-website/releases
+o   json: https://api.github.com/repos/processing/processing-website/releases
+o   has an array of objects, and there's an object key for 'zipball_url' we can use:
+o   https://api.github.com/repos/processing/processing-website/zipball/2022-11-14-1615
+X look into LSP code contribution
+X   https://github.com/processing/processing4/pull/564
+X   https://github.com/processing/processing4/issues/117
+X   App was merged into processing.mode.java.lsp.PdeLanguageServer
+X "Show Sketch Folder" for library examples need to treat the sketch as Untitled
+o   and with that, switch to another directory
+X   https://github.com/processing/processing4/issues/548
+X   was working as intended
+o remove target.path from build/build.xml
+o   maybe simpler way to write version? sheesh
+X   not sure what this was about, but confirmed that things are set up as they should be
+
+contrib
+X size(863,863/2) not working as first line of setup() function in a simple sketch
+X   https://github.com/processing/processing4/issues/602
+X preproc inserting weird number of spaces
+X   https://github.com/processing/processing4/issues/607
+X   before 'public' in functions, it's an extra single space
+o   not indenting the rest of the code at all
+X   many blank lines at the beginning
+o   'exported at' text at the top is awkward
+
+
 1287 (4.0.2)
 X using Java 17 in more syntax
 X fix potential casting problem with Platform and DefaultPlatform

@@ -1,3 +1,11 @@
+1288 (4.1)
+X updates and clarifications for the size() reference
+
+contribs
+X fix the JavaDoc for mousePressed variable
+X   https://github.com/processing/processing4/pull/605
+
+
 1287 (4.0.2)
 X Updating PApplet to use Java 17 (switch statements, etc)
 X XxxList bug with random() if there are zero elements in the array
