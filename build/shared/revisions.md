@@ -1,3 +1,14 @@
+# Processing 4.1.1
+
+*Revision 1289 – 28 November 2022*
+
+See the release notes for 4.1 and 4.0.2 for major updates from the last week.
+
+This release adds a single file for Language Server support that was missing in the 4.1 release from a few hours ago.
+
+And if you'd like to try out the Language Server with Visual Studio Code, you can give [this project](https://github.com/kgtkr/processing-language-server-vscode) a try.
+
+
 # Processing 4.1
 
 *Revision 1288 – 28 November 2022*
