@@ -34,13 +34,16 @@ o remove target.path from build/build.xml
 o   maybe simpler way to write version? sheesh
 X   not sure what this was about, but confirmed that things are set up as they should be
 
+contrib
+X size(863,863/2) not working as first line of setup() function in a simple sketch
+X   https://github.com/processing/processing4/issues/602
+X preproc inserting weird number of spaces
+X   https://github.com/processing/processing4/issues/607
+X   before 'public' in functions, it's an extra single space
+o   not indenting the rest of the code at all
+X   many blank lines at the beginning
+o   'exported at' text at the top is awkward
 
-_ preproc inserting weird number of spaces
-_   https://github.com/processing/processing4/issues/607
-_   before 'public' in functions, it's an extra single space
-_   not indenting the rest of the code at all
-_   many blank lines at the beginning
-_   'exported at' text at the top is awkward
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?

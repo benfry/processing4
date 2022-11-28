@@ -16,6 +16,10 @@ Compared with the 4.0.2 release which was focused on stability, this 4.1 release
 
 ## contributed fixes
 
+* `size(863,863/2)` inside `setup()` function (fix from @sampottinger) [#602](https://github.com/processing/processing4/issues/602), [#609](https://github.com/processing/processing4/pull/609)
+
+* Pre-processor was inserting extra spaces (another from @sampottinger) [#607](https://github.com/processing/processing4/issues/607), [#609](https://github.com/processing/processing4/pull/609)
+
 * Fix the JavaDoc for mousePressed variable from @SableRaf. [#605](https://github.com/processing/processing4/pull/605)
 
 
