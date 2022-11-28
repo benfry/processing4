@@ -1,3 +1,7 @@
+1289 (4.1.1)
+X add the gson.jar file to the Java Mode build to get LSP support working
+
+
 1288 (4.1)
 X bump Java version to 17.0.5
 X theme is not being kept after Processing restart on Windows
