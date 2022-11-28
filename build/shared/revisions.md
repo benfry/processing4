@@ -2,7 +2,7 @@
 
 *Revision 1289 – 28 November 2022*
 
-See the release notes for 4.1 and 4.0.2 for major updates from the last week.
+See the release notes for [4.1](https://github.com/processing/processing4/releases/tag/processing-1288-4.1) and [4.0.2](https://github.com/processing/processing4/releases/tag/processing-1287-4.0.2) for major updates since 4.0.1 was released in August.
 
 This release adds a single file for Language Server support that was missing in the 4.1 release from a few hours ago.
 
