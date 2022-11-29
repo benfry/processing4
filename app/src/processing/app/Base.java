@@ -1618,7 +1618,7 @@ public class Base {
         Messages.showWarning("You're tricky, but not tricky enough",
           pdeFile.getName() + " is not a valid name for sketch code.\n" +
           "Better to stick to ASCII, no spaces, and make sure\n" +
-          "it doesn't start with a number.", null);
+          "it doesn't start with a number or contains hyphens.", null);
         return null;
       }
 
