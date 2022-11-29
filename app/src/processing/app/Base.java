@@ -1553,6 +1553,14 @@ public class Base {
 
     File parentFolder = pdeFile.getParentFile();
 
+    if (!Sketch.isSanitaryName(parentFolder.getName())) {
+      Messages.showWarning("You're tricky, but not tricky enough",
+          parentFolder.getName() + " is not a valid name for a sketch folder.\n" +
+              "Better to stick to ASCII, no spaces, and make sure\n" +
+              "it doesn't start with a number or contains hyphens.", null);
+      return null;
+    }
+
     try {
       // read the sketch.properties file or get an empty Settings object
       Settings props = Sketch.loadProperties(parentFolder);
