@@ -319,6 +319,11 @@ public class ParserTests {
   }
 
   @Test
+  public void staticannotations() {
+    expectGood("staticannotations", true);
+  }
+
+  @Test
   public void generics() {
     expectGood("generics", true);
   }
