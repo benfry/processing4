@@ -591,7 +591,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
       if (annoationPoint == null) {
         insertBefore(possibleModifiers.getStart(), "public ");
       } else {
-        insertAfter(annoationPoint.getStop(), "public ");
+        insertAfter(annoationPoint.getStop(), " public ");
       }
     }
 

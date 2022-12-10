@@ -26,16 +26,16 @@ class Button {
     this.radius = radius;
   }
   
-  boolean over() {
+  public boolean over() {
     return dist(mouseX, mouseY, this.x, this.y) < this.radius;
   }
   
-  void draw() {
+  public void draw() {
     ellipse(this.x, this.y, this.radius * 2, this.radius * 2);
   }
 
   @Deprecated
-  void old() {
+  public void old() {
     ellipse(this.x, this.y, this.radius, this.radius);
   }
   
@@ -45,7 +45,7 @@ class Button {
 class ButtonOther extends Button {
 
   @Override
-  boolean over() {
+  public boolean over() {
     return dist(mouseX, mouseY, this.x, this.y) < this.radius / 2;
   }
 
