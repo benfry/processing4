@@ -566,7 +566,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
     int numChildren = possibleModifiers.getChildCount();
 
-    ParserRuleContext annoationPoint = null;
+    ParserRuleContext annotationPoint = null;
 
     for (int i = 0; i < numChildren; i++) {
       boolean childIsVisibility;
@@ -582,16 +582,16 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
 
       boolean isModifier = child instanceof ProcessingParser.ModifierContext;
       if (isModifier && isAnnotation((ProcessingParser.ModifierContext) child)) {
-        annoationPoint = (ParserRuleContext) child;
+        annotationPoint = (ParserRuleContext) child;
       }
     }
 
     // Insert at start of method or after annoation
     if (!hasVisibilityModifier) {
-      if (annoationPoint == null) {
+      if (annotationPoint == null) {
         insertBefore(possibleModifiers.getStart(), "public ");
       } else {
-        insertAfter(annoationPoint.getStop(), " public ");
+        insertAfter(annotationPoint.getStop(), " public ");
       }
     }
 
