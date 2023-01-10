@@ -1,4 +1,6 @@
 1290 (4.1.2?)
+_ show an error when calling clear() on the main drawing surface
+_   https://github.com/processing/processing4/issues/627
 
 
 _ args passed to main() aren't working

@@ -1,5 +1,15 @@
 1290 (4.1.2?)
 
+contrib
+X “Cannot find a class or type named ‘PApplet’” error
+X   https://github.com/processing/processing4/issues/626
+X   https://github.com/processing/processing4/pull/635
+X cannot use @Override and @Deprecated in static mode
+X   https://github.com/processing/processing4/issues/619
+X   https://github.com/processing/processing4/pull/622
+
+
+_ make ctrl-g work inside the find window
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
