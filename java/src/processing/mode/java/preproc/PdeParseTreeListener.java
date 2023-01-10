@@ -1076,17 +1076,10 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    */
   protected void writeImports(PrintWriterWithEditGen headerWriter,
         RewriteResultBuilder resultBuilder) {
-
-    if (!userImportingManually) {
-      writeImportList(headerWriter, coreImports, resultBuilder);
-    }
-
+    writeImportList(headerWriter, coreImports, resultBuilder);
     writeImportList(headerWriter, codeFolderImports, resultBuilder);
     writeImportList(headerWriter, foundImports, resultBuilder);
-
-    if (!userImportingManually) {
-      writeImportList(headerWriter, defaultImports, resultBuilder);
-    }
+    writeImportList(headerWriter, defaultImports, resultBuilder);
   }
 
   /**
