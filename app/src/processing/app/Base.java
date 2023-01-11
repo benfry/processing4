@@ -202,7 +202,6 @@ public class Base {
       }
     }
 
-
     Platform.init();
     // call after Platform.init() because we need the settings folder
     Console.startup();
@@ -356,35 +355,10 @@ public class Base {
 
 
   static private void handleWelcomeScreen(Base base) {
-    /*
-    boolean sketchbookPrompt = false;
-    if (Preferences.getBoolean("welcome.four.beta.show")) {
-      // only ask once about split sketchbooks
-      if (!Preferences.getBoolean("welcome.four.beta.seen")) {
-        // Check if there's a 2.0 sketchbook present
-        String oldPath = Preferences.getOldSketchbookPath();
-        if (oldPath != null) {
-          String newPath = Preferences.getSketchbookPath();
-          // If newPath is null, this is the first run of any 3.x version
-          if (newPath == null) {
-            sketchbookPrompt = true;
-
-          } else if (oldPath.equals(newPath)) {
-            // If both exist and are identical, then the user has used
-            // pre-releases of 3.x and needs to be warned about the
-            // larger changes in this release.
-            sketchbookPrompt = true;
-          }
-        }
-      }
-    }
-    */
-
     // Needs to be shown after the first editor window opens, so that it
     // shows up on top, and doesn't prevent an editor window from opening.
     if (Preferences.getBoolean("welcome.four.show")) {
       try {
-        //new Welcome(base, sketchbookPrompt);
         new Welcome(base);
       } catch (IOException e) {
         Messages.showTrace("Unwelcoming",
@@ -622,106 +596,6 @@ public class Base {
   }
 
 
-  void buildCoreModes() {
-    ModeContribution javaModeContrib =
-      ModeContribution.load(this, Platform.getContentFile("modes/java"),
-                            getDefaultModeIdentifier());
-    if (javaModeContrib == null) {
-      Messages.showError("Startup Error",
-                "Could not load Java Mode, please reinstall Processing.",
-                         new Exception("ModeContribution.load() was null"));
-
-    } else {
-      // PDE X calls getModeList() while it's loading, so coreModes must be set
-      //coreModes = new Mode[] { javaModeContrib.getMode() };
-      coreMode = javaModeContrib.getMode();
-    }
-  }
-
-
-  /**
-   * Instantiates and adds new contributed modes to the contribModes list.
-   * Checks for duplicates so the same mode isn't instantiated twice. Does not
-   * remove modes because modes can't be removed once they are instantiated.
-   */
-  void rebuildContribModes() {
-    if (contribModes == null) {
-      contribModes = new ArrayList<>();
-    }
-    File modesFolder = getSketchbookModesFolder();
-    List<ModeContribution> contribModes = getContribModes();
-
-    Map<File, ModeContribution> known = new HashMap<>();
-    for (ModeContribution contrib : contribModes) {
-      known.put(contrib.getFolder(), contrib);
-    }
-    File[] potential = ContributionType.MODE.listCandidates(modesFolder);
-    // If modesFolder does not exist or is inaccessible (folks might like to
-    // mess with folders then report it as a bug) 'potential' will be null.
-    if (potential != null) {
-      for (File folder : potential) {
-        if (!known.containsKey(folder)) {
-          try {
-            contribModes.add(new ModeContribution(this, folder, null));
-          } catch (NoSuchMethodError | NoClassDefFoundError ne) {
-            System.err.println(folder.getName() + " is not compatible with this version of Processing");
-            if (DEBUG) ne.printStackTrace();
-          } catch (InvocationTargetException ite) {
-            System.err.println(folder.getName() + " could not be loaded and may not compatible with this version of Processing");
-            if (DEBUG) ite.printStackTrace();
-          } catch (IgnorableException ig) {
-            Messages.log(ig.getMessage());
-            if (DEBUG) ig.printStackTrace();
-          } catch (Throwable e) {
-            System.err.println("Could not load Mode from " + folder);
-            e.printStackTrace();
-          }
-        } else {
-          known.remove(folder);  // remove this item as already been seen
-        }
-      }
-    }
-
-    // This allows you to build and test a Mode from Eclipse
-    // -Dusemode=com.foo.FrobMode:/path/to/FrobMode
-    final String useMode = System.getProperty("usemode");
-    if (useMode != null) {
-      final String[] modeInfo = useMode.split(":", 2);
-      final String modeClass = modeInfo[0];
-      final String modeResourcePath = modeInfo[1];
-      System.out.println("Attempting to load " + modeClass + " with resources at " + modeResourcePath);
-      ModeContribution mc = ModeContribution.load(this, new File(modeResourcePath), modeClass);
-      contribModes.add(mc);
-      File key = getFileForContrib(mc, known);
-      if (key != null) {
-        known.remove(key);
-      }
-    }
-    if (known.size() != 0) {
-      for (ModeContribution mc : known.values()) {
-        System.out.println("Extraneous Mode entry: " + mc.getName());
-      }
-    }
-  }
-
-
-  static private File getFileForContrib(ModeContribution contrib,
-                                 Map<File, ModeContribution> known) {
-    for (Entry<File, ModeContribution> entry : known.entrySet()) {
-      if (entry.getValue() == contrib) {
-        return entry.getKey();
-      }
-    }
-    return null;
-  }
-
-
-  void rebuildContribExamples() {
-    contribExamples =
-      ExamplesContribution.loadAll(getSketchbookExamplesFolder());
-  }
-
-
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
@@ -800,6 +674,27 @@ public class Base {
   }
 
 
+  /**
+   * Get all the contributed Modes, Libraries, Tools, and Examples.
+   * Used by the Contribution Manager to report what's installed while
+   * checking for updates and available contributions.
+   */
+  public Set<Contribution> getInstalledContribs() {
+    List<ModeContribution> modeContribs = getContribModes();
+    Set<Contribution> contributions = new HashSet<>(modeContribs);
+
+    for (ModeContribution modeContrib : modeContribs) {
+      Mode mode = modeContrib.getMode();
+      contributions.addAll(mode.contribLibraries);
+      contributions.addAll(mode.foundationLibraries);
+    }
+
+    contributions.addAll(getContribTools());
+    contributions.addAll(getContribExamples());
+    return contributions;
+  }
+
+
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
@@ -819,15 +714,126 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  public List<Mode> getModeList() {
+    List<Mode> outgoing = new ArrayList<>();
+    outgoing.add(coreMode);
+    if (contribModes != null) {
+      for (ModeContribution contrib : contribModes) {
+        outgoing.add(contrib.getMode());
+      }
+    }
+    return outgoing;
+  }
+
+
+  void buildCoreModes() {
+    ModeContribution javaModeContrib =
+      ModeContribution.load(this, Platform.getContentFile("modes/java"),
+                            getDefaultModeIdentifier());
+    if (javaModeContrib == null) {
+      Messages.showError("Startup Error",
+                "Could not load Java Mode, please reinstall Processing.",
+                         new Exception("ModeContribution.load() was null"));
+
+    } else {
+      // PDE X calls getModeList() while it's loading, so coreModes must be set
+      //coreModes = new Mode[] { javaModeContrib.getMode() };
+      coreMode = javaModeContrib.getMode();
+    }
+  }
+
+
+  public List<ModeContribution> getContribModes() {
+    return contribModes;
+  }
+
+
+  /**
+   * Instantiates and adds new contributed modes to the contribModes list.
+   * Checks for duplicates so the same mode isn't instantiated twice. Does not
+   * remove modes because modes can't be removed once they are instantiated.
+   */
+  void rebuildContribModes() {
+    if (contribModes == null) {
+      contribModes = new ArrayList<>();
+    }
+    File modesFolder = getSketchbookModesFolder();
+    List<ModeContribution> contribModes = getContribModes();
+
+    Map<File, ModeContribution> known = new HashMap<>();
+    for (ModeContribution contrib : contribModes) {
+      known.put(contrib.getFolder(), contrib);
+    }
+    File[] potential = ContributionType.MODE.listCandidates(modesFolder);
+    // If modesFolder does not exist or is inaccessible (folks might like to
+    // mess with folders then report it as a bug) 'potential' will be null.
+    if (potential != null) {
+      for (File folder : potential) {
+        if (!known.containsKey(folder)) {
+          try {
+            contribModes.add(new ModeContribution(this, folder, null));
+          } catch (NoSuchMethodError | NoClassDefFoundError ne) {
+            System.err.println(folder.getName() + " is not compatible with this version of Processing");
+            if (DEBUG) ne.printStackTrace();
+          } catch (InvocationTargetException ite) {
+            System.err.println(folder.getName() + " could not be loaded and may not compatible with this version of Processing");
+            if (DEBUG) ite.printStackTrace();
+          } catch (IgnorableException ig) {
+            Messages.log(ig.getMessage());
+            if (DEBUG) ig.printStackTrace();
+          } catch (Throwable e) {
+            System.err.println("Could not load Mode from " + folder);
+            e.printStackTrace();
+          }
+        } else {
+          known.remove(folder);  // remove this item as already been seen
+        }
+      }
+    }
+
+    // This allows you to build and test a Mode from Eclipse
+    // -Dusemode=com.foo.FrobMode:/path/to/FrobMode
+    final String useMode = System.getProperty("usemode");
+    if (useMode != null) {
+      final String[] modeInfo = useMode.split(":", 2);
+      final String modeClass = modeInfo[0];
+      final String modeResourcePath = modeInfo[1];
+      System.out.println("Attempting to load " + modeClass + " with resources at " + modeResourcePath);
+      ModeContribution mc = ModeContribution.load(this, new File(modeResourcePath), modeClass);
+      contribModes.add(mc);
+      File key = getModeContribFile(mc, known);
+      if (key != null) {
+        known.remove(key);
+      }
+    }
+    if (known.size() != 0) {
+      for (ModeContribution mc : known.values()) {
+        System.out.println("Extraneous Mode entry: " + mc.getName());
+      }
+    }
+  }
+
+
+  static private File getModeContribFile(ModeContribution contrib,
+                                         Map<File, ModeContribution> known) {
+    for (Entry<File, ModeContribution> entry : known.entrySet()) {
+      if (entry.getValue() == contrib) {
+        return entry.getKey();
+      }
+    }
+    return null;
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
   public List<ToolContribution> getCoreTools() {
     return coreTools;
   }
 
 
   public List<ToolContribution> getContribTools() {
-//    if (contribTools == null) {
-//      contribTools = ToolContribution.loadAll(Base.getSketchbookToolsFolder());
-//    }
     return contribTools;
   }
 
@@ -947,29 +953,6 @@ public class Base {
   }
 
 
-  /*
-  static public void addTools(JMenu menu, List<Tool> tools) {
-    Map<String, JMenuItem> toolItems = new HashMap<String, JMenuItem>();
-
-    for (final Tool tool : tools) {
-      // If init() fails, the item won't be added to the menu
-      addToolItem(tool, toolItems);
-    }
-
-    List<String> toolList = new ArrayList<String>(toolItems.keySet());
-    if (toolList.size() > 0) {
-      if (menu.getItemCount() != 0) {
-        menu.addSeparator();
-      }
-      Collections.sort(toolList);
-      for (String title : toolList) {
-        menu.add(toolItems.get(title));
-      }
-    }
-  }
-  */
-
-
   JMenuItem createToolItem(final Tool tool) { //, Map<String, JMenuItem> toolItems) {
     String title = tool.getMenuTitle();
     final JMenuItem item = new JMenuItem(title);
@@ -998,47 +981,14 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  public List<ModeContribution> getContribModes() {
-    return contribModes;
-  }
-
-
-  public List<Mode> getModeList() {
-    //List<Mode> outgoing = new ArrayList<>(Arrays.asList(coreModes));
-    List<Mode> outgoing = new ArrayList<>();
-    outgoing.add(coreMode);
-    if (contribModes != null) {
-      for (ModeContribution contrib : contribModes) {
-        outgoing.add(contrib.getMode());
-      }
-    }
-    return outgoing;
+  void rebuildContribExamples() {
+    contribExamples =
+      ExamplesContribution.loadAll(getSketchbookExamplesFolder());
   }
 
 
   public List<ExamplesContribution> getContribExamples() {
     return contribExamples;
-  }
-
-
-  /**
-   * Get all the contributed Modes, Libraries, Tools, and Examples.
-   * Used by the Contribution Manager to report what's installed while
-   * checking for updates and available contributions.
-   */
-  public Set<Contribution> getInstalledContribs() {
-    List<ModeContribution> modeContribs = getContribModes();
-    Set<Contribution> contributions = new HashSet<>(modeContribs);
-
-    for (ModeContribution modeContrib : modeContribs) {
-      Mode mode = modeContrib.getMode();
-      contributions.addAll(mode.contribLibraries);
-      contributions.addAll(mode.foundationLibraries);
-    }
-
-    contributions.addAll(getContribTools());
-    contributions.addAll(getContribExamples());
-    return contributions;
   }
 
 
@@ -1106,101 +1056,6 @@ public class Base {
     // Against all (or at least most) odds, we were able to reassign the Mode
     return true;
   }
-
-
-  /*
-  private boolean isCompatible(Sketch sketch, Mode mode) {
-    for (final SketchCode code : sketch.getCode()) {
-      if (!mode.validExtension(code.getExtension())) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-
-  private static class ModeInfo {
-    public final String title;
-    public final String id;
-
-    public ModeInfo(String id, String title) {
-      this.id = id;
-      this.title = title;
-    }
-  }
-
-
-  private static ModeInfo modeInfoFor(final File sketch) {
-    final File sketchFolder = sketch.getParentFile();
-    final File sketchProps = new File(sketchFolder, "sketch.properties");
-    if (!sketchProps.exists()) {
-      return null;
-    }
-    try {
-      final Settings settings = new Settings(sketchProps);
-      final String title = settings.get("mode");
-      final String id = settings.get("mode.id");
-      if (title == null || id == null) {
-        return null;
-      }
-      return new ModeInfo(id, title);
-    } catch (IOException e) {
-      System.err.println("While trying to read " + sketchProps + ": "
-        + e.getMessage());
-    }
-    return null;
-  }
-  */
-
-
-  /*
-  private Mode promptForMode(final File passedFile) {
-    final String filename = passedFile.getName();
-    final String extension =
-      filename.substring(filename.lastIndexOf('.') + 1).toLowerCase();
-    final List<Mode> possibleModes = new ArrayList<>();
-    for (final Mode mode : getModeList()) {
-      if (mode.canEdit(passedFile)) {
-        possibleModes.add(mode);
-      }
-    }
-    if (possibleModes.size() == 0) {
-      final String msg =
-        "I don't know how to open a sketch with the \"" + extension + "\"\n" +
-        "file extension. You'll have to install a different\n" +
-        "Mode for that.";
-      Messages.showWarning("Modeless Dialog", msg);
-      return null;
-
-    } else if (possibleModes.size() == 1) {
-      // If there's one Mode that can open this sketch, just open it
-      return possibleModes.get(0);
-
-    } else {
-      // More than one Mode possible, prompt the user
-      Mode[] modes = possibleModes.toArray(new Mode[0]);
-      return (Mode) JOptionPane.showInputDialog(null,
-        (nextMode.getTitle() + " Mode can't open ." + extension + " files, " +
-          "but you have more than one Mode\ninstalled that can. " +
-          "Select which you would like to use:"),
-        "Choose Wisely",
-        JOptionPane.QUESTION_MESSAGE,
-        null, modes, modes[0]);
-    }
-  }
-  */
-
-
-  /*
-  private Mode selectMode(final File sketch) {
-    final ModeInfo modeInfo = modeInfoFor(sketch);
-    final Mode specifiedMode = modeInfo == null ? null : findMode(modeInfo.id);
-    if (specifiedMode != null) {
-      return specifiedMode;
-    }
-    return promptForMode(sketch, modeInfo);
-  }
-  */
 
 
   protected Mode findMode(String id) {

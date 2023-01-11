@@ -19,10 +19,22 @@ X cleaning up methods for initializing various contribs in Base
 X replace getToolContribs() with getContribTools() for consistency
 X change base.getModeContribs() to base.getContribModes() for consistency
 X move contribs -> binary blob out of Base since it doesn't belong there
+
 _ Mode manager window is empty
 _   https://github.com/processing/processing4/issues/613
 _ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
 _   https://github.com/processing/processing4/issues/618
+
+_ ContributionTab.updateContributionListing()
+_   this one shouldn't be in a single tab
+_   and it should include all contribs (method from Base to get in one swoop?)
+_   this is also likely the cause of per-Mode weirdness
+_   should be using Base.getInstalledContribs() instead of rewriting its own
+_ ManagerFrame.downloadAndUpdateContributionListing()
+_   should not even be run, because the contribs load on startup
+_   but ContributionTab.tryAgainButton needs to be able to request re-download
+o ManagerFrame.makeAndShowTab()
+o   this one looks like it's gonna get called multiple times
 
 
 _ make ctrl-g work inside the find window
@@ -319,19 +331,10 @@ _ also if update check disabled, user isn't notified that contribs unavailable
 _ currently no indication that contrib download failed
 _   so the 'try again' won't show up; everything looks fine
 _   (was this for the contrib listing? or an actual contrib?)
-_ ContributionTab.updateContributionListing()
-_   this one shouldn't be in a single tab
-_   and it should include all contribs (method from Base to get in one swoop?)
-_   this is also likely the cause of per-Mode weirdness
 _ Base.setUpdatesAvailable() is called from half a dozen places!?
 _ how to handle contrib manager download/retry/etc and showing progress
 _ ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
 _   seems to be out of sync/unavailable data based on more recent contrib changes?
-_ ManagerFrame.downloadAndUpdateContributionListing()
-_   should not even be run, because the contribs load on startup
-_   but ContributionTab.tryAgainButton needs to be able to request re-download
-_ ManagerFrame.makeAndShowTab()
-_   this one looks like it's gonna get called multiple times
 _ holy s*t ContributionTableModel is using all of the contribs
 _ after failed update of Mode, the button is no longer available
 _   have to click something else, then click back on the Mode line again
