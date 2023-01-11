@@ -327,7 +327,7 @@ public class ContributionTab extends JPanel {
 
 //      List<ModeContribution> modes = base.getModeContribs();
 //      contributions.addAll(modes);
-      contributions.addAll(base.getModeContribs());
+      contributions.addAll(base.getContribModes());
 
 //      List<ExamplesContribution> examples = base.getExampleContribs();
 //      contributions.addAll(examples);

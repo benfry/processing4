@@ -96,7 +96,7 @@ public class ModeContribution extends LocalContribution {
    * "locked" and a Mode can be removed without restart.
    */
   public void clearClassLoader(Base base) {
-    List<ModeContribution> contribModes = base.getModeContribs();
+    List<ModeContribution> contribModes = base.getContribModes();
     if (contribModes.contains(this)) {
       contribModes.remove(this);
       try {

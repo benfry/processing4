@@ -30,9 +30,11 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import processing.app.Base;
 import processing.app.Library;
+import processing.app.UpdateCheck;
 import processing.app.Util;
 import processing.core.PApplet;
 import processing.data.StringDict;
+import processing.data.StringList;
 
 
 public class ContributionListing {
@@ -211,7 +213,7 @@ public class ContributionListing {
             System.err.println("Could not set " + tempContribFile + " writable");
           }
         }
-        ContributionManager.download(url, base.getInstalledContribsInfo(),
+        ContributionManager.download(url, makeContribsBlob(base),
                                      tempContribFile, progress);
         if (!progress.isCanceled() && !progress.isException()) {
           if (listingFile.exists()) {
@@ -248,6 +250,28 @@ public class ContributionListing {
         downloadingListingLock.unlock();
       }
     }, "Contribution List Downloader").start();
+  }
+
+
+  /**
+   * Bundles information about what contribs are installed, so that they can
+   * be reported at the stats link: https://download.processing.org/stats/
+   * (Eventually this may also be used to show relative popularity of contribs.)
+   * Read more about it <a href="https://github.com/processing/processing4/wiki/FAQ#checking-for-updates-or-why-is-processing-connecting-to-the-network">in the FAQ</a>.</a>
+   */
+  private byte[] makeContribsBlob(Base base) {
+    Set<Contribution> contribs = base.getInstalledContribs();
+    StringList entries = new StringList();
+    for (Contribution c : contribs) {
+      String entry = c.getTypeName() + "=" +
+        PApplet.urlEncode(String.format("name=%s\nurl=%s\nrevision=%d\nversion=%s",
+          c.getName(), c.getUrl(),
+          c.getVersion(), c.getBenignVersion()));
+      entries.append(entry);
+    }
+    String joined =
+      "id=" + UpdateCheck.getUpdateID() + "&" + entries.join("&");
+    return joined.getBytes();
   }
 
 
@@ -328,7 +352,7 @@ public class ContributionListing {
    */
   public int countUpdates(Base base) {
     int count = 0;
-    for (ModeContribution mc : base.getModeContribs()) {
+    for (ModeContribution mc : base.getContribModes()) {
       if (hasUpdates(mc)) {
         count++;
       }

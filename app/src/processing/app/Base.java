@@ -649,7 +649,7 @@ public class Base {
       contribModes = new ArrayList<>();
     }
     File modesFolder = getSketchbookModesFolder();
-    List<ModeContribution> contribModes = getModeContribs();
+    List<ModeContribution> contribModes = getContribModes();
 
     Map<File, ModeContribution> known = new HashMap<>();
     for (ModeContribution contrib : contribModes) {
@@ -998,7 +998,7 @@ public class Base {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  public List<ModeContribution> getModeContribs() {
+  public List<ModeContribution> getContribModes() {
     return contribModes;
   }
 
@@ -1022,11 +1022,12 @@ public class Base {
 
 
   /**
-   * Get all the contributed Modes, Libraries, Tools, and Examples
-   * so that they can be reported for an update check.
+   * Get all the contributed Modes, Libraries, Tools, and Examples.
+   * Used by the Contribution Manager to report what's installed while
+   * checking for updates and available contributions.
    */
-  private Set<Contribution> getInstalledContribs() {
-    List<ModeContribution> modeContribs = getModeContribs();
+  public Set<Contribution> getInstalledContribs() {
+    List<ModeContribution> modeContribs = getContribModes();
     Set<Contribution> contributions = new HashSet<>(modeContribs);
 
     for (ModeContribution modeContrib : modeContribs) {
@@ -1035,28 +1036,9 @@ public class Base {
       contributions.addAll(mode.foundationLibraries);
     }
 
-    // For 4.1.2, not reloading all the tools here. Just in case it causes a
-    // regression b/c it's not clear why it was written that way. [fry 230110]
     contributions.addAll(getContribTools());
-
     contributions.addAll(getContribExamples());
     return contributions;
-  }
-
-
-  public byte[] getInstalledContribsInfo() {
-    Set<Contribution> contribs = getInstalledContribs();
-    StringList entries = new StringList();
-    for (Contribution c : contribs) {
-      String entry = c.getTypeName() + "=" +
-        PApplet.urlEncode(String.format("name=%s\nurl=%s\nrevision=%d\nversion=%s",
-                                        c.getName(), c.getUrl(),
-                                        c.getVersion(), c.getBenignVersion()));
-      entries.append(entry);
-    }
-    String joined =
-      "id=" + UpdateCheck.getUpdateID() + "&" + entries.join("&");
-    return joined.getBytes();
   }
 
 
