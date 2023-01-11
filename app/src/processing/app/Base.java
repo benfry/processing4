@@ -561,9 +561,14 @@ public class Base {
     cl.downloadAvailableList(this, new ContribProgress(null));
     long t9 = System.currentTimeMillis();
 
-//    System.out.println("core modes: " + (t2b-t2) + ", contrib modes: " + (t2c-t2b) + ", contrib ex: " + (t2c-t2b));
-//    System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
-//      " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) + " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");
+    if (DEBUG) {
+      System.out.println("core modes: " + (t2b-t2) +
+                         ", contrib modes: " + (t2c-t2b) +
+                         ", contrib ex: " + (t2c-t2b));
+      System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
+                         " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) +
+                         " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");
+    }
   }
 
 
@@ -1593,11 +1598,11 @@ public class Base {
         Mode defaultMode = getDefaultMode();
         if (nextMode == defaultMode) {
           // unreachable? hopefully?
-          Messages.showError("Editor Problems",
-                             "An error occurred while trying to change modes.\n" +
-                             "We'll have to quit for now because it's an\n" +
-                             "unfortunate bit of indigestion with the default Mode.",
-                             null);
+          Messages.showError("Editor Problems", """
+              An error occurred while trying to change modes.
+              We'll have to quit for now because it's an
+              unfortunate bit of indigestion with the default Mode.
+              """, null);
         } else {
           // Don't leave the user hanging or the PDE locked up
           // https://github.com/processing/processing/issues/4467
@@ -1899,10 +1904,10 @@ public class Base {
       if (new File(path).exists()) {
         handleOpen(path);
       } else {
-        Messages.showWarning("Sketch Disappeared",
-                             "The selected sketch no longer exists.\n" +
-                             "You may need to restart Processing to update\n" +
-                             "the sketchbook menu.", null);
+        Messages.showWarning("Sketch Disappeared","""
+            The selected sketch no longer exists.
+            You may need to restart Processing to update
+            the sketchbook menu.""", null);
       }
     };
     // offers no speed improvement
@@ -2152,12 +2157,12 @@ public class Base {
     if (sketchbookPath != null) {
       sketchbookFolder = new File(sketchbookPath);
       if (!sketchbookFolder.exists()) {
-        Messages.showWarning("Sketchbook folder disappeared",
-                             "The sketchbook folder no longer exists.\n" +
-                             "Processing will switch to the default sketchbook\n" +
-                             "location, and create a new sketchbook folder if\n" +
-                             "necessary. Processing will then stop talking\n" +
-                             "about itself in the third person.", null);
+        Messages.showWarning("Sketchbook folder disappeared","""
+            The sketchbook folder no longer exists.
+            Processing will switch to the default sketchbook
+            location, and create a new sketchbook folder if
+            necessary. Processing will then stop talking
+            about itself in the third person.""", null);
         sketchbookFolder = null;
       }
     }
