@@ -1,4 +1,8 @@
 1290 (4.1.2?)
+X Fix ClassCastException with copy() and PGraphicsJava2D
+X   https://github.com/processing/processing4/issues/624
+
+
 _ show an error when calling clear() on the main drawing surface
 _   https://github.com/processing/processing4/issues/627
 

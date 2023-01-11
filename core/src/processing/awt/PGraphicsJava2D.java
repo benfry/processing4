@@ -3007,7 +3007,19 @@ public class PGraphicsJava2D extends PGraphics {
   public void copy(PImage src,
                    int sx, int sy, int sw, int sh,
                    int dx, int dy, int dw, int dh) {
-    g2.drawImage((Image) src.getNative(),
+    Image nativeImage;
+    if (src instanceof PGraphicsJava2D) {
+      // if it's a Java2D drawing surface, use its backing image
+      nativeImage = ((PGraphicsJava2D) src).image;
+    } else if (src.getNative() instanceof Image) {  // may be null
+      // if it's something else that has a java.awt.Image as its native backing
+      nativeImage = (Image) src.getNative();
+    } else {
+      // much slower: grab the pixels with get() and create a native image
+      nativeImage = (Image) src.get(sx, sy, sw, sh).getNative();
+    }
+
+    g2.drawImage(nativeImage,
                  dx, dy, dx + dw, dy + dh,
                  sx, sy, sx + sw, sy + sh, null);
   }
