@@ -103,8 +103,8 @@ public class Base {
   private Mode coreMode;
 
   // TODO can these be Set objects, or are they expected to be in order?
-  protected List<ModeContribution> contribModes;
-  protected List<ExamplesContribution> contribExamples;
+  private List<ModeContribution> contribModes;
+  private List<ExamplesContribution> contribExamples;
 
   /** These aren't even dynamically loaded, they're hard-wired here. */
   private List<Tool> internalTools;
@@ -716,16 +716,9 @@ public class Base {
   }
 
 
-  /**
-   * Instantiates and adds new contributed modes to the contribModes list.
-   * Checks for duplicates so the same mode isn't instantiates twice. Does not
-   * remove modes because modes can't be removed once they are instantiated.
-   */
   void rebuildContribExamples() {
-    if (contribExamples == null) {
-      contribExamples = new ArrayList<>();
-    }
-    ExamplesContribution.loadMissing(this);
+    contribExamples =
+      ExamplesContribution.loadAll(getSketchbookExamplesFolder());
   }
 
 
@@ -733,11 +726,11 @@ public class Base {
 
 
   /**
-   * Tools require an 'Editor' object when they're instantiated, but the
-   * activeEditor will be null when the first Editor that opens is creating
-   * its Tools menu. This will temporarily set the activeEditor to the one
-   * that's opening so that we don't go all NPE on startup. If there's already
-   * an active editor, then this does nothing.
+   * Tools require an 'Editor' object when they're instantiated, but
+   * the activeEditor will be null when the first Editor that opens is
+   * creating its Tools menu. This will temporarily set the activeEditor
+   * to the one that's opening so that we don't go all NPE on startup.
+   * If there's already an active editor, then this does nothing.
    */
   public void checkFirstEditor(Editor editor) {
     if (activeEditor == null) {
@@ -831,20 +824,16 @@ public class Base {
   }
 
 
-  public List<ToolContribution> getToolContribs() {
+  public List<ToolContribution> getContribTools() {
+//    if (contribTools == null) {
+//      contribTools = ToolContribution.loadAll(Base.getSketchbookToolsFolder());
+//    }
     return contribTools;
   }
 
 
-  /*
-  public void removeToolContrib(ToolContribution tc) {
-    contribTools.remove(tc);
-  }
-  */
-
-
   public void rebuildToolList() {
-    // Only do this once because the list of internal tools will never change
+    // Only do these once because the list of internal tools will never change
     if (internalTools == null) {
       internalTools = new ArrayList<>();
 
@@ -860,7 +849,7 @@ public class Base {
       //initInternalTool("processing.app.tools.UpdateTheme");
     }
 
-    // No need to reload these either
+    // Only init() these the first time they're loaded
     if (coreTools == null) {
       coreTools = ToolContribution.loadAll(Base.getToolsFolder());
       for (Tool tool : coreTools) {
@@ -868,7 +857,7 @@ public class Base {
       }
     }
 
-    // Rebuilt when new tools installed, etc
+    // Reset the contributed tools and re-init() all of them.
     contribTools = ToolContribution.loadAll(Base.getSketchbookToolsFolder());
     for (Tool tool : contribTools) {
       try {
@@ -1048,7 +1037,7 @@ public class Base {
 
     // For 4.1.2, not reloading all the tools here. Just in case it causes a
     // regression b/c it's not clear why it was written that way. [fry 230110]
-    contributions.addAll(contribTools);
+    contributions.addAll(getContribTools());
 
     contributions.addAll(getContribExamples());
     return contributions;

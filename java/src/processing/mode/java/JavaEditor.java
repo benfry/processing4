@@ -358,7 +358,7 @@ public class JavaEditor extends Editor {
     boolean coreToolMenuItemAdded;
     boolean contribToolMenuItemAdded;
 
-    List<ToolContribution> contribTools = base.getToolContribs();
+    List<ToolContribution> contribTools = base.getContribTools();
     // Adding this in in case a reference folder is added for MovieMaker, or in case
     // other core tools are introduced later
     coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);

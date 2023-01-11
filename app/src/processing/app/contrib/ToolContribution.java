@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-22 The Processing Foundation
+  Copyright (c) 2013-23 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -30,7 +30,7 @@ import processing.app.Messages;
 import processing.app.tools.Tool;
 
 
-public class ToolContribution extends LocalContribution implements Tool, Comparable<ToolContribution> {
+public class ToolContribution extends LocalContribution implements Tool {
   private Tool tool;
   final private File referenceFile; // shortname/reference/index.html
 
@@ -84,9 +84,9 @@ public class ToolContribution extends LocalContribution implements Tool, Compara
 
   static public List<ToolContribution> loadAll(File toolsFolder) {
     File[] list = ContributionType.TOOL.listCandidates(toolsFolder);
-    ArrayList<ToolContribution> outgoing = new ArrayList<>();
+    List<ToolContribution> outgoing = new ArrayList<>();
     // If toolsFolder does not exist or is inaccessible (stranger things have
-    // happened, and are reported as bugs) list will come back null.
+    // happened, and are reported as bugs) the list will come back null.
     if (list != null) {
       for (File folder : list) {
         try {
@@ -99,7 +99,7 @@ public class ToolContribution extends LocalContribution implements Tool, Compara
         }
       }
     }
-    Collections.sort(outgoing);
+    outgoing.sort(Comparator.comparing(ToolContribution::getMenuTitle));
     return outgoing;
   }
 
@@ -139,11 +139,5 @@ public class ToolContribution extends LocalContribution implements Tool, Compara
    */
   public boolean hasReference() {
     return referenceFile.exists();
-  }
-
-
-  @Override
-  public int compareTo(ToolContribution o) {
-    return getMenuTitle().compareTo(o.getMenuTitle());
   }
 }

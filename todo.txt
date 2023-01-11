@@ -1,10 +1,7 @@
 1290 (4.1.2?)
-X add foundation libraries to the stats (https://download.processing.org/stats/)
-X   make foundationLibraries a class var, and then access it when calling download()
-X also removed the "new ArrayList()" wrapping in getInstalledContribs()
-X   seemed extraneous, perhaps dates to that being an array instead of a List?
 
-contrib
+
+contributed
 X “Cannot find a class or type named ‘PApplet’” error
 X   https://github.com/processing/processing4/issues/626
 X   https://github.com/processing/processing4/pull/635
@@ -12,6 +9,18 @@ X cannot use @Override and @Deprecated in static mode
 X   https://github.com/processing/processing4/issues/619
 X   https://github.com/processing/processing4/pull/622
 
+manager
+X add foundation libraries to the stats (https://download.processing.org/stats/)
+X   make foundationLibraries a class var, and then access it when calling download()
+X also removed the "new ArrayList()" wrapping in getInstalledContribs()
+X   seemed extraneous, perhaps dates to that being an array instead of a List?
+X rewrite of half of ExamplesContribution
+X cleaning up methods for initializing various contribs in Base
+X replace getToolContribs() with getContribTools() for consistency
+_ Mode manager window is empty
+_   https://github.com/processing/processing4/issues/613
+_ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
+_   https://github.com/processing/processing4/issues/618
 
 
 _ make ctrl-g work inside the find window

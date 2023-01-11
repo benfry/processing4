@@ -345,7 +345,7 @@ public class ContributionListing {
         }
       }
     }
-    for (ToolContribution tc : base.getToolContribs()) {
+    for (ToolContribution tc : base.getContribTools()) {
       if (hasUpdates(tc)) {
         count++;
       }

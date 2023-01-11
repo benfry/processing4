@@ -1,19 +1,43 @@
+/* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
+
+/*
+  Part of the Processing project - https://processing.org
+
+  Copyright (c) 2014-23 The Processing Foundation
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License version 2
+  as published by the Free Software Foundation.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License along
+  with this program; if not, write to the Free Software Foundation, Inc.
+  59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+*/
 package processing.app.contrib;
 
 import java.io.File;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 import processing.app.Base;
 import processing.app.Mode;
 import processing.data.StringDict;
 import processing.data.StringList;
+
 import static processing.app.contrib.ContributionType.EXAMPLES;
 
 
 public class ExamplesContribution extends LocalContribution {
-  private StringList modeList;
+
+  private ExamplesContribution(File folder) {
+    super(folder);
+  }
 
 
   static public ExamplesContribution load(File folder) {
@@ -21,12 +45,18 @@ public class ExamplesContribution extends LocalContribution {
   }
 
 
-  private ExamplesContribution(File folder) {
-    super(folder);
-
-    if (properties != null) {
-      modeList = parseModeList(properties);
+  static public List<ExamplesContribution> loadAll(File examplesFolder) {
+    List<ExamplesContribution> outgoing = new ArrayList<>();
+    File[] potential = EXAMPLES.listCandidates(examplesFolder);
+    // If examplesFolder does not exist or is inaccessible (stranger things
+    // have happened, and are reported as bugs) the list will come back null.
+    if (potential != null) {
+      for (File folder : potential) {
+        outgoing.add(load(folder));
+      }
     }
+    outgoing.sort(Comparator.comparing(Contribution::getName));
+    return outgoing;
   }
 
 
@@ -54,45 +84,8 @@ public class ExamplesContribution extends LocalContribution {
   }
 
 
-  static public boolean isCompatible(Base base, File exampleFolder) {
-    StringDict props = loadProperties(exampleFolder, EXAMPLES);
-    if (props != null) {
-      return isCompatible(base, props);
-    }
-    // Require a proper .properties file to show up
-    return false;
-  }
-
-
-
-  static public void loadMissing(Base base) {
-    File examplesFolder = Base.getSketchbookExamplesFolder();
-    List<ExamplesContribution> contribExamples = base.getContribExamples();
-
-    Map<File, ExamplesContribution> existing = new HashMap<>();
-    for (ExamplesContribution contrib : contribExamples) {
-      existing.put(contrib.getFolder(), contrib);
-    }
-    File[] potential = EXAMPLES.listCandidates(examplesFolder);
-    // If modesFolder does not exist or is inaccessible (folks might like to
-    // mess with folders then report it as a bug) 'potential' will be null.
-    if (potential != null) {
-      for (File folder : potential) {
-        if (!existing.containsKey(folder)) {
-          contribExamples.add(new ExamplesContribution(folder));
-        }
-      }
-    }
-  }
-
-
   @Override
   public ContributionType getType() {
     return EXAMPLES;
-  }
-
-
-  public StringList getModeList() {
-    return modeList;
   }
 }

@@ -323,7 +323,7 @@ public class ContributionTab extends JPanel {
 
 //      List<ToolContribution> tools = base.getToolContribs();
 //      contributions.addAll(tools);
-      contributions.addAll(base.getToolContribs());
+      contributions.addAll(base.getContribTools());
 
 //      List<ModeContribution> modes = base.getModeContribs();
 //      contributions.addAll(modes);
