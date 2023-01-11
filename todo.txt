@@ -1,4 +1,8 @@
 1290 (4.1.2?)
+X add foundation libraries to the stats (https://download.processing.org/stats/)
+X   make foundationLibraries a class var, and then access it when calling download()
+X also removed the "new ArrayList()" wrapping in getInstalledContribs()
+X   seemed extraneous, perhaps dates to that being an array instead of a List?
 
 contrib
 X “Cannot find a class or type named ‘PApplet’” error
@@ -7,6 +11,7 @@ X   https://github.com/processing/processing4/pull/635
 X cannot use @Override and @Deprecated in static mode
 X   https://github.com/processing/processing4/issues/619
 X   https://github.com/processing/processing4/pull/622
+
 
 
 _ make ctrl-g work inside the find window

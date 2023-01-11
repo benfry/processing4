@@ -937,14 +937,14 @@ public class Base {
     }
     toolsMenu.addSeparator();
 
-    if (coreTools.size() > 0) {
+    if (!coreTools.isEmpty()) {
       for (Tool tool : coreTools) {
         toolsMenu.add(createToolItem(tool));
       }
       toolsMenu.addSeparator();
     }
 
-    if (contribTools.size() > 0) {
+    if (!contribTools.isEmpty()) {
       for (Tool tool : contribTools) {
         toolsMenu.add(createToolItem(tool));
       }
@@ -1032,18 +1032,23 @@ public class Base {
   }
 
 
+  /**
+   * Get all the contributed Modes, Libraries, Tools, and Examples
+   * so that they can be reported for an update check.
+   */
   private Set<Contribution> getInstalledContribs() {
     List<ModeContribution> modeContribs = getModeContribs();
     Set<Contribution> contributions = new HashSet<>(modeContribs);
 
     for (ModeContribution modeContrib : modeContribs) {
       Mode mode = modeContrib.getMode();
-      contributions.addAll(new ArrayList<>(mode.contribLibraries));
+      contributions.addAll(mode.contribLibraries);
+      contributions.addAll(mode.foundationLibraries);
     }
 
-    // how is this different from getToolContribs()?
-    // TODO this duplicates code in Editor, but it's not editor-specific
-    contributions.addAll(ToolContribution.loadAll(getSketchbookToolsFolder()));
+    // For 4.1.2, not reloading all the tools here. Just in case it causes a
+    // regression b/c it's not clear why it was written that way. [fry 230110]
+    contributions.addAll(contribTools);
 
     contributions.addAll(getContribExamples());
     return contributions;
