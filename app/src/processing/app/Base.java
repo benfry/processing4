@@ -113,6 +113,9 @@ public class Base {
   private List<ToolContribution> coreTools;
   private List<ToolContribution> contribTools;
 
+  /** Current tally of available updates (used for new Editor windows). */
+  private int updatesAvailable = 0;
+
   // Used by handleOpen(), this saves the chooser to remember the directory.
   // Doesn't appear to be necessary with the AWT native file dialog.
   // https://github.com/processing/processing/pull/2366
@@ -700,17 +703,21 @@ public class Base {
   }
 
 
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+  public void tallyUpdatesAvailable() {
+    Set<Contribution> installed = getInstalledContribs();
+    ContributionListing listing = ContributionListing.getInstance();
 
+    int newCount = 0;
+    for (Contribution contrib : installed) {
+      if (listing.hasUpdates(contrib)) {
+        newCount++;
+      }
+    }
+    updatesAvailable = newCount;
 
-  private int updatesAvailable = 0;
-
-
-  public void setUpdatesAvailable(int n) {
-    updatesAvailable = n;
     synchronized (editors) {
-      for (Editor e : editors) {
-        e.setUpdatesAvailable(n);
+      for (Editor editor : editors) {
+        editor.setUpdatesAvailable(updatesAvailable);
       }
     }
   }

@@ -29,7 +29,6 @@ import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 import processing.app.Base;
-import processing.app.Library;
 import processing.app.UpdateCheck;
 import processing.app.Util;
 import processing.core.PApplet;
@@ -98,23 +97,23 @@ public class ContributionListing {
   }
 
 
-  /**
-   * Adds the installed libraries to the listing of libraries, replacing
-   * any pre-existing libraries by the same name as one in the list.
-   */
-  protected void updateInstalledList(Set<Contribution> installed) {
-    for (Contribution contribution : installed) {
-      Contribution existingContribution = getContribution(contribution);
-      if (existingContribution != null) {
-        if (existingContribution != contribution) {
-          // don't replace contrib with itself
-          replaceContribution(existingContribution, contribution);
-        }
-      } else {
-        addContribution(contribution);
-      }
-    }
-  }
+//  /**
+//   * Adds the installed libraries to the listing of libraries, replacing
+//   * any pre-existing libraries by the same name as one in the list.
+//   */
+//  protected void updateInstalledList(Set<Contribution> installed) {
+//    for (Contribution contribution : installed) {
+//      Contribution existingContribution = getContribution(contribution);
+//      if (existingContribution != null) {
+//        if (existingContribution != contribution) {
+//          // don't replace contrib with itself
+//          replaceContribution(existingContribution, contribution);
+//        }
+//      } else {
+//        addContribution(contribution);
+//      }
+//    }
+//  }
 
 
   protected void replaceContribution(Contribution oldLib, Contribution newLib) {
@@ -164,6 +163,7 @@ public class ContributionListing {
   }
 
 
+  /*
   private Contribution getContribution(Contribution contribution) {
     for (Contribution c : allContributions) {
       if (c.getName().equals(contribution.getName()) &&
@@ -173,6 +173,7 @@ public class ContributionListing {
     }
     return null;
   }
+  */
 
 
   protected AvailableContribution getAvailableContribution(Contribution info) {
@@ -226,7 +227,7 @@ public class ContributionListing {
               // TODO: run this in SwingWorker done() [jv]
               EventQueue.invokeAndWait(() -> {
                 setAdvertisedList(listingFile);
-                base.setUpdatesAvailable(countUpdates(base));
+                base.tallyUpdatesAvailable();
               });
             } catch (InterruptedException e) {
               e.printStackTrace();
@@ -275,7 +276,7 @@ public class ContributionListing {
   }
 
 
-  protected boolean hasUpdates(Contribution contrib) {
+  public boolean hasUpdates(Contribution contrib) {
     if (contrib.isInstalled()) {
       Contribution advertised = getAvailableContribution(contrib);
       if (advertised != null) {
@@ -342,13 +343,14 @@ public class ContributionListing {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /**
-   * TODO This needs to be called when the listing loads, and also
-   *      the contribs list has been updated (for whatever reason).
-   *      In addition, the caller (presumably Base) should update all
-   *      Editor windows with the correct number of items available.
-   * @return The number of contributions that have available updates.
-   */
+//  /**
+//   * TODO This needs to be called when the listing loads, and also
+//   *      the contribs list has been updated (for whatever reason).
+//   *      In addition, the caller (presumably Base) should update all
+//   *      Editor windows with the correct number of items available.
+//   * @return The number of contributions that have available updates.
+//   */
+  /*
   public int countUpdates(Base base) {
     int count = 0;
     for (ModeContribution mc : base.getContribModes()) {
@@ -357,12 +359,16 @@ public class ContributionListing {
       }
     }
     if (base.getActiveEditor() != null) {
-      for (Library lib : base.getActiveEditor().getMode().contribLibraries) {
+      Mode activeMode = base.getActiveEditor().getMode();
+      for (Library lib : activeMode.contribLibraries) {
         if (hasUpdates(lib)) {
           count++;
         }
       }
-      for (Library lib : base.getActiveEditor().getMode().coreLibraries) {
+      // Changing this from coreLibraries to foundationLibraries for 4.1.2
+      // because that's probably what was intended earlier. [fry 230112]
+      // https://github.com/processing/processing4/commit/3f5451c7371f2d97aa0bac21262a27ea4eeebe67
+      for (Library lib : activeMode.foundationLibraries) {
         if (hasUpdates(lib)) {
           count++;
         }
@@ -380,6 +386,7 @@ public class ContributionListing {
     }
     return count;
   }
+  */
 
 
   /** Used by JavaEditor to auto-import */

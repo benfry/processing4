@@ -21,6 +21,20 @@ X   this ship has sailed
 X something to set min/max versions that are supported by a library
 o ManagerFrame.makeAndShowTab()
 o   this one looks like it's gonna get called multiple times
+o alternating blue/white backgrounds aren't updated after changing filter
+o   just need to call a repaint() after a filter change?
+o check with Casey about coloring for error messages
+o test on Windows and Linux
+o font size for "Downloading" on progress bar is too large
+o   but changing the size breaks the vertical centering
+o wheel mouse is super jumpy
+o   something about unit increment in ContributionListPanel
+o arrow keys up/down move scroll bar, not selection
+o fonts/etc need to be set in one place where they can be edited
+o   move styling to separate constants that are more accessible
+o optimize ContributionTab addListener() call in constructor
+X   no longer calling addListener() on every single entry, whcih helps
+/   but what else might that change be breaking?
 
 manager
 X add foundation libraries to the stats (https://download.processing.org/stats/)
@@ -34,12 +48,17 @@ X change base.getModeContribs() to base.getContribModes() for consistency
 X move contribs -> binary blob out of Base since it doesn't belong there
 X Mode manager window is empty
 X   https://github.com/processing/processing4/issues/613
+X in ContributionTab, the downloadAndUpdateContributionListing() should actually be downloading
+X   but in ManagerFrame.showFrame(), it should not, and should just make sure the list is updated
+X   however, the list can be updated another time, right? after load? only on changes?
+X remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
+X   should be a better way to implement this
+X   currently removed, but still need a way to indicate loading
 
+_ updates tab is empty
+_ remove Libraries/Tools/etc separators from Updates tab? too confusing/looks like a bug?
 _ remove rebuildLayout() from ContributionTab?
 
-_ in ContributionTab, the downloadAndUpdateContributionListing() should actually be downloading
-_   but in ManagerFrame.showFrame(), it should not, and should just make sure the list is updated
-_   however, the list can be updated another time, right? after load? only on changes?
 
 _ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
 _   https://github.com/processing/processing4/issues/618
@@ -344,8 +363,8 @@ PDE / Manager (4.x notes)
 
 _ get rid of dummy progress bar being created in StatusDetail.update()
 _   would be good to *add* a progress bar of some kind, but sheesh
-_ remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
-_   should be a better way to implement this
+_ if contribution listing is still downloading, need to indicate
+_   especially when no previous contribs.txt is in the prefs folder
 _ if no internet available, install buttons disabled, but not clear why broken
 _ also if update check disabled, user isn't notified that contribs unavailable
 _ currently no indication that contrib download failed
@@ -367,9 +386,6 @@ _ when opening manager, animation runs briefly then freezes
 _ DetailPanel setContribution() being called 4x for each contrib on startup
 _ during install of contrib, progress is halting during the install
 _   probably too much happening on the EDT that should not be
-_ optimize ContributionTab addListener() call in constructor
-X   no longer calling addListener() on every single entry, whcih helps
-_   but what else might that change be breaking?
 _ StatusPanel seems to be recreated entirely
 _ StatusPanel being reset twice on each click
 _   is checking for previous, but apparently that's not working
@@ -449,17 +465,7 @@ _   "Update 4 items" as a button name
 _ new libraries not picked up when changing sketchbook location
 _ make sure contrib manager can run w/o a network connection
 _   or if a bad document comes through, it can recover
-_ alternating blue/white backgrounds aren't updated after changing filter
-_   just need to call a repaint() after a filter change?
-_ check with Casey about coloring for error messages
-_ test on Windows and Linux
-_ font size for "Downloading" on progress bar is too large
-_   but changing the size breaks the vertical centering
-_ wheel mouse is super jumpy
-_   something about unit increment in ContributionListPanel
-_ arrow keys up/down move scroll bar, not selection
-_ fonts/etc need to be set in one place where they can be edited
-_   move styling to separate constants that are more accessible
+
 
 
 PDE / Preferences

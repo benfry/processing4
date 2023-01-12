@@ -165,7 +165,8 @@ public class ContributionManager {
                 EventQueue.invokeAndWait(() -> {
                   contribListing.replaceContribution(ad, contribution);
                   base.refreshContribs(contribution.getType());
-                  base.setUpdatesAvailable(contribListing.countUpdates(base));
+                  //base.setUpdatesAvailable(contribListing.countUpdates(base));
+                  base.tallyUpdatesAvailable();
                 });
               } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -248,7 +249,7 @@ public class ContributionManager {
               EventQueue.invokeAndWait(() -> {
                 contribListing.replaceContribution(ad, contribution);
                 base.refreshContribs(contribution.getType());
-                base.setUpdatesAvailable(contribListing.countUpdates(base));
+                base.tallyUpdatesAvailable();
               });
             } catch (InterruptedException e) {
               e.printStackTrace();
@@ -378,7 +379,7 @@ public class ContributionManager {
                 EventQueue.invokeAndWait(() -> {
                   contribListing.replaceContribution(contrib, contribution);
                   base.refreshContribs(contribution.getType());
-                  base.setUpdatesAvailable(contribListing.countUpdates(base));
+                  base.tallyUpdatesAvailable();
                 });
               } catch (InterruptedException e) {
                 e.printStackTrace();

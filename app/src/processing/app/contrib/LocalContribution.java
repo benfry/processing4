@@ -402,7 +402,7 @@ public abstract class LocalContribution extends Contribution {
             cl.replaceContribution(LocalContribution.this, advertisedVersion);
           }
           base.refreshContribs(LocalContribution.this.getType());
-          base.setUpdatesAvailable(cl.countUpdates(base));
+          base.tallyUpdatesAvailable();
         });
       } catch (InterruptedException e) {
         e.printStackTrace();
@@ -426,7 +426,7 @@ public abstract class LocalContribution extends Contribution {
               cl.replaceContribution(LocalContribution.this,
                                                  LocalContribution.this);
               base.refreshContribs(LocalContribution.this.getType());
-              base.setUpdatesAvailable(cl.countUpdates(base));
+              base.tallyUpdatesAvailable();
             });
           } catch (InterruptedException e) {
             e.printStackTrace();
