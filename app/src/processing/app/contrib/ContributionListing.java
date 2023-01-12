@@ -68,7 +68,7 @@ public class ContributionListing {
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
     if (listingFile.exists()) {
       // On the EDT already, but do this later on the EDT so that the
-      // constructor can finish more efficiently for getInstance().
+      // constructor can finish more efficiently inside getInstance().
       EventQueue.invokeLater(() -> setAdvertisedList(listingFile));
     }
   }
@@ -95,25 +95,6 @@ public class ContributionListing {
       addContribution(contribution);
     }
   }
-
-
-//  /**
-//   * Adds the installed libraries to the listing of libraries, replacing
-//   * any pre-existing libraries by the same name as one in the list.
-//   */
-//  protected void updateInstalledList(Set<Contribution> installed) {
-//    for (Contribution contribution : installed) {
-//      Contribution existingContribution = getContribution(contribution);
-//      if (existingContribution != null) {
-//        if (existingContribution != contribution) {
-//          // don't replace contrib with itself
-//          replaceContribution(existingContribution, contribution);
-//        }
-//      } else {
-//        addContribution(contribution);
-//      }
-//    }
-//  }
 
 
   protected void replaceContribution(Contribution oldLib, Contribution newLib) {
@@ -161,19 +142,6 @@ public class ContributionListing {
       listener.contributionRemoved(contribution);
     }
   }
-
-
-  /*
-  private Contribution getContribution(Contribution contribution) {
-    for (Contribution c : allContributions) {
-      if (c.getName().equals(contribution.getName()) &&
-          c.getType() == contribution.getType()) {
-        return c;
-      }
-    }
-    return null;
-  }
-  */
 
 
   protected AvailableContribution getAvailableContribution(Contribution info) {
@@ -256,7 +224,7 @@ public class ContributionListing {
 
   /**
    * Bundles information about what contribs are installed, so that they can
-   * be reported at the stats link: https://download.processing.org/stats/
+   * be reported at the <a href="https://download.processing.org/stats/">stats</a> link.
    * (Eventually this may also be used to show relative popularity of contribs.)
    * Read more about it <a href="https://github.com/processing/processing4/wiki/FAQ#checking-for-updates-or-why-is-processing-connecting-to-the-network">in the FAQ</a>.</a>
    */
@@ -341,52 +309,6 @@ public class ContributionListing {
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-
-//  /**
-//   * TODO This needs to be called when the listing loads, and also
-//   *      the contribs list has been updated (for whatever reason).
-//   *      In addition, the caller (presumably Base) should update all
-//   *      Editor windows with the correct number of items available.
-//   * @return The number of contributions that have available updates.
-//   */
-  /*
-  public int countUpdates(Base base) {
-    int count = 0;
-    for (ModeContribution mc : base.getContribModes()) {
-      if (hasUpdates(mc)) {
-        count++;
-      }
-    }
-    if (base.getActiveEditor() != null) {
-      Mode activeMode = base.getActiveEditor().getMode();
-      for (Library lib : activeMode.contribLibraries) {
-        if (hasUpdates(lib)) {
-          count++;
-        }
-      }
-      // Changing this from coreLibraries to foundationLibraries for 4.1.2
-      // because that's probably what was intended earlier. [fry 230112]
-      // https://github.com/processing/processing4/commit/3f5451c7371f2d97aa0bac21262a27ea4eeebe67
-      for (Library lib : activeMode.foundationLibraries) {
-        if (hasUpdates(lib)) {
-          count++;
-        }
-      }
-    }
-    for (ToolContribution tc : base.getContribTools()) {
-      if (hasUpdates(tc)) {
-        count++;
-      }
-    }
-    for (ExamplesContribution ec : base.getContribExamples()) {
-      if (hasUpdates(ec)) {
-        count++;
-      }
-    }
-    return count;
-  }
-  */
 
 
   /** Used by JavaEditor to auto-import */

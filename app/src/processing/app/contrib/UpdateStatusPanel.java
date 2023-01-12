@@ -43,8 +43,7 @@ public class UpdateStatusPanel extends StatusPanel {
     layout.setAutoCreateContainerGaps(true);
     layout.setAutoCreateGaps(true);
 
-    layout.setHorizontalGroup(layout
-      .createSequentialGroup()
+    layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
                        GroupLayout.PREFERRED_SIZE, Short.MAX_VALUE)
       .addComponent(updateButton, BUTTON_WIDTH, BUTTON_WIDTH, BUTTON_WIDTH)
@@ -56,14 +55,15 @@ public class UpdateStatusPanel extends StatusPanel {
 
 
   private void updateAll() {
-    for (StatusDetail detail : contributionTab.listPanel.detailForContrib.values()) {
+    ListPanel listPanel = contributionTab.listPanel;
+    for (StatusDetail detail : listPanel.detailForContrib.values()) {
       detail.update();
     }
-    contributionTab.listPanel.model.fireTableDataChanged();
+    listPanel.model.fireTableDataChanged();
   }
 
 
-  protected void updateEnabled(boolean updateEnabled) {
+  protected void setUpdateEnabled(boolean updateEnabled) {
     updateButton.setEnabled(updateEnabled);
   }
 }

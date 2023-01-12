@@ -28,6 +28,8 @@ public class UpdateContributionTab extends ContributionTab {
   public UpdateContributionTab(ManagerFrame dialog) {
     super(dialog);
 
+    // Filter to show only the contributions that have updates
+    // or are fake section header "contributions".
     filter = contrib -> {
       if (contrib instanceof ListPanel.SectionHeaderContribution) {
         return true;
