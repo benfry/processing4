@@ -9,6 +9,19 @@ X cannot use @Override and @Deprecated in static mode
 X   https://github.com/processing/processing4/issues/619
 X   https://github.com/processing/processing4/pull/622
 
+manager/cleaning
+X send info on 'check for updates' so we know about libs/modes/etc?
+X   how to disclose to users?
+X   only send for items that are part of the public list
+X     otherwise we're sending private libraries/installs
+X     although this won't pick up old libraries not on the new system
+o we shouldn't use .properties extension for modes, et al
+o   because a .properties file is iso8859-1
+X   this ship has sailed
+X something to set min/max versions that are supported by a library
+o ManagerFrame.makeAndShowTab()
+o   this one looks like it's gonna get called multiple times
+
 manager
 X add foundation libraries to the stats (https://download.processing.org/stats/)
 X   make foundationLibraries a class var, and then access it when calling download()
@@ -19,9 +32,15 @@ X cleaning up methods for initializing various contribs in Base
 X replace getToolContribs() with getContribTools() for consistency
 X change base.getModeContribs() to base.getContribModes() for consistency
 X move contribs -> binary blob out of Base since it doesn't belong there
+X Mode manager window is empty
+X   https://github.com/processing/processing4/issues/613
 
-_ Mode manager window is empty
-_   https://github.com/processing/processing4/issues/613
+_ remove rebuildLayout() from ContributionTab?
+
+_ in ContributionTab, the downloadAndUpdateContributionListing() should actually be downloading
+_   but in ManagerFrame.showFrame(), it should not, and should just make sure the list is updated
+_   however, the list can be updated another time, right? after load? only on changes?
+
 _ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
 _   https://github.com/processing/processing4/issues/618
 
@@ -33,8 +52,9 @@ _   should be using Base.getInstalledContribs() instead of rewriting its own
 _ ManagerFrame.downloadAndUpdateContributionListing()
 _   should not even be run, because the contribs load on startup
 _   but ContributionTab.tryAgainButton needs to be able to request re-download
-o ManagerFrame.makeAndShowTab()
-o   this one looks like it's gonna get called multiple times
+
+_ make note in docs that .properties file *must* be utf-8 (usually iso8859-1)
+_   if not it'll make things gross (andre sier flob library)
 
 
 _ make ctrl-g work inside the find window
@@ -383,11 +403,10 @@ _   https://github.com/processing/processing/issues/4757
 
 PDE / Manager (3.x notes)
 
-_   vertical centering of the search box in the manager
 _ “could not move the contribution to the backup folder” message while updating
 _   problem is that any sketch that uses a library, the lib is stuck as "in use"
 _   https://github.com/processing/processing/issues/4973
-_ issues with updating modes
+_ failed Mode updates leaving around tmp folders (that appear to be legit Modes)
 _   https://github.com/processing/processing/issues/5424
 _ examples window not updating on install
 _   open examples window
@@ -411,19 +430,9 @@ _   looks like ContributionListing.getScrollableUnitIncrement() returns early
 _ Examples window closes and re-opens during library install/remove
 _   https://github.com/processing/processing/issues/3304
 _ several TODO items listed in ContributionPanel
-_ something to set min/max versions that are supported by a library
 _ ability to cancel a download/install
-_ we shouldn't use .properties extension for modes, et al
-_   because a .properties file is iso8859-1
-_ make note that .properties file *must* be utf-8
-_   if not it'll make things gross (andre sier flob library)
 _ why wasn't Library moved to LibraryContribution?
 _   or that LibraryContribution needs to be a wrapper around it?
-_ send info on 'check for updates' so we know about libs/modes/etc?
-_   how to disclose to users?
-_   only send for items that are part of the public list
-_     otherwise we're sending private libraries/installs
-_     although this won't pick up old libraries not on the new system
 _ classpath conflicts..
 _   getPackageList.. from Library... maybe others?
 _   really need to make sure that a weird core.jar isn't being imported

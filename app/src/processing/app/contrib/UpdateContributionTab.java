@@ -63,19 +63,21 @@ public class UpdateContributionTab extends ContributionTab {
     setLayout(layout);
     layout.setHorizontalGroup(layout
       .createParallelGroup(GroupLayout.Alignment.CENTER)
-      .addComponent(loaderLabel)
+      //.addComponent(loaderLabel)
       .addComponent(listPanel)
-      .addComponent(errorPanel)
+      //.addComponent(errorPanel)
       .addComponent(statusPanel));
 
     layout.setVerticalGroup(layout
       .createSequentialGroup()
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                  .addComponent(loaderLabel)
+                  //.addComponent(loaderLabel)
                   .addComponent(listPanel))
-      .addComponent(errorPanel)
-      .addComponent(statusPanel, GroupLayout.PREFERRED_SIZE,
-                    GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE));
+                  //.addComponent(errorPanel)
+                  .addComponent(statusPanel,
+                                GroupLayout.PREFERRED_SIZE,
+                                GroupLayout.DEFAULT_SIZE,
+                                GroupLayout.PREFERRED_SIZE));
     layout.setHonorsVisibility(listPanel, false);
 
     //setBackground(Color.WHITE);

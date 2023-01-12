@@ -38,7 +38,8 @@ import processing.data.StringDict;
 
 
 public class ContributionManager {
-  static ContributionListing listing;
+  static ManagerFrame managerFrame;
+  static ContributionListing contribListing;
 
 
   /**
@@ -162,9 +163,9 @@ public class ContributionManager {
               try {
                 // TODO: run this in SwingWorker done() [jv]
                 EventQueue.invokeAndWait(() -> {
-                  listing.replaceContribution(ad, contribution);
+                  contribListing.replaceContribution(ad, contribution);
                   base.refreshContribs(contribution.getType());
-                  base.setUpdatesAvailable(listing.countUpdates(base));
+                  base.setUpdatesAvailable(contribListing.countUpdates(base));
                 });
               } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -245,9 +246,9 @@ public class ContributionManager {
             try {
               // TODO: run this in SwingWorker done() [jv]
               EventQueue.invokeAndWait(() -> {
-                listing.replaceContribution(ad, contribution);
+                contribListing.replaceContribution(ad, contribution);
                 base.refreshContribs(contribution.getType());
-                base.setUpdatesAvailable(listing.countUpdates(base));
+                base.setUpdatesAvailable(contribListing.countUpdates(base));
               });
             } catch (InterruptedException e) {
               e.printStackTrace();
@@ -375,9 +376,9 @@ public class ContributionManager {
             if (contribution != null) {
               try {
                 EventQueue.invokeAndWait(() -> {
-                  listing.replaceContribution(contrib, contribution);
+                  contribListing.replaceContribution(contrib, contribution);
                   base.refreshContribs(contribution.getType());
-                  base.setUpdatesAvailable(listing.countUpdates(base));
+                  base.setUpdatesAvailable(contribListing.countUpdates(base));
                 });
               } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -428,7 +429,7 @@ public class ContributionManager {
    *
    * @return a file that does not exist yet
    */
-  public static File getUniqueName(File parentFolder, String fileName) {
+  static public File getUniqueName(File parentFolder, String fileName) {
     File backupFolderForLib;
     int i = 1;
     do {
@@ -486,6 +487,7 @@ public class ContributionManager {
     deleteFlagged(Base.getSketchbookToolsFolder());
 
     installPreviouslyFailed(base, Base.getSketchbookModesFolder());
+
     updateFlagged(base, Base.getSketchbookModesFolder());
     updateFlagged(base, Base.getSketchbookToolsFolder());
 
@@ -549,11 +551,11 @@ public class ContributionManager {
     // https://github.com/processing/processing/issues/5823
     if (installList != null) {
       for (File file : installList) {
-        for (AvailableContribution contrib : listing.advertisedContributions) {
+        for (AvailableContribution contrib : contribListing.advertisedContributions) {
           if (file.getName().equals(contrib.getName())) {
             file.delete();
             installOnStartUp(base, contrib);
-            EventQueue.invokeAndWait(() -> listing.replaceContribution(contrib, contrib));
+            EventQueue.invokeAndWait(() -> contribListing.replaceContribution(contrib, contrib));
           }
         }
       }
@@ -635,7 +637,7 @@ public class ContributionManager {
       }
     }
 
-    for (AvailableContribution contrib : listing.advertisedContributions) {
+    for (AvailableContribution contrib : contribListing.advertisedContributions) {
       if (updateContribsNames.contains(contrib.getName())) {
         updateContribsList.add(contrib);
       }
@@ -643,7 +645,7 @@ public class ContributionManager {
 
     for (AvailableContribution contrib : updateContribsList) {
       installOnStartUp(base, contrib);
-      listing.replaceContribution(contrib, contrib);
+      contribListing.replaceContribution(contrib, contrib);
     }
   }
 
@@ -680,12 +682,10 @@ public class ContributionManager {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static ManagerFrame managerFrame;
-
-
   static public void init(Base base) throws Exception {
 //    long t1 = System.currentTimeMillis();
-    listing = ContributionListing.getInstance(); // Moved here to make sure it runs on EDT [jv 170121]
+    // Moved here to make sure it runs on EDT [jv 170121]
+    contribListing = ContributionListing.getInstance();
 //    long t2 = System.currentTimeMillis();
     managerFrame = new ManagerFrame(base);
 //    long t3 = System.currentTimeMillis();
@@ -693,6 +693,14 @@ public class ContributionManager {
 //    long t4 = System.currentTimeMillis();
 //    System.out.println("ContributionManager.init() " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3));
   }
+
+
+  /*
+  static public void downloadAvailable() {
+    //ContributionListing cl = ContributionListing.getInstance();
+    contribListing.downloadAvailableList(base, new ContribProgress(null));
+  }
+  */
 
 
   static public void updateTheme() {

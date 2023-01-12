@@ -56,7 +56,7 @@ public class ContributionListing {
   Set<Contribution> allContributions;
   boolean listDownloaded;
 //  boolean listDownloadFailed;
-  ReentrantLock downloadingListingLock;
+  ReentrantLock downloadingLock;
 
 
   private ContributionListing() {
@@ -64,7 +64,7 @@ public class ContributionListing {
     advertisedContributions = new ArrayList<>();
     librariesByImportHeader = new HashMap<>();
     allContributions = new LinkedHashSet<>();
-    downloadingListingLock = new ReentrantLock();
+    downloadingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
     if (listingFile.exists()) {
@@ -102,7 +102,7 @@ public class ContributionListing {
    * Adds the installed libraries to the listing of libraries, replacing
    * any pre-existing libraries by the same name as one in the list.
    */
-  protected void updateInstalledList(List<Contribution> installed) {
+  protected void updateInstalledList(Set<Contribution> installed) {
     for (Contribution contribution : installed) {
       Contribution existingContribution = getContribution(contribution);
       if (existingContribution != null) {
@@ -203,7 +203,7 @@ public class ContributionListing {
 
     // TODO: replace with SwingWorker [jv]
     new Thread(() -> {
-      downloadingListingLock.lock();
+      downloadingLock.lock();
 
       try {
         URL url = new URL(LISTING_URL);
@@ -247,7 +247,7 @@ public class ContributionListing {
         progress.setException(e);
         progress.finished();
       } finally {
-        downloadingListingLock.unlock();
+        downloadingLock.unlock();
       }
     }, "Contribution List Downloader").start();
   }
@@ -276,15 +276,14 @@ public class ContributionListing {
 
 
   protected boolean hasUpdates(Contribution contrib) {
-    if (!contrib.isInstalled()) {
-      return false;
+    if (contrib.isInstalled()) {
+      Contribution advertised = getAvailableContribution(contrib);
+      if (advertised != null) {
+        return (advertised.getVersion() > contrib.getVersion() &&
+                advertised.isCompatible(Base.getRevision()));
+      }
     }
-    Contribution advertised = getAvailableContribution(contrib);
-    if (advertised == null) {
-      return false;
-    }
-    return (advertised.getVersion() > contrib.getVersion() &&
-            advertised.isCompatible(Base.getRevision()));
+    return false;
   }
 
 
