@@ -7430,8 +7430,12 @@ public class PGraphics extends PImage implements PConstants {
    * @webref color:setting
    * @webBrief Clears the pixels within a buffer
    */
-  public void clear() {
-    background(0, 0, 0, 0);
+  final public void clear() {
+    if (primaryGraphics) {
+      showWarning("clear() can only be used with createGraphics()");
+    } else {
+      background(0, 0, 0, 0);
+    }
   }
 
 
