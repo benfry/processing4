@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-22 The Processing Foundation
+  Copyright (c) 2013-23 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -44,12 +44,6 @@ import processing.app.ui.Toolkit;
 
 public class ListPanel extends JPanel implements Scrollable {
   ContributionTab contributionTab;
-//  static public Comparator<Contribution> COMPARATOR =
-//    Comparator.comparing(o -> o.getName().toLowerCase());
-//  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
-//    new TreeMap<>(ContributionListing.COMPARATOR);
-//  TreeMap<Contribution, StatusPanelDetail> detailForContrib =
-//    new TreeMap<>(Comparator.comparing(o -> o.getName().toLowerCase()));
   Map<Contribution, StatusDetail> detailForContrib =
     new ConcurrentHashMap<>();
 
@@ -97,17 +91,6 @@ public class ListPanel extends JPanel implements Scrollable {
     this.contributionTab = contributionTab;
     this.filter = filter;
 
-    this.rowFilter = new ContributionRowFilter(filter);
-
-//    if (upToDateIcon == null) {
-//      upToDateIcon = Toolkit.getLibIconX("manager/up-to-date");
-//      updateAvailableIcon = Toolkit.getLibIconX("manager/update-available");
-//      incompatibleIcon = Toolkit.getLibIconX("manager/incompatible");
-//      foundationIcon = Toolkit.getLibIconX("icons/foundation", 16);
-//      downloadingIcon = Toolkit.getLibIconX("manager/downloading");
-//    }
-
-    setOpaque(true);
     model = new ContributionTableModel(columns);
     model.enableSections(enableSections);
     table = new JTable(model) {
@@ -181,7 +164,8 @@ public class ListPanel extends JPanel implements Scrollable {
 
     sorter = new TableRowSorter<>(model);
     table.setRowSorter(sorter);
-    sorter.setRowFilter(this.rowFilter);
+    rowFilter = new ContributionRowFilter(filter);
+    sorter.setRowFilter(rowFilter);
     for (int i = 0; i < model.getColumnCount(); i++) {
       if (model.columns[i] == ContributionColumn.NAME) {
         sorter.setSortKeys(Collections.singletonList(new SortKey(i, SortOrder.ASCENDING)));
@@ -193,6 +177,7 @@ public class ListPanel extends JPanel implements Scrollable {
     table.getTableHeader().setResizingAllowed(true);
     table.setVisible(true);
 
+    setOpaque(true);
     setLayout(new BorderLayout());
     add(scrollPane, BorderLayout.CENTER);
   }
@@ -362,12 +347,16 @@ public class ListPanel extends JPanel implements Scrollable {
       Contribution contribution = (Contribution) value;
       JLabel label = new JLabel();
       ContributionColumn col = model.columns[column];
+      /*
+      // Removing this workaround for 4.1.2; likely fixed by change
+      // for the concurrent Set used with allContributions list.
       if (value == null) {
         // Working on https://github.com/processing/processing/issues/3667
         //System.err.println("null value seen in getTableCellRendererComponent()");
         // TODO this is now working, but the underlying issue is not fixed
         return label;
       }
+      */
 
       label.setOpaque(true);
 
