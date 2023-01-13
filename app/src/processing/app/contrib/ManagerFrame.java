@@ -96,8 +96,12 @@ public class ManagerFrame {
 //      ContributionListing.updateInstalled(base);
 //      showTab.activate();
 //    } else {
+      ContributionListing.getInstance().updateInstalled(base.getInstalledContribs());
     }
     tabs.setPanel(showTab);
+//    if (contributionType == null) {
+//      showTab.listPanel.model.fireTableDataChanged();
+//      System.out.println("rows: " + showTab.listPanel.model.getRowCount());
 //    }
     frame.setVisible(true);
     // Avoid the search box taking focus and hiding the 'search' text

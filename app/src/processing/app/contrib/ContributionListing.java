@@ -26,6 +26,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import processing.app.Base;
@@ -62,7 +63,7 @@ public class ContributionListing {
     listPanels = new HashSet<>();
     advertisedContributions = new ArrayList<>();
     librariesByImportHeader = new HashMap<>();
-    allContributions = new LinkedHashSet<>();
+    allContributions = ConcurrentHashMap.newKeySet();
     downloadingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
@@ -94,6 +95,48 @@ public class ContributionListing {
     for (Contribution contribution : advertisedContributions) {
       addContribution(contribution);
     }
+  }
+
+
+  /**
+   * Adds the installed libraries to the listing of libraries, replacing
+   * any pre-existing libraries by the same name as one in the list.
+   */
+  protected void updateInstalled(Set<Contribution> installed) {
+//    Map<Contribution, Contribution> replacements = new HashMap<>();
+//    Set<Contribution> additions = new HashSet<>();
+
+    for (Contribution contribution : installed) {
+      Contribution existingContribution = findContribution(contribution);
+      if (existingContribution != null) {
+        if (existingContribution != contribution) {
+          // don't replace contrib with itself
+          replaceContribution(existingContribution, contribution);
+//          replacements.put(existingContribution, contribution);
+        }
+      } else {
+        addContribution(contribution);
+//        additions.add(contribution);
+      }
+    }
+
+//    for (Contribution existing : replacements.keySet()) {
+//      replaceContribution(existing, replacements.get(existing));
+//    }
+//    for (Contribution adding : additions) {
+//      addContribution(adding);
+//    }
+  }
+
+
+  private Contribution findContribution(Contribution contribution) {
+    for (Contribution c : allContributions) {
+      if (c.getName().equals(contribution.getName()) &&
+        c.getType() == contribution.getType()) {
+        return c;
+      }
+    }
+    return null;
   }
 
 

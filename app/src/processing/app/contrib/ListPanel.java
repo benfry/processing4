@@ -704,28 +704,19 @@ public class ListPanel extends JPanel implements Scrollable {
 
   // Thread: EDT
   protected void contributionChanged(final Contribution oldContrib,
-                                  final Contribution newContrib) {
+                                     final Contribution newContrib) {
     if (filter.matches(oldContrib)) {
-//    if (true || filter.matches(oldContrib)) {
-//      System.out.println(contributionTab.contribType + " tab: " +
-//        "changed " + oldContrib + " -> " + newContrib);
-//      new Exception().printStackTrace(System.out);
       StatusDetail detail = detailForContrib.get(oldContrib);
-//      if (panel == null) {
-////        System.out.println("panel null for " + newContrib);
-//        contributionAdded(newContrib);
-//      } else {
-        detailForContrib.remove(oldContrib);
-        detail.setContrib(newContrib);
-        detailForContrib.put(newContrib, detail);
-        model.fireTableDataChanged();
-//      }
+      detailForContrib.remove(oldContrib);
+      detail.setContrib(newContrib);
+      detailForContrib.put(newContrib, detail);
+      model.fireTableDataChanged();
     }
   }
 
 
   // Thread: EDT
-  protected void filterLibraries(String category, List<String> filters) {
+  protected void updateFilter(String category, List<String> filters) {
     rowFilter.setCategoryFilter(category);
     rowFilter.setStringFilters(filters);
     model.fireTableDataChanged();

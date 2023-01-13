@@ -216,7 +216,7 @@ public class ContributionTab extends JPanel {
         category = null;
       }
       //filterLibraries(category, filterField.filterWords);
-      filterLibraries();
+      updateFilter();
     });
 
     filterField = new FilterField();
@@ -316,9 +316,11 @@ public class ContributionTab extends JPanel {
   }
 
 
-  //protected void filterLibraries(String category, List<String> filters) {
-  protected void filterLibraries() {
-    listPanel.filterLibraries(category, filterField.filterWords);
+  /**
+   * Filter the libraries based on category and filter words.
+   */
+  protected void updateFilter() {
+    listPanel.updateFilter(category, filterField.filterWords);
   }
 
 
@@ -475,7 +477,7 @@ public class ContributionTab extends JPanel {
 
       filterWords = Arrays.asList(filter.split(" "));
       //filterLibraries(category, filterWords);
-      filterLibraries();
+      updateFilter();
     }
 
     protected void updateTheme() {
