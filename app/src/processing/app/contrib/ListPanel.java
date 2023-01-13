@@ -143,7 +143,7 @@ public class ListPanel extends JPanel implements Scrollable {
     scrollPane.getVerticalScrollBar().setUI(new PdeScrollBarUI("manager.scrollbar"));
     scrollPane.setBorder(BorderFactory.createEmptyBorder());
     table.setFillsViewportHeight(true);
-    table.setDefaultRenderer(Contribution.class, new ContribStatusRenderer());
+    table.setDefaultRenderer(Contribution.class, new ContribCellRenderer());
     table.setRowHeight(Toolkit.zoom(28));
     table.setRowMargin(Toolkit.zoom(6));
 
@@ -283,16 +283,9 @@ public class ListPanel extends JPanel implements Scrollable {
       super.getTableCellRendererComponent(table, value,
               isSelected, hasFocus, row, column);
 
-//      JTableHeader tableHeader = table.getTableHeader();
-//      if (tableHeader != null) {
-//        setForeground(tableHeader.getForeground());
-//      }
       setForeground(headerFgColor);
-      //setText(getText() + "\u2191\u2193");
       setText(getText() + getSortText(table, column));
       putClientProperty("FlatLaf.styleClass", "small");
-//      setFont(ManagerFrame.SMALL_PLAIN);
-      //setIcon(getSortIcon(table, column));
       setBackground(headerBgColor);
       setBorder(null);
       return this;
@@ -354,7 +347,7 @@ public class ListPanel extends JPanel implements Scrollable {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  private class ContribStatusRenderer extends DefaultTableCellRenderer {
+  private class ContribCellRenderer extends DefaultTableCellRenderer {
 
     @Override
     public void setVerticalAlignment(int alignment) {
@@ -382,22 +375,11 @@ public class ListPanel extends JPanel implements Scrollable {
         return label;
       }
       switch (col) {
-        case STATUS:
-        case STATUS_NO_HEADER:
-          configureStatusColumnLabel(label, contribution);
-          break;
-        case NAME:
-          configureNameColumnLabel(table, label, contribution);
-          break;
-        case AUTHOR:
-          configureAuthorsColumnLabel(label, contribution);
-          break;
-        case INSTALLED_VERSION:
-          label.setText(contribution.getBenignVersion());
-          break;
-        case AVAILABLE_VERSION:
-          label.setText(ContributionListing.getInstance().getLatestPrettyVersion(contribution));
-          break;
+        case STATUS, STATUS_NO_HEADER -> configureStatusColumnLabel(label, contribution);
+        case NAME -> configureNameColumnLabel(table, label, contribution);
+        case AUTHOR -> configureAuthorsColumnLabel(label, contribution);
+        case INSTALLED_VERSION -> label.setText(contribution.getBenignVersion());
+        case AVAILABLE_VERSION -> label.setText(ContributionListing.getInstance().getLatestPrettyVersion(contribution));
       }
 
       if (contribution instanceof SectionHeaderContribution) {
@@ -435,11 +417,10 @@ public class ListPanel extends JPanel implements Scrollable {
 
     private void configureNameColumnLabel(JTable table, JLabel label, Contribution contribution) {
       // Generating ellipses based on fontMetrics
-//      final Font boldFont = ManagerFrame.NORMAL_BOLD;
       final Font boldFont = Theme.getFont("manager.list.heavy.font");
       FontMetrics fontMetrics = table.getFontMetrics(boldFont);
       int colSize = table.getColumnModel().getColumn(1).getWidth();
-      int currentWidth = fontMetrics.stringWidth(contribution.getName() + " | ...");
+      int currentWidth = fontMetrics.stringWidth(contribution.getName() + " | …");
       String sentence = Util.removeMarkDownLinks(contribution.getSentence());
       StringBuilder text =
         new StringBuilder("<html><body><font face=\"")
@@ -460,12 +441,11 @@ public class ListPanel extends JPanel implements Scrollable {
         text.append(" | </font>").append(sentence, 0, index);
         // Adding ellipses only if text doesn't fit into the column
         if (index != sentence.length()) {
-          text.append("...");
+          text.append("…");
         }
       }
       text.append("</body></html>");
       label.setText(text.toString());
-//      label.setFont(ManagerFrame.NORMAL_PLAIN);
     }
 
     private void configureAuthorsColumnLabel(JLabel label, Contribution contribution) {
@@ -477,7 +457,6 @@ public class ListPanel extends JPanel implements Scrollable {
       label.setText(name);
       label.setHorizontalAlignment(SwingConstants.LEFT);
       label.setForeground(Color.BLACK);
-      //label.setFont(ManagerFrame.NORMAL_BOLD);
       label.setFont(Theme.getFont("manager.list.heavy.font"));
     }
   }
@@ -638,10 +617,10 @@ public class ListPanel extends JPanel implements Scrollable {
       this.type = type;
 
       switch (type) {
-        case LIBRARY: this.name = "Libraries"; break;
-        case MODE: this.name = "Modes"; break;
-        case TOOL: this.name = "Tools"; break;
-        case EXAMPLES: this.name = "Examples"; break;
+        case LIBRARY -> this.name = "Libraries";
+        case MODE -> this.name = "Modes";
+        case TOOL -> this.name = "Tools";
+        case EXAMPLES -> this.name = "Examples";
       }
     }
 
@@ -726,9 +705,9 @@ public class ListPanel extends JPanel implements Scrollable {
   }
 
 
-  protected void fireChange() {
-    model.fireTableDataChanged();
-  }
+//  protected void fireChange() {
+//    model.fireTableDataChanged();
+//  }
 //  protected void filterDummy(String category) {
 //    System.out.println("LAST CHANCE DUMMY");
 ////    rowFilter.setCategoryFilter(category);
