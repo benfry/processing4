@@ -54,10 +54,11 @@ X   however, the list can be updated another time, right? after load? only on ch
 X remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
 X   should be a better way to implement this
 X   currently removed, but still need a way to indicate loading
-
-_ updates tab is empty
-_ remove Libraries/Tools/etc separators from Updates tab? too confusing/looks like a bug?
-_ remove rebuildLayout() from ContributionTab?
+X updates tab is empty
+X show the contrib type headers in a different color in the updates tab
+X   still not ideal, and tempting to remove these entirely
+o   remove Libraries/Tools/etc separators from Updates tab? too confusing/looks like a bug?
+X remove rebuildLayout() from ContributionTab
 
 
 _ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null

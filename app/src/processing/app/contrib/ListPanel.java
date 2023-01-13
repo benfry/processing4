@@ -400,7 +400,10 @@ public class ListPanel extends JPanel implements Scrollable {
           break;
       }
 
-      if (contribution.isCompatible(Base.getRevision())) {
+      if (contribution instanceof SectionHeaderContribution) {
+        // grouping color for libraries, modes, tools headers in updates panel
+        label.setForeground(textColorIncompatible);
+      } else if (contribution.isCompatible(Base.getRevision())) {
         label.setForeground(textColor);
       } else {
         label.setForeground(textColorIncompatible);
