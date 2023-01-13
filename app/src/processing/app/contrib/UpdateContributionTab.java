@@ -39,15 +39,17 @@ public class UpdateContributionTab extends ContributionTab {
       }
       return false;
     };
-    listPanel = new UpdateListPanel(this, filter);
 
+    listPanel = new UpdateListPanel(this, filter);
     statusPanel = new UpdateStatusPanel(this);
+    initLayout();
+
     ContributionListing.getInstance().addListPanel(listPanel);
   }
 
 
   @Override
-  protected void setLayout() {
+  protected void initLayout() {
     /*
     if (loaderLabel == null) {
 //    if (progressBar == null) {

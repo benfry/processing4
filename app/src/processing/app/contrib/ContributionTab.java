@@ -34,9 +34,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import processing.app.Base;
-import processing.app.Library;
 import processing.app.laf.PdeComboBoxUI;
-import processing.app.ui.Editor;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
 
@@ -89,6 +87,7 @@ public class ContributionTab extends JPanel {
     // TODO StatusPanel init is after listPanel is created because it calls
     //      updateTheme() which needs it, but yuck, too messy [fry 220504]
     statusPanel = new StatusPanel(this);
+    initLayout();
 
     ContributionListing.getInstance().addListPanel(listPanel);
   }
@@ -120,24 +119,24 @@ public class ContributionTab extends JPanel {
   */
 
 
+  /*
 //  public void rebuildLayout(boolean error, boolean loading) {
   public void rebuildLayout() {
     setLayout();
 
-    /*
-    listPanel.setVisible(!loading);
-    loaderLabel.setVisible(loading);
-    errorPanel.setVisible(error);
-    */
+//    listPanel.setVisible(!loading);
+//    loaderLabel.setVisible(loading);
+//    errorPanel.setVisible(error);
 
     listPanel.fireChange();  // wtf, really? every time? [fry 230111]
 
     validate();
     repaint();
   }
+  */
 
 
-  protected void setLayout() {
+  protected void initLayout() {
     if (categoryChooser == null) {
       createComponents();
     }

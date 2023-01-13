@@ -111,9 +111,9 @@ public class ManagerFrame {
     tabs = new ManagerTabs();
 
     //rebuildTabLayouts(false, true);
-    for (ContributionTab tab : tabList) {
-      tab.rebuildLayout();
-    }
+//    for (ContributionTab tab : tabList) {
+//      tab.rebuildLayout();
+//    }
 
     tabs.addPanel(librariesTab, "Libraries");
     tabs.addPanel(modesTab, "Modes");
