@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-22 The Processing Foundation
+  Copyright (c) 2012-23 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -374,8 +374,8 @@ public class Base {
 
   /**
    * Temporary workaround as we try to sort out
-   * https://github.com/processing/processing4/issues/231
-   * and https://github.com/processing/processing4/issues/226
+   * <a href="https://github.com/processing/processing4/issues/231">231</a>
+   * and <a href="https://github.com/processing/processing4/issues/226">226</a>.
    */
   static private void handleCrustyDisplay() {
     /*
