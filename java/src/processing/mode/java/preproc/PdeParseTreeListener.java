@@ -635,7 +635,8 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
    * @param ctx ANTLR context for the type token.
    */
   public void exitColorPrimitiveType(ProcessingParser.ColorPrimitiveTypeContext ctx) {
-    if (ctx.getText().equals("color")) {
+    boolean isQualifiedName = ctx.getParent() instanceof ProcessingParser.QualifiedNameContext; 
+    if (ctx.getText().equals("color") && !isQualifiedName) {
       insertAfter(ctx.stop, "int");
       delete(ctx.start, ctx.stop);
     }
