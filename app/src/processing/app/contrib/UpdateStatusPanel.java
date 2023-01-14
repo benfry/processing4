@@ -66,4 +66,10 @@ public class UpdateStatusPanel extends StatusPanel {
   protected void setUpdateEnabled(boolean updateEnabled) {
     updateButton.setEnabled(updateEnabled);
   }
+
+
+  @Override
+  protected void updateDetail(StatusDetail detail) {
+    detail.setProgressBar(progressBar);
+  }
 }

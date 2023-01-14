@@ -324,6 +324,11 @@ public class ContributionTab extends JPanel {
   }
 
 
+  protected boolean filterHasFocus() {
+    return filterField != null && filterField.hasFocus();
+  }
+
+
   /*
   // TODO Why is this entire set of code only running when Editor
   //      is not null... And what's it doing anyway? Shouldn't it run
@@ -369,13 +374,13 @@ public class ContributionTab extends JPanel {
   */
 
 
-  public void updateStatusDetail(StatusDetail detail) {
-    statusPanel.updateDetail(detail);
+  protected StatusDetail createStatusDetail() {
+    return new StatusDetail(base, statusPanel);
   }
 
 
-  public boolean filterHasFocus() {
-    return filterField != null && filterField.hasFocus();
+  protected void updateStatusDetail(StatusDetail detail) {
+    statusPanel.updateDetail(detail);
   }
 
 

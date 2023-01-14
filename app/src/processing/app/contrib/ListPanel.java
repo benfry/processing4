@@ -22,6 +22,7 @@
 package processing.app.contrib;
 
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -56,6 +57,7 @@ public class ListPanel extends JPanel implements Scrollable {
   protected ContributionTableModel model;
 
   // state icons appearing to the left side of the list
+  static final int ICON_SIZE = 16;
   Icon upToDateIcon;
   Icon updateAvailableIcon;
   Icon incompatibleIcon;
@@ -197,14 +199,27 @@ public class ListPanel extends JPanel implements Scrollable {
     rowColor = Theme.getColor("manager.list.background.color");
     table.setBackground(rowColor);
 
-    foundationIcon = Toolkit.renderIcon("manager/foundation", Theme.get("manager.list.foundation.color"), 16);
+    foundationIcon = Toolkit.renderIcon("manager/foundation", Theme.get("manager.list.foundation.color"), ICON_SIZE);
 
-    upToDateIcon = Toolkit.renderIcon("manager/list-up-to-date", Theme.get("manager.list.icon.color"), 16);
-    updateAvailableIcon = Toolkit.renderIcon("manager/list-update-available", Theme.get("manager.list.icon.color"), 16);
-    incompatibleIcon = Toolkit.renderIcon("manager/list-incompatible", Theme.get("manager.list.icon.color"), 16);
-    downloadingIcon = Toolkit.renderIcon("manager/list-downloading", Theme.get("manager.list.icon.color"), 16);
+    upToDateIcon = Toolkit.renderIcon("manager/list-up-to-date", Theme.get("manager.list.icon.color"), ICON_SIZE);
+    updateAvailableIcon = Toolkit.renderIcon("manager/list-update-available", Theme.get("manager.list.icon.color"), ICON_SIZE);
+    incompatibleIcon = Toolkit.renderIcon("manager/list-incompatible", Theme.get("manager.list.icon.color"), ICON_SIZE);
+    downloadingIcon = Toolkit.renderIcon("manager/list-downloading", Theme.get("manager.list.icon.color"), ICON_SIZE);
 
     ((PdeScrollBarUI) scrollPane.getVerticalScrollBar().getUI()).updateTheme();
+  }
+
+
+  Icon renderProgressIcon(float amount) {
+    final int scale = Toolkit.highResImages() ? 2 : 1;
+    final int dim = ICON_SIZE * scale;
+    Image image = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g2 = (Graphics2D) image.getGraphics();
+    g2.scale(scale, scale);
+    g2.setColor(Color.ORANGE);
+    g2.fillRect(0, 0, (int) (amount * ICON_SIZE), ICON_SIZE);
+    g2.dispose();
+    return Toolkit.wrapIcon(image);
   }
 
 
@@ -304,9 +319,9 @@ public class ListPanel extends JPanel implements Scrollable {
       if (sortKey != null && table.convertColumnIndexToView(sortKey.getColumn()) == column) {
         switch (sortKey.getSortOrder()) {
           case ASCENDING:
-            return "  \u2193";
+            return "  ↓";
           case DESCENDING:
-            return "  \u2191";
+            return "  ↑";
         }
       }
       // if not sorting on this column
@@ -389,6 +404,8 @@ public class ListPanel extends JPanel implements Scrollable {
       if (detail != null && (detail.updateInProgress || detail.installInProgress)) {
         // Display "loading" icon if download/install in progress
         icon = downloadingIcon;
+//        float amount = detail.getProgressAmount();
+//        icon = (amount == -1) ? downloadingIcon : renderProgressIcon(amount);
       } else if (contribution.isInstalled()) {
         if (!contribution.isCompatible(Base.getRevision())) {
           icon = incompatibleIcon;
@@ -642,8 +659,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //      new Exception().printStackTrace(System.out);
 //        long t1 = System.currentTimeMillis();
         //StatusPanelDetail newPanel = new StatusPanelDetail(this);
-        StatusDetail newPanel =
-          new StatusDetail(contributionTab.base, contributionTab.statusPanel);
+        StatusDetail newPanel = contributionTab.createStatusDetail();
         detailForContrib.put(contribution, newPanel);
         newPanel.setContrib(contribution);
 //      add(newPanel);

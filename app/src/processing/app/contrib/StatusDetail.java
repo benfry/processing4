@@ -30,6 +30,7 @@ import javax.swing.JProgressBar;
 
 import processing.app.*;
 import processing.app.laf.PdeProgressBarUI;
+import processing.app.ui.Toolkit;
 
 
 /**
@@ -78,11 +79,11 @@ class StatusDetail {
   }
 
 
-  private void installContribution(AvailableContribution info) {
-    if (info.link == null) {
-      statusPanel.setErrorMessage(Language.interpolate("contrib.unsupported_operating_system", info.getType()));
+  protected float getProgressAmount() {
+    if (progressBar.isIndeterminate()) {
+      return -1;
     } else {
-      installContribution(info, info.link);
+      return (float) progressBar.getValue() / progressBar.getMaximum();
     }
   }
 
@@ -141,12 +142,20 @@ class StatusDetail {
 
 
   protected void install() {
-    //clearStatusMessage();
     statusPanel.clearMessage();
     installInProgress = true;
-    if (contrib instanceof AvailableContribution) {
-      installContribution((AvailableContribution) contrib);
-      ContributionListing.getInstance().replaceContribution(contrib, contrib);
+    if (contrib instanceof AvailableContribution info) {
+      if (info.link == null) {
+        statusPanel.setErrorMessage(Language.interpolate("contrib.missing_link", info.getType()));
+      } else {
+        installContribution(info, info.link);
+        // NOTE As of 4.1.1 this was being called even if the error message
+        //      above was getting called. Probably harmless, especially since
+        //      the error may never happen, but still… weird. [fry 230114]
+        // TODO More importantly, why is this being called? Seems like this
+        //      should be doing an actual replacement. [fry 230114]
+        ContributionListing.getInstance().replaceContribution(contrib, contrib);
+      }
     }
   }
 
@@ -155,7 +164,6 @@ class StatusDetail {
   //      of all things, calls install() in its finishedAction() method.
   //      FFS this is gross. [fry 220311]
   protected void update() {
-    //clearStatusMessage();
     statusPanel.clearMessage();
     updateInProgress = true;
 
@@ -163,19 +171,8 @@ class StatusDetail {
 
     // TODO not really a 'restart' anymore, just requires care [fry 220312]
     if (contrib.getType().requiresRestart()) {
-      // For the special "Updates" tab in the manager, there are no progress
-      // bars, so if that's what we're doing, this will create a dummy bar.
-      // TODO Not a good workaround [fry 220312]
-      // TODO This is really, really gross [fry 221104]
-      if (progressBar == null) {
-        // This was removed in 4.x and brought back for 4.0.2 because
-        // it broke the "Update All" option in the Contributions Manager.
-        // https://github.com/processing/processing4/issues/567
-        progressBar = new JProgressBar();
-      } else {
-        progressBar.setVisible(true);
-        progressBar.setIndeterminate(true);
-      }
+      progressBar.setVisible(true);
+      progressBar.setIndeterminate(true);
 
       ContribProgress progress = new ContribProgress(progressBar) {
         @Override

@@ -118,27 +118,7 @@ class StatusPanel extends JPanel {
       updateDetail(currentDetail);
     });
 
-    progressBar = new JProgressBar();
-    /*
-    progressBar = new JProgressBar() {
-      @Override
-      public void setBackground(Color c) {
-        new Exception("setting bg to " + c).printStackTrace(System.out);
-        super.setBackground(c);
-      }
-    };
-    */
-    progressBar.setStringPainted(true);
-    progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
-    //progressBar.setOpaque(true);
-
-    resetProgressBar();
-
-    final int high = progressBar.getPreferredSize().height;
-    Dimension dim = new Dimension(BUTTON_WIDTH, high);
-    progressBar.setPreferredSize(dim);
-    progressBar.setMaximumSize(dim);
-    progressBar.setMinimumSize(dim);
+    buildProgressBar();
 
     updateLabel = new JLabel(" ");
 //    updateLabel.setFont(buttonFont);
@@ -209,8 +189,6 @@ class StatusPanel extends JPanel {
     layout.linkSize(SwingConstants.HORIZONTAL,
                     installButton, progressBar, updateButton, removeButton);
 
-    progressBar.setVisible(false);
-
     installButton.setEnabled(false);
     updateButton.setEnabled(false);
     removeButton.setEnabled(false);
@@ -220,6 +198,22 @@ class StatusPanel extends JPanel {
     layout.setHonorsVisibility(updateLabel, false);
 
     validate();
+  }
+
+
+  protected void buildProgressBar() {
+    progressBar = new JProgressBar();
+    progressBar.setStringPainted(true);
+    progressBar.setAlignmentX(Component.CENTER_ALIGNMENT);
+    //progressBar.setOpaque(true);
+
+    resetProgressBar();
+
+    final int high = progressBar.getPreferredSize().height;
+    Dimension dim = new Dimension(BUTTON_WIDTH, high);
+    progressBar.setPreferredSize(dim);
+    progressBar.setMaximumSize(dim);
+    progressBar.setMinimumSize(dim);
   }
 
 

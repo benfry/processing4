@@ -140,20 +140,20 @@ public class ContributionListing {
   }
 
 
-  protected void replaceContribution(Contribution oldLib, Contribution newLib) {
-    if (oldLib != null && newLib != null) {
-      if (oldLib.getImports() != null) {
-        for (String importName : oldLib.getImports()) {
+  protected void replaceContribution(Contribution oldContrib, Contribution newContrib) {
+    if (oldContrib != null && newContrib != null) {
+      if (oldContrib.getImports() != null) {
+        for (String importName : oldContrib.getImports()) {
           if (getLibrariesByImportHeader().containsKey(importName)) {
-            getLibrariesByImportHeader().put(importName, newLib);
+            getLibrariesByImportHeader().put(importName, newContrib);
           }
         }
       }
-      allContributions.remove(oldLib);
-      allContributions.add(newLib);
+      allContributions.remove(oldContrib);
+      allContributions.add(newContrib);
 
       for (ListPanel listener : listPanels) {
-        listener.contributionChanged(oldLib, newLib);
+        listener.contributionChanged(oldContrib, newContrib);
       }
     }
   }
@@ -227,7 +227,7 @@ public class ContributionListing {
         }
         ContributionManager.download(url, makeContribsBlob(base),
                                      tempContribFile, progress);
-        if (!progress.isCanceled() && !progress.isException()) {
+        if (progress.notCanceled() && !progress.isException()) {
           if (listingFile.exists()) {
             listingFile.delete();  // may silently fail, but below may still work
           }

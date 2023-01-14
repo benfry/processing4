@@ -28,8 +28,8 @@ public class UpdateContributionTab extends ContributionTab {
   public UpdateContributionTab(ManagerFrame dialog) {
     super(dialog);
 
-    // Filter to show only the contributions that have updates
-    // or are fake section header "contributions".
+    // Filter to show only the contributions with updates available,
+    // or are section headers (which are fake contributions).
     filter = contrib -> {
       if (contrib instanceof ListPanel.SectionHeaderContribution) {
         return true;
@@ -85,11 +85,5 @@ public class UpdateContributionTab extends ContributionTab {
     layout.setHonorsVisibility(listPanel, false);
 
     //setBackground(Color.WHITE);
-  }
-
-
-  @Override
-  public void updateStatusDetail(StatusDetail detail) {
-    // Do nothing
   }
 }

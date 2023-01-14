@@ -67,7 +67,15 @@ X   should be using Base.getInstalledContribs() instead of rewriting its own
 X ManagerFrame.downloadAndUpdateContributionListing()
 X   should not even be run, because the contribs load on startup
 X   but ContributionTab.tryAgainButton needs to be able to request re-download
+X removed old workaround for NPE
+X   https://github.com/processing/processing/issues/3667
 
+_ contrib categories are broken
+_   showing 'all' on all tabs, not showing categories at all for libs
+
+_ updateDetail() call in StatusPanel.updateTheme()
+_   move to ListPanel.updateTheme() (why wasn't it there?)
+_   ugh, it's called twice, right nearby each other; yikes
 
 _ rip out JProgressBar from StatusPanel/StatusDetail
 _   show progress in the list instead

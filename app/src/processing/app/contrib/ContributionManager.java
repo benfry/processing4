@@ -107,7 +107,7 @@ public class ContributionManager {
         int amount;
         if (progress != null) {
           int total = 0;
-          while (!progress.isCanceled() && (amount = in.read(b)) != -1) {
+          while (progress.notCanceled() && (amount = in.read(b)) != -1) {
             out.write(b, 0, amount);
             total += amount;
             progress.setProgress(total);
@@ -154,7 +154,7 @@ public class ContributionManager {
         try {
           download(url, null, contribZip, downloadProgress);
 
-          if (!downloadProgress.isCanceled() && !downloadProgress.isException()) {
+          if (downloadProgress.notCanceled() && !downloadProgress.isException()) {
             installProgress.startTask(Language.text("contrib.progress.installing"));
             final LocalContribution contribution =
               ad.install(base, contribZip, false, status);
