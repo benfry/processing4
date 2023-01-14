@@ -315,67 +315,20 @@ public abstract class LocalContribution extends Contribution {
   private void remove(Base base, ContribProgress pm, StatusPanel status, boolean updating) {
     pm.startTask("Removing");
 
-    boolean doBackup = Preferences.getBoolean("contribution.backup.on_remove");
     if (getType() == ContributionType.MODE) {
-      //Set<Sketch> sketches = new HashSet<>();
-      List<Editor> editors = new ArrayList<>();  // might be nice to be in order
-      ModeContribution m = (ModeContribution) this;
-      for (Editor editor : base.getEditors()) {
-        if (editor.getMode().equals(m.getMode())) {
-          Sketch sketch = editor.getSketch();
-          if (sketch.isModified()) {
-            pm.cancel();
-            editor.toFront();
-            Messages.showMessage("Save Sketch",
-                                 "Please first save “" + sketch.getName() + "”.");
-            return;
-          } else {
-            // Keep track of open Editor windows using this Mode
-            //sketchMainList.add(sketch.getMainPath());
-            //sketches.add(sketch);
-            editors.add(editor);
-          }
-        }
-      }
-      // Close any open Editor windows that were using this Mode,
-      // and if updating, build up a list of paths for the sketches
-      // so that we can dispose of the Editor objects.
-      //StringList sketchPathList = new StringList();
-      for (Editor editor : editors) {
-        //sketchPathList.append(editor.getSketch().getMainPath());
-        StatusDetail.storeSketchPath(editor.getSketch().getMainPath());
-        base.handleClose(editor, true);
-      }
-      editors.clear();
-      m.clearClassLoader(base);
-      //StatusPanelDetail.storeSketches(sketchPathList);
-
-      /*
+      if (!removeMode(base, updating)) {
         pm.cancel();
-        Messages.showMessage("Mode Manager",
-                             "Please save your Sketch and change the Mode of all Editor\n" +
-                             "windows that have " + name + " as the active Mode.");
         return;
-      */
-
-      if (!updating) {
-        // Notify the Base in case this is the current Mode
-        base.modeRemoved(m.getMode());
-        // If that was the last Editor window, and we deleted its Mode,
-        // open a fresh window using the default Mode.
-        if (base.getEditors().size() == 0) {
-          base.handleNew();
-        }
       }
-    }
 
-    if (getType() == ContributionType.TOOL) {
+    } else if (getType() == ContributionType.TOOL) {
       // menu will be rebuilt below with the refreshContribs() call
       base.clearToolMenus();
       ((ToolContribution) this).clearClassLoader();
     }
 
     boolean success;
+    boolean doBackup = Preferences.getBoolean("contribution.backup.on_remove");
     if (doBackup) {
       success = backup(true, status);
     } else {
@@ -448,6 +401,59 @@ public abstract class LocalContribution extends Contribution {
     } else {
       pm.cancel();
     }
+  }
+
+
+  private boolean removeMode(Base base, boolean updating) {
+    List<Editor> editors = new ArrayList<>();  // might be nice to be in order
+    ModeContribution m = (ModeContribution) this;
+    for (Editor editor : base.getEditors()) {
+      if (editor.getMode().equals(m.getMode())) {
+        Sketch sketch = editor.getSketch();
+        if (sketch.isModified()) {
+          editor.toFront();
+          Messages.showMessage("Save Sketch",
+            "Please first save “" + sketch.getName() + "”.");
+          return false;
+        } else {
+          // Keep track of open Editor windows using this Mode
+          //sketchMainList.add(sketch.getMainPath());
+          //sketches.add(sketch);
+          editors.add(editor);
+        }
+      }
+    }
+    // Close any open Editor windows that were using this Mode,
+    // and if updating, build up a list of paths for the sketches
+    // so that we can dispose of the Editor objects.
+    //StringList sketchPathList = new StringList();
+    for (Editor editor : editors) {
+      //sketchPathList.append(editor.getSketch().getMainPath());
+      StatusDetail.storeSketchPath(editor.getSketch().getMainPath());
+      base.handleClose(editor, true);
+    }
+    editors.clear();
+    m.clearClassLoader(base);
+    //StatusPanelDetail.storeSketches(sketchPathList);
+
+      /*
+        pm.cancel();
+        Messages.showMessage("Mode Manager",
+                             "Please save your Sketch and change the Mode of all Editor\n" +
+                             "windows that have " + name + " as the active Mode.");
+        return;
+      */
+
+    if (!updating) {
+      // Notify the Base in case this is the current Mode
+      base.modeRemoved(m.getMode());
+      // If that was the last Editor window, and we deleted its Mode,
+      // open a fresh window using the default Mode.
+      if (base.getEditors().size() == 0) {
+        base.handleNew();
+      }
+    }
+    return true;
   }
 
 

@@ -1238,7 +1238,7 @@ public class JavaEditor extends Editor {
    */
   private List<AvailableContribution> getNotInstalledAvailableLibs(List<String> importHeadersList) {
     Map<String, Contribution> importMap =
-      ContributionListing.getInstance().getLibrariesByImportHeader();
+      ContributionListing.getInstance().getLibraryImportMap();
     List<AvailableContribution> libList = new ArrayList<>();
     for (String importHeaders : importHeadersList) {
       int dot = importHeaders.lastIndexOf('.');

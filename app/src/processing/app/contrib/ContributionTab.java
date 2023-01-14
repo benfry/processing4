@@ -277,7 +277,7 @@ public class ContributionTab extends JPanel {
   private Set<String> listCategories() {
     Set<String> categories = new HashSet<>();
 
-    for (Contribution c : ContributionListing.getInstance().allContribs) {
+    for (Contribution c : ContributionListing.getAllContribs()) {
       if (filter.matches(c)) {
         for (String category : c.getCategories()) {
           categories.add(category);

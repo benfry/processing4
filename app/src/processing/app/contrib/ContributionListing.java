@@ -48,14 +48,14 @@ public class ContributionListing {
   static final String LOCAL_FILENAME = "contribs.txt";
 
   /** Location of the listing file on disk, will be read and written. */
-  File listingFile;
-  boolean listDownloaded;
+  private File listingFile;
+  private boolean listDownloaded;
 //  boolean listDownloadFailed;
-  ReentrantLock downloadingLock;
+  private ReentrantLock downloadingLock;
 
   final Set<AvailableContribution> availableContribs;
-  Map<String, Contribution> librariesByImportHeader;
-  Set<Contribution> allContribs;
+  private Map<String, Contribution> importToLibrary;
+  private Set<Contribution> allContribs;
 
   Set<ListPanel> listPanels;
 
@@ -63,7 +63,7 @@ public class ContributionListing {
   private ContributionListing() {
     listPanels = new HashSet<>();
     availableContribs = new HashSet<>();
-    librariesByImportHeader = new HashMap<>();
+    importToLibrary = new HashMap<>();
     allContribs = ConcurrentHashMap.newKeySet();
     downloadingLock = new ReentrantLock();
 
@@ -85,6 +85,11 @@ public class ContributionListing {
       }
     }
     return singleInstance;
+  }
+
+
+  static protected Set<Contribution> getAllContribs() {
+    return getInstance().allContribs;
   }
 
 
@@ -131,13 +136,18 @@ public class ContributionListing {
   }
 
 
+  // This could just be a remove followed by an add, but contributionChanged()
+  // is a little weird, so that should be cleaned up first [fry 230114]
   protected void replaceContribution(Contribution oldContrib, Contribution newContrib) {
     if (oldContrib != null && newContrib != null) {
       if (oldContrib.getImports() != null) {
         for (String importName : oldContrib.getImports()) {
-          if (getLibrariesByImportHeader().containsKey(importName)) {
-            getLibrariesByImportHeader().put(importName, newContrib);
-          }
+          importToLibrary.remove(importName);
+        }
+      }
+      if (newContrib.getImports() != null) {
+        for (String importName : newContrib.getImports()) {
+          importToLibrary.put(importName, newContrib);
         }
       }
       allContribs.remove(oldContrib);
@@ -153,7 +163,7 @@ public class ContributionListing {
   private void addContribution(Contribution contribution) {
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
-        getLibrariesByImportHeader().put(importName, contribution);
+        getLibraryImportMap().put(importName, contribution);
       }
     }
     allContribs.add(contribution);
@@ -167,7 +177,7 @@ public class ContributionListing {
   protected void removeContribution(Contribution contribution) {
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
-        getLibrariesByImportHeader().remove(importName);
+        getLibraryImportMap().remove(importName);
       }
     }
     allContribs.remove(contribution);
@@ -363,8 +373,10 @@ public class ContributionListing {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  /** Used by JavaEditor to auto-import */
-  public Map<String, Contribution> getLibrariesByImportHeader() {
-    return librariesByImportHeader;
+  /**
+   * Used by JavaEditor to auto-import. Not known to be used by other Modes.
+   */
+  public Map<String, Contribution> getLibraryImportMap() {
+    return importToLibrary;
   }
 }

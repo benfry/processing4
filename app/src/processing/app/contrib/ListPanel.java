@@ -515,7 +515,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     @Override
     public int getRowCount() {
-      return ContributionListing.getInstance().allContribs.size() + (sectionsEnabled ? 4 : 0);
+      return ContributionListing.getAllContribs().size() + (sectionsEnabled ? 4 : 0);
     }
 
     @Override
@@ -539,7 +539,7 @@ public class ListPanel extends JPanel implements Scrollable {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
       final Set<Contribution> allContribs =
-        ContributionListing.getInstance().allContribs;
+        ContributionListing.getAllContribs();
       if (rowIndex >= allContribs.size()) {
         return sections[rowIndex - allContribs.size()];
       }
@@ -603,7 +603,7 @@ public class ListPanel extends JPanel implements Scrollable {
     }
 
     private boolean includeSection(SectionHeaderContribution section) {
-      return ContributionListing.getInstance().allContribs.stream()
+      return ContributionListing.getAllContribs().stream()
         .filter(contribution -> contribution.getType() == section.getType())
         .anyMatch(this::includeContribution);
     }
