@@ -394,7 +394,7 @@ public abstract class LocalContribution extends Contribution {
           ContributionListing cl = ContributionListing.getInstance();
 
           Contribution advertisedVersion =
-            cl.getAvailableContribution(LocalContribution.this);
+            cl.findAvailableContribution(LocalContribution.this);
 
           if (advertisedVersion == null) {
             cl.removeContribution(LocalContribution.this);

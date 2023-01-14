@@ -49,28 +49,29 @@ public class ContributionListing {
 
   /** Location of the listing file on disk, will be read and written. */
   File listingFile;
-
-  Set<ListPanel> listPanels;
-  final List<AvailableContribution> advertisedContributions;
-  Map<String, Contribution> librariesByImportHeader;
-  Set<Contribution> allContributions;
   boolean listDownloaded;
 //  boolean listDownloadFailed;
   ReentrantLock downloadingLock;
 
+  final Set<AvailableContribution> availableContribs;
+  Map<String, Contribution> librariesByImportHeader;
+  Set<Contribution> allContribs;
+
+  Set<ListPanel> listPanels;
+
 
   private ContributionListing() {
     listPanels = new HashSet<>();
-    advertisedContributions = new ArrayList<>();
+    availableContribs = new HashSet<>();
     librariesByImportHeader = new HashMap<>();
-    allContributions = ConcurrentHashMap.newKeySet();
+    allContribs = ConcurrentHashMap.newKeySet();
     downloadingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
     if (listingFile.exists()) {
       // On the EDT already, but do this later on the EDT so that the
       // constructor can finish more efficiently inside getInstance().
-      EventQueue.invokeLater(() -> setAdvertisedList(listingFile));
+      EventQueue.invokeLater(() -> loadAvailableList(listingFile));
     }
   }
 
@@ -87,20 +88,10 @@ public class ContributionListing {
   }
 
 
-  private void setAdvertisedList(File file) {
-    listingFile = file;
-
-    advertisedContributions.clear();
-    advertisedContributions.addAll(parseContribList(listingFile));
-    for (Contribution contribution : advertisedContributions) {
-      addContribution(contribution);
-    }
-  }
-
-
   /**
-   * Adds the installed libraries to the listing of libraries, replacing
-   * any pre-existing libraries by the same name as one in the list.
+   * Update the list of contribs with entries for what is installed.
+   * If it matches an entry from contribs.txt, replace that entry.
+   * If not, add it to the list as a new contrib.
    */
   protected void updateInstalled(Set<Contribution> installed) {
 //    Map<Contribution, Contribution> replacements = new HashMap<>();
@@ -130,7 +121,7 @@ public class ContributionListing {
 
 
   private Contribution findContribution(Contribution contribution) {
-    for (Contribution c : allContributions) {
+    for (Contribution c : allContribs) {
       if (c.getName().equals(contribution.getName()) &&
         c.getType() == contribution.getType()) {
         return c;
@@ -149,8 +140,8 @@ public class ContributionListing {
           }
         }
       }
-      allContributions.remove(oldContrib);
-      allContributions.add(newContrib);
+      allContribs.remove(oldContrib);
+      allContribs.add(newContrib);
 
       for (ListPanel listener : listPanels) {
         listener.contributionChanged(oldContrib, newContrib);
@@ -165,7 +156,7 @@ public class ContributionListing {
         getLibrariesByImportHeader().put(importName, contribution);
       }
     }
-    allContributions.add(contribution);
+    allContribs.add(contribution);
 
     for (ListPanel listener : listPanels) {
       listener.contributionAdded(contribution);
@@ -179,7 +170,7 @@ public class ContributionListing {
         getLibrariesByImportHeader().remove(importName);
       }
     }
-    allContributions.remove(contribution);
+    allContribs.remove(contribution);
 
     for (ListPanel listener : listPanels) {
       listener.contributionRemoved(contribution);
@@ -187,11 +178,15 @@ public class ContributionListing {
   }
 
 
-  protected AvailableContribution getAvailableContribution(Contribution info) {
-    synchronized (advertisedContributions) {
-      for (AvailableContribution advertised : advertisedContributions) {
-        if (advertised.getType() == info.getType() &&
-            advertised.getName().equals(info.getName())) {
+  /**
+   * Given a contribution that's already installed, find it in the list
+   * of available contributions to see if there is an update available.
+   */
+  protected AvailableContribution findAvailableContribution(Contribution contrib) {
+    synchronized (availableContribs) {
+      for (AvailableContribution advertised : availableContribs) {
+        if (advertised.getType() == contrib.getType() &&
+            advertised.getName().equals(contrib.getName())) {
           return advertised;
         }
       }
@@ -229,6 +224,7 @@ public class ContributionListing {
                                      tempContribFile, progress);
         if (progress.notCanceled() && !progress.isException()) {
           if (listingFile.exists()) {
+            //noinspection ResultOfMethodCallIgnored
             listingFile.delete();  // may silently fail, but below may still work
           }
           if (tempContribFile.renameTo(listingFile)) {
@@ -237,7 +233,7 @@ public class ContributionListing {
             try {
               // TODO: run this in SwingWorker done() [jv]
               EventQueue.invokeAndWait(() -> {
-                setAdvertisedList(listingFile);
+                loadAvailableList(listingFile);
                 base.tallyUpdatesAvailable();
               });
             } catch (InterruptedException e) {
@@ -265,6 +261,22 @@ public class ContributionListing {
   }
 
 
+  protected boolean isDownloaded() {
+    return listDownloaded;
+  }
+
+
+  private void loadAvailableList(File file) {
+    listingFile = file;
+
+    availableContribs.clear();
+    availableContribs.addAll(parseContribList(listingFile));
+    for (Contribution contribution : availableContribs) {
+      addContribution(contribution);
+    }
+  }
+
+
   /**
    * Bundles information about what contribs are installed, so that they can
    * be reported at the <a href="https://download.processing.org/stats/">stats</a> link.
@@ -289,27 +301,24 @@ public class ContributionListing {
 
   public boolean hasUpdates(Contribution contrib) {
     if (contrib.isInstalled()) {
-      Contribution advertised = getAvailableContribution(contrib);
-      if (advertised != null) {
-        return (advertised.getVersion() > contrib.getVersion() &&
-                advertised.isCompatible(Base.getRevision()));
-      }
+      Contribution available = findAvailableContribution(contrib);
+      return available != null &&
+        (available.getVersion() > contrib.getVersion() &&
+         available.isCompatible(Base.getRevision()));
     }
     return false;
   }
 
 
+  /**
+   * Get the human-readable version number from the available list.
+   */
   protected String getLatestPrettyVersion(Contribution contrib) {
-    Contribution newestContrib = getAvailableContribution(contrib);
-    if (newestContrib == null) {
-      return null;
+    Contribution newestContrib = findAvailableContribution(contrib);
+    if (newestContrib != null) {
+      return newestContrib.getPrettyVersion();
     }
-    return newestContrib.getPrettyVersion();
-  }
-
-
-  protected boolean isDownloaded() {
-    return listDownloaded;
+    return null;
   }
 
 

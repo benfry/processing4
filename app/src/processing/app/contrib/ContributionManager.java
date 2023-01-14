@@ -552,7 +552,7 @@ public class ContributionManager {
     // https://github.com/processing/processing/issues/5823
     if (installList != null) {
       for (File file : installList) {
-        for (AvailableContribution contrib : contribListing.advertisedContributions) {
+        for (AvailableContribution contrib : contribListing.availableContribs) {
           if (file.getName().equals(contrib.getName())) {
             file.delete();
             installOnStartUp(base, contrib);
@@ -638,7 +638,7 @@ public class ContributionManager {
       }
     }
 
-    for (AvailableContribution contrib : contribListing.advertisedContributions) {
+    for (AvailableContribution contrib : contribListing.availableContribs) {
       if (updateContribsNames.contains(contrib.getName())) {
         updateContribsList.add(contrib);
       }

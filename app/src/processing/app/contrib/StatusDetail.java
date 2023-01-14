@@ -30,7 +30,6 @@ import javax.swing.JProgressBar;
 
 import processing.app.*;
 import processing.app.laf.PdeProgressBarUI;
-import processing.app.ui.Toolkit;
 
 
 /**
@@ -179,7 +178,7 @@ class StatusDetail {
         public void finishedAction() {
           statusPanel.resetProgressBar();
           AvailableContribution ad =
-            contribListing.getAvailableContribution(contrib);
+            contribListing.findAvailableContribution(contrib);
           // install the new version of the Mode (or Tool)
           installContribution(ad, ad.link);
         }
@@ -201,7 +200,7 @@ class StatusDetail {
 
     } else {
       AvailableContribution ad =
-        contribListing.getAvailableContribution(contrib);
+        contribListing.findAvailableContribution(contrib);
       installContribution(ad, ad.link);
     }
   }

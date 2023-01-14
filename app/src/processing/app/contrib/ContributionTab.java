@@ -277,7 +277,7 @@ public class ContributionTab extends JPanel {
   private Set<String> listCategories() {
     Set<String> categories = new HashSet<>();
 
-    for (Contribution c : ContributionListing.getInstance().allContributions) {
+    for (Contribution c : ContributionListing.getInstance().allContribs) {
       if (filter.matches(c)) {
         for (String category : c.getCategories()) {
           categories.add(category);
@@ -293,8 +293,11 @@ public class ContributionTab extends JPanel {
       categoryChooser.removeAllItems();
 
       Set<String> categories = listCategories();
-      if (categories.size() == 1 &&
-          categories.contains(Contribution.UNKNOWN_CATEGORY)) {
+      // this is a complicated way of saying "if this is the libraries tab"
+      //if (categories.size() == 1 &&
+      //    categories.contains(Contribution.UNKNOWN_CATEGORY)) {
+      if (categories.isEmpty() || // listing not loaded yet
+          contribType != ContributionType.LIBRARY) {
         // Add dummy item for sizing purposes
         // https://github.com/processing/processing4/issues/520
         categoryChooser.addItem("NULL");
@@ -329,12 +332,12 @@ public class ContributionTab extends JPanel {
   }
 
 
-  /*
   // TODO Why is this entire set of code only running when Editor
   //      is not null... And what's it doing anyway? Shouldn't it run
   //      on all editors? (The change to getActiveEditor() was made
   //      for 4.0b8 because the Editor may have been closed after the
   //      Contrib Manager was opened.) [fry 220311]
+  /*
   protected void updateContributionListing() {
     Editor editor = base.getActiveEditor();
     if (editor != null) {
