@@ -698,9 +698,11 @@ public class Toolkit {
    */
   static public ImageIcon renderIcon(File file, String color, int size) {
     Image image = renderMonoImage(file, color, size);
-    if (image == null) {
-      return null;
-    }
+    return (image != null) ? wrapIcon(image) : null;
+  }
+
+
+  static public ImageIcon wrapIcon(Image image) {
     final int scale = Toolkit.highResImages() ? 2 : 1;
 
     return new ImageIcon(image) {
