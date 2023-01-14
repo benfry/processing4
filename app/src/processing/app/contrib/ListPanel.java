@@ -318,10 +318,8 @@ public class ListPanel extends JPanel implements Scrollable {
       SortKey sortKey = getSortKey(table);
       if (sortKey != null && table.convertColumnIndexToView(sortKey.getColumn()) == column) {
         switch (sortKey.getSortOrder()) {
-          case ASCENDING:
-            return "  ↓";
-          case DESCENDING:
-            return "  ↑";
+          case ASCENDING -> { return "  ↓"; }
+          case DESCENDING -> { return "  ↑"; }
         }
       }
       // if not sorting on this column
