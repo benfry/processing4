@@ -72,9 +72,14 @@ X   should not even be run, because the contribs load on startup
 X   but ContributionTab.tryAgainButton needs to be able to request re-download
 X removed old workaround for NPE
 X   https://github.com/processing/processing/issues/3667
+X contrib categories are broken
+X   showing 'all' on all tabs
+X   not showing categories at all for libs
 
-_ contrib categories are broken
-_   showing 'all' on all tabs, not showing categories at all for libs
+_ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
+_   https://github.com/processing/processing4/issues/618
+_ get rid of dummy progress bar being created in StatusDetail.update()
+_   would be good to *add* a progress bar of some kind, but sheesh
 
 _ updateDetail() call in StatusPanel.updateTheme()
 _   move to ListPanel.updateTheme() (why wasn't it there?)
@@ -83,11 +88,7 @@ _   ugh, it's called twice, right nearby each other; yikes
 _ rip out JProgressBar from StatusPanel/StatusDetail
 _   show progress in the list instead
 _   also make possible to start install by clicking the list
-_ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
-_   https://github.com/processing/processing4/issues/618
 
-_ get rid of dummy progress bar being created in StatusDetail.update()
-_   would be good to *add* a progress bar of some kind, but sheesh
 _ if contribution listing is still downloading, need to indicate
 _   especially when no previous contribs.txt is in the prefs folder
 _ if no internet available, install buttons disabled, but not clear why broken

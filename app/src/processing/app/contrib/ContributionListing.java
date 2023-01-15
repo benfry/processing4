@@ -98,30 +98,20 @@ public class ContributionListing {
    * If it matches an entry from contribs.txt, replace that entry.
    * If not, add it to the list as a new contrib.
    */
-  protected void updateInstalled(Set<Contribution> installed) {
-//    Map<Contribution, Contribution> replacements = new HashMap<>();
-//    Set<Contribution> additions = new HashSet<>();
+  static protected void updateInstalled(Set<Contribution> installed) {
+    ContributionListing listing = getInstance();
 
     for (Contribution contribution : installed) {
-      Contribution existingContribution = findContribution(contribution);
+      Contribution existingContribution = listing.findContribution(contribution);
       if (existingContribution != null) {
         if (existingContribution != contribution) {
           // don't replace contrib with itself
-          replaceContribution(existingContribution, contribution);
-//          replacements.put(existingContribution, contribution);
+          listing.replaceContribution(existingContribution, contribution);
         }
       } else {
-        addContribution(contribution);
-//        additions.add(contribution);
+        listing.addContribution(contribution);
       }
     }
-
-//    for (Contribution existing : replacements.keySet()) {
-//      replaceContribution(existing, replacements.get(existing));
-//    }
-//    for (Contribution adding : additions) {
-//      addContribution(adding);
-//    }
   }
 
 
@@ -276,6 +266,7 @@ public class ContributionListing {
   }
 
 
+  // Thread: EDT
   private void loadAvailableList(File file) {
     listingFile = file;
 

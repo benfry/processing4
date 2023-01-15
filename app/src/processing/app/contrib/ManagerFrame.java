@@ -89,20 +89,14 @@ public class ManagerFrame {
     ContributionTab showTab = getTab(contributionType);
     if (frame == null) {
       makeFrame();
-      // done before as downloadAndUpdateContributionListing()
-      // requires the current selected tab
-//      tabs.setPanel(showTab);
-      //downloadAndUpdateContributionListing();
-//      ContributionListing.updateInstalled(base);
-//      showTab.activate();
-//    } else {
-      ContributionListing.getInstance().updateInstalled(base.getInstalledContribs());
+      // Update the list of contribs with what's installed locally.
+      ContributionListing.updateInstalled(base.getInstalledContribs());
+      // Set the list of categories on first use. If a new category is added
+      // from an already-installed contrib, or in the downloaded contribs list,
+      // it won't be included. Yech! But practically speaking… [fry 230114]
+      getTab(ContributionType.LIBRARY).updateCategoryChooser();
     }
     tabs.setPanel(showTab);
-//    if (contributionType == null) {
-//      showTab.listPanel.model.fireTableDataChanged();
-//      System.out.println("rows: " + showTab.listPanel.model.getRowCount());
-//    }
     frame.setVisible(true);
     // Avoid the search box taking focus and hiding the 'search' text
     tabs.requestFocusInWindow();
