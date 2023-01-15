@@ -117,7 +117,6 @@ class StatusDetail {
             Thread.sleep(100);
           } catch (InterruptedException ignored) { }
         }
-        System.out.println("exiting animation");
       });
       thread.start();
     }
