@@ -40,18 +40,12 @@ public enum ContributionType {
 
 
   public String toString() {
-    switch (this) {
-    case LIBRARY:
-      return "library";
-    case MODE:
-      return "mode";
-    case TOOL:
-      return "tool";
-    case EXAMPLES:
-      return "examples";
-    default:
-      throw new IllegalArgumentException();
-    }
+    return switch (this) {
+      case LIBRARY -> "library";
+      case MODE -> "mode";
+      case TOOL -> "tool";
+      case EXAMPLES -> "examples";
+    };
   }
 
 
@@ -112,17 +106,12 @@ public enum ContributionType {
 
 
   public File getSketchbookFolder() {
-    switch (this) {
-    case LIBRARY:
-      return Base.getSketchbookLibrariesFolder();
-    case TOOL:
-      return Base.getSketchbookToolsFolder();
-    case MODE:
-      return Base.getSketchbookModesFolder();
-    case EXAMPLES:
-      return Base.getSketchbookExamplesFolder();
-    }
-    return null;
+    return switch (this) {
+      case LIBRARY -> Base.getSketchbookLibrariesFolder();
+      case TOOL -> Base.getSketchbookToolsFolder();
+      case MODE -> Base.getSketchbookModesFolder();
+      case EXAMPLES -> Base.getSketchbookExamplesFolder();
+    };
   }
 
 
@@ -203,38 +192,26 @@ public enum ContributionType {
 
 
   LocalContribution load(Base base, File folder) {
-    switch (this) {
-    case LIBRARY:
-      //return new Library(folder);
-      return Library.load(folder);
-    case TOOL:
-      return ToolContribution.load(folder);
-    case MODE:
-      return ModeContribution.load(base, folder);
-    case EXAMPLES:
-      return ExamplesContribution.load(folder);
-    }
-    return null;
+    return switch (this) {
+      case LIBRARY -> Library.load(folder);
+      case TOOL -> ToolContribution.load(folder);
+      case MODE -> ModeContribution.load(base, folder);
+      case EXAMPLES -> ExamplesContribution.load(folder);
+    };
   }
 
 
   List<LocalContribution> listContributions(Base base, Editor editor) {
     List<LocalContribution> contribs = new ArrayList<>();
     switch (this) {
-    case LIBRARY:
-      if (editor != null) {
-        contribs.addAll(editor.getMode().contribLibraries);
+      case LIBRARY -> {
+        if (editor != null) {
+          contribs.addAll(editor.getMode().contribLibraries);
+        }
       }
-      break;
-    case TOOL:
-      contribs.addAll(base.getContribTools());
-      break;
-    case MODE:
-      contribs.addAll(base.getContribModes());
-      break;
-    case EXAMPLES:
-      contribs.addAll(base.getContribExamples());
-      break;
+      case TOOL -> contribs.addAll(base.getContribTools());
+      case MODE -> contribs.addAll(base.getContribModes());
+      case EXAMPLES -> contribs.addAll(base.getContribExamples());
     }
     return contribs;
   }
