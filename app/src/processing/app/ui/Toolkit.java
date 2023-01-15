@@ -881,17 +881,17 @@ public class Toolkit {
   */
 
 
-  /**
-   * Create an Image to be used as an offscreen drawing context,
-   * automatically doubling the size if running on a retina display.
-   */
-  static public Image offscreenGraphics(Component comp, int width, int height) {
-//    if (ISSUE_342) {
-//      return comp.createImage(dpiScale(width), dpiScale(height));
-//    }
-    int m = Toolkit.isRetina() ? 2 : 1;
-    return comp.createImage(m * width, m * height);
-  }
+//  /**
+//   * Create an Image to be used as an offscreen drawing context,
+//   * automatically doubling the size if running on a retina display.
+//   */
+//  static public Image offscreenGraphics(Component comp, int width, int height) {
+////    if (ISSUE_342) {
+////      return comp.createImage(dpiScale(width), dpiScale(height));
+////    }
+//    int m = Toolkit.isRetina() ? 2 : 1;
+//    return comp.createImage(m * width, m * height);
+//  }
 
 
   static public Graphics2D prepareGraphics(Image image) {

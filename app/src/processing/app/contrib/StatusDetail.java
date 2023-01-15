@@ -102,14 +102,17 @@ class StatusDetail {
   }
 
 
-  class StatusAnimator {
+  static class StatusAnimator {
     Thread thread;
 
     StatusAnimator(ListPanel listPanel) {
       thread = new Thread(() -> {
         while (Thread.currentThread() == thread) {
-          //listPanel.repaint();  // stopped working
+          //listPanel.repaint();
           listPanel.table.repaint();
+          // TODO Ideally this should be only calling update on the relevant
+          //      cell with model.fireTableCellUpdated(), but that requires
+          //      more state housekeeping that's already broken. [fry 230115]
           try {
             Thread.sleep(100);
           } catch (InterruptedException ignored) { }

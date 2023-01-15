@@ -25,6 +25,7 @@ import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -216,22 +217,15 @@ public class ListPanel extends JPanel implements Scrollable {
     final float FFS_JAVA2D = ICON_SIZE - 1.5f;
 //    final int scale = Toolkit.highResImages() ? 2 : 1;
 //    final int dim = ICON_SIZE * scale;
-    Image image = Toolkit.offscreenGraphics(this, ICON_SIZE, ICON_SIZE);
-//    Image image = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
+    final int dim = ICON_SIZE * (Toolkit.highResImages() ? 2 : 1);
+//    Image image = Toolkit.offscreenGraphics(this, ICON_SIZE, ICON_SIZE);
+    Image image = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
 //    Graphics2D g2 = (Graphics2D) image.getGraphics();
 //    Toolkit.prepareGraphics(g2);
     Graphics2D g2 = Toolkit.prepareGraphics(image);
-//    g2.scale(scale, scale);
 
-//    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-//      RenderingHints.VALUE_ANTIALIAS_ON);
-//    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
-//      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-//    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-//      RenderingHints.VALUE_INTERPOLATION_BICUBIC);
-
-    g2.setColor(rowColor);
-    g2.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
+//    g2.setColor(rowColor);
+//    g2.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
     g2.translate(0.5, 0.5);
 
     g2.setStroke(new BasicStroke(1.5f));
@@ -256,11 +250,13 @@ public class ListPanel extends JPanel implements Scrollable {
       g2.fill(circle);
 
       g2.translate(FFS_JAVA2D/2, FFS_JAVA2D/2);
-      int angle = (int) (System.currentTimeMillis() / 1000) % 360;
+      // offset by epoch to avoid integer out of bounds
+      final long EPOCH = 1673802150579L;
+      int angle = (int) ((System.currentTimeMillis() - EPOCH) / 10) % 360;
       g2.rotate(angle);
 
       g2.setColor(rowColor);
-      float lineRadius = FFS_JAVA2D * 0.4f;
+      float lineRadius = FFS_JAVA2D * 0.3f;
       g2.draw(new Line2D.Float(-lineRadius, 0, lineRadius, 0));
     }
 
