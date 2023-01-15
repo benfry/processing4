@@ -31,6 +31,8 @@ import processing.app.Library;
 import processing.app.Messages;
 import processing.app.Util;
 import processing.app.ui.Editor;
+import processing.core.PApplet;
+import processing.data.StringDict;
 
 
 public enum ContributionType {
@@ -66,6 +68,17 @@ public enum ContributionType {
   /** Get the name of the properties file for this type of contribution. */
   public String getPropertiesName() {
     return this + ".properties";
+  }
+
+
+  public StringDict loadProperties(File contribFolder) {
+    File propertiesFile = new File(contribFolder, getPropertiesName());
+    if (propertiesFile.exists()) {
+      return Util.readSettings(propertiesFile, false);
+    } else {
+      System.err.println("Not found: " + propertiesFile);
+    }
+    return null;
   }
 
 
@@ -116,7 +129,35 @@ public enum ContributionType {
   public boolean isCandidate(File potential) {
     return (potential.isDirectory() &&
             new File(potential, toString()).exists() &&
-            !isTempFolderName(potential.getName()));
+            !isTempFolderName(potential.getName()) &&
+            isCompatible(potential));
+  }
+
+
+  /**
+   * Whether this contrib is compatible with this revision of Processing.
+   */
+  private boolean isCompatible(File contribFolder) {
+    StringDict properties = loadProperties(contribFolder);
+    if (properties != null) {
+      final int revisionNum = Base.getRevision();
+
+      int minRevision = 0;
+      String minRev = properties.get("minRevision");
+      if (minRev != null) {
+        minRevision = PApplet.parseInt(minRev, 0);
+      }
+
+      int maxRevision = 0;
+      String maxRev = properties.get("maxRevision");
+      if (maxRev != null) {
+        maxRevision = PApplet.parseInt(maxRev, 0);
+      }
+
+      return ((maxRevision == 0 || revisionNum <= maxRevision) && revisionNum >= minRevision);
+    }
+    // Maybe it's ok, maybe it's not. Don't know him; can't vouch for him.
+    return true;
   }
 
 

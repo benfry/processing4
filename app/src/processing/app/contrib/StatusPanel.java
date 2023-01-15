@@ -45,7 +45,6 @@ import processing.app.laf.PdeButtonUI;
 import processing.app.laf.PdeProgressBarUI;
 import processing.app.ui.Theme;
 import processing.app.ui.Toolkit;
-import processing.app.Base;
 import processing.app.Platform;
 
 
@@ -414,10 +413,10 @@ class StatusPanel extends JPanel {
 
     installButton.setEnabled(!contrib.isInstalled() &&
                              listing.isDownloaded() &&
-                             contrib.isCompatible(Base.getRevision()) &&
+                             contrib.isCompatible() &&
                              !detail.installInProgress);
 
-    if (contrib.isCompatible(Base.getRevision())) {
+    if (contrib.isCompatible()) {
       if (installButton.isEnabled()) {
         if (latestVersion != null) {
           updateLabel.setText(latestVersion + " available");

@@ -773,10 +773,10 @@ public class Base {
       contribModes = new ArrayList<>();
     }
     File modesFolder = getSketchbookModesFolder();
-    List<ModeContribution> contribModes = getContribModes();
+    List<ModeContribution> knownList = getContribModes();
 
     Map<File, ModeContribution> known = new HashMap<>();
-    for (ModeContribution contrib : contribModes) {
+    for (ModeContribution contrib : knownList) {
       known.put(contrib.getFolder(), contrib);
     }
     File[] potential = ContributionType.MODE.listCandidates(modesFolder);
@@ -1599,7 +1599,7 @@ public class Base {
                              "while opening a new editor window. Please report this.", t, true);
         } else {
           Messages.showTrace("Mode Problems",
-                             "A nasty error occurred while trying to use " + nextMode.getTitle() + ".\n" +
+                             "A nasty error occurred while trying to use “" + nextMode.getTitle() + "”.\n" +
                              "It may not be compatible with this version of Processing.\n" +
                              "Try updating the Mode or contact its author for a new version.", t, false);
         }

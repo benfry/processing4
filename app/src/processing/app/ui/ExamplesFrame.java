@@ -57,7 +57,6 @@ import processing.app.Mode;
 import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.SketchReference;
-import processing.app.contrib.Contribution;
 import processing.app.contrib.ContributionManager;
 import processing.app.contrib.ContributionType;
 import processing.app.contrib.ExamplesContribution;
@@ -350,9 +349,10 @@ public class ExamplesFrame extends JFrame {
       if (folders != null) {
         for (File sub : folders) {
           StringDict props =
-            Contribution.loadProperties(sub, ContributionType.EXAMPLES);
+            //Contribution.loadProperties(sub, ContributionType.EXAMPLES);
+            ContributionType.EXAMPLES.loadProperties(sub);
           if (props != null) {
-            if (ExamplesContribution.isCompatible(base, props)) {
+            if (ExamplesContribution.isModeCompatible(base, props)) {
               DefaultMutableTreeNode subNode =
                 new DefaultMutableTreeNode(props.get("name"));
               if (base.addSketches(subNode, sub, true)) {

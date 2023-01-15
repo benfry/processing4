@@ -306,8 +306,8 @@ public class ContributionListing {
     if (contrib.isInstalled()) {
       Contribution available = findAvailableContribution(contrib);
       return available != null &&
-        (available.getVersion() > contrib.getVersion() &&
-         available.isCompatible(Base.getRevision()));
+        available.getVersion() > contrib.getVersion() &&
+        available.isCompatible();
     }
     return false;
   }

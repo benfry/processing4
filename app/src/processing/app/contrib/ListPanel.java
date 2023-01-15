@@ -103,7 +103,7 @@ public class ListPanel extends JPanel implements Scrollable {
         if (rowValue instanceof SectionHeaderContribution) {
           c.setBackground(sectionColor);
         } else if (isRowSelected(row)) {
-          if (((Contribution) rowValue).isCompatible(Base.getRevision())) {
+          if (((Contribution) rowValue).isCompatible()) {
             c.setBackground(selectionColor);
           } else {
             c.setBackground(selectionColorIncompatible);
@@ -238,7 +238,7 @@ public class ListPanel extends JPanel implements Scrollable {
       if (ContributionListing.getInstance().hasUpdates(c)) {
         pos = 2;
       }
-      if (!c.isCompatible(Base.getRevision())) {
+      if (!c.isCompatible()) {
         // This is weird because it means some grayed-out items will
         // show up before non-gray items. We probably need another
         // state icon for 'installed but incompatible' [fry 220116]
@@ -387,7 +387,7 @@ public class ListPanel extends JPanel implements Scrollable {
       if (contribution instanceof SectionHeaderContribution) {
         // grouping color for libraries, modes, tools headers in updates panel
         label.setForeground(textColorIncompatible);
-      } else if (contribution.isCompatible(Base.getRevision())) {
+      } else if (contribution.isCompatible()) {
         label.setForeground(textColor);
       } else {
         label.setForeground(textColorIncompatible);
@@ -405,7 +405,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //        float amount = detail.getProgressAmount();
 //        icon = (amount == -1) ? downloadingIcon : renderProgressIcon(amount);
       } else if (contribution.isInstalled()) {
-        if (!contribution.isCompatible(Base.getRevision())) {
+        if (!contribution.isCompatible()) {
           icon = incompatibleIcon;
         } else if (ContributionListing.getInstance().hasUpdates(contribution)) {
           icon = updateAvailableIcon;

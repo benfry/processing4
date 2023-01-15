@@ -60,8 +60,8 @@ public class ExamplesContribution extends LocalContribution {
   }
 
 
-  static public boolean isCompatible(Base base, StringDict props) {
-    return isCompatible(base.getActiveEditor().getMode(), props);
+  static public boolean isModeCompatible(Base base, StringDict props) {
+    return isModeCompatible(base.getActiveEditor().getMode(), props);
   }
 
 
@@ -69,7 +69,7 @@ public class ExamplesContribution extends LocalContribution {
    * Determine whether the example is compatible with the current Mode.
    * @return true if compatible with the Mode of the currently active editor
    */
-  static public boolean isCompatible(Mode mode, StringDict props) {
+  static public boolean isModeCompatible(Mode mode, StringDict props) {
     String currentIdentifier = mode.getIdentifier();
     StringList compatibleList = parseModeList(props);
     if (compatibleList.size() == 0) {
