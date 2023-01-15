@@ -22,7 +22,7 @@
 package processing.app.contrib;
 
 import java.awt.EventQueue;
-import java.io.*;
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.net.*;
 import java.util.*;
@@ -51,12 +51,11 @@ public class ContributionListing {
   private File listingFile;
   private boolean listDownloaded;
 //  boolean listDownloadFailed;
-  private ReentrantLock downloadingLock;
+  final private ReentrantLock downloadingLock = new ReentrantLock();
 
   final Set<AvailableContribution> availableContribs;
-  private Map<String, Contribution> importToLibrary;
-  //private CopyOnWriteArrayList<Contribution> allContribs;
-  private Set<Contribution> allContribs;
+  final private Map<String, Contribution> importToLibrary;
+  final private Set<Contribution> allContribs;
 
   Set<ListPanel> listPanels;
 
@@ -66,8 +65,6 @@ public class ContributionListing {
     availableContribs = new HashSet<>();
     importToLibrary = new HashMap<>();
     allContribs = ConcurrentHashMap.newKeySet();
-//    allContribs = new CopyOnWriteArrayList<>();
-    downloadingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
     if (listingFile.exists()) {
@@ -209,7 +206,6 @@ public class ContributionListing {
    */
   public void downloadAvailableList(final Base base,
                                     final ContribProgress progress) {
-
     // TODO: replace with SwingWorker [jv]
     new Thread(() -> {
       downloadingLock.lock();
