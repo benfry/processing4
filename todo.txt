@@ -100,39 +100,13 @@ o   assume this is part of the section header mess, but… weird
 X   haven't seen again
 o when no entry selected in the status panel, need to clear the detail panel
 X   can't do it because the entries de-select all the time (on install!)
+X make note in docs that .properties file *must* be utf-8 (usually iso8859-1)
+X   if not it'll make things gross (andre sier flob library)
+X add tool.properties to MovieMaker
+o ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
+o   seems to be out of sync/unavailable data based on more recent contrib changes?
+X   should be resolved with more recent changes
 
-
-_ entries in the list de-select on install or all the excessive contrib changes
-_   this means we can never clear the status panel
-_   need to fix the excessive data model and contribChanged() calls first
-
-_ Update All with several entries is really locking things up
-_   not clear if it's work being done on the EDT
-_   or that all the threads are running immediately (rather than sequentially)
-_   probably need to move these into an Executor
-
-_ rip out JProgressBar from StatusPanel/StatusDetail
-_   show progress in the list instead
-_   also make possible to start install by clicking the list
-
-_ if contribution listing is still downloading, need to indicate
-_   especially when no previous contribs.txt is in the prefs folder
-/ if no internet available, install buttons disabled, but not clear why broken
-X   update button no longer disabled
-_   but still need to indicate internet unavailable on install errors
-_ currently no indication that contrib download failed
-_   so the 'try again' won't show up; everything looks fine
-_   (was this for the contrib listing? or an actual contrib?)
-_ also if update check disabled, user isn't notified that contribs unavailable
-/ Base.setUpdatesAvailable() is called from half a dozen places!?
-X   this is now tallyUpdatesAvailable() a
-_ how to handle contrib manager download/retry/etc and showing progress
-
-
-_ make note in docs that .properties file *must* be utf-8 (usually iso8859-1)
-_   if not it'll make things gross (andre sier flob library)
-
-_ add tool.properties to MovieMaker
 
 _ make ctrl-g work inside the find window
 
@@ -419,8 +393,29 @@ _ when adding a new library, its examples aren't added to the list until restart
 
 PDE / Manager (4.x notes)
 
-_ ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
-_   seems to be out of sync/unavailable data based on more recent contrib changes?
+_ Update All with several entries is really locking things up
+_   not clear if it's work being done on the EDT
+_   or that all the threads are running immediately (rather than sequentially)
+_   probably need to move these into an Executor
+_ rip out JProgressBar from StatusPanel/StatusDetail
+X   show progress in the list instead
+_   also make possible to start install by clicking the list
+_ if contribution listing is still downloading, need to indicate
+_   especially when no previous contribs.txt is in the prefs folder
+/ if no internet available, install buttons disabled, but not clear why broken
+X   update button no longer disabled
+_   but still need to indicate internet unavailable on install errors
+_ currently no indication that contrib download failed
+_   so the 'try again' won't show up; everything looks fine
+_   (was this for the contrib listing? or an actual contrib?)
+_ also if update check disabled, user isn't notified that contribs unavailable
+/ Base.setUpdatesAvailable() is called from half a dozen places!?
+X   this is now tallyUpdatesAvailable() a
+_ how to handle contrib manager download/retry/etc and showing progress
+_ entries in the list de-select on install or all the excessive contrib changes
+_   (i.e. note how hitting 'Install' actually deselects the entry in the list, ugh)
+_   this means we can never clear the status panel
+_   need to fix the excessive data model and contribChanged() calls first
 _ holy s*t ContributionTableModel is using all of the contribs
 _ after failed update of Mode, the button is no longer available
 _   have to click something else, then click back on the Mode line again
