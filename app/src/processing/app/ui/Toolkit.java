@@ -894,6 +894,11 @@ public class Toolkit {
   }
 
 
+  static public Graphics2D prepareGraphics(Image image) {
+    return prepareGraphics(image.getGraphics(), true);
+  }
+
+
   static public Graphics2D prepareGraphics(Graphics g) {
     return prepareGraphics(g, false);
   }

@@ -102,10 +102,35 @@ class StatusDetail {
   }
 
 
-  private void installContribution(AvailableContribution ad, String url) {
+  class StatusAnimator {
+    Thread thread;
+
+    StatusAnimator(ListPanel listPanel) {
+      thread = new Thread(() -> {
+        while (Thread.currentThread() == thread) {
+          listPanel.repaint();
+          try {
+            System.out.println("animating " + System.currentTimeMillis());
+            Thread.sleep(250);
+          } catch (InterruptedException ignored) { }
+        }
+        System.out.println("exiting animation");
+      });
+      thread.start();
+    }
+
+    void stop() {
+      thread = null;
+    }
+  }
+
+
+  private void installContribution(AvailableContribution ad, ListPanel listPanel) {
     try {
-      URL downloadUrl = new URL(url);
+      URL downloadUrl = new URL(ad.link);
       progressBar.setVisible(true);
+
+      final StatusAnimator spinner = new StatusAnimator(listPanel);
 
       ContribProgress downloadProgress = new ContribProgress(progressBar) {
         public void finishedAction() { }
@@ -122,6 +147,9 @@ class StatusDetail {
           // if it was a Mode, restore any sketches
           //if (contrib.getType() == ContributionType.MODE) {  // no need
           restoreSketches();
+
+          // stop animating the installation
+          spinner.stop();
         }
 
         public void cancelAction() {
@@ -140,14 +168,15 @@ class StatusDetail {
   }
 
 
-  protected void installContrib() {
+  protected void installContrib(ListPanel listPanel) {
     statusPanel.clearMessage();
     installInProgress = true;
     if (contrib instanceof AvailableContribution info) {
       if (info.link == null) {
         statusPanel.setErrorMessage(Language.interpolate("contrib.missing_link", info.getType()));
       } else {
-        installContribution(info, info.link);
+        System.out.println("starting install of " + info);
+        installContribution(info, listPanel);
         // NOTE As of 4.1.1 this was being called even if the error message
         //      above was getting called. Probably harmless, especially since
         //      the error may never happen, but still… weird. [fry 230114]
@@ -155,6 +184,7 @@ class StatusDetail {
         //      should be doing an actual replacement (i.e. what happens with
         //      the previous contrib?) And because it's usually (always?) not
         //      actually removing anything, shouldn't this be add? [fry 230114]
+        System.out.println("calling replace for " + info);
         ContributionListing.getInstance().replaceContribution(contrib, contrib);
       }
     }
@@ -164,7 +194,7 @@ class StatusDetail {
   // TODO Update works by first calling a remove, and then ContribProgress,
   //      of all things, calls install() in its finishedAction() method.
   //      FFS this is gross. [fry 220311]
-  protected void updateContrib() {
+  protected void updateContrib(ListPanel listPanel) {
     statusPanel.clearMessage();
     updateInProgress = true;
 
@@ -182,7 +212,7 @@ class StatusDetail {
           AvailableContribution ad =
             contribListing.findAvailableContribution(contrib);
           // install the new version of the Mode (or Tool)
-          installContribution(ad, ad.link);
+          installContribution(ad, listPanel);
         }
 
         @Override
@@ -203,7 +233,7 @@ class StatusDetail {
     } else {
       AvailableContribution ad =
         contribListing.findAvailableContribution(contrib);
-      installContribution(ad, ad.link);
+      installContribution(ad, listPanel);
     }
   }
 

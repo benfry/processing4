@@ -103,6 +103,7 @@ X   haven't seen again
 _ Update All with several entries is really locking things up
 _   not clear if it's work being done on the EDT
 _   or that all the threads are running immediately (rather than sequentially)
+_   probably need to move these into an Executor
 
 _ rip out JProgressBar from StatusPanel/StatusDetail
 _   show progress in the list instead

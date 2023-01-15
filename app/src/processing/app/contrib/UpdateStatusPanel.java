@@ -75,7 +75,7 @@ public class UpdateStatusPanel extends StatusPanel {
     for (StatusDetail detail : listPanel.detailForContrib.values()) {
       // Set the fake detail object so progressBar is set.
       applyDetail(detail);
-      detail.updateContrib();
+      detail.updateContrib(listPanel);
     }
     listPanel.model.fireTableDataChanged();
   }

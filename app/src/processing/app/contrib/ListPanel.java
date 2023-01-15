@@ -22,6 +22,9 @@
 package processing.app.contrib;
 
 import java.awt.*;
+import java.awt.geom.Arc2D;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
@@ -210,13 +213,58 @@ public class ListPanel extends JPanel implements Scrollable {
 
 
   Icon renderProgressIcon(float amount) {
-    final int scale = Toolkit.highResImages() ? 2 : 1;
-    final int dim = ICON_SIZE * scale;
-    Image image = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g2 = (Graphics2D) image.getGraphics();
-    g2.scale(scale, scale);
-    g2.setColor(Color.ORANGE);
-    g2.fillRect(0, 0, (int) (amount * ICON_SIZE), ICON_SIZE);
+//    final int FFS_JAVA2D = ICON_SIZE - 2;
+    final float FFS_JAVA2D = ICON_SIZE - 1.5f;
+//    final int scale = Toolkit.highResImages() ? 2 : 1;
+//    final int dim = ICON_SIZE * scale;
+    Image image = Toolkit.offscreenGraphics(this, ICON_SIZE, ICON_SIZE);
+//    Image image = new BufferedImage(dim, dim, BufferedImage.TYPE_INT_ARGB);
+//    Graphics2D g2 = (Graphics2D) image.getGraphics();
+//    Toolkit.prepareGraphics(g2);
+    Graphics2D g2 = Toolkit.prepareGraphics(image);
+//    g2.scale(scale, scale);
+
+//    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+//      RenderingHints.VALUE_ANTIALIAS_ON);
+//    g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+//      RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+//    g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+//      RenderingHints.VALUE_INTERPOLATION_BICUBIC);
+
+    g2.setColor(rowColor);
+    g2.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
+    g2.translate(0.5, 0.5);
+
+    g2.setStroke(new BasicStroke(1.5f));
+
+    Color iconColor = Theme.getColor("manager.list.icon.color");
+    g2.setColor(iconColor);
+
+//    g2.drawOval(0, 0, FFS_JAVA2D, FFS_JAVA2D);
+    Ellipse2D circle = new Ellipse2D.Float(0, 0, FFS_JAVA2D, FFS_JAVA2D);
+
+    if (amount != -1) {
+      // draw ever-growing pie wedge
+      g2.draw(circle);
+
+      int theta = (int) (360 * amount);
+//      g2.fillArc(0, 0, ICON_SIZE-1, ICON_SIZE-1, 90, -theta);
+      Arc2D wedge = new Arc2D.Float(0, 0, FFS_JAVA2D, FFS_JAVA2D, 90, -theta, Arc2D.PIE);
+      g2.fill(wedge);
+
+    } else {
+      // draw indeterminate state
+      g2.fill(circle);
+
+      g2.translate(FFS_JAVA2D/2, FFS_JAVA2D/2);
+      int angle = (int) (System.currentTimeMillis() / 250) % 360;
+      g2.rotate(angle);
+
+      g2.setColor(rowColor);
+      float lineRadius = FFS_JAVA2D * 0.4f;
+      g2.draw(new Line2D.Float(-lineRadius, 0, lineRadius, 0));
+    }
+
     g2.dispose();
     return Toolkit.wrapIcon(image);
   }
@@ -400,9 +448,10 @@ public class ListPanel extends JPanel implements Scrollable {
 
       if (detail != null && (detail.updateInProgress || detail.installInProgress)) {
         // Display "loading" icon if download/install in progress
-        icon = downloadingIcon;
+//        icon = downloadingIcon;
 //        float amount = detail.getProgressAmount();
 //        icon = (amount == -1) ? downloadingIcon : renderProgressIcon(amount);
+        renderProgressIcon(detail.getProgressAmount());
       } else if (contribution.isInstalled()) {
         if (!contribution.isCompatible()) {
           icon = incompatibleIcon;
@@ -566,7 +615,7 @@ public class ListPanel extends JPanel implements Scrollable {
   }
 
 
-  class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
+  static class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
     Contribution.Filter contributionFilter;
     String categoryFilter;
     List<String> stringFilters = Collections.emptyList();

@@ -107,7 +107,7 @@ class StatusPanel extends JPanel {
       installButton.setEnabled(false);
       StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
-      currentDetail.installContrib();
+      currentDetail.installContrib(contributionTab.listPanel);
       applyDetail(currentDetail);
     });
 
@@ -125,7 +125,7 @@ class StatusPanel extends JPanel {
       updateButton.setEnabled(false);
       StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
-      currentDetail.updateContrib();
+      currentDetail.updateContrib(contributionTab.listPanel);
       applyDetail(currentDetail);
     });
 
