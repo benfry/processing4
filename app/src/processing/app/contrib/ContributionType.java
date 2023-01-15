@@ -136,6 +136,10 @@ public enum ContributionType {
 
   /**
    * Whether this contrib is compatible with this revision of Processing.
+   * Unfortunately, this requires the author to properly set this value.
+   * For instance, with “Python Mode for Processing 3” the max revision
+   * is set to 0 in mode.properties (meaning all newer Processing versions),
+   * even though it properly maxes out with 3.x in contribs.txt.
    */
   private boolean isCompatible(File contribFolder) {
     StringDict properties = loadProperties(contribFolder);

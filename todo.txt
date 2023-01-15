@@ -84,16 +84,16 @@ X updateDetail() call in StatusPanel.updateTheme()
 o   move to ListPanel.updateTheme() (why wasn't it there?)
 X   ugh, it's called twice, right nearby each other; yikes
 X   fix the double call, but just need to get rid of progress bars anyway
-
+X if Python Mode for 3.x is installed, it's allowed to be used and loaded
+o   shouldn't be loading it on startup if it's not compatible
+o   does this apply to other libraries as well?
+X   added checks for compatibility to ContributionType.isCandidate()
+X   but with Python Mode for 3.x, the problem is maxRevision is set to 0
+X   filed an issue https://github.com/jdf/processing.py/issues/406
 
 _ Update All with several entries is really locking things up
 _   not clear if it's work being done on the EDT
 _   or that all the threads are running immediately (rather than sequentially)
-
-
-_ if Python Mode for 3.x is installed, it's allowed to be used and loaded
-_   shouldn't be loading it on startup if it's not compatible
-_   does this apply to other libraries as well?
 
 _ rip out JProgressBar from StatusPanel/StatusDetail
 _   show progress in the list instead
@@ -108,6 +108,7 @@ _   so the 'try again' won't show up; everything looks fine
 _   (was this for the contrib listing? or an actual contrib?)
 _ Base.setUpdatesAvailable() is called from half a dozen places!?
 _ how to handle contrib manager download/retry/etc and showing progress
+
 
 _ make note in docs that .properties file *must* be utf-8 (usually iso8859-1)
 _   if not it'll make things gross (andre sier flob library)

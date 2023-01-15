@@ -773,10 +773,8 @@ public class Base {
       contribModes = new ArrayList<>();
     }
     File modesFolder = getSketchbookModesFolder();
-    List<ModeContribution> knownList = getContribModes();
-
     Map<File, ModeContribution> known = new HashMap<>();
-    for (ModeContribution contrib : knownList) {
+    for (ModeContribution contrib : getContribModes()) {
       known.put(contrib.getFolder(), contrib);
     }
     File[] potential = ContributionType.MODE.listCandidates(modesFolder);
