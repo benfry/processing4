@@ -91,6 +91,12 @@ X   added checks for compatibility to ContributionType.isCandidate()
 X   but with Python Mode for 3.x, the problem is maxRevision is set to 0
 X   filed an issue https://github.com/jdf/processing.py/issues/406
 
+_ section header is wrong on the updates panel
+_   installing/removing/updating anything will fix it
+_   so appears to be a dumb synchronization problem; yech
+_ saw the active download icon on a list item in the updates tab
+_   assume this is part of the section header mess, but… weird
+
 _ Update All with several entries is really locking things up
 _   not clear if it's work being done on the EDT
 _   or that all the threads are running immediately (rather than sequentially)
@@ -101,7 +107,9 @@ _   also make possible to start install by clicking the list
 
 _ if contribution listing is still downloading, need to indicate
 _   especially when no previous contribs.txt is in the prefs folder
-_ if no internet available, install buttons disabled, but not clear why broken
+/ if no internet available, install buttons disabled, but not clear why broken
+X   update button no longer disabled
+_   but still need to indicate internet unavailable
 _ also if update check disabled, user isn't notified that contribs unavailable
 _ currently no indication that contrib download failed
 _   so the 'try again' won't show up; everything looks fine
