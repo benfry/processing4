@@ -98,7 +98,13 @@ X   so appears to be a dumb synchronization problem; yech
 o saw the active download icon on a list item in the updates tab
 o   assume this is part of the section header mess, but… weird
 X   haven't seen again
+o when no entry selected in the status panel, need to clear the detail panel
+X   can't do it because the entries de-select all the time (on install!)
 
+
+_ entries in the list de-select on install or all the excessive contrib changes
+_   this means we can never clear the status panel
+_   need to fix the excessive data model and contribChanged() calls first
 
 _ Update All with several entries is really locking things up
 _   not clear if it's work being done on the EDT

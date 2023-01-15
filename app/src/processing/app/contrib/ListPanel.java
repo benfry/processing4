@@ -25,7 +25,6 @@ import java.awt.*;
 import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
-import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -257,7 +256,7 @@ public class ListPanel extends JPanel implements Scrollable {
       g2.fill(circle);
 
       g2.translate(FFS_JAVA2D/2, FFS_JAVA2D/2);
-      int angle = (int) (System.currentTimeMillis() / 250) % 360;
+      int angle = (int) (System.currentTimeMillis() / 1000) % 360;
       g2.rotate(angle);
 
       g2.setColor(rowColor);
@@ -451,7 +450,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //        icon = downloadingIcon;
 //        float amount = detail.getProgressAmount();
 //        icon = (amount == -1) ? downloadingIcon : renderProgressIcon(amount);
-        renderProgressIcon(detail.getProgressAmount());
+        icon = renderProgressIcon(detail.getProgressAmount());
       } else if (contribution.isInstalled()) {
         if (!contribution.isCompatible()) {
           icon = incompatibleIcon;

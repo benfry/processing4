@@ -108,10 +108,10 @@ class StatusDetail {
     StatusAnimator(ListPanel listPanel) {
       thread = new Thread(() -> {
         while (Thread.currentThread() == thread) {
-          listPanel.repaint();
+          //listPanel.repaint();  // stopped working
+          listPanel.table.repaint();
           try {
-            System.out.println("animating " + System.currentTimeMillis());
-            Thread.sleep(250);
+            Thread.sleep(100);
           } catch (InterruptedException ignored) { }
         }
         System.out.println("exiting animation");
@@ -175,7 +175,6 @@ class StatusDetail {
       if (info.link == null) {
         statusPanel.setErrorMessage(Language.interpolate("contrib.missing_link", info.getType()));
       } else {
-        System.out.println("starting install of " + info);
         installContribution(info, listPanel);
         // NOTE As of 4.1.1 this was being called even if the error message
         //      above was getting called. Probably harmless, especially since
@@ -184,7 +183,6 @@ class StatusDetail {
         //      should be doing an actual replacement (i.e. what happens with
         //      the previous contrib?) And because it's usually (always?) not
         //      actually removing anything, shouldn't this be add? [fry 230114]
-        System.out.println("calling replace for " + info);
         ContributionListing.getInstance().replaceContribution(contrib, contrib);
       }
     }
