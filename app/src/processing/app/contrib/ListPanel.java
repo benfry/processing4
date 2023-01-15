@@ -31,7 +31,6 @@ import javax.swing.*;
 import javax.swing.RowSorter.SortKey;
 import javax.swing.table.*;
 
-import processing.app.Base;
 import processing.app.Util;
 import processing.app.ui.Theme;
 import processing.app.laf.PdeScrollBarUI;
@@ -78,7 +77,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
   JScrollPane scrollPane;
 
-  static final SectionHeaderContribution[] sections = {
+  static final SectionHeaderContribution[] sectionHeaders = {
     new SectionHeaderContribution(ContributionType.LIBRARY),
     new SectionHeaderContribution(ContributionType.MODE),
     new SectionHeaderContribution(ContributionType.TOOL),
@@ -538,7 +537,7 @@ public class ListPanel extends JPanel implements Scrollable {
     public Object getValueAt(int rowIndex, int columnIndex) {
       Set<Contribution> allContribs = ContributionListing.getAllContribs();
       if (rowIndex >= allContribs.size()) {
-        return sections[rowIndex - allContribs.size()];
+        return sectionHeaders[rowIndex - allContribs.size()];
       }
       return allContribs.stream().skip(rowIndex).findFirst().orElse(null);
     }
@@ -567,7 +566,7 @@ public class ListPanel extends JPanel implements Scrollable {
   }
 
 
-  static class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
+  class ContributionRowFilter extends RowFilter<ContributionTableModel, Integer> {
     Contribution.Filter contributionFilter;
     String categoryFilter;
     List<String> stringFilters = Collections.emptyList();
@@ -587,6 +586,9 @@ public class ListPanel extends JPanel implements Scrollable {
     @Override
     public boolean include(Entry<? extends ContributionTableModel, ? extends Integer> entry) {
       Contribution contribution = (Contribution) entry.getValue(0);
+//      if (contributionTab.getName().equals("updates")) {
+//        System.out.println(contributionTab.getName() + " checking " + contribution.getName() + " for inclusion " + includeContribution(contribution));
+//      }
       if (contribution instanceof SectionHeaderContribution) {
         return includeSection((SectionHeaderContribution) contribution);
       }

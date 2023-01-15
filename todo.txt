@@ -92,12 +92,13 @@ X   but with Python Mode for 3.x, the problem is maxRevision is set to 0
 X   filed an issue https://github.com/jdf/processing.py/issues/406
 X replace contrib.unsupported_operating_system with contrib.missing_link
 X   had nothing to do with os, it was just whether the link was bad
+X section header is wrong on the updates panel
+X   installing/removing/updating anything will fix it
+X   so appears to be a dumb synchronization problem; yech
+o saw the active download icon on a list item in the updates tab
+o   assume this is part of the section header mess, but… weird
+X   haven't seen again
 
-_ section header is wrong on the updates panel
-_   installing/removing/updating anything will fix it
-_   so appears to be a dumb synchronization problem; yech
-_ saw the active download icon on a list item in the updates tab
-_   assume this is part of the section header mess, but… weird
 
 _ Update All with several entries is really locking things up
 _   not clear if it's work being done on the EDT
@@ -111,12 +112,13 @@ _ if contribution listing is still downloading, need to indicate
 _   especially when no previous contribs.txt is in the prefs folder
 / if no internet available, install buttons disabled, but not clear why broken
 X   update button no longer disabled
-_   but still need to indicate internet unavailable
-_ also if update check disabled, user isn't notified that contribs unavailable
+_   but still need to indicate internet unavailable on install errors
 _ currently no indication that contrib download failed
 _   so the 'try again' won't show up; everything looks fine
 _   (was this for the contrib listing? or an actual contrib?)
-_ Base.setUpdatesAvailable() is called from half a dozen places!?
+_ also if update check disabled, user isn't notified that contribs unavailable
+/ Base.setUpdatesAvailable() is called from half a dozen places!?
+X   this is now tallyUpdatesAvailable() a
 _ how to handle contrib manager download/retry/etc and showing progress
 
 

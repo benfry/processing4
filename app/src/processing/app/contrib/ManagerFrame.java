@@ -88,13 +88,23 @@ public class ManagerFrame {
   public void showFrame(ContributionType contributionType) {
     ContributionTab showTab = getTab(contributionType);
     if (frame == null) {
+      // Build the Contribution Manager UI on first use.
       makeFrame();
+
       // Update the list of contribs with what's installed locally.
       ContributionListing.updateInstalled(base.getInstalledContribs());
+
       // Set the list of categories on first use. If a new category is added
       // from an already-installed contrib, or in the downloaded contribs list,
       // it won't be included. Yech! But practically speaking… [fry 230114]
       getTab(ContributionType.LIBRARY).updateCategoryChooser();
+
+      // TODO If it's the updates tab, need to reset the list. This is papering
+      //      over a concurrency bug with adding/removing contribs during the
+      //      initial load/startup, but probably always relevant. [fry 230115]
+      if (showTab.contribType == null) {
+        showTab.listPanel.model.fireTableDataChanged();
+      }
     }
     tabs.setPanel(showTab);
     frame.setVisible(true);

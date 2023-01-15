@@ -93,6 +93,13 @@ public class ContributionTab extends JPanel {
   }
 
 
+  /** Only used for debugging. */
+  @Override
+  public String getName() {
+    return (contribType == null) ? "updates" : contribType.toString();
+  }
+
+
   protected void updateTheme() {
     setBackground(Theme.getColor("manager.list.background.color"));
 

@@ -706,6 +706,8 @@ public class Base {
   public void tallyUpdatesAvailable() {
     // Significant rewrite from previous version seen in
     // https://github.com/processing/processing4/commit/a2e8cd7
+    // Also counting all updates, not just those for the current Mode.
+    // (Too confusing otherwise, having different counts.)
 
     Set<Contribution> installed = getInstalledContribs();
     ContributionListing listing = ContributionListing.getInstance();
