@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2013-16 The Processing Foundation
+  Copyright (c) 2013-23 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -55,6 +55,7 @@ public class ContributionListing {
 
   final Set<AvailableContribution> availableContribs;
   private Map<String, Contribution> importToLibrary;
+  //private CopyOnWriteArrayList<Contribution> allContribs;
   private Set<Contribution> allContribs;
 
   Set<ListPanel> listPanels;
@@ -65,6 +66,7 @@ public class ContributionListing {
     availableContribs = new HashSet<>();
     importToLibrary = new HashMap<>();
     allContribs = ConcurrentHashMap.newKeySet();
+//    allContribs = new CopyOnWriteArrayList<>();
     downloadingLock = new ReentrantLock();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);

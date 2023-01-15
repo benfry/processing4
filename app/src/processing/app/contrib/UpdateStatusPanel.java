@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-22 The Processing Foundation
+  Copyright (c) 2013-23 The Processing Foundation
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License version 2
@@ -25,12 +25,18 @@ import javax.swing.JButton;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
+import processing.app.ui.Theme;
+
 
 public class UpdateStatusPanel extends StatusPanel {
 
   public UpdateStatusPanel(UpdateContributionTab tab) {
     super(tab);
+  }
 
+
+  @Override
+  protected void buildLayout() {
     updateButton = new JButton("Update All");
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
     updateButton.setVisible(true);
@@ -51,13 +57,25 @@ public class UpdateStatusPanel extends StatusPanel {
 
     layout.setVerticalGroup(layout.createParallelGroup()
       .addComponent(updateButton));
+
+    // Dummy progress bar that's never shown. Yuck! [fry 230114]
+    buildProgressBar();
+  }
+
+
+  @Override
+  protected void updateTheme() {
+    setBackground(Theme.getColor("manager.panel.background.color"));
+    updateButtonTheme(updateButton, "update");
   }
 
 
   private void updateAll() {
     ListPanel listPanel = contributionTab.listPanel;
     for (StatusDetail detail : listPanel.detailForContrib.values()) {
-      detail.update();
+      // Set the fake detail object so progressBar is set.
+      updateDetail(detail);
+      detail.updateContrib();
     }
     listPanel.model.fireTableDataChanged();
   }

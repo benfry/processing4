@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-22 The Processing Foundation
+  Copyright (c) 2013-23 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -80,17 +80,11 @@ class StatusPanel extends JPanel {
 
   public StatusPanel(final ContributionTab contributionTab) {
     this.contributionTab = contributionTab;
+    buildLayout();
+  }
 
-//    if (foundationIcon == null) {
-//      foundationIcon = Toolkit.getLibIconX("icons/foundation", 32);
-//      installIcon = Toolkit.getLibIconX("manager/install");
-//      updateIcon = Toolkit.getLibIconX("manager/update");
-//      removeIcon = Toolkit.getLibIconX("manager/remove");
-//      buttonFont = ManagerFrame.NORMAL_PLAIN;
-//    }
 
-    //setBackground(new Color(0xebebeb));
-
+  protected void buildLayout() {
     iconLabel = new JLabel();
     iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
@@ -114,7 +108,7 @@ class StatusPanel extends JPanel {
       installButton.setEnabled(false);
       StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
-      currentDetail.install();
+      currentDetail.installContrib();
       updateDetail(currentDetail);
     });
 
@@ -132,7 +126,7 @@ class StatusPanel extends JPanel {
       updateButton.setEnabled(false);
       StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
-      currentDetail.update();
+      currentDetail.updateContrib();
       updateDetail(currentDetail);
     });
 
@@ -144,7 +138,7 @@ class StatusPanel extends JPanel {
       removeButton.setEnabled(false);
       StatusDetail currentPanel =
         contributionTab.listPanel.getSelectedDetail();
-      currentPanel.remove();
+      currentPanel.removeContrib();
       updateDetail(currentPanel);
     });
 
@@ -197,7 +191,7 @@ class StatusPanel extends JPanel {
     // Makes the label take up space even though not visible
     layout.setHonorsVisibility(updateLabel, false);
 
-    validate();
+    //validate();  // necessary? [fry 230114]
   }
 
 
@@ -299,7 +293,7 @@ class StatusPanel extends JPanel {
   }
 
 
-  static private void updateButtonTheme(JButton button, String name) {
+  static protected void updateButtonTheme(JButton button, String name) {
     if (button.getUI() instanceof PdeButtonUI) {
       ((PdeButtonUI) button.getUI()).updateTheme();
     } else {

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - https://processing.org
 
-  Copyright (c) 2013-22 The Processing Foundation
+  Copyright (c) 2013-23 The Processing Foundation
   Copyright (c) 2011-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -140,7 +140,7 @@ class StatusDetail {
   }
 
 
-  protected void install() {
+  protected void installContrib() {
     statusPanel.clearMessage();
     installInProgress = true;
     if (contrib instanceof AvailableContribution info) {
@@ -152,7 +152,9 @@ class StatusDetail {
         //      above was getting called. Probably harmless, especially since
         //      the error may never happen, but still… weird. [fry 230114]
         // TODO More importantly, why is this being called? Seems like this
-        //      should be doing an actual replacement. [fry 230114]
+        //      should be doing an actual replacement (i.e. what happens with
+        //      the previous contrib?) And because it's usually (always?) not
+        //      actually removing anything, shouldn't this be add? [fry 230114]
         ContributionListing.getInstance().replaceContribution(contrib, contrib);
       }
     }
@@ -162,7 +164,7 @@ class StatusDetail {
   // TODO Update works by first calling a remove, and then ContribProgress,
   //      of all things, calls install() in its finishedAction() method.
   //      FFS this is gross. [fry 220311]
-  protected void update() {
+  protected void updateContrib() {
     statusPanel.clearMessage();
     updateInProgress = true;
 
@@ -206,7 +208,7 @@ class StatusDetail {
   }
 
 
-  protected void remove() {
+  protected void removeContrib() {
     //clearStatusMessage();
     statusPanel.clearMessage();
     if (contrib.isInstalled() && contrib instanceof LocalContribution) {

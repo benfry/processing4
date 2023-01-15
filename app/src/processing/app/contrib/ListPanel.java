@@ -536,8 +536,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-      final Set<Contribution> allContribs =
-        ContributionListing.getAllContribs();
+      Set<Contribution> allContribs = ContributionListing.getAllContribs();
       if (rowIndex >= allContribs.size()) {
         return sections[rowIndex - allContribs.size()];
       }

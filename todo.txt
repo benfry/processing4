@@ -75,11 +75,16 @@ X   https://github.com/processing/processing/issues/3667
 X contrib categories are broken
 X   showing 'all' on all tabs
 X   not showing categories at all for libs
+X Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
+X   https://github.com/processing/processing4/issues/618
+X get rid of dummy progress bar being created in StatusDetail.update()
+X   there was one behind the scenes, but it wasn't getting set properly
+o   would be good to *add* a progress bar of some kind, but sheesh
 
-_ Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
-_   https://github.com/processing/processing4/issues/618
-_ get rid of dummy progress bar being created in StatusDetail.update()
-_   would be good to *add* a progress bar of some kind, but sheesh
+
+_ Update All with several entries is really locking things up
+_   not clear if it's work being done on the EDT
+_   or that all the threads are running immediately (rather than sequentially)
 
 _ updateDetail() call in StatusPanel.updateTheme()
 _   move to ListPanel.updateTheme() (why wasn't it there?)
