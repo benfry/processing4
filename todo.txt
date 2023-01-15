@@ -80,15 +80,20 @@ X   https://github.com/processing/processing4/issues/618
 X get rid of dummy progress bar being created in StatusDetail.update()
 X   there was one behind the scenes, but it wasn't getting set properly
 o   would be good to *add* a progress bar of some kind, but sheesh
+X updateDetail() call in StatusPanel.updateTheme()
+o   move to ListPanel.updateTheme() (why wasn't it there?)
+X   ugh, it's called twice, right nearby each other; yikes
+X   fix the double call, but just need to get rid of progress bars anyway
 
 
 _ Update All with several entries is really locking things up
 _   not clear if it's work being done on the EDT
 _   or that all the threads are running immediately (rather than sequentially)
 
-_ updateDetail() call in StatusPanel.updateTheme()
-_   move to ListPanel.updateTheme() (why wasn't it there?)
-_   ugh, it's called twice, right nearby each other; yikes
+
+_ if Python Mode for 3.x is installed, it's allowed to be used and loaded
+_   shouldn't be loading it on startup if it's not compatible
+_   does this apply to other libraries as well?
 
 _ rip out JProgressBar from StatusPanel/StatusDetail
 _   show progress in the list instead

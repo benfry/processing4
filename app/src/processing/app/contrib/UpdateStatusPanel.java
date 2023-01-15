@@ -74,7 +74,7 @@ public class UpdateStatusPanel extends StatusPanel {
     ListPanel listPanel = contributionTab.listPanel;
     for (StatusDetail detail : listPanel.detailForContrib.values()) {
       // Set the fake detail object so progressBar is set.
-      updateDetail(detail);
+      applyDetail(detail);
       detail.updateContrib();
     }
     listPanel.model.fireTableDataChanged();
@@ -87,7 +87,7 @@ public class UpdateStatusPanel extends StatusPanel {
 
 
   @Override
-  protected void updateDetail(StatusDetail detail) {
+  protected void applyDetail(StatusDetail detail) {
     detail.setProgressBar(progressBar);
   }
 }

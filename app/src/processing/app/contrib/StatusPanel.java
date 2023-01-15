@@ -109,7 +109,7 @@ class StatusPanel extends JPanel {
       StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
       currentDetail.installContrib();
-      updateDetail(currentDetail);
+      applyDetail(currentDetail);
     });
 
     buildProgressBar();
@@ -127,7 +127,7 @@ class StatusPanel extends JPanel {
       StatusDetail currentDetail =
         contributionTab.listPanel.getSelectedDetail();
       currentDetail.updateContrib();
-      updateDetail(currentDetail);
+      applyDetail(currentDetail);
     });
 
     //removeButton = Toolkit.createIconButton("Remove", removeIcon);
@@ -139,7 +139,7 @@ class StatusPanel extends JPanel {
       StatusDetail currentPanel =
         contributionTab.listPanel.getSelectedDetail();
       currentPanel.removeContrib();
-      updateDetail(currentPanel);
+      applyDetail(currentPanel);
     });
 
     layout = new GroupLayout(this);
@@ -239,13 +239,6 @@ class StatusPanel extends JPanel {
       "}";
 
     updateLabel.setForeground(Theme.getColor("manager.panel.text.color"));
-
-    // I'm not circuitous, *you're* circuitous.
-    StatusDetail detail = contributionTab.listPanel.getSelectedDetail();
-    if (detail != null) {
-      updateDetail(detail);
-    }
-
     foundationIcon = Toolkit.renderIcon("manager/foundation", Theme.get("manager.panel.foundation.color"), 32);
 
     updateButtonTheme(installButton, "install");
@@ -253,8 +246,15 @@ class StatusPanel extends JPanel {
     updateButtonTheme(removeButton, "remove");
 
     StatusDetail currentDetail =
+      // I'm not circuitous, *you're* circuitous.
       contributionTab.listPanel.getSelectedDetail();
     if (currentDetail != null) {
+      applyDetail(currentDetail);
+      // TODO This only updates the scroll bar, and only the current selection.
+      //      So if the theme is updated with the manager opened, selecting
+      //      another contrib and installing/updating/removing it will result
+      //      in a progress bar being used that's not the correct theme.
+      //      But the progress bars need to be removed anyway. [fry 230114]
       currentDetail.updateTheme();
     }
 
@@ -393,7 +393,7 @@ class StatusPanel extends JPanel {
   }
 
 
-  void updateDetail(StatusDetail detail) {
+  protected void applyDetail(StatusDetail detail) {
 //    System.out.println("rebuilding status detail for " + detail.getContrib().name);
 //    new Exception("rebuilding status detail for " + detail.getContrib().name).printStackTrace(System.out);
     Contribution contrib = detail.getContrib();
