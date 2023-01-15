@@ -308,99 +308,96 @@ public abstract class LocalContribution extends Contribution {
                                     StatusPanel status,
                                     boolean updating) {
     // TODO: replace with SwingWorker [jv]
-    new Thread(() -> remove(base, pm, status, updating), "Contribution Uninstaller").start();
-  }
+    new Thread(() -> {
+      pm.startTask("Removing");
 
+      if (getType() == ContributionType.MODE) {
+        if (!removeMode(base, updating)) {
+          pm.cancel();
+          return;
+        }
 
-  private void remove(Base base, ContribProgress pm, StatusPanel status, boolean updating) {
-    pm.startTask("Removing");
-
-    if (getType() == ContributionType.MODE) {
-      if (!removeMode(base, updating)) {
-        pm.cancel();
-        return;
+      } else if (getType() == ContributionType.TOOL) {
+        // menu will be rebuilt below with the refreshContribs() call
+        base.clearToolMenus();
+        ((ToolContribution) this).clearClassLoader();
       }
 
-    } else if (getType() == ContributionType.TOOL) {
-      // menu will be rebuilt below with the refreshContribs() call
-      base.clearToolMenus();
-      ((ToolContribution) this).clearClassLoader();
-    }
-
-    boolean success;
-    boolean doBackup = Preferences.getBoolean("contribution.backup.on_remove");
-    if (doBackup) {
-      success = backup(true, status);
-    } else {
-      try {
-        success = Platform.deleteFile(getFolder());
-      } catch (IOException e) {
-        e.printStackTrace();
-        success = false;
-      }
-    }
-
-    if (success) {
-      try {
-        // TODO: run this in SwingWorker done() [jv]
-        EventQueue.invokeAndWait(() -> {
-          ContributionListing cl = ContributionListing.getInstance();
-
-          Contribution advertisedVersion =
-            cl.findAvailableContribution(LocalContribution.this);
-
-          if (advertisedVersion == null) {
-            cl.removeContribution(LocalContribution.this);
-          } else {
-            cl.replaceContribution(LocalContribution.this, advertisedVersion);
-          }
-          base.refreshContribs(LocalContribution.this.getType());
-          base.tallyUpdatesAvailable();
-        });
-      } catch (InterruptedException e) {
-        e.printStackTrace();
-      } catch (InvocationTargetException e) {
-        Throwable cause = e.getCause();
-        if (cause instanceof RuntimeException) {
-          throw (RuntimeException) cause;
-        } else {
-          cause.printStackTrace();
+      boolean success;
+      boolean doBackup = Preferences.getBoolean("contribution.backup.on_remove");
+      if (doBackup) {
+        success = backup(true, status);
+      } else {
+        try {
+          success = Platform.deleteFile(getFolder());
+        } catch (IOException e) {
+          e.printStackTrace();
+          success = false;
         }
       }
 
-    } else {
-      // There was a failure backing up the folder
-      if (!doBackup || backup(false, status)) {
-        if (setDeletionFlag(true)) {
-          try {
-            // TODO: run this in SwingWorker done() [jv]
-            EventQueue.invokeAndWait(() -> {
-              ContributionListing cl = ContributionListing.getInstance();
-              cl.replaceContribution(LocalContribution.this,
-                                                 LocalContribution.this);
-              base.refreshContribs(LocalContribution.this.getType());
-              base.tallyUpdatesAvailable();
-            });
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof RuntimeException) {
-              throw (RuntimeException) cause;
+      if (success) {
+        try {
+          // TODO: run this in SwingWorker done() [jv]
+          EventQueue.invokeAndWait(() -> {
+            ContributionListing cl = ContributionListing.getInstance();
+
+            Contribution advertisedVersion =
+              cl.findAvailableContribution(LocalContribution.this);
+
+            if (advertisedVersion == null) {
+              cl.removeContribution(LocalContribution.this);
             } else {
-              cause.printStackTrace();
+              cl.replaceContribution(LocalContribution.this, advertisedVersion);
+            }
+            base.refreshContribs(LocalContribution.this.getType());
+            base.tallyUpdatesAvailable();
+          });
+        } catch (InterruptedException e) {
+          e.printStackTrace();
+        } catch (InvocationTargetException e) {
+          Throwable cause = e.getCause();
+          if (cause instanceof RuntimeException) {
+            throw (RuntimeException) cause;
+          } else {
+            cause.printStackTrace();
+          }
+        }
+
+      } else {
+        // There was a failure backing up the folder
+        if (!doBackup || backup(false, status)) {
+          if (setDeletionFlag(true)) {
+            try {
+              // TODO: run this in SwingWorker done() [jv]
+              EventQueue.invokeAndWait(() -> {
+                ContributionListing cl = ContributionListing.getInstance();
+                cl.replaceContribution(LocalContribution.this,
+                  LocalContribution.this);
+                base.refreshContribs(LocalContribution.this.getType());
+                base.tallyUpdatesAvailable();
+              });
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            } catch (InvocationTargetException e) {
+              Throwable cause = e.getCause();
+              if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+              } else {
+                cause.printStackTrace();
+              }
             }
           }
+        } else {
+          status.setErrorMessage("Could not delete the contribution's files");
         }
-      } else {
-        status.setErrorMessage("Could not delete the contribution's files");
       }
-    }
-    if (success) {
-      pm.finished();
-    } else {
-      pm.cancel();
-    }
+      if (success) {
+        pm.finished();
+      } else {
+        pm.cancel();
+      }
+    }, "Contribution Uninstaller").start();
   }
 
 

@@ -90,6 +90,8 @@ o   does this apply to other libraries as well?
 X   added checks for compatibility to ContributionType.isCandidate()
 X   but with Python Mode for 3.x, the problem is maxRevision is set to 0
 X   filed an issue https://github.com/jdf/processing.py/issues/406
+X replace contrib.unsupported_operating_system with contrib.missing_link
+X   had nothing to do with os, it was just whether the link was bad
 
 _ section header is wrong on the updates panel
 _   installing/removing/updating anything will fix it

@@ -654,7 +654,7 @@ public class ContributionManager {
   static private void installOnStartUp(final Base base, final AvailableContribution availableContrib) {
     if (availableContrib.link == null) {
       Messages.showWarning(Language.interpolate("contrib.errors.update_on_restart_failed", availableContrib.getName()),
-                           Language.text("contrib.unsupported_operating_system"));
+                           Language.text("contrib.missing_link"));
     } else {
       try {
         URL downloadUrl = new URL(availableContrib.link);
