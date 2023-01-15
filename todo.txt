@@ -132,6 +132,7 @@ _ how to handle contrib manager download/retry/etc and showing progress
 _ make note in docs that .properties file *must* be utf-8 (usually iso8859-1)
 _   if not it'll make things gross (andre sier flob library)
 
+_ add tool.properties to MovieMaker
 
 _ make ctrl-g work inside the find window
 

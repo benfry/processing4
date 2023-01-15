@@ -212,7 +212,13 @@ public class ListPanel extends JPanel implements Scrollable {
   }
 
 
-  Icon renderProgressIcon(float amount) {
+  /**
+   * Render the pie chart or indeterminate spinner for table rows.
+   * @param amount 0..1 for a pie, -1 for indeterminate
+   * @param hash unique offset to prevent indeterminate from being in the same position
+   * @return properly scalable ImageIcon for rendering in the Table at 1x or 2x
+   */
+  Icon renderProgressIcon(float amount, int hash) {
 //    final int FFS_JAVA2D = ICON_SIZE - 2;
     final float FFS_JAVA2D = ICON_SIZE - 1.5f;
 //    final int scale = Toolkit.highResImages() ? 2 : 1;
@@ -251,8 +257,8 @@ public class ListPanel extends JPanel implements Scrollable {
 
       g2.translate(FFS_JAVA2D/2, FFS_JAVA2D/2);
       // offset by epoch to avoid integer out of bounds
-      final long EPOCH = 1673802150579L;
-      int angle = (int) ((System.currentTimeMillis() - EPOCH) / 10) % 360;
+      final long EPOCH = 1500000000000L + Math.abs((long) hash);  // date is in 2001
+      int angle = (int) ((System.currentTimeMillis() - EPOCH) / 20) % 360;
       g2.rotate(angle);
 
       g2.setColor(rowColor);
@@ -446,7 +452,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //        icon = downloadingIcon;
 //        float amount = detail.getProgressAmount();
 //        icon = (amount == -1) ? downloadingIcon : renderProgressIcon(amount);
-        icon = renderProgressIcon(detail.getProgressAmount());
+        icon = renderProgressIcon(detail.getProgressAmount(), contribution.hashCode());
       } else if (contribution.isInstalled()) {
         if (!contribution.isCompatible()) {
           icon = incompatibleIcon;
