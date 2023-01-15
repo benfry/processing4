@@ -234,7 +234,7 @@ public class ListPanel extends JPanel implements Scrollable {
 //    g2.fillRect(0, 0, ICON_SIZE, ICON_SIZE);
     g2.translate(0.5, 0.5);
 
-    g2.setStroke(new BasicStroke(1.5f));
+    g2.setStroke(new BasicStroke(1.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 
     Color iconColor = Theme.getColor("manager.list.icon.color");
     g2.setColor(iconColor);
@@ -256,8 +256,8 @@ public class ListPanel extends JPanel implements Scrollable {
       g2.fill(circle);
 
       g2.translate(FFS_JAVA2D/2, FFS_JAVA2D/2);
-      // offset by epoch to avoid integer out of bounds
-      final long EPOCH = 1500000000000L + Math.abs((long) hash);  // date is in 2001
+      // offset by epoch to avoid integer out of bounds (the date is in 2001)
+      final long EPOCH = 1500000000000L + Math.abs((long) hash);
       int angle = (int) ((System.currentTimeMillis() - EPOCH) / 20) % 360;
       g2.rotate(angle);
 
