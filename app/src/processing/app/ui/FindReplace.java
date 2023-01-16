@@ -179,8 +179,11 @@ public class FindReplace extends JFrame {
     replaceButton.addActionListener(e -> replace());
     replaceAllButton.addActionListener(e -> replaceAll());
     replaceAndFindButton.addActionListener(e -> replaceAndFindNext());
-    findButton.addActionListener(e -> findNext());
-    previousButton.addActionListener(e -> findPrevious());
+
+//    findButton.addActionListener(e -> findNext());
+//    previousButton.addActionListener(e -> findPrevious());
+    Toolkit.applyAction(editor.findNextAction, findButton);
+    Toolkit.applyAction(editor.findPreviousAction, previousButton);
 
     getRootPane().setDefaultButton(findButton);
 

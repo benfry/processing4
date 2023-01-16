@@ -56,6 +56,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.Action;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -188,7 +189,10 @@ public class Toolkit {
    */
   static public JMenuItem newJMenuItem(Action action, int what) {
     JMenuItem menuItem = new JMenuItem(action);
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_KEY_MASK));
+    // Use putValue() instead of setAccelerator() to work with applyAction()
+//    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_KEY_MASK));
+    action.putValue(Action.ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(what, SHORTCUT_KEY_MASK));
     return menuItem;
   }
 
@@ -208,7 +212,10 @@ public class Toolkit {
    */
   static public JMenuItem newJMenuItemShift(Action action, int what) {
     JMenuItem menuItem = new JMenuItem(action);
-    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_SHIFT_KEY_MASK));
+    // Use putValue() instead of setAccelerator() to work with applyAction()
+//    menuItem.setAccelerator(KeyStroke.getKeyStroke(what, SHORTCUT_SHIFT_KEY_MASK));
+    action.putValue(Action.ACCELERATOR_KEY,
+                    KeyStroke.getKeyStroke(what, SHORTCUT_SHIFT_KEY_MASK));
     return menuItem;
   }
 
@@ -511,6 +518,21 @@ public class Toolkit {
       index++;
     }
     return -1;
+  }
+
+
+  /**
+   * Apply an Action from something else (i.e. a JMenuItem) to a JButton.
+   * Swing is so absof*ckinglutely convoluted sometimes. Do we really need
+   * half a dozen lines of boilerplate to apply a key shortcut to a button?
+   */
+  static public void applyAction(Action action, JButton button) {
+    button.setAction(action);
+    // use an arbitrary but unique name
+    String name = String.valueOf(action.hashCode());
+    button.getActionMap().put(name, action);
+    button.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+      .put((KeyStroke) action.getValue(Action.ACCELERATOR_KEY), name);
   }
 
 

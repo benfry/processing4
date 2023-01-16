@@ -3,6 +3,7 @@ X Help Menu disabled on OS X (looks like a JVM bug)
 X   https://github.com/processing/processing/issues/4353#issuecomment-237715947
 X   https://github.com/processing/processing4/issues/617
 X   https://github.com/processing/processing4/issues/638
+X make ctrl-g (and ctrl-shift-g) work inside the Find window
 
 contributed
 X “Cannot find a class or type named ‘PApplet’” error
@@ -113,8 +114,6 @@ o ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
 o   seems to be out of sync/unavailable data based on more recent contrib changes?
 X   should be resolved with more recent changes
 
-
-_ make ctrl-g work inside the find window
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?

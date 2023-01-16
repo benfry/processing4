@@ -131,6 +131,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
   /** Menu Actions updated on the opening of the edit menu. */
   protected List<UpdatableAction> editMenuUpdatable = new ArrayList<>();
 
+  protected FindNextAction findNextAction;
+  protected FindPreviousAction findPreviousAction;
+
   /** The currently selected tab's undo manager and caret positions*/
   private UndoManager undo;
   // maintain caret position during undo operations
@@ -788,15 +791,15 @@ public abstract class Editor extends JFrame implements RunnerListener {
     });
     menu.add(item);
 
+    item = Toolkit.newJMenuItem(findNextAction = new FindNextAction(), 'G');
+    editMenuUpdatable.add(findNextAction);
+    menu.add(item);
+
+    item = Toolkit.newJMenuItemShift(findPreviousAction = new FindPreviousAction(), 'G');
+    editMenuUpdatable.add(findPreviousAction);
+    menu.add(item);
+
     UpdatableAction action;
-    item = Toolkit.newJMenuItem(action = new FindNextAction(), 'G');
-    editMenuUpdatable.add(action);
-    menu.add(item);
-
-    item = Toolkit.newJMenuItemShift(action = new FindPreviousAction(), 'G');
-    editMenuUpdatable.add(action);
-    menu.add(item);
-
     item = Toolkit.newJMenuItem(action = new SelectionForFindAction(), 'E');
     editMenuUpdatable.add(action);
     menu.add(item);
