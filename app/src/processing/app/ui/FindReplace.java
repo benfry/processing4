@@ -40,7 +40,7 @@ import processing.app.Sketch;
  * Find & Replace window for the Processing editor.
  */
 public class FindReplace extends JFrame {
-  Editor editor;
+  final Editor editor;
 
   static final int BORDER = Platform.isMacOS() ? 20 : 13;
 
@@ -200,6 +200,35 @@ public class FindReplace extends JFrame {
         findField.selectAll();
       }
     });
+
+    // An attempt to set the menu bar so that key shortcuts for Find items
+    // work from inside this window. Unfortunately, it breaks on macOS because
+    // closing the window triggers the "default" JMenuBar, no matter what.
+    // It works fine when going back and forth between the Find window and the
+    // Editor window, but then when you close the Find window, the Editor
+    // has only the default menu bar. The last setJMenuBar() call inside
+    // windowDeactivated() seems to be ignored. Or maybe it's immediately
+    // replaced? Oddly, the key shortcuts still work, so it may be that the
+    // menu bar itself is simply not (visually) updated. [fry 230116]
+    /*
+    addWindowListener(new WindowAdapter() {
+      JMenuBar editorMenuBar;
+
+      public void windowActivated(WindowEvent e) {
+        // Steal the menu bar from the Editor
+        if (editorMenuBar == null) {
+          editorMenuBar = editor.getJMenuBar();
+        }
+        setJMenuBar(editorMenuBar);
+      }
+
+      @Override
+      public void windowDeactivated(WindowEvent e) {
+        editor.setJMenuBar(editorMenuBar);
+      }
+    });
+    */
+
     pack();
     setResizable(true);
     setLocationRelativeTo(null);
