@@ -1,3 +1,52 @@
+# Processing 4.1.2
+
+*Revision 1290 – 16 January 2023*
+
+Happy [Martin Luther King Jr. day](https://en.wikipedia.org/wiki/Martin_Luther_King_Jr._Day)!
+
+
+## Contributions Manager
+
+The majority of the work for this release went into cleaning up and fixing the Contributions Manager. (What you see when importing Libraries, managing Modes, etc.) Please, please, please help us out and give it a lot of testing. This is old, messy, and important code that is easy to break in major ways. If you have trouble with it, please file an issue!
+
+* The “Manage Modes…” menu item was opening an empty window. [#613](https://github.com/processing/processing4/issues/613)
+
+* Fix `Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null` error when using Update All. [#618](https://github.com/processing/processing4/issues/618)
+
+* Libraries from the Foundation (i.e. Video, Sound, and JavaFX) will now be reported properly on the [stats page](https://download.processing.org/stats/).
+
+* Updated the [Wiki pages](https://github.com/processing/processing4/wiki#contributions) about Libraries, Modes, Tools, and Examples for Processing 4. These pages were copied over from the Processing 3 repository, but needed some cleaning. Still more work to do here, but it's a start.
+
+* Implemented per-line indicators for download/install status. Eventually these will replace the progress bar in the bottom panel.
+
+* Removed an old workaround for a `NullPointerException` while making selections. If it reappears, please file a new issue. [#3667](https://github.com/processing/processing/issues/3667)
+
+
+## @SamPottinger saves us again
+
+* “Cannot find a class or type named ‘PApplet’” error [#626](https://github.com/processing/processing4/issues/626), [#635](https://github.com/processing/processing4/pull/635)
+
+* Cannot use `@Override` and `@Deprecated` in static mode [#619](https://github.com/processing/processing4/issues/619), [#622](https://github.com/processing/processing4/pull/622)
+
+* `color` in imports shows up as an error in the editor (even though the code still runs) [#521](https://github.com/processing/processing4/issues/521), [#636](https://github.com/processing/processing4/pull/636)
+
+* Sketch folders with spaces or hyphens showing errors in the editor window (even though the code still runs) [#610](https://github.com/processing/processing4/issues/610), [#637](https://github.com/processing/processing4/pull/637)
+
+
+## Other Bug Fixes
+
+* Help Menu sometimes disabled on macOS. This is a Java bug, but it's been closed as “cannot reproduce,” so I managed to find a workaround. [#4353](https://github.com/processing/processing/issues/4353#issuecomment-237715947), [#617](https://github.com/processing/processing4/issues/617), [#638](https://github.com/processing/processing4/issues/638)
+
+* Fixed ClassCastException with `copy()` and `PGraphicsJava2D`. [#624](https://github.com/processing/processing4/issues/624)
+
+
+## Additions? Why Not.
+
+* The shortcuts for Find Next and Find Previous (i.e. ctrl-G and ctrl-shift-G on Windows/Linux) now work inside the Find/Replace window.
+
+* Show a warning when calling `clear()` on the primary drawing surface. [#627](https://github.com/processing/processing4/issues/627)
+
+
 # Processing 4.1.1
 
 *Revision 1289 – 28 November 2022*
