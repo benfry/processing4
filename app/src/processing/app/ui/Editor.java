@@ -633,7 +633,19 @@ public abstract class Editor extends JFrame implements RunnerListener {
     base.populateToolsMenu(toolsMenu);
     menubar.add(toolsMenu);
 
-    menubar.add(buildHelpMenu());
+    JMenu helpMenu = buildHelpMenu();
+    if (Platform.isMacOS()) {
+      // There's a bug on macOS since at least 2016 that leaves the
+      // Help menu disabled after a modal dialog has been shown.
+      // In 2018, it was closed by Oracle with a claim that it couldn't
+      // be reproduced: https://bugs.openjdk.org/browse/JDK-8196655
+      // The workaround is to add a space to the end of the menu name,
+      // which disables whatever macOS behavior is causing the problem.
+      // https://github.com/processing/processing4/issues/638
+      helpMenu.setText(helpMenu.getText() + " ");
+    }
+    menubar.add(helpMenu);
+
     Toolkit.setMenuMnemonics(menubar);
     setJMenuBar(menubar);
   }
