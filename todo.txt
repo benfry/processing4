@@ -2,6 +2,7 @@
 X Help Menu disabled on OS X (looks like a JVM bug)
 X   https://github.com/processing/processing/issues/4353#issuecomment-237715947
 X   https://github.com/processing/processing4/issues/617
+X   https://github.com/processing/processing4/issues/638
 
 contributed
 X “Cannot find a class or type named ‘PApplet’” error

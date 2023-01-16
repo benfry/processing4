@@ -80,28 +80,16 @@ public class FindReplace extends JFrame {
     if (replaceString != null) replaceField.setText(replaceString);
 
     ignoreCaseBox = new JCheckBox(Language.text("find.ignore_case"));
-    ignoreCaseBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          ignoreCase = ignoreCaseBox.isSelected();
-        }
-      });
+    ignoreCaseBox.addActionListener(e -> ignoreCase = ignoreCaseBox.isSelected());
     ignoreCaseBox.setSelected(ignoreCase);
 
     allTabsBox = new JCheckBox(Language.text("find.all_tabs"));
-    allTabsBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          allTabs = allTabsBox.isSelected();
-        }
-      });
+    allTabsBox.addActionListener(e -> allTabs = allTabsBox.isSelected());
     allTabsBox.setSelected(allTabs);
     allTabsBox.setEnabled(true);
 
     wrapAroundBox = new JCheckBox(Language.text("find.wrap_around"));
-    wrapAroundBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          wrapAround = wrapAroundBox.isSelected();
-        }
-      });
+    wrapAroundBox.addActionListener(e -> wrapAround = wrapAroundBox.isSelected());
     wrapAroundBox.setSelected(wrapAround);
 
     GroupLayout layout = new GroupLayout(pain);
@@ -135,36 +123,33 @@ public class FindReplace extends JFrame {
     }
     setFound(false);
 
-    Group buttonsVerticalGroup = layout.createParallelGroup(); // Creates group for arranging buttons vertically
-    buttonsVerticalGroup.addComponent(findButton)
-    .addComponent(previousButton)
-    .addComponent(replaceAndFindButton)
-    .addComponent(replaceButton)
-    .addComponent(replaceAllButton);
+    // Creates group for arranging buttons vertically
+    Group buttonsVerticalGroup = layout.createParallelGroup()
+      .addComponent(findButton)
+      .addComponent(previousButton)
+      .addComponent(replaceAndFindButton)
+      .addComponent(replaceButton)
+      .addComponent(replaceAllButton);
 
-    layout.setHorizontalGroup(layout
-        .createSequentialGroup()
-        .addGap(BORDER)
-        .addGroup(layout.createParallelGroup()
-            .addGroup(GroupLayout.Alignment.TRAILING, // TRAILING makes everything right alinged
-                layout.createSequentialGroup()
-                    .addGap(replaceLabel.getPreferredSize().width
-                        - findLabel.getPreferredSize().width)
-                    .addComponent(findLabel)
-                    .addComponent(findField))
-            .addGroup(GroupLayout.Alignment.TRAILING,
-                layout.createSequentialGroup()
-                    .addComponent(replaceLabel)
-                    .addGroup(layout.createParallelGroup()
-                        .addComponent(replaceField)
-                        .addGroup(GroupLayout.Alignment.LEADING,
-                                  layout.createSequentialGroup()
-                                      .addComponent(ignoreCaseBox)
-                                      .addComponent(allTabsBox)
-                                      .addComponent(wrapAroundBox)
-                                      .addGap(0))))
-            .addGroup(GroupLayout.Alignment.CENTER,buttonsHorizontalGroup))
-        .addGap(BORDER)
+    layout.setHorizontalGroup(layout.createSequentialGroup()
+      .addGap(BORDER)
+      .addGroup(layout.createParallelGroup()
+        // TRAILING makes everything right aligned
+        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+          .addGap(replaceLabel.getPreferredSize().width - findLabel.getPreferredSize().width)
+          .addComponent(findLabel)
+          .addComponent(findField))
+        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+          .addComponent(replaceLabel)
+          .addGroup(layout.createParallelGroup()
+            .addComponent(replaceField)
+            .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+              .addComponent(ignoreCaseBox)
+              .addComponent(allTabsBox)
+              .addComponent(wrapAroundBox)
+              .addGap(0))))
+        .addGroup(GroupLayout.Alignment.CENTER,buttonsHorizontalGroup))
+      .addGap(BORDER)
     );
 
 //    layout.linkSize(SwingConstants.HORIZONTAL, findButton, replaceButton, replaceAllButton, replaceAndFindButton, previousButton);
@@ -172,59 +157,34 @@ public class FindReplace extends JFrame {
     layout.setVerticalGroup(layout.createSequentialGroup()
       .addGap(BORDER)
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-          .addComponent(findLabel)
-          .addComponent(findField))
+        .addComponent(findLabel)
+        .addComponent(findField))
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-          .addComponent(replaceLabel)
-          .addComponent(replaceField))
+        .addComponent(replaceLabel)
+        .addComponent(replaceField))
       .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-          .addComponent(ignoreCaseBox)
-          .addComponent(allTabsBox)
-          .addComponent(wrapAroundBox))
-          .addGroup(buttonsVerticalGroup)
-      .addGap(BORDER)
-      );
+        .addComponent(ignoreCaseBox)
+        .addComponent(allTabsBox)
+        .addComponent(wrapAroundBox))
+        .addGroup(buttonsVerticalGroup)
+      .addGap(BORDER));
 
     setLocationRelativeTo(null); // center
     Dimension size = layout.preferredLayoutSize(pain);
     setSize(size.width, size.height);
     Dimension screen = Toolkit.getScreenSize();
     setLocation((screen.width - size.width) / 2,
-                      (screen.height - size.height) / 2);
+                (screen.height - size.height) / 2);
 
-    replaceButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        replace();
-      }
-    });
-
-    replaceAllButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        replaceAll();
-      }
-    });
-
-    replaceAndFindButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        replaceAndFindNext();
-      }
-    });
-
-    findButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        findNext();
-      }
-    });
-
-    previousButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        findPrevious();
-      }
-    });
+    replaceButton.addActionListener(e -> replace());
+    replaceAllButton.addActionListener(e -> replaceAll());
+    replaceAndFindButton.addActionListener(e -> replaceAndFindNext());
+    findButton.addActionListener(e -> findNext());
+    previousButton.addActionListener(e -> findPrevious());
 
     // you mustn't replace what you haven't found, my son
     // semantics of replace are "replace the current selection with the replace field"
-    // so whether we have found before or not is irrelevent
+    // so whether we have found before or not is irrelevant
     // replaceButton.setEnabled(false);
     // replaceFindButton.setEnabled(false);
 
@@ -237,14 +197,10 @@ public class FindReplace extends JFrame {
         handleClose();
       }
     });
-    Toolkit.registerWindowCloseKeys(getRootPane(), new ActionListener() {
-      public void actionPerformed(ActionEvent actionEvent) {
-        handleClose();
-      }
-    });
+    Toolkit.registerWindowCloseKeys(getRootPane(), actionEvent -> handleClose());
     Toolkit.setIcon(this);
 
-    // hack to to get first field to focus properly on osx
+    // hack to get first field to focus properly on osx
     addWindowListener(new WindowAdapter() {
       public void windowActivated(WindowEvent e) {
         //System.out.println("activating");
@@ -260,11 +216,10 @@ public class FindReplace extends JFrame {
 
 
   public void handleClose() {
-    //System.out.println("handling close now");
     findString = findField.getText();
     replaceString = replaceField.getText();
 
-    // this object should eventually become dereferenced
+    // this object should eventually become de-referenced
     setVisible(false);
   }
 
@@ -299,13 +254,13 @@ public class FindReplace extends JFrame {
         nextIndex = text.indexOf(searchTerm, selectionEnd);
         if (nextIndex == -1 && wrap && !allTabs) {
           // if wrapping, a second chance is ok, start from beginning
-          nextIndex = text.indexOf(searchTerm, 0);
+          nextIndex = text.indexOf(searchTerm);
 
         } else if (nextIndex == -1 && allTabs) {
           // For searching in all tabs, wrapping always happens.
 
           int tempIndex = tabIndex;
-          // Look for searchterm in all tabs.
+          // Look for search term in all tabs.
           while (tabIndex <= sketch.getCodeCount() - 1) {
             if (tabIndex == sketch.getCodeCount() - 1) {
               // System.out.println("wrapping.");
@@ -329,14 +284,14 @@ public class FindReplace extends JFrame {
             if (ignoreCase) {
               text = text.toLowerCase();
             }
-            nextIndex = text.indexOf(searchTerm, 0);
+            nextIndex = text.indexOf(searchTerm);
 
             if (nextIndex != -1  || tabIndex == tempIndex) {
               break;
             }
           }
 
-          // searchterm wasn't found in any of the tabs.
+          // search term wasn't found in any of the tabs.
           // No tab switching should happen, restore tabIndex
           if (nextIndex == -1) {
             tabIndex = tempIndex;
@@ -400,7 +355,7 @@ public class FindReplace extends JFrame {
           sketch.setCurrentCode(tabIndex);
         }
         editor.setSelection(nextIndex, nextIndex + searchTerm.length());
-      } else {
+      //} else {
         //Toolkit.getDefaultToolkit().beep();
       }
       if (nextIndex != -1) {
@@ -418,23 +373,24 @@ public class FindReplace extends JFrame {
     replaceAndFindButton.setEnabled(found);
   }
 
-/**
- * Replace the current selection with whatever's in the
+
+  /**
+   * Replace the current selection with whatever is in the
    * replacement text field.
- * @param isCompoundEdit True if the action is to be marked as a copmound edit
- */
+   */
   public void replace(boolean isCompoundEdit) {
     editor.setSelectedText(replaceField.getText(), isCompoundEdit);
 
-    editor.getSketch().setModified(true);  // This necessary- calling replace()
+    // This necessary because calling replace()
     // doesn't seem to mark a sketch as modified
+    editor.getSketch().setModified(true);
 
     setFound(false);
   }
 
 
   /**
-   * Replace the current selection with whatever's in the
+   * Replace the current selection with whatever is in the
    * replacement text field, marking the action as a compound edit.
    */
   public void replace() {
@@ -443,7 +399,7 @@ public class FindReplace extends JFrame {
 
 
   /**
-   * Replace the current selection with whatever's in the
+   * Replace the current selection with whatever is in the
    * replacement text field, and then find the next match
    */
   public void replaceAndFindNext() {
@@ -472,7 +428,7 @@ public class FindReplace extends JFrame {
         int stopIndex = startIndex + replaceField.getText().length();
         if (editor.getSketch().getCurrentCodeIndex() == startTab &&
             (caret >= startIndex && (caret <= stopIndex))) {
-          // we've reached where we started, so stop the replace
+          // we've reached where we started, so stop the replacement
           Toolkit.beep();
           editor.statusNotice("Reached beginning of search!");
           break;
@@ -516,8 +472,7 @@ public class FindReplace extends JFrame {
 
 
   /**
-   * Returns true if find next/previous will work, for graying-
-   * out of menu items.
+   * Returns true if Find Next/Previous will work. Used to disable menu items.
    */
   public boolean canFindNext() {
     return findField.getText().length() != 0;
