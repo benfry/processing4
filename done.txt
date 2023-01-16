@@ -1,3 +1,120 @@
+1290 (4.1.2)
+X Help Menu disabled on OS X (looks like a JVM bug)
+X   https://github.com/processing/processing/issues/4353#issuecomment-237715947
+X   https://github.com/processing/processing4/issues/617
+X   https://github.com/processing/processing4/issues/638
+X make ctrl-g (and ctrl-shift-g) work inside the Find window
+
+contributed
+X “Cannot find a class or type named ‘PApplet’” error
+X   https://github.com/processing/processing4/issues/626
+X   https://github.com/processing/processing4/pull/635
+X cannot use @Override and @Deprecated in static mode
+X   https://github.com/processing/processing4/issues/619
+X   https://github.com/processing/processing4/pull/622
+X color in imports shows up as an error in the editor in 4.0 beta 9
+X   https://github.com/processing/processing4/issues/521
+X   https://github.com/processing/processing4/pull/636
+X sketch folders with spaces or hyphens showing errors in the editor window
+X   https://github.com/processing/processing4/issues/610
+X   https://github.com/processing/processing4/pull/637
+
+manager/cleaning
+X send info on 'check for updates' so we know about libs/modes/etc?
+X   how to disclose to users?
+X   only send for items that are part of the public list
+X     otherwise we're sending private libraries/installs
+X     although this won't pick up old libraries not on the new system
+o we shouldn't use .properties extension for modes, et al
+o   because a .properties file is iso8859-1
+X   this ship has sailed
+X something to set min/max versions that are supported by a library
+o ManagerFrame.makeAndShowTab()
+o   this one looks like it's gonna get called multiple times
+o alternating blue/white backgrounds aren't updated after changing filter
+o   just need to call a repaint() after a filter change?
+o check with Casey about coloring for error messages
+o test on Windows and Linux
+o font size for "Downloading" on progress bar is too large
+o   but changing the size breaks the vertical centering
+o wheel mouse is super jumpy
+o   something about unit increment in ContributionListPanel
+o arrow keys up/down move scroll bar, not selection
+o fonts/etc need to be set in one place where they can be edited
+o   move styling to separate constants that are more accessible
+o optimize ContributionTab addListener() call in constructor
+X   no longer calling addListener() on every single entry, whcih helps
+/   but what else might that change be breaking?
+
+manager
+X add foundation libraries to the stats (https://download.processing.org/stats/)
+X   make foundationLibraries a class var, and then access it when calling download()
+X also removed the "new ArrayList()" wrapping in getInstalledContribs()
+X   seemed extraneous, perhaps dates to that being an array instead of a List?
+X rewrite of half of ExamplesContribution
+X cleaning up methods for initializing various contribs in Base
+X replace getToolContribs() with getContribTools() for consistency
+X change base.getModeContribs() to base.getContribModes() for consistency
+X move contribs -> binary blob out of Base since it doesn't belong there
+X Mode manager window is empty
+X   https://github.com/processing/processing4/issues/613
+X in ContributionTab, the downloadAndUpdateContributionListing() should actually be downloading
+X   but in ManagerFrame.showFrame(), it should not, and should just make sure the list is updated
+X   however, the list can be updated another time, right? after load? only on changes?
+X remove dorky loading.gif (used in ContributionTab and UpdateContributionTab)
+X   should be a better way to implement this
+X   currently removed, but still need a way to indicate loading
+X updates tab is empty
+X show the contrib type headers in a different color in the updates tab
+X   still not ideal, and tempting to remove these entirely
+o   remove Libraries/Tools/etc separators from Updates tab? too confusing/looks like a bug?
+X remove rebuildLayout() from ContributionTab
+X ContributionTab.updateContributionListing()
+X   this one shouldn't be in a single tab
+X   and it should include all contribs (method from Base to get in one swoop?)
+X   this is also likely the cause of per-Mode weirdness
+X   should be using Base.getInstalledContribs() instead of rewriting its own
+X ManagerFrame.downloadAndUpdateContributionListing()
+X   should not even be run, because the contribs load on startup
+X   but ContributionTab.tryAgainButton needs to be able to request re-download
+X removed old workaround for NPE
+X   https://github.com/processing/processing/issues/3667
+X contrib categories are broken
+X   showing 'all' on all tabs
+X   not showing categories at all for libs
+X Cannot invoke "javax.swing.JProgressBar.setVisible(boolean)" because "this.progressBar" is null
+X   https://github.com/processing/processing4/issues/618
+X get rid of dummy progress bar being created in StatusDetail.update()
+X   there was one behind the scenes, but it wasn't getting set properly
+o   would be good to *add* a progress bar of some kind, but sheesh
+X updateDetail() call in StatusPanel.updateTheme()
+o   move to ListPanel.updateTheme() (why wasn't it there?)
+X   ugh, it's called twice, right nearby each other; yikes
+X   fix the double call, but just need to get rid of progress bars anyway
+X if Python Mode for 3.x is installed, it's allowed to be used and loaded
+o   shouldn't be loading it on startup if it's not compatible
+o   does this apply to other libraries as well?
+X   added checks for compatibility to ContributionType.isCandidate()
+X   but with Python Mode for 3.x, the problem is maxRevision is set to 0
+X   filed an issue https://github.com/jdf/processing.py/issues/406
+X replace contrib.unsupported_operating_system with contrib.missing_link
+X   had nothing to do with os, it was just whether the link was bad
+X section header is wrong on the updates panel
+X   installing/removing/updating anything will fix it
+X   so appears to be a dumb synchronization problem; yech
+o saw the active download icon on a list item in the updates tab
+o   assume this is part of the section header mess, but… weird
+X   haven't seen again
+o when no entry selected in the status panel, need to clear the detail panel
+X   can't do it because the entries de-select all the time (on install!)
+X make note in docs that .properties file *must* be utf-8 (usually iso8859-1)
+X   if not it'll make things gross (andre sier flob library)
+X add tool.properties to MovieMaker
+o ListPanel.configureStatusColumnLabel() getting null DetailPanel objects
+o   seems to be out of sync/unavailable data based on more recent contrib changes?
+X   should be resolved with more recent changes
+
+
 1289 (4.1.1)
 X add the gson.jar file to the Java Mode build to get LSP support working
 
