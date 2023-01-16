@@ -379,7 +379,7 @@ public class PreprocService {
 
     // Core and default imports
     PdePreprocessor preProcessor =
-      PdePreprocessor.builderFor(this.sketch.getName()).build();
+      PdePreprocessor.builderFor(this.sketch.getMainName()).build();
     if (coreAndDefaultImports == null) {
       coreAndDefaultImports = buildCoreAndDefaultImports(preProcessor);
     }
