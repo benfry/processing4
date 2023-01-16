@@ -1,4 +1,4 @@
-1290 (4.1.2?)
+1290 (4.1.2)
 X Fix ClassCastException with copy() and PGraphicsJava2D
 X   https://github.com/processing/processing4/issues/624
 X show a warning when calling clear() on the primary drawing surface
