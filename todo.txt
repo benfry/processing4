@@ -1,5 +1,7 @@
 1290 (4.1.2?)
-
+X Help Menu disabled on OS X (looks like a JVM bug)
+X   https://github.com/processing/processing/issues/4353#issuecomment-237715947
+X   https://github.com/processing/processing4/issues/617
 
 contributed
 X “Cannot find a class or type named ‘PApplet’” error
@@ -825,9 +827,6 @@ _   https://github.com/processing/processing4/issues/234
 _   we're not posting any, can we suppress the "allow notifications" message?
 _   https://developer.apple.com/documentation/usernotifications
 _   https://developer.apple.com/documentation/usernotifications/asking_permission_to_use_notifications
-_ Help Menu disabled on OS X (looks like a JVM bug)
-_   https://github.com/processing/processing/issues/4353#issuecomment-237715947
-_   still broken in 11.0.8
 _ Java bug prevents us from setting the dock name of a sketch run from the PDE
 _   https://github.com/processing/processing/issues/5045
 _ client properties
