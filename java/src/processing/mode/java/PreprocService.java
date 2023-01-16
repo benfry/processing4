@@ -98,8 +98,6 @@ public class PreprocService {
       complete(null); // initialization block
     }};
 
-  private volatile boolean enabled = true;
-
   /**
    * Create a new preprocessing service to support an editor.
    */
@@ -178,15 +176,13 @@ public class PreprocService {
    * Indicate to this service that the sketch code has changed.
    */
   public void notifySketchChanged() {
-    if (enabled) {
-      synchronized (requestLock) {
-        if (preprocessingTask.isDone()) {
-          preprocessingTask = new CompletableFuture<>();
-          // Register callback which executes all listeners
-          whenDone(this::fireListeners);
-        }
-        requestQueue.offer(Boolean.TRUE);
+    synchronized (requestLock) {
+      if (preprocessingTask.isDone()) {
+        preprocessingTask = new CompletableFuture<>();
+        // Register callback which executes all listeners
+        whenDone(this::fireListeners);
       }
+      requestQueue.offer(Boolean.TRUE);
     }
   }
 
@@ -243,7 +239,6 @@ public class PreprocService {
    *    {PreprocessedSketch} that has any {Problem} instances that were resultant.
    */
   public void whenDone(Consumer<PreprocSketch> callback) {
-    if (!enabled) return;
     registerCallback(callback);
   }
 
@@ -259,7 +254,6 @@ public class PreprocService {
    * </p>
    */
   public void whenDoneBlocking(Consumer<PreprocSketch> callback) {
-    if (!enabled) return;
     try {
       registerCallback(callback).get(BLOCKING_TIMEOUT_SECONDS, TimeUnit.SECONDS);
     } catch (InterruptedException | ExecutionException | TimeoutException e) {
