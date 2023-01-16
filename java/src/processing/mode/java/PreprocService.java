@@ -23,7 +23,6 @@ package processing.mode.java;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -103,7 +102,6 @@ public class PreprocService {
 
   /**
    * Create a new preprocessing service to support an editor.
-   * @param editor The editor supported by this service and receives issues.
    */
   public PreprocService(JavaMode javaMode, Sketch sketch) {
     this.javaMode = javaMode;
@@ -362,6 +360,7 @@ public class PreprocService {
         String newPieceBuilt = getSketchTabContents(sc) + '\n';
         numLines += SourceUtil.getCount(newPieceBuilt, "\n");
         workBuffer.append(newPieceBuilt);
+
       } else if (sc.isExtension("java")) {
         tabStartsList.append(workBuffer.length());
         tabLineStarts.add(numLines);
@@ -377,7 +376,7 @@ public class PreprocService {
         workBuffer.append(newPieceBuilt);
       }
     }
-    result.tabStartOffsets = tabStartsList.array();
+    result.tabStartOffsets = tabStartsList.toArray();
 
     String pdeStage = result.pdeCode = workBuffer.toString();
 
@@ -419,8 +418,6 @@ public class PreprocService {
     }
 
     if (preprocessorResult.getPreprocessIssues().size() > 0) {
-      final int endNumLines = numLines;
-
       preprocessorResult.getPreprocessIssues().stream()
           .map((x) -> ProblemFactory.build(x, tabLineStarts))
           .forEach(result.otherProblems::add);
@@ -694,7 +691,7 @@ public class PreprocService {
   private Path createTemporaryFile(String content) {
     try {
       Path tempFile = Files.createTempFile(null, null);
-      Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
+      Files.writeString(tempFile, content);
       return tempFile;
     } catch (IOException e) {
       throw new RuntimeException("Cannot write to temporary folder.");

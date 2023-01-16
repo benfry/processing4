@@ -39,7 +39,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -79,11 +78,11 @@ public class Sketch {
   private int currentIndex;
 
   /**
-   * Number of SketchCode objects (tabs) in the current sketch. Note that this
-   * will be the same as code.length, because the getCode() method returns
-   * just the code[] array, rather than a copy of it, or an array that's been
-   * resized to just the relevant files themselves.
-   * https://download.processing.org/bugzilla/940.html
+   * Number of SketchCode objects (tabs) in the current sketch. Note
+   * that this will be the same as code.length, because the getCode()
+   * method returns just the code[] array, rather than a copy of it,
+   * or an array that's been resized to just the relevant files.
+   * (<a href="https://download.processing.org/bugzilla/940.html">Bugzilla 940</a>)
    */
   private int codeCount;
   private SketchCode[] code;
@@ -1692,8 +1691,10 @@ public class Sketch {
 
   /**
    * Returns the name (without extension) of the main tab.
-   * Most uses of getName() prior to 4.0 beta 6 were to get the main class,
-   * but this allows the sketch to be decoupled from the main tab name.
+   * (This version still has underscores and is a legit class name.)
+   * Most getName() calls before 4.0 were to get the main class,
+   * so this method addition allows the sketch name to be decoupled
+   * from the name of the main tab.
    */
   public String getMainName() {
     return code[0].getPrettyName();
