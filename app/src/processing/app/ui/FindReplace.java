@@ -182,13 +182,6 @@ public class FindReplace extends JFrame {
     findButton.addActionListener(e -> findNext());
     previousButton.addActionListener(e -> findPrevious());
 
-    // you mustn't replace what you haven't found, my son
-    // semantics of replace are "replace the current selection with the replace field"
-    // so whether we have found before or not is irrelevant
-    // replaceButton.setEnabled(false);
-    // replaceFindButton.setEnabled(false);
-
-    // make the find button the blinky default
     getRootPane().setDefaultButton(findButton);
 
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
@@ -200,12 +193,10 @@ public class FindReplace extends JFrame {
     Toolkit.registerWindowCloseKeys(getRootPane(), actionEvent -> handleClose());
     Toolkit.setIcon(this);
 
-    // hack to get first field to focus properly on osx
+    // hack to get first field to focus properly on macOS
     addWindowListener(new WindowAdapter() {
       public void windowActivated(WindowEvent e) {
-        //System.out.println("activating");
-        /*boolean ok =*/ findField.requestFocusInWindow();
-        //System.out.println("got " + ok);
+        findField.requestFocusInWindow();
         findField.selectAll();
       }
     });
@@ -233,13 +224,11 @@ public class FindReplace extends JFrame {
     if (searchTerm.length() != 0) {
       String text = editor.getText();
 
-      // Started work on find/replace across tabs. These two variables store
-      // the original tab and selection position so that it knew when to stop
-      // rotating through.
+      // Started work on find/replace across tabs. These two variables
+      // store the original tab and selection position so that it knew
+      // when to stop rotating through.
       Sketch sketch = editor.getSketch();
       int tabIndex = sketch.getCurrentCodeIndex();
-//    int selIndex = backwards ?
-//      editor.getSelectionStart() : editor.getSelectionStop();
 
       if (ignoreCase) {
         searchTerm = searchTerm.toLowerCase();
@@ -265,8 +254,9 @@ public class FindReplace extends JFrame {
             if (tabIndex == sketch.getCodeCount() - 1) {
               // System.out.println("wrapping.");
               tabIndex = -1;
-            } else if (tabIndex == sketch.getCodeCount() - 1) {
-              break;
+              // removing for 4.1.2, this was never being run, but is it hiding a bug? [fry 230116]
+//            } else if (tabIndex == sketch.getCodeCount() - 1) {
+//              break;
             }
 
             try {
@@ -317,8 +307,9 @@ public class FindReplace extends JFrame {
             if (tabIndex == 0) {
               //System.out.println("wrapping.");
               tabIndex = sketch.getCodeCount();
-            } else if (tabIndex == 0) {
-              break;
+              // removing for 4.1.2, this was never being run, but is it hiding a bug? [fry 230116]
+//            } else if (tabIndex == 0) {
+//              break;
             }
             try {
               Document doc = sketch.getCode(tabIndex - 1).getDocument();
