@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-15 The Processing Foundation
+  Copyright (c) 2012-23 The Processing Foundation
   Copyright (c) 2008-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@ import java.awt.Font;
 import java.io.File;
 
 import javax.swing.UIManager;
-import javax.swing.plaf.FontUIResource;
+import javax.swing.border.EmptyBorder;
 
 import com.formdev.flatlaf.FlatLaf;
 import com.formdev.flatlaf.FlatLightLaf;
@@ -36,7 +36,6 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 
 import processing.app.Base;
-import processing.app.Language;
 import processing.app.Preferences;
 import processing.app.ui.Toolkit;
 import processing.awt.ShimAWT;
@@ -46,16 +45,16 @@ import processing.core.PApplet;
 /**
  * Used by Base for platform-specific tweaking, for instance finding the
  * sketchbook location using the Windows registry, or OS X event handling.
- *
+ * <p/>
  * The methods in this implementation are used by default, and can be
  * overridden by a subclass.
- *
+ * <p/>
  * These methods throw vanilla-flavored Exceptions, so that error handling
  * occurs inside Platform (which will show warnings in some cases).
- *
+ * <p/>
  * There is currently no mechanism for adding new platforms, as the setup is
  * not automated. We could use getProperty("os.arch") perhaps, but that's
- * debatable (could be upper/lowercase, have spaces, etc.. basically we don't
+ * debatable (could be upper/lowercase, have spaces, etc… basically we don't
  * know if name is proper Java package syntax.)
  */
 public class DefaultPlatform {
@@ -124,6 +123,10 @@ public class DefaultPlatform {
 
     // start with Light, but updateTheme() will be called soon
     UIManager.setLookAndFeel(new FlatLightLaf());
+
+    // Does not fully remove the gray hairline (probably from a parent
+    // Window object), but is an improvement from the heavier default.
+    UIManager.put("ToolTip.border", new EmptyBorder(0, 0, 0, 0));
 
     /*
     javax.swing.UIDefaults defaults = UIManager.getDefaults();

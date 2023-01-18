@@ -1,5 +1,12 @@
 1291 (4.1.3 or 4.2)
 
+design
+X tool tips for errors/warnings not picking up correct colors
+X   also fix the margins and border
+_ completion mode pop-up not following dark and light mode conventions
+_ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pressed.color
+_   currently just using .enabled.color because they weren't in ColorSet
+
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
@@ -84,12 +91,6 @@ _ right-click/ctrl-click for jump to declaration causes hang
 _   https://github.com/processing/processing4/issues/527
 _   https://github.com/processing/processing4/issues/551
 _   https://github.com/processing/processing4/issues/595
-
-design
-_ completion mode pop-up not following dark and light mode conventions
-_ tool tips for errors/warnings not picking up correct colors
-_ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pressed.color
-_   currently just using .enabled.color because they weren't in ColorSet
 
 
 organize this mess

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-19 The Processing Foundation
+  Copyright (c) 2012-23 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -24,7 +24,6 @@
 package processing.app.ui;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -587,9 +586,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
     }
 
     toolTipFont = Toolkit.getSansFont(Toolkit.zoom(9), Font.PLAIN);
-    toolTipTextColor = Theme.getColor("errors.selection.fgcolor");
-    toolTipWarningColor = Theme.getColor("errors.selection.warning.bgcolor");
-    toolTipErrorColor = Theme.getColor("errors.selection.error.bgcolor");
+    toolTipTextColor = Theme.get("errors.selection.fgcolor");
+    toolTipWarningColor = Theme.get("errors.selection.warning.bgcolor");
+    toolTipErrorColor = Theme.get("errors.selection.error.bgcolor");
 
     JPopupMenu popup = modePopup.getPopupMenu();
     // Cannot use instanceof because com.formdev.flatlaf.ui.FlatPopupMenuBorder
@@ -2838,19 +2837,23 @@ public abstract class Editor extends JFrame implements RunnerListener {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
+  private JToolTip toolTip;
   static Font toolTipFont;
-  static Color toolTipTextColor;
-  static Color toolTipWarningColor;
-  static Color toolTipErrorColor;
+  static String toolTipTextColor;
+  static String toolTipWarningColor;
+  static String toolTipErrorColor;
+
 
 
   public void statusToolTip(JComponent comp, String message, boolean error) {
-    Color bgColor = error ? toolTipErrorColor : toolTipWarningColor;
-    int m = Toolkit.zoom(3);
+    // Adjust margin if the UI zoom has been manually set larger/smaller
+    int m = Toolkit.zoom(5);
     String css =
-      String.format("margin: %d %d %d %d; ", -m, -m, -m, -m) +
-      String.format("padding: %d %d %d %d; ", m, m, m, m) +
-      "background: #" + PApplet.hex(bgColor.getRGB(), 8).substring(2) + ";" +
+      // https://github.com/AdoptOpenJDK/openjdk-jdk8u/blob/master/jdk/src/share/classes/javax/swing/plaf/basic/BasicToolTipUI.java
+      "margin: 0 -3 0 -3;" +  // Basic LAF adds 3px to either side; yay!
+      String.format("padding: %d %d %d %d; ", m, m*2, m, m*2) +
+      "background: " + (error ? toolTipErrorColor : toolTipWarningColor) + ";" +
+      "color: " + toolTipTextColor + ";" +
       "font-family: " + toolTipFont.getFontName() + ", sans-serif;" +
       "font-size: " + toolTipFont.getSize() + "px;";
     String content =
