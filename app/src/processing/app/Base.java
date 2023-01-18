@@ -1453,11 +1453,47 @@ public class Base {
       // Mode that it's using. (In 4.0b8, this became the fall-through case.)
 
       if (!Sketch.isSanitaryName(pdeFile.getName())) {
-        Messages.showWarning("You're tricky, but not tricky enough",
-          pdeFile.getName() + " is not a valid name for sketch code.\n" +
-          "Better to stick to ASCII, no spaces, and make sure\n" +
-          "it doesn't start with a number.", null);
-        return null;
+        Object[] options = {
+            "Rename", "Cancel"
+        };
+        String prompt =
+            pdeFile.getName() + " is not a valid name for sketch code.\n" +
+                "The allowed characters are A-Z, a-z, numbers and underscores.\n" +
+                "Should we fix it automagically?";
+
+        int result = JOptionPane.showOptionDialog(null,
+            prompt,
+            "Rename the sketch?",
+            JOptionPane.YES_NO_OPTION,
+            JOptionPane.WARNING_MESSAGE,
+            null,
+            options,
+            options[0]);
+
+        if (result == JOptionPane.YES_OPTION) {  // rename
+          // Split name at dot to be able to only sanitize the actual name
+          String name = pdeFile.getName();
+          String suffix = "";
+          final int dot = name.lastIndexOf('.');
+          if (dot >= 0) {
+            suffix = name.substring(dot);
+            name = name.substring(0, dot);
+          }
+
+          // copy the sketch to a properly named file
+          File properPdeFile = new File(pdeFile.getParent(), Sketch.sanitizeName(name) + suffix);
+          Util.copyFile(pdeFile, properPdeFile);
+
+          // remove the original file, so user doesn't get confused
+          if (!pdeFile.delete()) {
+            Messages.err("Could not delete " + pdeFile);
+          }
+
+          // Use the proper file from now on
+          pdeFile = properPdeFile;
+        } else {  // cancel
+          return null;
+        }
       }
 
       // Check if the name of the file matches the parent folder name.
