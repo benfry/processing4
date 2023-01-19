@@ -1256,7 +1256,7 @@ public class JavaEditor extends Editor {
         library = this.getMode().getLibrary(entry);
         if (library == null) {
           Contribution c = importMap.get(importHeaders);
-          if (c != null && c instanceof AvailableContribution) {
+          if (c instanceof AvailableContribution) {  // also checks null
             libList.add((AvailableContribution) c);// System.out.println(importHeaders
                                                    // + "not found");
           }
@@ -1264,7 +1264,7 @@ public class JavaEditor extends Editor {
       } catch (Exception e) {
         // Not gonna happen (hopefully)
         Contribution c = importMap.get(importHeaders);
-        if (c != null && c instanceof AvailableContribution) {
+        if (c instanceof AvailableContribution) {  // also checks null
           libList.add((AvailableContribution) c);// System.out.println(importHeaders
                                                  // + "not found");
         }
@@ -1972,7 +1972,7 @@ public class JavaEditor extends Editor {
   }
 
 
-  protected void initEditorCode(List<List<Handle>> handles, boolean withSpaces) {
+  protected void initEditorCode(List<List<Handle>> handles) {
     SketchCode[] sketchCode = sketch.getCode();
     for (int tab=0; tab<baseCode.length; tab++) {
         // beautify the numbers
@@ -1983,15 +1983,9 @@ public class JavaEditor extends Editor {
           int s = n.startChar + charInc;
           int e = n.endChar + charInc;
           String newStr = n.strNewValue;
-          if (withSpaces) {
-            newStr = "  " + newStr + "  ";
-          }
           code = replaceString(code, s, e, newStr);
           n.newStartChar = n.startChar + charInc;
           charInc += n.strNewValue.length() - n.strValue.length();
-          if (withSpaces) {
-            charInc += 4;
-          }
           n.newEndChar = n.endChar + charInc;
         }
 
