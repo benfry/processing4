@@ -350,6 +350,7 @@ public abstract class LocalContribution extends Contribution {
             } else {
               cl.replaceContribution(LocalContribution.this, advertisedVersion);
             }
+            cl.updateTableModels();
             base.refreshContribs(LocalContribution.this.getType());
             base.tallyUpdatesAvailable();
           });
@@ -372,8 +373,8 @@ public abstract class LocalContribution extends Contribution {
               // TODO: run this in SwingWorker done() [jv]
               EventQueue.invokeAndWait(() -> {
                 ContributionListing cl = ContributionListing.getInstance();
-                cl.replaceContribution(LocalContribution.this,
-                  LocalContribution.this);
+                cl.replaceContribution(LocalContribution.this, LocalContribution.this);
+                cl.updateTableModels();
                 base.refreshContribs(LocalContribution.this.getType());
                 base.tallyUpdatesAvailable();
               });

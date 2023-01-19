@@ -102,8 +102,9 @@ public class ManagerFrame {
       // TODO If it's the updates tab, need to reset the list. This is papering
       //      over a concurrency bug with adding/removing contribs during the
       //      initial load/startup, but probably always relevant. [fry 230115]
-      if (showTab.contribType == null) {
-        showTab.listPanel.model.fireTableDataChanged();
+//      if (showTab.contribType == null) {
+      for (ContributionTab tab : tabList) {
+        //tab.listPanel.model.fireTableDataChanged();
       }
     }
     tabs.setPanel(showTab);

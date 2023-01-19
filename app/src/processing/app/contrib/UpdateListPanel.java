@@ -65,13 +65,19 @@ public class UpdateListPanel extends ListPanel {
   // Thread: EDT
   @Override
   public void contributionRemoved(final Contribution contribution) {
-    super.contributionRemoved(contribution);
+    if (contribFilter.matches(contribution)) {
+      super.contributionRemoved(contribution);
 
-    // Disable the update button if no contributions in the list
-    ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(getRowCount() > 0);
+      // Disable the update button if no contributions in the list
+      ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(getRowCount() > 0);
+    }
   }
 
 
+  // TODO This seems a little weird… Does not check against the filter,
+  //      and not clear why it isn't just calling super().
+  //      Also seems dangerous to do its own remove() call. [fry 230118]
+  /*
   // Thread: EDT
   @Override
   public void contributionChanged(final Contribution oldContrib,
@@ -82,6 +88,7 @@ public class UpdateListPanel extends ListPanel {
     } else if (newContrib.isInstalled()) {
       detailForContrib.remove(oldContrib);
     }
-    model.fireTableDataChanged();
+//    model.fireTableDataChanged();
   }
+  */
 }

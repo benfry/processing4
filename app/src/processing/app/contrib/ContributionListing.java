@@ -97,20 +97,21 @@ public class ContributionListing {
    * If it matches an entry from contribs.txt, replace that entry.
    * If not, add it to the list as a new contrib.
    */
-  static protected void updateInstalled(Set<Contribution> installed) {
+  static protected void updateInstalled(Set<Contribution> installedContribs) {
     ContributionListing listing = getInstance();
 
-    for (Contribution contribution : installed) {
-      Contribution existingContribution = listing.findContribution(contribution);
-      if (existingContribution != null) {
-        if (existingContribution != contribution) {
+    for (Contribution installed : installedContribs) {
+      Contribution listed = listing.findContribution(installed);
+      if (listed != null) {
+        if (listed != installed) {
           // don't replace contrib with itself
-          listing.replaceContribution(existingContribution, contribution);
+          listing.replaceContribution(listed, installed);
         }
       } else {
-        listing.addContribution(contribution);
+        listing.addContribution(installed);
       }
     }
+    listing.updateTableModels();
   }
 
 
@@ -128,6 +129,9 @@ public class ContributionListing {
   // This could just be a remove followed by an add, but contributionChanged()
   // is a little weird, so that should be cleaned up first [fry 230114]
   protected void replaceContribution(Contribution oldContrib, Contribution newContrib) {
+    removeContribution(oldContrib);
+    addContribution(newContrib);
+    /*
     if (oldContrib != null && newContrib != null) {
       if (oldContrib.getImports() != null) {
         for (String importName : oldContrib.getImports()) {
@@ -146,13 +150,14 @@ public class ContributionListing {
         listener.contributionChanged(oldContrib, newContrib);
       }
     }
+    */
   }
 
 
   private void addContribution(Contribution contribution) {
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
-        getLibraryImportMap().put(importName, contribution);
+        importToLibrary.put(importName, contribution);
       }
     }
     allContribs.add(contribution);
@@ -166,13 +171,20 @@ public class ContributionListing {
   protected void removeContribution(Contribution contribution) {
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
-        getLibraryImportMap().remove(importName);
+        importToLibrary.remove(importName);
       }
     }
     allContribs.remove(contribution);
 
     for (ListPanel listener : listPanels) {
       listener.contributionRemoved(contribution);
+    }
+  }
+
+
+  protected void updateTableModels() {
+    for (ListPanel listener : listPanels) {
+      listener.updateModel();
     }
   }
 
@@ -270,9 +282,10 @@ public class ContributionListing {
 
     availableContribs.clear();
     availableContribs.addAll(parseContribList(listingFile));
-    for (Contribution contribution : availableContribs) {
-      addContribution(contribution);
+    for (Contribution available : availableContribs) {
+      addContribution(available);
     }
+    updateTableModels();
   }
 
 

@@ -139,7 +139,7 @@ public class ContributionManager {
    */
   static void downloadAndInstall(final Base base,
                                  final URL url,
-                                 final AvailableContribution ad,
+                                 final AvailableContribution available,
                                  final ContribProgress downloadProgress,
                                  final ContribProgress installProgress,
                                  final StatusPanel status) {
@@ -156,15 +156,16 @@ public class ContributionManager {
 
           if (downloadProgress.notCanceled() && !downloadProgress.isException()) {
             installProgress.startTask(Language.text("contrib.progress.installing"));
-            final LocalContribution contribution =
-              ad.install(base, contribZip, false, status);
+            final LocalContribution installed =
+              available.install(base, contribZip, false, status);
 
-            if (contribution != null) {
+            if (installed != null) {
               try {
                 // TODO: run this in SwingWorker done() [jv]
                 EventQueue.invokeAndWait(() -> {
-                  contribListing.replaceContribution(ad, contribution);
-                  base.refreshContribs(contribution.getType());
+                  contribListing.replaceContribution(available, installed);
+                  contribListing.updateTableModels();
+                  base.refreshContribs(installed.getType());
                   base.tallyUpdatesAvailable();
                 });
               } catch (InterruptedException e) {
@@ -180,11 +181,11 @@ public class ContributionManager {
             if (exception instanceof SocketTimeoutException) {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.contrib_download.timeout",
-                             ad.getName()));
+                             available.getName()));
             } else if (exception != null) {
               status.setErrorMessage(Language
                 .interpolate("contrib.errors.download_and_install",
-                             ad.getName()));
+                             available.getName()));
               exception.printStackTrace();
             }
           }
@@ -203,7 +204,7 @@ public class ContributionManager {
           }
 
           if (msg == null) {
-            msg = Language.interpolate("contrib.errors.download_and_install", ad.getName());
+            msg = Language.interpolate("contrib.errors.download_and_install", available.getName());
             // Something unexpected, so print the trace for bug tracking
             e.printStackTrace();
           }
@@ -227,10 +228,10 @@ public class ContributionManager {
    * installed at startup time.
    *
    * @param url Direct link to the contribution.
-   * @param ad The AvailableContribution to be downloaded and installed.
+   * @param available The AvailableContribution to be downloaded and installed.
    */
   static void downloadAndInstallOnStartup(final Base base, final URL url,
-                                          final AvailableContribution ad) {
+                                          final AvailableContribution available) {
     // TODO: replace with SwingWorker [jv]
     new Thread(() -> {
       String filename = url.getFile();
@@ -239,15 +240,16 @@ public class ContributionManager {
         File contribZip = File.createTempFile("download", filename);
         try {
           download(url, null, contribZip, null);
-          final LocalContribution contribution =
-            ad.install(base, contribZip, false, null);
+          final LocalContribution installed =
+            available.install(base, contribZip, false, null);
 
-          if (contribution != null) {
+          if (installed != null) {
             try {
               // TODO: run this in SwingWorker done() [jv]
               EventQueue.invokeAndWait(() -> {
-                contribListing.replaceContribution(ad, contribution);
-                base.refreshContribs(contribution.getType());
+                contribListing.replaceContribution(available, installed);
+                contribListing.updateTableModels();
+                base.refreshContribs(installed.getType());
                 base.tallyUpdatesAvailable();
               });
             } catch (InterruptedException e) {
@@ -264,15 +266,15 @@ public class ContributionManager {
           if (contribZip.exists() && !contribZip.delete()) {
             System.err.println("Could not delete " + contribZip);
           }
-          handleUpdateFailedMarkers(ad);
+          handleUpdateFailedMarkers(available);
 
         } catch (Exception e) {
           String arg = "contrib.startup.errors.download_install";
-          System.err.println(Language.interpolate(arg, ad.getName()));
+          System.err.println(Language.interpolate(arg, available.getName()));
         }
       } catch (IOException e) {
         String arg = "contrib.startup.errors.temp_dir";
-        System.err.println(Language.interpolate(arg, ad.getName()));
+        System.err.println(Language.interpolate(arg, available.getName()));
       }
     }, "Contribution Installer").start();
   }
@@ -335,12 +337,12 @@ public class ContributionManager {
     // to give the user an idea about progress being made.
     boolean prevDone = false;
 
-    for (final AvailableContribution contrib : list) {
-      if (contrib.getType() != ContributionType.LIBRARY) {
+    for (final AvailableContribution available : list) {
+      if (available.getType() != ContributionType.LIBRARY) {
         continue;
       }
       try {
-        URL url = new URL(contrib.link);
+        URL url = new URL(available.link);
         String filename = url.getFile();
         filename = filename.substring(filename.lastIndexOf('/') + 1);
         try {
@@ -356,11 +358,11 @@ public class ContributionManager {
             String statusMsg = editor.getStatusMessage();
             if (prevDone) {
               String status = statusMsg + " "
-                + Language.interpolate("contrib.import.progress.download", contrib.name);
+                + Language.interpolate("contrib.import.progress.download", available.name);
               editor.statusNotice(status);
             } else {
               String arg = "contrib.import.progress.download";
-              String status = Language.interpolate(arg, contrib.name);
+              String status = Language.interpolate(arg, available.name);
               editor.statusNotice(status);
             }
 
@@ -369,15 +371,16 @@ public class ContributionManager {
             download(url, null, contribZip, null);
 
             String arg = "contrib.import.progress.install";
-            editor.statusNotice(Language.interpolate(arg,contrib.name));
-            final LocalContribution contribution =
-              contrib.install(base, contribZip, false, null);
+            editor.statusNotice(Language.interpolate(arg,available.name));
+            final LocalContribution installed =
+              available.install(base, contribZip, false, null);
 
-            if (contribution != null) {
+            if (installed != null) {
               try {
                 EventQueue.invokeAndWait(() -> {
-                  contribListing.replaceContribution(contrib, contribution);
-                  base.refreshContribs(contribution.getType());
+                  contribListing.replaceContribution(available, installed);
+                  contribListing.updateTableModels();
+                  base.refreshContribs(installed.getType());
                   base.tallyUpdatesAvailable();
                 });
               } catch (InterruptedException e) {
@@ -394,23 +397,23 @@ public class ContributionManager {
 
             contribZip.delete();
 
-            installedLibList.add(contrib.name);
+            installedLibList.add(available.name);
             prevDone = true;
 
             arg = "contrib.import.progress.done";
-            editor.statusNotice(Language.interpolate(arg,contrib.name));
+            editor.statusNotice(Language.interpolate(arg,available.name));
 
           } catch (Exception e) {
             String arg = "contrib.startup.errors.download_install";
-            System.err.println(Language.interpolate(arg, contrib.getName()));
+            System.err.println(Language.interpolate(arg, available.getName()));
           }
         } catch (IOException e) {
           String arg = "contrib.startup.errors.temp_dir";
-          System.err.println(Language.interpolate(arg,contrib.getName()));
+          System.err.println(Language.interpolate(arg,available.getName()));
         }
       } catch (MalformedURLException e1) {
         System.err.println(Language.interpolate("contrib.import.errors.link",
-                                                contrib.getName()));
+                                                available.getName()));
       }
     }
     editor.getTextArea().setEditable(true);
@@ -550,14 +553,19 @@ public class ContributionManager {
 
     // https://github.com/processing/processing/issues/5823
     if (installList != null) {
+      boolean found = false;
       for (File file : installList) {
-        for (AvailableContribution contrib : contribListing.availableContribs) {
-          if (file.getName().equals(contrib.getName())) {
+        for (AvailableContribution available : contribListing.availableContribs) {
+          if (file.getName().equals(available.getName())) {
             file.delete();
-            installOnStartUp(base, contrib);
-            EventQueue.invokeAndWait(() -> contribListing.replaceContribution(contrib, contrib));
+            installOnStartUp(base, available);
+            EventQueue.invokeAndWait(() -> contribListing.replaceContribution(available, available));
+            found = true;
           }
         }
+      }
+      if (found) {
+        contribListing.updateTableModels();
       }
     } else {
       System.err.println("Could not read " + root);
@@ -646,6 +654,9 @@ public class ContributionManager {
     for (AvailableContribution contrib : updateContribsList) {
       installOnStartUp(base, contrib);
       contribListing.replaceContribution(contrib, contrib);
+    }
+    if (!updateContribsList.isEmpty()) {
+      contribListing.updateTableModels();
     }
   }
 

@@ -93,7 +93,13 @@ abstract public class Contribution {
   }
 
 
-  // pdf.export.*,pdf.convert.common.*
+  /**
+   * Returns the list of imports specified by this library author.
+   * Only used by library authors that want to override the default
+   * behavior of importing all packages in their library.
+   * As of 230118, no Libraries use this with Processing 4.
+   * @return null if no entries found
+   */
   protected StringList getImports() {
     return imports;
   }
@@ -285,10 +291,7 @@ abstract public class Contribution {
 
 
   /**
-   * Returns the list of imports specified by this library author. Only
-   * necessary for library authors that want to override the default behavior
-   * of importing all packages in their library.
-   * @return null if no entries found
+   * Returns the list of imports specified by this library author.
    */
   static StringList parseImports(StringDict properties) {
     StringList outgoing = new StringList();

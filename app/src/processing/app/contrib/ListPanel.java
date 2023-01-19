@@ -95,7 +95,13 @@ public class ListPanel extends JPanel implements Scrollable {
     this.contributionTab = contributionTab;
     this.filter = filter;
 
-    model = new ContributionTableModel(columns);
+    model = new ContributionTableModel(columns); /* {
+      @Override
+      public void fireTableDataChanged() {
+        new Exception().printStackTrace(System.out);
+        super.fireTableDataChanged();
+      }
+    };*/
     model.enableSections(enableSections);
     table = new JTable(model) {
       @Override
@@ -696,28 +702,13 @@ public class ListPanel extends JPanel implements Scrollable {
 
   // Thread: EDT
   protected void contributionAdded(final Contribution contribution) {
-//    if (true || filter.matches(contribution)) {
     if (filter.matches(contribution)) {
-//      System.out.println(contributionTab.contribType + " tab: " +
-//        "added " + contribution.name);
-      //new Exception().printStackTrace(System.out);
-
       if (!detailForContrib.containsKey(contribution)) {
-//        System.out.println(contributionTab.contribType + " tab: " +
-//          "actually adding " + contribution.name);
-//      new Exception().printStackTrace(System.out);
-//        long t1 = System.currentTimeMillis();
-        //StatusPanelDetail newPanel = new StatusPanelDetail(this);
         StatusDetail newPanel = contributionTab.createStatusDetail();
         detailForContrib.put(contribution, newPanel);
         newPanel.setContrib(contribution);
-//      add(newPanel);
-        model.fireTableDataChanged();
-//        long t2 = System.currentTimeMillis();
-//        System.out.println("ListPanel.contributionAdded() " + (t2 - t1) + " " + contribution.getTypeName() + " " + contribution.getName());
+//        model.fireTableDataChanged();
       }
-//    } else {
-//      System.out.println("ignoring contrib " + contribution.getName());
     }
   }
 
@@ -725,19 +716,16 @@ public class ListPanel extends JPanel implements Scrollable {
   // Thread: EDT
   protected void contributionRemoved(final Contribution contribution) {
     if (filter.matches(contribution)) {
-//      System.out.println(contributionTab.contribType + " tab: " +
-//        "removed " + contribution.name);
-//    if (true || filter.matches(contribution)) {
       StatusDetail panel = detailForContrib.get(contribution);
       if (panel != null) {
         detailForContrib.remove(contribution);
       }
-      model.fireTableDataChanged();
-      updateUI();
+//      model.fireTableDataChanged();
     }
   }
 
 
+  /*
   // Thread: EDT
   protected void contributionChanged(final Contribution oldContrib,
                                      final Contribution newContrib) {
@@ -746,28 +734,24 @@ public class ListPanel extends JPanel implements Scrollable {
       detailForContrib.remove(oldContrib);
       detail.setContrib(newContrib);
       detailForContrib.put(newContrib, detail);
-      model.fireTableDataChanged();
+//      model.fireTableDataChanged();
     }
   }
+  */
 
 
   // Thread: EDT
   protected void updateFilter(String category, List<String> filters) {
     rowFilter.setCategoryFilter(category);
     rowFilter.setStringFilters(filters);
-    model.fireTableDataChanged();
+//    model.fireTableDataChanged();
+    updateModel();
   }
 
 
-//  protected void fireChange() {
-//    model.fireTableDataChanged();
-//  }
-//  protected void filterDummy(String category) {
-//    System.out.println("LAST CHANCE DUMMY");
-////    rowFilter.setCategoryFilter(category);
-////    rowFilter.setStringFilters(new ArrayList<>());
-//    model.fireTableDataChanged();
-//  }
+  protected void updateModel() {
+    model.fireTableDataChanged();
+  }
 
 
   // Thread: EDT
