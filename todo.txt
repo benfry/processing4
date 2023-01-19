@@ -91,6 +91,8 @@ _   malformed proxy issues http://stackoverflow.com/q/376101
 _   docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html
 _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 _   https://github.com/processing/processing4/wiki/Preferences#proxies
+_ proxies don't support authentication
+_   https://github.com/processing/processing4/issues/644
 _ right-click/ctrl-click for jump to declaration causes hang
 _   https://github.com/processing/processing4/issues/527
 _   https://github.com/processing/processing4/issues/551
