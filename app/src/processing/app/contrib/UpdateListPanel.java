@@ -49,6 +49,7 @@ public class UpdateListPanel extends ListPanel {
   }
 
 
+  /*
   // Thread: EDT
   @Override
   public void contributionAdded(final Contribution contribution) {
@@ -57,7 +58,7 @@ public class UpdateListPanel extends ListPanel {
       super.contributionAdded(contribution);
 
       // Enable the update button if contributions are available
-      ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(getRowCount() > 0);
+      ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(anyRows());
     }
   }
 
@@ -69,26 +70,46 @@ public class UpdateListPanel extends ListPanel {
       super.contributionRemoved(contribution);
 
       // Disable the update button if no contributions in the list
-      ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(getRowCount() > 0);
+      ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(anyRows());
     }
   }
+  */
 
 
   // TODO This seems a little weird… Does not check against the filter,
-  //      and not clear why it isn't just calling super().
-  //      Also seems dangerous to do its own remove() call. [fry 230118]
-  /*
+  //      and not entirely clear why it isn't just calling super().
+  //      Also seems dangerous to do its own add/remove calls.
+  //      However, if removed, the StatusDetail entries for the Updates
+  //      panel are all f-ed up (NPE for progressBar). [fry 230119]
   // Thread: EDT
   @Override
   public void contributionChanged(final Contribution oldContrib,
                                   final Contribution newContrib) {
-    StatusDetail detail = detailForContrib.get(oldContrib);
-    if (detail == null) {
-      contributionAdded(newContrib);
-    } else if (newContrib.isInstalled()) {
-      detailForContrib.remove(oldContrib);
-    }
+    // TODO Matching against oldContrib brings back NPEs,
+    //      but using newContrib seems to work. [fry 230119]
+    if (contribFilter.matches(newContrib)) {
+      StatusDetail detail = detailForContrib.get(oldContrib);
+      if (detail == null) {
+        contributionAdded(newContrib);
+      } else if (newContrib.isInstalled()) {
+        detailForContrib.remove(oldContrib);
+      }
 //    model.fireTableDataChanged();
+    }
   }
-  */
+
+
+  @Override
+  protected void updateModel() {
+    super.updateModel();
+
+    ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(anyRows());
+  }
+
+
+  private boolean anyRows() {
+    // This will count section headers, but it is only used to check if any rows are shown
+    System.out.println("row count " + sorter.getViewRowCount());
+    return sorter.getViewRowCount() > 0;
+  }
 }

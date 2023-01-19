@@ -843,10 +843,4 @@ public class ListPanel extends JPanel implements Scrollable {
   public boolean getScrollableTracksViewportWidth() {
     return true;
   }
-
-
-  public int getRowCount() {
-    // This will count section headers, but it is only used to check if any rows are shown
-    return sorter.getViewRowCount();
-  }
 }
