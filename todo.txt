@@ -1,15 +1,20 @@
 1291 (4.1.3 or 4.2)
 
+
+manager
+X add 'exports' to the library parameters
+X remove 'imports' from Modes, since they're not used
+_   need to document on the wiki
+_ more contribs manager concurrency problems
+_   https://github.com/processing/processing4/issues/640
+
+
 design
 X tool tips for errors/warnings not picking up correct colors
 X   also fix the margins and border
 _ completion mode pop-up not following dark and light mode conventions
 _ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pressed.color
 _   currently just using .enabled.color because they weren't in ColorSet
-
-
-_ more contribs manager concurrency problems
-_   https://github.com/processing/processing4/issues/640
 
 
 _ export to IntelliJ? how tricky?
