@@ -22,11 +22,11 @@ How to start:
     * They are isolated enough that someone can jump into it without significant reworking of other code.
     * Ben knows that it’s unlikely that he’ll have time to work on them.
 
-* **The Old Repository** – There are also many “help wanted” [issues in the 3.x repository](https://github.com/processing/processing4/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Some of these are very old, so it may be a good idea to check in about the priority before putting in too much work!
+* **The Old Repository** – There are also many “help wanted” [issues in the 3.x repository](https://github.com/processing/processing4/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22). Some of these are very old, so if you're interested in one of these, check in about the priority before putting in too much work!
 
 * **JavaFX** – There are several [active issues](https://github.com/processing/processing4-javafx/issues?q=is%3Aissue+is%3Aopen+sort%3Aupdated-desc) for the JavaFX renderer as well.
 
-* **The `todo.txt` File** – This is *not* a good place to start. It’s Ben’s rambling to-do list, and dates back to the very start of the project over twenty years ago. It shouldn’t be used as a guideline for work to be done, because there are lots of things there that are no longer relevant. Consider it the dusty attic of what’s inside his head. If you see something of interest there, open an issue to see if it’s still a priority, or how it should be approached. But also, there are *so many open issues*, which represent actual problems identified by community members. Those are by far the best place to start.
+* **The `todo.txt` File** – This is *not* a good place to start. It’s Ben’s rambling to-do list, and dates back to the very start of the project over twenty years ago. It shouldn’t be used as a guideline for work to be done, because there are lots of things there that are no longer relevant. Consider it the dusty attic of what’s inside his head. If you see something of interest there, open an issue to see if it’s still a priority, or how it should be approached. But really, there are *so many open issues*, which represent actual problems identified by community members, and they are by far the best place to start.
 
 * **Style Guidelines** – Keep the [style guidelines](https://github.com/processing/processing/wiki/Style-Guidelines) in mind when submitting pull requests. If you don’t, someone else will have to reformat your code so that it fits everything else (or we’ll have to reject it if it’ll take us too long to clean it up).
 
@@ -41,23 +41,25 @@ Similarly, Tweak Mode began as a [separate project](http://galsasson.com/tweakmo
 
 Developing features separately from the main software has several benefits:
 
-* It’s easier for the contributor to develop the software without it needing to work for tens of thousands of Processing users.
-* It provides a way to get feedback on that code independently of everything else, and iterating on it rapidly.
+* It’s easier for the contributor to develop the software without it needing to work for tens or hundreds of thousands of Processing users.
+* It provides a way to get feedback on that code independently of everything else, and the ability to iterate on it rapidly.
 * This feedback process also helps gauge the level of interest for the community, and how it should be prioritized for the software.
 * We can delay the process of “normalizing” the features so that they’re consistent with the rest of Processing (function naming, structure, etc).
 
 A major consideration for any new feature is the level of maintenance that it might require in the future. If the original maintainer loses interest over time (which is normal), any ongoing work usually falls to Ben, or it sits on the issues list unfixed, which isn’t good for the community, or for Ben, who has plenty of issues of his own—whether Processing or otherwise.
 
-Processing is a massive project that has existed for more than 20 years. Part of its longevity comes from the effort that’s gone into keeping things as simple as we can, and making a lot of decisions about *what to leave out*. Adding a new feature always has to be weighed against the potential confusion of one more thing—whether it’s a menu item, a dialog box, a function that needs to be added to the reference, etc. Adding a new graphics function means making it work across all the renderers that we ship (Java2D, OpenGL, JavaFX, PDF, etc) and across platforms (macOS, Windows, Linux).
+Processing is a massive project that has existed for more than 20 years. Part of its longevity comes from the effort that’s gone into keeping things as simple as we can, and in particular, making a lot of difficult decisions about *what to leave out*. Adding a new feature always has to be weighed against the potential confusion of one more thing—whether it’s a menu item, a dialog box, a function that needs to be added to the reference, etc. Adding a new graphics function means making it work across all the renderers that we ship (Java2D, OpenGL, JavaFX, PDF, etc) and across platforms (macOS, Windows, Linux). Does the feature help enough people that it's worth making the reference longer? Or the additional burden of maintaining that feature? It's no fun to say “no,” especially to people volunteering their time, but we often have to.
 
 
 ## Editor
 
 The current Editor, based on the ancient [JEditSyntax](http://syntax.jedit.org/) package has held up long past its expiration date. [Exhaustive work](https://github.com/processing/processing4/blob/master/app/src/processing/app/syntax/README.md) has been done to look at replacing the component with something more modern, like `RSyntaxArea`, but it’s simply not feasible without breaking a massive amount of code, and likely introducing a lot of regressions in the process. All for… code folding? An incrementally better experience? But with potential for major setbacks in low-level code? It’s simply not a path that makes sense.
 
-With that in mind, any work on updating the editor and adding new features should be focused on first [adapting the preprocessor and compiler](https://github.com/processing/processing4/issues/117) to be wrapped using the [Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol), so that we can link to other existing editors (Visual Studio Code and many others). It should be possible to create a Java-only, headless implementation that wraps the current source in this repository and can communicate via LSP.
+With that in mind, any work on updating the editor and adding new features should be focused on further [adapting the preprocessor and compiler](https://github.com/processing/processing4/issues/117) to be wrapped using the [Language Server Protocol](https://en.wikipedia.org/wiki/Language_Server_Protocol), so that we can link to other existing editors (Visual Studio Code and many others). It should be possible to create a Java-only, headless implementation that wraps the current source in this repository and can communicate via LSP. 
 
-Once that initial work is done, more people can use popular tools like VS Code and others, and we can start building a new PDE that’s as simple to use as the current application, based on something like [Theia](https://theia-ide.org/), a new editor platform that uses LSP as its basis.
+The initial work was completed in Processing 4.1, and now needs more testing and implementation of Language Server clients such as [this one](https://github.com/kgtkr/processing-language-server-vscode).
+
+We can start building a new PDE that’s as simple to use as the current application, based on something like [Theia](https://theia-ide.org/), a new editor platform that uses LSP as its basis.
 
 With that in mind, nearly all editor enhancement requests will be redirected to this aim. The current editor does what we want it to, for the intended audience, and improving it requires a better foundation as a starting point.
 
