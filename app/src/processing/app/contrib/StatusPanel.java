@@ -443,7 +443,7 @@ class StatusPanel extends JPanel {
     }
 
     removeButton.setEnabled(contrib.isInstalled() && !detail.removeInProgress);
-
+    
     if (detail.updateInProgress || detail.installInProgress || detail.removeInProgress) {
 //      progressBar.setUI(new PdeProgressBarUI("manager.progress"));
 //      System.out.println(progressBar.getUI());

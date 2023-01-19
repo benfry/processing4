@@ -725,7 +725,6 @@ public class ListPanel extends JPanel implements Scrollable {
   }
 
 
-  /*
   // Thread: EDT
   protected void contributionChanged(final Contribution oldContrib,
                                      final Contribution newContrib) {
@@ -737,7 +736,6 @@ public class ListPanel extends JPanel implements Scrollable {
 //      model.fireTableDataChanged();
     }
   }
-  */
 
 
   // Thread: EDT
@@ -756,7 +754,7 @@ public class ListPanel extends JPanel implements Scrollable {
 
   // Thread: EDT
   private void setSelectedDetail(StatusDetail contribDetail) {
-    contributionTab.updateStatusDetail(contribDetail);
+    contributionTab.applyDetail(contribDetail);
 
     if (selectedDetail != contribDetail) {
       selectedDetail = contribDetail;

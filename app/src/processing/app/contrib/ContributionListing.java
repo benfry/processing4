@@ -129,9 +129,9 @@ public class ContributionListing {
   // This could just be a remove followed by an add, but contributionChanged()
   // is a little weird, so that should be cleaned up first [fry 230114]
   protected void replaceContribution(Contribution oldContrib, Contribution newContrib) {
-    removeContribution(oldContrib);
-    addContribution(newContrib);
-    /*
+//    removeContribution(oldContrib);
+//    addContribution(newContrib);
+
     if (oldContrib != null && newContrib != null) {
       if (oldContrib.getImports() != null) {
         for (String importName : oldContrib.getImports()) {
@@ -150,7 +150,6 @@ public class ContributionListing {
         listener.contributionChanged(oldContrib, newContrib);
       }
     }
-    */
   }
 
 

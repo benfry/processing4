@@ -108,8 +108,12 @@ class StatusDetail {
     StatusAnimator(ListPanel listPanel) {
       thread = new Thread(() -> {
         while (Thread.currentThread() == thread) {
-          //listPanel.repaint();
-          listPanel.table.repaint();
+          // Should be ok to call this from any Thread (EDT or otherwise)
+          // https://www.oracle.com/java/technologies/painting.html#mgr
+          listPanel.repaint();
+//          System.out.println("calling repaint() " + System.currentTimeMillis());
+//          listPanel.table.repaint();
+//          listPanel.contributionTab.repaint();
           // TODO Ideally this should be only calling update on the relevant
           //      cell with model.fireTableCellUpdated(), but that requires
           //      more state housekeeping that's already broken. [fry 230115]

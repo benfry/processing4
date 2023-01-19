@@ -389,7 +389,7 @@ public class ContributionTab extends JPanel {
   }
 
 
-  protected void updateStatusDetail(StatusDetail detail) {
+  protected void applyDetail(StatusDetail detail) {
     statusPanel.applyDetail(detail);
   }
 
