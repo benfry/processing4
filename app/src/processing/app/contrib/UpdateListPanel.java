@@ -76,7 +76,7 @@ public class UpdateListPanel extends ListPanel {
   */
 
 
-  // TODO This seems a little weird… Does not check against the filter,
+  // TODO This seems a little weird… Wasn't checking against the filter,
   //      and not entirely clear why it isn't just calling super().
   //      Also seems dangerous to do its own add/remove calls.
   //      However, if removed, the StatusDetail entries for the Updates
@@ -103,13 +103,7 @@ public class UpdateListPanel extends ListPanel {
   protected void updateModel() {
     super.updateModel();
 
-    ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(anyRows());
-  }
-
-
-  private boolean anyRows() {
-    // This will count section headers, but it is only used to check if any rows are shown
-    System.out.println("row count " + sorter.getViewRowCount());
-    return sorter.getViewRowCount() > 0;
+    boolean anyRows = sorter.getViewRowCount() > 0;
+    ((UpdateStatusPanel) contributionTab.statusPanel).setUpdateEnabled(anyRows);
   }
 }
