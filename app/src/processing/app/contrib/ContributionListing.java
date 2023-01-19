@@ -54,7 +54,7 @@ public class ContributionListing {
   final private ReentrantLock downloadingLock = new ReentrantLock();
 
   final Set<AvailableContribution> availableContribs;
-  final private Map<String, Contribution> importToLibrary;
+  final private Map<String, Contribution> packageToLibrary;
   final private Set<Contribution> allContribs;
 
   Set<ListPanel> listPanels;
@@ -63,7 +63,7 @@ public class ContributionListing {
   private ContributionListing() {
     listPanels = new HashSet<>();
     availableContribs = new HashSet<>();
-    importToLibrary = new HashMap<>();
+    packageToLibrary = new HashMap<>();
     allContribs = ConcurrentHashMap.newKeySet();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
@@ -133,6 +133,7 @@ public class ContributionListing {
 //    addContribution(newContrib);
 
     if (oldContrib != null && newContrib != null) {
+      /*
       if (oldContrib.getImports() != null) {
         for (String importName : oldContrib.getImports()) {
 //          System.out.println("replaceContribution() removing import " + importName);
@@ -145,6 +146,7 @@ public class ContributionListing {
           importToLibrary.put(importName, newContrib);
         }
       }
+      */
       allContribs.remove(oldContrib);
       allContribs.add(newContrib);
 
@@ -156,12 +158,14 @@ public class ContributionListing {
 
 
   private void addContribution(Contribution contribution) {
+      /*
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
 //        System.out.println("addContribution() putting import " + importName);
         importToLibrary.put(importName, contribution);
       }
     }
+      */
     allContribs.add(contribution);
 
     for (ListPanel listener : listPanels) {
@@ -171,12 +175,14 @@ public class ContributionListing {
 
 
   protected void removeContribution(Contribution contribution) {
+    /*
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
 //        System.out.println("removeContribution() removing import " + importName);
         importToLibrary.remove(importName);
       }
     }
+    */
     allContribs.remove(contribution);
 
     for (ListPanel listener : listPanels) {
@@ -285,8 +291,23 @@ public class ContributionListing {
 
     availableContribs.clear();
     availableContribs.addAll(parseContribList(listingFile));
+
+    // Only updated whenever the available list is loaded.
+    // No need to do this after/during the installation process.
+    packageToLibrary.clear();
+
     for (Contribution available : availableContribs) {
       addContribution(available);
+      if (available.getType() == ContributionType.LIBRARY) {
+        // Only needs to be called for libraries, the list of exports
+        // maps packages to available libraries for auto-installation.
+        StringList exports = available.getExports();
+        if (exports != null) {
+          for (String export : exports) {
+            packageToLibrary.put(export, available);
+          }
+        }
+      }
     }
     updateTableModels();
   }
@@ -382,6 +403,6 @@ public class ContributionListing {
    * Used by JavaEditor to auto-import. Not known to be used by other Modes.
    */
   public Map<String, Contribution> getLibraryImportMap() {
-    return importToLibrary;
+    return packageToLibrary;
   }
 }
