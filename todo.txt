@@ -8,6 +8,10 @@ _ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pres
 _   currently just using .enabled.color because they weren't in ColorSet
 
 
+_ more contribs manager concurrency problems
+_   https://github.com/processing/processing4/issues/640
+
+
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
 _   point to binaries in /Applications/Processing.app? (no)
