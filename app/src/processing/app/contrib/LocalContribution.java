@@ -66,7 +66,8 @@ public abstract class LocalContribution extends Contribution {
         name = properties.get("name");
         id = properties.get("id");
         categories = parseCategories(properties);
-        imports = parseImports(properties);
+        imports = parseImports(properties, IMPORTS_PROPERTY);
+        exports = parseImports(properties, EXPORTS_PROPERTY);
         if (name == null) {
           name = folder.getName();
         }
@@ -467,17 +468,6 @@ public abstract class LocalContribution extends Contribution {
 
   public String getId() {
     return id;
-  }
-
-
-  /**
-   * Returns the imports (package-names) for a library, as specified in its library.properties
-   * (e.g., imports=libname.*,libname.support.*)
-   *
-   * @return String[] packageNames (without wildcards) or null if none are specified
-   */
-  public StringList getImports() {
-    return imports;
   }
 
 

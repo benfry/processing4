@@ -21,7 +21,6 @@
 */
 package processing.app.contrib;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -31,11 +30,11 @@ import processing.core.PApplet;
 import processing.data.StringDict;
 import processing.data.StringList;
 import processing.app.Language;
-import processing.app.Util;
 
 
 abstract public class Contribution {
   static final String IMPORTS_PROPERTY = "imports";
+  static final String EXPORTS_PROPERTY = "exports";
   static final String CATEGORIES_PROPERTY = "categories";
   static final String MODES_PROPERTY = "modes";
   static final String AUTHORS_PROPERTY = "authors";
@@ -61,7 +60,8 @@ abstract public class Contribution {
   protected long lastUpdated;       // 1402805757
   protected int minRevision;        // 0
   protected int maxRevision;        // 227
-  protected StringList imports;     // pdf.export,pdf.convert.common (list of packages, not imports)
+  protected StringList imports;     // pdf.export,pdf.convert.common (list of packages)
+  protected StringList exports;     // full list of possible packages
 
 
   // "Sound", "Utilities"... see valid list in ContributionListing
@@ -94,14 +94,30 @@ abstract public class Contribution {
 
 
   /**
-   * Returns the list of imports specified by this library author.
+   * For Libraries, returns the list of imports specified by the author.
+   * This will be the list of entries added as imports when a user
+   * selects an item from the "Import Library" menu.
    * Only used by library authors that want to override the default
    * behavior of importing all packages in their library.
    * As of 230118, no Libraries use this with Processing 4.
+   * <p/>
+   * For Modes, several list processing.mode.java.JavaMode as its import,
+   * however this is not used for anything, and it's only JavaMode.
    * @return null if no entries found
    */
-  protected StringList getImports() {
+  public StringList getImports() {
     return imports;
+  }
+
+
+  /**
+   * For Libraries, the list of all possible packages that are provided
+   * by this library. Not required, but makes it possible to use the
+   * auto-import feature for libraries (i.e. if a library is used by a
+   * sketch, the PDE will prompt the user if they'd like to install.)
+   */
+  public StringList getExports() {
+    return exports;
   }
 
 
@@ -293,10 +309,10 @@ abstract public class Contribution {
   /**
    * Returns the list of imports specified by this library author.
    */
-  static StringList parseImports(StringDict properties) {
+  static StringList parseImports(StringDict properties, String prop) {
     StringList outgoing = new StringList();
 
-    String importStr = properties.get(IMPORTS_PROPERTY);
+    String importStr = properties.get(prop);
     if (importStr != null) {
       String[] importList = PApplet.trim(PApplet.split(importStr, ','));
       for (String importName : importList) {
@@ -332,7 +348,7 @@ abstract public class Contribution {
 
   static private String translateCategory(String cat) {
     // Converts Other to other, I/O to i_o, Video & Vision to video_vision
-    String cleaned = cat.replaceAll("[\\W]+", "_").toLowerCase();
+    String cleaned = cat.replaceAll("\\W+", "_").toLowerCase();
     return Language.text("contrib.category." + cleaned);
   }
 

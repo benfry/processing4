@@ -135,11 +135,13 @@ public class ContributionListing {
     if (oldContrib != null && newContrib != null) {
       if (oldContrib.getImports() != null) {
         for (String importName : oldContrib.getImports()) {
+//          System.out.println("replaceContribution() removing import " + importName);
           importToLibrary.remove(importName);
         }
       }
       if (newContrib.getImports() != null) {
         for (String importName : newContrib.getImports()) {
+//          System.out.println("replaceContribution() putting import " + importName);
           importToLibrary.put(importName, newContrib);
         }
       }
@@ -156,6 +158,7 @@ public class ContributionListing {
   private void addContribution(Contribution contribution) {
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
+//        System.out.println("addContribution() putting import " + importName);
         importToLibrary.put(importName, contribution);
       }
     }
@@ -170,6 +173,7 @@ public class ContributionListing {
   protected void removeContribution(Contribution contribution) {
     if (contribution.getImports() != null) {
       for (String importName : contribution.getImports()) {
+//        System.out.println("removeContribution() removing import " + importName);
         importToLibrary.remove(importName);
       }
     }
