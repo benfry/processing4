@@ -101,8 +101,9 @@ abstract public class Contribution {
    * behavior of importing all packages in their library.
    * As of 230118, no Libraries use this with Processing 4.
    * <p/>
-   * For Modes, several list processing.mode.java.JavaMode as its import,
-   * however this is not used for anything, and it's only JavaMode.
+   * For Modes, this may specify another Mode it depends upon, i.e.
+   * several list processing.mode.java.JavaMode as its import.
+   *
    * @return null if no entries found
    */
   public StringList getImports() {

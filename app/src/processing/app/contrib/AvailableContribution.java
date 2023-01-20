@@ -46,8 +46,11 @@ public class AvailableContribution extends Contribution {
     this.link = params.get("download");
 
     categories = parseCategories(params);
+
+    // Only used by Libraries and Modes
     imports = parseImports(params, IMPORTS_PROPERTY);
     exports = parseImports(params, EXPORTS_PROPERTY);
+
     name = params.get("name");
     // formerly authorList (but not a list, just free text)
     authors = params.get("authors");
@@ -371,14 +374,14 @@ public class AvailableContribution extends Contribution {
     writer.println("minRevision=" + minRev);
     writer.println("maxRevision=" + maxRev);
 
-    if (getType() == ContributionType.LIBRARY) {
-      if (importList != null) {
-        writer.println("imports=" + importList.join(","));
-      }
-      if (exportList != null) {
-        writer.println("exports=" + importList.join(","));
-      }
+    // Only used by Libraries and Modes
+    if (importList != null) {
+      writer.println("imports=" + importList.join(","));
     }
+    if (exportList != null) {
+      writer.println("exports=" + importList.join(","));
+    }
+
     if (getType() == ContributionType.EXAMPLES) {
       if (compatibleContribsList != null) {
         writer.println(MODES_PROPERTY + "=" + compatibleContribsList);

@@ -66,8 +66,11 @@ public abstract class LocalContribution extends Contribution {
         name = properties.get("name");
         id = properties.get("id");
         categories = parseCategories(properties);
+
+        // Only used by Libraries and Modes
         imports = parseImports(properties, IMPORTS_PROPERTY);
         exports = parseImports(properties, EXPORTS_PROPERTY);
+
         if (name == null) {
           name = folder.getName();
         }

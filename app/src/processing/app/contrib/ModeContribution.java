@@ -120,7 +120,7 @@ public class ModeContribution extends LocalContribution {
   }
 
 
-  public String initLoader(Base base, String className) throws Exception {
+  private String initLoader(Base base, String className) throws Exception {
     File modeDirectory = new File(folder, getTypeName());
     if (modeDirectory.exists()) {
       Messages.log("checking mode folder regarding class name " + className);
@@ -147,17 +147,17 @@ public class ModeContribution extends LocalContribution {
         // mode.properties), add the dependencies to the classloader
 
         Map<String, Mode> installedModes = new HashMap<>();
-        for(Mode m: base.getModeList()){
+        for (Mode m : base.getModeList()) {
           // Base.log("Mode contrib: " + m.getClass().getName() + " : "+ m.getFolder());
           installedModes.put(m.getClass().getName(), m);
         }
 
-        for (String modeImport: imports) {
+        for (String modeImport : imports) {
           if (installedModes.containsKey(modeImport)) {
             Messages.log("Found mode dependency " + modeImport);
             File modeFolder = installedModes.get(modeImport).getFolder();
             File[] archives = Util.listJarFiles(new File(modeFolder, "mode"));
-            if (archives != null && archives.length > 0) {
+            if (archives != null) {
               for (File archive : archives) {
                 // Base.log("Adding jar dependency: " + archives[i].getAbsolutePath());
                 extraUrls.add(archive.toURI().toURL());
