@@ -1,29 +1,30 @@
 <?xml version="1.0"?>
 <project name="Processing Serial Library" default="build">
-
-  <target name="clean" description="Clean the build directories">
-    <delete dir="bin" />
-    <delete file="library/serial.jar" />
-  </target>
+  <property name="core.path" location="../../../core/library/core.jar" />
 
   <target name="compile" description="Compile sources">
     <condition property="core-built">
-      <available file="../../../core/library/core.jar" />
+      <available file="${core.path}" />
     </condition>
-    <fail unless="core-built" message="Please build the core library first and make sure it sits in ../../../core/library/core.jar" />
+    <fail unless="core-built" message="Please build the core library first and make sure it sits in ${core.path}" />
 
     <mkdir dir="bin" />
-    <javac source="11"
-	   target="11"
-	   srcdir="src" destdir="bin"
-	   encoding="UTF-8"
-	   includeAntRuntime="false"
-	   classpath="../../../core/library/core.jar; library/jssc.jar"
-	   nowarn="true">
+    <javac source="17"
+           target="17"
+           srcdir="src" destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           classpath="${core.path}; library/jssc.jar"
+           nowarn="true">
     </javac>
   </target>
 
   <target name="build" depends="compile" description="Build serial library">
     <jar basedir="bin" destfile="library/serial.jar" />
+  </target>
+
+  <target name="clean" description="Clean the build directories">
+    <delete dir="bin" />
+    <delete file="library/serial.jar" />
   </target>
 </project>

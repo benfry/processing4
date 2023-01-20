@@ -3,13 +3,13 @@
   <target name="compile">
 
     <mkdir dir="bin" />
-    <javac source="11"
-           target="11"
-	   srcdir="src"
+    <javac source="17"
+           target="17"
+           srcdir="src"
            destdir="bin"
-	   debug="true"
-	   includeantruntime="true"
-	   nowarn="true">
+           debug="true"
+           includeantruntime="true"
+           nowarn="true">
 
     </javac>
   </target>
@@ -28,8 +28,8 @@
     </copy>
 
     <taskdef name="methods"
-	     classname="PAppletMethods"
-	     classpath="methods.jar" />
+             classname="PAppletMethods"
+             classpath="methods.jar" />
     <methods dir="demo"/>
   </target>
 

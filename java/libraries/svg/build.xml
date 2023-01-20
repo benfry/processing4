@@ -60,7 +60,7 @@
     <fail unless="core-built" message="Please build the core library first and make sure it is located at ${core.library.jar}" />
 
     <mkdir dir="bin" />
-    <javac source="11" target="11"
+    <javac source="17" target="17"
 	         srcdir="src" destdir="bin"
 	         encoding="UTF-8"
 	         includeAntRuntime="false"

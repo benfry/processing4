@@ -1,11 +1,6 @@
 <?xml version="1.0"?>
 <project name="Processing Hardware I/O Library" default="build">
 
-  <target name="clean" description="Clean the build directories">
-    <delete dir="bin" />
-    <delete file="library/io.jar" />
-  </target>
-
   <property name="core.path" location="../../../core/library/core.jar" />
 
   <target name="compile" description="Compile sources">
@@ -15,13 +10,13 @@
     <fail unless="core-built" message="Please build the core library first and make sure it is located at ${core.path}" />
 
     <mkdir dir="bin" />
-    <javac source="11"
-	         target="11"
-	         srcdir="src" destdir="bin"
-	         encoding="UTF-8"
-	         includeAntRuntime="false"
-	         classpath="${core.path}"
-	         nowarn="true" />
+    <javac source="17"
+           target="17"
+           srcdir="src" destdir="bin"
+           encoding="UTF-8"
+           includeAntRuntime="false"
+           classpath="${core.path}"
+           nowarn="true" />
   </target>
 
   <target name="build" depends="compile" description="Build I/O library">
@@ -40,9 +35,17 @@
         </tokenfilter>
       </filterchain>
     </loadfile>
-    <replaceregexp file="library.properties" match="version = .*" replace="version = ${revision}" flags="g" />
-    <replaceregexp file="library.properties" match="prettyVersion = .*" replace="prettyVersion = ${revision}" flags="g" />
 
+    <replaceregexp file="library.properties"
+                   match="version = .*"
+                   replace="version = ${revision}"
+                   flags="g" />
+    <replaceregexp file="library.properties"
+                   match="prettyVersion = .*"
+                   replace="prettyVersion = ${revision}"
+                   flags="g" />
+
+    <!-- TODO this is the old reference! needs an update [fry 230120] -->
     <get src="http://download.processing.org/reference.zip"
          dest="reference.zip"
          usetimestamp="true" />
@@ -68,5 +71,10 @@
 
     <copy file="library.properties"
           toFile="../io.txt"/>
+  </target>
+
+  <target name="clean" description="Clean the build directories">
+    <delete dir="bin" />
+    <delete file="library/io.jar" />
   </target>
 </project>
