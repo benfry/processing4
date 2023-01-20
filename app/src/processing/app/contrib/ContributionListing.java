@@ -54,7 +54,7 @@ public class ContributionListing {
   final private ReentrantLock downloadingLock = new ReentrantLock();
 
   final Set<AvailableContribution> availableContribs;
-  final private Map<String, Contribution> packageToLibrary;
+  final private Map<String, Contribution> libraryExports;
   final private Set<Contribution> allContribs;
 
   Set<ListPanel> listPanels;
@@ -63,7 +63,7 @@ public class ContributionListing {
   private ContributionListing() {
     listPanels = new HashSet<>();
     availableContribs = new HashSet<>();
-    packageToLibrary = new HashMap<>();
+    libraryExports = new HashMap<>();
     allContribs = ConcurrentHashMap.newKeySet();
 
     listingFile = Base.getSettingsFile(LOCAL_FILENAME);
@@ -294,7 +294,7 @@ public class ContributionListing {
 
     // Only updated whenever the available list is loaded.
     // No need to do this after/during the installation process.
-    packageToLibrary.clear();
+    libraryExports.clear();
 
     for (Contribution available : availableContribs) {
       addContribution(available);
@@ -304,7 +304,7 @@ public class ContributionListing {
         StringList exports = available.getExports();
         if (exports != null) {
           for (String export : exports) {
-            packageToLibrary.put(export, available);
+            libraryExports.put(export, available);
           }
         }
       }
@@ -402,7 +402,7 @@ public class ContributionListing {
   /**
    * Used by JavaEditor to auto-import. Not known to be used by other Modes.
    */
-  public Map<String, Contribution> getLibraryImportMap() {
-    return packageToLibrary;
+  public Map<String, Contribution> getLibraryExports() {
+    return libraryExports;
   }
 }

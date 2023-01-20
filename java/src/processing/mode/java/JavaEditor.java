@@ -118,22 +118,6 @@ public class JavaEditor extends Editor {
     // setting breakpoints will flag sketch as modified, so override this here
     getSketch().setModified(false);
 
-    /*
-    // hack to add a JPanel to the right-hand side of the text area
-    JPanel textAndError = new JPanel();
-    // parent is a vertical box with the toolbar, the header, and the text area
-    Box box = (Box) textarea.getParent();
-    // remove the text area temporarily
-    box.remove(2);
-    textAndError.setLayout(new BorderLayout());
-    errorColumn =  new MarkerColumn(this, textarea.getMinimumSize().height);
-    textAndError.add(errorColumn, BorderLayout.EAST);
-    textarea.setBounds(0, 0, errorColumn.getX() - 1, textarea.getHeight());
-    textAndError.add(textarea);
-    // add our hacked version back to the editor
-    box.add(textAndError);
-    */
-
     preprocService = new PreprocService(this.jmode, this.sketch); 
 
 //    long t5 = System.currentTimeMillis();
@@ -359,8 +343,8 @@ public class JavaEditor extends Editor {
     boolean contribToolMenuItemAdded;
 
     List<ToolContribution> contribTools = base.getContribTools();
-    // Adding this in in case a reference folder is added for MovieMaker, or in case
-    // other core tools are introduced later
+    // Adding this in case a reference folder is added for MovieMaker,
+    // or in case other core tools are introduced later.
     coreToolMenuItemAdded = addToolReferencesToSubMenu(base.getCoreTools(), toolRefSubmenu);
 
     if (coreToolMenuItemAdded && !contribTools.isEmpty())
@@ -547,7 +531,7 @@ public class JavaEditor extends Editor {
 
       } else {
         // why it's not CANCEL_OPTION is beyond me (at least on the mac)
-        // but f-- it.. let's get this shite done..
+        // but f-- it... let's get this shite done...
         //} else if (result == JOptionPane.CANCEL_OPTION) {
         statusNotice(Language.text("export.notice.cancel.unsaved_changes"));
         //toolbar.clear();
@@ -705,11 +689,10 @@ public class JavaEditor extends Editor {
 
 
   /**
-   * Add import statements to the current tab for all of packages inside
+   * Add import statements to the current tab for all packages inside
    * the specified jar file.
    */
   public void handleImportLibrary(String libraryName) {
-
     // make sure the user didn't hide the sketch folder
     sketch.ensureExistence();
 
@@ -1238,7 +1221,7 @@ public class JavaEditor extends Editor {
    */
   private List<AvailableContribution> getNotInstalledAvailableLibs(List<String> importHeadersList) {
     Map<String, Contribution> importMap =
-      ContributionListing.getInstance().getLibraryImportMap();
+      ContributionListing.getInstance().getLibraryExports();
     List<AvailableContribution> libList = new ArrayList<>();
     for (String importHeaders : importHeadersList) {
       int dot = importHeaders.lastIndexOf('.');
@@ -1828,21 +1811,6 @@ public class JavaEditor extends Editor {
   }
 
 
-//  /**
-//   * Checks if the sketch contains java tabs. If it does, the editor ain't
-//   * built for it, yet. Also, user should really start looking at a full IDE
-//   * like Eclipse. Disable compilation check and some more features.
-//   */
-//  private boolean checkForJavaTabs() {
-//    for (SketchCode code : getSketch().getCode()) {
-//      if (code.getExtension().equals("java")) {
-//        return true;
-//      }
-//    }
-//    return false;
-//  }
-
-
   @Override
   public void applyPreferences() {
     super.applyPreferences();
@@ -1926,8 +1894,8 @@ public class JavaEditor extends Editor {
         textarea.invalidate();
       }
     } else {
-      // number values were not modified but we need to load the saved code
-      // because of some formatting changes
+      // number values were not modified, but we need to load
+      // the saved code because of some formatting changes
       loadSavedCode();
       textarea.invalidate();
     }
@@ -2015,23 +1983,6 @@ public class JavaEditor extends Editor {
   }
 
 
-  /*
-  private void removeSpacesFromCode() {
-    SketchCode[] code = sketch.getCode();
-    for (int i=0; i<code.length; i++) {
-      String c = code[i].getProgram();
-      //c = c.substring(SPACE_AMOUNT, c.length() - SPACE_AMOUNT);
-      code[i].setProgram(c);
-      // TODO Wild Hack: set document to null so the text editor will refresh
-      // the program contents when the document tab is being clicked
-      code[i].setDocument(null);
-    }
-    // this will update the current code
-    setCode(sketch.getCurrentCode());
-  }
-  */
-
-
   /**
    * Replace all numbers with variables and add code to initialize
    * these variables and handle update messages.
@@ -2098,11 +2049,15 @@ public class JavaEditor extends Editor {
     // header contains variable declaration, initialization,
     // and OSC listener function
     String header;
-    header = "\n\n" +
-      "/*************************/\n" +
-      "/* MODIFIED BY TWEAKMODE */\n" +
-      "/*************************/\n" +
-      "\n\n";
+    header = """
+
+
+      /*************************/
+      /* MODIFIED BY TWEAKMODE */
+      /*************************/
+
+
+      """;
 
     // add needed OSC imports and the global OSC object
     header += "import java.net.*;\n";
@@ -2142,11 +2097,16 @@ public class JavaEditor extends Editor {
 
     // add call to our initAllVars and initOSC functions
     // from the setup() function.
-    String addToSetup = "\n\n\n"+
-      "  /* TWEAKMODE */\n"+
-      "    tweakmode_initAllVars();\n"+
-      "    tweakmode_initCommunication();\n"+
-      "  /* TWEAKMODE */\n\n";
+    String addToSetup = """
+
+
+
+        /* TWEAKMODE */
+          tweakmode_initAllVars();
+          tweakmode_initCommunication();
+        /* TWEAKMODE */
+
+      """;
 
     afterSizePos = SketchParser.getAfterSizePos(c);
     c = replaceString(c, afterSizePos, afterSizePos, addToSetup);
