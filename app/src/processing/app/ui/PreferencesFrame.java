@@ -830,6 +830,9 @@ public class PreferencesFrame {
     for (Editor editor : base.getEditors()) {
       editor.applyPreferences();
     }
+
+    // https://github.com/processing/processing4/issues/608
+    Preferences.save();
   }
 
 

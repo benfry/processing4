@@ -220,8 +220,8 @@ public class Preferences {
 
 
   static public void save() {
-    // On startup it'll be null, don't worry about it. It's trying to update
-    // the prefs for the open sketch before Preferences.init() has been called.
+    // On startup, this is null, but ignore it. It's trying to update the
+    // prefs for the open sketch before Preferences.init() has been called.
     if (preferencesFile != null) {
       try {
         File dir = preferencesFile.getParentFile();
