@@ -3,10 +3,12 @@
 
 manager
 X add 'exports' to the library parameters
-X remove 'imports' from Modes, since they're not used
-_   need to document on the wiki
-_ more contribs manager concurrency problems
-_   https://github.com/processing/processing4/issues/640
+/ remove 'imports' from Modes, since they're not used
+/   need to document on the wiki
+X   oops those are in fact used
+X many more updates to the contribs wiki
+X more contribs manager concurrency problems
+X   https://github.com/processing/processing4/issues/640
 
 
 design
