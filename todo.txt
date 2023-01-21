@@ -12,11 +12,16 @@ X   oops those are in fact used
 X many more updates to the contribs wiki
 X more contribs manager concurrency problems
 X   https://github.com/processing/processing4/issues/640
-
+X warn users about multiple libraries with the same name
+_ Updates requiring a reboot give the false impression that they failed (in the updates tab)
+_   https://github.com/processing/processing4/issues/647
+_ lots of folders remaining in 'old' for Modes
+_   were these shut off during debug? need to be moving these to trash (maybe only on startup)
 
 design
 X tool tips for errors/warnings not picking up correct colors
 X   also fix the margins and border
+_ use down arrow for updates, circle arrow for restart?
 _ completion mode pop-up not following dark and light mode conventions
 _ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pressed.color
 _   currently just using .enabled.color because they weren't in ColorSet

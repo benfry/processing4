@@ -1,5 +1,6 @@
 package processing.app;
 
+import java.awt.EventQueue;
 import java.io.*;
 import java.util.*;
 import java.util.zip.ZipFile;
@@ -619,12 +620,33 @@ public class Library extends LocalContribution {
   }
 
 
+  static Set<String> duplicateLibraries = new HashSet<>();
+
   static public List<Library> list(File folder) {
     List<Library> libraries = new ArrayList<>();
     List<File> librariesFolders = new ArrayList<>(discover(folder));
 
+    Map<String, File> seen = new HashMap<>();
     for (File baseFolder : librariesFolders) {
-      libraries.add(new Library(baseFolder));
+      Library lib = new Library(baseFolder);
+      String name = lib.getName();
+      File foundEarlier = seen.get(name);
+      if (foundEarlier != null) {
+        // Warn the user about this duplication (later, on the EDT)
+        if (!duplicateLibraries.contains(name)) {
+          Messages.showWarningTiered("Duplicate Library Found",
+            "There are multiple libraries named “" + name + "”",
+            "Please remove either “" + foundEarlier.getName() +
+              " or “" + lib.getName() + "”\n" +
+              "from " + folder.getPath() + "\n" +
+              "and restart Processing.", null);
+        }
+        duplicateLibraries.add(name);
+
+      } else {
+        seen.put(name, lib.getFolder());
+        libraries.add(lib);
+      }
     }
     return libraries;
   }
