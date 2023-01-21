@@ -23,6 +23,7 @@ package processing.app;
 
 import processing.app.ui.Toolkit;
 
+import java.awt.EventQueue;
 import java.awt.Frame;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -74,21 +75,23 @@ public class Messages {
 
 
   /**
-   * Non-fatal error message with optional stack trace side dish.
+   * Non-fatal error message with two levels of formatting.
+   * Unlike the others, this is non-blocking and will run later on the EDT.
    */
   static public void showWarningTiered(String title,
                                        String primary, String secondary,
                                        Throwable e) {
-    if (title == null) title = "Warning";
-
-    final String message = primary + "\n" + secondary;
     if (Base.isCommandLine()) {
-      System.out.println(title + ": " + message);
+      // TODO All these messages need to be handled differently for
+      //      proper parsing on the command line. Many have \n in them.
+      System.out.println(title + ": " + primary + "\n" + secondary);
 
     } else {
-      JOptionPane.showMessageDialog(new JFrame(),
-                                    Toolkit.formatMessage(primary, secondary),
-                                    title, JOptionPane.WARNING_MESSAGE);
+      EventQueue.invokeLater(() -> {
+        JOptionPane.showMessageDialog(new JFrame(),
+          Toolkit.formatMessage(primary, secondary),
+          title, JOptionPane.WARNING_MESSAGE);
+      });
     }
     if (e != null) e.printStackTrace();
   }
