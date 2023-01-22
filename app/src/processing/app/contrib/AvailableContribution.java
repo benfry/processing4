@@ -96,43 +96,40 @@ public class AvailableContribution extends Contribution {
   }
 
 
-  static public LocalContribution install(Base base, File contribArchive) throws IOException {
-    AvailableContribution ac = null;
+  /**
+   * Create an AvailableContribution object from the .properties file
+   * found in the specified zip file. Or return null if no match.
+   */
+  static private AvailableContribution findContrib(File contribArchive) throws IOException {
+    try (ZipFile zf = new ZipFile(contribArchive)) {
+      Enumeration<? extends ZipEntry> entries = zf.entries();
+      while (entries.hasMoreElements()) {
+        ZipEntry entry = entries.nextElement();
+        String entryPath = entry.getName();
+        if (entryPath.endsWith(".properties")) {
+          ContributionType type = matchContribType(entryPath);
+          if (type != null) {
+            String[] lines = PApplet.loadStrings(zf.getInputStream(entry));
+            if (lines != null) {
+              String filename = contribArchive.getAbsolutePath() + ":" + entryPath;
+              StringDict params = Util.readSettings(filename, lines, false);
+              return new AvailableContribution(type, params);
 
-    ZipFile zf = new ZipFile(contribArchive);
-    Enumeration<? extends ZipEntry> entries = zf.entries();
-    while (entries.hasMoreElements()) {
-      ZipEntry entry = entries.nextElement();
-      String name = entry.getName();
-      if (name.endsWith(".properties")) {
-        ContributionType type = matchContribType(name);
-        if (type != null) {
-          StringDict params = new StringDict();
-          String[] lines = PApplet.loadStrings(zf.getInputStream(entry));
-          if (lines != null) {
-            for (String line : lines) {
-              if (!line.startsWith("#")) {
-                int equals = line.indexOf('=');
-                if (equals != -1) {
-                  String key = line.substring(0, equals).trim();
-                  String value = line.substring(equals + 1).trim();
-                  params.set(key, value);
-                }
-              }
+            } else {
+              System.err.println("Could parse properties from " + entryPath);
             }
-            ac = new AvailableContribution(type, params);
-            break;  // found, let's get outta here
-
           } else {
-            System.err.println("Could parse properties from " + name);
+            System.err.println("Could not find a matching .properties file");
           }
-        } else {
-          System.err.println("Could not find a matching .properties file");
         }
       }
     }
-    zf.close();
+    return null;
+  }
 
+
+  static public LocalContribution install(Base base, File contribArchive) throws IOException {
+    AvailableContribution ac = findContrib(contribArchive);
     if (ac != null) {
       return ac.install(base, contribArchive, false, null);
     }
@@ -160,8 +157,9 @@ public class AvailableContribution extends Contribution {
     try {
       tempFolder = type.createTempFolder();
     } catch (IOException e) {
-      if (status != null)
+      if (status != null) {
         status.setErrorMessage(Language.text("contrib.errors.temporary_directory"));
+      }
       return null;
     }
     Util.unzip(contribArchive, tempFolder);
@@ -271,6 +269,9 @@ public class AvailableContribution extends Contribution {
    */
   private boolean rewritePropertiesFile(File propFile) {
     StringDict properties = Util.readSettings(propFile, false);
+    if (properties == null) {
+      return false;
+    }
 
     String name = properties.get("name");
     if (name == null || name.isEmpty()) {
@@ -379,7 +380,7 @@ public class AvailableContribution extends Contribution {
       writer.println("imports=" + importList.join(","));
     }
     if (exportList != null) {
-      writer.println("exports=" + importList.join(","));
+      writer.println("exports=" + exportList.join(","));
     }
 
     if (getType() == ContributionType.EXAMPLES) {
