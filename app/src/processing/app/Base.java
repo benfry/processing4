@@ -600,10 +600,6 @@ public class Base {
     item.addActionListener(e -> thinkDifferentExamples());
     defaultFileMenu.add(item);
 
-    item = new JMenuItem("Restart");
-    item.addActionListener(e -> handleRestart());
-    defaultFileMenu.add(item);
-
     return defaultFileMenu;
   }
 
@@ -1784,7 +1780,8 @@ public class Base {
             System.out.println("launching");
             Process p;
             if (Platform.isMacOS()) {
-              p = Runtime.getRuntime().exec(new String[]{
+              p = Runtime.getRuntime().exec(new String[] {
+                // -n allows more than one instance to be opened at a time
                 "open", "-n", "-a", app.getAbsolutePath()
               });
             } else {

@@ -697,6 +697,14 @@ public abstract class Editor extends JFrame implements RunnerListener {
     item.addActionListener(e -> handlePrint());
     fileMenu.add(item);
 
+    {
+      fileMenu.addSeparator();
+
+      item = new JMenuItem("Restart");
+      item.addActionListener(e -> base.handleRestart());
+      fileMenu.add(item);
+    }
+
     // Mac OS X already has its own preferences and quit menu.
     // That's right! Think different, b*tches!
     if (!Platform.isMacOS()) {
