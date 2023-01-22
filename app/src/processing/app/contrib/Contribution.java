@@ -263,25 +263,6 @@ abstract public class Contribution {
   }
 
 
-  /*
-  public StringDict loadProperties(File contribFolder) {
-    return loadProperties(contribFolder, getType());
-  }
-  */
-
-
-  /*
-  static public StringDict loadProperties(File contribFolder,
-                                          ContributionType type) {
-    File propertiesFile = new File(contribFolder, type.getPropertiesName());
-    if (propertiesFile.exists()) {
-      return Util.readSettings(propertiesFile, false);
-    }
-    return null;
-  }
-  */
-
-
   /**
    * @return the list of categories that this contribution is part of
    *         (e.g. "Typography / Geometry"). "Unknown" if the category null.
