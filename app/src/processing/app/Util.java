@@ -94,8 +94,15 @@ public class Util {
    * by = (the equals sign). The # (hash) symbol is used to denote comments.
    * As of 4.0.2, set allowHex to true if hex colors are used in the file.
    * This will disable support for comments that begin later in the line.
-   * If allowHex is false, then comments can appear later on a line, which is
-   * necessary for the contribution .properties files. Blank lines are ignored.
+   * Blank lines are always ignored.
+   *
+   * @param filename Name of the input file; only used for error messages.
+   * @param lines Lines already parsed from the input file.
+   * @param allowHex If false, # indicates comment to the end of line,
+   *                 which is necessary for the .properties files
+   *                 used by Contributions. If true, # is unharmed,
+   *                 allowing for hex characters and colors (used by
+   *                 themes and preferences).
    */
   static public StringDict readSettings(String filename, String[] lines, boolean allowHex) {
     StringDict settings = new StringDict();
