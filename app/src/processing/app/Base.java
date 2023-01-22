@@ -600,6 +600,10 @@ public class Base {
     item.addActionListener(e -> thinkDifferentExamples());
     defaultFileMenu.add(item);
 
+    item = new JMenuItem("Restart");
+    item.addActionListener(e -> handleRestart());
+    defaultFileMenu.add(item);
+
     return defaultFileMenu;
   }
 
@@ -858,16 +862,15 @@ public class Base {
     if (internalTools == null) {
       internalTools = new ArrayList<>();
 
-      initInternalTool("processing.app.tools.Archiver");
-      initInternalTool("processing.app.tools.ColorSelector");
-      initInternalTool("processing.app.tools.CreateFont");
+      initInternalTool(processing.app.tools.Archiver.class);
+      initInternalTool(processing.app.tools.ColorSelector.class);
+      initInternalTool(processing.app.tools.CreateFont.class);
 
       if (Platform.isMacOS()) {
-        initInternalTool("processing.app.tools.InstallCommander");
+        initInternalTool(processing.app.tools.InstallCommander.class);
       }
 
-      initInternalTool("processing.app.tools.ThemeSelector");
-      //initInternalTool("processing.app.tools.UpdateTheme");
+      initInternalTool(processing.app.tools.ThemeSelector.class);
     }
 
     // Only init() these the first time they're loaded
@@ -913,9 +916,8 @@ public class Base {
   }
 
 
-  protected void initInternalTool(String className) {
+  protected void initInternalTool(Class<?> toolClass) {
     try {
-      Class<?> toolClass = Class.forName(className);
       final Tool tool = (Tool)
         toolClass.getDeclaredConstructor().newInstance();
 
@@ -1681,18 +1683,6 @@ public class Base {
         }
       }
 
-      /*
-      // wow, this is wrong (should only be called after the last window)
-      // but also outdated, because it's instance_server.* not server.*
-      // and Preferences.save() is also about restoring sketches.
-
-      Preferences.unset("server.port"); //$NON-NLS-1$
-      Preferences.unset("server.key"); //$NON-NLS-1$
-
-      // Save out the current prefs state
-      Preferences.save();
-       */
-
       if (defaultFileMenu == null) {
         if (preventQuit) {
           // need to close this editor, ever so temporarily
@@ -1724,7 +1714,10 @@ public class Base {
 
 
   /**
-   * Handler for File &rarr; Quit.
+   * Handler for File &rarr; Quit. Note that this is *only* for the
+   * File menu. On macOS, it will not call System.exit() because the
+   * application will handle that. If calling this from elsewhere,
+   * you'll need a System.exit() call on macOS.
    * @return false if canceled, true otherwise.
    */
   public boolean handleQuit() {
@@ -1774,6 +1767,46 @@ public class Base {
       }
     }
     return true;
+  }
+
+
+  public void handleRestart() {
+    File app = Platform.getProcessingApp();
+    System.out.println(app);
+    if (app.exists()) {
+      if (handleQuitEach()) {  // only if everything saved
+        SingleInstance.clearRunning();
+
+        // Launch on quit
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+          try {
+            //Runtime.getRuntime().exec(app.getAbsolutePath());
+            System.out.println("launching");
+            Process p;
+            if (Platform.isMacOS()) {
+              p = Runtime.getRuntime().exec(new String[]{
+                "open", "-n", "-a", app.getAbsolutePath()
+              });
+            } else {
+              p = PApplet.launch(app.getAbsolutePath());
+            }
+            System.out.println("launched with result " + p.waitFor());
+            System.out.flush();
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+        }));
+        handleQuit();
+        // handleQuit() does not call System.exit() on macOS
+        if (Platform.isMacOS()) {
+          System.exit(0);
+        }
+      }
+    } else {
+      Messages.showWarning("Cannot Restart",
+        "Cannot automatically restart because the Processing\n" +
+        "application has been renamed. Please quit and then restart manually.");
+    }
   }
 
 

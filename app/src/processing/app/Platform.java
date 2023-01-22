@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-20 The Processing Foundation
+  Copyright (c) 2012-23 The Processing Foundation
   Copyright (c) 2008-12 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
@@ -25,9 +25,12 @@ package processing.app;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sun.jna.platform.FileUtils;
@@ -401,6 +404,114 @@ public class Platform {
     } catch (IOException e) {
       return javaFile.getAbsolutePath();
     }
+  }
+
+
+  static protected File getProcessingApp() {
+    File appFile;
+    if (Platform.isMacOS()) {
+      // walks up from Processing.app/Contents/Java to Processing.app
+      // (or whatever the user has renamed it to)
+      appFile = getContentFile("../..");
+    } else if (Platform.isWindows()) {
+      appFile = getContentFile("processing.exe");
+    } else {
+      appFile = getContentFile("processing");
+    }
+    try {
+      return appFile.getCanonicalFile();
+
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+
+  // Not great, shows the crusty Duke icon in the dock.
+  // Better to just re-launch the .exe instead.
+  // Hacked up from <a href="https://lewisleo.blogspot.com/2012/08/programmatically-restart-java.html">this code</a>.
+  static private void restartJavaApplication() {
+    //    System.out.println("java path: " + javaPath);
+//    String java = System.getProperty("java.home") + "/bin/java";
+    // Tested and working with JDK 17 [fry 230122]
+//    System.out.println("sun java command: " + System.getProperty("sun.java.command"));
+//    System.out.println("class path: " + System.getProperty("java.class.path"));
+    List<String> cmd = new ArrayList<>();
+
+    // Add the path to the current java binary
+    cmd.add(getJavaPath());
+
+    // Get all the VM arguments that are currently in use
+    List<String> vmArguments =
+      ManagementFactory.getRuntimeMXBean().getInputArguments();
+
+    // Add all the arguments we're using now, except for -agentlib
+    for (String arg : vmArguments) {
+      if (!arg.contains("-agentlib")) {
+        cmd.add(arg);
+      }
+    }
+
+    // Does not work for .jar files, should this be used in a more general way
+    cmd.add("-cp");
+    cmd.add(System.getProperty("java.class.path"));
+
+    // Finally, add the class that was used to launch the app
+    // (in our case, this is the Processing splash screen)
+    String javaCommand = System.getProperty("sun.java.command");
+    String[] splitCommand = PApplet.split(javaCommand, ' ');
+//    if (splitCommand.length > 1) {
+//      try {
+//        Util.saveFile(javaCommand, PApplet.desktopFile("arrrrrghs.txt"));
+//      } catch (IOException e) {
+//        throw new RuntimeException(e);
+//      }
+//    }
+    cmd.add(splitCommand[0]);  // should be the main class name
+
+    ProcessBuilder builder = new ProcessBuilder(cmd);
+
+    /*
+    StringBuffer vmArgsOneLine = new StringBuffer();
+    for (String arg : vmArguments) {
+      // if it's the agent argument : we ignore it otherwise the
+      // address of the old application and the new one will be in conflict
+      if (!arg.contains("-agentlib")) {
+        vmArgsOneLine.append(arg);
+        vmArgsOneLine.append(" ");
+      }
+    }
+    // init the command to execute, add the vm args
+    final StringBuffer cmd = new StringBuffer("\"" + java + "\" " + vmArgsOneLine);
+    // program main and program arguments (be careful a sun property. might not be supported by all JVM)
+    String[] mainCommand = System.getProperty("sun.java.command").split(" ");
+    // program main is a jar
+    if (mainCommand[0].endsWith(".jar")) {
+      // if it's a jar, add -jar mainJar
+      cmd.append("-jar " + new File(mainCommand[0]).getPath());
+    } else {
+      // else it's a .class, add the classpath and mainClass
+      cmd.append("-cp \"" + System.getProperty("java.class.path") + "\" " + mainCommand[0]);
+    }
+    // finally add program arguments
+    for (int i = 1; i < mainCommand.length; i++) {
+      cmd.append(" ");
+      cmd.append(mainCommand[i]);
+    }
+    */
+    // execute the command in a shutdown hook, to be sure that all the
+    // resources have been disposed before restarting the application
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      try {
+//        System.out.println(new StringList(cmd).join(" "));
+//        Runtime.getRuntime().exec(cmd.toArray(new String[0]));
+        builder.start();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }));
+    System.exit(0);
   }
 
 

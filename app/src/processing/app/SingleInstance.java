@@ -54,6 +54,15 @@ public class SingleInstance {
   }
 
 
+  /**
+   * Disable briefly for Processing to restart itself.
+   */
+  static public void clearRunning() {
+    Preferences.unset(SERVER_PORT);
+    Preferences.save();
+  }
+
+
   static void startServer(final Base base) {
     try {
       Messages.log("Opening SingleInstance socket");

@@ -29,6 +29,11 @@ _ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pres
 _   currently just using .enabled.color because they weren't in ColorSet
 
 
+_ remove temporary 'restart' menu before release
+
+_ implement automatic updates?
+_   especially with fixes to updates on startup...
+
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
 _   point to binaries in /Applications/Processing.app? (no)
