@@ -1784,8 +1784,14 @@ public class Base {
                 // -n allows more than one instance to be opened at a time
                 "open", "-n", "-a", app.getAbsolutePath()
               });
+            } else if (Platform.isLinux()) {
+              p = Runtime.getRuntime().exec(new String[] {
+                app.getAbsolutePath()
+              });
             } else {
-              p = PApplet.launch(app.getAbsolutePath());
+              p = Runtime.getRuntime().exec(new String[] {
+                "cmd", "/c", app.getAbsolutePath()
+              });
             }
             System.out.println("launched with result " + p.waitFor());
             System.out.flush();
