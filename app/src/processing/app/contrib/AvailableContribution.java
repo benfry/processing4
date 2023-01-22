@@ -131,7 +131,7 @@ public class AvailableContribution extends Contribution {
   static public LocalContribution install(Base base, File contribArchive) throws IOException {
     AvailableContribution ac = findContrib(contribArchive);
     if (ac != null) {
-      return ac.install(base, contribArchive, false, null);
+      return ac.install(base, contribArchive, null);
     }
     return null;
   }
@@ -140,15 +140,12 @@ public class AvailableContribution extends Contribution {
   /**
    * @param contribArchive
    *          a zip file containing the library to install
-   * @param confirmReplace
-   *          true to open a dialog asking the user to confirm removing/moving
-   *          the library when a library by the same name already exists
    * @param status
    *          the StatusPanel. Pass null if this function is called for an
    *          install-on-startup
    */
   public LocalContribution install(Base base, File contribArchive,
-                                   boolean confirmReplace, StatusPanel status) {
+                                   StatusPanel status) {
     // Unzip the file into the modes, tools, or libraries folder inside the
     // sketchbook. Unzipping to /tmp is problematic because it may be on
     // another file system, so move/rename operations will break.
@@ -191,8 +188,7 @@ public class AvailableContribution extends Contribution {
 
           // Check to make sure nothing has the same name already,
           // backup old if needed, then move things into place and reload.
-          installedContrib =
-            newContrib.copyAndLoad(base, confirmReplace, status);
+          installedContrib = newContrib.copyAndLoad(base, status);
 
           // Unlock all the jars if it is a mode or tool
           if (newContrib.getType() == ContributionType.MODE) {

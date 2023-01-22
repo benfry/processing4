@@ -157,7 +157,7 @@ public class ContributionManager {
           if (downloadProgress.notCanceled() && !downloadProgress.isException()) {
             installProgress.startTask(Language.text("contrib.progress.installing"));
             final LocalContribution installed =
-              available.install(base, contribZip, false, status);
+              available.install(base, contribZip, status);
 
             if (installed != null) {
               try {
@@ -241,7 +241,7 @@ public class ContributionManager {
         try {
           download(url, null, contribZip, null);
           final LocalContribution installed =
-            available.install(base, contribZip, false, null);
+            available.install(base, contribZip, null);
 
           if (installed != null) {
             try {
@@ -373,7 +373,7 @@ public class ContributionManager {
             String arg = "contrib.import.progress.install";
             editor.statusNotice(Language.interpolate(arg,available.name));
             final LocalContribution installed =
-              available.install(base, contribZip, false, null);
+              available.install(base, contribZip, null);
 
             if (installed != null) {
               try {

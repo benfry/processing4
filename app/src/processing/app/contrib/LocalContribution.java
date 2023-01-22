@@ -164,7 +164,6 @@ public abstract class LocalContribution extends Contribution {
 
 
   LocalContribution copyAndLoad(Base base,
-                                boolean confirmReplace,
                                 StatusPanel status) {
     // NOTE: null status => function is called on startup
     // when Editor objects, et al. aren't ready
@@ -198,33 +197,9 @@ public abstract class LocalContribution extends Contribution {
           } else {
             int result;
             boolean doBackup = Preferences.getBoolean("contribution.backup.on_install");
-            if (confirmReplace) {
-              if (doBackup) {
-                result = Messages.showYesNoQuestion(editor, "Replace",
-                       "Replace pre-existing \"" + oldContrib.getName() + "\" library?",
-                       "A pre-existing copy of the \"" + oldContrib.getName() + "\" library<br>"+
-                       "has been found in your sketchbook. Clicking “Yes”<br>"+
-                       "will move the existing library to a backup folder<br>" +
-                       "in <i>libraries/old</i> before replacing it.");
-                if (result != JOptionPane.YES_OPTION || !oldContrib.backup(true, status)) {
-                  return null;
-                }
-              } else {
-                result = Messages.showYesNoQuestion(editor, "Replace",
-                       "Replace pre-existing \"" + oldContrib.getName() + "\" library?",
-                       "A pre-existing copy of the \"" + oldContrib.getName() + "\" library<br>"+
-                       "has been found in your sketchbook. Clicking “Yes”<br>"+
-                       "will permanently delete this library and all of its contents<br>"+
-                       "before replacing it.");
-                if (result != JOptionPane.YES_OPTION || !oldContrib.getFolder().delete()) {
-                  return null;
-                }
-              }
-            } else {
-              if ((doBackup && !oldContrib.backup(true, status)) ||
+            if ((doBackup && !oldContrib.backup(true, status)) ||
                   (!doBackup && !oldContrib.getFolder().delete())) {
-                return null;
-              }
+              return null;
             }
           }
         }

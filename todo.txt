@@ -13,6 +13,8 @@ X many more updates to the contribs wiki
 X more contribs manager concurrency problems
 X   https://github.com/processing/processing4/issues/640
 X warn users about multiple libraries with the same name
+X remove unused confirmReplace variable from install() functions for contribs
+_ if contrib (library only?) folder name changes on update, old lib not removed
 _ Updates requiring a reboot give the false impression that they failed (in the updates tab)
 _   https://github.com/processing/processing4/issues/647
 _ lots of folders remaining in 'old' for Modes
