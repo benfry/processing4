@@ -464,7 +464,7 @@ public class Util {
 
   /**
    * @param folder source folder to search
-   * @return a list of .jar and .zip files in that folder
+   * @return an array of .jar and .zip files in that folder
    */
   static public File[] listJarFiles(File folder) {
     return folder.listFiles((dir, name) ->
@@ -585,9 +585,9 @@ public class Util {
         if (!entry.isDirectory()) {
           String name = entry.getName();
 
-          // Avoid META-INF because some jokers but .class files in there
+          // Avoid META-INF because some jokers put .class files in there
           // https://github.com/processing/processing/issues/5778
-          if (name.endsWith(".class") && !name.startsWith("META-INF/")) {
+          if (name.endsWith(".class") && !name.contains("META-INF/")) {
             int slash = name.lastIndexOf('/');
             if (slash != -1) {
               String packageName = name.substring(0, slash);
@@ -640,31 +640,27 @@ public class Util {
    * Extract the contents of a .zip archive into a folder.
    * Ignores (does not extract) any __MACOSX files from macOS archives.
    */
-  static public void unzip(File zipFile, File dest) {
-    try {
-      FileInputStream fis = new FileInputStream(zipFile);
-      CheckedInputStream checksum = new CheckedInputStream(fis, new Adler32());
-      ZipInputStream zis = new ZipInputStream(new BufferedInputStream(checksum));
-      ZipEntry entry;
-      while ((entry = zis.getNextEntry()) != null) {
-        final String name = entry.getName();
-        if (!name.startsWith(("__MACOSX"))) {
-          File currentFile = new File(dest, name);
-          if (entry.isDirectory()) {
-            currentFile.mkdirs();
-          } else {
-            File parentDir = currentFile.getParentFile();
-            // Sometimes the directory entries aren't already created
-            if (!parentDir.exists()) {
-              parentDir.mkdirs();
-            }
-            currentFile.createNewFile();
-            unzipEntry(zis, currentFile);
+  static public void unzip(File zipFile, File dest) throws IOException {
+    FileInputStream fis = new FileInputStream(zipFile);
+    CheckedInputStream checksum = new CheckedInputStream(fis, new Adler32());
+    ZipInputStream zis = new ZipInputStream(new BufferedInputStream(checksum));
+    ZipEntry entry;
+    while ((entry = zis.getNextEntry()) != null) {
+      final String name = entry.getName();
+      if (!name.startsWith(("__MACOSX"))) {
+        File currentFile = new File(dest, name);
+        if (entry.isDirectory()) {
+          currentFile.mkdirs();
+        } else {
+          File parentDir = currentFile.getParentFile();
+          // Sometimes the directory entries aren't already created
+          if (!parentDir.exists()) {
+            parentDir.mkdirs();
           }
+          currentFile.createNewFile();
+          unzipEntry(zis, currentFile);
         }
       }
-    } catch (Exception e) {
-      e.printStackTrace();
     }
   }
 

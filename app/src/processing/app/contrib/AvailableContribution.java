@@ -159,7 +159,12 @@ public class AvailableContribution extends Contribution {
       }
       return null;
     }
-    Util.unzip(contribArchive, tempFolder);
+    try {
+      Util.unzip(contribArchive, tempFolder);
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
 
     LocalContribution installedContrib = null;
     // Find the first legitimate folder in what we just unzipped
