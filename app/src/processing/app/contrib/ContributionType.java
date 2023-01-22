@@ -105,6 +105,21 @@ public enum ContributionType {
   }
 
 
+  /**
+   * Identify a ContributionType from a .properties file name or path.
+   * If passed 'blah/potato/library.properties' returns LIBRARY, etc.
+   */
+  static public ContributionType fromFilePath(String path) {
+    String filename = path.substring(path.lastIndexOf('/') + 1);
+    for (ContributionType type : ContributionType.values()) {
+      if (filename.equals(type.getPropertiesName())) {
+        return type;
+      }
+    }
+    return null;
+  }
+
+
   public File getSketchbookFolder() {
     return switch (this) {
       case LIBRARY -> Base.getSketchbookLibrariesFolder();

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2005-15 Ben Fry and Casey Reas
+  Copyright (c) 2005-23 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -36,25 +36,28 @@ import processing.core.PApplet;
 
 /**
  * Threaded class to check for updates in the background.
- * <P>
+ * <p/>
  * This is the class that handles the mind control and stuff for
  * spying on our users and stealing their personal information.
  * A random ID number is generated for each user, and hits the server
  * to check for updates. Also included is the operating system and
  * its version and the version of Java being used to run Processing.
- * <P>
+ * <p/>
+ * You can read more about this code
+ * <a href="https://github.com/processing/processing4/wiki/FAQ#checking-for-updates">here</a>.
+ * <p/>
  * Aside from the privacy invasion of knowing that an anonymous Processing
  * user opened the software at one time during a 24-hour period somewhere
  * in the world, we use the ID number to give us a general idea of how many
  * people are using Processing, which helps us when writing grant proposals
  * and that kind of thing so that we can keep Processing free. The numbers
- * are also sometimes used in ugly charts when Ben and Casey present.
+ * are also sometimes shown in ugly charts presented by Ben and Casey.
  */
 public class UpdateCheck {
   private final Base base;
 
-  static private final String DOWNLOAD_URL = "http://processing.org/download/";
-  static private final String LATEST_URL = "http://processing.org/download/latest.txt";
+  static private final String DOWNLOAD_URL = "https://processing.org/download/";
+  static private final String LATEST_URL = "https://processing.org/download/latest.txt";
 
   static private final long ONE_DAY = 24 * 60 * 60 * 1000;
 

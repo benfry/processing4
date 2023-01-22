@@ -280,11 +280,6 @@ public class ContributionListing {
   }
 
 
-  protected boolean isDownloaded() {
-    return listDownloaded;
-  }
-
-
   // Thread: EDT
   private void loadAvailableList(File file) {
     listingFile = file;
@@ -317,7 +312,7 @@ public class ContributionListing {
    * Bundles information about what contribs are installed, so that they can
    * be reported at the <a href="https://download.processing.org/stats/">stats</a> link.
    * (Eventually this may also be used to show relative popularity of contribs.)
-   * Read more about it <a href="https://github.com/processing/processing4/wiki/FAQ#checking-for-updates-or-why-is-processing-connecting-to-the-network">in the FAQ</a>.</a>
+   * Read more about it <a href="<a href="https://github.com/processing/processing4/wiki/FAQ#checking-for-updates">here</a>.">in the FAQ</a>.
    */
   private byte[] makeContribsBlob(Base base) {
     Set<Contribution> contribs = base.getInstalledContribs();

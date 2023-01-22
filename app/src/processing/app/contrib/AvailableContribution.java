@@ -85,17 +85,6 @@ public class AvailableContribution extends Contribution {
   }
 
 
-  static ContributionType matchContribType(String path) {
-    String filename = path.substring(path.lastIndexOf('/') + 1);
-    for (ContributionType type : ContributionType.values()) {
-      if (filename.equals(type.getPropertiesName())) {
-        return type;
-      }
-    }
-    return null;
-  }
-
-
   /**
    * Create an AvailableContribution object from the .properties file
    * found in the specified zip file. Or return null if no match.
@@ -107,7 +96,7 @@ public class AvailableContribution extends Contribution {
         ZipEntry entry = entries.nextElement();
         String entryPath = entry.getName();
         if (entryPath.endsWith(".properties")) {
-          ContributionType type = matchContribType(entryPath);
+          ContributionType type = ContributionType.fromFilePath(entryPath);
           if (type != null) {
             String[] lines = PApplet.loadStrings(zf.getInputStream(entry));
             if (lines != null) {
