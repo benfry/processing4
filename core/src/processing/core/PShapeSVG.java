@@ -515,6 +515,7 @@ public class PShapeSVG extends PShape {
 
     StringBuilder pathBuffer = new StringBuilder();
     boolean lastSeparate = false;
+    boolean isOnDecimal = false;
 
     for (int i = 0; i < pathDataChars.length; i++) {
       char c = pathDataChars[i];
@@ -538,6 +539,13 @@ public class PShapeSVG extends PShape {
       }
       if (c == 'Z' || c == 'z') {
         separate = false;
+      }
+      if (c == '.' && !isOnDecimal) {
+        isOnDecimal = true;
+      }
+      else if (isOnDecimal && (c < '0' || c > '9')) {
+        pathBuffer.append("|");
+        isOnDecimal = c == '.';
       }
       if (c == '-' && !lastSeparate) {
         // allow for 'e' notation in numbers, e.g. 2.10e-9
