@@ -405,16 +405,14 @@ public class Sketch {
           // the Enter key event. Since the text field is the default component
           // in the dialog, OK doesn't consume Enter key event, by default.
           Container parent = field.getParent();
-          while (!(parent instanceof JOptionPane)) {
+          while (!(parent instanceof JOptionPane pane)) {
             parent = parent.getParent();
           }
-          JOptionPane pane = (JOptionPane) parent;
           final JPanel pnlBottom = (JPanel)
             pane.getComponent(pane.getComponentCount() - 1);
           for (int i = 0; i < pnlBottom.getComponents().length; i++) {
             Component component = pnlBottom.getComponents()[i];
-            if (component instanceof JButton) {
-              final JButton okButton = (JButton) component;
+            if (component instanceof final JButton okButton) {
               if (okButton.getText().equalsIgnoreCase("OK")) {
                 ActionListener[] actionListeners =
                   okButton.getActionListeners();
@@ -1049,19 +1047,19 @@ public class Sketch {
    * a good bit of refactoring (that should be done at some point).
    * As a result, this method will return 'true' before the full "Save As"
    * has completed, which will cause problems in weird cases.
-   *
+   * <p/>
    * For instance, the threading will cause problems while saving an untitled
    * sketch that has an enormous data folder while quitting. The save thread to
    * move those data folder files won't have finished before this returns true,
    * and the PDE may quit before the SwingWorker completes its job.
-   *
+   * <p/>
    * <a href="https://github.com/processing/processing/issues/3843">3843</a>
    */
   void startSaveAsThread(final File newFolder, final File[] copyItems) {
     saving.set(true);
     EventQueue.invokeLater(() -> {
       final JFrame frame =
-        new JFrame("Saving \u201C" + newFolder.getName() + "\u201C\u2026");
+        new JFrame("Saving “" + newFolder.getName() + "“…");
       frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
       Box box = Box.createVerticalBox();
@@ -1785,7 +1783,7 @@ public class Sketch {
 
   /**
    * Tried to remove in beta 6, but in use by Python Mode.
-   * When it's removed there, let me know and I'll remove it here.
+   * When it's removed there, let me know, and I'll remove it here.
    */
   @Deprecated
   public String getMainProgram() {
