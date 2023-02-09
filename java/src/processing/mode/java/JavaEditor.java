@@ -659,7 +659,6 @@ public class JavaEditor extends Editor {
   }
 
 
-
   public boolean handleSaveAs() {
     //System.out.println("handleSaveAs");
     String oldName = getSketch().getCode(0).getFileName();

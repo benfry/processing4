@@ -840,7 +840,6 @@ public class Sketch {
    * Also removes the previously-generated .class and .jar files,
    * because they can cause trouble.
    */
-  @SuppressWarnings("BooleanMethodIsAlwaysInverted")
   public boolean saveAs() throws IOException {
     String newParentDir = null;
     String newSketchName = null;

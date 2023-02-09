@@ -2171,20 +2171,20 @@ public abstract class Editor extends JFrame implements RunnerListener {
   public boolean handleSaveAs() {
     statusNotice(Language.text("editor.status.saving"));
     try {
-      //noinspection StatementWithEmptyBody
-      if (!sketch.saveAs()) {
+      if (sketch.saveAs()) {
         // No longer showing "Done" message except in cases where a
         // progress bar is necessary. Message will come from Sketch.
         //statusNotice(Language.text("editor.status.saving.done"));
+        return true;
+
       } else {
         statusNotice(Language.text("editor.status.saving.canceled"));
-        return false;
       }
     } catch (Exception e) {
       // show the error as a message in the window
       statusError(e);
     }
-    return true;
+    return false;
   }
 
 
