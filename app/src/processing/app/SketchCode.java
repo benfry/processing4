@@ -156,6 +156,7 @@ public class SketchCode {
   }
 
 
+  /** No dots! */
   public boolean isExtension(String what) {
     return extension.equals(what);
   }
