@@ -30,10 +30,10 @@
   <property name="examples.dir"
             location="../../processing-examples" />
 
-  <!-- 17.0.5+8 -->
+  <!-- 17.0.6+10 -->
   <property name="jdk.train" value="17" />
-  <property name="jdk.detail" value="${jdk.train}.0.5" />
-  <property name="jdk.build" value="8" />
+  <property name="jdk.detail" value="${jdk.train}.0.6" />
+  <property name="jdk.build" value="10" />
   <property name="jdk.folder" value="jdk-${jdk.detail}+${jdk.build}" />
 
 

@@ -3,6 +3,7 @@ X preferences.txt is not saved when closing Processing under certain circumstanc
 X   https://github.com/processing/processing4/issues/608
 X set all build.xml files to use Java 17
 X   also fix several that still had tabs instead of spaces
+X update to JDK 17.0.6+10 from https://adoptium.net/
 
 manager
 X add 'exports' to the library parameters
