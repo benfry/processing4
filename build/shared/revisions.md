@@ -1,3 +1,44 @@
+# Processing 4.1.3
+
+*Revision 1291 – 9 February 2023*
+
+Rollup of bug fixes from the past few weeks. Mostly in the Contributions Manager, several others too.
+
+
+## bug fixin'
+
+* Lots of work on the Contributions Manager to deal with concurrency issues (and myriad problems revealed in the process). [#640](https://github.com/processing/processing4/issues/640)
+
+* Preferences were not saved when closing Processing under certain circumstances. [#608](https://github.com/processing/processing4/issues/608)
+
+
+## community contributin'
+
+* Fix typos in French translation. [#661](https://github.com/processing/processing4/pull/661)
+
+* Improved documentation for `lerpColor()` function. [#655](https://github.com/processing/processing4/pull/655)
+
+
+## house cleanin'
+
+* Warn users about multiple libraries with the same name.
+
+* Tool tips for errors and warnings not picking up correct colors from the theme. Also made fixes for the margins and border of the popup.
+
+* Many more updates to the contribs wiki
+
+
+## internal changin'
+
+* Update to JDK 17.0.6+10 from [Adoptium](https://adoptium.net/)
+
+* Set all `build.xml` files to use Java 17. Also fix several that still had tabs instead of spaces.
+
+* Add `exports` to the library parameters.
+
+* Fix inversion of `handleSaveAs()` (regression from [earlier](https://github.com/processing/processing4/commit/aef561a8eb8fa894c5a22c611279a5092e2dbb28))
+
+
 # Processing 4.1.2
 
 *Revision 1290 – 16 January 2023*

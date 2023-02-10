@@ -1,4 +1,5 @@
-1291 (4.1.3 or 4.2)
+1291 (4.1.3)
+X no changes to core for this release
 
 
 _ args passed to main() aren't working
