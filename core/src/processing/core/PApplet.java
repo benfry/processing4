@@ -9639,10 +9639,11 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Calculates a <b>color</b> between two colors at a specific increment. The
-   * <b>amt</b> parameter is the amount to interpolate between the two values
-   * where 0.0 is equal to the first point, 0.1 is very near the first point,
-   * 0.5 is halfway in between, etc. <br />
+   * Calculates a new <b>color</b> that is a blend of two other colors. The <b>amt</b> parameter 
+   * controls the amount of each color to use where an amount of 0.0 will produce 
+   * the first color, 1.0 will return the second color, and 0.5 is halfway in 
+   * between. Values between 0.0 and 1.0 will interpolate between the two colors in
+   * that proportion. <br />
    * An amount below 0 will be treated as 0. Likewise, amounts above 1 will be
    * capped at 1. This is different from the behavior of <b>lerp()</b>, but necessary
    * because otherwise numbers outside the range will produce strange and
