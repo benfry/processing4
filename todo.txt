@@ -6,6 +6,7 @@ X   also fix several that still had tabs instead of spaces
 X update to JDK 17.0.6+10 from https://adoptium.net/
 X fix inversion of handleSaveAs() introduced in:
 X   https://github.com/processing/processing4/commit/aef561a8eb8fa894c5a22c611279a5092e2dbb28
+X remove temporary 'restart' menu before release
 
 manager
 X add 'exports' to the library parameters
@@ -27,9 +28,6 @@ X Fix typos in French translation
 X   https://github.com/processing/processing4/pull/661
 X Improved documentation for lerpColor() function
 X   https://github.com/processing/processing4/pull/655
-
-
-_ remove temporary 'restart' menu before release
 
 
 manager
