@@ -1,33 +1,4 @@
-1291 (4.1.3)
-X preferences.txt is not saved when closing Processing under certain circumstances
-X   https://github.com/processing/processing4/issues/608
-X set all build.xml files to use Java 17
-X   also fix several that still had tabs instead of spaces
-X update to JDK 17.0.6+10 from https://adoptium.net/
-X fix inversion of handleSaveAs() introduced in:
-X   https://github.com/processing/processing4/commit/aef561a8eb8fa894c5a22c611279a5092e2dbb28
-X remove temporary 'restart' menu before release
-
-manager
-X add 'exports' to the library parameters
-/ remove 'imports' from Modes, since they're not used
-/   need to document on the wiki
-X   oops those are in fact used
-X many more updates to the contribs wiki
-X more contribs manager concurrency problems
-X   https://github.com/processing/processing4/issues/640
-X warn users about multiple libraries with the same name
-X remove unused confirmReplace variable from install() functions for contribs
-
-design
-X tool tips for errors/warnings not picking up correct colors
-X   also fix the margins and border
-
-contribs
-X Fix typos in French translation
-X   https://github.com/processing/processing4/pull/661
-X Improved documentation for lerpColor() function
-X   https://github.com/processing/processing4/pull/655
+1292 (4.1.4)
 
 
 manager
