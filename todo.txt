@@ -1,4 +1,10 @@
-1292 (4.1.4)
+1292 (4.1.4 or 4.2)
+X application exported to the wrong folder
+X   https://github.com/processing/processing4/issues/601
+
+python
+X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by Jython
+X move isXcodeInstalled() methods from JavaBuild into MacPlatform
 
 
 manager

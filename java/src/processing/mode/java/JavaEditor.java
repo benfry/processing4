@@ -3,7 +3,7 @@
 /*
 Part of the Processing project - http://processing.org
 
-Copyright (c) 2012-22 The Processing Foundation
+Copyright (c) 2012-23 The Processing Foundation
 Copyright (c) 2004-12 Ben Fry and Casey Reas
 Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -475,7 +475,15 @@ public class JavaEditor extends Editor {
     if (handleExportCheckModified()) {
       statusNotice(Language.text("export.notice.exporting"));
       try {
-        if (ExportPrompt.trigger(this)) {
+        ExportPrompt ep = new ExportPrompt(this, () -> {
+          try {
+            jmode.handleExportApplication(getSketch());
+          } catch (Exception e) {
+            statusNotice(Language.text("export.notice.exporting.error"));
+            e.printStackTrace();
+          }
+        });
+        if (ep.trigger()) {
           Platform.openFolder(sketch.getFolder());
           statusNotice(Language.text("export.notice.exporting.done"));
           //} else {

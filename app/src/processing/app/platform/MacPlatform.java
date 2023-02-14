@@ -34,6 +34,8 @@ import javax.swing.JMenuBar;
 import processing.app.Base;
 import processing.app.Messages;
 import processing.app.ui.About;
+import processing.core.PApplet;
+import processing.data.StringList;
 
 
 /**
@@ -146,6 +148,36 @@ public class MacPlatform extends DefaultPlatform {
     }
     return folder.getAbsolutePath();
   }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+
+  static private Boolean xcodeInstalled;
+
+  static public boolean isXcodeInstalled() {
+    if (xcodeInstalled == null) {
+      // Note that xcode-select is *not* an xcrun tool: it's part of the OS.
+      // pkgutil --file-info /usr/bin/xcode-select
+      // https://stackoverflow.com/a/32752859/18247494
+      StringList stdout = new StringList();
+      StringList stderr = new StringList();
+      int result = PApplet.exec(stdout, stderr, "/usr/bin/xcode-select", "-p");
+
+      // Returns 0 if installed, 2 if not (-1 if exception)
+      // http://stackoverflow.com/questions/15371925
+      xcodeInstalled = (result == 0);
+    }
+    return xcodeInstalled;
+  }
+
+
+  static public void resetXcodeInstalled() {
+    xcodeInstalled = null;  // give them another chance
+  }
+
+
+  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
   /*

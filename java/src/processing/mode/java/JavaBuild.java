@@ -3,7 +3,7 @@
 /*
 Part of the Processing project - http://processing.org
 
-Copyright (c) 2012-19 The Processing Foundation
+Copyright (c) 2012-23 The Processing Foundation
 Copyright (c) 2004-12 Ben Fry and Casey Reas
 Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -36,6 +36,8 @@ import org.apache.tools.ant.ProjectHelper;
 
 import processing.app.*;
 import processing.app.exec.ProcessHelper;
+import processing.app.platform.MacPlatform;
+import processing.app.ui.ExportPrompt;
 import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.data.StringList;
@@ -915,7 +917,7 @@ public class JavaBuild {
       // attempt to code sign if the Xcode tools appear to be installed
       String appPath = dotAppFolder.getAbsolutePath();
       if (Platform.isMacOS()) {
-        if (isXcodeInstalled()) {
+        if (MacPlatform.isXcodeInstalled()) {
 //        if (embedJava) {
 //          ProcessHelper.ffs("codesign", "--force", "--sign", "--deep", "-", jdkPath);
 //        }
@@ -1081,30 +1083,6 @@ public class JavaBuild {
       "--add-exports", "javafx.graphics/com.sun.javafx.geom=ALL-UNNAMED",
       "--add-exports", "javafx.graphics/com.sun.glass.ui=ALL-UNNAMED"
     };
-  }
-
-
-  static Boolean xcodeInstalled;
-
-  static protected boolean isXcodeInstalled() {
-    if (xcodeInstalled == null) {
-      // Note that xcode-select is *not* an xcrun tool: it's part of the OS.
-      // pkgutil --file-info /usr/bin/xcode-select
-      // https://stackoverflow.com/a/32752859/18247494
-      StringList stdout = new StringList();
-      StringList stderr = new StringList();
-      int result = PApplet.exec(stdout, stderr, "/usr/bin/xcode-select", "-p");
-
-      // Returns 0 if installed, 2 if not (-1 if exception)
-      // http://stackoverflow.com/questions/15371925
-      xcodeInstalled = (result == 0);
-    }
-    return xcodeInstalled;
-  }
-
-
-  static protected void resetXcodeInstalled() {
-    xcodeInstalled = null;  // give them another chance
   }
 
 
