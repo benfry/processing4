@@ -676,6 +676,9 @@ _ windows anti-malware leaves browser stuck at 100%
 _   https://github.com/processing/processing/issues/5893
 _ sign releases on Windows to avoid SmartScreen warnings/errors
 _   https://github.com/processing/processing4/issues/25
+_   https://stackoverflow.com/q/252226
+_   https://cheapsslsecurity.com/sslproducts/codesigningcertificate.html
+_   https://stackoverflow.com/a/66582477
 _   https://www.microsoft.com/security/
 blog/2018/08/16/partnering-with-the-industry-to-minimize-false-positives/
 _   https://shop.certum.eu/open-source-code-signing-code.html
