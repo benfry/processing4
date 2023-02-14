@@ -3,7 +3,7 @@
 /*
 Part of the Processing project - http://processing.org
 
-Copyright (c) 2012-22 The Processing Foundation
+Copyright (c) 2012-23 The Processing Foundation
 Copyright (c) 2004-12 Ben Fry and Casey Reas
 Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -28,6 +28,7 @@ import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.SketchException;
 import processing.app.ui.ColorChooser;
+import processing.app.ui.Editor;
 import processing.core.PApplet;
 import processing.data.StringDict;
 import processing.data.StringList;
@@ -50,12 +51,14 @@ public class ExportPrompt {
     "https://github.com/processing/processing4/wiki/Exporting-Applications#macos";
   static final String EXPORT_VARIANTS = "export.application.variants";
 
+  static public final String JAVA_DOWNLOAD_URL = "https://adoptium.net/";
+
   final JButton exportButton = new JButton(Language.text("prompt.export"));
   final JButton cancelButton = new JButton(Language.text("prompt.cancel"));
 
   List<JCheckBox> variantButtons;
 
-  final JavaEditor editor;
+  final Editor editor;
 
   static ExportPrompt inst;
 
@@ -212,7 +215,7 @@ public class ExportPrompt {
     final String warning2b =
       "Users will need to ";
     final String warning3 =
-      "<a href=\"" + JavaBuild.JAVA_DOWNLOAD_URL + "\">" +
+      "<a href=\"" + JAVA_DOWNLOAD_URL + "\">" +
       "install OpenJDK " + PApplet.javaPlatform + "</a>.";
 
     // both are needed because they change as the user hits the checkbox
@@ -222,7 +225,7 @@ public class ExportPrompt {
     final JLabel warningLabel = new JLabel(embed ? embedWarning : nopeWarning);
     warningLabel.addMouseListener(new MouseAdapter() {
       public void mousePressed(MouseEvent event) {
-        Platform.openURL(JavaBuild.JAVA_DOWNLOAD_URL);
+        Platform.openURL(JAVA_DOWNLOAD_URL);
       }
     });
     warningLabel.setBorder(new EmptyBorder(3, 13, 3, 13));
@@ -257,13 +260,13 @@ public class ExportPrompt {
       signPanel.setBorder(new TitledBorder(Language.text("export.code_signing")));
 
       String thePain =
-        "Applications on macOS must be \u201Csigned\u201D and \u201Cnotarized,\u201D " +
+        "Applications on macOS must be “signed” and “notarized,”" +
         "or they will be reported as damaged or unsafe. ";
 
       //if (false && new File("/usr/bin/codesign_allocate").exists()) {
       if (JavaBuild.isXcodeInstalled()) {
         thePain += "<br/>" +
-          "This application will be \u201Cself-signed\u201D which means that " +
+          "This application will be “self-signed” which means that " +
           "macOS may complain that it comes from an unidentified developer. " +
           "If the application will not run, try right-clicking the app and " +
           "selecting Open from the pop-up menu. " +

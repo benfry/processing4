@@ -48,7 +48,6 @@ public class JavaBuild {
   static public final String PACKAGE_REGEX =
     "(?:^|\\s|;)package\\s+(\\S+)\\;";
 
-  static public final String JAVA_DOWNLOAD_URL = "https://adoptium.net/";
   static public final String MIN_JAVA_VERSION = "17";
 
   protected Sketch sketch;
@@ -951,7 +950,7 @@ public class JavaBuild {
       XML config = new XML("launch4jConfig");
       config.addChild("headerType").setContent("gui");
       config.addChild("dontWrapJar").setContent("true");
-      config.addChild("downloadUrl").setContent(JAVA_DOWNLOAD_URL);
+      config.addChild("downloadUrl").setContent(ExportPrompt.JAVA_DOWNLOAD_URL);
 
       File exeFile = new File(destFolder, sketch.getName() + ".exe");
       config.addChild("outfile").setContent(exeFile.getAbsolutePath());
