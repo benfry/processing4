@@ -255,6 +255,9 @@ public class Util {
       if (directory.mkdirs()) {
         // Set the parent directory writable for multi-user machines.
         // https://github.com/processing/processing4/issues/666
+        if (!directory.setReadable(true, false)) {
+          System.err.println("Could not set readable for all: " + directory);
+        }
         if (!directory.setWritable(true, false)) {
           System.err.println("Could not set writable for all: " + directory);
         }
