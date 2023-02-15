@@ -1,7 +1,7 @@
 #!/usr/bin/make
 
 CC=gcc
-JAVA_HOME="`/usr/libexec/java_home -v 11`"
+JAVA_HOME="`/usr/libexec/java_home -v 17`"
 JNI=-I${JAVA_HOME}/include -I${JAVA_HOME}/include/darwin/
 
 default: universal_lib
