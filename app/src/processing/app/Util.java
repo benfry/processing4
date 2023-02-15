@@ -252,7 +252,16 @@ public class Util {
     String tmpDir = System.getProperty("java.io.tmpdir");
     File directory = new File(tmpDir, "processing");
     if (!directory.exists()) {
-      if (!directory.mkdirs()) {
+      if (directory.mkdirs()) {
+        // Set the parent directory writable for multi-user machines.
+        // https://github.com/processing/processing4/issues/666
+        if (!directory.setWritable(true, false)) {
+          System.err.println("Could not set writable for all: " + directory);
+        }
+        if (!directory.setExecutable(true, false)) {
+          System.err.println("Could not set writable for all: " + directory);
+        }
+      } else {
         throw new IOException("Could not create temp directory. " +
           "Check that you have permissions to write to " + tmpDir);
       }

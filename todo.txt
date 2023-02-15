@@ -1,7 +1,7 @@
 1292 (4.2)
 X application exported to the wrong folder
 X   https://github.com/processing/processing4/issues/601
-_ more /tmp folder problems with Linux (may be the subdirectories?)
+X more /tmp folder problems with Linux (may be the subdirectories?)
 _   https://github.com/processing/processing4/issues/666
 
 python (api changes mean this is 4.2)
