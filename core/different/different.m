@@ -19,13 +19,6 @@ JNIEXPORT void JNICALL Java_processing_core_ThinkDifferent_showMenuBar
 }
 
 
-JNIEXPORT void JNICALL Java_processing_core_ThinkDifferent_showMenuBar
-(JNIEnv *env, jclass clazz, jboolean visible, jboolean kioskMode)
-{
-    [NSApp setPresentationOptions:0];
-}
-
-
 JNIEXPORT void JNICALL Java_processing_core_ThinkDifferent_activateIgnoringOtherApps
 (JNIEnv *env, jclass klass)
 {

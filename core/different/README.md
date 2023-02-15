@@ -2,7 +2,9 @@
 
 Native code to go with the `ThinkDifferent` class that handles macOS-specific API calls.
 
-Currently only handles hiding the menu bar, and the basic structure of the native libraries evolved from the [jAppleMenuBar project](https://github.com/kritzikratzi/jAppleMenuBar) by Hansi Raber and was rewritten for Processing 4 by Ben Fry.
+Currently handles hiding the menu bar, and the basic structure of the native libraries evolved from the [jAppleMenuBar project](https://github.com/kritzikratzi/jAppleMenuBar) by Hansi Raber and was rewritten for Processing 4 by Ben Fry.
+
+As of 4.2, also includes a method from Python Mode to bring windows to the front.
 
 Helpful reference used for the rewrite:
 
