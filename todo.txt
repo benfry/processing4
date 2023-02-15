@@ -1,10 +1,13 @@
-1292 (4.1.4 or 4.2)
+1292 (4.2)
 X application exported to the wrong folder
 X   https://github.com/processing/processing4/issues/601
+_ more /tmp folder problems with Linux (may be the subdirectories?)
+_   https://github.com/processing/processing4/issues/666
 
-python
+python (api changes mean this is 4.2)
 X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by Jython
 X move isXcodeInstalled() methods from JavaBuild into MacPlatform
+X add activateIgnoringOtherApps() to ThinkDifferent
 
 
 manager
