@@ -124,6 +124,10 @@ public class ThinkDifferent {
 
   static native public void showMenuBar();
 
+  // Used by Python (Jython) Mode to bring windows to the front
+  static native public void activateIgnoringOtherApps();
+
+
   static {
     final String NATIVE_FILENAME = "libDifferent.jnilib";
     try {
@@ -151,11 +155,4 @@ public class ThinkDifferent {
       e.printStackTrace();
     }
   }
-
-
-  // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-
-  // Used by Python (Jython) Mode to bring windows to the front
-
-  static native public void activateIgnoringOtherApps();
 }
