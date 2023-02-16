@@ -28,6 +28,8 @@ import java.net.JarURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -282,14 +284,20 @@ public class Util {
       if (directory.mkdirs()) {
         // Set the parent directory writable for multi-user machines.
         // https://github.com/processing/processing4/issues/666
-        if (!directory.setReadable(true, false)) {
-          System.err.println("Could not set readable for all: " + directory);
-        }
-        if (!directory.setWritable(true, false)) {
-          System.err.println("Could not set writable for all: " + directory);
-        }
-        if (!directory.setExecutable(true, false)) {
-          System.err.println("Could not set writable for all: " + directory);
+        if (Platform.isLinux()) {
+          Path path = directory.toPath();
+          Files.setPosixFilePermissions(path, PosixFilePermissions.fromString("rwxrwxrwx"));
+
+        } else {
+          if (!directory.setReadable(true, false)) {
+            System.err.println("Could not set readable for all: " + directory);
+          }
+          if (!directory.setWritable(true, false)) {
+            System.err.println("Could not set writable for all: " + directory);
+          }
+          if (!directory.setExecutable(true, false)) {
+            System.err.println("Could not set writable for all: " + directory);
+          }
         }
       } else {
         throw new IOException("Could not create temp directory. " +
