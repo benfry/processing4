@@ -1362,31 +1362,35 @@ public class Base {
 
 
   /**
-   * Handling pde:// URLs
-   * @param location everything after pde://
+   * Handler for pde:// protocol URIs
+   * @param schemeUri the full URI, including pde://
    */
-  public void handleLocation(String location) {
-    // if it leads with a slash, then it's a file url
-    if (location.charAt(0) == '/') {
-      handleOpen(location);  // it's a full path to a file
-    } else {
-      // turn it into an https url
-      final String url = "https://" + location;
-      if (location.toLowerCase().endsWith(".pdez") ||
-        location.toLowerCase().endsWith(".pdex")) {
-        String extension = location.substring(location.length() - 5);
-        try {
-          File tempFile = File.createTempFile("scheme", extension);
-          if (PApplet.saveStream(tempFile, Util.createInput(url))) {
-            handleOpen(tempFile.getAbsolutePath());
-          } else {
-            System.err.println("Could not open " + tempFile);
+  public Editor handleScheme(String schemeUri) {
+    String location = schemeUri.substring(6);
+    if (location.length() > 0) {
+      // if it leads with a slash, then it's a file url
+      if (location.charAt(0) == '/') {
+        handleOpen(location);  // it's a full path to a file
+      } else {
+        // turn it into an https url
+        final String url = "https://" + location;
+        if (location.toLowerCase().endsWith(".pdez") ||
+          location.toLowerCase().endsWith(".pdex")) {
+          String extension = location.substring(location.length() - 5);
+          try {
+            File tempFile = File.createTempFile("scheme", extension);
+            if (PApplet.saveStream(tempFile, Util.createInput(url))) {
+              return handleOpen(tempFile.getAbsolutePath());
+            } else {
+              System.err.println("Could not open " + tempFile);
+            }
+          } catch (IOException e) {
+            e.printStackTrace();
           }
-        } catch (IOException e) {
-          e.printStackTrace();
         }
       }
     }
+    return null;
   }
 
 
@@ -1395,6 +1399,10 @@ public class Base {
    * Note that the user may have selected/double-clicked any .pde in a sketch.
    */
   public Editor handleOpen(String path) {
+    if (path.startsWith("pde://")) {
+      return handleScheme(path);
+    }
+
     if (path.endsWith(SKETCH_BUNDLE_EXT)) {
       return openSketchBundle(path);
 

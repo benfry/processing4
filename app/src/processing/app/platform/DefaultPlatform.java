@@ -26,8 +26,6 @@ package processing.app.platform;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -39,7 +37,6 @@ import com.sun.jna.Native;
 
 import processing.app.Base;
 import processing.app.Preferences;
-import processing.app.Util;
 import processing.app.ui.Toolkit;
 import processing.awt.ShimAWT;
 import processing.core.PApplet;
