@@ -50,9 +50,10 @@ import processing.core.PApplet;
 /**
  * Platform-specific glue for Windows.
  */
+@SuppressWarnings("unused")
 public class WindowsPlatform extends DefaultPlatform {
-
   static final String APP_NAME = "Processing";
+
   static final String[] APP_EXTENSIONS = {
     // This could iterate through each Mode and call getDefaultExtension(),
     // however if p5jsMode were installed, .js files would be automatically
@@ -63,10 +64,12 @@ public class WindowsPlatform extends DefaultPlatform {
     System.getProperty("user.dir").replace('/', '\\') +
     "\\" + APP_NAME.toLowerCase() + ".exe \"%1\"";
   static final String REG_DOC = APP_NAME + ".Document";
+  static final String[] APP_SCHEMES = { "pde" };  // use pde://
+
+  static final String AUTO_ASSOCIATE_PREF =
+    "platform.auto_file_type_associations";
 
   private static final float RESOLUTION_AT_NO_SCALE = 96;
-  private static final int VERTRES = 10;
-  private static final int DESKTOPVERTRES = 117;
 
   private Optional<Float> cachedDisplayScaling;
 
@@ -79,6 +82,7 @@ public class WindowsPlatform extends DefaultPlatform {
     super.initBase(base);
 
     checkAssociations();
+    checkSchemes();
 
     //checkQuickTime();
     checkPath();
@@ -157,7 +161,7 @@ public class WindowsPlatform extends DefaultPlatform {
    */
   protected void checkAssociations() {
     try {
-      if (Preferences.getBoolean("platform.auto_file_type_associations")) {
+      if (Preferences.getBoolean(AUTO_ASSOCIATE_PREF)) {
         // Check the key that should be set by a previous run of Processing
         String knownCommand =
           WindowsRegistry.getStringValue(REGISTRY_ROOT_KEY.CURRENT_USER,
@@ -181,48 +185,26 @@ public class WindowsPlatform extends DefaultPlatform {
   }
 
 
+  protected void checkSchemes() {
+    try {
+      for (String extension : APP_SCHEMES) {
+        if (!WindowsRegistry.valueExists(REGISTRY_ROOT_KEY.CURRENT_USER,
+          "Software\\Classes", extension)) {
+          setSchemes();
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+
   /**
    * Associate .pde files with this version of Processing. After 2.0.1,
    * this was changed to only set the values for the current user, so that
    * it would no longer silently fail on systems that have UAC turned on.
    */
   protected void setAssociations() throws UnsupportedEncodingException {
-    // http://support.microsoft.com/kb/184082
-    // http://msdn.microsoft.com/en-us/library/cc144175%28v=VS.85%29.aspx
-    // http://msdn.microsoft.com/en-us/library/cc144104%28v=VS.85%29.aspx
-    // http://msdn.microsoft.com/en-us/library/cc144067%28v=VS.85%29.aspx
-    // msdn.microsoft.com/en-us/library/windows/desktop/ms724475(v=vs.85).aspx
-
-//    HKEY_CLASSES_ROOT
-//    MyProgram.exe
-//       shell
-//          open
-//             command
-//                (Default) = C:\MyDir\MyProgram.exe "%1"
-
-/*
-    REGISTRY_ROOT_KEY rootKey = REGISTRY_ROOT_KEY.CLASSES_ROOT;
-    if (Registry.createKey(rootKey,
-                           "", ".pde") &&
-        Registry.setStringValue(rootKey,
-                                ".pde", "", DOC) &&
-
-        Registry.createKey(rootKey, "", DOC) &&
-        Registry.setStringValue(rootKey, DOC, "",
-                                "Processing Source Code") &&
-
-        Registry.createKey(rootKey,
-                           DOC, "shell") &&
-        Registry.createKey(rootKey,
-                           DOC + "\\shell", "open") &&
-        Registry.createKey(rootKey,
-                           DOC + "\\shell\\open", "command") &&
-        Registry.setStringValue(rootKey,
-                                DOC + "\\shell\\open\\command", "",
-                                openCommand)) {
-*/
-
-    // First create the .pde association
     for (String extension : APP_EXTENSIONS) {
       if (!registerExtension(extension)) {
         Messages.log("Could not associate " + extension + "files, " +
@@ -233,25 +215,52 @@ public class WindowsPlatform extends DefaultPlatform {
   }
 
 
+  protected void setSchemes() throws UnsupportedEncodingException {
+    for (String scheme : APP_SCHEMES) {
+      if (!registerScheme(scheme)) {
+        Messages.log("Error while trying to associate " + scheme + ":// URLs.");
+      }
+    }
+  }
+
+
+  private boolean registerOpen(REGISTRY_ROOT_KEY rootKey, String prefix) throws UnsupportedEncodingException {
+    return (WindowsRegistry.createKey(rootKey, prefix, "shell") &&
+            WindowsRegistry.createKey(rootKey, prefix + "\\shell", "open") &&
+            WindowsRegistry.createKey(rootKey, prefix + "\\shell\\open", "command") &&
+            WindowsRegistry.setStringValue(rootKey, prefix + "\\shell\\open\\command", "", REG_OPEN_COMMAND));
+  }
+
+
   private boolean registerExtension(String extension) throws UnsupportedEncodingException {
     // "To change the settings for the interactive user, store the changes
     // under HKEY_CURRENT_USER\Software\Classes rather than HKEY_CLASSES_ROOT."
     // msdn.microsoft.com/en-us/library/windows/desktop/ms724475(v=vs.85).aspx
     final REGISTRY_ROOT_KEY rootKey = REGISTRY_ROOT_KEY.CURRENT_USER;
-    final String docPrefix = "Software\\Classes\\" + REG_DOC;
+    final String prefix = "Software\\Classes\\" + REG_DOC;
 
     return (WindowsRegistry.createKey(rootKey, "Software\\Classes", extension) &&
             WindowsRegistry.setStringValue(rootKey, "Software\\Classes\\" + extension, "", REG_DOC) &&
 
             // Now give files with a .pde extension a name for the explorer
             WindowsRegistry.createKey(rootKey, "Software\\Classes", REG_DOC) &&
-            WindowsRegistry.setStringValue(rootKey, docPrefix, "", APP_NAME + " Source Code") &&
+            WindowsRegistry.setStringValue(rootKey, prefix, "", APP_NAME + " Source Code") &&
 
             // Now associate the 'open' command with the current processing.exe
-            WindowsRegistry.createKey(rootKey, docPrefix, "shell") &&
-            WindowsRegistry.createKey(rootKey, docPrefix + "\\shell", "open") &&
-            WindowsRegistry.createKey(rootKey, docPrefix + "\\shell\\open", "command") &&
-            WindowsRegistry.setStringValue(rootKey, docPrefix + "\\shell\\open\\command", "", REG_OPEN_COMMAND));
+            registerOpen(rootKey, prefix));
+  }
+
+
+  private boolean registerScheme(String scheme) throws UnsupportedEncodingException {
+    final REGISTRY_ROOT_KEY rootKey = REGISTRY_ROOT_KEY.CURRENT_USER;
+    final String prefix = "Software\\Classes\\" + scheme;
+
+    return (WindowsRegistry.createKey(rootKey, "Software\\Classes", scheme) &&
+            WindowsRegistry.setStringValue(rootKey, prefix, "", "URL:" + scheme + " Protocol") &&
+            WindowsRegistry.setStringValue(rootKey, prefix, "URL Protocol", "") &&
+
+            // Identical to the associate command previously in registerExtension()
+            registerOpen(rootKey, prefix));
   }
 
 
@@ -327,9 +336,11 @@ public class WindowsPlatform extends DefaultPlatform {
       String path = new File("lib").getCanonicalPath();
 
       String msg = Util.containsNonASCII(path) ?
-        "Please move Processing to a location with only\n" +
-        "ASCII characters in the path and try again.\n" +
-        "https://github.com/processing/processing/issues/3543" :
+        """
+          Please move Processing to a location with only
+          ASCII characters in the path and try again.
+          https://github.com/processing/processing/issues/3543
+        """ :
         "Could not find JNA support files, please reinstall Processing.";
       Messages.showError("Windows JNA Problem", msg, ule);
       return null;  // unreachable
@@ -659,6 +670,9 @@ public class WindowsPlatform extends DefaultPlatform {
       float resolution = Toolkit.getDefaultToolkit().getScreenResolution();
       return resolution / RESOLUTION_AT_NO_SCALE;
     }
+
+    final int VERTRES = 10;
+    final int DESKTOPVERTRES = 117;
 
     float virtualResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, VERTRES);
     float logicalResolution = GDI32.INSTANCE.GetDeviceCaps(hdc, DESKTOPVERTRES);
