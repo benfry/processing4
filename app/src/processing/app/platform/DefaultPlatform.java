@@ -26,6 +26,8 @@ package processing.app.platform;
 import java.awt.Desktop;
 import java.awt.Font;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
@@ -37,6 +39,7 @@ import com.sun.jna.Native;
 
 import processing.app.Base;
 import processing.app.Preferences;
+import processing.app.Util;
 import processing.app.ui.Toolkit;
 import processing.awt.ShimAWT;
 import processing.core.PApplet;
@@ -95,6 +98,37 @@ public class DefaultPlatform {
 
   public void initBase(Base base) {
     this.base = base;
+
+    final Desktop desktop = Desktop.getDesktop();
+    desktop.setOpenURIHandler((event) -> {
+      // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html
+      URI uri = event.getURI();
+      String location = uri.toString().substring(6);
+      if (location.length() > 0) {
+        System.out.println("location is " + location);
+        // if it leads with a slash, then it's a file url
+        if (location.charAt(0) == '/') {
+          base.handleOpen(location);  // it's a full path to a file
+        } else {
+          // turn it into an https url
+          final String url = "https://" + location;
+          if (location.toLowerCase().endsWith(".pdez") ||
+              location.toLowerCase().endsWith(".pdex")) {
+            String extension = location.substring(location.length() - 5);
+            try {
+              File tempFile = File.createTempFile("scheme", extension);
+              if (PApplet.saveStream(tempFile, Util.createInput(url))) {
+                base.handleOpen(tempFile.getAbsolutePath());
+              } else {
+                System.err.println("Could not open " + tempFile);
+              }
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+          }
+        }
+      }
+    });
   }
 
 

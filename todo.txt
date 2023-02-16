@@ -3,6 +3,11 @@ X application exported to the wrong folder
 X   https://github.com/processing/processing4/issues/601
 X more /tmp folder problems with Linux (may be the subdirectories?)
 _   https://github.com/processing/processing4/issues/666
+_ add a protocol handler for pdex and pdez
+_   https://github.com/processing/processing4/issues/559
+X   implemented for macOS
+_   need to also warn people about running 'em
+
 
 python (api changes mean this is 4.2)
 X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by Jython
@@ -31,8 +36,6 @@ _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
 _   point to binaries in /Applications/Processing.app? (no)
 
-_ add a protocol handler for pdex and pdez
-_   https://github.com/processing/processing4/issues/559
 
 
 known issues
