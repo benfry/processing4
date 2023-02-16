@@ -1370,7 +1370,12 @@ public class Base {
     if (location.length() > 0) {
       // if it leads with a slash, then it's a file url
       if (location.charAt(0) == '/') {
-        handleOpen(location);  // it's a full path to a file
+        File file = new File(location);
+        if (file.exists()) {
+          handleOpen(location);  // it's a full path to a file
+        } else {
+          System.err.println(file + " does not exist.");
+        }
       } else {
         // turn it into an https url
         final String url = "https://" + location;
