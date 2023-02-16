@@ -23,6 +23,10 @@
 package processing.app;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.regex.Matcher;
@@ -64,6 +68,29 @@ public class Util {
     }
     input.close();  // weren't properly being closed
     return buffer;
+  }
+
+
+  static public InputStream createInput(String path) throws IOException {
+    URL url = new URL(path);
+    URLConnection conn = url.openConnection();
+
+    if (conn instanceof HttpURLConnection httpConn) {
+      // Will not handle a protocol change (see below)
+      httpConn.setInstanceFollowRedirects(true);
+      int response = httpConn.getResponseCode();
+      // Default won't follow HTTP -> HTTPS redirects for security reasons
+      // http://stackoverflow.com/a/1884427
+      if (response >= 300 && response < 400) {
+        String newLocation = httpConn.getHeaderField("Location");
+        return createInput(newLocation);
+      }
+      return conn.getInputStream();
+
+    } else if (conn instanceof JarURLConnection) {
+      return url.openStream();
+    }
+    return null;
   }
 
 
