@@ -33,6 +33,7 @@ import javax.swing.JMenuBar;
 
 import processing.app.Base;
 import processing.app.Messages;
+import processing.app.Util;
 import processing.app.ui.About;
 import processing.core.PApplet;
 import processing.data.StringList;
@@ -89,6 +90,15 @@ public class MacPlatform extends DefaultPlatform {
         quitResponse.performQuit();
       } else {
         quitResponse.cancelQuit();
+      }
+    });
+
+    desktop.setOpenURIHandler((event) -> {
+      // https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/net/URI.html
+      URI uri = event.getURI();
+      String location = uri.toString().substring(6);
+      if (location.length() > 0) {
+        base.handleLocation(location);
       }
     });
   }

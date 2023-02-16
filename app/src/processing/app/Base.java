@@ -1362,6 +1362,35 @@ public class Base {
 
 
   /**
+   * Handling pde:// URLs
+   * @param location everything after pde://
+   */
+  public void handleLocation(String location) {
+    // if it leads with a slash, then it's a file url
+    if (location.charAt(0) == '/') {
+      handleOpen(location);  // it's a full path to a file
+    } else {
+      // turn it into an https url
+      final String url = "https://" + location;
+      if (location.toLowerCase().endsWith(".pdez") ||
+        location.toLowerCase().endsWith(".pdex")) {
+        String extension = location.substring(location.length() - 5);
+        try {
+          File tempFile = File.createTempFile("scheme", extension);
+          if (PApplet.saveStream(tempFile, Util.createInput(url))) {
+            handleOpen(tempFile.getAbsolutePath());
+          } else {
+            System.err.println("Could not open " + tempFile);
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
+
+
+  /**
    * Open a sketch from the path specified. Do not use for untitled sketches.
    * Note that the user may have selected/double-clicked any .pde in a sketch.
    */
