@@ -2,13 +2,17 @@
 X application exported to the wrong folder
 X   https://github.com/processing/processing4/issues/601
 X more /tmp folder problems with Linux (may be the subdirectories?)
-_   https://github.com/processing/processing4/issues/666
+X   https://github.com/processing/processing4/issues/666
 _ add a protocol handler for pdex and pdez
 _   https://github.com/processing/processing4/issues/559
 X   implemented for macOS
-_   Windows implementation https://git.eclipse.org/c/platform/eclipse.platform.ui.git/commit/?id=94914f2852f0c32e60361648ec82da153b8d70ae
+X   Windows implementation https://git.eclipse.org/c/platform/eclipse.platform.ui.git/commit/?id=94914f2852f0c32e60361648ec82da153b8d70ae
+_   https://web.archive.org/web/20210601082308/https://support.shotgunsoftware.com/hc/en-us/articles/219031308-How-to-launch-external-applications-using-custom-protocols-rock-instead-of-http-?mobile_site=true
+_     presumably from https://github.com/pboucher ?
+_   check on Linux implementation
 _   need to also warn people about running 'em
 
+_ pdez (and presumably pdex) files have the wrong icons on Windows
 
 python (api changes mean this is 4.2)
 X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by Jython
@@ -25,13 +29,14 @@ _   were these shut off during debug? need to be moving these to trash (maybe on
 _ implement automatic updates?
 _   especially with fixes to updates on startup...
 
-design
+manager/design
 _ use down arrow for updates, circle arrow for restart?
 _ completion mode pop-up not following dark and light mode conventions
 _ update console.scrollbar.thumb.rollover.color and console.scrollbar.thumb.pressed.color
 _   currently just using .enabled.color because they weren't in ColorSet
 
 _ opening p5jsMode sketch with no local.properties throws an NPE
+_   PDE can't find any files that match the supported extensions
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
