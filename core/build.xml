@@ -23,8 +23,15 @@
   <property name="jogl.url.backup"
             value="https://download.processing.org/jogl/v2.4.0-rc-20210111" />
   -->
+  <!-- Active version for Processing 4.0 to 4.1.3 -->
   <property name="jogl.url"
             value="https://download.processing.org/jogl/v2.4.0-rc-20210111y" />
+
+  <!-- TODO new RC versions posted in February 2023... -->
+  <!--
+  <property name="jogl.url"
+            value="https://jogamp.org/deployment/archive/rc/v2.4.0/jar" />
+  -->
 
   <available file="library/jogl-all.jar" property="jogl.present" />
 
