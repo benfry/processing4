@@ -808,10 +808,11 @@ public class PSurfaceJOGL implements PSurface {
         if (sketchWidth != sketchWidthRequested || sketchHeight != sketchHeightRequested) {
           if (!sketch.sketchFullScreen()) {
             // don't show the message when using fullScreen()
-            PGraphics.showWarning("The sketch has been resized from " +
+            PGraphics.showWarning(
+              "The sketch has been resized from " +
                 "%dx%d to %dx%d by the operating system.%n" +
-                "This is happening outside Processing, " +
-                "and is probably a limitation of the OS or window manager.",
+                "This happened outside Processing, " +
+                "and may be a limitation of the OS or window manager.",
               sketchWidthRequested, sketchHeightRequested, sketchWidth, sketchHeight);
           }
         }

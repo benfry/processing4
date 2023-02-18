@@ -5,6 +5,11 @@ X Support chained decimals during SVG Parsing
 X   https://github.com/processing/processing4/pull/659
 X   https://github.com/processing/processing4/issues/515
 
+_ has been resized from 100?100 to 116?100 by the window manager
+
+_ fullScreen(P2D) from an executable does not work properly
+_   partially fixed, but now need to sort out hidpi issues
+_   https://github.com/processing/processing4/issues/514
 
 _ args passed to main() aren't working
 _   (there was a bug report for this already?)
