@@ -40,7 +40,10 @@
     <!-- launch4j does not detect Adoptium, so add %PATH% as fallback -->
     <!-- https://sourceforge.net/p/launch4j/bugs/197/ -->
     <!-- https://github.com/processing/processing4/issues/667 -->
-    <path>java;%PATH%</path>
+    <!-- <path>java;%PATH%</path> -->
+    <!-- For processing.exe, use the "java" folder as shipped, otherwise too many variables. -->
+    <path>java</path>
+
     <!-- Make it possible access JavaFX and JOGL libraries for Tools,
          Modes, etc. Not recommended, but making it possible because
          some Tools rely on JavaFX. (OpenGL is only incidental.) -->
