@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2014-22 The Processing Foundation
+  Copyright (c) 2014-23 The Processing Foundation
 
   This library is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
@@ -310,7 +310,8 @@ public class PSurfaceAWT extends PSurfaceNone {
           // it's printing in a monospace font to the console.
           for (int i = 0; i < devices.length; i++) {
             DisplayMode mode = devices[i].getDisplayMode();
-            String title = String.format("%d (%d\u00d7%d)",  // \u00d7 or \u2715
+            // \u00d7 supported more widely than \u2715 (and a better size)
+            String title = String.format("%d (%d\u00d7%d)",
                 i + 1, mode.getWidth(), mode.getHeight());
             if (devices[i] == defaultDevice) {
               title += " default";

@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-21 The Processing Foundation
+  Copyright (c) 2012-23 The Processing Foundation
   Copyright (c) 2004-12 Ben Fry and Casey Reas
   Copyright (c) 2001-04 Massachusetts Institute of Technology
 
@@ -98,6 +98,7 @@ public class PSurfaceJOGL implements PSurface {
 
   protected int sketchWidthRequested;
   protected int sketchHeightRequested;
+
   protected int sketchWidth;
   protected int sketchHeight;
 
@@ -117,8 +118,6 @@ public class PSurfaceJOGL implements PSurface {
   protected int windowScaleFactor;
 
   protected float[] currentPixelScale = { 0, 0 };
-
-//  protected boolean external = false;
 
 
   public PSurfaceJOGL(PGraphics graphics) {
@@ -171,8 +170,8 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
-  // TODO this code is mostly copied from code found in PSurfaceOpenGL,
-  //      they should probably be merged to avoid divergence [fry 211122]
+  // TODO This code is mostly copied from code found in PSurfaceAWT.
+  //      It should probably be merged to avoid divergence. [fry 211122]
   static protected Rectangle getDisplayBounds(int displayNum) {
     GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     GraphicsDevice[] awtDevices = ge.getScreenDevices();
@@ -189,17 +188,19 @@ public class PSurfaceJOGL implements PSurface {
           System.err.format("Display %d is %s%n", i+1, awtDevices[i]);
         }
       }
-    } else if (0 < awtDevices.length) {
+//    } else if (0 < awtDevices.length) {
       // TODO this seems like a bad idea: in lots of situations [0] will *not*
       //      be the default device. Not sure why this was added instead of
       //      just using getDefaultScreenDevice() below. [fry 211122]
-      awtDisplayDevice = awtDevices[0];
+      // TODO Removing for 4.2, clean this code on next visit. [fry 230218]
+//      awtDisplayDevice = awtDevices[0];
     }
 
     if (awtDisplayDevice == null) {
       awtDisplayDevice = ge.getDefaultScreenDevice();
     }
 
+    System.out.println("transform is " + awtDisplayDevice.getDefaultConfiguration().getNormalizingTransform());
     return awtDisplayDevice.getDefaultConfiguration().getBounds();
   }
 
