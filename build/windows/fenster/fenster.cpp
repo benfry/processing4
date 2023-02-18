@@ -14,11 +14,13 @@ int main() {
   // also done in the JDK https://hg.openjdk.java.net/jdk/jdk/rev/b7a958df3992
   HDC hdc = GetDC(NULL);
   if (hdc) {
+    // https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-getdevicecaps
     INT horizontalDPI = GetDeviceCaps(hdc, LOGPIXELSX);
     INT verticalDPI = GetDeviceCaps(hdc, LOGPIXELSY);
     //printf("%d %d", horizontalDPI, verticalDPI);
     // god help us if horizontal != vertical
-    printf("%f", horizontalDPI);
+    printf("%d", horizontalDPI);
+    // printf("\n%d", sizeof(INT));
     ReleaseDC(NULL, hdc);
     return 0;
   }
