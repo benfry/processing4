@@ -495,12 +495,18 @@ public class Runner implements MessageConsumer {
         params.append(PApplet.ARGS_DENSITY + "=2");
       }
       */
+
+      // Using this causes behavior to be different between exported
+      // applications and when run from the PDE. Turning it off for 4.2
+      // so there's a path for debugging all of this. [fry 230218]
+      /*
       if (Platform.isWindows()) {
         // Pass the DPI setting to the app to avoid using the helper app.
         int dpi = Toolkit.getDefaultToolkit().getScreenResolution();
         int uiScale = PApplet.constrain(dpi / 96, 1, 2);
         params.append(PApplet.ARGS_UI_SCALE + "=" + uiScale);
       }
+      */
 
       params.append(build.getSketchClassName());
     }
