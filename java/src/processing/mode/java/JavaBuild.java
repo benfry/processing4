@@ -972,6 +972,7 @@ public class JavaBuild {
         jre.addChild("path").setContent("java;%PATH%");
       } else {
         // needed to make OpenJDK work properly
+        // https://sourceforge.net/p/launch4j/bugs/197/
         // https://github.com/processing/processing4/issues/667
         jre.addChild("path").setContent("%PATH%");
       }
