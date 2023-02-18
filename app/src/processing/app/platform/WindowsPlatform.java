@@ -3,7 +3,7 @@
 /*
   Part of the Processing project - http://processing.org
 
-  Copyright (c) 2012-2013 The Processing Foundation
+  Copyright (c) 2012-2023 The Processing Foundation
   Copyright (c) 2008-2012 Ben Fry and Casey Reas
 
   This program is free software; you can redistribute it and/or
@@ -83,6 +83,7 @@ public class WindowsPlatform extends DefaultPlatform {
         WindowsRegistry.setStringValue(rootKey, "Software\\Classes\\" + doc, "", title) &&
 
         // Assign an .ico file to this document type
+        // https://learn.microsoft.com/en-us/windows/win32/shell/how-to-assign-a-custom-icon-to-a-file-type
         WindowsRegistry.createKey(rootKey, "Software\\Classes\\" + doc, "DefaultIcon") &&
         WindowsRegistry.setStringValue(rootKey, "Software\\Classes\\" + doc + "\\DefaultIcon", "", iconPath) &&
 

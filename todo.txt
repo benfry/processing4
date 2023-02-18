@@ -3,16 +3,21 @@ X application exported to the wrong folder
 X   https://github.com/processing/processing4/issues/601
 X more /tmp folder problems with Linux (may be the subdirectories?)
 X   https://github.com/processing/processing4/issues/666
-_ add a protocol handler for pdex and pdez
-_   https://github.com/processing/processing4/issues/559
+X add a protocol handler for pdex and pdez
+X   https://github.com/processing/processing4/issues/559
 X   implemented for macOS
+X   implemented for Windows
 X   Windows implementation https://git.eclipse.org/c/platform/eclipse.platform.ui.git/commit/?id=94914f2852f0c32e60361648ec82da153b8d70ae
 _   https://web.archive.org/web/20210601082308/https://support.shotgunsoftware.com/hc/en-us/articles/219031308-How-to-launch-external-applications-using-custom-protocols-rock-instead-of-http-?mobile_site=true
 _     presumably from https://github.com/pboucher ?
 _   check on Linux implementation
 _   need to also warn people about running 'em
-
-_ pdez (and presumably pdex) files have the wrong icons on Windows
+X implement icon files on Windows
+X   pdez (and presumably pdex) files have the wrong icons on Windows
+X   implement document icons for pdez etc on Windows
+X icons/earlier
+X   need .pde document icons
+X   need .psk file icon
 
 python (api changes mean this is 4.2)
 X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by Jython
@@ -642,8 +647,6 @@ _ drag and drop
 _   including the number of items added to sketch would be especially nice
 _ implement automatic update
 _   https://github.com/processing/processing/issues/100
-_ need .pde document icons
-_ need .psk file icon
 _ need exported application icons
 _ need more comprehensive list of 'known bugs'
 _ need more comprehensive list of 'known suggestions'
@@ -665,7 +668,6 @@ _ p5 assets need to be licensed differently from the source
 
 DIST / Windows
 
-_ implement document icons for pdez etc on Windows
 _ Resolve “Successfully created” and “illegal reflective access” errors from launch4j
 _   https://github.com/processing/processing4/issues/137
 _ windows batch file would be a good idea (debugging is hard)
