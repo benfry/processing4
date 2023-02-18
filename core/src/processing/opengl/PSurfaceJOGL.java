@@ -200,7 +200,13 @@ public class PSurfaceJOGL implements PSurface {
       awtDisplayDevice = ge.getDefaultScreenDevice();
     }
 
-    return awtDisplayDevice.getDefaultConfiguration().getBounds();
+    //return awtDisplayDevice.getDefaultConfiguration().getBounds();
+    Rectangle bounds = awtDisplayDevice.getDefaultConfiguration().getBounds();
+    float uiScale = Float.parseFloat(System.getProperty("sun.java2d.uiScale", "1.0"));
+    return new Rectangle((int) (uiScale * bounds.getX()),
+              (int) (uiScale * bounds.getY()),
+              (int) (uiScale * bounds.getWidth()),
+              (int) (uiScale * bounds.getHeight()));
   }
 
 
@@ -302,19 +308,21 @@ public class PSurfaceJOGL implements PSurface {
     windowScaleFactor =
       (PApplet.platform == PConstants.MACOS) ? 1 : sketch.pixelDensity;
 
-    float uiScale =
-      Float.parseFloat(System.getProperty("sun.java2d.uiScale", "1.0"));
-
     boolean spanDisplays = sketch.sketchDisplay() == PConstants.SPAN;
 
     screenRect = spanDisplays ?
       // TODO probably need to apply this to the spanning version [fry 230218]
       new Rectangle(screen.getX(), screen.getY(),
                     screen.getWidth(), screen.getHeight()) :
-      new Rectangle((int) (uiScale * displayRect.getX()),
-                    (int) (uiScale * displayRect.getY()),
-                    (int) (uiScale * displayRect.getWidth()),
-                    (int) (uiScale * displayRect.getHeight()));
+            new Rectangle((int) displayRect.getX(),
+                          (int) displayRect.getY(),
+                          (int) displayRect.getWidth(),
+                          (int) displayRect.getHeight());
+
+//      new Rectangle((int) (uiScale * displayRect.getX()),
+//                    (int) (uiScale * displayRect.getY()),
+//                    (int) (uiScale * displayRect.getWidth()),
+//                    (int) (uiScale * displayRect.getHeight()));
 
     // Set the displayWidth/Height variables inside PApplet, so that they're
     // usable and can even be returned by the sketchWidth()/Height() methods.
@@ -338,8 +346,10 @@ public class PSurfaceJOGL implements PSurface {
     // https://github.com/processing/processing/issues/3545
 
     if (fullScreen || spanDisplays) {
-      sketchWidth = (int) (uiScale * screenRect.width / windowScaleFactor);
-      sketchHeight = (int) (uiScale * screenRect.height / windowScaleFactor);
+//      sketchWidth = (int) (uiScale * screenRect.width / windowScaleFactor);
+//      sketchHeight = (int) (uiScale * screenRect.height / windowScaleFactor);
+      sketchWidth = screenRect.width / windowScaleFactor;
+      sketchHeight = screenRect.height / windowScaleFactor;
     }
 
     sketch.setSize(sketchWidth, sketchHeight);
@@ -483,7 +493,6 @@ public class PSurfaceJOGL implements PSurface {
   }
 
 
-  @SuppressWarnings("resource")
   private String resourceFilename(String filename) {
     // The code below comes from PApplet.createInputRaw() with a few adaptations
     InputStream stream;
