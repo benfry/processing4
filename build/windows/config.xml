@@ -13,6 +13,9 @@
   <stayAlive>false</stayAlive>
   <manifest></manifest>
   <icon>processing.ico</icon>
+  <icon>pde.ico</icon>
+  <icon>pdex.ico</icon>
+  <icon>pdez.ico</icon>
   <classPath>
     <!-- <mainClass>processing.app.Base</mainClass> -->
     <mainClass>processing.app.ui.Splash</mainClass>
