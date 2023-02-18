@@ -78,7 +78,8 @@ public class PSurfaceAWT extends PSurfaceNone {
   int sketchWidth;
   int sketchHeight;
 
-  int windowScaleFactor;
+  // int windowScaleFactor;
+  final int windowScaleFactor = 1;
 
 
   public PSurfaceAWT(PGraphics graphics) {
@@ -337,8 +338,8 @@ public class PSurfaceAWT extends PSurfaceNone {
     sketch.displayWidth = screenRect.width;
     sketch.displayHeight = screenRect.height;
 
-    windowScaleFactor = PApplet.platform == PConstants.MACOS ?
-        1 : sketch.pixelDensity;
+    // windowScaleFactor = PApplet.platform == PConstants.MACOS ?
+    //     1 : sketch.pixelDensity;
 
     sketchWidth = sketch.sketchWidth() * windowScaleFactor;
     sketchHeight = sketch.sketchHeight() * windowScaleFactor;
