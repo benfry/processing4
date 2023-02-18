@@ -200,7 +200,6 @@ public class PSurfaceJOGL implements PSurface {
       awtDisplayDevice = ge.getDefaultScreenDevice();
     }
 
-    System.out.println("transform is " + awtDisplayDevice.getDefaultConfiguration().getNormalizingTransform());
     return awtDisplayDevice.getDefaultConfiguration().getBounds();
   }
 
@@ -303,14 +302,19 @@ public class PSurfaceJOGL implements PSurface {
     windowScaleFactor =
       (PApplet.platform == PConstants.MACOS) ? 1 : sketch.pixelDensity;
 
+    float uiScale =
+      Float.parseFloat(System.getProperty("sun.java2d.uiScale", "1.0"));
+
     boolean spanDisplays = sketch.sketchDisplay() == PConstants.SPAN;
+
     screenRect = spanDisplays ?
+      // TODO probably need to apply this to the spanning version [fry 230218]
       new Rectangle(screen.getX(), screen.getY(),
                     screen.getWidth(), screen.getHeight()) :
-      new Rectangle((int) displayRect.getX(),
-                    (int) displayRect.getY(),
-                    (int) displayRect.getWidth(),
-                    (int) displayRect.getHeight());
+      new Rectangle((int) (uiScale * displayRect.getX()),
+                    (int) (uiScale * displayRect.getY()),
+                    (int) (uiScale * displayRect.getWidth()),
+                    (int) (uiScale * displayRect.getHeight()));
 
     // Set the displayWidth/Height variables inside PApplet, so that they're
     // usable and can even be returned by the sketchWidth()/Height() methods.
