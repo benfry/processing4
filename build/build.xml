@@ -1299,6 +1299,10 @@
       <fileset file="shared/revisions.md" />
     </copy>
 
+    <copy todir="windows/work/lib" preservelastmodified="true">
+      <fileset dir="windows" includes="*.ico" />
+    </copy>
+
     <fixcrlf file="windows/work/revisions.md" eol="crlf" encoding="UTF-8" />
 
     <antcall target="assemble">
