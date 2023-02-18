@@ -24,6 +24,11 @@ X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by
 X move isXcodeInstalled() methods from JavaBuild into MacPlatform
 X add activateIgnoringOtherApps() to ThinkDifferent
 
+_ Exported project to Windows cannot find Java
+_   https://github.com/processing/processing4/issues/667
+
+_ exporting application while still running on Windows
+_   just says "Error during export" rather than something more useful about deleting dir
 
 manager
 _ if contrib (library only?) folder name changes on update, old lib not removed
