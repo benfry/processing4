@@ -24,12 +24,12 @@ X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by
 X move isXcodeInstalled() methods from JavaBuild into MacPlatform
 X add activateIgnoringOtherApps() to ThinkDifferent
 
+export
 X Exported project to Windows cannot find Java
 X   https://github.com/processing/processing4/issues/667
-
-_ when not exporting Java as well, the "exporting application" message doesn't seem to clear
-
-_ after exporting application, open the sketch folder
+X when exporting, the "exporting application" message doesn't seem to clear
+X   was a regression caused by ExportPrompt changes
+X   after exporting application, open the sketch folder
 
 _ exporting application while still running on Windows
 _   just says "Error during export" rather than something more useful about deleting dir

@@ -469,34 +469,23 @@ public class JavaEditor extends Editor {
 
 
   /**
-   * Handler for Sketch &rarr; Export Application
+   * Handler for Sketch → Export Application
    */
   public void handleExportApplication() {
     if (handleExportCheckModified()) {
       statusNotice(Language.text("export.notice.exporting"));
-      try {
-        ExportPrompt ep = new ExportPrompt(this, () -> {
-          try {
-            jmode.handleExportApplication(getSketch());
-          } catch (Exception e) {
-            statusNotice(Language.text("export.notice.exporting.error"));
-            e.printStackTrace();
+      ExportPrompt ep = new ExportPrompt(this, () -> {
+        try {
+          if (jmode.handleExportApplication(getSketch())) {
+            Platform.openFolder(sketch.getFolder());
+            statusNotice(Language.text("export.notice.exporting.done"));
           }
-        });
-        if (ep.trigger()) {
-          Platform.openFolder(sketch.getFolder());
-          statusNotice(Language.text("export.notice.exporting.done"));
-          //} else {
-          // error message will already be visible
-          // or there was no error, in which case it was canceled.
+        } catch (Exception e) {
+          statusNotice(Language.text("export.notice.exporting.error"));
+          e.printStackTrace();
         }
-      } catch (SketchException se) {
-        EventQueue.invokeLater(() -> statusError(se));
-
-      } catch (Exception e) {
-        statusNotice(Language.text("export.notice.exporting.error"));
-        e.printStackTrace();
-      }
+      });
+      ep.trigger();
     }
   }
 

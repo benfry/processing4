@@ -23,15 +23,6 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 package processing.app.ui;
 
-import processing.app.Language;
-import processing.app.Platform;
-import processing.app.Preferences;
-import processing.app.SketchException;
-import processing.app.platform.MacPlatform;
-import processing.core.PApplet;
-import processing.data.StringDict;
-import processing.data.StringList;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.TitledBorder;
@@ -42,6 +33,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+
+import processing.app.Language;
+import processing.app.Platform;
+import processing.app.Preferences;
+import processing.app.platform.MacPlatform;
+
+import processing.core.PApplet;
+import processing.data.StringDict;
+import processing.data.StringList;
 
 
 public class ExportPrompt {
@@ -111,7 +111,7 @@ public class ExportPrompt {
   }
 
 
-  public boolean trigger() throws SketchException {
+  public void trigger() {
     final JDialog dialog = new JDialog(editor, Language.text("export"), true);
 
     JPanel panel = new JPanel();
@@ -347,7 +347,7 @@ public class ExportPrompt {
       // closed window by hitting Cancel or ESC
       editor.statusNotice(Language.text("export.notice.exporting.cancel"));
     }
-    return false;
+//    return false;
   }
 
 
