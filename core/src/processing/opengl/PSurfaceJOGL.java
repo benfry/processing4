@@ -338,8 +338,8 @@ public class PSurfaceJOGL implements PSurface {
     // https://github.com/processing/processing/issues/3545
 
     if (fullScreen || spanDisplays) {
-      sketchWidth = screenRect.width / windowScaleFactor;
-      sketchHeight = screenRect.height / windowScaleFactor;
+      sketchWidth = (int) (uiScale * screenRect.width / windowScaleFactor);
+      sketchHeight = (int) (uiScale * screenRect.height / windowScaleFactor);
     }
 
     sketch.setSize(sketchWidth, sketchHeight);
