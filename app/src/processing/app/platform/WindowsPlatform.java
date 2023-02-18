@@ -94,8 +94,8 @@ public class WindowsPlatform extends DefaultPlatform {
   static final Association[] ASSOCIATIONS = new Association[] {
     new Association(".pde", "Processing Source Code", "Processing.Document", "pde.ico"),
     new Association(".pyde", "Processing Python Source Code", "Processing.Document", "pde.ico"),
-    new Association(".pdex", "Processing Sketch Bundle", "Processing.Sketch.Document", "pdez.ico"),
-    new Association(".pdez", "Processing Contribution Bundle", "Processing.Contribution.Document", "pdex.ico"),
+    new Association(".pdez", "Processing Sketch Bundle", "Processing.Sketch.Document", "pdez.ico"),
+    new Association(".pdex", "Processing Contribution Bundle", "Processing.Contribution.Document", "pdex.ico"),
   };
 
   // This could iterate through each Mode and call getDefaultExtension(),
