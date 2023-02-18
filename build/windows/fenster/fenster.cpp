@@ -18,7 +18,7 @@ int main() {
     INT verticalDPI = GetDeviceCaps(hdc, LOGPIXELSY);
     //printf("%d %d", horizontalDPI, verticalDPI);
     // god help us if horizontal != vertical
-    printf("%d", horizontalDPI);
+    printf("%f", horizontalDPI);
     ReleaseDC(NULL, hdc);
     return 0;
   }
