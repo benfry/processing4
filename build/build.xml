@@ -553,9 +553,15 @@
            causes appbundler to remove the extension handling,
            so double-clicking files no longer works. -->
 
-      <bundledocument extensions="pde,pyde"
+      <bundledocument extensions="pde"
                       icon="macos/pde.icns"
                       name="Processing Source Code"
+                      role="Editor">
+      </bundledocument>
+
+      <bundledocument extensions="pyde"
+                      icon="macos/pde.icns"
+                      name="Processing Python Source Code"
                       role="Editor">
       </bundledocument>
 
