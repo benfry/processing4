@@ -30,7 +30,14 @@ This was the intended approach, however the result works 3 times in 5, has an im
     * <https://www.baeldung.com/jni>
 
 
+### Use Cygwin
+
+Install `mingw-86_64-gcc-core`, `mingw-86_64-gcc-g++`, `make`. (Also `nano` for good measure.) Had to switch to this because MSYS2 always requires `msys-2.0.dll`, which is > 3 MB to include, and instead, `mingw64` uses the widely available `msvcrt.dll`.
+
+
 ### Building the JNI code
+
+> See above for final version used… Also, did not use the JNI version because it failed often.
 
 * Install MSYS2 from <https://www.msys2.org/> via <https://www.mingw-w64.org/downloads/#msys2>
 
