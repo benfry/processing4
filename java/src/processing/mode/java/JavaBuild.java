@@ -951,6 +951,7 @@ public class JavaBuild {
 
       XML config = new XML("launch4jConfig");
       config.addChild("headerType").setContent("gui");
+      //config.addChild("headerType").setContent("console");
       config.addChild("dontWrapJar").setContent("true");
       config.addChild("downloadUrl").setContent(ExportPrompt.JAVA_DOWNLOAD_URL);
 
@@ -967,7 +968,12 @@ public class JavaBuild {
       }
       XML jre = config.addChild("jre");
       if (embedJava) {
-        jre.addChild("path").setContent("java");
+        // also falling back to PATH if the "java" folder is later removed
+        jre.addChild("path").setContent("java;%PATH%");
+      } else {
+        // needed to make OpenJDK work properly
+        // https://github.com/processing/processing4/issues/667
+        jre.addChild("path").setContent("%PATH%");
       }
       jre.addChild("minVersion").setContent(MIN_JAVA_VERSION);
       for (String opt : runOptions) {
