@@ -1,5 +1,10 @@
 1292 (4.2)
 
+contribs
+X Support chained decimals during SVG Parsing
+X   https://github.com/processing/processing4/pull/659
+X   https://github.com/processing/processing4/issues/515
+
 
 _ args passed to main() aren't working
 _   (there was a bug report for this already?)
