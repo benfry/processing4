@@ -1019,18 +1019,12 @@ public class PSurfaceJOGL implements PSurface {
                        InputEvent.ALT_MASK);
      */
 
-    int peButton = 0;
-    switch (nativeEvent.getButton()) {
-      case com.jogamp.newt.event.MouseEvent.BUTTON1:
-        peButton = PConstants.LEFT;
-        break;
-      case com.jogamp.newt.event.MouseEvent.BUTTON2:
-        peButton = PConstants.CENTER;
-        break;
-      case com.jogamp.newt.event.MouseEvent.BUTTON3:
-        peButton = PConstants.RIGHT;
-        break;
-    }
+    int peButton = switch (nativeEvent.getButton()) {
+      case com.jogamp.newt.event.MouseEvent.BUTTON1 -> PConstants.LEFT;
+      case com.jogamp.newt.event.MouseEvent.BUTTON2 -> PConstants.CENTER;
+      case com.jogamp.newt.event.MouseEvent.BUTTON3 -> PConstants.RIGHT;
+      default -> 0;
+    };
 
     int peCount;
     if (peAction == MouseEvent.WHEEL) {
@@ -1150,58 +1144,39 @@ public class PSurfaceJOGL implements PSurface {
   // Relevant discussion and links here:
   // http://forum.jogamp.org/Newt-wrong-keycode-for-key-td4033690.html#a4033697
   // (I don't think this is a complete solution).
-  @SuppressWarnings("SuspiciousNameCombination")
   private static int mapToPConst(short code) {
-    switch (code) {
-      case com.jogamp.newt.event.KeyEvent.VK_UP:
-        return PConstants.UP;
-      case com.jogamp.newt.event.KeyEvent.VK_DOWN:
-        return PConstants.DOWN;
-      case com.jogamp.newt.event.KeyEvent.VK_LEFT:
-        return PConstants.LEFT;
-      case com.jogamp.newt.event.KeyEvent.VK_RIGHT:
-        return PConstants.RIGHT;
-      case com.jogamp.newt.event.KeyEvent.VK_ALT:
-        return PConstants.ALT;
-      case com.jogamp.newt.event.KeyEvent.VK_CONTROL:
-        return PConstants.CONTROL;
-      case com.jogamp.newt.event.KeyEvent.VK_SHIFT:
-        return PConstants.SHIFT;
-      case com.jogamp.newt.event.KeyEvent.VK_WINDOWS:
-        return java.awt.event.KeyEvent.VK_META;
-      default:
-        return code;
-    }
+    return switch (code) {
+      case com.jogamp.newt.event.KeyEvent.VK_UP -> PConstants.UP;
+      case com.jogamp.newt.event.KeyEvent.VK_DOWN -> PConstants.DOWN;
+      case com.jogamp.newt.event.KeyEvent.VK_LEFT -> PConstants.LEFT;
+      case com.jogamp.newt.event.KeyEvent.VK_RIGHT -> PConstants.RIGHT;
+      case com.jogamp.newt.event.KeyEvent.VK_ALT -> PConstants.ALT;
+      case com.jogamp.newt.event.KeyEvent.VK_CONTROL -> PConstants.CONTROL;
+      case com.jogamp.newt.event.KeyEvent.VK_SHIFT -> PConstants.SHIFT;
+      case com.jogamp.newt.event.KeyEvent.VK_WINDOWS -> java.awt.event.KeyEvent.VK_META;
+      default -> code;
+    };
   }
 
 
   private static boolean isHackyKey(short code) {
-    switch (code) {
-      case com.jogamp.newt.event.KeyEvent.VK_BACK_SPACE:
-      case com.jogamp.newt.event.KeyEvent.VK_TAB:
-      case com.jogamp.newt.event.KeyEvent.VK_ENTER:
-      case com.jogamp.newt.event.KeyEvent.VK_ESCAPE:
-      case com.jogamp.newt.event.KeyEvent.VK_DELETE:
-        return true;
-    }
-    return false;
+    return (code == com.jogamp.newt.event.KeyEvent.VK_BACK_SPACE ||
+            code == com.jogamp.newt.event.KeyEvent.VK_TAB ||
+            code == com.jogamp.newt.event.KeyEvent.VK_ENTER ||
+            code == com.jogamp.newt.event.KeyEvent.VK_ESCAPE ||
+            code == com.jogamp.newt.event.KeyEvent.VK_DELETE);
   }
 
 
   private static char hackToChar(short code, char def) {
-    switch (code) {
-      case com.jogamp.newt.event.KeyEvent.VK_BACK_SPACE:
-        return PConstants.BACKSPACE;
-      case com.jogamp.newt.event.KeyEvent.VK_TAB:
-        return PConstants.TAB;
-      case com.jogamp.newt.event.KeyEvent.VK_ENTER:
-        return PConstants.ENTER;
-      case com.jogamp.newt.event.KeyEvent.VK_ESCAPE:
-        return PConstants.ESC;
-      case com.jogamp.newt.event.KeyEvent.VK_DELETE:
-        return PConstants.DELETE;
-    }
-    return def;
+    return switch (code) {
+      case com.jogamp.newt.event.KeyEvent.VK_BACK_SPACE -> PConstants.BACKSPACE;
+      case com.jogamp.newt.event.KeyEvent.VK_TAB -> PConstants.TAB;
+      case com.jogamp.newt.event.KeyEvent.VK_ENTER -> PConstants.ENTER;
+      case com.jogamp.newt.event.KeyEvent.VK_ESCAPE -> PConstants.ESC;
+      case com.jogamp.newt.event.KeyEvent.VK_DELETE -> PConstants.DELETE;
+      default -> def;
+    };
   }
 
 
