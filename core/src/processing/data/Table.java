@@ -3550,8 +3550,11 @@ public class Table {
         return null;
       }
     } else if (columnTypes[column] == DOUBLE) {
-      if (Double.isNaN(getFloat(row, column))) {
+      double value =  getDouble(row, column);
+      if (Double.isNaN(value)) {
         return null;
+      } else {
+        return Double.toString(value);
       }
     }
     return String.valueOf(Array.get(columns[column], row));
