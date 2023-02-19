@@ -894,7 +894,7 @@ public class PApplet implements PConstants {
       // For Monterey, it appears to not be set until the user
       // has visited the Mission Control preference pane once.
       if (resultCode == 1 || "0".equals(processOutput)) {
-        System.err.println("To use fullScreen(SPAN), visit System Preferences \u2192 Mission Control");
+        System.err.println("To use fullScreen(SPAN), visit System Preferences → Mission Control");
         System.err.println("and make sure that “Displays have separate spaces” is turned off.");
         System.err.println("Then log out and log back in.");
       }
@@ -1935,7 +1935,7 @@ public class PApplet implements PConstants {
         renderer = "JavaFX";
       }
       if (external) {
-        throw new RuntimeException("Please use Sketch \u2192 Import Library " +
+        throw new RuntimeException("Please use Sketch → Import Library " +
                                    "to add " + renderer + " to your sketch.");
       } else {
         throw new RuntimeException("The " + renderer +
@@ -3246,41 +3246,6 @@ public class PApplet implements PConstants {
 
     Thread outThread = new LineThread(p.getInputStream(), stdout);
     Thread errThread = new LineThread(p.getErrorStream(), stderr);
-    /*
-    final InputStream err = p.getErrorStream();
-    final InputStream out = p.getInputStream();
-    Thread outThread = new Thread(() ->  {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      String line;
-      try {
-        saveStream(baos, out);
-        BufferedReader err2 = createReader(new ByteArrayInputStream(baos.toByteArray()));
-        while ((line = err2.readLine()) != null) {
-          stdout.append(line);
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-        throw new RuntimeException(e);
-      }
-    });
-    outThread.start();
-
-    Thread errThread = new Thread(() ->  {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      String line;
-      try {
-        saveStream(baos, err);
-        BufferedReader err2 = createReader(new ByteArrayInputStream(baos.toByteArray()));
-        while ((line = err2.readLine()) != null) {
-          stderr.append(line);
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-        throw new RuntimeException(e);
-      }
-    });
-    errThread.start();
-    */
 
     try {
       int result = p.waitFor();
@@ -3964,7 +3929,7 @@ public class PApplet implements PConstants {
       if (name.charAt(0) == '[') {
         switch (name.charAt(1)) {
           case '[' ->
-            // don't even mess with multi-dimensional arrays (case '[')
+            // don't even mess with multidimensional arrays (case '[')
             // or anything else that's not int, float, boolean, char
             System.out.println(what);
           case 'L' -> {
@@ -6288,7 +6253,6 @@ public class PApplet implements PConstants {
 
 
   /**
-   *
    * This is a function for advanced programmers to open a Java InputStream.
    * It's useful if you want to use the facilities provided by PApplet to
    * easily open files from the data folder or from a URL, but want an
@@ -6356,6 +6320,7 @@ public class PApplet implements PConstants {
    * @see PApplet#selectInput(String,String)
    *
    */
+  @SuppressWarnings("JavadocLinkAsPlainText")
   public InputStream createInput(String filename) {
     InputStream input = createInputRaw(filename);
     if (input != null) {
@@ -9984,6 +9949,7 @@ public class PApplet implements PConstants {
         param = args[argIndex].substring(0, equals);
         value = args[argIndex].substring(equals + 1);
 
+        //noinspection EnhancedSwitchMigration
         switch (param) {
           case ARGS_EDITOR_LOCATION:
             external = true;
@@ -10257,33 +10223,6 @@ public class PApplet implements PConstants {
   }
 
 
-//  protected void createSurface() {
-//    surface = g.createSurface();
-//    if (surface == null) {
-//      System.err.println("This renderer needs to be updated for Processing 3");
-//      System.err.println("The createSurface() method returned null.");
-//      System.exit(1);
-//    }
-//  }
-
-
-//  /**
-//   * Return a Canvas object that can be embedded into other Java GUIs.
-//   * This is necessary because PApplet no longer subclasses Component.
-//   *
-//   * <pre>
-//   * PApplet sketch = new EmbedSketch();
-//   * Canvas canvas = sketch.getCanvas();
-//   * // add the canvas object to your project and validate() it
-//   * sketch.init()  // start the animation thread
-//   */
-//  public Component getComponent() {
-//    g = createPrimaryGraphics();
-//    surface = g.createSurface();
-//    return surface.initComponent(this);
-//  }
-
-
   /** Convenience method, should only be called by PSurface subclasses. */
   static public void hideMenuBar() {
     if (platform == MACOS) {
@@ -10324,7 +10263,7 @@ public class PApplet implements PConstants {
 
   /**
    * Get the display scaling for Windows by calling out to a helper app.
-   * https://github.com/processing/processing4/tree/master/build/windows/fenster
+   * More <a href="https://github.com/processing/processing4/tree/master/build/windows/fenster">here</a>.
    */
   static private int getWindowsDPI() {
     String fensterPath = findFenster();
