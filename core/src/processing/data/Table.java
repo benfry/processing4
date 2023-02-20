@@ -3550,7 +3550,7 @@ public class Table {
         return null;
       }
     } else if (columnTypes[column] == DOUBLE) {
-      if (Double.isNaN(getFloat(row, column))) {
+      if (Double.isNaN(getDouble(row, column))) {
         return null;
       }
     }
