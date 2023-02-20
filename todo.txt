@@ -33,9 +33,6 @@ X   after exporting application, open the sketch folder
 
 _ change the welcome screen to be wide instead of vertical
 
-_ fullScreen(P2D) from an executable does not work properly
-_   https://github.com/processing/processing4/issues/514
-
 _ exporting application while still running on Windows
 _   just says "Error during export" rather than something more useful about deleting dir
 
