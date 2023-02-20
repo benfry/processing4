@@ -8,10 +8,9 @@ X   https://github.com/processing/processing4/issues/559
 X   implemented for macOS
 X   implemented for Windows
 X   Windows implementation https://git.eclipse.org/c/platform/eclipse.platform.ui.git/commit/?id=94914f2852f0c32e60361648ec82da153b8d70ae
-_   https://web.archive.org/web/20210601082308/https://support.shotgunsoftware.com/hc/en-us/articles/219031308-How-to-launch-external-applications-using-custom-protocols-rock-instead-of-http-?mobile_site=true
-_     presumably from https://github.com/pboucher ?
-_   check on Linux implementation
-_   need to also warn people about running 'em
+X   https://web.archive.org/web/20210601082308/https://support.shotgunsoftware.com/hc/en-us/articles/219031308-How-to-launch-external-applications-using-custom-protocols-rock-instead-of-http-?mobile_site=true
+X     presumably from https://github.com/pboucher ?
+X   check on Linux implementation
 X implement icon files on Windows
 X   pdez (and presumably pdex) files have the wrong icons on Windows
 X   implement document icons for pdez etc on Windows
@@ -30,6 +29,7 @@ X   https://github.com/processing/processing4/issues/667
 X when exporting, the "exporting application" message doesn't seem to clear
 X   was a regression caused by ExportPrompt changes
 X   after exporting application, open the sketch folder
+
 
 _ change the welcome screen to be wide instead of vertical
 
@@ -57,7 +57,6 @@ _   PDE can't find any files that match the supported extensions
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
 _   point to binaries in /Applications/Processing.app? (no)
-
 
 
 known issues
