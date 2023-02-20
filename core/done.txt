@@ -1,3 +1,17 @@
+1292 (4.2)
+X has been resized from 100?100 to 116?100 by the window manager
+X fullScreen(P2D) from an executable does not work properly
+X   partially fixed, but now need to sort out hidpi issues
+X   https://github.com/processing/processing4/issues/514
+X Table.getString() raises stackOverflowError on double value encounter
+X   https://github.com/processing/processing4/issues/671
+
+contribs
+X Support chained decimals during SVG Parsing
+X   https://github.com/processing/processing4/pull/659
+X   https://github.com/processing/processing4/issues/515
+
+
 1291 (4.1.3)
 X no changes to core for this release
 

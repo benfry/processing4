@@ -1,3 +1,36 @@
+1292 (4.2)
+X application exported to the wrong folder
+X   https://github.com/processing/processing4/issues/601
+X more /tmp folder problems with Linux (may be the subdirectories?)
+X   https://github.com/processing/processing4/issues/666
+X add a protocol handler for pdex and pdez
+X   https://github.com/processing/processing4/issues/559
+X   implemented for macOS
+X   implemented for Windows
+X   Windows implementation https://git.eclipse.org/c/platform/eclipse.platform.ui.git/commit/?id=94914f2852f0c32e60361648ec82da153b8d70ae
+X   https://web.archive.org/web/20210601082308/https://support.shotgunsoftware.com/hc/en-us/articles/219031308-How-to-launch-external-applications-using-custom-protocols-rock-instead-of-http-?mobile_site=true
+X     presumably from https://github.com/pboucher ?
+X   check on Linux implementation
+X implement icon files on Windows
+X   pdez (and presumably pdex) files have the wrong icons on Windows
+X   implement document icons for pdez etc on Windows
+X icons/earlier
+X   need .pde document icons
+X   need .psk file icon
+
+python (api changes mean this is 4.2)
+X move ExportDialog to processing.app.ui (out of Java Mode) so it can be used by Jython
+X move isXcodeInstalled() methods from JavaBuild into MacPlatform
+X add activateIgnoringOtherApps() to ThinkDifferent
+
+export
+X Exported project to Windows cannot find Java
+X   https://github.com/processing/processing4/issues/667
+X when exporting, the "exporting application" message doesn't seem to clear
+X   was a regression caused by ExportPrompt changes
+X   after exporting application, open the sketch folder
+
+
 1291 (4.1.3)
 X preferences.txt is not saved when closing Processing under certain circumstances
 X   https://github.com/processing/processing4/issues/608
