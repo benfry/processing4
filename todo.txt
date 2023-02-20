@@ -1,5 +1,8 @@
 1293 (4.2.1)
 
+_ should Python Mode rely on Java Mode?
+_   this would let us put ExportPrompt back in there
+_   also add parts of JavaBuild that handle packaging exported apps
 
 _ change the welcome screen to be wide instead of vertical
 
