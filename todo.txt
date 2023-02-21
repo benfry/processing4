@@ -1,5 +1,10 @@
 1293 (4.2.1)
 
+
+_ doing "Save As" on sketch didn't write a new main= entry in sketch.properties
+_   at least with Python Mode
+_ sketchbook entries that use local.properties not getting picked up in sketchbook window
+
 _ should Python Mode rely on Java Mode?
 _   this would let us put ExportPrompt back in there
 _   also add parts of JavaBuild that handle packaging exported apps
