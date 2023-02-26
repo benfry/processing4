@@ -8,15 +8,25 @@ import java.util.List;
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionList;
 import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
+import org.eclipse.lsp4j.DeclarationParams;
 import org.eclipse.lsp4j.DidOpenTextDocumentParams;
 import org.eclipse.lsp4j.DidSaveTextDocumentParams;
 import org.eclipse.lsp4j.DidCloseTextDocumentParams;
 import org.eclipse.lsp4j.DidChangeTextDocumentParams;
 import org.eclipse.lsp4j.DocumentFormattingParams;
 import org.eclipse.lsp4j.TextEdit;
+import org.eclipse.lsp4j.Location;
+import org.eclipse.lsp4j.LocationLink;
 
 import java.util.Collections;
 import java.net.URI;
+import java.util.Optional;
+
+import processing.mode.java.PreprocSketch;
+
+import static org.eclipse.lsp4j.jsonrpc.CompletableFutures.computeAsync;
+import static org.eclipse.lsp4j.jsonrpc.messages.Either.forLeft;
+
 
 class PdeTextDocumentService implements TextDocumentService {
   PdeLanguageServer pls;
@@ -82,4 +92,49 @@ class PdeTextDocumentService implements TextDocumentService {
     })
     .orElse(CompletableFuture.completedFuture(Collections.emptyList()));
   }
+  
+
+  @Override
+  public CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>> declaration(DeclarationParams params) {
+    System.out.println("searching for declaration");
+  
+    java.net.URI uri = java.net.URI.create(params.getTextDocument().getUri());
+    int lineNumber = params.getPosition().getLine();
+    int colNumber = params.getPosition().getCharacter();
+  
+    Optional<PdeAdapter> adapterOptional =
+      pls.getAdapter(uri);
+  
+    if(adapterOptional.isEmpty()){
+      System.out.println("pde adapter not found");
+      return CompletableFutures.computeAsync(_x -> Either
+        .forLeft(Collections.emptyList()));
+    }
+    
+    PdeAdapter adapter = adapterOptional.get();
+    PreprocSketch preprocSketch = adapter.ps;
+    Optional<Integer> optionalJavaOffset = adapter.findJavaOffset(uri,
+      lineNumber, colNumber);
+  
+    if(optionalJavaOffset.isEmpty()){
+      System.out.println("javaOffset not found");
+      return CompletableFutures.computeAsync(_x -> Either
+        .forLeft(Collections.emptyList()));
+    }
+    int javaOffset = optionalJavaOffset.get();
+    
+    List<? extends Location> locations;
+    locations = PdeSymbolFinder.searchDeclaration(preprocSketch, javaOffset);
+    
+    Optional<CompletableFuture<Either<List<? extends Location>, List<? extends LocationLink>>>>
+      OptCompFutEit = Optional.ofNullable(CompletableFutures
+          .computeAsync(_x -> locations))
+        .map(_x -> _x.thenApply(Either::forLeft)
+        );
+    
+    return  OptCompFutEit.orElse(
+      computeAsync(_x -> forLeft(Collections.emptyList()))
+    );
+  }
+  
 }
