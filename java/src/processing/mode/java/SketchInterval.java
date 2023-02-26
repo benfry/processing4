@@ -14,9 +14,9 @@ public class SketchInterval {
     this.stopPdeOffset = stopPdeOffset;
   }
 
-  final int tabIndex;
-  final int startTabOffset;
-  final int stopTabOffset;
+  public final int tabIndex;
+  public final int startTabOffset;
+  public final int stopTabOffset;
 
   final int startPdeOffset;
   final int stopPdeOffset;
