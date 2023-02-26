@@ -6,6 +6,7 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -58,6 +59,7 @@ class PdeAdapter {
   CompletableFuture<PreprocSketch> cps;
   CompletionGenerator suggestionGenerator;
   Set<URI> prevDiagnosticReportUris = new HashSet<>();
+  PreprocSketch ps;
   
 
   PdeAdapter(File rootPath, LanguageClient client) {
@@ -155,6 +157,10 @@ class PdeAdapter {
     preprocService.notifySketchChanged();
     errorChecker.notifySketchChanged();
     preprocService.whenDone(cps::complete);
+    try { ps = cps.get();
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   Optional<SketchCode> findCodeByUri(URI uri) {
