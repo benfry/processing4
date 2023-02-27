@@ -6,6 +6,7 @@ import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,11 +14,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
 import org.eclipse.lsp4j.CompletionItem;
 import org.eclipse.lsp4j.CompletionItemKind;
 import org.eclipse.lsp4j.Diagnostic;
 import org.eclipse.lsp4j.DiagnosticSeverity;
 import org.eclipse.lsp4j.InsertTextFormat;
+import org.eclipse.lsp4j.Location;
 import org.eclipse.lsp4j.jsonrpc.CompletableFutures;
 import org.eclipse.lsp4j.Position;
 import org.eclipse.lsp4j.PublishDiagnosticsParams;
@@ -25,6 +28,7 @@ import org.eclipse.lsp4j.Range;
 import org.eclipse.lsp4j.services.LanguageClient;
 import org.eclipse.lsp4j.TextEdit;
 import org.jsoup.Jsoup;
+
 import processing.app.Base;
 import processing.app.contrib.ModeContribution;
 import processing.app.Platform;
@@ -41,6 +45,7 @@ import processing.mode.java.JavaTextArea;
 import processing.mode.java.PreprocService;
 import processing.mode.java.PreprocSketch;
 
+import static java.util.Arrays.copyOfRange;
 
 class PdeAdapter {
   File rootPath;
@@ -54,6 +59,7 @@ class PdeAdapter {
   CompletableFuture<PreprocSketch> cps;
   CompletionGenerator suggestionGenerator;
   Set<URI> prevDiagnosticReportUris = new HashSet<>();
+  PreprocSketch ps;
   
 
   PdeAdapter(File rootPath, LanguageClient client) {
@@ -104,6 +110,41 @@ class PdeAdapter {
     return new Offset(line, col);
   }
 
+  
+  /**
+   * Converts a tabOffset to a position within a tab
+   * @param program current code(text) from a tab
+   * @param tabOffset character offset inside a tab
+   * @return Position(line and col) within the tab
+   */
+  static Position toPosition(String program, int tabOffset){
+    Offset offset = toLineCol(program, tabOffset);
+    return new Position(offset.line, offset.col-1);
+  }
+  
+  
+  /**
+   * Converts a range (start to end offset) to a location.
+   * @param program current code(text) from a tab
+   * @param startTabOffset starting character offset inside a tab
+   * @param stopTabOffset ending character offset inside a tab
+   * @param uri uri from a tab
+   * @return Range inside a file
+   */
+  static Location toLocation(
+    String program,
+    int startTabOffset,
+    int stopTabOffset,
+    URI uri
+  ){
+    Position startPos = toPosition(program, startTabOffset);
+    Position stopPos = toPosition(program, stopTabOffset);
+    
+    Range range = new Range(startPos, stopPos);
+    return new Location(uri.toString(), range);
+  }
+
+  
   static void init() {
     Base.setCommandLine();
     Platform.init();
@@ -116,6 +157,10 @@ class PdeAdapter {
     preprocService.notifySketchChanged();
     errorChecker.notifySketchChanged();
     preprocService.whenDone(cps::complete);
+    try { ps = cps.get();
+    } catch (InterruptedException | ExecutionException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   Optional<SketchCode> findCodeByUri(URI uri) {
@@ -126,6 +171,59 @@ class PdeAdapter {
       );
   }
 
+  
+  /**
+   * Looks for the tab number for a given text
+   * @param code text(code) from a tab
+   * @return tabIndex where the code belongs to, or empty
+   */
+  public Optional<Integer> findTabIndex(SketchCode code){
+    int tabsCount = sketch.getCodeCount();
+    java.util.OptionalInt optionalTabIndex;
+      optionalTabIndex =  IntStream.range(0, tabsCount)
+        .filter(i -> sketch.getCode(i).equals(code))
+        .findFirst();
+    
+    if(optionalTabIndex.isEmpty()){
+      return Optional.empty();
+    }
+    
+    return Optional.of(optionalTabIndex.getAsInt());
+  }
+  
+  
+  /**
+   * Looks for the javaOffset, this offset is the character position inside the
+   * full java file. The position can be used by the AST to find a node.
+   * @param uri uri of the file(tab) where to look
+   * @param line line number
+   * @param col column number
+   * @return character offset within the full AST
+   */
+  public Optional<Integer> findJavaOffset(URI uri, int line, int col){
+    
+    Optional<SketchCode> optionalCode =  findCodeByUri(uri);
+    if(optionalCode.isEmpty()){
+      System.out.println("couldn't find sketch code");
+      return Optional.empty();
+    }
+    SketchCode code = optionalCode.get();
+    
+    Optional<Integer> optionalTabIndex = findTabIndex(code);
+    if (optionalTabIndex.isEmpty()){
+      System.out.println("couldn't find tab index");
+      return  Optional.empty();
+    }
+    int tabIndex = optionalTabIndex.get();
+    
+    String[] codeLines = copyOfRange(code.getProgram().split("\n"), 0,line);
+    String codeString = String.join("\n", codeLines);
+    int tabOffset = codeString.length() + col;
+    
+    return Optional.of(ps.tabOffsetToJavaOffset(tabIndex, tabOffset));
+  }
+
+  
    void updateProblems(List<Problem> problems) {
       Map<URI, List<Diagnostic>> dias = problems.stream()
       .map(prob -> {

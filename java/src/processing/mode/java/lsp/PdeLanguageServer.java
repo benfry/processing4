@@ -77,6 +77,7 @@ class PdeLanguageServer implements LanguageServer, LanguageClientAware {
     completionOptions.setTriggerCharacters(List.of("."));
     capabilities.setCompletionProvider(completionOptions);
     capabilities.setDocumentFormattingProvider(true);
+    capabilities.setDeclarationProvider(true);
     var result = new InitializeResult(capabilities);
     return CompletableFuture.completedFuture(result);
   }
