@@ -1,5 +1,10 @@
 1293 (4.2.1)
 
+contribs
+X LSP feature/declaration support from @Efratror
+X   https://github.com/processing/processing4/pull/678
+X   https://github.com/processing/processing4/issues/676
+
 
 _ doing "Save As" on sketch didn't write a new main= entry in sketch.properties
 _   at least with Python Mode
