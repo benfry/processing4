@@ -13,6 +13,9 @@ RESOURCE_NAME=processing-pde
 SCRIPT_PATH=$( cd $(dirname $0) ; pwd )
 cd "${SCRIPT_PATH}"
 
+# Absolute path to build/shared directory
+SHARED_DIR="${SCRIPT_PATH}/../shared"
+
 # Default mode is to install.
 UNINSTALL=false
 
@@ -30,17 +33,17 @@ xdg_install_f() {
 
   # Create *.desktop file using the existing template file
   sed -e "s,<BINARY_LOCATION>,${SCRIPT_PATH}/processing,g" \
-      -e "s,<ICON_NAME>,${RESOURCE_NAME},g" "${SCRIPT_PATH}/lib/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
+      -e "s,<ICON_NAME>,${RESOURCE_NAME},g" "${SCRIPT_PATH}/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
 
   # Install the icon files using name and resolutions
-  xdg-icon-resource install --context mimetypes --size 16 "${SCRIPT_PATH}/lib/icons/pde-16.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 32 "${SCRIPT_PATH}/lib/icons/pde-32.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 48 "${SCRIPT_PATH}/lib/icons/pde-48.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 64 "${SCRIPT_PATH}/lib/icons/pde-64.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 128 "${SCRIPT_PATH}/lib/icons/pde-128.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 256 "${SCRIPT_PATH}/lib/icons/pde-256.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 512 "${SCRIPT_PATH}/lib/icons/pde-512.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 1024 "${SCRIPT_PATH}/lib/icons/pde-1024.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 16 "${SHARED_DIR}/lib/icons/pde-16.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 32 "${SHARED_DIR}/lib/icons/pde-32.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 48 "${SHARED_DIR}/lib/icons/pde-48.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 64 "${SHARED_DIR}/lib/icons/pde-64.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 128 "${SHARED_DIR}/lib/icons/pde-128.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 256 "${SHARED_DIR}/lib/icons/pde-256.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 512 "${SHARED_DIR}/lib/icons/pde-512.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 1024 "${SHARED_DIR}/lib/icons/pde-1024.png" $RESOURCE_NAME
 
   # Install the created *.desktop file
   xdg-desktop-menu install "${TMP_DIR}/${RESOURCE_NAME}.desktop"
@@ -49,17 +52,17 @@ xdg_install_f() {
   xdg-desktop-icon install "${TMP_DIR}/${RESOURCE_NAME}.desktop"
 
   # Install Processing mime type
-  xdg-mime install "${SCRIPT_PATH}/lib/${RESOURCE_NAME}.xml"
+  xdg-mime install "${SCRIPT_PATH}/${RESOURCE_NAME}.xml"
 
   # Install icons for mime type
-  xdg-icon-resource install --context mimetypes --size 16 "${SCRIPT_PATH}/lib/icons/pde-16.png" text-x-processing
-  xdg-icon-resource install --context mimetypes --size 32 "${SCRIPT_PATH}/lib/icons/pde-32.png" text-x-processing
-  xdg-icon-resource install --context mimetypes --size 48 "${SCRIPT_PATH}/lib/icons/pde-48.png" text-x-processing
-  xdg-icon-resource install --context mimetypes --size 64 "${SCRIPT_PATH}/lib/icons/pde-64.png" text-x-processing
-  xdg-icon-resource install --context mimetypes --size 128 "${SCRIPT_PATH}/lib/icons/pde-128.png" text-x-processing
-  xdg-icon-resource install --context mimetypes --size 256 "${SCRIPT_PATH}/lib/icons/pde-256.png" text-x-processing
-  xdg-icon-resource install --context mimetypes --size 512 "${SCRIPT_PATH}/lib/icons/pde-512.png" text-x-processing
-  xdg-icon-resource install --context mimetypes --size 1024 "${SCRIPT_PATH}/lib/icons/pde-1024.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 16 "${SHARED_DIR}/lib/icons/pde-16.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 32 "${SHARED_DIR}/lib/icons/pde-32.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 48 "${SHARED_DIR}/lib/icons/pde-48.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 64 "${SHARED_DIR}/lib/icons/pde-64.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 128 "${SHARED_DIR}/lib/icons/pde-128.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 256 "${SHARED_DIR}/lib/icons/pde-256.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 512 "${SHARED_DIR}/lib/icons/pde-512.png" text-x-processing
+  xdg-icon-resource install --context mimetypes --size 1024 "${SHARED_DIR}/lib/icons/pde-1024.png" text-x-processing
 
   # Make the Processing Development Environment the default app for *.pde files
   xdg-mime default ${RESOURCE_NAME}.desktop text/x-processing
@@ -78,13 +81,13 @@ simple_install_f() {
 
   # Create *.desktop file using the existing template file
   sed -e "s,<BINARY_LOCATION>,${SCRIPT_PATH}/processing,g" \
-      -e "s,<ICON_NAME>,${SCRIPT_PATH}/lib/icons/pde-128.png,g" "${SCRIPT_PATH}/lib/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
+      -e "s,<ICON_NAME>,${SHARED_DIR}/lib/icons/pde-128.png,g" "${SCRIPT_PATH}/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
 
   mkdir -p "${HOME}/.local/share/applications"
   cp "${TMP_DIR}/${RESOURCE_NAME}.desktop" "${HOME}/.local/share/applications/"
 
   mkdir -p "${HOME}/.local/share/metainfo"
-  cp "${SCRIPT_PATH}/lib/appdata.xml" "${HOME}/.local/share/metainfo/${RESOURCE_NAME}.appdata.xml"
+  cp "${SCRIPT_PATH}/appdata.xml" "${HOME}/.local/share/metainfo/${RESOURCE_NAME}.appdata.xml"
 
   # Copy desktop icon if desktop dir exists (was found)
   if [ -d "${XDG_DESKTOP_DIR}" ]; then
@@ -129,7 +132,7 @@ xdg_uninstall_f() {
   xdg-icon-resource uninstall --size 1024 text-x-processing
 
   # Remove MIME type
-  xdg-mime uninstall "${SCRIPT_PATH}/lib/${RESOURCE_NAME}.xml"
+  xdg-mime uninstall "${SCRIPT_PATH}/${RESOURCE_NAME}.xml"
 
 }
 
