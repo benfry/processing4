@@ -1047,6 +1047,7 @@
          - icons for the files
          - a desktop icon
          - when double clicking the *.pde files, the PDE will be opened
+         - open of *.pde file directly from browser
 
          from Sweden with <3
     -->
@@ -1056,6 +1057,7 @@
     <copy file="linux/uninstall.sh" todir="linux/work" />
     <chmod perm="ugo+x" file="linux/work/uninstall.sh" />
 
+    <copy file="linux/pde-handler.sh" todir="linux/work/lib" />
     <copy file="linux/processing-pde.xml" todir="linux/work/lib" />
     <copy file="linux/appdata.xml" todir="linux/work/lib" />
     <copy file="linux/desktop.template" todir="linux/work/lib" />

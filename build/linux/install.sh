@@ -24,14 +24,18 @@ fi
 
 # Install using xdg-utils
 xdg_install_f() {
-
+  
   # Create a temp dir accessible by all users
   TMP_DIR=`mktemp --directory`
 
   # Create *.desktop file using the existing template file
-  sed -e "s,<BINARY_LOCATION>,${SCRIPT_PATH}/processing,g" \
+  sed -e "s,<HANDLER_LOCATION>,${HOME}/.local/bin/pde-handler.sh,g" \
       -e "s,<ICON_NAME>,${RESOURCE_NAME},g" "${SCRIPT_PATH}/lib/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
 
+  # Generate script for pde browser protocol handler at ~/.local/bin
+  mkdir -p ${HOME}/.local/bin
+  sed -e "s,<BINARY_LOCATION>,${SCRIPT_PATH}/processing,g" "${SCRIPT_PATH}/lib/pde-handler.sh" > "${HOME}/.local/bin/pde-handler.sh"
+  
   # Install the icon files using name and resolutions
   xdg-icon-resource install --context mimetypes --size 16 "${SCRIPT_PATH}/lib/icons/pde-16.png" $RESOURCE_NAME
   xdg-icon-resource install --context mimetypes --size 32 "${SCRIPT_PATH}/lib/icons/pde-32.png" $RESOURCE_NAME
@@ -64,9 +68,15 @@ xdg_install_f() {
   # Make the Processing Development Environment the default app for *.pde files
   xdg-mime default ${RESOURCE_NAME}.desktop text/x-processing
 
+  # Make the Processing Development Environment the default app for pde scheme 
+  xdg-mime default ${RESOURCE_NAME}.desktop x-scheme-handler/pde
+
   # Clean up
   rm "${TMP_DIR}/${RESOURCE_NAME}.desktop"
   rmdir "$TMP_DIR"
+
+  # Make pde-opener.sh executable
+  chmod u+x ~/.local/bin/pde-handler.sh
 
 }
 
@@ -77,8 +87,12 @@ simple_install_f() {
   TMP_DIR=`mktemp --directory`
 
   # Create *.desktop file using the existing template file
-  sed -e "s,<BINARY_LOCATION>,${SCRIPT_PATH}/processing,g" \
-      -e "s,<ICON_NAME>,${SCRIPT_PATH}/lib/icons/pde-128.png,g" "${SCRIPT_PATH}/lib/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
+  sed -e "s,<HANDLER_LOCATION>,${HOME}/.local/bin/pde-handler.sh,g" \
+    -e "s,<ICON_NAME>,${SCRIPT_PATH}/lib/icons/pde-128.png,g" "${SCRIPT_PATH}/lib/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
+      
+  # Generate script for pde browser protocol handler at ~/.local/bin
+  mkdir -p ${HOME}/.local/bin
+  sed -e "s,<BINARY_LOCATION>,${SCRIPT_PATH}/processing,g" "${SCRIPT_PATH}/lib/pde-handler.sh" > "${HOME}/.local/bin/pde-handler.sh"
 
   mkdir -p "${HOME}/.local/share/applications"
   cp "${TMP_DIR}/${RESOURCE_NAME}.desktop" "${HOME}/.local/share/applications/"
@@ -131,6 +145,10 @@ xdg_uninstall_f() {
   # Remove MIME type
   xdg-mime uninstall "${SCRIPT_PATH}/lib/${RESOURCE_NAME}.xml"
 
+  # Remove pde-opener.sh
+  if [ -f ${HOME}/.local/bin/pde-handler.sh ]; then
+    rm ${HOME}/.local/bin/pde-handler.sh
+  fi
 }
 
 # Uninstall by simply removing desktop files (fallback), incl. old one
@@ -162,6 +180,10 @@ simple_uninstall_f() {
     rm "${XDG_DESKTOP_DIR}/${RESOURCE_NAME}.desktop"
   fi
 
+  # Remove pde-opener.sh
+  if [ -f ${HOME}/.local/bin/pde-handler.sh ]; then
+    rm ${HOME}/.local/bin/pde-handler.sh
+  fi
 }
 
 # Update desktop file and mime databases (if possible)
