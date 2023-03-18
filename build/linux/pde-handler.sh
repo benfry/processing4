@@ -2,7 +2,7 @@
 
 # Support for pde browser protocol
 # Processing executable path
-EXEC=/home/deidara/dev/processing4/build/linux/work/processing
+EXEC=<BINARY_LOCATION>
 
 if [ -z "${1}" ]; then
     "$EXEC"
