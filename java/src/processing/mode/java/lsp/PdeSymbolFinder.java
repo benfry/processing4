@@ -18,8 +18,7 @@ import processing.app.SketchCode;
 import processing.mode.java.PreprocSketch;
 import processing.mode.java.SketchInterval;
 
-import static processing.mode.java.ASTUtils.getSimpleNameAt;
-import static processing.mode.java.ASTUtils.resolveBinding;
+import static processing.mode.java.ASTUtils.*;
 
 
 public class PdeSymbolFinder {
@@ -82,6 +81,51 @@ public class PdeSymbolFinder {
     declarationList.add(findLocation(ps, si));
   
     return declarationList;
+  }
+  
+  
+  /**
+   * searches all reference nodes for a provided character offset
+   *
+   * @param ps         processed sketch, for AST-nodes and sketch
+   * @param javaOffset character offset for the node we want to look up
+   *
+   * @return Location list of all references found, else an empty list.
+   */
+  static public List<? extends Location> searchReference(PreprocSketch ps,
+    int javaOffset
+  ) {
+    ASTNode root = ps.compilationUnit;
+    
+    SimpleName simpleName = getSimpleNameAt(root, javaOffset, javaOffset);
+    if (simpleName == null) {
+      System.out.println("no simple name found at location");
+      return Collections.emptyList();
+    }
+    
+    IBinding binding = resolveBinding(simpleName);
+    if (binding == null) {
+      System.out.println("binding not resolved");
+      return Collections.emptyList();
+    }
+    
+    // Find usages
+    String bindingKey = binding.getKey();
+    List<SketchInterval> referenceIntervals =
+      findAllOccurrences(ps.compilationUnit, bindingKey).stream()
+      .map(ps::mapJavaToSketch)
+      // remove occurrences which fall into generated header
+      .filter(ps::inRange)
+      // remove empty intervals (happens when occurence was inserted)
+      .filter(in -> in.startPdeOffset < in.stopPdeOffset)
+      .collect(java.util.stream.Collectors.toList());
+    
+    List<Location> referenceList = new ArrayList<>();
+    for (SketchInterval referenceInterval: referenceIntervals) {
+      referenceList.add(findLocation(ps, referenceInterval));
+    }
+    
+    return referenceList;
   }
   
   
