@@ -106,7 +106,7 @@ class PdeTextDocumentService implements TextDocumentService {
     Optional<PdeAdapter> adapterOptional =
       pls.getAdapter(uri);
   
-    if(adapterOptional.isEmpty()){
+    if (adapterOptional.isEmpty()) {
       System.out.println("pde adapter not found");
       return CompletableFutures.computeAsync(_x -> Either
         .forLeft(Collections.emptyList()));
@@ -117,7 +117,7 @@ class PdeTextDocumentService implements TextDocumentService {
     Optional<Integer> optionalJavaOffset = adapter.findJavaOffset(uri,
       lineNumber, colNumber);
   
-    if(optionalJavaOffset.isEmpty()){
+    if (optionalJavaOffset.isEmpty()) {
       System.out.println("javaOffset not found");
       return CompletableFutures.computeAsync(_x -> Either
         .forLeft(Collections.emptyList()));
