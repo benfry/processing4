@@ -78,6 +78,7 @@ class PdeLanguageServer implements LanguageServer, LanguageClientAware {
     capabilities.setCompletionProvider(completionOptions);
     capabilities.setDocumentFormattingProvider(true);
     capabilities.setDeclarationProvider(true);
+    capabilities.setReferencesProvider(true);
     var result = new InitializeResult(capabilities);
     return CompletableFuture.completedFuture(result);
   }
