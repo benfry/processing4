@@ -77,18 +77,29 @@ public class PdeSymbolFinder {
       System.out.println("declaration is outside of the sketch");
       return Collections.emptyList();
     }
-    
-    //Create a location for the found declaration
+  
+    List<Location> declarationList = new ArrayList<>();
+    declarationList.add(findLocation(ps, si));
+  
+    return declarationList;
+  }
+  
+  
+  /**
+   * Looks for a location(range) for a given sketchInterval
+   *
+   * @param ps processed sketch, for finding the uri and code
+   * @param si The interval to find the location for
+   *
+   * @return Location(range) inside a file from the workspace
+   */
+  static private Location findLocation(PreprocSketch ps, SketchInterval si) {
     SketchCode code = ps.sketch.getCode(si.tabIndex);
     String program = code.getProgram();
     URI uri = PdeAdapter.pathToUri(code.getFile());
     
-    Location location =
-      PdeAdapter.toLocation(program, si.startTabOffset, si.stopTabOffset, uri);
-    
-    List<Location> declarationList = new ArrayList<>();
-    declarationList.add(location);
-    
-    return declarationList;
+    return PdeAdapter.toLocation(program, si.startTabOffset, si.stopTabOffset,
+      uri
+    );
   }
 }
