@@ -64,6 +64,9 @@ xdg_install_f() {
   # Make the Processing Development Environment the default app for *.pde files
   xdg-mime default ${RESOURCE_NAME}.desktop text/x-processing
 
+  # Make the Processing Development Environment the default app for pde scheme
+  xdg-mime default ${RESOURCE_NAME}.desktop x-scheme-handler/pde
+  
   # Clean up
   rm "${TMP_DIR}/${RESOURCE_NAME}.desktop"
   rmdir "$TMP_DIR"
