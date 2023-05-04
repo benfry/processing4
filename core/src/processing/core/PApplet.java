@@ -8198,69 +8198,87 @@ public class PApplet implements PConstants {
   * @param list booleans[], bytes[], chars[], ints[], floats[], or Strings[]
   * @see PApplet#sort(String[], int)
   */
-  static public boolean[] reverse(boolean[] list) {
-    boolean[] outgoing = new boolean[list.length];
-    int length1 = list.length - 1;
-    for (int i = 0; i < list.length; i++) {
-      outgoing[i] = list[length1 - i];
+  public static <T> T [] reverse(T [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      T buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
     }
-    return outgoing;
+    return arr;
   }
 
-  static public byte[] reverse(byte[] list) {
-    byte[] outgoing = new byte[list.length];
-    int length1 = list.length - 1;
-    for (int i = 0; i < list.length; i++) {
-      outgoing[i] = list[length1 - i];
+  public static boolean [] reverse(boolean [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      boolean buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
     }
-    return outgoing;
+    return arr;
   }
 
-  static public char[] reverse(char[] list) {
-    char[] outgoing = new char[list.length];
-    int length1 = list.length - 1;
-    for (int i = 0; i < list.length; i++) {
-      outgoing[i] = list[length1 - i];
+  public static byte [] reverse(byte [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      byte buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
     }
-    return outgoing;
+    return arr;
   }
 
-  static public int[] reverse(int[] list) {
-    int[] outgoing = new int[list.length];
-    int length1 = list.length - 1;
-    for (int i = 0; i < list.length; i++) {
-      outgoing[i] = list[length1 - i];
+  public static char [] reverse(char [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      char buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
     }
-    return outgoing;
+    return arr;
   }
 
-  static public float[] reverse(float[] list) {
-    float[] outgoing = new float[list.length];
-    int length1 = list.length - 1;
-    for (int i = 0; i < list.length; i++) {
-      outgoing[i] = list[length1 - i];
+  public static int [] reverse(int [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      int buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
     }
-    return outgoing;
+    return arr;
   }
 
-  static public String[] reverse(String[] list) {
-    String[] outgoing = new String[list.length];
-    int length1 = list.length - 1;
-    for (int i = 0; i < list.length; i++) {
-      outgoing[i] = list[length1 - i];
+  public static long [] reverse(long [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      long buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
     }
-    return outgoing;
+    return arr;
   }
 
-  static public Object reverse(Object list) {
-    Class<?> type = list.getClass().getComponentType();
-    int length = Array.getLength(list);
-    Object outgoing = Array.newInstance(type, length);
-    for (int i = 0; i < length; i++) {
-      Array.set(outgoing, i, Array.get(list, (length - 1) - i));
+  public static float [] reverse(float [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      float buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
     }
-    return outgoing;
+    return arr;
   }
+
+  public static double [] reverse(double [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      double buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
+    }
+    return arr;
+  }
+
+  public static String [] reverse(String [] arr) {
+    for(int i = 0 ; i < arr.length / 2; i++) {
+      String buf = arr[i];
+      arr[i] = arr[arr.length - i - 1];
+      arr[arr.length - i - 1] = buf;
+    }
+    return arr;
+  }
+
 
 
 
