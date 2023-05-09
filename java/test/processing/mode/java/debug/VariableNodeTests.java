@@ -11,6 +11,12 @@ import org.mockito.Mockito;
 public class VariableNodeTests {
 
   @Test
+  public void describeNull() {
+    VariableNode node = new VariableNode("test", "null", null);
+    Assert.assertEquals(node.getStringValue(), "null");
+  }
+
+  @Test
   public void describeInt() {
     Value value = buildMockValue("5");
     VariableNode node = new VariableNode("test", "int", value);
