@@ -72,6 +72,13 @@ public class VariableNodeTests {
     Assert.assertEquals(node.getStringValue(), "instance of int[5][7][][]");
   }
 
+  @Test
+  public void describeArrayFailsafe() {
+    Value value = buildMockValue("instance of int[x][7] (id=998)");
+    VariableNode node = new VariableNode("test", "int[][][][]", value);
+    Assert.assertEquals(node.getStringValue(), "instance of int[x][7] (id=998));
+  }
+
   private Value buildMockValue(String toStringValue) {
     Value value = Mockito.mock(Value.class);
     Mockito.when(value.toString()).thenReturn(toStringValue);
