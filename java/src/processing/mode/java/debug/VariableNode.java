@@ -95,6 +95,19 @@ public class VariableNode implements MutableTreeNode {
       } else if (getType() == TYPE_ARRAY) {
         //instance of int[5] (id=998) --> instance of int[5]
         str = value.toString().substring(0, value.toString().lastIndexOf(" "));
+        /*
+        *formats multidimensional array values to have the size of the first array in
+        *the first bracket eg.int[][5]-->int[5][]
+        */
+        // resolves issue #606: https://github.com/processing/processing4/issues/606 
+        if (str.contains("][")) {
+          String brackets = str.substring(str.indexOf('['));
+          int arrayDimensions = 0;
+          String num = brackets.replaceAll("[^\\d]", "");
+          arrayDimensions = (brackets.length() - num.length()) / 2;
+          brackets = "[" + num + "]" + "[]".repeat(arrayDimensions - 1);
+          str = str.substring(0, str.indexOf('[')) + brackets;
+        }
       } else if (getType() == TYPE_STRING) {
         str = ((StringReference) value).value(); // use original string value (without quotes)
       } else {
