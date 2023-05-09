@@ -399,7 +399,10 @@ public class VariableNode implements MutableTreeNode {
   private String describeArray(String fullDescription) {
     Matcher matcher = ARRAY_REGEX.matcher(fullDescription);
     StringJoiner joiner = new StringJoiner("");
-    System.out.println(matcher.matches());
+    if (!matcher.matches()) {
+      return fullDescription;
+    }
+    
     joiner.add(matcher.group("prefix")); // Type without brackets
     joiner.add(matcher.group("bounded")); // Brackets with numbers
     joiner.add(matcher.group("unbounded")); // Brackets without numbers
