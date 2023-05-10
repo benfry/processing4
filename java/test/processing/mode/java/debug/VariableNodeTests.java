@@ -74,9 +74,16 @@ public class VariableNodeTests {
 
   @Test
   public void describeArrayFailsafe() {
-    Value value = buildMockValue("instance of int[x][7] (id=998)");
+    Value value = buildMockValue("instance of int[x][7] (id=98)");
     VariableNode node = new VariableNode("test", "int[][][][]", value);
-    Assert.assertEquals(node.getStringValue(), "instance of int[x][7] (id=998));
+    Assert.assertEquals(node.getStringValue(), "instance of int[x][7] (id=98)");
+  }
+
+  @Test
+  public void describeArrayUnexpectedOrder() {
+    Value value = buildMockValue("instance of int[7][] (id=98)");
+    VariableNode node = new VariableNode("test", "int[][][][]", value);
+    Assert.assertEquals(node.getStringValue(), "instance of int[7][] (id=98)");
   }
 
   private Value buildMockValue(String toStringValue) {

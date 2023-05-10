@@ -56,7 +56,7 @@ public class VariableNode implements MutableTreeNode {
   public static final int TYPE_VOID = 11;
 
   private static final Pattern ARRAY_REGEX = Pattern.compile(
-    "^(?<prefix>[^\\]]+)(?<unbounded>(\\[\\])*)(?<bounded>(\\[\\d+\\])+).*$"
+    "^(?<prefix>[^\\[]+)(?<unbounded>(\\[\\])*)(?<bounded>(\\[\\d+\\])+)(?<unneeded>[^\\[]*)$"
   );
 
   protected String type;
