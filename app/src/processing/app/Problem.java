@@ -21,16 +21,76 @@
 package processing.app;
 
 
+/**
+ * Structure describing a problem encountered in sketch compilation.
+ */
 public interface Problem {
+
+  /**
+   * Get if the problem is an error that prevented compilation.
+   * 
+   * @return True if an error such that the sketch did not compile and false
+   *    otherwise.
+   */
   public boolean isError();
+
+  /**
+   * Get if the problem is an warning that did not prevent compilation.
+   * 
+   * @return True if a warning and the sketch compiled and false otherwise.
+   */
   public boolean isWarning();
 
+  /**
+   * Get which tab (sketch file) the problem was encountered.
+   * 
+   * @return The index of the tab in which the problem was encountered.
+   */
   public int getTabIndex();
-  public int getLineNumber();  // 0-indexed
+
+  /**
+   * Get at which line the problem was encountered.
+   * 
+   * @return Zero-indexed line number within the tab at getTabIndex in which
+   *    this problem was encountered. Note that this is not the line in the
+   *    generated Java file.
+   */
+  public int getLineNumber();
+
+  /**
+   * Get a human-reabable description of the problem encountered.
+   * 
+   * @return String describing the error or warning encountered.
+   */
   public String getMessage();
 
+  /**
+   * Determine against what reference point for the this Problem's specific
+   * location is reported.
+   * 
+   * @return True if getStartOffset and getStopOffset are number of characters
+   *    relative to the start of the line reported by getLineNumber. False if
+   *    getStartOffset and getStopOffset are number of characters from start of
+   *    the tab.
+   */
   public boolean usesLineOffset();
+
+  /**
+   * Get the exact character on which this problem starts in code.
+   * 
+   * @return Number of characters past the reference point in usesLineOffset
+   *     at which this problem starts (where the code to which the problem
+   *     is attributed starts).
+   */
   public int getStartOffset();
+
+  /**
+   * Get the exact character on which this problem ends in code.
+   * 
+   * @return Number of characters past the reference point in usesLineOffset
+   *     at which this problem ends (where the code to which the problem
+   *     is attributed ends).
+   */
   public int getStopOffset();
 }
 
