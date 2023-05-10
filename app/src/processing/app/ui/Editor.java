@@ -2624,7 +2624,15 @@ public abstract class Editor extends JFrame implements RunnerListener {
         .filter(p -> {
           int pStartLine = p.getLineNumber();
           int pEndOffset = p.getStopOffset();
-          int pEndLine = textarea.getLineOfOffset(pEndOffset);
+
+          int pEndLine;
+          if (p.isLineOffset()) {
+            int lineGlobalOffset = textarea.getLineStartOffset(pStartLine);
+            pEndLine = textarea.getLineOfOffset(pEndOffset + lineGlobalOffset);
+          } else {
+            pEndLine = textarea.getLineOfOffset(pEndOffset);
+          }
+
           return line >= pStartLine && line <= pEndLine;
         })
         .collect(Collectors.toList());

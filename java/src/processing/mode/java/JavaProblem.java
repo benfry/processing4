@@ -82,7 +82,7 @@ public class JavaProblem implements Problem {
   }
 
 
-  public void setPDEOffsets(int startOffset, int stopOffset){
+  public void setPDEOffsets(int startOffset, int stopOffset) {
     this.startOffset = startOffset;
     this.stopOffset = stopOffset;
   }
@@ -139,6 +139,9 @@ public class JavaProblem implements Problem {
     importSuggestions = a;
   }
 
+  public boolean isLineOffset() {
+    return false;
+  }
 
   @Override
   public String toString() {
