@@ -19,14 +19,14 @@ public class SyntaxProblem extends JavaProblem  {
    * @param newLineNumber The line number within the tab at which the offending code can be found.
    * @param newMessage Human readable message describing the issue.
    * @param newStartOffset The character index at which the issue starts. This is relative to start
-   *    of tab / file not relative to start of line if newIsLineOffset is true else it is line
+   *    of tab / file not relative to start of line if newUsesLineOffset is true else it is line
    *    offset.
    * @param newStopOffset The character index at which the issue ends. This is relative to start
-   *    of tab / file not relative to start of line if newIsLineOffset is true else it is line
+   *    of tab / file not relative to start of line if newUsesLineOffset is true else it is line
    *    offset.
    */
   public SyntaxProblem(int newTabIndex, int newLineNumber, String newMessage, int newStartOffset,
-                       int newStopOffset, boolean newIsLineOffset) {
+                       int newStopOffset, boolean newUsesLineOffset) {
 
     super(newMessage, JavaProblem.ERROR, newLineNumber, newLineNumber);
 
@@ -35,7 +35,7 @@ public class SyntaxProblem extends JavaProblem  {
     message = newMessage;
     startOffset = newStartOffset;
     stopOffset = newStopOffset;
-    lineFlag = newIsLineOffset;
+    lineFlag = newUsesLineOffset;
   }
 
   @Override
@@ -73,7 +73,7 @@ public class SyntaxProblem extends JavaProblem  {
     return stopOffset;
   }
 
-  public boolean isLineOffset() {
+  public boolean usesLineOffset() {
     return lineFlag;
   }
 

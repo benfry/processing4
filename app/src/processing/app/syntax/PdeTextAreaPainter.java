@@ -152,7 +152,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
       int lineOffset = textArea.getLineStartOffset(line);
 
-      if (problem.isLineOffset()) {
+      if (problem.usesLineOffset()) {
         startOffset += lineOffset;
         stopOffset += lineOffset;
       }

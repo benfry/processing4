@@ -139,7 +139,7 @@ public class JavaProblem implements Problem {
     importSuggestions = a;
   }
 
-  public boolean isLineOffset() {
+  public boolean usesLineOffset() {
     return false;
   }
 

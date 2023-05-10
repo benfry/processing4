@@ -28,7 +28,7 @@ public interface Problem {
   public int getLineNumber();  // 0-indexed
   public String getMessage();
 
-  public boolean isLineOffset();
+  public boolean usesLineOffset();
   public int getStartOffset();
   public int getStopOffset();
 }
