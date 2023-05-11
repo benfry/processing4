@@ -277,9 +277,16 @@ public class ErrorChecker {
             String q = matcher.group();
             int tabStart = in.startTabOffset + offset;
             int tabStop = tabStart + 1;
+            int line = ps.tabOffsetToTabLine(in.tabIndex, tabStart);
+            
             // Prevent duplicate problems
-            if (problems.stream().noneMatch(p -> p.getStartOffset() == tabStart)) {
-              int line = ps.tabOffsetToTabLine(in.tabIndex, tabStart);
+            boolean isDupe = problems.stream()
+              .filter(p -> p.getTabIndex() == in.tabIndex)
+              .filter(p -> p.getLineNumber() == line)
+              .findAny()
+              .isPresent();
+
+            if (isDupe) {
               String message;
               if (iproblem.getID() == IProblem.UnterminatedString) {
                 message = Language.interpolate("editor.status.unterm_string_curly", q);

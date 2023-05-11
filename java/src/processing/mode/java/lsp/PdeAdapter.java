@@ -233,13 +233,13 @@ class PdeAdapter {
             new Position(
               prob.getLineNumber(),
               PdeAdapter
-                .toLineCol(code.getProgram(), prob.getStartOffset())
+                .toLineCol(code.getProgram(), prob.getTabStartOffset().get())
                 .col - 1
             ),
             new Position(
               prob.getLineNumber(),
               PdeAdapter
-                .toLineCol(code.getProgram(), prob.getStopOffset())
+                .toLineCol(code.getProgram(), prob.getTabStopOffset().get())
                 .col - 1
             )
           ),

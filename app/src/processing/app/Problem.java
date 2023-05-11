@@ -20,11 +20,28 @@
 
 package processing.app;
 
+import java.util.Optional;
+
 
 /**
  * Structure describing a problem encountered in sketch compilation.
  */
 public interface Problem {
+
+  /**
+   * Strategy converting line number in tab to character offset from tab start.
+   */
+  public interface LineToTabOffsetGetter {
+
+    /**
+     * Convert a line number to the number of characters past tab start.
+     * 
+     * @param line The line number to convert.
+     * @return The number of characters past tab start where that line starts.
+     */
+    public int get(int line);
+
+  }
 
   /**
    * Get if the problem is an error that prevented compilation.
@@ -65,32 +82,55 @@ public interface Problem {
   public String getMessage();
 
   /**
-   * Determine against what reference point for the this Problem's specific
-   * location is reported.
+   * Get the exact character on which this problem starts in code tab relative.
    * 
-   * @return True if getStartOffset and getStopOffset are number of characters
-   *    relative to the start of the line reported by getLineNumber. False if
-   *    getStartOffset and getStopOffset are number of characters from start of
-   *    the tab.
+   * @return Number of characters past the start of the tab if known where the
+   *    code associated with the Problem starts. Returns empty if not provided.
    */
-  public boolean usesLineOffset();
+  public Optional<Integer> getTabStartOffset();
 
   /**
-   * Get the exact character on which this problem starts in code.
+   * Get the exact character on which this problem ends in code tab relative.
    * 
-   * @return Number of characters past the reference point in usesLineOffset
-   *     at which this problem starts (where the code to which the problem
-   *     is attributed starts).
+   * @return Number of characters past the start of the tab if known where the
+   *    code associated with the Problem ends. Returns empty if not provided.
    */
-  public int getStartOffset();
+  public Optional<Integer> getTabStopOffset();
 
   /**
-   * Get the exact character on which this problem ends in code.
+   * Get the exact character on which this problem starts in code line relative.
    * 
-   * @return Number of characters past the reference point in usesLineOffset
-   *     at which this problem ends (where the code to which the problem
-   *     is attributed ends).
+   * @return Number of characters past the start of the line if known where the
+   *    code associated with the Problem starts. Returns empty if not provided.
    */
-  public int getStopOffset();
+  public Optional<Integer> getLineStartOffset();
+
+  /**
+   * Get the exact character on which this problem ends in code line relative.
+   * 
+   * @return Number of characters past the start of the line if known where the
+   *    code associated with the Problem ends. Returns empty if not provided.
+   */
+  public Optional<Integer> getLineStopOffset();
+
+  /**
+   * Get the exact character on which this problem ends in code tab relative.
+   * 
+   * @param strategy Strategy to convert line to tab start if needed.
+   * @return Number of characters past the start of the tab if known where the
+   *    code associated with the Problem ends, using the provided conversion
+   *    if needed. Returns line start if character position not given.
+   */
+  public int computeTabStartOffset(LineToTabOffsetGetter strategy);
+
+  /**
+   * Get the exact character on which this problem ends in code tab relative.
+   * 
+   * @param strategy Strategy to convert line to tab start if needed.
+   * @return Number of characters past the start of the tab if known where the
+   *    code associated with the Problem ends, using the provided conversion
+   *    if needed. Returns line start if character position not given.
+   */
+  public int computeTabStopOffset(LineToTabOffsetGetter strategy);
 }
 

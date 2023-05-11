@@ -46,6 +46,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected Color gutterTextInactiveColor;
   protected Color gutterHighlightColor;
 
+  private final Problem.LineToTabOffsetGetter lineToTabOffsetGetter;
+
 
   public PdeTextAreaPainter(JEditTextArea textArea, TextAreaDefaults defaults) {
     super(textArea, defaults);
@@ -76,6 +78,10 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         }
       }
     });
+
+    lineToTabOffsetGetter = (x) -> {
+      return textArea.getLineStartOffset(x);
+    };
   }
 
 
@@ -147,18 +153,14 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected void paintErrorLine(Graphics gfx, int line, int x) {
     List<Problem> problems = getEditor().findProblems(line);
     for (Problem problem : problems) {
-      int startOffset = problem.getStartOffset();
-      int stopOffset = problem.getStopOffset();
+      int startOffset = problem.computeTabStartOffset(lineToTabOffsetGetter);
+      int stopOffset = problem.computeTabStopOffset(lineToTabOffsetGetter);
 
-      int lineOffset = textArea.getLineStartOffset(line);
+      int lineOffsetStart = textArea.getLineStartOffset(line);
+      int lineOffsetStop = textArea.getLineStopOffset(line);
 
-      if (problem.usesLineOffset()) {
-        startOffset += lineOffset;
-        stopOffset += lineOffset;
-      }
-
-      int wiggleStart = Math.max(startOffset, lineOffset);
-      int wiggleStop = Math.min(stopOffset, textArea.getLineStopOffset(line));
+      int wiggleStart = Math.max(startOffset, lineOffsetStart);
+      int wiggleStop = Math.min(stopOffset, lineOffsetStop);
 
       int y = textArea.lineToY(line) + getLineDisplacement();
 
@@ -168,7 +170,10 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         try {
           SyntaxDocument doc = textArea.getDocument();
           badCode = doc.getText(wiggleStart, wiggleStop - wiggleStart);
-          goodCode = doc.getText(lineOffset, wiggleStart - lineOffset);
+          goodCode = doc.getText(
+            lineOffsetStart,
+            wiggleStart - lineOffsetStart
+          );
           //log("paintErrorLine() LineText GC: " + goodCode);
           //log("paintErrorLine() LineText BC: " + badCode);
         } catch (BadLocationException bl) {
@@ -333,8 +338,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         int lineStart = textArea.getLineStartOffset(line);
         int lineEnd = textArea.getLineStopOffset(line);
 
-        int errorStart = problem.getStartOffset();
-        int errorEnd = problem.getStopOffset() + 1;
+        int errorStart = problem.computeTabStartOffset(lineToTabOffsetGetter);
+        int errorEnd = problem.computeTabStopOffset(lineToTabOffsetGetter) + 1;
 
         int startOffset = Math.max(errorStart, lineStart) - lineStart;
         int stopOffset = Math.min(errorEnd, lineEnd) - lineStart;
