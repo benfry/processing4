@@ -85,12 +85,26 @@ public class Handle {
       textFormat = "0x%x";
 
     } else if ("webcolor".equals(type)) {
-      Long val = Long.parseLong(strValue.substring(1, strValue.length()), 16);
+      Long val;
+      String prefix;
+      if (strValue.length() == 7) {
+        val = Long.parseLong(strValue.substring(1, strValue.length()), 16);
+        prefix = "";
+      } else {
+        String valStr = strValue.substring(
+          strValue.length() - 6,
+          strValue.length()
+        );
+        val = Long.parseLong(valStr, 16);
+        prefix = strValue.substring(
+          1,
+          strValue.length() - 6
+        );
+      }
       val = val | 0xff000000;
       value = newValue = val.intValue();
       strNewValue = strValue;
-      textFormat = "#%06x";
-
+      textFormat = "#" + prefix + "%06x";
     } else if ("float".equals(type)) {
       value = newValue = Float.parseFloat(strValue);
       strNewValue = strValue;
@@ -267,7 +281,19 @@ public class Handle {
       } else if ("hex".equals(type)) {
         tweakClient.sendInt(index, newValue.intValue());
       } else if ("webcolor".equals(type)) {
-        tweakClient.sendInt(index, newValue.intValue());
+        // If full opaque color, don't spend the cycles on string processing
+        // which does appear to matter at high frame rates.  Otherwise take the
+        // hit and parse back from string value with transparency.
+        if (strNewValue.length() == 7) {
+          tweakClient.sendInt(index, newValue.intValue());
+        } else {
+          long target = Long.parseLong(
+            strNewValue.substring(1, strNewValue.length()),
+            16
+          );
+          tweakClient.sendInt(index, (int) target);
+        }
+        
       } else if ("float".equals(type)) {
         tweakClient.sendFloat(index, newValue.floatValue());
       }
