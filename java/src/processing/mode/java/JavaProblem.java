@@ -20,6 +20,8 @@ along with this program; if not, write to the Free Software Foundation, Inc.
 
 package processing.mode.java;
 
+import java.util.Optional;
+
 import org.eclipse.jdt.core.compiler.IProblem;
 
 import processing.app.Problem;
@@ -42,9 +44,9 @@ public class JavaProblem implements Problem {
   /** Line number (pde code) of the error */
   private final int lineNumber;
 
-  private int startOffset;
+  private Optional<Integer> startOffset;
 
-  private int stopOffset;
+  private Optional<Integer> stopOffset;
 
   /**
    * If the error is a 'cannot find type' contains the list of suggested imports
@@ -60,6 +62,8 @@ public class JavaProblem implements Problem {
     this.type = type;
     this.tabIndex = tabIndex;
     this.lineNumber = lineNumber;
+    this.startOffset = Optional.empty();
+    this.stopOffset = Optional.empty();
   }
 
 
@@ -83,22 +87,31 @@ public class JavaProblem implements Problem {
 
 
   public void setPDEOffsets(int startOffset, int stopOffset){
-    this.startOffset = startOffset;
-    this.stopOffset = stopOffset;
+    this.startOffset = Optional.of(startOffset);
+    this.stopOffset = Optional.of(stopOffset);
   }
 
 
   @Override
-  public int getStartOffset() {
+  public Optional<Integer> getTabStartOffset() {
     return startOffset;
   }
 
 
   @Override
-  public int getStopOffset() {
+  public Optional<Integer> getTabStopOffset() {
     return stopOffset;
   }
 
+  @Override
+  public Optional<Integer> getLineStartOffset() {
+    return Optional.empty();
+  }
+
+  @Override
+  public Optional<Integer> getLineStopOffset() {
+    return Optional.empty();
+  }
 
   @Override
   public boolean isError() {
@@ -139,6 +152,9 @@ public class JavaProblem implements Problem {
     importSuggestions = a;
   }
 
+  public boolean usesLineOffset() {
+    return false;
+  }
 
   @Override
   public String toString() {
@@ -146,4 +162,37 @@ public class JavaProblem implements Problem {
         + startOffset + ",LN STOP OFF: " + stopOffset + ",PROB: "
         + message;
   }
+
+  @Override
+  public int computeTabStartOffset(LineToTabOffsetGetter strategy) {
+    Optional<Integer> nativeTabStartOffset = getTabStartOffset();
+    if (nativeTabStartOffset.isPresent()) {
+      return nativeTabStartOffset.get();
+    }
+
+    Optional<Integer> lineStartOffset = getLineStartOffset();
+    int lineOffset = strategy.get(getLineNumber());
+    if (lineStartOffset.isPresent()) {
+      return lineOffset + lineStartOffset.get();
+    } else {
+      return lineOffset;
+    }
+  }
+
+  @Override
+  public int computeTabStopOffset(LineToTabOffsetGetter strategy) {
+    Optional<Integer> nativeTabStopOffset = getTabStopOffset();
+    if (nativeTabStopOffset.isPresent()) {
+      return nativeTabStopOffset.get();
+    }
+
+    Optional<Integer> lineStopOffset = getLineStopOffset();
+    int lineOffset = strategy.get(getLineNumber());
+    if (lineStopOffset.isPresent()) {
+      return lineOffset + lineStopOffset.get();
+    } else {
+      return lineOffset;
+    }
+  }
+
 }
