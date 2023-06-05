@@ -48,7 +48,7 @@ public class VariableNodeTests {
   public void describeSimpleArray() {
     Value value = buildMockValue("instance of int[5] (id=998)");
     VariableNode node = new VariableNode("test", "int[]", value);
-    Assert.assertEquals(node.getStringValue(), "instance of int[5]");
+    Assert.assertEquals(node.getStringValue(), "instance of int[5] (id=998)");
   }
 
   @Test
