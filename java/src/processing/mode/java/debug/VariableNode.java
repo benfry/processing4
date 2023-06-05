@@ -55,9 +55,7 @@ public class VariableNode implements MutableTreeNode {
   public static final int TYPE_SHORT = 10;
   public static final int TYPE_VOID = 11;
 
-  private static final Pattern ARRAY_REGEX = Pattern.compile(
-    "^(?<prefix>[^\\[]+)(?<unbounded>(\\[\\])*)(?<bounded>(\\[\\d+\\])+)(?<unneeded>[^\\[]*)$"
-  );
+  private static final Pattern ARRAY_REGEX = Pattern.compile("^(?<prefix>[^\\[]+)(?<unbounded>(\\[\\])+)(?<bounded>(\\[\\d+\\])+)(?<unneeded>[^\\[]*)$");
 
   protected String type;
   protected String name;
@@ -94,7 +92,6 @@ public class VariableNode implements MutableTreeNode {
    * @return a String representing the value.
    */
   public String getStringValue() {
-<<<<<<< Updated upstream
     if (value == null) {
       return "null";
     }
@@ -111,48 +108,6 @@ public class VariableNode implements MutableTreeNode {
       return value.toString();
     }
   }
-=======
-        String str = null;
-        if (value != null) {
-          if (getType() == TYPE_OBJECT) {
-            str = "instance of " + type;
-          } else if (getType() == TYPE_ARRAY) {
-            //instance of int[5] (id=998) --> instance of int[5]
-            str = value.toString().substring(0, value.toString().lastIndexOf(" "));
-          String brackets = "";
-          if (str.contains("][")) {
-            brackets = str.substring(str.indexOf('['), str.length());
-            String num = "";
-            int arrayDimensions = 0;
-            for (int i = 0; i < brackets.length(); i++) {
-              if (!(brackets.charAt(i) == '[' || brackets.charAt(i) == ']')) {
-                num += brackets.charAt(i);
-                }
-              }
-            for (int i = 0; i < brackets.length(); i++) {
-              if (brackets.charAt(i) == '[') {
-              arrayDimensions++;
-              }
-            }
-            brackets = "[" + num + "]";
-            for (int i = 1; i < arrayDimensions; i++) {
-            brackets += "[]";
-            str = str.substring(0, str.indexOf('[')) + brackets;
-          }
-          } else if (getType() == TYPE_STRING) {
-            str = ((StringReference) value).value(); // use original string value (without quotes)
-          } else {
-            str = value.toString();
-          }
-        } else {
-          str = "null";
-        }
-      }
-        return str;
-
-    }
->>>>>>> Stashed changes
-
 
   public String getTypeName() {
     return type;
@@ -433,18 +388,18 @@ public class VariableNode implements MutableTreeNode {
    * Describe an array in a human friendly description.
    * 
    * @see Issue #606
-   * @param fullDescrition The full description of the array like "instance of
+   * @param fullDescription The full description of the array like "instance of
    *    int[5] (id=998)" or "instance of int[][5] (id=998)"
    * @return Human-friendly description like "instance of int[5]" or
    *    "instance of int[5][]".
    */
   private String describeArray(String fullDescription) {
     Matcher matcher = ARRAY_REGEX.matcher(fullDescription);
-    StringJoiner joiner = new StringJoiner("");
     if (!matcher.matches()) {
       return fullDescription;
     }
     
+    StringJoiner joiner = new StringJoiner("");
     joiner.add(matcher.group("prefix")); // Type without brackets
     joiner.add(matcher.group("bounded")); // Brackets with numbers
     joiner.add(matcher.group("unbounded")); // Brackets without numbers
