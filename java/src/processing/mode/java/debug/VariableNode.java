@@ -94,6 +94,7 @@ public class VariableNode implements MutableTreeNode {
    * @return a String representing the value.
    */
   public String getStringValue() {
+<<<<<<< Updated upstream
     if (value == null) {
       return "null";
     }
@@ -110,6 +111,47 @@ public class VariableNode implements MutableTreeNode {
       return value.toString();
     }
   }
+=======
+        String str = null;
+        if (value != null) {
+          if (getType() == TYPE_OBJECT) {
+            str = "instance of " + type;
+          } else if (getType() == TYPE_ARRAY) {
+            //instance of int[5] (id=998) --> instance of int[5]
+            str = value.toString().substring(0, value.toString().lastIndexOf(" "));
+          String brackets = "";
+          if (str.contains("][")) {
+            brackets = str.substring(str.indexOf('['), str.length());
+            String num = "";
+            int arrayDimensions = 0;
+            for (int i = 0; i < brackets.length(); i++) {
+              if (!(brackets.charAt(i) == '[' || brackets.charAt(i) == ']')) {
+                num += brackets.charAt(i);
+                }
+              }
+            for (int i = 0; i < brackets.length(); i++) {
+              if (brackets.charAt(i) == '[') {
+              arrayDimensions++;
+              }
+            }
+            brackets = "[" + num + "]";
+            for (int i = 1; i < arrayDimensions; i++) {
+            brackets += "[]";
+            str = str.substring(0, str.indexOf('[')) + brackets;
+          }
+          } else if (getType() == TYPE_STRING) {
+            str = ((StringReference) value).value(); // use original string value (without quotes)
+          } else {
+            str = value.toString();
+          }
+        } else {
+          str = "null";
+        }
+      }
+        return str;
+
+    }
+>>>>>>> Stashed changes
 
 
   public String getTypeName() {
