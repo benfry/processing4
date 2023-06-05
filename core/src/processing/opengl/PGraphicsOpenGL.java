@@ -1422,12 +1422,13 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     setViewport();
+    checkSettings();
     if (primaryGraphics) {
       beginOnscreenDraw();
     } else {
       beginOffscreenDraw();
     }
-    checkSettings();
+
 
     drawing = true;
 
