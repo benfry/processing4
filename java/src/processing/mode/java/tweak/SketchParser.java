@@ -270,7 +270,7 @@ public class SketchParser {
    * list of all hexadecimal numbers in the sketch
    */
   private void addAllWebColorNumbers() {
-    Pattern p = Pattern.compile("#[A-Fa-f0-9]{6}");
+    Pattern p = Pattern.compile("#([A-Fa-f0-9]{2})?[A-Fa-f0-9]{6}");
     for (int i=0; i<codeTabs.length; i++)
     {
       String c = codeTabs[i];
