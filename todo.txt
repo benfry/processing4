@@ -1,6 +1,8 @@
 1293 (4.2.1)
 X `NullPointerException` when background exceeds color range when writing PDF
 X   https://github.com/processing/processing4/issues/740
+X Use calculated text height instead of OS ascent for better vertical centering
+X   https://github.com/processing/processing4/issues/739
 
 sampottinger
 X Syntax error highlighting placement / width incorrect

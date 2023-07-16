@@ -1873,10 +1873,16 @@ public class PGraphicsJava2D extends PGraphics {
       defaultFontOrDeath("textAscent");
     }
 
+    // This value is dreadfully inaccurate and inconsistent, and especially
+    // so for the default font. Switching to use our built-in calculation since
+    // our most common use case is likely textAlign(CENTER, CENTER) with the
+    // default font, and it needs to work well there. [fry 230716]
+    /*
     Font font = (Font) textFont.getNative();
     if (font != null) {
       return g2.getFontMetrics(font).getAscent();
     }
+    */
     return super.textAscent();
   }
 
@@ -1886,10 +1892,12 @@ public class PGraphicsJava2D extends PGraphics {
     if (textFont == null) {
       defaultFontOrDeath("textDescent");
     }
+    /*
     Font font = (Font) textFont.getNative();
     if (font != null) {
       return g2.getFontMetrics(font).getDescent();
     }
+    */
     return super.textDescent();
   }
 
