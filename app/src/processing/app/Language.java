@@ -351,24 +351,34 @@ public class Language {
     LanguageBundle(String language) throws IOException {
       table = new HashMap<>();
 
-      // Also check to see if the user is working on localization,
-      // and has their own .properties files in their sketchbook.
-      // https://github.com/processing/processing4/wiki/Translations
+      // Disabling load from sketchbook in 4.2.1, because the path
+      // is not yet loaded from Preferences when languages are loaded.
+      // Fixing that (i.e. reloading languages) makes the code a lot
+      // more complicated for dubious benefit over simply editing the
+      // language files in the download (i.e. still would not help
+      // with adding new language codes.)
 
       String baseFilename = "languages/PDE.properties";
       String langFilename = "languages/PDE_" + language + ".properties";
 
       File baseFile = Base.getLibFile(baseFilename);
+      /*
+      // Also check to see if the user is working on localization,
+      // and has their own .properties files in their sketchbook.
+      // https://github.com/processing/processing4/wiki/Translations
       File userBaseFile = new File(Base.getSketchbookFolder(), baseFilename);
       if (userBaseFile.exists()) {
         baseFile = userBaseFile;
       }
+      */
 
       File langFile = Base.getLibFile(langFilename);
+      /*
       File userLangFile = new File(Base.getSketchbookFolder(), langFilename);
       if (userLangFile.exists()) {
         langFile = userLangFile;
       }
+      */
 
       read(baseFile);
       read(langFile);

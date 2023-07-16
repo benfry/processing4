@@ -1,8 +1,9 @@
 1293 (4.2.1)
-_ &apos; appearing in code with Copy as HTML
-_ Cannot load any user language files for i18n
-_   https://github.com/processing/processing4/issues/722
-
+o &apos; appearing in code with Copy as HTML
+X   could not reproduce
+/ Cannot load any user language files for i18n
+X   https://github.com/processing/processing4/issues/722
+X   not possible to load, updated the docs instead
 
 contribs
 X Syntax error highlighting placement / width incorrect from @sampottinger
@@ -26,6 +27,8 @@ X   https://github.com/processing/processing4/pull/745
 X Debugger lists immediate array dimension last from @WillRabois04
 X   https://github.com/processing/processing4/issues/606
 X   https://github.com/processing/processing4/pull/729
+_ Mode-breaking interface change causing regression in Problem
+_   https://github.com/processing/processing4/issues/751
 
 
 pending
