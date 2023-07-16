@@ -1500,18 +1500,18 @@
     <mkdir dir="javadoc" />
 
     <!-- Core is in the classpath, so we must build it. -->
-    <subant buildpath="../core" target="build" failonerror="false" />
+    <subant buildpath="../core" target="build" failonerror="true" />
 
     <!-- build doc for core -->
-    <exec executable="find" dir="javadoc" errorproperty="ignored">
+    <exec executable="find" dir="javadoc" discardError="true">
       <arg line="core -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../core/library/jogl-all.jar:../core/bin:../core/library/gluegen-rt.jar" destdir="javadoc/core" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="17" splitindex="false" use="false" version="false">
+    <javadoc access="public" author="false" classpath="../core/library/jogl-all.jar:../core/bin:../core/library/gluegen-rt.jar" destdir="javadoc/core" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="${jdk.train}" splitindex="false" use="false" version="false">
 
       <!-- provide links for java.* classes.
            also suppresses the java.lang prefix in the text.  -->
-      <link href="https://docs.oracle.com/en/java/javase/11/docs/api/" />
+      <link href="https://docs.oracle.com/en/java/javase/${jdk.train}/docs/api/" />
 
       <!-- prevent files from always appearing to have changed -->
       <arg value="-notimestamp" />
@@ -1534,31 +1534,23 @@
 
     </javadoc>
 
-<!--
-    <copy file="javadoc/stylesheet.css"
-          tofile="javadoc/core/stylesheet.css" />
-    <copy file="javadoc/index.html"
-          tofile="javadoc/core/index.html" />
--->
-
     <!-- build everything else -->
-    <exec executable="find" dir="javadoc" errorproperty="ignored">
+    <exec executable="find" dir="javadoc" discardError="true">
       <arg line="everything -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="17" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../app/lib/flatlaf.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library:${java.home}/lib/tools.jar" destdir="javadoc/everything" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="${jdk.train}" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
       <arg value="-quiet" />
 
-      <link href="https://docs.oracle.com/en/java/javase/11/docs/api/" />
+      <link href="https://docs.oracle.com/en/java/javase/${jdk.train}/docs/api/" />
 
       <packageset dir="../app/src">
         <include name="antlr/**" />
         <include name="processing/**" />
       </packageset>
-
 
       <tag name="webref" enabled="false" />
       <tag name="nowebref" enabled="false" />
@@ -1580,17 +1572,17 @@
 
 
     <!-- do libraries -->
-    <exec executable="find" dir="javadoc" errorproperty="ignored">
+    <exec executable="find" dir="javadoc" discardError="true">
       <arg line="libraries -type f -exec rm -rf {} ';'" />
     </exec>
 
-    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="17" splitindex="false" use="false" version="false" noqualifier="all">
+    <javadoc access="public" author="false" classpath="../app/lib/ant.jar:../app/lib/ant-launcher.jar:../app/lib/jna.jar:../app/lib/jna-platform.jar:../core/bin:../core/library/gluegen-rt.jar:../core/library/jogl-all.jar:../java/libraries/svg/library/batik.jar:../java/libraries/pdf/library/itext.jar:../java/libraries/dxf:../java/libraries/serial/library/jssc.jar:${java.home}/lib/tools.jar" destdir="javadoc/libraries" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" source="${jdk.train}" splitindex="false" use="false" version="false" noqualifier="all">
 
       <arg value="-notimestamp" />
 
       <arg value="-quiet" />
 
-      <link href="https://docs.oracle.com/en/java/javase/11/docs/api/" />
+      <link href="https://docs.oracle.com/en/java/javase/${jdk.train}/docs/api/" />
       <link href="../../javadoc/core/" />
 
       <tag name="webref" enabled="false" />
