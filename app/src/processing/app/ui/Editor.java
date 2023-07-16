@@ -2556,8 +2556,15 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
 
   public void highlight(Problem p) {
+    Problem.LineToTabOffsetGetter getter = (x) -> {
+      return textarea.getLineStartOffset(x);
+    };
+
     if (p != null) {
-      highlight(p.getTabIndex(), p.getStartOffset(), p.getStopOffset());
+      int tabIndex = p.getTabIndex();
+      int tabToStartOffset = p.computeTabStartOffset(getter);
+      int tabToStopOffset = p.computeTabStopOffset(getter);
+      highlight(tabIndex, tabToStartOffset, tabToStopOffset);
     }
   }
 
@@ -2623,8 +2630,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
         .filter(p -> p.getTabIndex() == currentTab)
         .filter(p -> {
           int pStartLine = p.getLineNumber();
-          int pEndOffset = p.getStopOffset();
+          int pEndOffset = p.computeTabStopOffset(
+            (startLine) -> textarea.getLineStartOffset(pStartLine)
+          );
           int pEndLine = textarea.getLineOfOffset(pEndOffset);
+
           return line >= pStartLine && line <= pEndLine;
         })
         .collect(Collectors.toList());

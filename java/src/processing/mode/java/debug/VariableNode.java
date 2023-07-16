@@ -29,6 +29,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.StringJoiner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
@@ -52,12 +55,13 @@ public class VariableNode implements MutableTreeNode {
   public static final int TYPE_SHORT = 10;
   public static final int TYPE_VOID = 11;
 
+  private static final Pattern ARRAY_REGEX = Pattern.compile("^(?<prefix>[^\\[]+)(?<unbounded>(\\[\\])+)(?<bounded>(\\[\\d+\\])+)(?<unneeded>[^\\[]*)$");
+
   protected String type;
   protected String name;
   protected Value value;
   protected List<MutableTreeNode> children = new ArrayList<>();
   protected MutableTreeNode parent;
-
 
   /**
    * Construct a {@link VariableNode}.
@@ -88,24 +92,22 @@ public class VariableNode implements MutableTreeNode {
    * @return a String representing the value.
    */
   public String getStringValue() {
-    String str;
-    if (value != null) {
-      if (getType() == TYPE_OBJECT) {
-        str = "instance of " + type;
-      } else if (getType() == TYPE_ARRAY) {
-        //instance of int[5] (id=998) --> instance of int[5]
-        str = value.toString().substring(0, value.toString().lastIndexOf(" "));
-      } else if (getType() == TYPE_STRING) {
-        str = ((StringReference) value).value(); // use original string value (without quotes)
-      } else {
-        str = value.toString();
-      }
-    } else {
-      str = "null";
+    if (value == null) {
+      return "null";
     }
-    return str;
-  }
 
+    int typeDescriptor = getType();
+    if (typeDescriptor == TYPE_OBJECT) {
+      return "instance of " + type;
+    } else if (typeDescriptor == TYPE_ARRAY) {
+      return describeArray(value.toString());
+    } else if (typeDescriptor == TYPE_STRING) {
+      // use original string value (without quotes)
+      return ((StringReference) value).value();
+    } else {
+      return value.toString();
+    }
+  }
 
   public String getTypeName() {
     return type;
@@ -379,5 +381,28 @@ public class VariableNode implements MutableTreeNode {
     hash = 97 * hash + (this.name != null ? this.name.hashCode() : 0);
     hash = 97 * hash + (this.value != null ? this.value.hashCode() : 0);
     return hash;
+  }
+
+
+  /**
+   * Describe an array in a human friendly description.
+   * 
+   * @see Issue #606
+   * @param fullDescription The full description of the array like "instance of
+   *    int[5] (id=998)" or "instance of int[][5] (id=998)"
+   * @return Human-friendly description like "instance of int[5]" or
+   *    "instance of int[5][]".
+   */
+  private String describeArray(String fullDescription) {
+    Matcher matcher = ARRAY_REGEX.matcher(fullDescription);
+    if (!matcher.matches()) {
+      return fullDescription;
+    }
+    
+    StringJoiner joiner = new StringJoiner("");
+    joiner.add(matcher.group("prefix")); // Type without brackets
+    joiner.add(matcher.group("bounded")); // Brackets with numbers
+    joiner.add(matcher.group("unbounded")); // Brackets without numbers
+    return joiner.toString();
   }
 }
