@@ -1,9 +1,35 @@
 1293 (4.2.1)
 
+
+sampottinger
+X Syntax error highlighting placement / width incorrect
+X   https://github.com/processing/processing4/issues/714
+X   https://github.com/processing/processing4/pull/715
+X Tweak mode issue with hex codes including transparency
+X   https://github.com/processing/processing4/issues/720
+X   https://github.com/processing/processing4/pull/721
+
 contribs
 X LSP feature/declaration support from @Efratror
 X   https://github.com/processing/processing4/pull/678
 X   https://github.com/processing/processing4/issues/676
+X Update Spanish translation from @trikaphundo
+X   https://github.com/processing/processing4/issues/744
+X   https://github.com/processing/processing4/pull/746
+X Update Catalan translation from @trikaphundo
+X   https://github.com/processing/processing4/issues/743
+X   https://github.com/processing/processing4/pull/745
+X Debugger lists immediate array dimension last from @WillRabois04
+X   https://github.com/processing/processing4/issues/606
+X   https://github.com/processing/processing4/pull/729
+
+
+_ &apos; appearing in code with Copy as HTML
+
+_ sandbox access to Desktop folder when using non-notarized versions
+_   "Security-Scoped Bookmarks" is the term: https://stackoverflow.com/a/12155622
+_   example using JNI: https://github.com/plexteq/PQSsbJNIBridge
+_   how to store/save bookmarks: https://stackoverflow.com/a/74835008
 
 
 _ doing "Save As" on sketch didn't write a new main= entry in sketch.properties
