@@ -229,24 +229,21 @@ class PdeAdapter {
       .map(prob -> {
         SketchCode code = sketch.getCode(prob.getTabIndex());
 
-        Optional<Integer> startOffset = prob.getTabStartOffset();
-        Optional<Integer> endOffset = prob.getTabStopOffset();
-
-        assert startOffset.isPresent();
-        assert endOffset.isPresent();
+        int startOffset = prob.getStartOffset();
+        int endOffset = prob.getStopOffset();
 
         Diagnostic dia = new Diagnostic(
           new Range(
             new Position(
               prob.getLineNumber(),
               PdeAdapter
-                .toLineCol(code.getProgram(), startOffset.get())
+                .toLineCol(code.getProgram(), startOffset)
                 .col - 1
             ),
             new Position(
               prob.getLineNumber(),
               PdeAdapter
-                .toLineCol(code.getProgram(), endOffset.get())
+                .toLineCol(code.getProgram(), endOffset)
                 .col - 1
             )
           ),
