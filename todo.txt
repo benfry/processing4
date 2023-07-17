@@ -9,6 +9,9 @@ contribs
 X Syntax error highlighting placement / width incorrect from @sampottinger
 X   https://github.com/processing/processing4/issues/714
 X   https://github.com/processing/processing4/pull/715
+X Mode-breaking interface change causing regression in Problem
+X   https://github.com/processing/processing4/issues/751
+X   https://github.com/processing/processing4/pull/752
 X Tweak mode issue with hex codes including transparency from @sampottinger
 X   https://github.com/processing/processing4/issues/720
 X   https://github.com/processing/processing4/pull/721
@@ -27,8 +30,6 @@ X   https://github.com/processing/processing4/pull/745
 X Debugger lists immediate array dimension last from @WillRabois04
 X   https://github.com/processing/processing4/issues/606
 X   https://github.com/processing/processing4/pull/729
-_ Mode-breaking interface change causing regression in Problem
-_   https://github.com/processing/processing4/issues/751
 
 
 pending
