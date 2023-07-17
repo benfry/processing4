@@ -2633,8 +2633,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
           int lineOffset = textarea.getLineStartOffset(pStartLine);
           int pEndOffset = lineOffset + p.getStopOffset();
           int pEndLine = textarea.getLineOfOffset(pEndOffset);
-
-          System.out.println(line + "\t" + pStartLine + "\t" + pEndLine);
+          
           return line >= pStartLine && line <= pEndLine;
         })
         .collect(Collectors.toList());

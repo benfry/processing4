@@ -147,15 +147,11 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected void paintErrorLine(Graphics gfx, int line, int x) {
     List<Problem> problems = getEditor().findProblems(line);
     for (Problem problem : problems) {
-      System.out.println("here");
       int lineOffsetStart = textArea.getLineStartOffset(line);
       int lineOffsetStop = textArea.getLineStopOffset(line);
 
-      int startOffset = lineOffsetStart + problem.getStartOffset();
-      int stopOffset = lineOffsetStart + problem.getStopOffset();
-
-      int wiggleStart = Math.max(startOffset, lineOffsetStart);
-      int wiggleStop = Math.min(stopOffset, lineOffsetStop);
+      int wiggleStart = lineOffsetStart + problem.getStartOffset();
+      int wiggleStop = lineOffsetStart + problem.getStopOffset();
 
       int y = textArea.lineToY(line) + getLineDisplacement();
 

@@ -60,6 +60,10 @@ public class JavaProblem implements Problem {
     this.type = type;
     this.tabIndex = tabIndex;
     this.lineNumber = lineNumber;
+
+    // Default to 0, 1 unless a longer section is specified
+    this.startOffset = 0;
+    this.stopOffset = 1;
   }
 
 
