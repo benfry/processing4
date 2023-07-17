@@ -70,17 +70,17 @@ public interface Problem {
    * Get the exact character on which this problem starts in code line relative.
    * 
    * @return Number of characters past the start of the line if known where the
-   *    code associated with the Problem starts. Returns empty if not provided.
+   *    code associated with the Problem starts.
    */
-  public Optional<Integer> getStartOffset();
+  public int getStartOffset();
 
   /**
    * Get the exact character on which this problem ends in code line relative.
    * 
    * @return Number of characters past the start of the line if known where the
-   *    code associated with the Problem ends. Returns empty if not provided.
+   *    code associated with the Problem ends.
    */
-  public Optional<Integer> getStopOffset();
+  public int getStopOffset();
 
 }
 
