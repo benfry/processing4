@@ -2630,10 +2630,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
         .filter(p -> p.getTabIndex() == currentTab)
         .filter(p -> {
           int pStartLine = p.getLineNumber();
-          int lineOffset = textarea.getLineOfOffset(pStartLine);
+          int lineOffset = textarea.getLineStartOffset(pStartLine);
           int pEndOffset = lineOffset + p.getStopOffset();
           int pEndLine = textarea.getLineOfOffset(pEndOffset);
 
+          System.out.println(line + "\t" + pStartLine + "\t" + pEndLine);
           return line >= pStartLine && line <= pEndLine;
         })
         .collect(Collectors.toList());

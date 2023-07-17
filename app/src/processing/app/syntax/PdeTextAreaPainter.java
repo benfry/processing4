@@ -147,6 +147,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected void paintErrorLine(Graphics gfx, int line, int x) {
     List<Problem> problems = getEditor().findProblems(line);
     for (Problem problem : problems) {
+      System.out.println("here");
       int lineOffsetStart = textArea.getLineStartOffset(line);
       int lineOffsetStop = textArea.getLineStopOffset(line);
 
@@ -326,7 +327,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   public String getToolTipText(MouseEvent event) {
     fontMetrics = getFontMetrics();
     int line = event.getY() / fontMetrics.getHeight() + textArea.getFirstLine();
-    if (line >= 0 || line < textArea.getLineCount()) {getPreprocessIssues
+    if (line >= 0 || line < textArea.getLineCount()) {
       List<Problem> problems = getEditor().findProblems(line);
       for (Problem problem : problems) {
         int lineStart = textArea.getLineStartOffset(line);
@@ -337,8 +338,6 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
         int startOffset = Math.max(errorStart, lineStart) - lineStart;
         int stopOffset = Math.min(errorEnd, lineEnd) - lineStart;
-
-        System.out.println(lineStart + "\t" + lineEnd + "\t" + errorStart + "\t" + errorEnd + "\t" + startOffset + "\t" + stopOffset);
 
         int x = event.getX();
 

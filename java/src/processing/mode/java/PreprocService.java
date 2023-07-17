@@ -93,17 +93,34 @@ public class PreprocService {
   private volatile boolean running;
   private CompletableFuture<PreprocSketch> preprocessingTask = new CompletableFuture<>();
 
+  private JavaEditor editor;
+
   private CompletableFuture<?> lastCallback =
     new CompletableFuture<>() {{
       complete(null); // initialization block
     }};
 
   /**
-   * Create a new preprocessing service to support an editor.
+   * Create a new preprocessing service to support the language server.
    */
   public PreprocService(JavaMode javaMode, Sketch sketch) {
     this.javaMode = javaMode;
     this.sketch = sketch;
+
+    // Register listeners for first run
+    whenDone(this::fireListeners);
+
+    preprocessingThread = new Thread(this::mainLoop, "ECS");
+    preprocessingThread.start();
+  }
+
+  /**
+   * Create a new preprocessing service to support an editor.
+   */
+  public PreprocService(JavaMode javaMode, Sketch sketch, JavaEditor editor) {
+    this.javaMode = javaMode;
+    this.sketch = sketch;
+    this.editor = editor;
 
     // Register listeners for first run
     whenDone(this::fireListeners);
@@ -411,10 +428,18 @@ public class PreprocService {
       throw new RuntimeException("Unexpected sketch exception in preprocessing: " + e);
     }
 
+    final int endNumLines = numLines;
+
     if (preprocessorResult.getPreprocessIssues().size() > 0) {
-      preprocessorResult.getPreprocessIssues().stream()
+      if (editor == null) {
+        preprocessorResult.getPreprocessIssues().stream()
           .map((x) -> ProblemFactory.build(x, tabLineStarts))
           .forEach(result.otherProblems::add);
+      } else {
+        preprocessorResult.getPreprocessIssues().stream()
+          .map((x) -> ProblemFactory.build(x, tabLineStarts, endNumLines, editor))
+          .forEach(result.otherProblems::add);
+      }
 
       result.hasSyntaxErrors = true;
     }

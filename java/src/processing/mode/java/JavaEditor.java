@@ -118,7 +118,7 @@ public class JavaEditor extends Editor {
     // setting breakpoints will flag sketch as modified, so override this here
     getSketch().setModified(false);
 
-    preprocService = new PreprocService(this.jmode, this.sketch); 
+    preprocService = new PreprocService(this.jmode, this.sketch, this); 
 
 //    long t5 = System.currentTimeMillis();
 
