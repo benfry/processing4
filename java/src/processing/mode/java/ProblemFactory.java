@@ -52,9 +52,8 @@ public class ProblemFactory {
         tab,
         localLine,
         message,
-        lineStart,
-        lineStop,
-        false
+        0,
+        lineStop - lineStart
     );
   }
 
@@ -85,8 +84,7 @@ public class ProblemFactory {
         localLine,
         message,
         0,
-        col,
-        true
+        col
     );
   }
 

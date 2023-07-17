@@ -326,7 +326,7 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   public String getToolTipText(MouseEvent event) {
     fontMetrics = getFontMetrics();
     int line = event.getY() / fontMetrics.getHeight() + textArea.getFirstLine();
-    if (line >= 0 || line < textArea.getLineCount()) {
+    if (line >= 0 || line < textArea.getLineCount()) {getPreprocessIssues
       List<Problem> problems = getEditor().findProblems(line);
       for (Problem problem : problems) {
         int lineStart = textArea.getLineStartOffset(line);
@@ -337,6 +337,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
 
         int startOffset = Math.max(errorStart, lineStart) - lineStart;
         int stopOffset = Math.min(errorEnd, lineEnd) - lineStart;
+
+        System.out.println(lineStart + "\t" + lineEnd + "\t" + errorStart + "\t" + errorEnd + "\t" + startOffset + "\t" + stopOffset);
 
         int x = event.getX();
 
