@@ -4,6 +4,15 @@ X   could not reproduce
 / Cannot load any user language files for i18n
 X   https://github.com/processing/processing4/issues/722
 X   not possible to load, updated the docs instead
+X comment/uncomment on French systems
+X   https://github.com/processing/processing4/issues/625
+X   https://github.com/processing/processing4/pull/660
+o reference needs to show a "not installed" message
+o   https://github.com/processing/processing4/issues/733
+X   this was an Android Mode bug
+_ update icon to look less like VS Code
+_   update splash screen based on changes
+
 
 contribs
 X Syntax error highlighting placement / width incorrect from @sampottinger
@@ -32,17 +41,17 @@ X   https://github.com/processing/processing4/issues/606
 X   https://github.com/processing/processing4/pull/729
 
 
-pending
-_ comment/uncomment on French systems
-_   https://github.com/processing/processing4/issues/625
-_   https://github.com/processing/processing4/pull/660
+high priority
+_ right-click/ctrl-click for jump to declaration causes hang
+_   https://github.com/processing/processing4/issues/527
+_   https://github.com/processing/processing4/issues/551
+_   https://github.com/processing/processing4/issues/595
 
 
 _ sandbox access to Desktop folder when using non-notarized versions
 _   "Security-Scoped Bookmarks" is the term: https://stackoverflow.com/a/12155622
 _   example using JNI: https://github.com/plexteq/PQSsbJNIBridge
 _   how to store/save bookmarks: https://stackoverflow.com/a/74835008
-
 
 _ doing "Save As" on sketch didn't write a new main= entry in sketch.properties
 _   at least with Python Mode
@@ -153,10 +162,6 @@ _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 _   https://github.com/processing/processing4/wiki/Preferences#proxies
 _ proxies don't support authentication
 _   https://github.com/processing/processing4/issues/644
-_ right-click/ctrl-click for jump to declaration causes hang
-_   https://github.com/processing/processing4/issues/527
-_   https://github.com/processing/processing4/issues/551
-_   https://github.com/processing/processing4/issues/595
 
 
 organize this mess

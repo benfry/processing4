@@ -611,6 +611,8 @@
       <option value="-Dcom.apple.macos.use-file-dialog-packages=true" />
       <option value="-Dcom.apple.macos.useScreenMenuBar=true" />
       <option value="-Dcom.apple.smallTabs=true" />
+      <!-- https://github.com/processing/processing4/issues/699 -->
+      <option value="-Dapple.awt.application.appearance=system" />
 
       <!-- https://github.com/jdf/Processing.py-Bugs/issues/322 -->
       <option value="-Dpython.console.encoding=UTF-8" />
