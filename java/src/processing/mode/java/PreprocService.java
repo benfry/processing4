@@ -99,7 +99,7 @@ public class PreprocService {
     }};
 
   /**
-   * Create a new preprocessing service to support an editor.
+   * Create a new preprocessing service to support the language server.
    */
   public PreprocService(JavaMode javaMode, Sketch sketch) {
     this.javaMode = javaMode;
@@ -411,10 +411,12 @@ public class PreprocService {
       throw new RuntimeException("Unexpected sketch exception in preprocessing: " + e);
     }
 
+    final int endNumLines = numLines;
+
     if (preprocessorResult.getPreprocessIssues().size() > 0) {
       preprocessorResult.getPreprocessIssues().stream()
-          .map((x) -> ProblemFactory.build(x, tabLineStarts))
-          .forEach(result.otherProblems::add);
+        .map((x) -> ProblemFactory.build(x, tabLineStarts))
+        .forEach(result.otherProblems::add);
 
       result.hasSyntaxErrors = true;
     }

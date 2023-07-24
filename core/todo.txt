@@ -1,9 +1,12 @@
 1293 (4.2.1)
+X `NullPointerException` when background exceeds color range when writing PDF
+X   https://github.com/processing/processing4/issues/740
+X Use calculated text height instead of OS ascent for better vertical centering
+X   https://github.com/processing/processing4/issues/739
 
 
-JNA version of getting resolution https://stackoverflow.com/a/32588375
-https://stackoverflow.com/a/32588375
-
+_ JNA version of getting resolution
+_   https://stackoverflow.com/a/32588375
 
 _ args passed to main() aren't working
 _   (there was a bug report for this already?)

@@ -1873,10 +1873,16 @@ public class PGraphicsJava2D extends PGraphics {
       defaultFontOrDeath("textAscent");
     }
 
+    // This value is dreadfully inaccurate and inconsistent, and especially
+    // so for the default font. Switching to use our built-in calculation since
+    // our most common use case is likely textAlign(CENTER, CENTER) with the
+    // default font, and it needs to work well there. [fry 230716]
+    /*
     Font font = (Font) textFont.getNative();
     if (font != null) {
       return g2.getFontMetrics(font).getAscent();
     }
+    */
     return super.textAscent();
   }
 
@@ -1886,10 +1892,12 @@ public class PGraphicsJava2D extends PGraphics {
     if (textFont == null) {
       defaultFontOrDeath("textDescent");
     }
+    /*
     Font font = (Font) textFont.getNative();
     if (font != null) {
       return g2.getFontMetrics(font).getDescent();
     }
+    */
     return super.textDescent();
   }
 
@@ -2607,34 +2615,41 @@ public class PGraphicsJava2D extends PGraphics {
       clearPixels(backgroundColor);
 
     } else {
-      Color bgColor = new Color(backgroundColor);
-      // seems to fire an additional event that causes flickering,
-      // like an extra background erase on OS X
-//      if (canvas != null) {
-//        canvas.setBackground(bgColor);
-//      }
-      //new Exception().printStackTrace(System.out);
-      // in case people do transformations before background(),
-      // need to handle this with a push/reset/pop
-      Composite oldComposite = g2.getComposite();
-      g2.setComposite(defaultComposite);
-
-      pushMatrix();
-      resetMatrix();
-      g2.setColor(bgColor); //, backgroundAlpha));
-//      g2.fillRect(0, 0, width, height);
-      // On a hi-res display, image may be larger than width/height
-      if (image != null) {
-        // image will be null in subclasses (i.e. PDF)
-        g2.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
-      } else {
-        // hope for the best if image is null
-        g2.fillRect(0, 0, width, height);
-      }
-      popMatrix();
-
-      g2.setComposite(oldComposite);
+      backgroundRect();
     }
+  }
+
+
+  protected void backgroundRect() {
+    Color bgColor = new Color(backgroundColor);
+
+    // While more complete, this seems to fire an additional event that
+    // causes flickering, like an extra background erase on OS X.
+    //if (canvas != null) {
+    //  canvas.setBackground(bgColor);
+    //}
+
+    // If there are transformations or blending changes at the top of
+    // draw() (before background() is called) or still in place from
+    // the last trip through draw(), need to store and re-apply after.
+    Composite oldComposite = g2.getComposite();
+    g2.setComposite(defaultComposite);
+    pushMatrix();
+    resetMatrix();
+
+    g2.setColor(bgColor);
+    // On a hi-res display, image may be larger than width/height
+    if (image != null) {
+      // image will be null in subclasses (i.e. PDF)
+      g2.fillRect(0, 0, image.getWidth(null), image.getHeight(null));
+    } else {
+      // hope for the best if image is null
+      g2.fillRect(0, 0, width, height);
+    }
+
+    // Reset the drawing state (see above)
+    popMatrix();
+    g2.setComposite(oldComposite);
   }
 
 

@@ -29,10 +29,8 @@ public class SyntaxProblem extends JavaProblem  {
   private final int tabIndex;
   private final int lineNumber;
   private final String message;
-  private final Optional<Integer> tabStartOffset;
-  private final Optional<Integer> tabStopOffset;
-  private final Optional<Integer> lineStartOffset;
-  private final Optional<Integer> lineStopOffset;
+  private final int lineStartOffset;
+  private final int lineStopOffset;
 
   /**
    * Create a new syntax problem.
@@ -40,33 +38,19 @@ public class SyntaxProblem extends JavaProblem  {
    * @param newTabIndex The tab number containing the source with the syntax issue.
    * @param newLineNumber The line number within the tab at which the offending code can be found.
    * @param newMessage Human readable message describing the issue.
-   * @param newStartOffset The character index at which the issue starts. This is relative to start
-   *    of tab / file not relative to start of line if newUsesLineOffset is true else it is line
-   *    offset.
-   * @param newStopOffset The character index at which the issue ends. This is relative to start
-   *    of tab / file not relative to start of line if newUsesLineOffset is true else it is line
-   *    offset.
+   * @param newStartOffset The character index at which the issue starts relative to line.
+   * @param newStopOffset The character index at which the issue end relative to line.
    */
   public SyntaxProblem(int newTabIndex, int newLineNumber, String newMessage, int newStartOffset,
-                       int newStopOffset, boolean newUsesLineOffset) {
+                       int newStopOffset) {
 
     super(newMessage, JavaProblem.ERROR, newLineNumber, newLineNumber);
 
     tabIndex = newTabIndex;
     lineNumber = newLineNumber;
     message = newMessage;
-
-    if (newUsesLineOffset) {
-      lineStartOffset = Optional.of(newStartOffset);
-      lineStopOffset = Optional.of(newStopOffset);
-      tabStartOffset = Optional.empty();
-      tabStopOffset = Optional.empty();
-    } else {
-      lineStartOffset = Optional.empty();
-      lineStopOffset = Optional.empty();
-      tabStartOffset = Optional.of(newStartOffset);
-      tabStopOffset = Optional.of(newStopOffset);
-    }
+    lineStartOffset = newStartOffset;
+    lineStopOffset = newStopOffset;
   }
 
   @Override
@@ -94,23 +78,11 @@ public class SyntaxProblem extends JavaProblem  {
     return message;
   }
 
-  @Override
-  public Optional<Integer> getTabStartOffset() {
-    return tabStartOffset;
-  }
-
-  @Override
-  public Optional<Integer> getTabStopOffset() {
-    return tabStopOffset;
-  }
-
-  @Override
-  public Optional<Integer> getLineStartOffset() {
+  public int getStartOffset() {
     return lineStartOffset;
   }
 
-  @Override
-  public Optional<Integer> getLineStopOffset() {
+  public int getStopOffset() {
     return lineStopOffset;
   }
 

@@ -46,8 +46,6 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected Color gutterTextInactiveColor;
   protected Color gutterHighlightColor;
 
-  private final Problem.LineToTabOffsetGetter lineToTabOffsetGetter;
-
 
   public PdeTextAreaPainter(JEditTextArea textArea, TextAreaDefaults defaults) {
     super(textArea, defaults);
@@ -78,10 +76,6 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         }
       }
     });
-
-    lineToTabOffsetGetter = (x) -> {
-      return textArea.getLineStartOffset(x);
-    };
   }
 
 
@@ -153,14 +147,11 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected void paintErrorLine(Graphics gfx, int line, int x) {
     List<Problem> problems = getEditor().findProblems(line);
     for (Problem problem : problems) {
-      int startOffset = problem.computeTabStartOffset(lineToTabOffsetGetter);
-      int stopOffset = problem.computeTabStopOffset(lineToTabOffsetGetter);
-
       int lineOffsetStart = textArea.getLineStartOffset(line);
       int lineOffsetStop = textArea.getLineStopOffset(line);
 
-      int wiggleStart = Math.max(startOffset, lineOffsetStart);
-      int wiggleStop = Math.min(stopOffset, lineOffsetStop);
+      int wiggleStart = lineOffsetStart + problem.getStartOffset();
+      int wiggleStop = lineOffsetStart + problem.getStopOffset();
 
       int y = textArea.lineToY(line) + getLineDisplacement();
 
@@ -338,8 +329,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         int lineStart = textArea.getLineStartOffset(line);
         int lineEnd = textArea.getLineStopOffset(line);
 
-        int errorStart = problem.computeTabStartOffset(lineToTabOffsetGetter);
-        int errorEnd = problem.computeTabStopOffset(lineToTabOffsetGetter) + 1;
+        int errorStart = lineStart + problem.getStartOffset();
+        int errorEnd = lineStart + problem.getStopOffset();
 
         int startOffset = Math.max(errorStart, lineStart) - lineStart;
         int stopOffset = Math.min(errorEnd, lineEnd) - lineStart;

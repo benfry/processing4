@@ -18,6 +18,6 @@ public class SketchInterval {
   public final int startTabOffset;
   public final int stopTabOffset;
 
-  final int startPdeOffset;
-  final int stopPdeOffset;
+  public final int startPdeOffset;
+  public final int stopPdeOffset;
 }

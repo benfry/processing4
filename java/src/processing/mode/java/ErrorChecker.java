@@ -199,7 +199,7 @@ public class ErrorChecker {
       String badCode = ps.getPdeCode(in);
       int line = ps.tabOffsetToTabLine(in.tabIndex, in.startTabOffset);
       JavaProblem p = JavaProblem.fromIProblem(iproblem, in.tabIndex, line, badCode);
-      p.setPDEOffsets(in.startTabOffset, in.stopTabOffset);
+      p.setPDEOffsets(0, iproblem.getSourceEnd() - iproblem.getSourceStart());
       return p;
     }
     return null;
@@ -252,7 +252,6 @@ public class ErrorChecker {
 
       String message = Language.interpolate("editor.status.bad_curly_quote", q);
       JavaProblem problem = new JavaProblem(message, JavaProblem.ERROR, tabIndex, tabLine);
-      problem.setPDEOffsets(tabOffset, tabOffset+1);
 
       problems.add(problem);
     }
@@ -294,7 +293,6 @@ public class ErrorChecker {
                 message = Language.interpolate("editor.status.bad_curly_quote", q);
               }
               JavaProblem p = new JavaProblem(message, JavaProblem.ERROR, in.tabIndex, line);
-              p.setPDEOffsets(tabStart, tabStop);
               problems2.add(p);
             }
           }
