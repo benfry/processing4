@@ -21,13 +21,13 @@ public class MissingIdentifierMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("Missing identifier at ';'");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("Missing identifier at ';'", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("String x = \" \\\" \"");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("String x = \" \\\" \"", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

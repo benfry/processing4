@@ -77,7 +77,7 @@ public class PdeIssueEmitter extends BaseErrorListener {
                           int charPositionInLine, String msg, RecognitionException e) {
 
     PreprocessIssueMessageSimplifier facade = PreprocessIssueMessageSimplifier.get();
-    IssueMessageSimplification simplification = facade.simplify(msg);
+    IssueMessageSimplification simplification = facade.simplify(msg, line);
 
     IssueLocation issueLocation;
 

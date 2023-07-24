@@ -20,13 +20,13 @@ public class MissingCurlyMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class Test {");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class Test {", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class Test { }");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class Test { }", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

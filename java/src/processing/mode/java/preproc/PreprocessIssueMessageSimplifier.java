@@ -96,11 +96,12 @@ public class PreprocessIssueMessageSimplifier {
    * Attempt to improve an error message.
    *
    * @param originalMessage Error message generated from ANTLR.
+   * @param line The line number associated to the error.
    * @return An improved error message or the originalMessage if no improvements could be made.
    */
-  public PdeIssueEmitter.IssueMessageSimplification simplify(String originalMessage) {
+  public PdeIssueEmitter.IssueMessageSimplification simplify(String originalMessage, int line) {
     Optional<PdeIssueEmitter.IssueMessageSimplification> matching = strategies.stream()
-        .map((x) -> x.simplify(originalMessage))
+        .map((x) -> x.simplify(originalMessage, line))
         .filter(Optional::isPresent)
         .map(Optional::get)
         .findFirst();
@@ -213,10 +214,11 @@ public class PreprocessIssueMessageSimplifier {
      * Attempt to simplify an error message.
      *
      * @param message The message to be simplified.
+     * @param line The line number associated with the error message.
      * @return An optional with an improved message or an empty optional if no improvements could be
      *    made by this strategy.
      */
-    Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message);
+    Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line);
 
   }
 
@@ -266,7 +268,7 @@ public class PreprocessIssueMessageSimplifier {
     }
 
     @Override
-    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message) {
+    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       String messageContent = getOffendingArea(message);
 
       if (filter.isPresent()) {
@@ -339,7 +341,7 @@ public class PreprocessIssueMessageSimplifier {
     }
 
     @Override
-    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message) {
+    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       String messageContent = getOffendingArea(message);
 
       int count1 = SourceUtil.getCount(messageContent, token1);
@@ -420,7 +422,7 @@ public class PreprocessIssueMessageSimplifier {
     }
 
     @Override
-    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message) {
+    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       if (pattern.matcher(message).find()) {
         String newMessage = String.format(
             hintTemplate,
@@ -545,7 +547,7 @@ public class PreprocessIssueMessageSimplifier {
    */
   protected PreprocIssueMessageSimplifierStrategy createMissingCurlyAtStartSimplifierStrategy() {
 
-    return message -> {
+    return (message, line) -> {
       boolean matches = message.endsWith("expecting {'throws', '{'}");
       matches = matches || message.endsWith("expecting {'throws', '{', '[', ';'}");
 
@@ -563,7 +565,7 @@ public class PreprocessIssueMessageSimplifier {
    * Strategy to catch a missing curly at a semicolon.
    */
   protected PreprocIssueMessageSimplifierStrategy createMissingCurlyAtSemicolonSimplifierStrategy() {
-    return message -> {
+    return (message, line) -> {
       if (!message.equals("missing ';' at '{'")) {
         return Optional.empty();
       }
@@ -578,7 +580,7 @@ public class PreprocessIssueMessageSimplifier {
    * Strategy to check for an error indicating that an identifier was expected but not given.
    */
   protected PreprocIssueMessageSimplifierStrategy createMissingIdentifierSimplifierStrategy() {
-    return message -> {
+    return (message, line) -> {
       if (message.toLowerCase().contains("missing identifier at")) {
         String newMessage = String.format(
             getLocalStr("editor.status.missing.name"),
@@ -598,7 +600,7 @@ public class PreprocessIssueMessageSimplifier {
    */
   protected PreprocIssueMessageSimplifierStrategy createKnownMissingSimplifierStrategy() {
     final Pattern parsePattern = Pattern.compile(".*missing '(.*)' at .*");
-    return message -> {
+    return (message, line) -> {
       if (message.toLowerCase().contains("missing")) {
         String missingPiece;
         Matcher matcher = parsePattern.matcher(message);
@@ -624,7 +626,7 @@ public class PreprocessIssueMessageSimplifier {
    * Strategy to handle extraneous input messages.
    */
   protected PreprocIssueMessageSimplifierStrategy createExtraneousInputSimplifierStrategy() {
-    return message -> {
+    return (message, line) -> {
       if (message.toLowerCase().contains("extraneous")) {
         String innerMsg = getOffendingArea(message);
 
@@ -645,7 +647,7 @@ public class PreprocessIssueMessageSimplifier {
    */
   protected PreprocIssueMessageSimplifierStrategy createMismatchedInputSimplifierStrategy() {
     final Pattern parser = Pattern.compile("mismatched input '(.*)' expecting ");
-    return message -> {
+    return (message, line) -> {
       if (message.toLowerCase().contains("mismatched input")) {
         Matcher matcher = parser.matcher(message);
 
@@ -671,7 +673,7 @@ public class PreprocessIssueMessageSimplifier {
   protected static class DefaultMessageSimplifier implements PreprocIssueMessageSimplifierStrategy {
 
     @Override
-    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message) {
+    public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       if (message.contains("viable alternative")) {
         String newMessage = String.format(
             getLocalizedGenericError("%s"),
