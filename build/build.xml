@@ -1418,6 +1418,7 @@
   </target>
 
 
+  <!-- OUT OF DATE -->
   <!-- bundle a bunch of PNGs into an OS X iconset -->
   <target name="iconset">
     <mkdir dir="${icon.set}" />
@@ -1456,6 +1457,7 @@
   </target>
 
 
+  <!-- OUT OF DATE -->
   <!-- Target to create the icons... putting this in here rather than docs.
        For OS X (though Linux might work), not intended for general use,
        because it requires things like iconutil (on OS X) or ImageMagick's
