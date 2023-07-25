@@ -714,7 +714,7 @@ public class Toolkit {
         iconImages = new ArrayList<>();
         final int[] sizes = { 16, 32, 48, 64, 128, 256, 512 };
         for (int sz : sizes) {
-          iconImages.add(Toolkit.getLibImage("icons/pde-" + sz + ".png"));
+          iconImages.add(Toolkit.getLibImage("icons/app-" + sz + ".png"));
         }
       }
       window.setIconImages(iconImages);
