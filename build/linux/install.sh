@@ -1,7 +1,7 @@
 #!/bin/sh
 
-# This script adds a menu item, icons and mime type for Processing for 
-# the current user. If possible, it will use the xdg-utils - or fall back 
+# This script adds a menu item, icons and mime type for Processing for
+# the current user. If possible, it will use the xdg-utils - or fall back
 # to just creating and copying a desktop file to the user's directory.
 # If called with the "-u" option, it will uninstall.
 
@@ -33,14 +33,14 @@ xdg_install_f() {
       -e "s,<ICON_NAME>,${RESOURCE_NAME},g" "${SCRIPT_PATH}/lib/desktop.template" > "${TMP_DIR}/${RESOURCE_NAME}.desktop"
 
   # Install the icon files using name and resolutions
-  xdg-icon-resource install --context mimetypes --size 16 "${SCRIPT_PATH}/lib/icons/pde-16.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 32 "${SCRIPT_PATH}/lib/icons/pde-32.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 48 "${SCRIPT_PATH}/lib/icons/pde-48.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 64 "${SCRIPT_PATH}/lib/icons/pde-64.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 128 "${SCRIPT_PATH}/lib/icons/pde-128.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 256 "${SCRIPT_PATH}/lib/icons/pde-256.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 512 "${SCRIPT_PATH}/lib/icons/pde-512.png" $RESOURCE_NAME
-  xdg-icon-resource install --context mimetypes --size 1024 "${SCRIPT_PATH}/lib/icons/pde-1024.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 16 "${SCRIPT_PATH}/lib/icons/app-16.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 32 "${SCRIPT_PATH}/lib/icons/app-32.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 48 "${SCRIPT_PATH}/lib/icons/app-48.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 64 "${SCRIPT_PATH}/lib/icons/app-64.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 128 "${SCRIPT_PATH}/lib/icons/app-128.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 256 "${SCRIPT_PATH}/lib/icons/app-256.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 512 "${SCRIPT_PATH}/lib/icons/app-512.png" $RESOURCE_NAME
+  xdg-icon-resource install --context mimetypes --size 1024 "${SCRIPT_PATH}/lib/icons/app-1024.png" $RESOURCE_NAME
 
   # Install the created *.desktop file
   xdg-desktop-menu install "${TMP_DIR}/${RESOURCE_NAME}.desktop"
