@@ -541,11 +541,9 @@ public class PSurfaceAWT extends PSurfaceNone {
           final int[] sizes = { 16, 32, 48, 64, 128, 256, 512 };
 
           for (int sz : sizes) {
-            //URL url = getClass().getResource("/icon/icon-" + sz + ".png");
             URL url = PApplet.class.getResource("/icon/icon-" + sz + ".png");
             Image image = Toolkit.getDefaultToolkit().getImage(url);
             iconImages.add(image);
-            //iconImages.add(Toolkit.getLibImage("icons/pde-" + sz + ".png", frame));
           }
         }
         frame.setIconImages(iconImages);
