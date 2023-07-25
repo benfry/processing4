@@ -12,6 +12,7 @@ o   https://github.com/processing/processing4/issues/733
 X   this was an Android Mode bug
 X inherit dark mode from system settings on macOS
 X   https://github.com/processing/processing4/issues/699
+X bump Java to 17.0.8+7
 _ update icon to look less like VS Code
 _   update splash screen based on changes
 
