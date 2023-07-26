@@ -1,4 +1,4 @@
-1293 (4.2.1)
+1293 (4.3)
 o &apos; appearing in code with Copy as HTML
 X   could not reproduce
 / Cannot load any user language files for i18n
