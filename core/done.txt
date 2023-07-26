@@ -1,3 +1,15 @@
+1293 (4.3)
+X `NullPointerException` when background exceeds color range when writing PDF
+X   https://github.com/processing/processing4/issues/740
+X Use calculated text height instead of OS ascent for better vertical centering
+X   https://github.com/processing/processing4/issues/739
+
+contribs
+X Second beginDraw / endDraw call clears PGraphics object when created w/ P2D
+X   https://github.com/processing/processing4/issues/641
+X   https://github.com/processing/processing4/pull/728
+
+
 1292 (4.2)
 X has been resized from 100?100 to 116?100 by the window manager
 X fullScreen(P2D) from an executable does not work properly
