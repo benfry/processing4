@@ -13,9 +13,8 @@ X   this was an Android Mode bug
 X inherit dark mode from system settings on macOS
 X   https://github.com/processing/processing4/issues/699
 X bump Java to 17.0.8+7
-_ update icon to look less like VS Code
-_   update splash screen based on changes
-
+X work with @fathompaul update icon to look less like VS Code
+X   update splash screen based on changes
 
 contribs
 X Syntax error highlighting placement / width incorrect from @sampottinger
@@ -58,6 +57,9 @@ _   how to store/save bookmarks: https://stackoverflow.com/a/74835008
 
 _ doing "Save As" on sketch didn't write a new main= entry in sketch.properties
 _   at least with Python Mode
+_ problem re-loading a sketch that doesn't get its sketch.properties written
+_   https://github.com/processing/processing4/issues/719
+_   may be a p5jsMode issue, though ahrd to say
 _ sketchbook entries that use local.properties not getting picked up in sketchbook window
 
 _ should Python Mode rely on Java Mode?
