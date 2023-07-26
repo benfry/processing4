@@ -33,6 +33,8 @@ This release incorporates several contributed fixes (see below) and a few additi
 
 * Debugger was listing immediate array dimension last, fix from @WillRabois04 [606](https://github.com/processing/processing4/issues/606), [729](https://github.com/processing/processing4/pull/729)
 
+* Second `beginDraw()` / `endDraw()` call clears `PGraphics` object when created w/ `P2D` [641](https://github.com/processing/processing4/issues/641), [728](https://github.com/processing/processing4/pull/728)
+
 
 # Processing 4.2
 
