@@ -19,6 +19,8 @@ This release incorporates several contributed fixes (see below) and a few additi
 
 * Updated icons and splash screen colors from @fathompaul.
 
+* Register pde:// browser protocol for .pdez and .pdex files on Linux from @lala-lala-lori [674](https://github.com/processing/processing4/issues/674), [696](https://github.com/processing/processing4/pull/696)
+
 * Syntax error highlighting placement / width incorrect from @sampottinger [714](https://github.com/processing/processing4/issues/714), [715](https://github.com/processing/processing4/pull/715)
 
 * Better comment/uncomment key shortcut for French systems from @ThinkDumbIndustries [625](https://github.com/processing/processing4/issues/625), [660](https://github.com/processing/processing4/pull/660)

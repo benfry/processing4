@@ -41,6 +41,9 @@ X   https://github.com/processing/processing4/pull/745
 X Debugger lists immediate array dimension last from @WillRabois04
 X   https://github.com/processing/processing4/issues/606
 X   https://github.com/processing/processing4/pull/729
+X Register pde:// browser protocol for .pdez and .pdex files on Linux
+X   https://github.com/processing/processing4/issues/674
+X   https://github.com/processing/processing4/pull/696
 
 
 high priority
