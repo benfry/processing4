@@ -902,16 +902,14 @@
     <!-- https://developer.apple.com/account/ -->
 
     <exec executable="/usr/bin/xcrun" dir="macos" failonerror="true">
-      <arg value="altool" />
-      <arg value="--notarize-app" />
+      <arg value="notarytool" />
+      <arg value="submit" />
 
       <!-- spew a bunch of useless garbage that has nothing to do with success/failure -->
       <!-- <arg value="- -verbose" /> -->
 
-      <arg value="--primary-bundle-id" />
-      <arg value="org.processing.app" />
 
-      <arg value="--username" />
+      <arg value="--apple-id" />
       <arg value="${env.PROCESSING_APPLE_ID}" />
 
       <arg value="--password" />
@@ -920,14 +918,13 @@
       <arg value="--team-id" />
       <arg value="${env.PROCESSING_TEAM_ID}" />
 
-      <arg value="--file" />
       <arg value="${dist.filename}" />
     </exec>
 
     <echo>
       Check on notarization status with:
 
-      xcrun altool -u $PROCESSING_APPLE_ID -p $PROCESSING_APP_PASSWORD --notarization-info [the RequestUUID above]
+      xcrun notarytool info --apple-id $PROCESSING_APPLE_ID --password $PROCESSING_APP_PASSWORD [the RequestUUID above]
     </echo>
   </target>
 
