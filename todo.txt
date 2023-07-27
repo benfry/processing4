@@ -1,6 +1,11 @@
 1294 (4.3.1)
 
 
+contribs
+X migrate from altool to notarytool from @CyberFlameGO
+X   https://github.com/processing/processing4/pull/757
+
+
 high priority
 _ right-click/ctrl-click for jump to declaration causes hang
 _   https://github.com/processing/processing4/issues/527
