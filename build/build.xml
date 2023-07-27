@@ -924,7 +924,7 @@
     <echo>
       Check on notarization status with:
 
-      xcrun notarytool info --apple-id $PROCESSING_APPLE_ID --password $PROCESSING_APP_PASSWORD [the RequestUUID above]
+      xcrun notarytool info --apple-id $PROCESSING_APPLE_ID --password $PROCESSING_APP_PASSWORD --team-id $PROCESSING_TEAM_ID [the Submission ID above]
     </echo>
   </target>
 
