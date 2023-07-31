@@ -1,6 +1,12 @@
 1294 (4.3.1)
 
 
+contribs
+X Movie throwing NullPointerException with usedBuffers with P2D/P3D
+X   https://github.com/processing/processing4/issues/760
+X   https://github.com/processing/processing4/pull/759
+
+
 _ JNA version of getting resolution
 _   https://stackoverflow.com/a/32588375
 
