@@ -8252,15 +8252,49 @@ public class PApplet implements PConstants {
     return outgoing;
   }
 
-  static public Object reverse(Object list) {
-    Class<?> type = list.getClass().getComponentType();
-    int length = Array.getLength(list);
-    Object outgoing = Array.newInstance(type, length);
-    for (int i = 0; i < length; i++) {
-      Array.set(outgoing, i, Array.get(list, (length - 1) - i));
+  /*
+   * This function Object reverse(Object list)ccan be replace by <T> T [] reverse(T [] list) is more faster for every case
+   * 
+   */
+  // static public Object reverse(Object list) {
+  //   Class<?> type = list.getClass().getComponentType();
+  //   int length = Array.getLength(list);
+  //   Object outgoing = Array.newInstance(type, length);
+  //   for (int i = 0; i < length; i++) {
+  //     Array.set(outgoing, i, Array.get(list, (length - 1) - i));
+  //   }
+  //   return outgoing;
+  // }
+
+  static public <T> T [] reverse(T [] list) {
+    int len = list.length;
+    T[] outgoing = (T[]) Array.newInstance(list.getClass().getComponentType(), len);
+    for (int i = 0; i < outgoing.length; i++) {
+      outgoing[i] = list[len - i - 1];
     }
     return outgoing;
   }
+
+  static public long [] reverse(long [] list) {
+    int len = list.length;
+    long[] outgoing = new long[list.length];
+    for (int i = 0; i < outgoing.length; i++) {
+      outgoing[i] = list[len - i - 1];
+    }
+    return outgoing;
+  }
+
+  static public double [] reverse(double [] list) {
+    int len = list.length;
+    double[] outgoing = new double[list.length];
+    for (int i = 0; i < outgoing.length; i++) {
+      outgoing[i] = list[len - i - 1];
+    }
+    return outgoing;
+  }
+
+
+
 
 
 
