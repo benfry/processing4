@@ -1,4 +1,6 @@
 1294 (4.3.1)
+X difference in text position with processing 4.3, JAVA2D vs P2D
+X   https://github.com/processing/processing4/issues/768
 
 
 contribs

@@ -475,6 +475,7 @@ public class PJOGL extends PGL {
   }
 
 
+  /*
   @Override
   protected int getFontAscent(Object font) {
     return getFontMetrics((Font) font).getAscent();
@@ -485,6 +486,7 @@ public class PJOGL extends PGL {
   protected int getFontDescent(Object font) {
     return getFontMetrics((Font) font).getDescent();
   }
+  */
 
 
   @Override
