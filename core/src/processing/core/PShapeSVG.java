@@ -1273,8 +1273,8 @@ public class PShapeSVG extends PShape {
     fillColor = ((int) (fillOpacity * 255)) << 24 | fillColor & 0xFFFFFF;
   }
 
-
-  void setColor(String colorText, boolean isFill) {
+  //making this public allows us to set gradient fills on a PShape
+  public void setColor(String colorText, boolean isFill) {
     colorText = colorText.trim();
     int opacityMask = fillColor & 0xFF000000;
     boolean visible = true;
@@ -1497,7 +1497,7 @@ public class PShapeSVG extends PShape {
 
 
   static public class Gradient extends PShapeSVG {
-    AffineTransform transform;
+    public AffineTransform transform;
 
     public float[] offset;
     public int[] color;

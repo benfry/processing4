@@ -87,6 +87,10 @@ public class PGraphicsSVG extends PGraphicsJava2D {
     g2 = new SVGGraphics2D(document);
     ((SVGGraphics2D) g2).setSVGCanvasSize(new Dimension(width, height));
 
+    //set the extension handler to allow linear and radial gradients to be exported as svg
+    GradientExtensionHandler gradH = new GradientExtensionHandler();
+    ((SVGGraphics2D) g2).setExtensionHandler(gradH);
+
     // Done with our work, let's check on defaults and the rest
     //super.beginDraw();
     // Can't call super.beginDraw() because it'll nuke our g2
