@@ -30,12 +30,14 @@ public class GradientExtensionHandler extends DefaultExtensionHandler {
 	public SVGPaintDescriptor handlePaint(Paint paint, SVGGeneratorContext genCtx) {
 
 		// Handle LinearGradientPaint
-		if (paint instanceof LinearGradientPaint)
+		if (paint instanceof LinearGradientPaint) {
 			return getLgpDescriptor((LinearGradientPaint) paint, genCtx);
+		}
 			
 		// Handle RadialGradientPaint
-		if (paint instanceof RadialGradientPaint)
+		if (paint instanceof RadialGradientPaint) {
 			return getRgpDescriptor((RadialGradientPaint) paint, genCtx);
+		}
 		
 		return super.handlePaint(paint, genCtx);
 	}
@@ -80,6 +82,7 @@ public class GradientExtensionHandler extends DefaultExtensionHandler {
 
 		gradElem.setAttribute("r", String.valueOf(gradient.getRadius()));
 
+		//TODO: change this to be: addMgpAttributes after refactoring the paint methods
 		addRgpAttributes(gradElem, genCtx, gradient);
 
 		return new SVGPaintDescriptor("url(#" + id + ")", SVG_OPAQUE_VALUE, gradElem);
@@ -92,7 +95,6 @@ public class GradientExtensionHandler extends DefaultExtensionHandler {
 
 		TODO: make the effort to refactor them to properly implement java.awt.MultipleGradientPaint
 	*/
-	
 	private void addLgpAttributes(Element gradElem, SVGGeneratorContext genCtx, LinearGradientPaint gradient) {
 		gradElem.setAttribute(SVG_GRADIENT_UNITS_ATTRIBUTE, SVG_USER_SPACE_ON_USE_VALUE);
 
@@ -121,9 +123,6 @@ public class GradientExtensionHandler extends DefaultExtensionHandler {
 				break;
 		}
 
-		/*
-			
-		*/
 		// Set transform matrix if not identity
 		AffineTransform tf = gradient.getTransform();
 		if (!Objects.isNull(tf) && !tf.isIdentity()) {
