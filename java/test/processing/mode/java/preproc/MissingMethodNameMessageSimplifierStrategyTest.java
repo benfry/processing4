@@ -20,25 +20,25 @@ public class MissingMethodNameMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void (int x) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void (int x) \n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentNoSpace() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("test(int x) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("test(int x) \n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentUnderscore() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void (int x_y) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void (int x_y) \n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

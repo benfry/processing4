@@ -20,13 +20,13 @@ public class MissingChevMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class Test <a extends {");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class Test <a extends {", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class {");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class {", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

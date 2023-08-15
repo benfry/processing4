@@ -19,13 +19,13 @@ public class MissingSingleQuoteMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("char x = '");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("char x = '", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("char x = '\\''");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("char x = '\\''", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

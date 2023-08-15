@@ -160,7 +160,8 @@
                       lib/ant-launcher.jar;
                       lib/flatlaf.jar;
                       lib/jna.jar;
-                      lib/jna-platform.jar"
+                      lib/jna-platform;
+                      lib/build-flexmark-all.jar"
            debug="on"
            nowarn="true">
       <compilerarg value="-Xlint:deprecation" />
