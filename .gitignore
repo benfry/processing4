@@ -93,3 +93,6 @@ bin-test
 # VS Code Java project files
 .project
 .vscode/
+
+# ANTLR intermediate files
+java/src/processing/mode/java/preproc/.antlr
