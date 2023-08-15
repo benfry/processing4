@@ -160,7 +160,7 @@
                       lib/ant-launcher.jar;
                       lib/flatlaf.jar;
                       lib/jna.jar;
-                      lib/jna-platform;
+                      lib/jna-platform.jar;
                       lib/build-flexmark-all.jar"
            debug="on"
            nowarn="true">
