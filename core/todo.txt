@@ -1,8 +1,12 @@
-1293 (4.2.1)
-X `NullPointerException` when background exceeds color range when writing PDF
-X   https://github.com/processing/processing4/issues/740
-X Use calculated text height instead of OS ascent for better vertical centering
-X   https://github.com/processing/processing4/issues/739
+1294 (4.3.1)
+X difference in text position with processing 4.3, JAVA2D vs P2D
+X   https://github.com/processing/processing4/issues/768
+
+
+contribs
+X Movie throwing NullPointerException with usedBuffers with P2D/P3D
+X   https://github.com/processing/processing4/issues/760
+X   https://github.com/processing/processing4/pull/759
 
 
 _ JNA version of getting resolution

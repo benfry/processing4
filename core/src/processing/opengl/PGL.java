@@ -2717,10 +2717,10 @@ public abstract class PGL {
   // TODO: the next three functions shouldn't be here...
   // Uses 'Object' so that the API can be used w/ Android Typeface objects
 
-  abstract protected int getFontAscent(Object font);
+  // abstract protected int getFontAscent(Object font);
 
 
-  abstract protected int getFontDescent(Object font);
+  // abstract protected int getFontDescent(Object font);
 
 
   abstract protected int getTextWidth(Object font, char[] buffer, int start, int stop);

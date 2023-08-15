@@ -30,10 +30,10 @@
   <property name="examples.dir"
             location="../../processing-examples" />
 
-  <!-- 17.0.6+10 -->
+  <!-- 17.0.8+7 -->
   <property name="jdk.train" value="17" />
-  <property name="jdk.detail" value="${jdk.train}.0.6" />
-  <property name="jdk.build" value="10" />
+  <property name="jdk.detail" value="${jdk.train}.0.8" />
+  <property name="jdk.build" value="7" />
   <property name="jdk.folder" value="jdk-${jdk.detail}+${jdk.build}" />
 
 
@@ -902,16 +902,14 @@
     <!-- https://developer.apple.com/account/ -->
 
     <exec executable="/usr/bin/xcrun" dir="macos" failonerror="true">
-      <arg value="altool" />
-      <arg value="--notarize-app" />
+      <arg value="notarytool" />
+      <arg value="submit" />
 
       <!-- spew a bunch of useless garbage that has nothing to do with success/failure -->
       <!-- <arg value="- -verbose" /> -->
 
-      <arg value="--primary-bundle-id" />
-      <arg value="org.processing.app" />
 
-      <arg value="--username" />
+      <arg value="--apple-id" />
       <arg value="${env.PROCESSING_APPLE_ID}" />
 
       <arg value="--password" />
@@ -920,14 +918,13 @@
       <arg value="--team-id" />
       <arg value="${env.PROCESSING_TEAM_ID}" />
 
-      <arg value="--file" />
       <arg value="${dist.filename}" />
     </exec>
 
     <echo>
       Check on notarization status with:
 
-      xcrun altool -u $PROCESSING_APPLE_ID -p $PROCESSING_APP_PASSWORD --notarization-info [the RequestUUID above]
+      xcrun notarytool info --apple-id $PROCESSING_APPLE_ID --password $PROCESSING_APP_PASSWORD --team-id $PROCESSING_TEAM_ID [the Submission ID above]
     </echo>
   </target>
 
@@ -1418,6 +1415,7 @@
   </target>
 
 
+  <!-- OUT OF DATE -->
   <!-- bundle a bunch of PNGs into an OS X iconset -->
   <target name="iconset">
     <mkdir dir="${icon.set}" />
@@ -1456,6 +1454,7 @@
   </target>
 
 
+  <!-- OUT OF DATE -->
   <!-- Target to create the icons... putting this in here rather than docs.
        For OS X (though Linux might work), not intended for general use,
        because it requires things like iconutil (on OS X) or ImageMagick's

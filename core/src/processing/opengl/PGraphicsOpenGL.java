@@ -1422,12 +1422,13 @@ public class PGraphicsOpenGL extends PGraphics {
     }
 
     setViewport();
+    checkSettings();
     if (primaryGraphics) {
       beginOnscreenDraw();
     } else {
       beginOffscreenDraw();
     }
-    checkSettings();
+
 
     drawing = true;
 
@@ -3426,6 +3427,7 @@ public class PGraphicsOpenGL extends PGraphics {
   // TEXT IMPL
 
 
+  /*
   @Override
   public float textAscent() {
     if (textFont == null) defaultFontOrDeath("textAscent");
@@ -3446,6 +3448,7 @@ public class PGraphicsOpenGL extends PGraphics {
     if (descent == 0) descent = super.textDescent();
     return descent;
   }
+  */
 
 
   @Override
