@@ -1,10 +1,59 @@
 1293 (4.2.1)
+o &apos; appearing in code with Copy as HTML
+X   could not reproduce
+/ Cannot load any user language files for i18n
+X   https://github.com/processing/processing4/issues/722
+X   not possible to load, updated the docs instead
+X comment/uncomment on French systems
+X   https://github.com/processing/processing4/issues/625
+X   https://github.com/processing/processing4/pull/660
+o reference needs to show a "not installed" message
+o   https://github.com/processing/processing4/issues/733
+X   this was an Android Mode bug
+X inherit dark mode from system settings on macOS
+X   https://github.com/processing/processing4/issues/699
+_ update icon to look less like VS Code
+_   update splash screen based on changes
+
 
 contribs
+X Syntax error highlighting placement / width incorrect from @sampottinger
+X   https://github.com/processing/processing4/issues/714
+X   https://github.com/processing/processing4/pull/715
+X Mode-breaking interface change causing regression in Problem
+X   https://github.com/processing/processing4/issues/751
+X   https://github.com/processing/processing4/pull/752
+X Tweak mode issue with hex codes including transparency from @sampottinger
+X   https://github.com/processing/processing4/issues/720
+X   https://github.com/processing/processing4/pull/721
 X LSP feature/declaration support from @Efratror
 X   https://github.com/processing/processing4/pull/678
 X   https://github.com/processing/processing4/issues/676
+X Feature: Language Server Protocol, Reference Support from @Efratror
+X   https://github.com/processing/processing4/issues/684
+X   https://github.com/processing/processing4/pull/690
+X Update Spanish translation from @trikaphundo
+X   https://github.com/processing/processing4/issues/744
+X   https://github.com/processing/processing4/pull/746
+X Update Catalan translation from @trikaphundo
+X   https://github.com/processing/processing4/issues/743
+X   https://github.com/processing/processing4/pull/745
+X Debugger lists immediate array dimension last from @WillRabois04
+X   https://github.com/processing/processing4/issues/606
+X   https://github.com/processing/processing4/pull/729
 
+
+high priority
+_ right-click/ctrl-click for jump to declaration causes hang
+_   https://github.com/processing/processing4/issues/527
+_   https://github.com/processing/processing4/issues/551
+_   https://github.com/processing/processing4/issues/595
+
+
+_ sandbox access to Desktop folder when using non-notarized versions
+_   "Security-Scoped Bookmarks" is the term: https://stackoverflow.com/a/12155622
+_   example using JNI: https://github.com/plexteq/PQSsbJNIBridge
+_   how to store/save bookmarks: https://stackoverflow.com/a/74835008
 
 _ doing "Save As" on sketch didn't write a new main= entry in sketch.properties
 _   at least with Python Mode
@@ -21,10 +70,11 @@ _   just says "Error during export" rather than something more useful about dele
 
 manager
 _ if contrib (library only?) folder name changes on update, old lib not removed
-_ Updates requiring a reboot give the false impression that they failed (in the updates tab)
+_ Updates requiring a reboot give the false impression that they failed (in updates tab)
 _   https://github.com/processing/processing4/issues/647
 _ lots of folders remaining in 'old' for Modes
-_   were these shut off during debug? need to be moving these to trash (maybe only on startup)
+_   were these shut off during debug?
+_   need to be moving these to trash (maybe only on startup)
 _ implement automatic updates?
 _   especially with fixes to updates on startup...
 
@@ -36,6 +86,7 @@ _   currently just using .enabled.color because they weren't in ColorSet
 
 _ opening p5jsMode sketch with no local.properties throws an NPE
 _   PDE can't find any files that match the supported extensions
+_   maybe related: https://github.com/processing/processing4/issues/719
 
 _ export to IntelliJ? how tricky?
 _   just copy jars to /lib?
@@ -113,10 +164,6 @@ _   https://github.com/processing/processing/issues/1476#issuecomment-23229990
 _   https://github.com/processing/processing4/wiki/Preferences#proxies
 _ proxies don't support authentication
 _   https://github.com/processing/processing4/issues/644
-_ right-click/ctrl-click for jump to declaration causes hang
-_   https://github.com/processing/processing4/issues/527
-_   https://github.com/processing/processing4/issues/551
-_   https://github.com/processing/processing4/issues/595
 
 
 organize this mess

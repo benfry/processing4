@@ -147,13 +147,11 @@ public class PdeTextAreaPainter extends TextAreaPainter {
   protected void paintErrorLine(Graphics gfx, int line, int x) {
     List<Problem> problems = getEditor().findProblems(line);
     for (Problem problem : problems) {
-      int startOffset = problem.getStartOffset();
-      int stopOffset = problem.getStopOffset();
+      int lineOffsetStart = textArea.getLineStartOffset(line);
+      int lineOffsetStop = textArea.getLineStopOffset(line);
 
-      int lineOffset = textArea.getLineStartOffset(line);
-
-      int wiggleStart = Math.max(startOffset, lineOffset);
-      int wiggleStop = Math.min(stopOffset, textArea.getLineStopOffset(line));
+      int wiggleStart = lineOffsetStart + problem.getStartOffset();
+      int wiggleStop = lineOffsetStart + problem.getStopOffset();
 
       int y = textArea.lineToY(line) + getLineDisplacement();
 
@@ -163,7 +161,10 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         try {
           SyntaxDocument doc = textArea.getDocument();
           badCode = doc.getText(wiggleStart, wiggleStop - wiggleStart);
-          goodCode = doc.getText(lineOffset, wiggleStart - lineOffset);
+          goodCode = doc.getText(
+            lineOffsetStart,
+            wiggleStart - lineOffsetStart
+          );
           //log("paintErrorLine() LineText GC: " + goodCode);
           //log("paintErrorLine() LineText BC: " + badCode);
         } catch (BadLocationException bl) {
@@ -328,8 +329,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         int lineStart = textArea.getLineStartOffset(line);
         int lineEnd = textArea.getLineStopOffset(line);
 
-        int errorStart = problem.getStartOffset();
-        int errorEnd = problem.getStopOffset() + 1;
+        int errorStart = lineStart + problem.getStartOffset();
+        int errorEnd = lineStart + problem.getStopOffset();
 
         int startOffset = Math.max(errorStart, lineStart) - lineStart;
         int stopOffset = Math.min(errorEnd, lineEnd) - lineStart;

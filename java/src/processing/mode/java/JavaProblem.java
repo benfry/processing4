@@ -60,6 +60,10 @@ public class JavaProblem implements Problem {
     this.type = type;
     this.tabIndex = tabIndex;
     this.lineNumber = lineNumber;
+
+    // Default to 0, 1 unless a longer section is specified
+    this.startOffset = 0;
+    this.stopOffset = 1;
   }
 
 
@@ -98,7 +102,6 @@ public class JavaProblem implements Problem {
   public int getStopOffset() {
     return stopOffset;
   }
-
 
   @Override
   public boolean isError() {
@@ -139,6 +142,9 @@ public class JavaProblem implements Problem {
     importSuggestions = a;
   }
 
+  public boolean usesLineOffset() {
+    return false;
+  }
 
   @Override
   public String toString() {
@@ -146,4 +152,5 @@ public class JavaProblem implements Problem {
         + startOffset + ",LN STOP OFF: " + stopOffset + ",PROB: "
         + message;
   }
+
 }

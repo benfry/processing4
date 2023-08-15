@@ -228,18 +228,22 @@ class PdeAdapter {
       Map<URI, List<Diagnostic>> dias = problems.stream()
       .map(prob -> {
         SketchCode code = sketch.getCode(prob.getTabIndex());
+
+        int startOffset = prob.getStartOffset();
+        int endOffset = prob.getStopOffset();
+
         Diagnostic dia = new Diagnostic(
           new Range(
             new Position(
               prob.getLineNumber(),
               PdeAdapter
-                .toLineCol(code.getProgram(), prob.getStartOffset())
+                .toLineCol(code.getProgram(), startOffset)
                 .col - 1
             ),
             new Position(
               prob.getLineNumber(),
               PdeAdapter
-                .toLineCol(code.getProgram(), prob.getStopOffset())
+                .toLineCol(code.getProgram(), endOffset)
                 .col - 1
             )
           ),

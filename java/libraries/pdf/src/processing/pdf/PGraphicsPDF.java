@@ -496,6 +496,14 @@ public class PGraphicsPDF extends PGraphicsJava2D {
   //////////////////////////////////////////////////////////////
 
 
+  public void backgroundImpl() {
+    // Override so that even with alpha, we draw a rectangle.
+    // https://github.com/processing/processing4/issues/740
+    backgroundRect();
+  }
+
+  //
+
   public void loadPixels() {
     nope("loadPixels");
   }

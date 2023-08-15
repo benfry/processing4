@@ -163,7 +163,9 @@ public class ASTUtils {
   }
 
 
-  protected static List<SimpleName> findAllOccurrences(ASTNode root, String bindingKey) {
+  public static List<SimpleName> findAllOccurrences(ASTNode root,
+    String bindingKey
+  ) {
     List<SimpleName> occurrences = new ArrayList<>();
     root.getRoot().accept(new ASTVisitor() {
       @Override

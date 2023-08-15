@@ -98,6 +98,7 @@
     <pathelement location="../app/lib/jna.jar" />
     <pathelement location="../app/lib/jna-platform.jar" />
 
+
     <pathelement location="mode/antlr-4.7.2-complete.jar" />
     <pathelement location="mode/classpath-explorer-1.0.jar" />
     <pathelement location="mode/jsoup-1.7.1.jar" />
@@ -116,6 +117,9 @@
     <pathelement location="mode/org.eclipse.lsp4j.jsonrpc.jar" />
     <pathelement location="mode/org.eclipse.osgi.jar" />
     <pathelement location="mode/org.eclipse.text.jar" />
+    <pathelement location="mode/ST-4.3.4.jar" />
+    <pathelement location="mode/build-flexmark-all.jar" />
+
   </path>
 
   <path id="classpath.test">
