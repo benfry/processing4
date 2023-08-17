@@ -11,11 +11,25 @@
   <property name="antlr_jar"
             value="${basedir}/mode/antlr-4.7.2-complete.jar" />
 
+  <property name="st_jar"
+            value="${basedir}/mode/ST-4.3.4.jar" />
+
+  <property name="flexmark_jar"
+            value="${basedir}/mode/build-flexmark-all.jar" />
+
   <property name="mode_jar"
             value="${basedir}/mode/JavaMode.jar" />
 
   <classloader taskname="antlr">
     <classpath path="${antlr_jar}" />
+  </classloader>
+
+  <classloader taskname="flexmark">
+    <classpath path="${flexmark_jar}" />
+  </classloader>
+
+  <classloader taskname="st">
+    <classpath path="${flexmark_jar}" />
   </classloader>
 
   <target name="clean" description="Clean the build directories">
