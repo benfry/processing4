@@ -2,6 +2,7 @@
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
     <libelement value="jar://$MODULE_DIR$/mode/antlr-4.7.2-complete.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/build-flexmark-all.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/classpath-explorer-1.0.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/com.ibm.icu.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/jdtCompilerAdapter.jar!/" />
@@ -16,6 +17,7 @@
     <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.osgi.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/org.eclipse.text.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/org.netbeans.swing.outline.jar!/" />
+    <libelement value="jar://$MODULE_DIR$/mode/ST-4.3.4.jar!/" />
     <libelement value="jar://$MODULE_DIR$/test/lib/junit-4.8.1.jar!/" />
     <src_description expected_position="0">
       <src_folder value="file://$MODULE_DIR$/generated" expected_position="0" />
