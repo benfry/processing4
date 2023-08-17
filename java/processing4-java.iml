@@ -2,7 +2,6 @@
 <module type="JAVA_MODULE" version="4">
   <component name="EclipseModuleManager">
     <libelement value="jar://$MODULE_DIR$/mode/antlr-4.7.2-complete.jar!/" />
-    <libelement value="jar://$MODULE_DIR$/mode/build-flexmark-all.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/classpath-explorer-1.0.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/com.ibm.icu.jar!/" />
     <libelement value="jar://$MODULE_DIR$/mode/jdtCompilerAdapter.jar!/" />

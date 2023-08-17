@@ -11,25 +11,11 @@
   <property name="antlr_jar"
             value="${basedir}/mode/antlr-4.7.2-complete.jar" />
 
-  <property name="st_jar"
-            value="${basedir}/mode/ST-4.3.4.jar" />
-
-  <property name="flexmark_jar"
-            value="${basedir}/mode/build-flexmark-all.jar" />
-
   <property name="mode_jar"
             value="${basedir}/mode/JavaMode.jar" />
 
   <classloader taskname="antlr">
     <classpath path="${antlr_jar}" />
-  </classloader>
-
-  <classloader taskname="flexmark">
-    <classpath path="${flexmark_jar}" />
-  </classloader>
-
-  <classloader taskname="st">
-    <classpath path="${flexmark_jar}" />
   </classloader>
 
   <target name="clean" description="Clean the build directories">
@@ -111,6 +97,8 @@
     <pathelement location="../app/lib/apple.jar" />
     <pathelement location="../app/lib/jna.jar" />
     <pathelement location="../app/lib/jna-platform.jar" />
+    <pathelement location="../app/lib/build-flexmark-all.jar" />
+    <pathelement location="../app/lib/ST-4.3.4.jar" />
 
 
     <pathelement location="mode/antlr-4.7.2-complete.jar" />
@@ -131,8 +119,6 @@
     <pathelement location="mode/org.eclipse.lsp4j.jsonrpc.jar" />
     <pathelement location="mode/org.eclipse.osgi.jar" />
     <pathelement location="mode/org.eclipse.text.jar" />
-    <pathelement location="mode/ST-4.3.4.jar" />
-    <pathelement location="mode/build-flexmark-all.jar" />
 
   </path>
 
