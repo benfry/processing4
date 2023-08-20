@@ -1006,7 +1006,7 @@ public class PVector implements Serializable {
    * @return the angle in radians
    */
   static public float signedAngle(PVector from, PVector to) {
-    return atan2(to.y, to.x) - atan2(from.y, from.x);
+    return Math.atan2(to.y, to.x) - Math.atan2(from.y, from.x);
   }
 
 
