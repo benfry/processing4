@@ -991,6 +991,24 @@ public class PVector implements Serializable {
     return (float) Math.acos(amt);
   }
 
+  /**
+   *
+   * Get the signed (directed) angle between two (2D) vectors. The angle it returns
+   * will be between -PI and +PI with clockwise being negative and counterclockwise
+   * being positive.
+   *
+   *
+   * @webref pvector:method
+   * @usage web_application
+   * @webBrief  Get signed angle between two vectors (2D only)
+   * @param from the vector from which the angle is measured
+   * @param to the vector to which the angle is measured
+   * @return the angle in radians
+   */
+  static public float signedAngle(PVector from, PVector to) {
+    return atan2(to.y, to.x) - atan2(from.y, from.x);
+  }
+
 
   @Override
   public String toString() {
