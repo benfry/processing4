@@ -110,6 +110,12 @@ class PdeAdapter {
     return new Offset(line, col);
   }
 
+  static Offset toLineEndCol(String s, int offset) {
+    Offset before = toLineCol(s, offset);
+    int remaining = s.substring(offset).indexOf('\n');
+    return new Offset(before.line, before.col + remaining);
+  }
+
   
   /**
    * Converts a tabOffset to a position within a tab
@@ -232,21 +238,32 @@ class PdeAdapter {
         int startOffset = prob.getStartOffset();
         int endOffset = prob.getStopOffset();
 
+        Position startPosition = new Position(
+          prob.getLineNumber(),
+          PdeAdapter
+            .toLineCol(code.getProgram(), startOffset)
+            .col - 1
+        );
+
+        Position stopPosition;
+        if (endOffset == -1) {
+          stopPosition = new Position(
+            prob.getLineNumber(),
+            PdeAdapter
+              .toLineEndCol(code.getProgram(), startOffset)
+              .col - 1
+          );
+        } else {
+          stopPosition = new Position(
+            prob.getLineNumber(),
+            PdeAdapter
+              .toLineCol(code.getProgram(), endOffset)
+              .col - 1
+          );
+        }
+
         Diagnostic dia = new Diagnostic(
-          new Range(
-            new Position(
-              prob.getLineNumber(),
-              PdeAdapter
-                .toLineCol(code.getProgram(), startOffset)
-                .col - 1
-            ),
-            new Position(
-              prob.getLineNumber(),
-              PdeAdapter
-                .toLineCol(code.getProgram(), endOffset)
-                .col - 1
-            )
-          ),
+          new Range(startPosition, stopPosition),
           prob.getMessage()
         );
         dia.setSeverity(
