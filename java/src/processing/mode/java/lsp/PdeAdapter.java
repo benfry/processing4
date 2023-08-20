@@ -112,8 +112,7 @@ class PdeAdapter {
 
   static Offset toLineEndCol(String s, int offset) {
     Offset before = toLineCol(s, offset);
-    int remaining = s.substring(offset).indexOf('\n');
-    return new Offset(before.line, before.col + remaining);
+    return new Offset(before.line, Integer.MAX_VALUE);
   }
 
   

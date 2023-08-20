@@ -1030,11 +1030,9 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
   static public int getProblemEditorLineStop(Problem problem, int lineStart, int lineStop) {
     int stopOffset = problem.getStopOffset();
-    System.out.println("> " + lineStart + " " + lineStop + " " + stopOffset);
     if (stopOffset == -1) {
       stopOffset = lineStop - lineStart;
     }
-    System.out.println("< " + lineStart + " " + lineStop + " " + stopOffset);
     return stopOffset;
   }
 
