@@ -78,7 +78,7 @@ public interface Problem {
    * Get the exact character on which this problem ends in code line relative.
    * 
    * @return Number of characters past the start of the line if known where the
-   *    code associated with the Problem ends.
+   *    code associated with the Problem ends. If -1, should use the whole line.
    */
   public int getStopOffset();
 
