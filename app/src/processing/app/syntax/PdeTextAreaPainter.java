@@ -151,7 +151,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
       int lineOffsetStop = textArea.getLineStopOffset(line);
 
       int wiggleStart = lineOffsetStart + problem.getStartOffset();
-      int wiggleStop = lineOffsetStart + problem.getStopOffset();
+      int stopOffset = Editor.getProblemEditorLineStop(problem, lineOffsetStart, lineOffsetStop);
+      int wiggleStop = lineOffsetStart + stopOffset;
 
       int y = textArea.lineToY(line) + getLineDisplacement();
 
@@ -330,7 +331,8 @@ public class PdeTextAreaPainter extends TextAreaPainter {
         int lineEnd = textArea.getLineStopOffset(line);
 
         int errorStart = lineStart + problem.getStartOffset();
-        int errorEnd = lineStart + problem.getStopOffset();
+        int stopOffsetLine = Editor.getProblemEditorLineStop(problem, lineStart, lineEnd);
+        int errorEnd = lineStart + stopOffsetLine;
 
         int startOffset = Math.max(errorStart, lineStart) - lineStart;
         int stopOffset = Math.min(errorEnd, lineEnd) - lineStart;

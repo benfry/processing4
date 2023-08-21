@@ -1028,6 +1028,14 @@ public abstract class Editor extends JFrame implements RunnerListener {
     }
   }
 
+  static public int getProblemEditorLineStop(Problem problem, int lineStart, int lineStop) {
+    int stopOffset = problem.getStopOffset();
+    if (stopOffset == -1) {
+      stopOffset = lineStop - lineStart;
+    }
+    return stopOffset;
+  }
+
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
@@ -2563,8 +2571,11 @@ public abstract class Editor extends JFrame implements RunnerListener {
     int tabIndex = p.getTabIndex();
     int lineNumber = p.getLineNumber();
     int lineStart = textarea.getLineStartOffset(lineNumber);
+    int lineEnd = textarea.getLineStopOffset(lineNumber);
     int tabToStartOffset = lineStart + p.getStartOffset();
-    int tabToStopOffset = lineStart + p.getStopOffset();
+
+    int lineStopOffset = getProblemEditorLineStop(p, lineStart, lineEnd);
+    int tabToStopOffset = lineStart + lineStopOffset;
     highlight(tabIndex, tabToStartOffset, tabToStopOffset);
   }
 
@@ -2631,7 +2642,8 @@ public abstract class Editor extends JFrame implements RunnerListener {
         .filter(p -> {
           int pStartLine = p.getLineNumber();
           int lineOffset = textarea.getLineStartOffset(pStartLine);
-          int pEndOffset = lineOffset + p.getStopOffset();
+          int stopOffset = p.getStopOffset();
+          int pEndOffset = lineOffset + (stopOffset == -1 ? 0 : stopOffset);
           int pEndLine = textarea.getLineOfOffset(pEndOffset);
           
           return line >= pStartLine && line <= pEndLine;

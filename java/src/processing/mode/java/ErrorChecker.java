@@ -199,7 +199,7 @@ public class ErrorChecker {
       String badCode = ps.getPdeCode(in);
       int line = ps.tabOffsetToTabLine(in.tabIndex, in.startTabOffset);
       JavaProblem p = JavaProblem.fromIProblem(iproblem, in.tabIndex, line, badCode);
-      p.setPDEOffsets(0, iproblem.getSourceEnd() - iproblem.getSourceStart());
+      p.setPDEOffsets(0, -1);
       return p;
     }
     return null;
