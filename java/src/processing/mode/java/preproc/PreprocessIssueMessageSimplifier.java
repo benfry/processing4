@@ -31,6 +31,9 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.stringtemplate.v4.*;
+
+
 
 /**
  * Utility class that generates localized error messages for incorrect sketch syntax.
@@ -89,7 +92,13 @@ public class PreprocessIssueMessageSimplifier {
       retStr = DefaultErrorLocalStrSet.get().get(stringName).orElse(stringName);
     }
 
-    return String.format(errStr, retStr);
+    // String isSyntaxError = (errStr.contains("error"))? "error" :"statement" ;
+    ST messageTemplate = new ST (errStr, '$', '$');	
+
+
+    messageTemplate.add("statement", retStr);
+
+    return messageTemplate.render();
   }
 
   /**
@@ -196,8 +205,11 @@ public class PreprocessIssueMessageSimplifier {
    * @return Semi-localized message.
    */
   private static String getLocalizedGenericError(String unlocalized) {
-    String template = getLocalStr("editor.status.error_on");
-    return String.format(template, unlocalized);
+
+    ST messageTemplate = new ST(getLocalStr("editor.status.error_on"), '$', '$');
+    messageTemplate.add("statement",  unlocalized);
+    
+    return messageTemplate.render();
   }
 
   /* ==================================
@@ -280,12 +292,17 @@ public class PreprocessIssueMessageSimplifier {
       if (count % 2 == 0) {
         return Optional.empty();
       } else {
-        String newMessage = String.format(
-            getLocalStr("editor.status.missing.default").replace("%c", "%s"),
-            token
-        );
+        // String newMessage = String.format(
+        //     getLocalStr("editor.status.missing.default").replace("%c", "%s"),
+        //     token
+        // );
+        
+        ST messageTemplate = new ST (getLocalStr("editor.status.missing.default"), '$', '$');
+        messageTemplate.add("character",token);
         return Optional.of(
-            new PdeIssueEmitter.IssueMessageSimplification(newMessage)
+            new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
+        // return Optional.of(
+        //     new PdeIssueEmitter.IssueMessageSimplification(newMessage)
         );
       }
     }
@@ -358,13 +375,20 @@ public class PreprocessIssueMessageSimplifier {
         missingToken = token2;
       }
 
-      String newMessage = String.format(
-          getLocalStr("editor.status.missing.default")
-              .replace("%c", "%s"), missingToken);
+      // String newMessage = String.format(
+      //     getLocalStr("editor.status.missing.default")
+      //         .replace("%c", "%s"), missingToken);
 
+              ST messageTemplate = new ST (getLocalStr("editor.status.missing.default"), '$', '$');
+          messageTemplate.add("character",missingToken);
+  
       return Optional.of(
-          new PdeIssueEmitter.IssueMessageSimplification(newMessage)
+          new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
       );
+
+      // return Optional.of(
+      //     new PdeIssueEmitter.IssueMessageSimplification(newMessage)
+      // );
     }
 
   }
@@ -424,21 +448,31 @@ public class PreprocessIssueMessageSimplifier {
     @Override
     public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       if (pattern.matcher(message).find()) {
-        String newMessage = String.format(
-            hintTemplate,
-            getOffendingArea(message)
-        );
+        // String newMessage = String.format(
+        //     hintTemplate,
+        //     getOffendingArea(message)
+        // );
+
+
+        ST messageTemplate = new ST (hintTemplate,'$','$');
+        messageTemplate.add("statement",getOffendingArea(message));
+        messageTemplate.add("linenumber",getOffendingArea(message));
 
         return Optional.of(
-            new PdeIssueEmitter.IssueMessageSimplification(newMessage, getAttributeToPrior())
+            new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render(), getAttributeToPrior())
         );
+
+        // return Optional.of(
+        //     new PdeIssueEmitter.IssueMessageSimplification(newMessage, getAttributeToPrior())
+        // );
       } else {
         return Optional.empty();
       }
     }
 
     /**
-     * Determine if this issue should be attributed to the prior token.
+     * Determine if this issue should be git reset --hard origin/<branch-name>
+ to the prior token.
      *
      * @return True if should be attributed to prior token. False otherwise.
      */
@@ -582,12 +616,13 @@ public class PreprocessIssueMessageSimplifier {
   protected PreprocIssueMessageSimplifierStrategy createMissingIdentifierSimplifierStrategy() {
     return (message, line) -> {
       if (message.toLowerCase().contains("missing identifier at")) {
-        String newMessage = String.format(
-            getLocalStr("editor.status.missing.name"),
-            message.replace("missing Identifier at", "")
-        );
+        
+        ST messageTemplate = new ST(getLocalStr("editor.status.missing.name"), '$', '$');
+        messageTemplate.add("statement",  message.replace("missing Identifier at", ""));
+        messageTemplate.add("linenumber", line);
+
         return Optional.of(
-            new PdeIssueEmitter.IssueMessageSimplification(newMessage)
+            new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
         );
       } else {
         return Optional.empty();
@@ -610,12 +645,16 @@ public class PreprocessIssueMessageSimplifier {
           missingPiece = "character";
         }
 
-        String langTemplate = getLocalStr("editor.status.missing.default")
-            .replace("%c", "%s");
+        // String langTemplate = getLocalStr("editor.status.missing.default")
+        //     .replace("%c", "%s");
 
-        String newMessage = String.format(langTemplate, missingPiece);
+        // String newMessage = String.format(langTemplate, missingPiece);
 
-        return Optional.of(new PdeIssueEmitter.IssueMessageSimplification(newMessage));
+        ST messageTemplate = new ST(getLocalStr("editor.status.missing.default"), '$', '$');
+        messageTemplate.add("character",  missingPiece);
+        messageTemplate.add("linenumber", line);
+
+        return Optional.of(new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render()));
       } else {
         return Optional.empty();
       }
@@ -628,13 +667,17 @@ public class PreprocessIssueMessageSimplifier {
   protected PreprocIssueMessageSimplifierStrategy createExtraneousInputSimplifierStrategy() {
     return (message, line) -> {
       if (message.toLowerCase().contains("extraneous")) {
-        String innerMsg = getOffendingArea(message);
+        // String innerMsg = getOffendingArea(message);
 
-        String newMessageOuter = getLocalStr("editor.status.extraneous");
-        String newMessage = String.format(newMessageOuter, innerMsg);
+        // String newMessageOuter = getLocalStr("editor.status.extraneous");
+        // String newMessage = String.format(newMessageOuter, innerMsg);
+
+        ST messageTemplate = new ST(getLocalStr("editor.status.extraneous"), '$', '$');
+        messageTemplate.add("statement", getOffendingArea(message));
+        messageTemplate.add("linenumber", line);
 
         return Optional.of(
-            new PdeIssueEmitter.IssueMessageSimplification(newMessage)
+            new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
         );
       } else {
         return Optional.empty();
@@ -651,14 +694,19 @@ public class PreprocessIssueMessageSimplifier {
       if (message.toLowerCase().contains("mismatched input")) {
         Matcher matcher = parser.matcher(message);
 
-        String newMessage = String.format(
-            getLocalStr("editor.status.mismatched"),
-            matcher.find() ? matcher.group(1) : message
-        );
+        // String newMessage = String.format(
+        //     getLocalStr("editor.status.mismatched"),
+        //     matcher.find() ? matcher.group(1) : message
+        // );
+
+        
+        ST messageTemplate = new ST( getLocalStr("editor.status.mismatched"), '$', '$');
+        messageTemplate.add("statement", matcher.find() ? matcher.group(1) : message);
+        messageTemplate.add("linenumber", line);
 
         return Optional.of(
             new PdeIssueEmitter.IssueMessageSimplification(
-                newMessage
+                messageTemplate.render()
             )
         );
       } else {
@@ -675,8 +723,12 @@ public class PreprocessIssueMessageSimplifier {
     @Override
     public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       if (message.contains("viable alternative")) {
+
+        // ST messageTemplate = new ST(getLocalStr("$statement$"));
+        // messageTemplate.add("statement",  getOffendingArea(message));
+
         String newMessage = String.format(
-            getLocalizedGenericError("%s"),
+            getLocalizedGenericError("$statement$"),
             getOffendingArea(message)
         );
         return Optional.of(
@@ -1027,15 +1079,15 @@ public class PreprocessIssueMessageSimplifier {
      */
     private DefaultErrorLocalStrSet() {
       localizations.put("editor.status.error", "Error");
-      localizations.put("editor.status.error.syntax", "Syntax Error - %s");
-      localizations.put("editor.status.bad.assignment", "Error on variable assignment near %s?");
-      localizations.put("editor.status.bad.identifier", "Identifier cannot start with digits near %s?");
-      localizations.put("editor.status.bad.parameter", "Error on parameter or method declaration near %s?");
-      localizations.put("editor.status.extraneous", "Unexpected extra code near %s?");
-      localizations.put("editor.status.mismatched", "Missing operator or semicolon near %s?");
-      localizations.put("editor.status.missing.name", "Missing name near %s?");
-      localizations.put("editor.status.missing.type", "Missing name or type near %s?");
-      localizations.put("editor.status.missing.default", "Missing '%s'?");
+      localizations.put("editor.status.error.syntax", "Syntax Error - TEST$statement$");
+      localizations.put("editor.status.bad.assignment", "Error on variable assignment near $statement$?");
+      localizations.put("editor.status.bad.identifier", "Identifier cannot start with digits near $statement$?");
+      localizations.put("editor.status.bad.parameter", "Error on parameter or method declaration near $statement$?");
+      localizations.put("editor.status.extraneous", "Unexpected extra code near $statement$?");
+      localizations.put("editor.status.mismatched", "Missing operator or semicolon near $statement$?");
+      localizations.put("editor.status.missing.name", "Missing name near $statement$?");
+      localizations.put("editor.status.missing.type", "Missing name or type near $statement$?");
+      localizations.put("editor.status.missing.default", "Missing '$character$'?");
       localizations.put("editor.status.missing.right_curly_bracket", "Missing '}'");
       localizations.put("editor.status.missing.left_curly_bracket", "Missing '{'");
     }
