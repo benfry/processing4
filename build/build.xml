@@ -536,6 +536,9 @@
       <classpath file="../app/lib/jna-platform.jar" />
       <classpath file="../app/lib/ant.jar" />
       <classpath file="../app/lib/ant-launcher.jar" />
+      <classpath file="../app/lib/ant-launcher.jar" />
+      <classpath file="../app/lib/build-flexmark-all.jar" />
+      <classpath file="../app/lib/ST-4.3.4.jar" />
       <classpath file="../app/lib/flatlaf.jar" />
 
 
