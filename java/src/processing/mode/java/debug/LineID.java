@@ -49,6 +49,7 @@ public class LineID implements DocumentListener {
 
 
   public LineID(String fileName, int lineIdx) {
+    System.out.println("fileName: " + fileName);
     this.fileName = fileName;
     this.lineIdx = lineIdx;
   }

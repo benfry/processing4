@@ -11,7 +11,7 @@ public class PreprocessIssueMessageSimplifierTest {
   public void testAssignment() {
     String input = "List<ColoredCircle> =";
     String output = PreprocessIssueMessageSimplifier.get().simplify(input, 123).getMessage();
-    Assert.assertTrue(output.contains("assignment"));
+    Assert.assertTrue(output.contains("assignment")&&!(output.contains("$statement$") || output.contains("$character$") || output.contains("$linenumber$")));
   }
 
   @Test
@@ -19,14 +19,14 @@ public class PreprocessIssueMessageSimplifierTest {
     String input = "List<ColoredCircle> 9";
     String output = PreprocessIssueMessageSimplifier.get().simplify(input, 123).getMessage();
     System.out.println("output:"+output);
-    Assert.assertTrue(output.contains("digit"));
+    Assert.assertTrue(output.contains("digit")&&!(output.contains("$statement$") || output.contains("$character$") || output.contains("$linenumber$")));
   }
 
   @Test
   public void testBadParamLead() {
     String input = "x,";
     String output = PreprocessIssueMessageSimplifier.get().simplify(input, 123).getMessage();
-    Assert.assertTrue(output.contains("parameter"));
+    Assert.assertTrue(output.contains("parameter")&&!(output.contains("$statement$") || output.contains("$character$") || output.contains("$linenumber$")));
   }
 
   @Test
@@ -41,7 +41,7 @@ public class PreprocessIssueMessageSimplifierTest {
     String input = "List<ColoredCircle circles";
     String output = PreprocessIssueMessageSimplifier.get().simplify(input, 123).getMessage();
     System.out.println("testCaret output:" + output);
-    Assert.assertTrue(output.contains(">"));
+    Assert.assertTrue(output.contains(">")&&!(output.contains("$statement$") || output.contains("$character$") || output.contains("$linenumber$")));
   }
 
   @Test
@@ -49,7 +49,7 @@ public class PreprocessIssueMessageSimplifierTest {
     String input = "missing Identifier at '{'";
     String output = PreprocessIssueMessageSimplifier.get().simplify(input, 123).getMessage();
     System.out.println("testMissingIdentifieroutput:" + output);
-    Assert.assertTrue(output.contains("{"));
+    Assert.assertTrue(output.contains("{")&&!(output.contains("$statement$") || output.contains("$character$") || output.contains("$linenumber$")));
   }
 
   @Test

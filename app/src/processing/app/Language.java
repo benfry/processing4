@@ -27,6 +27,9 @@ import java.util.*;
 import processing.core.PApplet;
 import processing.data.StringList;
 
+// import org.stringtemplate.v4.*;
+
+
 
 /**
  * Internationalization (I18N) and Localization (L10N)
@@ -200,6 +203,7 @@ public class Language {
 
   /** Get translation from bundles. */
   static public String text(String key) {
+
     String value = get(key);
     if (value == null) {
       // MissingResourceException and null values
@@ -210,10 +214,13 @@ public class Language {
 
 
   static public String interpolate(String key, Object... arguments) {
+
+
     String value = get(key);
     if (value == null) {
       return key;
     }
+
     return String.format(value, arguments);
   }
 

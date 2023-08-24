@@ -131,9 +131,8 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   public class friendlyErrorPopup{
 
-    private String messageText = "It looks like either a class name or semicolon is missing near 'asdfsda' on line 2!<br><br><b>Hint:</b> <br>Either a [class](https://processing.org/reference/class.html) was not given a name or a [semicolon](https://processing.org/reference/semicolon.html) is missing.<br><br><b>Suggestion:</b> <br>If the name was forgotten, add it and ensure that it does not start with a number. Make sure it only includes letters, numbers, dollar signs ($) and underscores (_). Also check that the name is not a keyword that is part of the language like \"true\", \"class\" or \"setup\" . If you are missing a semicolon, check the ends of the [statements](https://processing.org/examples/statementscomments.html) near 'if (' and line '43234234'.<br><br><b>For more:</b> [Variable Examples](https://processing.org/examples/variables.html)";
     private JFrame popupFrame;
-    final int PROCESSING_SAYS_OFFSET = 5;
+    final int PROCESSING_SAYS_OFFSET = 6;
   
     String markdownToHtml(String target) {
       MutableDataSet options = new MutableDataSet();
@@ -141,7 +140,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
       HtmlRenderer renderer = HtmlRenderer.builder(options).build();
       Node document = parser.parse(target);
       String html =  renderer.render(document);
-      html = "<div style=\"font-family: Source Code PRO;color:font-size: 15px " + "#0d335a" + ";\"> <br><b>🔵Processing says:</b>" + html + "</div>" ;
+      html = "<div style=\"font-family: Source Code PRO;color:font-size: 13px " + "#0d335a" + ";\"> <br><b>🔵Processing says:</b>" + html + "</div>" ;
       return html;
     }
   
@@ -188,7 +187,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
     JScrollPane scrollPane = new JScrollPane(errorPane);
   
     //not actually necessary but it allows the window resizing to work
-    errorPane.setFont(new Font("Source Code PRO", Font.PLAIN, 15));
+    errorPane.setFont(new Font("Source Code PRO", Font.PLAIN, 13));
     errorPane.setText(messageText);
     errorPane.setBackground(Color.decode("#fafcff"));
     errorPane.setEditable(false);
@@ -457,7 +456,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
         newMessage = message.substring(0,indexOfNewLine);
 
     }
-    System.out.println("newMessage: "+newMessage);
     this.message = newMessage;
     this.mode = mode;
     url = findURL(newMessage);

@@ -87,17 +87,15 @@ public class PreprocessIssueMessageSimplifier {
     if (Platform.isAvailable()) {
       errStr = Language.text("editor.status.error.syntax");
       retStr = Language.text(stringName);
+
     } else {
       errStr = DefaultErrorLocalStrSet.get().get("editor.status.error.syntax").orElse("Error");
       retStr = DefaultErrorLocalStrSet.get().get(stringName).orElse(stringName);
     }
 
-    // String isSyntaxError = (errStr.contains("error"))? "error" :"statement" ;
     ST messageTemplate = new ST (errStr, '$', '$');	
-
-
     messageTemplate.add("statement", retStr);
-
+  
     return messageTemplate.render();
   }
 
@@ -209,6 +207,7 @@ public class PreprocessIssueMessageSimplifier {
     ST messageTemplate = new ST(getLocalStr("editor.status.error_on"), '$', '$');
     messageTemplate.add("statement",  unlocalized);
     
+
     return messageTemplate.render();
   }
 
@@ -292,17 +291,11 @@ public class PreprocessIssueMessageSimplifier {
       if (count % 2 == 0) {
         return Optional.empty();
       } else {
-        // String newMessage = String.format(
-        //     getLocalStr("editor.status.missing.default").replace("%c", "%s"),
-        //     token
-        // );
         
         ST messageTemplate = new ST (getLocalStr("editor.status.missing.default"), '$', '$');
         messageTemplate.add("character",token);
         return Optional.of(
             new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
-        // return Optional.of(
-        //     new PdeIssueEmitter.IssueMessageSimplification(newMessage)
         );
       }
     }
@@ -375,10 +368,6 @@ public class PreprocessIssueMessageSimplifier {
         missingToken = token2;
       }
 
-      // String newMessage = String.format(
-      //     getLocalStr("editor.status.missing.default")
-      //         .replace("%c", "%s"), missingToken);
-
               ST messageTemplate = new ST (getLocalStr("editor.status.missing.default"), '$', '$');
           messageTemplate.add("character",missingToken);
   
@@ -448,23 +437,15 @@ public class PreprocessIssueMessageSimplifier {
     @Override
     public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       if (pattern.matcher(message).find()) {
-        // String newMessage = String.format(
-        //     hintTemplate,
-        //     getOffendingArea(message)
-        // );
-
 
         ST messageTemplate = new ST (hintTemplate,'$','$');
         messageTemplate.add("statement",getOffendingArea(message));
-        messageTemplate.add("linenumber",getOffendingArea(message));
+        messageTemplate.add("linenumber",line);
 
         return Optional.of(
             new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render(), getAttributeToPrior())
         );
-
-        // return Optional.of(
-        //     new PdeIssueEmitter.IssueMessageSimplification(newMessage, getAttributeToPrior())
-        // );
+        
       } else {
         return Optional.empty();
       }
@@ -588,6 +569,9 @@ public class PreprocessIssueMessageSimplifier {
       if (!matches) {
         return Optional.empty();
       }
+
+
+      System.out.println( "getLocalStr(\"editor.status.missing.left_curly_bracket\"): " + getLocalStr("editor.status.missing.left_curly_bracket"));
 
       return Optional.of(new PdeIssueEmitter.IssueMessageSimplification(
           getLocalStr("editor.status.missing.left_curly_bracket")
@@ -724,13 +708,10 @@ public class PreprocessIssueMessageSimplifier {
     public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       if (message.contains("viable alternative")) {
 
-        // ST messageTemplate = new ST(getLocalStr("$statement$"));
-        // messageTemplate.add("statement",  getOffendingArea(message));
+        ST messageTemplate = new ST(getLocalStr("$statement$"));
+        messageTemplate.add("statement",  getOffendingArea(message));
+        String newMessage = messageTemplate.render();
 
-        String newMessage = String.format(
-            getLocalizedGenericError("$statement$"),
-            getOffendingArea(message)
-        );
         return Optional.of(
             new PdeIssueEmitter.IssueMessageSimplification(newMessage)
         );
@@ -1079,7 +1060,7 @@ public class PreprocessIssueMessageSimplifier {
      */
     private DefaultErrorLocalStrSet() {
       localizations.put("editor.status.error", "Error");
-      localizations.put("editor.status.error.syntax", "Syntax Error - TEST$statement$");
+      localizations.put("editor.status.error.syntax", "Syntax Error - $statement$");
       localizations.put("editor.status.bad.assignment", "Error on variable assignment near $statement$?");
       localizations.put("editor.status.bad.identifier", "Identifier cannot start with digits near $statement$?");
       localizations.put("editor.status.bad.parameter", "Error on parameter or method declaration near $statement$?");
