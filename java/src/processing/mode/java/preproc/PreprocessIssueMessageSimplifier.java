@@ -106,7 +106,6 @@ public class PreprocessIssueMessageSimplifier {
    * @return An improved error message or the originalMessage if no improvements could be made.
    */
   public PdeIssueEmitter.IssueMessageSimplification simplify(String originalMessage, int line) {
-    System.out.println("originalMessage: " + originalMessage);
     Optional<PdeIssueEmitter.IssueMessageSimplification> matching = strategies.stream()
         .map((x) -> x.simplify(originalMessage, line))
         .filter(Optional::isPresent)
@@ -564,10 +563,6 @@ public class PreprocessIssueMessageSimplifier {
       if (!matches) {
         return Optional.empty();
       }
-
-
-      System.out.println( "getLocalStr(\"editor.status.missing.left_curly_bracket\"): " + getLocalStr("editor.status.missing.left_curly_bracket"));
-
       return Optional.of(new PdeIssueEmitter.IssueMessageSimplification(
           getLocalStr("editor.status.missing.left_curly_bracket")
       ));
