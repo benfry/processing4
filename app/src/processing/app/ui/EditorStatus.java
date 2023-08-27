@@ -129,12 +129,12 @@ public class EditorStatus extends BasicSplitPaneDivider {
   public boolean isFriendly = false;
   Thread thread;
 
-  public class friendlyErrorPopup{
+  public class FriendlyErrorPopup{
 
     private JFrame popupFrame;
     final int PROCESSING_SAYS_OFFSET = 6;
   
-    String markdownToHtml(String target) {
+    private String markdownToHtml(String target) {
       MutableDataSet options = new MutableDataSet();
       Parser parser = Parser.builder(options).build();
       HtmlRenderer renderer = HtmlRenderer.builder(options).build();
@@ -144,95 +144,83 @@ public class EditorStatus extends BasicSplitPaneDivider {
       return html;
     }
   
-    public friendlyErrorPopup(String messageText){
+    public FriendlyErrorPopup(String messageText){
         
-        int firstLineIndex = messageText.indexOf("<br>");
-        String firstSentence = messageText.substring(0,firstLineIndex);
-        int lineCounter = 0;
-        int newLineCount = 0;
-        String pureText = messageText;
-  
-        Pattern newLineCounter = Pattern.compile("<br>");
-        Matcher newLineMatcher = newLineCounter.matcher(pureText);
-        
-        Pattern linkSkipper = Pattern.compile("\\[([^\\]]+)\\]\\([^\\)]+\\)");
-        Matcher linkSkipperMatcher = linkSkipper.matcher(pureText);
-        
-        // allows for error messages with markdown links in the first line although there currently are none
-        while (linkSkipperMatcher.find()){
-              
-          pureText = pureText.replace(linkSkipperMatcher.group(0),linkSkipperMatcher.group(1));     
-    
-       }
+      int firstLineIndex = messageText.indexOf("<br>");
+      int lineCounter = 0;
+      int newLineCount = 0;
 
-        firstSentence = pureText.substring(0,pureText.indexOf("<br>"));
-        firstLineIndex = firstSentence.length();
-        
-         int index = 0;
+      String firstSentence = messageText.substring(0,firstLineIndex);
+      String pureText = messageText;
 
-         while (index < pureText.length()) {
-            lineCounter++; 
-            int nextBreakIndex = pureText.indexOf("<br>", index);
-            index = (((nextBreakIndex - index) <= firstLineIndex) && nextBreakIndex != -1) ?  nextBreakIndex + 4 : index + firstLineIndex;
-             }
-     
-            pureText = pureText.replaceAll("<br>","");   
+      Pattern newLineCounter = Pattern.compile("<br>");
+      Pattern linkSkipper = Pattern.compile("\\[([^\\]]+)\\]\\([^\\)]+\\)");
+      Matcher newLineMatcher = newLineCounter.matcher(pureText);
+      Matcher linkSkipperMatcher = linkSkipper.matcher(pureText);
       
-        
-      messageText = markdownToHtml(messageText);
-  
-    JEditorPane errorPane = new JEditorPane();
-    errorPane.setContentType("text/html");
-  
-    JScrollPane scrollPane = new JScrollPane(errorPane);
-  
-    //not actually necessary but it allows the window resizing to work
-    errorPane.setFont(new Font("Source Code PRO", Font.PLAIN, 13));
-    errorPane.setText(messageText);
-    errorPane.setBackground(Color.decode("#fafcff"));
-    errorPane.setEditable(false);
-    java.awt.FontMetrics fontMetrics = errorPane.getFontMetrics(errorPane.getFont());
-    
-    int popupWidth  = fontMetrics.stringWidth(firstSentence) - 25;
-    int popupHeight = (lineCounter + PROCESSING_SAYS_OFFSET) * fontMetrics.getHeight();
-  
-    errorPane.addHyperlinkListener((event) -> {
-      HyperlinkEvent.EventType eventType = event.getEventType();
-      boolean linkClicked = eventType == HyperlinkEvent.EventType.ACTIVATED;
-      if (linkClicked) {
-        String url = event.getURL().toString();
-        URI targetUri = URI.create(url);
-  
-        try {
-          Desktop.getDesktop().browse(targetUri);
-        }
-        catch(IOException e) {
-        }
+      // allows for error messages with markdown links in the first line although there currently are none
+      while (linkSkipperMatcher.find()){
+        pureText = pureText.replace(linkSkipperMatcher.group(0),linkSkipperMatcher.group(1));     
       }
-    }
-    );
-  
-    JFrame frame = new JFrame("[classname.pde]");
-  
-    Border paddingBorder = BorderFactory.createEmptyBorder(0, 20, 0, 0); // Customize the padding as needed
-    Border border = BorderFactory.createLineBorder(java.awt.Color.decode("#58a2d1"), 10); // Customize the border as needed\
-    Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
-    errorPane.setBorder(compoundBorder);
-  
-    // Set the preferred size for the scroll pane
-    scrollPane.setBorder(null);
-    frame.setSize(popupWidth, popupHeight);
-  
-    // Create a container panel to hold the scroll pane
-    JPanel containerPanel = new JPanel(new BorderLayout());
-    containerPanel.add(scrollPane, BorderLayout.CENTER);
-  
-    frame.setContentPane(containerPanel);
-  
-    frame.setVisible(true);
-  
-    }
 
+      firstSentence = pureText.substring(0,pureText.indexOf("<br>"));
+      firstLineIndex = firstSentence.length();
+      
+      int index = 0;
+
+      while (index < pureText.length()) {
+        lineCounter++; 
+        int nextBreakIndex = pureText.indexOf("<br>", index);
+        index = (((nextBreakIndex - index) <= firstLineIndex) && nextBreakIndex != -1) ?  nextBreakIndex + 4 : index + firstLineIndex;
+        }
+  
+      pureText = pureText.replaceAll("<br>","");   
+      messageText = markdownToHtml(messageText);
+
+      JEditorPane errorPane = new JEditorPane();
+      errorPane.setContentType("text/html");
+  
+      JScrollPane scrollPane = new JScrollPane(errorPane);
+  
+      errorPane.setFont(new Font("Source Code PRO", Font.PLAIN, 13));  //not actually necessary but it allows the window resizing to work
+      errorPane.setText(messageText);
+      errorPane.setBackground(Color.decode("#fafcff"));
+      errorPane.setEditable(false);
+
+      java.awt.FontMetrics fontMetrics = errorPane.getFontMetrics(errorPane.getFont());
+      
+      int popupWidth  = fontMetrics.stringWidth(firstSentence) - 25;
+      int popupHeight = (lineCounter + PROCESSING_SAYS_OFFSET) * fontMetrics.getHeight();
+  
+      errorPane.addHyperlinkListener((event) -> {
+        HyperlinkEvent.EventType eventType = event.getEventType();
+        boolean linkClicked = eventType == HyperlinkEvent.EventType.ACTIVATED;
+        if (linkClicked) {
+          String url = event.getURL().toString();
+          URI targetUri = URI.create(url);
+          try {
+            Desktop.getDesktop().browse(targetUri);
+          }
+          catch(IOException e) {
+          }
+        }
+      });
+
+      JFrame frame = new JFrame("Error Details");
+    
+      Border paddingBorder = BorderFactory.createEmptyBorder(0, 20, 0, 0); 
+      Border border = BorderFactory.createLineBorder(java.awt.Color.decode("#58a2d1"), 10);
+      Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
+      
+      errorPane.setBorder(compoundBorder);
+      scrollPane.setBorder(null);
+      frame.setSize(popupWidth, popupHeight);
+    
+      JPanel containerPanel = new JPanel(new BorderLayout());
+      containerPanel.add(scrollPane, BorderLayout.CENTER);
+      frame.setContentPane(containerPanel);
+      frame.setVisible(true);
+    }
   }
 
   public EditorStatus(BasicSplitPaneUI ui, Editor editor) {
@@ -454,7 +442,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
         this.isFriendly = true;
         this.friendlyMessage = message;
         newMessage = message.substring(0,indexOfNewLine);
-
     }
     this.message = newMessage;
     this.mode = mode;
@@ -594,8 +581,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
     drawButton(g, 0, glyph, alpha);
     
     // draw more info button
-    
-
     if (isFriendly) {
       ImageIcon glyph2;
       glyph2 = moreInfoIcon[mode];
@@ -603,17 +588,13 @@ public class EditorStatus extends BasicSplitPaneDivider {
         alpha = btnRolloverAlpha;
       } else if (mouseState == MORE_INFO_PRESSED) {
         alpha = btnPressedAlpha;
-        friendlyErrorPopup friendlyPopup = new friendlyErrorPopup(friendlyMessage);
+        FriendlyErrorPopup friendlyPopup = new FriendlyErrorPopup(friendlyMessage);
       } 
       else {
         alpha = btnEnabledAlpha;
       }
-      
       drawButton(g,2,moreInfoIcon[mode],alpha);
-
     }
-
-  
   }
 
   /**

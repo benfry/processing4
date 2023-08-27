@@ -209,7 +209,7 @@ public class CompileErrorMessageSimplifier {
           // 2nd arg is method name, 3rd arg is correct param list
           if (args[2].trim().length() == 0) {
             // the case where no params are needed.
-            result = Language.interpolate("editor.status.undefined_method", args[1]);
+            result = Language.interpolate("editor.status.empty_param", args[1]);
 
           } else {
             result = Language.interpolate("editor.status.wrong_param",
@@ -220,7 +220,7 @@ public class CompileErrorMessageSimplifier {
 
       case IProblem.UndefinedField:
         if (args.length > 0) {
-          result = Language.interpolate("editor.status.wrong_param", args[0]);
+          result = Language.interpolate("editor.status.undef_global_var", args[0]);
         }
         break;
 

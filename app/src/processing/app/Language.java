@@ -27,9 +27,6 @@ import java.util.*;
 import processing.core.PApplet;
 import processing.data.StringList;
 
-// import org.stringtemplate.v4.*;
-
-
 
 /**
  * Internationalization (I18N) and Localization (L10N)

@@ -34,7 +34,6 @@ import java.util.regex.Pattern;
 import org.stringtemplate.v4.*;
 
 
-
 /**
  * Utility class that generates localized error messages for incorrect sketch syntax.
  *
@@ -107,6 +106,7 @@ public class PreprocessIssueMessageSimplifier {
    * @return An improved error message or the originalMessage if no improvements could be made.
    */
   public PdeIssueEmitter.IssueMessageSimplification simplify(String originalMessage, int line) {
+    System.out.println("originalMessage: " + originalMessage);
     Optional<PdeIssueEmitter.IssueMessageSimplification> matching = strategies.stream()
         .map((x) -> x.simplify(originalMessage, line))
         .filter(Optional::isPresent)
@@ -207,7 +207,6 @@ public class PreprocessIssueMessageSimplifier {
     ST messageTemplate = new ST(getLocalStr("editor.status.error_on"), '$', '$');
     messageTemplate.add("statement",  unlocalized);
     
-
     return messageTemplate.render();
   }
 
@@ -368,16 +367,12 @@ public class PreprocessIssueMessageSimplifier {
         missingToken = token2;
       }
 
-              ST messageTemplate = new ST (getLocalStr("editor.status.missing.default"), '$', '$');
-          messageTemplate.add("character",missingToken);
+      ST messageTemplate = new ST (getLocalStr("editor.status.missing.default"), '$', '$');
+      messageTemplate.add("character",missingToken);
   
       return Optional.of(
           new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
       );
-
-      // return Optional.of(
-      //     new PdeIssueEmitter.IssueMessageSimplification(newMessage)
-      // );
     }
 
   }
@@ -629,11 +624,6 @@ public class PreprocessIssueMessageSimplifier {
           missingPiece = "character";
         }
 
-        // String langTemplate = getLocalStr("editor.status.missing.default")
-        //     .replace("%c", "%s");
-
-        // String newMessage = String.format(langTemplate, missingPiece);
-
         ST messageTemplate = new ST(getLocalStr("editor.status.missing.default"), '$', '$');
         messageTemplate.add("character",  missingPiece);
         messageTemplate.add("linenumber", line);
@@ -651,11 +641,7 @@ public class PreprocessIssueMessageSimplifier {
   protected PreprocIssueMessageSimplifierStrategy createExtraneousInputSimplifierStrategy() {
     return (message, line) -> {
       if (message.toLowerCase().contains("extraneous")) {
-        // String innerMsg = getOffendingArea(message);
-
-        // String newMessageOuter = getLocalStr("editor.status.extraneous");
-        // String newMessage = String.format(newMessageOuter, innerMsg);
-
+      
         ST messageTemplate = new ST(getLocalStr("editor.status.extraneous"), '$', '$');
         messageTemplate.add("statement", getOffendingArea(message));
         messageTemplate.add("linenumber", line);
@@ -678,12 +664,6 @@ public class PreprocessIssueMessageSimplifier {
       if (message.toLowerCase().contains("mismatched input")) {
         Matcher matcher = parser.matcher(message);
 
-        // String newMessage = String.format(
-        //     getLocalStr("editor.status.mismatched"),
-        //     matcher.find() ? matcher.group(1) : message
-        // );
-
-        
         ST messageTemplate = new ST( getLocalStr("editor.status.mismatched"), '$', '$');
         messageTemplate.add("statement", matcher.find() ? matcher.group(1) : message);
         messageTemplate.add("linenumber", line);
