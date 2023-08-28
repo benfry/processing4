@@ -694,7 +694,7 @@ public class PreprocessIssueMessageSimplifier {
         messageTemplate.add("statement",  getOffendingArea(message));
 
         return Optional.of(
-            new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render();)
+            new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
         );
       } else {
         return Optional.of(
