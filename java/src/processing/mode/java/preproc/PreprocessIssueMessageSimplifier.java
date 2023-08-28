@@ -690,8 +690,8 @@ public class PreprocessIssueMessageSimplifier {
     public Optional<PdeIssueEmitter.IssueMessageSimplification> simplify(String message, int line) {
       if (message.contains("viable alternative")) {
 
-        ST messageTemplate = new ST(getLocalStr("$statement$"));
-        messageTemplate.add("statement",  getOffendingArea(message));
+        ST messageTemplate = new ST(getLocalStr("editor.status.error.syntaxdefault"), '$', '$');
+        messageTemplate.add("statement", getOffendingArea(message));
 
         return Optional.of(
             new PdeIssueEmitter.IssueMessageSimplification(messageTemplate.render())
