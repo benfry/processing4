@@ -126,8 +126,17 @@ public class EditorStatus extends BasicSplitPaneDivider {
   boolean collapsed = false;
 
   boolean indeterminate;
-  public boolean isFriendly = false;
   Thread thread;
+
+  /**
+   * The isFriendly instance variable that determines whether a given error passed in is friendly (has additional information to be shown in a popup).
+   */
+  public boolean isFriendly = false;
+
+
+  /*
+   * Popup that shows additional info about the error message that shows up in the status bar.
+   */
 
   public class FriendlyErrorPopup{
 
@@ -143,7 +152,11 @@ public class EditorStatus extends BasicSplitPaneDivider {
       html = "<div style=\"font-family: Source Code PRO;color:font-size: 13px " + "#0d335a" + ";\"> <br><b>🔵Processing says:</b>" + html + "</div>" ;
       return html;
     }
-  
+
+  /** 
+   * Constructor for FriendlyErrorPopup class.
+   * @param messageText a String containing the full message to be simplified.
+  */
     public FriendlyErrorPopup(String messageText){
         
       int firstLineIndex = messageText.indexOf("<br>");
@@ -223,6 +236,13 @@ public class EditorStatus extends BasicSplitPaneDivider {
     }
   }
 
+ /**
+ * A constructor for the EditorStatus class. It interacts with the BasicSplitPaneUI and Editor objects
+ * to handle mouse events for opening URLs, copying text to the clipboard, and toggling collapse.
+ *
+ * @param ui an instance of the BasicSplitPaneUI class.
+ * @param editor the editor panel associated with this status.
+ */
   public EditorStatus(BasicSplitPaneUI ui, Editor editor) {
     super(ui);
     this.editor = editor;
@@ -372,7 +392,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
     return null;
   }
 
-
   protected void updateTheme() {
     urlEnabledAlpha = 255 * Theme.getInteger("status.url.enabled.alpha") / 100;
     urlRolloverAlpha = 255 * Theme.getInteger("status.url.rollover.alpha") / 100;
@@ -434,6 +453,11 @@ public class EditorStatus extends BasicSplitPaneDivider {
     repaint();
   }
 
+  /**
+   * The message method updates the message and mode instance variables and determines whether the error message being passed in is friendly or not.
+   * @param message the error message being passed in.
+   * @param mode represents whether the message is friendly or not. 
+   */
   public void message(String message, int mode) { 
     
     String newMessage = message;
