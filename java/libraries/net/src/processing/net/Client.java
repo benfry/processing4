@@ -41,7 +41,7 @@ import java.nio.charset.StandardCharsets;
  * @webBrief The client class is used to create client Objects which connect to a server to exchange data
  * @instanceName client any variable of type Client
  * @usage Application
- * @see_external LIB_net/clientEvent
+ * @see_external clientEvent
  */
 @SuppressWarnings("unused")
 public class Client implements Runnable {
