@@ -4,13 +4,19 @@ X   https://github.com/processing/processing4/issues/768
 
 
 contribs
-X Movie throwing NullPointerException with usedBuffers with P2D/P3D
+X Movie throwing NullPointerException with usedBuffers with P2D/P3D from @Clarvel
 X   https://github.com/processing/processing4/issues/760
 X   https://github.com/processing/processing4/pull/759
+X Fix beginContour() when used with createShape() from @hx2A
+X   https://github.com/processing/processing4/issues/643
+X   https://github.com/processing/processing4/pull/776
 
 
 _ JNA version of getting resolution
 _   https://stackoverflow.com/a/32588375
+_ note about running outside the PDE if OpenGL shows up 2x too small
+_   System.setProperty("sun.java2d.uiScale.enabled", "false");
+_   from https://github.com/processing/processing4/issues/763
 
 _ args passed to main() aren't working
 _   (there was a bug report for this already?)

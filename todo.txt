@@ -4,6 +4,8 @@
 contribs
 X migrate from altool to notarytool from @CyberFlameGO
 X   https://github.com/processing/processing4/pull/757
+X more fixes for error checking from @sampottinger
+X   https://github.com/processing/processing4/pull/772
 
 
 high priority
