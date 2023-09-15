@@ -1772,12 +1772,32 @@ public class PShape implements PConstants {
   protected void drawGeometry(PGraphics g) {
     // get cache object using g.
     g.beginShape(kind);
+
+    boolean insideContour = false;
+    int codeIndex = 0;
+
     if (style) {
       for (int i = 0; i < vertexCount; i++) {
+        if (vertexCodes[codeIndex++] == BREAK) {
+          if (insideContour) {
+            g.endContour();
+          }
+          g.beginContour();
+          insideContour = true;
+        }
+
         g.vertex(vertices[i]);
       }
     } else {
       for (int i = 0; i < vertexCount; i++) {
+        if (vertexCodes[codeIndex++] == BREAK) {
+          if (insideContour) {
+            g.endContour();
+          }
+          g.beginContour();
+          insideContour = true;
+        }
+
         float[] vert = vertices[i];
         if (vert.length < 3 || vert[Z] == 0) {
           g.vertex(vert[X], vert[Y]);
@@ -1785,6 +1805,10 @@ public class PShape implements PConstants {
           g.vertex(vert[X], vert[Y], vert[Z]);
         }
       }
+    }
+
+    if (insideContour) {
+      g.endContour();
     }
     g.endShape(close ? CLOSE : OPEN);
   }
