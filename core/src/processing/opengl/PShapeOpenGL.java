@@ -2455,7 +2455,7 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public int getSpecular(int index) {
-    if (family == GROUP) {
+    if (family != GROUP) {
       if (root.tessUpdate) {
         return PGL.nativeToJavaARGB(tessGeo.polySpecular[firstPolyVertex + index]);
       } else {
@@ -2528,7 +2528,7 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public int getEmissive(int index) {
-    if (family == GROUP) {
+    if (family != GROUP) {
       if (root.tessUpdate) {
         return PGL.nativeToJavaARGB(tessGeo.polyEmissive[firstPolyVertex + index]);
       } else {
@@ -2602,7 +2602,7 @@ public class PShapeOpenGL extends PShape {
 
   @Override
   public float getShininess(int index) {
-    if (family == GROUP) {
+    if (family != GROUP) {
       if (root.tessUpdate) {
         return tessGeo.polyShininess[firstPolyVertex + index];
       } else {
