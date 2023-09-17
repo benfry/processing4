@@ -37,8 +37,8 @@
   <property name="jdk.folder" value="jdk-${jdk.detail}+${jdk.build}" />
 
 
-  <!-- Require Java ${train} everywhere. -->
-  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, that you're using Ant 1.10.14 or later, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
+  <!-- Require Java ${train} everywhere. Ant works back to 1.10.7 at least. -->
+  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, that you're using Ant 1.10.7 or later, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
     <condition>
       <not>
         <or>
