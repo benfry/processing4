@@ -38,7 +38,7 @@
 
 
   <!-- Require Java ${train} everywhere. -->
-  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
+  <fail message="Unsupported Java version: ${java.version}. To build, make sure that Java ${jdk.train} is installed, that you're using Ant 1.10.14 or later, and that JAVA_HOME points at the JDK that you want to use. For instance, on macOS, set it with:${line.separator}export JAVA_HOME=&quot;`/usr/libexec/java_home -v ${jdk.train}`&quot;">
     <condition>
       <not>
         <or>

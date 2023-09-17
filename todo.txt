@@ -1,5 +1,6 @@
 1294 (4.3.1)
-
+X add an extra note about the Ant version
+X   https://github.com/processing/processing4/pull/783
 
 contribs
 X migrate from altool to notarytool from @CyberFlameGO
