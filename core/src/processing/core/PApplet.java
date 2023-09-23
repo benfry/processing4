@@ -2627,16 +2627,15 @@ public class PApplet implements PConstants {
     keyEvent = event;
     key = event.getKey();
     keyCode = event.getKeyCode();
-
+    Long hash = ((long) keyCode << Character.SIZE);
     switch (event.getAction()) {
       case KeyEvent.PRESS -> {
-        Long hash = ((long) keyCode << Character.SIZE) | key;
         if (!pressedKeys.contains(hash)) pressedKeys.add(hash);
         keyPressed = true;
         keyPressed(keyEvent);
       }
       case KeyEvent.RELEASE -> {
-        pressedKeys.remove(((long) keyCode << Character.SIZE) | key);
+        pressedKeys.remove(hash);
         keyPressed = !pressedKeys.isEmpty();
         keyReleased(keyEvent);
       }
