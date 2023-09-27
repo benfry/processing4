@@ -129,9 +129,9 @@ public class EditorStatus extends BasicSplitPaneDivider {
   Thread thread;
 
   /**
-   * The isFriendly instance variable that determines whether a given error passed in is friendly (has additional information to be shown in a popup).
+   * The friendly instance variable that determines whether a given error passed in is friendly (has additional information to be shown in a popup).
    */
-  public boolean isFriendly = false;
+  public boolean friendly = false;
 
 
   /*
@@ -463,7 +463,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
     String newMessage = message;
     int indexOfNewLine = message.indexOf("<br>");
     if (indexOfNewLine != -1) {
-        this.isFriendly = true;
+        this.friendly = true;
         this.friendlyMessage = message;
         newMessage = message.substring(0,indexOfNewLine);
     }
@@ -605,7 +605,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
     drawButton(g, 0, glyph, alpha);
     
     // draw more info button
-    if (isFriendly) {
+    if (friendly) {
       ImageIcon glyph2;
       glyph2 = moreInfoIcon[mode];
       if (mouseState == MORE_INFO_ROLLOVER) {
