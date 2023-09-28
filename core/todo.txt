@@ -1,6 +1,7 @@
 1294 (4.3.1)
 X difference in text position with processing 4.3, JAVA2D vs P2D
 X   https://github.com/processing/processing4/issues/768
+X add iterators to JSONArray
 
 
 contribs
@@ -13,6 +14,9 @@ X   https://github.com/processing/processing4/pull/776
 X Fix `PShape.getSpecular()`, `getEmissive()`, and `getShininess()` from @hx2A
 X   https://github.com/processing/processing4/issues/781
 X   https://github.com/processing/processing4/pull/782
+_ Fix hash of keyEvent being added to pressedKeys
+_   https://github.com/processing/processing4/issues/779
+_   https://github.com/processing/processing4/pull/786
 
 
 _ JNA version of getting resolution

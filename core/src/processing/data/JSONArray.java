@@ -42,6 +42,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import processing.core.PApplet;
 
@@ -558,6 +559,111 @@ public class JSONArray {
     } catch (Exception e) {
       return defaultValue;
     }
+  }
+
+
+  public Iterable<Boolean> booleanValues() {
+    return () -> new Iterator<>() {
+      int index = -1;
+
+      public Boolean next() {
+        return getBoolean(++index);
+      }
+
+      public boolean hasNext() {
+        return index+1 < size();
+      }
+    };
+  }
+
+
+  public Iterable<Integer> intValues() {
+    return () -> new Iterator<>() {
+      int index = -1;
+
+      public Integer next() {
+        return getInt(++index);
+      }
+
+      public boolean hasNext() {
+        return index+1 < size();
+      }
+    };
+  }
+
+
+  public Iterable<Long> longValues() {
+    return () -> new Iterator<>() {
+      int index = -1;
+
+      public Long next() {
+        return getLong(++index);
+      }
+
+      public boolean hasNext() {
+        return index+1 < size();
+      }
+    };
+  }
+
+
+  public Iterable<Float> floatValues() {
+    return () -> new Iterator<>() {
+      int index = -1;
+
+      public Float next() {
+        return getFloat(++index);
+      }
+
+      public boolean hasNext() {
+        return index+1 < size();
+      }
+    };
+  }
+
+
+  public Iterable<Double> doubleValues() {
+    return () -> new Iterator<>() {
+      int index = -1;
+
+      public Double next() {
+        return getDouble(++index);
+      }
+
+      public boolean hasNext() {
+        return index+1 < size();
+      }
+    };
+  }
+
+
+  public Iterable<JSONArray> arrayValues() {
+    return () -> new Iterator<>() {
+      int index = -1;
+
+      public JSONArray next() {
+        return getJSONArray(++index);
+      }
+
+      public boolean hasNext() {
+        return index+1 < size();
+      }
+    };
+  }
+
+
+  public Iterable<JSONObject> objectValues() {
+    return () -> new Iterator<>() {
+      int index = -1;
+
+      public JSONObject next() {
+        return getJSONObject(++index);
+      }
+
+      public boolean hasNext() {
+        return index+1 < size();
+      }
+    };
   }
 
 
