@@ -20,13 +20,13 @@ public class MissingVariableNameMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("char = ';");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("char = ';", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class test {");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class test {", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

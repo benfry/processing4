@@ -10,6 +10,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="mode/antlr-4.7.2-complete.jar"/>
+	<classpathentry kind="lib" path="mode/build-flexmark-all.jar"/>
 	<classpathentry kind="lib" path="mode/classpath-explorer-1.0.jar"/>
 	<classpathentry kind="lib" path="mode/com.ibm.icu.jar"/>
 	<classpathentry kind="lib" path="mode/jdtCompilerAdapter.jar"/>
@@ -24,6 +25,7 @@
 	<classpathentry kind="lib" path="mode/org.eclipse.osgi.jar"/>
 	<classpathentry kind="lib" path="mode/org.eclipse.text.jar"/>
 	<classpathentry kind="lib" path="mode/org.netbeans.swing.outline.jar"/>
+	<classpathentry kind="lib" path="mode/ST-4.3.4.jar"/>
 	<classpathentry kind="lib" path="test/lib/junit-4.13.2.jar"/>
 	<classpathentry kind="lib" path="test/lib/hamcrest-core-1.3.jar"/>
 	<classpathentry kind="output" path="bin"/>

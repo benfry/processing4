@@ -1214,6 +1214,7 @@ public class PdeParseTreeListener extends ProcessingBaseListener {
     }
 
     String newCode = String.format(settingsOuterTemplate, settingsInner.toString());
+    System.out.println("newCode: " + newCode);
 
     classBodyWriter.addEmptyLine();
     classBodyWriter.addCodeLine(newCode);

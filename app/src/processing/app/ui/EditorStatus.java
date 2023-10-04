@@ -35,15 +35,30 @@ import java.awt.Graphics2D;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.Desktop;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicSplitPaneDivider;
 import javax.swing.plaf.basic.BasicSplitPaneUI;
+import javax.swing.JScrollPane;
+import javax.swing.event.*;
+import javax.swing.border.Border;
+
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.net.URI;
+
+import java.io.IOException;
 
 import processing.app.Platform;
 import processing.app.Preferences;
 import processing.core.PApplet;
 
+import com.vladsch.flexmark.html.HtmlRenderer;
+import com.vladsch.flexmark.parser.Parser;
+import com.vladsch.flexmark.util.ast.Node;
+import com.vladsch.flexmark.util.data.MutableDataSet;
 
 /**
  * Panel just below the editing area that contains status messages.
@@ -68,6 +83,7 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   int mode;
   String message = "";
+  String friendlyMessage = "";
 
   int messageRight;
   String url;
@@ -79,6 +95,8 @@ public class EditorStatus extends BasicSplitPaneDivider {
   static final int COLLAPSE_PRESSED = 4;
   static final int CLIPBOARD_ROLLOVER = 5;
   static final int CLIPBOARD_PRESSED = 6;
+  static final int MORE_INFO_ROLLOVER = 7;
+  static final int MORE_INFO_PRESSED = 8;
   int mouseState;
 
   Font font;
@@ -91,6 +109,8 @@ public class EditorStatus extends BasicSplitPaneDivider {
   ImageIcon[] searchIcon;
   ImageIcon[] collapseIcon;
   ImageIcon[] expandIcon;
+  ImageIcon[] moreInfoIcon;
+
 
   float btnEnabledAlpha;
   float btnRolloverAlpha;
@@ -108,7 +128,121 @@ public class EditorStatus extends BasicSplitPaneDivider {
   boolean indeterminate;
   Thread thread;
 
+  /**
+   * The friendly instance variable that determines whether a given error passed in is friendly (has additional information to be shown in a popup).
+   */
+  public boolean friendly = false;
 
+
+  /*
+   * Popup that shows additional info about the error message that shows up in the status bar.
+   */
+
+  public class FriendlyErrorPopup{
+
+    private JFrame popupFrame;
+    final int PROCESSING_SAYS_OFFSET = 6;
+  
+    private String markdownToHtml(String target) {
+      MutableDataSet options = new MutableDataSet();
+      Parser parser = Parser.builder(options).build();
+      HtmlRenderer renderer = HtmlRenderer.builder(options).build();
+      Node document = parser.parse(target);
+      String html =  renderer.render(document);
+      html = "<div style=\"font-family: Source Code PRO;color:font-size: 13px " + "#0d335a" + ";\"> <br><b>🔵Processing says:</b>" + html + "</div>" ;
+      return html;
+    }
+
+  /** 
+   * Constructor for FriendlyErrorPopup class.
+   * @param messageText a String containing the full message to be simplified.
+  */
+    public FriendlyErrorPopup(String messageText){
+        
+      int firstLineIndex = messageText.indexOf("<br>");
+      int lineCounter = 0;
+      int newLineCount = 0;
+
+      String firstSentence = messageText.substring(0,firstLineIndex);
+      String pureText = messageText;
+
+      Pattern newLineCounter = Pattern.compile("<br>");
+      Pattern linkSkipper = Pattern.compile("\\[([^\\]]+)\\]\\([^\\)]+\\)");
+      Matcher newLineMatcher = newLineCounter.matcher(pureText);
+      Matcher linkSkipperMatcher = linkSkipper.matcher(pureText);
+      
+      // allows for error messages with markdown links in the first line although there currently are none
+      while (linkSkipperMatcher.find()){
+        pureText = pureText.replace(linkSkipperMatcher.group(0),linkSkipperMatcher.group(1));     
+      }
+
+      firstSentence = pureText.substring(0,pureText.indexOf("<br>"));
+      firstLineIndex = firstSentence.length();
+      
+      int index = 0;
+
+      while (index < pureText.length()) {
+        lineCounter++; 
+        int nextBreakIndex = pureText.indexOf("<br>", index);
+        index = (((nextBreakIndex - index) <= firstLineIndex) && nextBreakIndex != -1) ?  nextBreakIndex + 4 : index + firstLineIndex;
+        }
+  
+      pureText = pureText.replaceAll("<br>","");   
+      messageText = markdownToHtml(messageText);
+
+      JEditorPane errorPane = new JEditorPane();
+      errorPane.setContentType("text/html");
+  
+      JScrollPane scrollPane = new JScrollPane(errorPane);
+  
+      errorPane.setFont(new Font("Source Code PRO", Font.PLAIN, 13));  //not actually necessary but it allows the window resizing to work
+      errorPane.setText(messageText);
+      errorPane.setBackground(Color.decode("#fafcff"));
+      errorPane.setEditable(false);
+
+      java.awt.FontMetrics fontMetrics = errorPane.getFontMetrics(errorPane.getFont());
+      
+      int popupWidth  = fontMetrics.stringWidth(firstSentence) - 25;
+      int popupHeight = (lineCounter + PROCESSING_SAYS_OFFSET) * fontMetrics.getHeight();
+  
+      errorPane.addHyperlinkListener((event) -> {
+        HyperlinkEvent.EventType eventType = event.getEventType();
+        boolean linkClicked = eventType == HyperlinkEvent.EventType.ACTIVATED;
+        if (linkClicked) {
+          String url = event.getURL().toString();
+          URI targetUri = URI.create(url);
+          try {
+            Desktop.getDesktop().browse(targetUri);
+          }
+          catch(IOException e) {
+          }
+        }
+      });
+
+      JFrame frame = new JFrame("Error Details");
+    
+      Border paddingBorder = BorderFactory.createEmptyBorder(0, 20, 0, 0); 
+      Border border = BorderFactory.createLineBorder(java.awt.Color.decode("#58a2d1"), 10);
+      Border compoundBorder = BorderFactory.createCompoundBorder(border, paddingBorder);
+      
+      errorPane.setBorder(compoundBorder);
+      scrollPane.setBorder(null);
+      frame.setSize(popupWidth, popupHeight);
+    
+      JPanel containerPanel = new JPanel(new BorderLayout());
+      containerPanel.add(scrollPane, BorderLayout.CENTER);
+      frame.setContentPane(containerPanel);
+      frame.setVisible(true);
+    }
+  }
+
+ /**
+ * A constructor for the EditorStatus class. It interacts with the BasicSplitPaneUI and Editor objects
+ * to handle mouse events for opening URLs, copying text to the clipboard, and toggling collapse.
+ *
+ * @param ui an instance of the BasicSplitPaneUI class.
+ * @param editor the editor panel associated with this status.
+ */
   public EditorStatus(BasicSplitPaneUI ui, Editor editor) {
     super(ui);
     this.editor = editor;
@@ -222,17 +356,25 @@ public class EditorStatus extends BasicSplitPaneDivider {
         } else if (url != null && mouseX > LEFT_MARGIN && mouseX < messageRight) {
           mouseState = pressed ? URL_PRESSED : URL_ROLLOVER;
         }
+        else if (mouseX > sizeW - (buttonEach * 3) && mouseX < sizeW - (2 * buttonEach)) {
+          mouseState = pressed ? MORE_INFO_PRESSED : MORE_INFO_ROLLOVER;
+        }
       }
     }
 
     // only change on the rollover, no need to update on press
     switch (mouseState) {
     case CLIPBOARD_ROLLOVER:
+      setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+      break;
     case URL_ROLLOVER:
       setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       break;
     case COLLAPSE_ROLLOVER:
       setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+      break;
+    case MORE_INFO_ROLLOVER:
+      setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
       break;
     case NONE:
       setCursor(Cursor.getPredefinedCursor(Cursor.MOVE_CURSOR));
@@ -249,7 +391,6 @@ public class EditorStatus extends BasicSplitPaneDivider {
     }
     return null;
   }
-
 
   protected void updateTheme() {
     urlEnabledAlpha = 255 * Theme.getInteger("status.url.enabled.alpha") / 100;
@@ -268,6 +409,8 @@ public class EditorStatus extends BasicSplitPaneDivider {
     searchIcon = renderIcons("status/search", stateColors);
     collapseIcon = renderIcons("status/console-collapse", stateColors);
     expandIcon = renderIcons("status/console-expand", stateColors);
+    moreInfoIcon = renderIcons("status/more-info", stateColors);
+
 
     btnEnabledAlpha = Theme.getInteger("status.button.enabled.alpha") / 100f;
     btnRolloverAlpha = Theme.getInteger("status.button.rollover.alpha") / 100f;
@@ -310,12 +453,23 @@ public class EditorStatus extends BasicSplitPaneDivider {
     repaint();
   }
 
-
-  public void message(String message, int mode) {
-    this.message = message;
+  /**
+   * The message method updates the message and mode instance variables and determines whether the error message being passed in is friendly or not.
+   * @param message the error message being passed in.
+   * @param mode represents whether the message is friendly or not. 
+   */
+  public void message(String message, int mode) { 
+    
+    String newMessage = message;
+    int indexOfNewLine = message.indexOf("<br>");
+    if (indexOfNewLine != -1) {
+        this.friendly = true;
+        this.friendlyMessage = message;
+        newMessage = message.substring(0,indexOfNewLine);
+    }
+    this.message = newMessage;
     this.mode = mode;
-
-    url = findURL(message);
+    url = findURL(newMessage);
     repaint();
   }
 
@@ -449,8 +603,23 @@ public class EditorStatus extends BasicSplitPaneDivider {
       alpha = btnEnabledAlpha;
     }
     drawButton(g, 0, glyph, alpha);
+    
+    // draw more info button
+    if (friendly) {
+      ImageIcon glyph2;
+      glyph2 = moreInfoIcon[mode];
+      if (mouseState == MORE_INFO_ROLLOVER) {
+        alpha = btnRolloverAlpha;
+      } else if (mouseState == MORE_INFO_PRESSED) {
+        alpha = btnPressedAlpha;
+        FriendlyErrorPopup friendlyPopup = new FriendlyErrorPopup(friendlyMessage);
+      } 
+      else {
+        alpha = btnEnabledAlpha;
+      }
+      drawButton(g,2,moreInfoIcon[mode],alpha);
+    }
   }
-
 
   /**
    * @param pos A zero-based button index with 0 as the rightmost button

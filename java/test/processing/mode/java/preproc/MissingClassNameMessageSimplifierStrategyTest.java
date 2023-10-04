@@ -20,19 +20,19 @@ public class MissingClassNameMessageSimplifierStrategyTest {
 
   @Test
   public void testPresentExtends() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class extends Base\n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class extends Base\n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentNoExtends() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("class \n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

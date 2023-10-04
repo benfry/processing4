@@ -20,13 +20,13 @@ public class MissingParenMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = ((5 + 4) / 3");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = ((5 + 4) / 3", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = (y/5)/(\n4)");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = (y/5)/(\n4)", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

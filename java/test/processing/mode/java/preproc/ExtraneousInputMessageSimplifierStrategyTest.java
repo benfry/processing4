@@ -21,13 +21,13 @@ public class ExtraneousInputMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("extraneous input 'test' expecting ';'");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("extraneous input 'test' expecting ';'", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("String x = \" \\\" \"");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("String x = \" \\\" \"", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 

@@ -20,25 +20,25 @@ public class BadParamMessageSimplifierStrategyTest {
 
   @Test
   public void testPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void test (int x,\ny) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void test (int x,\ny) \n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentUnderscore() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void test (int x,\ny_y) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void test (int x,\ny_y) \n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testPresentVarType() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void test (int x,\nint) \n{");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("void test (int x,\nint) \n{", 123);
     Assert.assertTrue(msg.isPresent());
   }
 
   @Test
   public void testNotPresent() {
-    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y");
+    Optional<PdeIssueEmitter.IssueMessageSimplification> msg = strategy.simplify("int x = y", 123);
     Assert.assertTrue(msg.isEmpty());
   }
 
