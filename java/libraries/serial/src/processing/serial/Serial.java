@@ -39,9 +39,8 @@ import jssc.*;
  *
  * @webref serial
  * @webBrief Class for sending and receiving data using the serial communication protocol
- * @instanceName serial any variable of type Serial
  * @usage Application
- * @see_external LIB_serial/serialEvent
+ * @see_external serialEvent
  */
 public class Serial implements SerialPortEventListener {
   PApplet parent;
