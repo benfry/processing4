@@ -22,14 +22,14 @@
 package processing.app;
 
 import java.awt.EventQueue;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.io.*;
+import java.util.*;
 
-import processing.core.PApplet;
+import processing.app.ui.Toolkit;
+import processing.core.*;
 
 
 /**
@@ -129,6 +129,13 @@ public class SingleInstance {
 
 
   static boolean sendArguments(String[] args) {  //, long timeout) {
+    boolean toRet;
+    Messages.log("Proxy settings will now be temporarily erased");
+    System.clearProperty("http.proxyHost");
+    System.clearProperty("https.proxyHost");
+    System.clearProperty("socksProxyHost");
+    System.clearProperty("java.net.useSystemProxies"); // bye bye settings for now
+    Messages.log("Proxy settings have been erased.");
     try {
       Messages.log("Checking to see if Processing is already running");
       int port = Preferences.getInteger(SERVER_PORT);
@@ -148,12 +155,23 @@ public class SingleInstance {
         }
         writer.flush();
         writer.close();
-        return true;
+        toRet = true; // Critical that proxy is reset
       }
     } catch (IOException e) {
       Messages.err("Error sending commands to other instance", e);
     }
     Messages.log("Processing is not already running (or could not connect)");
-    return false;
+    toRet = false; // Critical that proxy is reset
+    Messages.log("Proxy settings are returning");
+    if (Preferences.get("proxy.system").equals("true")) {
+      // Use the system proxy settings by default
+      // https://github.com/processing/processing/issues/2643
+      System.setProperty("java.net.useSystemProxies", "true");
+    }
+    Preferences.handleProxy("http", "http.proxyHost", "http.proxyPort");
+    Preferences.handleProxy("https", "https.proxyHost", "https.proxyPort");
+    Preferences.handleProxy("socks", "socksProxyHost", "socksProxyPort");
+    Messages.log("Proxy settings are back.");
+    return toRet;
   }
 }
