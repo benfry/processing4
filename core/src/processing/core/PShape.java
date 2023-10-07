@@ -1783,6 +1783,7 @@ public class PShape implements PConstants {
             g.endContour();
           }
           g.beginContour();
+          codeIndex++;
           insideContour = true;
         }
 
@@ -1795,6 +1796,7 @@ public class PShape implements PConstants {
             g.endContour();
           }
           g.beginContour();
+          codeIndex++;
           insideContour = true;
         }
 
