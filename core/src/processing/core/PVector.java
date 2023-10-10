@@ -868,6 +868,16 @@ public class PVector implements Serializable {
   }
 
 
+  /**
+   *
+   * Set the heading of this vector to the value used for the <b>angle</b> parameter.
+   *
+   *
+   * @webref pvector:method
+   * @usage web_application
+   * @param angle the new heading for this vector
+   * @webBrief  Set the heading of the vector
+   */
   public PVector setHeading(float angle) {
     float m = mag();
     x = (float) (m * Math.cos(angle));
