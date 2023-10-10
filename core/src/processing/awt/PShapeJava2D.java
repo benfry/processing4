@@ -33,6 +33,9 @@ import java.awt.image.ColorModel;
 import java.awt.image.Raster;
 import java.awt.image.WritableRaster;
 
+import java.util.Arrays;
+import java.awt.Color;
+
 import processing.core.PApplet;
 import processing.core.PGraphics;
 import processing.core.PShapeSVG;
@@ -96,16 +99,30 @@ public class PShapeJava2D extends PShapeSVG {
   */
 
 
-  static class LinearGradientPaint implements Paint {
+  public static class LinearGradientPaint implements Paint {
     float x1, y1, x2, y2;
     float[] offset;
     int[] color;
+    Color[] colors;
     int count;
     float opacity;
+    AffineTransform xform;
+
+
+    public static enum CycleMethod {
+      NO_CYCLE,
+      REFLECT,
+      REPEAT
+    }
+
+    public static enum ColorSpaceType {
+      SRGB,
+      LINEAR_RGB
+    }
 
     public LinearGradientPaint(float x1, float y1, float x2, float y2,
                                float[] offset, int[] color, int count,
-                               float opacity) {
+                               float opacity, AffineTransform xform) {
       this.x1 = x1;
       this.y1 = y1;
       this.x2 = x2;
@@ -114,6 +131,13 @@ public class PShapeJava2D extends PShapeSVG {
       this.color = color;
       this.count = count;
       this.opacity = opacity;
+      this.xform = xform;
+
+      //set an array of type Color
+      this.colors = new Color[this.color.length];
+      for (int i = 0; i < this.color.length; i++) {
+        this.colors[i] = new Color(this.color[i], true);
+      }
     }
 
     public PaintContext createContext(ColorModel cm,
@@ -123,6 +147,35 @@ public class PShapeJava2D extends PShapeSVG {
       Point2D t2 = xform.transform(new Point2D.Float(x2, y2), null);
       return new LinearGradientContext((float) t1.getX(), (float) t1.getY(),
                                        (float) t2.getX(), (float) t2.getY());
+    }
+
+    public Point2D getStartPoint() {
+      return new Point2D.Float(this.x1, this.y1);
+    }
+
+    public Point2D getEndPoint() {
+      return new Point2D.Float(this.x2, this.y2);
+    }
+
+    /* MultipleGradientPaint methods... */
+    public AffineTransform getTransform() {
+      return this.xform;
+    }
+
+    public ColorSpaceType getColorSpace() {
+      return ColorSpaceType.SRGB;
+    }
+    
+    public CycleMethod getCycleMethod() {
+      return CycleMethod.NO_CYCLE;
+    }
+
+    public Color[] getColors() {
+        return Arrays.copyOf(this.colors, this.colors.length);
+    }
+
+    public float[] getFractions() {
+        return Arrays.copyOf(this.offset, this.offset.length);
     }
 
     public int getTransparency() {
@@ -221,16 +274,29 @@ public class PShapeJava2D extends PShapeSVG {
   }
 
 
-  static class RadialGradientPaint implements Paint {
+  public static class RadialGradientPaint implements Paint {
     float cx, cy, radius;
     float[] offset;
     int[] color;
+    Color[] colors;
     int count;
     float opacity;
+    AffineTransform xform;
+
+    public static enum CycleMethod {
+      NO_CYCLE,
+      REFLECT,
+      REPEAT
+    }
+
+    public static enum ColorSpaceType {
+      SRGB,
+      LINEAR_RGB
+    }
 
     public RadialGradientPaint(float cx, float cy, float radius,
                                float[] offset, int[] color, int count,
-                               float opacity) {
+                               float opacity, AffineTransform xform) {
       this.cx = cx;
       this.cy = cy;
       this.radius = radius;
@@ -238,12 +304,54 @@ public class PShapeJava2D extends PShapeSVG {
       this.color = color;
       this.count = count;
       this.opacity = opacity;
+      this.xform = xform;
+
+      //set an array of type Color
+      this.colors = new Color[this.color.length];
+      for (int i = 0; i < this.color.length; i++) {
+        this.colors[i] = new Color(this.color[i], true);
+      }
     }
 
     public PaintContext createContext(ColorModel cm,
                                       Rectangle deviceBounds, Rectangle2D userBounds,
                                       AffineTransform xform, RenderingHints hints) {
       return new RadialGradientContext();
+    }
+
+    public Point2D getCenterPoint() {
+      return new Point2D.Double(this.cx, this.cy);
+    }
+
+    //TODO: investigate how to change a focus point for 0% x of the gradient
+    //for now default to center x/y
+    public Point2D getFocusPoint() {
+      return new Point2D.Double(this.cx, this.cy);
+    }
+
+    public float getRadius() {
+        return this.radius;
+    }
+
+    /* MultipleGradientPaint methods... */
+    public AffineTransform getTransform() {
+      return this.xform;
+    }
+    
+    public ColorSpaceType getColorSpace() {
+      return ColorSpaceType.SRGB;
+    }
+    
+    public CycleMethod getCycleMethod() {
+      return CycleMethod.NO_CYCLE;
+    }
+
+    public Color[] getColors() {
+        return Arrays.copyOf(this.colors, this.colors.length);
+    }
+
+    public float[] getFractions() {
+        return Arrays.copyOf(this.offset, this.offset.length);
     }
 
     public int getTransparency() {
@@ -305,14 +413,14 @@ public class PShapeJava2D extends PShapeSVG {
       LinearGradient grad = (LinearGradient) gradient;
       return new LinearGradientPaint(grad.x1, grad.y1, grad.x2, grad.y2,
                                      grad.offset, grad.color, grad.count,
-                                     opacity);
+                                     opacity, grad.transform);
 
     } else if (gradient instanceof RadialGradient) {
 //      System.out.println("creating radial gradient");
       RadialGradient grad = (RadialGradient) gradient;
       return new RadialGradientPaint(grad.cx, grad.cy, grad.r,
                                      grad.offset, grad.color, grad.count,
-                                     opacity);
+                                     opacity, grad.transform);
     }
     return null;
   }
