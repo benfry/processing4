@@ -269,15 +269,19 @@ run.present.stop.color = #cccccc
 # checker and the contrib manager to run properly in those environments.
 # This changed from proxy.host and proxy.port to proxy.http.host and
 # proxy.http.port in 3.0a8. In addition, https and socks were added.
-proxy.http.host=
-proxy.http.port=
-proxy.https.host=
-proxy.https.port=
-proxy.socks.host=
-proxy.socks.port=
+# This changed back to proxy.host and proxy.port in 4.0b4 because
+# you don't need multiple proxies.
+# The proxy type can be either "http", "https" or "socks".
+proxy.type=
+proxy.host=
+proxy.port=
+proxy.user=
+proxy.passwd=
 # Example of usage (replace 'http' with 'https' or 'socks' as needed)
-#proxy.http.host=proxy.example.com
-#proxy.http.port=8080
+#proxy.type=http
+#proxy.host=proxy.example.com
+#proxy.port=8080
+
 # Whether to use the system proxy by default
 proxy.system=true
 
