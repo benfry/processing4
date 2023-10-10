@@ -1575,7 +1575,6 @@ public class CompletionGenerator {
     ASTNode astRootNode = (ASTNode) ps.compilationUnit.types().get(0);
 
     // If the parsed code contains pde enhancements, take 'em out.
-    // TODO: test this
     TextTransform transform = new TextTransform(pdePhrase);
     transform.addAll(SourceUtil.replaceTypeConstructors(pdePhrase));
     transform.addAll(SourceUtil.replaceHexLiterals(pdePhrase));

@@ -222,4 +222,7 @@ Then copy that `jogl-all-src.jar` file to sit next to the `jogl-all.jar` folder 
 
 ### IntelliJ
 
-Using Eclipse isn't supported, and I've switched to IntelliJ. However, IntelliJ is baffling enough that I don't have good instructions yet on how to develop inside there. If you and IntelliJ have a better relationship than I do, [please help!](https://github.com/processing/processing4/issues/275)
+For IntelliJ, just use the "File/New/Project from Version Control..." from the navbar or the "Get from VCS" button in the Main menu - then select GIT and type in `git clone https://github.com/processing/processing4.git` as the URL. Click "Clone" and the project will be downloaded and opened.
+
+To run Ant tasks like build or run, open the Ant tab (defaults to the very right) and double-click your task. The build output can be seen in the "Messages" tab (select from the bottom tabs).
+
