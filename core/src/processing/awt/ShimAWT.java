@@ -237,7 +237,7 @@ public class ShimAWT implements PConstants {
   }
 
 
-  static public void resizeImage(PImage img, int w, int h) {  // ignore
+  static public void resizeImage(PImage img, int w, int h,int interpolationMode) {  // ignore
     if (w <= 0 && h <= 0) {
       throw new IllegalArgumentException("width or height must be > 0 for resize");
     }
@@ -251,7 +251,7 @@ public class ShimAWT implements PConstants {
     }
 
     BufferedImage bimg =
-      shrinkImage((BufferedImage) img.getNative(), w*img.pixelDensity, h*img.pixelDensity);
+      shrinkImage((BufferedImage) img.getNative(), w*img.pixelDensity, h*img.pixelDensity,interpolationMode);
 
     PImage temp = new PImageAWT(bimg);
     img.pixelWidth = temp.width;
@@ -274,7 +274,8 @@ public class ShimAWT implements PConstants {
   // plus a fix to deal with an infinite loop if images are expanded.
   // https://github.com/processing/processing/issues/1501
   static private BufferedImage shrinkImage(BufferedImage img,
-                                           int targetWidth, int targetHeight) {
+                                           int targetWidth, int targetHeight,
+                                           int interpolationMode) {
     int type = (img.getTransparency() == Transparency.OPAQUE) ?
       BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
     BufferedImage outgoing = img;
@@ -313,8 +314,15 @@ public class ShimAWT implements PConstants {
         scratchImage = new BufferedImage(w, h, type);
         g2 = scratchImage.createGraphics();
       }
+      //convert the passed int value of interpolationMode to the object expected by setRenderingHint
+      Object interpolationModeValue = switch(interpolationMode){
+        case 0 -> RenderingHints.VALUE_INTERPOLATION_NEAREST_NEIGHBOR;
+        //case 1 is the same as the default
+        case 2 -> RenderingHints.VALUE_INTERPOLATION_BICUBIC;
+        default -> RenderingHints.VALUE_INTERPOLATION_BILINEAR;
+      };
       g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
-        RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+              interpolationModeValue);
       g2.drawImage(outgoing, 0, 0, w, h, 0, 0, prevW, prevH, null);
       prevW = w;
       prevH = h;

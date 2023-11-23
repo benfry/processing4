@@ -483,6 +483,11 @@ public interface PConstants {
   int WAIT  = Cursor.WAIT_CURSOR;
 
 
+  //image interpolation modes
+  int NEAREST_NEIGHBOR = 0;
+  int BILINEAR = 1;
+  int BICUBIC = 2;
+
   // hints - hint values are positive for the alternate version,
   // negative of the same value returns to the normal/default state
 
