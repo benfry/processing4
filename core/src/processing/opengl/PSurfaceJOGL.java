@@ -1237,7 +1237,7 @@ public class PSurfaceJOGL implements PSurface {
             y = 8;
           } else if (kind == PConstants.TEXT) {
             x = 16;
-            y = 22;
+            y = 16;
           }
           cursor = new CursorInfo(img, x, y);
           cursors.put(kind, cursor);
