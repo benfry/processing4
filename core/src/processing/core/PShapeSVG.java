@@ -543,7 +543,7 @@ public class PShapeSVG extends PShape {
       if (c == '.' && !isOnDecimal) {
         isOnDecimal = true;
       }
-      else if (isOnDecimal && (c < '0' || c > '9')) {
+      else if (isOnDecimal && (c < '0' || c > '9') && c!='e' && c!='-') {
         pathBuffer.append("|");
         isOnDecimal = c == '.';
       }
