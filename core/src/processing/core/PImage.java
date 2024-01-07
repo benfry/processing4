@@ -1315,7 +1315,13 @@ public class PImage implements PConstants, Cloneable {
           ri++;
           read += pixelWidth;
         }
-        pixels[x+yi] = (ca/sum)<<24 | (cr/sum)<<16 | (cg/sum)<<8 | (cb/sum);
+        
+        try {
+        pixels[x + yi] = (ca / sum) << 24 | (cr / sum) << 16 | (cg / sum) << 8 | (cb / sum);
+        } catch (ArithmeticException e) {
+          
+        }
+
       }
       yi += pixelWidth;
       ymi += pixelWidth;
