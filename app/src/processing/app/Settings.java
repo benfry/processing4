@@ -94,14 +94,18 @@ public class Settings {
     // check for platform-specific properties in the defaults
     String platformExt = "." + Platform.getName();
     int platformExtLength = platformExt.length();
+    HashMap<String,String> tmpMap = new HashMap<>();
     for (String key : table.keySet()) {
       if (key.endsWith(platformExt)) {
         // this is a key specific to a particular platform
         String actualKey = key.substring(0, key.length() - platformExtLength);
         String value = get(key);
-        table.put(actualKey, value);
+        //if the key is specific to this platform and is not the last property then attempting to append it to the map will throw a ConcurrentModificationException
+        //to avoid this we append it to a temporary map that can then be safely merged after the loop is complete
+        tmpMap.put(actualKey, value);
       }
     }
+    table.putAll(tmpMap);
   }
 
 
