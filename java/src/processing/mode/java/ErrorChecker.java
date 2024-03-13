@@ -194,14 +194,29 @@ public class ErrorChecker {
 
 
   static private JavaProblem convertIProblem(IProblem iproblem, PreprocSketch ps) {
-    SketchInterval in = ps.mapJavaToSketch(iproblem);
-    if (in != SketchInterval.BEFORE_START) {
-      String badCode = ps.getPdeCode(in);
-      int line = ps.tabOffsetToTabLine(in.tabIndex, in.startTabOffset);
-      JavaProblem p = JavaProblem.fromIProblem(iproblem, in.tabIndex, line, badCode);
+    String originalFileName = new String(iproblem.getOriginatingFileName());
+    boolean isJavaTab = ps.isJavaTab(originalFileName);
+
+    // Java tabs' content isn't stored in a sketch's combined source code file,
+    // so they are processed differently
+    if (!isJavaTab) {
+      SketchInterval in = ps.mapJavaToSketch(iproblem);
+      if (in != SketchInterval.BEFORE_START) {
+        String badCode = ps.getPdeCode(in);
+        int line = ps.tabOffsetToTabLine(in.tabIndex, in.startTabOffset);
+        JavaProblem p = JavaProblem.fromIProblem(iproblem, in.tabIndex, line, badCode);
+        p.setPDEOffsets(0, -1);
+        return p;
+      }
+    } else {
+      int tabIndex = ps.getJavaTabIndex(originalFileName);
+      int line = iproblem.getSourceLineNumber() - 1;
+
+      JavaProblem p =  JavaProblem.fromIProblem(iproblem, tabIndex, line, "");
       p.setPDEOffsets(0, -1);
       return p;
     }
+
     return null;
   }
 

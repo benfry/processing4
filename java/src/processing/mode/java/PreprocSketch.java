@@ -72,6 +72,16 @@ public class PreprocSketch {
   }
 
 
+  public boolean isJavaTab(String fileName) {
+    return javaFileMapping.containsKey(fileName);
+  }
+
+
+  public int getJavaTabIndex(String fileName) {
+    return javaFileMapping.get(fileName);
+  }
+
+
   public SketchInterval mapJavaToSketch(IProblem iproblem) {
     String originalFile = new String(iproblem.getOriginatingFileName());
     boolean isJavaTab = javaFileMapping.containsKey(originalFile);
