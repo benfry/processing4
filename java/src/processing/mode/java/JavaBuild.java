@@ -1083,7 +1083,7 @@ public class JavaBuild {
       // Full list of modules, let's not commit to all of these unless
       // a compelling argument is made or a reason presents itself.
       //"javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
-      "--add-modules", "javafx.base,javafx.graphics,javafx.swing",
+      "--add-modules", "javafx.base,javafx.graphics,javafx.swing,javafx.controls,javafx.media,javafx.web,javafx.fxml",
 
       // TODO Presumably, this is only because com.sun.* classes are being used?
       // https://github.com/processing/processing4/issues/208
