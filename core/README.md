@@ -1,3 +1,77 @@
+# Processing Core
+
+`Core` contains the implementations of all the functionality that you would use within a Processing sketch, e.g. `size()` and `ellipse()` 
+
+
+## Including the Processing Core library on your project
+Processing’s core libraries are available through [Maven Central](https://central.sonatype.com/artifact/org.processing/core).  
+This allows integration of Processing into Java-based projects using build tools like Maven or Gradle.
+
+> [!IMPORTANT]  
+> Repository https://jogamp.org/deployment/maven must be added to the repository list.
+>
+> This is because the core library depends on some external libraries that are hosted on the aftermentioned repository.  
+> See the [Examples](#Examples) section on how to do this.
+
+## Examples
+Here are some examples on how to add the Processing core library to the Maven and Gradle build systems.  
+All examples consist on two parts:
+1. Adds the https://jogamp.org/deployment/maven repository to the build system to satisfy dependencies needed by the Processing core library.
+2. Adds the Processing core library as a dependency to your project.
+### Maven
+```xml
+<repositories>
+  <repository>
+    <id>jogamp</id>
+    <url>https://jogamp.org/deployment/maven</url>
+  </repository>
+</repositories>
+
+<dependencies>
+  <dependency>
+    <groupId>org.processing</groupId>
+    <artifactId>core</artifactId>
+    <version>4.3.1</version>
+  </dependency>
+</dependencies>
+```
+### Gradle (kotlin)
+```gradle
+repositories {
+  mavenCentral()
+  maven {
+      url = uri("https://jogamp.org/deployment/maven")
+  }
+}
+
+dependencies {
+  implementation("org.processing:core:4.3.1")
+}
+```
+### Gradle (groovy)
+```gradle
+repositories {
+  mavenCentral()
+  maven {
+      url = uri("https://jogamp.org/deployment/maven")
+  }
+}
+
+dependencies {
+  implementation group: 'org.processing', name: 'core', version: '4.3.1'
+}
+```
+
+## Developing for Core
+The easiest way to develop for core, without the need to build the whole project, is to use the `examples/src` sketches. 
+
+## PGraphics Modes
+Documentation on how to develop graphics modes as a library should go here. 
+
+### Other
+Other example snippets on including the library are included in the [Maven Central repo](https://central.sonatype.com/artifact/org.processing/core).  
+Please look up on how to add the custom https://jogamp.org/deployment/maven repository to your build system.
+
 ## There are significant changes to `core` in Processing 3.
 
 

@@ -1,5 +1,23 @@
 # How to Build Processing
 
+This folder contains files for the legacy `Ant` build system. This build system will be removed in the future when we're sure we no longer need it.
+
+## IntelliJ IDEA CE
+
+First, [download the IntelliJ IDEA Community Edition](https://www.jetbrains.com/idea/download/). Make sure to select the "Community Edition", not "Ultimate". The Community Edition is free and built on open-source software. You may need to scroll down to find the download link. Then:
+
+1. Clone the Processing4 repository to your machine locally
+1. Open the cloned repository in IntelliJ IDEA CE
+1. Click `Install Required Plugins` on the bottom right or in the notification tray
+1. Open the `Project Structure` window (`Ctrl+Alt+Shift+S` on Windows/Linux or `⌘;` on macOS)
+2. Go to `Project Settings > Project`
+1. In the SDK Dropdown option, select a JDK version 17 or `Download a JDK`
+1. Select your platform (Windows, MacOS or Linux) in the top right of the window
+1. Click the green Run Icon next to it
+1. Logs can be found in the `messages` or `run` pane on the bottom left of the window
+
+## Manual Approach
+
 The short version:
 
 1. Download and install JDK 17 from <https://adoptium.net/>
@@ -189,23 +207,6 @@ ant linux-dist
 
 Regardless, the distributable ends up in `build/{os}/work` where `{os}` is the target OS.
 
-
-### Code Signing
-
-Mac builds require code signing, due to [Apple requirements](https://support.apple.com/en-us/HT202491) issue. This is not executed by default by `ant dist` or `ant macosx-dist`. One can sign the resulting `.app` file though via:
-
-```
-/usr/bin/codesign --force --sign "Developer ID Application: Certificate Common Name" Processing.app/Contents/PlugIns/jdk-...
-/usr/bin/codesign --force --sign "Developer ID Application: Certificate Common Name" Processing.app
-```
-
-Note that one will need to complete the `jdk-...` string to be something like `jdk-17.0.2+8` depending on the build. Anyway, this will require an [Apple Developer ID](https://developer.apple.com/developer-id/).
-
-This is not strictly required especially if you are using your own app build.
-
-Eventually we'll want to sign [Windows releases](https://github.com/processing/processing4/issues/25), and [exported applications](https://github.com/processing/processing4/issues/173). If you have experience with this, please help!
-
-
 ## Using an IDE for development (Eclipse or IntelliJ)
 
 ### Eclipse
@@ -218,8 +219,3 @@ If you're using Eclipse, it'll complain about the lack of `jogl-all-src.jar`. St
     zip -r ../jogl-all-src.jar src
 
 Then copy that `jogl-all-src.jar` file to sit next to the `jogl-all.jar` folder inside `/path/to/processing/core/library`.
-
-
-### IntelliJ
-
-Using Eclipse isn't supported, and I've switched to IntelliJ. However, IntelliJ is baffling enough that I don't have good instructions yet on how to develop inside there. If you and IntelliJ have a better relationship than I do, [please help!](https://github.com/processing/processing4/issues/275)

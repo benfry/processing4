@@ -2,8 +2,6 @@ package processing.mode.java.preproc;
 
 import java.util.List;
 
-import processing.mode.java.TextTransform;
-
 
 /**
  * Data structure describing the result of preprocessor rewrite.

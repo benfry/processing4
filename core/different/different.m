@@ -1,7 +1,7 @@
 #import <AppKit/AppKit.h>
 #import <Cocoa/Cocoa.h>
-#import <JavaNativeFoundation/JavaNativeFoundation.h>
-
+// #import <JavaNativeFoundation/JavaNativeFoundation.h>
+#include <jni.h>
 
 JNIEXPORT void JNICALL Java_processing_core_ThinkDifferent_hideMenuBar
 (JNIEnv *env, jclass clazz, jboolean visible, jboolean kioskMode)
@@ -23,4 +23,11 @@ JNIEXPORT void JNICALL Java_processing_core_ThinkDifferent_activateIgnoringOther
 (JNIEnv *env, jclass klass)
 {
     [NSApp activateIgnoringOtherApps:true];
+}
+
+
+JNIEXPORT void JNICALL Java_processing_core_ThinkDifferent_activate
+(JNIEnv *env, jclass klass)
+{
+    [NSApp activate];
 }

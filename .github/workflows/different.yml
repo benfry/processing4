@@ -1,0 +1,40 @@
+name: Build libDifferent
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'core/different/different.m'
+      - 'core/different/Makefile'
+
+jobs:
+  build-and-pr:
+    runs-on: macos-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run make in core/different
+        run: |
+          cd core/different
+          make
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: 'Update generated files from make'
+          title: 'Update generated files from make'
+          body: |
+            This PR was automatically created after changes to:
+            - core/different/different.m
+            - core/different/Makefile
+            
+            The `make` command was run and these are the resulting changes.
+          branch: auto-different-updates
+          base: main

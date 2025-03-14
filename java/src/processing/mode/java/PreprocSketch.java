@@ -16,7 +16,8 @@ import java.util.Map;
 import processing.app.Problem;
 import processing.app.Sketch;
 import processing.core.PApplet;
-import processing.mode.java.TextTransform.OffsetMapper;
+import processing.mode.java.preproc.ImportStatement;
+import processing.mode.java.preproc.TextTransform.OffsetMapper;
 
 public class PreprocSketch {
 
@@ -69,6 +70,16 @@ public class PreprocSketch {
   public SketchInterval mapJavaToSketch(ASTNode node) {
     return mapJavaToSketch(node.getStartPosition(),
                            node.getStartPosition() + node.getLength());
+  }
+
+
+  public boolean isJavaTab(String fileName) {
+    return javaFileMapping.containsKey(fileName);
+  }
+
+
+  public int getJavaTabIndex(String fileName) {
+    return javaFileMapping.get(fileName);
   }
 
 

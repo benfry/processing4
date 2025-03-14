@@ -1,0 +1,9 @@
+<Project Sdk="WixToolset.Sdk/5.0.1">
+    <PropertyGroup>
+        <OutputPath>..\build\compose\binaries\main\msi</OutputPath>
+        <OutputName>Processing-$(Version)</OutputName>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="WixToolset.UI.wixext" Version="5.0.1" />
+    </ItemGroup>
+</Project>

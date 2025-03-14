@@ -1,0 +1,35 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+  <Package Name="Processing" Manufacturer="Processing Foundation" Version="$(Version)" UpgradeCode="89d8d7fe-5602-4b12-ba10-0fe78efbd602">
+    <Icon Id="icon.ico" SourceFile="..\..\build\windows\processing.ico" />
+    <Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+    <MediaTemplate EmbedCab="yes" />
+
+    <ui:WixUI Id="WixUI_Mondo" InstallDirectory="INSTALLFOLDER" />
+
+    <WixVariable Id="WixUILicenseRtf" Value="LICENSE.rtf" />
+    <WixVariable Id="WixUIDialogBmp" Value="background.png" />
+    <WixVariable Id="WixUIBannerBmp" Value="banner.png" />
+    <Feature Id="MainApplication" Title="Processing" Level="1">
+        <Files Include="..\build\compose\binaries\main\app\Processing\**" />
+        <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+    <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Processing"/>
+    </Directory>
+    <Directory Id="ProgramFiles64Folder">
+        <Directory Id="INSTALLFOLDER" Name="Processing">
+        </Directory>
+    </Directory>
+    <Component Id="ApplicationShortcut" Guid="b15e6d69-f054-4ec2-aade-8e3756b537d6">
+        <Shortcut Id="ApplicationStartMenuShortcut"
+                  Name="Processing"
+                  Description="My Application Description"
+                  Directory="ApplicationProgramsFolder"
+                  Target="[INSTALLFOLDER]\Processing.exe"
+                  WorkingDirectory="INSTALLFOLDER"/>
+        <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+        <RegistryValue Root="HKCU" Key="Software\Processing Foundation\Processing" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+    </Component>
+  </Package>
+</Wix>

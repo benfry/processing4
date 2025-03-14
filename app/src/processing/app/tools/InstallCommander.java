@@ -157,8 +157,10 @@ public class InstallCommander implements Tool {
         return name.toLowerCase().endsWith(".jar") && !name.startsWith(".");
       }
     });
-    for (File jar : jars) {
-      list.append(jar.getAbsolutePath());
+    if (jars != null) {
+        for (File jar : jars) {
+          list.append(jar.getAbsolutePath());
+        }
     }
   }
 }

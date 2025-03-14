@@ -24,7 +24,6 @@ package processing.mode.java.preproc;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
-import processing.mode.java.SourceUtil;
 
 import java.util.Optional;
 

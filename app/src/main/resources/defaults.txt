@@ -1,0 +1,309 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# DO NOT MAKE CHANGES TO THIS FILE!!!
+
+# These are the default preferences. If you want to modify
+# them directly, use the per-user local version of the file:
+
+# Users -> [username] -> AppData -> Roaming ->
+#    Processing -> preferences.txt (on Windows 10)
+
+# ~/Library -> Processing -> preferences.txt (on macOS)
+
+# ~/.config/processing -> preferences.txt (on Linux)
+
+# The exact location of your preferences file can be found at
+# the bottom of the Preferences window inside Processing.
+
+# Because AppData and Application Data may be considered
+# hidden or system folders on Windows, you'll have to ensure
+# that they're visible in order to get at preferences.txt
+
+# You'll have problems running Processing if you incorrectly
+# modify lines in this file. It will probably not start at all.
+
+# AGAIN, DO NOT ALTER THIS FILE! I'M ONLY YELLING BECAUSE I LOVE YOU!
+
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# If you don't want users to have their sketchbook default to
+# "My Documents/Processing" on Windows and "Documents/Processing" on OS X,
+# set this to another path that will be used by default.
+# Note that this path must exist already otherwise it won't see
+# the sketchbook folder, and will instead assume the sketchbook
+# has gone missing, and that it should instead use the default.
+# In 4.0, the location has changed.
+#sketchbook.path.four=
+
+# Whether or not to show the Welcome screen for 4.0
+# (It's always available under Help → Welcome)
+welcome.four.show = true
+welcome.four.seen = false
+
+# Set 'true' for the default behavior before 4.0, where the
+# main tab must have the same name as the sketch folder
+editor.sync_folder_and_filename = true
+
+# By default, contributions are moved to backup folders when
+# they are removed or replaced. The backups can be found at
+# sketchbook/libraries/old, sketchbook/tools/old, and sketchbook/modes/old
+
+# true to backup contributions when "Remove" button is pressed
+contribution.backup.on_remove = true
+# true to backup contributions when installing a newer version
+contribution.backup.on_install = true
+
+recent.count = 10
+
+# Default to the native (AWT) file selector where possible
+chooser.files.native = true
+# We were shutting this off on macOS because it broke Copy/Paste:
+# https://github.com/processing/processing/issues/1035
+# But removing again for 4.0 alpha 5, because the JFileChooser is awful,
+# and worse on Big Sur, so a bigger problem than the Copy/Paste issue.
+# https://github.com/processing/processing4/issues/77
+#chooser.files.native.macos = false
+
+# set to 'lab' to interpolate theme gradients using L*a*b* color space
+theme.gradient.method = rgb
+
+
+# by default, check the processing server for any updates
+# (please avoid disabling, this also helps us know basic numbers
+# on how many people are using Processing)
+update.check = true
+
+# on windows, automatically associate .pde files with processing.exe
+platform.auto_file_type_associations = true
+
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# default size for the main window
+editor.window.width.default = 700
+editor.window.height.default = 600
+
+editor.window.width.min = 400
+editor.window.height.min = 500
+# tested as approx 440 on OS X
+editor.window.height.min.macos = 450
+# tested to be 515 on Windows XP, this leaves some room
+editor.window.height.min.windows = 530
+# tested with Raspberry Pi display
+editor.window.height.min.linux = 480
+
+# scaling for the interface (to handle Windows and Linux HiDPI displays)
+editor.zoom = 100%
+# automatically set based on system dpi (only helps on Windows)
+editor.zoom.auto = true
+
+# Use the default monospace font included in lib/fonts.
+# (As of Processing 4 alpha 5, that's Source Code Pro)
+editor.font.family = processing.mono
+editor.font.size = 12
+
+# To reset everyone's default, replaced editor.antialias with editor.smooth
+# for 2.1. Fonts are unusably gross on OS X (and Linux) w/o smoothing and
+# the Oracle JVM, and many longtime users have anti-aliasing turned off.
+editor.smooth = true
+
+# blink the caret by default
+editor.caret.blink = true
+# change to true to use a block (instead of a bar)
+editor.caret.block = false
+
+# enable ctrl-ins, shift-ins, shift-delete for cut/copy/paste
+# on windows and linux, but disable on the mac
+editor.keys.alternative_cut_copy_paste = true
+editor.keys.alternative_cut_copy_paste.macos = false
+
+# true if shift-backspace sends the delete character,
+# false if shift-backspace just means backspace
+editor.keys.shift_backspace_is_delete = false
+
+# home and end keys should only travel to the start/end of the current line
+editor.keys.home_and_end_travel_far = false
+# home and end keys move to the first/last non-whitespace character,
+# and move to the actual start/end when pressed a second time.
+# Only works if editor.keys.home_and_end_travel_far is false.
+editor.keys.home_and_end_travel_smart = true
+# The OS X HI Guidelines say that home/end are relative to the document,
+# but that drives some people nuts. This pref enables/disables it.
+editor.keys.home_and_end_travel_far.macos = true
+
+# Enable/disable support for complex scripts. Used for Japanese and others,
+# but disable when not needed, otherwise basic Western European chars break.
+editor.input_method_support = false
+
+# convert tabs to spaces? how many spaces?
+editor.tabs.expand = true
+editor.tabs.size = 2
+
+# Set to true to automatically close [ { ( " and '
+editor.completion.auto_close = false
+
+# automatically indent each line
+editor.indent = true
+
+# Whether to check files to see if they've been modified externally
+editor.watcher = true
+# Set true to enable debugging, since this is quirky on others' machines
+editor.watcher.debug = false
+# The window of time (in milliseconds) in which a change won't be counted
+editor.watcher.window = 1500
+
+# Format and search engine to use for online queries
+search.format = https://google.com/search?q=%s
+
+# font choice and size for the console
+console.font.size = 12
+
+# number of lines to show by default
+console.lines = 4
+
+# Number of blank lines to advance/clear console.
+# Note that those lines are also printed in the terminal when
+# Processing is executed there.
+# Setting to 0 stops this behavior.
+console.head_padding = 10
+
+# Set to false to disable automatically clearing the console
+# each time 'run' is hit
+# If one sets it to false, one may also want to set 'console.head_padding'
+# to a positive number to separate outputs from different runs.
+console.auto_clear = true
+
+# number of days of history to keep around before cleaning
+# setting to 0 will never clean files
+console.temp.days = 7
+
+# set the maximum number of lines remembered by the console
+# the default is 500, lengthen at your own peril
+console.scrollback.lines = 500
+console.scrollback.chars = 40000
+
+# Any additional Java options when running.
+# If you change this and can't run things, it's your own durn fault.
+run.options =
+
+# settings for the -XmsNNNm and -XmxNNNm command line option
+run.options.memory = false
+run.options.memory.initial = 64
+run.options.memory.maximum = 512
+
+# Index of the display to use for running sketches (starts at 1).
+# Kept this 1-indexed because older vesions of Processing were setting
+# the preference even before it was being used.
+# -1 means the default display, 0 means all displays
+run.display = -1
+
+# set internally because it comes from the system
+#run.window.bgcolor=
+
+# set to false to open a new untitled window when closing the last window
+# (otherwise, the environment will quit)
+# default to the relative norm for the different platforms,
+# but the setting can be changed in the prefs dialog anyway
+#sketchbook.closing_last_window_quits = true
+#sketchbook.closing_last_window_quits.macos = false
+
+editor.untitled.prefix=sketch_
+# The old (pre-1.0, back for 2.0) style for default sketch name.
+# If you change this, be careful that this will work with your language
+# settings. For instance, MMMdd won't work on Korean-language systems
+# because it'll insert non-ASCII characters and break the environment.
+# https://github.com/processing/processing/issues/322
+editor.untitled.suffix=yyMMdd
+
+# replace underscores in .pde file names with spaces
+sketch.name.replace_underscore = true
+
+# what to use for generating sketch names (change in the prefs window)
+#sketch.name.approach =
+
+# number of days of build history and other temp files to keep around
+# these are kept around for debugging purposes, and in case code is lost
+temp.days = 7
+
+
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+# whether or not to export as full screen (present) mode
+export.application.fullscreen = false
+
+# whether to show the stop button when exporting to application
+export.application.stop = true
+
+# embed Java by default for lower likelihood of problems
+export.application.embed_java = true
+
+# set to false to no longer delete application folders before export
+# (removed from the Preferences windows in 4.0 beta 9)
+export.delete_target_folder = true
+
+# may be useful when attempting to debug the preprocessor
+preproc.save_build_files=false
+
+# allows various preprocessor features to be toggled
+# in case they are causing problems
+
+# preprocessor: pde.g
+preproc.color_datatype = true
+preproc.web_colors = true
+preproc.enhanced_casting = true
+
+# preprocessor: PdeEmitter.java
+preproc.substitute_floats = true
+
+# PdePreproc.java
+# writes out the parse tree as parseTree.xml, which can be usefully
+# viewed in (at least) Mozilla or IE.  useful when debugging the preprocessor.
+preproc.output_parse_tree = false
+
+# set to the program to be used for opening HTML files, folders, etc.
+#launcher.linux = xdg-open
+
+# FULL SCREEN (PRESENT MODE)
+run.present.bgcolor = #666666
+run.present.stop.color = #cccccc
+
+# PROXIES
+# Set a proxy server for folks that require it. This will allow the update
+# checker and the contrib manager to run properly in those environments.
+# This changed from proxy.host and proxy.port to proxy.http.host and
+# proxy.http.port in 3.0a8. In addition, https and socks were added.
+proxy.http.host=
+proxy.http.port=
+proxy.https.host=
+proxy.https.port=
+proxy.socks.host=
+proxy.socks.port=
+# Example of usage (replace 'http' with 'https' or 'socks' as needed)
+#proxy.http.host=proxy.example.com
+#proxy.http.port=8080
+# Whether to use the system proxy by default
+proxy.system=true
+
+# PDE X
+pdex.errorCheckEnabled = true
+pdex.warningsEnabled = true
+pdex.writeErrorLogs = false
+
+pdex.autoSave.autoSaveEnabled = false
+pdex.autoSaveInterval = 5
+pdex.autoSave.promptDisplay = true
+pdex.autoSave.autoSaveByDefault = true
+
+# Enable auto-completion when hitting ctrl-space
+pdex.completion = false
+# Setting this true will show completions whenever available, not just after ctrl-space
+pdex.completion.trigger = false
+# Suggest libraries to import when a class is undefined/unavailable
+pdex.suggest.imports = true
+# Set to false to disable ctrl/cmd-click jump to definition
+pdex.inspectMode.hotkey = true

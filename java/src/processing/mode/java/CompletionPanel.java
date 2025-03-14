@@ -287,7 +287,7 @@ public class CompletionPanel {
     int x = ta.getCaretPosition() - ta.getLineStartOffset(line) - 1, x1 = x - 1;
     if (x >= s.length() || x < 0)
       return null; //TODO: Does this check cause problems? Verify.
-    if (Base.DEBUG) System.out.print(" x char: " + s.charAt(x));
+    Messages.log(" x char: " + s.charAt(x));
 
     String word = String.valueOf(s.charAt(x));
     if (s.trim().length() == 1) {

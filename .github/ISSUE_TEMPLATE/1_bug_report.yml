@@ -1,0 +1,93 @@
+name: 🐛 Found a Bug
+description: Report broken or incorrect behavior in Processing 4. (For help with your own code, please visit our forum at discourse.processing.org instead).
+labels: [bug]
+body:
+
+- type: dropdown
+  id: sub-area
+  attributes:
+    label: Most appropriate sub-area of Processing 4?
+    description: You may select more than one.
+    multiple: true
+    options:
+        - Accessibility
+        - Core/Environment/Rendering
+        - PDE
+        - Data
+        - Events
+        - Image
+        - IO
+        - Math
+        - Typography
+        - Utilities
+        - OpenGL
+        - Contributions Manager
+        - Export
+        - Build process
+        - Unit testing
+        - Internationalization
+        - Other (specify if possible)
+  validations:
+    required: true
+
+- type: input
+  attributes:
+    label: Processing version
+    description: Go to "Help > About Processing" and look in the bottom-right corner for the version number. It also appears in the title bar of every editor window.
+  validations:
+    required: true
+
+- type: input
+  attributes:
+    label: Operating system
+    description: "Ex: Windows/MacOSX/Linux/Android/iOS along with version"
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Steps to reproduce this
+    description: Describe what steps will produce the bug.
+    value: |
+      "1.
+
+      2.
+
+      3."
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: snippet
+    description: If applicable, include a minimal sketch that produces the error.
+    value: |
+      ```processing
+
+      // Paste your code below :)
+
+      void setup() {
+
+      }
+
+      void draw() {
+
+      }
+      ```
+  validations:
+    required: false
+
+- type: textarea
+  attributes:
+    label: Additional context
+    description: Add any other context about the problem here.
+  validations:
+    required: false
+
+- type: input
+  attributes:
+    label: Would you like to work on the issue?
+    description: |
+      Please let us know if you can work on this or if the issue should be assigned to someone else.
+  validations:
+    required: true

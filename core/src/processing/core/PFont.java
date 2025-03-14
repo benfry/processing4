@@ -740,7 +740,7 @@ public class PFont implements PConstants {
     // six element array received from the Java2D path iterator
     float[] iterPoints = new float[6];
     // array passed to createGlyphVector
-    char[] textArray = new char[] { ch };
+    char[] textArray = { ch };
 
     //Graphics2D graphics = (Graphics2D) this.getGraphics();
     //FontRenderContext frc = graphics.getFontRenderContext();
@@ -755,16 +755,17 @@ public class PFont implements PConstants {
       shp.getPathIterator(null, detail);  // convert to line segments
 
     int contours = 0;
+    s.beginShape();
+    s.noStroke();
+    s.fill(0);
     while (!iter.isDone()) {
       int type = iter.currentSegment(iterPoints);
       switch (type) {
       case PathIterator.SEG_MOVETO:   // 1 point (2 vars) in textPoints
-        if (contours == 0) {
-          s.beginShape();
-        } else {
+        if (contours > 0) {
           s.beginContour();
         }
-        contours++;
+        ++contours;
         s.vertex(iterPoints[0], iterPoints[1]);
         break;
 

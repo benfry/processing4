@@ -24,6 +24,7 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 package processing.mode.java;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -42,8 +43,10 @@ import processing.core.PApplet;
 import processing.core.PConstants;
 import processing.data.StringList;
 import processing.data.XML;
+import processing.mode.java.preproc.ImportStatement;
 import processing.mode.java.preproc.PdePreprocessor;
 import processing.mode.java.preproc.PreprocessorResult;
+import processing.mode.java.preproc.SketchException;
 
 
 public class JavaBuild {
@@ -275,7 +278,12 @@ public class JavaBuild {
 
     for (ImportStatement item : result.getImportStatements()) {
       String entry = item.getPackageName();
-      Library library = mode.getLibrary(entry);
+      Library library = null;
+      try{
+        library = mode.getLibrary(entry);
+      }catch (processing.app.SketchException e){
+        throw new SketchException(e.getMessage(), e.getCodeIndex(), e.getCodeLine(), e.getCodeColumn(), e.isStackTraceEnabled());
+      }
 
       if (library != null) {
         if (!importedLibraries.contains(library)) {
@@ -726,17 +734,52 @@ public class JavaBuild {
       writer.flush();
       writer.close();
 
-      // Use faster(?) native copy here (also to do sym links)
-      if (embedJava) {
-        Util.copyDirNative(new File(contentsOrig, "PlugIns"),
-                           new File(contentsFolder, "PlugIns"));
+      Settings sketchProperties = new Settings(new File(sketch.getFolder(), "sketch.properties"));
+      String iconPath = sketchProperties.get("icon");  // icon.macos in sketch.properties
+      File iconFile;
+      if(iconPath == null || iconPath.isEmpty()){
+          iconFile = mode.getContentFile("application/application.icns");
+      }else {
+          iconFile = new File(sketch.getFolder(), iconPath);
       }
+
+      var resources = System.getProperty("compose.application.resources.dir");
+      if(resources == null) {
+        // Use faster(?) native copy here (also to do sym links)
+        if (embedJava) {
+          Util.copyDirNative(new File(contentsOrig, "PlugIns"),
+                             new File(contentsFolder, "PlugIns"));
+        }
 
       File resourcesFolder = new File(contentsFolder, "Resources");
       Util.copyDir(new File(contentsOrig, "Resources/en.lproj"),
                    new File(resourcesFolder, "en.lproj"));
-      Util.copyFile(mode.getContentFile("application/application.icns"),
-                    new File(resourcesFolder, "application.icns"));
+      Util.copyFile(iconFile,
+                new File(resourcesFolder, "application.icns"));
+      }else{
+        if(embedJava){
+          try {
+            var jdk = Files.list(new File(resources).toPath())
+                    .filter(Files::isDirectory)
+                    .filter(p -> p.getFileName().toString().startsWith("jdk-"))
+                    .findFirst()
+                    .orElseThrow();
+            var target = new File(contentsFolder, "PlugIns/");
+            target.mkdirs();
+            Util.copyDirNative(jdk.toFile(), target);
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+
+          Util.copyDir(new File(resources, "modes/java/application/en.lproj"),
+                  new File(contentsFolder, "Resources/en.lproj"));
+          Util.copyFile(iconFile,
+                    new File(contentsFolder, "application.icns"));
+
+
+        }
+
+      }
 
     } else if (exportPlatform == PConstants.LINUX) {
       if (embedJava) {
@@ -958,7 +1001,15 @@ public class JavaBuild {
       File exeFile = new File(destFolder, sketch.getName() + ".exe");
       config.addChild("outfile").setContent(exeFile.getAbsolutePath());
 
-      File iconFile = mode.getContentFile("application/application.ico");
+      // check sketch.properties to see if an icon was set
+      Settings sketchProperties = new Settings(new File(sketch.getFolder(), "sketch.properties"));
+      String iconPath = sketchProperties.get("icon");// icon.windows in sketch.properties
+      File iconFile;
+      if(iconPath == null || iconPath.isEmpty()){
+        iconFile = mode.getContentFile("application/application.ico");
+      }else {
+        iconFile = new File(sketch.getFolder(), iconPath);
+      }
       config.addChild("icon").setContent(iconFile.getAbsolutePath());
 
       XML clazzPath = config.addChild("classPath");
@@ -1083,7 +1134,7 @@ public class JavaBuild {
       // Full list of modules, let's not commit to all of these unless
       // a compelling argument is made or a reason presents itself.
       //"javafx.base,javafx.controls,javafx.fxml,javafx.graphics,javafx.media,javafx.swing,javafx.web"
-      "--add-modules", "javafx.base,javafx.graphics,javafx.swing",
+       "--add-modules", "javafx.base,javafx.graphics,javafx.swing,javafx.controls,javafx.media,javafx.web,javafx.fxml",
 
       // TODO Presumably, this is only because com.sun.* classes are being used?
       // https://github.com/processing/processing4/issues/208

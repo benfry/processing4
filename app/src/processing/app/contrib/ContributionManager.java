@@ -67,10 +67,10 @@ public class ContributionManager {
       conn.setConnectTimeout(15 * 1000);
       conn.setReadTimeout(60 * 1000);
 
-      if (post == null) {
+      // Disable the post for now, since it's not used
+      if (post == null || System.getProperty("processing.contributions.source") != null) {
         conn.setRequestMethod("GET");
         conn.connect();
-
       } else {
         post = Util.gzipEncode(post);
         conn.setRequestMethod("POST");

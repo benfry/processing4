@@ -23,6 +23,8 @@
 package processing.app.platform;
 
 import java.awt.*;
+import java.awt.desktop.AppReopenedEvent;
+import java.awt.desktop.AppReopenedListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -100,6 +102,12 @@ public class MacPlatform extends DefaultPlatform {
 //      if (location.length() > 0) {
 //        base.handleLocation(location);
 //      }
+    });
+
+    desktop.addAppEventListener((AppReopenedListener) e ->{
+      if(base.getEditors().isEmpty()){
+        base.handleNew();
+      }
     });
   }
 

@@ -79,9 +79,7 @@ public class InputMethodSupport implements InputMethodRequests, InputMethodListe
 
   @Override
   public Rectangle getTextLocation(TextHitInfo offset) {
-    if (Base.DEBUG) {
-      Messages.log("#Called getTextLocation:" + offset);
-    }
+    Messages.log("#Called getTextLocation:" + offset);
     int line = textArea.getCaretLine();
     int offsetX = textArea.getCaretPosition() - textArea.getLineStartOffset(line);
     // '+1' mean textArea.lineToY(line) + textArea.getPainter().getFontMetrics().getHeight().
@@ -238,9 +236,7 @@ public class InputMethodSupport implements InputMethodRequests, InputMethodListe
                         RenderingHints.VALUE_TEXT_ANTIALIAS_ON :
                         RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
     FontRenderContext frc = g2d.getFontRenderContext();
-    if (Base.DEBUG) {
-      Messages.log("debug: FontRenderContext is Antialiased = " + frc.getAntiAliasingHint());
-    }
+    Messages.log("debug: FontRenderContext is Antialiased = " + frc.getAntiAliasingHint());
 
     return new TextLayout(composedTextString.getIterator(), frc);
   }

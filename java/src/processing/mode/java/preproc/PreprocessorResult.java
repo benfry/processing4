@@ -25,9 +25,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import processing.mode.java.ImportStatement;
-import processing.mode.java.TextTransform;
-
 
 /**
  * Result of sketch Preprocessing.

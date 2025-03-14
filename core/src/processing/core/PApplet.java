@@ -3679,8 +3679,7 @@ public class PApplet implements PConstants {
 
   /**
    *
-   * Hides the cursor from view. Will not work when running the program in a
-   * web browser or when running in full screen (Present) mode.
+   * Hides the mouse cursor from view.
    *
    * <h3>Advanced</h3>
    * Hide the cursor by creating a transparent image
@@ -9664,7 +9663,7 @@ public class PApplet implements PConstants {
 
   // WINDOW METHODS
 
-  Map<String, Integer> windowEventQueue = new ConcurrentHashMap<>();
+  Map<String, WindowEventValuePairs> windowEventQueue = new ConcurrentHashMap<>();
 
 
   public void windowTitle(String title) {
@@ -9684,8 +9683,7 @@ public class PApplet implements PConstants {
    * only the notification that the resize has happened.
    */
   public void postWindowResized(int newWidth, int newHeight) {
-    windowEventQueue.put("w", newWidth);
-    windowEventQueue.put("h", newHeight);
+    windowEventQueue.put("wh", new WindowEventValuePairs(newWidth, newHeight));
   }
 
 
@@ -9725,8 +9723,7 @@ public class PApplet implements PConstants {
       frameMoved(newX, newY);
     }
 
-    windowEventQueue.put("x", newX);
-    windowEventQueue.put("y", newY);
+    windowEventQueue.put("xy", new WindowEventValuePairs(newX, newY));
   }
 
 
@@ -9735,21 +9732,28 @@ public class PApplet implements PConstants {
 
 
   private void dequeueWindowEvents() {
-    if (windowEventQueue.containsKey("x")) {
-      windowX = windowEventQueue.remove("x");
-      windowY = windowEventQueue.remove("y");
+    if (windowEventQueue.containsKey("xy")) {
+      WindowEventValuePairs xy = windowEventQueue.remove("xy");
+      windowX = xy.num1;
+      windowY = xy.num2;
       windowMoved();
     }
-    if (windowEventQueue.containsKey("w")) {
-      // these should already match width/height
-      //windowResized(windowEventQueue.remove("w"),
-      //              windowEventQueue.remove("h"));
-      windowEventQueue.remove("w");
-      windowEventQueue.remove("h");
+    if (windowEventQueue.containsKey("wh")) {
+      WindowEventValuePairs wh = windowEventQueue.remove("wh");
       windowResized();
     }
   }
 
+  protected class WindowEventValuePairs {
+
+    public int num1;
+    public int num2;
+
+    public WindowEventValuePairs(int num1, int num2) {
+      this.num1 = num1;
+      this.num2 = num2;
+    }
+  }
 
   /**
    * Scale the sketch as if it fits this specific width and height.

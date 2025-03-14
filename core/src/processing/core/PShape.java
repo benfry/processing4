@@ -1783,6 +1783,7 @@ public class PShape implements PConstants {
             g.endContour();
           }
           g.beginContour();
+          codeIndex++;
           insideContour = true;
         }
 
@@ -1795,6 +1796,7 @@ public class PShape implements PConstants {
             g.endContour();
           }
           g.beginContour();
+          codeIndex++;
           insideContour = true;
         }
 
@@ -2333,18 +2335,28 @@ public class PShape implements PConstants {
   }
 
   /**
-   * The <b>getVertexCount()</b> method returns the number of vertices that
-   * make up a <b>PShape</b>. In the above example, the value 4 is returned by the
+   * The <b>getVertexCount()</b> method returns the number of vertices (with an option to count children by passing true as boolean parameter to method call) that
+   * make up a <b>PShape</b>. By default, it does not count child vertices for GROUP shapes. To include child vertices, pass <b>true</b> as a boolean parameter. In the above example, the value 4 is returned by the
    * <b>getVertexCount()</b> method because 4 vertices are defined in
    * <b>setup()</b>.
    *
    * @webref pshape:method
-   * @webBrief Returns the total number of vertices as an int
+   * @webBrief Returns the total number of vertices as an int with an option to count children Vertex for GROUP Shapes
    * @see PShape#getVertex(int)
    * @see PShape#setVertex(int, float, float)
    */
+  public int getVertexCount(boolean includeChildren) {
+    if(!includeChildren && family == GROUP){
+      PGraphics.showWarning(NO_VERTICES_ERROR);
+    }
+    else if (family == PRIMITIVE) {
+      PGraphics.showWarning(NO_VERTICES_ERROR);
+    }
+    return vertexCount;
+  }
+
   public int getVertexCount() {
-    if (family == GROUP || family == PRIMITIVE) {
+    if(family == GROUP || family == PRIMITIVE){
       PGraphics.showWarning(NO_VERTICES_ERROR);
     }
     return vertexCount;

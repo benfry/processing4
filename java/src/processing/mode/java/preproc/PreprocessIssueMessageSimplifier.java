@@ -22,10 +22,6 @@ Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 package processing.mode.java.preproc;
 
 
-import processing.app.Language;
-import processing.app.Platform;
-import processing.mode.java.SourceUtil;
-
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
@@ -78,16 +74,8 @@ public class PreprocessIssueMessageSimplifier {
    * @return The template's contents prior to rendering.
    */
   public static String getLocalStr(String stringName) {
-    String errStr;
-    String retStr;
-
-    if (Platform.isAvailable()) {
-      errStr = Language.text("editor.status.error.syntax");
-      retStr = Language.text(stringName);
-    } else {
-      errStr = DefaultErrorLocalStrSet.get().get("editor.status.error.syntax").orElse("Error");
-      retStr = DefaultErrorLocalStrSet.get().get(stringName).orElse(stringName);
-    }
+    var errStr = DefaultErrorLocalStrSet.get().get("editor.status.error.syntax").orElse("Error");
+    var retStr = DefaultErrorLocalStrSet.get().get(stringName).orElse(stringName);
 
     return String.format(errStr, retStr);
   }

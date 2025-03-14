@@ -60,6 +60,9 @@ import processing.app.Messages;
 
 import com.google.classpath.ClassPath;
 import com.google.classpath.RegExpResourceFilter;
+import processing.mode.java.preproc.ImportStatement;
+import processing.mode.java.preproc.SourceUtil;
+import processing.mode.java.preproc.TextTransform;
 
 @SuppressWarnings({ "unchecked" })
 public class CompletionGenerator {

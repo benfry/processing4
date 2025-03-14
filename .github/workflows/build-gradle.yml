@@ -1,0 +1,80 @@
+name: Branch Builds
+on:
+  push:
+    paths-ignore:
+      - '**/*.md'
+      - '.all-contributorsrc'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test Processing
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle
+        run: ./gradlew test
+  build:
+    name: (${{ matrix.os_prefix }}/${{ matrix.arch }}) Create Processing Build
+    runs-on: ${{ matrix.os }}
+    needs: test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04-arm
+            os_prefix: linux
+            arch: aarch64
+            binary: processing*.snap
+          - os: ubuntu-latest
+            os_prefix: linux
+            arch: x64
+            binary: processing*.snap
+          - os: windows-latest
+            os_prefix: windows
+            arch: x64
+            binary: msi/Processing-*.msi
+          - os: macos-latest
+            os_prefix: macos
+            arch: x64
+            binary: dmg/Processing-*.dmg
+          - os: macos-latest
+            os_prefix: macos
+            arch: aarch64
+            binary: dmg/Processing-*.dmg
+    steps:
+      - name: Install Snapcraft
+        if: runner.os == 'Linux'
+        uses: samuelmeuli/action-snapcraft@v3
+      - name: Install LXD
+        if: runner.os == 'Linux'
+        uses: canonical/setup-lxd@main
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          architecture: ${{ matrix.arch }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle
+        run: ./gradlew packageDistributionForCurrentOS
+
+      - name: Add artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: processing-${{ matrix.os_prefix }}-${{ matrix.arch }}-br_${{ github.ref_name }}
+          retention-days: 1
+          path: app/build/compose/binaries/main/${{ matrix.binary }}

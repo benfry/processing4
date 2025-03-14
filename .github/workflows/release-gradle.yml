@@ -1,0 +1,173 @@
+name: Releases
+on:
+  release:
+    types: [published]
+
+jobs:
+  version:
+    runs-on: ubuntu-latest
+    outputs:
+      revision: ${{ steps.tag_info.outputs.revision }}
+      version: ${{ steps.tag_info.outputs.version }}
+    steps:
+      - name: Extract version and revision
+        id: tag_info
+        shell: bash
+        run: |
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          REVISION=$(echo "$TAG_NAME" | cut -d'-' -f2)
+          VERSION=$(echo "$TAG_NAME" | cut -d'-' -f3)
+
+          # Set outputs for use in later jobs or steps
+          echo "revision=$REVISION" >> $GITHUB_OUTPUT
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+  reference:
+    name: Publish Processing Reference to release
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+    - name: Checkout Website Repository
+      uses: actions/checkout@v4
+      with:
+        repository: processing/processing-website
+    - name: Use Node.js 16
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+    - name: Install dependencies
+      run: npm ci
+    - name: Build
+      run: npm run build
+    - name: Make reference.zip
+      run: npm run zip
+    - name: Upload reference to release
+      uses: svenstaro/upload-release-action@v2
+      with:
+        repo_token: ${{ secrets.GITHUB_TOKEN }}
+        asset_name: processing-${{ needs.version.outputs.version }}-reference.zip
+        file: reference.zip
+
+  publish:
+    name: Publish Processing Libraries to Maven Central
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: 17
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+
+    - name: Build with Gradle
+      run: ./gradlew publish
+      env:
+        MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+        MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
+        ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+        ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+
+        ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.SIGNING_IN_MEMORY_KEY }}
+        ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.SIGNING_IN_MEMORY_KEY_PASSWORD }}
+
+        ORG_GRADLE_PROJECT_version: ${{ needs.version.outputs.version }}
+        ORG_GRADLE_PROJECT_group: ${{ vars.GRADLE_GROUP }}
+  build: 
+    name: (${{ matrix.os_prefix }}/${{ matrix.arch }}) Create Processing Release
+    runs-on: ${{ matrix.os }}
+    needs: version
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04-arm
+            os_prefix: linux
+            arch: aarch64
+            binary: ${{ vars.SNAP_NAME }}_${{ needs.version.outputs.version }}_arm64
+            extension: snap
+          - os: ubuntu-latest
+            os_prefix: linux
+            arch: x64
+            binary: ${{ vars.SNAP_NAME }}_${{ needs.version.outputs.version }}_amd64
+            extension: snap
+          - os: windows-latest
+            os_prefix: windows
+            arch: x64
+            binary: msi/Processing-${{ needs.version.outputs.version }}
+            extension: msi
+          - os: macos-latest
+            os_prefix: macos
+            arch: x64
+            binary: dmg/Processing-${{ needs.version.outputs.version }}
+            extension: dmg
+          - os: macos-latest
+            os_prefix: macos
+            arch: aarch64
+            binary: dmg/Processing-${{ needs.version.outputs.version }}
+            extension: dmg
+    steps:
+      - name: Install Certificates for Code Signing
+        if: runner.os == 'macOS'
+        continue-on-error: true
+        uses: apple-actions/import-codesign-certs@v3
+        with:
+          p12-file-base64: ${{ secrets.CERTIFICATES_P12 }}
+          p12-password: ${{ secrets.CERTIFICATES_P12_PASSWORD }}
+
+      - name: Install Snapcraft
+        if: runner.os == 'Linux'
+        uses: samuelmeuli/action-snapcraft@v3
+      - name: Install LXD
+        if: runner.os == 'Linux'
+        uses: canonical/setup-lxd@main
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          architecture: ${{ matrix.arch }}
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build with Gradle
+        run: ./gradlew packageDistributionForCurrentOS
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ needs.version.outputs.version }}
+          ORG_GRADLE_PROJECT_group: ${{ vars.GRADLE_GROUP }}
+          ORG_GRADLE_PROJECT_revision: ${{ needs.version.outputs.revision }}
+          ORG_GRADLE_PROJECT_compose.desktop.verbose: true
+          ORG_GRADLE_PROJECT_compose.desktop.mac.sign: ${{ secrets.PROCESSING_SIGNING }}
+          ORG_GRADLE_PROJECT_compose.desktop.mac.signing.identity: ${{ secrets.PROCESSING_SIGNING_IDENTITY }}
+          ORG_GRADLE_PROJECT_compose.desktop.mac.notarization.appleID: ${{ secrets.PROCESSING_APPLE_ID }}
+          ORG_GRADLE_PROJECT_compose.desktop.mac.notarization.password: ${{ secrets.PROCESSING_APP_PASSWORD }}
+          ORG_GRADLE_PROJECT_compose.desktop.mac.notarization.teamID: ${{ secrets.PROCESSING_TEAM_ID }}
+          ORG_GRADLE_PROJECT_snapname: ${{ vars.SNAP_NAME }}
+
+      - name: Upload portables to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          asset_name: processing-${{ needs.version.outputs.version }}-${{ matrix.os_prefix }}-${{ matrix.arch }}-portable.zip
+          file: app/build/compose/binaries/main/Processing-${{ needs.version.outputs.version }}.zip
+
+      - name: Upload installers to release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          asset_name: processing-${{ needs.version.outputs.version }}-${{ matrix.os_prefix }}-${{ matrix.arch }}.${{ matrix.extension }}
+          file: app/build/compose/binaries/main/${{ matrix.binary }}.${{ matrix.extension }}
+
+      - name: Upload snap to Snap Store
+        if: runner.os == 'Linux'
+        run: snapcraft upload --release=beta app/build/compose/binaries/main/${{ matrix.binary }}.${{ matrix.extension }}
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.PROCESSING_SNAPCRAFT_TOKEN }}

@@ -1,4 +1,20 @@
-1294 (4.3.1)
+1295 (4.3.2)
+^^^^^^^^^^^^
+NOTE: The first line in this file is the source for the current
+revision of Processing for the build system.
+
+***************************************************************
+IMPORTANT: The rest of this file is left here for historical
+reference and should not be used as a guide for current tasks 
+or priorities. Many items in this list are outdated or no longer 
+relevant. 
+
+For contributors, please refer to the CONTRIBUTING guidelines 
+and check the open issues list for actionable items. If anything 
+here sparks interest, consider opening a new issue to discuss 
+its current relevance.
+***************************************************************
+
 X add an extra note about the Ant version
 X   https://github.com/processing/processing4/pull/783
 

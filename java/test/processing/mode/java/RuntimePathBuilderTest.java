@@ -23,6 +23,8 @@ package processing.mode.java;
 import org.junit.Before;
 import org.junit.Test;
 import processing.app.Sketch;
+import processing.mode.java.preproc.ImportStatement;
+
 
 import java.io.File;
 import java.util.Arrays;

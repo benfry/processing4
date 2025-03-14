@@ -276,7 +276,9 @@ public class EditorConsole extends JScrollPane {
       // components, causing deadlock. Updates are buffered to the console and
       // displayed at regular intervals on Swing's event-dispatching thread.
       // (patch by David Mellis)
-      consoleDoc.appendString(what, err ? errStyle : stdStyle);
+      // Remove ANSI escape codes from the text before adding it to the console
+      String clean = what.replaceAll("\u001B\\[[0-9;]*m", "");
+      consoleDoc.appendString(clean, err ? errStyle : stdStyle);
     }
   }
 

@@ -1,0 +1,74 @@
+name: 💡 Existing Feature Enhancement
+description: Suggest an improvement for an existing feature of Processing.
+labels: [enhancement]
+body:
+
+- type: dropdown
+  id: feature-area
+  attributes:
+    label: Most relevant area for this enhancement?
+    description: Choose the most relevant area for the proposed feature or improvement.
+    multiple: true
+    options:
+        - Accessibility
+        - Core/Environment/Rendering
+        - PDE
+        - Data
+        - Events
+        - Image
+        - IO
+        - Math
+        - Typography
+        - Utilities
+        - OpenGL
+        - Contributions Manager
+        - Export
+        - Build process
+        - Unit testing
+        - Internationalization
+        - Other (specify if possible)
+  validations:
+    required: true
+
+- type: input
+  attributes:
+    label: Feature to enhance
+    description: Which existing feature of Processing would be improved by this enhancement?
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Desired enhancement
+    description: Describe the improvement you’d like to see with that existing feature
+  validations:
+    required: true
+
+- type: textarea
+  attributes:
+    label: Potential benefits
+    description: Explain how this enhancement could benefit users or improve Processing.
+  validations:
+    required: false
+
+- type: textarea
+  attributes:
+    label: Possible drawbacks
+    description: Consider any possible drawbacks or challenges related to the implementation of this enhancement.
+  validations:
+    required: false
+
+- type: textarea
+  attributes:
+    label: Additional context
+    description: Add any other context or screenshots about the feature request here.
+  validations:
+    required: false
+
+- type: input
+  attributes:
+    label: Would you like to work on the issue?
+    description: |
+      Please let us know if you can work on this or if the issue should be assigned to someone else.
+  validations:
+    required: true

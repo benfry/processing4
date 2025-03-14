@@ -26,6 +26,7 @@ package processing.mode.java;
 import processing.app.*;
 import processing.app.ui.Editor;
 import processing.core.*;
+import processing.mode.java.preproc.SketchException;
 
 import java.io.*;
 import java.lang.reflect.Method;

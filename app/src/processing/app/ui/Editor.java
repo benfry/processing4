@@ -23,13 +23,7 @@
 
 package processing.app.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.datatransfer.*;
 import java.awt.event.*;
 import java.awt.print.*;
@@ -54,6 +48,8 @@ import javax.swing.text.*;
 import javax.swing.text.html.*;
 import javax.swing.undo.*;
 
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.util.SystemInfo;
 import processing.app.Base;
 import processing.app.Formatter;
 import processing.app.Language;
@@ -104,6 +100,7 @@ public abstract class Editor extends JFrame implements RunnerListener {
   private JMenu fileMenu;
   private JMenu sketchMenu;
 
+  protected JPanel spacer = new JPanel();
   protected EditorHeader header;
   protected EditorToolbar toolbar;
   protected JEditTextArea textarea;
@@ -210,6 +207,16 @@ public abstract class Editor extends JFrame implements RunnerListener {
 
     Box box = Box.createVerticalBox();
     Box upper = Box.createVerticalBox();
+
+    if(SystemInfo.isMacFullWindowContentSupported) {
+      getRootPane().putClientProperty( "apple.awt.fullWindowContent", true );
+      getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+
+      spacer.setPreferredSize(new Dimension(1, Toolkit.zoom(18)));
+      spacer.setMinimumSize(new Dimension(1, Toolkit.zoom(18)));
+      spacer.setAlignmentX(Component.LEFT_ALIGNMENT);
+      box.add(spacer);
+    }
 
     rebuildModePopup();
     toolbar = createToolbar();
@@ -580,10 +587,20 @@ public abstract class Editor extends JFrame implements RunnerListener {
       errorTable.updateTheme();
     }
 
+    var color = Theme.getColor("toolbar.gradient.top");
+    spacer.setBackground(color);
+
     toolTipFont = Toolkit.getSansFont(Toolkit.zoom(9), Font.PLAIN);
     toolTipTextColor = Theme.get("errors.selection.fgcolor");
     toolTipWarningColor = Theme.get("errors.selection.warning.bgcolor");
     toolTipErrorColor = Theme.get("errors.selection.error.bgcolor");
+
+    if(Platform.isWindows()) {
+      UIManager.put("RootPane.background", color);
+      UIManager.put("TitlePane.embeddedForeground", Theme.getColor("editor.fgcolor"));
+      getRootPane().updateUI();
+      UIManager.put("RootPane.background", null);
+    }
 
     JPopupMenu popup = modePopup.getPopupMenu();
     // Cannot use instanceof because com.formdev.flatlaf.ui.FlatPopupMenuBorder
@@ -2293,8 +2310,10 @@ public abstract class Editor extends JFrame implements RunnerListener {
     internalCloseRunner();
     statusEmpty();
 
-    // do this to advance/clear the terminal window / dos prompt / etc
-    for (int i = 0; i < 10; i++) System.out.println();
+    // Do this to advance/clear the terminal window / dos prompt / etc.
+    // This may be useful especially when 'console.auto_clear' is false.
+    int headPadding = Preferences.getInteger("console.head_padding");
+    for (int i = 0; i < headPadding; i++) console.message("\n", false);
 
     // clear the console on each run, unless the user doesn't want to
     if (Preferences.getBoolean("console.auto_clear")) {

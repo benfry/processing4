@@ -165,8 +165,16 @@ console.font.size = 12
 # number of lines to show by default
 console.lines = 4
 
-# set to false to disable automatically clearing the console
+# Number of blank lines to advance/clear console.
+# Note that those lines are also printed in the terminal when
+# Processing is executed there.
+# Setting to 0 stops this behavior.
+console.head_padding = 10
+
+# Set to false to disable automatically clearing the console
 # each time 'run' is hit
+# If one sets it to false, one may also want to set 'console.head_padding'
+# to a positive number to separate outputs from different runs.
 console.auto_clear = true
 
 # number of days of history to keep around before cleaning

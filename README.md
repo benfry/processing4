@@ -1,134 +1,297 @@
+<!-- Uncomment the shield below once the repo is made public -->
+<!-- [![All Contributors](https://img.shields.io/github/all-contributors/processing/processing4?color=ee8449)](#contributors) -->
+
+<img alt="Processing Logo" src="https://processing.org/favicon.svg" width="250">
+
+Processing is a flexible software sketchbook and a programming language designed for learning how to code.
+
 This repository contains the source code for the [Processing](https://processing.org/) project for people who want to help improve the code.
 
-If you're interested in *using* Processing, get started at the [download](https://processing.org/download) page, or read more about the project at the [home page](https://processing.org/). There are also several [tutorials](https://processing.org/tutorials) that provide a helpful introduction. They are complemented by hundreds of examples that are included with the software itself.
-
-
-# Processing 4.0
-
-Processing 4 has [important updates](https://github.com/processing/processing4/wiki/Changes-in-4.0) that prepare the platform for its future. Most significantly, this includes the move to Java 17 as well as major changes to the range of platforms we support (Apple Silicon! Raspberry Pi on 32- and 64-bit ARM!)
-
-With any luck, many changes should be transparent to most users, in spite of how much is updated behind the scenes. More immediately visible changes include major work on the UI, including “themes” and the ability to change how sketches are named by default.
-
-
-## Building the Code
-
-[Instructions on how to build the code](https://github.com/processing/processing4/blob/master/build/README.md) are found in a README inside the `build` folder.
-
-We've also moved to a new repository for this release so that we could cull a lot of the accumulated mess of the last 20 years, which makes `git clone` (and most other `git` operations) a lot faster.
-
-The work on 4.0 was done by a [tiny number of people](https://github.com/processing/processing4/graphs/contributors?from=2019-10-01&to=2022-08-09&type=c) who continue working on it, unpaid, because they care about it. Please help!
-
-
-## API and Internal Changes
-
-As with all releases, we'll do [everything possible](https://twitter.com/ben_fry/status/1426282574683516928) to avoid breaking API. However, there will still be tweaks that have to be made. We'll try to keep them minor. Our goal is stability, and keeping everyone's code running.
-
-The full list of changes can be seen in [the release notes for each version](https://github.com/processing/processing4/blob/master/build/shared/revisions.md). <b>The list below only covers changes for developers working on this repository, or that may have an impact on Library, Mode, or Tool development.</b>
-
-
-### Beta 9
-
-* Major changes to themes and some libraries too. Also changed the default branch. If you have an older checkout, do this:
-
-      git pull
-      git checkout main
-      ant clean
-      ant clean-libs
-      ant run
-
-    …or just do a fresh `git clone` and pull down the latest.
-
-* Apple Silicon support should be complete, as far as we know. If you find otherwise, file an issue.
-
-* Check out the long [revisions](https://github.com/processing/processing4/blob/master/build/shared/revisions.md) update for this one. Too much to cover here.
-
-* Now using Java 17.0.4+8 from [Adoptium](https://adoptium.net/).
-
-
-### Beta 8
-
-* [Renamed](https://github.com/processing/processing4/commit/409163986ff2ff4d2dbf69c79c7eced45950d1d0) the Add Mode, Add Library, and Add Tool menu items to Manage Modes, Manage Libraries, and Manage Tools. This will require translation updates for the new text:
-    * `toolbar.add_mode = Add Mode...` has been replaced with `toolbar.manage_modes = Manage Modes…`
-    * `menu.library.add_library = Add Library...` → `menu.library.manage_libraries = Manage Libraries…`
-    * `menu.tools.add_tool = Add Tool...` → `menu.tools.manage_tools = Manage Tools…`
-
-
-### Beta 6
-
-* Major rewrite of `handleOpen()`, now possible to use something besides the folder name for the main sketch file (see `revisions.md` for details).
-
-* Now using Java 17.0.2+8 from [Adoptium](https://adoptium.net/).
-
-
-### Beta 3
-
-* Now using JDK 17.0.1 and JavaFX 17.0.1.
-
-* Major changes to `theme.txt` and theme handling in general. Now rendering toolbar icons from SVG images. More documentation later.
-
-* Made `DrawListener` public in `PSurfaceJOGL`.
-
-
-### Beta 2
-
-* Added a workaround so that `color` can be part of package names, which gets some older code (i.e. toxiclibs) running again.
-
-
-### Beta 1
-
-* Now using JDK 11.0.12+7.
-
-
-### Alpha 6
-
-* `Editor.applyPreferences()` was `protected`, now it's `public`.
-
-* Removed `Editor.repaintErrorBar()` and `Editor.showConsole()`. Does not appear to be in use anywhere, easy to add back if we hear otherwise.
-
-* Renamed `TextAreaPainter.getCompositionTextpainter()` to `getCompositionTextPainter()`. This was an internal function and inconsistent with the rest of the function naming.
-
-
-### Alpha 5
-
-* ~~Known bug: code completion is currently broken. Any updates will be posted [here](https://github.com/processing/processing4/issues/177).~~ Fixed in alpha 6.
-
-* Moved from the 11.0.2 LTS version of JavaFX to the in-progress version 16. This fixes a [garbled text](https://bugs.openjdk.java.net/browse/JDK-8234916) issue that was breaking Tools that used JavaFX.
-
-* The minimum system version for macOS (for the PDE and exported applications) is now set to 10.14.6 (the last update of Mojave). 10.13 (High Sierra) is no longer supported by Apple as of September or December 2020 (depending on what you read), and for our sanity, we're dropping it as well.
-
-* JavaFX has been moved out of core and into a separate library. After Java 8, it's no longer part of the JDK, so it requires additional files that were formerly included by default. The Processing version of that library comes in at 180 MB, which seems excessive to include with every project, regardless of whether it's used. (And that's not including the full Webkit implementation, which adds \~80 MB per platform.)
-
-
-### Alpha 4
-
-* `EditorState(List<Editor> editors)` changed to `EditorState.nextEditor(List<Editor> editors)`, reflecting its nature as closer to a factory method (that makes use of the Editor list) than a constructor that will also be storing information about the list of Editor objects in the created object.
-
-
-### Alpha 3
-
-* `export.embed_java.for` changed to `export.include_java` which also embeds a string for the platform for better localization support.
-
-
-### Alpha 2
-
-* ~~The minimum system version for macOS (for the PDE and exported applications) is now set to 10.13.6 (the last update of High Sierra). Apple will likely be dropping support for High Sierra in late 2020, so we may make the minimum 10.14.x by the time 4.x ships.~~
-
-* ~~See `revisions.md` if you're using `surface.setResizable()` with this release on macOS and with P2D or P3D renderers.~~
-
-* The `static` versions of `selectInput()`, `selectOutput()`, and `selectFolder()` in `PApplet` have been removed. These were not documented, hopefully they were not in use anyway.
-
-* The `frame` object has been removed from `PApplet`. We've been warning folks to use `surface` since 2015, but maybe we can provide an [easy way](https://github.com/processing/processing4/issues/59) to update code from inside the PDE.
-
-* `PImage.checkAlpha()` is now `public` instead of `protected`
-
-* All AWT calls have been moved out of `PImage`, which may be a problem for anything that was relying on those internals
-    * ~~For instance, `new PImage(java.awt.Image)` is no longer available. It was an undocumented method that was `public` only because it was required by subclasses.~~ As of alpha 4, this is back, because it wasn't deprecated in 3.x, and is likely to break too many things.
-
-* Removed `MouseEvent.getClickCount()` and `MouseEvent.getAmount()`. These had been deprecated, not clear they were used anywhere.
-
-
-### Alpha 1
-
-* `Base.defaultFileMenu` is now `protected` instead of `static public`
-
-* Processing 4 is 64-bit only. This is the overwhelming majority of users, and we don't have the necessary help to maintain and support 32-bit systems.
+## Announcing Processing 4.3.1
+
+We’re excited to announce the release of Processing 4.3.1! This update brings tooling improvements and a friendlier experience for contributors. To learn more, read the [Processing 4.3.1 announcement](https://github.com/processing/processing4-carbon-aug-19/wiki/Announcing-Processing-4.3.1).
+
+Processing was initiated in 2001 by Ben Fry and Casey Reas, who lead the development and maintenance of the project until 2023. We are grateful for their vision and dedication to the project. Processing is also indebted to over two decades of contributions from the broader Processing community. 
+
+> [!NOTE] 
+> Due to platform limitations, the GitHub Contributors page for this repository does not show the complete list of contributors. However, the [git commit history](https://github.com/processing/processing4/commits/main/) provides a full record of the project's contributions. For contributor graphs before November 13th, refer to [this page](https://github.com/benfry/processing4/graphs/contributors). A comprehensive [list of all contributors](#contributors) is also included below. To see all commits by a contributor, click on the [💻](https://github.com/processing/processing4/commits?author=benfry) emoji below their name.
+
+## Using Processing
+
+If you're interested in *using* Processing, head over to the [download page](https://processing.org/download), or read more about the project on the [Processing website](https://processing.org/). There are also several [tutorials](https://processing.org/tutorials) that provide a helpful introduction. They are complemented by hundreds of examples that are included with the software itself.
+
+## Getting Help 
+For assistance with your own sketches, projects, or code, please post your question on the Processing forum: https://discourse.processing.org/. Our community is full of experienced developers and knowledgeable users who are eager to help. Before you post, please take a moment to read the [guidelines on asking questions](https://discourse.processing.org/t/guidelines-asking-questions/2147) to make sure you get the best possible help. We’re incredibly grateful for the support and knowledge shared by everyone on the forum over the years.
+
+## Contributing to Processing
+Processing is a labor of love, built over decades by people who believe in this community and genuinely enjoy contributing to it. If you want to fix a bug that’s been bothering you or give back to the project in other ways, you’re in the right place! We invite you to think of this repository as a community garden. We’re here to cultivate something beautiful together, and that takes kindness, dedication, and patience. For detailed guidelines on how to contribute, please see our [CONTRIBUTING.md](CONTRIBUTING.md).
+
+We understand that contributing to open source can be intimidating, but mistakes are part of learning—and we are all learners here. We do not assume knowledge or imply that somebody should already know any particular thing in order to contribute. Whether you’re a newcomer or an expert, your knowledge and contributions are valuable. Never hesitate to ask questions, open an issue, a pull request, or write a comment. We also encourage you to step in if you can: reply to issues, review pull requests, or help out in whatever way feels right for you.
+
+While we assume good intentions, and will give everyone a chance to learn, we have zero tolerance for repeated harassment, harmful behavior, or toxicity of any kind. Please read our [Code of Conduct](https://github.com/processing/processing4?tab=coc-ov-file) and join us in creating a safe and supportive environment through your words and actions.
+
+## Building Processing
+
+Building Processing locally on your machine will let you troubleshoot and make sure your contributions work as intended before submitting them to this repository. It also gives you the flexibility to experiment and learn more about how Processing is structured.
+
+For a quick start: 
+1. Fork and clone the repository
+1. Open it in IntelliJ IDEA
+1. Wait for Gradle to sync
+1. Next to the run Button, select the `Processing` Configuration 
+1. Hit Run
+
+For more information and detailed instructions, follow our [How to Build Processing](BUILD.md) guide.
+
+## Contact Information
+For technical support or troubleshooting with your project, please post on the [Processing Forum](https://discourse.processing.org/).
+
+For bug reports or feature requests, please [create an issue](https://github.com/processing/processing4/issues).
+
+For non-technical inquiries, here’s how to get in touch:
+
+- For press inquiries, general information about the Processing software, or other non-technical questions, contact [hello@processing.org](mailto:hello@processing.org).
+- For anything related to the Processing Foundation or broader topics beyond the software, please reach out to [foundation@processingfoundation.org](mailto:foundation@processingfoundation.org).
+
+## License & Copyright
+
+- The **core library** is licensed under the GNU Lesser General Public License version 2.1 ([LGPL-2.1](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)).
+- Everything else including the **PDE** is licensed under the GNU General Public License version 2 ([GPL-2.0](https://www.gnu.org/licenses/old-licenses/gpl-2.0.html)).
+- The **reference**, including the JavaDoc comments, is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License ([CC-BY-NC-SA-4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/)).
+
+For complete licensing information about the Processing core library and software, see [LICENSE.md](LICENSE.md)
+
+For licensing information about the Processing website see the [processing-website README](https://github.com/processing/processing-website/blob/main/README.md#licenses).
+
+Copyright (c) 2015-now The Processing Foundation
+
+## Contributors
+
+Add yourself to the contributors list [here](https://github.com/processing/processing4-carbon-aug-19/issues/839)!
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://fathom.info"><img src="https://avatars.githubusercontent.com/u/1623101?v=4?s=120" width="120px;" alt="Ben Fry"/><br /><sub><b>Ben Fry</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=benfry" title="Code">💻</a> <a href="#ideas-benfry" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-benfry" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#mentoring-benfry" title="Mentoring">🧑‍🏫</a> <a href="#maintenance-benfry" title="Maintenance">🚧</a> <a href="#content-benfry" title="Content">🖋</a> <a href="#talk-benfry" title="Talks">📢</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://reas.com"><img src="https://avatars.githubusercontent.com/u/677774?v=4?s=120" width="120px;" alt="Casey Reas"/><br /><sub><b>Casey Reas</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=REAS" title="Code">💻</a> <a href="#ideas-REAS" title="Ideas, Planning, & Feedback">🤔</a> <a href="#infra-REAS" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a> <a href="#mentoring-REAS" title="Mentoring">🧑‍🏫</a> <a href="#content-REAS" title="Content">🖋</a> <a href="#talk-REAS" title="Talks">📢</a> <a href="#tutorial-REAS" title="Tutorials">✅</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://andrescolubri.net/"><img src="https://avatars.githubusercontent.com/u/62246?v=4?s=120" width="120px;" alt="codeanticode"/><br /><sub><b>codeanticode</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=codeanticode" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://mkmoharana.com/"><img src="https://avatars.githubusercontent.com/u/1686425?v=4?s=120" width="120px;" alt="Manindra Moharana"/><br /><sub><b>Manindra Moharana</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Manindra29" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://jakubvaltar.com/"><img src="https://avatars.githubusercontent.com/u/3177098?v=4?s=120" width="120px;" alt="Jakub Valtar"/><br /><sub><b>Jakub Valtar</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=JakubValtar" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://gleap.org/"><img src="https://avatars.githubusercontent.com/u/110391?v=4?s=120" width="120px;" alt="A Samuel Pottinger"/><br /><sub><b>A Samuel Pottinger</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=sampottinger" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="http://twitter.com/mrgohai"><img src="https://avatars.githubusercontent.com/u/4945451?v=4?s=120" width="120px;" alt="Gottfried Haider"/><br /><sub><b>Gottfried Haider</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=gohai" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Akarshit"><img src="https://avatars.githubusercontent.com/u/7762605?v=4?s=120" width="120px;" alt="Akarshit Wal"/><br /><sub><b>Akarshit Wal</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Akarshit" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/peskal"><img src="https://avatars.githubusercontent.com/u/1523978?v=4?s=120" width="120px;" alt="Peter Kalauskas"/><br /><sub><b>Peter Kalauskas</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=peskal" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://thecodingtrain.com/"><img src="https://avatars.githubusercontent.com/u/191758?v=4?s=120" width="120px;" alt="Daniel Shiffman"/><br /><sub><b>Daniel Shiffman</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=shiffman" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://joelmoniz.com/"><img src="https://avatars.githubusercontent.com/u/4526417?v=4?s=120" width="120px;" alt="Joel Moniz"/><br /><sub><b>Joel Moniz</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=joelmoniz" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/lonnen"><img src="https://avatars.githubusercontent.com/u/21467?v=4?s=120" width="120px;" alt="Lonnen"/><br /><sub><b>Lonnen</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=lonnen" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="http://bezier.de/"><img src="https://avatars.githubusercontent.com/u/59608?v=4?s=120" width="120px;" alt="Florian Jenett"/><br /><sub><b>Florian Jenett</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=fjenett" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/scotthmurray"><img src="https://avatars.githubusercontent.com/u/1034002?v=4?s=120" width="120px;" alt="Scott Murray"/><br /><sub><b>Scott Murray</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=scotthmurray" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://federicobond.com/"><img src="https://avatars.githubusercontent.com/u/138426?v=4?s=120" width="120px;" alt="Federico Bond"/><br /><sub><b>Federico Bond</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=federicobond" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/pvrs12"><img src="https://avatars.githubusercontent.com/u/6956401?v=4?s=120" width="120px;" alt="pvrs12"/><br /><sub><b>pvrs12</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=pvrs12" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/GKFX"><img src="https://avatars.githubusercontent.com/u/5357642?v=4?s=120" width="120px;" alt="George Bateman"/><br /><sub><b>George Bateman</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=GKFX" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://mckennapsean.com/"><img src="https://avatars.githubusercontent.com/u/1406149?v=4?s=120" width="120px;" alt="Sean McKenna"/><br /><sub><b>Sean McKenna</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=mckennapsean" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/kfeuz"><img src="https://avatars.githubusercontent.com/u/2780385?v=4?s=120" width="120px;" alt="kfeuz"/><br /><sub><b>kfeuz</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kfeuz" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://sansumbrella.com/"><img src="https://avatars.githubusercontent.com/u/81553?v=4?s=120" width="120px;" alt="David Wicks"/><br /><sub><b>David Wicks</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=sansumbrella" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/wirsing"><img src="https://avatars.githubusercontent.com/u/938075?v=4?s=120" width="120px;" alt="Wilm Thoben"/><br /><sub><b>Wilm Thoben</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=wirsing" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Anadroid"><img src="https://avatars.githubusercontent.com/u/1826278?v=4?s=120" width="120px;" alt="Ana"/><br /><sub><b>Ana</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Anadroid" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://vimeo.com/amnon"><img src="https://avatars.githubusercontent.com/u/4075846?v=4?s=120" width="120px;" alt="Amnon Owed"/><br /><sub><b>Amnon Owed</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=AmnonOwed" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/galsasson"><img src="https://avatars.githubusercontent.com/u/3430521?v=4?s=120" width="120px;" alt="Gal Sasson"/><br /><sub><b>Gal Sasson</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=galsasson" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/scollovati"><img src="https://avatars.githubusercontent.com/u/20740642?v=4?s=120" width="120px;" alt="scollovati"/><br /><sub><b>scollovati</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=scollovati" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://yongbakos.com/"><img src="https://avatars.githubusercontent.com/u/5502?v=4?s=120" width="120px;" alt="Yong Joseph Bakos"/><br /><sub><b>Yong Joseph Bakos</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=ybakos" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/crazymaster"><img src="https://avatars.githubusercontent.com/u/1528093?v=4?s=120" width="120px;" alt="Kenichi Ito"/><br /><sub><b>Kenichi Ito</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=crazymaster" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Efratror"><img src="https://avatars.githubusercontent.com/u/19653269?v=4?s=120" width="120px;" alt="Efratror"/><br /><sub><b>Efratror</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Efratror" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/aengelke"><img src="https://avatars.githubusercontent.com/u/4236689?v=4?s=120" width="120px;" alt="Alexis Engelke"/><br /><sub><b>Alexis Engelke</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=aengelke" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://tyfkda.github.io/"><img src="https://avatars.githubusercontent.com/u/7347125?v=4?s=120" width="120px;" alt="tyfkda"/><br /><sub><b>tyfkda</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=tyfkda" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/juniperoserra"><img src="https://avatars.githubusercontent.com/u/125713?v=4?s=120" width="120px;" alt="Simon Greenwold"/><br /><sub><b>Simon Greenwold</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=juniperoserra" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/runemadsen"><img src="https://avatars.githubusercontent.com/u/192021?v=4?s=120" width="120px;" alt="Rune Skjoldborg Madsen"/><br /><sub><b>Rune Skjoldborg Madsen</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=runemadsen" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/inkwellsiesta"><img src="https://avatars.githubusercontent.com/u/6732005?v=4?s=120" width="120px;" alt="Leslie Watkins"/><br /><sub><b>Leslie Watkins</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=inkwellsiesta" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://www.linkedin.com/in/rostyslav-zatserkovnyi/"><img src="https://avatars.githubusercontent.com/u/13783592?v=4?s=120" width="120px;" alt="Rostyslav Zatserkovnyi"/><br /><sub><b>Rostyslav Zatserkovnyi</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=rzats" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/trikaphundo"><img src="https://avatars.githubusercontent.com/u/24832650?v=4?s=120" width="120px;" alt="Dan"/><br /><sub><b>Dan</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=trikaphundo" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/dhowe"><img src="https://avatars.githubusercontent.com/u/737638?v=4?s=120" width="120px;" alt="Daniel Howe"/><br /><sub><b>Daniel Howe</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=dhowe" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/joshgiesbrecht"><img src="https://avatars.githubusercontent.com/u/3434564?v=4?s=120" width="120px;" alt="Josh Giesbrecht"/><br /><sub><b>Josh Giesbrecht</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=joshgiesbrecht" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://liquidex.house/"><img src="https://avatars.githubusercontent.com/u/16415678?v=4?s=120" width="120px;" alt="liquidex"/><br /><sub><b>liquidex</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=liquidev" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/bgc"><img src="https://avatars.githubusercontent.com/u/516129?v=4?s=120" width="120px;" alt="bgc"/><br /><sub><b>bgc</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=bgc" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://umair.io/"><img src="https://avatars.githubusercontent.com/u/3191547?v=4?s=120" width="120px;" alt="Mohammad Umair"/><br /><sub><b>Mohammad Umair</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=omerjerk" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/mtsio"><img src="https://avatars.githubusercontent.com/u/8008901?v=4?s=120" width="120px;" alt="T Michail"/><br /><sub><b>T Michail</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=mtsio" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://twitter.com/omarhommos"><img src="https://avatars.githubusercontent.com/u/3680307?v=4?s=120" width="120px;" alt="ohommos"/><br /><sub><b>ohommos</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=ohommos" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/google-feinberg"><img src="https://avatars.githubusercontent.com/u/2643627?v=4?s=120" width="120px;" alt="Jonathan Feinberg"/><br /><sub><b>Jonathan Feinberg</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=google-feinberg" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/davidfokkema"><img src="https://avatars.githubusercontent.com/u/917137?v=4?s=120" width="120px;" alt="David Fokkema"/><br /><sub><b>David Fokkema</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=davidfokkema" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/liquidzym"><img src="https://avatars.githubusercontent.com/u/51957?v=4?s=120" width="120px;" alt="liquid"/><br /><sub><b>liquid</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=liquidzym" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/kisarur"><img src="https://avatars.githubusercontent.com/u/23295399?v=4?s=120" width="120px;" alt="Kisaru Liyanage"/><br /><sub><b>Kisaru Liyanage</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kisarur" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/boubpopsyteam"><img src="https://avatars.githubusercontent.com/u/3597918?v=4?s=120" width="120px;" alt="BouB"/><br /><sub><b>BouB</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=boubpopsyteam" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://twitter.com/ijkxy"><img src="https://avatars.githubusercontent.com/u/8381460?v=4?s=120" width="120px;" alt="atk"/><br /><sub><b>atk</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=5atk6" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="http://twitter.com/xranby"><img src="https://avatars.githubusercontent.com/u/1233011?v=4?s=120" width="120px;" alt="Xerxes Rånby"/><br /><sub><b>Xerxes Rånby</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=xranby" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/WillRabalais04"><img src="https://avatars.githubusercontent.com/u/69363495?v=4?s=120" width="120px;" alt="Will Rabalais"/><br /><sub><b>Will Rabalais</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=WillRabalais04" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/iamutkarshtiwari"><img src="https://avatars.githubusercontent.com/u/6258810?v=4?s=120" width="120px;" alt="Utkarsh Tiwari"/><br /><sub><b>Utkarsh Tiwari</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=iamutkarshtiwari" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Prince-Polka"><img src="https://avatars.githubusercontent.com/u/29307694?v=4?s=120" width="120px;" alt="Prince-Polka"/><br /><sub><b>Prince-Polka</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Prince-Polka" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/jamesjgrady"><img src="https://avatars.githubusercontent.com/u/2600893?v=4?s=120" width="120px;" alt="jamesjgrady"/><br /><sub><b>jamesjgrady</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jamesjgrady" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/SableRaf"><img src="https://avatars.githubusercontent.com/u/290261?v=4?s=120" width="120px;" alt="Raphaël de Courville"/><br /><sub><b>Raphaël de Courville</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=SableRaf" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/satoshiokita"><img src="https://avatars.githubusercontent.com/u/16870334?v=4?s=120" width="120px;" alt="Satoshi Okita"/><br /><sub><b>Satoshi Okita</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=satoshiokita" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/rocha"><img src="https://avatars.githubusercontent.com/u/51551?v=4?s=120" width="120px;" alt="Carlos Andrés Rocha"/><br /><sub><b>Carlos Andrés Rocha</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=rocha" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/vijnv"><img src="https://avatars.githubusercontent.com/u/1311387?v=4?s=120" width="120px;" alt="Vincent Vijn"/><br /><sub><b>Vincent Vijn</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=vijnv" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/dzaima"><img src="https://avatars.githubusercontent.com/u/5551338?v=4?s=120" width="120px;" alt="dzaima"/><br /><sub><b>dzaima</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=dzaima" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/mingness"><img src="https://avatars.githubusercontent.com/u/5671413?v=4?s=120" width="120px;" alt="mingness"/><br /><sub><b>mingness</b></sub></a><br /><a href="#infra-mingness" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://doradocodes.com/"><img src="https://avatars.githubusercontent.com/u/140831752?v=4?s=120" width="120px;" alt="Dora Do"/><br /><sub><b>Dora Do</b></sub></a><br /><a href="#infra-doradocodes" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://steftervel.de/"><img src="https://avatars.githubusercontent.com/u/4988953?v=4?s=120" width="120px;" alt="Stef Tervelde"/><br /><sub><b>Stef Tervelde</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Stefterv" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/apps/allcontributors"><img src="https://avatars.githubusercontent.com/in/23186?v=4?s=120" width="120px;" alt="allcontributors[bot]"/><br /><sub><b>allcontributors[bot]</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=allcontributors[bot]" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://www.linkedin.com/in/davidtregay/"><img src="https://avatars.githubusercontent.com/u/131480?v=4?s=120" width="120px;" alt="Dave"/><br /><sub><b>Dave</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=datguy" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/TN8001"><img src="https://avatars.githubusercontent.com/u/28250188?v=4?s=120" width="120px;" alt="TN8001"/><br /><sub><b>TN8001</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=TN8001" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Sardtok"><img src="https://avatars.githubusercontent.com/u/613667?v=4?s=120" width="120px;" alt="Sigmund Hansen"/><br /><sub><b>Sigmund Hansen</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Sardtok" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://rbonifacio.github.io/"><img src="https://avatars.githubusercontent.com/u/1269433?v=4?s=120" width="120px;" alt="Rodrigo Bonifácio"/><br /><sub><b>Rodrigo Bonifácio</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=rbonifacio" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Plastix"><img src="https://avatars.githubusercontent.com/u/1526881?v=4?s=120" width="120px;" alt="Aidan Pieper"/><br /><sub><b>Aidan Pieper</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Plastix" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://www.minimaximize.com/"><img src="https://avatars.githubusercontent.com/u/12061276?v=4?s=120" width="120px;" alt="Liam James"/><br /><sub><b>Liam James</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Minimaximize" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/kazimuth"><img src="https://avatars.githubusercontent.com/u/555667?v=4?s=120" width="120px;" alt="james gilles"/><br /><sub><b>james gilles</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kazimuth" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://www.prisonerjohn.com/"><img src="https://avatars.githubusercontent.com/u/119702?v=4?s=120" width="120px;" alt="Elie Zananiri"/><br /><sub><b>Elie Zananiri</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=prisonerjohn" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://blogs.gnome.org/cosimoc"><img src="https://avatars.githubusercontent.com/u/13906?v=4?s=120" width="120px;" alt="Cosimo Cecchi"/><br /><sub><b>Cosimo Cecchi</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=cosimoc" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/liam-middlebrook"><img src="https://avatars.githubusercontent.com/u/3920942?v=4?s=120" width="120px;" alt="Liam Middlebrook"/><br /><sub><b>Liam Middlebrook</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=liam-middlebrook" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/myrjola"><img src="https://avatars.githubusercontent.com/u/36122?v=4?s=120" width="120px;" alt="Martin Yrjölä"/><br /><sub><b>Martin Yrjölä</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=myrjola" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://tajnyprojekt.com/"><img src="https://avatars.githubusercontent.com/u/18449680?v=4?s=120" width="120px;" alt="Michał Urbański"/><br /><sub><b>Michał Urbański</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=urbanskimichal" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/pacoelayudante"><img src="https://avatars.githubusercontent.com/u/9141115?v=4?s=120" width="120px;" alt="Paco"/><br /><sub><b>Paco</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=pacoelayudante" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/pjryan93"><img src="https://avatars.githubusercontent.com/u/7769635?v=4?s=120" width="120px;" alt="Patrick Ryan"/><br /><sub><b>Patrick Ryan</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=pjryan93" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://mimotaurs.pl/"><img src="https://avatars.githubusercontent.com/u/8190751?v=4?s=120" width="120px;" alt="Paweł Goliński"/><br /><sub><b>Paweł Goliński</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=qiubit" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://iamrupesh.me/"><img src="https://avatars.githubusercontent.com/u/46577873?v=4?s=120" width="120px;" alt="Rupesh Kumar"/><br /><sub><b>Rupesh Kumar</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=rupeshkumar22" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://suhaibkhan.com/"><img src="https://avatars.githubusercontent.com/u/4609293?v=4?s=120" width="120px;" alt="Suhaib Khan"/><br /><sub><b>Suhaib Khan</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=suheb" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/yblake"><img src="https://avatars.githubusercontent.com/u/9674161?v=4?s=120" width="120px;" alt="Yves BLAKE"/><br /><sub><b>Yves BLAKE</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=yblake" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/ernestum"><img src="https://avatars.githubusercontent.com/u/1250234?v=4?s=120" width="120px;" alt="M. Ernestus"/><br /><sub><b>M. Ernestus</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=ernestum" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/francisli"><img src="https://avatars.githubusercontent.com/u/140766?v=4?s=120" width="120px;" alt="Francis Li"/><br /><sub><b>Francis Li</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=francisli" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/PARAG00991"><img src="https://avatars.githubusercontent.com/u/8044561?v=4?s=120" width="120px;" alt="Parag Jain"/><br /><sub><b>Parag Jain</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=PARAG00991" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://roopavasudevan.com/"><img src="https://avatars.githubusercontent.com/u/1497519?v=4?s=120" width="120px;" alt="roopa vasudevan"/><br /><sub><b>roopa vasudevan</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=rouxpz" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/kiwistrongis"><img src="https://avatars.githubusercontent.com/u/2838640?v=4?s=120" width="120px;" alt="kiwistrongis"/><br /><sub><b>kiwistrongis</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kiwistrongis" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://www.linkedin.com/in/alessandro-ranellucci/"><img src="https://avatars.githubusercontent.com/u/594957?v=4?s=120" width="120px;" alt="Alessandro Ranellucci"/><br /><sub><b>Alessandro Ranellucci</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=alranel" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://abav.lugaralgum.com/"><img src="https://avatars.githubusercontent.com/u/3694604?v=4?s=120" width="120px;" alt="Alexandre B A Villares"/><br /><sub><b>Alexandre B A Villares</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=villares" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://heracl.es/"><img src="https://avatars.githubusercontent.com/u/3519269?v=4?s=120" width="120px;" alt="Heracles"/><br /><sub><b>Heracles</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Arty2" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Arya-Gupta"><img src="https://avatars.githubusercontent.com/u/84087089?v=4?s=120" width="120px;" alt="Arya Gupta"/><br /><sub><b>Arya Gupta</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Arya-Gupta" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/ddf"><img src="https://avatars.githubusercontent.com/u/141640?v=4?s=120" width="120px;" alt="Damien Quartz"/><br /><sub><b>Damien Quartz</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=ddf" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://rathoresaab.wordpress.com/"><img src="https://avatars.githubusercontent.com/u/9786291?v=4?s=120" width="120px;" alt="Shubham Rathore"/><br /><sub><b>Shubham Rathore</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=GABBAR1947" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/gtitaev"><img src="https://avatars.githubusercontent.com/u/6291442?v=4?s=120" width="120px;" alt="Grigoriy Titaev"/><br /><sub><b>Grigoriy Titaev</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=gtitaev" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://www.alura.com.br/"><img src="https://avatars.githubusercontent.com/u/51391?v=4?s=120" width="120px;" alt="Guilherme Silveira"/><br /><sub><b>Guilherme Silveira</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=guilhermesilveira" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://hectorcarral.com/"><img src="https://avatars.githubusercontent.com/u/26223377?v=4?s=120" width="120px;" alt="Héctor López Carral"/><br /><sub><b>Héctor López Carral</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=HectorCarral" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://jeremydouglass.com/"><img src="https://avatars.githubusercontent.com/u/798570?v=4?s=120" width="120px;" alt="Jeremy Douglass"/><br /><sub><b>Jeremy Douglass</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jeremydouglass" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://jettlarue.com/"><img src="https://avatars.githubusercontent.com/u/855581?v=4?s=120" width="120px;" alt="Jett LaRue"/><br /><sub><b>Jett LaRue</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=whackashoe" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/hx2A"><img src="https://avatars.githubusercontent.com/u/4044283?v=4?s=120" width="120px;" alt="Jim"/><br /><sub><b>Jim</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=hx2A" title="Code">💻</a> <a href="https://github.com/processing/processing4/issues?q=author%3Ahx2A" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://perals.io/"><img src="https://avatars.githubusercontent.com/u/1257272?v=4?s=120" width="120px;" alt="Joan Perals"/><br /><sub><b>Joan Perals</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jperals" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/oseph"><img src="https://avatars.githubusercontent.com/u/23200117?v=4?s=120" width="120px;" alt="Josh Holinaty"/><br /><sub><b>Josh Holinaty</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=oseph" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://catherine.superneko.net/"><img src="https://avatars.githubusercontent.com/u/74973441?v=4?s=120" width="120px;" alt="Keito Takeda"/><br /><sub><b>Keito Takeda</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=cathiecode" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/vepo"><img src="https://avatars.githubusercontent.com/u/353569?v=4?s=120" width="120px;" alt="Victor Osório"/><br /><sub><b>Victor Osório</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=vepo" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://letorbi.com/"><img src="https://avatars.githubusercontent.com/u/1268015?v=4?s=120" width="120px;" alt="Torben"/><br /><sub><b>Torben</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=letorbi" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/TobiPristupin"><img src="https://avatars.githubusercontent.com/u/22137035?v=4?s=120" width="120px;" alt="Tobias Pristupin"/><br /><sub><b>Tobias Pristupin</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=TobiPristupin" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://www.leplus.org/"><img src="https://avatars.githubusercontent.com/u/1929743?v=4?s=120" width="120px;" alt="Thomas Leplus"/><br /><sub><b>Thomas Leplus</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=thomasleplus" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/arnoudvanderleer"><img src="https://avatars.githubusercontent.com/u/6382058?v=4?s=120" width="120px;" alt="Arnoud van der Leer"/><br /><sub><b>Arnoud van der Leer</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=arnoudvanderleer" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://knupel.art/"><img src="https://avatars.githubusercontent.com/u/3332269?v=4?s=120" width="120px;" alt="Stanislas Marçais / Knupel"/><br /><sub><b>Stanislas Marçais / Knupel</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=knupel" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/DarkPrince304"><img src="https://avatars.githubusercontent.com/u/9005407?v=4?s=120" width="120px;" alt="Sanchit Kapoor"/><br /><sub><b>Sanchit Kapoor</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=DarkPrince304" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/hazmatsuitor"><img src="https://avatars.githubusercontent.com/u/6372134?v=4?s=120" width="120px;" alt="Miles Fogle"/><br /><sub><b>Miles Fogle</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=hazmatsuitor" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/mvaladas"><img src="https://avatars.githubusercontent.com/u/120122?v=4?s=120" width="120px;" alt="Miguel Valadas"/><br /><sub><b>Miguel Valadas</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=mvaladas" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/mglst"><img src="https://avatars.githubusercontent.com/u/13157227?v=4?s=120" width="120px;" alt="Maximilien Tirard"/><br /><sub><b>Maximilien Tirard</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=mglst" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Clarvel"><img src="https://avatars.githubusercontent.com/u/4959627?v=4?s=120" width="120px;" alt="Matthew Russell"/><br /><sub><b>Matthew Russell</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Clarvel" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/dcuartielles"><img src="https://avatars.githubusercontent.com/u/40865?v=4?s=120" width="120px;" alt="dcuartielles"/><br /><sub><b>dcuartielles</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=dcuartielles" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/jaysonkh"><img src="https://avatars.githubusercontent.com/u/1037665?v=4?s=120" width="120px;" alt="Jayson Haebich"/><br /><sub><b>Jayson Haebich</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jaysonkh" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/jordirosa-p5"><img src="https://avatars.githubusercontent.com/u/4674664?v=4?s=120" width="120px;" alt="jordirosa"/><br /><sub><b>jordirosa</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jordirosa-p5" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/jshrake"><img src="https://avatars.githubusercontent.com/u/3046816?v=4?s=120" width="120px;" alt="Justin Shrake"/><br /><sub><b>Justin Shrake</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jshrake" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/kevinstadler"><img src="https://avatars.githubusercontent.com/u/7602414?v=4?s=120" width="120px;" alt="Kevin"/><br /><sub><b>Kevin</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kevinstadler" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://kgtkr.net/"><img src="https://avatars.githubusercontent.com/u/17868838?v=4?s=120" width="120px;" alt="kgtkr"/><br /><sub><b>kgtkr</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kgtkr" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/markluffel"><img src="https://avatars.githubusercontent.com/u/13292?v=4?s=120" width="120px;" alt="Mark Luffel"/><br /><sub><b>Mark Luffel</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=markluffel" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/nking07049925"><img src="https://avatars.githubusercontent.com/u/11886663?v=4?s=120" width="120px;" alt="Никита Король"/><br /><sub><b>Никита Король</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=nking07049925" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/montardon"><img src="https://avatars.githubusercontent.com/u/238749?v=4?s=120" width="120px;" alt="raguenets"/><br /><sub><b>raguenets</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=montardon" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/robog-two"><img src="https://avatars.githubusercontent.com/u/77205106?v=4?s=120" width="120px;" alt="robog-two"/><br /><sub><b>robog-two</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=robog-two" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/teddywing"><img src="https://avatars.githubusercontent.com/u/342964?v=4?s=120" width="120px;" alt="teddywing"/><br /><sub><b>teddywing</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=teddywing" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/tiwawan"><img src="https://avatars.githubusercontent.com/u/4486076?v=4?s=120" width="120px;" alt="chikuwa"/><br /><sub><b>chikuwa</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=tiwawan" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/QazCetelic"><img src="https://avatars.githubusercontent.com/u/51381523?v=4?s=120" width="120px;" alt="ಠ_ಠ"/><br /><sub><b>ಠ_ಠ</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=QazCetelic" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://hamoid.com/"><img src="https://avatars.githubusercontent.com/u/108264?v=4?s=120" width="120px;" alt="Abe Pazos"/><br /><sub><b>Abe Pazos</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=hamoid" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/sashashura"><img src="https://avatars.githubusercontent.com/u/93376818?v=4?s=120" width="120px;" alt="Alex"/><br /><sub><b>Alex</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=sashashura" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/alexanderghurst"><img src="https://avatars.githubusercontent.com/u/34695105?v=4?s=120" width="120px;" alt="Alexander Hurst"/><br /><sub><b>Alexander Hurst</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=alexanderghurst" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/Xwhn"><img src="https://avatars.githubusercontent.com/u/8299732?v=4?s=120" width="120px;" alt="Anıl"/><br /><sub><b>Anıl</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Xwhn" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/setanarut"><img src="https://avatars.githubusercontent.com/u/36481442?v=4?s=120" width="120px;" alt="Barış"/><br /><sub><b>Barış</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=setanarut" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/bsapozhnikov"><img src="https://avatars.githubusercontent.com/u/5421484?v=4?s=120" width="120px;" alt="Brian Sapozhnikov"/><br /><sub><b>Brian Sapozhnikov</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=bsapozhnikov" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/charlesbones"><img src="https://avatars.githubusercontent.com/u/3228784?v=4?s=120" width="120px;" alt="Carlos Mario Rodriguez Perdomo"/><br /><sub><b>Carlos Mario Rodriguez Perdomo</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=charlesbones" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/CyberFlameGO"><img src="https://avatars.githubusercontent.com/u/24910512?v=4?s=120" width="120px;" alt="CyberFlame"/><br /><sub><b>CyberFlame</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=CyberFlameGO" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/dhruv13J"><img src="https://avatars.githubusercontent.com/u/4868174?v=4?s=120" width="120px;" alt="Dhruv Jawali"/><br /><sub><b>Dhruv Jawali</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=dhruv13J" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/FlorisVO"><img src="https://avatars.githubusercontent.com/u/29863403?v=4?s=120" width="120px;" alt="FlorisVO"/><br /><sub><b>FlorisVO</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=FlorisVO" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/frankleonrose"><img src="https://avatars.githubusercontent.com/u/1261725?v=4?s=120" width="120px;" alt="Frank Leon Rose"/><br /><sub><b>Frank Leon Rose</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=frankleonrose" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://gregborenstein.com/"><img src="https://avatars.githubusercontent.com/u/165?v=4?s=120" width="120px;" alt="Greg Borenstein"/><br /><sub><b>Greg Borenstein</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=atduskgreg" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/libasoles"><img src="https://avatars.githubusercontent.com/u/8009070?v=4?s=120" width="120px;" alt="Guillermo Perez"/><br /><sub><b>Guillermo Perez</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=libasoles" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/hkiel"><img src="https://avatars.githubusercontent.com/u/9904830?v=4?s=120" width="120px;" alt="Henning Kiel"/><br /><sub><b>Henning Kiel</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=hkiel" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="http://catcode.com/"><img src="https://avatars.githubusercontent.com/u/160096?v=4?s=120" width="120px;" alt="J David Eisenberg"/><br /><sub><b>J David Eisenberg</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jdeisenberg" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/JEphron"><img src="https://avatars.githubusercontent.com/u/1817241?v=4?s=120" width="120px;" alt="Jordan Ephron"/><br /><sub><b>Jordan Ephron</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=JEphron" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://jasonsigal.cc/"><img src="https://avatars.githubusercontent.com/u/504124?v=4?s=120" width="120px;" alt="Jason Sigal"/><br /><sub><b>Jason Sigal</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=therewasaguy" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://orel.li/"><img src="https://avatars.githubusercontent.com/u/400255?v=4?s=120" width="120px;" alt="Jordan Orelli"/><br /><sub><b>Jordan Orelli</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=jordanorelli" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/karlre"><img src="https://avatars.githubusercontent.com/u/22083320?v=4?s=120" width="120px;" alt="Kalle"/><br /><sub><b>Kalle</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=karlre" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/kamedin"><img src="https://avatars.githubusercontent.com/u/5443113?v=4?s=120" width="120px;" alt="Laureano López"/><br /><sub><b>Laureano López</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kamedin" title="Code">💻</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/LesleyWagner"><img src="https://avatars.githubusercontent.com/u/33584486?v=4?s=120" width="120px;" alt="Lesley Wagner"/><br /><sub><b>Lesley Wagner</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=LesleyWagner" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://mcslee.com/"><img src="https://avatars.githubusercontent.com/u/597850?v=4?s=120" width="120px;" alt="Mark Slee"/><br /><sub><b>Mark Slee</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=mcslee" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://groedl.xyz/"><img src="https://avatars.githubusercontent.com/u/1692826?v=4?s=120" width="120px;" alt="MARTIN LEOPOLD GROEDL"/><br /><sub><b>MARTIN LEOPOLD GROEDL</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=martinleopold" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://monkstone.github.io/"><img src="https://avatars.githubusercontent.com/u/86850?v=4?s=120" width="120px;" alt="Martin Prout"/><br /><sub><b>Martin Prout</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=monkstone" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/hbs"><img src="https://avatars.githubusercontent.com/u/236594?v=4?s=120" width="120px;" alt="Mathias Herberts"/><br /><sub><b>Mathias Herberts</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=hbs" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://www.diyasolanki.com"><img src="https://avatars.githubusercontent.com/u/110971977?v=4?s=120" width="120px;" alt="Diya Solanki"/><br /><sub><b>Diya Solanki</b></sub></a><br /><a href="#infra-diyaayay" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://www.codelerity.com/"><img src="https://avatars.githubusercontent.com/u/3975960?v=4?s=120" width="120px;" alt="Neil C Smith"/><br /><sub><b>Neil C Smith</b></sub></a><br /><a href="#infra-neilcsmith-net" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://www.katehollenbach.com"><img src="https://avatars.githubusercontent.com/u/78966?v=4?s=120" width="120px;" alt="kate hollenbach"/><br /><sub><b>kate hollenbach</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=kjhollen" title="Code">💻</a> <a href="#platform-kjhollen" title="Packaging/porting to new platform">📦</a> <a href="#mentoring-kjhollen" title="Mentoring">🧑‍🏫</a> <a href="https://github.com/processing/processing4/issues?q=author%3Akjhollen" title="Bug reports">🐛</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/rishabdev2997"><img src="https://avatars.githubusercontent.com/u/107137565?v=4?s=120" width="120px;" alt="Rishabdev Tudu"/><br /><sub><b>Rishabdev Tudu</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=rishabdev2997" title="Documentation">📖</a> <a href="https://github.com/processing/processing4/commits?author=rishabdev2997" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://plopez.me"><img src="https://avatars.githubusercontent.com/u/37042253?v=4?s=120" width="120px;" alt="Pau"/><br /><sub><b>Pau</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=plopez01" title="Documentation">📖</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://d.hatena.ne.jp/junology/"><img src="https://avatars.githubusercontent.com/u/1933073?v=4?s=120" width="120px;" alt="Junology"/><br /><sub><b>Junology</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=Junology" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/twisst"><img src="https://avatars.githubusercontent.com/u/2244463?v=4?s=120" width="120px;" alt="Jaap Meijers"/><br /><sub><b>Jaap Meijers</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=twisst" title="Documentation">📖</a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/xinemata"><img src="https://avatars.githubusercontent.com/u/9159424?v=4?s=120" width="120px;" alt="Xin Xin"/><br /><sub><b>Xin Xin</b></sub></a><br /><a href="#eventOrganizing-xinemata" title="Event Organizing">📋</a> <a href="#ideas-xinemata" title="Ideas, Planning, & Feedback">🤔</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="http://benjaminfoxstudios.com"><img src="https://avatars.githubusercontent.com/u/234190?v=4?s=120" width="120px;" alt="Benjamin Fox"/><br /><sub><b>Benjamin Fox</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=tracerstar" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/e1dem"><img src="https://avatars.githubusercontent.com/u/32488297?v=4?s=120" width="120px;" alt="e1dem"/><br /><sub><b>e1dem</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=e1dem" title="Code">💻</a></td>
+      <td align="center" valign="top" width="16.66%"><a href="https://github.com/inteqam"><img src="https://avatars.githubusercontent.com/u/104833943?v=4?s=120" width="120px;" alt="Aditya Chaudhary"/><br /><sub><b>Aditya Chaudhary</b></sub></a><br /><a href="https://github.com/processing/processing4/commits?author=inteqam" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->

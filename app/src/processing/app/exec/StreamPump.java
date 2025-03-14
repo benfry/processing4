@@ -13,6 +13,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import processing.app.Base;
+import processing.app.Messages;
 
 
 /**
@@ -79,8 +80,7 @@ public class StreamPump implements Runnable {
       }
     } catch (final IOException e) {
       if (Base.DEBUG) {
-        System.err.println("StreamPump: " + name);
-        e.printStackTrace(System.err);
+        Messages.err("StreamPump: " + name, e);
         // removing for 0190, but need a better way to handle these
         throw new RuntimeException("Inside " + this + " for " + name, e);
       }

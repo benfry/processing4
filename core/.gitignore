@@ -5,3 +5,5 @@ bin-test
 /library/jogl-all*.jar
 
 core-sources.jar
+
+different/build

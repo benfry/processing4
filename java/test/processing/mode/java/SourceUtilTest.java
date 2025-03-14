@@ -2,6 +2,7 @@ package processing.mode.java;
 
 import org.junit.Assert;
 import org.junit.Test;
+import processing.mode.java.preproc.SourceUtil;
 
 
 public class SourceUtilTest {

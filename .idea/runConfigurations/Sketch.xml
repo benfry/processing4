@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Sketch" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="Basic" />
+    <module name="processing.core.examples.main" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

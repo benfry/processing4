@@ -24,6 +24,7 @@ import org.mockito.Mockito;
 import processing.app.Library;
 import processing.app.Sketch;
 import processing.app.SketchException;
+import processing.mode.java.preproc.ImportStatement;
 
 import java.io.File;
 import java.io.IOException;

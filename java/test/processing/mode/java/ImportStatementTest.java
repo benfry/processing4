@@ -3,6 +3,7 @@ package processing.mode.java;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import processing.mode.java.preproc.ImportStatement;
 
 
 public class ImportStatementTest {

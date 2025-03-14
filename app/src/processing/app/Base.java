@@ -44,7 +44,6 @@ import processing.app.ui.Toolkit;
 import processing.core.*;
 import processing.data.StringList;
 
-
 /**
  * The base class for the main processing application.
  * Primary role of this class is for platform identification and
@@ -54,9 +53,9 @@ import processing.data.StringList;
 public class Base {
   // Added accessors for 0218 because the UpdateCheck class was not properly
   // updating the values, due to javac inlining the static final values.
-  static private final int REVISION = 1294;
+  static private final int REVISION = Integer.parseInt(System.getProperty("processing.revision", "1295"));
   /** This might be replaced by main() if there's a lib/version.txt file. */
-  static private String VERSION_NAME = "1294"; //$NON-NLS-1$
+  static private String VERSION_NAME = System.getProperty("processing.version", "1295"); //$NON-NLS-1$
 
   static final public String SKETCH_BUNDLE_EXT = ".pdez";
   static final public String CONTRIB_BUNDLE_EXT = ".pdex";
@@ -66,7 +65,7 @@ public class Base {
    * if an empty file named 'debug' is found in the settings folder.
    * See implementation in createAndShowGUI().
    */
-  static public boolean DEBUG;
+  static public boolean DEBUG = System.getenv().containsKey("DEBUG");
 
   /** True if running via Commander. */
   static private boolean commandLine;
@@ -125,6 +124,7 @@ public class Base {
 
 
   static public void main(final String[] args) {
+    Messages.log("Starting Processing version" + VERSION_NAME + " revision "+ REVISION);
     EventQueue.invokeLater(() -> {
       try {
         createAndShowGUI(args);
@@ -157,7 +157,7 @@ public class Base {
         }
         Messages.showTrace("Unknown Problem",
                            "A serious error happened during startup. Please report:\n" +
-                           "http://github.com/processing/processing/issues/new", t, true);
+                           "http://github.com/processing/processing4/issues/new", t, true);
       }
     });
   }
@@ -237,7 +237,7 @@ public class Base {
 
 //    long t2 = System.currentTimeMillis();
 
-    if (!SingleInstance.alreadyRunning(args)) {
+    if (DEBUG || !SingleInstance.alreadyRunning(args)) {
       // Set the look and feel before opening the window
       try {
         Platform.setLookAndFeel();
@@ -564,14 +564,12 @@ public class Base {
     cl.downloadAvailableList(this, new ContribProgress(null));
     long t9 = System.currentTimeMillis();
 
-    if (DEBUG) {
-      System.out.println("core modes: " + (t2b-t2) +
-                         ", contrib modes: " + (t2c-t2b) +
-                         ", contrib ex: " + (t2c-t2b));
-      System.out.println("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
+    Messages.log("core modes: " + (t2b-t2) +
+                       ", contrib modes: " + (t2c-t2b) +
+                       ", contrib ex: " + (t2c-t2b));
+    Messages.log("base took " + (t2-t1) + " " + (t3-t2) + " " + (t4-t3) +
                          " " + (t5-t4) + " t6-t5=" + (t6-t5) + " " + (t7-t6) +
                          " handleNew=" + (t8-t7) + " " + (t9-t8) + " ms");
-    }
   }
 
 
@@ -1214,6 +1212,7 @@ public class Base {
   private Editor openSketchBundle(String path) {
     File zipFile = new File(path);
     try {
+      untitledFolder.mkdirs();
       File destFolder = File.createTempFile("zip", "tmp", untitledFolder);
       if (!destFolder.delete() || !destFolder.mkdirs()) {
         // Hard to imagine why this would happen, but...
@@ -1366,6 +1365,11 @@ public class Base {
    * @param schemeUri the full URI, including pde://
    */
   public Editor handleScheme(String schemeUri) {
+    var result = Schema.handleSchema(schemeUri, this);
+    if (result != null) {
+      return result;
+    }
+
     String location = schemeUri.substring(6);
     if (location.length() > 0) {
       // if it leads with a slash, then it's a file url

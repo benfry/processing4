@@ -30,6 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import processing.app.Base;
+import processing.app.Messages;
 import processing.app.UpdateCheck;
 import processing.app.Util;
 import processing.core.PApplet;
@@ -44,7 +45,7 @@ public class ContributionListing {
    * Stable URL that will redirect to wherever the file is hosted.
    * Changed to use https in 4.0 beta 8 (returns same data).
    */
-  static final String LISTING_URL = "https://download.processing.org/contribs";
+  static final String LISTING_URL = System.getProperty("processing.contributions.source","https://download.processing.org/contribs");
   static final String LOCAL_FILENAME = "contribs.txt";
 
   /** Location of the listing file on disk, will be read and written. */
@@ -228,6 +229,7 @@ public class ContributionListing {
   public void downloadAvailableList(final Base base,
                                     final ContribProgress progress) {
     // TODO: replace with SwingWorker [jv]
+    Messages.log("Downloading contributions list from " + LISTING_URL);
     new Thread(() -> {
       downloadingLock.lock();
 

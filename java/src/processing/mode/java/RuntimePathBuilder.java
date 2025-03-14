@@ -36,11 +36,8 @@ import java.util.stream.Stream;
 
 import com.google.classpath.ClassPathFactory;
 
-import processing.app.Library;
-import processing.app.Messages;
-import processing.app.Sketch;
-import processing.app.SketchException;
-import processing.app.Util;
+import processing.app.*;
+import processing.mode.java.preproc.ImportStatement;
 
 
 /**
@@ -575,7 +572,7 @@ public class RuntimePathBuilder {
    */
   protected String findFullyQualifiedJarName(String jarName) {
     StringJoiner joiner = new StringJoiner(File.separator);
-    joiner.add(System.getProperty("java.home"));
+    joiner.add(Platform.getJavaHome().getAbsolutePath());
     joiner.add("lib");
     joiner.add(jarName);
 
@@ -591,7 +588,7 @@ public class RuntimePathBuilder {
    */
   protected String buildForModule(String moduleName) {
     StringJoiner jmodPathJoiner = new StringJoiner(File.separator);
-    jmodPathJoiner.add(System.getProperty("java.home"));
+    jmodPathJoiner.add(Platform.getJavaHome().getAbsolutePath());
     jmodPathJoiner.add("jmods");
     jmodPathJoiner.add(moduleName);
     return jmodPathJoiner.toString();

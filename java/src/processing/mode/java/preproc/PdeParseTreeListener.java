@@ -33,9 +33,6 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import processing.app.Base;
 import processing.app.Preferences;
 import processing.core.PApplet;
-import processing.mode.java.ImportStatement;
-import processing.mode.java.SourceUtil;
-import processing.mode.java.TextTransform;
 import processing.mode.java.preproc.PdePreprocessor.Mode;
 
 /**

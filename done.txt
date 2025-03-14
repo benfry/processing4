@@ -1,4 +1,14 @@
 1293 (4.3)
+
+***************************************************************
+IMPORTANT: This file is left here for historical reference only.
+
+For contributors, please refer to the CONTRIBUTING guidelines 
+and check the open issues list for actionable items. If anything 
+here sparks interest, consider opening a new issue to discuss 
+its current relevance.
+***************************************************************
+
 o &apos; appearing in code with Copy as HTML
 X   could not reproduce
 / Cannot load any user language files for i18n

@@ -1632,20 +1632,34 @@ public class PShapeOpenGL extends PShape {
 
   // Setters/getters of individual vertices
 
-
+  //for taking the default value as false , so user don't have to explicitly enter false
+  // if user don't want to include children vertex count
   @Override
   public int getVertexCount() {
-    if (family == GROUP) return 0; // Group shapes don't have vertices
-    else {
+    return getVertexCount(false);  // Calls the main method with default false
+  }
+  @Override
+  public int getVertexCount(boolean includeChildren) {
+     int count = 0;
+    // If the shape is a group, recursively count the vertices of its children
+    if (family == GROUP) {
+      if(!includeChildren){
+        return 0;
+      }
+      // Iterate through all the child shapes and count their vertices
+      for (int i = 0; i < getChildCount(); i++) {
+        count += getChild(i).getVertexCount(true);  // Recursive call to get the vertex count of child shapes
+      }
+    } else {
       if (root.tessUpdate) {
         if (root.tessKind == TRIANGLES) {
-          return lastPolyVertex - firstPolyVertex + 1;
+          count += lastPolyVertex - firstPolyVertex + 1;
         } else if (root.tessKind == LINES) {
-          return lastLineVertex - firstLineVertex + 1;
+          count += lastLineVertex - firstLineVertex + 1;
         } else if (root.tessKind == POINTS) {
-          return lastPointVertex - firstPointVertex + 1;
+          count += lastPointVertex - firstPointVertex + 1;
         } else {
-          return 0;
+          count += 0; // Handle other cases
         }
       } else {
         if (family == PRIMITIVE || family == PATH) {
@@ -1653,9 +1667,10 @@ public class PShapeOpenGL extends PShape {
           // tessellation
           updateTessellation();
         }
-        return inGeo.vertexCount;
+        count += inGeo.vertexCount;
       }
     }
+    return count;
   }
 
 

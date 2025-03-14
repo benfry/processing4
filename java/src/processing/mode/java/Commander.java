@@ -33,7 +33,7 @@ import processing.app.Platform;
 import processing.app.Preferences;
 import processing.app.RunnerListener;
 import processing.app.Sketch;
-import processing.app.SketchException;
+import processing.mode.java.preproc.SketchException;
 import processing.app.Util;
 import processing.app.contrib.ModeContribution;
 import processing.core.PApplet;

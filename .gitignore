@@ -93,3 +93,23 @@ bin-test
 # VS Code Java project files
 .project
 .vscode/
+
+# Processing examples
+processing-examples
+
+# Maven ignores
+.gradle
+core/build/
+build/publish/
+app/build
+java/build/
+/build/reports
+/java/bin
+/java/libraries/svg/bin
+/java/preprocessor/build
+/java/lsp/build
+/.kotlin/sessions
+/core/examples/build
+
+.build/
+/app/windows/obj

@@ -1,0 +1,63 @@
+name: Pull Requests
+on:
+  pull_request:
+    paths-ignore:
+      - '**/*.md'
+    branches:
+      - main
+
+jobs:
+  build: 
+    name: Create Pull Request Build for ${{ matrix.os_prefix }} (${{ matrix.arch }})
+    runs-on: ${{ matrix.os }}
+    permissions:
+      pull-requests: write
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # compiling for arm32 needs a self-hosted runner on Raspi OS (32-bit)
+          - os: [self-hosted, linux, ARM]
+            os_prefix: linux
+            arch: arm
+          - os: ubuntu-latest
+            os_prefix: linux
+            arch: x64
+          - os: windows-latest
+            os_prefix: windows
+            arch: x64
+          - os: macos-latest
+            os_prefix: macos
+            arch: x64
+          - os: macos-latest
+            os_prefix: macos
+            arch: aarch64
+          - os: macos-latest
+            os_prefix: linux
+            arch: aarch64
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Checkout Examples Repository
+        uses: actions/checkout@v4
+        with:
+          repository: processing/processing-examples
+          path: processing-examples
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          architecture: ${{ matrix.arch }}
+      - name: Setup Ant
+        uses: cedx/setup-ant@v3
+      - name: Build Release
+        run: ant -noinput -buildfile build/build.xml ${{ matrix.os_prefix }}-dist -Dversion="${{ github.sha }}" -Dplatform=${{ matrix.os_prefix }}
+      - name: Add artifact
+        uses: actions/upload-artifact@v4
+        id: upload
+        with:
+          name: processing-pr${{ github.event.pull_request.number }}-${{github.sha}}-${{ matrix.os_prefix }}-${{ matrix.arch }}-ant
+          path:  ./build/${{ matrix.os_prefix }}/processing-${{github.sha}}-${{ matrix.os_prefix}}-*
+          retention-days: 5

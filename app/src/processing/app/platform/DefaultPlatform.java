@@ -257,31 +257,31 @@ public class DefaultPlatform {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  public interface CLibrary extends Library {
-    CLibrary INSTANCE = Native.load("c", CLibrary.class);
-    int setenv(String name, String value, int overwrite);
-    String getenv(String name);
-    int unsetenv(String name);
-    int putenv(String string);
-  }
-
-
-  public void setenv(String variable, String value) {
-    CLibrary clib = CLibrary.INSTANCE;
-    clib.setenv(variable, value, 1);
-  }
-
-
-  public String getenv(String variable) {
-    CLibrary clib = CLibrary.INSTANCE;
-    return clib.getenv(variable);
-  }
-
-
-  public int unsetenv(String variable) {
-    CLibrary clib = CLibrary.INSTANCE;
-    return clib.unsetenv(variable);
-  }
+//  public interface CLibrary extends Library {
+//    CLibrary INSTANCE = Native.load("c", CLibrary.class);
+//    int setenv(String name, String value, int overwrite);
+//    String getenv(String name);
+//    int unsetenv(String name);
+//    int putenv(String string);
+//  }
+//
+//
+//  public void setenv(String variable, String value) {
+//    CLibrary clib = CLibrary.INSTANCE;
+//    clib.setenv(variable, value, 1);
+//  }
+//
+//
+//  public String getenv(String variable) {
+//    CLibrary clib = CLibrary.INSTANCE;
+//    return clib.getenv(variable);
+//  }
+//
+//
+//  public int unsetenv(String variable) {
+//    CLibrary clib = CLibrary.INSTANCE;
+//    return clib.unsetenv(variable);
+//  }
 
 
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .

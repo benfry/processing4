@@ -440,15 +440,102 @@ public class PShapeSVG extends PShape {
   }
 
 
+  /**
+   * Parse <rect> element.
+   * Syntax defined at https://www.w3.org/TR/SVG11/shapes.html#RectElement
+   */
   protected void parseRect() {
-    kind = RECT;
-    family = PRIMITIVE;
-    params = new float[] {
-      getFloatWithUnit(element, "x", svgWidth),
-      getFloatWithUnit(element, "y", svgHeight),
-      getFloatWithUnit(element, "width", svgWidth),
-      getFloatWithUnit(element, "height", svgHeight)
-    };
+    // Load rectangle parameters
+    float x = getFloatWithUnit(element, "x", svgWidth);
+    float y = getFloatWithUnit(element, "y", svgHeight);
+    float w = getFloatWithUnit(element, "width", svgWidth);
+    float h = getFloatWithUnit(element, "height", svgHeight);
+
+    // The specification above says zero size should disable rendering.
+    // The resulting shape is an empty GROUP shape since it is the most light one in drawing.
+    if (w <= 0f || h <= 0f) {
+      kind = 0;
+      family = GROUP;
+      childCount = 0;
+      children = null;
+      vertexCount = 0;
+      visible = false;
+      return;
+    }
+
+    // Determine the values of rx and ry from attributes
+    String rxAttr = element.getString("rx");
+    String ryAttr = element.getString("ry");
+    float rx = rxAttr == null ? -1f : parseUnitSize(rxAttr, svgWidth);
+    float ry = ryAttr == null ? -1f : parseUnitSize(ryAttr, svgHeight);
+    if (rx < 0f && ry > 0f)
+      rx = ry;
+    if (rx > 0f && ry < 0f)
+      ry = rx;
+    if (rx > w/2)
+      rx = w/2;
+    if (ry > h/2)
+      ry = h/2;
+
+    // Determine the vertices
+    if (rx <= 0f || ry <= 0f) {
+      kind = RECT;
+      family = PRIMITIVE;
+      params = new float[] {x, y, w, h};
+    }
+    else if (rx == ry) {
+      kind = RECT;
+      family = PRIMITIVE;
+      params = new float[] {x, y, w, h, rx};
+    }
+    else {
+      kind = 0;
+      family = PATH;
+      close = true;
+      vertexCount = 16;
+      vertices = new float[vertexCount][2];
+      vertexCodes = new int[8];
+      parsePathCode(VERTEX);
+      vertices[0][X] = x;
+      vertices[0][Y] = y + ry;
+      parsePathCode(BEZIER_VERTEX);
+      vertices[1][X] = x;
+      vertices[1][Y] = y + 0.4476f * ry;
+      vertices[2][X] = x + 0.4476f * rx;
+      vertices[2][Y] = y;
+      vertices[3][X] = x + rx;
+      vertices[3][Y] = y;
+      parsePathCode(VERTEX);
+      vertices[4][X] = x + w - rx;
+      vertices[4][Y] = y;
+      parsePathCode(BEZIER_VERTEX);
+      vertices[5][X] = x + w - 0.4476f * rx;
+      vertices[5][Y] = y;
+      vertices[6][X] = x + w;
+      vertices[6][Y] = y + 0.4476f * ry;
+      vertices[7][X] = x + w;
+      vertices[7][Y] = y + ry;
+      parsePathCode(VERTEX);
+      vertices[8][X] = x + w;
+      vertices[8][Y] = y + h - ry;
+      parsePathCode(BEZIER_VERTEX);
+      vertices[9][X] = x + w;
+      vertices[9][Y] = y + h - 0.4476f * ry;
+      vertices[10][X] = x + w - 0.4476f * rx;
+      vertices[10][Y] = y + h;
+      vertices[11][X] = x + w - rx;
+      vertices[11][Y] = y + h;
+      parsePathCode(VERTEX);
+      vertices[12][X] = x + rx;
+      vertices[12][Y] = y + h;
+      parsePathCode(BEZIER_VERTEX);
+      vertices[13][X] = x + 0.4476f * rx;
+      vertices[13][Y] = y + h;
+      vertices[14][X] = x;
+      vertices[14][Y] = y + h - 0.4476f * ry;
+      vertices[15][X] = x;
+      vertices[15][Y] = y + h- ry;
+    }
   }
 
 
@@ -514,53 +601,89 @@ public class PShapeSVG extends PShape {
     char[] pathDataChars = pathData.toCharArray();
 
     StringBuilder pathBuffer = new StringBuilder();
-    boolean lastSeparate = false;
-    boolean isOnDecimal = false;
+
+    // The states of the lexical sanner
+    enum LexState {
+      AFTER_CMD,// Just after a command (i.e. a single alphabet)
+      NEUTRAL,  // Neutral state, waiting for a number expression or a command
+      INTEGER,  // On a sequence of digits possibly led by the '-' sign 
+      DECIMAL,  // On a digit sequence following the decimal point '.'
+      EXP_HEAD, // On the head of the exponent part of a scientific notation; the '-' sign or a digit
+      EXP_TAIL, // On the integer expression in the exponent part
+    }
+    LexState lexState = LexState.NEUTRAL;
 
     for (int i = 0; i < pathDataChars.length; i++) {
       char c = pathDataChars[i];
-      boolean separate = false;
 
-      if (c == 'M' || c == 'm' ||
-          c == 'L' || c == 'l' ||
-          c == 'H' || c == 'h' ||
-          c == 'V' || c == 'v' ||
-          c == 'C' || c == 'c' ||  // beziers
-          c == 'S' || c == 's' ||
-          c == 'Q' || c == 'q' ||  // quadratic beziers
-          c == 'T' || c == 't' ||
-          c == 'A' || c == 'a' ||  // elliptical arc
-          c == 'Z' || c == 'z' ||  // closepath
-          c == ',') {
-        separate = true;
-        if (i != 0) {
-          pathBuffer.append("|");
-        }
-      }
-      if (c == 'Z' || c == 'z') {
-        separate = false;
-      }
-      if (c == '.' && !isOnDecimal) {
-        isOnDecimal = true;
-      }
-      else if (isOnDecimal && (c < '0' || c > '9')) {
+      // Put a separator after a command.
+      if (lexState == LexState.AFTER_CMD) {
         pathBuffer.append("|");
-        isOnDecimal = c == '.';
+        lexState = LexState.NEUTRAL;
       }
-      if (c == '-' && !lastSeparate) {
-        // allow for 'e' notation in numbers, e.g. 2.10e-9
-        // https://download.processing.org/bugzilla/1408.html
-        if (i == 0 || pathDataChars[i-1] != 'e') {
+
+      if (c >= '0' && c <= '9') {
+        // If it is a head of a number representation, enter the 'inside' of the digit sequence.
+        if (lexState == LexState.NEUTRAL) {
+          lexState = LexState.INTEGER;
+        }
+        else if (lexState == LexState.EXP_HEAD) {
+          lexState = LexState.EXP_TAIL;
+        }
+        pathBuffer.append(c);
+        continue;
+      }
+
+      if (c == '-') {
+        if (lexState == LexState.NEUTRAL) {
+          // In neutral state, enter 'digit sequence'.
+          lexState = LexState.INTEGER;
+        }
+        else if (lexState == LexState.EXP_HEAD) {
+          // In the begining of an exponent, enter 'exponent digit sequence'.
+          lexState = LexState.EXP_TAIL;
+        }
+        else {
+          // Otherwise, begin a new number representation.
+          pathBuffer.append("|");
+          lexState = LexState.INTEGER;
+        }
+        pathBuffer.append("-");
+        continue;
+      }
+
+      if (c == '.') {
+        if (lexState == LexState.DECIMAL || lexState == LexState.EXP_HEAD || lexState == LexState.EXP_TAIL) {
+          // Begin a new decimal number unless it is in a neutral state or after a digit sequence
           pathBuffer.append("|");
         }
+        pathBuffer.append(".");
+        lexState = LexState.DECIMAL;
+        continue;
       }
+
+      if (c == 'e' || c == 'E') {
+        // Found 'e' or 'E', enter the 'exponent' state immediately.
+        pathBuffer.append("e");
+        lexState = LexState.EXP_HEAD;
+        continue;
+      }
+
+      // The following are executed for non-numeral elements
+
+      if (lexState != LexState.NEUTRAL) {
+        pathBuffer.append("|");
+        lexState = LexState.NEUTRAL;
+      }
+
       if (c != ',') {
-        pathBuffer.append(c); //"" + pathDataBuffer.charAt(i));
+        pathBuffer.append(c);
       }
-      if (separate && c != ',' && c != '-') {
-        pathBuffer.append("|");
+
+      if ((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z')) {
+        // Every alphabet character except for 'e' and 'E' are considered as a command.
+        lexState = LexState.AFTER_CMD;
       }
-      lastSeparate = separate;
     }
 
     // use whitespace constant to get rid of extra spaces and CR or LF
@@ -1274,7 +1397,8 @@ public class PShapeSVG extends PShape {
   }
 
 
-  void setColor(String colorText, boolean isFill) {
+  //making this public allows us to set gradient fills on a PShape
+  public void setColor(String colorText, boolean isFill) {
     colorText = colorText.trim();
     int opacityMask = fillColor & 0xFF000000;
     boolean visible = true;
@@ -1497,7 +1621,7 @@ public class PShapeSVG extends PShape {
 
 
   static public class Gradient extends PShapeSVG {
-    AffineTransform transform;
+    public AffineTransform transform;
 
     public float[] offset;
     public int[] color;
